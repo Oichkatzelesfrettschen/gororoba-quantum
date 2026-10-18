@@ -22,9 +22,10 @@
 # the sources, venvs, uv cache and wheel, several GB of Python packages, and
 # lives outside every checkout so the checkout's tree walks never read it.
 # Every checkout shares it, so one host run at a time holds WORK/.lock (a
-# second run exits 75), and build records in WORK/producer.txt the digest of
-# the recipe inputs that made the wheel; check and gpu-check refuse a wheel
-# whose digest differs from the running recipe's.
+# second run exits 75). images labels both images with the digest of the
+# recipe inputs, build and check refuse an image whose label differs, and
+# build records the digest and the image ids in WORK/producer.txt; check and
+# gpu-check refuse a wheel whose digest differs from the running recipe's.
 set -eu
 
 RECIPE_DIR=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
@@ -62,7 +63,21 @@ recipe_digest() {
 	} | sha256sum | cut -d' ' -f1
 }
 
+# require_images: both tagged images carry the running recipe's digest, so
+# a step never runs an image a changed Containerfile or base no longer makes.
+require_images() {
+	want=$(recipe_digest)
+	for tag in "$BUILD_TAG" "$TEST_TAG"; do
+		label=$("$PODMAN" image inspect --format '{{index .Labels "gororoba.recipe"}}' "$tag" 2>/dev/null || true)
+		if [ "$label" != "$want" ]; then
+			log "$tag was built by recipe ${label:-unknown}, not $want; run images first"
+			exit 1
+		fi
+	done
+}
+
 require_producer() {
+	require_images
 	want=$(recipe_digest)
 	have=$(sed -n 's/^recipe //p' "$WORK/producer.txt" 2>/dev/null || true)
 	if [ "$have" != "$want" ]; then
@@ -109,16 +124,18 @@ step_fetch() {
 
 step_images() {
 	mkdir -p "$WORK/logs"
-	nice -n 19 "$PODMAN" build --target build -t "$BUILD_TAG" \
+	digest=$(recipe_digest)
+	nice -n 19 "$PODMAN" build --target build -t "$BUILD_TAG" --label "gororoba.recipe=$digest" \
 		--build-arg BUILD_BASE="$BUILD_BASE" --build-arg TEST_BASE="$TEST_BASE" \
 		-f "$RECIPE_DIR/aer-gpu-cu13.Containerfile" "$RECIPE_DIR" >"$WORK/logs/image-build.log" 2>&1
-	nice -n 19 "$PODMAN" build --target test -t "$TEST_TAG" \
+	nice -n 19 "$PODMAN" build --target test -t "$TEST_TAG" --label "gororoba.recipe=$digest" \
 		--build-arg BUILD_BASE="$BUILD_BASE" --build-arg TEST_BASE="$TEST_BASE" \
 		-f "$RECIPE_DIR/aer-gpu-cu13.Containerfile" "$RECIPE_DIR" >"$WORK/logs/image-test.log" 2>&1
 	"$PODMAN" image inspect --format '{{.Id}} {{.RepoTags}}' "$BUILD_TAG" "$TEST_TAG" >"$WORK/logs/images.txt"
 }
 
 step_build() {
+	require_images
 	for stale in "$WORK/src" "$WORK/venv-build" "$WORK/dist" "$WORK/producer.txt"; do
 		if [ -e "$stale" ]; then
 			log "trash $stale"
@@ -128,7 +145,8 @@ step_build() {
 	mkdir -p "$WORK/logs"
 	container_run "$BUILD_TAG" '' inner-build >"$WORK/logs/build.log" 2>&1
 	revision=$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || echo unknown)
-	printf 'recipe %s\nrevision %s\n' "$(recipe_digest)" "$revision" >"$WORK/producer.txt"
+	images=$("$PODMAN" image inspect --format '{{.Id}}' "$BUILD_TAG" "$TEST_TAG" | tr '\n' ' ')
+	printf 'recipe %s\nrevision %s\nimages %s\n' "$(recipe_digest)" "$revision" "${images% }" >"$WORK/producer.txt"
 }
 
 step_check() {
