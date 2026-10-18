@@ -308,12 +308,14 @@ stream, numpy seed [20261017, 2], differs from the ladder's.
   | (10,13) | 1.0214 | 1.0274 | 1.0312 | 1.063 | 1.0004 |
   | (12,14) | 1.0056 | 1.0058 | 1.0086 | 1.011 | 1.0059 |
 
-  The stationary 99% intervals exclude 1 on all three pairs, at 1.0280 to
-  1.0322, 1.0291 to 1.0334 and 1.0074 to 1.0098, and the readout-iso-x
-  correction moves them by at most 0.0003. Restricting the combination to
-  batch 1, the only X batch whose jobs all carry a significant depth-9 first
-  harmonic, gives 1.0326, 1.0303 and 1.0075. The ln-mean over all 8
-  bins, which carries no choice of bin, also reads at or above the job
+  Bins 0 and 4 are extrema of the line only where the depth-9 selector's
+  first harmonic supplies the phase, so the stationary verdict combines
+  batch 1 alone, the only X batch whose jobs all carry a detected line and a
+  significant depth-9 first harmonic: 1.0326, 1.0303 and 1.0075, with 99%
+  intervals 1.0297 to 1.0358, 1.0272 to 1.0332 and 1.0059 to 1.0092, all
+  excluding 1. Both X batches together (the table) give 1.0280 to 1.0322,
+  1.0291 to 1.0334 and 1.0074 to 1.0098, and the readout-iso-x correction
+  moves those by at most 0.0003. The ln-mean over all 8 bins, which carries no choice of bin, also reads at or above the job
   average, so job-averaging does not raise rho here and the modulation
   covariance does not explain the excess.
 - **Phase profile.** The excess follows the line. On (1,4) and (10,13) rho
@@ -324,18 +326,24 @@ stream, numpy seed [20261017, 2], differs from the ladder's.
   error would leave rho flat across bins.
 - **Reference.** In batch 4 the depth-9 selector of latin-x-1 has a first
   harmonic of 0.0027, so that job's bins take their phase from noise and every
-  pair's depth cell from it averages over phases. The clean-batch row above
-  removes that job's batch.
+  pair's depth cell from it averages over phases; the stationary verdict
+  leaves that job's batch out. A job whose line scan missed the detection
+  threshold would leave its harmonic rules undetermined and its batch out of
+  the verdict; all 12 detect the line.
 - **Harmonics at 2 f.** max(A1, A2) at depth 9 exceeds depth 1 by 0.0174 to
-  0.137 against a margin error of 0.0015 to 0.0019 in all 12 jobs, where the
-  first-harmonic rule holds in 10. In the two failing jobs (batch 4
+  0.137 in all 12 jobs, against a margin error of 0.0014 to 0.0019 from a
+  bootstrap that redraws both harmonics' coefficients and repeats the
+  maximum, where the first-harmonic rule holds in 10. In the two failing jobs (batch 4
   latin-x-1 and batch 5 latin-y-1, both with (12,14) at depth 9) A1 is 0.0027
-  and A2 0.0203 and 0.0220, 12 to 13 margin errors. A depth-9 second
+  and A2 0.0203 and 0.0220, and the max rule's depth differences are 12 and
+  14 margin errors. A depth-9 second
   harmonic of 0.009 to 0.030 appears in every job, so the selector responses
   are not pure first harmonics.
 
-The intervals carry shot noise and readout-count noise only; the batch-to-batch
-scatter of deep populations that the follow series measured is outside them.
+The intervals carry shot noise and readout-count noise only, conditional on
+each job's fitted line frequency and phase, which set the bins and are not
+refitted per draw; the batch-to-batch scatter of deep populations that the
+follow series measured is outside them.
 
 ## Open questions
 
@@ -355,8 +363,8 @@ scatter of deep populations that the follow series measured is outside them.
   reference; the Latin square puts each pair's depths in different jobs.
 - The line at 2 f: max(A1, A2) holds in all 12 jobs where the first-harmonic
   test fails in two. The max rule is exploratory; a preregistered line test
-  for a future run adopts it with its margin and the Rayleigh bias of a
-  noise amplitude stated.
+  for a future run adopts it with its bootstrap margin and the Rice bias of
+  a noisy amplitude stated.
 - The per-CZ time term and the decomposition of H: an A/B of H against
   Y90 then X on one replica would price the decomposed gate, and a ladder of
   `wait` cycles beside the CZ ladder would separate the detuning phase from

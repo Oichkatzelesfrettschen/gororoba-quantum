@@ -35,8 +35,15 @@ rho per bin:
   over all bins, the phase-resolved counterpart of the job average. A batch
   whose job's depth-9 selector carries no significant first harmonic takes its
   bin reference from noise, so its stationary cells average over random
-  phases; "reference_significant" marks the pair-batches free of that and the
-  stationary cell's "clean" entry restricts the combination to them.
+  phases, and a job whose scan peak misses line_detection_p takes its
+  frequency from noise; "reference_significant" marks the pair-batches free
+  of both, and the stationary verdict combines those batches alone (the
+  all-batch combination is reported as stationary_all_verdict). An
+  undetected job's harmonic rules read undetermined.
+- intervals: conditional on each job's fitted line frequency and phase. The
+  bootstrap redraws the cells' counts with the bins fixed; it does not
+  repeat the scan or the lock-in, so the uncertainty of the bin reference
+  is outside the intervals.
 - streams: numpy seed [bootstrap_seed, LINE_BINS_SEED], distinct from the
   ladder's [bootstrap_seed] and [bootstrap_seed, LADDER_LINE_SEED]; the
   readout-iso-x alternative uses [bootstrap_seed, LINE_BINS_SEED,
@@ -50,15 +57,20 @@ Harmonics at 2 f:
   depth_growth: the difference exceeds amplitude_sigmas times the quadrature
   sum of the two standard errors. A selector at an extremum of its response
   carries a vanishing A1 and a second harmonic, so the maximum keeps it. The
-  maximum of two amplitudes is biased upward by the Rayleigh law of a noise
-  amplitude; the margin test compares depth 9 with depth 1 on the same
-  statistic, so the bias enters both terms.
+  max rule's standard error is the bootstrap standard deviation of the
+  depth difference of max(A1, A2), each draw redrawing both harmonics'
+  coefficients at the lock-in error and repeating the selection (numpy seed
+  [bootstrap_seed, LINE_BINS_SEED, MAX_RULE_SEED]). The maximum of two
+  amplitudes is biased upward by the Rice law of a noisy amplitude; the
+  margin test compares depth 9 with depth 1 on the same statistic, so the
+  bias enters both terms.
 
 --out FILE writes the record, --check FILE recomputes it from its listed runs
 and compares bytes, --self-test runs synthetic ladders: a line that modulates
 the selector population with rho = 1 in the stationary bins, a coherent
 population error that raises rho in every bin, and a selector at an extremum of
-its response; it then rejects a corrupted raw digest, an altered bin count and
+its response, and a series without a line, whose phase rules read
+undetermined; it then rejects a corrupted raw digest, an altered bin count and
 an altered raw file.
 
 Usage: "$PYTHON" scripts/qi_ladder_line_bins.py (--out FILE | --check FILE | --self-test)
@@ -86,6 +98,7 @@ import parallel  # noqa: E402
 
 SCHEMA = "qi-ladder-line-bins-v1"
 LINE_BINS_SEED = 2
+MAX_RULE_SEED = 3
 LADDER_RECORD = ROOT / "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json"
 LINE_BINS_RECORD = ROOT / "results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json"
 FAMILY = "tuna_ladder"
@@ -147,7 +160,26 @@ class JobWork:
         return {"first": first, "second": second, "counts": counts}
 
 
-def harmonic_entry(depths: list[int], selector: dict[int, int], work: dict[str, Any], sigmas: float) -> dict[str, Any]:
+def max_draws(a1: dict[str, float], a2: dict[str, float], rng: np.random.Generator, draws: int) -> np.ndarray:
+    """max(A1, A2) per draw with each harmonic's two coefficients redrawn at the lock-in standard error.
+
+    The coefficient noise is isotropic, so |(A cos phi, A sin phi) + noise| has the law of |(A, 0) + noise|.
+    """
+    out = []
+    for a in (a1, a2):
+        z = rng.standard_normal((draws, 2))
+        out.append(np.hypot(a["amplitude"] + a["se"] * z[:, 0], a["se"] * z[:, 1]))
+    return np.maximum(out[0], out[1])
+
+
+def harmonic_entry(
+    depths: list[int],
+    selector: dict[int, int],
+    work: dict[str, Any],
+    sigmas: float,
+    rng: np.random.Generator,
+    draws: int,
+) -> dict[str, Any]:
     per_depth = {}
     for n in depths:
         a1, a2 = work["first"][n], work["second"][n]
@@ -166,14 +198,18 @@ def harmonic_entry(depths: list[int], selector: dict[int, int], work: dict[str, 
     deep, shallow = per_depth[str(max(depths))], per_depth[str(min(depths))]
     margin_se = math.sqrt(deep["se"] ** 2 + shallow["se"] ** 2)
 
-    def rule(deep_value: float, shallow_value: float) -> dict[str, Any]:
+    def rule(deep_value: float, shallow_value: float, se: float) -> dict[str, Any]:
         difference = deep_value - shallow_value
-        return {"difference": difference, "se": margin_se, "holds": difference > sigmas * margin_se}
+        return {"difference": difference, "se": se, "holds": bool(difference > sigmas * se)}
 
+    # The maximum of two Rice-distributed amplitudes has no closed-form error; its SE is the bootstrap
+    # standard deviation of the depth difference with the harmonic selection repeated in every draw.
+    boot = {n: max_draws(work["first"][n], work["second"][n], rng, draws) for n in (max(depths), min(depths))}
+    max_se = float(np.std(boot[max(depths)] - boot[min(depths)], ddof=1))
     return {
         "depths": per_depth,
-        "first_harmonic_rule": rule(deep["first"]["amplitude"], shallow["first"]["amplitude"]),
-        "max_rule": rule(deep["max_amplitude"], shallow["max_amplitude"]),
+        "first_harmonic_rule": rule(deep["first"]["amplitude"], shallow["first"]["amplitude"], margin_se),
+        "max_rule": rule(deep["max_amplitude"], shallow["max_amplitude"], max_se),
     }
 
 
@@ -264,11 +300,19 @@ def analyze_bins(
 
     harmonics, reference = [], {}
     counts: dict[tuple[str, str, int], np.ndarray] = {}
+    max_rng = np.random.default_rng([t["bootstrap_seed"], LINE_BINS_SEED, MAX_RULE_SEED])
     for (name, _, witness), scanned, item, work in zip(jobs, scans, work_items, works, strict=True):
-        entry = harmonic_entry(depths, item["selector"], work, sigmas)
+        entry = harmonic_entry(depths, item["selector"], work, sigmas, max_rng, draws)
         entry |= {"batch": name, "file": witness["file"], "detected": scanned["detected"],
                   "cycles_per_shot": scanned["cycles_per_shot"], "log10_p": scanned["log10_p"]}  # fmt: skip
-        entry["reference_significant"] = entry["depths"][str(max(depths))]["first"]["significant"]
+        # A scan peak below line_detection_p is a noise frequency: the job's phase rules are undetermined
+        # and its bins carry no phase reference.
+        if not scanned["detected"]:
+            for key in ("first_harmonic_rule", "max_rule"):
+                entry[key]["holds"] = None
+        entry["reference_significant"] = bool(
+            scanned["detected"] and entry["depths"][str(max(depths))]["first"]["significant"]
+        )
         reference[(name, witness["file"])] = entry["reference_significant"]
         harmonics.append(entry)
         for r, c in zip(witness["replicas"], work["counts"], strict=True):
@@ -367,9 +411,11 @@ def analyze_bins(
             name: verdict_of(row["cells"][name]["combined"]["interval"]) for name in cell_names if name != "all"
         }
         row["job_average_verdict"] = verdict_of(row["cells"]["all"]["combined"]["interval"])
-        row["stationary_verdict"] = verdict_of(row["cells"]["stationary"]["combined"]["interval"])
+        # Bins 0 and bins / 2 are extrema of the line only where the reference phase is the line's, so the
+        # stationary verdict combines the batches whose jobs all carry a detected line and a significant A1.
         clean_block = row["cells"]["stationary"]["clean"]
-        row["stationary_clean_verdict"] = verdict_of(None if clean_block is None else clean_block["interval"])
+        row["stationary_verdict"] = verdict_of(None if clean_block is None else clean_block["interval"])
+        row["stationary_all_verdict"] = verdict_of(row["cells"]["stationary"]["combined"]["interval"])
         if row["stationary_verdict"] == "above 1":
             row["reading"] = "averaging over the line does not explain rho above 1"
         elif row["stationary_verdict"] == "consistent with 1" and row["job_average_verdict"] == "above 1":
@@ -388,13 +434,14 @@ def analyze_bins(
         "rho": rho_rows,
         "harmonics": harmonics,
         "harmonic_rules": {
-            "first_harmonic_rule_holds": sum(h["first_harmonic_rule"]["holds"] for h in harmonics),
-            "max_rule_holds": sum(h["max_rule"]["holds"] for h in harmonics),
+            "first_harmonic_rule_holds": sum(h["first_harmonic_rule"]["holds"] is True for h in harmonics),
+            "max_rule_holds": sum(h["max_rule"]["holds"] is True for h in harmonics),
             "jobs": len(harmonics),
             "first_rule_fails": [
-                f"{h['batch']} {h['file']}" for h in harmonics if not h["first_harmonic_rule"]["holds"]
+                f"{h['batch']} {h['file']}" for h in harmonics if h["first_harmonic_rule"]["holds"] is False
             ],
-            "max_rule_fails": [f"{h['batch']} {h['file']}" for h in harmonics if not h["max_rule"]["holds"]],
+            "max_rule_fails": [f"{h['batch']} {h['file']}" for h in harmonics if h["max_rule"]["holds"] is False],
+            "undetermined": [f"{h['batch']} {h['file']}" for h in harmonics if not h["detected"]],
         },
     }
 
@@ -420,7 +467,7 @@ def check_against_ladder(
         for n, selector in entry["selectors"].items():
             if abs(selector["amplitude"] - mine["depths"][n]["first"]["amplitude"]) > 1e-9:
                 box.fail(f"{entry['file']} depth {n}: first-harmonic amplitude differs from the ladder record")
-        if entry["depth_growth"]["holds"] != mine["first_harmonic_rule"]["holds"]:
+        if mine["detected"] and entry["depth_growth"]["holds"] != mine["first_harmonic_rule"]["holds"]:
             box.fail(f"{entry['file']}: first-harmonic rule differs from the ladder record")
 
 
@@ -447,6 +494,7 @@ def build(
         "streams": {
             "line_bins": [t["bootstrap_seed"], LINE_BINS_SEED],
             "line_bins_iso": [t["bootstrap_seed"], LINE_BINS_SEED, box.LADDER_LINE_SEED],
+            "max_rule": [t["bootstrap_seed"], LINE_BINS_SEED, MAX_RULE_SEED],
             "ladder": [t["bootstrap_seed"]],
             "ladder_iso": [t["bootstrap_seed"], box.LADDER_LINE_SEED],
         },
@@ -454,7 +502,10 @@ def build(
         "uncertainty": f"intervals are the {t['interval_percentiles'][0]} and {t['interval_percentiles'][1]} "
         f"percentiles of a parametric bootstrap ({t['bootstrap_draws']} draws): every bracket's readout counts "
         "once per draw, shared by all cells, and each cell's joint (a, d) counts from a multinomial on the cell's "
-        "own shots; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n)",
+        "own shots; they are conditional on each job's fitted line frequency and phase, which fix the bins and "
+        "are not refitted per draw; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n), and the "
+        "max rule's error is the standard deviation of the depth difference of max(A1, A2) over draws that "
+        "redraw both harmonics' coefficients",
     }
     record["analysis_sha256"] = digest_of(record)
     return record
@@ -542,6 +593,8 @@ SCENARIOS: dict[str, dict[str, Any]] = {
     "population_error": {"frequency": FREQUENCY, "modulation": 0.3, "p0": 0.97, "p_slope": 0.02},
     # Depth 5 carries the line at f, depth 9 at 2 f only, depth 1 none.
     "extremum": {"frequency": FREQUENCY, "modulation": 0.2, "scale_depth": False, "harmonic": {1: 0, 5: 1, 9: 2}},
+    # No line: the scan peak is noise, so every phase rule and the stationary verdict are undetermined.
+    "no_line": {"frequency": FREQUENCY, "modulation": 0.0, "p0": 0.9},
 }
 
 
@@ -598,6 +651,14 @@ def self_test() -> str:
             require(h["max_rule"]["holds"] and not h["first_harmonic_rule"]["holds"], f"{h['file']} rules")
             require(h["depths"]["5"]["first"]["significant"], f"{h['file']} depth 5 first harmonic")
 
+        quiet = analysis("no_line")
+        for h in quiet["harmonics"]:
+            require(not h["detected"], f"{h['file']} line detected without a line (log10 p {h['log10_p']})")
+            require(h["max_rule"]["holds"] is None and h["first_harmonic_rule"]["holds"] is None, "undetermined")
+        require(len(quiet["harmonic_rules"]["undetermined"]) == len(quiet["harmonics"]), "every rule undetermined")
+        for row in quiet["rho"]:
+            require(row["stationary_verdict"] == "undetermined", f"{row['pair']}: {row['stationary_verdict']}")
+
         # A record verifies, and a corrupted raw digest, an altered bin count or an altered raw file does not.
         runs = built["population_line"]
         base = root / "population_line"
@@ -633,8 +694,9 @@ def self_test() -> str:
         box.expect_exit("an altered raw file", lambda: check_record(record, base), "differs from its recomputation")
     return (
         "self-test: a population line gives stationary rho 1 beside job-averaged rho above 1, a population error "
-        "raises rho in every bin, an extremum response keeps A1 near 0 with A2 detected by max(A1, A2), and a "
-        "corrupted digest, bin count and raw file are refused"
+        "raises rho in every bin, an extremum response keeps A1 near 0 with A2 detected by max(A1, A2), a "
+        "series without a line leaves every phase rule undetermined, and a corrupted digest, bin count and raw "
+        "file are refused"
     )
 
 

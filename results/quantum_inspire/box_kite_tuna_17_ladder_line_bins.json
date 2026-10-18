@@ -1,5 +1,5 @@
 {
- "analysis_sha256": "89d8291f4d07ac42b62977655e61724cd51ffe9d00efd2325b3e382d08d8a35d",
+ "analysis_sha256": "ad35843fac97366059e4759705cfdde735efbdcf378c3d067bffb8e8c6f71c98",
  "binds": "a future run only; the preregistered ladder record is analyze_ladder's",
  "cells": [
   "all",
@@ -21,7 +21,8 @@
   ],
   "jobs": 12,
   "max_rule_fails": [],
-  "max_rule_holds": 12
+  "max_rule_holds": 12,
+  "undetermined": []
  },
  "harmonics": [
   {
@@ -88,7 +89,7 @@
    "max_rule": {
     "difference": 0.021319291918,
     "holds": true,
-    "se": 0.001534546179
+    "se": 0.001475753934
    },
    "reference_significant": true
   },
@@ -156,7 +157,7 @@
    "max_rule": {
     "difference": 0.134048028378,
     "holds": true,
-    "se": 0.001864297026
+    "se": 0.001778780819
    },
    "reference_significant": true
   },
@@ -224,7 +225,7 @@
    "max_rule": {
     "difference": 0.127285290822,
     "holds": true,
-    "se": 0.00192775793
+    "se": 0.001878553814
    },
    "reference_significant": true
   },
@@ -292,7 +293,7 @@
    "max_rule": {
     "difference": 0.024939673963,
     "holds": true,
-    "se": 0.001540424079
+    "se": 0.001427276996
    },
    "reference_significant": true
   },
@@ -360,7 +361,7 @@
    "max_rule": {
     "difference": 0.115923178782,
     "holds": true,
-    "se": 0.001810260131
+    "se": 0.001703351409
    },
    "reference_significant": true
   },
@@ -428,7 +429,7 @@
    "max_rule": {
     "difference": 0.120509006193,
     "holds": true,
-    "se": 0.001889261864
+    "se": 0.001770499702
    },
    "reference_significant": true
   },
@@ -496,7 +497,7 @@
    "max_rule": {
     "difference": 0.122258029579,
     "holds": true,
-    "se": 0.001847713533
+    "se": 0.001746247554
    },
    "reference_significant": true
   },
@@ -564,7 +565,7 @@
    "max_rule": {
     "difference": 0.111704169295,
     "holds": true,
-    "se": 0.001894901779
+    "se": 0.001746142275
    },
    "reference_significant": true
   },
@@ -632,7 +633,7 @@
    "max_rule": {
     "difference": 0.017382559005,
     "holds": true,
-    "se": 0.001525227512
+    "se": 0.001501031059
    },
    "reference_significant": false
   },
@@ -700,7 +701,7 @@
    "max_rule": {
     "difference": 0.136694322273,
     "holds": true,
-    "se": 0.001824023194
+    "se": 0.001699921202
    },
    "reference_significant": true
   },
@@ -768,7 +769,7 @@
    "max_rule": {
     "difference": 0.104268078358,
     "holds": true,
-    "se": 0.001853370696
+    "se": 0.001847458628
    },
    "reference_significant": true
   },
@@ -836,7 +837,7 @@
    "max_rule": {
     "difference": 0.020141252054,
     "holds": true,
-    "se": 0.001505317658
+    "se": 0.001432109539
    },
    "reference_significant": false
   }
@@ -1305,7 +1306,7 @@
     "batch-01": true,
     "batch-04": false
    },
-   "stationary_clean_verdict": "above 1",
+   "stationary_all_verdict": "above 1",
    "stationary_verdict": "above 1"
   },
   {
@@ -1703,7 +1704,7 @@
     "batch-01": true,
     "batch-04": false
    },
-   "stationary_clean_verdict": "above 1",
+   "stationary_all_verdict": "above 1",
    "stationary_verdict": "above 1"
   },
   {
@@ -2101,7 +2102,7 @@
     "batch-01": true,
     "batch-04": false
    },
-   "stationary_clean_verdict": "above 1",
+   "stationary_all_verdict": "above 1",
    "stationary_verdict": "above 1"
   }
  ],
@@ -2135,6 +2136,11 @@
    20261017,
    2,
    1
+  ],
+  "max_rule": [
+   20261017,
+   2,
+   3
   ]
  },
  "thresholds": {
@@ -2181,5 +2187,5 @@
    14
   ]
  },
- "uncertainty": "intervals are the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws): every bracket's readout counts once per draw, shared by all cells, and each cell's joint (a, d) counts from a multinomial on the cell's own shots; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n)"
+ "uncertainty": "intervals are the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws): every bracket's readout counts once per draw, shared by all cells, and each cell's joint (a, d) counts from a multinomial on the cell's own shots; they are conditional on each job's fitted line frequency and phase, which fix the bins and are not refitted per draw; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n), and the max rule's error is the standard deviation of the depth difference of max(A1, A2) over draws that redraw both harmonics' coefficients"
 }
