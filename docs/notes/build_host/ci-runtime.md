@@ -8,6 +8,11 @@ per-gate timing artifacts.
 
 ## Measured baseline
 
+The sampled ubuntu-latest runners exposed four logical/affinity CPUs and
+roughly 16 GB of memory. CPU models varied among AMD EPYC 7763, 9V45 and
+9V74. The reports retain each job's runner-spec lines; the worker count
+follows the allocation rather than the guide's earlier two-CPU assumption.
+
 The retained analyses name successful GitHub runs and derive elapsed seconds
 from the jobs API and each gate's printed duration. Both runs used Python
 3.14.7; the Quantum Inspire job used its separate 3.13 interpreter.

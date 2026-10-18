@@ -89,6 +89,7 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(delayed["created_to_first_job_seconds"], 60)
         self.assertEqual(delayed["workflow_seconds"], 72)
         self.assertEqual(report["runner_seconds"], 10)
+        self.assertEqual(len(report["runner_specs"]["gates 0/1"]), 1)
         self.assertEqual(report["gate_elapsed_seconds"], 15)
         self.assertEqual(report["stage_runner_seconds"]["Run shard"], 8)
         manifest = {"gates": [{"name": "fast", "seconds": 1}]}

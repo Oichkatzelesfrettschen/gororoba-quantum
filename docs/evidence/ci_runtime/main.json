@@ -106,6 +106,101 @@
       "wall_seconds": 379.0
     }
   ],
+  "runner_specs": {
+    "gates 0/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15253440 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 1/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15239316 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 10/12": [
+      "cpu_model: AMD EPYC 9V74 80-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15323768 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 11/12": [
+      "cpu_model: AMD EPYC 9V45 96-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15278636 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 2/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373448 kB', 'MemAvailable': '15225224 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 3/12": [
+      "cpu_model: AMD EPYC 9V45 96-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15075172 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 4/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15236168 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 5/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15109352 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 6/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15235172 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 7/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15288428 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 8/12": [
+      "cpu_model: Intel(R) Xeon(R) 6973P-C",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16372436 kB', 'MemAvailable': '15199252 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 9/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15260524 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "qi stack on Python 3.13": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15302652 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15302656 kB'}",
+      "python: 3.13.15 CPython x86_64"
+    ]
+  },
   "gates": [
     {
       "job": "gates 0/12",

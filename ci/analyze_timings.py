@@ -16,6 +16,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+RUNNER_SPEC = re.compile(r"((?:cpu_model|logical_cpus|memory|python|platform): .*)$")
 VERDICT = re.compile(r"\b(PASS|FAIL) ([\w-]+)\s+([\d.]+)s\s")
 
 
@@ -28,7 +29,12 @@ def analyze(
 ) -> dict[str, Any]:
     estimates = {gate["name"]: gate["seconds"] for gate in manifest["gates"]}
     records = []
+    runner_specs: dict[str, list[str]] = defaultdict(list)
     for line in log.splitlines():
+        job_name = line.split("\t", 1)[0]
+        spec = RUNNER_SPEC.search(line)
+        if spec and spec[1] not in runner_specs[job_name]:
+            runner_specs[job_name].append(spec[1])
         match = VERDICT.search(line)
         if match:
             records.append(
@@ -68,6 +74,7 @@ def analyze(
         "stage_runner_seconds": dict(sorted(stages.items())),
         "gate_elapsed_seconds": sum(row["seconds"] for row in records),
         "runners": runners,
+        "runner_specs": dict(sorted(runner_specs.items())),
         "gates": sorted(records, key=lambda row: (-row["seconds"], row["job"], row["name"])),
     }
 

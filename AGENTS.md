@@ -25,8 +25,9 @@ raw evidence; a missing declaration fails selection. CI and dependency-pin
 changes select every gate, and an unavailable diff base runs the full suite.
 Gate seconds are scheduling estimates, independent of tier membership.
 [CI runtime analysis](docs/notes/build_host/ci-runtime.md) records the timing
-denominators, measured bottlenecks and replay commands. Runners are 2-vCPU,
-8 GB machines on Python 3.14
+denominators, measured bottlenecks and replay commands. Runner-spec logs
+record the allocation; the retained audit measured four affinity CPUs and
+about 16 GB on ubuntu-latest. Jobs use Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard and the `qi-stack` and `external-ground-truth` jobs are green and its
