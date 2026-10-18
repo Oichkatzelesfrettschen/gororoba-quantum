@@ -422,8 +422,11 @@ circuit and needs its own stated observable and controls.
 
 dark + bright - 1 = -0.009 (z = -2.3) and fixture - 1/2 = -0.008
 (z = -3.0) both have the same sign as the earlier series' shift toward
-selector 1. The secondary readout-corrected bootstrap gives
-H = fixture - (dark + bright)/2 = 0.0091, 95% interval 0.0018-0.0163.
+selector 1. The secondary analysis of this placement
+([record](../../../results/quantum_inspire/zero_divisor_tuna_17_visibility_floor_analysis.json),
+`secondary`) gives raw H = fixture - (dark + bright)/2 = -0.0038
+(z = -1.11); its readout-corrected bootstrap reverses the sign,
+H = 0.0091, 95% interval 0.0018-0.0163.
 Unlike the original pooled corrected H, that interval excludes zero. It
 challenges carrying a common affine response into this placement, subject
 to the all-|0>/all-|1> calibration model, different selectors and routed

@@ -7,8 +7,8 @@ a delta method. It checks the pooled secondary H = fixture - (dark + bright)/2
 and adds corrected regional estimates with their selector/depth confounds.
 It does not acquire data, simulate a circuit, or identify a noise mechanism.
 
-Usage: python scripts/qi_zero_divisor_secondary.py --write results/quantum_inspire/secondary
-       python scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test
+Usage: "$PYTHON" scripts/qi_zero_divisor_secondary.py --write results/quantum_inspire/secondary
+       "$PYTHON" scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test
 """
 
 from __future__ import annotations
@@ -26,8 +26,6 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from parallel import ordered_map  # noqa: E402
 
 RUN = Path("results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17")
-BASELINE_REVISION = "f529256033267b768c6e75444fd9b1566e86bdd9"
-ACQUISITION_EVIDENCE_REVISION = "da293a88532e61e55aac03f75cb0838bae95cfff"
 NAMES = ("dark", "bright", "fixture")
 STEM = "zero_divisor_tuna_17"
 Z95 = 1.959963984540054
@@ -172,7 +170,6 @@ def compare_upstream(
     return {
         "registry_claim": "qi-tuna17-zero-divisor-common-response",
         "source": str(RUN / "analysis.json"),
-        "source_revision": BASELINE_REVISION,
         "bootstrap": secondary["bootstrap"],
         "raw_point_estimates_and_covariance_reproduced": True,
         "raw_variance_unbiased_to_upstream_ratio": variance_factor,
@@ -320,8 +317,6 @@ def analyze() -> dict[str, Any]:
     return {
         "schema": "qi-zero-divisor-secondary-v1",
         "claim_kind": "secondary hardware reanalysis",
-        "baseline_revision": BASELINE_REVISION,
-        "acquisition_evidence_revision": ACQUISITION_EVIDENCE_REVISION,
         "run": str(RUN),
         "input_sha256": hashes,
         "method": {
@@ -373,9 +368,7 @@ def render(report: dict[str, Any]) -> str:
             "the retained common-response bootstrap and adds corrected regional estimates."
         ),
         "",
-        f"Run: `{report['run']}`. Input baseline: `{report['baseline_revision']}`; "
-        "the JSON sidecar binds every input by SHA256. The acquisition evidence was already retained "
-        f"at `{report['acquisition_evidence_revision']}`.",
+        f"Run: `{report['run']}`. The JSON sidecar binds every input by SHA256.",
         "",
         "## Counts and case estimates",
         "",
@@ -559,7 +552,7 @@ def render(report: dict[str, Any]) -> str:
         "## Reproduction",
         "",
         "```sh",
-        ("python scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test"),
+        ('"$PYTHON" scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test'),
         "```",
         "",
         (

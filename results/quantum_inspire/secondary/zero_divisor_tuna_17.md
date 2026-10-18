@@ -2,7 +2,7 @@
 
 Claim kind: **secondary hardware reanalysis**. This independent analytic audit complements the retained common-response bootstrap and adds corrected regional estimates.
 
-Run: `results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17`. Input baseline: `f529256033267b768c6e75444fd9b1566e86bdd9`; the JSON sidecar binds every input by SHA256. The acquisition evidence was already retained at `da293a88532e61e55aac03f75cb0838bae95cfff`.
+Run: `results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17`. The JSON sidecar binds every input by SHA256.
 
 ## Counts and case estimates
 
@@ -79,7 +79,7 @@ The intervals assume independent shots within each acquisition and independence 
 ## Reproduction
 
 ```sh
-python scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test
+"$PYTHON" scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test
 ```
 
 The self-test uses exactly correlated and anticorrelated selector samples, and verifies that shared readout offsets cancel in the appropriate contrasts. The acquisition blocks retain covariance matrices and input hashes in the JSON sidecar. This analysis submits no hardware job.

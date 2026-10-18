@@ -1,8 +1,6 @@
 {
  "schema": "qi-zero-divisor-secondary-v1",
  "claim_kind": "secondary hardware reanalysis",
- "baseline_revision": "f529256033267b768c6e75444fd9b1566e86bdd9",
- "acquisition_evidence_revision": "da293a88532e61e55aac03f75cb0838bae95cfff",
  "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
  "input_sha256": {
   "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/raw/latin-1.cq.json": "223b843c4df4983deb9c613cac12074bd1da73021a6d04302a21ad3eb5eb193c",
@@ -52,7 +50,6 @@
  "upstream_secondary_comparison": {
   "registry_claim": "qi-tuna17-zero-divisor-common-response",
   "source": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
-  "source_revision": "f529256033267b768c6e75444fd9b1566e86bdd9",
   "bootstrap": {
    "draws": 4000,
    "seed": 20261016
