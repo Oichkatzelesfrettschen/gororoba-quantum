@@ -5227,12 +5227,12 @@
       "superseded_by": null
     },
     {
-      "id": "qd-belenos-q1-leak-follows-its-mesh",
-      "statement": "Q1's exact case sent to qpu:belenos as one circuit at compilation_seed 1 (job 8d28f121) compiled to a new mesh (e296b6a9, not Q1's 29dc6ef8) and kept in_block 0.886 (Wilson 0.879 to 0.892) with a = 0.931, where the same one-circuit body at the default seed kept 0.470 and 0.504; the preregistered rule reads 'intermediate' (between 0.65 and 0.90), so most of Q1's leak belongs to its compiled mesh and at most about a tenth of the light is lost to anything the one-circuit form adds.",
+      "id": "qd-belenos-q1-one-circuit-new-mesh-intermediate",
+      "statement": "Q1's exact case sent to qpu:belenos as one circuit at compilation_seed 1 (job 8d28f121) compiled to a new mesh (e296b6a9, not Q1's 29dc6ef8) and kept in_block 0.886 (Wilson 0.879 to 0.892) with a = 0.931, where the same one-circuit body at the default seed compiled to 29dc6ef8 both times and kept 0.470 and 0.504; the preregistered rule reads 'intermediate': 0.886 lies above the 0.65 bound of the one-circuit-form reading and below the 0.90 bound of the Q1-mesh reading.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One seeded job on one new mesh in the couplers of every C1 run; the residual 0.114 lies inside the 0.75 to 0.997 in_block spread of the iterated bright configurations, so it does not separate a form effect from mesh-to-mesh scatter.",
+      "boundary": "One seeded job on one new mesh in the couplers of every C1 run. At the default seed the one-circuit form returned Q1's mesh both times, so form and mesh are confounded, and the residual 0.114 lies inside the 0.75 to 0.997 in_block spread of the iterated bright configurations, so it is not split between a form effect and mesh-to-mesh scatter.",
       "evidence": [
         {
           "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json",

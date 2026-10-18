@@ -1087,7 +1087,8 @@ photons; `compilation_seed` selects the start. `scripts/qd_belenos_mesh.py`
 decodes architectures and compiled meshes with a standard-library protobuf
 reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
 the architecture circuit whose iterations bind all 574 phases and the input
-mode, so one credit buys up to sixteen different unitaries (job-00 the
+mode, so one credit buys every unitary that fits the 300 s per-job limit,
+32 iterations of 1500 samples in 221 s on qpu:belenos (job-00 the
 error-class diagnostic, job-02 the 84/84 box-kite edges, job-03 to job-06
 the 64 seeded random settings of the characterization campaign, job-07
 the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's

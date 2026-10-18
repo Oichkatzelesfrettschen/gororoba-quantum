@@ -625,6 +625,25 @@ def seed_value(seed: Any, owner: str) -> int:
     return seed
 
 
+def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | None:
+    """The compilation seed of a one-circuit job's computation: its one mesh setting's or its manifest's.
+
+    An iterated job names its seeds per iteration, so a manifest seed on it raises, as does a one-setting
+    case whose setting and manifest name different seeds; a case that names none sends none.
+    """
+    owner = manifest["job"]
+    named = manifest.get("compilation_seed")
+    if manifest.get("iterations", 1) > 1:
+        if named is not None:
+            raise PlatformError(f"{owner}: an iterated case names compilation_seed per iteration, not in its manifest")
+        return None
+    own = settings[0].get("compilation_seed") if settings else None
+    if named is not None and own is not None and named != own:
+        raise PlatformError(f"{owner}: manifest compilation_seed {named!r} differs from its setting's {own!r}")
+    seed = named if own is None else own
+    return None if seed is None else seed_value(seed, owner)
+
+
 def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
     """Refuse a mesh case when the platform's live architecture carries other couplers or symbols than the case."""
     import qd_belenos_mesh as mesh
@@ -671,12 +690,9 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     factory = ExecutionFactory(computer, built, max_shots_per_call=per_shots)
     base = factory.build_computation(manifest["command"])
     base.add_params(max_samples=per_samples)
-    # A one-circuit job takes its compilation seed from the case (the manifest, or its one mesh setting);
-    # a case that names none sends none, as every earlier body did.
-    if steps == 1:
-        seed = settings[0].get("compilation_seed") if mesh else manifest.get("compilation_seed")
-        if seed is not None:
-            base.add_params(compilation_seed=seed_value(seed, manifest["job"]))
+    seed = job_seed(manifest, settings)
+    if seed is not None:
+        base.add_params(compilation_seed=seed)
     params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if steps > 1 else None)
     estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
     estimate = None if estimate is None else estimate * steps
@@ -1180,7 +1196,9 @@ def charge_self_test() -> None:
 
 
 def seed_self_test() -> None:
-    """seed_value passes non-negative integers and refuses a bool, a negative, a float or a string."""
+    """seed_value passes non-negative integers and refuses a bool, a negative, a float or a string; job_seed
+    takes a one-circuit job's seed from its setting or its manifest and refuses a conflict or an iterated
+    case's manifest seed."""
     if seed_value(0, "test") != 0 or seed_value(7, "test") != 7:
         raise SystemExit("self-test: seed_value changed a valid seed")
     for bad in (True, -1, 1.0, "1", None):
@@ -1189,6 +1207,31 @@ def seed_self_test() -> None:
         except PlatformError:
             continue
         raise SystemExit(f"self-test: seed_value accepted {bad!r}")
+    one: dict[str, Any] = {"job": "test"}
+    many: dict[str, Any] = {"job": "test", "iterations": 2}
+    accepted: list[tuple[dict[str, Any], list[dict[str, Any]], int | None]] = [
+        (one, [], None),
+        (one, [{}], None),
+        ({**one, "compilation_seed": 3}, [], 3),
+        ({**one, "compilation_seed": 3}, [{}], 3),
+        (one, [{"compilation_seed": 4}], 4),
+        ({**one, "compilation_seed": 4}, [{"compilation_seed": 4}], 4),
+        (many, [{"compilation_seed": 1}, {"compilation_seed": 2}], None),
+    ]
+    for manifest, settings, want in accepted:
+        if job_seed(manifest, settings) != want:
+            raise SystemExit(f"self-test: job_seed({manifest}, {settings}) is not {want}")
+    refused: list[tuple[dict[str, Any], list[dict[str, Any]]]] = [
+        ({**one, "compilation_seed": 3}, [{"compilation_seed": 4}]),
+        ({**many, "compilation_seed": 1}, [{}, {}]),
+        ({**one, "compilation_seed": -1}, []),
+    ]
+    for manifest, settings in refused:
+        try:
+            job_seed(manifest, settings)
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: job_seed accepted {manifest} with {settings}")
 
 
 def runner_self_test() -> int:
