@@ -3815,7 +3815,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical theorem",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at generic {a, 0} points as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn keeps nullity 12 only from family points with parallel octonion halves, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at generic {a, 0} points as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -3823,11 +3823,11 @@
         },
         {
           "path": "docs/evidence/rank_locus_rotation_composite/result.json",
-          "sha256": "533183f5467912e4c246d41ab3c79d351c5c9c889f0974dd56626006175cad46"
+          "sha256": "bb884e0026b1b46c323362bbc7f01988c80e2dbedbfe1c9910a8ec7b83d82811"
         },
         {
           "path": "docs/evidence/rank_locus_rotation_composite/audit.json",
-          "sha256": "d3dc6f0c9f69d0cf5c8a2bb776049f284f52560ba3920fa741ee8a3cd6d15871"
+          "sha256": "e5bb1f6f9084990c9cb97b15b5edee86ac97980b79a95e35014e1fb1f303c30d"
         }
       ],
       "documents": [

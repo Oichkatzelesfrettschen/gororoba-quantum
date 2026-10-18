@@ -69,6 +69,7 @@ from cd_core import cd_sign  # noqa: E402
 
 SCHEMA = "rank-locus-rotation-composite-v1"
 AUDIT_SCHEMA = "rank-locus-rotation-composite-audit-v1"
+AUDIT_PATH = ROOT / "docs/evidence/rank_locus_rotation_composite/audit.json"
 DIM = 32
 HALF = 16
 I4 = 8
@@ -174,8 +175,27 @@ def witness_row(unit: int) -> dict[str, Any]:
         "partner": partner(unit),
         "x0": encode(x0),
         "turns_equal_rotation_curve": curves_agree,
+        "differential_rank_cone": differential_rank(unit),
         "points": rows,
     }
+
+
+def differential_rank(unit: int) -> int:
+    """Exact rank on the cone of the candidate's differential at x0: 14 family directions and both turn velocities.
+
+    Psi is quadratic in sigma and in tau, so (Psi(1) - Psi(-1)) / 2 is its
+    exact partial derivative at 0.
+    """
+    zero = [Fraction(0)] * HALF
+    one, half = Fraction(1), Fraction(1, 2)
+    columns = [bracket([Fraction(int(k == m)) for k in range(HALF)], zero) for m in range(HALF) if m not in (0, I4)]
+    for plus, minus in (
+        (psi(unit, Fraction(0), Fraction(0), one, Fraction(0)), psi(unit, Fraction(0), Fraction(0), -one, Fraction(0))),
+        (psi(unit, Fraction(0), Fraction(0), Fraction(0), one), psi(unit, Fraction(0), Fraction(0), Fraction(0), -one)),
+    ):
+        columns.append([half * (a - b) for a, b in zip(plus, minus, strict=True)])
+    entries = [flint.fmpq(v.numerator, v.denominator) for column in columns for v in column]
+    return int(flint.fmpq_mat(len(columns), DIM, entries).rank())
 
 
 def family_row(index: int) -> dict[str, Any]:
@@ -214,6 +234,8 @@ def verdicts(record: dict[str, Any]) -> list[str]:
         unit = row["unit"]
         if not row["turns_equal_rotation_curve"]:
             failures.append(f"{unit}: a single turn differs from rotation_curve")
+        if row["differential_rank_cone"] != 16:
+            failures.append(f"{unit}: the differential at x0 does not have rank 16 on the cone")
         for label in (
             "witness",
             "upper-turn",
@@ -225,9 +247,11 @@ def verdicts(record: dict[str, Any]) -> list[str]:
         ):
             if not by_label.get(label) or any(value != RANK for value in by_label[label]):
                 failures.append(f"{unit}: {label} does not have rank {RANK}")
-        if any(value <= RANK for value in by_label["composite"]):
+        composite = by_label.get("composite", [])
+        if not composite or any(value <= RANK for value in composite):
             failures.append(f"{unit}: the composite keeps nullity {NULLITY}")
-        if any(value <= RANK for value in by_label["generic-upper-turn"] + by_label["generic-lower-turn"]):
+        generic = by_label.get("generic-upper-turn", []) + by_label.get("generic-lower-turn", [])
+        if len(generic) != 2 * len(GENERIC_SLICE) or any(value <= RANK for value in generic):
             failures.append(f"{unit}: a turn from a generic family point keeps nullity {NULLITY}")
     for row in record["family_tangent_bounds"]:
         if row["a4_rank"] != HALF or row["nullity"] != NULLITY or row["dimension_upper_bound"] != 15:
@@ -267,54 +291,66 @@ def product_cd(x: Vector, y: Vector) -> Vector:
     return [sum((table[r * DIM + c] * y[c] for c in range(DIM)), Fraction(0)) for r in range(DIM)]
 
 
-def audit_core() -> dict[str, Any]:
+def _kernel_task(unit: int) -> dict[str, Any]:
+    x0 = psi(unit, Fraction(0), Fraction(0), Fraction(0), Fraction(0))
+    basis = kernel_basis(x0)
+    _require(all(not any(product_cd(x0, v)) for v in basis), "a cd_core kernel vector is not annihilated")
+    return {
+        "dimension": len(basis),
+        "sha256": hashlib.sha256(json.dumps([encode(v) for v in basis]).encode()).hexdigest(),
+    }
+
+
+def _digest_task(item: tuple[int, list[Fraction]]) -> dict[str, Any]:
+    unit, params = item
+    return {"unit": unit, "params": [str(v) for v in params], "l_sha256": l_digest(psi(unit, *params))}
+
+
+def audit_core(record: dict[str, Any]) -> dict[str, Any]:
     """The cd_core side of every package comparison: L digests at each retained point and the kernel at x0."""
-    record = run()
-    nodes = [
-        {"unit": unit, "params": [str(v) for v in params], "l_sha256": l_digest(psi(unit, *params))}
-        for unit, params in retained_points(record)
-    ]
-    kernels = {}
-    for unit in WITNESS_UNITS:
-        x0 = psi(unit, Fraction(0), Fraction(0), Fraction(0), Fraction(0))
-        basis = kernel_basis(x0)
-        _require(all(not any(product_cd(x0, v)) for v in basis), "a cd_core kernel vector is not annihilated")
-        kernels[str(unit)] = {
-            "dimension": len(basis),
-            "sha256": hashlib.sha256(json.dumps([encode(v) for v in basis]).encode()).hexdigest(),
-        }
-    return {"nodes": nodes, "kernels": kernels}
+    nodes = parallel.ordered_map(_digest_task, retained_points(record), min_items=2)
+    kernels = parallel.ordered_map(_kernel_task, list(WITNESS_UNITS), min_items=2)
+    return {"nodes": nodes, "kernels": {str(unit): k for unit, k in zip(WITNESS_UNITS, kernels, strict=True)}}
+
+
+def package_product(name: str) -> Any:
+    """x * y in hyprat or python-hypercomplex, exact over Q, each bound to its installed distribution."""
+    from algebra_package_tables import require_bound
+
+    if name == "hyprat":
+        import hyprat
+
+        require_bound(hyprat, "hyprat")
+        return lambda x, y: [Fraction(v) for v in (hyprat.Hy.from_array(x) * hyprat.Hy.from_array(y)).to_array()]
+    import hypercomplex
+
+    require_bound(hypercomplex, "hypercomplex")
+    algebra = hypercomplex.cayley_dickson_algebra(5, Fraction)
+    return lambda x, y: [Fraction(v) for v in (algebra(*x) * algebra(*y)).coefficients()]
+
+
+def _package_task(item: tuple[str, str, dict[str, Any] | int]) -> bool:
+    """One package check: an L table at a retained node equals cd_core's digest, or x0's kernel is annihilated."""
+    name, kind, payload = item
+    product = package_product(name)
+    if kind == "kernel":
+        assert isinstance(payload, int)
+        x0 = psi(payload, Fraction(0), Fraction(0), Fraction(0), Fraction(0))
+        return all(not any(product(x0, v)) for v in kernel_basis(x0))
+    assert isinstance(payload, dict)
+    point = psi(payload["unit"], *[Fraction(v) for v in payload["params"]])
+    columns = [product(point, [Fraction(int(k == c)) for k in range(DIM)]) for c in range(DIM)]
+    table = [columns[c][r] for r in range(DIM) for c in range(DIM)]
+    return hashlib.sha256(json.dumps(encode(table)).encode()).hexdigest() == payload["l_sha256"]
 
 
 def audit_packages(core: dict[str, Any]) -> dict[str, Any]:
     """hyprat and python-hypercomplex rebuild L at each retained point and annihilate the kernel at x0."""
-    import hypercomplex
-    import hyprat
-    from algebra_package_tables import require_bound
-
-    require_bound(hyprat, "hyprat")
-    require_bound(hypercomplex, "hypercomplex")
-    algebra = hypercomplex.cayley_dickson_algebra(5, Fraction)
-
-    def via_hyprat(x: Vector, y: Vector) -> Vector:
-        return [Fraction(v) for v in (hyprat.Hy.from_array(x) * hyprat.Hy.from_array(y)).to_array()]
-
-    def via_hypercomplex(x: Vector, y: Vector) -> Vector:
-        return [Fraction(v) for v in (algebra(*x) * algebra(*y)).coefficients()]
-
-    units = [[Fraction(int(k == c)) for k in range(DIM)] for c in range(DIM)]
     out: dict[str, Any] = {}
-    for name, product in (("hyprat", via_hyprat), ("hypercomplex", via_hypercomplex)):
-        tables = kernels = True
-        for entry in core["nodes"]:
-            point = psi(entry["unit"], *[Fraction(v) for v in entry["params"]])
-            columns = [product(point, unit) for unit in units]
-            table = [columns[c][r] for r in range(DIM) for c in range(DIM)]
-            tables &= hashlib.sha256(json.dumps(encode(table)).encode()).hexdigest() == entry["l_sha256"]
-        for unit in WITNESS_UNITS:
-            x0 = psi(unit, Fraction(0), Fraction(0), Fraction(0), Fraction(0))
-            kernels &= all(not any(product(x0, v)) for v in kernel_basis(x0))
-        out[name] = {"l_tables_equal_cd_core": tables, "kernel_annihilated": kernels}
+    for name in ("hyprat", "hypercomplex"):
+        tables = parallel.ordered_map(_package_task, [(name, "node", node) for node in core["nodes"]], min_items=2)
+        kernels = parallel.ordered_map(_package_task, [(name, "kernel", unit) for unit in WITNESS_UNITS], min_items=2)
+        out[name] = {"l_tables_equal_cd_core": all(tables), "kernel_annihilated": all(kernels)}
     return out
 
 
@@ -385,10 +421,14 @@ def audit_sage() -> dict[str, Any]:
                 full[r][c] = full[r + HALF][c + HALF] = d[r][c]
         diag.append(sum(full, []))
     named = matrix(QQ, diag + [[int(r == c) for r in range(DIM) for c in range(DIM)]])
-    mixing = False
+    extras = []
+    grown = named
     for m in middle:
-        if named.stack(matrix(QQ, [m.list()])).rank() > named.rank():
-            mixing |= any(m[r, c] for r in range(DIM) for c in EXIT if (r < HALF) != (c < HALF))
+        if grown.stack(matrix(QQ, [m.list()])).rank() > grown.rank():
+            grown = grown.stack(matrix(QQ, [m.list()]))
+            extras.append(
+                [[r, c, str(m[r, c])] for r in range(DIM) for c in EXIT if m[r, c] and (r < HALF) != (c < HALF)]
+            )
     zero = [Fraction(0)] * HALF
     family = matrix(
         QQ, [bracket([Fraction(int(k == m)) for k in range(HALF)], zero) for m in range(HALF) if m not in (0, I4)]
@@ -408,65 +448,102 @@ def audit_sage() -> dict[str, Any]:
         "related_triples_dimension": int(kernel.nrows()),
         "middle_projection_dimension": int(span.rank()),
         "middle_contains_der_and_identity": span.stack(named).rank() == span.rank(),
-        "extra_generators_mix_e8_e24_across_halves": mixing,
+        "extra_generator_cross_half_exit_entries": extras,
         "orbits_unit_1": orbits,
     }
 
 
 def audit() -> dict[str, Any]:
-    core = audit_core()
+    core = audit_core(run())
     return {"schema": AUDIT_SCHEMA, "core": core, "packages": audit_packages(core), "sage": audit_sage()}
 
 
-def audit_check(path: Path) -> None:
-    """Recompute the cd_core side of the retained audit and require every package and Sage verdict."""
-    record = json.loads(path.read_text(encoding="utf-8"))
-    _require(record["schema"] == AUDIT_SCHEMA, "audit schema differs")
-    _require(record["core"] == audit_core(), "the cd_core side of the audit differs from the retained record")
+def audit_verdicts(record: dict[str, Any], core: dict[str, Any]) -> list[str]:
+    """Every rule the retained audit must satisfy against a fresh cd_core side; empty means it passes."""
+    failures = []
+    if record.get("schema") != AUDIT_SCHEMA:
+        failures.append("audit schema differs")
+    if record.get("core") != core:
+        failures.append("the cd_core side of the audit differs from the retained record")
     for name in ("hyprat", "hypercomplex"):
-        entry = record["packages"][name]
-        _require(entry["l_tables_equal_cd_core"] and entry["kernel_annihilated"], f"{name} disagrees with cd_core")
-    sage = record["sage"]
-    _require(
-        sage["der_o_dimension"] == len(gap.derivations()) and sage["der_o_equals_cd_core_under_sign_flip_e3_e5_e6"],
-        "Sage der(O) differs from cd_core",
-    )
-    _require(sage["middle_contains_der_and_identity"], "the related triples miss der(O) or the identity")
+        entry = record.get("packages", {}).get(name, {})
+        if not (entry.get("l_tables_equal_cd_core") and entry.get("kernel_annihilated")):
+            failures.append(f"{name} disagrees with cd_core")
+    sage = record.get("sage", {})
+    expected = {
+        "der_o_dimension": len(gap.derivations()),
+        "der_o_equals_cd_core_under_sign_flip_e3_e5_e6": True,
+        "related_triples_dimension": 18,
+        "middle_projection_dimension": 17,
+        "middle_contains_der_and_identity": True,
+    }
+    for key, value in expected.items():
+        if sage.get(key) != value:
+            failures.append(f"Sage {key} is not {value}")
+    extras = sage.get("extra_generator_cross_half_exit_entries", [])
+    if len(extras) != 2 or not all(extras):
+        failures.append("Sage does not record two extra generators that move e_8 or e_24 across the halves")
+    orbits = sage.get("orbits_unit_1", {})
+    dims = {label: (o.get("dimension"), o.get("inside_family_cone")) for label, o in orbits.items()}
+    if dims != {"witness": (8, True), "generic-0": (13, True), "generic-1": (13, True)}:
+        failures.append(f"Sage orbit dimensions differ: {dims}")
+    return failures
+
+
+def audit_check(path: Path) -> None:
+    """Recompute the cd_core side of the retained audit and require every package and Sage value."""
+    failures = audit_verdicts(json.loads(path.read_text(encoding="utf-8")), audit_core(run()))
+    _require(not failures, f"the audit fails: {failures}")
+
+
+def _point(record: dict[str, Any], witness: int, label: str) -> dict[str, Any]:
+    return next(p for p in record["witnesses"][witness]["points"] if p["label"] == label)
 
 
 def self_test() -> str:
-    """A corrupted rank, a composite that keeps nullity, a wrong turn and a wrong family bound are rejected."""
+    """Corrupted ranks, turns, differentials, family bounds and audit values are each rejected."""
     record = run()
     _require(not verdicts(record), f"the honest record fails: {verdicts(record)}")
-
-    def first(label: str) -> dict[str, Any]:
-        return next(p for p in record["witnesses"][0]["points"] if p["label"] == label)
-
     mutations = {
-        "composite rank 20": lambda r: next(
-            p for p in r["witnesses"][0]["points"] if p["label"] == "composite"
-        ).__setitem__("rank", RANK),
-        "turn rank 21": lambda r: next(
-            p for p in r["witnesses"][1]["points"] if p["label"] == "upper-turn"
-        ).__setitem__("rank", RANK + 1),
-        "generic turn rank 20": lambda r: next(
-            p for p in r["witnesses"][2]["points"] if p["label"] == "generic-lower-turn"
-        ).__setitem__("rank", RANK),
+        "composite rank 20": lambda r: _point(r, 0, "composite").__setitem__("rank", RANK),
+        "composite missing": lambda r: r["witnesses"][1].__setitem__(
+            "points", [p for p in r["witnesses"][1]["points"] if p["label"] != "composite"]
+        ),
+        "turn rank 21": lambda r: _point(r, 1, "upper-turn").__setitem__("rank", RANK + 1),
+        "parallel turn rank 28": lambda r: _point(r, 0, "parallel-lower-turn").__setitem__("rank", 28),
+        "generic turn rank 20": lambda r: _point(r, 2, "generic-lower-turn").__setitem__("rank", RANK),
         "turn differs from rotation_curve": lambda r: r["witnesses"][0].__setitem__(
             "turns_equal_rotation_curve", False
         ),
+        "differential rank 15": lambda r: r["witnesses"][2].__setitem__("differential_rank_cone", 15),
         "family bound 13": lambda r: r["family_tangent_bounds"][0].__setitem__("dimension_upper_bound", 13),
+        "family nullity 4": lambda r: r["family_tangent_bounds"][2].__setitem__("nullity", 4),
         "family point a zero divisor": lambda r: r["family_tangent_bounds"][1].__setitem__("a4_rank", 12),
     }
     for label, change in mutations.items():
         bad = copy.deepcopy(record)
         change(bad)
         _require(bool(verdicts(bad)), f"the {label} mutation passes")
-    off = psi(1, Fraction(0), Fraction(0), Fraction(0), Fraction(0))
-    off[0] += 1
-    _require(rank(off) > RANK, "a corrupted witness keeps rank 20")
-    _require(first("composite")["rank"] > RANK, "the composite keeps nullity 12")
-    return f"rank locus rotation composite self-test: {len(mutations) + 1} corruptions rejected"
+    retained = json.loads(AUDIT_PATH.read_text(encoding="utf-8"))
+    core = audit_core(record)
+    _require(not audit_verdicts(retained, core), f"the retained audit fails: {audit_verdicts(retained, core)}")
+    audit_mutations = {
+        "hyprat table": lambda a: a["packages"]["hyprat"].__setitem__("l_tables_equal_cd_core", False),
+        "hypercomplex kernel": lambda a: a["packages"]["hypercomplex"].__setitem__("kernel_annihilated", False),
+        "core digest": lambda a: a["core"]["nodes"][3].__setitem__("l_sha256", "0" * 64),
+        "triples 17": lambda a: a["sage"].__setitem__("related_triples_dimension", 17),
+        "one extra": lambda a: a["sage"]["extra_generator_cross_half_exit_entries"].pop(),
+        "orbit 12": lambda a: a["sage"]["orbits_unit_1"]["generic-0"].__setitem__("dimension", 12),
+        "der(O) map": lambda a: a["sage"].__setitem__("der_o_equals_cd_core_under_sign_flip_e3_e5_e6", False),
+    }
+    for label, change in audit_mutations.items():
+        bad = copy.deepcopy(retained)
+        change(bad)
+        _require(bool(audit_verdicts(bad, core)), f"the {label} audit mutation passes")
+    return (
+        f"rank locus rotation composite self-test: {len(mutations)} record and "
+        f"{len(audit_mutations)} audit corruptions rejected"
+    )
 
 
 def main() -> int:

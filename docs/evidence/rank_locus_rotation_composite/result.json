@@ -44,6 +44,7 @@
     "0"
    ],
    "turns_equal_rotation_curve": true,
+   "differential_rank_cone": 16,
    "points": [
     {
      "label": "witness",
@@ -245,6 +246,7 @@
     "0"
    ],
    "turns_equal_rotation_curve": true,
+   "differential_rank_cone": 16,
    "points": [
     {
      "label": "witness",
@@ -446,6 +448,7 @@
     "0"
    ],
    "turns_equal_rotation_curve": true,
+   "differential_rank_cone": 16,
    "points": [
     {
      "label": "witness",

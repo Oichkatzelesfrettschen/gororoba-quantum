@@ -30,6 +30,7 @@ record checks both equalities.
 | Point (beta, gamma, sigma, tau) | rank L | nullity |
 | --- | --- | --- |
 | x0 (0, 0, 0, 0) | 20 | 12 |
+| differential at x0, on the cone | rank 16 | |
 | upper turn (0, 0, 2, 0), lower turn (0, 0, 0, 3) | 20 | 12 |
 | composite (0, 0, 2, 3) | 32 | 0 |
 | family, u and v parallel: (1, 0), (-2/5, 0) | 20 | 12 |
@@ -44,10 +45,11 @@ The table holds at all three witnesses.
   composite therefore leaves D_(5,12) on an open dense set of its
   parameters. The two turns are certified only from points of {a, 0}, and
   after the first turn the upper half has left C_4^perp.
-- **The turns are special.** One turn keeps nullity 12 from family points
-  whose octonion halves u, v of a = u + v e_8 are parallel, the stratum of
-  the witnesses. From a generic family point the same turn drops to
-  nullity 4. Turning the whole of x0 toward e_8 + e_24 or e_8 - e_24 gives
+- **The turns are special.** One turn keeps nullity 12 from the retained
+  family points whose octonion halves u, v of a = u + v e_8 are parallel,
+  the stratum of the witnesses. From the retained generic points the same
+  turn drops to nullity 4, so it leaves the locus off a proper closed
+  subset of the family. Turning the whole of x0 toward e_8 + e_24 or e_8 - e_24 gives
   rank 32 at u = 1/2, 1, 2, 3 (exploratory, not retained).
 - **The gap is a family property.** At three generic non-zero-divisor
   points of C_4^perp (rank L_a = 16 in A_4, one on the complex line
@@ -71,8 +73,8 @@ the parameter count.
   17 dimensions: der(O) on each half, the identity and two maps that move
   e_8 into the lower half and e_24 into the upper half.
 - On the family cone the orbit has dimension 8 at e_1 and 13 at generic
-  slice points, inside the 14-dimensional family cone. Only der(O) and
-  scaling commute with the separate half turns.
+  slice points, inside the 14-dimensional family cone. The record retains
+  the cross-half e_8 and e_24 entries of the two extra generators.
 
 ## Package audit
 

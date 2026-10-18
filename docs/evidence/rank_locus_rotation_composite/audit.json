@@ -515,7 +515,32 @@
   "related_triples_dimension": 18,
   "middle_projection_dimension": 17,
   "middle_contains_der_and_identity": true,
-  "extra_generators_mix_e8_e24_across_halves": true,
+  "extra_generator_cross_half_exit_entries": [
+   [
+    [
+     8,
+     24,
+     "-1/2"
+    ],
+    [
+     24,
+     8,
+     "1/2"
+    ]
+   ],
+   [
+    [
+     8,
+     24,
+     "-1/2"
+    ],
+    [
+     24,
+     8,
+     "1/2"
+    ]
+   ]
+  ],
   "orbits_unit_1": {
    "witness": {
     "dimension": 8,

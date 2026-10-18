@@ -4124,7 +4124,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locus_rotation_composite/audit.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locus_rotation_composite/audit.json",
    "name": "core-586",
-   "seconds": 6.0,
+   "seconds": 10.0,
    "tier": "pr"
   }
  ],

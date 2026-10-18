@@ -150,15 +150,15 @@ and is never evidence of the gap.
    - Rank 32 at the rational point sigma = 2, tau = 3 of x0 exhibits a
      nonzero 21-minor, so the composite leaves D_(5,12) on an open dense
      set. Each turn alone keeps rank 20 there.
-   - One turn keeps nullity 12 only from family points whose octonion
-     halves are parallel, the stratum of the witnesses; from generic
-     family points it drops to nullity 4. Neither turn extends over the
-     family.
+   - One turn keeps nullity 12 from the retained family points whose
+     octonion halves are parallel, the stratum of the witnesses, and drops
+     to nullity 4 from the retained generic points, hence off a proper
+     closed subset of the family. Neither turn extends over the family.
    - The tangent bound is 15 at generic {a, 0} points too, so the gap is a
      property of the whole family, not of the witness stratum.
    - Related triples of A_5 (SageMath, an 18-dimensional algebra) act with
-     13-dimensional orbits on the 14-dimensional family cone. Only der(O)
-     and scaling commute with the separate half turns.
+     13-dimensional orbits on the 14-dimensional family cone; two of its
+     generators move e_8 or e_24 across the halves.
    - The nullity-12 question stays open. The next step is equations that
      cut out D_(5,12) near {e_i, 0} (the centered Schur complement of
      computation 2 with its higher-order terms), or a curve family that is
