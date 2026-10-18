@@ -769,9 +769,9 @@ section 4(g); gate core-425 replays both records).
   ([tuna-17-run-design.md](tuna-17-run-design.md) Results).
 
 - **Tuna-17 ladder** (7 batches, 21 jobs at 131072 shots, its 2 QX twin
-  batches exact): neighbor-dependent readout established on q13 and absent
+  batches exact): context-dependent readout established on q13 and absent
   on q1 and q14; rho = r_coh / r_pop above 1 on all three pairs in both
-  replicate batches; the 50 Hz line in all 12 Latin jobs, its depth-9
+  replicate batches under either readout correction; the 50 Hz line in all 12 Latin jobs, its depth-9
   margin refuted in the two jobs whose depth-9 pair is (12,14)
   ([tuna-17-run-design.md](tuna-17-run-design.md) Ladder results).
 - **Shot order** (reanalysis of every retained job): the raw lists carry a

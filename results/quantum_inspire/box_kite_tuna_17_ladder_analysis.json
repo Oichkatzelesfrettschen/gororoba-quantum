@@ -4090,7 +4090,12 @@
       1.021339442044,
       1.020339872019
      ],
-     "verdict": "above 1"
+     "rho_iso": [
+      1.021372175557,
+      1.020387315507
+     ],
+     "verdict": "above 1",
+     "verdict_iso": "above 1"
     },
     {
      "batches": [
@@ -4107,7 +4112,12 @@
       1.020580250261,
       1.022275499926
      ],
-     "verdict": "above 1"
+     "rho_iso": [
+      1.02033178602,
+      1.021955818604
+     ],
+     "verdict": "above 1",
+     "verdict_iso": "above 1"
     },
     {
      "batches": [
@@ -4124,7 +4134,12 @@
       1.004794070986,
       1.006470779904
      ],
-     "verdict": "above 1"
+     "rho_iso": [
+      1.004870519574,
+      1.006490353014
+     ],
+     "verdict": "above 1",
+     "verdict_iso": "above 1"
     }
    ],
    "stops": [],
@@ -4172,7 +4187,7 @@
      14
     ]
    },
-   "uncertainty": "standard errors are standard deviations and intervals the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws, numpy seed 20261017) of every bracket's readout counts and each replica's joint (a, d) counts; the witness cross-check draws from numpy seed [20261017, 1]; line and context errors are binomial",
+   "uncertainty": "standard errors are standard deviations and intervals the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws, numpy seed 20261017) of every bracket's readout counts and each replica's joint (a, d) counts; the readout-iso-x estimates (rho_iso and the witness cross-check) draw from numpy seed [20261017, 1]; line and context errors are binomial",
    "verdict": "refuted",
    "within_batch_ladder": [
     {
@@ -4246,6 +4261,15 @@
       "se": 0.000467765555,
       "undefined_draws": 0,
       "value": 1.021339442044
+     },
+     "rho_iso": {
+      "interval": [
+       1.020181314843,
+       1.022515271574
+      ],
+      "se": 0.000456678525,
+      "undefined_draws": 0,
+      "value": 1.021372175557
      },
      "setting": "X"
     },
@@ -4321,6 +4345,15 @@
       "undefined_draws": 0,
       "value": 1.020580250261
      },
+     "rho_iso": {
+      "interval": [
+       1.019210079687,
+       1.02143057183
+      ],
+      "se": 0.00044175886,
+      "undefined_draws": 0,
+      "value": 1.02033178602
+     },
      "setting": "X"
     },
     {
@@ -4394,6 +4427,15 @@
       "se": 0.000310443179,
       "undefined_draws": 0,
       "value": 1.004794070986
+     },
+     "rho_iso": {
+      "interval": [
+       1.004052817049,
+       1.005675165523
+      ],
+      "se": 0.000312786152,
+      "undefined_draws": 0,
+      "value": 1.004870519574
      },
      "setting": "X"
     },
@@ -4640,6 +4682,15 @@
       "undefined_draws": 0,
       "value": 1.020339872019
      },
+     "rho_iso": {
+      "interval": [
+       1.019324935069,
+       1.021446285015
+      ],
+      "se": 0.000422530805,
+      "undefined_draws": 0,
+      "value": 1.020387315507
+     },
      "setting": "X"
     },
     {
@@ -4714,6 +4765,15 @@
       "undefined_draws": 0,
       "value": 1.022275499926
      },
+     "rho_iso": {
+      "interval": [
+       1.020719525364,
+       1.023226906449
+      ],
+      "se": 0.000491335456,
+      "undefined_draws": 0,
+      "value": 1.021955818604
+     },
      "setting": "X"
     },
     {
@@ -4787,6 +4847,15 @@
       "se": 0.000305898922,
       "undefined_draws": 0,
       "value": 1.006470779904
+     },
+     "rho_iso": {
+      "interval": [
+       1.005645091335,
+       1.007266698367
+      ],
+      "se": 0.000309376944,
+      "undefined_draws": 0,
+      "value": 1.006490353014
      },
      "setting": "X"
     },
@@ -4967,7 +5036,7 @@
      "batch": "batch-01",
      "file": "latin-x-2.cq",
      "iso_corrected": {
-      "se": 0.001354640789,
+      "se": 0.001387704676,
       "undefined_draws": 0,
       "value": -0.998774461374
      },
@@ -4987,7 +5056,7 @@
      "batch": "batch-01",
      "file": "latin-x-3.cq",
      "iso_corrected": {
-      "se": 0.001680898336,
+      "se": 0.001686262406,
       "undefined_draws": 0,
       "value": -0.997200106289
      },
@@ -5007,7 +5076,7 @@
      "batch": "batch-04",
      "file": "latin-x-2.cq",
      "iso_corrected": {
-      "se": 0.001310888603,
+      "se": 0.001321238047,
       "undefined_draws": 0,
       "value": -0.994556496008
      },
@@ -5027,7 +5096,7 @@
      "batch": "batch-04",
      "file": "latin-x-3.cq",
      "iso_corrected": {
-      "se": 0.00173982403,
+      "se": 0.001766466035,
       "undefined_draws": 0,
       "value": -0.955016264868
      },

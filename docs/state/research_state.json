@@ -4501,7 +4501,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "4fdd54622bb7bef0674d7126a3a4832c0092c7c424fb3126c87ad015a1d6273f"
+          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
         }
       ],
       "documents": [
@@ -4608,15 +4608,15 @@
     },
     {
       "id": "qi-tuna17-boxkite-ladder-readout-context",
-      "statement": "On Tuna-17 the |1> misassignment of q13 depends on the state of its coupled neighbors: e10 reads 0.0895 and 0.0863 with all 17 qubits excited (readout-1, batches 0 and 6) against 0.0441 and 0.0399 with q1, q13 and q14 alone excited and every coupled neighbor in |0> (readout-iso-x), differences 0.045 and 0.046 at about 45 standard errors, so neighbor context is established on q13 by the preregistered rule (above 0.02 and 5 SE in both brackets). It is absent on q1 (-0.0009, -0.0016) and q14 (-0.0027, -0.0006). The preparation path is absent under the 0.02 threshold on all three: e10 after H Z H minus the interpolated isolated e10 is +0.016 (q13), +0.005 (q14) and -0.0002 (q1). Corrected with the readout-1 brackets, the depth-1 X conditional coherence on (10,13) reads -1.104 and -1.060 (batches 1 and 4); corrected with q13's isolated e10 it reads -0.997 and -0.955, within one of the physical bound; (12,14) reads -0.995 and -0.994 either way. The follow series' unphysical -1.105 on (10,13) is therefore a readout-1 calibration artifact of q13.",
+      "statement": "On Tuna-17 the |1> misassignment of q13 depends on the preparation context of the chip: e10 reads 0.0895 and 0.0863 with all 17 qubits excited (readout-1, batches 0 and 6) against 0.0441 and 0.0399 with q1, q13 and q14 alone excited and every coupled neighbor in |0> (readout-iso-x), differences 0.045 and 0.046 at about 45 standard errors, so context is established on q13 by the preregistered rule (above 0.02 and 5 SE in both brackets). It is absent on q1 (-0.0009, -0.0016) and q14 (-0.0027, -0.0006). The preparation path is absent under the 0.02 threshold on all three: e10 after H Z H minus the interpolated isolated e10 is +0.016 (q13), +0.005 (q14) and -0.0002 (q1). Corrected with the readout-1 brackets, the depth-1 X conditional coherence on (10,13) reads -1.104 and -1.060 (batches 1 and 4); corrected with q13's isolated e10 it reads -0.997 and -0.955, within one of the physical bound; (12,14) reads -0.995 and -0.994 with readout-1 and -0.999 and -0.995 with q14's isolated e10. The follow series' unphysical -1.105 on (10,13) is therefore a calibration artifact of the all-qubit readout-1 bracket applied to q13.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One device state of one night (01:55Z to 03:02Z, 2026-10-18) at 131072 shots per job. readout-1 excites q10 and q11 together, so the design does not say which neighbor shifts q13's readout. The preparation differences below the 0.02 threshold are significant on shot noise (q13 +0.016 at about 20 SE, q14 +0.005 at about 9 SE) and are reported, not decided. Beside an excited q13, q10's own e01 rises by 0.011 to 0.014 against readout-0 (reported).",
+      "boundary": "One device state of one night (01:55Z to 03:02Z, 2026-10-18) at 131072 shots per job. readout-1 and readout-iso-x differ both in the neighbors' state at measurement and in the X pulses applied to the neighbors, so the design does not separate state-dependent readout of q13 from drive crosstalk of those pulses on q13's preparation; readout-1 also excites q10 and q11 together, so it does not say which neighbor matters. The preparation differences below the 0.02 threshold are significant on shot noise (q13 +0.016 at about 20 SE, q14 +0.005 at about 9 SE) and are reported, not decided. Beside an excited q13, q10's own e01 rises by 0.011 to 0.014 against readout-0 (reported).",
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
-          "sha256": "a2f22aeddf38809b47793d159773f5351f8b9448f239197a7d35f6fb8c8d5247"
+          "sha256": "b301929aef16321096dfd04c37e85e58729201bb01db0f9d63a904de7fe5675e"
         }
       ],
       "documents": [
@@ -4650,11 +4650,11 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "rho above 1 means the population contrast decays faster than the joint coherence, which neither a global depolarizing channel (rho = 1) nor dephasing (rho below 1) gives; a coherent error that moves selector population, or the 50 Hz modulation averaged over a job, would raise it, and the design isolates neither. The (10,13) rho uses the readout-1 correction, which overstates q13's e10 (claim qi-tuna17-boxkite-ladder-readout-context). The line refutation is of the preregistered first-harmonic margin; the second harmonic of the same selector stays at 0.020 to 0.022 (claim qi-tuna17-boxkite-ladder-drift-harmonics), so the refutation does not show the modulation absent.",
+      "boundary": "rho above 1 means the population contrast decays faster than the joint coherence, which neither a global depolarizing channel (rho = 1) nor dephasing (rho below 1) gives; a coherent error that moves selector population, or the 50 Hz modulation averaged over a job, would raise it, and the design isolates neither. The preregistered rho uses the readout-1 correction, which overstates q13's e10 (claim qi-tuna17-boxkite-ladder-readout-context); with every iso qubit's e10 from readout-iso-x, rho reads 1.021 and 1.020 on (1,4), 1.020 and 1.022 on (10,13), 1.005 and 1.006 on (12,14), each 99% interval again excluding 1, so the decision is the same under both corrections. The line refutation is of the preregistered first-harmonic margin; the second harmonic of the same selector stays at 0.020 to 0.022 (claim qi-tuna17-boxkite-ladder-drift-harmonics), so the refutation does not show the modulation absent.",
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
-          "sha256": "a2f22aeddf38809b47793d159773f5351f8b9448f239197a7d35f6fb8c8d5247"
+          "sha256": "b301929aef16321096dfd04c37e85e58729201bb01db0f9d63a904de7fe5675e"
         }
       ],
       "documents": [
@@ -4692,11 +4692,11 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
-          "sha256": "a2f22aeddf38809b47793d159773f5351f8b9448f239197a7d35f6fb8c8d5247"
+          "sha256": "b301929aef16321096dfd04c37e85e58729201bb01db0f9d63a904de7fe5675e"
         },
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "4fdd54622bb7bef0674d7126a3a4832c0092c7c424fb3126c87ad015a1d6273f"
+          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
         }
       ],
       "documents": [

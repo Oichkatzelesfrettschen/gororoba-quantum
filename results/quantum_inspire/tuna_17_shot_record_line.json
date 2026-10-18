@@ -171,30 +171,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1345,
-     0.9612,
-     0.03444,
-     0.01313
-    ],
-    "11": [
-     0.03048,
-     0.8991,
-     0.01027,
-     0.002868
-    ],
-    "12": [
-     0.02902,
-     0.9196,
-     0.009339,
-     0.005715
-    ],
-    "7": [
-     0.02598,
-     -2.66,
-     0.002613,
-     0.007586
-    ]
+    "0": {
+     "first": 0.1345,
+     "first_significant": true,
+     "phase": 0.9612,
+     "se": 0.00546,
+     "second": 0.01313,
+     "second_significant": false,
+     "third": 0.03444
+    },
+    "11": {
+     "first": 0.03048,
+     "first_significant": true,
+     "phase": 0.8991,
+     "se": 0.00551,
+     "second": 0.002868,
+     "second_significant": false,
+     "third": 0.01027
+    },
+    "12": {
+     "first": 0.02902,
+     "first_significant": true,
+     "phase": 0.9196,
+     "se": 0.0055,
+     "second": 0.005715,
+     "second_significant": false,
+     "third": 0.009339
+    },
+    "7": {
+     "first": 0.02598,
+     "first_significant": true,
+     "phase": -2.66,
+     "se": 0.00491,
+     "second": 0.007586,
+     "second_significant": false,
+     "third": 0.002613
+    }
    },
    "bits_scanned": [
     0,
@@ -229,12 +241,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1302,
-     2.059,
-     0.03385,
-     0.007938
-    ]
+    "0": {
+     "first": 0.1302,
+     "first_significant": true,
+     "phase": 2.059,
+     "se": 0.00552,
+     "second": 0.007938,
+     "second_significant": false,
+     "third": 0.03385
+    }
    },
    "bits_scanned": [
     0,
@@ -269,18 +284,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1354,
-     2.783,
-     0.04696,
-     0.009061
-    ],
-    "12": [
-     0.03449,
-     2.848,
-     0.004212,
-     0.01094
-    ]
+    "0": {
+     "first": 0.1354,
+     "first_significant": true,
+     "phase": 2.783,
+     "se": 0.00549,
+     "second": 0.009061,
+     "second_significant": false,
+     "third": 0.04696
+    },
+    "12": {
+     "first": 0.03449,
+     "first_significant": true,
+     "phase": 2.848,
+     "se": 0.00551,
+     "second": 0.01094,
+     "second_significant": false,
+     "third": 0.004212
+    }
    },
    "bits_scanned": [
     0,
@@ -314,18 +335,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1318,
-     -2.553,
-     0.04671,
-     0.004022
-    ],
-    "12": [
-     0.02864,
-     -2.303,
-     0.01137,
-     0.004862
-    ]
+    "0": {
+     "first": 0.1318,
+     "first_significant": true,
+     "phase": -2.553,
+     "se": 0.00552,
+     "second": 0.004022,
+     "second_significant": false,
+     "third": 0.04671
+    },
+    "12": {
+     "first": 0.02864,
+     "first_significant": true,
+     "phase": -2.303,
+     "se": 0.00552,
+     "second": 0.004862,
+     "second_significant": false,
+     "third": 0.01137
+    }
    },
    "bits_scanned": [
     0,
@@ -505,42 +532,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.03677,
-     2.216,
-     0.007427,
-     0.006912
-    ],
-    "11": [
-     0.03575,
-     2.035,
-     0.006222,
-     0.005545
-    ],
-    "4": [
-     0.03299,
-     -0.6949,
-     0.008595,
-     0.01018
-    ],
-    "5": [
-     0.03235,
-     -1.15,
-     0.002945,
-     0.006654
-    ],
-    "7": [
-     0.03427,
-     2.458,
-     0.008899,
-     0.00391
-    ],
-    "8": [
-     0.03802,
-     -0.9364,
-     0.007019,
-     0.006241
-    ]
+    "0": {
+     "first": 0.03677,
+     "first_significant": true,
+     "phase": 2.216,
+     "se": 0.00551,
+     "second": 0.006912,
+     "second_significant": false,
+     "third": 0.007427
+    },
+    "11": {
+     "first": 0.03575,
+     "first_significant": true,
+     "phase": 2.035,
+     "se": 0.00552,
+     "second": 0.005545,
+     "second_significant": false,
+     "third": 0.006222
+    },
+    "4": {
+     "first": 0.03299,
+     "first_significant": true,
+     "phase": -0.6949,
+     "se": 0.00548,
+     "second": 0.01018,
+     "second_significant": false,
+     "third": 0.008595
+    },
+    "5": {
+     "first": 0.03235,
+     "first_significant": true,
+     "phase": -1.15,
+     "se": 0.00547,
+     "second": 0.006654,
+     "second_significant": false,
+     "third": 0.002945
+    },
+    "7": {
+     "first": 0.03427,
+     "first_significant": true,
+     "phase": 2.458,
+     "se": 0.00552,
+     "second": 0.00391,
+     "second_significant": false,
+     "third": 0.008899
+    },
+    "8": {
+     "first": 0.03802,
+     "first_significant": true,
+     "phase": -0.9364,
+     "se": 0.00552,
+     "second": 0.006241,
+     "second_significant": false,
+     "third": 0.007019
+    }
    },
    "bits_scanned": [
     0,
@@ -574,24 +619,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03988,
-     0.7923,
-     0.01221,
-     0.009992
-    ],
-    "2": [
-     0.04274,
-     -2.161,
-     0.007782,
-     0.006929
-    ],
-    "9": [
-     0.0317,
-     -2.365,
-     0.00217,
-     0.007775
-    ]
+    "14": {
+     "first": 0.03988,
+     "first_significant": true,
+     "phase": 0.7923,
+     "se": 0.00552,
+     "second": 0.009992,
+     "second_significant": false,
+     "third": 0.01221
+    },
+    "2": {
+     "first": 0.04274,
+     "first_significant": true,
+     "phase": -2.161,
+     "se": 0.00552,
+     "second": 0.006929,
+     "second_significant": false,
+     "third": 0.007782
+    },
+    "9": {
+     "first": 0.0317,
+     "first_significant": true,
+     "phase": -2.365,
+     "se": 0.00551,
+     "second": 0.007775,
+     "second_significant": false,
+     "third": 0.00217
+    }
    },
    "bits_scanned": [
     0,
@@ -625,24 +679,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "11": [
-     0.0509,
-     -2.683,
-     0.01289,
-     0.01918
-    ],
-    "16": [
-     0.03126,
-     -2.637,
-     0.006546,
-     0.003409
-    ],
-    "7": [
-     0.02887,
-     0.8986,
-     0.00972,
-     0.002069
-    ]
+    "11": {
+     "first": 0.0509,
+     "first_significant": true,
+     "phase": -2.683,
+     "se": 0.00551,
+     "second": 0.01918,
+     "second_significant": false,
+     "third": 0.01289
+    },
+    "16": {
+     "first": 0.03126,
+     "first_significant": true,
+     "phase": -2.637,
+     "se": 0.0054,
+     "second": 0.003409,
+     "second_significant": false,
+     "third": 0.006546
+    },
+    "7": {
+     "first": 0.02887,
+     "first_significant": true,
+     "phase": 0.8986,
+     "se": 0.00551,
+     "second": 0.002069,
+     "second_significant": false,
+     "third": 0.00972
+    }
    },
    "bits_scanned": [
     0,
@@ -997,18 +1060,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.002877,
-     -1.556,
-     0.004088,
-     0.02903
-    ],
-    "6": [
-     0.03615,
-     0.3248,
-     0.005761,
-     0.06337
-    ]
+    "5": {
+     "first": 0.002877,
+     "first_significant": false,
+     "phase": -1.556,
+     "se": 0.00366,
+     "second": 0.02903,
+     "second_significant": true,
+     "third": 0.004088
+    },
+    "6": {
+     "first": 0.03615,
+     "first_significant": true,
+     "phase": 0.3248,
+     "se": 0.00431,
+     "second": 0.06337,
+     "second_significant": true,
+     "third": 0.005761
+    }
    },
    "bits_scanned": [
     0,
@@ -1043,30 +1112,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.05598,
-     -2.014,
-     0.005423,
-     0.03267
-    ],
-    "12": [
-     0.04757,
-     1.059,
-     0.01534,
-     0.00499
-    ],
-    "5": [
-     0.02081,
-     1.06,
-     0.02031,
-     0.1736
-    ],
-    "6": [
-     0.01182,
-     2.332,
-     0.02569,
-     0.09811
-    ]
+    "0": {
+     "first": 0.05598,
+     "first_significant": true,
+     "phase": -2.014,
+     "se": 0.00396,
+     "second": 0.03267,
+     "second_significant": true,
+     "third": 0.005423
+    },
+    "12": {
+     "first": 0.04757,
+     "first_significant": true,
+     "phase": 1.059,
+     "se": 0.00447,
+     "second": 0.00499,
+     "second_significant": false,
+     "third": 0.01534
+    },
+    "5": {
+     "first": 0.02081,
+     "first_significant": false,
+     "phase": 1.06,
+     "se": 0.00551,
+     "second": 0.1736,
+     "second_significant": true,
+     "third": 0.02031
+    },
+    "6": {
+     "first": 0.01182,
+     "first_significant": false,
+     "phase": 2.332,
+     "se": 0.00532,
+     "second": 0.09811,
+     "second_significant": true,
+     "third": 0.02569
+    }
    },
    "bits_scanned": [
     0,
@@ -1101,24 +1182,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1048,
-     -0.4967,
-     0.03861,
-     0.00335
-    ],
-    "5": [
-     0.2485,
-     -0.5562,
-     0.06634,
-     0.009287
-    ],
-    "6": [
-     0.3804,
-     -0.5337,
-     0.09934,
-     0.004816
-    ]
+    "0": {
+     "first": 0.1048,
+     "first_significant": true,
+     "phase": -0.4967,
+     "se": 0.00552,
+     "second": 0.00335,
+     "second_significant": false,
+     "third": 0.03861
+    },
+    "5": {
+     "first": 0.2485,
+     "first_significant": true,
+     "phase": -0.5562,
+     "se": 0.00552,
+     "second": 0.009287,
+     "second_significant": false,
+     "third": 0.06634
+    },
+    "6": {
+     "first": 0.3804,
+     "first_significant": true,
+     "phase": -0.5337,
+     "se": 0.00552,
+     "second": 0.004816,
+     "second_significant": false,
+     "third": 0.09934
+    }
    },
    "bits_scanned": [
     0,
@@ -1153,42 +1243,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.2921,
-     2.627,
-     0.07831,
-     0.0138
-    ],
-    "11": [
-     0.06747,
-     2.611,
-     0.02222,
-     0.003424
-    ],
-    "12": [
-     0.05302,
-     2.459,
-     0.009266,
-     0.009858
-    ],
-    "16": [
-     0.04221,
-     2.557,
-     0.01398,
-     0.01381
-    ],
-    "5": [
-     0.3928,
-     2.672,
-     0.1235,
-     0.04435
-    ],
-    "6": [
-     0.04523,
-     -2.671,
-     0.04519,
-     0.02448
-    ]
+    "0": {
+     "first": 0.2921,
+     "first_significant": true,
+     "phase": 2.627,
+     "se": 0.00549,
+     "second": 0.0138,
+     "second_significant": false,
+     "third": 0.07831
+    },
+    "11": {
+     "first": 0.06747,
+     "first_significant": true,
+     "phase": 2.611,
+     "se": 0.00551,
+     "second": 0.003424,
+     "second_significant": false,
+     "third": 0.02222
+    },
+    "12": {
+     "first": 0.05302,
+     "first_significant": true,
+     "phase": 2.459,
+     "se": 0.00464,
+     "second": 0.009858,
+     "second_significant": false,
+     "third": 0.009266
+    },
+    "16": {
+     "first": 0.04221,
+     "first_significant": true,
+     "phase": 2.557,
+     "se": 0.00552,
+     "second": 0.01381,
+     "second_significant": false,
+     "third": 0.01398
+    },
+    "5": {
+     "first": 0.3928,
+     "first_significant": true,
+     "phase": 2.672,
+     "se": 0.00552,
+     "second": 0.04435,
+     "second_significant": true,
+     "third": 0.1235
+    },
+    "6": {
+     "first": 0.04523,
+     "first_significant": true,
+     "phase": -2.671,
+     "se": 0.00552,
+     "second": 0.02448,
+     "second_significant": false,
+     "third": 0.04519
+    }
    },
    "bits_scanned": [
     0,
@@ -1223,12 +1331,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.1212,
-     0.6415,
-     0.02906,
-     0.01649
-    ]
+    "7": {
+     "first": 0.1212,
+     "first_significant": true,
+     "phase": 0.6415,
+     "se": 0.00466,
+     "second": 0.01649,
+     "second_significant": false,
+     "third": 0.02906
+    }
    },
    "bits_scanned": [
     0,
@@ -1263,24 +1374,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03123,
-     1.822,
-     0.008593,
-     0.001462
-    ],
-    "7": [
-     0.2936,
-     -1.24,
-     0.09141,
-     0.0159
-    ],
-    "8": [
-     0.02635,
-     1.578,
-     0.008199,
-     0.002282
-    ]
+    "14": {
+     "first": 0.03123,
+     "first_significant": true,
+     "phase": 1.822,
+     "se": 0.00428,
+     "second": 0.001462,
+     "second_significant": false,
+     "third": 0.008593
+    },
+    "7": {
+     "first": 0.2936,
+     "first_significant": true,
+     "phase": -1.24,
+     "se": 0.00552,
+     "second": 0.0159,
+     "second_significant": false,
+     "third": 0.09141
+    },
+    "8": {
+     "first": 0.02635,
+     "first_significant": true,
+     "phase": 1.578,
+     "se": 0.00379,
+     "second": 0.002282,
+     "second_significant": false,
+     "third": 0.008199
+    }
    },
    "bits_scanned": [
     0,
@@ -1315,24 +1435,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03609,
-     -0.2364,
-     0.009264,
-     0.00849
-    ],
-    "7": [
-     0.182,
-     -0.5091,
-     0.0486,
-     0.01228
-    ],
-    "8": [
-     0.02769,
-     -0.7734,
-     0.004914,
-     0.01015
-    ]
+    "14": {
+     "first": 0.03609,
+     "first_significant": true,
+     "phase": -0.2364,
+     "se": 0.0055,
+     "second": 0.00849,
+     "second_significant": false,
+     "third": 0.009264
+    },
+    "7": {
+     "first": 0.182,
+     "first_significant": true,
+     "phase": -0.5091,
+     "se": 0.00487,
+     "second": 0.01228,
+     "second_significant": false,
+     "third": 0.0486
+    },
+    "8": {
+     "first": 0.02769,
+     "first_significant": true,
+     "phase": -0.7734,
+     "se": 0.00551,
+     "second": 0.01015,
+     "second_significant": false,
+     "third": 0.004914
+    }
    },
    "bits_scanned": [
     0,
@@ -1367,42 +1496,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.07759,
-     1.32,
-     0.02934,
-     0.009454
-    ],
-    "15": [
-     0.04423,
-     1.03,
-     0.002998,
-     0.007661
-    ],
-    "3": [
-     0.05157,
-     1.076,
-     0.004335,
-     0.01405
-    ],
-    "7": [
-     0.1822,
-     -1.806,
-     0.06669,
-     0.1199
-    ],
-    "8": [
-     0.0699,
-     1.155,
-     0.02831,
-     0.008079
-    ],
-    "9": [
-     0.04014,
-     1.183,
-     0.01004,
-     0.006728
-    ]
+    "14": {
+     "first": 0.07759,
+     "first_significant": true,
+     "phase": 1.32,
+     "se": 0.00542,
+     "second": 0.009454,
+     "second_significant": false,
+     "third": 0.02934
+    },
+    "15": {
+     "first": 0.04423,
+     "first_significant": true,
+     "phase": 1.03,
+     "se": 0.00552,
+     "second": 0.007661,
+     "second_significant": false,
+     "third": 0.002998
+    },
+    "3": {
+     "first": 0.05157,
+     "first_significant": true,
+     "phase": 1.076,
+     "se": 0.00543,
+     "second": 0.01405,
+     "second_significant": false,
+     "third": 0.004335
+    },
+    "7": {
+     "first": 0.1822,
+     "first_significant": true,
+     "phase": -1.806,
+     "se": 0.00548,
+     "second": 0.1199,
+     "second_significant": true,
+     "third": 0.06669
+    },
+    "8": {
+     "first": 0.0699,
+     "first_significant": true,
+     "phase": 1.155,
+     "se": 0.0053,
+     "second": 0.008079,
+     "second_significant": false,
+     "third": 0.02831
+    },
+    "9": {
+     "first": 0.04014,
+     "first_significant": true,
+     "phase": 1.183,
+     "se": 0.00547,
+     "second": 0.006728,
+     "second_significant": false,
+     "third": 0.01004
+    }
    },
    "bits_scanned": [
     0,
@@ -2433,12 +2580,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04787,
-     -2.367,
-     0.004266,
-     0.01388
-    ]
+    "6": {
+     "first": 0.04787,
+     "first_significant": true,
+     "phase": -2.367,
+     "se": 0.00753,
+     "second": 0.01388,
+     "second_significant": false,
+     "third": 0.004266
+    }
    },
    "bits_scanned": [
     0,
@@ -2507,12 +2657,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.04051,
-     0.8377,
-     0.005808,
-     0.0165
-    ]
+    "5": {
+     "first": 0.04051,
+     "first_significant": true,
+     "phase": 0.8377,
+     "se": 0.00779,
+     "second": 0.0165,
+     "second_significant": false,
+     "third": 0.005808
+    }
    },
    "bits_scanned": [
     0,
@@ -2549,12 +2702,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04509,
-     -2.11,
-     0.007744,
-     0.01086
-    ]
+    "6": {
+     "first": 0.04509,
+     "first_significant": true,
+     "phase": -2.11,
+     "se": 0.00772,
+     "second": 0.01086,
+     "second_significant": false,
+     "third": 0.007744
+    }
    },
    "bits_scanned": [
     0,
@@ -2592,12 +2748,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04599,
-     -1.346,
-     0.02537,
-     0.01018
-    ]
+    "6": {
+     "first": 0.04599,
+     "first_significant": true,
+     "phase": -1.346,
+     "se": 0.00776,
+     "second": 0.01018,
+     "second_significant": false,
+     "third": 0.02537
+    }
    },
    "bits_scanned": [
     0,
@@ -2635,12 +2794,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04308,
-     0.7865,
-     0.007943,
-     0.01943
-    ]
+    "6": {
+     "first": 0.04308,
+     "first_significant": true,
+     "phase": 0.7865,
+     "se": 0.00776,
+     "second": 0.01943,
+     "second_significant": false,
+     "third": 0.007943
+    }
    },
    "bits_scanned": [
     0,
@@ -2678,18 +2840,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.1467,
-     0.1555,
-     0.01958,
-     0.1473
-    ],
-    "6": [
-     0.06141,
-     0.361,
-     0.03492,
-     0.129
-    ]
+    "5": {
+     "first": 0.1467,
+     "first_significant": true,
+     "phase": 0.1555,
+     "se": 0.0078,
+     "second": 0.1473,
+     "second_significant": true,
+     "third": 0.01958
+    },
+    "6": {
+     "first": 0.06141,
+     "first_significant": true,
+     "phase": 0.361,
+     "se": 0.00743,
+     "second": 0.129,
+     "second_significant": true,
+     "third": 0.03492
+    }
    },
    "bits_scanned": [
     0,
@@ -2722,18 +2890,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.204,
-     1.289,
-     0.04999,
-     0.1281
-    ],
-    "6": [
-     0.04473,
-     1.327,
-     0.03052,
-     0.1435
-    ]
+    "5": {
+     "first": 0.204,
+     "first_significant": true,
+     "phase": 1.289,
+     "se": 0.00781,
+     "second": 0.1281,
+     "second_significant": true,
+     "third": 0.04999
+    },
+    "6": {
+     "first": 0.04473,
+     "first_significant": true,
+     "phase": 1.327,
+     "se": 0.00739,
+     "second": 0.1435,
+     "second_significant": true,
+     "third": 0.03052
+    }
    },
    "bits_scanned": [
     0,
@@ -2771,18 +2945,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.1685,
-     1.445,
-     0.02391,
-     0.1328
-    ],
-    "6": [
-     0.01487,
-     -2.455,
-     0.01902,
-     0.1457
-    ]
+    "5": {
+     "first": 0.1685,
+     "first_significant": true,
+     "phase": 1.445,
+     "se": 0.0078,
+     "second": 0.1328,
+     "second_significant": true,
+     "third": 0.02391
+    },
+    "6": {
+     "first": 0.01487,
+     "first_significant": false,
+     "phase": -2.455,
+     "se": 0.00736,
+     "second": 0.1457,
+     "second_significant": true,
+     "third": 0.01902
+    }
    },
    "bits_scanned": [
     0,
@@ -2820,18 +3000,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2226,
-     0.9983,
-     0.03666,
-     0.1104
-    ],
-    "6": [
-     0.009892,
-     0.4658,
-     0.006936,
-     0.0263
-    ]
+    "5": {
+     "first": 0.2226,
+     "first_significant": true,
+     "phase": 0.9983,
+     "se": 0.00781,
+     "second": 0.1104,
+     "second_significant": true,
+     "third": 0.03666
+    },
+    "6": {
+     "first": 0.009892,
+     "first_significant": false,
+     "phase": 0.4658,
+     "se": 0.00362,
+     "second": 0.0263,
+     "second_significant": true,
+     "third": 0.006936
+    }
    },
    "bits_scanned": [
     0,
@@ -2866,18 +3052,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.1796,
-     -1.686,
-     0.02956,
-     0.1214
-    ],
-    "6": [
-     0.0117,
-     -0.2423,
-     0.001134,
-     0.02845
-    ]
+    "5": {
+     "first": 0.1796,
+     "first_significant": true,
+     "phase": -1.686,
+     "se": 0.00781,
+     "second": 0.1214,
+     "second_significant": true,
+     "third": 0.02956
+    },
+    "6": {
+     "first": 0.0117,
+     "first_significant": false,
+     "phase": -0.2423,
+     "se": 0.00364,
+     "second": 0.02845,
+     "second_significant": true,
+     "third": 0.001134
+    }
    },
    "bits_scanned": [
     0,
@@ -2916,18 +3108,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2041,
-     2.417,
-     0.051,
-     0.1328
-    ],
-    "6": [
-     0.01508,
-     2.845,
-     0.004098,
-     0.02409
-    ]
+    "5": {
+     "first": 0.2041,
+     "first_significant": true,
+     "phase": 2.417,
+     "se": 0.00781,
+     "second": 0.1328,
+     "second_significant": true,
+     "third": 0.051
+    },
+    "6": {
+     "first": 0.01508,
+     "first_significant": false,
+     "phase": 2.845,
+     "se": 0.00375,
+     "second": 0.02409,
+     "second_significant": true,
+     "third": 0.004098
+    }
    },
    "bits_scanned": [
     0,
@@ -2966,18 +3164,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2164,
-     -0.233,
-     0.04301,
-     0.1417
-    ],
-    "6": [
-     0.001889,
-     0.5591,
-     0.0117,
-     0.02484
-    ]
+    "5": {
+     "first": 0.2164,
+     "first_significant": true,
+     "phase": -0.233,
+     "se": 0.0078,
+     "second": 0.1417,
+     "second_significant": true,
+     "third": 0.04301
+    },
+    "6": {
+     "first": 0.001889,
+     "first_significant": false,
+     "phase": 0.5591,
+     "se": 0.00359,
+     "second": 0.02484,
+     "second_significant": true,
+     "third": 0.0117
+    }
    },
    "bits_scanned": [
     0,
@@ -3016,18 +3220,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2455,
-     1.888,
-     0.05973,
-     0.1324
-    ],
-    "6": [
-     0.005595,
-     1.368,
-     0.008274,
-     0.03073
-    ]
+    "5": {
+     "first": 0.2455,
+     "first_significant": true,
+     "phase": 1.888,
+     "se": 0.00781,
+     "second": 0.1324,
+     "second_significant": true,
+     "third": 0.05973
+    },
+    "6": {
+     "first": 0.005595,
+     "first_significant": false,
+     "phase": 1.368,
+     "se": 0.00371,
+     "second": 0.03073,
+     "second_significant": true,
+     "third": 0.008274
+    }
    },
    "bits_scanned": [
     0,
@@ -3066,18 +3276,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.25,
-     1.526,
-     0.06021,
-     0.1229
-    ],
-    "6": [
-     0.0079,
-     1.409,
-     0.007266,
-     0.03352
-    ]
+    "5": {
+     "first": 0.25,
+     "first_significant": true,
+     "phase": 1.526,
+     "se": 0.00781,
+     "second": 0.1229,
+     "second_significant": true,
+     "third": 0.06021
+    },
+    "6": {
+     "first": 0.0079,
+     "first_significant": false,
+     "phase": 1.409,
+     "se": 0.00369,
+     "second": 0.03352,
+     "second_significant": true,
+     "third": 0.007266
+    }
    },
    "bits_scanned": [
     0,
@@ -3116,18 +3332,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2177,
-     -1.23,
-     0.04714,
-     0.1243
-    ],
-    "6": [
-     0.006188,
-     -0.9128,
-     0.004699,
-     0.02154
-    ]
+    "5": {
+     "first": 0.2177,
+     "first_significant": true,
+     "phase": -1.23,
+     "se": 0.00781,
+     "second": 0.1243,
+     "second_significant": true,
+     "third": 0.04714
+    },
+    "6": {
+     "first": 0.006188,
+     "first_significant": false,
+     "phase": -0.9128,
+     "se": 0.00371,
+     "second": 0.02154,
+     "second_significant": true,
+     "third": 0.004699
+    }
    },
    "bits_scanned": [
     0,
@@ -3166,18 +3388,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2022,
-     -3.007,
-     0.05603,
-     0.1268
-    ],
-    "6": [
-     0.008072,
-     -2.106,
-     0.00527,
-     0.01928
-    ]
+    "5": {
+     "first": 0.2022,
+     "first_significant": true,
+     "phase": -3.007,
+     "se": 0.00781,
+     "second": 0.1268,
+     "second_significant": true,
+     "third": 0.05603
+    },
+    "6": {
+     "first": 0.008072,
+     "first_significant": false,
+     "phase": -2.106,
+     "se": 0.00354,
+     "second": 0.01928,
+     "second_significant": true,
+     "third": 0.00527
+    }
    },
    "bits_scanned": [
     0,
@@ -3216,18 +3444,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.213,
-     2.297,
-     0.04531,
-     0.1261
-    ],
-    "6": [
-     0.001082,
-     2.042,
-     0.003208,
-     0.02854
-    ]
+    "5": {
+     "first": 0.213,
+     "first_significant": true,
+     "phase": 2.297,
+     "se": 0.00781,
+     "second": 0.1261,
+     "second_significant": true,
+     "third": 0.04531
+    },
+    "6": {
+     "first": 0.001082,
+     "first_significant": false,
+     "phase": 2.042,
+     "se": 0.00368,
+     "second": 0.02854,
+     "second_significant": true,
+     "third": 0.003208
+    }
    },
    "bits_scanned": [
     0,
@@ -3266,30 +3500,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1157,
-     -0.4319,
-     0.01798,
-     0.008698
-    ],
-    "12": [
-     0.06102,
-     -0.4773,
-     0.01448,
-     0.0069
-    ],
-    "2": [
-     0.01854,
-     -0.9881,
-     0.003133,
-     0.0007003
-    ],
-    "5": [
-     0.3677,
-     -0.3955,
-     0.1082,
-     0.06047
-    ]
+    "0": {
+     "first": 0.1157,
+     "first_significant": true,
+     "phase": -0.4319,
+     "se": 0.00649,
+     "second": 0.008698,
+     "second_significant": false,
+     "third": 0.01798
+    },
+    "12": {
+     "first": 0.06102,
+     "first_significant": true,
+     "phase": -0.4773,
+     "se": 0.0076,
+     "second": 0.0069,
+     "second_significant": false,
+     "third": 0.01448
+    },
+    "2": {
+     "first": 0.01854,
+     "first_significant": true,
+     "phase": -0.9881,
+     "se": 0.00341,
+     "second": 0.0007003,
+     "second_significant": false,
+     "third": 0.003133
+    },
+    "5": {
+     "first": 0.3677,
+     "first_significant": true,
+     "phase": -0.3955,
+     "se": 0.00777,
+     "second": 0.06047,
+     "second_significant": true,
+     "third": 0.1082
+    }
    },
    "bits_scanned": [
     0,
@@ -3323,42 +3569,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09716,
-     2.296,
-     0.01525,
-     0.00214
-    ],
-    "11": [
-     0.05056,
-     2.343,
-     0.009385,
-     0.008784
-    ],
-    "12": [
-     0.06309,
-     2.212,
-     0.02578,
-     0.007668
-    ],
-    "16": [
-     0.04045,
-     2.322,
-     0.00824,
-     0.01075
-    ],
-    "2": [
-     0.02286,
-     2.488,
-     0.009109,
-     0.00489
-    ],
-    "5": [
-     0.3451,
-     2.349,
-     0.0964,
-     0.06367
-    ]
+    "0": {
+     "first": 0.09716,
+     "first_significant": true,
+     "phase": 2.296,
+     "se": 0.00638,
+     "second": 0.00214,
+     "second_significant": false,
+     "third": 0.01525
+    },
+    "11": {
+     "first": 0.05056,
+     "first_significant": true,
+     "phase": 2.343,
+     "se": 0.0076,
+     "second": 0.008784,
+     "second_significant": false,
+     "third": 0.009385
+    },
+    "12": {
+     "first": 0.06309,
+     "first_significant": true,
+     "phase": 2.212,
+     "se": 0.00749,
+     "second": 0.007668,
+     "second_significant": false,
+     "third": 0.02578
+    },
+    "16": {
+     "first": 0.04045,
+     "first_significant": true,
+     "phase": 2.322,
+     "se": 0.00781,
+     "second": 0.01075,
+     "second_significant": false,
+     "third": 0.00824
+    },
+    "2": {
+     "first": 0.02286,
+     "first_significant": true,
+     "phase": 2.488,
+     "se": 0.00355,
+     "second": 0.00489,
+     "second_significant": false,
+     "third": 0.009109
+    },
+    "5": {
+     "first": 0.3451,
+     "first_significant": true,
+     "phase": 2.349,
+     "se": 0.00779,
+     "second": 0.06367,
+     "second_significant": true,
+     "third": 0.0964
+    }
    },
    "bits_scanned": [
     0,
@@ -3397,36 +3661,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09775,
-     2.788,
-     0.02726,
-     0.008795
-    ],
-    "11": [
-     0.05642,
-     2.707,
-     0.01304,
-     0.005171
-    ],
-    "12": [
-     0.05977,
-     2.993,
-     0.01534,
-     0.007606
-    ],
-    "16": [
-     0.05065,
-     2.569,
-     0.005406,
-     0.01426
-    ],
-    "5": [
-     0.369,
-     2.884,
-     0.1065,
-     0.07652
-    ]
+    "0": {
+     "first": 0.09775,
+     "first_significant": true,
+     "phase": 2.788,
+     "se": 0.00638,
+     "second": 0.008795,
+     "second_significant": false,
+     "third": 0.02726
+    },
+    "11": {
+     "first": 0.05642,
+     "first_significant": true,
+     "phase": 2.707,
+     "se": 0.0076,
+     "second": 0.005171,
+     "second_significant": false,
+     "third": 0.01304
+    },
+    "12": {
+     "first": 0.05977,
+     "first_significant": true,
+     "phase": 2.993,
+     "se": 0.00773,
+     "second": 0.007606,
+     "second_significant": false,
+     "third": 0.01534
+    },
+    "16": {
+     "first": 0.05065,
+     "first_significant": true,
+     "phase": 2.569,
+     "se": 0.00781,
+     "second": 0.01426,
+     "second_significant": false,
+     "third": 0.005406
+    },
+    "5": {
+     "first": 0.369,
+     "first_significant": true,
+     "phase": 2.884,
+     "se": 0.0078,
+     "second": 0.07652,
+     "second_significant": true,
+     "third": 0.1065
+    }
    },
    "bits_scanned": [
     0,
@@ -3465,42 +3744,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.08773,
-     -0.2633,
-     0.0314,
-     0.01143
-    ],
-    "11": [
-     0.0635,
-     -0.2229,
-     0.007501,
-     0.01355
-    ],
-    "12": [
-     0.068,
-     -0.2431,
-     0.005062,
-     0.01638
-    ],
-    "16": [
-     0.03898,
-     -0.1352,
-     0.01522,
-     0.003477
-    ],
-    "5": [
-     0.3753,
-     -0.2244,
-     0.1098,
-     0.06775
-    ],
-    "6": [
-     0.02234,
-     0.1837,
-     0.01427,
-     0.003935
-    ]
+    "0": {
+     "first": 0.08773,
+     "first_significant": true,
+     "phase": -0.2633,
+     "se": 0.00641,
+     "second": 0.01143,
+     "second_significant": false,
+     "third": 0.0314
+    },
+    "11": {
+     "first": 0.0635,
+     "first_significant": true,
+     "phase": -0.2229,
+     "se": 0.00756,
+     "second": 0.01355,
+     "second_significant": false,
+     "third": 0.007501
+    },
+    "12": {
+     "first": 0.068,
+     "first_significant": true,
+     "phase": -0.2431,
+     "se": 0.00776,
+     "second": 0.01638,
+     "second_significant": false,
+     "third": 0.005062
+    },
+    "16": {
+     "first": 0.03898,
+     "first_significant": true,
+     "phase": -0.1352,
+     "se": 0.00774,
+     "second": 0.003477,
+     "second_significant": false,
+     "third": 0.01522
+    },
+    "5": {
+     "first": 0.3753,
+     "first_significant": true,
+     "phase": -0.2244,
+     "se": 0.0078,
+     "second": 0.06775,
+     "second_significant": true,
+     "third": 0.1098
+    },
+    "6": {
+     "first": 0.02234,
+     "first_significant": true,
+     "phase": 0.1837,
+     "se": 0.00394,
+     "second": 0.003935,
+     "second_significant": false,
+     "third": 0.01427
+    }
    },
    "bits_scanned": [
     0,
@@ -3539,36 +3836,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09357,
-     1.438,
-     0.02044,
-     0.006762
-    ],
-    "11": [
-     0.05041,
-     1.402,
-     0.01327,
-     0.002781
-    ],
-    "12": [
-     0.06532,
-     1.477,
-     0.00514,
-     0.01467
-    ],
-    "5": [
-     0.3756,
-     1.527,
-     0.1042,
-     0.04842
-    ],
-    "6": [
-     0.02363,
-     1.835,
-     0.009772,
-     0.007035
-    ]
+    "0": {
+     "first": 0.09357,
+     "first_significant": true,
+     "phase": 1.438,
+     "se": 0.00629,
+     "second": 0.006762,
+     "second_significant": false,
+     "third": 0.02044
+    },
+    "11": {
+     "first": 0.05041,
+     "first_significant": true,
+     "phase": 1.402,
+     "se": 0.0077,
+     "second": 0.002781,
+     "second_significant": false,
+     "third": 0.01327
+    },
+    "12": {
+     "first": 0.06532,
+     "first_significant": true,
+     "phase": 1.477,
+     "se": 0.00779,
+     "second": 0.01467,
+     "second_significant": false,
+     "third": 0.00514
+    },
+    "5": {
+     "first": 0.3756,
+     "first_significant": true,
+     "phase": 1.527,
+     "se": 0.00777,
+     "second": 0.04842,
+     "second_significant": true,
+     "third": 0.1042
+    },
+    "6": {
+     "first": 0.02363,
+     "first_significant": true,
+     "phase": 1.835,
+     "se": 0.00404,
+     "second": 0.007035,
+     "second_significant": false,
+     "third": 0.009772
+    }
    },
    "bits_scanned": [
     0,
@@ -3607,30 +3919,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09718,
-     2.275,
-     0.02365,
-     0.004299
-    ],
-    "11": [
-     0.05165,
-     2.063,
-     0.004967,
-     0.01931
-    ],
-    "12": [
-     0.05468,
-     2.19,
-     0.0237,
-     0.008851
-    ],
-    "5": [
-     0.3838,
-     2.247,
-     0.1167,
-     0.05629
-    ]
+    "0": {
+     "first": 0.09718,
+     "first_significant": true,
+     "phase": 2.275,
+     "se": 0.00636,
+     "second": 0.004299,
+     "second_significant": false,
+     "third": 0.02365
+    },
+    "11": {
+     "first": 0.05165,
+     "first_significant": true,
+     "phase": 2.063,
+     "se": 0.00765,
+     "second": 0.01931,
+     "second_significant": false,
+     "third": 0.004967
+    },
+    "12": {
+     "first": 0.05468,
+     "first_significant": true,
+     "phase": 2.19,
+     "se": 0.00743,
+     "second": 0.008851,
+     "second_significant": false,
+     "third": 0.0237
+    },
+    "5": {
+     "first": 0.3838,
+     "first_significant": true,
+     "phase": 2.247,
+     "se": 0.00779,
+     "second": 0.05629,
+     "second_significant": true,
+     "third": 0.1167
+    }
    },
    "bits_scanned": [
     0,
@@ -3881,12 +4205,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "31": [
-     0.01422,
-     1.444,
-     0.002729,
-     0.002779
-    ]
+    "31": {
+     "first": 0.01422,
+     "first_significant": true,
+     "phase": 1.444,
+     "se": 0.00261,
+     "second": 0.002779,
+     "second_significant": false,
+     "third": 0.002729
+    }
    },
    "bits_scanned": [
     0,
@@ -3925,12 +4252,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.06746,
-     2.939,
-     0.00903,
-     0.004462
-    ]
+    "7": {
+     "first": 0.06746,
+     "first_significant": true,
+     "phase": 2.939,
+     "se": 0.00728,
+     "second": 0.004462,
+     "second_significant": false,
+     "third": 0.00903
+    }
    },
    "bits_scanned": [
     0,
@@ -4009,12 +4339,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.05035,
-     -1.735,
-     0.004508,
-     0.01356
-    ]
+    "7": {
+     "first": 0.05035,
+     "first_significant": true,
+     "phase": -1.735,
+     "se": 0.00645,
+     "second": 0.01356,
+     "second_significant": false,
+     "third": 0.004508
+    }
    },
    "bits_scanned": [
     0,
@@ -4055,12 +4388,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.04156,
-     -1.63,
-     0.00735,
-     0.007352
-    ]
+    "7": {
+     "first": 0.04156,
+     "first_significant": true,
+     "phase": -1.63,
+     "se": 0.00642,
+     "second": 0.007352,
+     "second_significant": false,
+     "third": 0.00735
+    }
    },
    "bits_scanned": [
     0,
@@ -4280,12 +4616,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.05657,
-     -2.57,
-     0.006033,
-     0.01079
-    ]
+    "7": {
+     "first": 0.05657,
+     "first_significant": true,
+     "phase": -2.57,
+     "se": 0.00779,
+     "second": 0.01079,
+     "second_significant": false,
+     "third": 0.006033
+    }
    },
    "bits_scanned": [
     0,
@@ -4326,12 +4665,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.3641,
-     1.74,
-     0.09007,
-     0.0154
-    ]
+    "7": {
+     "first": 0.3641,
+     "first_significant": true,
+     "phase": 1.74,
+     "se": 0.00775,
+     "second": 0.0154,
+     "second_significant": false,
+     "third": 0.09007
+    }
    },
    "bits_scanned": [
     0,
@@ -4362,12 +4704,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.3573,
-     2.967,
-     0.1044,
-     0.04372
-    ]
+    "7": {
+     "first": 0.3573,
+     "first_significant": true,
+     "phase": 2.967,
+     "se": 0.00778,
+     "second": 0.04372,
+     "second_significant": true,
+     "third": 0.1044
+    }
    },
    "bits_scanned": [
     0,
@@ -4406,12 +4751,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.3432,
-     0.8929,
-     0.08527,
-     0.04731
-    ]
+    "7": {
+     "first": 0.3432,
+     "first_significant": true,
+     "phase": 0.8929,
+     "se": 0.00777,
+     "second": 0.04731,
+     "second_significant": true,
+     "third": 0.08527
+    }
    },
    "bits_scanned": [
     0,
@@ -4450,12 +4798,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.2811,
-     -1.939,
-     0.08507,
-     0.02457
-    ]
+    "7": {
+     "first": 0.2811,
+     "first_significant": true,
+     "phase": -1.939,
+     "se": 0.00768,
+     "second": 0.02457,
+     "second_significant": false,
+     "third": 0.08507
+    }
    },
    "bits_scanned": [
     0,
@@ -4493,12 +4844,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.246,
-     -0.5262,
-     0.06243,
-     0.05035
-    ]
+    "7": {
+     "first": 0.246,
+     "first_significant": true,
+     "phase": -0.5262,
+     "se": 0.00776,
+     "second": 0.05035,
+     "second_significant": true,
+     "third": 0.06243
+    }
    },
    "bits_scanned": [
     0,
@@ -4535,12 +4889,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.2241,
-     0.8978,
-     0.05965,
-     0.02735
-    ]
+    "7": {
+     "first": 0.2241,
+     "first_significant": true,
+     "phase": 0.8978,
+     "se": 0.00768,
+     "second": 0.02735,
+     "second_significant": false,
+     "third": 0.05965
+    }
    },
    "bits_scanned": [
     0,
@@ -4578,24 +4935,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.09544,
-     2.478,
-     0.02055,
-     0.007482
-    ],
-    "7": [
-     0.05126,
-     2.665,
-     0.007982,
-     0.09845
-    ],
-    "8": [
-     0.06443,
-     2.698,
-     0.01224,
-     0.008174
-    ]
+    "14": {
+     "first": 0.09544,
+     "first_significant": true,
+     "phase": 2.478,
+     "se": 0.00781,
+     "second": 0.007482,
+     "second_significant": false,
+     "third": 0.02055
+    },
+    "7": {
+     "first": 0.05126,
+     "first_significant": true,
+     "phase": 2.665,
+     "se": 0.00732,
+     "second": 0.09845,
+     "second_significant": true,
+     "third": 0.007982
+    },
+    "8": {
+     "first": 0.06443,
+     "first_significant": true,
+     "phase": 2.698,
+     "se": 0.00773,
+     "second": 0.008174,
+     "second_significant": false,
+     "third": 0.01224
+    }
    },
    "bits_scanned": [
     1,
@@ -4626,36 +4992,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.09057,
-     -0.7851,
-     0.03453,
-     0.01335
-    ],
-    "3": [
-     0.0529,
-     -0.9591,
-     0.01038,
-     0.01286
-    ],
-    "7": [
-     0.04313,
-     -1.006,
-     0.003534,
-     0.1045
-    ],
-    "8": [
-     0.04442,
-     -0.8856,
-     0.01413,
-     0.006895
-    ],
-    "9": [
-     0.03902,
-     -0.8075,
-     0.002014,
-     0.01824
-    ]
+    "14": {
+     "first": 0.09057,
+     "first_significant": true,
+     "phase": -0.7851,
+     "se": 0.0078,
+     "second": 0.01335,
+     "second_significant": false,
+     "third": 0.03453
+    },
+    "3": {
+     "first": 0.0529,
+     "first_significant": true,
+     "phase": -0.9591,
+     "se": 0.00769,
+     "second": 0.01286,
+     "second_significant": false,
+     "third": 0.01038
+    },
+    "7": {
+     "first": 0.04313,
+     "first_significant": true,
+     "phase": -1.006,
+     "se": 0.00737,
+     "second": 0.1045,
+     "second_significant": true,
+     "third": 0.003534
+    },
+    "8": {
+     "first": 0.04442,
+     "first_significant": true,
+     "phase": -0.8856,
+     "se": 0.00775,
+     "second": 0.006895,
+     "second_significant": false,
+     "third": 0.01413
+    },
+    "9": {
+     "first": 0.03902,
+     "first_significant": true,
+     "phase": -0.8075,
+     "se": 0.0078,
+     "second": 0.01824,
+     "second_significant": false,
+     "third": 0.002014
+    }
    },
    "bits_scanned": [
     0,
@@ -4693,24 +5074,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.08205,
-     2.212,
-     0.01631,
-     0.01146
-    ],
-    "7": [
-     0.04829,
-     2.241,
-     0.004781,
-     0.1034
-    ],
-    "8": [
-     0.04555,
-     2.706,
-     0.01657,
-     0.008539
-    ]
+    "14": {
+     "first": 0.08205,
+     "first_significant": true,
+     "phase": 2.212,
+     "se": 0.00781,
+     "second": 0.01146,
+     "second_significant": false,
+     "third": 0.01631
+    },
+    "7": {
+     "first": 0.04829,
+     "first_significant": true,
+     "phase": 2.241,
+     "se": 0.00743,
+     "second": 0.1034,
+     "second_significant": true,
+     "third": 0.004781
+    },
+    "8": {
+     "first": 0.04555,
+     "first_significant": true,
+     "phase": 2.706,
+     "se": 0.00774,
+     "second": 0.008539,
+     "second_significant": false,
+     "third": 0.01657
+    }
    },
    "bits_scanned": [
     0,
@@ -4747,30 +5137,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.0674,
-     1.913,
-     0.02828,
-     0.0126
-    ],
-    "7": [
-     0.4275,
-     2.082,
-     0.1126,
-     0.006249
-    ],
-    "8": [
-     0.04623,
-     2.15,
-     0.008172,
-     0.01244
-    ],
-    "9": [
-     0.05277,
-     2.199,
-     0.001933,
-     0.01114
-    ]
+    "14": {
+     "first": 0.0674,
+     "first_significant": true,
+     "phase": 1.913,
+     "se": 0.0078,
+     "second": 0.0126,
+     "second_significant": false,
+     "third": 0.02828
+    },
+    "7": {
+     "first": 0.4275,
+     "first_significant": true,
+     "phase": 2.082,
+     "se": 0.00779,
+     "second": 0.006249,
+     "second_significant": false,
+     "third": 0.1126
+    },
+    "8": {
+     "first": 0.04623,
+     "first_significant": true,
+     "phase": 2.15,
+     "se": 0.00777,
+     "second": 0.01244,
+     "second_significant": false,
+     "third": 0.008172
+    },
+    "9": {
+     "first": 0.05277,
+     "first_significant": true,
+     "phase": 2.199,
+     "se": 0.0078,
+     "second": 0.01114,
+     "second_significant": false,
+     "third": 0.001933
+    }
    },
    "bits_scanned": [
     0,
@@ -4808,36 +5210,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.07556,
-     0.9196,
-     0.01663,
-     0.01687
-    ],
-    "3": [
-     0.03881,
-     0.5937,
-     0.01628,
-     0.007523
-    ],
-    "7": [
-     0.4247,
-     1.051,
-     0.119,
-     0.009319
-    ],
-    "8": [
-     0.05579,
-     1.207,
-     0.0247,
-     0.004616
-    ],
-    "9": [
-     0.04315,
-     0.8811,
-     0.01443,
-     0.004539
-    ]
+    "14": {
+     "first": 0.07556,
+     "first_significant": true,
+     "phase": 0.9196,
+     "se": 0.00781,
+     "second": 0.01687,
+     "second_significant": false,
+     "third": 0.01663
+    },
+    "3": {
+     "first": 0.03881,
+     "first_significant": true,
+     "phase": 0.5937,
+     "se": 0.0077,
+     "second": 0.007523,
+     "second_significant": false,
+     "third": 0.01628
+    },
+    "7": {
+     "first": 0.4247,
+     "first_significant": true,
+     "phase": 1.051,
+     "se": 0.00779,
+     "second": 0.009319,
+     "second_significant": false,
+     "third": 0.119
+    },
+    "8": {
+     "first": 0.05579,
+     "first_significant": true,
+     "phase": 1.207,
+     "se": 0.00775,
+     "second": 0.004616,
+     "second_significant": false,
+     "third": 0.0247
+    },
+    "9": {
+     "first": 0.04315,
+     "first_significant": true,
+     "phase": 0.8811,
+     "se": 0.00781,
+     "second": 0.004539,
+     "second_significant": false,
+     "third": 0.01443
+    }
    },
    "bits_scanned": [
     0,
@@ -4875,30 +5292,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.07699,
-     0.8001,
-     0.02905,
-     0.007893
-    ],
-    "3": [
-     0.04643,
-     0.5035,
-     0.01481,
-     0.0117
-    ],
-    "7": [
-     0.4093,
-     0.7428,
-     0.1149,
-     0.006998
-    ],
-    "8": [
-     0.04582,
-     0.7466,
-     0.009884,
-     0.008426
-    ]
+    "14": {
+     "first": 0.07699,
+     "first_significant": true,
+     "phase": 0.8001,
+     "se": 0.0078,
+     "second": 0.007893,
+     "second_significant": false,
+     "third": 0.02905
+    },
+    "3": {
+     "first": 0.04643,
+     "first_significant": true,
+     "phase": 0.5035,
+     "se": 0.00771,
+     "second": 0.0117,
+     "second_significant": false,
+     "third": 0.01481
+    },
+    "7": {
+     "first": 0.4093,
+     "first_significant": true,
+     "phase": 0.7428,
+     "se": 0.00777,
+     "second": 0.006998,
+     "second_significant": false,
+     "third": 0.1149
+    },
+    "8": {
+     "first": 0.04582,
+     "first_significant": true,
+     "phase": 0.7466,
+     "se": 0.00774,
+     "second": 0.008426,
+     "second_significant": false,
+     "third": 0.009884
+    }
    },
    "bits_scanned": [
     0,
@@ -5246,12 +5675,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "4": [
-     0.04535,
-     -2.624,
-     0.01494,
-     0.008985
-    ]
+    "4": {
+     "first": 0.04535,
+     "first_significant": true,
+     "phase": -2.624,
+     "se": 0.00552,
+     "second": 0.008985,
+     "second_significant": false,
+     "third": 0.01494
+    }
    },
    "bits_scanned": [
     0,
@@ -5346,18 +5778,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "13": [
-     0.03091,
-     2.753,
-     0.006896,
-     0.01205
-    ],
-    "4": [
-     0.02893,
-     -0.5301,
-     0.01164,
-     0.01991
-    ]
+    "13": {
+     "first": 0.03091,
+     "first_significant": true,
+     "phase": 2.753,
+     "se": 0.0055,
+     "second": 0.01205,
+     "second_significant": false,
+     "third": 0.006896
+    },
+    "4": {
+     "first": 0.02893,
+     "first_significant": true,
+     "phase": -0.5301,
+     "se": 0.00551,
+     "second": 0.01991,
+     "second_significant": false,
+     "third": 0.01164
+    }
    },
    "bits_scanned": [
     0,
@@ -5453,12 +5891,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03346,
-     0.4521,
-     0.005463,
-     0.01176
-    ]
+    "14": {
+     "first": 0.03346,
+     "first_significant": true,
+     "phase": 0.4521,
+     "se": 0.00552,
+     "second": 0.01176,
+     "second_significant": false,
+     "third": 0.005463
+    }
    },
    "bits_scanned": [
     0,
@@ -5703,18 +6144,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "10": [
-     0.04046,
-     2.305,
-     0.01709,
-     0.007982
-    ],
-    "12": [
-     0.2211,
-     2.42,
-     0.05946,
-     0.008784
-    ]
+    "10": {
+     "first": 0.04046,
+     "first_significant": true,
+     "phase": 2.305,
+     "se": 0.00357,
+     "second": 0.007982,
+     "second_significant": false,
+     "third": 0.01709
+    },
+    "12": {
+     "first": 0.2211,
+     "first_significant": true,
+     "phase": 2.42,
+     "se": 0.00507,
+     "second": 0.008784,
+     "second_significant": false,
+     "third": 0.05946
+    }
    },
    "bits_scanned": [
     0,
@@ -5806,18 +6253,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09608,
-     0.3686,
-     0.03234,
-     0.009191
-    ],
-    "10": [
-     0.0184,
-     -2.713,
-     0.0009746,
-     0.004192
-    ]
+    "1": {
+     "first": 0.09608,
+     "first_significant": true,
+     "phase": 0.3686,
+     "se": 0.0042,
+     "second": 0.009191,
+     "second_significant": false,
+     "third": 0.03234
+    },
+    "10": {
+     "first": 0.0184,
+     "first_significant": true,
+     "phase": -2.713,
+     "se": 0.00249,
+     "second": 0.004192,
+     "second_significant": false,
+     "third": 0.0009746
+    }
    },
    "bits_scanned": [
     0,
@@ -5908,12 +6361,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.145,
-     -2.49,
-     0.04173,
-     0.03102
-    ]
+    "1": {
+     "first": 0.145,
+     "first_significant": true,
+     "phase": -2.49,
+     "se": 0.00454,
+     "second": 0.03102,
+     "second_significant": true,
+     "third": 0.04173
+    }
    },
    "bits_scanned": [
     0,
@@ -6103,24 +6559,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.1926,
-     0.614,
-     0.03917,
-     0.02606
-    ],
-    "10": [
-     0.2093,
-     0.5403,
-     0.04782,
-     0.008432
-    ],
-    "12": [
-     0.2486,
-     0.5799,
-     0.05404,
-     0.002883
-    ]
+    "1": {
+     "first": 0.1926,
+     "first_significant": true,
+     "phase": 0.614,
+     "se": 0.00471,
+     "second": 0.02606,
+     "second_significant": true,
+     "third": 0.03917
+    },
+    "10": {
+     "first": 0.2093,
+     "first_significant": true,
+     "phase": 0.5403,
+     "se": 0.00514,
+     "second": 0.008432,
+     "second_significant": false,
+     "third": 0.04782
+    },
+    "12": {
+     "first": 0.2486,
+     "first_significant": true,
+     "phase": 0.5799,
+     "se": 0.00552,
+     "second": 0.002883,
+     "second_significant": false,
+     "third": 0.05404
+    }
    },
    "bits_scanned": [
     0,
@@ -6215,24 +6680,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.2277,
-     -2.581,
-     0.04654,
-     0.02361
-    ],
-    "10": [
-     0.1986,
-     -2.6,
-     0.04539,
-     0.01968
-    ],
-    "12": [
-     0.2617,
-     -2.569,
-     0.05428,
-     0.001408
-    ]
+    "1": {
+     "first": 0.2277,
+     "first_significant": true,
+     "phase": -2.581,
+     "se": 0.00491,
+     "second": 0.02361,
+     "second_significant": false,
+     "third": 0.04654
+    },
+    "10": {
+     "first": 0.1986,
+     "first_significant": true,
+     "phase": -2.6,
+     "se": 0.00502,
+     "second": 0.01968,
+     "second_significant": false,
+     "third": 0.04539
+    },
+    "12": {
+     "first": 0.2617,
+     "first_significant": true,
+     "phase": -2.569,
+     "se": 0.00552,
+     "second": 0.001408,
+     "second_significant": false,
+     "third": 0.05428
+    }
    },
    "bits_scanned": [
     0,
@@ -6388,12 +6862,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.06154,
-     -0.4768,
-     0.01802,
-     0.01188
-    ]
+    "14": {
+     "first": 0.06154,
+     "first_significant": true,
+     "phase": -0.4768,
+     "se": 0.00374,
+     "second": 0.01188,
+     "second_significant": false,
+     "third": 0.01802
+    }
    },
    "bits_scanned": [
     0,
@@ -6491,18 +6968,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.1863,
-     -0.5312,
-     0.04471,
-     0.005078
-    ],
-    "4": [
-     0.06717,
-     -0.5188,
-     0.01699,
-     0.01083
-    ]
+    "14": {
+     "first": 0.1863,
+     "first_significant": true,
+     "phase": -0.5312,
+     "se": 0.00539,
+     "second": 0.005078,
+     "second_significant": false,
+     "third": 0.04471
+    },
+    "4": {
+     "first": 0.06717,
+     "first_significant": true,
+     "phase": -0.5188,
+     "se": 0.0055,
+     "second": 0.01083,
+     "second_significant": false,
+     "third": 0.01699
+    }
    },
    "bits_scanned": [
     0,
@@ -6537,24 +7020,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09267,
-     -2.975,
-     0.01799,
-     0.008791
-    ],
-    "10": [
-     0.09433,
-     -2.743,
-     0.02544,
-     0.004311
-    ],
-    "12": [
-     0.1293,
-     -2.848,
-     0.0314,
-     0.007979
-    ]
+    "1": {
+     "first": 0.09267,
+     "first_significant": true,
+     "phase": -2.975,
+     "se": 0.00412,
+     "second": 0.008791,
+     "second_significant": false,
+     "third": 0.01799
+    },
+    "10": {
+     "first": 0.09433,
+     "first_significant": true,
+     "phase": -2.743,
+     "se": 0.00452,
+     "second": 0.004311,
+     "second_significant": false,
+     "third": 0.02544
+    },
+    "12": {
+     "first": 0.1293,
+     "first_significant": true,
+     "phase": -2.848,
+     "se": 0.00484,
+     "second": 0.007979,
+     "second_significant": false,
+     "third": 0.0314
+    }
    },
    "bits_scanned": [
     0,
@@ -6650,24 +7142,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09378,
-     3.058,
-     0.01999,
-     0.008716
-    ],
-    "10": [
-     0.1073,
-     2.94,
-     0.02518,
-     0.009732
-    ],
-    "12": [
-     0.125,
-     2.992,
-     0.03387,
-     0.01005
-    ]
+    "1": {
+     "first": 0.09378,
+     "first_significant": true,
+     "phase": 3.058,
+     "se": 0.00413,
+     "second": 0.008716,
+     "second_significant": false,
+     "third": 0.01999
+    },
+    "10": {
+     "first": 0.1073,
+     "first_significant": true,
+     "phase": 2.94,
+     "se": 0.00462,
+     "second": 0.009732,
+     "second_significant": false,
+     "third": 0.02518
+    },
+    "12": {
+     "first": 0.125,
+     "first_significant": true,
+     "phase": 2.992,
+     "se": 0.00486,
+     "second": 0.01005,
+     "second_significant": false,
+     "third": 0.03387
+    }
    },
    "bits_scanned": [
     0,
@@ -7079,18 +7580,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "10": [
-     0.079,
-     0.6151,
-     0.02023,
-     0.003173
-    ],
-    "12": [
-     0.02386,
-     0.5419,
-     0.006747,
-     0.02085
-    ]
+    "10": {
+     "first": 0.079,
+     "first_significant": true,
+     "phase": 0.6151,
+     "se": 0.00152,
+     "second": 0.003173,
+     "second_significant": false,
+     "third": 0.02023
+    },
+    "12": {
+     "first": 0.02386,
+     "first_significant": true,
+     "phase": 0.5419,
+     "se": 0.00129,
+     "second": 0.02085,
+     "second_significant": true,
+     "third": 0.006747
+    }
    },
    "bits_scanned": [
     0,
@@ -7123,18 +7630,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.0969,
-     0.04547,
-     0.02556,
-     0.005704
-    ],
-    "10": [
-     0.1361,
-     0.0312,
-     0.03346,
-     0.01617
-    ]
+    "1": {
+     "first": 0.0969,
+     "first_significant": true,
+     "phase": 0.04547,
+     "se": 0.00148,
+     "second": 0.005704,
+     "second_significant": false,
+     "third": 0.02556
+    },
+    "10": {
+     "first": 0.1361,
+     "first_significant": true,
+     "phase": 0.0312,
+     "se": 0.00164,
+     "second": 0.01617,
+     "second_significant": true,
+     "third": 0.03346
+    }
    },
    "bits_scanned": [
     0,
@@ -7167,24 +7680,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.006645,
-     -2.1,
-     0.002022,
-     0.001074
-    ],
-    "1": [
-     0.1303,
-     0.6932,
-     0.02761,
-     0.02749
-    ],
-    "12": [
-     0.02828,
-     0.7059,
-     0.005009,
-     0.006698
-    ]
+    "0": {
+     "first": 0.006645,
+     "first_significant": true,
+     "phase": -2.1,
+     "se": 0.00108,
+     "second": 0.001074,
+     "second_significant": false,
+     "third": 0.002022
+    },
+    "1": {
+     "first": 0.1303,
+     "first_significant": true,
+     "phase": 0.6932,
+     "se": 0.00155,
+     "second": 0.02749,
+     "second_significant": true,
+     "third": 0.02761
+    },
+    "12": {
+     "first": 0.02828,
+     "first_significant": true,
+     "phase": 0.7059,
+     "se": 0.00107,
+     "second": 0.006698,
+     "second_significant": true,
+     "third": 0.005009
+    }
    },
    "bits_scanned": [
     0,
@@ -7217,18 +7739,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "10": [
-     0.07707,
-     -1.133,
-     0.01576,
-     0.00588
-    ],
-    "12": [
-     0.02626,
-     -1.109,
-     0.009069,
-     0.02176
-    ]
+    "10": {
+     "first": 0.07707,
+     "first_significant": true,
+     "phase": -1.133,
+     "se": 0.00151,
+     "second": 0.00588,
+     "second_significant": false,
+     "third": 0.01576
+    },
+    "12": {
+     "first": 0.02626,
+     "first_significant": true,
+     "phase": -1.109,
+     "se": 0.0013,
+     "second": 0.02176,
+     "second_significant": true,
+     "third": 0.009069
+    }
    },
    "bits_scanned": [
     0,
@@ -7261,18 +7789,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09003,
-     -1.08,
-     0.01988,
-     0.002763
-    ],
-    "10": [
-     0.1175,
-     -1.12,
-     0.02937,
-     0.01631
-    ]
+    "1": {
+     "first": 0.09003,
+     "first_significant": true,
+     "phase": -1.08,
+     "se": 0.00148,
+     "second": 0.002763,
+     "second_significant": false,
+     "third": 0.01988
+    },
+    "10": {
+     "first": 0.1175,
+     "first_significant": true,
+     "phase": -1.12,
+     "se": 0.0016,
+     "second": 0.01631,
+     "second_significant": true,
+     "third": 0.02937
+    }
    },
    "bits_scanned": [
     0,
@@ -7305,24 +7839,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.00768,
-     0.9502,
-     0.0008144,
-     0.001198
-    ],
-    "1": [
-     0.124,
-     -2.384,
-     0.02904,
-     0.02978
-    ],
-    "12": [
-     0.02465,
-     -2.365,
-     0.004495,
-     0.008691
-    ]
+    "0": {
+     "first": 0.00768,
+     "first_significant": true,
+     "phase": 0.9502,
+     "se": 0.00107,
+     "second": 0.001198,
+     "second_significant": false,
+     "third": 0.0008144
+    },
+    "1": {
+     "first": 0.124,
+     "first_significant": true,
+     "phase": -2.384,
+     "se": 0.00154,
+     "second": 0.02978,
+     "second_significant": true,
+     "third": 0.02904
+    },
+    "12": {
+     "first": 0.02465,
+     "first_significant": true,
+     "phase": -2.365,
+     "se": 0.00106,
+     "second": 0.008691,
+     "second_significant": true,
+     "third": 0.004495
+    }
    },
    "bits_scanned": [
     0,
@@ -7445,18 +7988,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "10": [
-     0.07301,
-     -2.925,
-     0.01561,
-     0.008653
-    ],
-    "12": [
-     0.002739,
-     -0.5487,
-     0.0007158,
-     0.02027
-    ]
+    "10": {
+     "first": 0.07301,
+     "first_significant": true,
+     "phase": -2.925,
+     "se": 0.00159,
+     "second": 0.008653,
+     "second_significant": true,
+     "third": 0.01561
+    },
+    "12": {
+     "first": 0.002739,
+     "first_significant": false,
+     "phase": -0.5487,
+     "se": 0.00128,
+     "second": 0.02027,
+     "second_significant": true,
+     "third": 0.0007158
+    }
    },
    "bits_scanned": [
     0,
@@ -7489,18 +8038,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.07972,
-     2.612,
-     0.008003,
-     0.004003
-    ],
-    "10": [
-     0.1236,
-     2.611,
-     0.01669,
-     0.008915
-    ]
+    "1": {
+     "first": 0.07972,
+     "first_significant": true,
+     "phase": 2.612,
+     "se": 0.00142,
+     "second": 0.004003,
+     "second_significant": false,
+     "third": 0.008003
+    },
+    "10": {
+     "first": 0.1236,
+     "first_significant": true,
+     "phase": 2.611,
+     "se": 0.00165,
+     "second": 0.008915,
+     "second_significant": true,
+     "third": 0.01669
+    }
    },
    "bits_scanned": [
     0,
@@ -7533,24 +8088,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.008117,
-     -2.04,
-     0.002613,
-     0.002536
-    ],
-    "1": [
-     0.1132,
-     1.24,
-     0.03097,
-     0.02655
-    ],
-    "12": [
-     0.01596,
-     1.252,
-     0.003987,
-     0.00841
-    ]
+    "0": {
+     "first": 0.008117,
+     "first_significant": true,
+     "phase": -2.04,
+     "se": 0.00107,
+     "second": 0.002536,
+     "second_significant": false,
+     "third": 0.002613
+    },
+    "1": {
+     "first": 0.1132,
+     "first_significant": true,
+     "phase": 1.24,
+     "se": 0.0015,
+     "second": 0.02655,
+     "second_significant": true,
+     "third": 0.03097
+    },
+    "12": {
+     "first": 0.01596,
+     "first_significant": true,
+     "phase": 1.252,
+     "se": 0.00101,
+     "second": 0.00841,
+     "second_significant": true,
+     "third": 0.003987
+    }
    },
    "bits_scanned": [
     0,
@@ -7583,18 +8147,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "10": [
-     0.07666,
-     0.4576,
-     0.01508,
-     0.003864
-    ],
-    "12": [
-     0.002702,
-     0.05274,
-     0.00111,
-     0.02198
-    ]
+    "10": {
+     "first": 0.07666,
+     "first_significant": true,
+     "phase": 0.4576,
+     "se": 0.00149,
+     "second": 0.003864,
+     "second_significant": false,
+     "third": 0.01508
+    },
+    "12": {
+     "first": 0.002702,
+     "first_significant": false,
+     "phase": 0.05274,
+     "se": 0.00127,
+     "second": 0.02198,
+     "second_significant": true,
+     "third": 0.00111
+    }
    },
    "bits_scanned": [
     0,
@@ -7627,18 +8197,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09121,
-     -2.694,
-     0.02284,
-     0.005007
-    ],
-    "10": [
-     0.1372,
-     -2.721,
-     0.03181,
-     0.01987
-    ]
+    "1": {
+     "first": 0.09121,
+     "first_significant": true,
+     "phase": -2.694,
+     "se": 0.00145,
+     "second": 0.005007,
+     "second_significant": false,
+     "third": 0.02284
+    },
+    "10": {
+     "first": 0.1372,
+     "first_significant": true,
+     "phase": -2.721,
+     "se": 0.00162,
+     "second": 0.01987,
+     "second_significant": true,
+     "third": 0.03181
+    }
    },
    "bits_scanned": [
     0,
@@ -7671,24 +8247,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.00737,
-     0.7182,
-     0.001931,
-     0.001299
-    ],
-    "1": [
-     0.1091,
-     -2.428,
-     0.0103,
-     0.02052
-    ],
-    "12": [
-     0.01307,
-     -2.307,
-     0.001784,
-     0.004544
-    ]
+    "0": {
+     "first": 0.00737,
+     "first_significant": true,
+     "phase": 0.7182,
+     "se": 0.00107,
+     "second": 0.001299,
+     "second_significant": false,
+     "third": 0.001931
+    },
+    "1": {
+     "first": 0.1091,
+     "first_significant": true,
+     "phase": -2.428,
+     "se": 0.00151,
+     "second": 0.02052,
+     "second_significant": true,
+     "third": 0.0103
+    },
+    "12": {
+     "first": 0.01307,
+     "first_significant": true,
+     "phase": -2.307,
+     "se": 0.001,
+     "second": 0.004544,
+     "second_significant": false,
+     "third": 0.001784
+    }
    },
    "bits_scanned": [
     0,
@@ -7889,7 +8474,7 @@
    "whitened_rank": 3
   }
  ],
- "schema": "qi-shot-record-line-v1",
+ "schema": "qi-shot-record-line-v2",
  "stationarity": {
   "box_kite_tuna_follow": {
    "fraction_below_0_01": 0.1429,
