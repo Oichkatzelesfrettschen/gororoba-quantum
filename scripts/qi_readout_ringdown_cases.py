@@ -1322,7 +1322,8 @@ def calibrated_errors(
     jacobian = {}
     for arm in ARMS:
         first, second = terms[arm]
-        assert first is not None and second is not None
+        if not (first is not None and second is not None):
+            raise AssertionError
         jacobian[arm] = [(second.d_phase[e] - first.d_phase[e]) / SPAN for e in range(2)]
     shot = {arm: base["rate_se_hz"][arm] / TO_HZ for arm in ARMS}
 
@@ -1621,7 +1622,8 @@ def sensitivity_self_test() -> str:
         base = analyze_target(t, table, (e01, e10))
         zero = calibrated_errors(t, table, counts[t], 0.0)
         full = calibrated_errors(t, table, counts[t])
-        assert zero is not None and full is not None
+        if not (zero is not None and full is not None):
+            raise AssertionError
         pairs = [(zero["A_se_hz"], base["h2"]["A_se_hz"]), (zero["min_visibility_se"], zero["min_visibility_shot_se"])]
         pairs += [(zero["rate_se_hz"][arm], base["rate_se_hz"][arm]) for arm in ARMS]
         pairs += [(zero["delta_se_hz"][tau], base["delta_se_hz"][tau]) for tau in base["delta_se_hz"]]

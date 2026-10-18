@@ -770,7 +770,8 @@ def require_crate_tree(directory: Path) -> None:
             if member.isfile():
                 handle = archive.extractfile(member)
                 require(handle is not None, f"{member.name} does not read")
-                assert handle is not None
+                if handle is None:
+                    raise AssertionError
                 archived[member.name.removeprefix("wheel-0.1.0/")] = handle.read()
     compiled = {path.relative_to(tree).as_posix(): path.read_bytes() for path in tree.rglob("*") if path.is_file()}
     require(

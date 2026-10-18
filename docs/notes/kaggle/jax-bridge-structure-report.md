@@ -73,7 +73,7 @@ export sweep. On the 105-replica dark/bright run the CPU time drops from
     of stacks under whole-group stacking and holds 24 MB per call, and
     neither sets the process peak.
 
-## Contracts (`--self-test`, gates core-352 and core-353)
+## Contracts (`--self-test`, gate core-352)
 
 The reduced case is 31 replicas from snapshot
 ibm_kingston/20261015T0003150700:

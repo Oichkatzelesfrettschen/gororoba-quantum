@@ -14,8 +14,8 @@ Cayley-Dickson arithmetic on a qubit register. The root AGENTS.md,
 gororoba_quantum/AGENTS.md and scripts/AGENTS.md carry this section with
 identical bytes; `ci/check_agents_sections.py` fails on any difference.
 `docs/evidence/reviewer_associator_audit/` replays the numeric claims below
-(gates sources-240 and sources-241), and `scripts/algebra_circuit_fixtures.py`
-(gates core-251 and core-252) runs the zero-product, Hadamard-basis and
+(gate sources-240), and `scripts/algebra_circuit_fixtures.py`
+(gate core-251) runs the zero-product, Hadamard-basis and
 workspace fixtures on the circuit builders of `designs.py`.
 
 **Encoding and representation.**
@@ -155,8 +155,8 @@ cz, id, rz, sx, x and xslow. Heron r3 and Nighthawk (square grid) exist in
 IBM's processor list and are absent from this account, so
 `service.backends()` is the authority before a design names a backend.
 `scripts/heron_target_snapshot.py --out` reads the live Targets into
-`docs/evidence/heron_platform/targets.json`, and gates core-254 and core-255
-recompute every per-backend fact below from it; a refreshed snapshot that
+`docs/evidence/heron_platform/targets.json`, and gate core-254
+recomputes every per-backend fact below from it; a refreshed snapshot that
 contradicts this section fails until the text changes with it. Measured
 values and the documentation captures are in
 `docs/notes/ibm_heron_platform.md`.

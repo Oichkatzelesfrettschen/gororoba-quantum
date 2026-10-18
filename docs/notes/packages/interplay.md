@@ -17,15 +17,15 @@ maps onto the `cd_core`-built H3(O) on all 729 basis pairs.
 - [manual/checks/algebra_interplay.py](manual/checks/algebra_interplay.py) retains 91 native
   basis tables read from the installed packages (`--extract`, local) in
   [manual/checks/interplay_tables.json](manual/checks/interplay_tables.json) and verifies
-  135 declared relations against `cd_core` alone (`--check`, gates sources-247 and
-  sources-248). The signed-relabeling search fixes e0, assigns signed images to a generating
+  135 declared relations against `cd_core` alone (`--check`, gate
+  sources-247). The signed-relabeling search fixes e0, assigns signed images to a generating
   set and closes under products; it is calibrated first on `cd_core` itself, which must
   return exactly 24 automorphisms at D = 4 and 1344 at D = 8. Non-isomorphism rests on an
   invariant, never on a failed search: associativity of the basis triples, alternativity
   (decided exactly by the linearized identities on basis triples, since the associator is
   trilinear), or the signature of the norm form of a quadratic table.
 - [manual/checks/albert_algebra.py](manual/checks/albert_algebra.py) carries the Albert
-  algebra comparison (gates sources-249 and sources-250).
+  algebra comparison (gate sources-249).
 - [manual/checks/run_examples.py](manual/checks/run_examples.py) replays every EXAMPLES block
   of the [manual](manual/README.md) on the build host.
 - The reference tables come from `cd_core.cd_sign`: the ordinary algebra of dimension D, the

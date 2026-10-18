@@ -201,6 +201,12 @@ DWELL_Q1_SEED = 20
 # unseeded single job on 29dc6ef8 lost light inside the photon's cone and every seeded cell kept it, so a
 # seeded single job at Q1's budget on Q1's mesh separates the unseeded path from form and budget.
 SEEDED_SINGLE_JOB = "job-13"
+# job-14 to job-16 hold Q1's circuit at seed 20 and 10000 samples per entry and change only the payload class:
+# a ComputationIterator with one entry (job-14), a single Computation (job-15, job-13 again as the time
+# control) and an iterator with two entries (job-16), so the single-path failure on 29dc6ef8 is read against the
+# wrapper with the budget, seed and mesh held.
+WRAPPER_ITERATOR_JOB, WRAPPER_SINGLE_JOB, WRAPPER_PAIR_JOB = "job-14", "job-15", "job-16"
+WRAPPER_SAMPLES = 10000
 CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 
 Element = tuple[str, int, Any]
@@ -644,7 +650,8 @@ class BlockFit:
             else:
                 u[m, :] *= np.exp(1j * start[t])
                 t += 1
-        assert pending is not None and first is not None
+        if not (pending is not None and first is not None):
+            raise AssertionError
         order.append((pending[0], pending[1], u))
         return [first], order
 
@@ -1141,6 +1148,101 @@ def seeded_single_manifest(source: dict[str, Any], source_sha: str) -> dict[str,
     }
 
 
+WRAPPER_PREREGISTERED = {
+    "series": "single computation versus iterator payload on Q1's mesh (strategy.md section 7 item 13)",
+    "statistic": "tvd_cone_from_ideal per entry: total variation of the one-click histogram inside source 20's "
+    "noise-bounded light cone from the served mesh's ideal propagation (scripts/qd_belenos_cone.py)",
+    "void_unless_mesh_sha256_prefix": "29dc6ef8",
+    "pass_at_most": 0.2,
+    "fail_at_least": 0.5,
+    "payload_entries": {WRAPPER_ITERATOR_JOB: 1, WRAPPER_SINGLE_JOB: 0, WRAPPER_PAIR_JOB: 2},
+    "order": "job-14 runs first; job-15 follows a job-14 pass and job-16 a job-14 fail; a void or intermediate "
+    "job-14 ends the series",
+    "readings": "job-14 pass, job-15 fail: the failure follows the single-computation payload class; job-14 pass, "
+    "job-15 pass: no single-path failure in this block, the payload class is not isolated; job-14 fail, job-16 "
+    "fail then pass: the first 10000-sample entry of a job fails whatever its wrapper; job-14 fail, job-16 pass "
+    "twice: one entry fails as a single computation does, two entries hold; job-14 fail, job-16 fail twice: "
+    "10000-sample entries fail without D2's leading 1500-sample entry; any other pattern, a void entry (other "
+    "mesh, or a result whose results_list length differs from payload_entries) or an intermediate entry: no "
+    "attribution",
+}
+
+
+def wrapper_iterator_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """Arm B: Q1's case as a ComputationIterator holding one entry at seed 20 and 10000 samples."""
+    return {
+        **source,
+        "family": FAMILY,
+        "job": WRAPPER_ITERATOR_JOB,
+        "iterator": True,
+        "iterations": 1,
+        "max_samples": WRAPPER_SAMPLES,
+        "max_shots": 2 * WRAPPER_SAMPLES,
+        "settings": [{"name": f"b-s{DWELL_Q1_SEED}-n{WRAPPER_SAMPLES}", "compilation_seed": DWELL_Q1_SEED}],
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": WRAPPER_PREREGISTERED,
+    }
+
+
+def wrapper_single_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """Arm A: job-13's single computation again, the time control of a job-14 pass."""
+    return {
+        **seeded_single_manifest(source, source_sha),
+        "job": WRAPPER_SINGLE_JOB,
+        "preregistered": WRAPPER_PREREGISTERED,
+    }
+
+
+# The pair's two seed-20 entries open job-16 unchanged; PAIR_EXTENSION_BLOCKS blocks of (14a96ca6, 29dc6ef8) at
+# 10000 samples follow, so every later seed-20 entry is the first acquisition of 29dc6ef8 after a mesh load and
+# every 14a96ca6 entry is a reference read in the same job. Each entry costs about 7 s of the 300 s limit whatever
+# its budget, and the shot cap of 2 x samples prices the job at 1 + 480000e-6 credits.
+PAIR_EXTENSION_BLOCKS = 11
+PAIR_EXTENSION_PREREGISTERED = {
+    "question": "does a 10000-sample 29dc6ef8 entry fail when it is the first acquisition of that mesh after a "
+    "load of 14a96ca6, and does 14a96ca6 hold in the same job",
+    "first_entry": 2,
+    "blocks": PAIR_EXTENSION_BLOCKS,
+    "expected_mesh_sha256_prefix": {str(DWELL_Q1_SEED): "29dc6ef8", "46667": "14a96ca6"},
+    "pass_at_most": 0.2,
+    "fail_at_least": 0.5,
+    "reload_fails_at_least_share": 0.8,
+    "minimum_read_entries": 9,
+    "order": "results_list order is taken as execution order; no result entry carries a timestamp",
+    "readings": "any 14a96ca6 entry failing: the fault reaches beyond 29dc6ef8 in this job, mesh specificity is "
+    "not supported; otherwise, of the post-load 29dc6ef8 entries that read pass or fail (at least 9 needed, "
+    "else inconclusive), at least 0.8 failing: a large 29dc6ef8 acquisition fails after a mesh load; none "
+    "failing: post-load acquisitions hold; between: intermittent, reported as a share with its Wilson "
+    "interval. Each is read beside the pair's two entries: a passing first entry implicates the job's entry "
+    "count or path, a passing second entry with failing post-load entries implicates the load, a failing "
+    "second entry with holding post-load entries implicates repetition of the job's first mesh.",
+}
+
+
+def wrapper_pair_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """Arm C: Q1's case as two identical iterator entries at seed 20 and 10000 samples each, then the
+    extension's alternating reference and post-load entries."""
+    seed = anu_seed(DWELL_ANU)
+    rows = [("c", DWELL_Q1_SEED)] * 2 + [("r", seed["value"]), ("t", DWELL_Q1_SEED)] * PAIR_EXTENSION_BLOCKS
+    settings = [
+        {"name": f"{tag}{k}-s{value}-n{WRAPPER_SAMPLES}", "compilation_seed": value}
+        for k, (tag, value) in enumerate(rows)
+    ]
+    return {
+        **source,
+        "family": FAMILY,
+        "job": WRAPPER_PAIR_JOB,
+        "iterations": len(settings),
+        "max_samples": len(settings) * WRAPPER_SAMPLES,
+        "max_shots": 2 * len(settings) * WRAPPER_SAMPLES,
+        "settings": settings,
+        "seed_source": seed,
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": WRAPPER_PREREGISTERED,
+        "extension_preregistered": PAIR_EXTENSION_PREREGISTERED,
+    }
+
+
 SEEDED_JOBS = {
     FORM_JOB: seeded_manifest,
     BRIDGE_JOB: bridge_manifest,
@@ -1148,6 +1250,9 @@ SEEDED_JOBS = {
     DWELL_D3_JOB: dwell_d3_manifest,
     DWELL_LADDER_JOB: dwell_ladder_manifest,
     SEEDED_SINGLE_JOB: seeded_single_manifest,
+    WRAPPER_ITERATOR_JOB: wrapper_iterator_manifest,
+    WRAPPER_SINGLE_JOB: wrapper_single_manifest,
+    WRAPPER_PAIR_JOB: wrapper_pair_manifest,
 }
 
 
@@ -1313,7 +1418,8 @@ def check(directory: Path) -> None:
         [p.name for p in jobs]
         == ["job-00", "job-01", "job-02"]
         + [f"job-{j:02d}" for j in CAMPAIGN_JOBS]
-        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB, SEEDED_SINGLE_JOB],
+        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB, SEEDED_SINGLE_JOB]
+        + [WRAPPER_ITERATOR_JOB, WRAPPER_SINGLE_JOB, WRAPPER_PAIR_JOB],
         f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     uses: dict[tuple[str, int], set[str]] = {}

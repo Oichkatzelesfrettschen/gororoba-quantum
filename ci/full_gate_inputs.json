@@ -12,39 +12,15 @@
       "docs/evidence/principal_skew_atlas/**",
       "docs/notes/principal_skew_atlas.md"
     ],
-    "sources-147": [
-      "docs/evidence/principal_skew_atlas/**",
-      "docs/notes/principal_skew_atlas.md"
-    ],
     "sources-149": [
       "docs/evidence/schur_acceleration/**",
       "docs/notes/schur_acceleration_certificates.md"
-    ],
-    "sources-161": [
-      "docs/evidence/nullity_twelve_locus/**",
-      "docs/notes/nullity_twelve_local_geometry.md"
-    ],
-    "sources-164": [
-      "docs/evidence/kernel_limits/**",
-      "docs/notes/annihilator_kernel_limits.md"
-    ],
-    "sources-167": [
-      "docs/evidence/complex_skew/**",
-      "docs/notes/complex_skew_rank_geometry.md"
     ],
     "core-443": [
       "results/live/2026-10-13T080216.451663Z/**",
       "docs/evidence/heron_platform/targets.json"
     ],
-    "core-449": [
-      "results/live/2026-10-13T080216.451663Z/**",
-      "docs/evidence/heron_platform/targets.json"
-    ],
     "core-447": [
-      "results/live/2026-10-13T083417.634585Z/**",
-      "docs/evidence/heron_platform/targets.json"
-    ],
-    "core-448": [
       "results/live/2026-10-13T083417.634585Z/**",
       "docs/evidence/heron_platform/targets.json"
     ],
@@ -105,15 +81,7 @@
       "docs/evidence/open_quantum/catalogue.json",
       "results/hw_estimate/n21_linear_conjugation_challenger.json"
     ],
-    "core-064": [],
-    "sources-150": [
-      "docs/evidence/schur_acceleration/**",
-      "docs/notes/schur_acceleration_certificates.md"
-    ],
     "sources-215": [
-      "docs/evidence/cd_associator_defect_census/census.json"
-    ],
-    "sources-218": [
       "docs/evidence/cd_associator_defect_census/census.json"
     ],
     "core-287": [
@@ -167,11 +135,6 @@
       "results/live/2026-10-15T070853.550532Z/**",
       "results/live/2026-10-15T070847.644554Z/**"
     ],
-    "core-353": [
-      "docs/evidence/calibration/history/**",
-      "results/live/2026-10-15T070853.550532Z/**",
-      "results/live/2026-10-15T070847.644554Z/**"
-    ],
     "core-499": [
       "docs/evidence/n21_qx_conformance/**",
       "results/live/2026-10-17T003834.987727Z/isa.qpy",
@@ -217,6 +180,7 @@
       "docs/evidence/calibration/history/**",
       "results/live/2026-10-15T070847.644554Z/**",
       "results/live/2026-10-15T070853.550532Z/**"
-    ]
+    ],
+    "core-570": []
   }
 }

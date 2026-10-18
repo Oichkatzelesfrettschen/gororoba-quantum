@@ -13,8 +13,8 @@ the algebra decomposes into computable sectors, and those sectors predict which
 hardware response carries new information.
 
 [scripts/singular_sector_dynamics.py](../../scripts/singular_sector_dynamics.py)
-recomputes every statement below from `cd_core.cd_sign`; gates core-240 and
-core-241 run it in normal and optimized Python. Gate core-242 replays the
+recomputes every statement below from `cd_core.cd_sign`; gate core-240
+runs it. Gate core-242 replays the
 retained [FakeFez record](../evidence/singular_sector_dynamics/fakefez_amplification.json).
 Labels follow [prior_work_synthesis.md](prior_work_synthesis.md): known theorem
 reproduced, new proof or formalization, new implementation or measurement,

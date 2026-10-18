@@ -7,7 +7,7 @@ sign-blind, second-order response into a signed, first-order one.
 both readouts, applies the mutations that must break the signed law, and
 prices both readouts. The evidence is
 [result.json](../evidence/signed_kernel_probe/result.json), re-derived by gate
-core-273 in normal and optimized modes.
+core-273.
 
 ## Construction
 

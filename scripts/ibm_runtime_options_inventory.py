@@ -723,7 +723,8 @@ def requirements() -> list[str]:
             continue
         match = re.fullmatch(r"([A-Za-z0-9_.\-]+)\s*(.*)", item.split(";")[0].strip())
         require(match is not None, f"unparsed requirement {item!r}")
-        assert match is not None
+        if match is None:
+            raise AssertionError
         name = re.sub(r"[-_.]+", "-", match.group(1)).lower()
         specifiers = sorted(part.strip() for part in match.group(2).split(",") if part.strip())
         rows.append(f"{name} {','.join(specifiers)}".strip())

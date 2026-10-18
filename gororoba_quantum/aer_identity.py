@@ -240,7 +240,8 @@ def _capture(
     manifest, manifest_stamp = None, None
     if manifest_path.exists():
         manifest_checksum, manifest_stamp, contents = _read_stable(manifest_path, retain_bytes=True)
-        assert contents is not None
+        if contents is None:
+            raise AssertionError
         try:
             build = json.loads(contents, object_pairs_hook=_unique_object)
         except (UnicodeError, json.JSONDecodeError) as error:
@@ -378,7 +379,8 @@ def _loaded_symbol_path(function: Any) -> Path:
     info = _DlInfo()
     found = loader.dladdr(ctypes.cast(function, ctypes.c_void_p), ctypes.byref(info))
     _require(bool(found) and info.filename is not None, "CUDA symbol has no loaded library identity")
-    assert info.filename is not None
+    if info.filename is None:
+        raise AssertionError
     return Path(os.fsdecode(info.filename)).resolve(strict=True)
 
 
@@ -455,7 +457,8 @@ def _kernel_identity(contents: bytes) -> dict[str, str]:
     text = contents.decode("utf-8")
     match = re.search(r"^NVRM version:.*?\s([0-9]+(?:\.[0-9]+){1,3})\s", text, flags=re.MULTILINE)
     _require(match is not None, "loaded NVIDIA kernel version is unavailable")
-    assert match is not None
+    if match is None:
+        raise AssertionError
     return {"version": match.group(1), "version_text_sha256": hashlib.sha256(contents).hexdigest()}
 
 
@@ -627,12 +630,18 @@ def _verify_gpu_fixtures() -> None:
         cache: dict[Path, tuple[_FileStamp, str]] = {}
         with patch.object(sys.modules[__name__], "_read_stable", wraps=_read_stable) as reader:
             baseline = _capture_gpu(paths, device, kernel, mappings, cache)
-            assert reader.call_count == 2
-            assert baseline == _capture_gpu(paths, device, kernel, mappings, cache)
-            assert reader.call_count == 2
-        assert str(directory) not in json.dumps(baseline.record)
-        assert baseline.record["nvidia_kernel"]["version"] == "615.71.09"
-        assert baseline.record["libraries"]["cuda_driver"]["sha256"] == hashlib.sha256(b"cuda_driver").hexdigest()
+            if reader.call_count != 2:
+                raise AssertionError
+            if baseline != _capture_gpu(paths, device, kernel, mappings, cache):
+                raise AssertionError
+            if reader.call_count != 2:
+                raise AssertionError
+        if str(directory) in json.dumps(baseline.record):
+            raise AssertionError
+        if baseline.record["nvidia_kernel"]["version"] != "615.71.09":
+            raise AssertionError
+        if baseline.record["libraries"]["cuda_driver"]["sha256"] != hashlib.sha256(b"cuda_driver").hexdigest():
+            raise AssertionError
         for field, invalid in (
             ("schema", "unknown"),
             ("device_count", 0),
@@ -698,8 +707,10 @@ def _verify_gpu_fixtures() -> None:
         ):
             first = gpu_runtime_identity()
             first["libraries"]["cuda_driver"]["sha256"] = "0" * 64
-            assert first != gpu_runtime_identity()
-            assert gpu_runtime_identity() == baseline.record
+            if first == gpu_runtime_identity():
+                raise AssertionError
+            if gpu_runtime_identity() != baseline.record:
+                raise AssertionError
             rejects(gpu_runtime_identity, "a changed active GPU identity")
     print("native CUDA identity: cached library hashes, device/kernel drift, unavailable APIs, and privacy checks pass")
 
