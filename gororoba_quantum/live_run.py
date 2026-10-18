@@ -3898,11 +3898,12 @@ def submit(
                 raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
         shot_violations = qpu_planning.shot_ceiling_violations(fresh.backend, int(plan_entry["shots"]))
         if shot_violations:
-            if not record["submission"]["jobs"]:
+            reason = "; ".join(shot_violations)
+            if record["submission"]["jobs"]:
+                record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+            else:
                 record["state"] = "approval_required"
-            raise LiveRunError(
-                f"{name}: {batch_tag} {'; '.join(shot_violations)}; no circuit in this batch was submitted"
-            )
+            raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         # Accepted jobs may remain unbilled. Every ceiling stays reserved until

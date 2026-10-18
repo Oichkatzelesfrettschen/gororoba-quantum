@@ -27,11 +27,11 @@ Recorded dependency versions:
 
 ## Scientific question and interpretation
 
-The state-prep-control family measures, on 7 qubits of ibm_kingston (the declared layout: 104, 105, 106, 117, 124, 125, 126), the excited fraction each qubit carries after the Sampler's implicit initialization at a requested repetition delay of 250 us (`--rep-delay 0.00025`). Three PUBs measure every qubit in each shot: A initializes and measures (residual excitation plus readout misassignment), B adds an active reset before the measure, and C applies an X before the measure (the |1> column of the assignment matrix). A and C share the static job; B, which the reset makes dynamic, runs in its own job with twirling and dynamical decoupling off.
+The state-prep-control family measures, on 7 qubits of ibm_kingston (the declared layout: 104, 105, 106, 117, 124, 125, 126), the excited fraction each qubit carries after the Sampler's implicit initialization at a requested repetition delay of 250 us (`--rep-delay 0.00025`). One PUB measures every qubit in each shot: A initializes and measures (residual excitation plus readout misassignment). A runs in one static job. The run selects the arms prep0 (`--state-prep-arms prep0`).
 
-Under the readout channel e10 = prob_meas1_prep0, e01 = prob_meas0_prep1, A reads (1 - eps) e10 + eps (1 - e01), so the initial excitation is eps = (A - e10) / (1 - e01 - e10) (diagnostic_experiments.state_prep_excitation), the value dynamic_density's prep_excitation and live_run's --prep-excitation take. The reset benefit A - B is positive only where initialization leaves more excitation than the reset's own misassignment. The calibration noise model starts every qubit in |0>, so it prices A at the readout error alone; the residual excitation is the device property this run measures, and only the device answers it.
+Under the readout channel e10 = prob_meas1_prep0, e01 = prob_meas0_prep1, A reads (1 - eps) e10 + eps (1 - e01), so the initial excitation is eps = (A - e10) / (1 - e01 - e10) (diagnostic_experiments.state_prep_excitation), the value dynamic_density's prep_excitation and live_run's --prep-excitation take. The calibration noise model starts every qubit in |0>, so it prices A at the readout error alone; the residual excitation is the device property this run measures, and only the device answers it.
 
-Three two-sided precision contracts per qubit, 21 in all, split the family-wise alpha evenly and admit the design: half-width 0.025 on A and on C, 0.05 on A - B, Hoeffding radii valid under arbitrary dependence between the qubits of one shot. They price resolution, not an effect. The comparison of A between two repetition delays spans two jobs, so it is outside these contracts; the written addendum states that comparison and its decision rule.
+One two-sided precision contract per qubit, 7 in all, split the family-wise alpha evenly and admit the design: half-width 0.025 on A, Hoeffding radii valid under arbitrary dependence between the qubits of one shot. They price resolution, not an effect. The comparison of A between two repetition delays spans two jobs, so it is outside these contracts; the written addendum states that comparison and its decision rule.
 
 ## Archived ideal laws and placement
 
@@ -234,6 +234,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-memory-mb 512 \
   --optimize \
   --layout 104,105,106,117,124,125,126 \
+  --state-prep-arms prep0 \
   --backends ibm_kingston \
   --shots 8192 \
   --seeds 8 \
@@ -275,6 +276,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-memory-mb 512 \
   --optimize \
   --layout 104,105,106,117,124,125,126 \
+  --state-prep-arms prep0 \
   --backends ibm_kingston \
   --shots 8192 \
   --seeds 8 \
