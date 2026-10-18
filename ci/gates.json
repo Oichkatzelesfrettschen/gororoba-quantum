@@ -3587,6 +3587,14 @@
    "name": "core-457",
    "seconds": 0.1,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test",
+   "name": "core-571",
+   "seconds": 6.6,
+   "tier": "pr"
   }
  ],
  "excluded": [

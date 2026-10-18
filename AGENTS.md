@@ -214,6 +214,34 @@ list and the open_gororoba fetch in agreement. The manual procedure remains
 the local replay. A pull request merges when `rocq-replay` is green whenever
 it ran.
 
+**Gate cost.**
+- Measure a gate's cost in CPU seconds. The runner records user and system
+  time beside wall time; wall time on a shared host grows with the host's
+  load, and parallel code only divides the CPUs it is granted, so a gate
+  that reads slow at a load above the CPU count is contended. Read its CPU
+  seconds before tuning it.
+- Spend CPU only on results that can change. `ci/premerge_gates.py` caches
+  the base tree's passing gates under
+  `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/premerge`, keyed by the
+  base commit, `--max-seconds`, each interpreter's real path, version and
+  installed distributions, and every `GOROROBA_`, `QI_`, `OQ_`, `QD_`,
+  `QISKIT_`, `PYTHON`, thread-count and `GLIBC_TUNABLES` variable. A flock
+  serializes runs over one key, so concurrent sessions share one base run.
+  Failures stay out of the cache: a merge failure absent from the cached
+  passes reruns on the base through `ci/run_gates.py --gates`, so a failure
+  under load never becomes a standing shared failure. `--no-cache` runs the
+  base every time.
+- Skip a gate only on evidence that its inputs are unchanged. The import
+  closure `gate_inputs` follows covers modules, while whole-tree record
+  gates (core-368, core-270) reach their inputs through glob, directory
+  listing and git; a skip rule for pr-tier gates needs each gate's recorded
+  read set and a self-test that plants a missed input.
+- Reserve `assert` for internal invariants and validate input and records
+  with an explicit raise. `python -O` strips every assert, so a gate's `-O`
+  half proves no check depends on one, and that half costs as much CPU as
+  the normal half; ruff `S101` carries the same guarantee at lint time
+  ([#283](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/283)).
+
 ## Source library and research replay
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
@@ -1329,7 +1357,8 @@ resolved, GitHub reports mergeable_state clean, and
 `"$PYTHON" ci/premerge_gates.py BRANCH` exits 0. That script merges the
 branch into origin/main in a scratch worktree and runs every pr-tier gate
 measured at 5 s or less there and on origin/main, each tree through its own
-ci/run_gates.py; it fails on a gate the merge breaks. A gate over a
+ci/run_gates.py, with origin/main's passes read from the base cache (Gate
+cost); it fails on a gate the merge breaks. A gate over a
 whole-tree record (core-368 over every case circuit, core-270 over every
 retained run) can pass on two branches separately and fail on their merge,
 and a PR's CI ran against main as it stood then. Full-tier record gates such
