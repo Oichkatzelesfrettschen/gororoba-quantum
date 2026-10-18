@@ -106,8 +106,8 @@ near 4 x 10^4 one-photon samples per second.
   probabilities (`error_mitigation/detector_balancing.py`,
   `abstract_mitigation.py`, `utils/conversion.py`); the retained artifacts
   do not establish the server-side processing of these acquisitions, so the
-  histograms are not assumed to be unmitigated detector records. All 167 QPU
-  result entries (single jobs and iterator entries) report
+  histograms are not assumed to be unmitigated detector records. All 192 retained
+  QPU result entries (single jobs and iterator entries) report
   `final_mode_number` 24, which excludes a cutoff to a smaller output
   register; photon-number selection (`min_detected_photons` 1), event
   rejection, correction or resampling that keeps 24 modes stay open. The `apply_emt` flag the bodies carry belongs to
@@ -506,9 +506,11 @@ the couplers equaled Q1's throughout.
    modes 0 to 11 collect about twice the clicks of modes 12 to 23; the
    receipt's dark rates predict about 150 clicks per setting on mode 0 where
    the chip reads none. Between Q1 and the replay the clicks of modes 12, 14
-   and 16 moved against their `t_out` changes. `sample_count` returns
-   integer counts, so `DetectorBalancing`, which rewrites `probs`, has not
-   touched them.
+   and 16 moved against their `t_out` changes. Integer `sample_count`
+   counts do not show that `DetectorBalancing` left them untouched: the
+   service default applies it, and Perceval 1.3.1's mitigation layer can
+   regenerate counts from corrected probabilities (section 1, Mitigation
+   and filtering).
 3. Fitted efficiencies (`--efficiency`, committed before it saw the four
    runs; job-03 had been examined in sample): one relative factor per output
    mode, fitted with each class and held out by run. The held-out median TVD

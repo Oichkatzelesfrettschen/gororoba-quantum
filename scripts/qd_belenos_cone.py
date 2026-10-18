@@ -427,6 +427,16 @@ def extension_verdict(rule: dict[str, Any], pair: Arms, reference: Arms, reload:
     return {**summary, "reading": reading}
 
 
+def follows(first: dict[str, Any], follower: dict[str, Any]) -> bool:
+    """A follower is read only when it was submitted after job-14's result was collected."""
+    import datetime
+
+    def instant(text: str) -> datetime.datetime:
+        return datetime.datetime.fromisoformat(text)
+
+    return instant(follower["submitted_utc"]) > instant(first["collected_utc"])
+
+
 def readout_series(runs: list[Path]) -> dict[str, Any]:
     """Validates each run's result shape and receipts before any cell is scored; a run that fails a check reads
     void with its reasons and its raw result stays in the run directory."""
@@ -448,6 +458,8 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
             "job": manifest["job"],
             "cases_sha256": mesh_lib.sha256(run / "cases.json"),
             "payload_entries": returned,
+            "submitted_utc": json.loads((run / "submission-state.json").read_text(encoding="utf-8"))["submitted_utc"],
+            "collected_utc": json.loads((run / "results.json").read_text(encoding="utf-8"))["collected_utc"],
         }
         if returned != sent:
             arm |= {"cells": [], "problems": [f"{returned} results_list entries for {sent} sent"], "readings": ["void"]}
@@ -460,8 +472,13 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
         else:
             budgets, entries = [manifest["max_samples"]], [inner]
         problems = [entry_problems(entry, source, budget) for entry, budget in zip(entries, budgets, strict=True)]
-        cells = run_cells(run)
         series = rule["payload_entries"][manifest["job"]] or 1
+        if any(p.startswith("computed_input") for entry in problems for p in entry):
+            # A foreign input has no cone of the block's source, so no cell is built for any entry.
+            arm |= {"cells": [], "problems": [p for entry in problems for p in entry], "readings": ["void"] * series}
+            jobs[role] = arm
+            continue
+        cells = run_cells(run)
         arm |= {
             "cells": cells[:series],
             "problems": [p for entry in problems[:series] for p in entry],
@@ -488,6 +505,10 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
         jobs[role] = arm
     if not rules or any(rule != rules[0] for rule in rules):
         raise SystemExit("the series runs carry different preregistrations")
+    for role in ("single", "pair"):
+        if role in jobs and "iterator" in jobs and not follows(jobs["iterator"], jobs[role]):
+            jobs[role]["problems"].append("submitted before job-14 was collected, so job-14's reading did not select it")
+            jobs[role]["readings"] = ["void"] * len(jobs[role]["readings"])
     arms = {role: tuple(arm["readings"]) for role, arm in jobs.items()}
     verdict = series_verdict(arms)
     return {
@@ -616,6 +637,10 @@ def self_test() -> int:
         got = extension_verdict(extension, pair, reference, reload)["reading"]
         if want not in got:
             raise SystemExit(f"cone self-test: extension {pair} {reload} read {got!r}, not {want!r}")
+    first = {"collected_utc": "2026-10-18T19:08:33+00:00"}
+    for submitted, want_follow in (("2026-10-18T19:35:32+00:00", True), ("2026-10-18T19:05:00+00:00", False)):
+        if follows(first, {"submitted_utc": submitted}) != want_follow:
+            raise SystemExit(f"cone self-test: a follower submitted at {submitted} did not read follows={want_follow}")
     if any("1500" in text or "whatever" in text for text in SERIES_READINGS.values()):
         raise SystemExit("cone self-test: a series reading attributes a mechanism the block does not vary")
     poisson = np.random.default_rng(7).poisson(50, 400).tolist()
@@ -629,7 +654,7 @@ def self_test() -> int:
     print(
         "cone self-test: off-cone clicks excluded, in-cone loss read, one-click account closes, four readings, "
         "six series entries, four receipts, fourteen series verdicts, four extension entries, eight extension "
-        "readings, Poisson dispersion near 1"
+        "readings, two chronologies, Poisson dispersion near 1"
     )
     return 0
 

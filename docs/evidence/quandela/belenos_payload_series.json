@@ -89,13 +89,15 @@
      "wall_share_s": 14.0
     }
    ],
+   "collected_utc": "2026-10-18T19:08:33+00:00",
    "job": "job-14",
    "payload_entries": 1,
    "problems": [],
    "readings": [
     "fail"
    ],
-   "run": "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14"
+   "run": "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+   "submitted_utc": "2026-10-18T19:05:32+00:00"
   },
   "pair": {
    "cases_sha256": "3cff3dec9eacb3e54b3657875507ee7f50f15bbf2bb4efe7290c838dae3d973b",
@@ -267,6 +269,7 @@
      "wall_share_s": 6.208333
     }
    ],
+   "collected_utc": "2026-10-18T19:39:31+00:00",
    "extension": {
     "cells": [
      {
@@ -2179,7 +2182,8 @@
     "fail",
     "fail"
    ],
-   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "submitted_utc": "2026-10-18T19:36:38+00:00"
   }
  },
  "next_job": null,
