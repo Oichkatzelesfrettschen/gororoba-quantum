@@ -7,8 +7,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 23 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 85 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 25 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 97 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 4 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -58,6 +58,8 @@ each source license in force.
 | [Cobos et al. 2025 -- Real-Time Dynamics in a (2+1)-D Gauge Theory: The Stringy Nature on a Superconducting Quantum Simulator (arXiv 2507.08088)](notes/2507.08088.md) | [2507.08088.pdf](pdf/2507.08088.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Pokharel et al. 2025 -- Order from chaos with adaptive circuits on quantum hardware (arXiv 2509.18259)](notes/2509.18259.md) | [2509.18259.pdf](pdf/2509.18259.pdf) | [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | [Levratti: active stabilizers and Cayley-Dickson zero-divisor supports](notes/levratti-2026-active-stabilizers.md) | [levratti-2026-active-stabilizers.pdf](pdf/levratti-2026-active-stabilizers.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [van der Schoot et al. 2023 -- quantum metrics on Quantum Inspire Starmon-5 (arXiv 2310.01120)](notes/2310.01120.md) | [2310.01120v1.pdf](pdf/2310.01120v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Nation et al. 2021 -- scalable measurement-error mitigation, M3 (arXiv 2108.12518)](notes/2108.12518.md) | [2108.12518v1.pdf](pdf/2108.12518v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Levratti 2026 -- Fano Duality, Projective Orthogonality and the CSS Bridge (author-hosted manuscript)](notes/levratti-2026-fano-css.md) | [levratti-2026-fano-css.pdf](pdf/levratti-2026-fano-css.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Covariant quantum kernels for data with group structure](notes/s41567-023-02340-9.md) | [2105.03406.pdf](pdf/2105.03406.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Challenges and opportunities in quantum optimization](notes/s42254-024-00770-9.md) | [2312.02279.pdf](pdf/2312.02279.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
@@ -172,6 +174,18 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Adler 2017 -- Does the Peres experiment using photons test for hyper-complex (quaternionic) quantum theories?](notes/1604.04950.md) | [PDF](https://arxiv.org/pdf/1604.04950v3) | `1604.04950v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1604.04950v3) |
 | [Procopio, Rozema, Dakic and Walther 2017 -- Comment on Adler's Peres-experiment critique](notes/1607.01648.md) | [PDF](https://arxiv.org/pdf/1607.01648v1) | `1607.01648v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1607.01648v1) |
 | [Iqbal et al. 2024 -- Non-Abelian Topological Order and Anyons on a Trapped-Ion Processor](notes/2305.03766.md) | [PDF](https://arxiv.org/pdf/2305.03766v2) | `2305.03766v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2305.03766v2) |
+| [Rol et al. 2019 -- Net Zero flux-pulsed CZ (arXiv 1903.02492)](notes/1903.02492.md) | [PDF](https://arxiv.org/pdf/1903.02492v1) | `1903.02492v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1903.02492v1) |
+| [Negirneac et al. 2021 -- Sudden Net Zero CZ (arXiv 2008.07411)](notes/2008.07411.md) | [PDF](https://arxiv.org/pdf/2008.07411v1) | `2008.07411v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2008.07411v1) |
+| [Marques et al. 2022 -- error-detecting surface code on a 7-transmon chip (arXiv 2102.13071)](notes/2102.13071.md) | [PDF](https://arxiv.org/pdf/2102.13071v1) | `2102.13071v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2102.13071v1) |
+| [Fu et al. 2017 -- QuMA control microarchitecture (arXiv 1708.07677)](notes/1708.07677.md) | [PDF](https://arxiv.org/pdf/1708.07677v1) | `1708.07677v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1708.07677v1) |
+| [Fu et al. 2019 -- eQASM executable instruction set (arXiv 1808.02449)](notes/1808.02449.md) | [PDF](https://arxiv.org/pdf/1808.02449v3) | `1808.02449v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1808.02449v3) |
+| [Klimov et al. 2018 -- T1 fluctuations and two-level-system defects (arXiv 1809.01043)](notes/1809.01043.md) | [PDF](https://arxiv.org/pdf/1809.01043v1) | `1809.01043v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1809.01043v1) |
+| [Schloer et al. 2019 -- burst noise from single fluctuators (arXiv 1901.05352)](notes/1901.05352.md) | [PDF](https://arxiv.org/pdf/1901.05352v2) | `1901.05352v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1901.05352v2) |
+| [Sung et al. 2019 -- non-Gaussian noise spectroscopy with a flux qubit (arXiv 1903.01043)](notes/1903.01043.md) | [PDF](https://arxiv.org/pdf/1903.01043v2) | `1903.01043v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1903.01043v2) |
+| [Bravyi et al. 2021 -- mitigating measurement errors (arXiv 2006.14044)](notes/2006.14044.md) | [PDF](https://arxiv.org/pdf/2006.14044v2) | `2006.14044v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2006.14044v2) |
+| [Heinsoo et al. 2018 -- multiplexed readout crosstalk (arXiv 1801.07904)](notes/1801.07904.md) | [PDF](https://arxiv.org/pdf/1801.07904v1) | `1801.07904v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1801.07904v1) |
+| [Geller 2020 -- rigorous measurement error correction (arXiv 2002.01471)](notes/2002.01471.md) | [PDF](https://arxiv.org/pdf/2002.01471v2) | `2002.01471v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2002.01471v2) |
+| [Sank et al. 2016 -- measurement-induced state transitions (arXiv 1606.05721)](notes/1606.05721.md) | [PDF](https://arxiv.org/pdf/1606.05721v2) | `1606.05721v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1606.05721v2) |
 
 ## Licensed software source snapshots
 
