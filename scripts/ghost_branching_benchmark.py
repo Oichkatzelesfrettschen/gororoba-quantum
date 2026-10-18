@@ -53,6 +53,7 @@ import ghost_error_scale_branching as sweep  # noqa: E402
 import ghost_run  # noqa: E402
 import numpy as np  # noqa: E402
 
+import aer_resources  # noqa: E402
 import branch_dm  # noqa: E402
 import parallel  # noqa: E402
 
@@ -60,7 +61,8 @@ SCHEMA = "ghost-branching-benchmark-v1"
 LAW_TOLERANCE = {"complex128": 1e-10, "complex64": 1e-6}
 GPU_TOLERANCE = 1e-10
 SPLIT_PREDICTION = 0.95
-DISTRIBUTIONS = ("numpy", "scipy", "qiskit", "qiskit-aer", "qiskit-aer-gpu-cu11", "torch")
+# environment() adds the installed GPU Aer build and its CUDA distributions.
+DISTRIBUTIONS = ("numpy", "scipy", "qiskit", "qiskit-aer", "torch")
 require = ghost_run.require
 
 
@@ -102,7 +104,7 @@ def host() -> dict[str, Any]:
             None,
         )
     versions: dict[str, str | None] = {}
-    for name in DISTRIBUTIONS:
+    for name in (*DISTRIBUTIONS, *aer_resources.gpu_aer_distributions()):
         try:
             versions[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:

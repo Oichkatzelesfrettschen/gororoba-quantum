@@ -1,0 +1,19 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-aer-gpu-cu13-preflight/1",
+ "state": "ERROR",
+ "collected_utc": "2026-10-18T072704Z",
+ "files": {
+  "gororoba-aer-gpu-cu13-preflight.log": "3c02fe3434352b18c8f137836ea3164b1dd8b6c136ccdae1f293bc1b7dc74110",
+  "output/environment.json": "acb8df3d3e25a3d753d92f7bcfad75555f972f320bc171446dc4f58f34bc83a0",
+  "output/exit.json": "62d006958623915c9ffc71dec3e3e129e4295c9ed05f437f645991d60f683b48",
+  "output/gpu-env-report.txt": "9bf8115b1b2e119672ba4f26d719f5c667978da1967ccc024bab0855b903b555",
+  "output/gpu-freeze.txt": "2846ee6f4662f18ad65fcf3fd979da337072c61d12e2bc4141911e83490af24f",
+  "output/gpu-venv.txt": "3ea249f1b95aef7d0c560fdddbe785d61f8481f8cc2a3556cf81746829c149ff",
+  "output/gpu_env.json": "7eac765184913b5909c3367940c5db3884a5b9a1f018f800ae1923dfce3cf479",
+  "output/hypercomplex.json": "f4c566fd2ccf988fcfa7496f75b710fec382032143f6a9ce6efa93ea835b712f",
+  "output/install-pins.txt": "d59e007d83ffc1ae4beeac2e8669bbdff91dfe4dbe21d75b074d52d40b71e3ee",
+  "output/pip.txt": "99dcb33626556190ef01046d23876a7b8b6271c74094e2a7d6a2bea94cc63370",
+  "output/uv-install.txt": "997658083282bddb60bcaa66794922de536a8fe6531f95d6d6497b9e3b9d0f52"
+ }
+}
