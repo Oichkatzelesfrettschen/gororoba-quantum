@@ -151,7 +151,7 @@ exhaustive replay rather than establishing the full corpus's scientific claim.
 
 `parallel.available_cpus()` intersects scheduler affinity with the CPU quotas
 of the process and its cgroup ancestors. The runner maintains that many CPU
-slots across all active gates. Ordinary gates consume one slot; fourteen gates
+slots across all active gates. Ordinary gates consume one slot; seventeen gates
 with independent inner work reserve the whole allocation using `workers: all`.
 A reserved gate receives the slot count through `GOROROBA_WORKERS`. Other gates
 wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
@@ -320,3 +320,29 @@ reproduces both lane-4 backends in normal and optimized Python at unchanged
 tolerances. The one-worker hosted samples were 905.0 s and 757.7 s; the local
 four-worker samples use a different machine and establish qualification rather
 than a controlled speedup.
+
+The QI job's first qualified artifact exposed another single-slot pool: the
+box-kite binding replay used 426.84 user CPU seconds over 428.32 elapsed seconds
+with four CPUs available. Both box-kite emulator gates and the N21 conformance
+gate now reserve the allocation for their existing ordered pools. The
+[local four-worker replay](../../evidence/ci_runtime/qi_pool.json) passes all
+three commands with `GOROROBA_QI_REQUIRED=1`, including exact retained seeded
+counts and the original reset-law and mutation checks. Local walls are 155.64 s for the binding replay,
+34.30 s for N21 conformance and 12.71 s for the short box-kite replay; hosted measurements remain separate.
+
+## Complete Ubuntu 26.04 qualification and refreshed estimates
+
+[Run 39089695277](../../evidence/ci_runtime/ubuntu26-qualified.json) passed all
+491 primary cases and five QI-required gates, Ubuntu 24.04 compatibility,
+external ground truth and Rocq replay. The receipt includes the per-gate CPU,
+RSS and worker artifacts. The six primary shard walls were 210.54, 624.94,
+859.71, 788.04, 1135.42 and 588.67 seconds. Old one-worker estimates overvalued
+the newly pooled atlas gates and left the last shard with the long planning
+contract and several archival replays. The manifest now uses successful
+primary-lane samples from the detected four-CPU allocation. The three newly
+pooled QI gates retain their prior estimates until their own hosted sample,
+since their worker allocation changed after that run. The final scheduling
+commit receives a fresh hosted run. These runs cover different selections from
+the earlier PR baseline; their walls do not establish a controlled workflow
+speedup. The repetition-delay planning contract remains the longest single-slot
+case at 635.81 seconds in that qualification.
