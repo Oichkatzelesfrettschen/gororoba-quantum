@@ -479,7 +479,16 @@ sedenion statement never rests on them.
   and timestamps compare as instants whatever their UTC offset. Right after
   the first discovery, before planning, the submission checks the approved
   isa.qpy circuits against the fresh Target and properties by the same rule
-  and writes `approval_required` in seconds. The submission plans only over
+  and writes `approval_required` in seconds. When the source digest,
+  dependency versions, simulator seed, policy, compiled circuits, QPY bytes
+  and every group's calibration values equal the approved record's, and
+  every recorded Aer batch ran on CPU by a route the host's GPU cannot
+  change (`local_compute.host_independent_route`), the submission copies the approved predictions (`reuse_approved_predictions`)
+  and, for a matched family whose approved search held one routed candidate
+  set under the same contracts, tiers, PUB cost inputs and optimization
+  budget, the approved design (`approved_family_design`) instead of
+  simulating; any differing input re-plans in full, and the run records
+  `prediction_reuse` with the approved record's digest. The submission plans only over
   the backends the approved record found eligible
   (`live_run.approved_backend_scope`), so a
   backend whose queue or status changed after the dry run cannot enter the
@@ -1126,7 +1135,7 @@ the 64 seeded random settings of the characterization campaign, job-07
 the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
 case as one circuit at seed 1, job-09 Q1's case iterated at seeds 0 to 21,
 0 and 1, job-10 to job-12 the form-versus-dwell series D1 to D4 with
-per-iteration sample budgets). A new exploratory compilation_seed comes
+per-iteration sample budgets, job-13 Q1's case as one circuit at seed 20). A new exploratory compilation_seed comes
 from the ANU QRNG draws that `scripts/anu_qrng.py` retains under
 `docs/evidence/anu_qrng/`. A case names its compilation_seed per
 iteration or, for one circuit, in its manifest; the seed selects the
@@ -1142,6 +1151,13 @@ runs, which takes about 64 random-target settings. The receipt's `t_out` and dar
 rates contradict the detected light (modes 12 to 23 read 194 to 400 %), so
 `--efficiency OUT RUN...` refits a session with relative per-mode efficiencies
 fitted jointly with every class and with the offsets, each run held out.
+Off-cone one-click samples come and go on modes 0, 1 and 5 with an origin
+the receipt's dark rates do not describe, so `scripts/qd_belenos_cone.py`
+reads in_block over the samples inside the source's light cone of each
+served mesh and times each
+acquisition as samples / (physical_perf x clock);
+`docs/evidence/quandela/belenos_light_cone.json` holds that reading of every
+Q1-circuit run.
 `plan` decodes the live architecture and
 refuses a mesh case whose couplers or symbols changed, so a recalibration
 means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
@@ -1175,7 +1191,10 @@ core-538 (`--check-pair`, the one-circuit form test job-08 and the
 preregistered bridge branch on synthetic iterations) and core-540
 (`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
 self-test and the offline check of every retained draw), core-542
-(`--self-test-dwell`) and core-543 (`--check-dwell`, the D1 to D4 readout).
+(`--self-test-dwell`), core-543 (`--check-dwell`, the D1 to D4 readout),
+core-545 (`qd_belenos_cone.py --self-test`), core-546 (its `--check` of
+the light-cone reading) and core-547 (its `--check-readout` of job-13, the
+seeded single job).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost
