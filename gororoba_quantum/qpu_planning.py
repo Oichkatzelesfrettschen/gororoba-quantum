@@ -56,19 +56,31 @@ from experiment_optimizer import (
     planned_empirical_bernstein,
 )
 from packing import Replica
-from qpe_diagnostics import ideal_compiled_probabilities
+from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_probabilities
+
+
+def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
+    """family_contracts' configuration keyword for a family whose contracts read its candidate's configuration.
+
+    state-prep-control reads its named qubits and n21-orbit-rca its herald
+    outcome width there; prepare and live_run.approved_family_design both
+    pass this, so a reused approved design rebuilds the approved contracts.
+    """
+    return {"configuration": configuration} if family in (STATE_PREP_FAMILY, "n21-orbit-rca") else {}
 
 
 def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
-    A declared preparation excitation, the empirical-Bernstein opt-in and a
-    state-prep arm selection join them only when given, so a plan without
-    them keeps its settings unchanged.
+    A declared preparation excitation, the empirical-Bernstein opt-in, a
+    state-prep arm selection and the n21-orbit-rca initialization herald
+    join them only when given, so a plan without them keeps its settings
+    unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
     arms = getattr(args, "state_prep_arms", None)
+    herald = {"init_herald": True} if getattr(args, "init_herald", False) else {}
     return (
         {
             name: getattr(args, name, default)
@@ -98,6 +110,7 @@ def settings(args: Any) -> dict[str, Any]:
         | ({"prep_excitation": excitation} if excitation is not None else {})
         | bernstein
         | ({"state_prep_arms": list(arms)} if arms is not None else {})
+        | herald
     )
 
 
@@ -212,13 +225,20 @@ def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = N
 def control_sites(runtime: Any, isas: list[Any]) -> list[tuple[tuple[str, int], ...]]:
     """Every measure and reset of each compiled window arm with its physical site, in instruction order.
 
-    Only the QPE control is measured and reset. Routing can move the control
-    between the rounds, so an arm's terminal readout can sit on another qubit
-    than its mid-circuit measure and reset.
+    Only the QPE control is measured and reset after the initialization
+    herald, whose measurements every qubit plays before the program and
+    which the list leaves out. Routing can move the control between the
+    rounds, so an arm's terminal readout can sit on another qubit than its
+    mid-circuit measure and reset.
     """
-    return [
-        tuple((name, qubits[0]) for name, qubits in runtime._ops(isa) if name in ("measure", "reset")) for isa in isas
-    ]
+    sites = []
+    for isa in isas:
+        program = isa.copy_empty_like()
+        for instruction in isa.data:
+            if not herald_measurement(isa, instruction):
+                program.append(instruction)
+        sites.append(tuple((name, qubits[0]) for name, qubits in runtime._ops(program) if name in ("measure", "reset")))
+    return sites
 
 
 def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
@@ -251,7 +271,7 @@ def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]
     windows = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
     if (window_dt, half_dt) == bound[:2]:
         return candidate, windows
-    group = n21_orbit_rca_group(window_dt, half_dt)
+    group = n21_orbit_rca_group(window_dt, half_dt, has_herald(candidate.group.members[0].circuit))
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
     ]
@@ -653,6 +673,10 @@ def family_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
     """Enumerate matched circuit sets; a folded family retains its exact physical mapping."""
+    if args.family == "et-row":
+        from et_planning import family_candidates as et_candidates
+
+        return et_candidates(runtime, snapshots, args, trace)
     if args.family in ("ripple", "rank-sector"):
         import algebra_planning
 
@@ -661,6 +685,7 @@ def family_candidates(
     if args.family in (*N21_FAMILIES, "n21-orbit-rca"):
         routed = []
         windows: dict[int, dict[str, float]] = {}
+        herald = bool(getattr(args, "init_herald", False))
         if args.family == "n21-orbit-rca":
             # Window durations come from each backend's calibration, so each
             # snapshot routes its own group; per-snapshot traces merge by group.
@@ -672,7 +697,7 @@ def family_candidates(
                 local: dict[str, Any] = {}
                 try:
                     bound = window_durations(runtime, snapshot)
-                    group = n21_orbit_rca_group(bound[0], bound[1])
+                    group = n21_orbit_rca_group(bound[0], bound[1], herald)
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
                     trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
@@ -726,7 +751,15 @@ def family_candidates(
                         continue
                     replica_sets.append(replicas)
                     candidates.append(
-                        ([trial], {"name": args.family, "replica_cap": cap, **windows.get(id(candidate), {})})
+                        (
+                            [trial],
+                            {
+                                "name": args.family,
+                                "replica_cap": cap,
+                                **windows.get(id(candidate), {}),
+                                **({"init_herald": True} if herald else {}),
+                            },
+                        )
                     )
         return candidates
     if args.family in PATCH_FAMILIES:
@@ -989,9 +1022,10 @@ def prepare(
         args.precision,
         args.alpha,
         args.power,
-        **({"configuration": candidates[0][1]} if args.family == STATE_PREP_FAMILY else {}),
+        **contract_configuration(args.family, candidates[0][1]),
     )
     plans: list[CandidatePlan] = []
+    et_screens: dict[str, dict[str, Any]] = {}
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
@@ -1012,7 +1046,7 @@ def prepare(
         if not tiers:
             raise runtime.LiveRunError(f"every shot tier exceeds max_shots {ceiling}: {trace['shot_ceiling']}")
     per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
-    if per_pub and (args.family not in ("ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize):
+    if per_pub and (args.family not in ("et-row", "ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize):
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
@@ -1058,7 +1092,12 @@ def prepare(
                 choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
             )
         start = len(local_compute.batches(simulator))
-        noisy = runtime.simulate(choice, simulator, args.model_shots, **excited)
+        if args.family == "et-row":
+            from et_planning import simulate as simulate_et
+
+            noisy = simulate_et(runtime, choice, simulator, args.model_shots)
+        else:
+            noisy = runtime.simulate(choice, simulator, args.model_shots, **excited)
         return local_compute.batches(simulator)[start:], noisy
 
     ordered = [choice for choices, _configuration in candidates for choice in choices]
@@ -1068,13 +1107,21 @@ def prepare(
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
         for choice in choices:
-            for entry in choice.entries:
-                for replica in entry.replicas:
-                    actual = ideal_compiled_probabilities(replica)
-                    if not np.allclose(actual, entry.ideal, rtol=0, atol=1e-10):
-                        raise runtime.LiveRunError(
-                            f"{entry.name}: compiled labeled ideal differs from its exact oracle"
-                        )
+            if args.family == "et-row":
+                from et_planning import validate_ideals
+
+                try:
+                    validate_ideals(choice)
+                except ValueError as error:
+                    raise runtime.LiveRunError(str(error)) from error
+            else:
+                for entry in choice.entries:
+                    for replica in entry.replicas:
+                        actual = ideal_compiled_probabilities(replica)
+                        if not np.allclose(actual, entry.ideal, rtol=0, atol=1e-10):
+                            raise runtime.LiveRunError(
+                                f"{entry.name}: compiled labeled ideal differs from its exact oracle"
+                            )
             evidence, noisy = next(simulated)
             local_compute.append_batches(simulators[id(choice.snap)], evidence)
             predictions.update(
@@ -1166,6 +1213,25 @@ def prepare(
                     jobs=tuple(jobs),
                     covariance_bounds=covariance,
                     empirical_bernstein=bernstein,
+                    **(
+                        {
+                            "independent_pub_blocks": tuple(
+                                tuple(
+                                    pub.name
+                                    for job in jobs
+                                    for pub in job.pubs
+                                    if {
+                                        configuration["members"][member]["block"] for member in pub.member_distributions
+                                    }
+                                    == {block}
+                                )
+                                for block in range(configuration["blocks"])
+                            ),
+                            "pub_independence_assumption": configuration["sampling_assumption"],
+                        }
+                        if args.family == "et-row"
+                        else {}
+                    ),
                     proxy_metadata={
                         "backend": choices[0].snap.name,
                         "seed": choices[0].seed,
@@ -1176,6 +1242,10 @@ def prepare(
                 )
             )
             ownership[name] = choices, configuration, shots
+            if args.family == "et-row":
+                from et_planning import calibrated_design
+
+                et_screens[name] = calibrated_design(configuration, predictions)
     if not plans:
         raise runtime.LiveRunError(
             f"every candidate failed its model or covariance admission: {trace.get('model_rejections')}"
@@ -1207,17 +1277,22 @@ def prepare(
             couplings[candidate.name] = tuple(
                 tuple(row_pubs[row] for row in rows) for rows in configuration.get("matched_walk_rows", {}).values()
             )
-        allocated, allocation_audits = allocate_plans(
-            tuple(plans),
-            contracts,
-            tuple(tiers),
-            budget,
-            simulation_alpha=args.simulation_alpha,
-            objective=policy["objective"],
-            cost_scenarios=scenarios,
-            coupled_pubs=couplings,
-            unscored_tier="smallest" if args.family in PATCH_FAMILIES else "largest",
-        )
+        if args.family == "et-row":
+            from et_planning import fixed_allocations
+
+            allocated, allocation_audits = fixed_allocations(tuple(plans), ownership, runtime)
+        else:
+            allocated, allocation_audits = allocate_plans(
+                tuple(plans),
+                contracts,
+                tuple(tiers),
+                budget,
+                simulation_alpha=args.simulation_alpha,
+                objective=policy["objective"],
+                cost_scenarios=scenarios,
+                coupled_pubs=couplings,
+                unscored_tier="smallest" if args.family in PATCH_FAMILIES else "largest",
+            )
         for original, allocated_plan in zip(plans, allocated, strict=True):
             selected_choices, selected_configuration, _shots = ownership[original.name]
             ownership[allocated_plan.name] = (
@@ -1234,6 +1309,14 @@ def prepare(
         objective=policy["objective"],
         cost_scenarios=scenarios,
     )
+    if args.family == "et-row":
+        from experiment_optimizer import restrict_candidates
+
+        result = restrict_candidates(
+            result,
+            {name for name, screen in et_screens.items() if screen["admitted"]},
+            "ET calibrated inference fails at declared allocation",
+        )
     # An infeasible dry run retains a concrete candidate and every rejection;
     # its state prevents that diagnostic archive from becoming a submission.
     retained = result.selected or plans[0].name
@@ -1244,6 +1327,7 @@ def prepare(
         args.pub_shots = dict(allocation_audits[retained]["pub_shots"])
     metadata = {
         "family_configuration": configuration,
+        **({"et_calibrated_design": et_screens[retained]} if args.family == "et-row" else {}),
         "observable_contracts": json.loads(json.dumps([asdict(contract) for contract in contracts])),
         "optimization": result.as_dict()
         | {
@@ -1256,7 +1340,8 @@ def prepare(
                 if per_pub
                 else "bounded routed candidates and uniform shot tiers; global optimality is unclaimed"
             ),
-        },
+        }
+        | ({"et_calibrated_candidates": et_screens} if args.family == "et-row" else {}),
         "optimizer_settings": settings(args),
         **(
             {
@@ -1336,6 +1421,10 @@ def measured_family(
     and withholds the analysis when the block's ``specification`` differs
     from experiment_optimizer.EMPIRICAL_BERNSTEIN.
     """
+    if record.get("family_configuration", {}).get("name") == "et-row":
+        from et_planning import collected
+
+        return collected(record, correction_evidence, executed, runtime)
     if record.get("family_configuration", {}).get("name") == "folded-correction":
         import correction_collection
 

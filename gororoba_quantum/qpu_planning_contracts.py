@@ -22,6 +22,7 @@ from types import SimpleNamespace
 from typing import Any, cast
 from unittest.mock import patch
 
+import numpy as np
 from qiskit.circuit import Delay, Measure
 from qiskit.transpiler import InstructionProperties, Target
 from qiskit_ibm_runtime.fake_provider import FakeFez, FakePrague
@@ -1671,6 +1672,17 @@ class _SmallHeronBackend(_ProbeBackend):
         return configuration
 
 
+class _DynamicHeronBackend(_SmallHeronBackend):
+    """_SmallHeronBackend whose Target also carries if_else, so dynamic families route on it."""
+
+    def __init__(self, name: str) -> None:
+        from qiskit.circuit import IfElseOp
+
+        backend = FakePrague()
+        backend.target.add_instruction(IfElseOp, name="if_else")
+        super().__init__(name, cast(Any, backend))
+
+
 class _SimulationForbidden(RuntimeError):
     """A reused submission reached a noise simulation."""
 
@@ -1887,6 +1899,59 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
         )
 
 
+def _verify_submit_reuse_herald() -> None:
+    """A heralded n21-orbit-rca submission reuses its approved design and predictions without simulating.
+
+    approved_family_design rebuilds the family contracts with the herald
+    configuration (qpu_planning.contract_configuration); four-outcome terms
+    would differ from the approved 64-outcome ones and send the submission
+    through the noise simulation, which the reuse case forbids.
+    """
+    from runtime_contracts import _FiniteQuotaService
+
+    backend = _DynamicHeronBackend("reuse_dynamic_fixture")
+    service = _FiniteQuotaService([backend])
+    family = [
+        "--family",
+        "n21-orbit-rca",
+        "--init-herald",
+        "--rep-delay",
+        "0.00005",
+        "--optimize",
+        "--shots",
+        "16384",
+        "--shot-tiers",
+        "16384",
+        "--replica-tiers",
+        "1",
+        "--optimizer-candidates",
+        "1",
+        "--model-shots",
+        "32768",
+        "--local-compute",
+        "auto",
+        "--local-compute-method",
+        "density_matrix_dynamic_statevector",
+        "--simulation-threads",
+        "1",
+        "--backends",
+        backend.name,
+        "--max-execution-seconds",
+        "60",
+        "--max-total-execution-seconds",
+        "120",
+    ]
+    with (
+        patch.object(live_run, "QiskitRuntimeService", lambda: service),
+        tempfile.TemporaryDirectory(prefix="gororoba-submit-reuse-herald-") as directory,
+    ):
+        _submit_reuse_case("n21-orbit-rca-herald", family, Path(directory))
+    print(
+        "QPU planning: a heralded n21-orbit-rca submission whose inputs match the approved record reuses its "
+        "lifted contracts, design and predictions without simulating, and a moved value refuses"
+    )
+
+
 def _verify_submit_reuse() -> None:
     """A submission reuses the approved predictions exactly when every input they read is unchanged."""
     from runtime_contracts import _FiniteQuotaService
@@ -2061,6 +2126,227 @@ def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
         )
 
 
+def _herald_renamed(isa: Any) -> Any:
+    """isa with every classical register renamed, so no register plays the herald role."""
+    from qiskit import ClassicalRegister, QuantumCircuit
+
+    renamed = QuantumCircuit(*isa.qregs, *(ClassicalRegister(r.size, r.name + "_plain") for r in isa.cregs))
+    renamed.compose(isa, inplace=True)
+    return renamed
+
+
+def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
+    """The heralded n21-orbit-rca family is its unheralded twin after one herald readout per qubit.
+
+    Every compiled arm measures each active qubit into the herald register
+    before a barrier over all of them, keeps the window bracket, the control
+    sites and the window durations of its unheralded twin compiled on the
+    same seed and layout, and has the lifted labeled law as its ideal. The
+    policy, the family configuration, the contracts and record_groups carry
+    the flag only when it is on, and the planner admits the heralded plan.
+    Negative controls: the herald written into a register of another name
+    opens the window at the first herald readout, which either leaves no
+    reset to close it or holds work-qubit operations, and the unfiltered
+    operation list holds the herald readouts.
+    """
+    from qpe_diagnostics import N21_PHASE_OUTCOMES, n21_labeled_law, phase_marginal
+
+    heralded_args = _args("n21-orbit-rca", init_herald=True)
+    plain_args = _args("n21-orbit-rca")
+    _require(qpu_planning.settings(heralded_args).get("init_herald") is True, "the policy lost the herald")
+    _require("init_herald" not in qpu_planning.settings(plain_args), "an absent herald entered the policy")
+    # approved_record_mismatches compares the record policy whole, so a
+    # submission whose herald differs from its approved record refuses.
+    heralded_policy = live_run.record_policy(heralded_args)
+    _require(
+        heralded_policy["design"].get("init_herald") is True and heralded_policy != live_run.record_policy(plain_args),
+        "the record policy does not bind the herald",
+    )
+    import qpu_cases
+
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    _require(
+        "--init-herald" not in qpu_cases._reproduction_arguments(fixture, location),
+        "an unheralded record replays with the herald",
+    )
+    fixture["policy"]["design"]["init_herald"] = True
+    _require(
+        "--init-herald" in qpu_cases._reproduction_arguments(fixture, location),
+        "a heralded record's written commands omit --init-herald",
+    )
+    trace: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], heralded_args, trace)
+    _require(bool(candidates), f"FakeFez rejects every heralded N=21 window family: {trace}")
+    (choice,), configuration = candidates[0]
+    _require(configuration.get("init_herald") is True, f"the family configuration lost the herald: {configuration}")
+    plain = qpu_planning.family_candidates(live_run, [snapshot], plain_args, {})
+    _require(bool(plain) and "init_herald" not in plain[0][1], "an absent herald entered the family configuration")
+    twins = [
+        live_run._compile(member.circuit, choice.snap, choice.seed, choice.layout)
+        for member in qpu_planning.n21_orbit_rca_group(
+            int(configuration["window_delay_dt"]), int(configuration["echo_half_dt"])
+        ).members
+    ]
+    _require(
+        qpu_planning.control_sites(live_run, choice.isas) == qpu_planning.control_sites(live_run, twins),
+        "the herald changes the control's measure and reset sites",
+    )
+    controls = qpu_planning.window_controls(qpu_planning.control_sites(live_run, choice.isas))
+    _require(
+        qpu_planning.window_durations(live_run, choice.snap, controls)[:2]
+        == (configuration["window_delay_dt"], configuration["echo_half_dt"]),
+        "the heralded windows differ from the control's own measure and reset durations",
+    )
+    for member, isa, twin in zip(choice.group.members, choice.isas, twins, strict=True):
+        active = sorted({isa.find_bit(q).index for i in isa.data if i.operation.name != "barrier" for q in i.qubits})
+        width = len(active)
+        prefix = isa.data[: width + 1]
+        herald_sites = [
+            isa.find_bit(i.qubits[0]).index for i in prefix[:width] if qpe_diagnostics.herald_measurement(isa, i)
+        ]
+        _require(sorted(herald_sites) == active, f"{member.name}: the herald reads {herald_sites}, not {active}")
+        _require(
+            prefix[width].operation.name == "barrier"
+            and sorted(isa.find_bit(q).index for q in prefix[width].qubits) == active,
+            f"{member.name}: no barrier over every active qubit follows the herald",
+        )
+        unfiltered = [name for name, _qubits in live_run._ops(isa) if name == "measure"]
+        _require(
+            len(unfiltered) == len([name for name, _qubits in live_run._ops(twin) if name == "measure"]) + width,
+            f"{member.name}: the operation list does not hold one herald readout per active qubit",
+        )
+        ideal = qpe_diagnostics.ideal_compiled_probabilities(isa)
+        _require(np.allclose(ideal, member.ideal, rtol=0, atol=1e-10), f"{member.name}: the heralded ideal moved")
+        _require(
+            np.allclose(phase_marginal(ideal), [float(v) for v in n21_labeled_law("_no_feedback" not in member.name)]),
+            f"{member.name}: the phase marginal differs from the labeled law",
+        )
+        inside = frozenset({"delay", "x"}) if "_window_echo_" in member.name else frozenset({"delay"})
+        found = qpe_diagnostics.window_bracket_violations(isa, inside)
+        _require(
+            not found and found == qpe_diagnostics.window_bracket_violations(twin, inside),
+            f"{member.name}: the heralded window bracket reads {found}",
+        )
+        try:
+            opened_at_herald = qpe_diagnostics.window_bracket_violations(_herald_renamed(isa), inside)
+        except ValueError as error:
+            # The first readout sits on a wire that is never reset.
+            opened_at_herald = [str(error)]
+        _require(
+            bool(opened_at_herald),
+            f"{member.name}: a window opened at the herald readout passes, so the herald exclusion proves nothing",
+        )
+    # prepare and live_run.approved_family_design build the contracts through
+    # qpu_planning.contract_configuration, so a dropped configuration here
+    # leaves four-outcome terms and fails the lift below.
+    contracts = diagnostic_experiments.family_contracts(
+        "n21-orbit-rca", 0.08, 0.05, 0.8, **qpu_planning.contract_configuration("n21-orbit-rca", configuration)
+    )
+    plain_contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8)
+    for lifted, unlifted in zip(contracts, plain_contracts, strict=True):
+        for term, plain_term in zip(lifted.terms, unlifted.terms, strict=True):
+            member = next(m for m in choice.group.members if m.name == term.member)
+            _require(
+                len(term.values) == member.ideal.size
+                and math.isclose(
+                    float(np.dot(term.values, member.ideal)),
+                    float(np.dot(plain_term.values, member.ideal[:N21_PHASE_OUTCOMES])),
+                    abs_tol=1e-12,
+                ),
+                f"{lifted.name}: the lifted contract scores the heralded law differently",
+            )
+    (rebuilt,) = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require(
+        [m.name for m in rebuilt.members] == [m.name for m in choice.group.members]
+        and all(qpe_diagnostics.has_herald(m.circuit) for m in rebuilt.members),
+        "record_groups lost the heralded members",
+    )
+    ideal_summary = choice.group.summarize({m.name: m.ideal for m in choice.group.members})
+    plain_group = qpu_planning.n21_orbit_rca_group(1, 1)
+    plain_summary = plain_group.summarize({m.name: m.ideal for m in plain_group.members})
+    _require(
+        all(ideal_summary[key] == value for key, value in plain_summary.items())
+        and all(value == 0.0 for key, value in ideal_summary.items() if "_herald_q" in key)
+        and sum("_herald_q" in key for key in ideal_summary) == 8 * 4,
+        f"the heralded summary moved the contrasts or the herald fractions: {ideal_summary}",
+    )
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    prepare_args = _args("n21-orbit-rca", init_herald=True, max_execution_seconds=60)
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        selected, metadata = qpu_planning.prepare(live_run, [snapshot], prepare_args, usage, {})
+    _require(
+        [c.group.name for c in selected] == ["n21_orbit_rca"]
+        and all(qpe_diagnostics.has_herald(isa) for isa in selected[0].isas),
+        "the planner did not admit the heralded family",
+    )
+    _require(
+        all(
+            len(term["values"]) == 1 << 6 for contract in metadata["observable_contracts"] for term in contract["terms"]
+        ),
+        "the planned contracts do not score every heralded outcome",
+    )
+    # Collection joins a replica's registers in circuit order; the joined
+    # outcome must read phase + 4 * herald, the index the lifted laws use.
+    from qiskit.primitives.containers import BitArray, DataBin, SamplerPubResult
+
+    entry = selected[0].entries[0]
+    (prefix,) = entry.prefixes
+    registers = live_run.packing.registers(entry.packed, prefix)
+    _require(
+        [qpe_diagnostics.register_role(name) for name in registers] == ["phase", "herald"],
+        f"the packed replica's registers read {registers}",
+    )
+    patterns = {"phase": "01", "herald": "0010"}
+    pub = SamplerPubResult(
+        DataBin(
+            **{
+                name: BitArray.from_samples(
+                    [patterns[qpe_diagnostics.register_role(name)]] * 8,
+                    num_bits=len(patterns[qpe_diagnostics.register_role(name)]),
+                )
+                for name in registers
+            }
+        )
+    )
+    joined = live_run._distribution(live_run._pub_counts(pub, registers, entry.name), entry.replicas[0].num_clbits)
+    _require(
+        joined.size == 1 << 6 and joined[1 + 4 * 0b0010] == 1.0,
+        f"phase 01 with herald 0010 joins to outcome {int(np.argmax(joined))}, not {1 + 4 * 0b0010}",
+    )
+    stderr = io.StringIO()
+    with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+        live_run.main(
+            [
+                "--family",
+                "n21-orbit-feedback",
+                "--init-herald",
+                "--max-execution-seconds",
+                "10",
+                "--max-total-execution-seconds",
+                "10",
+            ]
+        )
+    _require(
+        "--init-herald applies to the n21-orbit-rca family only" in stderr.getvalue(), "another family took the herald"
+    )
+
+
+def _verify_init_herald_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_init_herald(snapshot)
+    print(
+        "QPU planning: the heralded n21-orbit-rca family reads every active qubit before a full barrier, keeps its "
+        "unheralded twin's window bracket, control sites and windows, marginalizes to the labeled law, binds the "
+        "herald in policy, configuration, contracts and record_groups, and the planner admits it; a window opened "
+        "at the herald readout fails the bracket"
+    )
+
+
 def _verify_window_bracket_only() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
@@ -2098,16 +2384,26 @@ if __name__ == "__main__":
         "--submit-reuse", action="store_true", help="run only the approved-prediction reuse submission contracts"
     )
     parser.add_argument(
+        "--submit-reuse-herald",
+        action="store_true",
+        help="run only the heralded n21-orbit-rca approved-design reuse submission contract",
+    )
+    parser.add_argument(
         "--serialized-noise",
         action="store_true",
         help="run only the retained noise-serialization equivalence contract",
     )
     parser.add_argument("--window-bracket", action="store_true", help="run only the N=21 orbit window-bracket contract")
+    parser.add_argument(
+        "--init-herald", action="store_true", help="run only the n21-orbit-rca initialization-herald contract"
+    )
     parsed = parser.parse_args()
     if parsed.serialized_noise:
         _verify_serialized_noise_only()
     elif parsed.window_bracket:
         _verify_window_bracket_only()
+    elif parsed.init_herald:
+        _verify_init_herald_only()
     elif parsed.static_group_admission:
         _verify_static_admission_only()
     elif parsed.rep_delay:
@@ -2118,5 +2414,7 @@ if __name__ == "__main__":
         _verify_prep_excitation_only()
     elif parsed.submit_reuse:
         _verify_submit_reuse()
+    elif parsed.submit_reuse_herald:
+        _verify_submit_reuse_herald()
     else:
         _verify()

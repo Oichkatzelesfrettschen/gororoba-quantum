@@ -13,9 +13,22 @@ extend-exclude = ["docs/evidence/reviewer_associator_audit/audit.py"]
 "scripts/qi_*.py" = "py313"
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I", "B", "UP"]
+# S101 bans assert: python -O strips it, so a check must raise explicitly to
+# hold in every interpreter mode, and the gates run each command once.
+select = ["E", "W", "F", "I", "B", "UP", "S101"]
 # PEP 695 `type` aliases evaluate lazily and change runtime use of the aliases.
 ignore = ["UP040"]
+
+# Retained evidence and the records they verify pin these files' bytes by
+# sha256 (docs/VALIDATION.json, source-closure.json, the ripple validations),
+# so their asserts stay as recorded.
+[tool.ruff.lint.per-file-ignores]
+"gororoba_quantum/rank_path_topology.py" = ["S101"]
+"scripts/associator_walsh_classes.py" = ["S101"]
+"results/live/folded_raw_analysis.py" = ["S101"]
+"results/live/verify_source_closure.py" = ["S101"]
+"results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/verify_viewer.py" = ["S101"]
+"docs/notes/packages/manual/checks/algebra_interplay.py" = ["S101"]
 
 [tool.mypy]
 python_version = "3.14"

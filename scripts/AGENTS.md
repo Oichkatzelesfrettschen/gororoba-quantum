@@ -13,8 +13,8 @@ Cayley-Dickson arithmetic on a qubit register. The root AGENTS.md,
 gororoba_quantum/AGENTS.md and scripts/AGENTS.md carry this section with
 identical bytes; `ci/check_agents_sections.py` fails on any difference.
 `docs/evidence/reviewer_associator_audit/` replays the numeric claims below
-(gates sources-240 and sources-241), and `scripts/algebra_circuit_fixtures.py`
-(gates core-251 and core-252) runs the zero-product, Hadamard-basis and
+(gate sources-240), and `scripts/algebra_circuit_fixtures.py`
+(gate core-251) runs the zero-product, Hadamard-basis and
 workspace fixtures on the circuit builders of `designs.py`.
 
 **Encoding and representation.**

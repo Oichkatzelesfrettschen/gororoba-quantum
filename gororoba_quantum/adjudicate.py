@@ -871,8 +871,10 @@ def main() -> int:
         parser.error("a run directory or --check is required")
     from qiskit_ibm_runtime import QiskitRuntimeService
 
+    import ibm_account
+
     try:
-        out = adjudicate(QiskitRuntimeService(), args.run, args.seed)
+        out = adjudicate(ibm_account.open_service(QiskitRuntimeService), args.run, args.seed)
     except AdjudicationError as error:
         print(f"FAIL: {error}", file=sys.stderr)
         return 1

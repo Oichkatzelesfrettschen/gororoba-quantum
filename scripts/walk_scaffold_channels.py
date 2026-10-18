@@ -150,7 +150,8 @@ def member_role(name: str) -> tuple[str, tuple[int, int] | None, int | None]:
 def ideal_law(name: str) -> np.ndarray:
     role, pair, depth = member_role(name)
     if role == "depth":
-        assert pair is not None and depth is not None
+        if not (pair is not None and depth is not None):
+            raise AssertionError
         return _walk_ideal(pair, depth)
     law = np.zeros(16)
     law[0 if role == "readout0" else 15] = 1.0
@@ -193,7 +194,8 @@ def extract_lanes() -> list[dict[str, Any]]:
                 if not name.startswith("ripple_walk"):
                     continue
                 lane = re.match(r"ripple_walk_(lane\d+)_", name)
-                assert lane is not None
+                if lane is None:
+                    raise AssertionError
                 measured = measurements[name]
                 execution = measured["execution"]
                 if execution["calibration_changed_during_shots"]:

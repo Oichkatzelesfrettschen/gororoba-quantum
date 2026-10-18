@@ -276,7 +276,8 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
         "lifting": check_lifting(32),
     }
     triples = out["triples"]
-    assert isinstance(triples, dict)
+    if not isinstance(triples, dict):
+        raise AssertionError
     dim = 8
     while dim <= exhaustive_max:
         counts = triple_counts(dim)
@@ -297,7 +298,8 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
         triples[str(dim)] = {"method": "sampled", "independent_samples": int(free.sum()), "rate": rate, "se": se}
         dim *= 2
     subspaces = out["subspaces"]
-    assert isinstance(subspaces, dict)
+    if not isinstance(subspaces, dict):
+        raise AssertionError
     dim = 16
     while dim <= subspace_max:
         types = subspace_types(dim)
@@ -306,7 +308,8 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
         subspaces[str(dim)] = {"type_168": types[168], "type_72": types[72]}
         dim *= 2
     pairs = out["pairs"]
-    assert isinstance(pairs, dict)
+    if not isinstance(pairs, dict):
+        raise AssertionError
     dim = 16
     while dim <= pair_max:
         rows = pair_completions(dim)
@@ -316,7 +319,8 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
         dim *= 2
     walsh_out = out["walsh"]
     blocks = out["blocks"]
-    assert isinstance(walsh_out, dict) and isinstance(blocks, dict)
+    if not (isinstance(walsh_out, dict) and isinstance(blocks, dict)):
+        raise AssertionError
     for n in range(4, 13):
         dim = 1 << n
         k = np.arange(dim)
@@ -378,7 +382,8 @@ def main() -> int:
         return 0
     result = census(args.exhaustive_max, args.pair_max, args.subspace_max, args.sample_max, args.samples)
     triples = result["triples"]
-    assert isinstance(triples, dict)
+    if not isinstance(triples, dict):
+        raise AssertionError
     for dim, row in triples.items():
         print(f"dim {dim}: {row}")
     print(f"subspaces {result['subspaces']}")

@@ -147,7 +147,8 @@ def logical_circuit(gates: list[Gate], labels: Sequence[int], dt: float) -> Any:
         elif name == "SWAP":
             circuit.swap(q[0], q[1])
         elif name == "wait":
-            assert count is not None
+            if count is None:
+                raise AssertionError
             cycles = count * CYCLE_SECONDS / dt
             if abs(cycles - round(cycles)) > 1e-9:
                 raise ValueError(f"wait({count}) is not a whole number of dt")

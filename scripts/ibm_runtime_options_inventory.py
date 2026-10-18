@@ -72,6 +72,9 @@ from pathlib import Path
 from typing import Any, Literal, get_args, get_origin
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import ibm_account  # noqa: E402
+
 # CI sets it so a version mismatch fails instead of replaying the retained inventory (ci/pins.py).
 PINS_REQUIRED = "GOROROBA_PINS_REQUIRED"
 NOTE = ROOT / "docs/notes/ibm_quantum/hardware-controls.md"
@@ -720,7 +723,8 @@ def requirements() -> list[str]:
             continue
         match = re.fullmatch(r"([A-Za-z0-9_.\-]+)\s*(.*)", item.split(";")[0].strip())
         require(match is not None, f"unparsed requirement {item!r}")
-        assert match is not None
+        if match is None:
+            raise AssertionError
         name = re.sub(r"[-_.]+", "-", match.group(1)).lower()
         specifiers = sorted(part.strip() for part in match.group(2).split(",") if part.strip())
         rows.append(f"{name} {','.join(specifiers)}".strip())
@@ -1284,7 +1288,7 @@ def read_backends(out: Path) -> None:
     def stamp(call: str) -> None:
         reads.append({"call": call, "time": utc_now()})
 
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     stamp("QiskitRuntimeService() from the saved account")
     instance = str(service.active_instance() or "")
     require(bool(instance), "the saved account resolves no instance")

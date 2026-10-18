@@ -61,6 +61,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
 import correction_collection
+import ibm_account
 import local_compute
 import packing
 import parallel
@@ -72,7 +73,6 @@ from diagnostic_experiments import (
     FAMILY_NAMES,
     N21_FAMILIES,
     PATCH_FAMILIES,
-    STATE_PREP_FAMILY,
     record_groups,
     state_prep_arms,
 )
@@ -136,10 +136,16 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "designs.py",
     "diagnostic_experiments.py",
     "dynamic_density.py",
+    "et_reference.py",
+    "et_rows.py",
+    "et_campaign.py",
+    "et_statistics.py",
+    "et_planning.py",
     "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
     "hybrid_shor.py",
+    "ibm_account.py",
     "integral_homology.py",
     "jax_bridge.py",
     "live_run.py",
@@ -1123,6 +1129,14 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
     """
     if snap.admission_target is None:
         snap.admission_target = build_admission_target(snap)
+    compile_options: dict[str, Any] = {}
+    contract = (qc.metadata or {}).get("compilation_contract")
+    if contract is not None:
+        from et_rows import COMPILATION_CONTRACT
+
+        if contract != COMPILATION_CONTRACT:
+            raise ValueError(f"unknown compilation contract {contract!r}")
+        compile_options["qubits_initially_zero"] = False
     try:
         return transpile(
             qc,
@@ -1131,6 +1145,7 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
             optimization_level=OPT_LEVEL,
             seed_transpiler=seed,
             initial_layout=layout,
+            **compile_options,
         )
     except BaseException as error:
         if type(error).__name__ != "PanicException":
@@ -1851,6 +1866,16 @@ def _assign_fusion_indices(choices: list[Choice]) -> None:
 
 
 def execution_pubs(choices: list[Choice]) -> list[ExecutionPub]:
+    """Build ET's bounded bulk of circuit graphs before collecting temporary cycles."""
+    if any(choice.group.name == "et_row_campaign" for choice in choices):
+        from et_planning import bulk_packing
+
+        with bulk_packing():
+            return _execution_pubs(choices)
+    return _execution_pubs(choices)
+
+
+def _execution_pubs(choices: list[Choice]) -> list[ExecutionPub]:
     """Fuse corresponding logical entries on each backend and job-kind cluster.
 
     Row zero aligns every packed primary. Row one aligns every group-isolated
@@ -3105,6 +3130,7 @@ def _json_value(value: Any) -> Any:
 # Fields qpu_planning.prepare returns for a matched family; a reused design
 # copies each one the approved record carries.
 DESIGN_RECORD_FIELDS = (
+    "et_calibrated_design",
     "family_configuration",
     "observable_contracts",
     "optimization",
@@ -3269,7 +3295,7 @@ def approved_family_design(
                 args.precision,
                 args.alpha,
                 args.power,
-                **({"configuration": configuration} if args.family == STATE_PREP_FAMILY else {}),
+                **qpu_planning.contract_configuration(args.family, configuration),
             )
             tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
             ceiling = min(
@@ -3322,6 +3348,11 @@ def approved_family_design(
         log["design"] = {"reused": False, "blockers": blockers}
         return None
     for choice in choices:
+        if args.family == "et-row":
+            from et_planning import validate_ideals
+
+            validate_ideals(choice)
+            continue
         for entry in choice.entries:
             for replica in entry.replicas:
                 if not np.allclose(qpu_planning.ideal_compiled_probabilities(replica), entry.ideal, rtol=0, atol=1e-10):
@@ -3427,7 +3458,10 @@ def reuse_approved_predictions(choices: list[Choice], record: dict[str, Any], ar
 
 
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
-    available_groups = all_experiment_groups()
+    # The ET adapter constructs its complete family. Building every unrelated
+    # standalone circuit before backend discovery consumes time and memory
+    # without contributing a candidate to this opt-in family.
+    available_groups = [] if getattr(args, "family", None) == "et-row" and not args.groups else all_experiment_groups()
     known = {group.name for group in available_groups}
     unknown = sorted(set(args.groups or []) - known)
     if unknown:
@@ -3625,11 +3659,16 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             )
         sim, cal = sims[key]
         excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
-        noisy = (
-            simulate(choice, sim, int(record["shots"]), prep_excitation=excitation)
-            if excitation
-            else simulate(choice, sim, int(record["shots"]))
-        )
+        if record.get("family_configuration", {}).get("name") == "et-row":
+            from et_planning import simulate as simulate_et
+
+            noisy = simulate_et(sys.modules[__name__], choice, sim, int(record["shots"]))
+        else:
+            noisy = (
+                simulate(choice, sim, int(record["shots"]), prep_excitation=excitation)
+                if excitation
+                else simulate(choice, sim, int(record["shots"]))
+            )
         entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
         # Provenance of the whole-device noise model the prediction ran under;
         # the approval binds the group's calibration_fingerprint, not this digest.
@@ -3663,6 +3702,7 @@ def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
 
 APPROVED_GROUP_FIELDS = ("backend", "seed_transpiler", "initial_layout", "replica_floor")
 APPROVED_RECORD_FIELDS = (
+    "et_calibrated_design",
     "experiment_digest",
     "schema_version",
     "schema_contract",
@@ -4806,6 +4846,13 @@ def _instance_hash(service: Any) -> str:
     return hashlib.sha256(instance.encode()).hexdigest()[:12]
 
 
+def _require_record_instance(service: Any, record: dict[str, Any], context: str) -> None:
+    """A job lookup runs only on the service whose instance the record names (GOROROBA_IBM_ACCOUNT selects it)."""
+    recorded = record.get("instance_sha256_12")
+    if recorded is not None or ibm_account.account_name():
+        ibm_account.require_instance(recorded, _instance_hash(service), context, LiveRunError)
+
+
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
     """usage() seconds and window, with the instance identified only by a hash of its CRN."""
     instance = str(service.active_instance() or "")
@@ -5349,6 +5396,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
 def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
+    _require_record_instance(service, record, f"{run_dir}: collect")
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
     groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
     if (
@@ -5444,6 +5492,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     family_replayed: dict[str, list[np.ndarray]] = {}
     family_executed: dict[str, Any] = {}
     correction_family = record.get("family_configuration", {}).get("name") == "folded-correction"
+    et_family = record.get("family_configuration", {}).get("name") == "et-row"
     correction_evidence: list[dict[str, Any]] = []
     for job_entry in record["submission"]["jobs"]:
         shots = _recorded_job_shots(record, job_entry)
@@ -5581,6 +5630,18 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 replica_counts = [
                     _pub_counts(pub_result, packing.registers(entry.packed, prefix), name) for prefix in entry.prefixes
                 ]
+                if et_family:
+                    if len(replica_counts) != 1:
+                        raise LiveRunError("ET collection requires exactly one physical replica")
+                    from et_planning import measurement_map
+
+                    component_map = record["family_configuration"]["measurement_maps"][name]
+                    native_map = measurement_map(entry.packed)
+                    if native_map != component_map["classical_to_final_physical"]:
+                        raise LiveRunError(f"{name}: ET collection measurement roles differ from the approved map")
+                    correction_evidence.append(
+                        {"name": name, "counts": replica_counts[0], "measurement_map": component_map}
+                    )
                 if any(sum(counts.values()) != shots for counts in replica_counts):
                     raise LiveRunError(f"{name}: returned shot count differs from the planned {shots}")
                 if correction_family:
@@ -5610,6 +5671,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 if window is not None:
                     props_then = at[window[0]][0]
                     props_by_name[name] = props_then
+                    # The calibration in force at the PUB's execution start,
+                    # by value, over every qubit the PUB ran, so the fused
+                    # components of one PUB carry one execution evidence.
+                    executed[name]["placed_qubit_calibration"] = placed_qubit_calibration(
+                        props_then,
+                        sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
+                    )
                     calibration = props_then.last_update_date
                     sims_by_calibration.setdefault(calibration, at[window[0]][1])
                     replay_batches.setdefault(calibration, []).append(entry)
@@ -5734,7 +5802,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             family_measured,
             family_executed,
             sys.modules[__name__],
-            correction_evidence=correction_evidence if correction_family else None,
+            correction_evidence=correction_evidence if correction_family or et_family else None,
             replica_registers=(
                 qpu_planning.n21_exact_planning.retained_registers(run_dir, bounded_pubs) if bounded_pubs else None
             ),
@@ -5876,6 +5944,12 @@ def main(argv: list[str] | None = None) -> int:
         help="state-prep-control arms among prep0, reset, x and x_history, comma-separated: prep0 among "
         "them, or x_history alone, since it sets the end state every shot of its job leaves; "
         "omitted, prep0, reset and x; the policy binds a selection",
+    )
+    parser.add_argument(
+        "--init-herald",
+        action="store_true",
+        help="n21-orbit-rca: measure every qubit into a herald register before the program, a per-member "
+        "initial-excitation reading beside the unchanged labeled law; the policy and family configuration bind it",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
@@ -6109,6 +6183,8 @@ def main(argv: list[str] | None = None) -> int:
             args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
         except ValueError as error:
             parser.error(f"--state-prep-arms: {error}")
+    if args.init_herald and args.family != "n21-orbit-rca":
+        parser.error("--init-herald applies to the n21-orbit-rca family only")
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
@@ -6140,12 +6216,22 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
         args.max_replicas = 1
     if args.shot_allocation == "per-pub" and (
-        args.family not in ("ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize
+        args.family not in ("et-row", "ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize
     ):
         parser.error("per-PUB shot allocation requires an optimized algebra or patch family")
     if args.family in ("ripple", "rank-sector"):
         if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
             parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")
+    if args.family == "et-row":
+        if args.shots not in (2048, 8192) or args.max_replicas not in (None, 1) or args.replica_tiers != [1]:
+            parser.error("et-row fixes 8192 total signal shots, --max-replicas 1 and --replica-tiers 1")
+        if not args.optimize or args.shot_allocation != "per-pub":
+            parser.error("et-row requires --optimize --shot-allocation per-pub for its complete fixed budget")
+        if args.alpha != 0.05 or args.twirl or args.dd is not None:
+            parser.error("et-row requires alpha 0.05 and the unmitigated static policy")
+        args.max_replicas = 1
+        if sorted(set(args.shot_tiers)) != [32, 64, 128, 2048]:
+            parser.error("et-row requires --shot-tiers 32,64,128,2048 for its declared PUB allocation")
     if args.family:
         args.isolated_reference = False
     for name in ("alpha", "power", "simulation_alpha"):
@@ -6178,7 +6264,7 @@ def main(argv: list[str] | None = None) -> int:
             )
         print(f"FAIL: {error}", file=sys.stderr)
         return 1
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     try:
         if args.collect:
             collect(service, args.collect)
@@ -6391,6 +6477,7 @@ def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]
     jobs = record.get("submission", {}).get("jobs") or []
     if not jobs:
         raise LiveRunError(f"{run_dir} records no submitted jobs to preserve")
+    _require_record_instance(service, record, f"{run_dir}: preserve-raw")
     preserved: dict[str, Any] = {}
     (run_dir / RAW_DIRECTORY).mkdir(parents=True, exist_ok=True)
     for job_entry in jobs:

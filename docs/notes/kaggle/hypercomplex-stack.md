@@ -24,7 +24,7 @@ published only as a wheel, which `--install` installs as it is.
 | --- | --- | --- |
 | Build host (Arch) | Arch packages from `~/Github/PKGBUILDs`, `makepkg -si --nocheck` | `--fetch DIR` then `--extract DIR`: the regenerated `docs/evidence/algebra_packages/tables.json` must equal the retained bytes |
 | Kaggle kernel | `--fetch` and `--install` in `kaggle_kernel/kernel_main.py`: sha256-checked archives, recipes applied, `pip install --no-deps` | the same `--extract` byte comparison; the kernel exits with code 3 before its entry on any difference (`hypercomplex.json`) |
-| GitHub Actions | no package installed | `--check` (gates sources-216 and sources-217) re-derives every retained table's relation to `cd_core` |
+| GitHub Actions | no package installed | `--check` (gate sources-216) re-derives every retained table's relation to `cd_core` |
 
 `--extract` binds each installed distribution to its archive: exactly one
 archive carries the pinned sha256, the installed version equals the pin,

@@ -1,0 +1,32 @@
+[
+  {
+    "specification": "assessor-domain-overflow.md",
+    "url": "https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/226",
+    "title": "Distinguish assessor reclassification from embedded zero-product inheritance"
+  },
+  {
+    "specification": "shifted-et-signs.md",
+    "url": "https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/227",
+    "title": "Verify shifted ET signs independently of occupancy"
+  },
+  {
+    "specification": "et-theorem-attribution.md",
+    "url": "https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/228",
+    "title": "Bind ET embedding attribution to the actual Theorem 11 hypotheses"
+  },
+  {
+    "specification": "child-et-borders.md",
+    "url": "https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/229",
+    "title": "Add signed child-border ET certificates alongside same-level Skyboxes"
+  },
+  {
+    "specification": "et-balloon-trajectories.md",
+    "url": "https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/230",
+    "title": "Separate fixed-strut and moving-strut ET growth contracts"
+  },
+  {
+    "specification": "et-kernel-proof-bridges.md",
+    "url": "https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/231",
+    "title": "Formalize ET paired kernels and signed graph correspondence from existing sign foundations"
+  }
+]

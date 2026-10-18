@@ -135,7 +135,49 @@ the nominal pair's phase-per-exposure slope inside its profile-likelihood
 set; extra_readout's phase-free contrast magnitude
 hypot(fb1 - fb3, nf3 - nf1) must reach the nominal one times
 exp(-sum t_q / T2_q) over the added idle; window_echo's magnitude must reach
-the nominal one.
+the nominal one. T2 and the assignment rates come from the calibration in
+force at each PUB's execution start, which `--collect` retains as
+`placed_qubit_calibration` in each member's `executed` entry; a run
+collected without it reads the plan-time values, and the report names the
+source per member. The report also records the analyzer's sha256, and
+`--expected-analyzer-sha256 HEX` refuses any other analyzer.
+
+`--init-herald` (policy and family configuration bind it) measures every
+qubit into a `herald` register before the program, then a barrier over all
+qubits. The phase register keeps clbits 0 and 1, so the ideal law, weights
+and contract values lift onto the six clbits by phase label;
+`window_bracket_violations`, the planner's control sites and `window_roles`
+skip the herald readouts and their measure plays, so a heralded member reads
+its unheralded twin's bracket, windows and couplings (gates core-445 and
+core-459). Herald bit k reads logical qubit k's initial excitation plus its
+readout P(1|0); every member must read each herald qubit through one
+assignment channel (prob_meas1_prep0, prob_meas0_prep1) at its execution
+calibration, which makes the readout term common to the members, so the
+herald bounds the member spread of the excitation and is never a
+post-selection. Members whose channels differ leave the herald not
+evaluable.
+An excitation of bit k moves a pair's contrast vector by at most c_k m with
+c = (2, 1, 2, 2) for the control and the work bits for 1, 4 and 16 (exact
+ideal laws), so a spread of at most B on every bit moves a magnitude
+contract's statistic by at most 2 x (1/4) x 7 B = 3.5 B. The magnitude
+contracts' minimum detectable deficit at power 0.8 is (z_(1 - 0.05/3) +
+z_0.8) / sqrt(n), 0.01786 at 27,648 shots, and B holds the shift to a
+quarter of it: B = 0.001276, and a work-phase shift of at most 7 B = 0.0089
+rad. The run is herald-admissible unless a simultaneous Agresti-Caffo lower
+limit (alpha 0.05 over every bit and ordered member pair) of a member
+difference exceeds B times the qubit's readout contrast. The seeded
+operating characteristic (gate core-459) holds the level at spreads up to B
+and refuses at a 0.006 spread. At 27,648 shots and a 0.006 herald rate a
+member difference has standard error 0.00066 and the simultaneous quantile
+is 3.5, so the test resolves spreads above about B + 0.0023 = 0.0036; the
+report states the contract shift the simultaneous upper limits leave
+possible. A refused or unevaluable herald reads every between-arm contract
+not_admissible, and the readout contract is not evaluable in an arm whose
+nominal and extra_readout members executed at different T2 on a coupled
+qubit. A heralded submission under an approved record rebuilds the lifted
+contracts and reuses the approved design without simulating (gate
+core-570). The mechanism fit
+(`n21_orbit_rca.py RUN`, `--check`) reads unheralded runs only.
 
 The window durations come from the backend's longest measure and reset in
 dt and are recorded in the family configuration with the backend dt. Four
@@ -597,8 +639,7 @@ QPE checks, standalone optimizer checks, and fake-backend planning
 contracts. The planning checks cover the shared initial mapping,
 per-phase calibrated delay sites, complete static/dynamic job accounting, shot-tier
 admission, approval mismatches, and negative-record persistence. Those
-checks consume zero QPU jobs. The allocated-case contracts run in normal
-and optimized Python modes, reject inconsistent mappings and ledgers, preserve
+checks consume zero QPU jobs. The allocated-case contracts reject inconsistent mappings and ledgers, preserve
 retained artifact bytes on rejection, and parse reproduction commands with the
 live CLI before any service call. A fresh live-calibration dry run remains a
 separate admission surface. Historical allocation arithmetic and separate

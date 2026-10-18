@@ -205,15 +205,26 @@ class IbmRuns:
     absent = "holds no audited job"
 
     def __init__(self) -> None:
-        audit = load_json(RETENTION_AUDIT)
-        service = load_json(SERVICE_INVENTORY)
-        require(
-            audit.get("inventory_sha256") == digest(SERVICE_INVENTORY),
-            "the retention audit binds a different service inventory",
-        )
-        self.jobs: list[dict[str, Any]] = audit["jobs"]
-        self.service = service
-        self.status = {job["job_id"]: job["status"] for job in service["jobs"]}
+        # The default instance's inventory pairs with the retention audit; each
+        # further instance (qpu-job-inventory.<instance_crn_hash>.json) pairs
+        # with qpu-job-retention-audit.<instance_crn_hash>.json.
+        inventories = [SERVICE_INVENTORY, *sorted(SERVICE_INVENTORY.parent.glob("qpu-job-inventory.*.json"))]
+        self.jobs: list[dict[str, Any]] = []
+        self.services: list[dict[str, Any]] = []
+        self.job_groups: list[list[dict[str, Any]]] = []
+        for inventory in inventories:
+            audit_file = inventory.with_name(inventory.name.replace("qpu-job-inventory", "qpu-job-retention-audit"))
+            audit = load_json(audit_file)
+            service = load_json(inventory)
+            require(
+                audit.get("inventory_sha256") == digest(inventory),
+                "the retention audit binds a different service inventory",
+            )
+            self.jobs += audit["jobs"]
+            self.services.append(service)
+            self.job_groups.append(audit["jobs"])
+        self.service = self.services[0]
+        self.status = {job["job_id"]: job["status"] for service in self.services for job in service["jobs"]}
 
     def runs(self) -> dict[str, dict[str, Any]]:
         grouped: dict[str, list[dict[str, Any]]] = {}
@@ -236,14 +247,18 @@ class IbmRuns:
         return facts
 
     def account_line(self) -> str:
-        usage = self.service["account_usage"]
-        charge = sum(job["final_qpu_charge_seconds"] for job in self.jobs)
-        return (
-            f"The IBM service inventory observed at {self.service['observed_at']} holds {len(self.jobs)} physical "
-            f"jobs with {charge} settled seconds; the account then reported {usage['usage_consumed_seconds']} of "
-            f"{usage['usage_limit_seconds']} s consumed in the rolling window ending "
-            f"{usage['usage_period']['end_time']}. That is an observation, not a current balance or an authorization."
-        )
+        lines = []
+        for service, jobs in zip(self.services, self.job_groups, strict=True):
+            usage = service["account_usage"]
+            charge = sum(job["final_qpu_charge_seconds"] for job in jobs)
+            lines.append(
+                f"The IBM service inventory observed at {service['observed_at']} holds {len(jobs)} physical "
+                f"jobs with {charge} settled seconds; the account then reported {usage['usage_consumed_seconds']} of "
+                f"{usage['usage_limit_seconds']} s consumed in the rolling window ending "
+                f"{usage['usage_period']['end_time']}. That is an observation, not a current balance or an "
+                "authorization."
+            )
+        return "\n\n".join(lines)
 
 
 def _optional_json(path: Path) -> Any:
