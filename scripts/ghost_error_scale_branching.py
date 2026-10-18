@@ -547,7 +547,8 @@ def sweep_runs(
             groups = [merged[key] for key, _ in first.keys]
             if laws is not None:
                 for group in groups:
-                    assert group.law is not None
+                    if group.law is None:
+                        raise AssertionError
                     laws[(run, group.structure["replicas"][0])] = group.law
             results.append(summarize_run(first, groups, cz_factors, readout_factors))
         return results, seconds
@@ -815,7 +816,8 @@ def final_diagonal(state: SnapshotState, circuit: QuantumCircuit) -> np.ndarray:
     staged = branch_dm.stage(plan, backend)
     rho = backend.initial(1, 1, 2**plan.n)
     for step, operator in zip(plan.steps, staged.operators, strict=True):
-        assert isinstance(step, branch_dm.Step)
+        if not isinstance(step, branch_dm.Step):
+            raise AssertionError
         rho = branch_dm._apply_local(rho, step.qargs, operator, plan.n, backend)
     return np.real(np.diagonal(rho[0, 0, 0]))
 

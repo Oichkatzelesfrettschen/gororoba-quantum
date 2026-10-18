@@ -1085,9 +1085,7 @@
       ],
       "gates": {
         "core-212": "replay",
-        "core-213": "replay",
-        "sources-215": "replay",
-        "sources-218": "replay"
+        "sources-215": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -1132,8 +1130,7 @@
         "docs/notes/singular_sector_dynamics.md"
       ],
       "gates": {
-        "core-240": "replay",
-        "core-241": "replay"
+        "core-240": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -1581,7 +1578,6 @@
       ],
       "gates": {
         "sources-127": "replay",
-        "sources-128": "replay",
         "sources-175": "bytes"
       },
       "acquisitions": [],
@@ -1608,7 +1604,6 @@
       ],
       "gates": {
         "sources-143": "replay",
-        "sources-144": "replay",
         "sources-145": "bytes"
       },
       "acquisitions": [],
@@ -1638,9 +1633,8 @@
       ],
       "gates": {
         "core-053": "replay",
-        "core-054": "replay",
-        "sources-150": "replay",
-        "sources-151": "bytes"
+        "sources-151": "bytes",
+        "sources-149": "replay"
       },
       "acquisitions": [],
       "assumptions": [],
@@ -1666,7 +1660,6 @@
       ],
       "gates": {
         "sources-129": "replay",
-        "sources-130": "replay",
         "sources-176": "bytes"
       },
       "acquisitions": [],
@@ -1693,9 +1686,7 @@
       ],
       "gates": {
         "core-063": "replay",
-        "core-064": "replay",
         "sources-166": "replay",
-        "sources-167": "replay",
         "sources-168": "bytes"
       },
       "acquisitions": [],
@@ -1722,9 +1713,7 @@
       ],
       "gates": {
         "core-179": "replay",
-        "core-180": "replay",
         "sources-184": "replay",
-        "sources-185": "replay",
         "sources-186": "bytes"
       },
       "acquisitions": [],
@@ -1754,9 +1743,7 @@
       ],
       "gates": {
         "core-190": "replay",
-        "core-191": "replay",
         "sources-192": "replay",
-        "sources-193": "replay",
         "sources-194": "bytes"
       },
       "acquisitions": [],
@@ -1909,8 +1896,7 @@
         "AGENTS.md"
       ],
       "gates": {
-        "core-251": "replay",
-        "core-252": "replay"
+        "core-251": "replay"
       },
       "acquisitions": [],
       "assumptions": [],

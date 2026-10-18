@@ -316,19 +316,22 @@ def n21_orbit_diagnostic(
     if bracketed:
         circuit.barrier()
     if variant == "window_echo":
-        assert echo_half_dt is not None
+        if echo_half_dt is None:
+            raise AssertionError
         for _half in range(2):
             circuit.delay(echo_half_dt, [one, sixteen], unit="dt")
             circuit.x([one, sixteen])
     if variant == "window_barrier":
-        assert echo_half_dt is not None
+        if echo_half_dt is None:
+            raise AssertionError
         circuit.delay(2 * echo_half_dt, [one, sixteen], unit="dt")
     circuit.measure(0, phase[0])
     if variant == "extra_readout":
         circuit.measure(0, phase[0])
     circuit.reset(0)
     if variant == "window_delay":
-        assert window_delay_dt is not None
+        if window_delay_dt is None:
+            raise AssertionError
         circuit.delay(window_delay_dt, 0, unit="dt")
     if bracketed:
         circuit.barrier()

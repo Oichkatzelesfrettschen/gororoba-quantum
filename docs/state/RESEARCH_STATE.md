@@ -349,12 +349,12 @@ circuit and charges the account ledger's change.
   Boundary: The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); real basis triples.
   Evidence: [census.json](../evidence/cd_associator_defect_census/census.json), [cd_associator_defect_census.md](../notes/cd_associator_defect_census.md).
-  Gates: replayed by core-212, core-213, sources-215, sources-218.
+  Gates: replayed by core-212, sources-215.
 - **singular-sector-split** (mathematical theorem, algebra). (L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.
   Boundary: Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); two-term elements e_i + s e_j.
   Evidence: [singular_sector_dynamics.md](../notes/singular_sector_dynamics.md).
-  Gates: replayed by core-240, core-241.
+  Gates: replayed by core-240.
   Depends on: cd-associator-census.
 - **hpp-fixed-degree-refutation** (exact finite certificate, algebra). Bounded-degree Boolean interpolation recovers every degree-d promised polynomial on n <= 8 variables from sum_k<=d C(n, k) classical queries, refuting the stated fixed-degree exponential-query claim; squared Walsh data loses the phase the LCU witness carries.
   Boundary: Covers the enumerated variable counts and degrees; a hidden-polynomial advantage claim needs its own oracle, promise and output model.
@@ -438,34 +438,34 @@ circuit and charges the account ledger's change.
 - **local-schur-fixtures** (exact finite certificate, geometry). Six rational perturbations pass the rank, skew, lift and negative-control checks, with pointwise unit-base linearized bounds 23, 21 and 11.
   Boundary: Only the maximal bound matches a known stratum dimension; a germ atlas and lower-stratum regularity remain open.
   Evidence: [result.json](../evidence/local_schur/result.json), [README.md](../evidence/local_schur/README.md).
-  Gates: replayed by sources-127, sources-128; bytes verified by sources-175.
+  Gates: replayed by sources-127; bytes verified by sources-175.
 - **dimension32-skew-schur-charts** (mathematical theorem, geometry). Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain with nonzero reduced ranks and complete kernel lifts, inverse coordinates and sphere metrics; written all-real block identities give the local incidence homeomorphism.
   Boundary: A pair of exact paths with one initial tangent shows different nearby ranks, so linearization bounds rank only; nonlinear rank geometry and attachments remain open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); dimension 32, doubly-pure coefficients, admitted pivot domains.
   Evidence: [result.json](../evidence/dimension32_skew_schur/result.json), [dimension32_skew_schur_charts.md](../notes/dimension32_skew_schur_charts.md).
-  Gates: replayed by sources-143, sources-144; bytes verified by sources-145.
+  Gates: replayed by sources-143; bytes verified by sources-145.
 - **schur-acceleration-certificates** (exact finite certificate, geometry). Exact rational certificates at the admitted dimension-32 centers separate first-order failure, a complete affine space of compatible accelerations and a separating obstruction; an explicit nullity-12 direction passes every linear constraint and violates the quadratic tangent condition.
   Boundary: Formal second-order compatibility gives neither an actual curve nor smoothness; the quadratic conditions are an outer bound.
   Evidence: [result.json](../evidence/schur_acceleration/result.json), [schur_acceleration_certificates.md](../notes/schur_acceleration_certificates.md).
-  Gates: replayed by core-053, core-054, sources-150; bytes verified by sources-151.
+  Gates: replayed by core-053, sources-149; bytes verified by sources-151.
 - **fold-average-obstruction** (exact finite certificate, geometry). Exact fold averaging destroys a zero product, while eight implemented 4 x 4 XOR blocks preserve the complete selected-path multiplication matrix up to input and output permutations.
   Boundary: Count identities carry no topology-transfer map; information needs the full average and detail coordinates.
   Evidence: [fold_projection_counterexamples.json](../evidence/folding_proofs/fold_projection_counterexamples.json), [open_gororoba_folding_proofs.md](../notes/open_gororoba_folding_proofs.md).
-  Gates: replayed by sources-129, sources-130; bytes verified by sources-176.
+  Gates: replayed by sources-129; bytes verified by sources-176.
 - **complex-skew-certificate** (exact finite certificate, geometry). In dimension 32, fifteen coefficient-pair domains carry exhaustive Pfaffian equations and conjugated kernel maps, and the selected nullity-12 center has a six-coordinate complex residual.
   Boundary: The residual's real branches and normal links are unsolved, so no neighborhood classification follows.
   Evidence: [result.json](../evidence/complex_skew/result.json), [complex_skew_rank_geometry.md](../notes/complex_skew_rank_geometry.md).
-  Gates: replayed by core-063, core-064, sources-166, sources-167; bytes verified by sources-168.
+  Gates: replayed by core-063, sources-166; bytes verified by sources-168.
 - **projective-kernel-frontiers** (mathematical theorem, geometry). Finite frame saturation recovers the leading kernel plane of every admitted polynomial path, and an all-stage quotient theorem rebuilds the full pair space from tautological sphere spaces over all real frontier graphs.
   Boundary: Graph-closure computation, smooth subdivisions and quotient cell maps remain open; the theorem supplies no homology table.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); admitted polynomial paths.
   Evidence: [result.json](../evidence/projective_kernel_limits/result.json), [projective_kernel_frontiers.md](../notes/projective_kernel_frontiers.md).
-  Gates: replayed by core-179, core-180, sources-184, sources-185; bytes verified by sources-186.
+  Gates: replayed by core-179, sources-184; bytes verified by sources-186.
 - **real-circle-frontier-graph** (mathematical theorem, geometry). The named cone-slice frontier graph is a smooth cylinder with a trace inverse, and labelled integral contractions certify the unit-partner evaluation map and its cohomology pullbacks.
   Boundary: The named slice; ambient rank domains need their own positive-domain and coverage proofs.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the named cone slice.
   Evidence: [result.json](../evidence/real_frontier_graphs/result.json), [real_circle_frontier_graphs.md](../notes/real_circle_frontier_graphs.md).
-  Gates: replayed by core-190, core-191, sources-192, sources-193; bytes verified by sources-194.
+  Gates: replayed by core-190, sources-192; bytes verified by sources-194.
 - **a5-rank-locus-local-dimension** (exact finite certificate, geometry). At exact witnesses, the A_5 rank loci have local dimension 11 on D_(5,16) ({a,0}, a a zero divisor), 17 on D_(5,12) (both entries zero divisors on the D-locus) and 23 on D_(5,8) (both zero divisors off the D-locus): each family's dimension meets the exact upper bound dim{y : U^T L_y V = 0} - 1, so at those witnesses the tangent cone lies in H_5^perp. Every family with a non-zero-divisor coordinate (nullities 12, 8, 4) sits exactly two below its bound, and the listed witnesses outside H_5^perp carry upper bounds only: 15 at Proposition 8.2's nullity-12 (i_4, e_p) and 27 at Moreno's nullity-4 e_1 + e_10 + 2 e_24.
   Boundary: Local dimensions at 29 named exact points; the family dimensions rest on Theorems 1.5 and 7.5 of math/0702075 and Theorem 15.7 of math/0511691, and the upper bound is a tangent-cone containment. It decomposes no rank locus, counts no components, constructs no family through the witnesses outside H_5^perp, and leaves the two-dimensional gap at non-zero-divisor families open.
   Assumptions: Theorem 1.5 and Theorem 7.5 of math/0702075 as stated in docs/notes/math-0702075.md; Theorem 15.7 of math/0511691 (unit zero divisors of A_4 form V_2(R^7)) as stated in docs/notes/math-0511691.md.
@@ -499,7 +499,7 @@ circuit and charges the account ledger's change.
 - **algebra-circuit-fixtures** (circuit-conformance check, implementation). The designs.py builders pass the zero-product, Hadamard-basis and workspace fixtures: the dark witness (e1 + e10)(e4 - e15) gives P(s = 0) = 0, its bright control 1, and the four-label negative regression (e1 + e10)(e2 - e13) gives 1/2.
   Boundary: Ideal semantics only.
   Evidence: [AGENTS.md](../../AGENTS.md).
-  Gates: replayed by core-251, core-252.
+  Gates: replayed by core-251.
 - **heron-dd-circuit-infrastructure** (circuit-conformance check, implementation). dd_window (none, Hahn, CPMG-2, XY4) refocuses a static detuning in ideal simulation, the routed Steane CPMG-2 patch keeps its seven windows and final frame, and the Bell probe's x and y quadratures read (1 + V cos theta)/2 and (1 + V sin theta)/2.
   Boundary: Tested circuit and statistics infrastructure, not a demonstrated hardware mitigation.
   Evidence: [heron_spatial_multiprogramming.md](../notes/heron_spatial_multiprogramming.md).

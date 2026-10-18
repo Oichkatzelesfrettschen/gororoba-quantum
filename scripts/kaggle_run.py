@@ -663,7 +663,8 @@ def push(args: argparse.Namespace) -> int:
         raise SystemExit(f"kaggle refused the push: {reply}")
     version = re.search(r"Kernel version (\d+) successfully pushed", reply)
     require(version is not None, f"push reply names no kernel version: {reply}")
-    assert version is not None
+    if version is None:
+        raise AssertionError
     submission = submission_of(run_dir)
     submission["kernel_version"] = int(version.group(1))
     (run_dir / "submission.json").write_text(json.dumps(submission, indent=1) + "\n", encoding="utf-8")
@@ -1252,7 +1253,8 @@ def bundled_job(run_py: Path) -> dict[str, Any]:
     """The kernel_job.json inside a generated run.py's embedded bundle."""
     found = re.search(r'BUNDLE = "([^"]+)"', run_py.read_text(encoding="utf-8"))
     require(found is not None, f"{run_py} embeds no bundle")
-    assert found is not None
+    if found is None:
+        raise AssertionError
     archive = zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(found.group(1)))))
     return dict(json.loads(archive.read("kaggle_kernel/kernel_job.json")))
 
@@ -1293,7 +1295,8 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
         # run.py's own decoding, so the kernel unpacks exactly the bundled bytes.
         embedded = re.search(r'BUNDLE = "([^"]+)"', runner)
         require(embedded is not None, f"{machine}: run.py embeds no bundle")
-        assert embedded is not None
+        if embedded is None:
+            raise AssertionError
         unpacked = zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(embedded.group(1)))))
         members = {name: sha256(unpacked.read(name)) for name in unpacked.namelist()}
         require(

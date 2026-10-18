@@ -45,5 +45,5 @@ From the repository root on the build host, with `PYTHON=${PYTHON:-python3}`:
 runs each block as `$PYTHON -c` from the repository root with `PYTHONPATH=gororoba_quantum`
 and warnings ignored, and reads site-packages paths as `site-packages/`. `--write` refreshes
 the output blocks after a package rebuild. The two `--check` replays import `cd_core` alone
-and run in CI (gates sources-247 to sources-250); their `--extract` modes re-read the
+and run in CI (gates sources-247 and sources-249); their `--extract` modes re-read the
 installed packages, Sage through one `sage -c` call, and rewrite the retained JSON.

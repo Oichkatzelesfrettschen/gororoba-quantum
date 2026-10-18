@@ -2413,29 +2413,45 @@ def _verify() -> None:
         retain(record)
         originals = {name: (run_dir / name).read_bytes() for name in ("record.json", "isa.qpy")}
         destination = write_case(run_dir, record)
-        assert destination is not None
+        if destination is None:
+            raise AssertionError
         text = destination.read_text()
-        assert "UNAPPROVED" in text and "--approved-record-sha256" in text
-        assert hashlib.sha256(originals["record.json"]).hexdigest() in text
-        assert hashlib.sha256(originals["isa.qpy"]).hexdigest() in text
-        assert "--backends ibm_fez,ibm_kingston" in text
-        assert "--shot-tiers 2048,4096" in text
-        assert "2026-10-11T12:00:00+00:00" in text and "2.5.4+local" in text
-        assert "exceeds 0.06" in text and "conditional target power 0.8" in text
-        assert "one-sided detection radius" in text and "Power admission is conditional" in text
-        assert str(run_dir) not in text and "crn:" not in text
-        assert "--submit" not in text.split("## Approval-only submission template")[0]
-        assert write_case(run_dir, record) == destination and destination.read_text() == text
-        assert "--model-method" not in text and "--replica-variance-bound" not in text
+        if not ("UNAPPROVED" in text and "--approved-record-sha256" in text):
+            raise AssertionError
+        if hashlib.sha256(originals["record.json"]).hexdigest() not in text:
+            raise AssertionError
+        if hashlib.sha256(originals["isa.qpy"]).hexdigest() not in text:
+            raise AssertionError
+        if "--backends ibm_fez,ibm_kingston" not in text:
+            raise AssertionError
+        if "--shot-tiers 2048,4096" not in text:
+            raise AssertionError
+        if not ("2026-10-11T12:00:00+00:00" in text and "2.5.4+local" in text):
+            raise AssertionError
+        if not ("exceeds 0.06" in text and "conditional target power 0.8" in text):
+            raise AssertionError
+        if not ("one-sided detection radius" in text and "Power admission is conditional" in text):
+            raise AssertionError
+        if not (str(run_dir) not in text and "crn:" not in text):
+            raise AssertionError
+        if "--submit" in text.split("## Approval-only submission template")[0]:
+            raise AssertionError
+        if not (write_case(run_dir, record) == destination and destination.read_text() == text):
+            raise AssertionError
+        if not ("--model-method" not in text and "--replica-variance-bound" not in text):
+            raise AssertionError
         exact = copy.deepcopy(record)
         exact["policy"]["design"].update(model_method="exact", replica_variance_bound=0.55)
         exact_arguments = _reproduction_arguments(exact, Path("results/live/fixture/record.json"))
-        assert "--model-method exact --replica-variance-bound 0.55" in " ".join(exact_arguments)
-        assert "--rep-delay" not in text and "--prep-excitation" not in text
+        if "--model-method exact --replica-variance-bound 0.55" not in " ".join(exact_arguments):
+            raise AssertionError
+        if not ("--rep-delay" not in text and "--prep-excitation" not in text):
+            raise AssertionError
         excited = copy.deepcopy(exact)
         excited["policy"]["design"]["prep_excitation"] = 0.01
         excited_arguments = _reproduction_arguments(excited, Path("results/live/fixture/record.json"))
-        assert "--prep-excitation 0.01" in " ".join(excited_arguments)
+        if "--prep-excitation 0.01" not in " ".join(excited_arguments):
+            raise AssertionError
         prepared = copy.deepcopy(record)
         prepared["policy"]["design"].update(family="state-prep-control", state_prep_arms=["prep0"])
         prepared["family_configuration"] = {
@@ -2445,18 +2461,24 @@ def _verify() -> None:
             "arms": {"prep0": "init, measure"},
         }
         prepared_arguments = " ".join(_reproduction_arguments(prepared, Path("results/live/fixture/record.json")))
-        assert "--layout 104,105 --state-prep-arms prep0" in prepared_arguments
+        if "--layout 104,105 --state-prep-arms prep0" not in prepared_arguments:
+            raise AssertionError
         prepared_case = " ".join(_scientific_case("state-prep-control", prepared))
-        assert "One PUB measures every qubit" in prepared_case and "2 in all" in prepared_case
-        assert "reset benefit" not in prepared_case and "Three PUBs" not in prepared_case
+        if not ("One PUB measures every qubit" in prepared_case and "2 in all" in prepared_case):
+            raise AssertionError
+        if not ("reset benefit" not in prepared_case and "Three PUBs" not in prepared_case):
+            raise AssertionError
         history_record = copy.deepcopy(prepared)
         history_record["policy"]["design"]["state_prep_arms"] = ["x_history"]
         history_record["family_configuration"]["arms"] = {"x_history": "init, measure, x"}
         history_arguments = " ".join(_reproduction_arguments(history_record, Path("results/live/fixture/record.json")))
-        assert "--layout 104,105 --state-prep-arms x_history" in history_arguments
+        if "--layout 104,105 --state-prep-arms x_history" not in history_arguments:
+            raise AssertionError
         history_case = " ".join(_scientific_case("state-prep-control", history_record))
-        assert "One PUB measures every qubit" in history_case and "H reads" in history_case
-        assert "only arm of its job" in history_case and "A reads" not in history_case
+        if not ("One PUB measures every qubit" in history_case and "H reads" in history_case):
+            raise AssertionError
+        if not ("only arm of its job" in history_case and "A reads" not in history_case):
+            raise AssertionError
         for refused in (["prep0", "bogus"], ["x"], ["x_history", "prep0"], ["prep0", "x_history"]):
             prepared["policy"]["design"]["state_prep_arms"] = refused
             try:
@@ -2464,11 +2486,13 @@ def _verify() -> None:
             except ValueError:
                 continue
             raise AssertionError(f"state-prep arms {refused} rendered into the replay command")
-        assert any("declared excitation of 0.01" in line for line in _scientific_case("n21-feedback", excited))
+        if not any("declared excitation of 0.01" in line for line in _scientific_case("n21-feedback", excited)):
+            raise AssertionError
         delayed = copy.deepcopy(record)
         delayed["policy"]["rep_delay_seconds"] = 0.00025
         delayed_arguments = _reproduction_arguments(delayed, Path("results/live/fixture/record.json"))
-        assert "--rep-delay 0.00025" in " ".join(delayed_arguments)
+        if "--rep-delay 0.00025" not in " ".join(delayed_arguments):
+            raise AssertionError
         delayed["policy"]["rep_delay_seconds"] = 0.0001
         selected = next(
             candidate
@@ -2478,24 +2502,29 @@ def _verify() -> None:
         try:
             _validate_costs(selected, delayed)
         except ValueError as error:
-            assert "requested --rep-delay" in str(error)
+            if "requested --rep-delay" not in str(error):
+                raise AssertionError from error
         else:
             raise AssertionError("a cost ledger at another repetition delay passed the requested --rep-delay")
         _verify_covariance_falsifier(record)
         _verify_empirical_bernstein(record)
-        assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
+        if not all((run_dir / name).read_bytes() == value for name, value in originals.items()):
+            raise AssertionError
         for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):
             algebra = copy.deepcopy(record)
             algebra["policy"]["design"]["family"] = family
             algebra["family_configuration"]["name"] = family
             retain(algebra)
-            assert write_case(run_dir, algebra) == destination
-            assert (
+            if write_case(run_dir, algebra) != destination:
+                raise AssertionError
+            if not (
                 phrase in destination.read_text()
                 and "Native server timing remains unqualified" in destination.read_text()
-            )
+            ):
+                raise AssertionError
         retain(record)
-        assert write_case(run_dir, record) == destination and destination.read_text() == text
+        if not (write_case(run_dir, record) == destination and destination.read_text() == text):
+            raise AssertionError
         native_run = Path(temporary) / "native-fixture"
         native_dir = native_run / "native-dry-run" / "fixture"
         native_dir.mkdir(parents=True)
@@ -2509,26 +2538,34 @@ def _verify() -> None:
             "estimated_quantum_seconds": 7.5,
         }
         (native_dir / "report.json").write_text(json.dumps(native_report))
-        assert "7.5 quantum seconds" in "\n".join(_native_qualification(native_run, record_digest, qpy_digest))
-        assert "unqualified" in "\n".join(_native_qualification(native_run, "0" * 64, qpy_digest))
+        if "7.5 quantum seconds" not in "\n".join(_native_qualification(native_run, record_digest, qpy_digest)):
+            raise AssertionError
+        if "unqualified" not in "\n".join(_native_qualification(native_run, "0" * 64, qpy_digest)):
+            raise AssertionError
         native_report.update(status="unavailable", qualified=False)
         (native_dir / "report.json").write_text(json.dumps(native_report))
-        assert "leaves server timing unqualified" in "\n".join(
+        if "leaves server timing unqualified" not in "\n".join(
             _native_qualification(native_run, record_digest, qpy_digest)
-        )
+        ):
+            raise AssertionError
         for state in ("design_infeasible", "budget_infeasible", "submitted", "approval_required"):
             changed = copy.deepcopy(record)
             changed["state"] = state
-            assert write_case(run_dir, changed) is None
-            assert destination.read_text() == text
-        assert write_case(run_dir, {"state": "planned"}) is None
+            if write_case(run_dir, changed) is not None:
+                raise AssertionError
+            if destination.read_text() != text:
+                raise AssertionError
+        if write_case(run_dir, {"state": "planned"}) is not None:
+            raise AssertionError
         for key in ("submission", "approval_consumed"):
             changed = copy.deepcopy(record)
             changed[key] = {"present": True}
-            assert write_case(run_dir, changed) is None
+            if write_case(run_dir, changed) is not None:
+                raise AssertionError
         consumed = run_dir / "approval-consumed.json"
         consumed.write_text("{}\n")
-        assert write_case(run_dir, record) is None
+        if write_case(run_dir, record) is not None:
+            raise AssertionError
         consumed.unlink()
         folded = copy.deepcopy(record)
         folded["family_configuration"] = {
@@ -2557,39 +2594,54 @@ def _verify() -> None:
         with (run_dir / "isa.qpy").open("wb") as handle:
             qpy.dump([circuit, circuit.copy(name="coherent_pub")], handle)
         retain(folded)
-        assert write_case(run_dir, folded) == destination
+        if write_case(run_dir, folded) != destination:
+            raise AssertionError
         folded_text = destination.read_text()
-        assert "calibrated-delay arm" in folded_text and "measurement_sites" in folded_text
-        assert "coherent routing and terminal readout sites can differ" in folded_text
-        assert "--family folded-qpe" in folded_text and "requested precision is 0.08" in folded_text
-        assert "Reject the directional null" not in folded_text
-        assert "one-sided detection radius" not in folded_text and "Power admission" not in folded_text
-        assert "preregister precision intervals" in folded_text
-        assert "scheduler-latency noise remains outside the Aer outcome model" in folded_text
+        if not ("calibrated-delay arm" in folded_text and "measurement_sites" in folded_text):
+            raise AssertionError
+        if "coherent routing and terminal readout sites can differ" not in folded_text:
+            raise AssertionError
+        if not ("--family folded-qpe" in folded_text and "requested precision is 0.08" in folded_text):
+            raise AssertionError
+        if "Reject the directional null" in folded_text:
+            raise AssertionError
+        if not ("one-sided detection radius" not in folded_text and "Power admission" not in folded_text):
+            raise AssertionError
+        if "preregister precision intervals" not in folded_text:
+            raise AssertionError
+        if "scheduler-latency noise remains outside the Aer outcome model" not in folded_text:
+            raise AssertionError
         cost_section = folded_text.split("## Expected charge and service ceilings", 1)[1]
         pub_tables = re.findall(r"(?:^\|[^\n]+\n)+", cost_section, flags=re.MULTILINE)
-        assert len(pub_tables) == 3
+        if len(pub_tables) != 3:
+            raise AssertionError
         for table, job in zip(pub_tables[1:], folded_candidate["jobs"], strict=True):
             rows = table.splitlines()
-            assert rows[0].startswith("| PUB | Shots |") and rows[1].startswith("|---|")
-            assert len(rows) == len(job["pubs"]) + 2
-            assert all(
-                row.startswith("| " + pub["name"] + " |") for row, pub in zip(rows[2:], job["pubs"], strict=True)
-            )
+            if not (rows[0].startswith("| PUB | Shots |") and rows[1].startswith("|---|")):
+                raise AssertionError
+            if len(rows) != len(job["pubs"]) + 2:
+                raise AssertionError
+            if not (
+                all(row.startswith("| " + pub["name"] + " |") for row, pub in zip(rows[2:], job["pubs"], strict=True))
+            ):
+                raise AssertionError
         with (run_dir / "isa.qpy").open("wb") as handle:
             qpy.dump(circuit, handle)
         changed = copy.deepcopy(record)
         changed["code_commit"]["sources_modified"] = True
         retain(changed)
-        assert write_case(run_dir, changed) == destination
-        assert "source flag records changes anywhere" in destination.read_text()
+        if write_case(run_dir, changed) != destination:
+            raise AssertionError
+        if "source flag records changes anywhere" not in destination.read_text():
+            raise AssertionError
         retain(record)
         changed = copy.deepcopy(record)
         changed["shots"] = 4096
         try:
             write_case(run_dir, changed)
         except ValueError as error:
-            assert "retained record.json" in str(error)
+            if "retained record.json" not in str(error):
+                raise AssertionError from error
         else:
             raise AssertionError("case writer accepts mismatched in-memory record")
         changed = copy.deepcopy(record)
@@ -2598,7 +2650,8 @@ def _verify() -> None:
         try:
             write_case(run_dir, changed)
         except ValueError as error:
-            assert "budget ledger" in str(error)
+            if "budget ledger" not in str(error):
+                raise AssertionError from error
         else:
             raise AssertionError("case writer accepts an inconsistent aggregate budget")
         for field, invalid_budget, expected_error in (
@@ -2611,7 +2664,8 @@ def _verify() -> None:
             try:
                 write_case(run_dir, changed)
             except ValueError as error:
-                assert expected_error in str(error)
+                if expected_error not in str(error):
+                    raise AssertionError from error
             else:
                 raise AssertionError(f"case writer accepts inconsistent {field}")
         for field, invalid_pub, expected_error in (
@@ -2625,7 +2679,8 @@ def _verify() -> None:
             try:
                 write_case(run_dir, changed)
             except ValueError as error:
-                assert expected_error in str(error)
+                if expected_error not in str(error):
+                    raise AssertionError from error
             else:
                 raise AssertionError(f"case writer accepts inconsistent PUB {field}")
         retain(record)
@@ -2635,7 +2690,8 @@ def _verify() -> None:
         try:
             write_case(run_dir, record)
         except ValueError as error:
-            assert "ordered execution-PUB manifest" in str(error)
+            if "ordered execution-PUB manifest" not in str(error):
+                raise AssertionError from error
         else:
             raise AssertionError("case writer accepts a different QPY manifest")
     print("QPU cases: artifact and cost binding, both families, relative commands, and refusal checks pass")

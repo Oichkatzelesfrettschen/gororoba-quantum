@@ -880,7 +880,7 @@ transpilation.
 - ibm_kingston's median `measure_2` error (0.00940) sits below its `measure`
   error (0.00970) at read B, while AGENTS.md "Heron execution facts" and the
   2026-10-14 targets.json (0.01074 against 0.00958) state the reverse. The
-  live Target holds; core-254 and core-255 check the retained snapshot only.
+  live Target holds; core-254 checks the retained snapshot only.
 - The fractional-gates guide says `FoldRzzAngle` handles out-of-range
   constant angles; the default `ibm_dynamic_circuits` plugin lacks it, and the
   wrap comes from the Target's angle bounds (section 5).

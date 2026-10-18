@@ -21,9 +21,8 @@ triples among 4096; the Hadamard-test measurement basis; and a complex-linear
 zero divisor of an associative subalgebra. The algebra circuit design rules
 in the root AGENTS.md cite these results.
 
-Gate sources-242 checks the four files against SHA256SUMS, and gates
-sources-240 and sources-241 rerun the audit in normal and optimized
-Python and compare its printed JSON with `audit_results.json` byte for byte:
+Gate sources-242 checks the four files against SHA256SUMS, and gate
+sources-240 reruns the audit and compares its printed JSON with `audit_results.json` byte for byte:
 
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"

@@ -190,8 +190,8 @@ The [bundle](docs/evidence/formal_certificates/README.md) distinguishes
 real foundations, deterministic interval premises and unproved coverage.
 
 The recovered wide-control acquisition uses
-`scripts/review_wide_control_job.py --check` and `--self-test`, each in
-normal and optimized Python. `scripts/reconcile_qpu_inventory.py --check`
+`scripts/review_wide_control_job.py --check` and `--self-test`.
+`scripts/reconcile_qpu_inventory.py --check`
 binds the complete recorded service inventory to every raw job archive and
 the account's consumed seconds to the final charges of the jobs that ran
 inside its rolling usage period; its synthetic contract rejects
@@ -236,11 +236,11 @@ it ran.
   gates (core-368, core-270) reach their inputs through glob, directory
   listing and git; a skip rule for pr-tier gates needs each gate's recorded
   read set and a self-test that plants a missed input.
-- Reserve `assert` for internal invariants and validate input and records
-  with an explicit raise. `python -O` strips every assert, so a gate's `-O`
-  half proves no check depends on one, and that half costs as much CPU as
-  the normal half; ruff `S101` carries the same guarantee at lint time
-  ([#283](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/283)).
+- Check with an explicit raise, never `assert`. `python -O` strips every
+  assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
+  check holds in every interpreter mode and each gate runs its command once.
+  The files whose bytes retained evidence pins keep their asserts under
+  per-file ignores.
 
 ## Source library and research replay
 
@@ -248,7 +248,7 @@ it ran.
 replays. `literature -> docs` preserves recorded paths; new Markdown links use
 `docs/`. Immutable source ledgers retain their recorded bytes. The
 `sources` suite in ci/gates.json covers the source registry, the evidence
-replays (normal and optimized modes) and their checksum ledgers.
+replays and their checksum ledgers.
 
 
 Changes to proof replay inputs also follow the pinned Rocq replay in
@@ -307,8 +307,8 @@ Cayley-Dickson arithmetic on a qubit register. The root AGENTS.md,
 gororoba_quantum/AGENTS.md and scripts/AGENTS.md carry this section with
 identical bytes; `ci/check_agents_sections.py` fails on any difference.
 `docs/evidence/reviewer_associator_audit/` replays the numeric claims below
-(gates sources-240 and sources-241), and `scripts/algebra_circuit_fixtures.py`
-(gates core-251 and core-252) runs the zero-product, Hadamard-basis and
+(gate sources-240), and `scripts/algebra_circuit_fixtures.py`
+(gate core-251) runs the zero-product, Hadamard-basis and
 workspace fixtures on the circuit builders of `designs.py`.
 
 **Encoding and representation.**
@@ -666,8 +666,8 @@ cz, id, rz, sx, x and xslow. Heron r3 and Nighthawk (square grid) exist in
 IBM's processor list and are absent from this account, so
 `service.backends()` is the authority before a design names a backend.
 `scripts/heron_target_snapshot.py --out` reads the live Targets into
-`docs/evidence/heron_platform/targets.json`, and gates core-254 and core-255
-recompute every per-backend fact below from it; a refreshed snapshot that
+`docs/evidence/heron_platform/targets.json`, and gate core-254
+recomputes every per-backend fact below from it; a refreshed snapshot that
 contradicts this section fails until the text changes with it. Measured
 values and the documentation captures are in
 `docs/notes/ibm_heron_platform.md`.

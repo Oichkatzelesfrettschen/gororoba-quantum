@@ -55,7 +55,7 @@ value.
   entry, its import closure, the three `--include` files and the kernel
   files in a 539016-byte run.py, below KERNEL_SOURCE_LIMIT (1000000).
 - Gates core-420 (`--check`), core-421 (`--self-test`) and core-422 (sweep
-  `--self-test`), each in normal and optimized mode, from the range the
+  `--self-test`), from the range the
   orchestrator assigned (core-420 to core-429).
 
 ## Checks

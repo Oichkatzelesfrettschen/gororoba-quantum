@@ -1268,7 +1268,8 @@ def optimize(
     def rank(result: CandidateResult) -> tuple[float, float, str]:
         charge = result.worst_case_charge_seconds
         score = charge if objective == "minimum_charge" else result.normalized_precision_radius
-        assert charge is not None and score is not None
+        if not (charge is not None and score is not None):
+            raise AssertionError
         return score, charge, result.name
 
     selected = min(feasible, key=rank) if feasible else None
@@ -1320,59 +1321,82 @@ def _verify() -> None:
     expensive = candidate("high_proxy", 0.99, 0.003)
     cheap = candidate("low_proxy", 0.75)
     result = optimize((expensive, cheap), (contract,), budget)
-    assert result.selected == "low_proxy", result
-    assert result.pareto_frontier == ("low_proxy",), result
-    assert result == optimize((cheap, expensive), (contract,), budget)
+    if result.selected != "low_proxy":
+        raise AssertionError(result)
+    if result.pareto_frontier != ("low_proxy",):
+        raise AssertionError(result)
+    if result != optimize((cheap, expensive), (contract,), budget):
+        raise AssertionError
     noisier_pub = replace(cheap.jobs[0].pubs[0], member_distributions={"signal": ((0.35, 0.65),)})
     noisier = replace(cheap, jobs=(replace(cheap.jobs[0], pubs=(noisier_pub, cheap.jobs[0].pubs[1])),))
     tradeoff = optimize((expensive, noisier), (contract,), budget)
-    assert tradeoff.selected == "low_proxy" and tradeoff.pareto_frontier == ("high_proxy", "low_proxy")
+    if not (tradeoff.selected == "low_proxy" and tradeoff.pareto_frontier == ("high_proxy", "low_proxy")):
+        raise AssertionError
     tied = optimize((replace(cheap, name="zeta"), replace(cheap, name="alpha")), (contract,), budget)
-    assert tied.selected == "alpha" and tied.pareto_frontier == ("alpha", "zeta")
+    if not (tied.selected == "alpha" and tied.pareto_frontier == ("alpha", "zeta")):
+        raise AssertionError
 
     weaker_pub = replace(cheap.jobs[0].pubs[0], member_distributions={"signal": ((0.7, 0.3),)})
     weak = replace(cheap, jobs=(replace(cheap.jobs[0], pubs=(weaker_pub, cheap.jobs[0].pubs[1])),))
-    assert not evaluate_candidate(weak, (contract,), budget).feasible
-    assert optimize((weak,), (contract,), budget).selected is None
-    assert not evaluate_candidate(candidate("too_few", shots=16), (contract,), budget).feasible
+    if evaluate_candidate(weak, (contract,), budget).feasible:
+        raise AssertionError
+    if optimize((weak,), (contract,), budget).selected is not None:
+        raise AssertionError
+    if evaluate_candidate(candidate("too_few", shots=16), (contract,), budget).feasible:
+        raise AssertionError
     model_effect = evaluate_candidate(cheap, (replace(contract, minimum_effect=0.0),), budget)
-    assert model_effect.feasible
-    assert math.isclose(model_effect.observables[0].effect_used_for_power or 0.0, 0.6)
+    if not model_effect.feasible:
+        raise AssertionError
+    if not math.isclose(model_effect.observables[0].effect_used_for_power or 0.0, 0.6):
+        raise AssertionError
 
     precision = ObservableContract("precision", (terms[0],), precision_half_width=0.03)
-    assert evaluate_candidate(cheap, (precision,), budget).feasible
-    assert not evaluate_candidate(candidate("imprecise", shots=64), (precision,), budget).feasible
+    if not evaluate_candidate(cheap, (precision,), budget).feasible:
+        raise AssertionError
+    if evaluate_candidate(candidate("imprecise", shots=64), (precision,), budget).feasible:
+        raise AssertionError
 
     precise = candidate("more_precise", shots=8192)
-    assert optimize((cheap, precise), (precision,), budget).selected == cheap.name
+    if optimize((cheap, precise), (precision,), budget).selected != cheap.name:
+        raise AssertionError
     precision_search = optimize((cheap, precise), (precision,), budget, objective="precision_at_budget")
-    assert precision_search.selected == precise.name
-    assert precision_search.objective == "precision_at_budget"
-    assert precision_search.selected_objective_value == precision_search.candidates[1].normalized_precision_radius
-    assert precision_search == optimize((precise, cheap), (precision,), budget, objective="precision_at_budget")
-    assert precision_search.pareto_frontier == (cheap.name, precise.name)
+    if precision_search.selected != precise.name:
+        raise AssertionError
+    if precision_search.objective != "precision_at_budget":
+        raise AssertionError
+    if precision_search.selected_objective_value != precision_search.candidates[1].normalized_precision_radius:
+        raise AssertionError
+    if precision_search != optimize((precise, cheap), (precision,), budget, objective="precision_at_budget"):
+        raise AssertionError
+    if precision_search.pareto_frontier != (cheap.name, precise.name):
+        raise AssertionError
     limited = tuple(
         replace(plan, jobs=(replace(plan.jobs[0], max_execution_seconds=20.0),)) for plan in (cheap, precise)
     )
-    assert optimize(limited, (precision,), budget, objective="precision_at_budget").selected == cheap.name
+    if optimize(limited, (precision,), budget, objective="precision_at_budget").selected != cheap.name:
+        raise AssertionError
     quota_limited = replace(precise, jobs=(replace(precise.jobs[0], max_execution_seconds=80.0),))
-    assert (
+    if not (
         optimize(
             (cheap, quota_limited), (precision,), BudgetContract(70.0, 10.0, 80.0), objective="precision_at_budget"
         ).selected
         == cheap.name
-    )
+    ):
+        raise AssertionError
     for invalid_contracts in ((contract,), (precision, contract), (replace(precision, minimum_effect=0.0),)):
         invalid = optimize((cheap,), invalid_contracts, budget, objective="precision_at_budget")
-        assert invalid.selected is None and "precision-only" in invalid.rejection_reasons[0]
-    assert optimize((cheap,), (precision,), budget, objective="unknown").selected is None
+        if not (invalid.selected is None and "precision-only" in invalid.rejection_reasons[0]):
+            raise AssertionError
+    if optimize((cheap,), (precision,), budget, objective="unknown").selected is not None:
+        raise AssertionError
     precision_tied = optimize(
         (replace(cheap, name="zeta"), replace(cheap, name="alpha"), expensive),
         (precision,),
         budget,
         objective="precision_at_budget",
     )
-    assert precision_tied.selected == "alpha"
+    if precision_tied.selected != "alpha":
+        raise AssertionError
 
     # Different endpoint targets distinguish the minimax rule from raw radii
     # and a summed normalized radius. Explicit covariance bounds control each axis.
@@ -1411,22 +1435,32 @@ def _verify() -> None:
     uneven = endpoint_candidate("smaller_sum_and_raw_radius", (0.008, 0.024))
     balanced = endpoint_candidate("smaller_worst_normalized_radius", (0.032, 0.016))
     normalized_search = optimize((uneven, balanced), precision_endpoints, budget, objective="precision_at_budget")
-    assert normalized_search.selected == balanced.name
-    assert math.isclose(normalized_search.selected_objective_value or 0.0, 0.4)
+    if normalized_search.selected != balanced.name:
+        raise AssertionError
+    if not math.isclose(normalized_search.selected_objective_value or 0.0, 0.4):
+        raise AssertionError
 
     sensitivity = CostScenario("higher_overhead_and_latency", 4.0, 1000.0)
     scenario_search = optimize(
         (cheap, precise), (precision,), budget, objective="precision_at_budget", cost_scenarios=(sensitivity,)
     )
-    assert scenario_search.selected == cheap.name
+    if scenario_search.selected != cheap.name:
+        raise AssertionError
     accepted, rejected = scenario_search.candidates
-    assert accepted.jobs[0].overhead_seconds == cheap.jobs[0].overhead_seconds
-    assert accepted.jobs[0].pubs[0].classical_latency_seconds == 0
-    assert accepted.cost_scenarios[0].jobs[0].pubs[0].classical_latency_seconds == 0.001
-    assert accepted.cost_scenarios[0].jobs[0].pubs[0].classical_stage_count == 1
-    assert math.isclose(accepted.worst_case_charge_seconds or 0.0, 4 + 2 * 4096 * 0.00225)
-    assert not rejected.cost_scenarios[0].feasible
-    assert any("cost scenario higher_overhead_and_latency" in reason for reason in rejected.rejection_reasons)
+    if accepted.jobs[0].overhead_seconds != cheap.jobs[0].overhead_seconds:
+        raise AssertionError
+    if accepted.jobs[0].pubs[0].classical_latency_seconds != 0:
+        raise AssertionError
+    if accepted.cost_scenarios[0].jobs[0].pubs[0].classical_latency_seconds != 0.001:
+        raise AssertionError
+    if accepted.cost_scenarios[0].jobs[0].pubs[0].classical_stage_count != 1:
+        raise AssertionError
+    if not math.isclose(accepted.worst_case_charge_seconds or 0.0, 4 + 2 * 4096 * 0.00225):
+        raise AssertionError
+    if rejected.cost_scenarios[0].feasible:
+        raise AssertionError
+    if not any("cost scenario higher_overhead_and_latency" in reason for reason in rejected.rejection_reasons):
+        raise AssertionError
     alternate = candidate("costlier_nominal", duration=0.0013)
     alternate = replace(
         alternate,
@@ -1436,14 +1470,19 @@ def _verify() -> None:
             ),
         ),
     )
-    assert optimize((cheap, alternate), (precision,), budget).selected == cheap.name
-    assert optimize((cheap, alternate), (precision,), budget, cost_scenarios=(sensitivity,)).selected == alternate.name
+    if optimize((cheap, alternate), (precision,), budget).selected != cheap.name:
+        raise AssertionError
+    if optimize((cheap, alternate), (precision,), budget, cost_scenarios=(sensitivity,)).selected != alternate.name:
+        raise AssertionError
     optimistic = CostScenario("zero_additions", 0.0, 0.0)
     nominal_envelope = evaluate_candidate(cheap, (precision,), budget, cost_scenarios=(optimistic,))
-    assert nominal_envelope.worst_case_charge_seconds == nominal_envelope.estimated_charge_seconds
-    assert optimize((cheap,), (precision,), budget, cost_scenarios=(optimistic, sensitivity)) == optimize(
-        (cheap,), (precision,), budget, cost_scenarios=(sensitivity, optimistic)
-    )
+    if nominal_envelope.worst_case_charge_seconds != nominal_envelope.estimated_charge_seconds:
+        raise AssertionError
+    if not (
+        optimize((cheap,), (precision,), budget, cost_scenarios=(optimistic, sensitivity))
+        == optimize((cheap,), (precision,), budget, cost_scenarios=(sensitivity, optimistic))
+    ):
+        raise AssertionError
     missing_stages = replace(
         cheap,
         jobs=(
@@ -1452,15 +1491,18 @@ def _verify() -> None:
             ),
         ),
     )
-    assert not evaluate_candidate(missing_stages, (precision,), budget, cost_scenarios=(sensitivity,)).feasible
+    if evaluate_candidate(missing_stages, (precision,), budget, cost_scenarios=(sensitivity,)).feasible:
+        raise AssertionError
     for scenarios in (
         (sensitivity, sensitivity),
         (replace(sensitivity, name="nominal"),),
         (replace(sensitivity, job_overhead_seconds=-1.0),),
         (replace(sensitivity, classical_latency_us=float("nan")),),
     ):
-        assert optimize((cheap,), (precision,), budget, cost_scenarios=scenarios).selected is None
-    assert scenario_search.as_dict()["cost_scenarios"][0]["name"] == sensitivity.name
+        if optimize((cheap,), (precision,), budget, cost_scenarios=scenarios).selected is not None:
+            raise AssertionError
+    if scenario_search.as_dict()["cost_scenarios"][0]["name"] != sensitivity.name:
+        raise AssertionError
 
     observed_pubs = tuple(
         ObservedPub(pub.name, pub.member_distributions, job.shots) for job in cheap.jobs for pub in job.pubs
@@ -1468,11 +1510,16 @@ def _verify() -> None:
     observed = analyze_observations(observed_pubs, (contract, precision))
     planned = evaluate_candidate(cheap, (contract, precision), budget)
     for measured, predicted in zip(observed.observables, planned.observables, strict=True):
-        assert measured.confidence_half_width == predicted.confidence_half_width
-        assert measured.detection_radius == predicted.detection_radius
-    assert observed.observables[0].reject_null is True
-    assert observed.observables[1].reject_null is None
-    assert observed.observables[1].detection_radius is None
+        if measured.confidence_half_width != predicted.confidence_half_width:
+            raise AssertionError
+        if measured.detection_radius != predicted.detection_radius:
+            raise AssertionError
+    if observed.observables[0].reject_null is not True:
+        raise AssertionError
+    if observed.observables[1].reject_null is not None:
+        raise AssertionError
+    if observed.observables[1].detection_radius is not None:
+        raise AssertionError
     fused_pub = replace(
         cheap.jobs[0].pubs[0],
         name="fused_pub",
@@ -1487,12 +1534,18 @@ def _verify() -> None:
     fused_observed = analyze_observations(
         (ObservedPub(fused_pub.name, fused_pub.member_distributions, cheap.jobs[0].shots),), (contract,)
     ).observables[0]
-    assert fused_observed.confidence_half_width == fused_planned.confidence_half_width
-    assert fused_observed.detection_radius == fused_planned.detection_radius
-    assert fused_observed.confidence_half_width < observed.observables[0].confidence_half_width
-    assert fused_observed.detection_radius is not None
-    assert observed.observables[0].detection_radius is not None
-    assert fused_observed.detection_radius < observed.observables[0].detection_radius
+    if fused_observed.confidence_half_width != fused_planned.confidence_half_width:
+        raise AssertionError
+    if fused_observed.detection_radius != fused_planned.detection_radius:
+        raise AssertionError
+    if not fused_observed.confidence_half_width < observed.observables[0].confidence_half_width:
+        raise AssertionError
+    if fused_observed.detection_radius is None:
+        raise AssertionError
+    if observed.observables[0].detection_radius is None:
+        raise AssertionError
+    if not fused_observed.detection_radius < observed.observables[0].detection_radius:
+        raise AssertionError
     directional_estimate = (fused_observed.detection_radius + fused_observed.confidence_half_width) / 2
     directional = analyze_observations(
         (
@@ -1504,7 +1557,8 @@ def _verify() -> None:
         ),
         (contract,),
     ).observables[0]
-    assert directional.reject_null is True and directional.lo <= contract.null_value
+    if not (directional.reject_null is True and directional.lo <= contract.null_value):
+        raise AssertionError
     for invalid_observed in (
         (),
         observed_pubs + (observed_pubs[0],),
@@ -1520,12 +1574,16 @@ def _verify() -> None:
             raise AssertionError("invalid observation data passed admission")
 
     for duration in (-1.0, float("nan"), float("inf")):
-        assert not evaluate_candidate(candidate("invalid_cost", duration=duration), (contract,), budget).feasible
+        if evaluate_candidate(candidate("invalid_cost", duration=duration), (contract,), budget).feasible:
+            raise AssertionError
     ceiling = replace(cheap, jobs=(replace(cheap.jobs[0], max_execution_seconds=1.0),))
-    assert not evaluate_candidate(ceiling, (contract,), budget).feasible
+    if evaluate_candidate(ceiling, (contract,), budget).feasible:
+        raise AssertionError
     granularity = replace(cheap, jobs=(replace(cheap.jobs[0], shot_granularity=3),))
-    assert not evaluate_candidate(granularity, (contract,), budget).feasible
-    assert not evaluate_candidate(cheap, (contract,), BudgetContract(45.0, 10.0, 80.0)).feasible
+    if evaluate_candidate(granularity, (contract,), budget).feasible:
+        raise AssertionError
+    if evaluate_candidate(cheap, (contract,), BudgetContract(45.0, 10.0, 80.0)).feasible:
+        raise AssertionError
     split = replace(
         cheap,
         jobs=(
@@ -1533,24 +1591,31 @@ def _verify() -> None:
             replace(cheap.jobs[0], name="null_job", pubs=cheap.jobs[0].pubs[1:]),
         ),
     )
-    assert not evaluate_candidate(split, (contract,), BudgetContract(100.0, 10.0, 70.0)).feasible
-    assert evaluate_candidate(split, (contract,), budget).total_execution_ceiling_seconds == 80.0
+    if evaluate_candidate(split, (contract,), BudgetContract(100.0, 10.0, 70.0)).feasible:
+        raise AssertionError
+    if evaluate_candidate(split, (contract,), budget).total_execution_ceiling_seconds != 80.0:
+        raise AssertionError
     mixed_shots = replace(split, jobs=(split.jobs[0], replace(split.jobs[1], shots=2048)))
     mixed_result = evaluate_candidate(mixed_shots, (contract,), budget)
-    assert mixed_result.feasible
-    assert [pub.shots for job in mixed_result.jobs for pub in job.pubs] == [4096, 2048]
-    assert math.isclose(mixed_result.estimated_charge_seconds or 0.0, 4.0 + (4096 + 2048) * 0.00125)
+    if not mixed_result.feasible:
+        raise AssertionError
+    if [pub.shots for job in mixed_result.jobs for pub in job.pubs] != [4096, 2048]:
+        raise AssertionError
+    if not math.isclose(mixed_result.estimated_charge_seconds or 0.0, 4.0 + (4096 + 2048) * 0.00125):
+        raise AssertionError
     mixed_observed = analyze_observations(
         tuple(
             ObservedPub(pub.name, pub.member_distributions, job.shots) for job in mixed_shots.jobs for pub in job.pubs
         ),
         (contract,),
     )
-    assert mixed_result.observables[0].confidence_half_width == mixed_observed.observables[0].confidence_half_width
-    assert (
+    if mixed_result.observables[0].confidence_half_width != mixed_observed.observables[0].confidence_half_width:
+        raise AssertionError
+    if not (
         mixed_result.observables[0].confidence_half_width
         > evaluate_candidate(split, (contract,), budget).observables[0].confidence_half_width
-    )
+    ):
+        raise AssertionError
     with_additions = replace(
         cheap,
         jobs=(
@@ -1563,28 +1628,33 @@ def _verify() -> None:
         ),
     )
     priced = evaluate_candidate(with_additions, (contract,), budget)
-    assert math.isclose(priced.estimated_charge_seconds or 0.0, 2.0 + 2 * 4096 * 0.00128)
+    if not math.isclose(priced.estimated_charge_seconds or 0.0, 2.0 + 2 * 4096 * 0.00128):
+        raise AssertionError
 
     simulated = replace(
         cheap,
         jobs=(replace(cheap.jobs[0], pubs=tuple(replace(pub, simulation_shots=16) for pub in cheap.jobs[0].pubs)),),
     )
     simulated_result = evaluate_candidate(simulated, (contract,), budget)
-    assert not simulated_result.feasible and simulated_result.observables[0].simulation_error_radius > 0
+    if not (not simulated_result.feasible and simulated_result.observables[0].simulation_error_radius > 0):
+        raise AssertionError
     search = optimize((simulated, replace(simulated, name="another")), (contract,), budget)
-    assert search.simulation_comparisons == 4
-    assert (
+    if search.simulation_comparisons != 4:
+        raise AssertionError
+    if not (
         search.candidates[0].observables[0].simulation_error_radius
         >= simulated_result.observables[0].simulation_error_radius
-    )
+    ):
+        raise AssertionError
 
     replicas = 16
     replicated_pub = replace(cheap.jobs[0].pubs[0], member_distributions={"signal": ((0.2, 0.8),) * replicas})
     replicated = replace(cheap, jobs=(replace(cheap.jobs[0], pubs=(replicated_pub, cheap.jobs[0].pubs[1])),))
-    assert (
+    if not (
         evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
         == evaluate_candidate(cheap, (precision,), budget).observables[0].confidence_half_width
-    )
+    ):
+        raise AssertionError
     covariance = CovarianceBound(
         "precision",
         "signal_pub",
@@ -1593,42 +1663,54 @@ def _verify() -> None:
         "independent replica-score model, covariance bounded by diagonal 0.16",
     )
     independent = replace(replicated, covariance_bounds=(covariance,))
-    assert (
+    if not (
         evaluate_candidate(independent, (precision,), budget).observables[0].confidence_half_width
         < evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
-    )
+    ):
+        raise AssertionError
     correlated = replace(
         covariance,
         matrix=tuple(tuple(0.16 if row == column else 0.15 for column in range(replicas)) for row in range(replicas)),
     )
-    assert (
+    if not (
         evaluate_candidate(replace(replicated, covariance_bounds=(correlated,)), (precision,), budget)
         .observables[0]
         .confidence_half_width
         == evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
-    )
+    ):
+        raise AssertionError
     planned_half_width = evaluate_candidate(independent, (precision,), budget).observables[0].confidence_half_width
     observed_replicas = (ObservedPub("signal_pub", {"signal": ((0.2, 0.8),) * replicas}, independent.jobs[0].shots),)
     collected = analyze_observations(observed_replicas, (precision,), (covariance,)).observables[0]
-    assert math.isclose(collected.confidence_half_width, planned_half_width, rel_tol=1e-12)
-    assert collected.bound_methods == ("minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev",)
-    assert (
+    if not math.isclose(collected.confidence_half_width, planned_half_width, rel_tol=1e-12):
+        raise AssertionError
+    if collected.bound_methods != ("minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev",):
+        raise AssertionError
+    if not (
         analyze_observations(observed_replicas, (precision,)).observables[0].confidence_half_width
         > collected.confidence_half_width
-    )
+    ):
+        raise AssertionError
     invalid_covariance = replace(covariance, matrix=((-1.0,),))
-    assert not evaluate_candidate(
-        replace(replicated, covariance_bounds=(invalid_covariance,)), (precision,), budget
-    ).feasible
+    if not (
+        not evaluate_candidate(
+            replace(replicated, covariance_bounds=(invalid_covariance,)), (precision,), budget
+        ).feasible
+    ):
+        raise AssertionError
     non_psd = replace(
         covariance,
         matrix=tuple(tuple(-0.16 if row == column else 0.0 for column in range(replicas)) for row in range(replicas)),
     )
-    assert not evaluate_candidate(replace(replicated, covariance_bounds=(non_psd,)), (precision,), budget).feasible
+    if evaluate_candidate(replace(replicated, covariance_bounds=(non_psd,)), (precision,), budget).feasible:
+        raise AssertionError
     nearly_psd = replace(covariance, labels=("signal/r0",), matrix=((-1e-13,),))
-    assert not evaluate_candidate(replace(cheap, covariance_bounds=(nearly_psd,)), (precision,), budget).feasible
-    assert optimize((), (contract,), budget).selected is None
-    assert optimize((cheap,), (), budget).selected is None
+    if evaluate_candidate(replace(cheap, covariance_bounds=(nearly_psd,)), (precision,), budget).feasible:
+        raise AssertionError
+    if optimize((), (contract,), budget).selected is not None:
+        raise AssertionError
+    if optimize((cheap,), (), budget).selected is not None:
+        raise AssertionError
     print("experiment optimizer: statistical, cost, covariance, simulation, and deterministic-selection checks passed")
 
 
