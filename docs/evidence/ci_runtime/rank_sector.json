@@ -1,0 +1,53 @@
+{
+  "schema": "rank-sector-exact-runtime-comparison-v1",
+  "scope": "Same-host bounded CPU measurements; timings describe these calls, not hosted workflow wall time.",
+  "environment": {
+    "python": "3.14.7 (main, Aug 14 2026, 06:38:32) [GCC 16.2.1 20260810]",
+    "executable": "/usr/local/bin/python3",
+    "platform": "Linux-7.2.9-2-cachyos-x86_64-with-glibc2.44",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "sympy": "1.14.0",
+      "qiskit": "2.5.2",
+      "qiskit-ibm-runtime": "0.50.0"
+    },
+    "observation": "Versions collected when retaining the benchmark; timing samples were measured earlier in the same session."
+  },
+  "exact_probability": {
+    "cases": 224,
+    "construction": "Eight sectors, four probes per sector, five PARAMETERS plus Fraction(1,7) and Fraction(11,9).",
+    "reference_seconds": [
+      4.133253671003331,
+      4.437982620002003,
+      4.160121428998536
+    ],
+    "optimized_seconds": [
+      0.03064954599540215,
+      0.029489762004232034,
+      0.03129665800224757
+    ],
+    "exact_probability_sum": "52243664425/614742436",
+    "reference_median_seconds": 4.160121428998536,
+    "optimized_median_seconds": 0.03064954599540215
+  },
+  "repetition_delay_contract": {
+    "method": "One imported interpreter, three alternating reference/optimized repetitions, replacing only rank_sector_experiments.exact_success_probability.",
+    "reference_seconds": [
+      1.4091400260003866,
+      1.3206107379955938,
+      1.443901046004612
+    ],
+    "optimized_seconds": [
+      0.6455352129996754,
+      0.5988106000004336,
+      0.5831636570001137
+    ],
+    "reference_median_seconds": 1.4091400260003866,
+    "optimized_median_seconds": 0.5988106000004336
+  },
+  "reference_function": "def exact_success_probability(sector, probe_name, parameter):\n    probe = _probe(sector, probe_name)\n    value = _parameter(parameter)\n    columns = [sector ^ offset for offset in COSET_SUBGROUP]\n    matrix = path_matrix(value)\n    norm_squared = sum(coordinate**2 for coordinate in probe.coordinates)\n    image = [sum(matrix[row, column] * coordinate for column, coordinate in zip(columns, probe.coordinates, strict=True)) for row in range(32)]\n    numerator = sum(coordinate**2 for coordinate in image)\n    exact_norm = Fraction(int(numerator.p), int(numerator.q))\n    probability = exact_norm / (norm_squared * sector_alpha(value) ** 2)\n    if not 0 <= probability <= 1:\n        raise RuntimeError(\"exact LCU probability escaped [0,1]\")\n    return probability\n",
+  "reproduce": "From repository root: export PYTHON=\"${PYTHON:-python3}\"; \"$PYTHON\" -c 'import json; from pathlib import Path; exec(json.loads(Path(\"docs/evidence/ci_runtime/rank_sector.json\").read_text())[\"benchmark_program\"])'",
+  "benchmark_program": "import json, sys, time\nfrom fractions import Fraction\nfrom pathlib import Path\nsys.path.insert(0, \"gororoba_quantum\")\nimport rank_sector_experiments as rank\nimport qpu_planning_contracts as planning\nfrom rank_attachments import path_matrix\nartifact = json.loads(Path(\"docs/evidence/ci_runtime/rank_sector.json\").read_text())\nnamespace = dict(rank.__dict__, path_matrix=path_matrix)\nexec(artifact[\"reference_function\"], namespace)\nreference = namespace[\"exact_success_probability\"]\noptimized = rank.exact_success_probability\ncases = [(sector, probe.name, parameter) for sector in range(8) for probe in rank.sector_probes(sector) for parameter in (*rank.PARAMETERS, Fraction(1, 7), Fraction(11, 9))]\nfor label, implementation in ((\"reference\", reference), (\"optimized\", optimized)):\n    for repeat in range(3):\n        start = time.perf_counter()\n        probabilities = [implementation(*case) for case in cases]\n        print(label, \"exact\", len(cases), time.perf_counter() - start, str(sum(probabilities)), flush=True)\nfor repeat in range(3):\n    for label, implementation in ((\"reference\", reference), (\"optimized\", optimized)):\n        rank.exact_success_probability = implementation\n        start = time.perf_counter()\n        planning._verify_rep_delay_range()\n        print(label, \"rep_delay_range\", time.perf_counter() - start, flush=True)\nrank.exact_success_probability = optimized\n",
+  "verification": "256 independent full-matrix exact comparisons, normal/optimized full rank-sector contract byte-equivalence, pinned Ruff and Mypy passed in the implementation session."
+}

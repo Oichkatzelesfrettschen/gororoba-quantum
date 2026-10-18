@@ -28,7 +28,10 @@ depolarizing and assignment nuisances, and piecewise_fit compares the
 piecewise exposure with the single gap at one rate per coupled qubit.
 
 Usage: "$PYTHON" scripts/n21_orbit_rca.py RUN_DIR [--out FILE]; --check RUN_DIR regenerates
-RUN_DIR/rca-mechanism-fit.json and requires it to agree (differences()).
+RUN_DIR/rca-mechanism-fit.json and requires agreement of the induced laws,
+likelihoods, decisions and provenance. Each pair-mechanism parameter vector
+must reproduce its own stored laws; optimizer coordinates are reported without imposing
+a coordinate precision absent from the fitting procedure.
 """
 
 from __future__ import annotations
@@ -1571,21 +1574,61 @@ def _check_differences() -> None:
     retained = {"law": [0.25, 0.75], "dof": 3, "flag": True, "source": "--readout"}
     if differences(retained, {**retained, "law": [0.25 + 1e-8, 0.75]}):
         raise RuntimeError("a rounding-level float change fails the regeneration check")
-    flat = {"improves_at_family_alpha": False, "parameters": {"round1": 0.1, "reset_failure": 0.07}}
-    sharp = {"improves_at_family_alpha": True, "parameters": {"round1": 0.1, "phase_one": 0.59}}
-    report = {"pairs": {"p": {"models": {"reset_failure": flat, "work_phase_one": sharp}}}}
-    moved = json.loads(json.dumps(report))
-    moved["pairs"]["p"]["models"]["reset_failure"]["parameters"]["reset_failure"] = 0.12
-    if differences(identified(report), identified(moved)):
-        raise RuntimeError("the regeneration check compares an unidentified model's parameters")
-    moved["pairs"]["p"]["models"]["work_phase_one"]["parameters"]["phase_one"] = 0.6
-    if not differences(identified(report), identified(moved)):
-        raise RuntimeError("the regeneration check ignores a supported model's parameters")
+    _check_parameter_replay()
     for changed in ({"law": [0.26, 0.75]}, {"dof": 4}, {"flag": False}, {"dof": 3.0}, {"law": [0.25]}):
         if not differences(retained, {**retained, **changed}):
             raise RuntimeError(f"the regeneration check accepts {changed}")
     if not differences(retained, {key: value for key, value in retained.items() if key != "flag"}):
         raise RuntimeError("the regeneration check accepts a dropped key")
+
+
+def _check_parameter_replay() -> None:
+    readout = _readout(0.001, 0.006)
+    readouts = dict.fromkeys(("feedback", "no_feedback"), readout)
+    counts = {"feedback": np.array([300, 200, 100, 200]), "no_feedback": np.array([300, 100, 100, 300])}
+
+    def report(parameters: dict[str, float]) -> dict[str, Any]:
+        model = {
+            "parameters": parameters,
+            "deviance": deviance(counts, parameters, readouts),
+            "improves_at_family_alpha": True,
+            **{
+                f"{arm}_law": distribution(_with_excess(readout, parameters), arm == "feedback").tolist()
+                for arm in readouts
+            },
+        }
+        return {
+            "member_readout": {f"p_{arm}": readout for arm in readouts},
+            "pairs": {
+                "p": {
+                    "measured_counts": {arm: values.tolist() for arm, values in counts.items()},
+                    "models": {"control_phase": model},
+                }
+            },
+        }
+
+    parameters = {"round1": 0.17281242424172436, "round2": 0.17288122760296823, "control_phase": -0.4676820606691535}
+    original = report(parameters)
+    drifted = report(parameters | {"round2": 0.17287973432964707, "control_phase": -0.4676843006565198})
+    if not differences(original, drifted):
+        raise RuntimeError("the replay fixture fails to expose optimizer-coordinate drift")
+    if replay_differences(original, drifted):
+        raise RuntimeError("optimizer-coordinate drift with equivalent laws fails observable replay")
+    positive_boundary = report(parameters | {"control_phase": math.pi})
+    negative_boundary = report(parameters | {"control_phase": -math.pi})
+    if replay_differences(positive_boundary, negative_boundary):
+        raise RuntimeError("equivalent phase branch boundaries fail observable replay")
+    corrupted = json.loads(json.dumps(original))
+    corrupted["pairs"]["p"]["models"]["control_phase"]["parameters"]["control_phase"] = -0.4
+    if not replay_differences(original, corrupted):
+        raise RuntimeError("parameter changes unbound to recorded laws pass replay")
+    if not replay_differences(original, report(parameters | {"control_phase": -0.4})):
+        raise RuntimeError("changed observable laws pass replay")
+    for invalid_value in (True, math.nan, -0.1, 1.1):
+        corrupted = json.loads(json.dumps(original))
+        corrupted["pairs"]["p"]["models"]["control_phase"]["parameters"]["round2"] = invalid_value
+        if not parameter_law_differences(corrupted):
+            raise RuntimeError(f"an out-of-domain parameter {invalid_value!r} passes replay")
 
 
 def self_check() -> None:
@@ -1710,11 +1753,11 @@ def serialize(report: dict[str, Any]) -> str:
     return json.dumps(report, indent=2, sort_keys=True) + "\n"
 
 
-# L-BFGS-B iterates through BLAS, so a fit regenerated under another BLAS
-# build moves its floats; every other value is exact. A model that neither is
-# the baseline nor improves at family alpha has a flat deviance along its
-# added parameters, so its optimizer stops anywhere along that direction:
-# its law and deviance reproduce and its parameters do not (identified()).
+# Finite-difference L-BFGS-B stopping points vary across numerical libraries.
+# Compare the induced laws and likelihood at the retained replay precision;
+# Pair-mechanism parameter-to-law consistency is checked at roundoff precision.
+# Statistical significance establishes neither parameter identifiability nor
+# the reproducibility of individual optimizer coordinates.
 CHECK_REL_TOL = 1e-6
 CHECK_ABS_TOL = 1e-6
 # A fit's total deviance is stationary in its parameters at the optimum, so it
@@ -1751,8 +1794,8 @@ def differences(retained: Any, regenerated: Any, path: str = "") -> list[str]:
     return []
 
 
-def identified(report: dict[str, Any]) -> dict[str, Any]:
-    """report with each unidentified model's parameter values replaced by None, keeping their names.
+def observable_view(report: dict[str, Any]) -> dict[str, Any]:
+    """Observable replay view, retaining parameter names and comparing laws and deviances.
 
     The exposure models' rates are periodic, with basins of nearly equal
     deviance in several phase periods, so their values are masked as well,
@@ -1761,14 +1804,54 @@ def identified(report: dict[str, Any]) -> dict[str, Any]:
     """
     view: dict[str, Any] = json.loads(json.dumps(report))
     for pair in view["pairs"].values():
-        for name, model in pair["models"].items():
-            if name != "baseline_depolarizing" and not model["improves_at_family_alpha"]:
-                model["parameters"] = dict.fromkeys(model["parameters"])
+        for model in pair["models"].values():
+            model["parameters"] = dict.fromkeys(model["parameters"])
     for name, model in view.get("piecewise", {}).get("models", {}).items():
         if name != "no_detuning":
             model["parameters"] = dict.fromkeys(model["parameters"])
             model["starts"] = None
     return view
+
+
+def parameter_law_differences(report: dict[str, Any]) -> list[str]:
+    """Require bounded pair-mechanism coordinates to reproduce their laws and likelihood."""
+    found = []
+    for pair_name, pair in report["pairs"].items():
+        counts = {arm: np.asarray(values) for arm, values in pair["measured_counts"].items()}
+        readouts = {
+            arm: _model_readout(report["member_readout"][f"{pair_name}_{arm}"]) for arm in ("feedback", "no_feedback")
+        }
+        for name, model in pair["models"].items():
+            parameters = model["parameters"]
+            bounds = NUISANCE + MECHANISMS[name]
+            path = f"/pairs/{pair_name}/models/{name}"
+            if set(parameters) != {key for key, _low, _high in bounds} or any(
+                isinstance(parameters[key], bool)
+                or not isinstance(parameters[key], int | float)
+                or not math.isfinite(parameters[key])
+                or not low <= parameters[key] <= high
+                for key, low, high in bounds
+            ):
+                found.append(f"{path}/parameters: coordinates differ from the bounded model")
+                continue
+            for arm, readout in readouts.items():
+                expected = distribution(_with_excess(readout, parameters), arm == "feedback")
+                recorded = np.asarray(model[f"{arm}_law"])
+                if recorded.shape != expected.shape or not np.allclose(
+                    recorded, expected, rtol=0.0, atol=64 * np.finfo(float).eps
+                ):
+                    found.append(f"{path}/{arm}_law: parameter vector disagrees with the recorded law")
+            found.extend(differences(model["deviance"], deviance(counts, parameters, readouts), f"{path}/deviance"))
+    return found
+
+
+def replay_differences(retained: dict[str, Any], regenerated: dict[str, Any]) -> list[str]:
+    """Validate both pair-mechanism parameterizations, then compare observable evidence."""
+    return (
+        parameter_law_differences(retained)
+        + parameter_law_differences(regenerated)
+        + differences(observable_view(retained), observable_view(regenerated))
+    )
 
 
 def check(run: Path) -> None:
@@ -1785,10 +1868,13 @@ def check(run: Path) -> None:
         (first,) = {(entry["mid_e01"], entry["mid_e10"]) for entry in sources.values()}
         readout = first
     regenerated = json.loads(serialize(build_report(run, readout)))
-    found = differences(identified(retained), identified(regenerated))
+    found = replay_differences(retained, regenerated)
     if found:
         raise SystemExit(f"{run / RETAINED} differs from the fit its archived raw files regenerate: {found[:5]}")
-    print(f"{run / RETAINED}: regenerated from the archived raw files, floats within {CHECK_ABS_TOL:g}")
+    print(
+        f"{run / RETAINED}: pair-mechanism parameter laws verified; observable laws and likelihoods "
+        f"regenerated from archived raw files within {CHECK_ABS_TOL:g}"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

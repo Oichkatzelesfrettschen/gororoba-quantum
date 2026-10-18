@@ -5,7 +5,7 @@ f26297adbccd02434ce001a7a44fae68ff21311ef7dbf5b737631eb4ea8ca949  result.json
 362b8a43fd8c84e71faa4c49491b34e912f340b9fe546519b5b45e0184f1c77e  ../../notes/annihilator_determinant_line.md
 f76914ef22ada9b6f1e57e25496c2ea13ef15ddbf637c2de26a2fee75ef81681  ../../../gororoba_quantum/kernel_determinant.py
 3f770f7782c172ba536f17a6c7c4f397e095723371a5639b9ded7876fc2ac2c6  ../../../gororoba_quantum/kernel_determinant_contracts.py
-15e3dc1cf268c8cfe26046d9e212d5a9cfe69bf77c92c0638a989d5b744fcadd  ../../../gororoba_quantum/complex_skew.py
+a8daff05282a0affff406ed1fc067a340e9943816ed4145387c73fc4725763f0  ../../../gororoba_quantum/complex_skew.py
 f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c  ../../../gororoba_quantum/rank_charts.py
 5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427  ../../../gororoba_quantum/cd_core.py
-c77e02ae1f141231e7d1a6abfdc591a39685878cc2c843f4685dff0a4c458754  ../../../gororoba_quantum/parallel.py
+d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92  ../../../gororoba_quantum/parallel.py

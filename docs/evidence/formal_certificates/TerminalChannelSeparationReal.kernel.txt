@@ -18,3 +18,9 @@ CONTEXT SUMMARY
   
 * Inductives whose positivity is assumed: <none>
   
+* Inductives relying on indices not mattering:
+    Corelib.Init.Datatypes.eq_true
+    Stdlib.btauto.Algebra.null
+    Stdlib.Logic.EqdepFacts.eq_dep
+    Corelib.Init.Logic.eq
+  

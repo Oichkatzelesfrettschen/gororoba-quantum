@@ -172,6 +172,7 @@ def self_test() -> None:
 
         def commit(files: dict[str, str], message: str) -> None:
             for name, text in files.items():
+                (repo / name).parent.mkdir(parents=True, exist_ok=True)
                 (repo / name).write_text(text)
             git(repo, "add", "-A")
             git(repo, *MERGE_IDENTITY, "commit", "-q", "-m", message)
@@ -182,8 +183,9 @@ def self_test() -> None:
 
         record_gate = {"name": "record", "cwd": ".", "cmd": 'test "$(cat input)" = "$(cat record)"', "seconds": 0.1}
         host_gate = {"name": "host", "cwd": ".", "cmd": "false", "seconds": 0.1}
-        runner = (ROOT / "ci/run_gates.py").read_text(encoding="utf-8")
-        commit({"ci/gates.json": gates(host_gate), "ci/run_gates.py": runner, "input": "v1\n"}, "base")
+        runner_files = ("ci/run_gates.py", "ci/gate_inputs.py", "gororoba_quantum/parallel.py")
+        runner_sources = {name: (ROOT / name).read_text(encoding="utf-8") for name in runner_files}
+        commit({"ci/gates.json": gates(host_gate), **runner_sources, "input": "v1\n"}, "base")
         git(repo, "branch", "adds-record")
         git(repo, "branch", "consistent")
         git(repo, "switch", "-q", "adds-record")

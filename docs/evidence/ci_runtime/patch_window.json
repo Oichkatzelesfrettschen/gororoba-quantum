@@ -1,0 +1,106 @@
+{
+  "source_sha256": "2a9f91a5c512c6bcf391d568c0dcd440ea774e0221aa924b4827e539f502409c",
+  "baseline_commit": "9251c8dbd17df0a99a56194f3c1d186b90a1e591",
+  "baseline_source_sha256": "30740880ceca261fc0ab94c3bf57d6194cdfde108df6a4df7ef6b2eab07ccdd9",
+  "fitter_ast_sha256": "dda0d9ad155ae0db8f9f63ce166754d464d4a3f35483bd07b0bc919e1bb03346",
+  "stream_sha256": "0ffe4c6bddbbe86947ab91730c73e04175c6d33a370fbd8b4e73ef3616d35011",
+  "reference_stream_sha256": "0ffe4c6bddbbe86947ab91730c73e04175c6d33a370fbd8b4e73ef3616d35011",
+  "serial_results_sha256": "2409d83a13c61a317faf33ce59ad1d9d9164c484974d0b7d32b54bf0382fa003",
+  "pooled_results_sha256": "2409d83a13c61a317faf33ce59ad1d9d9164c484974d0b7d32b54bf0382fa003",
+  "trials": 20,
+  "points_per_trial": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "serial_seconds": 83.95680413699301,
+  "pooled_seconds_including_spawn": 29.859811105998233,
+  "available_cpus": 12,
+  "pooled_workers": 4,
+  "versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "qiskit": "2.6.0"
+  },
+  "python": "3.14.7 (main, Aug 14 2026, 06:38:32) [GCC 16.2.1 20260810]",
+  "executable": "/tmp/quantum-ci-upgrade.o0FngO/bin/python",
+  "platform": "Linux-7.2.9-2-cachyos-x86_64-with-glibc2.44",
+  "environment": {
+    "GLIBC_TUNABLES": "glibc.rtld.optional_static_tls=4096",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "QISKIT_NUM_PROCS": "1"
+  },
+  "schema": "patch-window-planted-fit-parallel-qualification-v1",
+  "execution_surface": "Local classical SciPy binomial-likelihood fits of fixed synthetic Ramsey counts; Qiskit metadata only; QPU and Aer execution absent from the qualification program.",
+  "source_path": "scripts/patch_window_analysis.py",
+  "source_bytes_unchanged_during_qualification": true,
+  "reference_generator": "The historical self_check AST retains its initial generator and truth/trials assignments, and each trial through point construction. The fitter call and subsequent trial statements are replaced by captured.append(points). The resulting 20 sample lists are compared byte-for-byte with _planted_detuning_samples(0.06,20).",
+  "fitter_unchanged": "The historical and edited fit_ramsey FunctionDef AST dumps are identical.",
+  "serialization": "json.dumps(value, sort_keys=True, separators=(\",\", \":\"), allow_nan=False).encode()",
+  "result_bytes_identical": true,
+  "stream_bytes_identical": true,
+  "timing_scope": "One serial batch and one four-worker batch on a shared host; pooled timing includes cold process spawning. These samples establish these calls only and are not hosted CI wall-time measurements.",
+  "observed_speedup": 2.8116991041556787,
+  "fixture": {
+    "rng_seed": 20261013,
+    "truth_detuning_mhz": 0.06,
+    "times_us": [
+      0.0,
+      3.6,
+      5.6,
+      7.6
+    ],
+    "shots_per_quadrature": 1024,
+    "draw_order": "For each trial, draw X then Y at each time, in listed time order; finish all 20 trials before mapping fits."
+  },
+  "metrics": {
+    "covered_intervals": 18,
+    "resolved_fits": 20,
+    "max_absolute_detuning_error_mhz": 0.0043807194433809205,
+    "coverage_threshold": 16,
+    "scope": "Finite synthetic regression fixture; the coverage count is not a calibrated coverage theorem."
+  },
+  "self_checks": [
+    {
+      "optimization": 0,
+      "passed": true,
+      "stdout": "patch window analysis: planted detuning covered in 18 of 20 fits; aliases kept; boundary intervals finite; mixed calibrations withhold every cross-job comparison\n",
+      "seconds": 3.930114657996455,
+      "method": "Exact source/stream/result-digest-bound reuse of the independently computed four-worker fits; every remaining self-check computation executes normally."
+    },
+    {
+      "optimization": 1,
+      "passed": true,
+      "stdout": "patch window analysis: planted detuning covered in 18 of 20 fits; aliases kept; boundary intervals finite; mixed calibrations withhold every cross-job comparison\n",
+      "seconds": 3.933254350005882,
+      "method": "Exact source/stream/result-digest-bound reuse of the independently computed four-worker fits; every remaining self-check computation executes normally."
+    }
+  ],
+  "self_check_output_identical": true,
+  "driver_source": "from __future__ import annotations\n\nimport argparse\nimport ast\nimport copy\nimport hashlib\nimport importlib.metadata\nimport io\nimport json\nimport os\nimport platform\nimport subprocess\nimport sys\nimport time\nfrom contextlib import redirect_stdout\nfrom pathlib import Path\nfrom unittest.mock import patch\n\n\ndef encoded(value):\n    return json.dumps(value, sort_keys=True, separators=(\",\", \":\"), allow_nan=False).encode()\n\n\ndef digest(value):\n    return hashlib.sha256(value).hexdigest()\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--root\", type=Path, required=True)\n    parser.add_argument(\"--baseline-commit\", required=True)\n    parser.add_argument(\"--cache\", type=Path, required=True)\n    parser.add_argument(\"--cached-self-check\", action=\"store_true\")\n    arguments = parser.parse_args()\n    root = arguments.root.resolve()\n    sys.path.insert(0, str(root / \"scripts\"))\n    import patch_window_analysis as analysis\n\n    source_path = root / \"scripts/patch_window_analysis.py\"\n    source_bytes = source_path.read_bytes()\n    if arguments.cached_self_check:\n        cache = json.loads(arguments.cache.read_text())\n        if digest(source_bytes) != cache[\"source_sha256\"]:\n            raise RuntimeError(\"Source changed before cached self-check\")\n    else:\n        old_source = subprocess.check_output(\n            [\"git\", \"-C\", str(root), \"show\", arguments.baseline_commit + \":scripts/patch_window_analysis.py\"]\n        )\n        old_tree, new_tree = ast.parse(old_source), ast.parse(source_bytes)\n        old_fit = next(node for node in old_tree.body if isinstance(node, ast.FunctionDef) and node.name == \"fit_ramsey\")\n        new_fit = next(node for node in new_tree.body if isinstance(node, ast.FunctionDef) and node.name == \"fit_ramsey\")\n        if ast.dump(old_fit) != ast.dump(new_fit):\n            raise RuntimeError(\"fit_ramsey differs from the historical fitter\")\n        check = copy.deepcopy(next(node for node in old_tree.body if isinstance(node, ast.FunctionDef) and node.name == \"self_check\"))\n        trial_index, trial = next((index, node) for index, node in enumerate(check.body) if isinstance(node, ast.For) and isinstance(node.target, ast.Name) and node.target.id == \"_trial\")\n        fit_index = next(index for index, node in enumerate(trial.body) if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Name) and node.value.func.id == \"fit_ramsey\")\n        trial.body = trial.body[:fit_index] + ast.parse(\"captured.append(points)\").body\n        check.name = \"old_samples\"\n        check.body = check.body[:trial_index] + ast.parse(\"captured = []\").body + [trial] + ast.parse(\"return captured\").body\n        namespace = dict(analysis.__dict__)\n        exec(compile(ast.fix_missing_locations(ast.Module(body=[check], type_ignores=[])), \"<historical-sampler>\", \"exec\"), namespace)\n        old_samples = namespace[\"old_samples\"]()\n        samples = analysis._planted_detuning_samples(0.06, 20)\n        if encoded(old_samples) != encoded(samples):\n            raise RuntimeError(\"Extracted sampler changes the historical generator stream\")\n        os.environ[\"GOROROBA_WORKERS\"] = \"1\"\n        started = time.perf_counter()\n        serial = analysis.parallel.ordered_map(analysis.fit_ramsey, samples, min_items=2)\n        serial_seconds = time.perf_counter() - started\n        print(\"serial\", serial_seconds, flush=True)\n        os.environ[\"GOROROBA_WORKERS\"] = \"4\"\n        started = time.perf_counter()\n        pooled = analysis.parallel.ordered_map(analysis.fit_ramsey, samples, min_items=2)\n        pooled_seconds = time.perf_counter() - started\n        print(\"pooled\", pooled_seconds, flush=True)\n        if encoded(serial) != encoded(pooled):\n            raise RuntimeError(\"Serial and four-worker fit outputs differ\")\n        if source_path.read_bytes() != source_bytes:\n            raise RuntimeError(\"Source changes during qualification\")\n        cache = {\n            \"source_sha256\": digest(source_bytes),\n            \"baseline_commit\": arguments.baseline_commit,\n            \"baseline_source_sha256\": digest(old_source),\n            \"fitter_ast_sha256\": digest(ast.dump(new_fit).encode()),\n            \"stream_sha256\": digest(encoded(samples)),\n            \"reference_stream_sha256\": digest(encoded(old_samples)),\n            \"serial_results_sha256\": digest(encoded(serial)),\n            \"pooled_results_sha256\": digest(encoded(pooled)),\n            \"trials\": len(samples),\n            \"points_per_trial\": [len(sample) for sample in samples],\n            \"serial_seconds\": serial_seconds,\n            \"pooled_seconds_including_spawn\": pooled_seconds,\n            \"available_cpus\": analysis.parallel.available_cpus(),\n            \"pooled_workers\": analysis.parallel.workers(),\n            \"stream\": samples,\n            \"results\": pooled,\n            \"versions\": {name: importlib.metadata.version(name) for name in (\"numpy\", \"scipy\", \"qiskit\")},\n            \"python\": sys.version,\n            \"executable\": sys.executable,\n            \"platform\": platform.platform(),\n            \"environment\": {name: os.environ.get(name) for name in (\"GLIBC_TUNABLES\", \"OPENBLAS_NUM_THREADS\", \"OMP_NUM_THREADS\", \"RAYON_NUM_THREADS\", \"QISKIT_NUM_PROCS\")},\n        }\n        arguments.cache.write_text(json.dumps(cache, indent=2, allow_nan=False) + \"\\n\")\n\n    real_map = analysis.parallel.ordered_map\n\n    def verified_map(function, items, min_items=64):\n        if function is not analysis.fit_ramsey or digest(encoded(items)) != cache[\"stream_sha256\"]:\n            return real_map(function, items, min_items=min_items)\n        if digest(encoded(cache[\"results\"])) != cache[\"pooled_results_sha256\"]:\n            raise RuntimeError(\"Cached fits differ from the verified pooled outputs\")\n        return copy.deepcopy(cache[\"results\"])\n\n    os.environ[\"GOROROBA_WORKERS\"] = \"4\"\n    output = io.StringIO()\n    started = time.perf_counter()\n    with patch.object(analysis.parallel, \"ordered_map\", verified_map), redirect_stdout(output):\n        analysis.self_check()\n    if source_path.read_bytes() != source_bytes:\n        raise RuntimeError(\"Source changes during self-check\")\n    result = {\n        \"optimization\": sys.flags.optimize,\n        \"passed\": True,\n        \"stdout\": output.getvalue(),\n        \"seconds\": time.perf_counter() - started,\n        \"method\": \"Exact source/stream/result-digest-bound reuse of the independently computed four-worker fits; every remaining self-check computation executes normally.\",\n    }\n    arguments.cache.with_name(\"self-check-\" + str(sys.flags.optimize) + \".json\").write_text(json.dumps(result, indent=2) + \"\\n\")\n    print(result, flush=True)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "reproduce": [
+    "\"$PYTHON\" -c 'import json; from pathlib import Path; Path(\"/tmp/qualify.py\").write_text(json.loads(Path(\"docs/evidence/ci_runtime/patch_window.json\").read_text())[\"driver_source\"])'",
+    "export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 RAYON_NUM_THREADS=1 QISKIT_NUM_PROCS=1; select the retained Python/package versions before executing the commands.",
+    "\"$PYTHON\" -B -W error /tmp/qualify.py --root \"$PWD\" --baseline-commit 9251c8dbd17df0a99a56194f3c1d186b90a1e591 --cache /tmp/patch-window-fits.json",
+    "\"$PYTHON\" -B -O -W error /tmp/qualify.py --root \"$PWD\" --baseline-commit 9251c8dbd17df0a99a56194f3c1d186b90a1e591 --cache /tmp/patch-window-fits.json --cached-self-check"
+  ]
+}

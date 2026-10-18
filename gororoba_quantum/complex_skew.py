@@ -39,8 +39,10 @@ def _operator(values: Sequence[sp.Expr]) -> sp.ImmutableMatrix:
     return sp.ImmutableMatrix(
         half,
         half,
-        lambda row, column: values[row ^ column] * cd_sign(half, row ^ column, column)
-        - sp.I * values[half + (row ^ column)] * cd_sign(half, column, row ^ column),
+        lambda row, column: (
+            values[row ^ column] * cd_sign(half, row ^ column, column)
+            - sp.I * values[half + (row ^ column)] * cd_sign(half, column, row ^ column)
+        ),
     )
 
 

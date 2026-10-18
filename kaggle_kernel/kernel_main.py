@@ -39,6 +39,7 @@ import shutil
 import subprocess
 import sys
 import time
+from collections.abc import Mapping
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
@@ -74,6 +75,31 @@ REPORTED_PACKAGES = (
 DM_WIDTHS = (12, 13, 14, 15)
 SV_WIDTHS = (26, 28, 29, 30, 31)
 TRIAL_TIMEOUT = 600
+NATIVE_STATIC_TLS_BYTES = 4096
+STATIC_TLS_TUNABLE = "glibc.rtld.optional_static_tls"
+
+
+def native_environment(environment: Mapping[str, str]) -> dict[str, str]:
+    """Reserve native TLS when the child loader starts, preserving unrelated caller tunables.
+
+    Qiskit's Rust extension and Aer's libgomp need more optional static TLS
+    than glibc's default 512 bytes. The loader reads the surplus at process
+    startup, so setting the variable inside an importing interpreter is late.
+    """
+    entries = environment.get("GLIBC_TUNABLES", "").split(":")
+    retained = []
+    capacity = NATIVE_STATIC_TLS_BYTES
+    for entry in entries:
+        name, separator, value = entry.partition("=")
+        if name == STATIC_TLS_TUNABLE and separator:
+            try:
+                capacity = max(capacity, int(value))
+            except ValueError:
+                pass
+        elif entry:
+            retained.append(entry)
+    retained.append(f"{STATIC_TLS_TUNABLE}={capacity}")
+    return dict(environment, GLIBC_TUNABLES=":".join(retained))
 
 
 def write(name: str, data: Any) -> None:
@@ -233,7 +259,9 @@ def capacity() -> dict[str, Any]:
         for width in widths:
             cmd = [sys.executable, "-B", str(Path(__file__).resolve()), "--trial", method, str(width)]
             try:
-                proc = subprocess.run(cmd, capture_output=True, text=True, timeout=TRIAL_TIMEOUT)
+                proc = subprocess.run(
+                    cmd, capture_output=True, text=True, timeout=TRIAL_TIMEOUT, env=native_environment(os.environ)
+                )
             except subprocess.TimeoutExpired:
                 trial = {"width": width, "ok": False, "error": f"timeout after {TRIAL_TIMEOUT} s"}
             else:
@@ -301,13 +329,15 @@ def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, st
     checked("python-install", sys.executable, "-m", "uv", "python", "install", version)
     checked("venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", version, str(CI_VENV))
     python = str(CI_VENV / "bin/python")
-    env = dict(
-        os.environ,
-        PATH=f"{CI_VENV / 'bin'}:{os.environ['PATH']}",
-        PYTHON=python,
-        PYTHONHASHSEED="0",
-        MPLBACKEND="Agg",
-        GOROROBA_AER_DEVICE="CPU",
+    env = native_environment(
+        dict(
+            os.environ,
+            PATH=f"{CI_VENV / 'bin'}:{os.environ['PATH']}",
+            PYTHON=python,
+            PYTHONHASHSEED="0",
+            MPLBACKEND="Agg",
+            GOROROBA_AER_DEVICE="CPU",
+        )
     )
     checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=env)
     checked("ci-freeze", python, "-m", "pip", "freeze", env=env)
@@ -394,14 +424,16 @@ def gpu_interpreter(
     checked("uv-install", sys.executable, "-m", "pip", "install", "-q", spec["uv"])
     checked("gpu-venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", sys.executable, str(venv))
     python = str(venv / "bin/python")
-    env = dict(
-        {key: value for key, value in os.environ.items() if key not in ISOLATION_VARIABLES},
-        PYTHONNOUSERSITE="1",
-        PATH=f"{venv / 'bin'}:{os.environ['PATH']}",
-        PYTHON=python,
-        PYTHONHASHSEED="0",
-        MPLBACKEND="Agg",
-        GOROROBA_AER_DEVICE="GPU",
+    env = native_environment(
+        dict(
+            {key: value for key, value in os.environ.items() if key not in ISOLATION_VARIABLES},
+            PYTHONNOUSERSITE="1",
+            PATH=f"{venv / 'bin'}:{os.environ['PATH']}",
+            PYTHON=python,
+            PYTHONHASHSEED="0",
+            MPLBACKEND="Agg",
+            GOROROBA_AER_DEVICE="GPU",
+        )
     )
     checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(spec["aer_pins"])))
     checked("gpu-freeze", python, "-m", "pip", "freeze", env=env)
@@ -445,7 +477,9 @@ def start_entry(argv: list[str], cwd: Path, env: dict[str, str], out: Path) -> s
     writes its record under out keeps every row it finished.
     """
     with open(out / "stdout.txt", "wb") as stdout, open(out / "stderr.txt", "wb") as stderr:
-        return subprocess.Popen(argv, cwd=cwd, env=dict(env, PYTHONUNBUFFERED="1"), stdout=stdout, stderr=stderr)
+        return subprocess.Popen(
+            argv, cwd=cwd, env=native_environment(dict(env, PYTHONUNBUFFERED="1")), stdout=stdout, stderr=stderr
+        )
 
 
 def run_entry() -> int:

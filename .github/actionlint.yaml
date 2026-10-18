@@ -1,0 +1,6 @@
+# actionlint 1.7.12 predates the generally available hosted Ubuntu 26.04 label.
+# Extend its runner-label catalogue using the supported label configuration.
+# GitHub runs ubuntu-26.04 as a hosted runner; the workflow has no self-hosted job.
+self-hosted-runner:
+  labels:
+    - ubuntu-26.04
