@@ -81,6 +81,13 @@ KERNEL_PINS = (
 # --gpu-env installs these in requirements.txt's qiskit-aer place inside a
 # venv on the image's Python 3.13, the newest Python the cu11 wheel ships for.
 GPU_ENV_AER_PINS = tuple(pin for pin in KERNEL_PINS if not pin.startswith(("qiskit==", "qiskit-ibm-runtime==")))
+# Opt-in pins a --gpu-env venv adds (``push --gpu-env-with GROUP``), each at
+# the build host's Arch package version, installed in the same ci/install_pins.sh
+# resolve and required at version by kernel_main.gpu_env_failures. torch 2.14.1
+# is python-pytorch-opt-cuda's release; PyPI's cp313 wheel links CUDA 13, which
+# the T4 image's CUDA 13.0 driver loads, and an entry that needs the GPU proves
+# it with torch.cuda before any work.
+GPU_ENV_GROUPS: dict[str, tuple[str, ...]] = {"torch": ("torch==2.14.1",)}
 # GPUs each accelerator machine carries; kernel_main.gpu_env_failures requires
 # nvidia-smi to list them all.
 MACHINE_GPUS = {"NvidiaTeslaT4": 2}
@@ -380,6 +387,10 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         require(not args.with_groups, "--gpu-env installs the repository's pins only; drop --with")
         files.extend(ROOT / name for name in CI_ENV_FILES)
         gpu_env = {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": MACHINE_GPUS.get(args.machine, 1)}
+        extra = [pin for group in getattr(args, "gpu_env_with", []) for pin in GPU_ENV_GROUPS[group]]
+        if extra:
+            gpu_env["extra_pins"] = extra
+    require(gpu_env is not None or not getattr(args, "gpu_env_with", []), "--gpu-env-with needs --gpu-env")
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
     listed = subprocess.run(
         ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
@@ -764,6 +775,21 @@ def _gpu_env_self_test(data: str) -> None:
     }
     for change, (changed, listed) in changes.items():
         require(bool(kernel_main.gpu_env_failures(pins, changed, 2, listed)), f"gpu_env_failures passes {change}")
+    with tempfile.TemporaryDirectory() as scratch:
+        torch_args = argparse.Namespace(**{**vars(build_args), "gpu_env_with": ["torch"]})
+        build_kernel(torch_args, Path(scratch) / "run", "owner", "2000-01-01T000000Z", "0" * 40)
+        torch_job = bundled_job(Path(scratch) / "run/kernel/run.py")
+    require(
+        torch_job["gpu_env"] == {**spec, "extra_pins": list(GPU_ENV_GROUPS["torch"])},
+        f"torch spec {torch_job['gpu_env']}",
+    )
+    torch_pins = kernel_main.pinned(ROOT, spec["aer_pins"] + torch_job["gpu_env"]["extra_pins"])
+    require(torch_pins["torch"] == "2.14.1", f"GPU environment pins {torch_pins}")
+    require(
+        kernel_main.gpu_env_failures(torch_pins, {**report, "installed": {**pins, "torch": "2.14.1"}}, 2, 2) == []
+        and bool(kernel_main.gpu_env_failures(torch_pins, report, 2, 2)),
+        "gpu_env_failures does not hold the torch pin",
+    )
     with tempfile.TemporaryDirectory() as scratch:
         try:
             build_kernel(
@@ -1284,6 +1310,14 @@ def main() -> int:
         "--gpu-env",
         action="store_true",
         help="run ENTRY in a venv of the repository's pins with GPU Aer; the kernel stops unless Aer reaches the GPU",
+    )
+    push_parser.add_argument(
+        "--gpu-env-with",
+        dest="gpu_env_with",
+        action="append",
+        default=[],
+        choices=sorted(GPU_ENV_GROUPS),
+        help="with --gpu-env, a pin group the venv adds at the host's versions",
     )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)

@@ -1115,6 +1115,24 @@ def _verify_pub_fusion_contracts() -> None:
     ]
     if [register.name for register in extracted.cregs] != expected_registers:
         raise RuntimeError("QPY round trip changes fused-component register identity")
+    for pub in pubs:
+        fused = round_trip[pub.name]
+        specs = [
+            (
+                component.register_prefix,
+                sorted({q for replica in component.entry.replica_qubits for q in replica}),
+                component.entry.name,
+            )
+            for component in pub.components
+        ]
+        # Disjoint components take the one-pass path, and a repeated component
+        # makes the qubit sets overlap, which takes extract() per component.
+        for case in (specs, specs + specs[:1]):
+            if packing.extract_many(fused, case) != [packing.extract(fused, *spec) for spec in case]:
+                raise RuntimeError(f"{pub.name}: extract_many differs from extract")
+        once = [(prefix, iter(qubits), name) for prefix, qubits, name in specs + specs[:1]]
+        if packing.extract_many(fused, once) != [packing.extract(fused, *spec) for spec in specs + specs[:1]]:
+            raise RuntimeError(f"{pub.name}: extract_many loses one-shot qubit iterables on the overlap path")
 
     overlap = copy.deepcopy(static_choices[:2])
     overlap[1].entries = copy.deepcopy(overlap[1].entries)
