@@ -277,6 +277,7 @@ class GroupResult:
     structure: dict[str, Any]
     branches: dict[str, int]
     rows: dict[str, tuple[np.ndarray, np.ndarray]]
+    law: np.ndarray | None = None
 
 
 def group_result(
@@ -358,6 +359,7 @@ class RunSlicer:
     readout_factors: tuple[float, ...]
     fuse: bool
     mode: str
+    keep_laws: bool = False
 
     def __call__(self, item: tuple[str, int, int]) -> Shard:
         run_name, part, parts = item
@@ -418,6 +420,9 @@ class RunSlicer:
                 key: group_result(prepared, labels[key], plans[key], evolved[key], uniforms, points, backend)
                 for key in plans
             }
+            if self.keep_laws:
+                for key, result in results.items():
+                    result.law = np.asarray(evolved[key][0])
             seconds["sample"] = time.perf_counter() - clock
         return Shard(run_name, light, members, replicas, keys, results, seconds, audit)
 
@@ -499,6 +504,7 @@ def sweep_runs(
     fuse: bool = True,
     cz_factors: Sequence[float] = CZ_FACTORS,
     readout_factors: Sequence[float] = READOUT_FACTORS,
+    laws: dict[tuple[str, str], np.ndarray] | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Every run's exact and sampled TV distances at every (c, r) point and its branch counts, with phase seconds.
 
@@ -506,12 +512,13 @@ def sweep_runs(
     distances, on torch it returns plans, which the main process uploads one
     group at a time, evolves on the device and samples there. The seconds hold
     the pool map's wall time (``workers``), each worker phase summed over
-    slices (``worker_seconds``) and, on torch, the device phases.
+    slices (``worker_seconds``) and, on torch, the device phases. laws, when
+    given, receives each group's law array under (run, first replica label).
     """
     seconds: dict[str, Any] = {}
     clock = time.perf_counter()
     mode = "distances" if engine == "numpy" else "plans"
-    slicer = RunSlicer(index, tuple(cz_factors), tuple(readout_factors), fuse, mode)
+    slicer = RunSlicer(index, tuple(cz_factors), tuple(readout_factors), fuse, mode, laws is not None)
     shards = parallel.ordered_map(slicer, slices(run_names), min_items=2)
     seconds["workers"] = time.perf_counter() - clock
     summed: dict[str, float] = {}
@@ -529,7 +536,12 @@ def sweep_runs(
         for run in run_names:
             merged = {key: value for shard in by_run[run] for key, value in shard.results.items()}
             first = by_run[run][0]
-            results.append(summarize_run(first, [merged[key] for key, _ in first.keys], cz_factors, readout_factors))
+            groups = [merged[key] for key, _ in first.keys]
+            if laws is not None:
+                for group in groups:
+                    assert group.law is not None
+                    laws[(run, group.structure["replicas"][0])] = group.law
+            results.append(summarize_run(first, groups, cz_factors, readout_factors))
         return results, seconds
 
     backend = make_backend(engine, device, dtype)
@@ -563,6 +575,9 @@ def sweep_runs(
             for (key, labels), law in zip(first.keys, evolved, strict=True)
         ]
         seconds["sample"] += time.perf_counter() - clock
+        if laws is not None:
+            for (_, labels), (law, _) in zip(first.keys, evolved, strict=True):
+                laws[(run, labels[0])] = backend.host(law)
         results.append(summarize_run(first, groups, cz_factors, readout_factors))
     for phase in ("upload", "evolve", "sample"):
         seconds[phase] = round(seconds[phase], 3)
