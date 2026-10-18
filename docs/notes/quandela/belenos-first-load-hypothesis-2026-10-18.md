@@ -80,8 +80,10 @@ positive control) is clean. Consider:
 
 ## Resolution against the retained runs
 
-Every reading below comes from `docs/evidence/quandela/belenos_light_cone.json`
-(gate core-546) and each run's `submission.json`, so no job ran. Two facts in
+The table and the scores come from `docs/evidence/quandela/belenos_light_cone.json`
+(gate core-546). Submission times and receipt covariates come from each run's
+`submission.json`. The stale-load sweep comes from the strategy note's
+conjecture table, and Idea 2 states its limits. No job ran. Two facts in
 the notes above need correcting: D1 and D2 opened at 1500 samples, not 1600,
 and the bridge job c2eea262 is belenos_mesh job-09.
 
@@ -103,13 +105,18 @@ most 0.20 passes and at least 0.50 fails.
 | job-16 (46b810ae) | 19:36 | 29dc6ef8, 10000, iterated | fail 0.819 | entry 1 fails 0.814; 11 of 11 after a 14a96ca6 load pass |
 
 The rule that fits all ten jobs: a job that opens on 29dc6ef8 with a
-10000-sample entry fails, and the failure holds until another mesh loads. A
-job that opens on 29dc6ef8 with a 1500-sample entry passes, and the good state
-then holds through later 10000, 40000 and 60000-sample entries on the same
-mesh. Every job that opens on another mesh passes, at 1500 or 10000 samples.
-Among the seven jobs that opened on 29dc6ef8, five opened at 10000 and failed
-and two opened at 1500 and passed; Fisher's exact one-sided p is
-1/C(7,2) = 0.048. Uncertainty is medium. The single-to-iterated replication
+10000-sample entry fails, and in job-16 the failure held through a second
+10000-sample entry until another mesh loaded. A job that opens on 29dc6ef8
+with a 1500-sample entry passes, and in D2 the 10000-sample entry right after
+it also passed. D2's later 40000 and 60000-sample passes each follow a fresh
+1500-sample entry, so they fit a refresh by each 1500 entry just as well as
+persistence from the opening, and they decide nothing about persistence.
+Every job that opens on another mesh passes, at 1500 or 10000 samples. Among
+the seven jobs that opened on 29dc6ef8, five opened at 10000 and failed and
+two opened at 1500 and passed. Fisher's exact one-sided value is
+1/C(7,2) = 0.048, but it is descriptive only: the rule was chosen after
+seeing these same jobs, so the value is not a calibrated test. Significance
+needs runs reserved in advance. Uncertainty is medium. The single-to-iterated replication
 (D1 single, D2 iterated) raises confidence; the two 1500-sample openings
 falling within two minutes of each other lowers it.
 
@@ -124,12 +131,15 @@ half: a longer first acquisition on that mesh.
 **Idea 2, a stale characterization configuration.** Unsupported. e3f757ed
 first appears in characterization job-04 (fa847dfd, submitted 03:04:59 UTC
 on 10-18). The second Q1 failure (7af74302, 02:55) precedes it, so that
-failure could not have served a stale e3f757ed load. Across the 135 meshes
-served to this account, the best whole-mesh match is TVD 0.20, against a
-shot floor of 0.012, which counts as a mismatch, and 0.20 is the minimum of
-135 comparisons. The full-ideal sweep this idea asks for is already in the
-strategy note's conjecture table: stale load of an earlier complete mesh,
-refuted for those 135 meshes. Partial and mixed configurations stay open.
+failure could not have served a stale e3f757ed load. The e3f757ed timing
+comes from that run's `analysis.json` and `submission.json`. The full-ideal
+sweep this idea asks for is in the strategy note's conjecture table: stale
+load of an earlier complete mesh, refuted for the 135 meshes served to this
+account, with best TVD 0.20 and 0.29 against a 0.012 shot floor. The
+per-mesh sweep outputs are not retained as a replayable artifact, so these
+two figures rest on the strategy note's record alone until a sweep replay
+lands in `docs/evidence/quandela/`. Partial and mixed configurations stay
+open.
 
 **Idea 3, covariates.** Resolved for the recorded covariates. Every job ran
 exqalibur 1.4.2 and perceval-quandela 1.3.1 at a 4.94 MHz clock. The receipt's
@@ -151,32 +161,43 @@ open and is the threshold measurement. Each arm needs its own job, because
 the opening state exists only at job start, so the arms cost one credit
 each.
 
-**Idea 5, the procedure.** The retained data support two openings for a job
-whose first entry is on 29dc6ef8: a 1500-sample entry on 29dc6ef8 itself
-(job-10, job-12), or any entry on another mesh (job-09, job-16). Neither has
-been tried on another target mesh. The bug report rests on the table above,
-the fixed-point evidence (TVD 0.042 between job-14 and job-16 entry 0) and
-the refuted stale-load sweep.
+**Idea 5, the procedure.** Only one opening has retained support: a
+1500-sample entry on 29dc6ef8 itself (job-10, job-12), and job-12 alone shows
+a 10000 entry passing right after it. An opening on another mesh is
+untested as prevention. In job-09, 29dc6ef8 was reached at 1500, which passes
+anyway. In job-16, the other mesh loaded only after the opening had failed,
+so that shows recovery, not prevention. The cross-mesh warm-up stays
+unlicensed until job C or an equivalent run passes. The bug report rests on
+the table above, the stable failing histogram within the job-14 and job-16
+episode (TVD 0.042 between job-14 and job-16 entry 0), and the refuted
+complete-mesh sweep. Q1, job-13 and job-14 returned three different wrong
+histograms, so the failure is a stable state only within one episode.
 
 ## Falsification plan
 
 Each surviving claim is listed with its status and the result that would
 falsify it. Each job below needs a written case approved before submission
 and costs about one credit. The jobs run in the order listed, each planned
-after the previous one is collected.
+after the previous one is collected. Every job in the plan is reserved in
+advance, so its readings count as confirmatory.
 
 | claim | status | falsifier | cost |
 |---|---|---|---|
-| F1. On 29dc6ef8, the opening entry's sample budget sets a state that holds until another mesh loads | supported, 7 of 7 openings on 29dc6ef8 (p 0.048) | a job opening on 29dc6ef8 at 1500 then 10000 fails at the 10000 entry, at an hour outside 09:03 to 09:05 UTC (job A) | 1 job |
-| F2. Time of day, not budget, separates the openings | live confound | job A passes and job B fails: at any hour, a 1500 opening holds and a 10000 opening fails | carried by A and B |
-| F3. The budget axis is a threshold between 1500 and 10000 | open | job B opens on 29dc6ef8 at 5000. Pass or fail places the threshold; an intermediate TVD (0.20 to 0.50) means a graded effect | 1 job |
-| F4. Opening on another mesh protects a later 29dc6ef8 entry at 10000 | supported only after a failed opening (job-16) and at 1500 (job-09) | job C opens on 14a96ca6 at 1500, then 29dc6ef8 at 10000 fails | 1 job |
-| F5. 29dc6ef8 is the only mesh with a budget-sensitive opening | untested | a 10000-sample opening on e296b6a9 or 14a96ca6 fails. job-08 and job-11 already pass at 10000, so two meshes already support F5 | 0 jobs, already read |
-| F6. The failing state is a stale complete mesh served earlier | refuted for 135 meshes (best 0.20, floor 0.012; e3f757ed postdates the 02:55 failure) | a fit to a partial or mixed configuration of earlier meshes that reaches the shot floor | offline |
-| F7. The failing state is one fixed wrong configuration | supported (TVD 0.042 between job-14 and job-16 entry 0, 0.052 within job-16) | a repeated 10000 opening that moves more than 0.10 from the job-14 histogram | carried by any failing job |
+| F1. On 29dc6ef8, the opening entry's sample budget sets the job's state | supported descriptively, 7 of 7 openings on 29dc6ef8 | job A1 (1500 opening) fails, or job A2 (10000 opening, same hour) passes | jobs A1 and A2 |
+| F2. Time of day or service state, not budget, separates the openings | live confound | A1 passes and A2 fails when run back to back at an hour outside 09:03 to 09:05 UTC. A matched pair at one hour removes time as the difference | carried by A1 and A2 |
+| F3. A good opening persists through consecutive large entries without a refresh | untested; D2 refreshed with a 1500 entry before each large entry | A1's second or third consecutive 10000-sample entry after the single 1500 opening fails | carried by A1 |
+| F4. The budget axis is a threshold between 1500 and 10000 | open | job B opens on 29dc6ef8 at 5000. A pass or fail places the threshold. An intermediate TVD (0.20 to 0.50) is inconclusive, since it fits a graded response, intermittent switching or drift equally | 1 job |
+| F5. An opening on another mesh prevents the 10000-sample failure on 29dc6ef8 | untested: job-09 reached 29dc6ef8 at 1500, and job-16 shows recovery after failure, not prevention | job C opens on 14a96ca6 at 1500, then 29dc6ef8 at 10000, and that entry fails | 1 job |
+| F6. 29dc6ef8 is the only mesh with a budget-sensitive opening | consistent: 10000-sample openings on e296b6a9 (job-08) and 14a96ca6 (job-11) passed | a 10000-sample opening on another mesh fails | 0 jobs, already read |
+| F7. The failing state is a stale complete mesh served earlier | refuted for the 135 meshes served to this account (best 0.20, floor 0.012; strategy note record, sweep not retained) | a shot-floor match to an earlier complete mesh, in a sweep retained as an artifact | offline |
+| F8. The failing state is a stale partial or mixed configuration of earlier meshes | open, separate from F7 | a shot-floor fit to such a configuration supports it; no fit across the searched class leaves it unsupported | offline |
+| F9. Within one episode, the failing state is a fixed wrong configuration | supported for job-14 and job-16 (TVD 0.042 and 0.052); Q1, job-13 and job-14 differ, so the state does not survive across episodes | a back-to-back repeat of a failing 10000 opening that moves more than 0.10 from its neighbor's histogram | carried by A2 |
 
-Order: job A first, because it decides F1 against F2 directly. Job B runs next
-if A passes; if A fails, the axis is time or service state, and B is
-replaced by a 10000-sample opening inside the 09:00 UTC hour. Job C runs
-last, and its pass is what licenses the warm-up procedure. Stop at any void
-or intermediate result. The plan's ceiling is three jobs, about 3 credits.
+Order: A1 and A2 run back to back at one hour, A1 first. A1 opens on
+29dc6ef8 at 1500 and follows with three consecutive 10000-sample entries on
+the same mesh. A2 opens on 29dc6ef8 at 10000. A1 passing and A2 failing
+supports F1 and removes time of day as the difference. A1 failing, or A2
+passing, makes the axis time or service state, and job B is then dropped.
+Otherwise job B runs next, then job C, whose pass is what licenses the
+warm-up procedure. Stop at any void or intermediate reading. The plan's
+ceiling is four jobs, about 4 credits.
