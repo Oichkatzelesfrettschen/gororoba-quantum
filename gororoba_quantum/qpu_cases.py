@@ -252,6 +252,17 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             "state-prep-control names nonnegative qubits",
         )
         arguments.extend(["--layout", ",".join(str(qubit) for qubit in qubits)])
+    if "state_prep_arms" in design:
+        arms = design["state_prep_arms"]
+        _require(
+            isinstance(arms, list)
+            and bool(arms)
+            and "prep0" in arms
+            and set(arms) <= {"prep0", "reset", "x"}
+            and len(set(arms)) == len(arms),
+            "state_prep_arms names distinct state-prep-control arms, prep0 among them",
+        )
+        arguments.extend(["--state-prep-arms", ",".join(arms)])
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for backend_name, qubits in sorted(policy.get("operator_excluded_qubits", {}).items()):
         _require(
@@ -1507,27 +1518,71 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             if configuration.get("layout_source") == "declared"
             else f"the replica qubits of `{configuration['layout_source']}`"
         )
+        arms = list(configuration.get("arms") or ("prep0", "reset", "x"))
+        pub_text = {
+            "prep0": "A initializes and measures (residual excitation plus readout misassignment)",
+            "reset": "B adds an active reset before the measure",
+            "x": "C applies an X before the measure (the |1> column of the assignment matrix)",
+        }
+        static = [arm for arm in arms if arm != "reset"]
+        jobs_text = (
+            ("A and C share the static job" if len(static) == 2 else "A runs in one static job") if static else ""
+        )
+        if "reset" in arms:
+            jobs_text += ("; " if jobs_text else "") + (
+                "B, which the reset makes dynamic, runs in its own job with twirling and dynamical decoupling off"
+            )
+        endpoints = [
+            text
+            for text, needs in (
+                ("0.025 on A", {"prep0"}),
+                ("0.05 on A - B", {"prep0", "reset"}),
+                ("0.025 on C", {"x"}),
+            )
+            if needs <= set(arms)
+        ]
+        count = len(endpoints)
+        words = {1: "One", 2: "Two", 3: "Three"}
+        reset_text = (
+            " The reset benefit A - B is positive only where initialization leaves more excitation than the "
+            "reset's own misassignment."
+            if "reset" in arms
+            else ""
+        )
+        selection = (
+            ""
+            if len(arms) == 3
+            else f" The run selects the arms {', '.join(arms)} (`--state-prep-arms {','.join(arms)}`)."
+        )
         return [
             "## Scientific question and interpretation",
             "",
             f"The state-prep-control family measures, on {len(qubits)} qubits of {backends} ({origin}: "
             f"{', '.join(str(q) for q in qubits)}), the excited fraction each qubit carries after the "
-            f"Sampler's implicit initialization at {delay_text}. Three PUBs measure every qubit in each "
-            "shot: A initializes and measures (residual excitation plus readout misassignment), B adds an "
-            "active reset before the measure, and C applies an X before the measure (the |1> column of the "
-            "assignment matrix). A and C share the static job; B, which the reset makes dynamic, runs in its "
-            "own job with twirling and dynamical decoupling off.",
+            f"Sampler's implicit initialization at {delay_text}. "
+            + (
+                "Three PUBs measure every qubit in each "
+                "shot: A initializes and measures (residual excitation plus readout misassignment), B adds an "
+                "active reset before the measure, and C applies an X before the measure (the |1> column of the "
+                "assignment matrix). A and C share the static job; B, which the reset makes dynamic, runs in its "
+                "own job with twirling and dynamical decoupling off."
+                if len(arms) == 3
+                else f"{words[len(arms)]} PUB{'s' if len(arms) > 1 else ''} measure{'' if len(arms) > 1 else 's'} "
+                "every qubit in each shot: "
+                + "; ".join(pub_text[arm] for arm in arms)
+                + f". {jobs_text[0].upper() + jobs_text[1:]}.{selection}"
+            ),
             "",
             "Under the readout channel e10 = prob_meas1_prep0, e01 = prob_meas0_prep1, A reads "
             "(1 - eps) e10 + eps (1 - e01), so the initial excitation is eps = (A - e10) / (1 - e01 - e10) "
             "(diagnostic_experiments.state_prep_excitation), the value dynamic_density's prep_excitation and "
-            "live_run's --prep-excitation take. The reset benefit A - B is positive only where "
-            "initialization leaves more excitation than the reset's own misassignment. The calibration "
+            f"live_run's --prep-excitation take.{reset_text} The calibration "
             "noise model starts every qubit in |0>, so it prices A at the readout error alone; the residual "
             "excitation is the device property this run measures, and only the device answers it.",
             "",
-            f"Three two-sided precision contracts per qubit, {3 * len(qubits)} in all, split the family-wise "
-            "alpha evenly and admit the design: half-width 0.025 on A and on C, 0.05 on A - B, Hoeffding "
+            f"{words[count]} two-sided precision contract{'s' if count > 1 else ''} per qubit, "
+            f"{count * len(qubits)} in all, split the family-wise alpha evenly and admit the design: "
+            f"half-width {'0.025 on A and on C, 0.05 on A - B' if count == 3 else ', '.join(endpoints)}, Hoeffding "
             "radii valid under arbitrary dependence between the qubits of one shot. They price resolution, "
             "not an effect. The comparison of A between two repetition delays spans two jobs, so it is "
             "outside these contracts; the written addendum states that comparison and its decision rule.",
@@ -2353,6 +2408,26 @@ def _verify() -> None:
         excited["policy"]["design"]["prep_excitation"] = 0.01
         excited_arguments = _reproduction_arguments(excited, Path("results/live/fixture/record.json"))
         assert "--prep-excitation 0.01" in " ".join(excited_arguments)
+        prepared = copy.deepcopy(record)
+        prepared["policy"]["design"].update(family="state-prep-control", state_prep_arms=["prep0"])
+        prepared["family_configuration"] = {
+            "name": "state-prep-control",
+            "qubits": [104, 105],
+            "layout_source": "declared",
+            "arms": {"prep0": "init, measure"},
+        }
+        prepared_arguments = " ".join(_reproduction_arguments(prepared, Path("results/live/fixture/record.json")))
+        assert "--layout 104,105 --state-prep-arms prep0" in prepared_arguments
+        prepared_case = " ".join(_scientific_case("state-prep-control", prepared))
+        assert "One PUB measures every qubit" in prepared_case and "2 in all" in prepared_case
+        assert "reset benefit" not in prepared_case and "Three PUBs" not in prepared_case
+        for refused in (["prep0", "bogus"], ["x"]):
+            prepared["policy"]["design"]["state_prep_arms"] = refused
+            try:
+                _reproduction_arguments(prepared, Path("results/live/fixture/record.json"))
+            except ValueError:
+                continue
+            raise AssertionError(f"state-prep arms {refused} rendered into the replay command")
         assert any("declared excitation of 0.01" in line for line in _scientific_case("n21-feedback", excited))
         delayed = copy.deepcopy(record)
         delayed["policy"]["rep_delay_seconds"] = 0.00025
