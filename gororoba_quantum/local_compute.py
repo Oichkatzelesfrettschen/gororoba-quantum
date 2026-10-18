@@ -10,6 +10,7 @@ preparation time stays separate from the QPU charge ledger.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import io
 import json
@@ -20,8 +21,9 @@ from typing import Any
 
 import numpy as np
 from qiskit import qpy
-from qiskit.circuit import ControlFlowOp
+from qiskit.circuit import ControlFlowOp, Delay
 from qiskit_aer import AerSimulator
+from qiskit_aer.noise.errors.base_quantum_error import QuantumChannelInstruction
 
 import aer_identity
 import aer_resources
@@ -163,6 +165,159 @@ def noise_digest(model: Any) -> str:
     return digest
 
 
+class _Serialization:
+    """One noise model's serialized errors and the restrictions derived from them."""
+
+    def __init__(self, model: Any) -> None:
+        self.model = model
+        self.full: dict[str, Any] = model.to_dict(serializable=True)
+        errors = self.full["errors"]
+        # Instruction names of each error; the controller's NoiseModel.opset()
+        # is the union of its errors' instruction types plus roerror.
+        self.names = [
+            frozenset(instruction["name"] for circuit in error.get("instructions", []) for instruction in circuit)
+            for error in errors
+        ]
+        self.all_names = frozenset().union(*self.names)
+        self.readout = any(error["type"] == "roerror" for error in errors)
+        # A nonlocal error acts on qubits other than the gate's, so no
+        # active-qubit restriction preserves it; such a model runs whole.
+        self.nonlocal_errors = bool(getattr(model, "_nonlocal_quantum_errors", None))
+        self.restricted: dict[frozenset[int], dict[str, Any]] = {}
+        self.lock = threading.Lock()
+
+    def restrict(self, active: frozenset[int]) -> dict[str, Any]:
+        """The serialized errors whose qubits lie in active, plus witnesses of the full opset.
+
+        The controller reads a noise model globally only through is_ideal,
+        has_quantum_errors, has_nonlocal_quantum_errors and opset
+        (Controller::simulation_methods, CircuitExecutor::run_circuit_without_sampled_noise):
+        a statevector batch takes Kraus noise sampling exactly when the
+        model's opset holds kraus or superop, which draws the random stream
+        differently from per-shot circuit sampling. Every other lookup keys
+        an error by the circuit's own operation and physical qubits, which
+        enable_truncation maps back to the model's numbering. Keeping the
+        errors on active qubits, every all-qubit error, and the first error
+        in model order that contributes each instruction name or the readout
+        type the kept ones lack, preserves those four properties and every
+        lookup, so the controller samples the same counts.
+        """
+        if self.nonlocal_errors:
+            return self.full
+        with self.lock:
+            cached = self.restricted.get(active)
+            if cached is not None:
+                return cached
+            errors = self.full["errors"]
+            keep = [
+                "gate_qubits" not in error or any(set(qubits) <= active for qubits in error["gate_qubits"])
+                for error in errors
+            ]
+            names = frozenset().union(*(self.names[index] for index, kept in enumerate(keep) if kept))
+            readout = any(kept and error["type"] == "roerror" for kept, error in zip(keep, errors, strict=True))
+            for index, error in enumerate(errors):
+                if names >= self.all_names and (readout or not self.readout):
+                    break
+                if keep[index]:
+                    continue
+                if not self.names[index] <= names or (error["type"] == "roerror" and not readout):
+                    keep[index] = True
+                    names |= self.names[index]
+                    readout = readout or error["type"] == "roerror"
+            restricted = {"errors": [error for kept, error in zip(keep, errors, strict=True) if kept]}
+            self.restricted[active] = restricted
+            return restricted
+
+
+_SERIALIZED_NOISE: OrderedDict[int, _Serialization] = OrderedDict()
+_SERIALIZED_NOISE_LOCK = threading.Lock()
+
+
+def _serialization(model: Any) -> _Serialization:
+    with _SERIALIZED_NOISE_LOCK:
+        cached = _SERIALIZED_NOISE.get(id(model))
+        if cached is not None and cached.model is model:
+            return cached
+        serialization = _Serialization(model)
+        _SERIALIZED_NOISE[id(model)] = serialization
+        while len(_SERIALIZED_NOISE) > CACHE_ENTRIES:
+            _SERIALIZED_NOISE.popitem(last=False)
+        return serialization
+
+
+def serialized_noise(model: Any, active: frozenset[int] | None = None) -> dict[str, Any]:
+    """model.to_dict(serializable=True), computed once per model object, or its restriction to active qubits.
+
+    The dictionary is the native controller's only noise input. A model that
+    noise_simulator builds is never mutated afterward, so one serialization
+    equals every later one; the controller converts the dictionary to its
+    own representation and leaves the Python object unchanged. Each
+    restriction is computed once per active-qubit set (_Serialization.restrict).
+    """
+    serialization = _serialization(model)
+    return serialization.full if active is None else serialization.restrict(active)
+
+
+def circuit_qubits(circuits: list[Any]) -> frozenset[int]:
+    """Physical qubits any instruction of the circuits names; a control-flow operation names its blocks' qubits."""
+    return frozenset(
+        circuit.find_bit(qubit).index
+        for circuit in circuits
+        for instruction in circuit.data
+        for qubit in instruction.qubits
+    )
+
+
+class _SerializedNoise:
+    """Noise argument of cpp_execute_circuits carrying a retained serialization."""
+
+    def __init__(self, serialized: dict[str, Any]) -> None:
+        self._serialized = serialized
+
+    def to_dict(self, serializable: bool = False) -> dict[str, Any]:
+        del serializable
+        return self._serialized
+
+
+class SerializedNoiseSimulator(AerSimulator):
+    """AerSimulator that passes its configured noise model to the controller from one serialization.
+
+    qiskit_aer's cpp_execute_circuits serializes the noise model with
+    NoiseModel.to_dict(serializable=True) on every run: a walk over every
+    QuantumError of the whole device plus a JSON round trip. A run whose
+    noise model is the configured object hands the controller the retained
+    serialized_noise dictionary, which equals that walk's output, so the
+    controller receives the same input. AerBackend._assemble_noise_model
+    deep-copies the model before it adds a circuit's QuantumChannelInstruction
+    errors, and a run_options noise_model replaces it; either object differs
+    from the configured one and serializes afresh.
+    """
+
+    def _assemble_noise_model(self, circuits: Any, optypes: Any, **run_options: Any) -> Any:
+        """AerBackend._assemble_noise_model without its PassManager call on an empty circuit list.
+
+        The stock method runs the model's noise passes on the circuits that
+        hold a Delay and moves QuantumChannelInstruction errors into a copied
+        model. A batch with neither leaves circuits and model unchanged, yet
+        the stock call still hands qiskit's PassManager.run an empty list,
+        which dill-serializes the RelaxationNoisePass and its whole-device
+        Target for a process map. Such a batch returns the stock method's
+        unchanged circuits with the configured model's serialization
+        restricted to the batch's qubits (_Serialization.restrict).
+        """
+        if any(Delay in types or QuantumChannelInstruction in types for types in optypes):
+            return super()._assemble_noise_model(circuits, optypes, **run_options)
+        model = run_options.get("noise_model", getattr(self.options, "noise_model", None))
+        if model is not None and model is getattr(self.options, "noise_model", None):
+            model = _SerializedNoise(serialized_noise(model, circuit_qubits(circuits)))
+        return copy.copy(circuits), model, run_options
+
+    def _execute_circuits(self, aer_circuits: Any, noise_model: Any, config: Any) -> Any:
+        if noise_model is not None and noise_model is getattr(self.options, "noise_model", None):
+            noise_model = _SerializedNoise(serialized_noise(noise_model))
+        return super()._execute_circuits(aer_circuits, noise_model, config)
+
+
 def configure(simulator: Any, policy: dict[str, Any]) -> None:
     validate(policy)
     simulator.set_options(
@@ -177,6 +332,10 @@ def configure(simulator: Any, policy: dict[str, Any]) -> None:
         shot_branching_sampling_enable=policy["shot_branching_sampling"],
     )
     simulator._gororoba_noise_digest = noise_digest(simulator.options.noise_model)
+    if isinstance(simulator, SerializedNoiseSimulator) and simulator.options.noise_model is not None:
+        # The first serialization runs on the configuring thread, so
+        # concurrent runs on one snapshot read one retained dictionary.
+        serialized_noise(simulator.options.noise_model)
     simulator._gororoba_compute_policy = dict(policy)
     simulator._gororoba_simulation_batches = []
 
@@ -185,11 +344,10 @@ def batches(simulator: Any) -> list[dict[str, Any]]:
     return list(getattr(simulator, "_gororoba_simulation_batches", []))
 
 
-def merge_batches(target: Any, source: Any) -> None:
-    """Append source's batch evidence to target's, in order; a simulator without evidence contributes nothing."""
-    evidence = batches(source)
+def append_batches(target: Any, evidence: list[dict[str, Any]]) -> None:
+    """Append batch evidence another simulator recorded to target's, in order."""
     if evidence:
-        target._gororoba_simulation_batches = batches(target) + evidence
+        target._gororoba_simulation_batches = batches(target) + list(evidence)
 
 
 def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:
@@ -217,6 +375,28 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
             raise
         return "CPU", {"rejected": str(error), "active_qubits": width}
     return "GPU", admission
+
+
+def host_independent_route(batch: dict[str, Any]) -> str | None:
+    """None when route() sends a recorded batch to CPU whatever GPU the host reports, else the reason.
+
+    cpu mode never routes; auto keeps statevector trajectories, and density
+    matrices narrower than GPU_MIN_ACTIVE_QUBITS, on CPU. Every other batch
+    depends on Aer's device list and a fresh CUDA memory reading, and seeded
+    GPU counts differ from CPU counts, so a recorded draw of such a batch
+    need not repeat on the same circuits.
+    """
+    policy = batch.get("policy") or {}
+    if batch.get("device") != "CPU" or batch.get("gpu_admission") is not None:
+        return f"ran on {batch.get('device')} after a GPU admission decision"
+    if policy.get("mode") == "cpu" or (policy.get("mode") == "auto" and batch.get("method") != "density_matrix"):
+        return None
+    if policy.get("mode") != "auto":
+        return f"local-compute mode {policy.get('mode')}"
+    widths = [len(metadata.get("active_input_qubits") or ()) for metadata in batch.get("experiment_metadata", [])]
+    if not widths or 0 in widths or max(widths) >= GPU_MIN_ACTIVE_QUBITS:
+        return f"a density matrix of {max(widths, default=0)} active qubits routes by GPU availability"
+    return None
 
 
 def batch_route(policy: dict[str, Any], method: str, circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:

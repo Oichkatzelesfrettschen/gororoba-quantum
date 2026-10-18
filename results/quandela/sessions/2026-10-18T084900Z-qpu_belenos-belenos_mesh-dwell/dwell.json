@@ -1,0 +1,185 @@
+{
+ "schema": "qd-belenos-form-dwell-v1",
+ "preregistration_sha256": "47fde7851c76d1fd451b31db26754e06383ecc7edb5b8da3a670c90d9899a32e",
+ "runs": [
+  "2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
+  "2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
+  "2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12"
+ ],
+ "d1": {
+  "verdict": "intermediate",
+  "run": "2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
+  "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+  "in_block": 0.918,
+  "in_block_wilson95": [
+   0.903024429,
+   0.930840067
+  ],
+  "a": 0.940450254,
+  "a_wilson95": [
+   0.92668294,
+   0.95176693
+  ]
+ },
+ "d2": {
+  "verdict": "flat",
+  "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+  "short": {
+   "iterations": [
+    "d2-00-s20-n1500",
+    "d2-02-s20-n1500",
+    "d2-04-s20-n1500"
+   ],
+   "in_block": 0.975767008,
+   "in_block_wilson95": [
+    0.970850828,
+    0.979871235
+   ]
+  },
+  "long": {
+   "iterations": [
+    "d2-03-s20-n40000",
+    "d2-05-s20-n60000"
+   ],
+   "in_block": 0.94702239,
+   "in_block_wilson95": [
+    0.945615285,
+    0.948395075
+   ]
+  },
+  "drop": 0.028744618,
+  "drift_bound": 0.054659546,
+  "by_dwell": [
+   {
+    "name": "d2-00-s20-n1500",
+    "max_samples": 1500,
+    "in_block": 0.992666667,
+    "in_block_wilson95": [
+     0.986916091,
+     0.995900277
+    ]
+   },
+   {
+    "name": "d2-01-s20-n10000",
+    "max_samples": 10000,
+    "in_block": 0.896168851,
+    "in_block_wilson95": [
+     0.890036291,
+     0.901997063
+    ]
+   },
+   {
+    "name": "d2-02-s20-n1500",
+    "max_samples": 1500,
+    "in_block": 0.994659546,
+    "in_block_wilson95": [
+     0.989497123,
+     0.997291457
+    ]
+   },
+   {
+    "name": "d2-03-s20-n40000",
+    "max_samples": 40000,
+    "in_block": 0.949317398,
+    "in_block_wilson95": [
+     0.947124175,
+     0.951424314
+    ]
+   },
+   {
+    "name": "d2-04-s20-n1500",
+    "max_samples": 1500,
+    "in_block": 0.94,
+    "in_block_wilson95": [
+     0.92682063,
+     0.950931471
+    ]
+   },
+   {
+    "name": "d2-05-s20-n60000",
+    "max_samples": 60000,
+    "in_block": 0.945487087,
+    "in_block_wilson95": [
+     0.943638457,
+     0.94727847
+    ]
+   }
+  ]
+ },
+ "d3": {
+  "verdict": "mesh susceptible",
+  "run": "2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
+  "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+  "in_block": 0.9366,
+  "in_block_wilson95": [
+   0.931654261,
+   0.941210432
+  ],
+  "a": 0.961136024,
+  "a_wilson95": [
+   0.957029059,
+   0.964864875
+  ]
+ },
+ "d4": {
+  "verdict": "intermediate",
+  "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+  "short": {
+   "iterations": [
+    "d4-06-s46667-n1500"
+   ],
+   "in_block": 0.99,
+   "in_block_wilson95": [
+    0.983566095,
+    0.993930562
+   ]
+  },
+  "long": {
+   "iterations": [
+    "d4-08-s46667-n40000"
+   ],
+   "in_block": 0.851712928,
+   "in_block_wilson95": [
+    0.848196011,
+    0.85516228
+   ]
+  },
+  "drop": 0.138287072,
+  "drift_bound": 0.034,
+  "by_dwell": [
+   {
+    "name": "d4-06-s46667-n1500",
+    "max_samples": 1500,
+    "in_block": 0.99,
+    "in_block_wilson95": [
+     0.983566095,
+     0.993930562
+    ]
+   },
+   {
+    "name": "d4-07-s46667-n10000",
+    "max_samples": 10000,
+    "in_block": 0.9614,
+    "in_block_wilson95": [
+     0.957443725,
+     0.965001922
+    ]
+   },
+   {
+    "name": "d4-08-s46667-n40000",
+    "max_samples": 40000,
+    "in_block": 0.851712928,
+    "in_block_wilson95": [
+     0.848196011,
+     0.85516228
+    ]
+   }
+  ]
+ },
+ "d3_d4_paired": true,
+ "duration_s": {
+  "2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10": 14,
+  "2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11": 14,
+  "2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12": 61
+ }
+}

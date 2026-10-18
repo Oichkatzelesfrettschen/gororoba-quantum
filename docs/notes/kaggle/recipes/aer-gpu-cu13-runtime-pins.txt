@@ -1,0 +1,15 @@
+# CUDA 13 libraries that qiskit-aer-gpu-cu13 0.17.2 loads from site-packages.
+# The nvidia-* versions are the CUDA 13.0.3 toolkit components the module
+# compiles against (the T4 driver 580 runs CUDA 13.0); the cuQuantum versions
+# are the headers it compiles against. nvidia/cu13/lib holds the toolkit
+# libraries, cuquantum/lib libcustatevec.so.1 and libcutensornet.so.2, and
+# cutensor/lib libcutensor.so.2.
+nvidia-cuda-runtime==13.0.96
+nvidia-cublas==13.1.1.3
+nvidia-cuda-nvrtc==13.0.88
+nvidia-cusolver==12.0.4.66
+nvidia-cusparse==12.6.3.3
+nvidia-nvjitlink==13.0.88
+custatevec-cu13==1.15.0
+cutensornet-cu13==2.14.0
+cutensor-cu13==2.8.1

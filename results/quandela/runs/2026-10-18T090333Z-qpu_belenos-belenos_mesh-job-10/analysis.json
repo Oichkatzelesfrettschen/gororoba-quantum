@@ -1,0 +1,64 @@
+{
+ "blocks": [
+  {
+   "a": 0.940450254,
+   "a_wilson95": [
+    0.92668294,
+    0.95176693
+   ],
+   "config": "two_label-04",
+   "dark_corrected": {
+    "a": 0.940450254,
+    "expected_dark_in_block": 0.0,
+    "expected_dark_outside": 0.526,
+    "in_block": 0.918322139
+   },
+   "in_block": 0.918,
+   "in_block_wilson95": [
+    0.903024429,
+    0.930840067
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    699,
+    596,
+    50,
+    32
+   ],
+   "one_click_outside_block": 123,
+   "one_click_outside_by_mode": {
+    "12": 9,
+    "13": 1,
+    "15": 4,
+    "16": 5,
+    "17": 6,
+    "18": 80,
+    "19": 18
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.067175018
+  }
+ ],
+ "cases_sha256": "e4e1706bbdc90aba00874850bcca824617e753232c0e0a4b9b3cf8ad96ecb53b",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16250,
+   "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+  }
+ },
+ "job_id": "aa4218f1-3cbf-4347-a1c4-91cb2c2c1e01",
+ "logical_perf": 1,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.01, \"indistinguishability\": 0.579, \"transmittance\": 0.0288}",
+ "physical_perf": 0.0012118363558871767,
+ "platform": "qpu:belenos",
+ "result_sha256": "46eefda94887697a142ab98b0398b12b02fd1fe3bd0ca7831cb7ad583adbdb5a",
+ "run": "2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
+ "samples": 1500,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 1500,
+ "status": "completed"
+}

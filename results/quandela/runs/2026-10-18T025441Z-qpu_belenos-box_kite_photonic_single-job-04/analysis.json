@@ -10,8 +10,8 @@
    "dark_corrected": {
     "a": 0.275903136,
     "expected_dark_in_block": 0.0,
-    "expected_dark_outside": 656.6,
-    "in_block": 0.520046245
+    "expected_dark_outside": 5.071,
+    "in_block": 0.504055603
    },
    "in_block": 0.5038,
    "in_block_wilson95": [

@@ -1,0 +1,55 @@
+{
+ "schema": "qd-belenos-form-dwell-preregistration-v1",
+ "approval": "User 2026-10-18: 'approved yet decomposed along with the chips' architecture and what we've learned from previous runs, and the exhaustive amount of python packages with their granular capabilities', approving D1, D3 and the D2 + D4 job of strategy.md section 7 item 10 within about 3.13 credits, each job under 300 s.",
+ "question": "Does Q1's one-circuit leak on mesh 29dc6ef8 follow the single-job form or its 10000-sample dwell, and does a fresh ANU-seeded mesh leak in a long single job?",
+ "jobs": {
+  "D1": {
+   "case": "results/quandela/cases/belenos_mesh/job-10",
+   "form": "single",
+   "mesh": "29dc6ef8 expected (unseeded, as Q1 twice)",
+   "dwell": 1500
+  },
+  "D3": {
+   "case": "results/quandela/cases/belenos_mesh/job-11",
+   "form": "single",
+   "mesh": "fresh, compilation_seed 46667 = value 0 of docs/evidence/anu_qrng/draw-2026-10-18T083548Z.json",
+   "dwell": 10000
+  },
+  "D2+D4": {
+   "case": "results/quandela/cases/belenos_mesh/job-12",
+   "form": "iterated",
+   "D2": "seed 20 (29dc6ef8 in c2eea262) at 1500, 10000, 1500, 40000, 1500, 60000",
+   "D4": "seed 46667 at 1500, 10000, 40000"
+  }
+ },
+ "order": "D1, then D3, then D2 + D4, back to back",
+ "rule": {
+  "q1_mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+  "leak_at_most": 0.65,
+  "holds_at_least": 0.9,
+  "cross_job_scale": 0.034,
+  "short_at_most": 1500,
+  "long_at_least": 40000,
+  "ladder_drop": 0.25,
+  "ladder_flat": 0.05
+ },
+ "readings": {
+  "D1": "served mesh other than 29dc6ef8: 'mesh missing'; in_block + 0.034 <= 0.65: 'form' (a single job leaks at any dwell); in_block - 0.034 >= 0.90: 'dwell' (the leak needs the long dwell); otherwise 'intermediate'",
+  "D3": "in_block + 0.034 <= 0.65: 'generic' (long single jobs leak on fresh meshes); in_block - 0.034 >= 0.90: 'mesh susceptible' (the single-job leak needs a susceptible mesh); otherwise 'intermediate'",
+  "D2 and D4": "every iteration of a ladder returns one mesh (29dc6ef8 for D2), else 'mesh missing'; with d the in_block spread of its 1500-sample iterations (0.034 when it has one), pooled 1500-sample minus pooled >= 40000-sample in_block >= 0.25 + d reads 'dwell', <= 0.05 + d reads 'flat', otherwise 'intermediate'",
+  "pairing": "D3 and D4 pair when D4's mesh equals D3's served mesh"
+ },
+ "expectations": {
+  "D1": "unknown; Q1's 0.470 and 0.504 at dwell 10000 against 0.949 iterated at 1500 bound it",
+  "durations_s": {
+   "D1": "about 7",
+   "D3": "13 to 15",
+   "D2+D4": "about 170 (9 x 5.2 s overhead + 166000 x 0.75 ms)"
+  },
+  "credits": {
+   "D1": 1.0015,
+   "D3": 1.01,
+   "D2+D4": "1.003 if an iterated job bills one iteration's max_shots, 1.12 if its largest"
+  }
+ }
+}

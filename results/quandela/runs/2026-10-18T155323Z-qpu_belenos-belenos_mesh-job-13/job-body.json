@@ -1,0 +1,14 @@
+{
+ "job_group_name": null,
+ "job_name": "belenos_mesh/job-13",
+ "max_duration": 300,
+ "payload": {
+  "command": "sample_count",
+  "computation": "pcvlar 0 1 0 Computation 0 5 command 1 experiment 2 parameters 3 job_name 4 job_group_name 5 Command 0 3 name 6 signature 7 apply_emt 8 Experiment 364 CkI6UENWTDpCYXNpY1N0YXRlOnwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMSwwLDAsMD4SCkV4cGVyaW1lbnQiETpQQ1ZMOlBvc3RTZWxlY3Q6QBhKpwEQGFKiARAYIp0BCBQQBHqWAQqTAQgEEAQajAEKCQnNO39mnqDmPwoACgkJAAAAAAAA4D8KCQkAAAAAAADgPwoJCc07f2aeoOa/CgAKCQkAAAAAAADgPwoJCQAAAAAAAOA/CgAKCQnNO39mnqDmPwoJCQAAAAAAAOC/CgkJAAAAAAAA4D8KAAoJCc07f2aeoOa/CgkJAAAAAAAA4L8KCQkAAAAAAADgP1AB dict 3 15 17 12 18 16 19 str 19 belenos_mesh/job-13 None  str 12 sample_count list 3 9 10 11 bool T tuple 3 12 13 14 tuple 3 15 13 14 tuple 3 16 13 14 str 11 max_samples type 3 int bool F str 9 max_shots str 16 compilation_seed int 20000 int 10000 int 20",
+  "max_samples": 10000,
+  "max_shots": 20000
+ },
+ "pcvl_version": "1.3.1",
+ "platform_name": "qpu:belenos",
+ "process_id": "e8043e82-52f1-4ba2-8201-674e1a09a732"
+}

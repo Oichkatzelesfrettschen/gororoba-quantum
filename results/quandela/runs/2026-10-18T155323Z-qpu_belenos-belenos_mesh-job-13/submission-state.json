@@ -1,0 +1,188 @@
+{
+ "body_sha256": "ce5a146cefda7577e4e7bf95472a52dc063fdc5b48335b7f0a4a7c70bd8fb301",
+ "cases_sha256": "de2076c8388badaab55ea07f2c811d87dc252527b2f3c496c80f888e78ac3423",
+ "job_id": "c0db42f6-a17f-4774-babc-19f263bc87a1",
+ "phase": "posted",
+ "platform": "qpu:belenos",
+ "receipt": {
+  "approval": "User 2026-10-18: 'job D-13 approved' -- belenos_mesh job-13: Q1's single job byte for byte at compilation_seed 20 and 10000 samples, qpu:belenos, about 15 s against the 300 s limit, 1.01 credits estimated (ceiling 1.02); preregistered in-cone readings: void unless the served mesh is 29dc6ef8, at least 0.95 unseeded path, at most 0.65 single-job form at Q1's budget, between intermediate.",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "ce5a146cefda7577e4e7bf95472a52dc063fdc5b48335b7f0a4a7c70bd8fb301",
+  "case": "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+  "cases_sha256": "de2076c8388badaab55ea07f2c811d87dc252527b2f3c496c80f888e78ac3423",
+  "credit_ceiling": 1.02,
+  "estimated_credits": 1.01,
+  "estimated_shots": 10000,
+  "expected_seconds": 15.0,
+  "max_credits": 1.02,
+  "max_samples": 10000,
+  "max_shots": 20000,
+  "per_job_credits": 1.0,
+  "perfs_at_plan": {
+   "Clock (MHz)": 4.94,
+   "Dark counts (detection/s)": [
+    20.9,
+    5.1,
+    0.4,
+    0.5,
+    0.0,
+    78.4,
+    0.1,
+    0.1,
+    0.1,
+    0.7,
+    0.2,
+    0.2,
+    0.1,
+    0.0,
+    0.1,
+    2.4,
+    0.1,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "HOM (%)": 57.6,
+   "Transmission per mode (%)": {
+    "t_in": [
+     3.04,
+     0.0,
+     2.22,
+     0.0,
+     2.12,
+     0.0,
+     3.02,
+     0.0,
+     1.92,
+     2.67,
+     0.0,
+     0.0,
+     2.38,
+     1.79,
+     0.0,
+     0.0,
+     1.61,
+     0.0,
+     1.51,
+     0.0,
+     1.52,
+     0.0,
+     1.05,
+     0.0
+    ],
+    "t_out": [
+     5.79,
+     5.79,
+     4.7,
+     5.07,
+     6.61,
+     4.02,
+     5.32,
+     4.69,
+     4.92,
+     4.72,
+     6.12,
+     5.27,
+     223.12,
+     235.95,
+     238.77,
+     341.19,
+     282.78,
+     410.07,
+     368.09,
+     370.49,
+     193.39,
+     384.36,
+     319.24,
+     317.31
+    ]
+   },
+   "Transmittance (%)": 2.95,
+   "g2 (%)": 1.0
+  },
+  "platform": "qpu:belenos",
+  "platform_at_plan": {
+   "bookable": true,
+   "description": "Belenos QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": {
+    "end_time": "2026-10-22T11:00:00Z",
+    "maintenance_title": "Weekly maintenance",
+    "start_time": "2026-10-22T07:30:00Z",
+    "time_zone": "Europe/Paris"
+   },
+   "max_duration": 300,
+   "name": "qpu:belenos",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-11": {
+     "availability": 0.0
+    },
+    "2026-10-12": {
+     "availability": 0.0
+    },
+    "2026-10-13": {
+     "availability": 0.0
+    },
+    "2026-10-14": {
+     "availability": 30.72
+    },
+    "2026-10-15": {
+     "availability": 88.97
+    },
+    "2026-10-16": {
+     "availability": 72.11
+    },
+    "2026-10-17": {
+     "availability": 86.72999999999999
+    },
+    "2026-10-18": {
+     "availability": 89.45
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  "schema": "qd-submission-v1",
+  "usage_before": [
+   {
+    "total_jobs": 28,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 772,
+      "free_credits": 14.0,
+      "nb_jobs": 14,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1203,
+      "free_credits": 14.185500000000001,
+      "nb_jobs": 14,
+      "platform_name": "qpu:belenos"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-10-18T15:53:42+00:00",
+ "submitted_utc": "2026-10-18T15:53:45+00:00"
+}

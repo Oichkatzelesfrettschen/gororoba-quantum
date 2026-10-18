@@ -56,6 +56,16 @@ REPORTED_PACKAGES = (
     "custatevec-cu11",
     "cutensornet-cu11",
     "cutensor-cu11",
+    "qiskit-aer-gpu-cu13",
+    "custatevec-cu13",
+    "cutensornet-cu13",
+    "cutensor-cu13",
+    "nvidia-cuda-runtime",
+    "nvidia-cublas",
+    "nvidia-cusolver",
+    "nvidia-cusparse",
+    "nvidia-nvjitlink",
+    "nvidia-cuda-nvrtc",
     "qiskit-ibm-runtime",
     "numpy",
     "scipy",
@@ -345,6 +355,8 @@ def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, st
 
 
 GPU_VENV = Path("/tmp/gororoba/gpu-venv")
+INPUTS = Path("/kaggle/input")
+WHEELHOUSE = Path("/tmp/gororoba/wheelhouse")
 # Interpreter variables that would put the image's modules or startup code
 # into the venv's interpreter.
 ISOLATION_VARIABLES = frozenset({"PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "PYTHONUSERBASE"})
@@ -371,13 +383,22 @@ def pinned(tree: Path, aer_pins: list[str]) -> dict[str, str]:
     return {normalized(name): version for name, version in (pin.split("==", 1) for pin in pins)}
 
 
-def gpu_env_failures(pins: dict[str, str], report: dict[str, Any], expected_gpus: int, listed_gpus: int) -> list[str]:
+def gpu_env_failures(
+    pins: dict[str, str],
+    report: dict[str, Any],
+    expected_gpus: int,
+    listed_gpus: int,
+    cuda_root: Path | None = None,
+) -> list[str]:
     """Each way the GPU entry environment differs from its pins or leaves the GPU; empty when it holds both.
 
     The imported qiskit_aer must belong to the GPU Aer distribution alone,
     since a CPU qiskit-aer installed beside it overwrites the same files, and
     the interpreter's sys.path must stay inside the venv and the standard
-    library.
+    library. With cuda_root, every CUDA library the report names as mapped
+    must lie under it, except the driver's libcuda.so, which the host's
+    kernel module fixes; a build whose DT_RPATH names the pinned pip wheels
+    passes only when the loader took them and no system copy.
     """
     failures = [
         f"{name} is {report['installed'].get(name)}, pinned {version}"
@@ -402,11 +423,75 @@ def gpu_env_failures(pins: dict[str, str], report: dict[str, Any], expected_gpus
             failures.append(f"the {label} Bell run reports success {run['success']} on device {run['device']!r}")
         elif label == "custatevec" and run["cuStateVec_enable"] is not True:
             failures.append(f"the custatevec Bell run reports cuStateVec_enable {run['cuStateVec_enable']!r}")
+    if cuda_root is not None:
+        libraries = report.get("cuda_libraries", [])
+        if not libraries:
+            failures.append("the report names no mapped CUDA library")
+        for library in libraries:
+            path = Path(library)
+            if not path.name.startswith("libcuda.so") and not path.is_relative_to(cuda_root):
+                failures.append(f"{library} is mapped from outside {cuda_root}")
     return failures
 
 
+def attached_files(inputs: Path, ref: str, name: str) -> list[Path]:
+    """The files named NAME under a mount of dataset REF.
+
+    Kaggle mounts a dataset at /kaggle/input/SLUG or
+    /kaggle/input/datasets/OWNER/SLUG, so a file is found by name under a
+    path that holds the slug, as unpack_datasets finds an archive.
+    """
+    slug = ref.split("/")[1]
+    return sorted(p for p in inputs.rglob(name) if slug in p.parts) if inputs.is_dir() else []
+
+
+def verify_artifacts(artifacts: list[dict[str, Any]], inputs: Path = INPUTS) -> dict[str, Any]:
+    """Each attached artifact's file and sha256, before the entry runs.
+
+    An artifact stays a file under its dataset's mount. A missing, ambiguous
+    or different file stops the kernel, as a mismatched archive does in
+    unpack_datasets, so the entry reads only the bytes the retained record
+    names.
+    """
+    report: dict[str, Any] = {}
+    for entry in artifacts:
+        found = attached_files(inputs, entry["ref"], entry["file"])
+        if len(found) != 1:
+            raise SystemExit(f"artifact {entry['ref']}: {len(found)} files named {entry['file']} under {inputs}")
+        digest = sha256(found[0])
+        report[entry["ref"]] = {"path": str(found[0]), "sha256": digest, "size": found[0].stat().st_size}
+        if digest != entry["sha256"]:
+            raise SystemExit(f"artifact {entry['ref']}: {found[0]} has sha256 {digest}, not {entry['sha256']}")
+    return report
+
+
+def verified_wheel(
+    spec: dict[str, Any], inputs: Path = INPUTS, wheelhouse: Path = WHEELHOUSE
+) -> tuple[dict[str, Any], list[str]]:
+    """Copy the spec's wheel out of its attached dataset into wheelhouse when its sha256 is spec["wheel_sha256"].
+
+    The wheel is found as attached_files finds any artifact. pip then reads
+    only the verified copy; a missing, ambiguous or different file yields a
+    failure and an empty wheelhouse.
+    """
+    locator = spec["find_links"]
+    found = attached_files(inputs, locator["dataset"], locator["wheel"])
+    record: dict[str, Any] = {**locator, "expected_sha256": spec["wheel_sha256"], "paths": [str(p) for p in found]}
+    if len(found) != 1:
+        return record, [f"dataset {locator['dataset']}: {len(found)} files named {locator['wheel']} under {inputs}"]
+    data = found[0].read_bytes()
+    record["sha256"] = hashlib.sha256(data).hexdigest()
+    record["size"] = len(data)
+    if record["sha256"] != spec["wheel_sha256"]:
+        return record, [f"{found[0]} has sha256 {record['sha256']}, not {spec['wheel_sha256']}"]
+    wheelhouse.mkdir(parents=True, exist_ok=True)
+    (wheelhouse / locator["wheel"]).write_bytes(data)
+    record["find_links"] = str(wheelhouse)
+    return record, []
+
+
 def gpu_interpreter(
-    tree: Path, spec: dict[str, Any], venv: Path = GPU_VENV
+    tree: Path, spec: dict[str, Any], venv: Path = GPU_VENV, inputs: Path = INPUTS, wheelhouse: Path = WHEELHOUSE
 ) -> tuple[str, dict[str, str], dict[str, Any]]:
     """The image's Python in an isolated venv holding the repository's pins with the GPU Aer build, and its proof.
 
@@ -420,8 +505,22 @@ def gpu_interpreter(
     the venv's, so the environment drops ISOLATION_VARIABLES and turns the
     user site off. The record's failures name every difference from the
     pins, every sys.path entry outside the venv and the standard library,
-    and every way the venv's Aer leaves the GPU.
+    and every way the venv's Aer leaves the GPU; a spec with "cuda_in_venv"
+    also names every non-driver CUDA library mapped from outside the venv.
+    A spec with "find_links" (a
+    wheel no index serves) installs only after verified_wheel admits the
+    attached file; otherwise the record carries the refusal and nothing is
+    installed. The wheel's own pin is then a direct file reference to the
+    verified copy, so no index can supply the distribution, and
+    PIP_FIND_LINKS names the same directory.
     """
+    wheel: dict[str, Any] | None = None
+    find_links: dict[str, str] = {}
+    if "find_links" in spec:
+        wheel, refused = verified_wheel(spec, inputs, wheelhouse)
+        if refused:
+            return sys.executable, dict(os.environ), {"wheel": wheel, "failures": refused}
+        find_links = {"PIP_FIND_LINKS": wheel["find_links"]}
     checked("uv-install", sys.executable, "-m", "pip", "install", "-q", spec["uv"])
     checked("gpu-venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", sys.executable, str(venv))
     python = str(venv / "bin/python")
@@ -437,7 +536,19 @@ def gpu_interpreter(
         )
     )
     added = [*spec["aer_pins"], *spec.get("extra_pins", [])]
-    checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(added)))
+    install = added
+    if wheel is not None:
+        local = Path(wheel["find_links"])
+        distribution = normalized(wheel["wheel"].split("-")[0])
+        install = [
+            f"{distribution}@{(local / wheel['wheel']).as_uri()}"
+            if normalized(pin.split("==")[0]) == distribution
+            else pin
+            for pin in added
+        ]
+    checked(
+        "install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(install), **find_links)
+    )
     checked("gpu-freeze", python, "-m", "pip", "freeze", env=env)
     pins = pinned(tree, added)
     script = str(tree / "kaggle_kernel/gpu_env_report.py")
@@ -448,8 +559,10 @@ def gpu_interpreter(
         "expected_gpus": spec["gpus"],
         "listed_gpus": listed,
         "report": report,
-        "failures": gpu_env_failures(pins, report, spec["gpus"], listed),
+        "failures": gpu_env_failures(pins, report, spec["gpus"], listed, venv if spec.get("cuda_in_venv") else None),
     }
+    if wheel is not None:
+        record["wheel"] = wheel
     return python, env, record
 
 
@@ -491,6 +604,8 @@ def run_entry() -> int:
     print(f"usage guides in this kernel under {REPO}:", *guides, sep="\n  ", flush=True)
     if job.get("datasets"):
         write("datasets.json", unpack_datasets(job["datasets"]))
+    if job.get("artifacts"):
+        write("artifacts.json", verify_artifacts(job["artifacts"]))
     before = {p: sha256(p) for p in REPO.rglob("*") if p.is_file()}
     write("environment.json", environment() | {"entry_aer_device": entry_aer_device(job)})
     if job.get("pin_groups"):
