@@ -164,6 +164,9 @@ gate core-425; claims `qi-tuna17-boxkite-follow-crossover` and
   magnitudes 0.819 and 0.938 inside 0.10 of r^n_CZ, phases 0.297 and 0.052
   rad about omega; the path omit control reads -0.119 against a limit of
   0.126.
+- Every depth-5 and depth-9 job carries the 50 Hz line of
+  [tuna-17.md](tuna-17.md) on its selectors, at amplitude 0.09 to 0.26 and
+  in phase across the three pairs; the depth-1 replicas carry none.
 - The X and Y replicas of a depth-9 bright edge, which sit in consecutive
   batches and share the selector marginal, differ by 0.024 to 0.033 on all
   three pairs, 4 to 7 shot-noise sigma: deep-circuit populations scatter by
@@ -185,9 +188,12 @@ gate core-425; claims `qi-tuna17-boxkite-follow-crossover` and
 - Readout context: a bracket with only the witness's qubits excited, beside
   the all-qubit pair, would separate neighbor-dependent readout on q13 from
   a preparation error of readout-1's X.
-- The raw shot order: a run with a deliberate mid-job change would show
-  whether the retained list is temporal, which would let drift be tracked
-  within a job.
+- The raw shot order is temporal: it carries a 50 Hz line whose frequency
+  in cycles per shot follows circuit duration ([tuna-17.md](tuna-17.md),
+  claim `qi-tuna17-shot-record-50hz-line`). The line grows with CZ depth,
+  so the ladder's decay mixes decoherence with a time-averaged oscillating
+  phase. A ladder read at the line's phase, and a Ramsey sensor that gives
+  each job its phase reference, are open designs.
 - The per-CZ time term and the decomposition of H: an A/B of H against
   Y90 then X on one replica would price the decomposed gate, and a ladder of
   `wait` cycles beside the CZ ladder would separate the detuning phase from
