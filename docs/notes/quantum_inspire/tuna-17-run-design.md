@@ -175,12 +175,11 @@ job or one batch:
   errors. Each pair's contrast is also reported in eight bins of the line's
   phase.
 
-Budget at 65536 shots per job, from the timing fit:
-- 2.92 s + 0.509 ms x 65536 = 36.3 s per job, and 762 s for the 21 jobs.
-- With the seven pauses and collection, about 35 minutes of wall time.
-- About 1.5 MB of raw shots per job.
-
-At 131072 shots a job takes 69.6 s, and the series 1462 s and about 62 MB.
+Budget at LADDER_SHOTS = 131072, the platform cap, from the timing fit:
+- 2.92 s + 0.509 ms x 131072 = 69.6 s per job against the 300 s limit, and
+  1462 s for the 21 jobs.
+- With the seven pauses and collection, about 50 minutes of wall time.
+- About 3 MB of raw shots per job, and 2621 cycles of the 50 Hz line.
 The QX twins of the six Latin circuits run in two emulator batches first.
 All 27 circuits pass their 117 checks on local qxelarator.
 
