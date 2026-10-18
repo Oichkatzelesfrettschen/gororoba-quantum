@@ -176,9 +176,13 @@ no-redirect opener and keeps the token out of every file it writes.
   all one-click samples, ideal 1) separates routing loss from the algebra
   share a; the per-mode total variation distance uses every sample. The
   analysis also reports both after subtracting each mode's expected dark
-  clicks (the receipt's per-mode rate times the job's duration): the QPU
-  bright block's in_block rises from 0.470 to 0.505 once about 692 expected
-  dark clicks outside the block are removed, and a stays at 0.256.
+  clicks (the receipt's per-mode rate times the job's duration). That dark
+  model is refuted: in belenos_mesh job-03 on qpu:belenos modes 0 and 1, the
+  two highest receipt rates (21.8 and 6.0 per second), read zero clicks in
+  every setting whose ideal leaves them dark, where the model predicts about
+  150 and 40. A one-setting job has no such bin to cap it, so Q1's dark
+  correction (in_block 0.470 to 0.505, about 692 clicks removed) subtracts
+  real light; raw in_block is the comparable figure.
 - Two-photon block: threshold detectors with min_detected_photons 2 keep
   only two-click samples, so the observable is the conditional label
   fraction f(V) = (V L_ind + (1 - V) L_dist) / (V T_ind + (1 - V) T_dist),
@@ -209,7 +213,8 @@ no-redirect opener and keeps the token out of every file it writes.
 ## 6. Leakage root cause (qpu:belenos job 7419efb8)
 
 The bright block sent one photon into mode 20 and kept 0.470 of the
-one-click samples on modes 20 to 23 (0.505 after dark subtraction), with the
+one-click samples on modes 20 to 23 (0.505 after a dark subtraction that the
+C1 data refute, section 5), with the
 leaked light on modes 17 (0.190 of the dark-subtracted histogram), 18
 (0.101), 19 (0.068) and 16 (0.052), and 0.38 of the in-block light on the
 dilation modes that should be dark. Every conjecture below was tested
@@ -226,7 +231,7 @@ total variation distance against a shot-noise floor of 0.012):
 | Random heater phase noise | the exact dephasing channel reaches TVD 0.252 only at sigma 0.5 rad on every heater and puts the leak on 18 and 19 rather than 17 | not supported at a physical size |
 | Heater gain, thermal crosstalk, phase ceiling | best one-parameter fits TVD 0.256 (gain -0.3), 0.364 (crosstalk 0.155), 0.315 (ceiling 4.95 rad), all twenty times the floor | open, none explains the run |
 | Wrong photon: the demultiplexer routes the photon into another source mode | the compiled mesh's column 18 fits at TVD 0.298, as well as any physical model | open, tested by the identity settings below |
-| Device state: the run preceded a calibration (status `calibration` 40 minutes later) | Belenos read 0 % availability 2026-10-10 to 13 and returned on 10-14 | open, tested by the diagnostic job's class likelihood on fresh calibration |
+| Device state: the run preceded a calibration (status `calibration` 40 minutes later) | the exact replay (job 7af74302) ran the identical mesh 29dc6ef8 under the next calibration at HOM 57.6 % and kept 0.504 of one-click samples in the block (Wilson 0.494 to 0.514) against 0.470 (0.460 to 0.480), with the leak on modes 17 to 19 again | refuted: the leak is a fixed pattern of the mesh, stable across the calibration that moved HOM |
 
 The conclusion is that the error is in the chip's realization of a
 correct circuit, a single-photon interferometer error of at least 0.5 rad
@@ -259,9 +264,12 @@ QPU for the same body) respond differently to each class.
    by the source models, whose likelihood on the returned meshes separates a
    misroute from every other class by at least 8993 nats in one job.
 5. A calibration window can follow a run, and the source changes with it
-   (HOM 92.6 % at the Q1 run, 57.8 % after the next calibration). Resolved:
-   every plan records the live performance figures, and two-photon cases wait
-   for HOM to recover.
+   (HOM 92.6 % at the Q1 run, 57.6 % after the next calibration). The HOM
+   figure measures the source's indistinguishability, not the mesh: the
+   replay of Q1's identical mesh at HOM 57.6 % kept the same leak (in_block
+   0.504 against 0.470, raw). Resolved: every plan records
+   the live performance figures, two-photon cases wait for HOM to recover,
+   and one-photon cases are gated on the live-architecture check alone.
 6. Coupler angles change with recalibration, and the transpiler's output for
    a seed depends on them. Resolved: `plan` decodes the live architecture and
    refuses a mesh case whose couplers or symbols differ, and the analysis
@@ -373,6 +381,44 @@ compile candidates on sim:belenos, predict each under the fitted offsets,
 and send the best. The local transpiler replay converges on 96 % of random
 targets (8 of 220 failed), so a campaign plans a few spare settings.
 
+**What C1 measured (qpu:belenos, jobs f945a01d, fa847dfd, 0f0f242b,
+445e0482; 4.01 credits).** All 64 settings ran (1500 one-click samples
+each, 12 multi-click events in 96000), every mesh was re-transpiled, and
+the couplers equaled Q1's throughout.
+
+1. Preregistered verdict: every job reads "no class fits" (median TVD 9.6
+   to 15.4 shot-noise floors), and `--static` declares no offsets (held-out
+   gain -75911 nats against fitted dephasing).
+2. The instrument model behind that verdict is wrong. The receipt's `t_out`
+   reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, yet
+   modes 0 to 11 collect about twice the clicks of modes 12 to 23; the
+   receipt's dark rates predict about 150 clicks per setting on mode 0 where
+   the chip reads none. Between Q1 and the replay the clicks of modes 12, 14
+   and 16 moved against their `t_out` changes. `sample_count` returns
+   integer counts, so `DetectorBalancing`, which rewrites `probs`, has not
+   touched them.
+3. Fitted efficiencies (`--efficiency`, committed before it saw the four
+   runs; job-03 had been examined in sample): one relative factor per output
+   mode, fitted with each class and held out by run. The held-out median TVD
+   falls to 4.2 floors (absolute 0.149, range 0.031 to 0.273, floor 0.034),
+   every class's best point sits at or next to its null magnitude, and no
+   class passes; static offsets with fitted efficiencies lose to fitted
+   dephasing held out (-32579 nats), so the residual is not one offset
+   vector shared across runs. The factors put modes 0 to 11 near 1.2 and
+   12 to 23 near 0.7; mode 5 reads 6.6 and also collects light the ideal
+   places on modes 0 and 4.
+4. Sensitivity (exploratory). Per-run independent heater offsets reproduce
+   C1's held-out absolute TVD at about 0.08 rad rms, and at that size the
+   bright-block mesh 29dc6ef8 keeps a predicted in_block near 0.95 (0.86 to
+   0.97 at 0.1 rad); the observed 0.47 to 0.50 needs about 0.4 rad, which
+   would triple C1's TVD. Settings whose light lands on modes 16 to 23 show
+   about twice the held-out TVD of inputs 0 to 4, so the error is regional,
+   but not at the size the bright block's leak needs. The leak is therefore
+   specific to that job, its numeric unitary form or its sparse target, and
+   not the chip's generic error (inference, moderate confidence: a
+   mesh-form job with sparse targets in the same coupler state raises or
+   lowers it).
+
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
 The literature note transcribes 30 sources with their arXiv ids and the
@@ -403,9 +449,11 @@ equations used here. Five findings set the plan:
 
 Design rules taken from it, in order:
 
-1. Gate a QPU job on calibration state: plan records HOM and g2, and a
-   one-photon diagnostic waits until HOM is back above 90 %, the settled
-   state of the cited episode.
+1. Gate a QPU job on calibration state: plan records HOM and g2 and checks
+   the live couplers. A two-photon case waits until HOM is back above 90 %,
+   the settled state of the cited episode; a one-photon case runs on the
+   coupler check alone, because the identical-mesh replay showed the
+   bright block's leak unchanged across a fall of HOM from 92.6 % to 57.6 %.
 2. Run every production configuration as an ensemble of equivalent compiles
    (distinct `compilation_seed` values), report the mean and the
    between-seed spread, and select seeds on one half of the shots while
@@ -446,10 +494,12 @@ encoding needs 34 modes, beyond the chip's 24.
 | The chip implements U, not its transpose | the RCA's convention variants | settled offline: U^T fits at TVD 0.546 |
 | The server runs an architecture-form circuit without re-transpiling | belenos_mesh job-00 (S3) and job-01 (S4) on sim:belenos | settled: refuted, all 574 phases change in both forms |
 | The transpiler is exqalibur's CircuitOptimizer with photon-free modes ignored | local replay against the S3 meshes | settled statistically; bitwise replay open (server seed mapping) |
-| The photon is misrouted into another source mode | source models on the returned meshes of belenos_mesh job-00 on qpu:belenos | the misroute class fits and outscores every other class |
-| The chip's error class is random heater noise | class scans over belenos_mesh job-00 on qpu:belenos | another class fits better, the static offsets gain over 10 nats held out, or no class fits |
-| The chip carries static heater offsets that user jobs can measure | `--static` over the four runs of campaign C1 | held-out gain over the fitted dephasing ensemble at or below 10 nats, or held-out TVD above 3 floors |
+| The photon is misrouted into another source mode | source models on the returned meshes of C1 | settled: refuted on random meshes, every misroute fraction's best point is 0 under fitted efficiencies |
+| The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
+| The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain -75911 nats (receipt model) and -32579 nats (fitted efficiencies) |
+| The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | its bright configurations keep in_block near the C1-sized prediction (form or mesh) or leak like Q1 (sparse targets) |
 | compilation_seed selects the served mesh | a seed screen on sim:belenos | two seeds return the same mesh for the same target |
+| The bright-block leak is a calibration episode that the HOM figure indexes | exact replay of Q1's mesh after the calibration that moved HOM from 92.6 % to 57.6 % | settled: refuted, the identical mesh 29dc6ef8 kept in_block 0.504 (0.470 at Q1) with the leak on modes 17 to 19 |
 | The fringe visibility separates edge from strut on hardware | the fringe settings of belenos_mesh job-00 on qpu:belenos | edge visibility within 4.5 standard errors of the strut's |
 
 ## 10. Tricks
@@ -489,3 +539,8 @@ Not yet used:
 | 2026-10-17 23:27 | 1d7160c1 | sim:belenos | belenos_mesh job-00, 16 settings | 1.00 | every setting at its ideal (TVD 0.0002 to 0.038); all 574 phases re-transpiled; class likelihood names ideal by 352 nats |
 | 2026-10-17 23:36 | e5b74123 | sim:belenos | belenos_mesh job-01, numeric form | 1.00 | 721/779 on modes 20/21; re-transpiled, max phase change pi |
 | 2026-10-18 00:29 | 32b28fe8 | sim:belenos | belenos_mesh job-02, the 84/84 program | 1.00 | 8 dark configurations a = 0 (0/1500 each, Wilson upper 0.0026), 8 bright a = 1; verdict ideal (p = 0.136) |
+| 2026-10-18 02:55 | 7af74302 | qpu:belenos | single/job-04 bright, exact replay of 7419efb8 at HOM 57.6 % | 1.01 | same compiled circuit (sha256 9bbbaf63); in_block 0.504 (Wilson 0.494 to 0.514) against 0.470; a = 0.276; leak on modes 17, 18, 19 (1720, 1110, 769 clicks against 1773, 940, 637) |
+| 2026-10-18 03:01 | f945a01d | qpu:belenos | belenos_mesh job-03, C1 run 1 | 1.003 | no class fits (median 15.4 floors); all 16 re-transpiled |
+| 2026-10-18 03:04 | fa847dfd | qpu:belenos | belenos_mesh job-04, C1 run 2 | 1.003 | no class fits (14.6 floors) |
+| 2026-10-18 03:07 | 0f0f242b | qpu:belenos | belenos_mesh job-05, C1 run 3 | 1.003 | no class fits (9.6 floors) |
+| 2026-10-18 03:10 | 445e0482 | qpu:belenos | belenos_mesh job-06, C1 run 4 | 1.003 | no class fits (14.4 floors); `--static` declares nothing; fitted efficiencies reach 4.2 floors held out |

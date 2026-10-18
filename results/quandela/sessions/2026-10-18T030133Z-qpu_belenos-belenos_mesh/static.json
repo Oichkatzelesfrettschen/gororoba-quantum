@@ -1,0 +1,28 @@
+{
+ "schema": "qd-belenos-static-offsets-v1",
+ "runs": [
+  "2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+  "2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04",
+  "2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05",
+  "2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06"
+ ],
+ "analysis_sha256": [
+  "d62e9498e4d5ad873fa96d702e7f7a28c4869b05326c8f22b26f78fc47768eab",
+  "aeebaca4e32de76bf1b1d3800c2039cea69d514a3afef7270e3489cc3d66753a",
+  "d1233ac4379af545b7157ccd64e719c30e892c7c94d9aa32828e58e88f7c1964",
+  "ff76901e050fa7b73f1134702951a4543ed0de9b7a8b2e92d20b060e906984ca"
+ ],
+ "settings": 64,
+ "by_tau": {
+  "0.1": {
+   "gain_over_dephasing": -75911.155,
+   "median_tvd_over_floor": 20.008
+  },
+  "0.3": {
+   "gain_over_dephasing": -80938.646,
+   "median_tvd_over_floor": 21.304
+  }
+ },
+ "best_tau": 0.1,
+ "static_declared": false
+}

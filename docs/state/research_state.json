@@ -812,6 +812,41 @@
       "run": "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02",
       "family": "Belenos mesh S5",
       "question": "the 84/84 box-kite program in one job: do the 8 dark and 8 bright configurations covering every zero product and control of the 84 edges read their ideals through the re-transpiled meshes?"
+    },
+    {
+      "id": "qd-qpu-belenos-single-job-04-replay",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04",
+      "family": "box-kite photonic R1 replay",
+      "question": "the exact Q1 bright-block body on qpu:belenos after the calibration that moved HOM from 92.6 % to 57.6 %: does the identical compiled circuit keep Q1's in-block share?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-06",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
     }
   ],
   "claims": [
@@ -4593,7 +4628,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One 10000-sample job at the 2026-10-17 calibration (HOM 92.6 %, g2 1 %). The root-cause record (docs/evidence/quandela/belenos_leakage_rca.json) refutes a circuit, encoding, convention or multi-photon cause: the decoded compiled mesh reproduces the ideal, and no single-parameter error model reaches the shot-noise floor; the chip's error class and a demultiplexer misroute stay open for belenos_mesh job-00 on qpu:belenos.",
+      "boundary": "One 10000-sample job at the 2026-10-17 calibration (HOM 92.6 %, g2 1 %). The root-cause record (docs/evidence/quandela/belenos_leakage_rca.json) refutes a circuit, encoding, convention or multi-photon cause: the decoded compiled mesh reproduces the ideal, and no single-parameter error model reaches the shot-noise floor; the exact replay after a calibration reproduces the leak, and 64 random meshes of the same session show errors about a fifth the size the leak needs, so the leak stays specific to this job's form or mesh.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
@@ -4733,6 +4768,123 @@
       "assumptions": [],
       "depends_on": [
         "qd-cloud-retranspiles-architecture-circuits"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bright-block-leak-survives-recalibration",
+      "statement": "On qpu:belenos the exact Q1 bright-block body, re-run after the calibration that moved the HOM figure from 92.6 % to 57.6 % with unchanged couplers, compiled to the identical circuit (sha256 9bbbaf63) and kept 0.504 (Wilson 0.494 to 0.514) of one-click samples on the block's four modes against Q1's 0.470 (0.460 to 0.480), with the leaked light again mostly on modes 17, 18 and 19; the HOM figure does not index this one-photon route's leakage.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two 10000-sample jobs on one compiled mesh, before and after one calibration; raw in-block shares only, since the receipt's dark rates that the dark-corrected figures subtract are refuted by the C1 runs (modes 0 and 1 read no clicks where they predict about 150 and 40). It says nothing about another mesh or a recalibration that changes the couplers.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "cb2d07de68ff4c766c3e766a292b81c1960afa53a9cf519628032df5e819a149"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "61d3c7f7f7c9dfd6d1d7c9d455eb97a9121337e4f63ed8a4437abbeb6868b228"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-bright-block-routing-deficit"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-random-meshes-no-class-fits-under-receipt-model",
+      "statement": "On qpu:belenos four iterated jobs of 16 seeded uniform-random meshes each (64 settings, 1500 one-click samples per setting, one calibration session, all re-transpiled) read 'no class fits' under the preregistered analysis: no scanned heater-noise, gain, crosstalk or misroute magnitude reaches the fit test (median TVD 9.6 to 15.4 shot-noise floors per job), and shared static heater offsets are not declared (held-out gain -75911 nats against fitted dephasing, median held-out TVD 20 floors).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates; the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
+          "sha256": "d62e9498e4d5ad873fa96d702e7f7a28c4869b05326c8f22b26f78fc47768eab"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04/analysis.json",
+          "sha256": "aeebaca4e32de76bf1b1d3800c2039cea69d514a3afef7270e3489cc3d66753a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05/analysis.json",
+          "sha256": "d1233ac4379af545b7157ccd64e719c30e892c7c94d9aa32828e58e88f7c1964"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06/analysis.json",
+          "sha256": "ff76901e050fa7b73f1134702951a4543ed0de9b7a8b2e92d20b060e906984ca"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/static.json",
+          "sha256": "f8f3fc4dcf397ac8581fb6371272c5b5c7b07132205093e699e22a83dc4159c3"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-514": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-03",
+        "qd-qpu-belenos-mesh-job-04",
+        "qd-qpu-belenos-mesh-job-05",
+        "qd-qpu-belenos-mesh-job-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-cloud-retranspiles-architecture-circuits"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-random-meshes-fitted-efficiency-reanalysis",
+      "statement": "Refitting the four C1 runs with relative per-mode detection efficiencies fitted jointly with each class, each run held out in turn, cuts the held-out median TVD to 4.2 shot-noise floors (absolute TVD median 0.149 against the ideal, range 0.031 to 0.273, floor 0.034), with every class's best point at or next to its null magnitude and no class passing the fit test; static offsets fitted with the efficiencies lose to fitted dephasing on held-out runs (-32579 nats), and the fitted efficiencies put modes 0 to 11 near 1.2 and modes 12 to 23 near 0.7, with mode 5 a 6.6-fold outlier that also collects light the ideal places on modes 0 and 4.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Post hoc: the efficiency model was written after job-03 had been examined in sample and committed (5ad0008) before it ran on the four runs; the efficiencies are a fitted factor per output mode and support no detector-efficiency claim. It motivates a prospective test that scores a further job against these fixed efficiencies, belenos_mesh job-02 on qpu:belenos in the same coupler state.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/efficiency.json",
+          "sha256": "9cfa7dcc6ff3a9d93f4eb99c2f09e640031415d73baf87c076142a2ae1a941fd"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-535": "replay",
+        "core-534": "admission"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-03",
+        "qd-qpu-belenos-mesh-job-04",
+        "qd-qpu-belenos-mesh-job-05",
+        "qd-qpu-belenos-mesh-job-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-random-meshes-no-class-fits-under-receipt-model"
       ],
       "supersedes": [],
       "superseded_by": null
