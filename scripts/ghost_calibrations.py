@@ -118,16 +118,18 @@ def export(backend: Any, name: str, props: Any, target: Any, written: dict[str, 
 
 def index_job(job: dict[str, Any], service: Any, backends: dict[str, Any], written: dict[str, str]) -> dict[str, Any]:
     """One audited job's index entry: each execution start mapped to the snapshot export() returns for it."""
+    import live_run
+
+    # The backends' calibration history and the job metrics belong to the
+    # service's instance, so both reads require the run's recorded instance.
+    ibm_account.require_instance(
+        ibm_account.recorded_instance(ROOT / job["run"]),
+        live_run._instance_hash(service),
+        f"{job['job_id']}: calibration history",
+    )
     starts = execution_starts(job)
     source = "collect.json pub_timing"
     if not starts:
-        import live_run
-
-        ibm_account.require_instance(
-            ibm_account.recorded_instance(ROOT / job["run"]),
-            live_run._instance_hash(service),
-            f"{job['job_id']}: job metrics lookup",
-        )
         running = service.job(job["job_id"]).metrics()["timestamps"]["running"]
         starts = [running if "+" in running or running.endswith("Z") else running + "+00:00"]
         source = "job metrics timestamps.running"
