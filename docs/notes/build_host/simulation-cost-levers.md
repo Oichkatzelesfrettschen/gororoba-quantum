@@ -83,6 +83,27 @@ with the number of distinct recorded values, so it serves 7-qubit dynamic
 circuits in seconds and wide one-qubit families not at all; a wide
 one-qubit family is a batch of independent 2 x 2 laws instead.
 
+## Ghost refresh: ghost only what coverage lacks
+
+A ghost replay holds every retained run under every retained calibration
+of its backend, so one new run or one new snapshot extends the grid by a
+row or a column; it never requires rerunning the whole grid.
+
+| Interface | Setting or rule | Removes | Gate |
+|---|---|---|---|
+| `ghost_calibrations.py --add` | indexes only the audited jobs `index.json` lacks, read-only IBM reads plus the export check against live_run's channels | a full calibration re-export | core-560 |
+| `ghost_run.py --merge RESULT` | ghosts the (run, snapshot) pairs RESULT lacks, one pair per `parallel.ordered_map` item; a run whose inputs changed (`stale`) is ghosted again in full and its replaced entry's sha256 recorded | the full replay of every retained run | core-561 |
+| `ghost_run.py --provenance RESULT BASE` | RESULT without its `merged` runs and pairs equals the kernel's BASE byte for byte | trust in a merged file the kernel never wrote | core-293 |
+| `ghost_run.py --check --runs ...,merged` | replays the execution-snapshot ghost of every run a merge added, bit for bit on the merge's Aer device | an unreplayed merged run | core-287 |
+| exact law at `EXACT_MIN_SHOTS` or more | dynamic members draw from `dynamic_density`'s restricted law and a PCG64 multinomial at the position's Aer seed | per-shot density-matrix evolution of a 100,000-shot PUB | core-561 |
+| `max_parallel_experiments=0` (`PARALLEL_EXPERIMENTS`) | Aer runs one call's experiments in parallel | serial members of one snapshot | core-287 |
+
+Measured on the build host: five 2026-10-18 Kingston runs and one new
+Kingston snapshot took 2 min 20 s for `--add` and 7 min for `--merge`
+(54 pairs, 346 % CPU, 1.0 GB RSS), where the retained Kaggle ghost spent
+4207 s of T4 simulation on the first 14 runs. The pairs a merge adds to
+already retained runs are not yet replayed in CI ([issue #274](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/274)).
+
 ## Candidates measured or rejected
 
 | Candidate | Version | Verdict |
