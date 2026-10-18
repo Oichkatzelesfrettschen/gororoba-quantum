@@ -4110,6 +4110,22 @@
    "name": "core-457",
    "seconds": 0.3,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --check docs/evidence/rank_locus_rotation_composite/result.json && \"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --check docs/evidence/rank_locus_rotation_composite/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --self-test",
+   "name": "core-585",
+   "seconds": 10.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locus_rotation_composite/audit.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locus_rotation_composite/audit.json",
+   "name": "core-586",
+   "seconds": 6.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
