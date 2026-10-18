@@ -263,7 +263,7 @@ lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;
 a module without them raises `Simulation device "GPU" does not support
 cuStateVec on this system` on `cuStateVec_enable=True`.
 `docs/notes/build_host/custatevec.md` holds the requirement list, the build
-and install commands and the probe results. A Kaggle kernel installs qiskit 2.5.2,
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
 account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
 stops at 0.15.1) over the Kaggle image's numpy and scipy, records every

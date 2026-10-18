@@ -77,8 +77,12 @@ contracts; transpilation uses Qiskit's compiler rather than a numerical fit.
 
 ## Pinned runner infrastructure
 
-The workflow pins Ubuntu 24.04 to preserve the measured image through the
-announced October 19 ubuntu-latest migration. Official action manifests
+The primary workflow pins Ubuntu 26.04 and runs a separate Ubuntu 24.04
+compatibility job over native imports, Target equivalence and scheduling contracts.
+The official runner-image announcement confirms Ubuntu 26.04 GA and the
+October 19 to November 19 ubuntu-latest migration
+([runner-images #14748](https://github.com/actions/runner-images/issues/14748)).
+The setup-python manifest supplies Python 3.14.7 and 3.13.15 for that image. Official action manifests
 verified Node 24 for checkout v7.0.1, setup-python v7.0.0, cache v6.1.0,
 upload-artifact v7.0.2 and download-artifact v8.0.2. The workflow pins each
 release by its resolved commit SHA, avoiding the deprecated Node 20 actions
@@ -104,7 +108,8 @@ reported by the initial hosted run.
 - New pushes cancel stale checks for the same event and ref. Nightly and
   manual runs have separate concurrency groups so pushes preserve their
   exhaustive coverage.
-- Each shard uploads actual durations, estimates, exit codes and wall time
+- Each shard uploads actual durations, estimates, exit codes, user/system CPU
+  time, peak RSS, allocated workers and wall time
   even when a gate fails. Completion lines appear immediately. A failed
   gate keeps the remaining gates running.
 
@@ -141,3 +146,101 @@ independently checkable compile inventories across shards; profile exact
 symbolic replays before changing algorithms; and refresh timings after
 hosted resource limits apply. A reduced behavioral fixture complements the
 exhaustive replay rather than establishing the full corpus's scientific claim.
+
+## CPU scheduling and independent contracts
+
+`parallel.available_cpus()` intersects scheduler affinity with the CPU quotas
+of the process and its cgroup ancestors. The runner maintains that many CPU
+slots across all active gates. Ordinary gates consume one slot; seven gates
+with independent inner work reserve the whole allocation using `workers: all`.
+A reserved gate receives the slot count through `GOROROBA_WORKERS`. Other gates
+wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
+counts default to one so nested native pools share the same finite allocation.
+Explicit local native overrides remain visible in runner-spec output.
+
+The runtime suite exposes 45 named cases in a static registry. CI expands the
+registry before longest-first shard assignment, so independent cases can occupy
+different runners. Default script execution retains every case in original
+order through the spawn pool; case workers cap their own nested pools at one.
+Rocq bundle replay similarly maps independent isolated bundle processes through
+the detected pool and returns bundle records in request order.
+
+The GNU time wrapper measures user/system CPU seconds and maximum resident set
+size for each gate process tree. Peak RSS is a process maximum, rather than a
+sum of simultaneous child memory. These resource fields complement overlapping
+elapsed times; elapsed totals remain distinct from billed runner intervals.
+
+## Exact arithmetic and dependency qualification
+
+[Rank-sector benchmark samples and program](../../evidence/ci_runtime/rank_sector.json)
+retain the exact method and measured environment. Rank-sector success probabilities now accumulate 16 sparse rational products
+into the full 32-coordinate image instead of constructing a dense SymPy matrix
+per call. A 256-case contract compares exact Fractions with the independent full
+symbolic matrix, including the adversarial rational `1 - 2^-60`. The local
+224-evaluation benchmark measured median 4.1601 s before and 0.03065 s after;
+the containing repetition-delay check measured median 1.4091 s and 0.5988 s.
+These measurements describe the build host. Both Python modes passed the full
+rank-sector circuit and exact-arithmetic contracts.
+
+The [dependency audit](../../evidence/ci_runtime/dependencies.json) checks 78
+packages against release metadata. Current pins advance Qiskit to 2.6.0,
+Pydantic to 2.14.1, IBM schemas to 0.13.20261016, Ruff to 0.17.1, mypy to 2.4.0
+and Playwright to 1.64.0; threadpoolctl 3.7.0 reports actual loaded native pools.
+The Quantum Inspire lock retains upstream-required versions under Python
+3.13.15. Ruff uses Python 3.13 formatting and a Python 3.13 lint target for
+shared `qi_*.py` scripts.
+
+Qiskit 2.6 changes seeded routing relative to the retained Qiskit 2.5 receipts.
+Current behavioral and operator contracts run on 2.6. Source-recompilation gates
+that compare historical costs or simulated responses declare the producer
+runtime in the manifest. The GitHub and Kaggle shard planners request `ci/requirements-replay.txt` only
+when a shard contains those gates; dispatch requires `REPLAY_PYTHON` and reports
+the runtime in timing records. Historical raw costs and version labels retain
+their recorded values.
+
+The upgraded Rust extension needs more static TLS alongside Aer's libgomp.
+CI and Kaggle configure `glibc.rtld.optional_static_tls=4096` before interpreter
+startup. The glibc default is 512 bytes, so the explicit capacity reserves an
+additional 3584 bytes per thread, plus loader alignment. The setting follows
+[glibc's dynamic-linker documentation](https://sourceware.org/glibc/manual/latest/html_node/Dynamic-Linking-Tunables.html).
+Fresh normal and optimized imports and SDK options inventories passed under
+warnings-as-errors. Kaggle tests verify startup propagation offline; GPU
+execution remains a separate measurement.
+
+Rocq 9.3.0, OCaml 5.5.1 and independently versioned Stdlib 9.2.0 replace the
+older toolchain. Fresh compilation, kernel checking and raw-assumption receipts
+cover formal certificates, C881, folding, TargetFlipN21 and Stiefel. The four
+short bundles passed concurrent replay; Stiefel passed separately in 331.6 s.
+Raw kernel diagnostics include the additional Rocq 9.3 informational output.
+
+The walk-scaffold replay separates two SDK contracts. The producer gate requires
+byte-identical format-17 QPY and JSON extraction under Qiskit 2.5.2. The current
+SDK gate requires the same JSON bytes, all 56 loaded circuits equal, and the
+existing numerical law, likelihood, optimum and scientific decision checks.
+Qiskit 2.6 writes format 18 with a changed binary representation; the original
+extract and its source ledgers retain their recorded bytes.
+
+## Optimizer coordinates and reproducible scientific results
+
+Hosted run 39086132104 reproduced the orbit-window fit with control phase
+-0.4676820606691535 instead of -0.4676843006565198 and second-round excess
+0.17288122760296823 instead of 0.17287973432964707. The old replay compared
+coordinates at 1e-6, so the gate failed. The coordinate shift changes total
+G-squared by 2.66e-10 and the largest arm probability by 1.17e-7, equivalent
+to 0.00048 expected counts at 4096 shots. The retained point's law Jacobian
+has singular values 0.493, 0.122 and 0.0497: local rank is full. Statistical
+non-significance therefore cannot justify calling the coordinates unidentified.
+
+SciPy L-BFGS-B uses finite differences with default eps 1e-8, gtol 1e-5 and
+ftol 2.220446049250313e-9. At retained G-squared 5.5921, the objective stopping
+scale is about 1.24e-8. The measured objective shift lies below that stopping
+scale; the fitter specifies less coordinate precision than the old assertion.
+
+The replay now compares complete induced laws and likelihoods at the unchanged
+1e-6 scientific replay tolerance. A separate check requires every pair-model
+coordinate to stay inside its declared domain and reproduce its own stored laws
+within 64 float64 epsilons. Parameter names, scientific decisions, structural
+fields and measured counts retain their exact comparisons. Regression cases
+accept the measured stopping drift and equivalent phase branches and reject
+changed laws, corrupted coordinate/law bindings and out-of-domain coordinates.
+Raw reports retain their original coordinates.

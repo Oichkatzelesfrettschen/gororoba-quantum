@@ -55,6 +55,9 @@ WORKER_THREAD_VARIABLES = (
     "MKL_NUM_THREADS",
     "BLIS_NUM_THREADS",
     "VECLIB_MAXIMUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+    "RAYON_NUM_THREADS",
+    "QISKIT_NUM_PROCS",
 )
 # BLAS and OpenMP threads per worker: the pool supplies the parallelism, and
 # the matrices a worker handles are too small to repay BLAS threading. core-520

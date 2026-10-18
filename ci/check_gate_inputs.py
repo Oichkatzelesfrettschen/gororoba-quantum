@@ -122,6 +122,9 @@ class SelectionTests(unittest.TestCase):
         result = json.loads(record.read_text())
         self.assertEqual([(row["name"], row["status"]) for row in result["gates"]], [("fast", 1), ("long", 0)])
         self.assertGreater(result["wall_seconds"], 0)
+        self.assertGreaterEqual(result["cpu_capacity"], 1)
+        self.assertEqual(result["gates"][0]["resources"]["workers"], 1)
+        self.assertGreater(result["gates"][0]["resources"]["max_rss_kib"], 0)
 
     def test_workflow_diff_failure_selects_exhaustive_checks(self) -> None:
         import subprocess
@@ -148,6 +151,133 @@ class SelectionTests(unittest.TestCase):
             flags = changed_paths.select(self.root, "pull_request", "base", destination)
             self.assertEqual(flags, {"rocq": False, "full": False, "limited": True})
             self.assertEqual(destination.read_bytes(), paths)
+
+    def test_case_expansion_coverage_and_sharding(self) -> None:
+        self.write("entry.py", "CONTRACT_CASES: dict = {'first': first, 'second': second}\n")
+        parent = dict(self.gates[1], case_registry="CONTRACT_CASES", seconds=10)
+        expanded = gate_inputs.expand_cases(self.root, [parent])
+        self.assertEqual([gate["name"] for gate in expanded], ["long--first", "long--second"])
+        self.assertEqual([gate["seconds"] for gate in expanded], [5, 5])
+        self.assertEqual(
+            [gate["cmd"] for gate in expanded], ['"$PYTHON" entry.py --case first', '"$PYTHON" entry.py --case second']
+        )
+        shards = run_gates.assign(expanded, 2)
+        self.assertEqual([len(shard) for shard in shards], [1, 1])
+        for malformed in ("{}", "{'first': first, 'first': second}", "{**other}"):
+            self.write("entry.py", f"CONTRACT_CASES: dict = {malformed}\n")
+            with self.assertRaises(ValueError):
+                gate_inputs.expand_cases(self.root, [parent])
+
+    def test_detected_cpu_budget_and_full_pool_allocation(self) -> None:
+        import threading
+
+        lock = threading.Lock()
+        barrier = threading.Barrier(4)
+        active = 0
+        maximum = 0
+        observed: dict[str, int] = {}
+
+        def fake_run(
+            gate: dict[str, Any], environment: dict[str, str], root: Path
+        ) -> tuple[dict[str, Any], int, float, str]:
+            nonlocal active, maximum
+            workers = int(environment["GOROROBA_WORKERS"])
+            with lock:
+                active += workers
+                maximum = max(maximum, active)
+                observed[gate["name"]] = workers
+            if gate["name"] != "full-pool":
+                barrier.wait(timeout=3)
+            with lock:
+                active -= workers
+            return gate, 0, 0.0, ""
+
+        gates = [{"name": "full-pool", "workers": "all"}, *({"name": str(index)} for index in range(4))]
+        with patch.object(run_gates, "_cpus", return_value=4), patch.object(run_gates, "_run", fake_run):
+            results = list(run_gates.run_all(gates, {}, self.root))
+        self.assertEqual(len(results), 5)
+        self.assertEqual(observed, {"full-pool": 4, **{str(index): 1 for index in range(4)}})
+        self.assertEqual(maximum, 4)
+
+    def test_explicit_worker_caps_apply_to_inner_pools(self) -> None:
+        observed = []
+
+        def fake_run(
+            gate: dict[str, Any], environment: dict[str, str], root: Path
+        ) -> tuple[dict[str, Any], int, float, str]:
+            observed.append(int(environment["GOROROBA_WORKERS"]))
+            return gate, 0, 0.0, ""
+
+        for cap, expected in ((None, 4), ("1", 1), ("2", 2)):
+            environment = {} if cap is None else {"GOROROBA_WORKERS": cap}
+            with patch.object(run_gates, "_cpus", return_value=4), patch.object(run_gates, "_run", fake_run):
+                list(run_gates.run_all([{"name": "inner", "workers": "all"}], environment, self.root))
+            self.assertEqual(observed[-1], expected)
+
+    def test_case_estimates_require_complete_registry(self) -> None:
+        import analyze_timings
+
+        self.write("entry.py", "CONTRACT_CASES: dict = {'first': first, 'second': second}\n")
+        parent = dict(self.gates[1], case_registry="CONTRACT_CASES", seconds=100)
+        manifest = {"gates": [parent]}
+        report = {"gates": [{"job": "gates 0/1", "status": "PASS", "name": "long--first", "seconds": 2}]}
+        analyze_timings.refresh(manifest, [report], self.root)
+        self.assertEqual(parent["seconds"], 100)
+        report["gates"][0].update(name="long--second", seconds=3)
+        analyze_timings.refresh(manifest, [report], self.root)
+        self.assertEqual(parent["seconds"], 5)
+        self.write("entry.py", "CONTRACT_CASES: dict = {'first': first, 'second': second, 'third': third}\n")
+        analyze_timings.refresh(manifest, [report], self.root)
+        self.assertEqual(parent["seconds"], 5)
+        self.assertEqual(gate_inputs.expand_cases(self.root, [parent])[-1]["seconds"], 5 / 3)
+
+    def test_historical_plan_and_interpreter_dispatch(self) -> None:
+        import os
+        import sys
+
+        self.gates[0]["runtime"] = "qiskit-2.5"
+        self.gates[0]["cmd"] = '"$PYTHON" -c \'print("producer-interpreter")\''
+        self.write("ci/gates.json", json.dumps({"gates": self.gates}))
+        plan = self.root / "plan.json"
+        output = self.root / "output.txt"
+        with patch.object(run_gates, "ROOT", self.root):
+            self.assertEqual(run_gates.main(["--plan", str(plan), "--github-output", str(output)]), 0)
+        self.assertEqual(json.loads(plan.read_text())["environments"], ["qiskit-2.5"])
+        self.assertEqual(output.read_text(), "historical=true\n")
+        environment = dict(os.environ, PYTHON="/missing/current", GOROROBA_WORKERS="1")
+        environment.pop("REPLAY_PYTHON", None)
+        self.assertEqual(run_gates._run(self.gates[0], environment, self.root)[1], 127)
+        environment["REPLAY_PYTHON"] = sys.executable
+        _, status, _, result = run_gates._run(self.gates[0], environment, self.root)
+        self.assertEqual(status, 0, result)
+        self.assertEqual(result.strip(), "producer-interpreter")
+        self.assertEqual(environment["PYTHON"], "/missing/current")
+
+    def test_kaggle_historical_interpreter_isolation(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "kaggle_kernel"))
+        import kernel_main
+
+        environment = {"PYTHON": "/current/python", "GLIBC_TUNABLES": "glibc.malloc.arena_max=2"}
+        with patch.object(kernel_main, "checked") as checked:
+            result = kernel_main.historical_interpreter(self.root, "/current/python", environment)
+        self.assertEqual(environment["PYTHON"], "/current/python")
+        self.assertEqual(result["PYTHON"], "/current/python")
+        self.assertTrue(result["REPLAY_PYTHON"].endswith("replay-venv/bin/python"))
+        installation = checked.call_args_list[1]
+        child = installation.kwargs["env"]
+        self.assertEqual(child["PYTHON"], result["REPLAY_PYTHON"])
+        self.assertEqual(child["REQUIREMENTS_FILE"], "ci/requirements-replay.txt")
+        self.assertIn("glibc.rtld.optional_static_tls=4096", child["GLIBC_TUNABLES"])
+        self.assertIn("glibc.malloc.arena_max=2", child["GLIBC_TUNABLES"])
+
+    def test_invalid_resource_and_runtime_metadata(self) -> None:
+        for field, value in (("workers", 0), ("workers", True), ("workers", "four"), ("runtime", "unknown")):
+            with self.subTest(field=field, value=value):
+                self.write("ci/gates.json", json.dumps({"gates": [dict(self.gates[0], **{field: value})]}))
+                with self.assertRaises(SystemExit):
+                    run_gates.select(self.root, "full")
 
     def test_repository_source_manifest_closure(self) -> None:
         import ast
@@ -188,8 +318,16 @@ class SelectionTests(unittest.TestCase):
             environment = run_gates.environment_for(None)
             self.assertEqual(environment["OMP_NUM_THREADS"], "1")
             self.assertEqual(environment["OPENBLAS_NUM_THREADS"], "1")
+            self.assertEqual(environment["GLIBC_TUNABLES"], "glibc.rtld.optional_static_tls=4096")
         with patch.dict("os.environ", {"OMP_NUM_THREADS": "2"}, clear=True):
             self.assertEqual(run_gates.environment_for(None)["OMP_NUM_THREADS"], "2")
+        for configured, expected in (("128", "4096"), ("8192", "8192"), ("invalid", "4096")):
+            original = f"glibc.malloc.arena_max=2:glibc.rtld.optional_static_tls={configured}"
+            with patch.dict("os.environ", {"GLIBC_TUNABLES": original}, clear=True):
+                self.assertEqual(
+                    run_gates.environment_for(None)["GLIBC_TUNABLES"],
+                    f"glibc.malloc.arena_max=2:glibc.rtld.optional_static_tls={expected}",
+                )
 
 
 if __name__ == "__main__":

@@ -16,7 +16,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-RUNNER_SPEC = re.compile(r"((?:cpu_model|logical_cpus|memory|python|platform): .*)$")
+import gate_inputs
+
+ROOT = Path(__file__).resolve().parent.parent
+RUNNER_SPEC = re.compile(
+    r"((?:cpu_model|logical_cpus|memory|python|platform|glibc_tunables|native_threadpools|numpy): .*)$"
+)
 VERDICT = re.compile(r"\b(PASS|FAIL) ([\w-]+)\s+([\d.]+)s\s")
 
 
@@ -27,7 +32,7 @@ def seconds(start: str, end: str) -> float:
 def analyze(
     jobs: list[dict[str, Any]], log: str, manifest: dict[str, Any], run: dict[str, Any] | None = None
 ) -> dict[str, Any]:
-    estimates = {gate["name"]: gate["seconds"] for gate in manifest["gates"]}
+    estimates = {gate["name"]: gate["seconds"] for gate in gate_inputs.expand_cases(ROOT, manifest["gates"])}
     records = []
     runner_specs: dict[str, list[str]] = defaultdict(list)
     for line in log.splitlines():
@@ -79,7 +84,7 @@ def analyze(
     }
 
 
-def refresh(manifest: dict[str, Any], reports: list[dict[str, Any]]) -> None:
+def refresh(manifest: dict[str, Any], reports: list[dict[str, Any]], root: Path = ROOT) -> None:
     """Use primary gate-lane samples; the alternate QI interpreter has its own cost."""
     samples: dict[str, list[float]] = defaultdict(list)
     for report in reports:
@@ -87,6 +92,16 @@ def refresh(manifest: dict[str, Any], reports: list[dict[str, Any]]) -> None:
             if row["job"].startswith("gates ") and row["status"] == "PASS":
                 samples[row["name"]].append(row["seconds"])
     for gate in manifest["gates"]:
+        case_samples = {
+            name.split("--", 1)[1]: round(statistics.median(values), 1)
+            for name, values in samples.items()
+            if name.startswith(gate["name"] + "--")
+        }
+        if case_samples:
+            gate.setdefault("case_seconds", {}).update(case_samples)
+            registered = {case["name"].split("--", 1)[1] for case in gate_inputs.expand_cases(root, [gate])}
+            if registered <= gate["case_seconds"].keys():
+                gate["seconds"] = round(sum(gate["case_seconds"].values()), 1)
         if gate["name"] in samples:
             gate["seconds"] = round(statistics.median(samples[gate["name"]]), 1)
 

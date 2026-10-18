@@ -40,23 +40,26 @@ GOROROBA_ROOT=/path/to/open_gororoba ROCQ="${ROCQ:-rocq}" \
   sh docs/evidence/stiefel_witness/replay_rocq.sh
 ```
 
-The replay requires the Rocq 9.2 / OCaml 5.5.0 toolchain of
+The replay requires the Rocq 9.3.0 / OCaml 5.5.1 toolchain of
 [toolchain.txt](toolchain.txt), the same one the C881 replay uses. It
 checks the evidence digests, the open_gororoba source digest and the proof
 digest in [repo_sources.sha256](repo_sources.sha256), copies the two
 sources into temporary storage, compiles with `-w @all`, kernel-checks with
 `rocq check`, and compares all four outputs byte for byte. Compiling takes
 about 35 s; the independent kernel check takes about 4 minutes. Hosted CI
-supplies no Rocq toolchain, so CI verifies the retained bytes (`sha256sum
--c SHA256SUMS`), the proof digest in `repo_sources.sha256`, the generator's
-re-render, the Python identity and shellcheck. A regenerated proof therefore
+replays the proof on pushes to main and nightly under the pinned toolchain.
+The ordinary gates verify the retained bytes (`sha256sum -c SHA256SUMS`),
+the proof digest in `repo_sources.sha256`, the generator's re-render,
+the Python identity and shellcheck. A regenerated proof therefore
 fails CI until a successful replay refreshes `repo_sources.sha256` and the
 receipts. A retained receipt records this run; a later kernel check is a
 fresh replay.
 
-The retained witness replay pins Rocq 9.2 / OCaml 5.5.0. The current
-open_gororoba build uses Rocq 9.3.0 / OCaml 5.5.1 and Stdlib 9.2.0; its
-current pin does not change this historical receipt's identity. Neither
-`C1474_FuelAdequacy.v` nor this proof imports anything beyond Stdlib, so the
-recorded replay compiles both directly under 9.2 with explicit `-R` and
-`-Q` mappings, independently of the external checkout's Make configuration.
+Fresh compilation and independent kernel checking requalify the retained
+witness under Rocq 9.3.0 / OCaml 5.5.1 and independently released Stdlib
+9.2.0. Every theorem assumption report remains closed. Rocq 9.3 adds a
+kernel diagnostic listing inductives relying on indices not mattering;
+`kernel.txt` preserves the complete output.
+Neither `C1474_FuelAdequacy.v` nor the witness imports beyond Stdlib, so
+the replay compiles both directly with explicit `-R` and `-Q` mappings.
+The external source commit and every source digest retain their recorded values.

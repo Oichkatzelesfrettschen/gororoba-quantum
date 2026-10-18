@@ -84,7 +84,7 @@ MODULE_DIRS = ("gororoba_quantum", "scripts")
 # Pinning both holds every library Aer's cuStateVec_enable path loads at one
 # version.
 KERNEL_PINS = (
-    "qiskit==2.5.2",
+    "qiskit==2.6.0",
     "qiskit-aer-gpu-cu11==0.17.2",
     "cuquantum-cu11==24.8.0",
     "cutensor-cu11==2.2.0",
@@ -98,7 +98,7 @@ GPU_ENV_AER_PINS = tuple(pin for pin in KERNEL_PINS if not pin.startswith(("qisk
 MACHINE_GPUS = {"NvidiaTeslaT4": 2}
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
 # so those kernels take the CPU build of the same Aer release.
-CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
+CPU_KERNEL_PINS = ("qiskit==2.6.0", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
 # Usage guides every bundle carries, so an agent or author inside a kernel
 # reads the same package manuals, workflow and substrate notes as the host:
 # every tracked file under each directory except the captured upstream
@@ -124,10 +124,9 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
         "mthree==3.0.0",
         "runningman==2.3.0",
         "qiskit-ibm-runtime==0.50.0",
-        # Runtime's own dependencies, held at the host's versions: unpinned,
-        # a kernel resolves ibm-quantum-schemas 0.13 while the host has 0.12.
+        # Runtime dependencies match the active CI qualification environment.
         "samplomatic==0.21.0",
-        "ibm-quantum-schemas==0.12.20260921",
+        "ibm-quantum-schemas==0.13.20261016",
         "qiskit-mitigation==0.1.1",
         # qiskit.qasm3.loads needs the importer and its parser.
         "qiskit-qasm3-import==0.6.0",
@@ -201,7 +200,7 @@ KERNEL_FILES = (
 )
 
 RUNNER = r"""
-import base64, io, lzma, subprocess, sys, zipfile
+import base64, io, lzma, os, subprocess, sys, zipfile
 from pathlib import Path
 
 import importlib.metadata as metadata
@@ -235,7 +234,14 @@ for pin in [*PINS, *EXTRA, *frozen]:
         raise SystemExit(f"{{name}} is {{metadata.version(name)}}, pinned {{wanted}}")
 repo = Path("/tmp/gororoba/repo")
 zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(BUNDLE)))).extractall(repo)
-raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo).returncode)
+# The bootstrap imports standard-library modules only. Configure the new
+# interpreter's loader before kernel_main reads Aer's environment or capacity.
+sys.path.insert(0, str(repo / "kaggle_kernel"))
+from kernel_main import native_environment
+raise SystemExit(subprocess.run(
+    [sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo,
+    env=native_environment(os.environ),
+).returncode)
 """
 
 
@@ -666,6 +672,7 @@ def self_test(args: argparse.Namespace) -> int:
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
         _shard_identity_self_test(Path(scratch), head.stdout.strip(), data)
     _overlay_self_test()
+    _native_tls_self_test()
     _killed_entry_self_test()
     _gpu_env_self_test(data)
     _push_guard_self_test()
@@ -865,6 +872,112 @@ def _gpu_env_self_test(data: str) -> None:
             pass
         else:
             raise SystemExit("kaggle_run self-test: --gpu-env accepted a --with group")
+
+
+def _native_tls_self_test() -> None:
+    """Every scientific child receives loader capacity before startup; GPU calls use synthetic reports."""
+    import os
+    import tempfile
+    from types import SimpleNamespace
+    from unittest.mock import Mock, patch
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    tunable = kernel_main.STATIC_TLS_TUNABLE
+    for original, expected in (
+        ("", f"{tunable}=4096"),
+        (f"glibc.malloc.trim_threshold=1024:{tunable}=512", f"glibc.malloc.trim_threshold=1024:{tunable}=4096"),
+        (f"{tunable}=8192:glibc.malloc.arena_max=2", f"glibc.malloc.arena_max=2:{tunable}=8192"),
+        (f"{tunable}=invalid:{tunable}=2048", f"{tunable}=4096"),
+    ):
+        source = {"GLIBC_TUNABLES": original, "CUSTOM_FLAG": "retained"}
+        updated = kernel_main.native_environment(source)
+        require(updated == source | {"GLIBC_TUNABLES": expected}, f"native loader environment {updated}")
+        require(source["GLIBC_TUNABLES"] == original, "native_environment mutates the caller's environment")
+        require(kernel_main.native_environment(updated) == updated, "native loader capacity changes on repeat")
+
+    with patch.dict(os.environ, {"GLIBC_TUNABLES": "glibc.malloc.arena_max=2"}):
+        expected_environment = kernel_main.native_environment(os.environ)
+        launch = Mock(return_value=subprocess.CompletedProcess([], 0))
+        # Execute the generated bootstrap's launch statements, after bundle
+        # extraction, with process creation replaced by an argument recorder.
+        generated = ast.parse(RUNNER.format(pins=(), extra=(), bundle=""))
+        tail = ast.Module(body=generated.body[-3:], type_ignores=[])
+        namespace = {
+            "repo": ROOT,
+            "os": os,
+            "sys": SimpleNamespace(executable=sys.executable, path=[]),
+            "subprocess": SimpleNamespace(run=launch),
+        }
+        try:
+            exec(compile(tail, "<generated kernel launch>", "exec"), namespace)
+        except SystemExit as result:
+            require(result.code == 0, f"bootstrap launch exits {result.code}")
+        require(launch.call_count == 1, "bootstrap launches more than one kernel interpreter")
+        require(launch.call_args.kwargs["env"] == expected_environment, "bootstrap child lacks startup TLS capacity")
+        require(
+            launch.call_args.args[0] == [sys.executable, "-B", "kaggle_kernel/kernel_main.py"],
+            "bootstrap changes the kernel interpreter arguments",
+        )
+
+        with patch.object(kernel_main, "checked", return_value="") as checked:
+            _, environment = kernel_main.ci_interpreter(ROOT, UV_PIN, CI_PYTHON)
+        require(
+            environment["GLIBC_TUNABLES"] == expected_environment["GLIBC_TUNABLES"], "CI interpreter lacks native TLS"
+        )
+        require(environment["GOROROBA_AER_DEVICE"] == "CPU", "CI interpreter changes its Aer device")
+        for call in checked.call_args_list[-2:]:
+            require(call.kwargs["env"] == environment, "CI install or freeze lacks the startup environment")
+
+        def checked_gpu(name: str, *args: str, **kwargs: Any) -> str:
+            del args
+            if name == "gpu-env-report":
+                require(
+                    kwargs["env"]["GLIBC_TUNABLES"] == expected_environment["GLIBC_TUNABLES"],
+                    "GPU report child lacks startup TLS capacity",
+                )
+                return "{}"
+            return ""
+
+        with (
+            patch.object(kernel_main, "checked", checked_gpu),
+            patch.object(kernel_main, "gpus", return_value=[]),
+            patch.object(kernel_main, "gpu_env_failures", return_value=[]),
+        ):
+            _, environment, _ = kernel_main.gpu_interpreter(
+                ROOT, {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": 2}
+            )
+        require(
+            environment["GLIBC_TUNABLES"] == expected_environment["GLIBC_TUNABLES"], "GPU interpreter lacks native TLS"
+        )
+        require(environment["GOROROBA_AER_DEVICE"] == "GPU", "GPU interpreter changes its Aer device")
+
+        with (
+            patch.object(kernel_main, "gpus", return_value=[{}]),
+            patch.object(kernel_main, "DM_WIDTHS", (1,)),
+            patch.object(kernel_main, "SV_WIDTHS", (1,)),
+            patch.object(kernel_main, "write"),
+            patch.object(
+                kernel_main.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess([], 0, '{"width": 1, "ok": true}\n', ""),
+            ) as trials,
+        ):
+            kernel_main.capacity()
+        require(trials.call_count == 2, "mock capacity probe changes its trial count")
+        for trial in trials.call_args_list:
+            require(trial.kwargs["env"] == expected_environment, "capacity child lacks startup TLS capacity")
+
+        with tempfile.TemporaryDirectory() as scratch:
+            out = Path(scratch)
+            stub = "import os; print(os.environ['GLIBC_TUNABLES'])"
+            process = kernel_main.start_entry([sys.executable, "-c", stub], out, dict(os.environ), out)
+            require(process.wait(timeout=30) == 0, "native TLS entry child failed")
+            require(
+                (out / "stdout.txt").read_text().strip() == expected_environment["GLIBC_TUNABLES"],
+                "entry child lacks startup TLS capacity",
+            )
 
 
 def _killed_entry_self_test() -> None:

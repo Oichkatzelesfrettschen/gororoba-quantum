@@ -141,8 +141,8 @@ to 31,661 on 195 degrees of freedom, so every held-out p is 0.
 Gate core-311 runs four checks:
 - it requires `result.json` to be byte-identical to the output recorded in
   the run's `collect.json` ledger;
-- it re-derives `members.json` and `members.qpy` byte for byte from the
-  retained runs;
+- it re-derives `members.json` byte for byte and compares all 56 loaded
+  extracted circuits with the retained runs under the current SDK;
 - it recomputes the `cd_core` signs behind the recorded package agreement,
   without importing any package;
 - on the CPU it re-derives Kingston lane 0's laws for all 14 members under
@@ -153,3 +153,10 @@ Gate core-311 runs four checks:
   readout0 log-likelihood by more than 1e-3.
 
 Gate core-310 lints and type-checks the script.
+
+Gate `core-walk-extract` runs `--check-extract` in normal and optimized Python
+under the recorded Qiskit 2.5.2 producer. That check requires exact JSON and QPY
+bytes. Qiskit 2.6 emits QPY format 18 where the producer emitted format 17, so
+current-SDK circuit equivalence and producer byte identity have separate gates.
+Gate `core-walk-extract-contract` mutates circuit content and metadata to verify
+that the semantic extraction check rejects scientific changes.

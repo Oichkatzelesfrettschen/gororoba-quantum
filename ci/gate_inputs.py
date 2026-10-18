@@ -105,3 +105,46 @@ def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -
         if any(path in sources or any(matches(path, pattern) for pattern in patterns) for path in changed):
             selected.add(gate["name"])
     return selected
+
+
+def expand_cases(root: Path, gates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Split registered independent cases before scheduling, preserving parent selection."""
+    expanded = []
+    for gate in gates:
+        registry = gate.get("case_registry")
+        if registry is None:
+            expanded.append(gate)
+            continue
+        sources = [token for token in shlex.split(gate["cmd"]) if token.endswith(".py")]
+        if len(sources) != 1:
+            raise ValueError(f"{gate['name']}: case registry needs one Python entrypoint")
+        path = (root / gate["cwd"] / sources[0]).resolve()
+        if not path.is_relative_to(root):
+            raise ValueError("case entrypoint leaves checkout")
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        declarations = [
+            node.value
+            for node in tree.body
+            if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id == registry
+        ]
+        if len(declarations) != 1 or not isinstance(declarations[0], ast.Dict):
+            raise ValueError(f"{gate['name']}: registry must be a static annotated dictionary")
+        names = [ast.literal_eval(key) for key in declarations[0].keys if key is not None]
+        if len(names) != len(declarations[0].keys) or not names or len(set(names)) != len(names):
+            raise ValueError(f"{gate['name']}: case names must be nonempty and distinct")
+        if any(not isinstance(name, str) or not name.isidentifier() for name in names):
+            raise ValueError(f"{gate['name']}: case names must be identifiers")
+        measured = gate.get("case_seconds", {})
+        if not isinstance(measured, dict) or set(measured) - set(names):
+            raise ValueError(f"{gate['name']}: timings name an unregistered case")
+        for name in names:
+            expanded.append(
+                dict(
+                    gate,
+                    name=f"{gate['name']}--{name}",
+                    parent=gate["name"],
+                    cmd=gate["cmd"] + " --case " + shlex.quote(name),
+                    seconds=float(measured.get(name, float(gate.get("seconds", 10)) / len(names))),
+                )
+            )
+    return expanded

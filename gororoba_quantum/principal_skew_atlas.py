@@ -628,8 +628,10 @@ class PrincipalPolynomialContract:
             return sp.Matrix(
                 len(rows),
                 len(columns),
-                lambda row, column: lookup.get(rows[row] ^ columns[column], sp.Integer(0))
-                * cd_sign(dimension, rows[row] ^ columns[column], columns[column]),
+                lambda row, column: (
+                    lookup.get(rows[row] ^ columns[column], sp.Integer(0))
+                    * cd_sign(dimension, rows[row] ^ columns[column], columns[column])
+                ),
             )
 
         pivot, free = self.chart.pivot_indices, self.chart.free_indices
