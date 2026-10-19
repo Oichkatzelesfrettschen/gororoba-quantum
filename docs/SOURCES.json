@@ -5292,8 +5292,8 @@
         "evidence_summary": "The assumed license grants arXiv a perpetual non-exclusive distribution right for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission.",
         "pdf_notice_assessment": "The inspected PDF carries no redistribution license statement in its front matter; the arXiv abstract page is the license evidence."
       },
-      "excluded_published_path": "docs/pdf/math/0011260v1.pdf",
-      "local_cache_path": "docs/local_source_cache/math/0011260v1.pdf",
+      "excluded_published_path": "docs/pdf/math-0011260v1.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0011260v1.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The assumed license authorizes arXiv distribution for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission."
@@ -5321,8 +5321,8 @@
         "evidence_summary": "The assumed license grants arXiv a perpetual non-exclusive distribution right for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission.",
         "pdf_notice_assessment": "The inspected PDF carries no redistribution license statement in its front matter; the arXiv abstract page is the license evidence."
       },
-      "excluded_published_path": "docs/pdf/math/0403113v1.pdf",
-      "local_cache_path": "docs/local_source_cache/math/0403113v1.pdf",
+      "excluded_published_path": "docs/pdf/math-0403113v1.pdf",
+      "local_cache_path": "docs/local_source_cache/de_marrais_2004_math0403113_boxkites_III.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The assumed license authorizes arXiv distribution for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission."
@@ -5350,8 +5350,8 @@
         "evidence_summary": "The assumed license grants arXiv a perpetual non-exclusive distribution right for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission.",
         "pdf_notice_assessment": "The inspected PDF carries no redistribution license statement in its front matter; the arXiv abstract page is the license evidence."
       },
-      "excluded_published_path": "docs/pdf/math/0603281v1.pdf",
-      "local_cache_path": "docs/local_source_cache/math/0603281v1.pdf",
+      "excluded_published_path": "docs/pdf/math-0603281v1.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0603281v1.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The assumed license authorizes arXiv distribution for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission."
@@ -5379,8 +5379,8 @@
         "evidence_summary": "The assumed license grants arXiv a perpetual non-exclusive distribution right for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission.",
         "pdf_notice_assessment": "The inspected PDF carries no redistribution license statement in its front matter; the arXiv abstract page is the license evidence."
       },
-      "excluded_published_path": "docs/pdf/math/0703745v3.pdf",
-      "local_cache_path": "docs/local_source_cache/math/0703745v3.pdf",
+      "excluded_published_path": "docs/pdf/math-0703745v3.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0703745v3.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The assumed license authorizes arXiv distribution for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission."
@@ -5466,8 +5466,8 @@
         "evidence_summary": "The assumed license grants arXiv a perpetual non-exclusive distribution right for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission.",
         "pdf_notice_assessment": "The inspected PDF carries no redistribution license statement in its front matter; the arXiv abstract page is the license evidence."
       },
-      "excluded_published_path": "docs/pdf/q-alg/9710013v1.pdf",
-      "local_cache_path": "docs/local_source_cache/q-alg/9710013v1.pdf",
+      "excluded_published_path": "docs/pdf/q-alg-9710013v1.pdf",
+      "local_cache_path": "docs/local_source_cache/q-alg-9710013v1.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The assumed license authorizes arXiv distribution for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission."
