@@ -46,6 +46,7 @@ MANIFEST_FIELDS = ("cmd", "cwd", "runtime", "workers", "requires", "parent", "ca
 # command holding one reads paths no traced process lists.
 SHELL_METACHARACTERS = ("|", ";", ">", "<", "`", "$", "\n", "&", "*", "?", "[", "~", "(", ")")
 PYTHON_WORD = "$PYTHON"
+THREADED_FILES = 400
 # Interpreter and lint caches appear in directory listings as gates run; their
 # contents are derived from the sources the read set already hashes.
 CACHE_NAMES = frozenset(("__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache"))
@@ -301,11 +302,21 @@ def self_test() -> None:
                 "        pool.map(read, ['data/pooled.txt'])\n"
             ),
             "data/pooled.txt": "v1\n",
+            "threaded.py": (
+                "from concurrent.futures import ThreadPoolExecutor\n"
+                "from pathlib import Path\n"
+                f"paths = [f'data/threaded/{{k}}.txt' for k in range({THREADED_FILES})]\n"
+                "with ThreadPoolExecutor(8) as pool:\n"
+                "    list(pool.map(lambda path: Path(path).read_text(), paths))\n"
+            ),
             "isolated.py": "import subprocess, sys\nsubprocess.run([sys.executable, '-I', '-c', 'pass'], check=True)\n",
             "shells.py": "import subprocess\nsubprocess.run(['true'], check=True)\n",
             "writer.py": "open('data/written.txt', 'w').close()\n",
             "fails.py": "raise SystemExit(1)\n",
         }
+        (root / "data" / "threaded").mkdir()
+        for k in range(THREADED_FILES):
+            files[f"data/threaded/{k}.txt"] = f"{k}\n"
         for name, text in files.items():
             (root / name).write_text(text)
         # A pyc-only module: the compiled file stands without its source.
@@ -333,6 +344,7 @@ def self_test() -> None:
             gate("glob", '"$PYTHON" -B globber.py'),
             gate("listdir", '"$PYTHON" -B lister.py'),
             gate("pool", '"$PYTHON" -B pooled.py'),
+            gate("threads", '"$PYTHON" -B threaded.py'),
             gate("isolated-child", '"$PYTHON" -B isolated.py'),
             gate("isolated-shell", '"$PYTHON" -I -B plain.py'),
             gate("program-child", '"$PYTHON" -B shells.py'),
@@ -359,11 +371,14 @@ def self_test() -> None:
         if first != expected_first:
             raise RuntimeError(f"first pass verdicts {first}")
         stored = load(ledger)
-        traceable = {"plain", "import", "pyc", "glob", "listdir", "pool"}
+        traceable = {"plain", "import", "pyc", "glob", "listdir", "pool", "threads"}
         if set(stored) != traceable:
             raise RuntimeError(f"the ledger stores {sorted(stored)}, expected {sorted(traceable)}")
         if "compiled/only.pyc" not in stored["pyc"]["reads"]["files"]:
             raise RuntimeError(f"a pyc-only import is outside the read set: {stored['pyc']['reads']}")
+        threaded = {name for name in stored["threads"]["reads"]["files"] if name.startswith("data/threaded/")}
+        if len(threaded) != THREADED_FILES:
+            raise RuntimeError(f"threads recorded {len(threaded)} of {THREADED_FILES} files read from worker threads")
         second = run(gates)
         expected_second = {name: ("SKIP" if name in traceable else verdict) for name, verdict in first.items()}
         if second != expected_second:
@@ -375,6 +390,7 @@ def self_test() -> None:
             "glob": lambda: (root / "data" / "globbed" / "b.txt").write_text(""),
             "listdir": lambda: (root / "data" / "listed" / "b.txt").write_text(""),
             "pool": lambda: (root / "data" / "pooled.txt").write_text("v2\n"),
+            "threads": lambda: (root / "data" / "threaded" / f"{THREADED_FILES - 1}.txt").write_text("v2\n"),
         }
         for name, edit in edits.items():
             edit()

@@ -65,8 +65,14 @@ def _install(trace: str) -> None:
     ) | {os.path.realpath(sys.executable)}
     write_flags = os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND
     descriptor = os.open(os.path.join(trace, f"{os.getpid()}.tsv"), os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o644)
+    import _thread
+
     seen: set[object] = set()
-    active = [False]
+    # Threads that are inside the handler; an event a handler raises on its own
+    # thread returns at once, while every other thread's events still record.
+    active: set[int] = set()
+    lock = _thread.allocate_lock()
+    get_ident = _thread.get_ident
     events = frozenset(
         (
             "open",
@@ -90,7 +96,10 @@ def _install(trace: str) -> None:
     source_from_cache = importlib.util.source_from_cache
 
     def emit(record: str) -> None:
-        os.write(descriptor, (record + "\n").encode("utf-8", "surrogateescape"))
+        # One write per record on an O_APPEND descriptor, under the lock so
+        # records from concurrent threads never interleave.
+        with lock:
+            os.write(descriptor, (record + "\n").encode("utf-8", "surrogateescape"))
 
     def relative(path: Any, base: Any = None) -> str | None:
         if isinstance(path, int):
@@ -191,7 +200,10 @@ def _install(trace: str) -> None:
             emit(f"U\t{event}")
 
     def hook(event: str, args: tuple[Any, ...]) -> None:
-        if event not in events or active[0]:
+        if event not in events:
+            return
+        ident = get_ident()
+        if ident in active:
             return
         if event in deduplicated:
             first = args[0]
@@ -206,16 +218,17 @@ def _install(trace: str) -> None:
             )
             relative_path = first is None or (isinstance(first, (str, bytes)) and not os.path.isabs(first))
             key = (event, first, bool(writes), getcwd() if relative_path else None)
-            if key in seen:
-                return
-            seen.add(key)
-        active[0] = True
+            with lock:
+                if key in seen:
+                    return
+                seen.add(key)
+        active.add(ident)
         try:
             handle(event, args)
         except Exception as error:  # noqa: BLE001 -- a tracer fault marks the run, never the gate
             emit(f"U\ttracer {type(error).__name__} on {event}")
         finally:
-            active[0] = False
+            active.discard(ident)
 
     sys.addaudithook(hook)
 
