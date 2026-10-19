@@ -42,7 +42,9 @@ TRACER = Path(__file__).resolve().parent / "read_trace"
 SCHEMA = "gororoba-gate-ledger-v1"
 # Manifest fields that change what a gate runs; seconds and tier only schedule it.
 MANIFEST_FIELDS = ("cmd", "cwd", "runtime", "workers", "requires", "parent", "case_registry")
-SHELL_METACHARACTERS = ("|", ";", ">", "<", "`", "$(", "\n", "&")
+# The shell expands globs, tildes and parameters before Python starts, so a
+# command holding one reads paths no traced process lists.
+SHELL_METACHARACTERS = ("|", ";", ">", "<", "`", "$", "\n", "&", "*", "?", "[", "~", "(", ")")
 PYTHON_WORD = "$PYTHON"
 # Interpreter and lint caches appear in directory listings as gates run; their
 # contents are derived from the sources the read set already hashes.
@@ -81,7 +83,8 @@ def python_flags_escape(arguments: list[str]) -> str | None:
 
 def shell_untraceable(command: str) -> str | None:
     """Why a gate command escapes the trace, or None when it is ``"$PYTHON"`` calls joined by ``&&``."""
-    if any(mark in command.replace("&&", "\0") for mark in SHELL_METACHARACTERS):
+    plain = command.replace('"$PYTHON"', "\0").replace("&&", "\0")
+    if any(mark in plain for mark in SHELL_METACHARACTERS):
         return "shell command beyond $PYTHON invocations joined by &&"
     for segment in command.split("&&"):
         try:
@@ -415,6 +418,11 @@ def self_test() -> None:
         ('"$PYTHON" x.py | sha256sum', True),
         ("sha256sum -c x", True),
         ('"$PYTHON" x.py; true', True),
+        ('"$PYTHON" x.py --check results/runs/*-mesh-*/', True),
+        ('"$PYTHON" x.py data/[ab].json', True),
+        ('"$PYTHON" x.py ~/data', True),
+        ('"$PYTHON" x.py "$RUNNER_TEMP/out"', True),
+        ('"$PYTHON" x.py $(ls)', True),
     ):
         if (shell_untraceable(command) is not None) != escapes:
             raise RuntimeError(f"shell classification of {command!r} is wrong")
