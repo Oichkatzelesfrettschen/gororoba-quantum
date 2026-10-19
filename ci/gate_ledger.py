@@ -8,7 +8,8 @@ sha256 over the ledger schema, the tracer source, the gate's manifest entry
 (command, working directory, runtime, workers, requires, parent), its
 allocated worker count, the host identity (ci/host_identity.py) and the read
 set's content: each file's sha256, each listed directory's sorted entry
-names and each glob pattern's sorted matches. A later run recomputes the key
+names and each glob pattern's sorted matches, less interpreter and lint caches
+(CACHE_NAMES, *.pyc). A later run recomputes the key
 from the stored read set and reports SKIP when it is unchanged.
 
 A run stores no entry, and removes the gate's earlier one, when the gate
@@ -43,6 +44,13 @@ SCHEMA = "gororoba-gate-ledger-v1"
 MANIFEST_FIELDS = ("cmd", "cwd", "runtime", "workers", "requires", "parent", "case_registry")
 SHELL_METACHARACTERS = ("|", ";", ">", "<", "`", "$(", "\n", "&")
 PYTHON_WORD = "$PYTHON"
+# Interpreter and lint caches appear in directory listings as gates run; their
+# contents are derived from the sources the read set already hashes.
+CACHE_NAMES = frozenset(("__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache"))
+
+
+def derived(name: str) -> bool:
+    return name in CACHE_NAMES or name.endswith(".pyc")
 
 
 def tracer_digest() -> str:
@@ -157,7 +165,7 @@ class Content:
         key = ("d", name)
         if key not in self.memo:
             try:
-                self.memo[key] = sorted(os.listdir(self.root / name))
+                self.memo[key] = sorted(entry for entry in os.listdir(self.root / name) if not derived(entry))
             except FileNotFoundError:
                 self.memo[key] = "absent"
             except NotADirectoryError:
@@ -168,7 +176,8 @@ class Content:
     def matches(self, recursive: int, pattern: str) -> list[str]:
         key = ("g", f"{recursive}\t{pattern}")
         if key not in self.memo:
-            self.memo[key] = sorted(glob.glob(pattern, root_dir=self.root, recursive=bool(recursive)))
+            found = glob.glob(pattern, root_dir=self.root, recursive=bool(recursive))
+            self.memo[key] = sorted(path for path in found if not any(derived(part) for part in Path(path).parts))
         value: list[str] = self.memo[key]
         return value
 
