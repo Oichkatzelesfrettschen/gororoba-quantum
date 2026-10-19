@@ -888,11 +888,14 @@ class _RangeBackend(_ProbeBackend):
     """FakeFez whose rep_delay_range the contract can move between configuration reads."""
 
     rep_delay_range: list[float] | None = None
+    default_rep_delay: float | None = None
 
     def configuration(self) -> Any:
         configuration = super().configuration()
         if self.rep_delay_range is not None:
             configuration.rep_delay_range = list(self.rep_delay_range)
+        if self.default_rep_delay is not None:
+            configuration.default_rep_delay = self.default_rep_delay
         return configuration
 
 
@@ -918,6 +921,15 @@ def _verify_rep_delay_range() -> None:
             bool(qpu_planning.repetition_delay_violations(backend, below, None)),
             f"a repetition delay {below} below the Heron floor raised no violation",
         )
+    low_default = _RangeBackend("rep_delay_low_default", FakeFez())
+    low_default.default_rep_delay = 10e-6
+    try:
+        qpu_planning.repetition_delay(low_default)
+    except ValueError as error:
+        _require("backend default" in str(error), f"a low backend default refused for another reason: {error}")
+    else:
+        raise RuntimeError("a backend default below the Heron floor was admitted without a request")
+    _require(qpu_planning.repetition_delay(low_default, 20e-6) == 20e-6, "a request at the floor was refused")
     for outside in (high + 1e-6, -1e-6, float("nan")):
         try:
             qpu_planning.repetition_delay(backend, outside)

@@ -871,7 +871,8 @@ def repetition_delay(backend: Any, requested: float | None = None) -> float:
     microseconds. A requested value must lie in rep_delay_range, which IBM's
     repetition-rate guide names the supported interval and which changes
     over time, so every caller reads it from a fresh configuration. A
-    request on a Heron or Eagle processor also holds the changelog floor in
+    selected value on a Heron or Eagle processor, the requested one or the
+    backend default, also holds the changelog floor in
     REP_DELAY_FLOOR_SECONDS, which the configuration's range omits.
     """
     configuration = backend.configuration()
@@ -887,17 +888,17 @@ def repetition_delay(backend: Any, requested: float | None = None) -> float:
         or not interval[0] <= value <= interval[1]
     ):
         raise ValueError("cost planning requires a valid backend default repetition delay in seconds")
-    if requested is None:
-        return float(value)
     low, high = float(interval[0]), float(interval[1])
-    if not math.isfinite(requested) or not low <= requested <= high:
+    if requested is not None and (not math.isfinite(requested) or not low <= requested <= high):
         raise ValueError(f"repetition delay {requested} s lies outside the backend range [{low}, {high}] s")
+    selected = float(value if requested is None else requested)
     processor = getattr(configuration, "processor_type", None)
     family = processor.get("family") if isinstance(processor, dict) else None
     floor = REP_DELAY_FLOOR_SECONDS.get(str(family))
-    if floor is not None and requested < floor:
-        raise ValueError(f"repetition delay {requested} s lies below the {family} floor of {floor} s")
-    return float(requested)
+    if floor is not None and selected < floor:
+        source = "backend default" if requested is None else "requested"
+        raise ValueError(f"{source} repetition delay {selected} s lies below the {family} floor of {floor} s")
+    return selected
 
 
 def repetition_delay_range(backend: Any) -> list[float] | None:
