@@ -1,0 +1,212 @@
+{
+  "admissibility": {
+    "admissible": true,
+    "differing": {},
+    "missing": [],
+    "unresolved": {}
+  },
+  "alpha": {
+    "contracts": 2,
+    "family_alpha": 0.05,
+    "per_contract_alpha": 0.025,
+    "split": "Bonferroni"
+  },
+  "analyzer_sha256": "ddb1a965228779ac103dfbd7cb1b19c9b5b881a16544d2791f1f8c417dad1952",
+  "calibration": {
+    "n21_spectator_idle_ground_x": {
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_idle_ground_y": {
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_idle_x": {
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_idle_y": {
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_immediate_x": {
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_immediate_y": {
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "source": "execution_start"
+    }
+  },
+  "contracts": {
+    "spectator_control_zz": {
+      "herald_margin": 0.009839821395834556,
+      "idle_ground_visibility": 0.6223095204878807,
+      "idle_ground_x_expectation": 0.615966796875,
+      "idle_ground_y_expectation": 0.088623046875,
+      "idle_visibility": 0.6153880578297835,
+      "idle_x_expectation": 0.60986328125,
+      "idle_y_expectation": 0.082275390625,
+      "one_sided_quantile": 1.959963984540054,
+      "standard_error": 0.01241531076806979,
+      "statistic": -0.006921462658097233,
+      "status": "fail",
+      "upper_confidence_limit": 0.017412099304191873
+    },
+    "spectator_ground_idle_dephasing": {
+      "herald_margin": 0.009839821395834556,
+      "idle_ground_visibility": 0.6223095204878807,
+      "idle_ground_x_expectation": 0.615966796875,
+      "idle_ground_y_expectation": 0.088623046875,
+      "immediate_visibility": 0.9887966576140125,
+      "immediate_x_expectation": 0.98876953125,
+      "immediate_y_expectation": -0.00732421875,
+      "one_sided_quantile": 1.959963984540054,
+      "standard_error": 0.008911106356411307,
+      "statistic": -0.3664871371261318,
+      "status": "pass",
+      "upper_confidence_limit": -0.34902168960515967
+    }
+  },
+  "herald": {
+    "present": false
+  },
+  "schema_version": "n21-orbit-between-arm-contracts-v2",
+  "spectator_counts": {
+    "idle": {
+      "x": [
+        6594,
+        0,
+        1598,
+        0
+      ],
+      "y": [
+        4433,
+        0,
+        3759,
+        0
+      ]
+    },
+    "idle_ground": {
+      "x": [
+        6619,
+        0,
+        1573,
+        0
+      ],
+      "y": [
+        4459,
+        0,
+        3733,
+        0
+      ]
+    },
+    "immediate": {
+      "x": [
+        8146,
+        0,
+        46,
+        0
+      ],
+      "y": [
+        4066,
+        0,
+        4126,
+        0
+      ]
+    }
+  },
+  "spectator_herald": {
+    "admissible": true,
+    "alpha": 0.05,
+    "bits": {
+      "0": {
+        "excitation_spread_upper_limit": 0.0067333706357690735,
+        "excited_fraction": {
+          "n21_spectator_idle_ground_x": 0.0050048828125,
+          "n21_spectator_idle_ground_y": 0.0035400390625,
+          "n21_spectator_idle_x": 0.0048828125,
+          "n21_spectator_idle_y": 0.0047607421875,
+          "n21_spectator_immediate_x": 0.005126953125,
+          "n21_spectator_immediate_y": 0.0064697265625
+        },
+        "qubit": 142,
+        "readout_contrast": 0.988525390625,
+        "role": "control",
+        "spread": 0.0029296875,
+        "spread_lower_limit": -0.0007981630002604156,
+        "status": "pass",
+        "threshold": 0.00218558981720594
+      },
+      "1": {
+        "excitation_spread_upper_limit": 0.005020572569571213,
+        "excited_fraction": {
+          "n21_spectator_idle_ground_x": 0.0029296875,
+          "n21_spectator_idle_ground_y": 0.0029296875,
+          "n21_spectator_idle_x": 0.0020751953125,
+          "n21_spectator_idle_y": 0.0030517578125,
+          "n21_spectator_immediate_x": 0.0040283203125,
+          "n21_spectator_immediate_y": 0.0032958984375
+        },
+        "qubit": 136,
+        "readout_contrast": 0.9736328125,
+        "role": "work_1",
+        "spread": 0.001953125,
+        "spread_lower_limit": -0.0009828976328145641,
+        "status": "pass",
+        "threshold": 0.0021526629268997996
+      },
+      "2": {
+        "excitation_spread_upper_limit": 0.004919910697917278,
+        "excited_fraction": {
+          "n21_spectator_idle_ground_x": 0.001708984375,
+          "n21_spectator_idle_ground_y": 0.0030517578125,
+          "n21_spectator_idle_x": 0.0037841796875,
+          "n21_spectator_idle_y": 0.0029296875,
+          "n21_spectator_immediate_x": 0.003173828125,
+          "n21_spectator_immediate_y": 0.003173828125
+        },
+        "qubit": 143,
+        "readout_contrast": 0.989013671875,
+        "role": "work_4",
+        "spread": 0.0020751953125,
+        "spread_lower_limit": -0.0007164813512832652,
+        "status": "pass",
+        "threshold": 0.0021866693873799116
+      },
+      "3": {
+        "excitation_spread_upper_limit": 0.0056709364039215044,
+        "excited_fraction": {
+          "n21_spectator_idle_ground_x": 0.0054931640625,
+          "n21_spectator_idle_ground_y": 0.0050048828125,
+          "n21_spectator_idle_x": 0.005126953125,
+          "n21_spectator_idle_y": 0.006103515625,
+          "n21_spectator_immediate_x": 0.006103515625,
+          "n21_spectator_immediate_y": 0.0042724609375
+        },
+        "qubit": 144,
+        "readout_contrast": 0.99169921875,
+        "role": "work_16",
+        "spread": 0.0018310546875,
+        "spread_lower_limit": -0.0019626476777960715,
+        "status": "pass",
+        "threshold": 0.0021926070233367566
+      }
+    },
+    "comparisons": 120,
+    "contract_shift_upper_limit": 0.019834504022393465,
+    "evaluable": true,
+    "excitation_spread_bound": 0.0022109597162942776,
+    "one_sided_quantile": 3.3414789560386264,
+    "present": true,
+    "shots": 8192
+  },
+  "spectator_immediate_visibility": {
+    "ideal_visibility": 1.0,
+    "standard_error": 0.001653168284427043,
+    "status": "descriptive",
+    "visibility": 0.9887966576140125,
+    "x_expectation": 0.98876953125,
+    "y_expectation": -0.00732421875
+  }
+}

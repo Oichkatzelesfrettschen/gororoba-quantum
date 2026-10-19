@@ -1,0 +1,5321 @@
+{
+  "schema_version": 7,
+  "schema_contract": "live-target-statistical-design-invocation-budget-v1",
+  "state": "submitted",
+  "started": "2026-10-19T23:10:43.083602+00:00",
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "scipy": "1.18.1",
+    "rustworkx": "0.18.1",
+    "sympy": "1.14.0"
+  },
+  "policy": {
+    "max_readout_error": 0.08,
+    "max_cz_error": 0.03,
+    "max_sx_error": 0.01,
+    "min_t1_us": 20.0,
+    "min_t2_us": 20.0,
+    "max_pending": 25,
+    "seeds": 8,
+    "joint_candidates": 3,
+    "replica_floor": null,
+    "max_replicas": null,
+    "isolated_reference": false,
+    "cross_group_buffer": true,
+    "twirl": false,
+    "dd": null,
+    "min_remaining_seconds": 60.0,
+    "max_execution_seconds": 15,
+    "rep_delay_seconds": 5e-05,
+    "operator_excluded_qubits": {},
+    "design": {
+      "family": "n21-orbit-rca",
+      "optimize": true,
+      "objective": "minimum_charge",
+      "cost_scenarios": [],
+      "shot_tiers": [
+        8192
+      ],
+      "shot_allocation": "uniform",
+      "replica_tiers": [
+        1
+      ],
+      "optimizer_candidates": 6,
+      "model_shots": 131072,
+      "precision": 0.08,
+      "alpha": 0.05,
+      "power": 0.8,
+      "simulation_alpha": 0.01,
+      "job_overhead_seconds": 2.3,
+      "classical_latency_us": 20.0,
+      "reserve_seconds": 0.0,
+      "max_total_execution_seconds": 15.0,
+      "patch_qubits": null,
+      "model_method": "sampled",
+      "replica_variance_bound": null,
+      "init_herald": true,
+      "ground_control_split": true,
+      "pin_layout": {
+        "backend": "ibm_fez",
+        "qubits": [
+          142,
+          136,
+          143,
+          144
+        ]
+      }
+    },
+    "local_compute": {
+      "mode": "auto",
+      "threads": 12,
+      "memory_mb": 512,
+      "shot_branching": false,
+      "method": "density_matrix_dynamic_statevector",
+      "precision": "double",
+      "shot_branching_sampling": false,
+      "parallel_experiments": 1,
+      "aer_native": {
+        "schema": "native-aer-identity-v1",
+        "distribution": "qiskit-aer",
+        "version": "0.17.2",
+        "python_soabi": "cpython-314-x86_64-linux-gnu",
+        "extension": {
+          "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+          "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+        },
+        "native_cuda_build": null,
+        "loaded_mapping_verified": true,
+        "loaded_mapping_scope": "linux-process-map-device-inode"
+      }
+    }
+  },
+  "shots": 8192,
+  "instance_sha256_12": "e3de05b6901e",
+  "seed_simulator": 20261011,
+  "experiment_digest": "514804c0cb457f8212bb7fe92dd02b4d8081734dbb756381eb974da56d413fb0",
+  "code_commit": {
+    "head": "723256d76f6fd495ac21ffa6c4589b0643b56b9b",
+    "sources_modified": false
+  },
+  "system_inventory": {
+    "ibm_fez": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 2,
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "fetched_at": "2026-10-19T23:10:45+00:00",
+      "backend_version": "1.3.37",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 134.5918003498576,
+        "t2_us": 88.57119340428746,
+        "readout_error": 0.0093994140625,
+        "cz_error": 0.0025195059838703515
+      },
+      "excluded_qubits": {
+        "11": "T1=75.3us T2=12.4us",
+        "15": "readout error 0.106",
+        "22": "T1=149.2us T2=16.6us",
+        "43": "readout error 0.084",
+        "46": "T1=152.2us T2=15.8us",
+        "53": "T1=132.1us T2=19.9us",
+        "63": "readout error 0.101",
+        "66": "T1=136.6us T2=19.1us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "77": "T1=71.1us T2=19.1us",
+        "83": "readout error 0.121",
+        "102": "readout error 0.099",
+        "146": "T1=101.9us T2=14.5us",
+        "148": "T1=5.6us T2=22.1us",
+        "149": "T1=43.0us T2=7.1us",
+        "150": "T1=144.6us T2=5.7us",
+        "155": "T1=80.8us T2=18.6us"
+      },
+      "excluded_edges": {
+        "27-28": "cz error 0.10323228480861839",
+        "28-27": "cz error 0.10323228480861839",
+        "31-32": "cz error 0.030233437118917683",
+        "32-31": "cz error 0.030233437118917683",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "38-49": "cz error 0.05414860532300081",
+        "48-49": "cz error 0.06584895622264286",
+        "49-38": "cz error 0.05414860532300081",
+        "49-48": "cz error 0.06584895622264286",
+        "63-64": "cz error 0.04868519723230427",
+        "64-63": "cz error 0.04868519723230427",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.1260754309238268",
+        "103-102": "cz error 0.1260754309238268",
+        "147-148": "cz error 0.0886160278981069",
+        "148-147": "cz error 0.0886160278981069",
+        "148-149": "cz error 0.13106785643824742",
+        "149-148": "cz error 0.13106785643824742"
+      }
+    }
+  },
+  "backends": {
+    "ibm_fez": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 2,
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "fetched_at": "2026-10-19T23:10:45+00:00",
+      "backend_version": "1.3.37",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 134.5918003498576,
+        "t2_us": 88.57119340428746,
+        "readout_error": 0.0093994140625,
+        "cz_error": 0.0025195059838703515
+      },
+      "excluded_qubits": {
+        "11": "T1=75.3us T2=12.4us",
+        "15": "readout error 0.106",
+        "22": "T1=149.2us T2=16.6us",
+        "43": "readout error 0.084",
+        "46": "T1=152.2us T2=15.8us",
+        "53": "T1=132.1us T2=19.9us",
+        "63": "readout error 0.101",
+        "66": "T1=136.6us T2=19.1us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "77": "T1=71.1us T2=19.1us",
+        "83": "readout error 0.121",
+        "102": "readout error 0.099",
+        "146": "T1=101.9us T2=14.5us",
+        "148": "T1=5.6us T2=22.1us",
+        "149": "T1=43.0us T2=7.1us",
+        "150": "T1=144.6us T2=5.7us",
+        "155": "T1=80.8us T2=18.6us"
+      },
+      "excluded_edges": {
+        "27-28": "cz error 0.10323228480861839",
+        "28-27": "cz error 0.10323228480861839",
+        "31-32": "cz error 0.030233437118917683",
+        "32-31": "cz error 0.030233437118917683",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "38-49": "cz error 0.05414860532300081",
+        "48-49": "cz error 0.06584895622264286",
+        "49-38": "cz error 0.05414860532300081",
+        "49-48": "cz error 0.06584895622264286",
+        "63-64": "cz error 0.04868519723230427",
+        "64-63": "cz error 0.04868519723230427",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.1260754309238268",
+        "103-102": "cz error 0.1260754309238268",
+        "147-148": "cz error 0.0886160278981069",
+        "148-147": "cz error 0.0886160278981069",
+        "148-149": "cz error 0.13106785643824742",
+        "149-148": "cz error 0.13106785643824742"
+      }
+    }
+  },
+  "skipped_backends": {},
+  "circuit_requirements": {
+    "n21_orbit_rca": {
+      "qubits": 4,
+      "classical_bits": 6,
+      "static_circuits": 0,
+      "dynamic_circuits": 6,
+      "target_operations": [
+        "delay",
+        "measure",
+        "reset"
+      ],
+      "control_flow": []
+    }
+  },
+  "execution_requirements": {
+    "n21_orbit_rca": {
+      "entries": 6,
+      "entry_names": [
+        "n21_spectator_immediate_x",
+        "n21_spectator_immediate_y",
+        "n21_spectator_idle_x",
+        "n21_spectator_idle_y",
+        "n21_spectator_idle_ground_x",
+        "n21_spectator_idle_ground_y"
+      ],
+      "static_circuits": 0,
+      "dynamic_circuits": 6,
+      "max_classical_bits": 6,
+      "physical_qubits": [
+        136,
+        142,
+        143,
+        144
+      ],
+      "operation_names": [
+        "measure",
+        "reset",
+        "rz",
+        "sx"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    }
+  },
+  "fusion_placement": {
+    "allocation": "matched-family",
+    "configuration": {
+      "name": "n21-orbit-rca",
+      "replica_cap": 1,
+      "window_delay_dt": 415,
+      "echo_half_dt": 502,
+      "dt_seconds": 4e-09,
+      "reset_dt": 421,
+      "pin_layout": {
+        "backend": "ibm_fez",
+        "qubits": [
+          142,
+          136,
+          143,
+          144
+        ]
+      },
+      "init_herald": true,
+      "ground_control_split": true
+    }
+  },
+  "fusion_summary": {
+    "strategy": "aligned_members_without_reference",
+    "reference_estimand": null,
+    "reference_estimand_by_kind": {
+      "static": null,
+      "dynamic": null
+    },
+    "logical_entries": {
+      "static": 0,
+      "dynamic": 6
+    },
+    "execution_pubs": {
+      "static": 0,
+      "dynamic": 6
+    },
+    "reference_components": {
+      "static": 0,
+      "dynamic": 0
+    }
+  },
+  "execution_pubs": [
+    {
+      "name": "ibm_fez_dynamic_pub_01",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1263,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_orbit_rca",
+          "member": "n21_spectator_immediate_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase",
+              "g0_r0_herald"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_fez_dynamic_pub_02",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1263,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_orbit_rca",
+          "member": "n21_spectator_immediate_y",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase",
+              "g0_r0_herald"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_fez_dynamic_pub_03",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 2099,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_orbit_rca",
+          "member": "n21_spectator_idle_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase",
+              "g0_r0_herald"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_fez_dynamic_pub_04",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 2099,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_orbit_rca",
+          "member": "n21_spectator_idle_y",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase",
+              "g0_r0_herald"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_fez_dynamic_pub_05",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 2099,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_orbit_rca",
+          "member": "n21_spectator_idle_ground_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase",
+              "g0_r0_herald"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_fez_dynamic_pub_06",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 2099,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_orbit_rca",
+          "member": "n21_spectator_idle_ground_y",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase",
+              "g0_r0_herald"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "selection_trace": {
+    "n21_orbit_rca": {
+      "ibm_fez": [
+        {
+          "stage": "capability_admission",
+          "requirements": {
+            "qubits": 4,
+            "classical_bits": 6,
+            "static_circuits": 0,
+            "dynamic_circuits": 6,
+            "target_operations": [
+              "delay",
+              "measure",
+              "reset"
+            ],
+            "control_flow": []
+          },
+          "rejected": []
+        },
+        {
+          "stage": "routing_admission",
+          "rejected": []
+        },
+        {
+          "seed": 20261010,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261011,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261012,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261013,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261014,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261015,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261016,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261017,
+          "cz": 0,
+          "rejected": [],
+          "primary_score": 0.8492406403852651
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.802492312560763,
+          "layout": [
+            142,
+            136,
+            143,
+            144
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.802492312560763,
+          "layout": [
+            142,
+            136,
+            143,
+            144
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.802492312560763,
+          "layout": [
+            142,
+            136,
+            143,
+            144
+          ]
+        }
+      ]
+    }
+  },
+  "family_configuration": {
+    "name": "n21-orbit-rca",
+    "replica_cap": 1,
+    "window_delay_dt": 415,
+    "echo_half_dt": 502,
+    "dt_seconds": 4e-09,
+    "reset_dt": 421,
+    "pin_layout": {
+      "backend": "ibm_fez",
+      "qubits": [
+        142,
+        136,
+        143,
+        144
+      ]
+    },
+    "init_herald": true,
+    "ground_control_split": true
+  },
+  "observable_contracts": [
+    {
+      "name": "n21_spectator_immediate_x_one",
+      "terms": [
+        {
+          "member": "n21_spectator_immediate_x",
+          "values": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.008333333333333333,
+      "power": 0.8,
+      "precision_half_width": 0.08
+    },
+    {
+      "name": "n21_spectator_immediate_y_one",
+      "terms": [
+        {
+          "member": "n21_spectator_immediate_y",
+          "values": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.008333333333333333,
+      "power": 0.8,
+      "precision_half_width": 0.08
+    },
+    {
+      "name": "n21_spectator_idle_x_one",
+      "terms": [
+        {
+          "member": "n21_spectator_idle_x",
+          "values": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.008333333333333333,
+      "power": 0.8,
+      "precision_half_width": 0.08
+    },
+    {
+      "name": "n21_spectator_idle_y_one",
+      "terms": [
+        {
+          "member": "n21_spectator_idle_y",
+          "values": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.008333333333333333,
+      "power": 0.8,
+      "precision_half_width": 0.08
+    },
+    {
+      "name": "n21_spectator_idle_ground_x_one",
+      "terms": [
+        {
+          "member": "n21_spectator_idle_ground_x",
+          "values": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.008333333333333333,
+      "power": 0.8,
+      "precision_half_width": 0.08
+    },
+    {
+      "name": "n21_spectator_idle_ground_y_one",
+      "terms": [
+        {
+          "member": "n21_spectator_idle_ground_y",
+          "values": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.008333333333333333,
+      "power": 0.8,
+      "precision_half_width": 0.08
+    }
+  ],
+  "optimization": {
+    "selected": "candidate-000-shots-8192",
+    "candidates": [
+      {
+        "name": "candidate-000-shots-8192",
+        "feasible": true,
+        "estimated_charge_seconds": 5.115492096,
+        "total_execution_ceiling_seconds": 15.0,
+        "jobs": [
+          {
+            "name": "ibm_fez/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_fez_dynamic_pub_01",
+                "shots": 8192,
+                "scheduled_seconds": 5.052e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.450985984,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_02",
+                "shots": 8192,
+                "scheduled_seconds": 5.052e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.450985984,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_03",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_04",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_05",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_06",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 5.115492096,
+            "max_execution_seconds": 15,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_spectator_immediate_x_one",
+            "predicted_value": 0.00286865234375,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002720387825373001,
+            "modeled_value_upper_bound": 0.008457692512873,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_immediate_y_one",
+            "predicted_value": 0.49729156494140625,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.49170252477228327,
+            "modeled_value_upper_bound": 0.5028806051105292,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_x_one",
+            "predicted_value": 0.00287628173828125,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002712758430841751,
+            "modeled_value_upper_bound": 0.00846532190740425,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_y_one",
+            "predicted_value": 0.49718475341796875,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.49159571324884577,
+            "modeled_value_upper_bound": 0.5027737935870917,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_ground_x_one",
+            "predicted_value": 0.00279998779296875,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002789052376154251,
+            "modeled_value_upper_bound": 0.00838902796209175,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_ground_y_one",
+            "predicted_value": 0.4965667724609375,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.4909777322918145,
+            "modeled_value_upper_bound": 0.5021558126300605,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_fez",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 8192,
+          "proxy_score": 0.802492312560763
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 5.115492096,
+        "normalized_precision_radius": 0.22862074662391554
+      },
+      {
+        "name": "candidate-001-shots-8192",
+        "feasible": true,
+        "estimated_charge_seconds": 5.115492096,
+        "total_execution_ceiling_seconds": 15.0,
+        "jobs": [
+          {
+            "name": "ibm_fez/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_fez_dynamic_pub_01",
+                "shots": 8192,
+                "scheduled_seconds": 5.052e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.450985984,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_02",
+                "shots": 8192,
+                "scheduled_seconds": 5.052e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.450985984,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_03",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_04",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_05",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_06",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 5.115492096,
+            "max_execution_seconds": 15,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_spectator_immediate_x_one",
+            "predicted_value": 0.00286865234375,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002720387825373001,
+            "modeled_value_upper_bound": 0.008457692512873,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_immediate_y_one",
+            "predicted_value": 0.49729156494140625,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.49170252477228327,
+            "modeled_value_upper_bound": 0.5028806051105292,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_x_one",
+            "predicted_value": 0.00287628173828125,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002712758430841751,
+            "modeled_value_upper_bound": 0.00846532190740425,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_y_one",
+            "predicted_value": 0.49718475341796875,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.49159571324884577,
+            "modeled_value_upper_bound": 0.5027737935870917,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_ground_x_one",
+            "predicted_value": 0.00279998779296875,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002789052376154251,
+            "modeled_value_upper_bound": 0.00838902796209175,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_ground_y_one",
+            "predicted_value": 0.4965667724609375,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.4909777322918145,
+            "modeled_value_upper_bound": 0.5021558126300605,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_fez",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 8192,
+          "proxy_score": 0.802492312560763
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 5.115492096,
+        "normalized_precision_radius": 0.22862074662391554
+      },
+      {
+        "name": "candidate-002-shots-8192",
+        "feasible": true,
+        "estimated_charge_seconds": 5.115492096,
+        "total_execution_ceiling_seconds": 15.0,
+        "jobs": [
+          {
+            "name": "ibm_fez/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_fez_dynamic_pub_01",
+                "shots": 8192,
+                "scheduled_seconds": 5.052e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.450985984,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_02",
+                "shots": 8192,
+                "scheduled_seconds": 5.052e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.450985984,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_03",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_04",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_05",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_06",
+                "shots": 8192,
+                "scheduled_seconds": 8.396e-06,
+                "repetition_delay_seconds": 5e-05,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.478380032,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 5.115492096,
+            "max_execution_seconds": 15,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_spectator_immediate_x_one",
+            "predicted_value": 0.00286865234375,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002720387825373001,
+            "modeled_value_upper_bound": 0.008457692512873,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_immediate_y_one",
+            "predicted_value": 0.49729156494140625,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.49170252477228327,
+            "modeled_value_upper_bound": 0.5028806051105292,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_x_one",
+            "predicted_value": 0.00287628173828125,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002712758430841751,
+            "modeled_value_upper_bound": 0.00846532190740425,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_y_one",
+            "predicted_value": 0.49718475341796875,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.49159571324884577,
+            "modeled_value_upper_bound": 0.5027737935870917,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_ground_x_one",
+            "predicted_value": 0.00279998779296875,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": -0.002789052376154251,
+            "modeled_value_upper_bound": 0.00838902796209175,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "n21_spectator_idle_ground_y_one",
+            "predicted_value": 0.4965667724609375,
+            "simulation_error_radius": 0.005589040169123001,
+            "modeled_value_lower_bound": 0.4909777322918145,
+            "modeled_value_upper_bound": 0.5021558126300605,
+            "confidence_half_width": 0.018289659729913244,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.08,
+            "alpha": 0.008333333333333333,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_fez",
+          "seed": 20261012,
+          "replicas": 1,
+          "shots": 8192,
+          "proxy_score": 0.802492312560763
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 5.115492096,
+        "normalized_precision_radius": 0.22862074662391554
+      }
+    ],
+    "pareto_frontier": [
+      "candidate-000-shots-8192",
+      "candidate-001-shots-8192",
+      "candidate-002-shots-8192"
+    ],
+    "rejection_reasons": [],
+    "simulation_alpha": 0.01,
+    "simulation_comparisons": 18,
+    "assumptions": [
+      "independent stationary repetitions; arbitrary dependence within each PUB shot unless explicitly bounded",
+      "union bounds across PUBs; no independence assumption between PUBs",
+      "observable alpha and power are per endpoint, conditional on the supplied outcome model",
+      "finite simulation error is controlled simultaneously across all supplied candidate-observable marginals",
+      "hardware-model discrepancy and cost-model error remain unquantified",
+      "charge estimates include every PUB, control, repetition delay, declared duration addition, and job overhead",
+      "execution ceilings apply per job; their aggregate must preserve the declared reserve",
+      "explicit cost scenarios are sensitivity assumptions; their coverage of cost uncertainty is unquantified"
+    ],
+    "objective": "minimum_charge",
+    "selected_objective_value": 5.115492096,
+    "cost_scenarios": [],
+    "retained_candidate": "candidate-000-shots-8192",
+    "searched_routed_sets": 3,
+    "shot_tiers": [
+      8192
+    ],
+    "scope": "bounded routed candidates and uniform shot tiers; global optimality is unclaimed"
+  },
+  "optimizer_settings": {
+    "family": "n21-orbit-rca",
+    "optimize": true,
+    "objective": "minimum_charge",
+    "cost_scenarios": [],
+    "shot_tiers": [
+      8192
+    ],
+    "shot_allocation": "uniform",
+    "replica_tiers": [
+      1
+    ],
+    "optimizer_candidates": 6,
+    "model_shots": 131072,
+    "precision": 0.08,
+    "alpha": 0.05,
+    "power": 0.8,
+    "simulation_alpha": 0.01,
+    "job_overhead_seconds": 2.3,
+    "classical_latency_us": 20.0,
+    "reserve_seconds": 0.0,
+    "max_total_execution_seconds": 15.0,
+    "patch_qubits": null,
+    "model_method": "sampled",
+    "replica_variance_bound": null,
+    "init_herald": true,
+    "ground_control_split": true,
+    "pin_layout": {
+      "backend": "ibm_fez",
+      "qubits": [
+        142,
+        136,
+        143,
+        144
+      ]
+    }
+  },
+  "optimization_budget": {
+    "remaining_seconds": 171.0,
+    "reserve_seconds": 0.0,
+    "max_total_execution_seconds": 15.0
+  },
+  "local_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_spectator_immediate_x",
+        "n21_spectator_immediate_y",
+        "n21_spectator_idle_x",
+        "n21_spectator_idle_y",
+        "n21_spectator_idle_ground_x",
+        "n21_spectator_idle_ground_y"
+      ],
+      "ordered_qpy_sha256": "e28382837307063c7c74e085e8669e164ffe59986f36cd35c0a3c0954cefd92a",
+      "noise_serialized_channels_sha256": "09005ff02d29c3ff9ee83f78d030fdb8a08ef683de435ebe339f2d995051e9c2",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 131072,
+      "seed_simulator": 20261011,
+      "wall_seconds": 4.862101849008468,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.177488698,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.17786787,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.163595382,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.168110035,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.188312036,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.177127008,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_spectator_immediate_x",
+        "n21_spectator_immediate_y",
+        "n21_spectator_idle_x",
+        "n21_spectator_idle_y",
+        "n21_spectator_idle_ground_x",
+        "n21_spectator_idle_ground_y"
+      ],
+      "ordered_qpy_sha256": "e28382837307063c7c74e085e8669e164ffe59986f36cd35c0a3c0954cefd92a",
+      "noise_serialized_channels_sha256": "09005ff02d29c3ff9ee83f78d030fdb8a08ef683de435ebe339f2d995051e9c2",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 131072,
+      "seed_simulator": 20261011,
+      "wall_seconds": 3.921079801992164,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.177470859,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.167536073,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.173107287,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.182724672,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.166708801,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.18191643,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_spectator_immediate_x",
+        "n21_spectator_immediate_y",
+        "n21_spectator_idle_x",
+        "n21_spectator_idle_y",
+        "n21_spectator_idle_ground_x",
+        "n21_spectator_idle_ground_y"
+      ],
+      "ordered_qpy_sha256": "e28382837307063c7c74e085e8669e164ffe59986f36cd35c0a3c0954cefd92a",
+      "noise_serialized_channels_sha256": "09005ff02d29c3ff9ee83f78d030fdb8a08ef683de435ebe339f2d995051e9c2",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 131072,
+      "seed_simulator": 20261011,
+      "wall_seconds": 4.048751765003544,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.18606376,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.18168203,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.186457932,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.186815103,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.168513676,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.180137806,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ],
+  "compiled_ideal_validation": {
+    "method": "branch-resolved statevector on active compiled replica wires",
+    "absolute_tolerance": 1e-10,
+    "noise_method": [
+      "statevector"
+    ],
+    "noise_policy": "density_matrix_dynamic_statevector",
+    "all_candidates_passed": true
+  },
+  "approval_preflight": {
+    "compared_at": "2026-10-19T23:10:45+00:00",
+    "accepted_timestamp_changes": [],
+    "mismatches": []
+  },
+  "prediction_reuse": {
+    "design": {
+      "reused": false,
+      "blockers": [
+        "the approved search held 3 routed candidate sets"
+      ]
+    },
+    "approved_record": "2026-10-19T223641.935223Z",
+    "record_sha256": "be3229453177950e1d0237a92a46e92f6e293881e6353b49a1400df833e29eca",
+    "qpy_archive_sha256": "77fd5a9f4a0f58a4f05c43f57e0a1b38f4e0bcd0ee78c17d23b1686fb954e899",
+    "predictions": {
+      "reused": true
+    },
+    "scope": "groups, evaluation_simulation_batches and, for a reused design, the DESIGN_RECORD_FIELDS are the approved record's; calibration identity and values are fresh"
+  },
+  "budget_plan": {
+    "jobs": [
+      {
+        "backend": "ibm_fez",
+        "kind": "dynamic",
+        "batch_index": 1,
+        "pubs": 6,
+        "ceiling_seconds": 15
+      }
+    ],
+    "combined_ceiling_seconds": 15.0,
+    "reserve_seconds": 0.0,
+    "max_total_execution_seconds": 15.0,
+    "remaining_seconds": 171,
+    "admitted": true,
+    "reasons": [],
+    "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+  },
+  "execution_contract": {
+    "backends": [
+      {
+        "name": "ibm_fez",
+        "repetition_delay_seconds": 5e-05,
+        "repetition_delay_source": "--rep-delay",
+        "default_repetition_delay_seconds": 0.00025,
+        "repetition_delay_range_seconds": [
+          0.0,
+          0.002
+        ]
+      }
+    ],
+    "selected_job_costs": [
+      {
+        "name": "ibm_fez/dynamic/1",
+        "pubs": [
+          {
+            "name": "ibm_fez_dynamic_pub_01",
+            "shots": 8192,
+            "scheduled_seconds": 5.052e-06,
+            "repetition_delay_seconds": 5e-05,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 0.450985984,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_02",
+            "shots": 8192,
+            "scheduled_seconds": 5.052e-06,
+            "repetition_delay_seconds": 5e-05,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 0.450985984,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_03",
+            "shots": 8192,
+            "scheduled_seconds": 8.396e-06,
+            "repetition_delay_seconds": 5e-05,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 0.478380032,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_04",
+            "shots": 8192,
+            "scheduled_seconds": 8.396e-06,
+            "repetition_delay_seconds": 5e-05,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 0.478380032,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_05",
+            "shots": 8192,
+            "scheduled_seconds": 8.396e-06,
+            "repetition_delay_seconds": 5e-05,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 0.478380032,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_06",
+            "shots": 8192,
+            "scheduled_seconds": 8.396e-06,
+            "repetition_delay_seconds": 5e-05,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 0.478380032,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          }
+        ],
+        "overhead_seconds": 2.3,
+        "estimated_charge_seconds": 5.115492096,
+        "max_execution_seconds": 15,
+        "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+      }
+    ],
+    "selected_cost_scenarios": [],
+    "selected_worst_case_charge_seconds": 5.115492096
+  },
+  "groups": [
+    {
+      "group": "n21_orbit_rca",
+      "backend": "ibm_fez",
+      "backend_version": "1.3.37",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-19T15:07:33-07:00",
+      "noise_model_calibration": "2026-10-19T15:07:33-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        142,
+        136,
+        143,
+        144
+      ],
+      "joint_score": 0.802492312560763,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.7799966386000681,
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "initial_layout": [
+            142,
+            136,
+            143,
+            144
+          ],
+          "mapping": {
+            "136": 136,
+            "142": 142,
+            "143": 143,
+            "144": 144
+          }
+        }
+      ],
+      "summary": {
+        "spectator_immediate_x_expectation": 0.993408203125,
+        "spectator_immediate_y_expectation": -0.01806640625,
+        "spectator_immediate_visibility": 0.9935724699642353,
+        "spectator_idle_x_expectation": 0.9921875,
+        "spectator_idle_y_expectation": -0.01171875,
+        "spectator_idle_visibility": 0.992256702803167,
+        "spectator_idle_ground_x_expectation": 0.994140625,
+        "spectator_idle_ground_y_expectation": 0.00732421875,
+        "spectator_idle_ground_visibility": 0.9941676048110241,
+        "n21_spectator_immediate_x_herald_q0": 0.0032958984375,
+        "n21_spectator_immediate_x_herald_q1": 0.0101318359375,
+        "n21_spectator_immediate_x_herald_q2": 0.0028076171875,
+        "n21_spectator_immediate_x_herald_q3": 0.0003662109375,
+        "n21_spectator_immediate_y_herald_q0": 0.0030517578125,
+        "n21_spectator_immediate_y_herald_q1": 0.0115966796875,
+        "n21_spectator_immediate_y_herald_q2": 0.0025634765625,
+        "n21_spectator_immediate_y_herald_q3": 0.0001220703125,
+        "n21_spectator_idle_x_herald_q0": 0.0040283203125,
+        "n21_spectator_idle_x_herald_q1": 0.0113525390625,
+        "n21_spectator_idle_x_herald_q2": 0.0025634765625,
+        "n21_spectator_idle_x_herald_q3": 0.000244140625,
+        "n21_spectator_idle_y_herald_q0": 0.0032958984375,
+        "n21_spectator_idle_y_herald_q1": 0.01123046875,
+        "n21_spectator_idle_y_herald_q2": 0.0020751953125,
+        "n21_spectator_idle_y_herald_q3": 0.00048828125,
+        "n21_spectator_idle_ground_x_herald_q0": 0.0035400390625,
+        "n21_spectator_idle_ground_x_herald_q1": 0.01123046875,
+        "n21_spectator_idle_ground_x_herald_q2": 0.00244140625,
+        "n21_spectator_idle_ground_x_herald_q3": 0.00048828125,
+        "n21_spectator_idle_ground_y_herald_q0": 0.00341796875,
+        "n21_spectator_idle_ground_y_herald_q1": 0.0107421875,
+        "n21_spectator_idle_ground_y_herald_q2": 0.0025634765625,
+        "n21_spectator_idle_ground_y_herald_q3": 0.0006103515625
+      },
+      "summary_per_replica": [
+        {
+          "spectator_immediate_x_expectation": 0.993408203125,
+          "spectator_immediate_y_expectation": -0.01806640625,
+          "spectator_immediate_visibility": 0.9935724699642353,
+          "spectator_idle_x_expectation": 0.9921875,
+          "spectator_idle_y_expectation": -0.01171875,
+          "spectator_idle_visibility": 0.992256702803167,
+          "spectator_idle_ground_x_expectation": 0.994140625,
+          "spectator_idle_ground_y_expectation": 0.00732421875,
+          "spectator_idle_ground_visibility": 0.9941676048110241,
+          "n21_spectator_immediate_x_herald_q0": 0.0032958984375,
+          "n21_spectator_immediate_x_herald_q1": 0.0101318359375,
+          "n21_spectator_immediate_x_herald_q2": 0.0028076171875,
+          "n21_spectator_immediate_x_herald_q3": 0.0003662109375,
+          "n21_spectator_immediate_y_herald_q0": 0.0030517578125,
+          "n21_spectator_immediate_y_herald_q1": 0.0115966796875,
+          "n21_spectator_immediate_y_herald_q2": 0.0025634765625,
+          "n21_spectator_immediate_y_herald_q3": 0.0001220703125,
+          "n21_spectator_idle_x_herald_q0": 0.0040283203125,
+          "n21_spectator_idle_x_herald_q1": 0.0113525390625,
+          "n21_spectator_idle_x_herald_q2": 0.0025634765625,
+          "n21_spectator_idle_x_herald_q3": 0.000244140625,
+          "n21_spectator_idle_y_herald_q0": 0.0032958984375,
+          "n21_spectator_idle_y_herald_q1": 0.01123046875,
+          "n21_spectator_idle_y_herald_q2": 0.0020751953125,
+          "n21_spectator_idle_y_herald_q3": 0.00048828125,
+          "n21_spectator_idle_ground_x_herald_q0": 0.0035400390625,
+          "n21_spectator_idle_ground_x_herald_q1": 0.01123046875,
+          "n21_spectator_idle_ground_x_herald_q2": 0.00244140625,
+          "n21_spectator_idle_ground_x_herald_q3": 0.00048828125,
+          "n21_spectator_idle_ground_y_herald_q0": 0.00341796875,
+          "n21_spectator_idle_ground_y_herald_q1": 0.0107421875,
+          "n21_spectator_idle_ground_y_herald_q2": 0.0025634765625,
+          "n21_spectator_idle_ground_y_herald_q3": 0.0006103515625
+        }
+      ],
+      "variance": {
+        "n21_spectator_immediate_x": {
+          "replicas": 1.0,
+          "mean": 0.0032958984375,
+          "shot_variance": 4.010053089587018e-07
+        },
+        "n21_spectator_immediate_y": {
+          "replicas": 1.0,
+          "mean": 0.509033203125,
+          "shot_variance": 3.0507617339026183e-05
+        },
+        "n21_spectator_idle_x": {
+          "replicas": 1.0,
+          "mean": 0.00390625,
+          "shot_variance": 4.7497451305389404e-07
+        },
+        "n21_spectator_idle_y": {
+          "replicas": 1.0,
+          "mean": 0.505859375,
+          "shot_variance": 3.051338717341423e-05
+        },
+        "n21_spectator_idle_ground_x": {
+          "replicas": 1.0,
+          "mean": 0.0029296875,
+          "shot_variance": 3.5658013075590134e-07
+        },
+        "n21_spectator_idle_ground_y": {
+          "replicas": 1.0,
+          "mean": 0.496337890625,
+          "shot_variance": 3.051594103453681e-05
+        }
+      },
+      "summary_readout_corrected": {
+        "spectator_immediate_x_expectation": 0.9982720315971362,
+        "spectator_immediate_y_expectation": -0.02443841026906929,
+        "spectator_immediate_visibility": 0.9985711216360871,
+        "spectator_idle_x_expectation": 0.997037768452234,
+        "spectator_idle_y_expectation": -0.01802024191557622,
+        "spectator_idle_visibility": 0.9972006021051665,
+        "spectator_idle_ground_x_expectation": 0.9990125894840778,
+        "spectator_idle_ground_y_expectation": 0.0012342631449024921,
+        "spectator_idle_ground_visibility": 0.999013351939399,
+        "n21_spectator_immediate_x_herald_q0": -0.000617436404050383,
+        "n21_spectator_immediate_x_herald_q1": -0.00137913741223671,
+        "n21_spectator_immediate_x_herald_q2": 0.00037027894347074866,
+        "n21_spectator_immediate_x_herald_q3": -0.00012309207287050726,
+        "n21_spectator_immediate_y_herald_q0": -0.0008644109656705356,
+        "n21_spectator_immediate_y_herald_q1": 0.0001253761283851549,
+        "n21_spectator_immediate_y_herald_q2": 0.00012342631449024986,
+        "n21_spectator_immediate_y_herald_q3": -0.00036927621861152144,
+        "n21_spectator_idle_x_herald_q0": 0.0001234872808100765,
+        "n21_spectator_idle_x_herald_q1": -0.00012537612838515628,
+        "n21_spectator_idle_x_herald_q2": 0.00012342631449024962,
+        "n21_spectator_idle_x_herald_q3": -0.0002461841457410144,
+        "n21_spectator_idle_y_herald_q0": -0.0006174364040503823,
+        "n21_spectator_idle_y_herald_q1": -0.00025075225677031175,
+        "n21_spectator_idle_y_herald_q2": -0.00037027894347074774,
+        "n21_spectator_idle_y_herald_q3": -2.168404344971009e-19,
+        "n21_spectator_idle_ground_x_herald_q0": -0.00037046184243022946,
+        "n21_spectator_idle_ground_x_herald_q1": -0.00025075225677031126,
+        "n21_spectator_idle_ground_x_herald_q2": 1.1011428314305904e-20,
+        "n21_spectator_idle_ground_x_herald_q3": -1.4632494163818038e-19,
+        "n21_spectator_idle_ground_y_herald_q0": -0.0004939491232403057,
+        "n21_spectator_idle_ground_y_herald_q1": -0.0007522567703109339,
+        "n21_spectator_idle_ground_y_herald_q2": 0.0001234263144902497,
+        "n21_spectator_idle_ground_y_herald_q3": 0.00012309207287050704
+      },
+      "placed_qubit_calibration": {
+        "136": {
+          "T1": 132.53230892236888,
+          "T2": 129.28605515723387,
+          "readout_error": 0.01318359375,
+          "prob_meas1_prep0": 0.011474609375,
+          "prob_meas0_prep1": 0.014892578125
+        },
+        "142": {
+          "T1": 218.41745555053225,
+          "T2": 237.4489904529227,
+          "readout_error": 0.0057373046875,
+          "prob_meas1_prep0": 0.00390625,
+          "prob_meas0_prep1": 0.007568359375
+        },
+        "143": {
+          "T1": 111.98255748865067,
+          "T2": 110.8908133128947,
+          "readout_error": 0.0054931640625,
+          "prob_meas1_prep0": 0.00244140625,
+          "prob_meas0_prep1": 0.008544921875
+        },
+        "144": {
+          "T1": 175.9138441271945,
+          "T2": 223.6933451070685,
+          "readout_error": 0.004150390625,
+          "prob_meas1_prep0": 0.00048828125,
+          "prob_meas0_prep1": 0.0078125
+        }
+      },
+      "calibration_fingerprint": {
+        "e01:136": 0.014892578125,
+        "e01:142": 0.007568359375,
+        "e01:143": 0.008544921875,
+        "e01:144": 0.0078125,
+        "e10:136": 0.011474609375,
+        "e10:142": 0.00390625,
+        "e10:143": 0.00244140625,
+        "e10:144": 0.00048828125,
+        "target:acquire_alignment": 1,
+        "target:concurrent_measurements": null,
+        "target:dt": 4e-09,
+        "target:granularity": 1,
+        "target:measure(136,):duration": 1.66e-06,
+        "target:measure(136,):error": 0.01318359375,
+        "target:measure(142,):duration": 1.66e-06,
+        "target:measure(142,):error": 0.0057373046875,
+        "target:measure(143,):duration": 1.66e-06,
+        "target:measure(143,):error": 0.0054931640625,
+        "target:measure(144,):duration": 1.66e-06,
+        "target:measure(144,):error": 0.004150390625,
+        "target:min_length": 2,
+        "target:pulse_alignment": 1,
+        "target:reset(142,):duration": 1.684e-06,
+        "target:reset(142,):error": null,
+        "target:rz(142,):duration": 0.0,
+        "target:rz(142,):error": 0.0,
+        "target:rz(143,):duration": 0.0,
+        "target:rz(143,):error": 0.0,
+        "target:sx(142,):duration": 2.4e-08,
+        "target:sx(142,):error": 0.00024499045061368205,
+        "target:sx(143,):duration": 2.4e-08,
+        "target:sx(143,):error": 0.00023588743202396318,
+        "target:t1:136": 0.00013253230892236887,
+        "target:t1:142": 0.00021841745555053224,
+        "target:t1:143": 0.00011198255748865067,
+        "target:t1:144": 0.0001759138441271945,
+        "target:t2:136": 0.00012928605515723386,
+        "target:t2:142": 0.0002374489904529227,
+        "target:t2:143": 0.0001108908133128947,
+        "target:t2:144": 0.0002236933451070685
+      },
+      "calibration_fingerprint_sha256": "9a48e60982d8c9f1d1f4f9395771ddf96dbec9ccafbc0a19302f83446ba4e4c3",
+      "members": [
+        {
+          "name": "n21_spectator_immediate_x",
+          "reference": false,
+          "cz": 0,
+          "depth": 9,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 5.052e-06,
+              "esp": 0.9656849976675768,
+              "coherence": 0.8794178665262894,
+              "noisy": [
+                0.980347,
+                0.0,
+                0.003174,
+                0.0,
+                0.003174,
+                0.0,
+                0.0,
+                0.0,
+                0.01001,
+                0.0,
+                0.000122,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.002686,
+                0.0,
+                0.0,
+                0.0,
+                0.000122,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000366,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.0196533203125
+            }
+          ]
+        },
+        {
+          "name": "n21_spectator_immediate_y",
+          "reference": false,
+          "cz": 0,
+          "depth": 8,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 5.052e-06,
+              "esp": 0.9656849976675768,
+              "coherence": 0.8794178665262894,
+              "noisy": [
+                0.482788,
+                0.0,
+                0.499878,
+                0.0,
+                0.001343,
+                0.0,
+                0.001709,
+                0.0,
+                0.005127,
+                0.0,
+                0.00647,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001587,
+                0.0,
+                0.000977,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000122,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.017333984375
+            }
+          ]
+        },
+        {
+          "name": "n21_spectator_idle_x",
+          "reference": false,
+          "cz": 0,
+          "depth": 10,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 8.396e-06,
+              "esp": 0.9656849976675768,
+              "coherence": 0.8077133231685254,
+              "noisy": [
+                0.978271,
+                0.0,
+                0.003662,
+                0.0,
+                0.003906,
+                0.0,
+                0.0,
+                0.0,
+                0.010986,
+                0.0,
+                0.000244,
+                0.0,
+                0.000122,
+                0.0,
+                0.0,
+                0.0,
+                0.002563,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000244,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.021728515625
+            }
+          ]
+        },
+        {
+          "name": "n21_spectator_idle_y",
+          "reference": false,
+          "cz": 0,
+          "depth": 9,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 8.396e-06,
+              "esp": 0.9656849976675768,
+              "coherence": 0.8077133231685254,
+              "noisy": [
+                0.485596,
+                0.0,
+                0.497681,
+                0.0,
+                0.001709,
+                0.0,
+                0.001465,
+                0.0,
+                0.005371,
+                0.0,
+                0.005493,
+                0.0,
+                0.0,
+                0.0,
+                0.000122,
+                0.0,
+                0.001343,
+                0.0,
+                0.000488,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000122,
+                0.0,
+                0.000122,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000488,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.0167236328125
+            }
+          ]
+        },
+        {
+          "name": "n21_spectator_idle_ground_x",
+          "reference": false,
+          "cz": 0,
+          "depth": 10,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 8.396e-06,
+              "esp": 0.965921639245233,
+              "coherence": 0.8077133231685254,
+              "noisy": [
+                0.97998,
+                0.0,
+                0.002808,
+                0.0,
+                0.003418,
+                0.0,
+                0.0,
+                0.0,
+                0.01062,
+                0.0,
+                0.000122,
+                0.0,
+                0.000122,
+                0.0,
+                0.0,
+                0.0,
+                0.002075,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000366,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000488,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.02001953125
+            }
+          ]
+        },
+        {
+          "name": "n21_spectator_idle_ground_y",
+          "reference": false,
+          "cz": 0,
+          "depth": 9,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 8.396e-06,
+              "esp": 0.965921639245233,
+              "coherence": 0.8077133231685254,
+              "noisy": [
+                0.496094,
+                0.0,
+                0.487061,
+                0.0,
+                0.001953,
+                0.0,
+                0.001343,
+                0.0,
+                0.004272,
+                0.0,
+                0.005981,
+                0.0,
+                0.0,
+                0.0,
+                0.000122,
+                0.0,
+                0.001221,
+                0.0,
+                0.000977,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.000122,
+                0.0,
+                0.000244,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.00061,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.016845703125
+            }
+          ]
+        }
+      ],
+      "noise_serialized_channels_sha256": "09005ff02d29c3ff9ee83f78d030fdb8a08ef683de435ebe339f2d995051e9c2"
+    }
+  ],
+  "evaluation_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_spectator_immediate_x",
+        "n21_spectator_immediate_y",
+        "n21_spectator_idle_x",
+        "n21_spectator_idle_y",
+        "n21_spectator_idle_ground_x",
+        "n21_spectator_idle_ground_y"
+      ],
+      "ordered_qpy_sha256": "e28382837307063c7c74e085e8669e164ffe59986f36cd35c0a3c0954cefd92a",
+      "noise_serialized_channels_sha256": "09005ff02d29c3ff9ee83f78d030fdb8a08ef683de435ebe339f2d995051e9c2",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 3.1515372339999885,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.032685381,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.029851584,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.030693236,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.027365609,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.026913228,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.026851948,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 6,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ],
+  "revalidation": [
+    {
+      "attempt": 1,
+      "system_inventory": {
+        "ibm_fez": {
+          "eligibility": "eligible",
+          "operational": true,
+          "status_msg": "active",
+          "pending_jobs": 2,
+          "calibration": "2026-10-19T15:07:33-07:00",
+          "fetched_at": "2026-10-19T23:11:07+00:00",
+          "backend_version": "1.3.37",
+          "processor_type": {
+            "family": "Heron",
+            "revision": "2"
+          },
+          "capabilities": {
+            "num_qubits": 156,
+            "dynamic_circuits": true,
+            "operation_names": [
+              "cz",
+              "delay",
+              "id",
+              "if_else",
+              "measure",
+              "measure_2",
+              "measure_reset",
+              "measure_reset_2",
+              "reset",
+              "reset_2",
+              "rz",
+              "sx",
+              "x",
+              "xslow"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "repetition_delay": 0.00025,
+          "medians": {
+            "t1_us": 134.5918003498576,
+            "t2_us": 88.57119340428746,
+            "readout_error": 0.0093994140625,
+            "cz_error": 0.0025195059838703515
+          },
+          "excluded_qubits": {
+            "11": "T1=75.3us T2=12.4us",
+            "15": "readout error 0.106",
+            "22": "T1=149.2us T2=16.6us",
+            "43": "readout error 0.084",
+            "46": "T1=152.2us T2=15.8us",
+            "53": "T1=132.1us T2=19.9us",
+            "63": "readout error 0.101",
+            "66": "T1=136.6us T2=19.1us",
+            "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+            "77": "T1=71.1us T2=19.1us",
+            "83": "readout error 0.121",
+            "102": "readout error 0.099",
+            "146": "T1=101.9us T2=14.5us",
+            "148": "T1=5.6us T2=22.1us",
+            "149": "T1=43.0us T2=7.1us",
+            "150": "T1=144.6us T2=5.7us",
+            "155": "T1=80.8us T2=18.6us"
+          },
+          "excluded_edges": {
+            "27-28": "cz error 0.10323228480861839",
+            "28-27": "cz error 0.10323228480861839",
+            "31-32": "cz error 0.030233437118917683",
+            "32-31": "cz error 0.030233437118917683",
+            "32-33": "cz error 1.0",
+            "33-32": "cz error 1.0",
+            "38-49": "cz error 0.05414860532300081",
+            "48-49": "cz error 0.06584895622264286",
+            "49-38": "cz error 0.05414860532300081",
+            "49-48": "cz error 0.06584895622264286",
+            "63-64": "cz error 0.04868519723230427",
+            "64-63": "cz error 0.04868519723230427",
+            "71-72": "cz error 1.0",
+            "72-71": "cz error 1.0",
+            "72-73": "cz error 1.0",
+            "73-72": "cz error 1.0",
+            "102-103": "cz error 0.1260754309238268",
+            "103-102": "cz error 0.1260754309238268",
+            "147-148": "cz error 0.0886160278981069",
+            "148-147": "cz error 0.0886160278981069",
+            "148-149": "cz error 0.13106785643824742",
+            "149-148": "cz error 0.13106785643824742"
+          }
+        }
+      },
+      "skipped_backends": {},
+      "reselected_groups": {},
+      "rebuilt": false,
+      "fusion_placement": {
+        "allocation": "matched-family",
+        "configuration": {
+          "name": "n21-orbit-rca",
+          "replica_cap": 1,
+          "window_delay_dt": 415,
+          "echo_half_dt": 502,
+          "dt_seconds": 4e-09,
+          "reset_dt": 421,
+          "pin_layout": {
+            "backend": "ibm_fez",
+            "qubits": [
+              142,
+              136,
+              143,
+              144
+            ]
+          },
+          "init_herald": true,
+          "ground_control_split": true
+        }
+      },
+      "selection_trace": {}
+    }
+  ],
+  "approved_record": {
+    "run": "2026-10-19T223641.935223Z",
+    "record_sha256": "be3229453177950e1d0237a92a46e92f6e293881e6353b49a1400df833e29eca",
+    "qpy_archive_sha256": "77fd5a9f4a0f58a4f05c43f57e0a1b38f4e0bcd0ee78c17d23b1686fb954e899",
+    "calibrations": {
+      "ibm_fez": "2026-10-19T15:07:33-07:00"
+    },
+    "calibration_values": {
+      "fingerprint_sha256": {
+        "n21_orbit_rca": "9a48e60982d8c9f1d1f4f9395771ddf96dbec9ccafbc0a19302f83446ba4e4c3"
+      },
+      "accepted_timestamp_changes": []
+    },
+    "mismatches": []
+  },
+  "submission": {
+    "started": "2026-10-19T23:10:43.083602+00:00",
+    "planned_backends": [
+      "ibm_fez"
+    ],
+    "qpy_archive_sha256": "77fd5a9f4a0f58a4f05c43f57e0a1b38f4e0bcd0ee78c17d23b1686fb954e899",
+    "planned_jobs": [
+      {
+        "backend": "ibm_fez",
+        "kind": "dynamic",
+        "batch_index": 1,
+        "batch_count": 1,
+        "shots": 8192,
+        "members": [
+          "n21_spectator_immediate_x",
+          "n21_spectator_immediate_y",
+          "n21_spectator_idle_x",
+          "n21_spectator_idle_y",
+          "n21_spectator_idle_ground_x",
+          "n21_spectator_idle_ground_y"
+        ],
+        "pubs": [
+          {
+            "name": "ibm_fez_dynamic_pub_01",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 1263,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_immediate_x",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_02",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 1263,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_immediate_y",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_03",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_x",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_04",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_y",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_05",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_ground_x",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_06",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_ground_y",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "qpy_archive_sha256": "77fd5a9f4a0f58a4f05c43f57e0a1b38f4e0bcd0ee78c17d23b1686fb954e899",
+        "calibrations": [
+          "2026-10-19T15:07:33-07:00"
+        ],
+        "recovery_tags": [
+          "gororoba-quantum",
+          "gororoba-run-cf813b5c53a2cf2829ce",
+          "gororoba-batch-455860d98ad3196d2a59cb6b"
+        ],
+        "options": {
+          "default_shots": 8192,
+          "dynamical_decoupling": {
+            "enable": false,
+            "sequence_type": "XX",
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "skip_reset_qubits": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "rep_delay": 5e-05,
+            "scheduler_timing": true,
+            "stretch_values": false,
+            "meas_type": "classified"
+          },
+          "twirling": {
+            "enable_gates": null,
+            "enable_measure": null,
+            "group": "pauli",
+            "num_randomizations": "auto",
+            "shots_per_randomization": "auto",
+            "strategy": "active-accum"
+          },
+          "max_execution_time": 15,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "experimental": {},
+          "environment": {
+            "log_level": "WARNING",
+            "job_tags": [
+              "gororoba-quantum",
+              "gororoba-run-cf813b5c53a2cf2829ce",
+              "gororoba-batch-455860d98ad3196d2a59cb6b"
+            ],
+            "private": false,
+            "max_execution_time": null,
+            "image": null
+          }
+        },
+        "state": "accepted",
+        "pre_submit_revalidation": {
+          "fetched_at": "2026-10-19T23:11:09+00:00",
+          "calibration": "2026-10-19T15:07:33-07:00",
+          "calibration_fingerprint_sha256": {
+            "n21_orbit_rca": "9a48e60982d8c9f1d1f4f9395771ddf96dbec9ccafbc0a19302f83446ba4e4c3"
+          },
+          "capabilities": {
+            "num_qubits": 156,
+            "dynamic_circuits": true,
+            "operation_names": [
+              "cz",
+              "delay",
+              "id",
+              "if_else",
+              "measure",
+              "measure_2",
+              "measure_reset",
+              "measure_reset_2",
+              "reset",
+              "reset_2",
+              "rz",
+              "sx",
+              "x",
+              "xslow"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "excluded_qubits": 17,
+          "excluded_edges": 22
+        },
+        "budget_before": {
+          "instance_sha256_12": "e3de05b6901e",
+          "usage_period": {
+            "start_time": "2026-09-21T23:11:09.272Z",
+            "end_time": "2026-10-19T23:11:09.272Z"
+          },
+          "usage_limit_seconds": 600,
+          "usage_consumed_seconds": 429,
+          "usage_remaining_seconds": 171
+        }
+      }
+    ],
+    "jobs": [
+      {
+        "backend": "ibm_fez",
+        "kind": "dynamic",
+        "batch_index": 1,
+        "batch_count": 1,
+        "job_id": "dbba739gv2cc73e81dg0",
+        "members": [
+          "n21_spectator_immediate_x",
+          "n21_spectator_immediate_y",
+          "n21_spectator_idle_x",
+          "n21_spectator_idle_y",
+          "n21_spectator_idle_ground_x",
+          "n21_spectator_idle_ground_y"
+        ],
+        "pubs": [
+          {
+            "name": "ibm_fez_dynamic_pub_01",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 1263,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_immediate_x",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_02",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 1263,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_immediate_y",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_03",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_x",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_04",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_y",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_05",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_ground_x",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_06",
+            "backend": "ibm_fez",
+            "kind": "dynamic",
+            "target_gate_lower_bound_dt": 2099,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "components": [
+              {
+                "group": "n21_orbit_rca",
+                "member": "n21_spectator_idle_ground_y",
+                "reference": false,
+                "register_prefix": "g0_",
+                "physical_qubits": [
+                  136,
+                  142,
+                  143,
+                  144
+                ],
+                "registers_by_replica": [
+                  [
+                    "g0_r0_phase",
+                    "g0_r0_herald"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "qpy_archive_sha256": "77fd5a9f4a0f58a4f05c43f57e0a1b38f4e0bcd0ee78c17d23b1686fb954e899",
+        "calibrations": [
+          "2026-10-19T15:07:33-07:00"
+        ],
+        "recovery_tags": [
+          "gororoba-quantum",
+          "gororoba-run-cf813b5c53a2cf2829ce",
+          "gororoba-batch-455860d98ad3196d2a59cb6b"
+        ],
+        "budget_before": {
+          "instance_sha256_12": "e3de05b6901e",
+          "usage_period": {
+            "start_time": "2026-09-21T23:11:09.272Z",
+            "end_time": "2026-10-19T23:11:09.272Z"
+          },
+          "usage_limit_seconds": 600,
+          "usage_consumed_seconds": 429,
+          "usage_remaining_seconds": 171
+        },
+        "options": {
+          "default_shots": 8192,
+          "dynamical_decoupling": {
+            "enable": false,
+            "sequence_type": "XX",
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "skip_reset_qubits": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "rep_delay": 5e-05,
+            "scheduler_timing": true,
+            "stretch_values": false,
+            "meas_type": "classified"
+          },
+          "twirling": {
+            "enable_gates": null,
+            "enable_measure": null,
+            "group": "pauli",
+            "num_randomizations": "auto",
+            "shots_per_randomization": "auto",
+            "strategy": "active-accum"
+          },
+          "max_execution_time": 15,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "experimental": {},
+          "environment": {
+            "log_level": "WARNING",
+            "job_tags": [
+              "gororoba-quantum",
+              "gororoba-run-cf813b5c53a2cf2829ce",
+              "gororoba-batch-455860d98ad3196d2a59cb6b"
+            ],
+            "private": false,
+            "max_execution_time": null,
+            "image": null
+          }
+        },
+        "shots": 8192
+      }
+    ],
+    "complete": true,
+    "budget_reservation": {
+      "jobs": [
+        {
+          "backend": "ibm_fez",
+          "kind": "dynamic",
+          "batch_index": 1,
+          "pubs": 6,
+          "ceiling_seconds": 15
+        }
+      ],
+      "combined_ceiling_seconds": 15.0,
+      "reserve_seconds": 0.0,
+      "max_total_execution_seconds": 15.0,
+      "remaining_seconds": 171,
+      "admitted": true,
+      "reasons": [],
+      "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+    }
+  },
+  "approval_consumed": {
+    "consumed_at": "2026-10-19T23:11:09+00:00",
+    "run": "2026-10-19T23:10:43.083602+00:00"
+  }
+}
