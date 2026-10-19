@@ -125,9 +125,10 @@ arm on the ibm_fez layouts it was compiled for (43 to 44 and 47 to 48).
 | window_delay | control idles one readout length after reset | phase grows with the idle | phase unchanged | phase shrinks |
 | extra_readout | control read twice into the first bit | phase grows as for window_delay | phase grows beyond window_delay | phase unchanged |
 | window_echo | X on the work bits for 1 and 16 at each echo half | phase near zero | partial cancellation | phase unchanged |
+| window_delay_long | control idles two readout lengths after reset | phase grows with the idle | phase unchanged | phase shrinks |
 
-`n21_orbit_rca.py --between-arm RUN` evaluates three contracts fixed before
-any bracketed run, each at alpha 0.05 / 3, and only when every member's Z
+`n21_orbit_rca.py --between-arm RUN` evaluates five contracts fixed before
+any bracketed run, each at alpha 0.05 / 5, and only when every member's Z
 probes give one resolved coupling equal to the nominal feed-forward member's
 (a no-feedback member up to its global sign); otherwise each reports
 `not_admissible` with the differing members. window_delay's phase must lie on
@@ -135,7 +136,14 @@ the nominal pair's phase-per-exposure slope inside its profile-likelihood
 set; extra_readout's phase-free contrast magnitude
 hypot(fb1 - fb3, nf3 - nf1) must reach the nominal one times
 exp(-sum t_q / T2_q) over the added idle; window_echo's magnitude must reach
-the nominal one. T2 and the assignment rates come from the calibration in
+the nominal one; window_delay_ramp passes when window_delay_long's magnitude
+lies below window_delay's, a loss that grows with the window, and fails on a
+one-time step; spectator_window_dephasing passes when qubit 2's Ramsey
+visibility hypot(<X>, <Y>) across the measured control lies below a
+reset_only reference that idles the measure duration instead. The spectator
+members join no pair and no window coupling; with a herald they get their
+own admission over the spectator members, and twice the qubit-2 bit's
+simultaneous spread limit counts against the spectator pass. T2 and the assignment rates come from the calibration in
 force at each PUB's execution start, which `--collect` retains as
 `placed_qubit_calibration` in each member's `executed` entry; a run
 collected without it reads the plan-time values, and the report names the
@@ -160,16 +168,16 @@ An excitation of bit k moves a pair's contrast vector by at most c_k m with
 c = (2, 1, 2, 2) for the control and the work bits for 1, 4 and 16 (exact
 ideal laws), so a spread of at most B on every bit moves a magnitude
 contract's statistic by at most 2 x (1/4) x 7 B = 3.5 B. The magnitude
-contracts' minimum detectable deficit at power 0.8 is (z_(1 - 0.05/3) +
-z_0.8) / sqrt(n), 0.01786 at 27,648 shots, and B holds the shift to a
-quarter of it: B = 0.001276, and a work-phase shift of at most 7 B = 0.0089
+contracts' minimum detectable deficit at power 0.8 is (z_(1 - 0.05/5) +
+z_0.8) / sqrt(n), 0.01905 at 27,648 shots, and B holds the shift to a
+quarter of it: B = 0.001361, and a work-phase shift of at most 7 B = 0.0095
 rad. The run is herald-admissible unless a simultaneous Agresti-Caffo lower
 limit (alpha 0.05 over every bit and ordered member pair) of a member
 difference exceeds B times the qubit's readout contrast. The seeded
 operating characteristic (gate core-459) holds the level at spreads up to B
 and refuses at a 0.006 spread. At 27,648 shots and a 0.006 herald rate a
 member difference has standard error 0.00066 and the simultaneous quantile
-is 3.5, so the test resolves spreads above about B + 0.0023 = 0.0036; the
+is 3.5, so the test resolves spreads above about B + 0.0023 = 0.0037; the
 report states the contract shift the simultaneous upper limits leave
 possible. A refused or unevaluable herald reads every between-arm contract
 not_admissible, and the readout contract is not evaluable in an arm whose
