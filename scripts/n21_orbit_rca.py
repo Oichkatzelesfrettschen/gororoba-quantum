@@ -2290,6 +2290,55 @@ def _check_overlap_split() -> dict[str, str]:
     return verdicts
 
 
+def _check_ground_control_split() -> dict[str, str]:
+    """Planted truths reach the preregistered ground-control-split verdicts.
+
+    ZZ to the control (idle 0.6, idle_ground 0.98, immediate 0.99) passes
+    spectator_control_zz and fails spectator_ground_idle_dephasing;
+    intrinsic idle dephasing (idle and idle_ground 0.6, immediate 0.99)
+    fails the first and passes the second; no loss (every kind 0.99) fails
+    both. The planned ground-control-split names agree with the analyzer's,
+    and the split excludes the window sweep and the overlap split.
+    """
+    verdicts = {}
+    for label, truth, expected in (
+        ("control_zz", {"idle": 0.6, "idle_ground": 0.98, "immediate": 0.99}, ("pass", "fail")),
+        ("intrinsic_idle", {"idle": 0.6, "idle_ground": 0.6, "immediate": 0.99}, ("fail", "pass")),
+        ("null", {"idle": 0.99, "idle_ground": 0.99, "immediate": 0.99}, ("fail", "fail")),
+    ):
+        results = ground_contract_results(_split_spectator_reads(truth))
+        found = tuple(results[name]["status"] for name in GROUND_CONTRACTS)
+        if found != expected:
+            raise RuntimeError(f"the {label} truth reads {dict(zip(GROUND_CONTRACTS, found, strict=True))}")
+        verdicts[label] = ", ".join(f"{name} {status}" for name, status in zip(GROUND_CONTRACTS, found, strict=True))
+    if ground_contract_results(None)["spectator_control_zz"]["status"] != "not_evaluable":
+        raise RuntimeError("a ground-control contract evaluates without spectator members")
+    from diagnostic_experiments import n21_orbit_rca_group, n21_orbit_variants, n21_spectator_members
+
+    names = [member.name for member in n21_orbit_rca_group(415, 502, reset_dt=520, ground_control_split=True).members]
+    if (
+        names != list(GROUND_SPECTATOR_MEMBERS)
+        or n21_orbit_variants(ground_control_split=True) != ()
+        or n21_spectator_members(ground_control_split=True) != GROUND_SPECTATOR_MEMBERS
+        or record_shape(names) != "ground"
+        or record_shape(list(SPLIT_SPECTATOR_MEMBERS)) == "ground"
+    ):
+        raise RuntimeError(f"the analyzer's ground-control-split names differ from the planned members {names}")
+    for sweep, split, reset in ((True, False, 520), (False, True, 520), (False, False, None)):
+        try:
+            n21_orbit_rca_group(
+                415, 502, window_sweep=sweep, overlap_split=split, reset_dt=reset, ground_control_split=True
+            )
+        except ValueError:
+            continue
+        raise RuntimeError(
+            f"the ground-control split accepted window_sweep {sweep}, overlap_split {split}, reset_dt {reset}"
+        )
+    if not math.isclose(contract_alpha("ground"), FAMILY_ALPHA / 2):
+        raise RuntimeError("the ground-control per-contract alpha does not follow its two contracts")
+    return verdicts
+
+
 def self_check() -> None:
     """Recover a known work phase from exact expected counts and reject the depolarizing baseline."""
     _check_exact_laws()
@@ -2301,6 +2350,7 @@ def self_check() -> None:
     _check_between_arm()
     verdicts = _check_window_sweep()
     split_verdicts = _check_overlap_split()
+    ground_verdicts = _check_ground_control_split()
     readout = _readout(0.001, 0.006)
     truth = readout | {"round1": 0.1, "round2": 0.02, "phase_one": 0.5}
     counts = {
@@ -2325,7 +2375,7 @@ def self_check() -> None:
         "N=21 orbit RCA: exact laws, manifest binding, seeded static basins, piecewise window exposure, "
         "regeneration tolerance, between-arm contracts and admissibility, planted-phase recovery, "
         f"branch-window, and baseline rejection checks pass; window sweep truths read {verdicts}; "
-        f"overlap split truths read {split_verdicts}"
+        f"overlap split truths read {split_verdicts}; ground-control split truths read {ground_verdicts}"
     )
 
 
@@ -2584,7 +2634,17 @@ SPLIT_SPECTATOR_KINDS = ("immediate", "idle", "reset_only")
 SPLIT_SPECTATOR_MEMBERS = tuple(
     f"{SPECTATOR_PREFIX}{k}_{q}" for k in SPLIT_SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES
 )
-ALL_SPECTATOR_MEMBERS = (*SPECTATOR_MEMBERS, *(m for m in SPLIT_SPECTATOR_MEMBERS if m not in SPECTATOR_MEMBERS))
+# The ground-control split (n21_orbit_rca_group, ground_control_split) holds
+# no orbit pair and reads qubit 2 at once (immediate), across the idle with
+# the unrecorded control in |+> (idle), and across the same idle with the
+# control in |0> (idle_ground). A ZZ coupling to a control in |0> is a fixed
+# rotation of qubit 2, which leaves its X and Y visibility unchanged.
+GROUND_SPECTATOR_KINDS = ("immediate", "idle", "idle_ground")
+GROUND_SPECTATOR_MEMBERS = tuple(
+    f"{SPECTATOR_PREFIX}{k}_{q}" for k in GROUND_SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES
+)
+ALL_SPECTATOR_MEMBERS = tuple(dict.fromkeys((*SPECTATOR_MEMBERS, *SPLIT_SPECTATOR_MEMBERS, *GROUND_SPECTATOR_MEMBERS)))
+GROUND_CONTRACTS = ("spectator_control_zz", "spectator_ground_idle_dephasing")
 OVERLAP_BRACKETED = ("nominal", "window_delay")
 OVERLAP_UNBRACKETED = "window_delay_unbracketed"
 OVERLAP_PAIRS = (*OVERLAP_BRACKETED, OVERLAP_UNBRACKETED)
@@ -2617,12 +2677,30 @@ def overlap_split(names: list[str]) -> bool:
 # adds window_delay_long and the measured spectators and all five, and the
 # overlap split holds its own four.
 PLAIN_VARIANTS = tuple(variant for variant in ORBIT_VARIANTS if variant != "window_delay_long")
-SHAPE_CONTRACTS = {"plain": CONTRACTS[:3], "sweep": CONTRACTS, "split": OVERLAP_CONTRACTS}
-SHAPE_VARIANTS = {"plain": PLAIN_VARIANTS, "sweep": ORBIT_VARIANTS, "split": OVERLAP_BRACKETED}
+SHAPE_CONTRACTS = {
+    "plain": CONTRACTS[:3],
+    "sweep": CONTRACTS,
+    "split": OVERLAP_CONTRACTS,
+    "ground": GROUND_CONTRACTS,
+}
+SHAPE_VARIANTS: dict[str, tuple[str, ...]] = {
+    "plain": PLAIN_VARIANTS,
+    "sweep": ORBIT_VARIANTS,
+    "split": OVERLAP_BRACKETED,
+    "ground": (),
+}
+
+
+def ground_control_split(names: list[str]) -> bool:
+    """Whether a record's members form the ground-control split: an idle_ground spectator is present."""
+    return any(name.startswith(f"{SPECTATOR_PREFIX}idle_ground_") for name in names)
 
 
 def record_shape(names: list[str]) -> str:
-    """split with an unbracketed orbit arm, sweep with window_delay_long or a measured spectator, else plain."""
+    """ground with an idle_ground spectator, split with an unbracketed orbit arm, sweep with
+    window_delay_long or a measured spectator, else plain."""
+    if ground_control_split(names):
+        return "ground"
     if overlap_split(names):
         return "split"
     if any(name.startswith(orbit_pair("window_delay_long") + "_") or name in SPECTATOR_MEMBERS for name in names):
@@ -3011,8 +3089,9 @@ def immediate_visibility(spectators: dict[str, dict[str, np.ndarray]] | None) ->
 def spectator_counts(run: Path) -> dict[str, dict[str, np.ndarray]] | None:
     """Per spectator kind and quadrature, counts over control + 2 * qubit-2 bit; None without spectator members.
 
-    The kinds present must be the window sweep's (SPECTATOR_KINDS) or the
-    overlap split's (SPLIT_SPECTATOR_KINDS), each in both quadratures.
+    The kinds present must be the window sweep's (SPECTATOR_KINDS), the
+    overlap split's (SPLIT_SPECTATOR_KINDS) or the ground-control split's
+    (GROUND_SPECTATOR_KINDS), each in both quadratures.
     """
     members = [member["name"] for member in _group(run)["members"]]
     if not set(ALL_SPECTATOR_MEMBERS) & set(members):
@@ -3024,12 +3103,16 @@ def spectator_counts(run: Path) -> dict[str, dict[str, np.ndarray]] | None:
         kind, quadrature = name.removeprefix("n21_spectator_").rsplit("_", 1)
         tally = Counter(int(value[1]) + 2 * int(value[0]) for value in payload["registers"][REGISTER]["bitstrings"])
         found.setdefault(kind, {})[quadrature] = np.array([tally[label] for label in range(4)], dtype=float)
-    kinds = SPLIT_SPECTATOR_KINDS if {"immediate", "idle"} & set(found) else SPECTATOR_KINDS
+    kinds: tuple[str, ...]
+    expected: tuple[str, ...]
+    if "idle_ground" in found:
+        kinds, expected = GROUND_SPECTATOR_KINDS, GROUND_SPECTATOR_MEMBERS
+    elif {"immediate", "idle"} & set(found):
+        kinds, expected = SPLIT_SPECTATOR_KINDS, SPLIT_SPECTATOR_MEMBERS
+    else:
+        kinds, expected = SPECTATOR_KINDS, SPECTATOR_MEMBERS
     if set(found) != set(kinds) or any(set(found[kind]) != set(SPECTATOR_QUADRATURES) for kind in kinds):
-        raise RuntimeError(
-            f"the record holds spectator members {sorted(found)}, not all of "
-            f"{SPLIT_SPECTATOR_MEMBERS if kinds == SPLIT_SPECTATOR_KINDS else SPECTATOR_MEMBERS}"
-        )
+        raise RuntimeError(f"the record holds spectator members {sorted(found)}, not all of {expected}")
     return found
 
 
@@ -3465,6 +3548,77 @@ def overlap_contract_results(
     }
 
 
+def ground_contract_results(
+    spectators: dict[str, dict[str, np.ndarray]] | None, spectator_herald_margin: float = 0.0
+) -> dict[str, dict[str, Any]]:
+    """Every ground-control-split contract's status and deciding numbers, each at contract_alpha("ground").
+
+    spectator_control_zz passes when qubit 2's idle visibility, with the
+    unrecorded control in |+>, lies below its idle_ground visibility, with
+    the control in |0>: a ZZ coupling to the control averages two phases
+    over the unrecorded control state and dephases qubit 2, while a control
+    in |0> turns the same coupling into one fixed rotation that the X and Y
+    visibility does not see, so a pass names control-state-dependent
+    dephasing. spectator_ground_idle_dephasing passes when the idle_ground
+    visibility lies below the immediate one: qubit 2 dephases across the
+    idle with the control static, its own T2* and any coupling to a qubit
+    the split does not hold in a fixed state. spectator_herald_margin
+    counts against both passes.
+    """
+    alpha = contract_alpha("ground")
+    return {
+        "spectator_control_zz": spectator_decline(spectators, "idle", "idle_ground", alpha, spectator_herald_margin),
+        "spectator_ground_idle_dephasing": spectator_decline(
+            spectators, "idle_ground", "immediate", alpha, spectator_herald_margin
+        ),
+    }
+
+
+def ground_report(run: Path) -> dict[str, Any]:
+    """The between-arm report of a ground-control split: spectator counts and its two contracts.
+
+    The split holds no orbit pair, so admissibility asks only that every
+    GROUND_SPECTATOR_MEMBERS member is present (spectator_counts raises on
+    a partial set), and the spectator herald alone gates the contracts.
+    """
+    names = contract_names("ground")
+    alpha = contract_alpha("ground")
+    members = [member["name"] for member in _group(run)["members"]]
+    calibrations = execution_calibration(run)
+    missing = [name for name in GROUND_SPECTATOR_MEMBERS if name not in members]
+    admitted = {"admissible": not missing, "differing": {}, "unresolved": {}, "missing": missing}
+    report: dict[str, Any] = {
+        "schema_version": BETWEEN_ARM_SCHEMA,
+        "analyzer_sha256": analyzer_sha256(),
+        "calibration": {
+            name: {"source": entry["source"], "calibration": entry["calibration"]}
+            for name, entry in calibrations.items()
+        },
+        "herald": {"present": False},
+        "spectator_herald": herald_report(run, calibrations, lambda name: name in ALL_SPECTATOR_MEMBERS, alpha),
+        "alpha": {
+            "family_alpha": FAMILY_ALPHA,
+            "split": "Bonferroni",
+            "contracts": len(names),
+            "per_contract_alpha": alpha,
+        },
+        "admissibility": admitted,
+    }
+    gated = contract_gate(admitted, report["spectator_herald"], names)
+    if gated is not None:
+        report["contracts"] = gated
+        return report
+    spectators = spectator_counts(run)
+    report["contracts"] = ground_contract_results(spectators, spectator_margin(report["spectator_herald"]))
+    if spectators is not None:
+        report["spectator_counts"] = {
+            kind: {quadrature: values.astype(int).tolist() for quadrature, values in reads.items()}
+            for kind, reads in spectators.items()
+        }
+        report["spectator_immediate_visibility"] = immediate_visibility(spectators)
+    return report
+
+
 def arm_t2_us(run: Path, variant: str = "extra_readout") -> dict[str, dict[int, float]]:
     """Per arm, T2 in microseconds of each placed qubit at the variant member's calibration.
 
@@ -3741,8 +3895,10 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
     the herald does not admit reads every contract not_admissible
     (herald_refusal).
     """
-    roles = window_roles(run)
     shape = record_shape([member["name"] for member in _group(run)["members"]])
+    if shape == "ground":
+        return ground_report(run)
+    roles = window_roles(run)
     split = shape == "split"
     names = contract_names(shape)
     alpha = contract_alpha(shape)
