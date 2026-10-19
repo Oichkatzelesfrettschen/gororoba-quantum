@@ -150,6 +150,24 @@ collected without it reads the plan-time values, and the report names the
 source per member. The report also records the analyzer's sha256, and
 `--expected-analyzer-sha256 HEX` refuses any other analyzer.
 
+`--overlap-split` (with `--pin-layout`; policy and family configuration bind
+it, the configuration with the control's `reset_dt`) replaces the window
+sweep with ten members: the nominal pair, the same pair without its window
+barriers (`n21_orbit_unbracketed_*`, whose compiled multipliers may play a
+work-qubit CZ during the control's readout), and qubit-2 spectators read at
+once (`immediate`), across an idle of measure plus reset durations with no
+reset (`idle`), and across the `reset_only` reference, each in X and Y. The
+immediate and idle spectators reset the control after qubit 2's readout, so
+the group stays one dynamic job (gate core-593). The analyzer reads the
+configuration from the members present and evaluates three contracts at
+0.05 / 3: window_overlap_loss passes when the unbracketed magnitude lies below
+the nominal one, spectator_readout_dephasing when the reset_only visibility
+lies below the idle one, and spectator_idle_dephasing when the idle
+visibility lies below the immediate one; the immediate visibility is reported
+against the ideal 1 and decides nothing. Admissibility reads the nominal pair
+alone, since the magnitude removes the work phase that an unbracketed
+coupling would change.
+
 `--init-herald` (policy and family configuration bind it) measures every
 qubit into a `herald` register before the program, then a barrier over all
 qubits. The phase register keeps clbits 0 and 1, so the ideal law, weights
