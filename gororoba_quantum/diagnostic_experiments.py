@@ -26,6 +26,7 @@ from qpe_diagnostics import (
     N21_ORBIT_VARIANTS,
     N21_SPECTATOR_KINDS,
     N21_SPECTATOR_QUADRATURES,
+    N21_SPECTATOR_SPLIT_KINDS,
     folded_diagnostic,
     folded_ideal,
     folded_terminal_weights,
@@ -373,20 +374,40 @@ _N21_WEIGHTS = (0.5, 1.0, 0.5, 0.0)
 _SPECTATOR_ONE = (0.0, 0.0, 1.0, 1.0)
 
 
-def n21_orbit_variants(window_sweep: bool = False) -> tuple[str, ...]:
-    """The orbit window variants of n21-orbit-rca; window_sweep adds window_delay_long."""
+# The overlap split pairs the bracketed nominal arm with the same program
+# without its window barriers (qpe_diagnostics variant nominal_unbarriered).
+N21_OVERLAP_PAIRS = ("nominal", "unbracketed")
+_N21_PAIR_BUILDS = {"unbracketed": "nominal_unbarriered"}
+
+
+def n21_orbit_variants(window_sweep: bool = False, overlap_split: bool = False) -> tuple[str, ...]:
+    """The orbit pairs of n21-orbit-rca; window_sweep adds window_delay_long, overlap_split names its two pairs."""
+    if overlap_split:
+        return N21_OVERLAP_PAIRS
     return (*N21_ORBIT_VARIANTS, *(N21_ORBIT_SWEEP_VARIANTS if window_sweep else ()))
 
 
-def n21_spectator_members() -> tuple[str, ...]:
+def n21_spectator_kinds(overlap_split: bool = False) -> tuple[str, ...]:
+    """Spectator kinds of a configuration: the window sweep's, or the overlap split's."""
+    return N21_SPECTATOR_SPLIT_KINDS if overlap_split else N21_SPECTATOR_KINDS
+
+
+def n21_spectator_members(overlap_split: bool = False) -> tuple[str, ...]:
     """Member names of the spectator Ramsey arms, kind-major."""
     return tuple(
-        f"n21_spectator_{kind}_{quadrature}" for kind in N21_SPECTATOR_KINDS for quadrature in N21_SPECTATOR_QUADRATURES
+        f"n21_spectator_{kind}_{quadrature}"
+        for kind in n21_spectator_kinds(overlap_split)
+        for quadrature in N21_SPECTATOR_QUADRATURES
     )
 
 
 def n21_orbit_rca_group(
-    window_delay_dt: int, echo_half_dt: int, init_herald: bool = False, window_sweep: bool = False
+    window_delay_dt: int,
+    echo_half_dt: int,
+    init_herald: bool = False,
+    window_sweep: bool = False,
+    overlap_split: bool = False,
+    reset_dt: int | None = None,
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -409,8 +430,20 @@ def n21_orbit_rca_group(
     reset_only reference idles window_delay_dt, the control's calibrated
     measure duration (qpu_planning.window_durations), in place of the
     measurement. Every member is dynamic, so the group runs as one job.
+
+    overlap_split replaces the group with ten members: the nominal pair, the
+    unbracketed pair (the same program without the window barriers, so the
+    compiler may play work-qubit gates during the control's readout), and
+    the immediate, idle and reset_only spectators in X and Y; idle idles
+    window_delay_dt + reset_dt, the control's calibrated measure and reset
+    durations. It excludes window_sweep.
     """
-    variants = n21_orbit_variants(window_sweep)
+    if overlap_split and window_sweep:
+        raise ValueError("overlap_split and window_sweep are separate n21-orbit-rca configurations")
+    if overlap_split and (type(reset_dt) is not int or reset_dt <= 0):
+        raise ValueError("overlap_split requires a positive integer reset_dt from calibration")
+    variants = n21_orbit_variants(window_sweep, overlap_split)
+    spectating = window_sweep or overlap_split
     clbits = N21_ORBIT_HERALDED_CLBITS if init_herald else 2
 
     def lifted(values: Any) -> np.ndarray:
@@ -420,7 +453,11 @@ def n21_orbit_rca_group(
         Member(
             f"n21_orbit_{variant}_{'feedback' if feedback else 'no_feedback'}",
             n21_orbit_diagnostic(
-                feedback, variant, window_delay_dt=window_delay_dt, echo_half_dt=echo_half_dt, init_herald=init_herald
+                feedback,
+                _N21_PAIR_BUILDS.get(variant, variant),
+                window_delay_dt=window_delay_dt,
+                echo_half_dt=echo_half_dt,
+                init_herald=init_herald,
             ),
             (
                 lift_phase_law(n21_labeled_law(feedback), clbits)
@@ -432,11 +469,13 @@ def n21_orbit_rca_group(
         for variant in variants
         for feedback in (True, False)
     )
-    if window_sweep:
+    if spectating:
         members += tuple(
             Member(
                 f"n21_spectator_{kind}_{quadrature}",
-                n21_spectator_ramsey(kind, quadrature, measure_dt=window_delay_dt, init_herald=init_herald),
+                n21_spectator_ramsey(
+                    kind, quadrature, measure_dt=window_delay_dt, reset_dt=reset_dt, init_herald=init_herald
+                ),
                 (
                     lift_phase_law(n21_spectator_law(kind, quadrature), clbits)
                     if init_herald
@@ -444,7 +483,7 @@ def n21_orbit_rca_group(
                 ),
                 weights=lifted(_SPECTATOR_ONE),
             )
-            for kind in N21_SPECTATOR_KINDS
+            for kind in n21_spectator_kinds(overlap_split)
             for quadrature in N21_SPECTATOR_QUADRATURES
         )
 
@@ -456,8 +495,8 @@ def n21_orbit_rca_group(
             result[f"{variant}_feedback_signed_contrast"] = float(primary[1] - primary[3])
             result[f"{variant}_no_feedback_signed_contrast"] = float(control[1] - control[3])
             result[f"{variant}_contrast_difference"] = float(primary[1] - primary[3] - control[1] + control[3])
-        if window_sweep:
-            for kind in N21_SPECTATOR_KINDS:
+        if spectating:
+            for kind in n21_spectator_kinds(overlap_split):
                 expectations = []
                 for quadrature in N21_SPECTATOR_QUADRATURES:
                     law = phase_marginal(distributions[f"n21_spectator_{kind}_{quadrature}"])
@@ -514,13 +553,14 @@ def family_contracts(
 
         return coherence_contracts(precision, alpha, power)
     if family == "n21-orbit-rca":
-        # One directional endpoint per orbit variant and, with window_sweep,
-        # one precision-only endpoint per spectator member share the requested
-        # family-wise alpha. A heralded member scores its phase label whatever
+        # One directional endpoint per orbit pair and, with window_sweep or
+        # overlap_split, one precision-only endpoint per spectator member
+        # share the requested family-wise alpha. A heralded member scores its phase label whatever
         # the herald read.
         heralded = bool((configuration or {}).get("init_herald"))
-        variants = n21_orbit_variants(bool((configuration or {}).get("window_sweep")))
-        spectators = n21_spectator_members() if (configuration or {}).get("window_sweep") else ()
+        split = bool((configuration or {}).get("overlap_split"))
+        variants = n21_orbit_variants(bool((configuration or {}).get("window_sweep")), split)
+        spectators = n21_spectator_members(split) if (configuration or {}).get("window_sweep") or split else ()
 
         def scored(values: tuple[float, ...]) -> tuple[float, ...]:
             return (
@@ -631,6 +671,8 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 int(family["echo_half_dt"]),
                 bool(family.get("init_herald", False)),
                 bool(family.get("window_sweep", False)),
+                bool(family.get("overlap_split", False)),
+                int(family["reset_dt"]) if "reset_dt" in family else None,
             )
         ]
     if family.get("name") in N21_FAMILIES:

@@ -11,6 +11,7 @@ import copy
 import json
 import math
 import threading
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from pathlib import Path
@@ -73,14 +74,15 @@ def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
-    state-prep arm selection, the n21-orbit-rca initialization herald and
-    its pinned layout join them only when given, so a plan without them keeps its settings
+    state-prep arm selection, the n21-orbit-rca initialization herald, its
+    overlap split and its pinned layout join them only when given, so a plan without them keeps its settings
     unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
     arms = getattr(args, "state_prep_arms", None)
     herald = {"init_herald": True} if getattr(args, "init_herald", False) else {}
+    split = {"overlap_split": True} if getattr(args, "overlap_split", False) else {}
     pin = getattr(args, "pin_layout", None)
     return (
         {
@@ -112,6 +114,7 @@ def settings(args: Any) -> dict[str, Any]:
         | bernstein
         | ({"state_prep_arms": list(arms)} if arms is not None else {})
         | herald
+        | split
         | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
     )
 
@@ -198,6 +201,24 @@ def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = N
     reset, so the second X precedes the second round and no tail of the window
     stays unechoed.
     """
+    longest, rounded, dt = _longest_window_dt(runtime, snapshot, controls)
+    return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), dt
+
+
+def reset_window_dt(runtime: Any, snapshot: Any, controls: list[int] | None = None) -> int:
+    """The control's reset length in dt, rounded up to granularity, over the sites window_durations reads.
+
+    The overlap split's idle spectator idles the measure plus this reset
+    length in place of both.
+    """
+    longest, rounded, _dt = _longest_window_dt(runtime, snapshot, controls)
+    return rounded(longest["reset"])
+
+
+def _longest_window_dt(
+    runtime: Any, snapshot: Any, controls: list[int] | None
+) -> tuple[dict[str, float], Callable[[float], int], float]:
+    """Slowest measure and reset in dt over controls (every qubit when None), a granularity rounding and dt."""
     target = snapshot.backend.target
     granularity = max(1, int(target.granularity))
     longest = {}
@@ -221,7 +242,7 @@ def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = N
     def rounded(value: float) -> int:
         return granularity * math.ceil(value / granularity)
 
-    return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
+    return longest, rounded, float(target.dt)
 
 
 def control_sites(runtime: Any, isas: list[Any]) -> list[tuple[tuple[str, int], ...]]:
@@ -268,7 +289,9 @@ def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     return sorted(window)
 
 
-def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]) -> tuple[Any, dict[str, Any]]:
+def _control_windows(
+    runtime: Any, candidate: Any, bound: tuple[int, int, float], reset_bound: int | None = None
+) -> tuple[Any, dict[str, Any]]:
     """Resize one routed window candidate to its control's own measure and reset durations.
 
     The candidate was routed with the backend-wide bound. The windows come
@@ -276,18 +299,27 @@ def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]
     same windows, the routed candidate stands; otherwise every arm rebuilds
     with them and recompiles on the same seed and initial layout, and each
     recompiled arm must keep its ordered measure and reset sites.
+    reset_bound, the backend-wide reset length of an overlap split
+    (reset_window_dt), resizes to the control's own reset with the windows
+    and enters them as reset_dt.
     """
     sites = control_sites(runtime, candidate.isas)
     controls = window_controls(orbit_sites(sites, candidate.group.members))
     window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
-    windows = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
-    if (window_dt, half_dt) == bound[:2]:
+    windows: dict[str, Any] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
+    split = reset_bound is not None
+    reset_dt = reset_window_dt(runtime, candidate.snap, controls) if split else None
+    if split:
+        windows["reset_dt"] = reset_dt
+    if (window_dt, half_dt) == bound[:2] and reset_dt == reset_bound:
         return candidate, windows
     group = n21_orbit_rca_group(
         window_dt,
         half_dt,
         has_herald(candidate.group.members[0].circuit),
-        any(member.name.startswith("n21_spectator_") for member in candidate.group.members),
+        not split and any(member.name.startswith("n21_spectator_") for member in candidate.group.members),
+        overlap_split=split,
+        reset_dt=reset_dt,
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -751,13 +783,19 @@ def family_candidates(
             # A pinned layout compiles every arm from the named qubits and
             # keeps the identity replica, so the replica search cannot
             # permute the roles.
+            # The overlap split replaces the window sweep and needs the
+            # control's reset length beside the window durations.
             pin = getattr(args, "pin_layout", None)
+            split = bool(getattr(args, "overlap_split", False))
             for snapshot in snapshots:
                 local: dict[str, Any] = {}
                 try:
                     pinned = None if pin is None else pinned_orbit_layout(runtime, snapshot, pin)
                     bound = window_durations(runtime, snapshot)
-                    group = n21_orbit_rca_group(bound[0], bound[1], herald, window_sweep=True)
+                    reset_bound = reset_window_dt(runtime, snapshot) if split else None
+                    group = n21_orbit_rca_group(
+                        bound[0], bound[1], herald, window_sweep=not split, overlap_split=split, reset_dt=reset_bound
+                    )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
                     trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
@@ -765,7 +803,7 @@ def family_candidates(
                 trace.setdefault(group.name, {}).update(local.get(group.name, {}))
                 for placement in placed:
                     try:
-                        choice, window = _control_windows(runtime, placement, bound)
+                        choice, window = _control_windows(runtime, placement, bound, reset_bound)
                         if pinned is not None:
                             if moved := pinned_roles_violations(runtime, choice, pinned):
                                 raise runtime.LiveRunError("; ".join(moved))
@@ -827,7 +865,13 @@ def family_candidates(
                                 "replica_cap": cap,
                                 **windows.get(id(candidate), {}),
                                 **({"init_herald": True} if herald else {}),
-                                **({"window_sweep": True} if args.family == "n21-orbit-rca" else {}),
+                                **(
+                                    {"overlap_split": True}
+                                    if getattr(args, "overlap_split", False)
+                                    else {"window_sweep": True}
+                                    if args.family == "n21-orbit-rca"
+                                    else {}
+                                ),
                             },
                         )
                     )

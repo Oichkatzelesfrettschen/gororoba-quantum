@@ -5995,6 +5995,13 @@ def main(argv: list[str] | None = None) -> int:
         help="n21-orbit-rca: measure every qubit into a herald register before the program, a per-member "
         "initial-excitation reading beside the unchanged labeled law; the policy and family configuration bind it",
     )
+    parser.add_argument(
+        "--overlap-split",
+        action="store_true",
+        help="n21-orbit-rca with --pin-layout: plan the nominal pair, the same pair without window barriers, and "
+        "immediate, idle and reset_only qubit-2 spectators in place of the window sweep; the policy and family "
+        "configuration bind it",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -6231,6 +6238,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--pin-layout applies to the n21-orbit-rca family only")
     if args.init_herald and args.family != "n21-orbit-rca":
         parser.error("--init-herald applies to the n21-orbit-rca family only")
+    if args.overlap_split and args.family != "n21-orbit-rca":
+        parser.error("--overlap-split applies to the n21-orbit-rca family only")
+    if args.overlap_split and args.pin_layout is None:
+        parser.error("--overlap-split requires --pin-layout: the split compares arms on fixed roles")
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":

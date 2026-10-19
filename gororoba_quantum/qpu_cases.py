@@ -318,6 +318,9 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if "init_herald" in design:
         _require(design["init_herald"] is True, "init_herald is recorded only when set")
         arguments.append("--init-herald")
+    if "overlap_split" in design:
+        _require(design["overlap_split"] is True, "overlap_split is recorded only when set")
+        arguments.append("--overlap-split")
     if "pin_layout" in design:
         pin = design["pin_layout"]
         _require(
@@ -1785,6 +1788,17 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_sweep")
+            else []
+        ),
+        *(
+            [
+                "--overlap-split replaces the window sweep with the nominal pair, the same pair without its window "
+                "barriers, so a work-qubit CZ may overlap the control's readout, and qubit-2 spectators read at "
+                "once, after an idle of the control's measure plus reset durations (window_delay_dt + reset_dt), "
+                "and across the reset_only reference.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("overlap_split")
             else []
         ),
         *(
