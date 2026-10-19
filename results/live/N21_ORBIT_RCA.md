@@ -150,6 +150,36 @@ against 65.42 on 4 without detuning, with five parameters on six cells.
    its reported T2 as a Hahn-echo value, which an unechoed window does not
    follow.
 
+## Contract forecast on the pre-barrier run
+
+083417 fails admissibility (`admissibility`): the no-feedback members leave
+the relative sign of 136 and 144 unresolved, and the window_echo members
+couple with signs opposite to the reference. The magnitude contracts below
+evaluate it anyway, as a forecast for a barrier-equalized run on this patch
+and not as a contract verdict; at alpha 0.0167 each:
+
+| Contract | Statistic | Standard error at 4096 / 27648 shots | Forecast |
+|---|---:|---|---|
+| extra_readout_contrast (T2 bound 0.127) | -0.057 | 0.015 / 0.006 | fails: magnitude 0.070 |
+| window_delay magnitude against nominal (bound 1) | -0.048 | 0.015 / 0.006 | fails: magnitude 0.081 |
+| window_echo_restoration | +0.015 | 0.015 / 0.006 | passes, on members whose couplings differ from the reference |
+
+`contrast_magnitude` is the hypot of the two signed contrasts, so a static
+detuning, and ZZ coupling among the work qubits (a constant phase on each
+one-hot branch), leave it unchanged. The forecast loss of about 45 percent
+over 415 dt is decoherence: the reported T2 predicts 2 percent, and the
+product-state Ramsey of PATCH_WINDOW_FINDINGS.md (R 0.88 and 0.92 at
+7.6 us on 136 and 144) predicts less than the delay arm shows. Two
+candidates remain and the next acquisition separates them:
+
+- Qubit 143, the control's neighbor, which carries the orbit amplitude for
+  residue 4 and sat in |0> in every product probe, dephases during and after
+  the control's readout: a 143 Ramsey decays faster across a measured
+  control than across a reset-only reference, and the orbit magnitude falls
+  monotonically with added window length.
+- The control's state after reset is imperfect: the orbit magnitude falls
+  by one step at the first added window and stays flat as it grows.
+
 ## Mitigation
 
 The explicit delay-X-delay-X echo survives transpilation (planning contract)
