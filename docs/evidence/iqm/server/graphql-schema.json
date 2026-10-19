@@ -1,0 +1,5306 @@
+{
+  "__schema": {
+    "mutationType": {
+      "name": "Mutation"
+    },
+    "queryType": {
+      "name": "Query"
+    },
+    "types": [
+      {
+        "description": "The value type for the `access_info` directive, providing information about\nthe authorization requirements of the object or field it is applied to.\n\nThe shape of this type is unstable: fields may be added, renamed, or removed\nat any time, with no backwards-compatibility guarantee.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "defaultValue": null,
+            "description": "Authentication requirements satisfying the guard. Any one of them is\nenough to grant access.\n\nMost entries are access token scope names. Two are markers rather than\nscopes you can pick: `authenticated`, where the chosen scopes do\nnot matter, and `system_admin`, which only system administration tokens\ncan meet.",
+            "name": "requirements",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null
+                }
+              }
+            }
+          },
+          {
+            "defaultValue": null,
+            "description": "Optional note about access rules that the entries cannot express on\ntheir own.",
+            "name": "comment",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "name": "AccessInfo"
+      },
+      {
+        "description": "Account a user can be authenticated to \u2014 organization, team, or personal.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the account.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Display name of the account.",
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Kind of account: personal, organization, or team.",
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "AccountType",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "INTERFACE",
+        "name": "Account"
+      },
+      {
+        "description": "A user's membership in an account (organization, team, or personal), including their role.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Identifier of the underlying user \u2014 the member's user id.",
+            "isDeprecated": false,
+            "name": "userId",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Full name of the member.",
+            "isDeprecated": false,
+            "name": "fullName",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Email address of the member.",
+            "isDeprecated": false,
+            "name": "email",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The member's role in this account.",
+            "isDeprecated": false,
+            "name": "role",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "AccountRole",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the user was invited to this account.",
+            "isDeprecated": false,
+            "name": "invitedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Account where this member belongs to",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Optional filters applied to the member's jobs",
+                "name": "filters",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "JobFilters",
+                  "ofType": null
+                }
+              },
+              {
+                "defaultValue": "1",
+                "description": "1-based page number",
+                "name": "page",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "10",
+                "description": "Number of items per page",
+                "name": "pageSize",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Member's jobs",
+            "isDeprecated": false,
+            "name": "jobs",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedJobList",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "AccountMember"
+      },
+      {
+        "description": "The role of a user within an account (organization or team).",
+        "enumValues": [
+          {
+            "description": "Full management access to the account.",
+            "isDeprecated": false,
+            "name": "ADMINISTRATOR"
+          },
+          {
+            "description": "Can manage jobs and schedules but cannot manage members.",
+            "isDeprecated": false,
+            "name": "SCHEDULER"
+          },
+          {
+            "description": "Basic user of the system, can submit jobs and manage own profile.",
+            "isDeprecated": false,
+            "name": "USER"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "AccountRole"
+      },
+      {
+        "description": "Kind of account: personal, organization, or team.",
+        "enumValues": [
+          {
+            "description": "A personal account belonging to a single user.",
+            "isDeprecated": false,
+            "name": "PERSONAL"
+          },
+          {
+            "description": "An organization account grouping multiple users and teams.",
+            "isDeprecated": false,
+            "name": "ORGANIZATION"
+          },
+          {
+            "description": "A team subgroup within an organization.",
+            "isDeprecated": false,
+            "name": "TEAM"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "AccountType"
+      },
+      {
+        "description": "The `Boolean` scalar type represents `true` or `false`.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "Boolean"
+      },
+      {
+        "description": "A credit balance held by an account. Balances are rendered as decimal strings\n(for example `\"1234.56\"`).",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Id of the account this credit belongs to.",
+            "isDeprecated": false,
+            "name": "accountId",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Remaining balance, as a decimal string. Expired credits report their\nstored balance here even though they count as zero when spending.",
+            "isDeprecated": false,
+            "name": "currentBalance",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Time the credit expires. Once passed, the balance can no longer be spent.",
+            "isDeprecated": false,
+            "name": "expiresAt",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "Credit"
+      },
+      {
+        "description": "An amount of account credits, exchanged as a decimal string with at most two fraction digits (for example `\"1234.56\"`). Amounts are strings rather than numbers so that no decimal precision is lost in transit.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "CreditAmount"
+      },
+      {
+        "description": "The two credits affected by a credit transfer, after the transfer completed.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The source account's credit after the transfer.",
+            "isDeprecated": false,
+            "name": "from",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Credit",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The destination account's credit after the transfer.",
+            "isDeprecated": false,
+            "name": "to",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Credit",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "CreditTransferResult"
+      },
+      {
+        "description": "The authenticated subject making the request, exposing their profile and current account context.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account the subject's session is currently bound to, or `null` when\nthe subject is not scoped to any account.",
+            "isDeprecated": false,
+            "name": "currentAccount",
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Account",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The authenticated user's profile.",
+            "isDeprecated": false,
+            "name": "profile",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "CurrentSubject"
+      },
+      {
+        "description": "Input/Output is an RFC3339 string, for example `2025-06-01T10:00:00Z` or `2025-01-01T00:00:00+02:00`.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "DateTime"
+      },
+      {
+        "description": "Outcome of `deleteTeam`: either the team was deleted\n([`TeamDeletionResult`](#type:TeamDeletionResult)) or the supplied checksum\nwas stale\n([`TeamDeletionChecksumMismatch`](#type:TeamDeletionChecksumMismatch)).",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "UNION",
+        "name": "DeleteTeamResult"
+      },
+      {
+        "description": "An account that has been deleted.\n\nReturned in place of a personal or team account that no longer exists, so\nthat references to it \u2014 such as the owner of a past job \u2014 still resolve.\nOnly the account's original id and type remain available; the name is always\n\"Deleted account\" and no other details are exposed.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the account, unchanged from before it was deleted.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Display name of the account. Always \"Deleted account\".",
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Kind of account that was deleted: personal, organization, or team.",
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "AccountType",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "DeletedAccount"
+      },
+      {
+        "description": "A member invitation that could not be sent.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Email address for which the invitation failed.",
+            "isDeprecated": false,
+            "name": "email",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Human-readable reason the invitation could not be sent.",
+            "isDeprecated": false,
+            "name": "error",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "FailedInvite"
+      },
+      {
+        "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "Float"
+      },
+      {
+        "description": "A user who was a member of an account but no longer is \u2014 their membership\nwas removed, or their user account was deleted.\n\nReturned in place of an [`AccountMember`](#type:AccountMember) so a reference\nto the former member still resolves. Only the identifier remains \u2014 matching\nthe underlying user and the former membership \u2014 no name, email, or role is\navailable.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Identifier of the underlying user \u2014 the former member's user id.",
+            "isDeprecated": false,
+            "name": "userId",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "FormerMember"
+      },
+      {
+        "description": null,
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "ID"
+      },
+      {
+        "description": "A time interval bounded by a start and end timestamp.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "defaultValue": null,
+            "description": "Start of the interval, included.",
+            "name": "start",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "defaultValue": null,
+            "description": "End of the interval, excluded.",
+            "name": "end",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "name": "InputTimeRange"
+      },
+      {
+        "description": "The `Int` scalar type represents non-fractional whole numeric values.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "Int"
+      },
+      {
+        "description": "Summary of a batch member invitation operation.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Invitations that were created successfully.",
+            "isDeprecated": false,
+            "name": "successfulInvites",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INTERFACE",
+                    "name": "SuccessfulInvite"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Invitations that could not be sent.",
+            "isDeprecated": false,
+            "name": "failedInvites",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "FailedInvite"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "InviteSummary"
+      },
+      {
+        "description": "A quantum job submitted by a user, including its status, execution details and produced artifacts.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Job ID",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The time when the job was created in the system (submitted by the user).",
+            "isDeprecated": false,
+            "name": "createdAt",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The time when the job reached its final state (if applicable).",
+            "isDeprecated": false,
+            "name": "finishedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": "Use `metrics.runtimeSeconds` instead.",
+            "description": "Total runtime of the job in seconds (compilation and execution), if known.",
+            "isDeprecated": true,
+            "name": "runtimeSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Runtime the quantum computer estimated for this job during validation, in\nseconds. Available before the job has run, so it can stand in for\n`runtimeSeconds` while the job is still queued or executing. Null when the\nquantum computer has not reported an estimate.",
+            "isDeprecated": false,
+            "name": "runtimeEstimateSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Timing and billing metrics recorded for the job. The individual metrics\nare null until they have been recorded, so they are typically available\nonly for finished jobs.",
+            "isDeprecated": false,
+            "name": "metrics",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "JobMetrics",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The time when the job was submitted to the quantum computer, if applicable.",
+            "isDeprecated": false,
+            "name": "submittedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Kind of the job",
+            "isDeprecated": false,
+            "name": "kind",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "JobKind",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Free-form job type identifier (e.g. `\"circuit\"`, `\"sweep\"`).",
+            "isDeprecated": false,
+            "name": "jobType",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Current status of the job",
+            "isDeprecated": false,
+            "name": "status",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "JobStatus",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Reason the job failed, safe to show to the person who submitted it.\nFailures caused by an internal problem are reported as a generic message\ninstead of the underlying error. Null for jobs that have not failed, and\nfor failed jobs whose data has been deleted.",
+            "isDeprecated": false,
+            "name": "errorMessage",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Quantum computer where the job was submitted to",
+            "isDeprecated": false,
+            "name": "quantumComputer",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "QuantumComputer",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Account that owns the job",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Timeslot during which the job was executed (if applicable). If job is still in the queue\nor if job was executed in default queue, this field will be null.",
+            "isDeprecated": false,
+            "name": "timeslot",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Timeslot",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Boolean flag indicating whether the job can be cancelled or not",
+            "isDeprecated": false,
+            "name": "isCancellable",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Boolean flag indicating whether the job is in a terminal state or not",
+            "isDeprecated": false,
+            "name": "isInTerminalState",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The submitter of the job.",
+            "isDeprecated": false,
+            "name": "submittedBy",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "UNION",
+                "name": "JobSubmitter",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Summary of the job's input payload.",
+            "isDeprecated": false,
+            "name": "inputSummary",
+            "type": {
+              "kind": "OBJECT",
+              "name": "JobInputSummary",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Size of the submitted job payload in bytes, before compression, as a whole\nnumber. Null for jobs submitted before this was recorded.",
+            "isDeprecated": false,
+            "name": "payloadSizeBytes",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Calibration set the job executed against, if known.",
+            "isDeprecated": false,
+            "name": "calibrationSetId",
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Job events timeline\n\nOnly the job owner can read this field; account admins viewing other\nmembers' jobs see only the basic details.",
+            "isDeprecated": false,
+            "name": "timeline",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "JobTimelineEvent"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Artifacts produced by the job execution (e.g. measurement results).\n\nOnly the job owner can read this field; account admins viewing other\nmembers' jobs see only the basic details.",
+            "isDeprecated": false,
+            "name": "artifacts",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "JobArtifact"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "Job"
+      },
+      {
+        "description": "An artifact produced by a job execution (e.g. measurement results, sweep data).",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The type of the artifact (e.g. \"counts\", \"`sweep_results`\").",
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The content type of the artifact (e.g. \"application/json\").",
+            "isDeprecated": false,
+            "name": "contentType",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "URL to download the artifact data.",
+            "isDeprecated": false,
+            "name": "downloadLink",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "JobArtifact"
+      },
+      {
+        "description": "Criteria for filtering a list of jobs.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "defaultValue": null,
+            "description": "Filter by one or more job statuses.",
+            "name": "status",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "JobStatus"
+                }
+              }
+            }
+          },
+          {
+            "defaultValue": null,
+            "description": "Filter to jobs created within the given time range.",
+            "name": "createdBetween",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "InputTimeRange",
+              "ofType": null
+            }
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "name": "JobFilters"
+      },
+      {
+        "description": "Summary of a job's input payload.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Number of circuits in the job, if known.",
+            "isDeprecated": false,
+            "name": "circuitCount",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Number of shots per circuit, if known.",
+            "isDeprecated": false,
+            "name": "shots",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Highest instruction count of any single circuit in the job. Null when the\nquantum computer has not reported it.",
+            "isDeprecated": false,
+            "name": "maxInstructionsPerCircuit",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "JobInputSummary"
+      },
+      {
+        "description": "The kind of workload a job represents.",
+        "enumValues": [
+          {
+            "description": "A quantum circuit job.",
+            "isDeprecated": false,
+            "name": "CIRCUIT"
+          },
+          {
+            "description": "A pulse-level job.",
+            "isDeprecated": false,
+            "name": "PULSE"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "JobKind"
+      },
+      {
+        "description": "Timing and billing metrics recorded for a job.\nThe total runtime, `runtimeSeconds`, is `compilationSeconds` plus\n`executionSeconds`. Credits are charged on `billedSeconds`, which is `runtimeSeconds` rounded up to whole\nseconds.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Time spent compiling the job on the quantum computer, in seconds. Null\nuntil the quantum computer has reported it, so it is typically available\nonly for finished jobs.",
+            "isDeprecated": false,
+            "name": "compilationSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Time spent executing the job on the quantum computer, in seconds. Null\nuntil the quantum computer has reported it, so it is typically available\nonly for finished jobs.",
+            "isDeprecated": false,
+            "name": "executionSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Total runtime of the job in seconds (compilation and execution). Null\nuntil the quantum computer has reported the durations, so it is\ntypically available only for finished jobs.",
+            "isDeprecated": false,
+            "name": "runtimeSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Billed runtime in whole seconds: `runtimeSeconds` rounded up. Credits are\ncharged on this value. Null until the runtime is known, so it is\ntypically available only for finished jobs.",
+            "isDeprecated": false,
+            "name": "billedSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Credits charged for running this job, as a decimal string. Read from the\ncredit ledger, so it is what the account was billed rather than a\nrecomputed price. Null for jobs that were never charged: jobs not billed\nper second (timeslot and mock jobs), and jobs that have not finished.",
+            "isDeprecated": false,
+            "name": "cost",
+            "type": {
+              "kind": "SCALAR",
+              "name": "CreditAmount",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "JobMetrics"
+      },
+      {
+        "description": "The externally visible execution status of a job.",
+        "enumValues": [
+          {
+            "description": "Job is queued and waiting for execution.",
+            "isDeprecated": false,
+            "name": "WAITING"
+          },
+          {
+            "description": "Job is currently being executed.",
+            "isDeprecated": false,
+            "name": "PROCESSING"
+          },
+          {
+            "description": "Job finished successfully.",
+            "isDeprecated": false,
+            "name": "COMPLETED"
+          },
+          {
+            "description": "Job terminated with an error.",
+            "isDeprecated": false,
+            "name": "FAILED"
+          },
+          {
+            "description": "Job was canceled before or during execution.",
+            "isDeprecated": false,
+            "name": "CANCELLED"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "JobStatus"
+      },
+      {
+        "description": "The submitter of a job: either a current\n[`AccountMember`](#type:AccountMember), or a\n[`FormerMember`](#type:FormerMember) when the submitter is no longer a member\nof the account.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "UNION",
+        "name": "JobSubmitter"
+      },
+      {
+        "description": "Single occurred event in the job timeline",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Source system of the event",
+            "isDeprecated": false,
+            "name": "source",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Status code of the event",
+            "isDeprecated": false,
+            "name": "status",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Timestamp when the event occurred",
+            "isDeprecated": false,
+            "name": "timestamp",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "JobTimelineEvent"
+      },
+      {
+        "description": "A single member invitation: the recipient email and the role to grant on acceptance.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "defaultValue": null,
+            "description": "Email address to send the invitation to.",
+            "name": "email",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "defaultValue": null,
+            "description": "Role assigned to the user upon accepting the invitation.",
+            "name": "role",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "AccountRole",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "name": "MemberInvitationInput"
+      },
+      {
+        "description": null,
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the account (organization or team)",
+                "name": "accountId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Members to invite",
+                "name": "invitations",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "MemberInvitationInput"
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Invites one or more users to an account (organization or team).\n\nRequires the Administrator role in the organization or team.",
+            "isDeprecated": false,
+            "name": "inviteAccountMembers",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "InviteSummary",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the account (organization or team)",
+                "name": "accountId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "ID of the invited user",
+                "name": "userId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Invites a user again who was invited to an account but has not accepted yet.\nThe earlier invitation stops working.\n\nRequires the Administrator role in the organization or team.",
+            "isDeprecated": false,
+            "name": "resendAccountInvitation",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "SuccessfulInvite",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the organization",
+                "name": "organizationId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Name of the team",
+                "name": "name",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Creates a new team in the specified organization.\n\nRequires the Administrator role in the organization.",
+            "isDeprecated": false,
+            "name": "createTeam",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Team",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the organization",
+                "name": "organizationId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "ID of the team",
+                "name": "teamId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "New name",
+                "name": "name",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Renames a team.\n\nRequires the Administrator role in the organization.",
+            "isDeprecated": false,
+            "name": "renameTeam",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Team",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the account (organization or team)",
+                "name": "accountId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "ID of the user",
+                "name": "userId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Role to assign",
+                "name": "role",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "AccountRole",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Sets the role of a member within an account (organization or team).\nReturns the updated account member with the new role.\n\nRequires the Administrator role in the organization or team.",
+            "isDeprecated": false,
+            "name": "setAccountMemberRole",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AccountMember",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the account (organization or team)",
+                "name": "accountId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "IDs of the users",
+                "name": "userIds",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "UUID"
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Removes one or more users from an account (organization or team).\n\nRequires the Administrator role in the organization or team.",
+            "isDeprecated": false,
+            "name": "removeAccountMembers",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RemoveAccountMemberResult",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the organization that owns the team to delete",
+                "name": "organizationId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "ID of the team to delete",
+                "name": "teamId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Optional checksum from a prior teamDeletionPlan preview. When supplied and it no longer matches the team's current state, nothing is deleted and a TeamDeletionChecksumMismatch carrying a fresh plan is returned. Omit to delete against the current state unconditionally.",
+                "name": "expectedChecksum",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Deletes a team and tears down all of its data: jobs are cancelled and\ndeleted, future timeslots are cancelled, and members, tokens,\ninvitations, identity-provider config and settings are removed. On\ndeployments that use credits, cancelled timeslots are refunded if they\nare far enough in the future. The team's remaining credit balance is\ntransferred to the parent organization. The team itself is soft-deleted\nand retained for audit.\n\nRequires the Administrator role in the organization.",
+            "isDeprecated": false,
+            "name": "deleteTeam",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "UNION",
+                "name": "DeleteTeamResult",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Id of the account credits are transferred from",
+                "name": "from",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Id of the account credits are transferred to",
+                "name": "to",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Amount to transfer. Must be greater than zero.",
+                "name": "amount",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "CreditAmount",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Transfers credits between an organization and one of its teams. `from` and\n`to` are account ids; the transfer must be between an organization and one\nof that organization's own teams, in either direction. Returns both\naccounts' credits as they stand after the transfer.\n\nRequires the Administrator role in the organization.",
+            "isDeprecated": false,
+            "name": "transferCredits",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "CreditTransferResult",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "Mutation"
+      },
+      {
+        "description": "An organization account grouping multiple users and teams.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the organization.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Account type, always `ORGANIZATION`.",
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "AccountType",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Display name of the organization.",
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the organization was created.",
+            "isDeprecated": false,
+            "name": "createdAt",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The organization's current credit balance, or `null` if it has no credits.\n\nRequires membership in the organization (any role).",
+            "isDeprecated": false,
+            "name": "credit",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Credit",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "1",
+                "description": "1-based page number",
+                "name": "page",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "10",
+                "description": "Number of items per page",
+                "name": "pageSize",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "ASC",
+                "description": "Sort direction",
+                "name": "sorting",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "SortOrder",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Paginated list of the organization's members. Requires administrator role.",
+            "isDeprecated": false,
+            "name": "members",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedAccountMemberList",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "1",
+                "description": "1-based page number",
+                "name": "page",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "10",
+                "description": "Number of items per page",
+                "name": "pageSize",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "ASC",
+                "description": "Sort direction",
+                "name": "sorting",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "SortOrder",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Paginated list of teams within this organization. Requires organization admin role.",
+            "isDeprecated": false,
+            "name": "teams",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedTeamList",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Time the report covers.",
+                "name": "range",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "InputTimeRange",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Credit and usage consumption on the organization's own account. Work\ndone by members who are not acting inside a team lands here. Excludes\nevery team; use `combinedUsageReport` for the organization and its teams\ntogether, or `usageReport` on each team for a breakdown.\n\nThe range must not span more than 123 days.",
+            "isDeprecated": false,
+            "name": "usageReport",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UsageTotals",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Time the report covers.",
+                "name": "range",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "InputTimeRange",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Credit and usage consumption for this organization and every team (even deleted) under\nit, added together.\n\nThe range must not span more than 123 days.",
+            "isDeprecated": false,
+            "name": "combinedUsageReport",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UsageTotals",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "Organization"
+      },
+      {
+        "description": "A single page of results together with the total count of matching items.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Items on the current page.",
+            "isDeprecated": false,
+            "name": "items",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AccountMember"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Total number of items matching the query across all pages.",
+            "isDeprecated": false,
+            "name": "total",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "PaginatedAccountMemberList"
+      },
+      {
+        "description": "A single page of results together with the total count of matching items.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Items on the current page.",
+            "isDeprecated": false,
+            "name": "items",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Job"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Total number of items matching the query across all pages.",
+            "isDeprecated": false,
+            "name": "total",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "PaginatedJobList"
+      },
+      {
+        "description": "A single page of results together with the total count of matching items.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Items on the current page.",
+            "isDeprecated": false,
+            "name": "items",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuantumComputer"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Total number of items matching the query across all pages.",
+            "isDeprecated": false,
+            "name": "total",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "PaginatedQuantumComputerList"
+      },
+      {
+        "description": "A single page of results together with the total count of matching items.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Items on the current page.",
+            "isDeprecated": false,
+            "name": "items",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Team"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Total number of items matching the query across all pages.",
+            "isDeprecated": false,
+            "name": "total",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "PaginatedTeamList"
+      },
+      {
+        "description": "A personal account belonging to a single user.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the personal account.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Display name of the account owner.",
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Account type; always `PERSONAL` for this type.",
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "AccountType",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account's current credit balance, or `null` if it has no credits.\n\nRequires ownership of the account.",
+            "isDeprecated": false,
+            "name": "credit",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Credit",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "PersonalAccount"
+      },
+      {
+        "description": "Additional information and links for a quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Link to IQM Academy content relevant to this quantum computer.",
+            "isDeprecated": false,
+            "name": "academyUrl",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Free-form list of use cases this quantum computer is best suited for.",
+            "isDeprecated": false,
+            "name": "bestSuitedFor",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Link to documentation for this quantum computer.",
+            "isDeprecated": false,
+            "name": "documentationUrl",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Link to a mock environment for this quantum computer.",
+            "isDeprecated": false,
+            "name": "mockUrl",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QcAdditionalInfo"
+      },
+      {
+        "description": "Backend type of a quantum computer.",
+        "enumValues": [
+          {
+            "description": "A real quantum processing unit.",
+            "isDeprecated": false,
+            "name": "QPU"
+          },
+          {
+            "description": "A mock backend used for testing.",
+            "isDeprecated": false,
+            "name": "MOCK"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "QcBackendType"
+      },
+      {
+        "description": "Health of a quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Whether the quantum computer is currently healthy.",
+            "isDeprecated": false,
+            "name": "healthy",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Time at which the health was last checked.",
+            "isDeprecated": false,
+            "name": "updatedAt",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QcHealth"
+      },
+      {
+        "description": "Pricing information for a quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Pay-as-you-go price per second, in credits, as a decimal string.",
+            "isDeprecated": false,
+            "name": "paygPricePerSecond",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Timeslot pricing. Null when the quantum computer does not offer timeslot\nbooking.",
+            "isDeprecated": false,
+            "name": "timeslot",
+            "type": {
+              "kind": "OBJECT",
+              "name": "QcTimeslotPricing",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QcPricing"
+      },
+      {
+        "description": "Timeslot booking pricing for a quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Duration of a single bookable timeslot, as an ISO-8601 duration string\n(e.g. `PT1H`).",
+            "isDeprecated": false,
+            "name": "slotDuration",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Price of a single timeslot, in credits, as a decimal string.",
+            "isDeprecated": false,
+            "name": "slotPrice",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QcTimeslotPricing"
+      },
+      {
+        "description": "A quantum computer available on the platform.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Quantum computer ID",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Quantum computer alias that can be used as a substitute for IDs in REST API routes",
+            "isDeprecated": false,
+            "name": "alias",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Name of the quantum computer",
+            "isDeprecated": false,
+            "name": "displayName",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Longer description of the quantum computer.",
+            "isDeprecated": false,
+            "name": "description",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Backend type of the quantum computer.",
+            "isDeprecated": false,
+            "name": "backendType",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "QcBackendType",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Number of qubits available on the quantum computer.",
+            "isDeprecated": false,
+            "name": "numberOfQubits",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Whether pulse-level access (Pulla) is enabled.",
+            "isDeprecated": false,
+            "name": "pullaEnabled",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Job size limits.",
+            "isDeprecated": false,
+            "name": "limits",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "QuantumComputerLimits",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Additional information and links.",
+            "isDeprecated": false,
+            "name": "additionalInfo",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "QcAdditionalInfo",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Operational status of the quantum computer.",
+            "isDeprecated": false,
+            "name": "operationalStatus",
+            "type": {
+              "kind": "ENUM",
+              "name": "QuantumComputerOperationalStatus",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Health readings from the quantum computer's last health check. `null`\nwhen the quantum computer is under maintenance, decommissioned, or has not\nbeen health checked yet.",
+            "isDeprecated": false,
+            "name": "health",
+            "type": {
+              "kind": "OBJECT",
+              "name": "QcHealth",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Length of this quantum computer's pay-as-you-go\nqueue. Jobs already executing are not counted, nor are timeslot queues.",
+            "isDeprecated": false,
+            "name": "queueLength",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Pricing information.",
+            "isDeprecated": false,
+            "name": "pricing",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "QcPricing",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Static configuration artifacts available for this quantum computer",
+            "isDeprecated": false,
+            "name": "artifacts",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuantumComputerArtifact"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QuantumComputer"
+      },
+      {
+        "description": "A static configuration artifact associated with a quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Artifact type identifier (e.g. `\"calibration_set\"`).",
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Data format of the artifact content.",
+            "isDeprecated": false,
+            "name": "dataFormat",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "URL to download the artifact.",
+            "isDeprecated": false,
+            "name": "downloadLink",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QuantumComputerArtifact"
+      },
+      {
+        "description": "Job size limits of a quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Maximum number of instructions within any circuit.",
+            "isDeprecated": false,
+            "name": "maxInstructionsPerCircuit",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Maximum number of shots per circuit in a job.",
+            "isDeprecated": false,
+            "name": "maxShotsPerCircuit",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Maximum number of circuits in a job.",
+            "isDeprecated": false,
+            "name": "maxCircuitsPerJob",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Maximum number of executions in a job, calculated as circuits multiplied\nby shots per circuit.",
+            "isDeprecated": false,
+            "name": "maxExecutionsPerJob",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Maximum number of jobs a single user can have queued at once.",
+            "isDeprecated": false,
+            "name": "maxQueuedJobsPerUser",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QuantumComputerLimits"
+      },
+      {
+        "description": "Operational status of a quantum computer.",
+        "enumValues": [
+          {
+            "description": "The quantum computer is operational and available for executing jobs.",
+            "isDeprecated": false,
+            "name": "ONLINE"
+          },
+          {
+            "description": "The quantum computer is under maintenance and not available for executing jobs. Jobs are queued while QC is in maintenance.",
+            "isDeprecated": false,
+            "name": "MAINTENANCE"
+          },
+          {
+            "description": "The quantum computer is decommissioned and is hidden from listings and\nrejecting job submissions.",
+            "isDeprecated": false,
+            "name": "DECOMMISSIONED"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "QuantumComputerOperationalStatus"
+      },
+      {
+        "description": "Time one account spent on a single quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The quantum computer the time was spent on.",
+            "isDeprecated": false,
+            "name": "quantumComputer",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "QuantumComputer",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Seconds spent compiling jobs for this quantum computer.",
+            "isDeprecated": false,
+            "name": "compilationSeconds",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Seconds spent executing jobs on this quantum computer.",
+            "isDeprecated": false,
+            "name": "executionSeconds",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "QuantumComputerUsageTotals"
+      },
+      {
+        "description": "Filters, sorting and pagination for the `quantumComputers` query.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "defaultValue": null,
+            "description": "Only return quantum computers whose operational status is one of these. A\nsingle value is accepted as a one-item list; omit to return all.",
+            "name": "operationalStatus",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "QuantumComputerOperationalStatus"
+                }
+              }
+            }
+          },
+          {
+            "defaultValue": "ALIAS",
+            "description": "Field to sort the quantum computers by.",
+            "name": "sortBy",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "QuantumComputersSortBy",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "defaultValue": "ASC",
+            "description": "Sort direction. Defaults to ascending.",
+            "name": "order",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "SortOrder",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "defaultValue": "1",
+            "description": "1-based page number.",
+            "name": "page",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "defaultValue": "10",
+            "description": "Number of items per page.",
+            "name": "pageSize",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "name": "QuantumComputersInput"
+      },
+      {
+        "description": "Field by which the quantum computer listing can be ordered.",
+        "enumValues": [
+          {
+            "description": "Sort by `QuantumComputer.alias`.",
+            "isDeprecated": false,
+            "name": "ALIAS"
+          },
+          {
+            "description": "Sort by `QuantumComputer.queueLength`.",
+            "isDeprecated": false,
+            "name": "QUEUE_LENGTH"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "QuantumComputersSortBy"
+      },
+      {
+        "description": null,
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the account",
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns an account by its ID. The account may be an organization, team, or personal\naccount. Returns `null` if the account does not exist.\n\nRequires membership in the account (any role). For organizations, membership in any\nof their teams also grants access; for teams, the Administrator role in the parent\norganization also grants access.",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Account",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the organization",
+                "name": "organizationId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns an organization by its ID. Returns `null` if the organization does not exist.\n\nRequires membership in the organization or in any of its teams (any role).",
+            "isDeprecated": false,
+            "name": "organization",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Organization",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the team",
+                "name": "teamId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns a team by its ID. Returns `null` if the team does not exist.\n\nRequires membership in the team (any role), or the Administrator role in the\nparent organization.",
+            "isDeprecated": false,
+            "name": "team",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Team",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the organization that owns the team",
+                "name": "organizationId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "ID of the team to compute a deletion plan for",
+                "name": "teamId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Read-only preview of what deleting a team would remove (jobs, members,\ntimeslots, tokens, invitations), plus a checksum to pass as\n`expectedChecksum` to the `deleteTeam` mutation. On deployments that use\ncredits, the preview also covers refunds and the credit-balance transfer.\nComputes the plan without making any changes. Returns `null` if the team\ndoes not exist or is not in the given organization.\n\nRequires the Administrator role in the organization.",
+            "isDeprecated": false,
+            "name": "teamDeletionPlan",
+            "type": {
+              "kind": "OBJECT",
+              "name": "TeamDeletionPlan",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the job",
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns a job by ID. Returns null if the job does not exist or is not accessible to the caller.",
+            "isDeprecated": false,
+            "name": "job",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Job",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Filters, sorting and pagination for the quantum computer listing.",
+                "name": "params",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "QuantumComputersInput",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns a paginated list of all accessible quantum computers.",
+            "isDeprecated": false,
+            "name": "quantumComputers",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedQuantumComputerList",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "ID of the quantum computer",
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns a quantum computer by ID. Returns null if not found or not accessible to the user.",
+            "isDeprecated": false,
+            "name": "quantumComputer",
+            "type": {
+              "kind": "OBJECT",
+              "name": "QuantumComputer",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The authenticated subject: their profile and the account their session\nis currently bound to (if any).",
+            "isDeprecated": false,
+            "name": "me",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "CurrentSubject",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Id of the account whose credit is returned",
+                "name": "accountId",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns the account's current credit, or `null` when the account has no\ncredits or is not accessible to the caller.\n\nRequires membership in the account (any role).",
+            "isDeprecated": false,
+            "name": "credit",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Credit",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "Query"
+      },
+      {
+        "description": "A removal that failed, with the reason.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The user ID that failed to be removed.",
+            "isDeprecated": false,
+            "name": "userId",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The reason the removal failed.",
+            "isDeprecated": false,
+            "name": "reason",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "RemoveAccountMemberFailure"
+      },
+      {
+        "description": "Result of a batch account member (Organization or Team) removal.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "User IDs that were successfully removed from the account.",
+            "isDeprecated": false,
+            "name": "removed",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "UUID"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Users that could not be removed, with reasons.",
+            "isDeprecated": false,
+            "name": "failed",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "RemoveAccountMemberFailure"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "RemoveAccountMemberResult"
+      },
+      {
+        "description": "Sort direction applied to an ordered list of results.",
+        "enumValues": [
+          {
+            "description": "Ascending order.",
+            "isDeprecated": false,
+            "name": "ASC"
+          },
+          {
+            "description": "Descending order.",
+            "isDeprecated": false,
+            "name": "DESC"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "SortOrder"
+      },
+      {
+        "description": "The `String` scalar type represents textual data, represented as UTF-8\ncharacter sequences. The String type is most often used by GraphQL to\nrepresent free-form human-readable text.",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "String"
+      },
+      {
+        "description": "A member invitation that was created successfully.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "ID of the invited user.",
+            "isDeprecated": false,
+            "name": "userId",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Email address of the invited user.",
+            "isDeprecated": false,
+            "name": "email",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "INTERFACE",
+        "name": "SuccessfulInvite"
+      },
+      {
+        "description": "An invitation that has been emailed to the user.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "ID of the invited user.",
+            "isDeprecated": false,
+            "name": "userId",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Email address of the invited user.",
+            "isDeprecated": false,
+            "name": "email",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "SuccessfulInviteViaEmail"
+      },
+      {
+        "description": "An invitation that could not be emailed, because the system has no email\nservice.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "ID of the invited user.",
+            "isDeprecated": false,
+            "name": "userId",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Email address of the invited user.",
+            "isDeprecated": false,
+            "name": "email",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Link to accept the invitation.",
+            "isDeprecated": false,
+            "name": "inviteLink",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "SuccessfulInviteViaLink"
+      },
+      {
+        "description": "A team subgroup within an organization.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the team.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Display name of the team.",
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Account type; always `TEAM` for this type.",
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "AccountType",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the team was created.",
+            "isDeprecated": false,
+            "name": "createdAt",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The team's current credit balance, or `null` if it has no credits.\n\nRequires membership in the team (any role).",
+            "isDeprecated": false,
+            "name": "credit",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Credit",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The organization this team belongs to.",
+            "isDeprecated": false,
+            "name": "parentOrganization",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Organization",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "1",
+                "description": "1-based page number",
+                "name": "page",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "10",
+                "description": "Number of items per page",
+                "name": "pageSize",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "ASC",
+                "description": "Sort direction",
+                "name": "sorting",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "SortOrder",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Paginated list of the team's members.",
+            "isDeprecated": false,
+            "name": "members",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedAccountMemberList",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Time the report covers.",
+                "name": "range",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "InputTimeRange",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Credit and usage consumption for this team over a time range.\n\nThe range must not span more than 123 days.",
+            "isDeprecated": false,
+            "name": "usageReport",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UsageTotals",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "Team"
+      },
+      {
+        "description": "Returned by `deleteTeam` when a supplied `expectedChecksum` no longer matches\nthe team's current state. No deletion is performed; the caller should review\nthe fresh plan (which carries a new checksum) and retry.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The team's freshly computed deletion plan, with a current checksum.",
+            "isDeprecated": false,
+            "name": "currentPlan",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TeamDeletionPlan",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "TeamDeletionChecksumMismatch"
+      },
+      {
+        "description": "Read-only preview of what deleting a team would remove. Returned by the\n`teamDeletionPlan` query and inside a checksum mismatch on `deleteTeam`.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Non-deleted jobs that would be cancelled (if running) and deleted.",
+            "isDeprecated": false,
+            "name": "jobsToDelete",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Memberships (activated and invited-not-activated) that would be removed.",
+            "isDeprecated": false,
+            "name": "membersToRemove",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Future-start timeslots that would be cancelled and deleted.",
+            "isDeprecated": false,
+            "name": "timeslotsToCancel",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Started (running or ended) timeslots that are retained for traceability.",
+            "isDeprecated": false,
+            "name": "timeslotsRetained",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Credits that would be refunded for cancelled future timeslots still\nwithin their cancellation deadline, as a decimal string.",
+            "isDeprecated": false,
+            "name": "creditsToRefund",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The team's current credit balance before any refund, as a decimal string.",
+            "isDeprecated": false,
+            "name": "currentCreditBalance",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Credits that would be transferred to the parent organization, as a\ndecimal string.",
+            "isDeprecated": false,
+            "name": "creditsToTransfer",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Active api tokens (activated, unexpired, not yet revoked) that would be\ndropped when the team's members are removed.",
+            "isDeprecated": false,
+            "name": "apiTokensToRevoke",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Pending invitations that would be deleted.",
+            "isDeprecated": false,
+            "name": "invitationsToDelete",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Checksum of this plan, to pass back as `expectedChecksum` on\n`deleteTeam` to guard against the team changing in the meantime.",
+            "isDeprecated": false,
+            "name": "checksum",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "TeamDeletionPlan"
+      },
+      {
+        "description": "Actual counts and amounts after a team was deleted.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Jobs that were cancelled (if running) and deleted.",
+            "isDeprecated": false,
+            "name": "jobsDeleted",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Memberships that were removed.",
+            "isDeprecated": false,
+            "name": "membersRemoved",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Future-start timeslots that were cancelled and deleted.",
+            "isDeprecated": false,
+            "name": "timeslotsCancelled",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Started timeslots that were retained.",
+            "isDeprecated": false,
+            "name": "timeslotsRetained",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Credits refunded for cancelled timeslots, as a decimal string.",
+            "isDeprecated": false,
+            "name": "creditsRefunded",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Credits transferred to the parent organization, as a decimal string.",
+            "isDeprecated": false,
+            "name": "creditsTransferred",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Api tokens dropped via the membership cascade.",
+            "isDeprecated": false,
+            "name": "apiTokensRevoked",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Pending invitations deleted.",
+            "isDeprecated": false,
+            "name": "invitationsDeleted",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Checksum of the pre-execution plan the teardown was based on.",
+            "isDeprecated": false,
+            "name": "checksum",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "TeamDeletionResult"
+      },
+      {
+        "description": "A reserved time window during which an account has exclusive access to a quantum computer.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the timeslot.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The time when the timeslot begins.",
+            "isDeprecated": false,
+            "name": "startTime",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The time when the timeslot ends.",
+            "isDeprecated": false,
+            "name": "endTime",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Price paid to book this timeslot, in credits, formatted with two\ndecimals. Null when the timeslot carries no booking price.",
+            "isDeprecated": false,
+            "name": "bookingPrice",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Account that owns this timeslot.",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "Timeslot"
+      },
+      {
+        "description": "A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as\nStrings within GraphQL. UUIDs are used to assign unique identifiers to\nentities without requiring a central allocating authority.\n\n# References\n\n* [Wikipedia: Universally Unique Identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier)\n* [RFC4122: A Universally Unique Identifier (UUID) URN Namespace](http://tools.ietf.org/html/rfc4122)",
+        "enumValues": null,
+        "fields": null,
+        "inputFields": null,
+        "kind": "SCALAR",
+        "name": "UUID"
+      },
+      {
+        "description": "Consumption figures for one account, or for several added together.\n\nTotal runtime is `compilationSeconds` plus `executionSeconds`.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Credits consumed.",
+            "isDeprecated": false,
+            "name": "credits",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Seconds spent compiling jobs.",
+            "isDeprecated": false,
+            "name": "compilationSeconds",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Seconds spent executing jobs on quantum computers.",
+            "isDeprecated": false,
+            "name": "executionSeconds",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Seconds split per quantum computer. Quantum computers with no jobs in\nthe range are omitted.",
+            "isDeprecated": false,
+            "name": "quantumComputersBreakdown",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuantumComputerUsageTotals"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "UsageTotals"
+      },
+      {
+        "description": "A person's identity in the system.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the user.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The user's full name.",
+            "isDeprecated": false,
+            "name": "fullName",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The user's email address, if known.",
+            "isDeprecated": false,
+            "name": "email",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "User"
+      },
+      {
+        "description": "A Directive provides a way to describe alternate runtime execution and type\nvalidation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution\nbehavior in ways field arguments will not suffice, such as conditionally\nincluding or skipping a field. Directives provide this by describing\nadditional information to the executor.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "locations",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "__DirectiveLocation"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "false",
+                "description": null,
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "args",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__InputValue"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "isRepeatable",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "__Directive"
+      },
+      {
+        "description": "A Directive can be adjacent to many parts of the GraphQL language, a\n__DirectiveLocation describes one such possible adjacencies.",
+        "enumValues": [
+          {
+            "description": "Location adjacent to a query operation.",
+            "isDeprecated": false,
+            "name": "QUERY"
+          },
+          {
+            "description": "Location adjacent to a mutation operation.",
+            "isDeprecated": false,
+            "name": "MUTATION"
+          },
+          {
+            "description": "Location adjacent to a subscription operation.",
+            "isDeprecated": false,
+            "name": "SUBSCRIPTION"
+          },
+          {
+            "description": "Location adjacent to a field.",
+            "isDeprecated": false,
+            "name": "FIELD"
+          },
+          {
+            "description": "Location adjacent to a fragment definition.",
+            "isDeprecated": false,
+            "name": "FRAGMENT_DEFINITION"
+          },
+          {
+            "description": "Location adjacent to a fragment spread.",
+            "isDeprecated": false,
+            "name": "FRAGMENT_SPREAD"
+          },
+          {
+            "description": "Location adjacent to an inline fragment.",
+            "isDeprecated": false,
+            "name": "INLINE_FRAGMENT"
+          },
+          {
+            "description": "Location adjacent to a variable definition.",
+            "isDeprecated": false,
+            "name": "VARIABLE_DEFINITION"
+          },
+          {
+            "description": "Location adjacent to a schema definition.",
+            "isDeprecated": false,
+            "name": "SCHEMA"
+          },
+          {
+            "description": "Location adjacent to a scalar definition.",
+            "isDeprecated": false,
+            "name": "SCALAR"
+          },
+          {
+            "description": "Location adjacent to an object type definition.",
+            "isDeprecated": false,
+            "name": "OBJECT"
+          },
+          {
+            "description": "Location adjacent to a field definition.",
+            "isDeprecated": false,
+            "name": "FIELD_DEFINITION"
+          },
+          {
+            "description": "Location adjacent to an argument definition.",
+            "isDeprecated": false,
+            "name": "ARGUMENT_DEFINITION"
+          },
+          {
+            "description": "Location adjacent to an interface definition.",
+            "isDeprecated": false,
+            "name": "INTERFACE"
+          },
+          {
+            "description": "Location adjacent to a union definition.",
+            "isDeprecated": false,
+            "name": "UNION"
+          },
+          {
+            "description": "Location adjacent to an enum definition.",
+            "isDeprecated": false,
+            "name": "ENUM"
+          },
+          {
+            "description": "Location adjacent to an enum value definition.",
+            "isDeprecated": false,
+            "name": "ENUM_VALUE"
+          },
+          {
+            "description": "Location adjacent to an input object type definition.",
+            "isDeprecated": false,
+            "name": "INPUT_OBJECT"
+          },
+          {
+            "description": "Location adjacent to an input object field definition.",
+            "isDeprecated": false,
+            "name": "INPUT_FIELD_DEFINITION"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "__DirectiveLocation"
+      },
+      {
+        "description": "One possible value for a given Enum. Enum values are unique values, not a\nplaceholder for a string or numeric value. However an Enum value is returned\nin a JSON response as a string.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "isDeprecated",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "deprecationReason",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "__EnumValue"
+      },
+      {
+        "description": "Object and Interface types are described by a list of Fields, each of which\nhas a name, potentially a list of arguments, and a return type.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "false",
+                "description": null,
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "args",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__InputValue"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "isDeprecated",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "deprecationReason",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "__Field"
+      },
+      {
+        "description": "Arguments provided to Fields or Directives and the input fields of an\nInputObject are represented as Input Values which describe their type and\noptionally a default value.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "defaultValue",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "isDeprecated",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "deprecationReason",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "__InputValue"
+      },
+      {
+        "description": "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes\nall available types and directives on the server, as well as the entry\npoints for query, mutation, and subscription operations.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "description of __Schema for newer graphiql introspection schema\nrequirements",
+            "isDeprecated": false,
+            "name": "description",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "A list of all types supported by this server.",
+            "isDeprecated": false,
+            "name": "types",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__Type"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The type that query operations will be rooted at.",
+            "isDeprecated": false,
+            "name": "queryType",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "__Type",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "If this server supports mutation, the type that mutation operations will\nbe rooted at.",
+            "isDeprecated": false,
+            "name": "mutationType",
+            "type": {
+              "kind": "OBJECT",
+              "name": "__Type",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "If this server support subscription, the type that subscription\noperations will be rooted at.",
+            "isDeprecated": false,
+            "name": "subscriptionType",
+            "type": {
+              "kind": "OBJECT",
+              "name": "__Type",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "A list of all directives supported by this server.",
+            "isDeprecated": false,
+            "name": "directives",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "__Directive"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "__Schema"
+      },
+      {
+        "description": "The fundamental unit of any GraphQL Schema is the type. There are many kinds\nof types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about\nthat type. Scalar types provide no information beyond a name and\ndescription, while Enum types provide their values. Object and Interface\ntypes provide the fields they describe. Abstract types, Union and Interface,\nprovide the Object types possible at runtime. List and NonNull types compose\nother types.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "kind",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "__TypeKind",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "name",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "false",
+                "description": null,
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "fields",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Field",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "interfaces",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "possibleTypes",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__Type",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "false",
+                "description": null,
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "enumValues",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__EnumValue",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": "false",
+                "description": null,
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "inputFields",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "__InputValue",
+                  "ofType": null
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "ofType",
+            "type": {
+              "kind": "OBJECT",
+              "name": "__Type",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "specifiedByURL",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": null,
+            "isDeprecated": false,
+            "name": "isOneOf",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "kind": "OBJECT",
+        "name": "__Type"
+      },
+      {
+        "description": "An enum describing what kind of type a given `__Type` is.",
+        "enumValues": [
+          {
+            "description": "Indicates this type is a scalar.",
+            "isDeprecated": false,
+            "name": "SCALAR"
+          },
+          {
+            "description": "Indicates this type is an object. `fields` and `interfaces` are valid\nfields.",
+            "isDeprecated": false,
+            "name": "OBJECT"
+          },
+          {
+            "description": "Indicates this type is an interface. `fields` and `possibleTypes` are\nvalid fields.",
+            "isDeprecated": false,
+            "name": "INTERFACE"
+          },
+          {
+            "description": "Indicates this type is a union. `possibleTypes` is a valid field.",
+            "isDeprecated": false,
+            "name": "UNION"
+          },
+          {
+            "description": "Indicates this type is an enum. `enumValues` is a valid field.",
+            "isDeprecated": false,
+            "name": "ENUM"
+          },
+          {
+            "description": "Indicates this type is an input object. `inputFields` is a valid field.",
+            "isDeprecated": false,
+            "name": "INPUT_OBJECT"
+          },
+          {
+            "description": "Indicates this type is a list. `ofType` is a valid field.",
+            "isDeprecated": false,
+            "name": "LIST"
+          },
+          {
+            "description": "Indicates this type is a non-null. `ofType` is a valid field.",
+            "isDeprecated": false,
+            "name": "NON_NULL"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "kind": "ENUM",
+        "name": "__TypeKind"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+> Full piece: [https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.html](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.html)
+> Retrieved 2026-10-19T06:06Z by scripts/capture_iqm_docs.py --docs (urllib, pandoc);
+> fetched HTML sha256 56bb6e90a0e47e6886670f76440392bcb9825535398ad1ff1c0adfc22a563e4b.
+
+# iqm.benchmarks.compressive_gst.gst_analysis
+
+Data analysis code for compressive gate set tomography.
+
+Functions
+
+|  |  |
+|----|----|
+| [`bootstrap_errors`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.bootstrap_errors.html#iqm.benchmarks.compressive_gst.gst_analysis.bootstrap_errors "iqm.benchmarks.compressive_gst.gst_analysis.bootstrap_errors")(dataset, y, gate_set, ...) | Resamples circuit outcomes a number of times and computes GST estimates for each repetition. |
+| [`dataset_counts_to_mgst_format`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.dataset_counts_to_mgst_format.html#iqm.benchmarks.compressive_gst.gst_analysis.dataset_counts_to_mgst_format "iqm.benchmarks.compressive_gst.gst_analysis.dataset_counts_to_mgst_format")(dataset, ...) | Turns the dictionary of outcomes obtained from qiskit backend into the format which is used in mGST. |
+| [`generate_gate_results`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.generate_gate_results.html#iqm.benchmarks.compressive_gst.gst_analysis.generate_gate_results "iqm.benchmarks.compressive_gst.gst_analysis.generate_gate_results")(dataset, qubit_layout, ...) | Produces all result tables for arbitrary Kraus rank estimates. |
+| [`generate_non_gate_results`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.generate_non_gate_results.html#iqm.benchmarks.compressive_gst.gst_analysis.generate_non_gate_results "iqm.benchmarks.compressive_gst.gst_analysis.generate_non_gate_results")(df_o\[, ...\]) | Creates error bars (if bootstrapping was used) and formats results for non-gate errors. |
+| [`generate_unit_rank_gate_results`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.generate_unit_rank_gate_results.html#iqm.benchmarks.compressive_gst.gst_analysis.generate_unit_rank_gate_results "iqm.benchmarks.compressive_gst.gst_analysis.generate_unit_rank_gate_results")(dataset, ...) | Produces all result tables for Kraus rank 1 estimates. |
+| [`mgst_analysis`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.mgst_analysis.html#iqm.benchmarks.compressive_gst.gst_analysis.mgst_analysis "iqm.benchmarks.compressive_gst.gst_analysis.mgst_analysis")(run) | Analysis function for compressive GST. |
+| [`pandas_results_to_observations`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.pandas_results_to_observations.html#iqm.benchmarks.compressive_gst.gst_analysis.pandas_results_to_observations "iqm.benchmarks.compressive_gst.gst_analysis.pandas_results_to_observations")(dataset, ...) | Converts high level GST results from a pandas Dataframe to a simple observation dictionary. |
+| [`process_bootstrap_samples`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.process_bootstrap_samples.html#iqm.benchmarks.compressive_gst.gst_analysis.process_bootstrap_samples "iqm.benchmarks.compressive_gst.gst_analysis.process_bootstrap_samples")(y_sampled, attrs, ...) | Process a single bootstrap sample for Gate Set Tomography. |
+| [`process_layout`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.process_layout.html#iqm.benchmarks.compressive_gst.gst_analysis.process_layout "iqm.benchmarks.compressive_gst.gst_analysis.process_layout")(args) | Process a single qubit layout for Gate Set Tomography analysis. |
+| [`process_plots`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.process_plots.html#iqm.benchmarks.compressive_gst.gst_analysis.process_plots "iqm.benchmarks.compressive_gst.gst_analysis.process_plots")(dataset, qubit_layout, ...) | Process and generate all plots for a single qubit layout. |
+| [`run_mgst_wrapper`](https://docs.iqm.tech/4.7/iqm-benchmarks/api/iqm.benchmarks.compressive_gst.gst_analysis.run_mgst_wrapper.html#iqm.benchmarks.compressive_gst.gst_analysis.run_mgst_wrapper "iqm.benchmarks.compressive_gst.gst_analysis.run_mgst_wrapper")(dataset, y) | Wrapper function for mGST algorithm execution which prepares an initialization and sets the alg. |
