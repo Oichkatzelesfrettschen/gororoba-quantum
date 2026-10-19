@@ -61,8 +61,9 @@ ran on a CPU host and no kernel output holds those pairs, so no retained
 shard bytes bind them. sampled_pairs() ranks the pairs of pair_cost() at most
 PAIR_COST_CAP by a sha256 over every added pair's distances, and replay_pairs()
 replays the first PAIR_SAMPLE. A hand-altered distance is caught only when
-its pair is sampled; a pair dearer than PAIR_COST_CAP is never replayed and
-keeps only the structural check and --provenance.
+its pair is sampled. The token ``pairs-all`` replays every merge-added pair
+through the process pool (replay_all_pairs), so a hand-altered distance in
+any pair fails; gate core-591 runs it on the full tier.
 ``--self-test`` exercises the merge, its removal and the exact path's rule
 and seeds on synthetic records.
 
@@ -1017,6 +1018,35 @@ def replay_pairs(
     return done
 
 
+def replay_all_pairs(result: dict[str, Any], index: dict[str, Any], device: str) -> int:
+    """Require every merge-added pair of this host's Aer device to equal snapshot_entry() recomputed, bit for bit.
+
+    The pairs run through parallel.ordered_map in pool_order of pair_cost(),
+    so a pass covers every added pair; pairs merged on another device are
+    skipped, since seeded counts differ across devices. Returns the number
+    of pairs replayed.
+    """
+    by_run = {run["run"]: run for run in result["runs"]}
+    pairs = [
+        (name, relative)
+        for merge in result.get("merged", [])
+        if merge["device"] == device
+        for name, relative in merge["pairs"]
+    ]
+    costs = pair_costs(result, index)
+    order = pool_order([costs[pair] for pair in pairs])
+    mapped = parallel.ordered_map(PairGhost(index, device), [pairs[k] for k in order], min_items=2)
+    for k, (fresh, _distances) in zip(order, mapped, strict=True):
+        name, relative = pairs[k]
+        retained = by_run[name]["snapshots"][relative]
+        for key in sorted(set(retained) | set(fresh)):
+            if key != "seconds":
+                require(
+                    fresh.get(key) == retained.get(key), f"{name}: merged pair {relative} {key} differs from its replay"
+                )
+    return len(pairs)
+
+
 def check(path: Path, runs: str, index: dict[str, Any]) -> None:
     """Validate every run of path, rerun the --runs execution ghosts, and replay merged runs bit for bit.
 
@@ -1048,7 +1078,9 @@ def check(path: Path, runs: str, index: dict[str, Any]) -> None:
         replay_merged(by_run[name], index, device)
         replayed += 1
     pairs = replay_pairs(retained, index, device) if tokens is None or "pairs" in tokens else 0
-    tokens = None if tokens is None else tokens - {"pairs"}
+    if tokens is not None and "pairs-all" in tokens:
+        pairs += replay_all_pairs(retained, index, device)
+    tokens = None if tokens is None else tokens - {"pairs", "pairs-all"}
     checked = 0
     for run in retained["runs"]:
         if "skipped" in run or (tokens is not None and run["run"] not in tokens):

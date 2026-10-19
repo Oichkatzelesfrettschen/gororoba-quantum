@@ -1998,6 +1998,15 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs-all",
+   "name": "core-591",
+   "seconds": 300.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "ruff check scripts/conditional_ramsey_power.py && ruff format --target-version py313 --check scripts/conditional_ramsey_power.py && MYPYPATH=gororoba_quantum mypy scripts/conditional_ramsey_power.py",
    "name": "core-300",
    "seconds": 13.5,
