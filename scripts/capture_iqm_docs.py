@@ -295,7 +295,9 @@ def capture_docs() -> tuple[list[dict[str, Any]], dict[str, Any]]:
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
         for url, path, status, text in pool.map(partial(render_page, "--docs", stamp), tasks):
             if text is None:
-                unreachable.append({"url": url, "status": status})
+                # Two inventory names can resolve to one URI; its failure is one entry.
+                if all(item["url"] != url for item in unreachable):
+                    unreachable.append({"url": url, "status": status})
                 continue
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text, encoding="utf-8")
@@ -457,7 +459,7 @@ def check_tree(root: Path) -> int:
         pinned = inventory(kind, base, root)
         unreachable = doc["unreachable"]
         for item in unreachable:
-            if set(item) != {"url", "status"} or not isinstance(item["status"], int) or item["status"] == 200:
+            if set(item) != {"url", "status"} or type(item["status"]) is not int or item["status"] == 200:
                 raise SystemExit(f"{kind}: unreachable entry {item} is not a failed fetch")
         failed = {item["url"] for item in unreachable}
         if len(failed) != len(unreachable):
@@ -571,11 +573,16 @@ def self_test() -> int:
         page_bytes = page.read_bytes()
         page.unlink()
 
-        def mark_reached(status: int, copies: int, doc: dict[str, Any]) -> None:
+        def mark_reached(status: int | bool, copies: int, doc: dict[str, Any]) -> None:
             drop_row(rel(page, root), doc)
             doc["unreachable"] = [{"url": page_url, "status": status}] * copies
 
-        for label, status, copies in (("a fetched page", 200, 1), ("a repeated URL", 404, 2)):
+        cases_unreachable: tuple[tuple[str, int | bool, int], ...] = (
+            ("a fetched page", 200, 1),
+            ("a Boolean status", False, 1),
+            ("a repeated URL", 404, 2),
+        )
+        for label, status, copies in cases_unreachable:
             original = edit_manifest("docs", partial(mark_reached, status, copies))
             expect(f"unreachable entry naming {label}", "unreachable entry")
             manifest_path("docs", base).write_bytes(original)
