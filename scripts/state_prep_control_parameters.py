@@ -387,7 +387,9 @@ def _planner(record: dict[str, Any], job: dict[str, Any]) -> dict[str, Any]:
     optimization = record.get("optimization") or {}
     candidates = optimization.get("candidates") or []
     require(bool(candidates), "the record holds no optimization candidate")
-    candidate = candidates[0]
+    selected = [planned for planned in candidates if planned.get("name") == optimization.get("selected")]
+    require(len(selected) == 1, f"{len(selected)} optimization candidates carry the selected name")
+    candidate = selected[0]
     names = [str(pub["name"]) for pub in job["pubs"]]
     matched = [
         planned
@@ -789,10 +791,11 @@ def _lag(qubits: list[int], bits: np.ndarray) -> dict[str, Any]:
     after_zero = previous.shape[1] - after_one
     one_one = (previous & current).sum(axis=1)
     zero_one = current.sum(axis=1) - one_one
-    defined = after_one > 0
+    defined = (after_one > 0) & (after_zero > 0)
     z95 = two_sided_z(1.0 - CONFIDENCE)
     usable = [i for i in range(len(qubits)) if defined[i]]
-    # Family F_lag1/<run>: one test per qubit with at least one shot after an excited shot.
+    # Family F_lag1/<run>: one test per qubit with at least one shot after an excited shot and one after a
+    # ground shot, so both conditional fractions have a positive denominator.
     a, n_a, b, n_b = (np.asarray([column[i] for i in usable]) for column in (one_one, after_one, zero_one, after_zero))
     if usable:
         difference_all, lower_all, upper_all = newcombe(a, n_a, b, n_b, z95)
@@ -802,8 +805,9 @@ def _lag(qubits: list[int], bits: np.ndarray) -> dict[str, Any]:
     adjusted_all = bonferroni(p_all, len(usable))
     per_qubit: dict[str, Any] = {}
     differences = []
-    for qubit in qubits:
-        per_qubit[str(qubit)] = {"undefined": "no shot follows an excited shot"}
+    for index, qubit in enumerate(qubits):
+        reason = "no shot follows an excited shot" if after_one[index] == 0 else "no shot follows a ground shot"
+        per_qubit[str(qubit)] = {"undefined": reason}
     for position, index in enumerate(usable):
         difference = float(difference_all[position])
         differences.append(difference)
@@ -817,14 +821,14 @@ def _lag(qubits: list[int], bits: np.ndarray) -> dict[str, Any]:
         }
     ranked = sorted(range(len(usable)), key=lambda i: (float(adjusted_all[i]), qubits[usable[i]]))
     pooled_one = int(one_one.sum()) / int(after_one.sum()) if int(after_one.sum()) else None
-    pooled_zero = int(zero_one.sum()) / int(after_zero.sum())
+    pooled_zero = int(zero_one.sum()) / int(after_zero.sum()) if int(after_zero.sum()) else None
     return {
         "class": "exploratory",
         "assumption": LAG_ASSUMPTION,
         "qubits": per_qubit,
         "defined_qubits": len(differences),
         "median_difference": _median(differences),
-        "pooled_difference": None if pooled_one is None else pooled_one - pooled_zero,
+        "pooled_difference": None if pooled_one is None or pooled_zero is None else pooled_one - pooled_zero,
         "positive_differences": sum(1 for value in differences if value > 0.0),
         "smallest_bonferroni_p": [
             {"qubit": qubits[usable[i]], "bonferroni_p": float(adjusted_all[i])} for i in ranked[:TOP]
@@ -1759,6 +1763,47 @@ def _self_test(scratch: Path) -> None:
             weight *= p if outcome >> bit & 1 else 1.0 - p
         brute[bin(outcome).count("1")] += weight
     require(np.allclose(poisson_binomial(probabilities), brute, rtol=0.0, atol=1e-15), "Poisson-binomial law")
+    # Lag-1: a qubit excited on every shot has no shot after a ground shot and stays undefined.
+    lag_bits = np.asarray([[1, 1, 1, 1, 1], [0, 1, 0, 1, 1], [0, 0, 0, 0, 0]], dtype=np.uint8)
+    lag = _lag([0, 1, 2], lag_bits)
+    require(lag["qubits"]["0"] == {"undefined": "no shot follows a ground shot"}, "lag-1 all-excited qubit")
+    require(lag["qubits"]["2"] == {"undefined": "no shot follows an excited shot"}, "lag-1 all-ground qubit")
+    require(lag["defined_qubits"] == 1 and "difference" in lag["qubits"]["1"], "lag-1 defined qubit")
+    all_excited = _lag([0], lag_bits[:1])
+    require(all_excited["pooled_difference"] is None and all_excited["defined_qubits"] == 0, "lag-1 pooled zero")
+    # The planner reads the candidate named by optimization.selected, exactly one of them.
+    plan_pub = {
+        "name": "p",
+        "shots": 1,
+        "scheduled_seconds": 1e-6,
+        "repetition_delay_seconds": 2.5e-4,
+        "classical_latency_seconds": 0.0,
+        "estimated_execution_seconds": 1.0,
+    }
+    plan_job = {"name": f"{SYNTHETIC_BACKEND}/k/1", "pubs": [plan_pub], "overhead_seconds": 2.0}
+    plan_job["estimated_charge_seconds"] = 3.0
+    other_job = {"name": f"{SYNTHETIC_BACKEND}/k/1", "pubs": [{**plan_pub, "shots": 2}]}
+    plan_record: dict[str, Any] = {
+        "optimization": {
+            "selected": "candidate-001",
+            "candidates": [
+                {"name": "candidate-000", "jobs": [other_job]},
+                {"name": "candidate-001", "jobs": [plan_job]},
+            ],
+        },
+        "execution_contract": {"selected_job_costs": [plan_job]},
+    }
+    plan_submitted = {"job_id": "j", "backend": SYNTHETIC_BACKEND, "pubs": [{"name": "p"}]}
+    chosen = _planner(plan_record, plan_submitted)
+    require(chosen["candidate"] == "candidate-001" and chosen["candidate_is_selected"], "planner candidate")
+    for selected_name in ("candidate-009", None):
+        broken_record = {**plan_record, "optimization": {**plan_record["optimization"], "selected": selected_name}}
+        try:
+            _planner(broken_record, plan_submitted)
+        except ValueError as error:
+            require("selected name" in str(error), f"planner refusal reason: {error}")
+        else:
+            raise RuntimeError("a planner without the selected candidate passed")
 
     rng = np.random.default_rng(20261018)
     qubits = list(range(8))
