@@ -2089,6 +2089,23 @@ def _check_window_sweep() -> dict[str, str]:
         or [name for name in names if not is_orbit(name)] != list(SPECTATOR_MEMBERS)
     ):
         raise RuntimeError(f"the analyzer's orbit and spectator names differ from the planned members {names}")
+    # Bitstrings put clbit 0 rightmost: "10" is qubit 2 read 1 with the control bit 0, label 2.
+    module = sys.modules[__name__]
+    synthetic = {"members": [{"name": "n21_orbit_nominal_feedback"}, *({"name": n} for n in SPECTATOR_MEMBERS)]}
+    payloads = [{"registers": {REGISTER: {"bitstrings": ["01"]}}}] + [
+        {"registers": {REGISTER: {"bitstrings": ["10", "00", "10"]}}} for _name in SPECTATOR_MEMBERS
+    ]
+    with (
+        mock.patch.object(module, "_group", lambda _run: synthetic),
+        mock.patch.object(module, "raw_pubs", lambda _run: payloads),
+    ):
+        tallied = spectator_counts(Path("."))
+    if tallied is None or any(
+        list(tallied[kind][quadrature]) != [1.0, 0.0, 2.0, 0.0]
+        for kind in SPECTATOR_KINDS
+        for quadrature in SPECTATOR_QUADRATURES
+    ):
+        raise RuntimeError(f"spectator_counts tallies {tallied}, not qubit 2 on clbit 1")
     if spectator_contract(None, CONTRACT_ALPHA)["status"] != "not_evaluable":
         raise RuntimeError("the spectator contract evaluates without spectator members")
     if (

@@ -1758,14 +1758,22 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "two-round semiclassical QPE and perform no order finding or factoring (Smolin, Smith and "
                 "Vargo, Nature 499, 163 (2013)). The window arms of n21-orbit-rca idle the control, read it "
                 "a second time, or echo the work qubits during the first measurement and reset; the family "
-                "configuration records their durations in dt. With window_sweep, window_delay_long idles the "
-                "control twice window_delay_dt, which separates a coherence loss growing with the window from a "
-                "one-time step, and four spectator Ramsey arms read the work bit for 4 in X and Y across the "
-                "control's measurement and reset, against a reset_only reference that idles window_delay_dt, the "
-                "control's calibrated measure duration, in place of the measurement.",
+                "configuration records their durations in dt.",
                 "",
             ]
             if family in ("n21-orbit-feedback", "n21-orbit-rca")
+            else []
+        ),
+        *(
+            [
+                "window_sweep adds window_delay_long, which idles the control twice window_delay_dt and "
+                "separates a coherence loss growing with the window from a one-time step, and four spectator "
+                "Ramsey arms that read the work bit for 4 in X and Y across the control's measurement and reset, "
+                "against a reset_only reference idling window_delay_dt, the control's calibrated measure "
+                "duration, in place of the measurement.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_sweep")
             else []
         ),
         *(
