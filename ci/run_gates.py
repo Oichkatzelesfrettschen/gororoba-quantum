@@ -329,9 +329,6 @@ def execute(
         for gate in gates:
             if gate["name"] in matching:
                 yield GateResult(gate, 0, 0.0, "", "SKIP")
-    # Running gates may read files other gates rewrite; digests taken before
-    # the runs describe the skip decision only.
-    content.forget()
     with TemporaryDirectory(prefix="ci-read-trace-") as temporary:
         traces = Path(temporary) if tracing else None
         for gate, status, seconds, output in run_all(to_run, environment, root, traces):
@@ -345,6 +342,10 @@ def execute(
                 if shell is not None:
                     reasons = [shell, *reasons]
                 if reads is not None and not reasons:
+                    # Another gate of the shard may have rewritten a file
+                    # since an earlier key read it, so each key hashes the
+                    # bytes on disk when its gate ends.
+                    content.forget()
                     entries[gate["name"]] = {"key": key(gate, reads), "reads": reads}
                 else:
                     entries.pop(gate["name"], None)
