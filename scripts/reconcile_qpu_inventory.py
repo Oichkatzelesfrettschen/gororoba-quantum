@@ -19,6 +19,12 @@ error) bills the QPU lock time it consumed and returns no result, so it has
 no raw archive. Its inventory row carries the failed status with a settled
 positive charge, the run whose collect.json names it with result_unavailable
 holds the same settled charge, and its charge enters the usage-window sum.
+
+The inventory is an observation at observed_at. A raw archive whose run's
+submission started at or after that instant names a job the observation
+cannot hold; it is listed under awaiting_observation and joins coverage at
+the next observation. Every archive of a run submitted earlier must match an
+inventory job.
 """
 
 from __future__ import annotations
@@ -128,6 +134,13 @@ def archive_instance(run: Path, default_instance: str) -> str:
     return recorded if isinstance(recorded, str) else default_instance
 
 
+def submitted_after(run: Path, observed_at: str) -> bool:
+    """Whether run's submission started at or after the inventory observation."""
+    record = run / "record.json"
+    started = (read(record).get("submission") or {}).get("started") if record.is_file() else None
+    return isinstance(started, str) and timestamp(started) >= timestamp(observed_at)
+
+
 def failed_collections(instance: str, default_instance: str) -> dict[str, Path]:
     """Each run that collected a failed job of the instance, keyed by that job's identity."""
     runs: dict[str, Path] = {}
@@ -201,6 +214,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     identities = [job["job_id"] for job in jobs]
     require(len(identities) == len(set(identities)), "duplicate service job identity")
     archives: dict[str, Path] = {}
+    awaiting: list[str] = []
     for index_path in sorted((ROOT / "results/live").glob("*/raw/*/index.json")):
         index = read(index_path)
         identity = index["job_id"]
@@ -208,8 +222,13 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         require(identity not in archives, "duplicate raw archive for a physical job")
         owner = archive_instance(index_path.parent.parent.parent, default_instance)
         require(owner in known, f"raw archive {identity} belongs to an instance without an inventory file: {owner}")
-        if owner == instance:
-            archives[identity] = index_path
+        if owner != instance:
+            continue
+        run = index_path.parent.parent.parent
+        if identity not in identities and submitted_after(run, snapshot["observed_at"]):
+            awaiting.append(str(index_path.parent.relative_to(ROOT)))
+            continue
+        archives[identity] = index_path
     statuses = {job["job_id"]: job["status"] for job in jobs}
     unfinished = sorted(key for key, value in statuses.items() if value != "DONE" and value not in FAILED_STATUSES)
     require(not unfinished, f"unfinished service jobs: {unfinished}")
@@ -371,6 +390,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "account_reserve_seconds": ACCOUNT_RESERVE_SECONDS,
         "usage_window_charge_seconds": str(in_window),
         "account_usage_observation": snapshot["account_usage"],
+        "awaiting_observation": sorted(awaiting),
         "failed_job_count": sum(1 for row in rows if row["provenance"] == "failed_collection"),
         "failed_charge_seconds": str(
             sum(

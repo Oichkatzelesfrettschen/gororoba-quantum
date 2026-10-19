@@ -700,6 +700,11 @@ where the registered commands require them.
 | Retained exact N=21 validation | core-485 |
 | Secondary witness, generator, estimator and compact QX | core-497, core-498, core-499, core-500 |
 
+The gate identities above are those of the 2860b437 snapshot. In the current
+`ci/gates.json` the secondary witness is core-571 and the static-neighbor
+generator, estimator and compact QX preflight are core-588, core-589 and
+core-590; core-497 to core-500 now name other gates.
+
 The [toolchain record](../../evidence/quantum_inspire/toolchain_check.json)
 was regenerated during this integration with Python 3.13.16, libqasm 1.2.1 and
 OpenSquirrel 0.9.1. All 1,000 current case circuits parsed and compiled. Its hashes and

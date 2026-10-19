@@ -10,6 +10,12 @@
     "usage_remaining_seconds": 218
   },
   "acquisition_count": 20,
+  "awaiting_observation": [
+    "results/live/2026-10-18T214519.655411Z/raw/dbajs3gc77vs7382ulhg",
+    "results/live/2026-10-18T220218.089776Z/raw/dbak4pni0auc73925oc0"
+  ],
+  "failed_charge_seconds": "0",
+  "failed_job_count": 0,
   "final_charge_seconds": "382",
   "historical_charge_seconds": "49",
   "indexed_metrics_snapshots": 28,
@@ -1331,9 +1337,9 @@
   "new_campaign_cutoff": "2026-10-14T00:00:00Z",
   "observed_at": "2026-10-18T09:20:42.042591+00:00",
   "pub_count": 494,
-  "replay_source_sha256": "b1bb35b29878de625abad19d4e9b1a0fe43448aca97aec77d94b4698aa0d8c58",
+  "replay_source_sha256": "d94f4684e21e418d462f4b1b2ff06ec183cde67cb01d127b0dd4c5f8e21cf4a9",
   "schema": "qpu-job-retention-audit-v1",
-  "scope": "All jobs in the retained service inventory have lossless raw archives. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
+  "scope": "All completed jobs in the retained service inventory have lossless raw archives, and every failed job's settled charge is bound to the collection that records why it returned no result. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
   "submitted_pub_shots": 1355072,
   "unallocated_campaign_seconds": "19",
   "usage_window_charge_seconds": "382"

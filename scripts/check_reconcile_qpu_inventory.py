@@ -122,52 +122,91 @@ def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str
         result["failed_job_count"] == 1 and result["failed_charge_seconds"] == "3" and result["job_count"] == 2,
         "failed-job audit differs",
     )
-    inventory_mutants: list[Any] = [
-        lambda value: value["jobs"][1].update(usage_status="pending"),
-        lambda value: value["jobs"][1].update(final_qpu_charge_seconds=0),
-        lambda value: value["jobs"][1].update(status="RUNNING"),
-        lambda value: value["jobs"][1].update(status="CANCELLED"),
-        lambda value: value["account_usage"].update(usage_consumed_seconds=1, usage_remaining_seconds=599),
+    inventory_mutants: list[tuple[Any, str]] = [
+        (lambda value: value["jobs"][1].update(usage_status="pending"), "unsettled job failed-job"),
+        (lambda value: value["jobs"][1].update(final_qpu_charge_seconds=0), "physical charge missing"),
+        (lambda value: value["jobs"][1].update(status="RUNNING"), "unfinished service jobs"),
+        (lambda value: value["jobs"][1].update(status="CANCELLED"), "collection status differs"),
+        (
+            lambda value: value["account_usage"].update(usage_consumed_seconds=1, usage_remaining_seconds=599),
+            "differ from the consumed seconds",
+        ),
     ]
-    for mutate in inventory_mutants:
+    for mutate, reason in inventory_mutants:
         mutant = copy.deepcopy(failed)
         mutate(mutant)
         write(source, mutant)
-        rejects(audit, source, "a mutated failed-job inventory")
+        rejects(audit, source, reason)
     write(source, failed)
-    collection_mutants: list[Any] = [
-        lambda value: value["jobs"]["failed-job"].pop("result_unavailable"),
-        lambda value: value["jobs"]["failed-job"].update(result_unavailable=""),
-        lambda value: value["jobs"]["failed-job"]["usage"].update(usage_status="pending"),
-        lambda value: value["jobs"]["failed-job"]["usage"].update(qpu_charge_time_seconds=2),
-        lambda value: value["jobs"]["failed-job"].update(backend="other-backend"),
-        lambda value: value.update(submission_complete=False),
+    collection_mutants: list[tuple[Any, str]] = [
+        (lambda value: value["jobs"]["failed-job"].pop("result_unavailable"), "has no collection naming it"),
+        (lambda value: value["jobs"]["failed-job"].update(result_unavailable=""), "lacks the reason"),
+        (lambda value: value["jobs"]["failed-job"]["usage"].update(usage_status="pending"), "usage is unsettled"),
+        (lambda value: value["jobs"]["failed-job"]["usage"].update(job_status="DONE"), "collection status differs"),
+        (lambda value: value["jobs"]["failed-job"]["usage"].update(qpu_charge_time_seconds=2), "charge differs"),
+        (lambda value: value["jobs"]["failed-job"].update(backend="other-backend"), "backend differs"),
+        (lambda value: value.update(submission_complete=False), "collection is incomplete"),
     ]
-    for mutate in collection_mutants:
+    for mutate, reason in collection_mutants:
         broken = copy.deepcopy(collection)
         mutate(broken[0])
         write(run / "collect.json", broken)
-        rejects(audit, source, "a mutated failed-job collection")
+        rejects(audit, source, reason)
     write(run / "collect.json", collection)
+    (run / "isa.qpy").write_bytes(b"altered failed-job circuit bytes")
+    rejects(audit, source, "isa.qpy differs")
+    (run / "isa.qpy").write_bytes(b"synthetic failed-job circuit bytes")
+    twin = root / "results/live/synthetic-failed-twin"
+    twin.mkdir()
+    write(twin / "collect.json", collection)
+    rejects(audit, source, "two runs collect failed job")
+    (twin / "collect.json").unlink()
+    twin.rmdir()
     raw = run / "raw/failed-job"
     raw.mkdir(parents=True)
     write(raw / "index.json", {"job_id": "failed-job", "files": {}, "metrics": [], "metrics_sha256": []})
-    rejects(audit, source, "a failed job with a raw archive")
+    rejects(audit, source, "retained archive identities differ")
     (raw / "index.json").unlink()
     raw.rmdir()
     (run / "collect.json").unlink()
-    rejects(audit, source, "a failed job without a collection")
+    rejects(audit, source, "has no collection naming it")
     write(run / "collect.json", collection)
     write(source, snapshot)
     (run / "collect.json").unlink()
 
 
-def rejects(audit: Any, source: Path, label: str) -> None:
+def awaiting_observation_contract(audit: Any, root: Path, source: Path, snapshot: dict[str, Any]) -> None:
+    """An archive submitted after the observation awaits it; one submitted before must be inventoried."""
+    run = root / "results/live/synthetic-later"
+    raw = run / "raw/later-job"
+    raw.mkdir(parents=True)
+    write(raw / "index.json", {"job_id": "later-job", "files": {}, "metrics": [], "metrics_sha256": []})
+    observed = copy.deepcopy(snapshot)
+    observed["observed_at"] = "2026-10-12T12:00:00+00:00"
+    write(source, observed)
+    write(run / "record.json", {"submission": {"started": "2026-10-12T12:00:00+00:00"}})
+    result = audit.reconcile(source)
+    audit.require(
+        result["awaiting_observation"] == ["results/live/synthetic-later/raw/later-job"] and result["job_count"] == 1,
+        "an archive submitted after the observation is not declared awaiting",
+    )
+    write(run / "record.json", {"submission": {"started": "2026-10-12T11:59:59+00:00"}})
+    rejects(audit, source, "retained archive identities differ")
+    (run / "record.json").unlink()
+    rejects(audit, source, "retained archive identities differ")
+    (raw / "index.json").unlink()
+    raw.rmdir()
+    write(source, snapshot)
+
+
+def rejects(audit: Any, source: Path, reason: str) -> None:
+    """reconcile refuses source with a message naming reason, so a mutant fails for the intended rule."""
     try:
         audit.reconcile(source)
-    except ValueError:
+    except ValueError as error:
+        audit.require(reason in str(error), f"refused for {error!r}, not {reason!r}")
         return
-    raise RuntimeError(f"{label} was admitted")
+    raise RuntimeError(f"a mutant expected to fail with {reason!r} was admitted")
 
 
 def main() -> None:
@@ -316,6 +355,7 @@ def main() -> None:
             audit.require(before == after, "replay altered retained inputs")
             second_instance_contract(audit, root, source, snapshot, times)
             failed_job_contract(audit, root, source, snapshot)
+            awaiting_observation_contract(audit, root, source, snapshot)
             duplicated = copy.deepcopy(index)
             duplicated["metrics"] = ["job_metrics.json", "job_metrics.json"]
             duplicated["metrics_sha256"] = [index["metrics_sha256"][0]] * 2
@@ -338,7 +378,8 @@ def main() -> None:
     print(
         "Synthetic inventory contract: 20 inventory mutations, two window chronology mutations, "
         "a repeated metrics snapshot and raw corruption rejected; a failed job binds its settled charge to "
-        "its collection under 13 mutations; the campaign cutoff splits charges; "
+        "its collection under 16 mutations, each refused by its own rule; an archive submitted after the "
+        "observation awaits it; the campaign cutoff splits charges; "
         "replay preserves bytes"
     )
 
