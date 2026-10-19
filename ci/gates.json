@@ -4,7 +4,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/check_gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/check_pins.py ci/gate_ledger.py ci/host_identity.py ci/read_trace/sitecustomize.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/check_gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/check_pins.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py",
    "name": "core-000",
    "seconds": 0.7,
    "tier": "pr"
@@ -3763,6 +3763,14 @@
    "cmd": "\"$PYTHON\" -B -W error gate_ledger.py --self-test",
    "name": "core-598",
    "seconds": 1.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/merge_gate_timings.py --check ci/gate_timings.json",
+   "name": "core-599",
+   "seconds": 0.5,
    "tier": "pr"
   }
  ],

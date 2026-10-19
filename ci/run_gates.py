@@ -152,14 +152,30 @@ def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | Non
     return workers
 
 
+def measured_seconds(root: Path) -> dict[str, float]:
+    """Measured wall seconds per gate from ci/gate_timings.json (ci/merge_gate_timings.py), empty when absent."""
+    path = root / "ci" / "gate_timings.json"
+    if not path.is_file():
+        return {}
+    gates = json.loads(path.read_text())["gates"]
+    return {name: float(entry["wall_seconds"]) for name, entry in gates.items()}
+
+
 def assign(
-    gates: list[dict[str, Any]], count: int, capacity: int = 1, caller_cap: str | None = None
+    gates: list[dict[str, Any]],
+    count: int,
+    capacity: int = 1,
+    caller_cap: str | None = None,
+    measured: dict[str, float] | None = None,
 ) -> list[list[dict[str, Any]]]:
-    """Longest-first allocation by estimated occupied CPU-slot seconds."""
+    """Longest-first allocation by occupied CPU-slot seconds, measured where recorded, else estimated."""
     shards: list[list[dict[str, Any]]] = [[] for _ in range(count)]
     loads = [0.0] * count
+    measured = measured or {}
     costs = {
-        gate["name"]: float(gate.get("seconds", 10.0)) * allocated_workers(gate, capacity, caller_cap) for gate in gates
+        gate["name"]: measured.get(gate["name"], float(gate.get("seconds", 10.0)))
+        * allocated_workers(gate, capacity, caller_cap)
+        for gate in gates
     }
     for gate in sorted(gates, key=lambda gate: (-costs[gate["name"]], gate["name"])):
         target = min(range(count), key=lambda index: (loads[index], index))
@@ -407,7 +423,7 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
         candidates = [gate for gate in candidates if gate["name"] in named or gate.get("parent") in named]
-    selected = assign(candidates, count, arguments.shard_cpus)[shard]
+    selected = assign(candidates, count, arguments.shard_cpus, measured=measured_seconds(ROOT))[shard]
     if arguments.plan is not None:
         environments = sorted({gate["runtime"] for gate in selected if gate.get("runtime")})
         arguments.plan.write_text(
