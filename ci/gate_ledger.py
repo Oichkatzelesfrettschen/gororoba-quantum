@@ -31,6 +31,7 @@ import hashlib
 import json
 import os
 import shlex
+import stat
 import sys
 import tempfile
 from collections.abc import Iterable, Mapping
@@ -39,7 +40,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 TRACER = Path(__file__).resolve().parent / "read_trace"
-SCHEMA = "gororoba-gate-ledger-v1"
+SCHEMA = "gororoba-gate-ledger-v2"
 # Manifest fields that change what a gate runs; seconds and tier only schedule it.
 MANIFEST_FIELDS = ("cmd", "cwd", "runtime", "workers", "requires", "parent", "case_registry")
 # The shell expands globs, tildes and parameters before Python starts, so a
@@ -50,6 +51,9 @@ THREADED_FILES = 400
 # Interpreter and lint caches appear in directory listings as gates run; their
 # contents are derived from the sources the read set already hashes.
 CACHE_NAMES = frozenset(("__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache"))
+
+
+FILE_TYPES = ((stat.S_ISREG, "file"), (stat.S_ISDIR, "directory"), (stat.S_ISLNK, "link"))
 
 
 def derived(name: str) -> bool:
@@ -117,6 +121,8 @@ def read_trace(trace: Path) -> tuple[dict[str, list[Any]] | None, list[str]]:
     files: set[str] = set()
     directories: set[str] = set()
     patterns: set[tuple[int, str]] = set()
+    probes: set[tuple[int, str]] = set()
+    links: set[str] = set()
     reasons: list[str] = []
     records = sorted(trace.glob("*.tsv")) if trace.is_dir() else []
     if not records:
@@ -131,6 +137,10 @@ def read_trace(trace: Path) -> tuple[dict[str, list[Any]] | None, list[str]]:
             elif kind == "g":
                 recursive, _, pattern = rest.partition("\t")
                 patterns.add((int(recursive), pattern))
+            elif kind in ("s", "l"):
+                probes.add((int(kind == "s"), rest))
+            elif kind == "k":
+                links.add(rest)
             elif kind == "U":
                 reasons.append(rest)
             else:
@@ -141,6 +151,8 @@ def read_trace(trace: Path) -> tuple[dict[str, list[Any]] | None, list[str]]:
         "files": sorted(files),
         "dirs": sorted(directories),
         "globs": [list(item) for item in sorted(patterns)],
+        "stats": [list(item) for item in sorted(probes)],
+        "links": sorted(links),
     }, []
 
 
@@ -185,6 +197,34 @@ class Content:
         value: list[str] = self.memo[key]
         return value
 
+    def status(self, follow: int, name: str) -> str:
+        """The path's existence and file type as os.stat (follow) or os.lstat sees it."""
+        key = ("s" if follow else "l", name)
+        if key not in self.memo:
+            try:
+                mode = (os.stat if follow else os.lstat)(self.root / name).st_mode
+            except FileNotFoundError:
+                self.memo[key] = "absent"
+            except NotADirectoryError:
+                self.memo[key] = "absent"
+            else:
+                self.memo[key] = next(
+                    (label for test, label in FILE_TYPES if test(mode)),
+                    "other",
+                )
+        return str(self.memo[key])
+
+    def link(self, name: str) -> str:
+        key = ("k", name)
+        if key not in self.memo:
+            try:
+                self.memo[key] = "link " + os.readlink(self.root / name)
+            except FileNotFoundError:
+                self.memo[key] = "absent"
+            except OSError:
+                self.memo[key] = "not a link"
+        return str(self.memo[key])
+
     def forget(self) -> None:
         self.memo.clear()
 
@@ -200,6 +240,8 @@ def gate_key(gate: Mapping[str, Any], workers: int, host: str, reads: Mapping[st
         "files": {name: content.file(name) for name in reads["files"]},
         "dirs": {name: content.directory(name) for name in reads["dirs"]},
         "globs": [[recursive, pattern, content.matches(recursive, pattern)] for recursive, pattern in reads["globs"]],
+        "stats": [[follow, name, content.status(follow, name)] for follow, name in reads["stats"]],
+        "links": {name: content.link(name) for name in reads["links"]},
     }
     return hashlib.sha256(json.dumps(components, sort_keys=True).encode()).hexdigest()
 
@@ -208,19 +250,24 @@ def valid_entry(entry: Any) -> bool:
     if not isinstance(entry, dict) or not isinstance(entry.get("key"), str):
         return False
     reads = entry.get("reads")
-    if not isinstance(reads, dict):
+    if not isinstance(reads, dict) or set(reads) != {"files", "dirs", "globs", "stats", "links"}:
         return False
-    files, dirs, globs = reads.get("files"), reads.get("dirs"), reads.get("globs")
-    return (
-        isinstance(files, list)
-        and all(isinstance(name, str) for name in files)
-        and isinstance(dirs, list)
-        and all(isinstance(name, str) for name in dirs)
-        and isinstance(globs, list)
-        and all(
+
+    def names(value: Any) -> bool:
+        return isinstance(value, list) and all(isinstance(name, str) for name in value)
+
+    def pairs(value: Any) -> bool:
+        return isinstance(value, list) and all(
             isinstance(item, list) and len(item) == 2 and isinstance(item[0], int) and isinstance(item[1], str)
-            for item in globs
+            for item in value
         )
+
+    return (
+        names(reads["files"])
+        and names(reads["dirs"])
+        and names(reads["links"])
+        and pairs(reads["globs"])
+        and pairs(reads["stats"])
     )
 
 
@@ -302,6 +349,12 @@ def self_test() -> None:
                 "        pool.map(read, ['data/pooled.txt'])\n"
             ),
             "data/pooled.txt": "v1\n",
+            "exists.py": (
+                "from pathlib import Path\nlater = Path('data/later.txt')\nif later.exists():\n    later.read_text()\n"
+            ),
+            "linked.py": "open('data/linked.txt').read()\nopen('data/outside.txt').read()\n",
+            "data/target_a.txt": "same\n",
+            "data/target_b.txt": "same\n",
             "threaded.py": (
                 "from concurrent.futures import ThreadPoolExecutor\n"
                 "from pathlib import Path\n"
@@ -319,6 +372,17 @@ def self_test() -> None:
             files[f"data/threaded/{k}.txt"] = f"{k}\n"
         for name, text in files.items():
             (root / name).write_text(text)
+        outside = Path(temporary) / "outside"
+        outside.mkdir()
+        (outside / "a.txt").write_text("same\n")
+        (outside / "b.txt").write_text("same\n")
+        (root / "data" / "linked.txt").symlink_to("target_a.txt")
+        (root / "data" / "outside.txt").symlink_to(outside / "a.txt")
+
+        def retarget(link: Path, target: Path | str) -> None:
+            link.unlink()
+            link.symlink_to(target)
+
         # A pyc-only module: the compiled file stands without its source.
         (root / "compiled").mkdir()
         (root / "compiled" / "only.py").write_text("VALUE = 1\n")
@@ -345,6 +409,8 @@ def self_test() -> None:
             gate("listdir", '"$PYTHON" -B lister.py'),
             gate("pool", '"$PYTHON" -B pooled.py'),
             gate("threads", '"$PYTHON" -B threaded.py'),
+            gate("exists", '"$PYTHON" -B exists.py'),
+            gate("link", '"$PYTHON" -B linked.py'),
             gate("isolated-child", '"$PYTHON" -B isolated.py'),
             gate("isolated-shell", '"$PYTHON" -I -B plain.py'),
             gate("program-child", '"$PYTHON" -B shells.py'),
@@ -371,7 +437,7 @@ def self_test() -> None:
         if first != expected_first:
             raise RuntimeError(f"first pass verdicts {first}")
         stored = load(ledger)
-        traceable = {"plain", "import", "pyc", "glob", "listdir", "pool", "threads"}
+        traceable = {"plain", "import", "pyc", "glob", "listdir", "pool", "threads", "exists", "link"}
         if set(stored) != traceable:
             raise RuntimeError(f"the ledger stores {sorted(stored)}, expected {sorted(traceable)}")
         if "compiled/only.pyc" not in stored["pyc"]["reads"]["files"]:
@@ -391,12 +457,17 @@ def self_test() -> None:
             "listdir": lambda: (root / "data" / "listed" / "b.txt").write_text(""),
             "pool": lambda: (root / "data" / "pooled.txt").write_text("v2\n"),
             "threads": lambda: (root / "data" / "threaded" / f"{THREADED_FILES - 1}.txt").write_text("v2\n"),
+            "exists": lambda: (root / "data" / "later.txt").write_text("appeared\n"),
+            "link": lambda: retarget(root / "data" / "linked.txt", "target_b.txt"),
         }
+        if "data/outside.txt" not in stored["link"]["reads"]["links"]:
+            raise RuntimeError(f"a link leaving the root is outside the read set: {stored['link']['reads']}")
+        edits["link-outside"] = lambda: retarget(root / "data" / "outside.txt", outside / "b.txt")
         for name, edit in edits.items():
             edit()
             verdicts = run([entry for entry in gates if entry["name"] in traceable])
             reran = {gate_name for gate_name, verdict in verdicts.items() if verdict != "SKIP"}
-            if reran != {name}:
+            if reran != {name.removesuffix("-outside")}:
                 raise RuntimeError(f"an edit read by {name} reran {sorted(reran)}")
         plain = [entry for entry in gates if entry["name"] == "plain"]
         edited = [dict(plain[0], cmd='"$PYTHON" -B -W error plain.py')]
@@ -443,7 +514,8 @@ def self_test() -> None:
         if (shell_untraceable(command) is not None) != escapes:
             raise RuntimeError(f"shell classification of {command!r} is wrong")
     print(
-        "gate-ledger: open, import, pyc-only, glob, listdir and spawn-pool reads each rerun exactly their gate; "
+        "gate-ledger: open, import, pyc-only, glob, listdir, spawn-pool, worker-thread, existence-probe and "
+        "symlink reads each rerun exactly their gate; "
         "-I children, -I shells, non-Python programs and repository writes never skip; a command or host change "
         "reruns, a failure stores nothing and removes the earlier pass, and a shard merge drops decided failures"
     )

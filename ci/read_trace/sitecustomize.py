@@ -14,6 +14,11 @@ Records name paths relative to GOROROBA_READ_TRACE_ROOT:
   the path, so a file created later changes the gate key);
 - ``d PATH``: a directory listed through os.listdir or os.scandir;
 - ``g RECURSIVE PATTERN``: a glob.glob pattern;
+- ``s PATH`` and ``l PATH``: a path os.stat or os.lstat probed (os.path.exists,
+  isfile, isdir, Path.exists and Path.stat resolve through them), keyed by
+  existence and file type, so a file that appears later changes the key;
+- ``k PATH``: a symbolic link a recorded path crosses, keyed by its link text,
+  recorded even when the link points outside the root;
 - ``U REASON``: the process did something the read set cannot capture: it
   opened a repository file for writing, or started a program that is not a
   traced interpreter of GOROROBA_READ_TRACE_PYTHONS (any non-Python program,
@@ -22,9 +27,9 @@ Records name paths relative to GOROROBA_READ_TRACE_ROOT:
 
 Writes under a ``__pycache__`` directory are bytecode caches and record
 nothing. Paths outside the root (the standard library, site-packages) belong
-to the interpreter identity in the ledger key. os.stat, os.path.exists and
-the clock raise no audit event, so a gate that branches on them alone is
-outside the read set; the nightly ledger audit reruns every gate against it.
+to the interpreter identity in the ledger key. The clock, stat calls through a
+dir_fd or a direct posix binding (importlib's) and C-extension file access
+leave no record; the nightly ledger audit reruns every gate against them.
 """
 
 from __future__ import annotations
@@ -101,18 +106,86 @@ def _install(trace: str) -> None:
         with lock:
             os.write(descriptor, (record + "\n").encode("utf-8", "surrogateescape"))
 
-    def relative(path: Any, base: Any = None) -> str | None:
+    def links(absolute: str) -> None:
+        """Record every symbolic link on a lexical repository path with its link text."""
+        current = root
+        for part in absolute[len(prefix) :].split(os.sep):
+            current = join(current, part)
+            if os.path.islink(current):
+                name = current[len(prefix) :]
+                key = ("k", name)
+                with lock:
+                    fresh = key not in seen
+                    seen.add(key)
+                if fresh:
+                    emit(f"k\t{name}")
+                current = realpath(current)
+                if not current.startswith(prefix):
+                    return
+
+    def relative(path: Any, base: Any = None, follow: bool = True) -> str | None:
+        """The root-relative resolved path, after recording each link the lexical path crosses."""
         if isinstance(path, int):
             return None
         text = fspath(path)
         if base is not None and not os.path.isabs(text):
             text = join(fspath(base), text)
-        absolute = realpath(join(getcwd(), text))
+        lexical = os.path.normpath(join(getcwd(), text))
+        if lexical.startswith(prefix):
+            links(lexical)
+        if follow:
+            absolute = realpath(lexical)
+        else:
+            absolute = join(realpath(os.path.dirname(lexical)), os.path.basename(lexical))
         if absolute == root:
             return "."
         if absolute.startswith(prefix):
             return absolute[len(prefix) :]
         return None
+
+    def probe(original: Any, follow: bool) -> Any:
+        """os.stat or os.lstat that records a repository path's existence and file type as a read."""
+        tag = "s" if follow else "l"
+
+        def wrapped(path: Any, *args: Any, **kwargs: Any) -> Any:
+            result = original(path, *args, **kwargs)
+            ident = get_ident()
+            if ident in active or isinstance(path, int) or kwargs.get("dir_fd") is not None:
+                return result
+            record(path, ident, kwargs.get("follow_symlinks", True) and follow)
+            return result
+
+        def record(path: Any, ident: int, followed: bool) -> None:
+            key = (tag, path if isinstance(path, (str, bytes)) else repr(path), followed, getcwd())
+            with lock:
+                if key in seen:
+                    return
+                seen.add(key)
+            active.add(ident)
+            try:
+                name = relative(path, follow=followed)
+                if name is not None:
+                    emit(f"{'s' if followed else 'l'}\t{name}")
+            except Exception as error:  # noqa: BLE001 -- a tracer fault marks the run, never the gate
+                emit(f"U\ttracer {type(error).__name__} on stat")
+            finally:
+                active.discard(ident)
+
+        def failing(path: Any, *args: Any, **kwargs: Any) -> Any:
+            try:
+                return wrapped(path, *args, **kwargs)
+            except OSError:
+                ident = get_ident()
+                if ident not in active and not isinstance(path, int) and kwargs.get("dir_fd") is None:
+                    record(path, ident, kwargs.get("follow_symlinks", True) and follow)
+                raise
+
+        failing.__name__ = original.__name__
+        failing.__doc__ = original.__doc__
+        return failing
+
+    os.stat = probe(os.stat, True)
+    os.lstat = probe(os.lstat, False)
 
     def python_child(argv: list[str], environment: Any) -> str | None:
         """The reason a child escapes the trace, or None for a traced Python child."""
