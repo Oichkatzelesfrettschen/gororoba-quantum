@@ -402,3 +402,26 @@ Each gate runs its command once in normal Python. A second pass under
 `GOROROBA_WORKERS=1`) the `-O` half took 26.8 of 53.5 CPU seconds. ruff
 `S101` with explicit raises carries the guarantee that pass checked, that no
 check depends on `assert`, at lint time.
+
+## Shared bytecode prefix
+
+`-B` stops a gate from writing `.pyc` files and still reads valid ones, so a
+`PYTHONPYCACHEPREFIX` filled once by `compileall` over the checkout and the
+interpreter's site-packages lets every gate read compiled bytecode. Sixty
+pr-tier gates measured at 5 s or less, run through `ci/run_gates.py
+--timings` under `taskset -c 0-3` in the CI-pinned Python 3.14.7
+environment, summed these gate CPU seconds (user plus system), the warm
+prefix's compile cost excluded:
+
+| Order | Without prefix | With warm prefix |
+|---|---|---|
+| base first | 52.8 | 55.0 |
+| prefix first | 59.3 | 82.0 |
+
+The host carried a load average of 14 to 21 during the second pair, so its
+magnitudes are noisy, but the prefix raised CPU seconds in both orders. The
+prefix moves the cache of every module, site-packages included, away from
+the distribution's own `__pycache__`; which cost outweighs the saved
+compilation is unmeasured. The gate commands keep
+`-B` without a prefix. A CI shard whose summed CPU seconds fall with a warm
+prefix, measured against the same shard without one, reopens the change.
