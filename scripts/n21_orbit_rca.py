@@ -1506,6 +1506,13 @@ def _check_exact_laws() -> None:
         law = distribution(_readout(0.0, 0.0), feed_forward)
         if not np.allclose(law, [value / 8 for value in exact], atol=1e-12):
             raise RuntimeError(f"noiseless model law {law} differs from the exact N=21 law")
+        if not np.allclose(distribution(_readout(0.0, 0.0), feed_forward, np.eye(8, dtype=complex)), law, atol=1e-12):
+            raise RuntimeError("an identity window changed the noiseless law")
+        params = _readout(0.02, 0.03) | {"round1": 0.1, "phase_one": 0.7}
+        phase = np.diag([np.exp(0.7j) if index & 1 else 1.0 for index in range(8)]).astype(complex)
+        windowed = distribution(params | {"phase_one": 0.0}, feed_forward, phase)
+        if not np.allclose(windowed, distribution(params, feed_forward), atol=1e-12):
+            raise RuntimeError("a window phase on the work qubit for 1 differs from phase_one")
 
 
 class TwoBasins:

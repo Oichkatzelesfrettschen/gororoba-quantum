@@ -1,0 +1,1506 @@
+{
+ "collect_sha256": "a35e07134002d29c5d49cec21bdc437bbfc32a7308dc8aa19536a6e38e733eaf",
+ "record_sha256": "ef90634ade52f7a2ab318c888c4c4d562cfb815fc261301ee6e5c9dc5f39c2de",
+ "schema": "state-prep-execution-properties-v1",
+ "windows": [
+  {
+   "at": "2026-10-18T08:52:53.360032+00:00",
+   "calibration": "2026-10-18T01:38:20-07:00",
+   "edge": "start",
+   "job_id": "dba8hnk24mrc73851u30",
+   "pub": "ibm_kingston_dynamic_pub_01",
+   "qubits": {
+    "0": {
+     "T1_seconds": 0.00023798977824499089,
+     "T2_seconds": 0.000346240085895486,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.013671875,
+     "prob_meas1_prep0": 0.00830078125,
+     "readout_error": 0.010986328125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "1": {
+     "T1_seconds": 0.0003619530924080742,
+     "T2_seconds": 0.0005152364346628411,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01220703125,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "10": {
+     "T1_seconds": 0.0003180065499335412,
+     "T2_seconds": 2.61218367647342e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00732421875,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "100": {
+     "T1_seconds": 0.0002016414768348649,
+     "T2_seconds": 0.00015857580997525125,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.009765625,
+     "prob_meas1_prep0": 0.0087890625,
+     "readout_error": 0.00927734375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "101": {
+     "T1_seconds": 0.0002665830118209059,
+     "T2_seconds": 0.0002165333987179802,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.015625,
+     "prob_meas1_prep0": 0.00830078125,
+     "readout_error": 0.011962890625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "102": {
+     "T1_seconds": 0.00020160796608637225,
+     "T2_seconds": 0.00019881959450661146,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01904296875,
+     "prob_meas1_prep0": 0.01025390625,
+     "readout_error": 0.0146484375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "103": {
+     "T1_seconds": 0.0002751946266640687,
+     "T2_seconds": 0.00010936244256610184,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0126953125,
+     "prob_meas1_prep0": 0.013671875,
+     "readout_error": 0.01318359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "104": {
+     "T1_seconds": 0.0001368331016925187,
+     "T2_seconds": 0.00022809965585932852,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01220703125,
+     "prob_meas1_prep0": 0.00732421875,
+     "readout_error": 0.009765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "105": {
+     "T1_seconds": 0.00023455639632372806,
+     "T2_seconds": 0.00023236325493677666,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.005126953125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "106": {
+     "T1_seconds": 0.00010590464593419759,
+     "T2_seconds": 0.00015755723015018259,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0185546875,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.010986328125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "107": {
+     "T1_seconds": 0.00019636259940535825,
+     "T2_seconds": 0.00020490508017919655,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01318359375,
+     "prob_meas1_prep0": 0.0146484375,
+     "readout_error": 0.013916015625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "108": {
+     "T1_seconds": 0.00021194393518054704,
+     "T2_seconds": 0.0002053260527741632,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.00048828125,
+     "readout_error": 0.004638671875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "109": {
+     "T1_seconds": 0.00027296998618636523,
+     "T2_seconds": 0.0002617969503138763,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.005859375,
+     "prob_meas1_prep0": 0.0,
+     "readout_error": 0.0029296875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "11": {
+     "T1_seconds": 0.00018089334744725,
+     "T2_seconds": 9.870117282527722e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0078125,
+     "prob_meas1_prep0": 0.0078125,
+     "readout_error": 0.0078125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "110": {
+     "T1_seconds": 0.00028542652555179596,
+     "T2_seconds": 0.00017148529717086333,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0068359375,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.00537109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "111": {
+     "T1_seconds": 0.0003551362936216371,
+     "T2_seconds": 0.00021348515016652613,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.005859375,
+     "readout_error": 0.00732421875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "112": {
+     "T1_seconds": 0.00018219416327456476,
+     "T2_seconds": 3.661777523125022e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0615234375,
+     "prob_meas1_prep0": 0.03466796875,
+     "readout_error": 0.048095703125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "114": {
+     "T1_seconds": 0.00016031171477354762,
+     "T2_seconds": 3.35007431691453e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0146484375,
+     "prob_meas1_prep0": 0.0185546875,
+     "readout_error": 0.0166015625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "116": {
+     "T1_seconds": 0.0002417015165268106,
+     "T2_seconds": 0.00027253716481953855,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0224609375,
+     "prob_meas1_prep0": 0.02001953125,
+     "readout_error": 0.021240234375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "117": {
+     "T1_seconds": 0.00025908402888110256,
+     "T2_seconds": 0.0002186026161595141,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00390625,
+     "prob_meas1_prep0": 0.0,
+     "readout_error": 0.001953125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "118": {
+     "T1_seconds": 0.00015113584459857873,
+     "T2_seconds": 0.00010250238671001057,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.00537109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "119": {
+     "T1_seconds": 0.00014219125094912756,
+     "T2_seconds": 0.00014878188838520924,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01318359375,
+     "prob_meas1_prep0": 0.017578125,
+     "readout_error": 0.015380859375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "12": {
+     "T1_seconds": 0.0003516441473752277,
+     "T2_seconds": 0.00030341435835339357,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0458984375,
+     "prob_meas1_prep0": 0.04931640625,
+     "readout_error": 0.047607421875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "120": {
+     "T1_seconds": 0.00020464444062088505,
+     "T2_seconds": 0.0001346772905431246,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0234375,
+     "prob_meas1_prep0": 0.0126953125,
+     "readout_error": 0.01806640625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "122": {
+     "T1_seconds": 0.0003358992069435763,
+     "T2_seconds": 0.0002909387522111317,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.03369140625,
+     "prob_meas1_prep0": 0.0,
+     "readout_error": 0.016845703125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "123": {
+     "T1_seconds": 7.038126394228005e-05,
+     "T2_seconds": 2.1524538199824838e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0068359375,
+     "prob_meas1_prep0": 0.0029296875,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "124": {
+     "T1_seconds": 0.0002434529587531447,
+     "T2_seconds": 0.00014546914778101964,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.013671875,
+     "prob_meas1_prep0": 0.01416015625,
+     "readout_error": 0.013916015625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "125": {
+     "T1_seconds": 0.0002410000620155779,
+     "T2_seconds": 0.0002837975175361988,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.029296875,
+     "prob_meas1_prep0": 0.04248046875,
+     "readout_error": 0.035888671875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "126": {
+     "T1_seconds": 0.0002885498129843875,
+     "T2_seconds": 0.00034640709118425445,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00537109375,
+     "prob_meas1_prep0": 0.01025390625,
+     "readout_error": 0.0078125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "127": {
+     "T1_seconds": 0.00022949988406084426,
+     "T2_seconds": 0.00020620895860616568,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.04931640625,
+     "prob_meas1_prep0": 0.041015625,
+     "readout_error": 0.045166015625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "128": {
+     "T1_seconds": 0.00016842964814312538,
+     "T2_seconds": 5.8501026262043505e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.013671875,
+     "prob_meas1_prep0": 0.005859375,
+     "readout_error": 0.009765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "129": {
+     "T1_seconds": 0.00020029158244016306,
+     "T2_seconds": 0.00012284893208175786,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.005859375,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.004150390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "13": {
+     "T1_seconds": 0.0004658307681408781,
+     "T2_seconds": 0.0008313460353357846,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00927734375,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.00634765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "130": {
+     "T1_seconds": 0.0002179582424457847,
+     "T2_seconds": 0.00020684418422929157,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0380859375,
+     "prob_meas1_prep0": 0.00439453125,
+     "readout_error": 0.021240234375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "131": {
+     "T1_seconds": 6.654859692679013e-05,
+     "T2_seconds": 3.4935082632609065e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.07275390625,
+     "prob_meas1_prep0": 0.07666015625,
+     "readout_error": 0.07470703125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "132": {
+     "T1_seconds": 0.0003115169641541765,
+     "T2_seconds": 0.00023747291460564403,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.0048828125,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "133": {
+     "T1_seconds": 0.00021191389023694952,
+     "T2_seconds": 0.0001452701942619337,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0166015625,
+     "prob_meas1_prep0": 0.01123046875,
+     "readout_error": 0.013916015625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "134": {
+     "T1_seconds": 0.00031661074509716256,
+     "T2_seconds": 0.00013831944811955557,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00341796875,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.002685546875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "135": {
+     "T1_seconds": 0.0001218776050741567,
+     "T2_seconds": 9.26742456914914e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0166015625,
+     "prob_meas1_prep0": 0.01904296875,
+     "readout_error": 0.017822265625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "136": {
+     "T1_seconds": 0.00016601920424325252,
+     "T2_seconds": 0.00027412096312758787,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0126953125,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.007568359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "137": {
+     "T1_seconds": 0.00033069440807778524,
+     "T2_seconds": 2.2266674709412123e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00732421875,
+     "readout_error": 0.0078125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "14": {
+     "T1_seconds": 0.0002446445276105548,
+     "T2_seconds": 0.0003358785028878835,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02685546875,
+     "prob_meas1_prep0": 0.01708984375,
+     "readout_error": 0.02197265625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "140": {
+     "T1_seconds": 0.0003026546027088888,
+     "T2_seconds": 0.00044836740955720203,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.005859375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "141": {
+     "T1_seconds": 5.40934423900502e-05,
+     "T2_seconds": 6.409746336363713e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.0009765625,
+     "readout_error": 0.004638671875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "142": {
+     "T1_seconds": 0.00023986517747320128,
+     "T2_seconds": 0.00025775378641403746,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.013671875,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.0087890625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "143": {
+     "T1_seconds": 0.00036936157152669735,
+     "T2_seconds": 2.8561134579306002e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.005859375,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.003662109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "144": {
+     "T1_seconds": 0.00024598910282739434,
+     "T2_seconds": 0.00035851867098172564,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.00732421875,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "145": {
+     "T1_seconds": 0.0002794123250424863,
+     "T2_seconds": 0.0001395093843334553,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01806640625,
+     "prob_meas1_prep0": 0.01123046875,
+     "readout_error": 0.0146484375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "147": {
+     "T1_seconds": 0.0004183924730840307,
+     "T2_seconds": 0.00010696590093725209,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.0009765625,
+     "readout_error": 0.003662109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "148": {
+     "T1_seconds": 0.00012549272662020473,
+     "T2_seconds": 0.00014264460812097083,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0029296875,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.00244140625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "149": {
+     "T1_seconds": 0.0002781351903207143,
+     "T2_seconds": 0.0004440469662619456,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0078125,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.004638671875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "15": {
+     "T1_seconds": 0.00029416333085146846,
+     "T2_seconds": 0.00031515083153423236,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0029296875,
+     "prob_meas1_prep0": 0.00048828125,
+     "readout_error": 0.001708984375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "150": {
+     "T1_seconds": 0.0003392824107674095,
+     "T2_seconds": 0.0003428062867395199,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.005859375,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.003662109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "151": {
+     "T1_seconds": 0.00017186485808178174,
+     "T2_seconds": 0.0001410145378590034,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.04296875,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.0224609375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "152": {
+     "T1_seconds": 0.000252997941342588,
+     "T2_seconds": 0.00011538930525521724,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.0048828125,
+     "readout_error": 0.005615234375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "153": {
+     "T1_seconds": 0.000398392511452375,
+     "T2_seconds": 0.00017148204987691505,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02734375,
+     "prob_meas1_prep0": 0.0224609375,
+     "readout_error": 0.02490234375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "154": {
+     "T1_seconds": 0.0002003943230113708,
+     "T2_seconds": 0.00016447662462343616,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.005859375,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.00390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "155": {
+     "T1_seconds": 0.0004410000141122725,
+     "T2_seconds": 0.00035203549984003275,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0126953125,
+     "prob_meas1_prep0": 0.0126953125,
+     "readout_error": 0.0126953125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "16": {
+     "T1_seconds": 0.00030485914003321933,
+     "T2_seconds": 0.00033467615453868334,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00537109375,
+     "prob_meas1_prep0": 0.0185546875,
+     "readout_error": 0.011962890625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "17": {
+     "T1_seconds": 0.00028825590753161297,
+     "T2_seconds": 8.58085591866747e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00732421875,
+     "prob_meas1_prep0": 0.00048828125,
+     "readout_error": 0.00390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "18": {
+     "T1_seconds": 9.100006870524183e-05,
+     "T2_seconds": 9.530439380604366e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01611328125,
+     "prob_meas1_prep0": 0.00439453125,
+     "readout_error": 0.01025390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "19": {
+     "T1_seconds": 0.00021659468380703256,
+     "T2_seconds": 0.00021557442308034355,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00439453125,
+     "readout_error": 0.00634765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "2": {
+     "T1_seconds": 0.00024011261111171384,
+     "T2_seconds": 0.00011000920746231,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.0078125,
+     "readout_error": 0.00830078125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "20": {
+     "T1_seconds": 0.00027725249145278436,
+     "T2_seconds": 7.6160045927321e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.005859375,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.00390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "21": {
+     "T1_seconds": 0.00013192266137494442,
+     "T2_seconds": 0.00015423441437493817,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.005859375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "22": {
+     "T1_seconds": 7.389306282189461e-05,
+     "T2_seconds": 9.044759494844471e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01806640625,
+     "prob_meas1_prep0": 0.005859375,
+     "readout_error": 0.011962890625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "23": {
+     "T1_seconds": 0.00028045649498871256,
+     "T2_seconds": 7.42727278115874e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01025390625,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.005859375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "24": {
+     "T1_seconds": 0.000262819304158119,
+     "T2_seconds": 5.313956758461226e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.021484375,
+     "prob_meas1_prep0": 0.01318359375,
+     "readout_error": 0.017333984375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "25": {
+     "T1_seconds": 0.0003194765710310506,
+     "T2_seconds": 2.5453168633122953e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0078125,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "26": {
+     "T1_seconds": 0.00016417223084590324,
+     "T2_seconds": 0.00011039429241339104,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01611328125,
+     "prob_meas1_prep0": 0.00439453125,
+     "readout_error": 0.01025390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "27": {
+     "T1_seconds": 0.00019507053162631235,
+     "T2_seconds": 5.1899015187924254e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.015625,
+     "prob_meas1_prep0": 0.00927734375,
+     "readout_error": 0.012451171875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "28": {
+     "T1_seconds": 0.00019903148736325326,
+     "T2_seconds": 0.00022662254921325438,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01513671875,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.009521484375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "29": {
+     "T1_seconds": 0.0001642446024889161,
+     "T2_seconds": 7.968659247830144e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01220703125,
+     "prob_meas1_prep0": 0.00537109375,
+     "readout_error": 0.0087890625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "3": {
+     "T1_seconds": 0.00013625229933665817,
+     "T2_seconds": 0.00021300301869859898,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0185546875,
+     "prob_meas1_prep0": 0.00048828125,
+     "readout_error": 0.009521484375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "30": {
+     "T1_seconds": 0.00017636005776006786,
+     "T2_seconds": 7.931028443349576e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01318359375,
+     "prob_meas1_prep0": 0.00732421875,
+     "readout_error": 0.01025390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "31": {
+     "T1_seconds": 0.0002357577666392726,
+     "T2_seconds": 0.00025637795048129254,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02197265625,
+     "prob_meas1_prep0": 0.041015625,
+     "readout_error": 0.031494140625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "32": {
+     "T1_seconds": 0.0003508490167822455,
+     "T2_seconds": 0.0005216421119406114,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.029296875,
+     "prob_meas1_prep0": 0.01220703125,
+     "readout_error": 0.020751953125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "33": {
+     "T1_seconds": 0.0002968994183132508,
+     "T2_seconds": 0.00042546190654400243,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0078125,
+     "prob_meas1_prep0": 0.0029296875,
+     "readout_error": 0.00537109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "34": {
+     "T1_seconds": 0.0001932685572849298,
+     "T2_seconds": 0.0002178235639853673,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02392578125,
+     "prob_meas1_prep0": 0.0263671875,
+     "readout_error": 0.025146484375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "35": {
+     "T1_seconds": 0.0002791716097849798,
+     "T2_seconds": 0.000310755061739125,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.021484375,
+     "prob_meas1_prep0": 0.01171875,
+     "readout_error": 0.0166015625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "36": {
+     "T1_seconds": 0.0002991426393176836,
+     "T2_seconds": 0.00028735129625219403,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.00537109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "37": {
+     "T1_seconds": 0.00016124810600334443,
+     "T2_seconds": 2.9169443538911113e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0078125,
+     "prob_meas1_prep0": 0.0029296875,
+     "readout_error": 0.00537109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "38": {
+     "T1_seconds": 0.0001471219960300636,
+     "T2_seconds": 0.0001043179848434781,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00927734375,
+     "prob_meas1_prep0": 0.00439453125,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "39": {
+     "T1_seconds": 0.00016836011906055966,
+     "T2_seconds": 0.0001077273254549973,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01123046875,
+     "prob_meas1_prep0": 0.00830078125,
+     "readout_error": 0.009765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "4": {
+     "T1_seconds": 0.00023903382559901283,
+     "T2_seconds": 4.9911933292895925e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01708984375,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.010498046875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "40": {
+     "T1_seconds": 0.0002643130870962344,
+     "T2_seconds": 4.10647419102212e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00390625,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.00390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "41": {
+     "T1_seconds": 0.0003379812188728796,
+     "T2_seconds": 3.490836053646977e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00732421875,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.00537109375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "42": {
+     "T1_seconds": 0.00017480947928307468,
+     "T2_seconds": 7.082400850104608e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.0009765625,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "43": {
+     "T1_seconds": 0.00017817419793573417,
+     "T2_seconds": 3.27009707531993e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.015625,
+     "prob_meas1_prep0": 0.01025390625,
+     "readout_error": 0.012939453125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "44": {
+     "T1_seconds": 0.00011321904872619974,
+     "T2_seconds": 0.0001645272053415609,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00537109375,
+     "prob_meas1_prep0": 0.0068359375,
+     "readout_error": 0.006103515625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "45": {
+     "T1_seconds": 0.00017761165357628602,
+     "T2_seconds": 0.00015128004708783938,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00830078125,
+     "readout_error": 0.00830078125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "46": {
+     "T1_seconds": 0.0001317713156464556,
+     "T2_seconds": 0.00010062166944689475,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01611328125,
+     "prob_meas1_prep0": 0.00537109375,
+     "readout_error": 0.0107421875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "47": {
+     "T1_seconds": 0.000351473682146712,
+     "T2_seconds": 8.845966641322525e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0068359375,
+     "prob_meas1_prep0": 0.0068359375,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "48": {
+     "T1_seconds": 0.00023101392884369105,
+     "T2_seconds": 2.0920788532494854e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0126953125,
+     "prob_meas1_prep0": 0.0009765625,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "49": {
+     "T1_seconds": 0.0002336025817171594,
+     "T2_seconds": 9.443957368964364e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01025390625,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.00634765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "5": {
+     "T1_seconds": 0.00016705312979391548,
+     "T2_seconds": 6.118693574754939e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.006103515625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "50": {
+     "T1_seconds": 0.00021080616885981232,
+     "T2_seconds": 0.0002227326883526736,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00537109375,
+     "prob_meas1_prep0": 0.0009765625,
+     "readout_error": 0.003173828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "51": {
+     "T1_seconds": 0.00025733021413997025,
+     "T2_seconds": 0.00023083125603554902,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02392578125,
+     "prob_meas1_prep0": 0.02099609375,
+     "readout_error": 0.0224609375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "52": {
+     "T1_seconds": 0.0001805637658491074,
+     "T2_seconds": 6.0607803236687685e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.029296875,
+     "prob_meas1_prep0": 0.00439453125,
+     "readout_error": 0.016845703125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "53": {
+     "T1_seconds": 0.0001629471955650944,
+     "T2_seconds": 5.218753898496912e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00537109375,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.00341796875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "54": {
+     "T1_seconds": 0.00040651054592430875,
+     "T2_seconds": 0.00021269020865396078,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.03076171875,
+     "prob_meas1_prep0": 0.02392578125,
+     "readout_error": 0.02734375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "55": {
+     "T1_seconds": 0.00030313575970931505,
+     "T2_seconds": 8.319168814662525e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0126953125,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.008056640625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "56": {
+     "T1_seconds": 0.00026550924302442066,
+     "T2_seconds": 3.625936236920924e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0107421875,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.006591796875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "57": {
+     "T1_seconds": 0.0002898003006382016,
+     "T2_seconds": 0.00025288881263877864,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.00732421875,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "58": {
+     "T1_seconds": 0.00027342952011118166,
+     "T2_seconds": 0.0001713701619713253,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00390625,
+     "prob_meas1_prep0": 0.03076171875,
+     "readout_error": 0.017333984375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "59": {
+     "T1_seconds": 0.00025569257932997436,
+     "T2_seconds": 6.191873541136365e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.00048828125,
+     "readout_error": 0.00341796875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "6": {
+     "T1_seconds": 0.0002485774860618847,
+     "T2_seconds": 9.791081050842997e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01025390625,
+     "prob_meas1_prep0": 0.00439453125,
+     "readout_error": 0.00732421875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "60": {
+     "T1_seconds": 0.000254082623782742,
+     "T2_seconds": 2.9741580324300972e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01123046875,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.00732421875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "61": {
+     "T1_seconds": 0.00016754821789674703,
+     "T2_seconds": 3.806941070560891e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.00048828125,
+     "readout_error": 0.004638671875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "62": {
+     "T1_seconds": 0.00030722769178187926,
+     "T2_seconds": 9.466672323207028e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.0205078125,
+     "readout_error": 0.0146484375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "63": {
+     "T1_seconds": 0.00016347574193884598,
+     "T2_seconds": 4.13202551343613e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01513671875,
+     "prob_meas1_prep0": 0.01123046875,
+     "readout_error": 0.01318359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "64": {
+     "T1_seconds": 0.0002430508084615462,
+     "T2_seconds": 0.0001412093272018103,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.00439453125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "65": {
+     "T1_seconds": 0.00018120881725534318,
+     "T2_seconds": 0.00014026895509143688,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0185546875,
+     "prob_meas1_prep0": 0.01220703125,
+     "readout_error": 0.015380859375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "66": {
+     "T1_seconds": 0.00013214960969118404,
+     "T2_seconds": 0.0001752418515601333,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.013671875,
+     "prob_meas1_prep0": 0.0068359375,
+     "readout_error": 0.01025390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "67": {
+     "T1_seconds": 0.0002992268732960173,
+     "T2_seconds": 0.000285009282186758,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.009765625,
+     "prob_meas1_prep0": 0.0068359375,
+     "readout_error": 0.00830078125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "68": {
+     "T1_seconds": 0.00020563158489725737,
+     "T2_seconds": 0.00013891041356439517,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01171875,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.007568359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "69": {
+     "T1_seconds": 0.0003078018148563138,
+     "T2_seconds": 0.00025935180637153953,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01513671875,
+     "prob_meas1_prep0": 0.00537109375,
+     "readout_error": 0.01025390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "7": {
+     "T1_seconds": 0.0002827285038397607,
+     "T2_seconds": 6.788912573581525e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.017578125,
+     "prob_meas1_prep0": 0.0068359375,
+     "readout_error": 0.01220703125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "70": {
+     "T1_seconds": 0.00020385441803382054,
+     "T2_seconds": 0.00019300403668051888,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02197265625,
+     "prob_meas1_prep0": 0.0126953125,
+     "readout_error": 0.017333984375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "71": {
+     "T1_seconds": 0.00026026984213746776,
+     "T2_seconds": 0.00015613810030627764,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.00341796875,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "72": {
+     "T1_seconds": 0.00019508796168219634,
+     "T2_seconds": 0.00013224079293779333,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.04296875,
+     "prob_meas1_prep0": 0.05615234375,
+     "readout_error": 0.049560546875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "73": {
+     "T1_seconds": 0.00030269040516151853,
+     "T2_seconds": 0.00021084812752921397,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02001953125,
+     "prob_meas1_prep0": 0.0107421875,
+     "readout_error": 0.015380859375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "74": {
+     "T1_seconds": 0.0003015360387134192,
+     "T2_seconds": 0.00019719709296635743,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01025390625,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.006103515625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "75": {
+     "T1_seconds": 0.000281015952739293,
+     "T2_seconds": 0.00014962719581760475,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.021484375,
+     "prob_meas1_prep0": 0.01953125,
+     "readout_error": 0.0205078125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "76": {
+     "T1_seconds": 2.846050249716029e-05,
+     "T2_seconds": 2.6827889129055933e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0966796875,
+     "prob_meas1_prep0": 0.04296875,
+     "readout_error": 0.06982421875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "77": {
+     "T1_seconds": 0.0003184346277991766,
+     "T2_seconds": 0.0002704757054958355,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00390625,
+     "prob_meas1_prep0": 0.0,
+     "readout_error": 0.001953125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "78": {
+     "T1_seconds": 0.00022790451732220354,
+     "T2_seconds": 3.2064349132932075e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.03662109375,
+     "prob_meas1_prep0": 0.01708984375,
+     "readout_error": 0.02685546875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "79": {
+     "T1_seconds": 0.00013187638576574485,
+     "T2_seconds": 6.997149324159664e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.009765625,
+     "prob_meas1_prep0": 0.00634765625,
+     "readout_error": 0.008056640625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "8": {
+     "T1_seconds": 0.0003211952375322925,
+     "T2_seconds": 6.996407612896691e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01953125,
+     "prob_meas1_prep0": 0.00732421875,
+     "readout_error": 0.013427734375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "80": {
+     "T1_seconds": 0.0003046857881205993,
+     "T2_seconds": 0.0003897091606142532,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02001953125,
+     "prob_meas1_prep0": 0.02783203125,
+     "readout_error": 0.02392578125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "81": {
+     "T1_seconds": 0.0002440034113491015,
+     "T2_seconds": 0.0002177333244586917,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01220703125,
+     "prob_meas1_prep0": 0.01708984375,
+     "readout_error": 0.0146484375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "82": {
+     "T1_seconds": 0.00019180372860661465,
+     "T2_seconds": 0.00015287365965990893,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00830078125,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.006103515625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "83": {
+     "T1_seconds": 0.00017088919197059995,
+     "T2_seconds": 0.00015378806937428228,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0322265625,
+     "prob_meas1_prep0": 0.0458984375,
+     "readout_error": 0.0390625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "84": {
+     "T1_seconds": 0.00024719673769224023,
+     "T2_seconds": 6.532734033196491e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01318359375,
+     "prob_meas1_prep0": 0.00537109375,
+     "readout_error": 0.00927734375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "85": {
+     "T1_seconds": 0.00020439605482687934,
+     "T2_seconds": 0.00010986190365672571,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01123046875,
+     "prob_meas1_prep0": 0.009765625,
+     "readout_error": 0.010498046875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "86": {
+     "T1_seconds": 0.0001722464906197719,
+     "T2_seconds": 2.3326962325652162e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0087890625,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.00634765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "87": {
+     "T1_seconds": 0.00011620711641793965,
+     "T2_seconds": 6.558399780331768e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0166015625,
+     "prob_meas1_prep0": 0.0087890625,
+     "readout_error": 0.0126953125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "88": {
+     "T1_seconds": 0.0002529750108745736,
+     "T2_seconds": 2.0720277415953936e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01123046875,
+     "prob_meas1_prep0": 0.00146484375,
+     "readout_error": 0.00634765625,
+     "readout_length_seconds": 2.18e-06
+    },
+    "89": {
+     "T1_seconds": 0.0001571268487695397,
+     "T2_seconds": 0.0001362650919564777,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.021484375,
+     "prob_meas1_prep0": 0.0048828125,
+     "readout_error": 0.01318359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "9": {
+     "T1_seconds": 0.0001551787816939222,
+     "T2_seconds": 4.553838903319252e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00732421875,
+     "prob_meas1_prep0": 0.00244140625,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "90": {
+     "T1_seconds": 0.0002066449299654292,
+     "T2_seconds": 0.00017909356916511734,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0205078125,
+     "prob_meas1_prep0": 0.00927734375,
+     "readout_error": 0.014892578125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "91": {
+     "T1_seconds": 0.0002541627621299776,
+     "T2_seconds": 0.00012125600306875533,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00927734375,
+     "prob_meas1_prep0": 0.00048828125,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "93": {
+     "T1_seconds": 6.927413966800374e-05,
+     "T2_seconds": 6.416261358390576e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0078125,
+     "prob_meas1_prep0": 0.01513671875,
+     "readout_error": 0.011474609375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "94": {
+     "T1_seconds": 0.00028187809313980224,
+     "T2_seconds": 0.00019460515031968737,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0107421875,
+     "prob_meas1_prep0": 0.00390625,
+     "readout_error": 0.00732421875,
+     "readout_length_seconds": 2.18e-06
+    },
+    "95": {
+     "T1_seconds": 0.00030159535968143485,
+     "T2_seconds": 0.00041877288539502464,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.00634765625,
+     "prob_meas1_prep0": 0.00537109375,
+     "readout_error": 0.005859375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "96": {
+     "T1_seconds": 0.00015308862766410307,
+     "T2_seconds": 0.00016727043746575483,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0205078125,
+     "prob_meas1_prep0": 0.0146484375,
+     "readout_error": 0.017578125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "97": {
+     "T1_seconds": 0.0001975481600225654,
+     "T2_seconds": 6.820771724840746e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.01171875,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.0068359375,
+     "readout_length_seconds": 2.18e-06
+    },
+    "98": {
+     "T1_seconds": 0.00010670715498624302,
+     "T2_seconds": 5.830456983315408e-05,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.0078125,
+     "prob_meas1_prep0": 0.001953125,
+     "readout_error": 0.0048828125,
+     "readout_length_seconds": 2.18e-06
+    },
+    "99": {
+     "T1_seconds": 0.00036228020746118683,
+     "T2_seconds": 0.0002570792662447306,
+     "anharmonicity_hz": null,
+     "frequency_hz": null,
+     "prob_meas0_prep1": 0.02880859375,
+     "prob_meas1_prep0": 0.025390625,
+     "readout_error": 0.027099609375,
+     "readout_length_seconds": 2.18e-06
+    }
+   }
+  }
+ ]
+}

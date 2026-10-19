@@ -319,3 +319,38 @@ commit itself, so a fresh clone recovers the window-unitary model for the
 orbit root-cause work from that branch's tip diff against its first parent.
 The local stash entry stays as well. The N=21 owner decides whether the
 content joins a change or the archive alone carries it.
+
+## Consolidated open items
+
+The branch `consolidate/open-items` collects every item that had no merged
+home:
+- the control-run evidence of `live/rep-delay-zero-control-records`, with its
+  extractor and the repetition-delay floor guard;
+- the draft Tuna-17 bipartite design note from
+  `tuna/bipartite-walsh-and-lcu-packing`;
+- the window-unitary model from the archived stash.
+
+The stash's model enters `scripts/n21_orbit_rca.py` as an optional argument
+that leaves every retained law unchanged. The Tuna note keeps its draft
+status line.
+
+The branch merges once the service inventory records the four failed
+control jobs. Those jobs' charges must settle first, which takes a read-only
+`--collect` of each failed run, and the reconciliation needs a failed-job
+inventory extension. The control-run findings note no longer argues from
+the timeout code: the zero-delay jobs and the large-shot short-delay jobs
+both ended with the service's max-time code, so that code does not
+separate a stalled shot loop from an overrun ceiling.
+The note's remaining claim rests on the absent circuit execution time of
+the zero-delay jobs and on IBM's documented floor.
+
+## Closing conditions for the consolidated branch
+
+The consolidated pull request does not close cleanly as it stands. It
+merges only when all of these hold:
+- the failed-job inventory blocker is resolved, and the service-inventory
+  reconciliation and retained-run inventory gates pass;
+- every open issue on the repository is resolved or closed with a recorded
+  reason;
+- the current-head Codex review is clean, every review thread is resolved
+  and the mergeable state is clean.
