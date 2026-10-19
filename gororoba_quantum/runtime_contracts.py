@@ -2734,9 +2734,9 @@ def _verify_schema_lifecycle() -> None:
         snaps: list[Snapshot],
         seeds: int,
         log: dict[str, Any],
-        layout: list[int] | None = None,
+        pinned: list[int] | None = None,
     ) -> list[Choice]:
-        del snaps, seeds, layout
+        del snaps, seeds, pinned
         log[group.name] = {"fixture": [{"stage": "renewed_approval_contract"}]}
         return [revised_choice]
 

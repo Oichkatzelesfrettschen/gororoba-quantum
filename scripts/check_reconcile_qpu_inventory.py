@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 from unittest.mock import patch
 
+import observe_qpu_job_inventory
 import reconcile_qpu_inventory as audit
 
 
@@ -241,6 +242,9 @@ def unexecuted_cancellation_contract(audit: Any, source: Path, snapshot: dict[st
         mutate(mutant["jobs"][1])
         write(source, mutant)
         rejects(audit, source, reason)
+    absent = copy.deepcopy(cancelled["jobs"][1]) | {"final_qpu_charge_seconds": None}
+    observe_qpu_job_inventory.zero_unexecuted_charges([absent])
+    audit.require(absent["final_qpu_charge_seconds"] == 0, "an absent unexecuted charge stays None")
     write(source, snapshot)
 
 

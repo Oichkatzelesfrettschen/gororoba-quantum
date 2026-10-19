@@ -67,11 +67,19 @@ def unexecuted_cancellation(row: dict[str, Any]) -> bool:
     )
 
 
+def zero_unexecuted_charges(rows: list[dict[str, Any]]) -> None:
+    """Record an absent charge of a cancellation that never ran as 0, so every consumer sums it as a number."""
+    for row in rows:
+        if unexecuted_cancellation(row) and row["final_qpu_charge_seconds"] is None:
+            row["final_qpu_charge_seconds"] = 0
+
+
 def observe(service: Any) -> dict[str, Any]:
     sys.path.insert(0, str(ROOT / "gororoba_quantum"))
     from live_run import _instance_hash
 
     rows = sorted((job_row(job) for job in service.jobs(limit=None)), key=lambda row: row["created_at"])
+    zero_unexecuted_charges(rows)
     unsettled = [
         row["job_id"]
         for row in rows

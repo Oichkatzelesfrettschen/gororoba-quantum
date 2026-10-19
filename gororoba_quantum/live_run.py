@@ -2027,13 +2027,13 @@ def _trace_failure_summary(trace_by_backend: dict[str, list[dict[str, Any]]]) ->
 
 
 def select_candidates(
-    group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any], layout: list[int] | None = None
+    group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any], pinned: list[int] | None = None
 ) -> list[Choice]:
     """Rank every routed (backend, seed, layout) candidate retained for joint selection.
 
     A pinned layout compiles every seed from that initial layout, and a seed
     whose compiled initial layout differs from it is rejected, so logical
-    qubit i starts on layout[i] in every retained candidate.
+    qubit i starts on pinned[i] in every retained candidate.
     """
     requirements = group_requirements(group)
     candidates: list[Choice] = []
@@ -2061,13 +2061,13 @@ def select_candidates(
             try:
                 isa = (
                     _compile_primary(primary.circuit, snap, seed)
-                    if layout is None
-                    else _compile(primary.circuit, snap, seed, layout)
+                    if pinned is None
+                    else _compile(primary.circuit, snap, seed, pinned)
                 )
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "compile_error": type(error).__name__})
                 continue
-            if layout is not None and (placed := isa.layout.initial_index_layout(filter_ancillas=True)) != layout:
+            if pinned is not None and (placed := isa.layout.initial_index_layout(filter_ancillas=True)) != pinned:
                 trace.append({"seed": seed, "pinned_layout_moved": placed})
                 continue
             bad = compiled_violations(isa, snap)

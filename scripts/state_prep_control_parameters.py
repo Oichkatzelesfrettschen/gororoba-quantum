@@ -963,7 +963,9 @@ def _run_families(name: str, qubits: list[int], bits: np.ndarray, couplings: lis
     varying = {q for q, k in zip(qubits, ones, strict=True) if 0 < int(k) < shots}
     present = set(qubits)
     pairs = {(min(a, b), max(a, b)) for a, b in couplings if a in present and b in present and a != b}
-    lag_defined = int(np.count_nonzero(bits[:, :-1].sum(axis=1, dtype=np.int64) > 0))
+    # _lag defines a member only when shots follow both an excited and a ground shot.
+    after_one = bits[:, :-1].sum(axis=1, dtype=np.int64)
+    lag_defined = int(np.count_nonzero((after_one > 0) & (after_one < shots - 1)))
     bonf = "Bonferroni: adjusted p = min(1, members x p)"
     return [
         family(f"D_chi_square/{name}", len(qubits), bonf, "block homogeneity of each member qubit's excitation"),
@@ -1769,6 +1771,8 @@ def _self_test(scratch: Path) -> None:
     require(lag["qubits"]["0"] == {"undefined": "no shot follows a ground shot"}, "lag-1 all-excited qubit")
     require(lag["qubits"]["2"] == {"undefined": "no shot follows an excited shot"}, "lag-1 all-ground qubit")
     require(lag["defined_qubits"] == 1 and "difference" in lag["qubits"]["1"], "lag-1 defined qubit")
+    declared_lag = {entry["name"]: entry["members"] for entry in _run_families("r", [0, 1, 2], lag_bits, [])}
+    require(declared_lag["F_lag1/r"] == lag["defined_qubits"], "lag-1 family declares only the defined qubits")
     all_excited = _lag([0], lag_bits[:1])
     require(all_excited["pooled_difference"] is None and all_excited["defined_qubits"] == 0, "lag-1 pooled zero")
     # The planner reads the candidate named by optimization.selected, exactly one of them.
