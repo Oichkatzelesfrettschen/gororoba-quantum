@@ -2226,7 +2226,7 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
     spectators in X and Y, in that order; the window_delay arms of both
     kinds idle window_delay_dt, the configuration records every orbit arm's
     CZ and sx counts, and a configuration without overlap_arm rebuilds the
-    earlier ten-member split; the unbracketed arms
+    ten-member nominal configuration; the unbracketed arms
     hold a work-qubit operation in the control's window and the bracketed
     ones do not; the idle spectator idles window_delay_dt + reset_dt and the
     immediate one plays no delay, each resetting the control only after
@@ -2316,7 +2316,7 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
             *(f"n21_orbit_{v}_{a}" for v in ("nominal", "unbracketed") for a in ("feedback", "no_feedback")),
             *OVERLAP_SPLIT_MEMBERS[6:],
         ],
-        "a configuration without overlap_arm does not rebuild the earlier ten-member split",
+        "a configuration without overlap_arm does not build the ten-member nominal configuration",
     )
     fixture = qpu_cases._fixture()
     location = Path("results/live/fixture/record.json")

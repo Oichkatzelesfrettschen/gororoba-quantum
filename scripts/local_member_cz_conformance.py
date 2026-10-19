@@ -928,7 +928,11 @@ def main() -> int:
         import qiskit
 
         requirements = (ROOT / "ci/requirements-replay.txt").read_text(encoding="utf-8").splitlines()
-        pinned = next(line.split("==", 1)[1].strip() for line in requirements if line.startswith("qiskit=="))
+        pins = [line.split("==", 1)[1].strip() for line in requirements if line.startswith("qiskit==")]
+        require(
+            len(pins) == 1, f"ci/requirements-replay.txt pins qiskit {len(pins)} times; --write needs one qiskit== pin"
+        )
+        (pinned,) = pins
         require(
             qiskit.__version__ == pinned,
             f"--write runs under the replay runtime's qiskit {pinned} (REPLAY_PYTHON), not {qiskit.__version__}",

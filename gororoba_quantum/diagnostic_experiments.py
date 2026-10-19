@@ -376,9 +376,9 @@ _SPECTATOR_ONE = (0.0, 0.0, 1.0, 1.0)
 
 # The overlap split compares bracketed window_delay with bracketed nominal
 # and with window_delay without its window barriers (qpe_diagnostics
-# variant window_delay_unbarriered). A configuration that records no
-# overlap_arm is the earlier split, which paired nominal with
-# nominal_unbarriered; record_groups keeps rebuilding it.
+# variant window_delay_unbarriered). overlap_arm "nominal", the value
+# record_groups reads from a configuration that records no overlap_arm,
+# pairs nominal with nominal_unbarriered in a ten-member group.
 N21_OVERLAP_PAIRS = {
     "window_delay": ("nominal", "window_delay", "window_delay_unbracketed"),
     "nominal": ("nominal", "unbracketed"),
@@ -447,8 +447,9 @@ def n21_orbit_rca_group(
     play work-qubit gates during the control's measure and reset), and the
     immediate, idle and reset_only spectators in X and Y; idle idles
     window_delay_dt + reset_dt, the control's calibrated measure and reset
-    durations. overlap_arm "nominal" rebuilds the earlier ten-member split
-    from a record that names no overlap_arm. It excludes window_sweep.
+    durations. overlap_arm "nominal" builds the ten-member configuration
+    instead: the nominal pair, nominal without its window barriers
+    (nominal_unbarriered) and the six spectators. It excludes window_sweep.
     """
     if overlap_split and window_sweep:
         raise ValueError("overlap_split and window_sweep are separate n21-orbit-rca configurations")
