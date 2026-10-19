@@ -1339,7 +1339,7 @@
   "new_campaign_cutoff": "2026-10-14T00:00:00Z",
   "observed_at": "2026-10-18T09:20:42.042591+00:00",
   "pub_count": 494,
-  "replay_source_sha256": "ef983fa49769d9583766879ad41d232ef3e754bf246941a841a163afefdca9bf",
+  "replay_source_sha256": "378618cb327e3058825aa434afe0277f29b1d9fbb1ac328deb153a9886cd2aaf",
   "schema": "qpu-job-retention-audit-v1",
   "scope": "All completed jobs in the retained service inventory have lossless raw archives, and every failed job's settled charge is bound to the collection that records why it returned no result. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
   "submitted_pub_shots": 1355072,
