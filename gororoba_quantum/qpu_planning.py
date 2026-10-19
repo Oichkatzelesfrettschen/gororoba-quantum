@@ -11,6 +11,7 @@ import copy
 import json
 import math
 import threading
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from pathlib import Path
@@ -24,6 +25,7 @@ import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
+    N21_OVERLAP_ARM,
     PATCH_FAMILIES,
     STATE_PREP_ARM_STEPS,
     STATE_PREP_DYNAMIC_ARMS,
@@ -73,14 +75,16 @@ def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
-    state-prep arm selection and the n21-orbit-rca initialization herald
-    join them only when given, so a plan without them keeps its settings
+    state-prep arm selection, the n21-orbit-rca initialization herald, its
+    overlap split and its pinned layout join them only when given, so a plan without them keeps its settings
     unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
     arms = getattr(args, "state_prep_arms", None)
     herald = {"init_herald": True} if getattr(args, "init_herald", False) else {}
+    split = {"overlap_split": True} if getattr(args, "overlap_split", False) else {}
+    pin = getattr(args, "pin_layout", None)
     return (
         {
             name: getattr(args, name, default)
@@ -111,6 +115,8 @@ def settings(args: Any) -> dict[str, Any]:
         | bernstein
         | ({"state_prep_arms": list(arms)} if arms is not None else {})
         | herald
+        | split
+        | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
     )
 
 
@@ -196,6 +202,24 @@ def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = N
     reset, so the second X precedes the second round and no tail of the window
     stays unechoed.
     """
+    longest, rounded, dt = _longest_window_dt(runtime, snapshot, controls)
+    return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), dt
+
+
+def reset_window_dt(runtime: Any, snapshot: Any, controls: list[int] | None = None) -> int:
+    """The control's reset length in dt, rounded up to granularity, over the sites window_durations reads.
+
+    The overlap split's idle spectator idles the measure plus this reset
+    length in place of both.
+    """
+    longest, rounded, _dt = _longest_window_dt(runtime, snapshot, controls)
+    return rounded(longest["reset"])
+
+
+def _longest_window_dt(
+    runtime: Any, snapshot: Any, controls: list[int] | None
+) -> tuple[dict[str, float], Callable[[float], int], float]:
+    """Slowest measure and reset in dt over controls (every qubit when None), a granularity rounding and dt."""
     target = snapshot.backend.target
     granularity = max(1, int(target.granularity))
     longest = {}
@@ -219,7 +243,7 @@ def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = N
     def rounded(value: float) -> int:
         return granularity * math.ceil(value / granularity)
 
-    return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
+    return longest, rounded, float(target.dt)
 
 
 def control_sites(runtime: Any, isas: list[Any]) -> list[tuple[tuple[str, int], ...]]:
@@ -241,6 +265,16 @@ def control_sites(runtime: Any, isas: list[Any]) -> list[tuple[tuple[str, int], 
     return sites
 
 
+def orbit_sites(sites: list[tuple[tuple[str, int], ...]], members: Any) -> list[tuple[tuple[str, int], ...]]:
+    """The control_sites entries of the orbit arms, in member order.
+
+    A spectator Ramsey arm of n21-orbit-rca reads qubit 2 at its end, and its
+    reset_only reference resets the control before any measurement, so the
+    window durations follow the orbit arms alone.
+    """
+    return [arm for arm, member in zip(sites, members, strict=True) if member.name.startswith("n21_orbit_")]
+
+
 def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     """Physical qubits of the mid-circuit round: each arm's measures through its first reset.
 
@@ -256,7 +290,9 @@ def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     return sorted(window)
 
 
-def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]) -> tuple[Any, dict[str, float]]:
+def _control_windows(
+    runtime: Any, candidate: Any, bound: tuple[int, int, float], reset_bound: int | None = None
+) -> tuple[Any, dict[str, Any]]:
     """Resize one routed window candidate to its control's own measure and reset durations.
 
     The candidate was routed with the backend-wide bound. The windows come
@@ -264,14 +300,28 @@ def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]
     same windows, the routed candidate stands; otherwise every arm rebuilds
     with them and recompiles on the same seed and initial layout, and each
     recompiled arm must keep its ordered measure and reset sites.
+    reset_bound, the backend-wide reset length of an overlap split
+    (reset_window_dt), resizes to the control's own reset with the windows
+    and enters them as reset_dt.
     """
     sites = control_sites(runtime, candidate.isas)
-    controls = window_controls(sites)
+    controls = window_controls(orbit_sites(sites, candidate.group.members))
     window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
-    windows = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
-    if (window_dt, half_dt) == bound[:2]:
+    windows: dict[str, Any] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
+    split = reset_bound is not None
+    reset_dt = reset_window_dt(runtime, candidate.snap, controls) if split else None
+    if split:
+        windows["reset_dt"] = reset_dt
+    if (window_dt, half_dt) == bound[:2] and reset_dt == reset_bound:
         return candidate, windows
-    group = n21_orbit_rca_group(window_dt, half_dt, has_herald(candidate.group.members[0].circuit))
+    group = n21_orbit_rca_group(
+        window_dt,
+        half_dt,
+        has_herald(candidate.group.members[0].circuit),
+        not split and any(member.name.startswith("n21_spectator_") for member in candidate.group.members),
+        overlap_split=split,
+        reset_dt=reset_dt,
+    )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
     ]
@@ -287,6 +337,58 @@ def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]
     joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
     resized = runtime.Choice(group, candidate.snap, candidate.seed, candidate.layout, isas, scores, joint)
     return resized, windows
+
+
+def orbit_gate_counts(choice: Any) -> dict[str, dict[str, int]]:
+    """CZ and sx counts of each routed orbit arm, a descriptive record of what removing the barriers changes.
+
+    Without the window barriers the transpiler resynthesizes the two-qubit
+    block around the window, so an unbracketed arm can differ from its
+    bracketed twin in CZ count as well as in readout overlap.
+    """
+    return {
+        member.name: {gate: int(isa.count_ops().get(gate, 0)) for gate in ("cz", "sx")}
+        for member, isa in zip(choice.group.members, choice.isas, strict=True)
+        if member.name.startswith("n21_orbit_")
+    }
+
+
+def pinned_orbit_layout(runtime: Any, snapshot: Any, pin: dict[str, Any]) -> list[int]:
+    """The physical qubit of each n21-orbit-rca logical qubit on snapshot under --pin-layout.
+
+    A pin names one backend and the qubits of the group's logical order, so
+    another backend, a qubit outside the device or one the fresh calibration
+    excludes refuses the snapshot rather than moving a role.
+    """
+    qubits = [int(qubit) for qubit in pin["qubits"]]
+    if snapshot.name != pin["backend"]:
+        raise runtime.LiveRunError(f"the pinned layout names {pin['backend']} qubits")
+    outside = [qubit for qubit in qubits if qubit >= snapshot.backend.target.num_qubits]
+    excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
+    if outside or excluded:
+        raise runtime.LiveRunError(f"pinned qubits {outside} lie outside the device; calibration excludes {excluded}")
+    return qubits
+
+
+def pinned_roles_violations(runtime: Any, choice: Any, layout: list[int]) -> list[str]:
+    """Reasons a routed pinned candidate moves a role off its pinned qubit.
+
+    Every arm must start logical qubit i on layout[i], touch no other
+    qubit, and play the orbit window's measure and reset on the pinned
+    control. Routing swaps among the work qubits stay part of the compiled
+    program, which the QPY bytes and the approval bind.
+    """
+    reasons = []
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        initial = isa.layout.initial_index_layout(filter_ancillas=True)[: len(layout)]
+        if initial != layout:
+            reasons.append(f"{member.name}: the arm starts on {initial}, not the pinned layout {layout}")
+        if outside := sorted(set(runtime._physical(isa)) - set(layout)):
+            reasons.append(f"{member.name}: routing leaves the pinned layout through qubits {outside}")
+    controls = window_controls(orbit_sites(control_sites(runtime, choice.isas), choice.group.members))
+    if controls != [layout[0]]:
+        reasons.append(f"the orbit window plays on {controls}, not the pinned control {layout[0]}")
+    return reasons
 
 
 def control_timing_dt(target: Any, control: int) -> tuple[float, float]:
@@ -684,7 +786,7 @@ def family_candidates(
     candidates: list[tuple[list[Any], dict[str, Any]]] = []
     if args.family in (*N21_FAMILIES, "n21-orbit-rca"):
         routed = []
-        windows: dict[int, dict[str, float]] = {}
+        windows: dict[int, dict[str, Any]] = {}
         herald = bool(getattr(args, "init_herald", False))
         if args.family == "n21-orbit-rca":
             # Window durations come from each backend's calibration, so each
@@ -693,19 +795,34 @@ def family_candidates(
             # leaves the others in the search; the trace records its reason.
             # Routing uses the backend-wide bound, and each routed candidate
             # then takes its control's own measure and reset durations.
+            # A pinned layout compiles every arm from the named qubits and
+            # keeps the identity replica, so the replica search cannot
+            # permute the roles.
+            # The overlap split replaces the window sweep and needs the
+            # control's reset length beside the window durations.
+            pin = getattr(args, "pin_layout", None)
+            split = bool(getattr(args, "overlap_split", False))
             for snapshot in snapshots:
                 local: dict[str, Any] = {}
                 try:
+                    pinned = None if pin is None else pinned_orbit_layout(runtime, snapshot, pin)
                     bound = window_durations(runtime, snapshot)
-                    group = n21_orbit_rca_group(bound[0], bound[1], herald)
-                    placed = runtime.select_candidates(group, [snapshot], args.seeds, local)
+                    reset_bound = reset_window_dt(runtime, snapshot) if split else None
+                    group = n21_orbit_rca_group(
+                        bound[0], bound[1], herald, window_sweep=not split, overlap_split=split, reset_dt=reset_bound
+                    )
+                    placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
                     trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
                     continue
                 trace.setdefault(group.name, {}).update(local.get(group.name, {}))
                 for placement in placed:
                     try:
-                        choice, window = _control_windows(runtime, placement, bound)
+                        choice, window = _control_windows(runtime, placement, bound, reset_bound)
+                        if pinned is not None:
+                            if moved := pinned_roles_violations(runtime, choice, pinned):
+                                raise runtime.LiveRunError("; ".join(moved))
+                            window = window | {"pin_layout": {"backend": snapshot.name, "qubits": pinned}}
                     except (runtime.LiveRunError, QiskitError, ValueError) as error:
                         trace.setdefault("family_rejections", []).append(
                             {
@@ -743,7 +860,12 @@ def family_candidates(
             for cap in sorted(set(tiers)):
                 trial = copy.copy(candidate)
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
-                if runtime._prepare_individual_candidate(trial, trace, policy):
+                pinned_replicas = (
+                    [Replica(0, {qubit: qubit for qubit in candidate.layout}, min(candidate.member_scores))]
+                    if "pin_layout" in windows.get(id(candidate), {})
+                    else None
+                )
+                if runtime._prepare_individual_candidate(trial, trace, policy, pinned_replicas):
                     # A cap above the floor-admitted replica count places the
                     # same replicas as a smaller cap; one copy enters the search.
                     replicas = [tuple(replica.qubits) for replica in trial.replicas]
@@ -758,6 +880,17 @@ def family_candidates(
                                 "replica_cap": cap,
                                 **windows.get(id(candidate), {}),
                                 **({"init_herald": True} if herald else {}),
+                                **(
+                                    {
+                                        "overlap_split": True,
+                                        "overlap_arm": N21_OVERLAP_ARM,
+                                        "orbit_gate_counts": orbit_gate_counts(candidate),
+                                    }
+                                    if getattr(args, "overlap_split", False)
+                                    else {"window_sweep": True}
+                                    if args.family == "n21-orbit-rca"
+                                    else {}
+                                ),
                             },
                         )
                     )
@@ -857,13 +990,23 @@ def family_candidates(
     return candidates
 
 
+# IBM's latest-updates changelog sets the repetition delay of Heron and
+# Eagle QPUs to 20 us through 2 ms, while their configurations report a
+# rep_delay_range starting at 0; a job below 20 us passes the service's range
+# check and then ends without a shot loop (docs/notes/ibm_heron_platform.md).
+REP_DELAY_FLOOR_SECONDS = {"Heron": 20e-6, "Eagle": 20e-6}
+
+
 def repetition_delay(backend: Any, requested: float | None = None) -> float:
     """The repetition delay in seconds a job on backend runs at: requested, or the backend default.
 
     The SDK attributes carry seconds; configuration.to_dict uses wire
     microseconds. A requested value must lie in rep_delay_range, which IBM's
     repetition-rate guide names the supported interval and which changes
-    over time, so every caller reads it from a fresh configuration.
+    over time, so every caller reads it from a fresh configuration. A
+    selected value on a Heron or Eagle processor, the requested one or the
+    backend default, also holds the changelog floor in
+    REP_DELAY_FLOOR_SECONDS, which the configuration's range omits.
     """
     configuration = backend.configuration()
     value = getattr(configuration, "default_rep_delay", None)
@@ -878,12 +1021,17 @@ def repetition_delay(backend: Any, requested: float | None = None) -> float:
         or not interval[0] <= value <= interval[1]
     ):
         raise ValueError("cost planning requires a valid backend default repetition delay in seconds")
-    if requested is None:
-        return float(value)
     low, high = float(interval[0]), float(interval[1])
-    if not math.isfinite(requested) or not low <= requested <= high:
+    if requested is not None and (not math.isfinite(requested) or not low <= requested <= high):
         raise ValueError(f"repetition delay {requested} s lies outside the backend range [{low}, {high}] s")
-    return float(requested)
+    selected = float(value if requested is None else requested)
+    processor = getattr(configuration, "processor_type", None)
+    family = processor.get("family") if isinstance(processor, dict) else None
+    floor = REP_DELAY_FLOOR_SECONDS.get(str(family))
+    if floor is not None and selected < floor:
+        source = "backend default" if requested is None else "requested"
+        raise ValueError(f"{source} repetition delay {selected} s lies below the {family} floor of {floor} s")
+    return selected
 
 
 def repetition_delay_range(backend: Any) -> list[float] | None:

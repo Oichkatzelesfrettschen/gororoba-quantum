@@ -186,10 +186,11 @@ usable-graph analysis, which fold into the next Tuna note.
   affine bound holds with the pre-finalization population.
 - The branch `live/rep-delay-zero-control-records` holds a local, unpushed
   commit with the state-prep control parameter extractor, its sidecars and
-  the short-delay and failed control runs. Its inventory gates fail until
-  the service inventory records the failed jobs, which waits on settled
-  charges and a failed-job inventory extension built on the named-account
-  overflow branch. Its findings note still argues a timeout-code distinction
+  the short-delay and failed control runs. The inventory gates declare
+  those runs' jobs as awaiting observation, and the reconciliation admits
+  a failed job by its settled charge and collection
+  (`docs/notes/ibm_quantum/account-access.md`); the next observation after
+  the four failed charges settle brings them into coverage. Its findings note still argues a timeout-code distinction
   the retained jobs refute, and its review threads ask for failed-run
   retention and a repetition-delay floor guard.
 - `scripts/n21_orbit_rca.py` names a deleted gate in one docstring; the fix
@@ -267,10 +268,9 @@ ET approval preflight uses deduplicated parallel ideal validation. The focused a
   branch holds the control-job records. The worktree holds a merge of main
   and an unpushed commit carrying the `state_prep_control_parameters`
   extractor; pushing that commit is the first step.
-- Two blockers precede the standard merge conditions. The service
-  inventory must record the failed jobs, which needs their charges settled
-  and the failed-job inventory extension built on the
-  `ibm/named-account-overflow` branch. Its review threads (failed-run
+- The failed-job inventory extension and the awaiting-observation rule
+  are on the consolidated branch, so the inventory no longer blocks the
+  merge. Its review threads (failed-run
   retention, a repetition-delay floor guard and the refuted timeout-code
   distinction in its findings note) must be fixed and resolved. The merge
   then follows the repository rule: a clean current-head Codex review,
@@ -319,3 +319,38 @@ commit itself, so a fresh clone recovers the window-unitary model for the
 orbit root-cause work from that branch's tip diff against its first parent.
 The local stash entry stays as well. The N=21 owner decides whether the
 content joins a change or the archive alone carries it.
+
+## Consolidated open items
+
+The branch `consolidate/open-items` collects every item that had no merged
+home:
+- the control-run evidence of `live/rep-delay-zero-control-records`, with its
+  extractor and the repetition-delay floor guard;
+- the draft Tuna-17 bipartite design note from
+  `tuna/bipartite-walsh-and-lcu-packing`;
+- the window-unitary model from the archived stash.
+
+The stash's model enters `scripts/n21_orbit_rca.py` as an optional argument
+that leaves every retained law unchanged. The Tuna note keeps its draft
+status line.
+
+The four failed control jobs await the next service observation: their
+charges must settle first, then a read-only `--collect` of each failed run
+records the final charge, and the reconciliation admits them by that
+charge. The control-run findings note no longer argues from
+the timeout code: the zero-delay jobs and the large-shot short-delay jobs
+both ended with the service's max-time code, so that code does not
+separate a stalled shot loop from an overrun ceiling.
+The note's remaining claim rests on the absent circuit execution time of
+the zero-delay jobs and on IBM's documented floor.
+
+## Closing conditions for the consolidated branch
+
+The consolidated pull request merges when all of these hold:
+- the service-inventory reconciliation and retained-run inventory gates
+  pass, with jobs submitted after the observation declared awaiting it;
+- every open issue on the repository is resolved or closed with a recorded
+  reason, except #291 (the pytest behavioral suite), which lands as its own
+  pull request stacked on the consolidated branch;
+- the current-head Codex review is clean, every review thread is resolved
+  and the mergeable state is clean.

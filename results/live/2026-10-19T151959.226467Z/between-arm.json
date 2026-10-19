@@ -1,0 +1,594 @@
+{
+  "admissibility": {
+    "admissible": true,
+    "differing": {},
+    "missing": [],
+    "orientation": {
+      "n21_orbit_extra_readout_feedback": 1,
+      "n21_orbit_extra_readout_no_feedback": 1,
+      "n21_orbit_nominal_feedback": 1,
+      "n21_orbit_nominal_no_feedback": 1,
+      "n21_orbit_window_delay_feedback": 1,
+      "n21_orbit_window_delay_long_feedback": 1,
+      "n21_orbit_window_delay_long_no_feedback": 1,
+      "n21_orbit_window_delay_no_feedback": 1,
+      "n21_orbit_window_echo_feedback": 1,
+      "n21_orbit_window_echo_no_feedback": 1
+    },
+    "reference_coupling": {
+      "136": {
+        "0": 1,
+        "1": 1
+      },
+      "142": {
+        "0": -1,
+        "1": -1
+      }
+    },
+    "reference_member": "n21_orbit_nominal_feedback",
+    "unresolved": {}
+  },
+  "alpha": {
+    "contracts": 5,
+    "family_alpha": 0.05,
+    "per_contract_alpha": 0.01,
+    "split": "Bonferroni"
+  },
+  "analyzer_sha256": "4ae6245fa18c6750d195eaf54c4a34e1913cff8d1179151bf17aed58fed9f45f",
+  "calibration": {
+    "n21_orbit_extra_readout_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_extra_readout_no_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_nominal_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_nominal_no_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_long_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_long_no_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_no_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_echo_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_echo_no_feedback": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_measured_x": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_measured_y": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_reset_only_x": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_reset_only_y": {
+      "calibration": "2026-10-19T07:44:14-07:00",
+      "source": "execution_start"
+    }
+  },
+  "contracts": {
+    "extra_readout_contrast": {
+      "added_idle_dt": {
+        "feedback": {
+          "136": 416.0,
+          "142": 416.0
+        },
+        "no_feedback": {
+          "136": 416.0,
+          "142": 416.0
+        }
+      },
+      "bound": 0.14838796776373364,
+      "contrast_magnitude": 0.14222161910705083,
+      "dt_seconds": 4e-09,
+      "feedback_factor": 0.9803177695772666,
+      "herald_margin": 0.013230667781471524,
+      "no_feedback_factor": 0.9803177695772666,
+      "one_sided_quantile": 2.3263478740408408,
+      "reference_contrast_magnitude": 0.1513672121109481,
+      "reference_signed_contrast_difference": -0.0977783203125,
+      "signed_contrast_difference": -0.04827880859375,
+      "standard_error": 0.0077047844368153704,
+      "statistic": -0.019397016438154332,
+      "status": "fail",
+      "t2_us": {
+        "feedback": {
+          "136": 129.28605515723387,
+          "142": 237.4489904529227
+        },
+        "no_feedback": {
+          "136": 129.28605515723387,
+          "142": 237.4489904529227
+        }
+      },
+      "upper_confidence_limit": -0.0014730075436259378
+    },
+    "spectator_window_dephasing": {
+      "herald_margin": 0.003395028924500678,
+      "measured_visibility": 0.5871351082873566,
+      "measured_x_expectation": 0.586181640625,
+      "measured_y_expectation": -0.033447265625,
+      "one_sided_quantile": 2.3263478740408408,
+      "reset_only_visibility": 0.5910585537867772,
+      "reset_only_x_expectation": 0.59033203125,
+      "reset_only_y_expectation": -0.029296875,
+      "standard_error": 0.00894135326220843,
+      "statistic": -0.003923445499420586,
+      "status": "fail",
+      "upper_confidence_limit": 0.01687725265316613
+    },
+    "window_delay_phase_slope": {
+      "candidates": [
+        {
+          "nominal_phase": 5.248041168847791,
+          "statistic": 40.4408561540763
+        },
+        {
+          "nominal_phase": -1.0351441867506748,
+          "statistic": 40.44085615399919
+        },
+        {
+          "nominal_phase": -7.318329446456513,
+          "statistic": 40.44085615401565
+        }
+      ],
+      "chi2_threshold": 6.634896601021215,
+      "confidence_set_grid_segments": [
+        [
+          -0.9948376736367681,
+          -0.8901179185171082
+        ]
+      ],
+      "exposure_ratio": 1.0,
+      "level": 0.99,
+      "nominal_exposure_dt": 519.0,
+      "nominal_fit_phase": -1.1642856868490112,
+      "nominal_phase": -1.0351441867506748,
+      "nominal_phase_bound": 10.38,
+      "nominal_phase_wraps": 0,
+      "slope_rad_per_dt": -0.0019944974696544794,
+      "slope_rad_per_us": -0.4986243674136198,
+      "statistic": 40.44085615399919,
+      "status": "fail",
+      "window_delay_exposure_dt": 519.0,
+      "window_delay_fit_phase": -0.9327619748381859,
+      "window_delay_phase": -1.0351441867506748
+    },
+    "window_delay_ramp": {
+      "contrast_magnitude": 0.15155147286246548,
+      "herald_margin": 0.013230667781471524,
+      "one_sided_quantile": 2.3263478740408408,
+      "reference_contrast_magnitude": 0.14376484804593376,
+      "standard_error": 0.007905000549245872,
+      "statistic": 0.007786624816531723,
+      "status": "fail",
+      "upper_confidence_limit": 0.026176406038561535
+    },
+    "window_echo_restoration": {
+      "bound": 0.1513672121109481,
+      "contrast_magnitude": 0.14656915118858083,
+      "feedback_factor": 1.0,
+      "herald_margin": 0.013230667781471524,
+      "no_feedback_factor": 1.0,
+      "one_sided_quantile": 2.3263478740408408,
+      "reference_contrast_magnitude": 0.1513672121109481,
+      "reference_signed_contrast_difference": -0.0977783203125,
+      "signed_contrast_difference": -0.16827392578125,
+      "standard_error": 0.007832405802531747,
+      "statistic": -0.01802872870383881,
+      "status": "pass",
+      "upper_confidence_limit": 0.00019217188350606138
+    }
+  },
+  "dt_seconds": 4e-09,
+  "dt_source": "record family_configuration.dt_seconds",
+  "herald": {
+    "admissible": true,
+    "alpha": 0.05,
+    "bits": {
+      "0": {
+        "excitation_spread_upper_limit": 0.002304601569650681,
+        "excited_fraction": {
+          "n21_orbit_extra_readout_feedback": 0.00103759765625,
+          "n21_orbit_extra_readout_no_feedback": 0.00146484375,
+          "n21_orbit_nominal_feedback": 0.00079345703125,
+          "n21_orbit_nominal_no_feedback": 0.00140380859375,
+          "n21_orbit_window_delay_feedback": 0.00103759765625,
+          "n21_orbit_window_delay_long_feedback": 0.00103759765625,
+          "n21_orbit_window_delay_long_no_feedback": 0.00164794921875,
+          "n21_orbit_window_delay_no_feedback": 0.0010986328125,
+          "n21_orbit_window_echo_feedback": 0.00164794921875,
+          "n21_orbit_window_echo_no_feedback": 0.0010986328125
+        },
+        "qubit": 144,
+        "readout_contrast": 0.994140625,
+        "role": "control",
+        "spread": 0.0008544921875,
+        "spread_lower_limit": -0.0005823222606224795,
+        "status": "pass",
+        "threshold": 0.0017574814668659768
+      },
+      "1": {
+        "excitation_spread_upper_limit": 0.005157066129859022,
+        "excited_fraction": {
+          "n21_orbit_extra_readout_feedback": 0.00628662109375,
+          "n21_orbit_extra_readout_no_feedback": 0.0062255859375,
+          "n21_orbit_nominal_feedback": 0.00482177734375,
+          "n21_orbit_nominal_no_feedback": 0.005859375,
+          "n21_orbit_window_delay_feedback": 0.0068359375,
+          "n21_orbit_window_delay_long_feedback": 0.0054931640625,
+          "n21_orbit_window_delay_long_no_feedback": 0.00592041015625,
+          "n21_orbit_window_delay_no_feedback": 0.006103515625,
+          "n21_orbit_window_echo_feedback": 0.00604248046875,
+          "n21_orbit_window_echo_no_feedback": 0.00677490234375
+        },
+        "qubit": 142,
+        "readout_contrast": 0.986328125,
+        "role": "work_1",
+        "spread": 0.00201416015625,
+        "spread_lower_limit": -0.001058730732164928,
+        "status": "pass",
+        "threshold": 0.0017436702176175213
+      },
+      "2": {
+        "excitation_spread_upper_limit": 0.0033718763813475813,
+        "excited_fraction": {
+          "n21_orbit_extra_readout_feedback": 0.0020751953125,
+          "n21_orbit_extra_readout_no_feedback": 0.00189208984375,
+          "n21_orbit_nominal_feedback": 0.0029296875,
+          "n21_orbit_nominal_no_feedback": 0.00177001953125,
+          "n21_orbit_window_delay_feedback": 0.0018310546875,
+          "n21_orbit_window_delay_long_feedback": 0.00250244140625,
+          "n21_orbit_window_delay_long_no_feedback": 0.0015869140625,
+          "n21_orbit_window_delay_no_feedback": 0.00152587890625,
+          "n21_orbit_window_echo_feedback": 0.001953125,
+          "n21_orbit_window_echo_no_feedback": 0.00152587890625
+        },
+        "qubit": 143,
+        "readout_contrast": 0.9853515625,
+        "role": "work_4",
+        "spread": 0.00140380859375,
+        "spread_lower_limit": -0.0005152091582934933,
+        "status": "pass",
+        "threshold": 0.0017419438114614643
+      },
+      "3": {
+        "excitation_spread_upper_limit": 0.004975656765543752,
+        "excited_fraction": {
+          "n21_orbit_extra_readout_feedback": 0.00921630859375,
+          "n21_orbit_extra_readout_no_feedback": 0.00933837890625,
+          "n21_orbit_nominal_feedback": 0.00946044921875,
+          "n21_orbit_nominal_no_feedback": 0.0091552734375,
+          "n21_orbit_window_delay_feedback": 0.009521484375,
+          "n21_orbit_window_delay_long_feedback": 0.009521484375,
+          "n21_orbit_window_delay_long_no_feedback": 0.009521484375,
+          "n21_orbit_window_delay_no_feedback": 0.00982666015625,
+          "n21_orbit_window_echo_feedback": 0.0098876953125,
+          "n21_orbit_window_echo_no_feedback": 0.0089111328125
+        },
+        "qubit": 136,
+        "readout_contrast": 0.9775390625,
+        "role": "work_16",
+        "spread": 0.0009765625,
+        "spread_lower_limit": -0.0029110122393902456,
+        "status": "pass",
+        "threshold": 0.0017281325622130086
+      }
+    },
+    "comparisons": 360,
+    "contract_shift_upper_limit": 0.013230667781471524,
+    "evaluable": true,
+    "excitation_spread_bound": 0.0017678399038023186,
+    "one_sided_quantile": 3.635188198352059,
+    "present": true,
+    "shots": 16384
+  },
+  "measured_counts": {
+    "n21_orbit_extra_readout": {
+      "feedback": [
+        4949,
+        3109,
+        3222,
+        5104
+      ],
+      "no_feedback": [
+        4875,
+        3485,
+        3335,
+        4689
+      ]
+    },
+    "n21_orbit_nominal": {
+      "feedback": [
+        4600,
+        3107,
+        3209,
+        5468
+      ],
+      "no_feedback": [
+        4619,
+        3870,
+        3266,
+        4629
+      ]
+    },
+    "n21_orbit_window_delay": {
+      "feedback": [
+        4945,
+        3276,
+        2895,
+        5268
+      ],
+      "no_feedback": [
+        4800,
+        3671,
+        2985,
+        4928
+      ]
+    },
+    "n21_orbit_window_delay_long": {
+      "feedback": [
+        4950,
+        3398,
+        2817,
+        5219
+      ],
+      "no_feedback": [
+        4979,
+        3451,
+        2815,
+        5139
+      ]
+    },
+    "n21_orbit_window_echo": {
+      "feedback": [
+        4411,
+        3091,
+        3421,
+        5461
+      ],
+      "no_feedback": [
+        4188,
+        4345,
+        3893,
+        3958
+      ]
+    }
+  },
+  "member_readout": {
+    "n21_orbit_extra_readout_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_extra_readout_no_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_nominal_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_nominal_no_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_window_delay_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_window_delay_long_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_window_delay_long_no_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_window_delay_no_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_window_echo_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    },
+    "n21_orbit_window_echo_no_feedback": {
+      "control_qubit": 144,
+      "end_e01": 0.0,
+      "end_e10": 0.005859375,
+      "mid_e01": 0.0,
+      "mid_e10": 0.005859375,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 144
+    }
+  },
+  "schema_version": "n21-orbit-between-arm-contracts-v2",
+  "spectator_branch_phase": {
+    "branch_phase_rad": [
+      0.0002086306433651746,
+      -0.11362472933717357
+    ],
+    "standard_error_rad": 0.02651193359988717,
+    "status": "descriptive",
+    "turn_rad": -0.11383335998053874
+  },
+  "spectator_counts": {
+    "measured": {
+      "x": [
+        6508,
+        6486,
+        1709,
+        1681
+      ],
+      "y": [
+        4104,
+        3814,
+        4103,
+        4363
+      ]
+    },
+    "reset_only": {
+      "x": [
+        13028,
+        0,
+        3356,
+        0
+      ],
+      "y": [
+        7952,
+        0,
+        8432,
+        0
+      ]
+    }
+  },
+  "spectator_herald": {
+    "admissible": true,
+    "alpha": 0.05,
+    "bits": {
+      "0": {
+        "excitation_spread_upper_limit": 0.001358487809088434,
+        "excited_fraction": {
+          "n21_spectator_measured_x": 0.00103759765625,
+          "n21_spectator_measured_y": 0.0008544921875,
+          "n21_spectator_reset_only_x": 0.000732421875,
+          "n21_spectator_reset_only_y": 0.00079345703125
+        },
+        "qubit": 144,
+        "readout_contrast": 0.994140625,
+        "role": "control",
+        "spread": 0.00030517578125,
+        "spread_lower_limit": -0.000740250853794189,
+        "status": "pass",
+        "threshold": 0.0017574814668659768
+      },
+      "1": {
+        "excitation_spread_upper_limit": 0.004674744087362127,
+        "excited_fraction": {
+          "n21_spectator_measured_x": 0.006103515625,
+          "n21_spectator_measured_y": 0.0057373046875,
+          "n21_spectator_reset_only_x": 0.00390625,
+          "n21_spectator_reset_only_y": 0.00457763671875
+        },
+        "qubit": 142,
+        "readout_contrast": 0.986328125,
+        "role": "work_1",
+        "spread": 0.002197265625,
+        "spread_lower_limit": -0.00021683669687007443,
+        "status": "pass",
+        "threshold": 0.0017436702176175213
+      },
+      "2": {
+        "excitation_spread_upper_limit": 0.001697514462250339,
+        "excited_fraction": {
+          "n21_spectator_measured_x": 0.0018310546875,
+          "n21_spectator_measured_y": 0.00189208984375,
+          "n21_spectator_reset_only_x": 0.00177001953125,
+          "n21_spectator_reset_only_y": 0.001953125
+        },
+        "qubit": 143,
+        "readout_contrast": 0.9853515625,
+        "role": "work_4",
+        "spread": 0.00018310546875,
+        "spread_lower_limit": -0.0013064822882719982,
+        "status": "pass",
+        "threshold": 0.0017419438114614643
+      },
+      "3": {
+        "excitation_spread_upper_limit": 0.0058179836977092555,
+        "excited_fraction": {
+          "n21_spectator_measured_x": 0.00946044921875,
+          "n21_spectator_measured_y": 0.00830078125,
+          "n21_spectator_reset_only_x": 0.0091552734375,
+          "n21_spectator_reset_only_y": 0.01068115234375
+        },
+        "qubit": 136,
+        "readout_contrast": 0.9775390625,
+        "role": "work_16",
+        "spread": 0.00238037109375,
+        "spread_lower_limit": -0.0009271452163536224,
+        "status": "pass",
+        "threshold": 0.0017281325622130086
+      }
+    },
+    "comparisons": 48,
+    "contract_shift_upper_limit": 0.011211358012729091,
+    "evaluable": true,
+    "excitation_spread_bound": 0.0017678399038023186,
+    "one_sided_quantile": 3.078088072842161,
+    "present": true,
+    "shots": 16384
+  }
+}

@@ -1,0 +1,1963 @@
+{
+  "compile_algebra_simulation_json_artifacts": [
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/annihilator_strata.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-annihilator-strata-v1",
+      "sha256": "30b3fde6d72f11b5dfcae5ace8f47c80fa35d9aaf782d34c08b299151234af77"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/associator_walsh_classes.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "5a7510dc3edcc7ce22fe43c3363dc9157ab7b5a2a16e997b62c2e6250341771c"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/cayley_dickson_claim_boundaries.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-claim-boundaries-v1",
+      "sha256": "f05eca772495a71b51f97d678dd112e6c401df9121adc664127abfde016b5fdd"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/cayley_dickson_claim_boundaries_verification.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-claim-boundaries-verification-v1",
+      "sha256": "a1edd7559341304a115f9d2a1617edaad5897c4fc5a1938afe8d46ed9978900d"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/cayley_dickson_topology_verification.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-topology-verification-v1",
+      "sha256": "2a9df2b2e7837e3773e95fa384c22d74a0195d9eb366a3b5f7f7110f68a58b0b"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/hybrid_shor_fake_fez.json",
+      "retained_state": "unspecified",
+      "schema": 1,
+      "sha256": "4faee7051fe94f880e0c999a3dfdf28013c85451f6be8dd41b60230ca2b08907"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/ibm_fez_record.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "c2d8765f20fbc80383b7f0f5bb652c9f0f89d8eefb4604dd32a953783810adb4"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/integral_homology.json",
+      "retained_state": "unspecified",
+      "schema": "integral-chain-homology-audit-v1",
+      "sha256": "930e851106b907071813094307272f0c06bf8fc2c522db2e7d9f224f52b832e9"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/mod15_signed_multiplier_census.json",
+      "retained_state": "unspecified",
+      "schema": 1,
+      "sha256": "680ffac07587ce48b87815ab4d0d2e32f0451ff3bee5892e89644251ed5ee0b9"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/n21_affine_residual_challenger.json",
+      "retained_state": "unspecified",
+      "schema": 1,
+      "sha256": "cd48a9dc4824dd641441172accd8e3e91956eb4e2bd0ff58bb07eaf626818cd7"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": "fresh selected-source compilation and theorem assumption audit; no quantum execution",
+      "path": "results/hw_estimate/n21_cross_project_proof_audit.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "09a0cd50f7152c3a31ec57fd2201b9a6b6a6179b8cb294f8ce180b2a02d3a198"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/n21_heavy_hex_mcx_workspace.json",
+      "retained_state": "unspecified",
+      "schema": 2,
+      "sha256": "65ba2045af90f37b54deef137cd3b7691c6af904e74082acaab6824cd84455f8"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/n21_target_flip_compilation.json",
+      "retained_state": "unspecified",
+      "schema": 3,
+      "sha256": "652b4e65b28b9ee55dfd883d88f9aaf6075e0bf26ad61b024d18348839d4de37"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": "credential-free ideal Aer sampling; not a noisy or hardware measurement",
+      "path": "results/hw_estimate/n21_target_flip_ideal_simulation.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "4601065ea8aa8b726e9449d0579cd64b397a67cde8b4159c5184cac45449c32d"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/n21_target_flip_precision5.json",
+      "retained_state": "unspecified",
+      "schema": 3,
+      "sha256": "4b6919f1deb8f8297f2c790e3831404e908a5c57dcb485515104a82fc5afca62"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/n21_target_flip_proof_verification.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "9a6597a0afa633d23b1150165e333bf87d3a4ed18c7f1963bdb36494ce7ba4dd"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/rank_attachments.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-polynomial-rank-attachments-v1",
+      "sha256": "459e7be97166b920e7be165cf8630de11385b60b8cabc1c32f6d2e6762be6af1"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/rank_charts.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-exact-rank-charts-v1",
+      "sha256": "1e24c2429ef1b627f9e1dce76f8c94992806a08c3599c7f933c33d0bbe44ae64"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/rank_path_topology.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-restricted-rank-path-topology-v1",
+      "sha256": "6f38b79f2786ce67a6b0463e1c400c0e6d72391955de06d88bf30ccc617663d6"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/rank_path_topology_embedded.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-restricted-rank-path-topology-v1",
+      "sha256": "4c6605ce0bb469f3fe28ff20a587d57c3e0ddf445f38b8830b0985eff6c8d96f"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/rank_polynomials.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-rank-polynomials-v1",
+      "sha256": "a81bf9d8b2b8e9f63106a9b559ee8fbd2c61dcf1c65c461a33944d808817bbf2"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/rank_polynomials_dimension64.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-rank-polynomials-v1",
+      "sha256": "8fefd54172c7e00bfb96772635110a92cf19fcc0e6ef96e47920ede18860d923"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/rank_topology_verification.json",
+      "retained_state": "unspecified",
+      "schema": "cayley-dickson-rank-topology-verification-v1",
+      "sha256": "18424c61faf685839fda9e97141c2c712a13edc03cd202dc443c242791994d99"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": null,
+      "path": "results/hw_estimate/sedenion_bundle.json",
+      "retained_state": "unspecified",
+      "schema": "sedenion-quaternion-bundle-atlas-v1",
+      "sha256": "b3c0d1a57365f2cdc2a49c4dbdd620679911fc8279a4116b0411cdab7a6ec078"
+    }
+  ],
+  "counts": {
+    "compile_algebra_simulation_json_artifacts": 24,
+    "local_compute_json_artifacts": 17,
+    "mock_diagnostics": 3,
+    "native_local_preparation_reports": 1,
+    "native_mock_reports": 3,
+    "physical_jobs": 10,
+    "registered_physical_jobs": 9,
+    "retrospective_physical_jobs": 1,
+    "runner_record_states": {
+      "approval_required": 3,
+      "design_infeasible": 1,
+      "planned": 76,
+      "submitted": 6,
+      "unspecified": 13
+    },
+    "runner_records": 99
+  },
+  "interpretation": "States are retained artifact fields; a running checkpoint does not establish a live process. Legacy unspecified states and missing batch metadata remain unknown. Software tests and failed native mocks inform implementation qualification. Measured physics comes from 10 hash-bound physical-job archives.",
+  "local_compute_json_artifacts": [
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/GPU_INVENTORY_OBSERVATIONS.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "ac0bec2acac499f7f4ad718ed84583a97ea10215184f2d5f39b62447c1e0b5fe"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/aer_delay_sentinels/record.json",
+      "retained_state": "unspecified",
+      "schema": "native-aer-cpu-delay-qualification-v1",
+      "sha256": "a562797e27ddbbc21a16cc18b2619fef0a2f312f7e2da2250fe9c0f899af9e14"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/cpu_branching_execution_mode_audit.json",
+      "retained_state": "failed_fresh_instance_repair_falsified",
+      "schema": null,
+      "sha256": "a47a8b547cec7599b9f7bd7e44fd539a20313699de4e23b7b2ce005d6968c87d"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/cpu_branching_noise_semantic.json.gz",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "a7945b73b221bc8f9efc3107ef9a5f0bead4bd050ac4b7fcd982b77f6604f5cf"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/cpu_branching_qualification.json.gz",
+      "retained_state": "failed",
+      "schema": null,
+      "sha256": "11a92e7870540ad4cad53ca1fdc8dd3e719b896d53b2bca0e88084942f6f9b02"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/cpu_branching_rca.json.gz",
+      "retained_state": "completed",
+      "schema": null,
+      "sha256": "bf99a87cba3a470ee3b7a5e536a718db7fd66570cd1b9024b33a4fece20f7237"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/cpu_branching_results.json.gz",
+      "retained_state": "running",
+      "schema": null,
+      "sha256": "5c37b8f1c351563036030a75cbb381b81f5843489e20a1a6cacc983dd398077f"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/cpu_branching_reuse_analysis.json.gz",
+      "retained_state": "failed_fresh_instance_repair_falsified",
+      "schema": null,
+      "sha256": "7749c07886cda6d5653519eda2c2b827ac633da853db6ab7b82aeb3a6129cf53"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/cpu_branching_reuse_probe.json.gz",
+      "retained_state": "completed",
+      "schema": null,
+      "sha256": "0de6143f1656e335cb0fe6453fc50e5f9c51a24adda7705e8a262fa779cdbdbc"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/manifest.json",
+      "retained_state": "unspecified",
+      "schema": 1,
+      "sha256": "ec7785fa1c50323d64989cc77708f1602b9c052748db7ff89d1a0d2eed3dc1ee"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/mixed_pub_client/registry_detection.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "6ae6ce301a1948d312fccd479500f41b93b55bb75aeb3958073ba6b5a0dbd7de"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/mixed_pub_client/result-optimized.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "79d07d9bda4c88227cb5ca8de54c4f3f4e5cd3ae649e51fb8e85adee7de3a9b4"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/mixed_pub_client/result.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "79d07d9bda4c88227cb5ca8de54c4f3f4e5cd3ae649e51fb8e85adee7de3a9b4"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/mixed_pub_client/status.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "b0ff9cea44da8bc95b413a003fdefcaa99b98b49f31a1a518e0b46e1c64d0e90"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/mixed_pub_client/validation.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "86d4535f1d7a28bd6f67630a2bb263f6334e6c9fe293fd7b0c56afdb32aa6e55"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/n21_shared_predicate/result.json",
+      "retained_state": "unspecified",
+      "schema": "n21-native-qiskit-shared-predicate-audit-v1",
+      "sha256": "fa3d0dd20bbd39f89abd3bc98ff30ba1a98705896d48213fe2bf084d7ad69e21"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/local_compute/summary.json",
+      "retained_state": "failed",
+      "schema": 1,
+      "sha256": "6f25d5ff8a554ac13a4a472825b0be12c7707f04ba7c5939f9db798a0d8dd382"
+    }
+  ],
+  "mock_diagnostics": [
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/ripple/fez-mock-diagnosis.json",
+      "retained_state": "unspecified",
+      "schema": "qiskit-mock-backend-diagnosis-v1",
+      "sha256": "64918c74f0cb5d4c1e95e13f772755c3e0aa06a418053e193e6b2d43af30a4a4"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/ripple/kingston-mock-diagnosis.json",
+      "retained_state": "unspecified",
+      "schema": "qiskit-mock-backend-diagnosis-v1",
+      "sha256": "a4ee3d16fd416bb2f0e1fe155a1498afdb7ac4f3de0cf075cbeb1acca6792cdc"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/ripple/marrakesh-mock-diagnosis.json",
+      "retained_state": "unspecified",
+      "schema": "qiskit-mock-backend-diagnosis-v1",
+      "sha256": "8c3acd631f7b7b3f308e890b0cdeb788c1ecbec352ab414fbaed857c88e2f837"
+    }
+  ],
+  "native_local_preparation_reports": [
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/live/2026-10-12T020459.130482Z/native-preparation.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "82ded65a817555a7b79a0644778f057ded820092a0d9ffdcff76525a84fa5724"
+    }
+  ],
+  "native_mock_reports": [
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": "server_mock_timing",
+      "path": "results/live/2026-10-12T062505.208379Z/native-dry-run/20261012T063039.174056Z-46f54595/report.json",
+      "retained_state": "unavailable",
+      "schema": 1,
+      "sha256": "445622cad538d0f89a143f1941f8d42d7d9ae721f6f517733e48bacc23ac754a"
+    },
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": "server_mock_timing",
+      "path": "results/live/2026-10-12T062505.552988Z/native-dry-run/20261012T062730.914121Z-f400b396/report.json",
+      "retained_state": "unavailable",
+      "schema": 1,
+      "sha256": "780f3a41ee21b6b9af8c499d5b121110fe2a4dedffc7f0e8e0e66ab384014e80"
+    },
+    {
+      "declared_qpu_execution": false,
+      "evidence_kind": "server_dry_run_randomized_mock_data",
+      "path": "results/live/2026-10-12T054229.702537Z/native-validation.json",
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "02592f3db1ceb203c4d623420067759c66cba4620a8e185596587ba837bb0cc9"
+    }
+  ],
+  "physical_inventory_sha256": "b3d9a3694221e725ef1729a6aeda9fe7d6400caab57e3f7861f47f22b7634b86",
+  "physical_service_observed_at": "2026-10-13T04:59:38.738834+00:00",
+  "replay_source_sha256": "67d05d33c30465d436165b083b08d26c897b8b691a5068b2a842289790f67354",
+  "retrospective_physical_retention": [
+    {
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "path": "results/live/kingston-wide-control-result/retention.json",
+      "retained_state": "DONE",
+      "schema": "unregistered-hardware-acquisition-retention-v1",
+      "sha256": "0076062a6eb46b53913fdfeea64a35b08ac52bf20e90458edb315fb0fa8d0048"
+    }
+  ],
+  "runner_records": [
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T165944+0000/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "422067b2789d8beb33f29d4816ff5998c7a736000ac63dd5cf25efa477d5b461",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T171827+0000/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "3fe90ccf9893aedf4aa67130417b92f989a956a00e4f7550988954006d02863c",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T172316+0000/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "ee4a9f31f60b2f672d2d8f7c29f4df6a27206ed71332df48665ebc13e4e84c49",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T173416.028543Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "0bdb560ea06102608804229f07e177acc357c22c9b8ace177068b1a1a3fe73a9",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T174036.860138Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "3faedc850ab24c06757cdebe5e9b0fd1d39d8599bbc467b1185fe50d4f7c6c40",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T174235.045010Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "fa66c1e7e3fcf6fc06e5f86bc4dd2200f99bc0271401ae1dd5134afbdcbf0cfe",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T175925.891919Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "5f3b34e3ca01d1123a5fb9bf575d9661909d222e4e0f659ca44e5fc728040408",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T183023.567277Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "89a3edeb0a29fe1dd0ddd1824e8fe8e2417f3da12027f27301133ac016f7b0ab",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T183325.225102Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "892ac44d1c2517128a200bfb2bf76ba7310e25e5ef063f8c516be5ba5ca5ec52",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T183549.443333Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "a0ae8d166ab8ff30f9103cd87e2779da7c5f13362fcd48dd41e377aee89a5e6d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T193949.352436Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "1eacca6b2c9081ca6bd81528a4f4df293efabbe488792c4a718c7da8dceb57ef",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T194700.095769Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "b54b7dfcd19ba8c5dfde6ec37ae3f739374a33dc096501115ac7c580076d09e7",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T195204.086678Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "unspecified",
+      "schema": null,
+      "sha256": "2a3ad5b1fe611eba7ef02631457ad11784255c016f69c11b85c90627150b4df3",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T200646.447516Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 2,
+      "sha256": "361710c4529f85ab13fa9d917f8d99b889bbecc50331429ce6b5828d7d6eba68",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T213145.298421Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 3,
+      "sha256": "7db1e6e31109c6cbdf06d42351fddf96d39f642436da879f33d75ead59525cc4",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T214318.070235Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 3,
+      "sha256": "c35125c69a8be85106dfb8f8b3cdf3c506c8acdd09df2aff8f4e0f24853012b9",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T215434.847324Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 3,
+      "sha256": "9ccd56e545fcbcd473095bc05b6898338d3e91cd0bd513076813a65c94eb4bf0",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T220435.034757Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 3,
+      "sha256": "0beed75edbbdd25cb6c718a1f8f5fd2d171c98c500407d3d2b7b4d498bf97939",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T220438.712726Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 3,
+      "sha256": "df4a78449671817ccc700781e0d277f1e3e7ae0787a33314cff2b78ba997efa3",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T221412.255180Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 3,
+      "sha256": "104b45b40147ecfa913fefbafea6d37103bf4588003fd410c4f66be6a13676f9",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T222132.627032Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 3,
+      "sha256": "9b9b29d5e8ce78f90fc3179c083bef1b1f9741dfa54a181698b70ad8c69f7e4e",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T223619.798923Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 4,
+      "sha256": "6c347e70e0ea22de682fc935d810612287bbb984d1a3ac551b367f550d5f0f7c",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T230646.694665Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 4,
+      "sha256": "8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-10T232219.919322Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 4,
+      "sha256": "0c5b57a2db2d4e246908c5a05ccf1eadc0aa87629e2ac3950586f38ef7c55744",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T062204.877756Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 5,
+      "sha256": "813be4a7e9e654c5a0043c596f900d4f3537c010d5bc9a863037f77163f4ae50",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T071616.724800Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 5,
+      "sha256": "54946d4b19b9ec9ff92d7c536ff050ba4dbdd0e3504d7f4e621ff70198682524",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T082455.919602Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 5,
+      "sha256": "503cc3da9d08f2426b80a145bf6091dc18405ea416d33aef0621777c66e188ef",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T085437.294823Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 5,
+      "sha256": "522e3bf7f765cda7a0139a326147a54b966a38188e104030de660e8653fb8e75",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T090500.749224Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "6c0d04b9cc4e7417ccd872af39ebe8935a3d5b3c301b0870df251d7df0607472",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T091019.824103Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 5,
+      "sha256": "96318b9b46ca355089b99011136311b4f6d8ee252ea87b6d93e69a4586b253cd",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T091715.073826Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "79e35c6a8a6bef2e215bb4ea07e450370c74fc8622612cc0d14db3255ec8bd58",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T093336.320234Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 5,
+      "sha256": "2245c42f8eb4f853c93fdf672c3979760eba85a96708394eb4db27627e2b58c0",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T093445.248590Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "54c1705b70e1b7884cff4ebfc5610e3af090df0303f92689e8b67d0eb521fb23",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T094055.608273Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "3734874afce712274a239478ad6b17e6564befff66116f6f54647bbbe6e8e64d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T095108.705673Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "4836ac0086cf84e5f2cff1837c9d4423ac2af00833cfa3c82d3adbda7663415a",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T095541.923847Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 5,
+      "sha256": "4b5e61dcaa5e87c5a76a7cbccf7bf85e5ef115951d87fe118a5b8b4fd5f28dfa",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T095547.705434Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "534a8d51a414e70019ef4ab4994101b8e5cef4c9510d69d804cce801e7c99e31",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T100158.375275Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "2d54cb68e1fd04465eb6753f8a40a250a197bdade6210ef6b5c9659b48418a92",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T100526.684788Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "d7400b165b2089d5081167bf60d56e6638c9fd8e11786f8f00e6ce3ffaab4f92",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T101630.331262Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "277204b26629986b77622943ddb765500e6afc3c27972966e70fb872e0a48adf",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T102037.475268Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "5f8ec0bf35d0f30ee35db204203f1b84df764da9c9dcc20de863bd9e4075a270",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T111237.410777Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "b7223494e0b11a7672a0949007c04952e0156ab19b7d6d7da028ae5d98051aed",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T111555.975109Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "6e75d92d50ecd7bf7201e45c751973b91eae7089ef574326f32c490cab903f65",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T113111.266543Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "2e08db3de61e25e1c272bafafe74034cb00291367a4da2d7ad9675f6bd728553",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T114048.080610Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "d18c0ef542b10260bc9affc275c9a4eae6a963a9719fa85a2b3881a2162792af",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T114958.902835Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "9c4285d7a293ea52fb5364494aaae14f896d5e610efc8d9d782330bfe71dbdde",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T120803.085652Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "0f06c5ef86bfd24a2b773f9a0de96a36a505c0806728b666bc5bfb3b681b843c",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T121402.617901Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "807f1856b54abc7aaec1a311a999d0c6f8fd197ccf385488bc153531432c447b",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": true,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T152922.787095Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [
+        "db5qmqclf4us73c4e1ug"
+      ],
+      "retained_state": "submitted",
+      "schema": 6,
+      "sha256": "3b81e5b3ba59bf5041daeaae911d9c5b62063fe4186544c5ed79e9ef709c1e59",
+      "submission_complete": true,
+      "submission_field_present": true
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T163812.041836Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "3042735c391ade3a8741b214242989bddfba2877ee0b22d341e42e302ca5d2d2",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T200341.410400Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "dbd522bc3e14f7d32c275ba4c95f33e5ed06d094be19a0f84aa887b9a60beb99",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T203420.747793Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "8c0c5c3b17f6ba529cf079ef047dcc933c74126b407d845337568efad5f9c10d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-11T203535.690679Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 6,
+      "sha256": "505ffcd719f966d59b26c34581d3d4a805f6292c1658f22b162713f90198c08e",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-12T011109.792785Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "2a6d02ebc703ec81e1cbe4383f6215331b97add27ca823a16dfe6110b692aabb",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {},
+      "path": "results/live/2026-10-12T011110.481425Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "0f05e1e687adc7f247ec05fb93e8af648ae78b80dc8c447383b7d87f2e88549c",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 7
+      },
+      "path": "results/live/2026-10-12T014428.093689Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "6bf8f0ce211d42c804276cf206cf8c3cf55b9d19c15a69d9c14d3fb9be0364d2",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 2,
+        "local_simulation_batches": 4
+      },
+      "path": "results/live/2026-10-12T014450.672483Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "e43c3e5bca12795a77d4148ff958735354271635430e2114f3b10233f9032d98",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T020459.130482Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "design_infeasible",
+      "schema": 7,
+      "sha256": "1d4bf7040c71b3a53c096825be34f37f694ed0b61f9bc1bbb4e488bbbbad7fef",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 2,
+        "local_simulation_batches": 4
+      },
+      "path": "results/live/2026-10-12T024756.245948Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "f8006ac659b43224f67eee85928987ae32ad9409e117d7802e97d78579438f2d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 2,
+        "local_simulation_batches": 4
+      },
+      "path": "results/live/2026-10-12T054229.702537Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "b4774b596656865edf75ff9eae32cf0d2630a06477d2d1547f498d102bc66cef",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 2,
+        "local_simulation_batches": 4
+      },
+      "path": "results/live/2026-10-12T055017.711575Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "approval_required",
+      "schema": 7,
+      "sha256": "aea22a9ddaa54be03481d8ea34dbce5479262d2a9cd8ea4e980d56dfb9d7a01d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 2,
+        "local_simulation_batches": 4
+      },
+      "path": "results/live/2026-10-12T055017.711575Z-prepared/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "2f87de38661a484bb0e09625b25e363acdc1eed1aba408ef5c2bea1bd6a1092a",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": true,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 2,
+        "local_simulation_batches": 4
+      },
+      "path": "results/live/2026-10-12T055624.091217Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [
+        "db67fqsvf2bc73d0pk4g",
+        "db67frimb58s738bci4g"
+      ],
+      "retained_state": "submitted",
+      "schema": 7,
+      "sha256": "91145c3456e8670a19eea258416412d020ca5e3fa71aa37b91ce7a5cb7f74670",
+      "submission_complete": true,
+      "submission_field_present": true
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 12
+      },
+      "path": "results/live/2026-10-12T062505.208379Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 8
+      },
+      "path": "results/live/2026-10-12T062505.552988Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T074042.840320Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T153635.004894Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 8
+      },
+      "path": "results/live/2026-10-12T163354.210407Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T163354.247043Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 12
+      },
+      "path": "results/live/2026-10-12T163354.310138Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T170742.727534Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 12
+      },
+      "path": "results/live/2026-10-12T174739.912595Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "88a1e9a95feb80bf39bd44998ac4507fc66d46cb53b8496f6b97337b68b913e3",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 8
+      },
+      "path": "results/live/2026-10-12T174740.017449Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "bca843fb99dff39c5ac9a8b2c9ea453cdaa53c25be37da529f1f89c9782d0bea",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T185136.764695Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "3a66462d5f62b8e74e1946754d38d4b2eb699dc8000a66c6419bcc3ea1a09d92",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 12
+      },
+      "path": "results/live/2026-10-12T195043.912458Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 8
+      },
+      "path": "results/live/2026-10-12T195828.029302Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T200830.246684Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "8dc6d11f7e8d5683bf10214b976fa76e686fafacf35562c2f8e8ffe922c8d9ae",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 24
+      },
+      "path": "results/live/2026-10-12T202604.294879Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "7159448f76a68c3e1bd71576cb9f55542f91d5dfdb437ed8a882f452fbc0722f",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T202752.126072Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 24
+      },
+      "path": "results/live/2026-10-12T203301.342941Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "f380511031e2161632801e20b9794caabecb52e9ba33d46941530f39539e0fe9",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T205014.933900Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "approval_required",
+      "schema": 7,
+      "sha256": "d8ee86531c7317e62505730f9487bde056d4ed64d3e1153dbdd44bfecb5278b3",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 24
+      },
+      "path": "results/live/2026-10-12T210043.972363Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "bc709f774aecd68fdfaa1612ea05db6a0326217df9ef1da2f0535c17371846e1",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T210111.066250Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "6d4de1692e84f5d8b8b9308fcd387aac59a74490133360ebad19e04b624967b7",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T210733.761428Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "approval_required",
+      "schema": 7,
+      "sha256": "76c1f472a1bcd71bd2e1660355f14c119e47b5ccfb5143e6ca0d9503a998241d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 16
+      },
+      "path": "results/live/2026-10-12T210815.657132Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "9ddec6264db827947babe29967f68690814d7510cc01f2af5e0aff55334ec877",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T213459.470118Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "603f6e975f53d792d8d5c2fe3682b77c882994251b4daec49815aab06943034f",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 16
+      },
+      "path": "results/live/2026-10-12T215030.944608Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "8b7832967064aa55bdd00d5cc376653611dd809a9ab7241a71795abc610205c2",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 24
+      },
+      "path": "results/live/2026-10-12T215030.995079Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "2807a634ff3fbdac979e3092d0a1b5a802aa0483ccaaa19af6ecdfcffa50da1f",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T215031.046514Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "b0a647ea218dd907988f6046a11b7163aa853e23591f8e263bf9c67017a5858a",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-12T221651.485791Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 7
+      },
+      "path": "results/live/2026-10-12T225019.585504Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "46199b32e1b36f424111b19d6fb87fe5c0d3d9f5220b4337b51797519b056226",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-13T020255.180301Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "f90f9715f6938d4ece1b58221e18ff912f92f715777b30dd382001ac4e6a252e",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": true,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-13T020454.599853Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [
+        "db6p55clf4us73c5nd9g"
+      ],
+      "retained_state": "submitted",
+      "schema": 7,
+      "sha256": "d9441a3b8c613c666657f3abdceb7eab9842db5d97310ec3af0319b21ad020ee",
+      "submission_complete": true,
+      "submission_field_present": true
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-13T022211.257292Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "78d17752b78b7e11424b9a92bdff201cda6afa319ed6717b0c83f308b5e5467b",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": true,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 1,
+        "local_simulation_batches": 1
+      },
+      "path": "results/live/2026-10-13T022433.333775Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [
+        "db6pepklf4us73c5nqcg"
+      ],
+      "retained_state": "submitted",
+      "schema": 7,
+      "sha256": "953925600a12666f406e56f7833be4bc2885c3904f5a64e82875ceeba56ffdad",
+      "submission_complete": true,
+      "submission_field_present": true
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 24
+      },
+      "path": "results/live/2026-10-13T024407.448597Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "8c9bd292a6d6f976f2e7014fe49fd99ed7327ad79a982bdfb8ae641a64877c4d",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": true,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 12,
+        "local_simulation_batches": 24
+      },
+      "path": "results/live/2026-10-13T025444.603480Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [
+        "db6q2p2mb58s738c75gg",
+        "db6q2rklf4us73c5oq90"
+      ],
+      "retained_state": "submitted",
+      "schema": 7,
+      "sha256": "dfe1e15a1a429c5625acac46a13f51dc4025619273b123ba969122a2a54dc83c",
+      "submission_complete": true,
+      "submission_field_present": true
+    },
+    {
+      "collection_present": false,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 16
+      },
+      "path": "results/live/2026-10-13T031726.380783Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [],
+      "retained_state": "planned",
+      "schema": 7,
+      "sha256": "5563c7e59b7e3a90d49cecefed223d354afcbbbacc121d7d2f3899455c6e37f6",
+      "submission_complete": null,
+      "submission_field_present": false
+    },
+    {
+      "collection_present": true,
+      "declared_qpu_execution": null,
+      "evidence_kind": null,
+      "local_batch_metadata_entries": {
+        "evaluation_simulation_batches": 8,
+        "local_simulation_batches": 16
+      },
+      "path": "results/live/2026-10-13T032011.664435Z/record.json",
+      "qpy_present": true,
+      "recorded_job_ids": [
+        "db6q9qo4qg6s73c57020",
+        "db6q9rsvf2bc73d1kpug"
+      ],
+      "retained_state": "submitted",
+      "schema": 7,
+      "sha256": "cde647e53a4a08164f71e474b63b36b60ad1417a850c48adb2907af050dc2368",
+      "submission_complete": true,
+      "submission_field_present": true
+    }
+  ],
+  "schema": "retained-run-channel-inventory-v1",
+  "scope": "Repository runner records, named native mock reports, local-compute JSON archives and top-level compile/algebra/simulation JSON artifacts. Counts describe retained evidence objects; neither directory names nor planned/local/mock records establish additional physical QPU jobs."
+}

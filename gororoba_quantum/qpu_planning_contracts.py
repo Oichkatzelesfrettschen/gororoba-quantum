@@ -164,7 +164,14 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         rca_configuration["window_delay_dt"] > 0 and rca_configuration["echo_half_dt"] > 0,
         f"window durations missing from the family configuration: {rca_configuration}",
     )
-    _require(len(rca_choice.isas) == 8, "N=21 window family lost an arm")
+    _require(
+        len(rca_choice.isas) == 14 and rca_configuration.get("window_sweep") is True,
+        "N=21 window family lost an arm or the window sweep",
+    )
+    _require(
+        {pub.kind for pub in live_run.execution_pubs([rca_choice])} == {"dynamic"},
+        "N=21 window family crossed execution kinds",
+    )
     arms = dict(zip((member.name for member in rca_choice.group.members), rca_choice.isas, strict=True))
 
     def ops(name: str) -> dict[str, int]:
@@ -177,6 +184,28 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         extra = ops(f"n21_orbit_extra_readout_{arm}")
         _require(extra["measure"] == nominal["measure"] + 1, f"extra readout was removed from the {arm} arm")
         _require(ops(f"n21_orbit_window_delay_{arm}").get("delay", 0) >= 1, f"window delay left the {arm} arm")
+        long_delays = [
+            int(instruction.operation.duration)
+            for instruction in arms[f"n21_orbit_window_delay_long_{arm}"].data
+            if instruction.operation.name == "delay"
+        ]
+        _require(
+            2 * rca_configuration["window_delay_dt"] in long_delays,
+            f"the long window delay {long_delays} of the {arm} arm is not twice window_delay_dt",
+        )
+    for quadrature in ("x", "y"):
+        measured = ops(f"n21_spectator_measured_{quadrature}")
+        reference = arms[f"n21_spectator_reset_only_{quadrature}"]
+        _require(
+            measured.get("measure") == 2 and measured.get("reset") == 1,
+            f"the measured {quadrature} spectator lost its control readout or reset: {measured}",
+        )
+        _require(
+            dict(reference.count_ops()).get("measure") == 1
+            and rca_configuration["window_delay_dt"]
+            in [int(i.operation.duration) for i in reference.data if i.operation.name == "delay"],
+            f"the reset_only {quadrature} spectator does not idle the control's measure duration",
+        )
         echo_isa = arms[f"n21_orbit_window_echo_{arm}"]
         wires: dict[int, list[str]] = {}
         for instruction in echo_isa.data:
@@ -235,7 +264,7 @@ def _verify_window_control_durations(snapshot: live_run.Snapshot) -> None:
     candidates = qpu_planning.family_candidates(live_run, [heterogeneous], _args("n21-orbit-rca"), trace)
     _require(bool(candidates), f"the heterogeneous Target rejects every N=21 window family: {trace}")
     (choice,), configuration = candidates[0]
-    sites = qpu_planning.control_sites(live_run, choice.isas)
+    sites = qpu_planning.orbit_sites(qpu_planning.control_sites(live_run, choice.isas), choice.group.members)
     controls = qpu_planning.window_controls(sites)
     _require(bool(controls) and slow not in controls, f"the control routed onto {controls}")
     expected = qpu_planning.window_durations(live_run, heterogeneous, controls)
@@ -275,7 +304,10 @@ def _verify_window_control_durations(snapshot: live_run.Snapshot) -> None:
         (window["window_delay_dt"], window["echo_half_dt"]) == uniform[:2],
         f"the terminal readout on {terminal} set the windows {window} instead of {uniform[:2]}",
     )
-    _require(qpu_planning.control_sites(live_run, resized.isas) == sites, "the resized arms moved their measure sites")
+    _require(
+        qpu_planning.orbit_sites(qpu_planning.control_sites(live_run, resized.isas), resized.group.members) == sites,
+        "the resized arms moved their measure sites",
+    )
 
 
 def _verify_heterogeneous_measurement_duration() -> None:
@@ -888,11 +920,14 @@ class _RangeBackend(_ProbeBackend):
     """FakeFez whose rep_delay_range the contract can move between configuration reads."""
 
     rep_delay_range: list[float] | None = None
+    default_rep_delay: float | None = None
 
     def configuration(self) -> Any:
         configuration = super().configuration()
         if self.rep_delay_range is not None:
             configuration.rep_delay_range = list(self.rep_delay_range)
+        if self.default_rep_delay is not None:
+            configuration.default_rep_delay = self.default_rep_delay
         return configuration
 
 
@@ -902,6 +937,31 @@ def _verify_rep_delay_range() -> None:
     low, high = backend.configuration().rep_delay_range
     _require(qpu_planning.repetition_delay(backend) == 0.00025, "the default repetition delay moved")
     _require(qpu_planning.repetition_delay(backend, 0.00005) == 0.00005, "an in-range request was not honored")
+    _require(qpu_planning.repetition_delay(backend, 20e-6) == 20e-6, "the Heron floor itself was refused")
+    _require(
+        (backend.configuration().processor_type or {}).get("family") == "Heron",
+        "the range fixture lost its Heron processor family",
+    )
+    for below in (0.0, 19e-6):
+        try:
+            qpu_planning.repetition_delay(backend, below)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError(f"the charge model accepted a repetition delay {below} below the Heron floor")
+        _require(
+            bool(qpu_planning.repetition_delay_violations(backend, below, None)),
+            f"a repetition delay {below} below the Heron floor raised no violation",
+        )
+    low_default = _RangeBackend("rep_delay_low_default", FakeFez())
+    low_default.default_rep_delay = 10e-6
+    try:
+        qpu_planning.repetition_delay(low_default)
+    except ValueError as error:
+        _require("backend default" in str(error), f"a low backend default refused for another reason: {error}")
+    else:
+        raise RuntimeError("a backend default below the Heron floor was admitted without a request")
+    _require(qpu_planning.repetition_delay(low_default, 20e-6) == 20e-6, "a request at the floor was refused")
     for outside in (high + 1e-6, -1e-6, float("nan")):
         try:
             qpu_planning.repetition_delay(backend, outside)
@@ -2089,14 +2149,20 @@ def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
     """Every n21-orbit-rca arm keeps work-qubit gates out of the control's measurement-and-reset window.
 
     The barrier-free n21-orbit-feedback pair is the negative control: its
-    compiled multipliers place work-only gates inside the window.
+    compiled multipliers place work-only gates inside the window, and so do
+    the unbracketed arms of a pinned overlap split, whose bracketed arms keep
+    the window clear (_window_bracket_split).
     """
     traces: dict[str, Any] = {}
     rca = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-rca"), traces)
     _require(bool(rca), f"FakeFez rejects every N=21 window family: {traces}")
     (choice,), _configuration = rca[0]
-    _require(len(choice.isas) == 8, "N=21 window family lost an arm")
+    _require(len(choice.isas) == 14, "N=21 window family lost an arm")
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        if "_reset_only_" in member.name:
+            # The reference idles in place of the measurement, so no
+            # measurement opens a window.
+            continue
         inside = frozenset({"delay", "x"}) if "_window_echo_" in member.name else frozenset({"delay"})
         found = qpe_diagnostics.window_bracket_violations(isa, inside)
         _require(not found, f"{member.name}: the window holds work-qubit operations {found}")
@@ -2108,6 +2174,298 @@ def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
             bool(qpe_diagnostics.window_bracket_violations(isa)),
             f"{member.name}: the barrier-free window holds no work-qubit operation, so the check proves nothing",
         )
+    _window_bracket_split(snapshot)
+
+
+PINNED_ORBIT_LAYOUT = [142, 136, 143, 144]
+OVERLAP_SPLIT_MEMBERS = [
+    *(
+        f"n21_orbit_{variant}_{arm}"
+        for variant in ("nominal", "window_delay", "window_delay_unbracketed")
+        for arm in ("feedback", "no_feedback")
+    ),
+    *(f"n21_spectator_{kind}_{q}" for kind in ("immediate", "idle", "reset_only") for q in ("x", "y")),
+]
+
+
+def _overlap_split_plan(snapshot: live_run.Snapshot) -> tuple[Any, dict[str, Any]]:
+    """The first pinned overlap-split candidate on snapshot and its family configuration."""
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(
+        live_run, [snapshot], _args("n21-orbit-rca", pin_layout=pin, overlap_split=True), traces
+    )
+    _require(bool(candidates), f"FakeFez refuses the pinned overlap split: {traces.get('family_rejections')}")
+    (choice,), configuration = candidates[0]
+    return choice, configuration
+
+
+def _window_bracket_split(snapshot: live_run.Snapshot) -> None:
+    """The overlap split's bracketed arms keep the window clear and its unbracketed arms do not.
+
+    The immediate and idle spectators measure no control and the reset_only
+    one resets it before any measurement, so no measurement opens their
+    window and the bracket test leaves them out.
+    """
+    choice, _configuration = _overlap_split_plan(snapshot)
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        if member.name.startswith("n21_spectator_"):
+            continue
+        found = qpe_diagnostics.window_bracket_violations(isa)
+        if "_unbracketed_" in member.name:
+            _require(bool(found), f"{member.name}: the unbracketed window holds no work-qubit operation")
+        else:
+            _require(not found, f"{member.name}: the window holds work-qubit operations {found}")
+
+
+def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
+    """A pinned overlap split plans its twelve members and binds the flag only when set.
+
+    The group holds the bracketed nominal and window_delay pairs, the
+    window_delay_unbracketed pair and the immediate, idle and reset_only
+    spectators in X and Y, in that order; the window_delay arms of both
+    kinds idle window_delay_dt, the configuration records every orbit arm's
+    CZ and sx counts, and a configuration without overlap_arm rebuilds the
+    ten-member nominal configuration; the unbracketed arms
+    hold a work-qubit operation in the control's window and the bracketed
+    ones do not; the idle spectator idles window_delay_dt + reset_dt and the
+    immediate one plays no delay, each resetting the control only after
+    qubit 2's readout; the configuration records
+    overlap_split and reset_dt and no window_sweep, and record_groups and
+    family_contracts rebuild it; the policy carries overlap_split only when
+    set; live_run refuses the flag without --pin-layout or on another family,
+    and the group refuses it beside window_sweep.
+    """
+    _require("overlap_split" not in qpu_planning.settings(_args("n21-orbit-rca")), "an absent split entered the policy")
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    _require(
+        qpu_planning.settings(_args("n21-orbit-rca", pin_layout=pin, overlap_split=True)).get("overlap_split") is True,
+        "the policy settings drop the overlap split",
+    )
+    choice, configuration = _overlap_split_plan(snapshot)
+    names = [member.name for member in choice.group.members]
+    _require(names == OVERLAP_SPLIT_MEMBERS, f"the overlap split plans {names}")
+    _require(
+        configuration.get("overlap_split") is True
+        and "window_sweep" not in configuration
+        and type(configuration.get("reset_dt")) is int
+        and configuration["reset_dt"] > 0
+        and configuration.get("pin_layout") == pin
+        and configuration.get("overlap_arm") == "window_delay"
+        and configuration.get("orbit_gate_counts")
+        == {
+            member.name: {gate: int(isa.count_ops().get(gate, 0)) for gate in ("cz", "sx")}
+            for member, isa in zip(choice.group.members, choice.isas, strict=True)
+            if member.name in OVERLAP_SPLIT_MEMBERS[:6]
+        },
+        f"the overlap-split configuration reads {configuration}",
+    )
+    _window_bracket_split(snapshot)
+    arms = dict(zip(names, choice.isas, strict=True))
+    control = PINNED_ORBIT_LAYOUT[0]
+
+    def reset_after_readout(isa: Any) -> bool:
+        names = [i.operation.name for i in isa.data if i.operation.name in ("measure", "reset")]
+        return names == ["measure", "reset"]
+
+    for arm in ("feedback", "no_feedback"):
+        for variant in ("window_delay", "window_delay_unbracketed"):
+            isa = arms[f"n21_orbit_{variant}_{arm}"]
+            delays = [int(i.operation.duration) for i in isa.data if i.operation.name == "delay"]
+            _require(
+                configuration["window_delay_dt"] in delays,
+                f"the {variant} {arm} arm does not idle window_delay_dt: {delays}",
+            )
+    for quadrature in ("x", "y"):
+        idle = arms[f"n21_spectator_idle_{quadrature}"]
+        immediate = arms[f"n21_spectator_immediate_{quadrature}"]
+        idle_delays = [
+            int(i.operation.duration)
+            for i in idle.data
+            if i.operation.name == "delay" and idle.find_bit(i.qubits[0]).index == control
+        ]
+        _require(
+            configuration["window_delay_dt"] + configuration["reset_dt"] in idle_delays and reset_after_readout(idle),
+            f"the idle {quadrature} spectator idles {idle_delays} on the control, not measure plus reset",
+        )
+        _require(
+            "delay" not in immediate.count_ops() and reset_after_readout(immediate),
+            f"the immediate {quadrature} spectator plays a window: {dict(immediate.count_ops())}",
+        )
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require(
+        [member.name for member in rebuilt[0].members] == names,
+        "record_groups does not rebuild the overlap split",
+    )
+    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration)
+    _require(
+        [contract.name for contract in contracts]
+        == [
+            "n21_orbit_nominal_feedback_contrast",
+            "n21_orbit_window_delay_feedback_contrast",
+            "n21_orbit_window_delay_unbracketed_feedback_contrast",
+            *(f"{name}_one" for name in OVERLAP_SPLIT_MEMBERS[6:]),
+        ]
+        and all(math.isclose(contract.alpha, 0.05 / 9) for contract in contracts),
+        f"the overlap-split family contracts read {[contract.name for contract in contracts]}",
+    )
+    legacy = {key: value for key, value in configuration.items() if key not in ("overlap_arm", "orbit_gate_counts")}
+    _require(
+        [m.name for m in diagnostic_experiments.record_groups({"family_configuration": legacy})[0].members]
+        == [
+            *(f"n21_orbit_{v}_{a}" for v in ("nominal", "unbracketed") for a in ("feedback", "no_feedback")),
+            *OVERLAP_SPLIT_MEMBERS[6:],
+        ],
+        "a configuration without overlap_arm does not build the ten-member nominal configuration",
+    )
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    _require(
+        "--overlap-split" not in qpu_cases._reproduction_arguments(fixture, location)
+        and not any("--overlap-split" in line for line in qpu_cases._scientific_case("n21-orbit-rca", fixture)),
+        "a record without the split replays or describes it",
+    )
+    fixture["policy"]["design"]["overlap_split"] = True
+    fixture["family_configuration"] = {
+        **fixture.get("family_configuration", {}),
+        "overlap_split": True,
+        "overlap_arm": "window_delay",
+        "orbit_gate_counts": configuration["orbit_gate_counts"],
+    }
+    case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+    counts = configuration["orbit_gate_counts"]["n21_orbit_window_delay_unbracketed_feedback"]
+    bracketed_cz = configuration["orbit_gate_counts"]["n21_orbit_window_delay_feedback"]["cz"]
+    _require(
+        "--overlap-split" in qpu_cases._reproduction_arguments(fixture, location)
+        and "--overlap-split replaces" in case
+        and qpu_cases._gate_count_bias(configuration["orbit_gate_counts"]) in case
+        and "not that it caused the 2026-10-13T083417 loss" in case
+        and f"hold {counts['cz']} CZ and {counts['sx']} sx unbracketed" in case,
+        f"a split record's written command or case text omits the split, its CZ bias or its scope: {case}",
+    )
+    # The bias sentence follows the recorded CZ difference in each direction.
+    for unbracketed_cz, phrase in (
+        (bracketed_cz - 2, "plays 2 CZ fewer than its bracketed twin"),
+        (bracketed_cz, "biases window_overlap_loss in neither direction"),
+        (bracketed_cz + 3, "plays 3 CZ more than its bracketed twin"),
+    ):
+        varied = {
+            "n21_orbit_window_delay_feedback": {"cz": bracketed_cz, "sx": 0},
+            "n21_orbit_window_delay_unbracketed_feedback": {"cz": unbracketed_cz, "sx": 0},
+        }
+        fixture["family_configuration"]["orbit_gate_counts"] = varied
+        varied_case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+        _require(phrase in varied_case, f"the case text misstates a CZ difference of {bracketed_cz - unbracketed_cz}")
+    if bracketed_cz - counts["cz"] > 0:
+        _require("biases window_overlap_loss against a pass" in case, "the recorded CZ deficit reads unbiased")
+    try:
+        diagnostic_experiments.n21_orbit_rca_group(415, 502, window_sweep=True, overlap_split=True, reset_dt=520)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("the group accepted overlap_split beside window_sweep")
+    ceilings = ["--max-execution-seconds", "10", "--max-total-execution-seconds", "10"]
+    for argv, message in (
+        (["--family", "n21-orbit-rca", "--overlap-split", *ceilings], "--overlap-split requires --pin-layout"),
+        (
+            ["--family", "n21-orbit-feedback", "--overlap-split", *ceilings],
+            "--overlap-split applies to the n21-orbit-rca family only",
+        ),
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+            live_run.main(argv)
+        _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
+
+
+def _verify_overlap_split_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_overlap_split(snapshot)
+    print(
+        "QPU planning: a pinned n21-orbit-rca overlap split plans the bracketed nominal and window_delay pairs, "
+        "the unbracketed window_delay pair and the immediate, idle and reset_only spectators, the unbracketed "
+        "arms alone hold a window operation and their CZ and sx counts enter the configuration, the "
+        "configuration and policy bind the split only when set, and live_run refuses it without --pin-layout"
+    )
+
+
+def _verify_pin_layout(snapshot: live_run.Snapshot) -> None:
+    """A pinned n21-orbit-rca plan keeps every role on its named qubit and binds the pin in its policy.
+
+    The pinned candidate's replica places logical qubit i on the i-th named
+    qubit with the window on the pinned control; a pin naming another
+    backend or a qubit the calibration excludes refuses the snapshot, and an
+    unpinned plan's settings carry no pin key.
+    """
+    _require("pin_layout" not in qpu_planning.settings(_args("n21-orbit-rca")), "an unpinned plan carries a pin")
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    args = _args("n21-orbit-rca", pin_layout=pin)
+    _require(qpu_planning.settings(args).get("pin_layout") == pin, "the policy settings drop the pin")
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], args, traces)
+    _require(bool(candidates), f"FakeFez refuses the pinned layout: {traces.get('family_rejections')}")
+    for (choice,), configuration in candidates:
+        _require(configuration.get("pin_layout") == pin, f"the configuration records {configuration.get('pin_layout')}")
+        _require(len(choice.replicas) == 1, "a pinned plan placed more than one replica")
+        placed = [choice.replicas[0].mapping.get(qubit) for qubit in choice.layout]
+        _require(placed == PINNED_ORBIT_LAYOUT, f"the pinned replica places the roles on {placed}")
+        controls = qpu_planning.window_controls(
+            qpu_planning.orbit_sites(
+                qpu_planning.control_sites(live_run, [entry.packed for entry in choice.entries]), choice.group.members
+            )
+        )
+        _require(controls == [PINNED_ORBIT_LAYOUT[0]], f"the packed window plays on {controls}")
+    for refused, reason in (
+        ({"backend": "another_backend", "qubits": PINNED_ORBIT_LAYOUT}, "names another_backend"),
+        (pin, "calibration excludes [143]"),
+    ):
+        fixture = copy.copy(snapshot)
+        if refused is pin:
+            fixture.excluded_qubits = {**snapshot.excluded_qubits, 143: "operator exclusion"}
+        rejected: dict[str, Any] = {}
+        try:
+            qpu_planning.family_candidates(live_run, [fixture], _args("n21-orbit-rca", pin_layout=refused), rejected)
+        except live_run.LiveRunError:
+            pass
+        else:
+            raise RuntimeError(f"a pin that {reason} still planned")
+        found = [row["reason"] for row in rejected.get("family_rejections", [])]
+        _require(any(reason in text for text in found), f"the refusal reads {found}, not {reason!r}")
+    stderr = io.StringIO()
+    with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+        live_run.main(
+            [
+                "--family",
+                "n21-orbit-feedback",
+                "--pin-layout",
+                f"{snapshot.name}:142,136,143,144",
+                "--max-execution-seconds",
+                "10",
+                "--max-total-execution-seconds",
+                "10",
+            ]
+        )
+    _require(
+        "--pin-layout applies to the n21-orbit-rca family only" in stderr.getvalue(), "another family took the pin"
+    )
+
+
+def _verify_pin_layout_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_pin_layout(snapshot)
+    print(
+        "QPU planning: a pinned n21-orbit-rca plan places each logical qubit and the window on its named qubit "
+        "with one identity replica and binds the pin in policy and configuration; another backend or an "
+        "excluded pinned qubit refuses, and another family rejects the flag"
+    )
 
 
 def _herald_renamed(isa: Any) -> Any:
@@ -2169,14 +2527,16 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
     twins = [
         live_run._compile(member.circuit, choice.snap, choice.seed, choice.layout)
         for member in qpu_planning.n21_orbit_rca_group(
-            int(configuration["window_delay_dt"]), int(configuration["echo_half_dt"])
+            int(configuration["window_delay_dt"]), int(configuration["echo_half_dt"]), window_sweep=True
         ).members
     ]
     _require(
         qpu_planning.control_sites(live_run, choice.isas) == qpu_planning.control_sites(live_run, twins),
         "the herald changes the control's measure and reset sites",
     )
-    controls = qpu_planning.window_controls(qpu_planning.control_sites(live_run, choice.isas))
+    controls = qpu_planning.window_controls(
+        qpu_planning.orbit_sites(qpu_planning.control_sites(live_run, choice.isas), choice.group.members)
+    )
     _require(
         qpu_planning.window_durations(live_run, choice.snap, controls)[:2]
         == (configuration["window_delay_dt"], configuration["echo_half_dt"]),
@@ -2202,10 +2562,17 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
         )
         ideal = qpe_diagnostics.ideal_compiled_probabilities(isa)
         _require(np.allclose(ideal, member.ideal, rtol=0, atol=1e-10), f"{member.name}: the heralded ideal moved")
-        _require(
-            np.allclose(phase_marginal(ideal), [float(v) for v in n21_labeled_law("_no_feedback" not in member.name)]),
-            f"{member.name}: the phase marginal differs from the labeled law",
+        unheralded = (
+            qpe_diagnostics.n21_spectator_law(*member.name.removeprefix("n21_spectator_").rsplit("_", 1))
+            if member.name.startswith("n21_spectator_")
+            else n21_labeled_law("_no_feedback" not in member.name)
         )
+        _require(
+            np.allclose(phase_marginal(ideal), [float(v) for v in unheralded]),
+            f"{member.name}: the phase marginal differs from the unheralded law",
+        )
+        if "_reset_only_" in member.name:
+            continue
         inside = frozenset({"delay", "x"}) if "_window_echo_" in member.name else frozenset({"delay"})
         found = qpe_diagnostics.window_bracket_violations(isa, inside)
         _require(
@@ -2227,7 +2594,9 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
     contracts = diagnostic_experiments.family_contracts(
         "n21-orbit-rca", 0.08, 0.05, 0.8, **qpu_planning.contract_configuration("n21-orbit-rca", configuration)
     )
-    plain_contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8)
+    plain_contracts = diagnostic_experiments.family_contracts(
+        "n21-orbit-rca", 0.08, 0.05, 0.8, configuration={"window_sweep": True}
+    )
     for lifted, unlifted in zip(contracts, plain_contracts, strict=True):
         for term, plain_term in zip(lifted.terms, unlifted.terms, strict=True):
             member = next(m for m in choice.group.members if m.name == term.member)
@@ -2247,12 +2616,12 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
         "record_groups lost the heralded members",
     )
     ideal_summary = choice.group.summarize({m.name: m.ideal for m in choice.group.members})
-    plain_group = qpu_planning.n21_orbit_rca_group(1, 1)
+    plain_group = qpu_planning.n21_orbit_rca_group(1, 1, window_sweep=True)
     plain_summary = plain_group.summarize({m.name: m.ideal for m in plain_group.members})
     _require(
         all(ideal_summary[key] == value for key, value in plain_summary.items())
         and all(value == 0.0 for key, value in ideal_summary.items() if "_herald_q" in key)
-        and sum("_herald_q" in key for key in ideal_summary) == 8 * 4,
+        and sum("_herald_q" in key for key in ideal_summary) == 14 * 4,
         f"the heralded summary moved the contrasts or the herald fractions: {ideal_summary}",
     )
     usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
@@ -2381,8 +2750,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "--init-herald", action="store_true", help="run only the n21-orbit-rca initialization-herald contract"
     )
+    parser.add_argument("--pin-layout", action="store_true", help="run only the n21-orbit-rca pinned-layout contract")
+    parser.add_argument(
+        "--overlap-split", action="store_true", help="run only the n21-orbit-rca overlap-split contract"
+    )
     parsed = parser.parse_args()
-    if parsed.serialized_noise:
+    if parsed.overlap_split:
+        _verify_overlap_split_only()
+    elif parsed.pin_layout:
+        _verify_pin_layout_only()
+    elif parsed.serialized_noise:
         _verify_serialized_noise_only()
     elif parsed.window_bracket:
         _verify_window_bracket_only()

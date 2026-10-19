@@ -80,6 +80,10 @@ SCHEMA = "qi-walsh-exemplar-cases-v1"
 SERIES_SCHEMA = "qi-walsh-exemplar-series-v1"
 FAMILY = "walsh_exemplar_tuna_17"
 TWIN_FAMILY = "walsh_exemplar_twins_qx"
+# The retained twin run binds its shared manifest bytes through cases_sha256, and that manifest carries the
+# Tuna block and context qubits beside nqubits 10 (each row's qubit_map translates them). A twin family named
+# here regenerates those bytes; every other twin family carries blocks and context on QX qubits.
+UNMAPPED_TWIN_FAMILIES = frozenset({TWIN_FAMILY})
 DIM = 32
 NBITS = 5
 EXEMPLARS = {"high": (1, 16), "low": (9, 18)}
@@ -480,6 +484,48 @@ def twin_text(text: str) -> tuple[str, dict[int, int]]:
     return "\n".join(lines + ["", "barrier q", "b = measure q", ""]), mapping
 
 
+def blocks_json() -> dict[str, list[int]]:
+    return {name: list(qubits) for name, qubits in BLOCKS.items()}
+
+
+def context_json() -> dict[str, Any]:
+    return {"qubit": CONTEXT_QUBIT, "neighbors": list(CONTEXT_NEIGHBORS)}
+
+
+def twin_header(
+    shared: dict[str, Any], family: str, qx: dict[str, Any], tuna_id: str, mapping: dict[int, int]
+) -> dict[str, Any]:
+    """The shared manifest of a QX twin series, blocks and context on the QX qubits that qubit_map assigns."""
+    header = {
+        **{k: v for k, v in shared.items() if k not in ("readout_calibration", "preregistered")},
+        "family": family,
+        "backend": qx["identifier"],
+        "backend_type_id": qx["id"],
+        "nqubits": qx["nqubits"],
+        "shots": QX_SHOTS,
+        "dialect": "qx",
+        "bit_order": "qubit 0 at the rightmost character (QX)",
+        "twin_of": tuna_id,
+    }
+    if family not in UNMAPPED_TWIN_FAMILIES:
+        header["blocks"] = {b: [mapping[q] for q in qubits] for b, qubits in shared["blocks"].items()}
+        header["context"] = {
+            "qubit": mapping[shared["context"]["qubit"]],
+            "neighbors": [mapping[q] for q in shared["context"]["neighbors"]],
+        }
+    return header
+
+
+def check_twin_indices(header: dict[str, Any]) -> None:
+    """Every blocks[b][k] and context qubit of a twin manifest lies below nqubits unless its family is exempt."""
+    if header["family"] in UNMAPPED_TWIN_FAMILIES:
+        return
+    named = [q for qubits in header["blocks"].values() for q in qubits]
+    named += [header["context"]["qubit"], *header["context"]["neighbors"]]
+    high = sorted(q for q in named if q >= header["nqubits"])
+    require(not high, f"{header['family']}: qubits {high} lie at or above nqubits {header['nqubits']}")
+
+
 # ---------------------------------------------------------------- series
 
 
@@ -607,17 +653,8 @@ def series() -> dict[str, dict[str, str]]:
         for block, cls in CIRCUITS[name].items():
             positions = tuple(mapping[q] for q in BLOCKS[block])
             checks.append((f"twin-{name}.cq", block, cls, probabilities(gates, positions)))
-    twin_shared = {
-        **{k: v for k, v in shared.items() if k not in ("readout_calibration", "preregistered")},
-        "family": TWIN_FAMILY,
-        "backend": qx["identifier"],
-        "backend_type_id": qx["id"],
-        "nqubits": qx["nqubits"],
-        "shots": QX_SHOTS,
-        "dialect": "qx",
-        "bit_order": "qubit 0 at the rightmost character (QX)",
-        "twin_of": tuna["identifier"],
-    }
+    twin_shared = twin_header(shared, TWIN_FAMILY, qx, tuna["identifier"], mapping)
+    check_twin_indices(twin_shared)
     twins = write(twin_shared, [twin_rows], twin_texts, qx)
     for file, block, cls, phys in checks:
         ideal = np.array([float(Fraction(p)) for p in built["classes"][cls]["ideal_p"]])
@@ -825,6 +862,26 @@ def self_test() -> None:
         expect_rejection(
             f"a conformance record with {key} {value}", partial(check_header, retained | {key: value}, fresh)
         )
+    mapping = {q: n for n, q in enumerate(sorted(q for b in BLOCKS.values() for q in b))}
+    qx = qx_backend(catalogue)
+    retained_header = twin_header(
+        shared | {"blocks": blocks_json(), "context": context_json()}, TWIN_FAMILY, qx, "t", mapping
+    )
+    check_twin_indices(retained_header)
+    fresh_family = "walsh_exemplar_twins_qx_next"
+    fresh_header = twin_header(
+        retained_header | {"blocks": blocks_json(), "context": context_json()}, fresh_family, qx, "t", mapping
+    )
+    check_twin_indices(fresh_header)
+    require(max(q for b in fresh_header["blocks"].values() for q in b) < fresh_header["nqubits"], "remapped blocks")
+    expect_rejection(
+        "an unmapped twin manifest outside the exemption",
+        partial(check_twin_indices, retained_header | {"family": fresh_family}),
+    )
+    expect_rejection(
+        "a twin context qubit at nqubits",
+        partial(check_twin_indices, fresh_header | {"context": {"qubit": qx["nqubits"], "neighbors": []}}),
+    )
     print("walsh exemplar cases self-test: every corrupted input rejected")
 
 

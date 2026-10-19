@@ -131,9 +131,9 @@ no correlation a CZ would be needed to produce. The member digest includes
 each control-flow condition and block, so members that differ only inside a
 branch stay distinct.
 
-Of 1452 distinct members, 418 are local unitaries, 20 product outputs, 64
-dynamic and 950 entangling; none is unchecked. Of the 64 dynamic members, 17
-execute no CZ, 23 have a correlated law that their multi-qubit gates
+Of 1793 distinct members, 585 are local unitaries, 20 product outputs, 238
+dynamic and 950 entangling; none is unchecked. Of the 238 dynamic members, 183
+execute no CZ, 31 have a correlated law that their multi-qubit gates
 produce (the N=21 feedback, encoded and orbit pairs, the patch orbit pairs
 and the XX, YY and ZZ coherence arms) and 24 execute CZ under a point-mass or product law. Fifty-four members execute
 CZ their law does not need, and each matches a declaration naming what it
@@ -159,9 +159,10 @@ the dynamic rows against the record without the static classification.
 law and unchecked reason, a feed-forward copy beside a spectator CZ among
 them, `--self-test-undeclared` (core-407) requires the
 stored census to fail naming `folded_qpe_null` once its declaration is
-removed, and `--cross-check-n21` (core-408) rebuilds the 20 correlated N=21
+removed, and `--cross-check-n21` (core-408) rebuilds the 28 correlated N=21
 members and requires their enumerated law to equal the Fraction law
-`qpe_diagnostics.n21_labeled_law`.
+`qpe_diagnostics.n21_labeled_law`, lifted onto the all-zero herald bits
+(`qpe_diagnostics.lift_phase_law`) for a heralded member.
 
 ## Files
 

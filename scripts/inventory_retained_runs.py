@@ -17,6 +17,7 @@ import hashlib
 import json
 import sys
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -66,6 +67,8 @@ def record_descriptor(path: Path) -> dict[str, Any]:
             "submission_field_present": "submission" in data,
             "submission_complete": submission.get("complete"),
             "recorded_job_ids": identities,
+            "submission_started": submission.get("started"),
+            "instance_sha256_12": data.get("instance_sha256_12"),
             "local_batch_metadata_entries": {
                 name: len(data[name])
                 for name in ("local_simulation_batches", "evaluation_simulation_batches")
@@ -76,6 +79,28 @@ def record_descriptor(path: Path) -> dict[str, Any]:
         }
     )
     return result
+
+
+def observed_instant(value: str) -> datetime:
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    require(parsed.utcoffset() is not None, "Observation timestamp requires a timezone")
+    return parsed
+
+
+def submitted_after_observation(record: dict[str, Any], observed: dict[str, datetime], default: str) -> bool:
+    """A record whose submission started after its instance's inventory observation names jobs it cannot hold.
+
+    The inventory is a read-only service observation at observed_at, so a job
+    submitted later is absent until the next observation. Such a record's
+    jobs are declared awaiting observation; every job submitted earlier must
+    appear in the inventory.
+    """
+    started = record["submission_started"]
+    if not isinstance(started, str):
+        return False
+    instance = record["instance_sha256_12"] if isinstance(record["instance_sha256_12"], str) else default
+    require(instance in observed, f"{record['path']} names an instance without an inventory file")
+    return observed_instant(started) >= observed[instance]
 
 
 def inventory() -> dict[str, Any]:
@@ -94,7 +119,16 @@ def inventory() -> dict[str, Any]:
     )
     record_paths = sorted((ROOT / "results/live").glob("*/record.json"))
     records = parallel.ordered_map(record_descriptor, record_paths, min_items=16)
-    registered_ids = {identity for record in records for identity in record["recorded_job_ids"]}
+    observed = {snapshot["instance_crn_hash"]: observed_instant(snapshot["observed_at"]) for snapshot in snapshots}
+    recorded_ids = {identity for record in records for identity in record["recorded_job_ids"]}
+    awaiting = sorted(
+        identity
+        for record in records
+        if submitted_after_observation(record, observed, service["instance_crn_hash"])
+        for identity in record["recorded_job_ids"]
+        if identity not in physical_ids
+    )
+    registered_ids = recorded_ids - set(awaiting)
     require(registered_ids <= physical_ids, "Runner records reference a job absent from the service observation")
     retrospective_paths = sorted((ROOT / "results/live").glob("*/retention.json"))
     retrospective = [descriptor(path) for path in retrospective_paths]
@@ -152,6 +186,7 @@ def inventory() -> dict[str, Any]:
             "runner_record_states": dict(sorted(states.items())),
             "physical_jobs": len(physical_ids),
             "registered_physical_jobs": len(registered_ids),
+            "awaiting_observation_jobs": len(awaiting),
             "retrospective_physical_jobs": len(retrospective_ids),
             "native_mock_reports": len(mocks),
             "mock_diagnostics": len(diagnostics),
@@ -159,6 +194,7 @@ def inventory() -> dict[str, Any]:
             "native_local_preparation_reports": len(native_local),
             "compile_algebra_simulation_json_artifacts": len(compiled),
         },
+        "awaiting_observation_job_ids": awaiting,
         "runner_records": records,
         "retrospective_physical_retention": retrospective,
         "native_mock_reports": mocks,

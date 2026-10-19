@@ -175,11 +175,14 @@ estimates outside the bound family, and x_history runs in a dynamic job
 while prep0 runs in a static one, so they bound no difference between the
 delays. The remaining levers on the n21 shot loop are:
 
-- **A delay below 50 us.** `rep_delay_range` admits 0, and at 0 the same
-  plan bills about 18 s. The excitation there is unmeasured, so the step
-  carries its own control at the shorter delay before any run relies on
-  it; the falsifier is a Clopper-Pearson bound on the run's qubits above
-  the eps the plan can absorb within `max_shots`.
+- **A delay below 50 us.** IBM's changelog sets the Heron and Eagle
+  repetition delay range at 20 to 2000 us, although `rep_delay_range`
+  reads [0, 2 ms]; two control jobs at 0 us never completed their shot
+  loop ([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)).
+  At the 20 us floor the n21 plan bills about 22 s. The excitation there
+  is unmeasured, so the step carries its own control at that delay before
+  any run relies on it; the falsifier is a Clopper-Pearson bound on the
+  run's qubits above the eps the plan can absorb within `max_shots`.
 - **Fewer routed CZ.** The unitary part holds 320 CX before routing on
   the 7-qubit tree, and routing roughly doubles it. IBM's local AI
   routing (qiskit-ibm-transpiler 0.18.0) routed it to 798 CZ against 786

@@ -2525,7 +2525,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "b6785e370eb39bebb11a98785e60ce8b3024331b3ac2650a0716c3b4f1387849"
+          "sha256": "c4d9c9de1e45350e29cf88427a2c2086fb96d14c900d8b45bed179b252d87d4c"
         }
       ],
       "documents": [
@@ -3364,7 +3364,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "b6785e370eb39bebb11a98785e60ce8b3024331b3ac2650a0716c3b4f1387849"
+          "sha256": "c4d9c9de1e45350e29cf88427a2c2086fb96d14c900d8b45bed179b252d87d4c"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -6141,6 +6141,42 @@
       "supersedes": [
         "proposed-qd-belenos-payload-class-series"
       ],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-effective-idle-zz-map",
+      "statement": "A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. Under the current 120-second hardware pause policy, the series requires at least 16560 seconds of interbatch pauses. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "No acquisition or new spending authorization. Hardware batches contain at most three circuits and are acquired sequentially under the current repository policy; a compact QX preflight has its own proposed case and budget. Results would be effective static edge interactions in the declared parallel context, not reconstructed coupler flux or unique causal attribution. The Q1/Q2 nonedge and driven crosstalk require additional controls. All six delays must pass signal and phase guards; failed precision is inconclusive, not a null. Rates are conditional on the first-interval absolute range below 1 MHz, since the commensurate grid cannot identify all out-of-range aliases. The two probe directions are separate settings, not a simultaneous two-equatorial-qubit Ramsey experiment. Primitive timing sums are planning scenarios, not billed QPU time. Joint readout correction assumes assignment-channel stability across the calibration and Ramsey batches; the estimator does not remove between-batch drift. QX success would support ideal marginal gate and wiring conformance only. The retained exploratory map already found low coherence on some probes at 2 us; requiring signal at all six delays through 40 us can therefore yield inconclusive edges. Its results do not relax the prospective guards. The 139-batch version is not recommended for unchanged acquisition after the retained coherence and calibration changes; no shorter pilot is generated or authorized here. A future revision must set its own prospective thresholds rather than relax this estimator after observing data.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/cases/zz_map_tuna_17/plan.json",
+          "sha256": "5984166c73f3309c1eea39b967c0d71c971d6a6cf724594573efd8af64d13d40"
+        },
+        {
+          "path": "results/quantum_inspire/cases/zz_map_qx/plan.json",
+          "sha256": "9eaa4f57f40df05d787f3541a0ee6697d9b24f36b9345db87bb98b1711a9f7f8"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna_zz_map.md",
+        "docs/notes/quantum_inspire/tuna_zz_qx_preflight.md"
+      ],
+      "gates": {
+        "core-594": "freshness",
+        "core-595": "admission",
+        "core-596": "freshness"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-zero-divisor-common-response",
+        "hw-idle-detuning-scale",
+        "qi-tuna17-coupler-zz-map"
+      ],
+      "supersedes": [],
       "superseded_by": null
     }
   ]

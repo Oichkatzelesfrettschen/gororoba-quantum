@@ -150,6 +150,125 @@ against 65.42 on 4 without detuning, with five parameters on six cells.
    its reported T2 as a Hahn-echo value, which an unechoed window does not
    follow.
 
+## Contract forecast on the pre-barrier run
+
+083417 fails admissibility (`admissibility`): the no-feedback members leave
+the relative sign of 136 and 144 unresolved, and the window_echo members
+couple with signs opposite to the reference. The magnitude contracts below
+evaluate it anyway, as a forecast for a barrier-equalized run on this patch
+and not as a contract verdict; at alpha 0.0167 each:
+
+| Contract | Statistic | Standard error at 4096 / 27648 shots | Forecast |
+|---|---:|---|---|
+| extra_readout_contrast (T2 bound 0.127) | -0.057 | 0.015 / 0.006 | fails: magnitude 0.070 |
+| window_delay magnitude against nominal (bound 1) | -0.048 | 0.015 / 0.006 | fails: magnitude 0.081 |
+| window_echo_restoration | +0.015 | 0.015 / 0.006 | passes, on members whose couplings differ from the reference |
+
+`contrast_magnitude` is the hypot of the two signed contrasts, so a static
+detuning, and ZZ coupling among the work qubits (a constant phase on each
+one-hot branch), leave it unchanged. The forecast loss of about 45 percent
+over 415 dt is decoherence: the reported T2 predicts 2 percent, and the
+product-state Ramsey of PATCH_WINDOW_FINDINGS.md (R 0.88 and 0.92 at
+7.6 us on 136 and 144) predicts less than the delay arm shows. Two
+candidates remain and the next acquisition separates them:
+
+- Qubit 143, the control's neighbor, which carries the orbit amplitude for
+  residue 4 and sat in |0> in every product probe, dephases during and after
+  the control's readout: a 143 Ramsey decays faster across a measured
+  control than across a reset-only reference, and the orbit magnitude falls
+  monotonically with added window length.
+- The control's state after reset is imperfect: the orbit magnitude falls
+  by one step at the first added window and stays flat as it grows.
+
+## Window sweep on a barrier-equalized run
+
+Record 2026-10-19T151959.226467Z, job dbb3auvi0auc7392sfs0, ibm_fez under
+the 2026-10-19T07:44:14-07:00 calibration, 14 PUBs of 16384 shots with the
+initialization herald, 18 s charged; analysis in
+[between-arm.json](2026-10-19T151959.226467Z/between-arm.json). The family
+is admissible and both heralds admit (contract shift upper limits 0.0132
+orbit, 0.0112 spectator). The placement reuses the four qubits of 083417
+with other roles: control 144, work bit 1 on 142, work bit 4 on 143, work
+bit 16 on 136, against control 142, 136, 143, 144 there, so neither run
+predicts the other.
+
+| Pair | Contrast magnitude |
+|---|---:|
+| nominal | 0.151 |
+| window_delay (+415 dt) | 0.144 |
+| window_delay_long (+830 dt) | 0.152 |
+| extra_readout | 0.142 |
+| window_echo | 0.147 |
+
+Each magnitude carries a standard error near 0.008. Contracts at alpha 0.01:
+
+- window_delay_ramp fails: the doubled delay reads 0.008 above the single
+  one, so added window length costs no resolved coherence on this
+  assignment, and neither a growing loss nor a one-time step appears.
+- extra_readout_contrast fails through the herald margin alone: the
+  magnitude lies 0.006 +- 0.008 below its T2 bound before the 0.013 margin.
+- window_echo_restoration passes with an upper limit of +0.0002.
+- spectator_window_dephasing fails: qubit 143 reads visibility 0.587
+  across the measured control and 0.591 across the reset-only reference.
+- window_delay_phase_slope fails (statistic 40.4 against 6.63): the two
+  coupled qubits, 136 (+) and 142 (-), lengthen by the same 415 dt, so the
+  signed exposure stays 519 dt while the fitted phase moves from -1.16 to
+  -0.93 rad. A static detuning on the coupled qubits does not describe the
+  phase.
+
+The spectator branches differ by -0.114 +- 0.027 rad between the control's
+recorded outcomes, a ZZ(144, 143) phase over the window (descriptive). Both
+spectator kinds hold 0.59 visibility against 0.99 in the calibration model,
+so qubit 143 loses coherence across the window without the control's
+measurement, and the branch turn reduces the pooled visibility by under
+1 percent. 143's own dephasing and a disturbance from the control's reset
+remain the candidates; a 143 Ramsey with an idle control separates them.
+
+The 083417 window loss of about 45 percent does not appear on this
+assignment and calibration. The role assignment and the calibration week
+both changed between the runs, so a run that holds the control on 142
+separates them.
+
+## Readout overlap on the pinned roles
+
+Record 2026-10-19T170620.832658Z, job dbb4se1gv2cc73e7pf40, ibm_fez under
+the 2026-10-19T09:47:37-07:00 calibration, 12 PUBs of 8192 shots with the
+initialization herald, 9 s charged; analysis in
+[between-arm.json](2026-10-19T170620.832658Z/between-arm.json).
+`--pin-layout ibm_fez:142,136,143,144` holds 083417's roles: control 142,
+work bit 1 on 136, bit 4 on 143, bit 16 on 144. The unbracketed window_delay
+pair drops the window barriers and compiles to 083417's window_delay
+program: 43 CZ, and the same partial order over every CZ, readout, reset
+and delay. Its bracketed twin plays 44 CZ, so the barrier costs one CZ and
+biases against an overlap loss. Contracts at alpha 0.0125:
+
+| Contract | Measured | Verdict |
+|---|---|---|
+| window_overlap_loss | unbracketed 0.094 against bracketed 0.228 (upper limit -0.110) | pass |
+| window_delay_pinned_loss | bracketed window_delay 0.228 against nominal 0.235 (upper limit +0.017) | fail |
+| spectator_idle_dephasing | qubit 143 visibility 0.611 after an idle of 836 dt against 0.994 at once | pass |
+| spectator_readout_dephasing | reset_only 0.593 against idle 0.611 (upper limit +0.010) | fail |
+
+The barrier-free delay arm reproduces 083417's loss (0.094 here, 0.081
+there) on today's calibration, and the bracketed arms on the same roles
+lose nothing to the added 415 dt. A work CZ(136, 143) that the dependency
+order leaves free to run during the control's measure-and-reset span costs
+the orbit about 59 percent of its contrast magnitude; the role assignment
+does not. The run establishes the overlap cost on this calibration; that the
+same overlap produced 083417's loss is the inference its identical program
+supports.
+
+The orbit's round-two coherence lives in the work register's |1> +- |4>
+superposition, which spans bit 1 (136) and bit 4 (143), so dephasing of
+those work qubits during the window lowers the contrast every arm carries.
+Qubit 143 loses 38 percent of its Ramsey visibility across an idle with no
+readout anywhere, while its reported (echo) T2 of 111 us predicts 3
+percent; the control's reset readout adds nothing resolved. During the idle
+the control sits in |+> unrecorded, so the loss combines 143's T2* with any
+ZZ phase to 142; a 143 Ramsey with the control in |0> separates the two.
+The nominal magnitude reads 0.235 on these roles against 0.151 on the
+control-144 assignment of 151959.
+
 ## Mitigation
 
 The explicit delay-X-delay-X echo survives transpilation (planning contract)

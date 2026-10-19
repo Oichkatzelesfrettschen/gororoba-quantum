@@ -318,6 +318,20 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if "init_herald" in design:
         _require(design["init_herald"] is True, "init_herald is recorded only when set")
         arguments.append("--init-herald")
+    if "overlap_split" in design:
+        _require(design["overlap_split"] is True, "overlap_split is recorded only when set")
+        arguments.append("--overlap-split")
+    if "pin_layout" in design:
+        pin = design["pin_layout"]
+        _require(
+            isinstance(pin, dict)
+            and isinstance(pin.get("backend"), str)
+            and isinstance(pin.get("qubits"), list)
+            and bool(pin["qubits"])
+            and all(type(qubit) is int and qubit >= 0 for qubit in pin["qubits"]),
+            "pin_layout names a backend and its nonnegative qubits",
+        )
+        arguments.extend(["--pin-layout", f"{pin['backend']}:" + ",".join(map(str, pin["qubits"]))])
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -1401,6 +1415,45 @@ def _empirical_bernstein(record: dict[str, Any], candidate: dict[str, Any]) -> l
     return lines
 
 
+def _gate_count_clause(counts: dict[str, dict[str, int]]) -> str:
+    """The routed CZ and sx counts of the bracketed and unbracketed window_delay feedback arms, or nothing."""
+    bracketed, unbracketed = (
+        counts.get(f"n21_orbit_{variant}_feedback") for variant in ("window_delay", "window_delay_unbracketed")
+    )
+    if bracketed is None or unbracketed is None:
+        return ""
+    return (
+        f" (the routed feedback arms hold {unbracketed['cz']} CZ and {unbracketed['sx']} sx unbracketed against "
+        f"{bracketed['cz']} CZ and {bracketed['sx']} sx bracketed)"
+    )
+
+
+def _gate_count_bias(counts: dict[str, dict[str, int]]) -> str:
+    """The direction in which the arms' routed CZ difference biases window_overlap_loss."""
+    bracketed, unbracketed = (
+        counts.get(f"n21_orbit_{variant}_feedback") for variant in ("window_delay", "window_delay_unbracketed")
+    )
+    if bracketed is None or unbracketed is None:
+        return (
+            "; the record holds no routed gate counts, so a CZ difference between the arms can bias "
+            "window_overlap_loss in either direction."
+        )
+    difference = int(bracketed["cz"]) - int(unbracketed["cz"])
+    if difference > 0:
+        return (
+            f"; the unbracketed arm plays {difference} CZ fewer than its bracketed twin, and fewer CZ raise its "
+            "contrast, which biases window_overlap_loss against a pass, so a fail is unresolved rather than "
+            "evidence that overlap costs nothing."
+        )
+    if difference < 0:
+        return (
+            f"; the unbracketed arm plays {-difference} CZ more than its bracketed twin, and more CZ lower its "
+            "contrast, which biases window_overlap_loss toward a pass, so a pass is unresolved rather than "
+            "evidence that overlap costs contrast."
+        )
+    return "; both arms play the same CZ count, so the gate count biases window_overlap_loss in neither direction."
+
+
 def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
     if family == "et-row":
         from et_campaign import configuration as et_configuration
@@ -1762,6 +1815,67 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family in ("n21-orbit-feedback", "n21-orbit-rca")
+            else []
+        ),
+        *(
+            [
+                "window_sweep adds window_delay_long, which idles the control twice window_delay_dt and "
+                "separates a coherence loss growing with the window from a one-time step, and four spectator "
+                "Ramsey arms that read the work bit for 4 in X and Y across the control's measurement and reset, "
+                "against a reset_only reference idling window_delay_dt, the control's calibrated measure "
+                "duration, in place of the measurement.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_sweep")
+            else []
+        ),
+        *(
+            [
+                "--overlap-split replaces the window sweep with the nominal pair, the same pair without its window "
+                "barriers, so a work-qubit CZ may overlap the control's readout, and qubit-2 spectators read at "
+                "once, after an idle of the control's measure plus reset durations (window_delay_dt + reset_dt), "
+                "and across the reset_only reference.",
+                "",
+            ]
+            if family == "n21-orbit-rca"
+            and record.get("family_configuration", {}).get("overlap_split")
+            and "overlap_arm" not in record["family_configuration"]
+            else []
+        ),
+        *(
+            [
+                "--overlap-split replaces the window sweep with the bracketed nominal and window_delay pairs, the "
+                "window_delay pair without its window barriers, so work-qubit gates may overlap the control's "
+                "measure-plus-reset span under the backend scheduler, and qubit-2 spectators read at once, after "
+                "an idle of the control's measure plus reset durations (window_delay_dt + reset_dt) with the "
+                "unrecorded control in |+>, and across the reset_only reference. Removing the barriers lets the "
+                "transpiler resynthesize the block around the window"
+                + _gate_count_clause(record["family_configuration"].get("orbit_gate_counts", {}))
+                + _gate_count_bias(record["family_configuration"].get("orbit_gate_counts", {}))
+                + " A resolved pass shows that overlap costs contrast magnitude on this calibration, not that it "
+                "caused the 2026-10-13T083417 loss: the "
+                "pin fixes the roles, and the calibration differs.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and "overlap_arm" in record.get("family_configuration", {})
+            else []
+        ),
+        *(
+            [
+                "--pin-layout places logical qubit i on the i-th named qubit (control, then the work qubits of "
+                "bits 1, 4 and 16) with one identity replica, so the roles are "
+                + ", ".join(
+                    f"{role} {qubit}"
+                    for role, qubit in zip(
+                        ("control", "work bit 1", "work bit 4", "work bit 16"),
+                        record["family_configuration"]["pin_layout"]["qubits"],
+                        strict=False,
+                    )
+                )
+                + ".",
+                "",
+            ]
+            if family == "n21-orbit-rca" and "pin_layout" in record.get("family_configuration", {})
             else []
         ),
         *(

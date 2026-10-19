@@ -62,6 +62,26 @@ without versioned URLs, so a later reading checks the live page.
 | execute-dynamic-circuits | https://quantum.cloud.ibm.com/docs/en/guides/execute-dynamic-circuits | `7e18b23fd8f570534820991de0877398de6f41f2ff87fcbc027ccb0a9b7fecda` | [P] `MidCircuitMeasure` (`measure_2`) recommended where supported; "Nested conditionals are not allowed"; operands "32 or fewer bits"; about 300 broadcasts of 60 bits or 2400 of 1 bit per job; `store` from runtime 0.47. |
 | qiskit-ibm-runtime release notes | https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/release-notes | `e2da0245c08c60f3e514a3a7b78b1c7fede8241da232194071ae2e9f29007f77` | [P] 0.48: differing `pub.shots` across PUBs deprecated; 0.49: `MidCircuitReset`; 0.50: client-side `executor_sampler.Sampler`, top-level `max_execution_time`, `XSlowGate`, samplomatic 0.21.0 and ibm-quantum-schemas 0.12.20260921 floors. |
 
+### Repetition delay floor and timeout codes
+
+Retrieved 2026-10-18T20:32:46Z with a Mozilla user agent, under the same
+rule as the table above.
+
+| Page | URL | SHA-256 of retrieved HTML | Cited for |
+|---|---|---|---|
+| latest-updates | https://quantum.cloud.ibm.com/docs/en/guides/latest-updates | `b98468c783bcc61c59245d316ac070ad855da48fc744eacdcdfb2088f5de5605` | [P] February 2026: "we have expanded the allowable repetition delay time range from 20-500 µs to 20-2000 µs on our Heron and Eagle QPUs. The Nighthawk QPU delay time range continues to be 1000-4000 µs"; September 2026, ibm_phoenix (Nighthawk r2): "the default repetition delay is 1 µs (previously 250 µs)". |
+| errors | https://quantum.cloud.ibm.com/docs/en/errors | `3f0075c500834ef96d5ad5f2b5f9b3ffb5fcb01bfb1e1ab209f3500a87b460c7` | [P] 1304 "Job {} exceeded the max_execution_time of {} seconds."; 1305 "Job {} ran longer than {}." with "Contact support."; 1602 "Supplied rep_delay is not in the supported backend range."; 8030 "Repetition delay ({0}) not supported."; 8038 "A timing error occurred during execution of the input circuits."; 8045 "A buffer overflow occurred during result collection." |
+| max-execution-time | https://quantum.cloud.ibm.com/docs/en/guides/max-execution-time | `ada3410adb19db940e839f310097badb58cc429051f734d9549567b1348ee8be` | [P] the limit is the smaller of `max_execution_time` and three hours, "based on QPU usage (quantum usage only), not wall clock time". |
+| execution options | https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/options-models-execution-options | `9cd0bb5050f990bf317dcda42579868b6eb7f94642af4b7fa908061c5360277e` | [P] `rep_delay` "must be from the range supplied by `backend.rep_delay_range`"; no minimum or note about 0. |
+
+[I] The changelog's Heron floor of 20 us contradicts the [0, 2 ms]
+`rep_delay_range` that the configuration of all three backends reports and
+that the service's own range check (1602) applies: a 0 us job is accepted
+and then fails at execution
+([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)).
+A design below 50 us therefore takes the changelog's 20 us as the floor,
+and the configuration's range only as the upper bound.
+
 ## Mapping to this repository
 
 - [I] The Heron execution facts section of AGENTS.md states the rules these

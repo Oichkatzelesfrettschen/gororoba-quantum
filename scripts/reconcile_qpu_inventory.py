@@ -13,6 +13,21 @@ instance its run record names (instance_sha256_12), and to the default
 instance when the run is a retrospective recovery without one. Coverage, the
 usage-window sum and the reserve hold per instance; the historical-job and
 campaign accounting bind the default instance only.
+
+A job that ends in ERROR or CANCELLED (a max-time cancellation, a user
+error) bills the QPU lock time it consumed and returns no result, so it has
+no raw archive. Its inventory row carries the failed status with a settled
+positive charge, the run whose collect.json names it with result_unavailable
+holds the same settled charge, and its charge enters the usage-window sum.
+A job cancelled before it ran carries no running timestamp and a zero
+charge; it needs neither an archive nor a collection and adds nothing to
+the window.
+
+The inventory is an observation at observed_at. A raw archive whose run's
+submission started at or after that instant names a job the observation
+cannot hold; it is listed under awaiting_observation and joins coverage at
+the next observation. Every archive of a run submitted earlier must match an
+inventory job.
 """
 
 from __future__ import annotations
@@ -36,6 +51,7 @@ CAMPAIGN_CUTOFF = "2026-10-14T00:00:00Z"
 
 
 ACCOUNT_RESERVE_SECONDS = 60
+FAILED_STATUSES = frozenset({"ERROR", "CANCELLED"})
 
 
 def require(condition: bool, message: str) -> None:
@@ -75,6 +91,8 @@ def window_charge(jobs: list[dict[str, Any]], usage: dict[str, Any]) -> Decimal:
         times = job.get("timestamps")
         if not isinstance(times, dict):
             raise ValueError(f"job timestamps are missing for {job.get('job_id')}")
+        if unexecuted(job):
+            continue
         running, finished = timestamp(times.get("running")), timestamp(times.get("finished"))
         require(running <= finished <= end, "job execution chronology differs from the account observation")
         if finished < start:
@@ -82,6 +100,16 @@ def window_charge(jobs: list[dict[str, Any]], usage: dict[str, Any]) -> Decimal:
         require(running >= start, "a job straddles the usage-period start; its in-window charge is not recorded")
         total += Decimal(str(job["final_qpu_charge_seconds"]))
     return total
+
+
+def unexecuted(job: dict[str, Any]) -> bool:
+    """A CANCELLED job with no running timestamp and a zero charge never held the QPU."""
+    times = job.get("timestamps") or {}
+    return (
+        job.get("status") == "CANCELLED"
+        and not times.get("running")
+        and Decimal(str(job.get("final_qpu_charge_seconds"))) == 0
+    )
 
 
 def campaign_split(rows: list[dict[str, Any]]) -> tuple[Decimal, Decimal, Decimal]:
@@ -121,6 +149,59 @@ def archive_instance(run: Path, default_instance: str) -> str:
     return recorded if isinstance(recorded, str) else default_instance
 
 
+def submitted_after(run: Path, observed_at: str) -> bool:
+    """Whether run's submission started at or after the inventory observation."""
+    record = run / "record.json"
+    started = (read(record).get("submission") or {}).get("started") if record.is_file() else None
+    return isinstance(started, str) and timestamp(started) >= timestamp(observed_at)
+
+
+def failed_collections(instance: str, default_instance: str) -> dict[str, Path]:
+    """Each run that collected a failed job of the instance, keyed by that job's identity."""
+    runs: dict[str, Path] = {}
+    for collection in sorted((ROOT / "results/live").glob("*/collect.json")):
+        run = collection.parent
+        if archive_instance(run, default_instance) != instance:
+            continue
+        for identity, entry in read(collection)[0].get("jobs", {}).items():
+            if "result_unavailable" in entry:
+                require(identity not in runs, f"two runs collect failed job {identity}")
+                runs[identity] = run
+    return runs
+
+
+def failed_row(job: dict[str, Any], run: Path | None, charge: Decimal) -> dict[str, Any]:
+    """The audit row of a failed job, bound to the collection that names it."""
+    identity = job["job_id"]
+    if run is None:
+        raise ValueError(f"failed job {identity} has no collection naming it")
+    header = read(run / "collect.json")[0]
+    entry = header["jobs"][identity]
+    require(header["submission_complete"] is True, "collection is incomplete")
+    require(entry["backend"] == job["backend"], "collection backend differs")
+    require(
+        isinstance(entry["result_unavailable"], str) and bool(entry["result_unavailable"]),
+        f"failed job {identity} lacks the reason its result is unavailable",
+    )
+    require(entry["usage"]["job_status"] == job["status"], f"collection status differs for {identity}")
+    require(entry["usage"]["usage_status"] == "final", f"collection usage is unsettled for failed job {identity}")
+    require(Decimal(str(entry["usage"]["qpu_charge_time_seconds"])) == charge, "collection charge differs")
+    submitted = read(run / "record.json")["submission"]["qpy_archive_sha256"]
+    require(digest(run / "isa.qpy") == submitted, "isa.qpy differs from the submitted circuit archive")
+    return {
+        **job,
+        "run": str(run.relative_to(ROOT)),
+        "provenance": "failed_collection",
+        "submitted_pub_shots": job["pub_count"] * job["shots_per_pub"],
+        "raw_data_files": 0,
+        "metrics_snapshots": 0,
+        "source_files": {
+            str((run / name).relative_to(ROOT)): digest(run / name)
+            for name in ("record.json", "collect.json", "isa.qpy")
+        },
+    }
+
+
 def reconcile(snapshot_path: Path) -> dict[str, Any]:
     default_path, other_paths = inventory_family(snapshot_path)
     snapshot = read(snapshot_path)
@@ -148,6 +229,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     identities = [job["job_id"] for job in jobs]
     require(len(identities) == len(set(identities)), "duplicate service job identity")
     archives: dict[str, Path] = {}
+    awaiting: list[str] = []
     for index_path in sorted((ROOT / "results/live").glob("*/raw/*/index.json")):
         index = read(index_path)
         identity = index["job_id"]
@@ -155,15 +237,43 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         require(identity not in archives, "duplicate raw archive for a physical job")
         owner = archive_instance(index_path.parent.parent.parent, default_instance)
         require(owner in known, f"raw archive {identity} belongs to an instance without an inventory file: {owner}")
-        if owner == instance:
-            archives[identity] = index_path
-    require(set(archives) == set(identities), "service jobs and retained archive identities differ")
+        if owner != instance:
+            continue
+        run = index_path.parent.parent.parent
+        if identity not in identities and submitted_after(run, snapshot["observed_at"]):
+            awaiting.append(str(index_path.parent.relative_to(ROOT)))
+            continue
+        archives[identity] = index_path
+    statuses = {job["job_id"]: job["status"] for job in jobs}
+    unfinished = sorted(key for key, value in statuses.items() if value != "DONE" and value not in FAILED_STATUSES)
+    require(not unfinished, f"unfinished service jobs: {unfinished}")
+    completed = {identity for identity, status in statuses.items() if status == "DONE"}
+    require(set(archives) == completed, "service jobs and retained archive identities differ")
+    collections = failed_collections(instance, default_instance)
     require(not is_default or HISTORICAL_JOBS <= set(identities), "historical accounting identities missing")
     rows = []
     for job in jobs:
         identity = job["job_id"]
-        require(job["status"] == "DONE" and job["usage_status"] == "complete", f"unsettled job {identity}")
+        if unexecuted(job):
+            rows.append(
+                {
+                    **job,
+                    "run": None,
+                    "provenance": "unexecuted_cancellation",
+                    "submitted_pub_shots": job["pub_count"] * job["shots_per_pub"],
+                    "raw_data_files": 0,
+                    "metrics_snapshots": 0,
+                    "source_files": {},
+                }
+            )
+            continue
+        require(job["usage_status"] == "complete", f"unsettled job {identity}")
         charge = Decimal(str(job["final_qpu_charge_seconds"]))
+        if job["status"] in FAILED_STATUSES:
+            # A system-error failure bills zero, so a finalized failed job admits a zero charge.
+            require(charge.is_finite() and charge >= 0, f"physical charge missing for {identity}")
+            rows.append(failed_row(job, collections.get(identity), charge))
+            continue
         require(charge.is_finite() and charge > 0, f"physical charge missing for {identity}")
         index_path = archives[identity]
         directory = index_path.parent
@@ -289,12 +399,13 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "inventory_sha256": digest(snapshot_path),
         "replay_source_sha256": digest(Path(__file__)),
         "scope": (
-            "All jobs in the retained service inventory have lossless raw archives. "
+            "All completed jobs in the retained service inventory have lossless raw archives, and every "
+            "failed job's settled charge is bound to the collection that records why it returned no result. "
             "Offline replay establishes retained coverage at the observation time; "
             "subsequent live jobs require a fresh inventory."
         ),
         "job_count": len(rows),
-        "acquisition_count": len({row["run"] for row in rows}),
+        "acquisition_count": len({row["run"] for row in rows if row["run"] is not None}),
         "pub_count": sum(row["pub_count"] for row in rows),
         "submitted_pub_shots": sum(row["submitted_pub_shots"] for row in rows),
         "indexed_raw_data_files": sum(row["raw_data_files"] for row in rows),
@@ -309,6 +420,18 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "account_reserve_seconds": ACCOUNT_RESERVE_SECONDS,
         "usage_window_charge_seconds": str(in_window),
         "account_usage_observation": snapshot["account_usage"],
+        "awaiting_observation": sorted(awaiting),
+        "failed_job_count": sum(1 for row in rows if row["provenance"] == "failed_collection"),
+        "failed_charge_seconds": str(
+            sum(
+                (
+                    Decimal(str(row["final_qpu_charge_seconds"]))
+                    for row in rows
+                    if row["provenance"] == "failed_collection"
+                ),
+                Decimal(0),
+            )
+        ),
         "jobs": rows,
     }
     if not is_default:

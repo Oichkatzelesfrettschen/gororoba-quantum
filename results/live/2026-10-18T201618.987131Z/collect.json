@@ -1,0 +1,64 @@
+[
+  {
+    "submission_complete": true,
+    "backends_without_recorded_job_id": [],
+    "members_without_recorded_job_id": [],
+    "jobs_without_recorded_id": [],
+    "jobs": {
+      "dbaii7c24mrc7385fjfg": {
+        "backend": "ibm_kingston",
+        "kind": "static",
+        "usage": {
+          "job_status": "ERROR",
+          "usage_status": "pending",
+          "usage_source": null,
+          "submitted_pub_shots": 100000,
+          "qpu_charge_time_seconds": null,
+          "pub_shots_per_qpu_second": null,
+          "throughput_unavailable_reason": "usage calculation still pending 120 s after the job ended; recollect to update it",
+          "raw_usage_metadata": {
+            "qpu_charge_time_seconds": 2,
+            "value": 0.028368,
+            "unit": "resource_units",
+            "status": "pending",
+            "details": [
+              {
+                "value": 0.028368,
+                "unit": "resource_units",
+                "metric": {
+                  "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+                  "value": 2
+                }
+              }
+            ]
+          }
+        },
+        "pub_timing": {},
+        "backend_identity": {
+          "backend_version": "1.0.0",
+          "processor_type": {
+            "family": "Heron",
+            "revision": "2"
+          },
+          "backend_version_at_execution": {}
+        },
+        "result_unavailable": "RuntimeJobMaxTimeoutError: 'Error code 1305; Job %!v(MISSING) ran longer than %!v(MISSING). Contact support.'"
+      }
+    },
+    "family_analysis": {
+      "withheld": "missing measured members ['spc_prep0_q0', 'spc_prep0_q1', 'spc_prep0_q10', 'spc_prep0_q100', 'spc_prep0_q101', 'spc_prep0_q102', 'spc_prep0_q103', 'spc_prep0_q104', 'spc_prep0_q105', 'spc_prep0_q106', 'spc_prep0_q107', 'spc_prep0_q108', 'spc_prep0_q109', 'spc_prep0_q11', 'spc_prep0_q110', 'spc_prep0_q111', 'spc_prep0_q112', 'spc_prep0_q114', 'spc_prep0_q116', 'spc_prep0_q117', 'spc_prep0_q118', 'spc_prep0_q119', 'spc_prep0_q12', 'spc_prep0_q120', 'spc_prep0_q122', 'spc_prep0_q123', 'spc_prep0_q124', 'spc_prep0_q125', 'spc_prep0_q126', 'spc_prep0_q127', 'spc_prep0_q128', 'spc_prep0_q129', 'spc_prep0_q13', 'spc_prep0_q130', 'spc_prep0_q132', 'spc_prep0_q133', 'spc_prep0_q134', 'spc_prep0_q135', 'spc_prep0_q136', 'spc_prep0_q137', 'spc_prep0_q138', 'spc_prep0_q139', 'spc_prep0_q14', 'spc_prep0_q140', 'spc_prep0_q141', 'spc_prep0_q142', 'spc_prep0_q143', 'spc_prep0_q144', 'spc_prep0_q145', 'spc_prep0_q147', 'spc_prep0_q148', 'spc_prep0_q149', 'spc_prep0_q15', 'spc_prep0_q150', 'spc_prep0_q151', 'spc_prep0_q152', 'spc_prep0_q153', 'spc_prep0_q154', 'spc_prep0_q155', 'spc_prep0_q16', 'spc_prep0_q17', 'spc_prep0_q18', 'spc_prep0_q19', 'spc_prep0_q2', 'spc_prep0_q21', 'spc_prep0_q22', 'spc_prep0_q23', 'spc_prep0_q24', 'spc_prep0_q25', 'spc_prep0_q26', 'spc_prep0_q27', 'spc_prep0_q28', 'spc_prep0_q29', 'spc_prep0_q3', 'spc_prep0_q30', 'spc_prep0_q31', 'spc_prep0_q32', 'spc_prep0_q33', 'spc_prep0_q34', 'spc_prep0_q35', 'spc_prep0_q36', 'spc_prep0_q37', 'spc_prep0_q38', 'spc_prep0_q39', 'spc_prep0_q4', 'spc_prep0_q40', 'spc_prep0_q41', 'spc_prep0_q42', 'spc_prep0_q43', 'spc_prep0_q44', 'spc_prep0_q45', 'spc_prep0_q46', 'spc_prep0_q47', 'spc_prep0_q48', 'spc_prep0_q49', 'spc_prep0_q5', 'spc_prep0_q50', 'spc_prep0_q51', 'spc_prep0_q52', 'spc_prep0_q53', 'spc_prep0_q54', 'spc_prep0_q55', 'spc_prep0_q56', 'spc_prep0_q57', 'spc_prep0_q58', 'spc_prep0_q59', 'spc_prep0_q6', 'spc_prep0_q60', 'spc_prep0_q61', 'spc_prep0_q62', 'spc_prep0_q63', 'spc_prep0_q64', 'spc_prep0_q65', 'spc_prep0_q66', 'spc_prep0_q67', 'spc_prep0_q68', 'spc_prep0_q69', 'spc_prep0_q7', 'spc_prep0_q70', 'spc_prep0_q71', 'spc_prep0_q72', 'spc_prep0_q73', 'spc_prep0_q74', 'spc_prep0_q75', 'spc_prep0_q77', 'spc_prep0_q78', 'spc_prep0_q79', 'spc_prep0_q8', 'spc_prep0_q80', 'spc_prep0_q81', 'spc_prep0_q82', 'spc_prep0_q83', 'spc_prep0_q84', 'spc_prep0_q85', 'spc_prep0_q87', 'spc_prep0_q88', 'spc_prep0_q89', 'spc_prep0_q9', 'spc_prep0_q90', 'spc_prep0_q91', 'spc_prep0_q92', 'spc_prep0_q93', 'spc_prep0_q94', 'spc_prep0_q95', 'spc_prep0_q96', 'spc_prep0_q97', 'spc_prep0_q98', 'spc_prep0_q99']"
+    },
+    "invocation_usage": {
+      "known_final_charge_seconds": "0",
+      "total_charge_seconds": null,
+      "charge_complete": false,
+      "workload_complete": false,
+      "predicted_charge_seconds": 2.518,
+      "charge_prediction_residual_seconds": null,
+      "charge_prediction_residual_withheld": "the complete planned workload lacks final charge or successful completion",
+      "jobs_without_final_charge": [
+        "dbaii7c24mrc7385fjfg"
+      ]
+    }
+  }
+]

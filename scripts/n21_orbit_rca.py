@@ -49,10 +49,14 @@ their measure plays, so admissibility is that of the unheralded twin, and
 --between-arm reports the herald admission beside it (herald_admission): a
 level-0.05 test that every member spread of the initial excitation is at
 most herald_bound(n), the spread that moves a magnitude contract by a
-quarter of its minimum detectable deficit (B = 0.001276 at 27,648 shots;
+quarter of its minimum detectable deficit (B = 0.001361 at 27,648 shots;
 derivation in herald_bound). Every member must read a herald qubit
 through one assignment channel; a refused or unevaluable herald reads every
-contract not_admissible. --self-test-herald checks the sensitivity
+contract not_admissible. An admitted herald's simultaneous upper limits
+leave the magnitude contracts a possible shift, contract_shift_upper_limit,
+which counts against every magnitude contract's pass before it
+decides, so a heralded pass holds for every spread the herald leaves
+possible. --self-test-herald checks the sensitivity
 coefficients, the twin roles on the retained schedule and the admission
 test's operating characteristic. The mechanism fit reads unheralded runs.
 """
@@ -68,6 +72,7 @@ import json
 import math
 import sys
 from collections import Counter
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 from unittest import mock
@@ -195,8 +200,14 @@ def _dephase() -> list[np.ndarray]:
     return [np.diag([1.0, 0.0]).astype(complex), np.diag([0.0, 1.0]).astype(complex)]
 
 
-def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
-    """Labeled law over y = b0 + 2 b1 under the parameterized error model."""
+def distribution(params: dict[str, float], feed_forward: bool, window: np.ndarray | None = None) -> np.ndarray:
+    """Labeled law over y = b0 + 2 b1 under the parameterized error model.
+
+    window, when given, is the 8x8 unitary the work qubits for 1, 4 and 16
+    undergo between the first measurement and the second round.
+    cphase_one applies a phase to the work bit for 1 when the recorded first
+    bit is 1.
+    """
     state = Evolution()
     state.unitary(_X, (ONE,))
     state.unitary(_H, (CONTROL,))
@@ -239,6 +250,10 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     for qubit, key in ((ONE, "phase_one"), (SIXTEEN, "phase_sixteen")):
         if params.get(key):
             state.unitary(np.diag([1, np.exp(1j * params[key])]).astype(complex), (qubit,))
+    if window is not None:
+        state.unitary(window, (ONE, FOUR, SIXTEEN))
+    if params.get("cphase_one"):
+        state.unitary(_controlled_phase(params["cphase_one"]), (RECORD, ONE))
     state.unitary(_H, (CONTROL,))
     state.unitary(_cswap(), (CONTROL, FOUR, SIXTEEN))
     state.unitary(_cswap(), (CONTROL, ONE, FOUR))
@@ -255,6 +270,15 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     for index, weight in enumerate(diagonal):
         law[((index >> RECORD) & 1) + 2 * ((index >> CONTROL) & 1)] += weight
     return law / law.sum()
+
+
+def is_orbit(name: str) -> bool:
+    """Whether a member is an orbit member: every member except a spectator Ramsey member (ALL_SPECTATOR_MEMBERS).
+
+    Records of n21-orbit-feedback name their pair without a variant, so the
+    test names the spectators rather than listing the orbit variants.
+    """
+    return not name.startswith(SPECTATOR_PREFIX)
 
 
 def _group(run: Path) -> dict[str, Any]:
@@ -329,7 +353,8 @@ def measured_pairs(run: Path) -> dict[str, dict[str, np.ndarray]]:
     """Counts per feed-forward pair, keyed by the member name without its arm suffix.
 
     PUB i carries the record's member i; the archived ISA confirms the order,
-    since only the feed-forward member contains an if_else.
+    since only the feed-forward member contains an if_else. Spectator
+    Ramsey members carry no pair and stay out (is_orbit).
     """
     members = [member["name"] for member in _group(run)["members"]]
     circuits = _circuits(run)
@@ -337,6 +362,8 @@ def measured_pairs(run: Path) -> dict[str, dict[str, np.ndarray]]:
         raise RuntimeError("archived circuits and record members differ in number")
     pairs: dict[str, dict[str, np.ndarray]] = {}
     for index, (name, circuit, payload) in enumerate(zip(members, circuits, raw_pubs(run), strict=True)):
+        if not is_orbit(name):
+            continue
         arm = "no_feedback" if name.endswith("_no_feedback") else "feedback"
         if ("if_else" in circuit.count_ops()) != (arm == "feedback"):
             raise RuntimeError(f"PUB {index} feed-forward structure differs from member {name}")
@@ -560,12 +587,14 @@ def window_roles(run: Path) -> dict[str, dict[str, Any]]:
     an initialization herald's readouts and their measure plays leave the
     instructions and the schedule first (member_roles), so the herald plays
     no part in the windows, the probes or the one-to-one pulse comparison.
+    Only orbit members carry a window coupling (is_orbit).
     """
     group = _group(run)
     placed = sorted(int(qubit) for qubit in group["replicas"][0]["physical_qubits"])
     return {
         member["name"]: member_roles(not member["name"].endswith("_no_feedback"), circuit, payload, placed)
         for member, circuit, payload in zip(group["members"], _circuits(run), raw_pubs(run), strict=True)
+        if is_orbit(member["name"])
     }
 
 
@@ -1496,6 +1525,13 @@ def _check_exact_laws() -> None:
         law = distribution(_readout(0.0, 0.0), feed_forward)
         if not np.allclose(law, [value / 8 for value in exact], atol=1e-12):
             raise RuntimeError(f"noiseless model law {law} differs from the exact N=21 law")
+        if not np.allclose(distribution(_readout(0.0, 0.0), feed_forward, np.eye(8, dtype=complex)), law, atol=1e-12):
+            raise RuntimeError("an identity window changed the noiseless law")
+        params = _readout(0.02, 0.03) | {"round1": 0.1, "phase_one": 0.7}
+        phase = np.diag([np.exp(0.7j) if index & 1 else 1.0 for index in range(8)]).astype(complex)
+        windowed = distribution(params | {"phase_one": 0.0}, feed_forward, phase)
+        if not np.allclose(windowed, distribution(params, feed_forward), atol=1e-12):
+            raise RuntimeError("a window phase on the work qubit for 1 differs from phase_one")
 
 
 class TwoBasins:
@@ -1774,7 +1810,13 @@ def _check_parameter_replay() -> None:
             raise RuntimeError(f"an out-of-domain parameter {invalid_value!r} passes replay")
 
 
-CONTRACT_IDLE_DT = {"nominal": 1000, "window_delay": 1415, "extra_readout": 1400, "window_echo": 1000}
+CONTRACT_IDLE_DT = {
+    "nominal": 1000,
+    "window_delay": 1415,
+    "window_delay_long": 1830,
+    "extra_readout": 1400,
+    "window_echo": 1000,
+}
 CONTRACT_SLOPE = 6e-4
 # Exact expected counts at this depth resolve the phase aliases the slope
 # test meets inside the rate bound.
@@ -1823,27 +1865,67 @@ def _check_between_arm() -> None:
     # The coupling of -1 makes the coupling-weighted exposure negative, so
     # the slope the contract recovers is -CONTRACT_SLOPE per dt.
     nominal = pair({"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["nominal"]})
+    # window_delay_long loses work-bit coherence beyond window_delay, so the
+    # ramp contract passes; no other contract reads it.
     pairs = {
         orbit_pair("nominal"): nominal,
         orbit_pair("window_delay"): pair({"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["window_delay"]}),
+        orbit_pair("window_delay_long"): pair(
+            {"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["window_delay_long"], "window_t2": 0.3}
+        ),
         orbit_pair("extra_readout"): nominal,
         orbit_pair("window_echo"): nominal,
     }
+    spectators = _spectator_reads(0.8, 0.4, 1.0, 0.0)
     roles = _contract_roles({7: {0: -1, 1: -1}})
     readouts = dict.fromkeys(roles, readout)
     t2_us = dict.fromkeys(ARMS, {7: 100.0})
     dt = SYNTHETIC_DT_US * 1e-6
     profiles = SlopeProfiles(pairs, readouts, phase_fits(pairs, readouts))
     orientation = admissibility(roles)["orientation"]
-    results = contract_results(roles, pairs, readouts, dt, t2_us, profiles)
+    results = contract_results(roles, pairs, readouts, dt, t2_us, profiles, spectators=spectators)
     json.dumps(results, sort_keys=True)
     passing = dict.fromkeys(CONTRACTS, "pass")
     if {name: result["status"] for name, result in results.items()} != passing:
         raise RuntimeError(f"a family planted on every contract returns {results}")
-    if contract_results(roles, pairs, readouts, dt, t2_us, profiles, nominal_t2_us=t2_us) != results:
+    # A plain record (the four bracketed pairs, no sweep or split members)
+    # reads the first three contracts at FAMILY_ALPHA / 3, admissible
+    # without window_delay_long.
+    plain_record = Path(__file__).resolve().parents[1] / "results/live/2026-10-18T062500.711287Z/record.json"
+    plain_names = [m["name"] for m in json.loads(plain_record.read_text())["groups"][0]["members"]]
+    long_pair = orbit_pair("window_delay_long")
+    plain_roles = {name: role for name, role in roles.items() if not name.startswith(long_pair + "_")}
+    plain_pairs = {name: arms for name, arms in pairs.items() if name != long_pair}
+    plain = contract_results(
+        plain_roles,
+        plain_pairs,
+        {name: readouts[name] for name in plain_roles},
+        dt,
+        t2_us,
+        SlopeProfiles(plain_pairs, readouts, phase_fits(plain_pairs, readouts)),
+        shape="plain",
+    )
+    if (
+        record_shape(plain_names) != "plain"
+        or not math.isclose(contract_alpha("plain"), FAMILY_ALPHA / 3)
+        or {name: result["status"] for name, result in plain.items()} != dict.fromkeys(CONTRACTS[:3], "pass")
+        or plain["window_echo_restoration"]["one_sided_quantile"] != float(norm.ppf(1 - FAMILY_ALPHA / 3))
+    ):
+        raise RuntimeError(f"a plain record reads {plain} at shape {record_shape(plain_names)}")
+    if (
+        contract_results(roles, pairs, readouts, dt, t2_us, profiles, nominal_t2_us=t2_us, spectators=spectators)
+        != results
+    ):
         raise RuntimeError("a nominal member at the extra_readout member's T2 changes the contracts")
     drifted = contract_results(
-        roles, pairs, readouts, dt, t2_us, profiles, nominal_t2_us={**t2_us, "feedback": {7: 90.0}}
+        roles,
+        pairs,
+        readouts,
+        dt,
+        t2_us,
+        profiles,
+        nominal_t2_us={**t2_us, "feedback": {7: 90.0}},
+        spectators=spectators,
     )
     if drifted["extra_readout_contrast"].get("differing_t2_qubits") != {"feedback": [7]} or any(
         drifted[name] != results[name] for name in CONTRACTS if name != "extra_readout_contrast"
@@ -1949,6 +2031,265 @@ def _check_between_arm() -> None:
         raise RuntimeError("the polynomial-trigonometric law differs from distribution() off its nodes")
 
 
+def _spectator_reads(
+    measured: float, measured_phase: float, reference: float, reference_phase: float, branch_turn: float = 0.0
+) -> dict[str, dict[str, np.ndarray]]:
+    """Exact expected spectator counts at CONTRACT_SHOTS: each kind's visibility and qubit-2 phase.
+
+    Qubit 2 reads 1 in X with probability (1 - R cos phi) / 2 and in Y with
+    (1 - R sin phi) / 2. The measured control bit splits the shots evenly,
+    branch 1 turned by branch_turn about branch 0 and the two branches
+    centered on phi; the unwritten reset_only bit reads 0.
+    """
+    reads: dict[str, dict[str, np.ndarray]] = {}
+    for kind, visibility, phase in (
+        ("measured", measured, measured_phase),
+        ("reset_only", reference, reference_phase),
+    ):
+        reads[kind] = {}
+        for quadrature in SPECTATOR_QUADRATURES:
+            vector = np.zeros(4)
+            branches = (
+                ((0, phase - branch_turn / 2), (1, phase + branch_turn / 2)) if kind == "measured" else ((0, phase),)
+            )
+            for control, angle in branches:
+                shots = CONTRACT_SHOTS // len(branches)
+                projection = math.cos(angle) if quadrature == "x" else math.sin(angle)
+                one = round((1 - visibility * projection) / 2 * shots)
+                vector[control] += shots - one
+                vector[control + 2] += one
+            reads[kind][quadrature] = vector
+    return reads
+
+
+def _check_window_sweep() -> dict[str, str]:
+    """Planted truths reach the preregistered ramp and spectator verdicts.
+
+    Static detuning: the nominal, window_delay and window_delay_long pairs
+    carry phases growing with their idles at equal coherence, and qubit 2's
+    measured Ramsey a rotated phase at the reference's visibility, so both
+    contracts fail. Monotonic dephasing: coherence falls with each added
+    idle, and the ramp passes. Qubit-2 readout dephasing: the measured
+    visibility 0.8 against 1.0 passes the spectator contract. Step: one loss
+    at the first added idle, flat beyond it, fails the ramp while
+    window_delay's magnitude lies below the nominal one (contrast_floor
+    fails). A ramp that passes at margin zero fails at a margin above its
+    upper limit's magnitude.
+    """
+    readout = _readout(0.001, 0.006)
+    base = readout | {"round1": 0.05, "round2": 0.02}
+
+    def pair(phase: float, loss: float) -> dict[str, np.ndarray]:
+        params = base | {"phase_one": phase, "window_t2": loss}
+        return {arm: np.round(distribution(params, arm == "feedback") * CONTRACT_SHOTS) for arm in ARMS}
+
+    def ramp(losses: tuple[float, float, float], slope: float = 0.0) -> tuple[dict[str, Any], dict[str, Any]]:
+        nominal, delay, long = (
+            pair(slope * CONTRACT_IDLE_DT[variant], loss)
+            for variant, loss in zip(("nominal", "window_delay", "window_delay_long"), losses, strict=True)
+        )
+        return magnitude_decline(long, delay, CONTRACT_ALPHA), contrast_floor(
+            delay, nominal, (1.0, 1.0), CONTRACT_ALPHA
+        )
+
+    verdicts = {}
+    static, static_step = ramp((0.0, 0.0, 0.0), CONTRACT_SLOPE)
+    rotated = spectator_contract(_spectator_reads(1.0, 0.3, 1.0, 0.0), CONTRACT_ALPHA)
+    if static["status"] != "fail" or static_step["status"] != "pass" or rotated["status"] != "fail":
+        raise RuntimeError(f"a static detuning reads ramp {static}, floor {static_step}, spectator {rotated}")
+    verdicts["static_detuning"] = "ramp fail, spectator fail"
+    monotonic, _floor = ramp((0.0, 0.2, 0.4))
+    if monotonic["status"] != "pass":
+        raise RuntimeError(f"a monotonic dephasing fails the ramp: {monotonic}")
+    verdicts["monotonic_dephasing"] = "ramp pass"
+    dephased = spectator_contract(_spectator_reads(0.8, 0.4, 1.0, 0.0), CONTRACT_ALPHA)
+    if dephased["status"] != "pass" or not math.isclose(dephased["measured_visibility"], 0.8, abs_tol=1e-4):
+        raise RuntimeError(f"a qubit-2 readout dephasing fails the spectator contract: {dephased}")
+    verdicts["spectator_dephasing"] = "spectator pass"
+    step, step_floor = ramp((0.0, 0.3, 0.3))
+    if step["status"] != "fail" or step_floor["status"] != "fail":
+        raise RuntimeError(f"a one-time step reads ramp {step}, window_delay floor {step_floor}")
+    verdicts["step"] = "ramp fail, window_delay below nominal"
+    held = magnitude_decline(
+        pair(0.0, 0.4), pair(0.0, 0.2), CONTRACT_ALPHA, -monotonic["upper_confidence_limit"] * 1.01
+    )
+    if held["status"] != "fail" or not held["herald_margin"] > 0:
+        raise RuntimeError(f"a herald margin above the ramp's upper limit leaves it passing: {held}")
+    from diagnostic_experiments import n21_orbit_rca_group, n21_orbit_variants, n21_spectator_members
+
+    names = [member.name for member in n21_orbit_rca_group(415, 502, window_sweep=True).members]
+    if (
+        set(n21_orbit_variants(True)) != set(ORBIT_VARIANTS)
+        or n21_spectator_members() != SPECTATOR_MEMBERS
+        or [name for name in names if not is_orbit(name)] != list(SPECTATOR_MEMBERS)
+    ):
+        raise RuntimeError(f"the analyzer's orbit and spectator names differ from the planned members {names}")
+    # Bitstrings put clbit 0 rightmost: "10" is qubit 2 read 1 with the control bit 0, label 2.
+    module = sys.modules[__name__]
+    synthetic = {"members": [{"name": "n21_orbit_nominal_feedback"}, *({"name": n} for n in SPECTATOR_MEMBERS)]}
+    payloads = [{"registers": {REGISTER: {"bitstrings": ["01"]}}}] + [
+        {"registers": {REGISTER: {"bitstrings": ["10", "00", "10"]}}} for _name in SPECTATOR_MEMBERS
+    ]
+    with (
+        mock.patch.object(module, "_group", lambda _run: synthetic),
+        mock.patch.object(module, "raw_pubs", lambda _run: payloads),
+    ):
+        tallied = spectator_counts(Path("."))
+    if tallied is None or any(
+        list(tallied[kind][quadrature]) != [1.0, 0.0, 2.0, 0.0]
+        for kind in SPECTATOR_KINDS
+        for quadrature in SPECTATOR_QUADRATURES
+    ):
+        raise RuntimeError(f"spectator_counts tallies {tallied}, not qubit 2 on clbit 1")
+    if spectator_contract(None, CONTRACT_ALPHA)["status"] != "not_evaluable":
+        raise RuntimeError("the spectator contract evaluates without spectator members")
+    for planted in (0.0, 0.4, -2.5):
+        turn = spectator_branch_phase(_spectator_reads(0.9, 0.3, 1.0, 0.0, planted)["measured"])
+        if abs(turn["turn_rad"] - planted) > 5 * turn["standard_error_rad"] or turn["standard_error_rad"] > 0.05:
+            raise RuntimeError(f"spectator_branch_phase reads {turn} for a planted turn of {planted} rad")
+    rotated_only = spectator_contract(_spectator_reads(0.9, 0.3, 0.9, 0.3, 0.4), CONTRACT_ALPHA)
+    if rotated_only["status"] != "pass":
+        raise RuntimeError(f"a branch turn of 0.4 rad does not lower the pooled measured visibility: {rotated_only}")
+    if (
+        spectator_margin({"present": False}) != 0.0
+        or spectator_margin(
+            {
+                "present": True,
+                "admissible": True,
+                "bits": {str(SPECTATOR_HERALD_BIT): {"excitation_spread_upper_limit": 0.002}},
+            }
+        )
+        != 0.004
+    ):
+        raise RuntimeError("spectator_margin does not read twice the qubit-2 herald spread limit")
+    return verdicts
+
+
+# The spectator truths plant visibilities 0.01 apart, below the minimum
+# detectable difference of a 4096-shot member at phase pi/4, where the
+# test must not separate them, and 0.37 apart, far above it.
+SPLIT_SPECTATOR_SHOTS = 4096
+SPLIT_SPECTATOR_PHASE = math.pi / 4
+
+
+def _split_spectator_reads(visibilities: dict[str, float]) -> dict[str, dict[str, np.ndarray]]:
+    """Expected overlap-split spectator counts at SPLIT_SPECTATOR_SHOTS; every kind leaves the control bit 0."""
+    reads: dict[str, dict[str, np.ndarray]] = {}
+    for kind, visibility in visibilities.items():
+        reads[kind] = {}
+        for quadrature in SPECTATOR_QUADRATURES:
+            projection = (math.cos if quadrature == "x" else math.sin)(SPLIT_SPECTATOR_PHASE)
+            one = round((1 - visibility * projection) / 2 * SPLIT_SPECTATOR_SHOTS)
+            reads[kind][quadrature] = np.array([SPLIT_SPECTATOR_SHOTS - one, 0.0, one, 0.0])
+    return reads
+
+
+def _check_overlap_split() -> dict[str, str]:
+    """Planted truths reach the preregistered overlap-split verdicts.
+
+    Pinned loss: window_delay keeps 0.55 of nominal's contrast, so
+    window_delay_pinned_loss passes; equal pairs fail it. Overlap: the
+    unbracketed pair keeps 0.55 of window_delay's contrast, so
+    window_overlap_loss passes; equal pairs fail it. Readout dephasing
+    (reset_only 0.6, idle 0.97, immediate 0.98) passes
+    spectator_readout_dephasing and fails spectator_idle_dephasing;
+    unrecorded-control idle loss (idle and reset_only 0.6, immediate 0.98)
+    passes the idle contract and fails the readout one; a preparation floor
+    (every kind 0.6) fails both. The planned overlap-split names agree with
+    the analyzer's, an absent unbracketed pair is not admissible, and an
+    unbracketed coupling that differs from the nominal one gates nothing.
+    """
+    alpha = contract_alpha("split")
+    readout = _readout(0.001, 0.006)
+    nominal_law = {arm: distribution(readout | {"round1": 0.05, "round2": 0.02}, arm == "feedback") for arm in ARMS}
+
+    def pair(kept: float) -> dict[str, np.ndarray]:
+        # Mixing with the uniform law, whose p1 - p3 is zero, scales both arms' contrasts by kept.
+        return {arm: np.round((kept * law + (1 - kept) * 0.25) * CONTRACT_SHOTS) for arm, law in nominal_law.items()}
+
+    verdicts = {}
+    if (
+        magnitude_decline(pair(0.55), pair(1.0), alpha)["status"] != "pass"
+        or magnitude_decline(pair(1.0), pair(1.0), alpha)["status"] != "fail"
+    ):
+        raise RuntimeError("window_delay_pinned_loss misreads a 0.55 loss or an equal pair")
+    verdicts["pinned_loss"] = "pinned pass; equal pinned fail"
+    overlap = magnitude_decline(pair(0.55 * 0.8), pair(0.8), alpha)
+    if overlap["status"] != "pass" or not math.isclose(
+        overlap["contrast_magnitude"] / overlap["reference_contrast_magnitude"], 0.55, rel_tol=1e-3
+    ):
+        raise RuntimeError(f"an overlap loss to 0.55 of the window_delay contrast fails window_overlap_loss: {overlap}")
+    verdicts["overlap"] = "overlap pass"
+    if magnitude_decline(pair(0.8), pair(0.8), alpha)["status"] != "fail":
+        raise RuntimeError("equal unbracketed and bracketed window_delay contrasts pass window_overlap_loss")
+    verdicts["no_overlap"] = "overlap fail"
+    for label, truth, expected in (
+        ("readout_dephasing", {"reset_only": 0.6, "idle": 0.97, "immediate": 0.98}, ("pass", "fail")),
+        ("unrecorded_control_idle_loss", {"reset_only": 0.6, "idle": 0.6, "immediate": 0.98}, ("fail", "pass")),
+        ("preparation_floor", {"reset_only": 0.6, "idle": 0.6, "immediate": 0.6}, ("fail", "fail")),
+    ):
+        reads = _split_spectator_reads(truth)
+        found = (
+            spectator_decline(reads, "reset_only", "idle", alpha)["status"],
+            spectator_decline(reads, "idle", "immediate", alpha)["status"],
+        )
+        if found != expected:
+            raise RuntimeError(f"the {label} truth reads readout {found[0]}, idle {found[1]}; expected {expected}")
+        verdicts[label] = f"readout {found[0]}, idle {found[1]}"
+        described = immediate_visibility(reads)
+        if not math.isclose(described["visibility"], truth["immediate"], abs_tol=1e-3):
+            raise RuntimeError(f"immediate_visibility reads {described} for a planted {truth['immediate']}")
+    if spectator_decline(None, "idle", "immediate", alpha)["status"] != "not_evaluable":
+        raise RuntimeError("a spectator contract evaluates without spectator members")
+    from diagnostic_experiments import n21_orbit_rca_group, n21_orbit_variants, n21_spectator_members
+
+    names = [member.name for member in n21_orbit_rca_group(415, 502, overlap_split=True, reset_dt=520).members]
+    expected_names = [
+        *(f"{orbit_pair(variant)}_{arm}" for variant in OVERLAP_PAIRS for arm in ARMS),
+        *SPLIT_SPECTATOR_MEMBERS,
+    ]
+    if (
+        names != expected_names
+        or n21_orbit_variants(overlap_split=True) != OVERLAP_PAIRS
+        or n21_spectator_members(True) != SPLIT_SPECTATOR_MEMBERS
+        or not overlap_split(names)
+        or overlap_split([member.name for member in n21_orbit_rca_group(415, 502, window_sweep=True).members])
+        or [name for name in names if not is_orbit(name)] != list(SPLIT_SPECTATOR_MEMBERS)
+    ):
+        raise RuntimeError(f"the analyzer's overlap-split names differ from the planned members {names}")
+    roles = {
+        name: role
+        for name, role in _contract_roles({7: {0: -1, 1: -1}}).items()
+        if name.startswith(tuple(f"{orbit_pair(variant)}_{arm}" for variant in OVERLAP_BRACKETED for arm in ARMS))
+    }
+    if split_admissibility(roles)["admissible"]:
+        raise RuntimeError("an overlap split without its unbracketed pair is admissible")
+    unbracketed = [f"{orbit_pair(OVERLAP_UNBRACKETED)}_{arm}" for arm in ARMS]
+    shifted = _contract_roles({9: {0: 1, 1: 1}})
+    for arm, name in zip(ARMS, unbracketed, strict=True):
+        roles[name] = shifted[f"{orbit_pair('window_delay')}_{arm}"] | {"unresolved": [3]}
+    admitted = split_admissibility(roles)
+    if not admitted["admissible"] or admitted["exempt"] != sorted(unbracketed):
+        raise RuntimeError(f"an unbracketed coupling gates the overlap split: {admitted}")
+    without_delay = {name: role for name, role in roles.items() if "_window_delay_" not in name or name in unbracketed}
+    if split_admissibility(without_delay)["admissible"]:
+        raise RuntimeError("an overlap split without its bracketed window_delay pair is admissible")
+    pairs = {
+        orbit_pair("nominal"): pair(1.0),
+        orbit_pair("window_delay"): pair(0.55),
+        orbit_pair(OVERLAP_UNBRACKETED): pair(0.55),
+    }
+    results = overlap_contract_results(
+        roles, pairs, _split_spectator_reads({"reset_only": 0.6, "idle": 0.97, "immediate": 0.98})
+    )
+    if [results[name]["status"] for name in OVERLAP_CONTRACTS] != ["pass", "fail", "pass", "fail"]:
+        raise RuntimeError(f"the overlap contracts read {results}")
+    verdicts["combined"] = "pinned pass, overlap fail, readout pass, idle fail"
+    if contract_alpha("sweep") != CONTRACT_ALPHA or not math.isclose(contract_alpha("split"), FAMILY_ALPHA / 4):
+        raise RuntimeError("the per-contract alpha does not follow the configuration's contracts")
+    return verdicts
+
+
 def self_check() -> None:
     """Recover a known work phase from exact expected counts and reject the depolarizing baseline."""
     _check_exact_laws()
@@ -1958,6 +2299,8 @@ def self_check() -> None:
     _check_seed_ranking()
     _check_differences()
     _check_between_arm()
+    verdicts = _check_window_sweep()
+    split_verdicts = _check_overlap_split()
     readout = _readout(0.001, 0.006)
     truth = readout | {"round1": 0.1, "round2": 0.02, "phase_one": 0.5}
     counts = {
@@ -1981,7 +2324,8 @@ def self_check() -> None:
     print(
         "N=21 orbit RCA: exact laws, manifest binding, seeded static basins, piecewise window exposure, "
         "regeneration tolerance, between-arm contracts and admissibility, planted-phase recovery, "
-        "branch-window, and baseline rejection checks pass"
+        f"branch-window, and baseline rejection checks pass; window sweep truths read {verdicts}; "
+        f"overlap split truths read {split_verdicts}"
     )
 
 
@@ -2212,11 +2556,48 @@ def check(run: Path) -> None:
 
 
 BETWEEN_ARM_SCHEMA = "n21-orbit-between-arm-contracts-v2"
-ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
+ORBIT_VARIANTS = ("nominal", "window_delay", "window_delay_long", "extra_readout", "window_echo")
 ARMS = ("feedback", "no_feedback")
 REFERENCE_MEMBER = "n21_orbit_nominal_feedback"
-CONTRACTS = ("window_delay_phase_slope", "extra_readout_contrast", "window_echo_restoration")
-# Bonferroni over the three contracts holds their family-wise error at FAMILY_ALPHA.
+CONTRACTS = (
+    "window_delay_phase_slope",
+    "extra_readout_contrast",
+    "window_echo_restoration",
+    "window_delay_ramp",
+    "spectator_window_dephasing",
+)
+# Spectator Ramsey members (diagnostic_experiments.n21_spectator_members):
+# logical qubit 2 read in X or Y across the control's measurement or a
+# reset_only idle of its length. Clbit 1 of the phase register holds the
+# qubit-2 bit.
+SPECTATOR_KINDS = ("measured", "reset_only")
+SPECTATOR_QUADRATURES = ("x", "y")
+SPECTATOR_PREFIX = "n21_spectator_"
+SPECTATOR_MEMBERS = tuple(f"{SPECTATOR_PREFIX}{k}_{q}" for k in SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES)
+# The overlap split (diagnostic_experiments.n21_orbit_rca_group,
+# overlap_split) holds the bracketed nominal and window_delay pairs and
+# window_delay without its window barriers, and reads qubit 2 at once
+# (immediate), across an idle of the control's measure plus reset durations
+# with the unrecorded control in |+> (idle), and across the reset_only
+# reference.
+SPLIT_SPECTATOR_KINDS = ("immediate", "idle", "reset_only")
+SPLIT_SPECTATOR_MEMBERS = tuple(
+    f"{SPECTATOR_PREFIX}{k}_{q}" for k in SPLIT_SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES
+)
+ALL_SPECTATOR_MEMBERS = (*SPECTATOR_MEMBERS, *(m for m in SPLIT_SPECTATOR_MEMBERS if m not in SPECTATOR_MEMBERS))
+OVERLAP_BRACKETED = ("nominal", "window_delay")
+OVERLAP_UNBRACKETED = "window_delay_unbracketed"
+OVERLAP_PAIRS = (*OVERLAP_BRACKETED, OVERLAP_UNBRACKETED)
+UNBRACKETED_MARK = "_unbracketed_"
+OVERLAP_CONTRACTS = (
+    "window_delay_pinned_loss",
+    "window_overlap_loss",
+    "spectator_readout_dephasing",
+    "spectator_idle_dephasing",
+)
+# The herald bit of logical qubit 2; its excitation maps |+> to |->.
+SPECTATOR_HERALD_BIT = 2
+# Bonferroni over the five contracts holds their family-wise error at FAMILY_ALPHA.
 CONTRACT_ALPHA = FAMILY_ALPHA / len(CONTRACTS)
 # A nominal pair exposed for under one sample time defines no phase slope.
 MIN_SLOPE_EXPOSURE_DT = 1.0
@@ -2224,6 +2605,39 @@ MIN_SLOPE_EXPOSURE_DT = 1.0
 
 def orbit_pair(variant: str) -> str:
     return f"n21_orbit_{variant}"
+
+
+def overlap_split(names: list[str]) -> bool:
+    """Whether a record's members form the overlap split: an unbracketed orbit arm is present."""
+    return any(name.startswith("n21_orbit_") and UNBRACKETED_MARK in name for name in names)
+
+
+# Shapes of an n21-orbit-rca record, read from its members (record_shape):
+# plain holds the four bracketed pairs and the first three contracts, sweep
+# adds window_delay_long and the measured spectators and all five, and the
+# overlap split holds its own four.
+PLAIN_VARIANTS = tuple(variant for variant in ORBIT_VARIANTS if variant != "window_delay_long")
+SHAPE_CONTRACTS = {"plain": CONTRACTS[:3], "sweep": CONTRACTS, "split": OVERLAP_CONTRACTS}
+SHAPE_VARIANTS = {"plain": PLAIN_VARIANTS, "sweep": ORBIT_VARIANTS, "split": OVERLAP_BRACKETED}
+
+
+def record_shape(names: list[str]) -> str:
+    """split with an unbracketed orbit arm, sweep with window_delay_long or a measured spectator, else plain."""
+    if overlap_split(names):
+        return "split"
+    if any(name.startswith(orbit_pair("window_delay_long") + "_") or name in SPECTATOR_MEMBERS for name in names):
+        return "sweep"
+    return "plain"
+
+
+def contract_names(shape: str) -> tuple[str, ...]:
+    """The preregistered contracts of a record shape (record_shape)."""
+    return SHAPE_CONTRACTS[shape]
+
+
+def contract_alpha(shape: str) -> float:
+    """Bonferroni level of each contract: FAMILY_ALPHA over the shape's contracts."""
+    return FAMILY_ALPHA / len(contract_names(shape))
 
 
 def normalized_coupling(coupling: dict[Any, dict[Any, Any]]) -> dict[int, dict[int, int]]:
@@ -2238,19 +2652,20 @@ def coupling_json(coupling: dict[Any, dict[Any, Any]]) -> dict[str, dict[str, in
     }
 
 
-def admissibility(roles: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def admissibility(roles: dict[str, dict[str, Any]], variants: tuple[str, ...] = ORBIT_VARIANTS) -> dict[str, Any]:
     """Whether every family member carries one resolved, non-empty coupling, and which members break it.
 
     The contracts compare pairs through one map from window qubits to the
-    work bit for 1, so every member of the four pairs must be present, free
+    work bit for 1, so every member of the ORBIT_VARIANTS pairs must be present, free
     of unresolved probes, and coupled exactly as the nominal feedback member.
     A no-feedback law is even in the work phase (window_roles), so a
     no-feedback member's signs are fixed only up to one global sign, which
     window_roles sets positive on its anchor qubit; such a member matches
     when its coupling or its global negation equals the reference, and
     orientation records the sign that maps it onto the reference.
+    variants names the pairs a configuration requires (split_admissibility).
     """
-    expected = [f"{orbit_pair(variant)}_{arm}" for variant in ORBIT_VARIANTS for arm in ARMS]
+    expected = [f"{orbit_pair(variant)}_{arm}" for variant in variants for arm in ARMS]
     missing = [name for name in expected if name not in roles]
     reference = normalized_coupling(roles[REFERENCE_MEMBER]["coupling"]) if REFERENCE_MEMBER in roles else {}
     orientation: dict[str, int] = {}
@@ -2276,7 +2691,28 @@ def admissibility(roles: dict[str, dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def not_admissible(admitted: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def split_admissibility(roles: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Admissibility of an overlap split: the bracketed pairs as admissibility reads them, the unbracketed pair present.
+
+    The unbracketed arms may play a work-qubit gate in the control's window,
+    so their coupling can differ from the bracketed one; window_overlap_loss
+    compares contrast magnitudes, which remove the work phase, so their
+    coupling and probes gate nothing and exempt lists them.
+    """
+    bracketed = {name: role for name, role in roles.items() if UNBRACKETED_MARK not in name}
+    admitted = admissibility(bracketed, OVERLAP_BRACKETED)
+    absent = [
+        f"{orbit_pair(OVERLAP_UNBRACKETED)}_{arm}"
+        for arm in ARMS
+        if f"{orbit_pair(OVERLAP_UNBRACKETED)}_{arm}" not in roles
+    ]
+    admitted["missing"] = [*admitted["missing"], *absent]
+    admitted["admissible"] = admitted["admissible"] and not absent
+    admitted["exempt"] = sorted(set(roles) - set(bracketed))
+    return admitted
+
+
+def not_admissible(admitted: dict[str, Any], names: tuple[str, ...] = CONTRACTS) -> dict[str, dict[str, Any]]:
     return {
         name: {
             "status": "not_admissible",
@@ -2284,7 +2720,7 @@ def not_admissible(admitted: dict[str, Any]) -> dict[str, dict[str, Any]]:
             "unresolved": admitted["unresolved"],
             "missing": admitted["missing"],
         }
-        for name in CONTRACTS
+        for name in names
     }
 
 
@@ -2351,6 +2787,7 @@ def contrast_floor(
     reference: dict[str, np.ndarray],
     factors: tuple[float, float],
     alpha: float,
+    margin: float = 0.0,
 ) -> dict[str, Any]:
     """One-sided test that a pair's contrast magnitude reaches the reference pair's, each arm scaled by its factor.
 
@@ -2364,6 +2801,11 @@ def contrast_floor(
     the bound sampling noise fails it with probability alpha. The signed
     contrast difference of each pair is reported and decides nothing, since
     a work phase moves it.
+
+    margin is subtracted from the statistic before the decision: a heralded
+    run's initial-excitation spread can move m_test - bound by up to the
+    herald's contract_shift_upper_limit (herald_admission), so a pass then
+    holds for every spread the herald's simultaneous upper limits allow.
     """
     feedback_factor, control_factor = factors
     tested, tested_variance = contrast_magnitude(test)
@@ -2374,7 +2816,7 @@ def contrast_floor(
         bound_variance = feedback_factor**2 * x_variance + control_factor**2 * y_variance
     else:
         bound_variance = (feedback_factor**4 * x**2 * x_variance + control_factor**4 * y**2 * y_variance) / bound**2
-    statistic = tested - bound
+    statistic = tested - bound - margin
     error = math.sqrt(tested_variance + bound_variance)
     quantile = float(norm.ppf(1 - alpha))
     upper = statistic + quantile * error
@@ -2391,7 +2833,223 @@ def contrast_floor(
         "standard_error": error,
         "one_sided_quantile": quantile,
         "upper_confidence_limit": upper,
+    } | ({"herald_margin": margin} if margin else {})
+
+
+def magnitude_decline(
+    test: dict[str, np.ndarray], reference: dict[str, np.ndarray], alpha: float, margin: float = 0.0
+) -> dict[str, Any]:
+    """One-sided test that a pair's contrast magnitude lies below the reference pair's.
+
+    m_test - m_ref is normal to first order in the multinomial counts of the
+    four independent PUBs, with variance var m_test + var m_ref
+    (contrast_magnitude). The contract passes only when the upper (1 - alpha)
+    confidence limit plus margin lies below zero, so a pair whose magnitude
+    equals the reference's passes with probability at most alpha. margin, a
+    heralded run's contract_shift_upper_limit, is added against the pass: a
+    member spread of the initial excitation that the herald leaves possible
+    cannot produce it.
+    """
+    tested, tested_variance = contrast_magnitude(test)
+    bound, bound_variance = contrast_magnitude(reference)
+    statistic = tested - bound
+    error = math.sqrt(tested_variance + bound_variance)
+    quantile = float(norm.ppf(1 - alpha))
+    upper = statistic + quantile * error
+    return {
+        "status": "pass" if upper + margin < 0 else "fail",
+        "contrast_magnitude": tested,
+        "reference_contrast_magnitude": bound,
+        "statistic": statistic,
+        "standard_error": error,
+        "one_sided_quantile": quantile,
+        "upper_confidence_limit": upper,
+    } | ({"herald_margin": margin} if margin else {})
+
+
+def spectator_visibility(counts: dict[str, np.ndarray]) -> tuple[float, float, float, float]:
+    """<X>, <Y>, R = hypot(<X>, <Y>) of qubit 2 and var R from one spectator kind's x and y counts.
+
+    Each count vector runs over control + 2 * qubit-2 bit, so <Q> = P(bit 0)
+    - P(bit 1) with multinomial variance (1 - <Q>^2) / n. The delta method
+    gives var R = (X^2 var X + Y^2 var Y) / R^2; at R = 0, var X + var Y.
+    """
+    values = []
+    for quadrature in SPECTATOR_QUADRATURES:
+        vector = counts[quadrature]
+        shots = float(vector.sum())
+        expectation = float(vector[0] + vector[1] - vector[2] - vector[3]) / shots
+        values.append((expectation, (1.0 - expectation**2) / shots))
+    (x, x_variance), (y, y_variance) = values
+    visibility = math.hypot(x, y)
+    if visibility == 0.0:
+        return x, y, visibility, x_variance + y_variance
+    return x, y, visibility, (x**2 * x_variance + y**2 * y_variance) / visibility**2
+
+
+def spectator_branch_phase(counts: dict[str, np.ndarray]) -> dict[str, Any]:
+    """Qubit 2's phase turn between the measured control's recorded branches, with its normal-approximation SE.
+
+    Each recorded control bit b selects the shots whose qubit-2 X and Y
+    reads give (<X>_b, <Y>_b) and phase phi_b = atan2(<Y>_b, <X>_b); the
+    turn phi_1 - phi_0, wrapped to (-pi, pi], estimates a ZZ coupling between
+    the control and qubit 2 integrated over the window. The delta method
+    gives var phi_b = (Y^2 var X + X^2 var Y) / R^4. The turn is descriptive
+    and decides no contract.
+    """
+    phases = []
+    for branch in (0, 1):
+        values = []
+        for quadrature in SPECTATOR_QUADRATURES:
+            zero, one = float(counts[quadrature][branch]), float(counts[quadrature][branch + 2])
+            shots = zero + one
+            if shots == 0:
+                return {"status": "not_evaluable", "reason": f"no shots record control bit {branch}"}
+            expectation = (zero - one) / shots
+            values.append((expectation, (1.0 - expectation**2) / shots))
+        (x, x_variance), (y, y_variance) = values
+        radius = x * x + y * y
+        if radius == 0.0:
+            return {"status": "not_evaluable", "reason": f"branch {branch} reads zero visibility"}
+        phases.append((math.atan2(y, x), (y * y * x_variance + x * x * y_variance) / radius**2))
+    turn = math.remainder(phases[1][0] - phases[0][0], math.tau)
+    return {
+        "status": "descriptive",
+        "branch_phase_rad": [phases[0][0], phases[1][0]],
+        "turn_rad": turn,
+        "standard_error_rad": math.sqrt(phases[0][1] + phases[1][1]),
     }
+
+
+def spectator_contract(
+    spectators: dict[str, dict[str, np.ndarray]] | None, alpha: float, margin: float = 0.0
+) -> dict[str, Any]:
+    """One-sided test that qubit 2's visibility across the measured control lies below the reset_only reference.
+
+    R_measured - R_reset_only is normal to first order in the four PUBs'
+    multinomial counts (spectator_visibility); the contract passes when the
+    upper (1 - alpha) confidence limit plus margin lies below zero. A static
+    detuning of qubit 2 rotates (<X>, <Y>) and leaves R unchanged, so a pass
+    names a coherence loss of qubit 2 that the control's measurement adds.
+    margin is the R shift the spectator herald leaves possible
+    (spectator_margin). A run without the four spectator members reads
+    not_evaluable.
+    """
+    if spectators is None or set(spectators) != set(SPECTATOR_KINDS):
+        return {"status": "not_evaluable", "reason": "the record holds no spectator Ramsey members"}
+    read = {kind: spectator_visibility(spectators[kind]) for kind in SPECTATOR_KINDS}
+    statistic = read["measured"][2] - read["reset_only"][2]
+    error = math.sqrt(read["measured"][3] + read["reset_only"][3])
+    quantile = float(norm.ppf(1 - alpha))
+    upper = statistic + quantile * error
+    return {
+        "status": "pass" if upper + margin < 0 else "fail",
+        **{
+            f"{kind}_{label}": read[kind][index]
+            for kind in SPECTATOR_KINDS
+            for index, label in enumerate(("x_expectation", "y_expectation", "visibility"))
+        },
+        "statistic": statistic,
+        "standard_error": error,
+        "one_sided_quantile": quantile,
+        "upper_confidence_limit": upper,
+    } | ({"herald_margin": margin} if margin else {})
+
+
+def spectator_decline(
+    spectators: dict[str, dict[str, np.ndarray]] | None, test: str, reference: str, alpha: float, margin: float = 0.0
+) -> dict[str, Any]:
+    """One-sided test that qubit 2's visibility in spectator kind test lies below kind reference's.
+
+    R_test - R_reference is normal to first order in the four PUBs'
+    multinomial counts (spectator_visibility); the contract passes when the
+    upper (1 - alpha) confidence limit plus margin (spectator_margin) lies
+    below zero. A static detuning rotates (<X>, <Y>) and leaves R unchanged,
+    so a pass names a coherence loss that the test kind adds. A run without
+    both kinds reads not_evaluable.
+    """
+    if spectators is None or not {test, reference} <= set(spectators):
+        return {"status": "not_evaluable", "reason": f"the record holds no {test} and {reference} spectator members"}
+    read = {kind: spectator_visibility(spectators[kind]) for kind in (test, reference)}
+    statistic = read[test][2] - read[reference][2]
+    error = math.sqrt(read[test][3] + read[reference][3])
+    quantile = float(norm.ppf(1 - alpha))
+    upper = statistic + quantile * error
+    return {
+        "status": "pass" if upper + margin < 0 else "fail",
+        **{
+            f"{kind}_{label}": read[kind][index]
+            for kind in (test, reference)
+            for index, label in enumerate(("x_expectation", "y_expectation", "visibility"))
+        },
+        "statistic": statistic,
+        "standard_error": error,
+        "one_sided_quantile": quantile,
+        "upper_confidence_limit": upper,
+    } | ({"herald_margin": margin} if margin else {})
+
+
+def immediate_visibility(spectators: dict[str, dict[str, np.ndarray]] | None) -> dict[str, Any]:
+    """Qubit 2's visibility read at once after its preparation, against the ideal 1; descriptive, deciding nothing.
+
+    It bounds the preparation, readout and herald-ringdown floor that every
+    other spectator kind carries.
+    """
+    if spectators is None or "immediate" not in spectators:
+        return {"status": "not_evaluable", "reason": "the record holds no immediate spectator members"}
+    x, y, visibility, variance = spectator_visibility(spectators["immediate"])
+    return {
+        "status": "descriptive",
+        "x_expectation": x,
+        "y_expectation": y,
+        "visibility": visibility,
+        "standard_error": math.sqrt(variance),
+        "ideal_visibility": 1.0,
+    }
+
+
+def spectator_counts(run: Path) -> dict[str, dict[str, np.ndarray]] | None:
+    """Per spectator kind and quadrature, counts over control + 2 * qubit-2 bit; None without spectator members.
+
+    The kinds present must be the window sweep's (SPECTATOR_KINDS) or the
+    overlap split's (SPLIT_SPECTATOR_KINDS), each in both quadratures.
+    """
+    members = [member["name"] for member in _group(run)["members"]]
+    if not set(ALL_SPECTATOR_MEMBERS) & set(members):
+        return None
+    found: dict[str, dict[str, np.ndarray]] = {}
+    for name, payload in zip(members, raw_pubs(run), strict=True):
+        if name not in ALL_SPECTATOR_MEMBERS:
+            continue
+        kind, quadrature = name.removeprefix("n21_spectator_").rsplit("_", 1)
+        tally = Counter(int(value[1]) + 2 * int(value[0]) for value in payload["registers"][REGISTER]["bitstrings"])
+        found.setdefault(kind, {})[quadrature] = np.array([tally[label] for label in range(4)], dtype=float)
+    kinds = SPLIT_SPECTATOR_KINDS if {"immediate", "idle"} & set(found) else SPECTATOR_KINDS
+    if set(found) != set(kinds) or any(set(found[kind]) != set(SPECTATOR_QUADRATURES) for kind in kinds):
+        raise RuntimeError(
+            f"the record holds spectator members {sorted(found)}, not all of "
+            f"{SPLIT_SPECTATOR_MEMBERS if kinds == SPLIT_SPECTATOR_KINDS else SPECTATOR_MEMBERS}"
+        )
+    return found
+
+
+def spectator_margin(herald: dict[str, Any]) -> float:
+    """The R shift an admitted spectator herald leaves possible; zero without one, whose contract is refused.
+
+    The spectator admission tests the spread against herald_bound, the
+    orbit's threshold; the margin, not that threshold, carries the spectator
+    contract's protection.
+
+    An initial excitation of qubit 2 maps |+> to |->, so an excited fraction
+    eps scales (<X>, <Y>) by 1 - 2 eps; a member spread at most Delta moves
+    each kind's R by at most 2 Delta, and the difference of the two kinds by
+    at most 2 Delta with Delta the simultaneous upper limit of the qubit-2
+    herald bit over the spectator members (herald_admission). Excitations of
+    the other qubits leave qubit 2's state alone.
+    """
+    if not herald["present"] or not herald["admissible"]:
+        return 0.0
+    return 2.0 * float(herald["bits"][str(SPECTATOR_HERALD_BIT)]["excitation_spread_upper_limit"])
 
 
 class PhaseFit:
@@ -2652,6 +3310,7 @@ def readout_contract(
     t2_us: dict[str, dict[int, float]],
     alpha: float,
     nominal_t2_us: dict[str, dict[int, float]] | None = None,
+    margin: float = 0.0,
 ) -> dict[str, Any]:
     """extra_readout's contrast magnitude stays above the nominal one dephased over each arm's added idle time.
 
@@ -2694,7 +3353,7 @@ def readout_contract(
         math.exp(-sum(added[arm][qubit] * dt / (t2_us[arm][qubit] * 1e-6) for qubit in qubits)) for arm in ARMS
     )
     result = contrast_floor(
-        pairs[orbit_pair("extra_readout")], pairs[orbit_pair("nominal")], (factors[0], factors[1]), alpha
+        pairs[orbit_pair("extra_readout")], pairs[orbit_pair("nominal")], (factors[0], factors[1]), alpha, margin
     )
     return result | {
         "added_idle_dt": {arm: {str(qubit): added[arm][qubit] for qubit in qubits} for arm in ARMS},
@@ -2712,30 +3371,97 @@ def contract_results(
     profiles: SlopeProfiles | None = None,
     render_set: bool = False,
     nominal_t2_us: dict[str, dict[int, float]] | None = None,
+    herald_margin: float = 0.0,
+    spectators: dict[str, dict[str, np.ndarray]] | None = None,
+    spectator_herald_margin: float = 0.0,
+    shape: str = "sweep",
 ) -> dict[str, dict[str, Any]]:
-    """Every between-arm contract's status and deciding numbers, each at CONTRACT_ALPHA.
+    """Every between-arm contract of a plain or sweep record (record_shape), each at contract_alpha(shape).
+
+    A plain record reads the first three contracts over PLAIN_VARIANTS; a
+    sweep record reads all five over ORBIT_VARIANTS.
 
     The contracts are preregistered, their statistics, levels and decision
     rules independent of any run's counts:
     window_delay_phase_slope (phase_slope_contract), extra_readout_contrast
     (readout_contract), and window_echo_restoration, which passes when the
     upper confidence limit of the window_echo contrast magnitude minus the
-    nominal one reaches zero (contrast_floor at factors 1). A family that
-    fails admissibility reports every contract not_admissible.
+    nominal one reaches zero (contrast_floor at factors 1),
+    window_delay_ramp, which passes when the window_delay_long magnitude lies
+    below the window_delay one (magnitude_decline: a coherence loss that
+    grows with the added idle; a one-time loss at the first added idle
+    fails it), and spectator_window_dephasing (spectator_contract). A family
+    that fails admissibility reports every contract not_admissible.
+    herald_margin (a heralded run's contract_shift_upper_limit) counts
+    against every magnitude contract's pass: subtracted from the floors'
+    statistics and added to the ramp's upper limit; spectator_herald_margin
+    counts against the spectator contract's pass.
     """
-    admitted = admissibility(roles)
+    names = contract_names(shape)
+    admitted = admissibility(roles, SHAPE_VARIANTS[shape])
     if not admitted["admissible"]:
-        return not_admissible(admitted)
+        return not_admissible(admitted, names)
     if profiles is None:
         profiles = SlopeProfiles(pairs, readouts, phase_fits(pairs, readouts))
-    return {
+    alpha = contract_alpha(shape)
+    results = {
         "window_delay_phase_slope": phase_slope_contract(
-            profiles, roles, admitted["orientation"], dt, CONTRACT_ALPHA, render_set
+            profiles, roles, admitted["orientation"], dt, alpha, render_set
         ),
-        "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, CONTRACT_ALPHA, nominal_t2_us),
+        "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, alpha, nominal_t2_us, herald_margin),
         "window_echo_restoration": contrast_floor(
-            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), CONTRACT_ALPHA
+            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), alpha, herald_margin
         ),
+    }
+    if shape == "sweep":
+        results["window_delay_ramp"] = magnitude_decline(
+            pairs[orbit_pair("window_delay_long")], pairs[orbit_pair("window_delay")], alpha, herald_margin
+        )
+        results["spectator_window_dephasing"] = spectator_contract(spectators, alpha, spectator_herald_margin)
+    return results
+
+
+def overlap_contract_results(
+    roles: dict[str, dict[str, Any]],
+    pairs: dict[str, dict[str, np.ndarray]],
+    spectators: dict[str, dict[str, np.ndarray]] | None,
+    herald_margin: float = 0.0,
+    spectator_herald_margin: float = 0.0,
+) -> dict[str, dict[str, Any]]:
+    """Every overlap-split contract's status and deciding numbers, each at contract_alpha("split").
+
+    window_delay_pinned_loss passes when the bracketed window_delay pair's
+    contrast magnitude lies below the bracketed nominal pair's
+    (magnitude_decline): the added idle costs contrast on the pinned roles.
+    window_overlap_loss passes when the window_delay_unbracketed magnitude
+    lies below the bracketed window_delay one: work-qubit operations that
+    overlap the control's measure-plus-reset span cost contrast on this
+    calibration; the unbracketed arm can hold one CZ fewer, which biases
+    against a pass. spectator_readout_dephasing passes when qubit 2's
+    reset_only visibility lies below its idle one: the reset's readout of
+    the control dephases qubit 2. spectator_idle_dephasing passes when the
+    idle visibility lies below the immediate one: a loss across an idle with
+    the unrecorded control in |+>, T2* together with an unrecorded ZZ to the
+    control, not T2 alone. herald_margin counts against the magnitude
+    contracts' passes and spectator_herald_margin against the spectator
+    contracts'. A split that fails split_admissibility reports every
+    contract not_admissible.
+    """
+    admitted = split_admissibility(roles)
+    if not admitted["admissible"]:
+        return not_admissible(admitted, OVERLAP_CONTRACTS)
+    alpha = contract_alpha("split")
+    return {
+        "window_delay_pinned_loss": magnitude_decline(
+            pairs[orbit_pair("window_delay")], pairs[orbit_pair("nominal")], alpha, herald_margin
+        ),
+        "window_overlap_loss": magnitude_decline(
+            pairs[orbit_pair(OVERLAP_UNBRACKETED)], pairs[orbit_pair("window_delay")], alpha, herald_margin
+        ),
+        "spectator_readout_dephasing": spectator_decline(
+            spectators, "reset_only", "idle", alpha, spectator_herald_margin
+        ),
+        "spectator_idle_dephasing": spectator_decline(spectators, "idle", "immediate", alpha, spectator_herald_margin),
     }
 
 
@@ -2777,7 +3503,7 @@ HERALD_ALPHA = 0.05
 HERALD_DESIGN_SHOTS = 27648
 
 
-def magnitude_mde(shots: int) -> float:
+def magnitude_mde(shots: int, alpha: float = CONTRACT_ALPHA) -> float:
     """Minimum detectable deficit of a magnitude contract at CONTRACT_ALPHA and MAGNITUDE_POWER.
 
     Each arm's labeled law puts 1/2 on outcomes 1 and 3 (the first bit is
@@ -2785,13 +3511,13 @@ def magnitude_mde(shots: int) -> float:
     score is at most 1 / (2 n), and the delta method gives var m <= 1 / (2 n)
     per pair. With factors at most 1, m_test - bound has variance at most
     1 / n, so the deficit the one-sided test at CONTRACT_ALPHA detects with
-    power MAGNITUDE_POWER is (z_(1 - alpha) + z_power) / sqrt(n): 0.01786 at
+    power MAGNITUDE_POWER is (z_(1 - alpha) + z_power) / sqrt(n): 0.01905 at
     HERALD_DESIGN_SHOTS.
     """
-    return float(norm.ppf(1 - CONTRACT_ALPHA) + norm.ppf(MAGNITUDE_POWER)) / math.sqrt(shots)
+    return float(norm.ppf(1 - alpha) + norm.ppf(MAGNITUDE_POWER)) / math.sqrt(shots)
 
 
-def herald_bound(shots: int) -> float:
+def herald_bound(shots: int, alpha: float = CONTRACT_ALPHA) -> float:
     """Largest member spread B of the initial excitation on every herald bit that the admission accepts.
 
     A member-dependent excitation with spread Delta_k on herald bit k moves
@@ -2801,18 +3527,21 @@ def herald_bound(shots: int) -> float:
     A magnitude contract's statistic m_test - bound then moves by at most
     (m_test + bound) sum_k c_k Delta_k <= 2 CONTRAST_CEILING sum_k c_k B =
     3.5 B with every Delta_k <= B. Holding that at HERALD_MDE_FRACTION of
-    magnitude_mde gives B = 0.25 x 0.01786 / 3.5 = 0.001276 at
+    magnitude_mde gives B = 0.25 x 0.01905 / 3.5 = 0.001361 at
     HERALD_DESIGN_SHOTS. The same spread moves a pair's work phase by at
-    most sum_k c_k B = 7 B radians, 0.0089 rad there. A common excitation of
+    most sum_k c_k B = 7 B radians, 0.0095 rad there. A common excitation of
     the control or work 1 scales both arms alike and leaves every contract's
     sign; a common excitation of work 4 or 16 enters each pair through its
     own phase, which the herald cannot separate from readout P(1|0).
     """
-    return HERALD_MDE_FRACTION * magnitude_mde(shots) / (2 * CONTRAST_CEILING * sum(HERALD_SENSITIVITY))
+    return HERALD_MDE_FRACTION * magnitude_mde(shots, alpha) / (2 * CONTRAST_CEILING * sum(HERALD_SENSITIVITY))
 
 
-def herald_counts(run: Path) -> dict[int, dict[str, Any]] | None:
-    """Per herald bit, its physical qubit and each member's (excited shots, shots); None for an unheralded run.
+def herald_counts(run: Path, select: Callable[[str], bool] = is_orbit) -> dict[int, dict[str, Any]] | None:
+    """Per herald bit, its physical qubit and each selected member's (excited shots, shots); None unheralded.
+
+    select picks the members by name: the orbit members, whose laws
+    HERALD_SENSITIVITY bounds, by default.
 
     Each herald clbit's physical qubit is the wire of the archived ISA's
     measurement into it; every member must read bit k on the same qubit.
@@ -2824,6 +3553,8 @@ def herald_counts(run: Path) -> dict[int, dict[str, Any]] | None:
     found: dict[int, dict[str, Any]] = {}
     heralded = []
     for name, circuit, payload in zip(members, _circuits(run), raw_pubs(run), strict=True):
+        if not select(name):
+            continue
         registers = [register for register in circuit.cregs if register_role(register.name) == HERALD_REGISTER]
         heralded.append(bool(registers))
         if not registers:
@@ -2915,8 +3646,16 @@ def herald_admission(
     }
 
 
-def herald_report(run: Path, calibrations: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def herald_report(
+    run: Path,
+    calibrations: dict[str, dict[str, Any]],
+    select: Callable[[str], bool] = is_orbit,
+    alpha: float = CONTRACT_ALPHA,
+) -> dict[str, Any]:
     """herald_admission of RUN at herald_bound of its smallest member shot count, or {"present": False}.
+
+    alpha is the per-contract level of the record's shape (contract_alpha),
+    so the bound follows the contracts it protects.
 
     herald_admission removes prob_meas1_prep0 as common to the members, so
     every member reads each herald qubit through one assignment channel
@@ -2928,8 +3667,8 @@ def herald_report(run: Path, calibrations: dict[str, dict[str, Any]]) -> dict[st
     or unretained channels leaves the herald not evaluable, which no
     contract reads past; the report names each member's calibration source.
     """
-    counts = herald_counts(run)
-    if counts is None:
+    counts = herald_counts(run, select)
+    if not counts:
         return {"present": False}
     shots = min(n for entry in counts.values() for _excited, n in entry["members"].values())
     contrasts = {}
@@ -2955,19 +3694,21 @@ def herald_report(run: Path, calibrations: dict[str, dict[str, Any]]) -> dict[st
             "differing_channels": differing,
             "shots": shots,
         }
-    return herald_admission(counts, contrasts, herald_bound(shots)) | {"evaluable": True, "shots": shots}
+    return herald_admission(counts, contrasts, herald_bound(shots, alpha)) | {"evaluable": True, "shots": shots}
 
 
-def contract_gate(admitted: dict[str, Any], herald: dict[str, Any]) -> dict[str, dict[str, Any]] | None:
+def contract_gate(
+    admitted: dict[str, Any], herald: dict[str, Any], names: tuple[str, ...] = CONTRACTS
+) -> dict[str, dict[str, Any]] | None:
     """Every contract not_admissible behind a refused window or herald, else None for contracts to be read."""
     if not admitted["admissible"]:
-        return not_admissible(admitted)
+        return not_admissible(admitted, names)
     if herald["present"] and not herald["admissible"]:
-        return herald_refusal(herald)
+        return herald_refusal(herald, names)
     return None
 
 
-def herald_refusal(herald: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def herald_refusal(herald: dict[str, Any], names: tuple[str, ...] = CONTRACTS) -> dict[str, dict[str, Any]]:
     """Every contract not_admissible behind a heralded run that the herald does not admit."""
     if not herald["evaluable"]:
         reason = {"herald": "not_evaluable", "differing_channels": herald["differing_channels"]}
@@ -2976,7 +3717,12 @@ def herald_refusal(herald: dict[str, Any]) -> dict[str, dict[str, Any]]:
             "herald": "refused",
             "refused_bits": sorted(bit for bit, entry in herald["bits"].items() if entry["status"] == "fail"),
         }
-    return {name: {"status": "not_admissible"} | reason for name in CONTRACTS}
+    return {name: {"status": "not_admissible"} | reason for name in names}
+
+
+def herald_margin(herald: dict[str, Any]) -> float:
+    """The magnitude-contract margin of an admitted herald, its contract_shift_upper_limit; zero without a herald."""
+    return float(herald["contract_shift_upper_limit"]) if herald["present"] else 0.0
 
 
 def analyzer_sha256() -> str:
@@ -2996,7 +3742,11 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
     (herald_refusal).
     """
     roles = window_roles(run)
-    admitted = admissibility(roles)
+    shape = record_shape([member["name"] for member in _group(run)["members"]])
+    split = shape == "split"
+    names = contract_names(shape)
+    alpha = contract_alpha(shape)
+    admitted = split_admissibility(roles) if split else admissibility(roles, SHAPE_VARIANTS[shape])
     calibrations = execution_calibration(run)
     report: dict[str, Any] = {
         "schema_version": BETWEEN_ARM_SCHEMA,
@@ -3005,20 +3755,22 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
             name: {"source": entry["source"], "calibration": entry["calibration"]}
             for name, entry in calibrations.items()
         },
-        "herald": herald_report(run, calibrations),
+        "herald": herald_report(run, calibrations, alpha=alpha),
+        "spectator_herald": herald_report(run, calibrations, lambda name: name in ALL_SPECTATOR_MEMBERS, alpha),
         "alpha": {
             "family_alpha": FAMILY_ALPHA,
             "split": "Bonferroni",
-            "contracts": len(CONTRACTS),
-            "per_contract_alpha": CONTRACT_ALPHA,
+            "contracts": len(names),
+            "per_contract_alpha": alpha,
         },
         "admissibility": admitted,
     }
-    gated = contract_gate(admitted, report["herald"])
+    gated = contract_gate(admitted, report["herald"], names)
     if gated is not None:
         report["contracts"] = gated
         return report
     pairs = measured_pairs(run)
+    spectators = spectator_counts(run)
     sources = readout_sources(run, roles, readout)
     readouts = {name: _model_readout(entry) for name, entry in sources.items()}
     dt, source = dt_source(run)
@@ -3029,10 +3781,47 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
         "measured_counts": {
             pair: {arm: values.astype(int).tolist() for arm, values in arms.items()} for pair, arms in pairs.items()
         },
-        "contracts": contract_results(
-            roles, pairs, readouts, dt, arm_t2_us(run), render_set=True, nominal_t2_us=arm_t2_us(run, "nominal")
+        "contracts": (
+            overlap_contract_results(
+                roles,
+                pairs,
+                spectators,
+                herald_margin(report["herald"]),
+                spectator_margin(report["spectator_herald"]),
+            )
+            if split
+            else contract_results(
+                roles,
+                pairs,
+                readouts,
+                dt,
+                arm_t2_us(run),
+                render_set=True,
+                nominal_t2_us=arm_t2_us(run, "nominal"),
+                herald_margin=herald_margin(report["herald"]),
+                spectators=spectators,
+                spectator_herald_margin=spectator_margin(report["spectator_herald"]),
+                shape=shape,
+            )
         ),
     }
+    # A spectator herald that the admission refuses or cannot evaluate
+    # refuses the spectator contracts alone; the orbit contracts read the
+    # orbit herald.
+    if report["spectator_herald"]["present"] and not report["spectator_herald"]["admissible"]:
+        refused = herald_refusal(report["spectator_herald"], names)
+        for name in names:
+            if name.startswith("spectator_"):
+                report["contracts"][name] = refused[name]
+    if spectators is not None:
+        report["spectator_counts"] = {
+            kind: {quadrature: values.astype(int).tolist() for quadrature, values in reads.items()}
+            for kind, reads in spectators.items()
+        }
+        if split:
+            report["spectator_immediate_visibility"] = immediate_visibility(spectators)
+        else:
+            report["spectator_branch_phase"] = spectator_branch_phase(spectators["measured"])
     return report
 
 
@@ -3319,11 +4108,11 @@ def _check_herald_twin_roles() -> dict[str, Any]:
             seen.update(kwargs, t2_us=args[4])
             return {}
 
-        with mock.patch.object(module, "admissibility", lambda _roles: passed):
+        with mock.patch.object(module, "admissibility", lambda _roles, _variants=ORBIT_VARIANTS: passed):
             behind = between_arm_report(planted_run, None)["contracts"]
             with mock.patch.object(module, "contract_results", spy):
                 between_arm_report(lone, None)
-        if behind != herald_refusal(refused["herald"]):
+        if behind != herald_refusal(refused["herald"], contract_names("plain")):
             raise RuntimeError(f"between_arm_report reads {behind} behind a refused herald")
         if seen.get("t2_us") != arm_t2_us(lone) or seen.get("nominal_t2_us") != arm_t2_us(lone, "nominal"):
             raise RuntimeError(f"between_arm_report hands contract_results T2 {seen}")
@@ -3359,9 +4148,31 @@ def _check_herald_operating_characteristic() -> dict[str, float]:
     return rates
 
 
+def _check_herald_margin() -> float:
+    """A magnitude contract that passes at margin zero fails once the herald margin exceeds its upper limit."""
+    arms = {
+        "feedback": np.array([1200.0, 2600.0, 1400.0, 1000.0]),
+        "no_feedback": np.array([1000.0, 1400.0, 2600.0, 1200.0]),
+    }
+    plain = contrast_floor(arms, arms, (1.0, 1.0), CONTRACT_ALPHA)
+    if plain["status"] != "pass" or "herald_margin" in plain:
+        raise RuntimeError(f"an equal pair failed its own floor or carried a margin: {plain}")
+    margin = plain["upper_confidence_limit"] * 1.01
+    held = contrast_floor(arms, arms, (1.0, 1.0), CONTRACT_ALPHA, margin)
+    if held["status"] != "fail" or held["herald_margin"] != margin:
+        raise RuntimeError(f"a herald margin above the upper limit left the contract passing: {held}")
+    if (
+        herald_margin({"present": False}) != 0.0
+        or herald_margin({"present": True, "contract_shift_upper_limit": margin}) != margin
+    ):
+        raise RuntimeError("herald_margin does not read the admitted herald's contract shift")
+    return margin
+
+
 def self_test_herald() -> None:
-    """The herald's sensitivity coefficients, twin roles, run-directory report and operating characteristic."""
+    """The herald's sensitivity coefficients, twin roles, run-directory report, margin and operating characteristic."""
     _check_herald_sensitivity()
+    margin = _check_herald_margin()
     twin = _check_herald_twin_roles()
     rates = _check_herald_operating_characteristic()
     bound = herald_bound(HERALD_DESIGN_SHOTS)
@@ -3371,7 +4182,7 @@ def self_test_herald() -> None:
         f"reads the twin's admissibility, execution-start calibration sources and the analyzer digest, refuses "
         f"a {twin['planted_excess']:.3f} control excess at {twin['shots']} shots, and the mechanism fit refuses "
         f"it; at {HERALD_DESIGN_SHOTS} shots MDE {magnitude_mde(HERALD_DESIGN_SHOTS):.5f}, B {bound:.6f}, "
-        f"refusal rates {rates}"
+        f"refusal rates {rates}; a {margin:.5f} herald margin turns a passing magnitude contract into a failure"
     )
 
 

@@ -885,13 +885,18 @@ def cross_check_n21() -> None:
         exact = n21_labeled_law(not name.endswith("no_feedback"))
         # A heralded member measures every qubit first, so its ideal law is
         # the phase law lifted onto the herald bits, each reading 0.
-        ideal = lift_phase_law([float(value) for value in exact], member.circuit.num_clbits)
+        clbits = member.circuit.num_clbits
+        ideal = lift_phase_law([float(value) for value in exact], clbits)
         require(
             np.allclose(law, ideal, atol=1e-11, rtol=0),
-            f"{name}: enumerated law {law} differs from n21_labeled_law {exact}",
+            f"{name}: enumerated law {law} differs from n21_labeled_law {exact} lifted onto {clbits} clbits {ideal}",
         )
         require(kind == "correlated", f"{name}: classified {kind}")
-    print(f"local-member conformance: {len(ordered)} correlated N=21 members enumerate to n21_labeled_law")
+    heralded = sum(member.circuit.num_clbits > 2 for _key, member in ordered)
+    print(
+        f"local-member conformance: {len(ordered)} correlated N=21 members ({heralded} heralded) enumerate to "
+        "n21_labeled_law"
+    )
 
 
 def main() -> int:
@@ -916,6 +921,22 @@ def main() -> int:
     if args.cross_check_n21:
         cross_check_n21()
         return 0
+    if args.write:
+        # The census gates run under the qiskit-2.5 replay runtime
+        # (ci/gates.json "runtime"), and a compiled member's digest follows
+        # the transpiler release, so the census is written under that runtime.
+        import qiskit
+
+        requirements = (ROOT / "ci/requirements-replay.txt").read_text(encoding="utf-8").splitlines()
+        pins = [line.split("==", 1)[1].strip() for line in requirements if line.startswith("qiskit==")]
+        require(
+            len(pins) == 1, f"ci/requirements-replay.txt pins qiskit {len(pins)} times; --write needs one qiskit== pin"
+        )
+        (pinned,) = pins
+        require(
+            qiskit.__version__ == pinned,
+            f"--write runs under the replay runtime's qiskit {pinned} (REPLAY_PYTHON), not {qiskit.__version__}",
+        )
     result = census()
     enforce(result["members"])
     text = json.dumps(result, indent=1) + "\n"

@@ -192,7 +192,10 @@ real foundations, deterministic interval premises and unproved coverage.
 The recovered wide-control acquisition uses
 `scripts/review_wide_control_job.py --check` and `--self-test`.
 `scripts/reconcile_qpu_inventory.py --check`
-binds the complete recorded service inventory to every raw job archive and
+binds the complete recorded service inventory to every raw job archive,
+each failed job's settled charge to the collection that records its
+unavailable result (runs submitted after the observation are listed as
+awaiting it, `docs/notes/ibm_quantum/account-access.md`), and
 the account's consumed seconds to the final charges of the jobs that ran
 inside its rolling usage period; its synthetic contract rejects
 missing/duplicate jobs, altered denominators, off-window chronology and raw
