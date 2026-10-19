@@ -259,6 +259,9 @@ def merge(base: Path | None, shards: list[Path]) -> tuple[dict[str, Any], list[s
 
 def self_test() -> None:
     """Every read kind flips SKIP to RUN after an edit; escapes, failures and key inputs never skip."""
+    from unittest import mock
+
+    import host_identity
     import run_gates
 
     python = sys.executable
@@ -375,6 +378,15 @@ def self_test() -> None:
             raise RuntimeError("an unchanged command after its pass ran again")
         if run(edited, {"GOROROBA_LEDGER_PROBE": "host"}) != {"plain": "PASS"}:
             raise RuntimeError("a changed host identity reused the stored key")
+        real_identity = host_identity.interpreter_identity
+
+        def upgraded(python: str) -> list[Any]:
+            path, (version, distributions) = real_identity(python)
+            return [path, [version, [*distributions, ["planted-distribution", "1.0"]]]]
+
+        with mock.patch.object(host_identity, "interpreter_identity", upgraded):
+            if run(edited, {"GOROROBA_LEDGER_PROBE": "host"}) != {"plain": "PASS"}:
+                raise RuntimeError("a changed interpreter distribution set reused the stored key")
         (root / "fails.py").write_text("raise SystemExit(0)\n")
         failing = [entry for entry in gates if entry["name"] == "failure"]
         run(failing)
