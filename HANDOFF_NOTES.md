@@ -346,11 +346,11 @@ the zero-delay jobs and on IBM's documented floor.
 
 ## Closing conditions for the consolidated branch
 
-The consolidated pull request does not close cleanly as it stands. It
-merges only when all of these hold:
+The consolidated pull request merges when all of these hold:
 - the service-inventory reconciliation and retained-run inventory gates
   pass, with jobs submitted after the observation declared awaiting it;
 - every open issue on the repository is resolved or closed with a recorded
-  reason;
+  reason, except #291 (the pytest behavioral suite), which lands as its own
+  pull request stacked on the consolidated branch;
 - the current-head Codex review is clean, every review thread is resolved
   and the mergeable state is clean.
