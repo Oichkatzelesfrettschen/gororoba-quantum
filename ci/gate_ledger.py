@@ -486,6 +486,18 @@ def self_test() -> None:
         with mock.patch.object(host_identity, "interpreter_identity", upgraded):
             if run(edited, {"GOROROBA_LEDGER_PROBE": "host"}) != {"plain": "PASS"}:
                 raise RuntimeError("a changed interpreter distribution set reused the stored key")
+        patches = Path(temporary) / "patches"
+        patches.mkdir()
+        (patches / "fix.patch").write_text("v1\n")
+        with mock.patch.object(host_identity, "PATCHES", patches):
+            run(edited)
+            if run(edited) != {"plain": "SKIP"}:
+                raise RuntimeError("an unchanged patch set reran a stored pass")
+            (patches / "fix.patch").write_text("v2\n")
+            if run(edited) != {"plain": "PASS"}:
+                raise RuntimeError("an edited ci/patches file reused the stored key")
+        if run(edited, {"IQM_TOKENS_FILE": "/nonexistent/tokens.json"}) != {"plain": "PASS"}:
+            raise RuntimeError("a newly set credential location reused the stored key")
         (root / "fails.py").write_text("raise SystemExit(0)\n")
         failing = [entry for entry in gates if entry["name"] == "failure"]
         run(failing)

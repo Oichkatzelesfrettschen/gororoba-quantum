@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import tempfile
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any
 
 # Gates read these to choose a device, toolchain, live or replay path, thread
@@ -41,7 +42,23 @@ KEY_PREFIXES = (
     "LD_",
     "CUDA_",
 )
-KEY_VARIABLES = ("GLIBC_TUNABLES", "PATH", "HOME", "VIRTUAL_ENV", "TMPDIR")
+KEY_VARIABLES = (
+    "GLIBC_TUNABLES",
+    "PATH",
+    "HOME",
+    "VIRTUAL_ENV",
+    "TMPDIR",
+    "KAGGLE_KERNEL_RUN_TYPE",
+    "LANG",
+    "LC_ALL",
+    "TZ",
+)
+# Credential locations: a gate takes its live or offline path on whether one is
+# set, so presence enters the identity while the value and file never do.
+PRESENCE_VARIABLES = ("IQM_TOKENS_FILE", "OPENQUANTUM_SDK_KEY", "ANU_QRNG_KEY_FILE", "QUANDELA_TOKEN_FILE")
+# ci/install_pins.sh applies these to installed distributions whose name and
+# version the interpreter identity already records.
+PATCHES = Path(__file__).resolve().parent / "patches"
 # The read tracer's own variables name a per-run scratch directory; a gate
 # observes nothing through them, so they stay out of the identity.
 TRACE_VARIABLES = ("GOROROBA_READ_TRACE", "GOROROBA_READ_TRACE_ROOT", "GOROROBA_READ_TRACE_PYTHONS")
@@ -92,8 +109,15 @@ def identity(environment: Mapping[str, str], python: str, replay: Mapping[str, s
         for name in KEY_INTERPRETERS
         if environment.get(name) and os.access(environment[name], os.X_OK)
     }
+    patches = {
+        path.relative_to(PATCHES).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted(PATCHES.rglob("*"))
+        if path.is_file()
+    }
     return {
         "python": interpreter_identity(python),
+        "patches": patches,
+        "present": {name: bool(environment.get(name)) for name in PRESENCE_VARIABLES},
         "replay": {variable: interpreter_identity(path) for variable, path in sorted(replay.items())},
         "environment": variables,
         "services": services,
