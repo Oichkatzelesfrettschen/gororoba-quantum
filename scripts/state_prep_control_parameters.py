@@ -567,6 +567,8 @@ def _failed_job(record: dict[str, Any], job: dict[str, Any], collected: dict[str
     code = ERROR_CODE.search(text) if isinstance(text, str) else None
     options = job.get("options") or {}
     raw_usage = usage.get("raw_usage_metadata") or {}
+    # A settled usage block (usage_status final) carries the canonical charge; until then only the raw metadata exists.
+    settled = usage.get("usage_status") == "final"
     return {
         "class": "exact",
         "job_id": str(job["job_id"]),
@@ -577,8 +579,10 @@ def _failed_job(record: dict[str, Any], job: dict[str, Any], collected: dict[str
         "submitted_pub_shots": usage.get("submitted_pub_shots"),
         "rep_delay_seconds": (options.get("execution") or {}).get("rep_delay"),
         "max_execution_time": options.get("max_execution_time"),
-        "billed_seconds": None,
-        "provisional_usage": {
+        "billed_seconds": usage.get("qpu_charge_time_seconds") if settled else None,
+        "provisional_usage": None
+        if settled
+        else {
             "scope": "collect.json's raw_usage_metadata at collection, provisional until the service finalizes it",
             "qpu_charge_time_seconds": raw_usage.get("qpu_charge_time_seconds"),
             "resource_units": raw_usage.get("value"),
@@ -1800,6 +1804,10 @@ def _self_test(scratch: Path) -> None:
     plan_submitted = {"job_id": "j", "backend": SYNTHETIC_BACKEND, "pubs": [{"name": "p"}]}
     chosen = _planner(plan_record, plan_submitted)
     require(chosen["candidate"] == "candidate-001" and chosen["candidate_is_selected"], "planner candidate")
+    # A failed job whose usage settled reports the canonical charge as billed_seconds.
+    settled_usage = {"job_status": "ERROR", "usage_status": "final", "qpu_charge_time_seconds": 3}
+    settled = _failed_job(plan_record, plan_submitted, {"usage": settled_usage})
+    require(settled["billed_seconds"] == 3 and settled["provisional_usage"] is None, f"settled failed job {settled}")
     for selected_name in ("candidate-009", None):
         broken_record = {**plan_record, "optimization": {**plan_record["optimization"], "selected": selected_name}}
         try:

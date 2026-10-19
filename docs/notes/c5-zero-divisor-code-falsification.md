@@ -16,13 +16,18 @@ null-attenuation measurements on 84 channels.
 
 $0 simulation, defined before running: the 84-pair annihilation code must
 beat a random 84-codeword spherical code in 16 dimensions with a matched-filter
-decoder, at the same rate, under additive Gaussian noise. Script:
-`~/workspace/c5-sim/sim_c5.py` (precomputed annihilator matrices, vectorized
-Monte Carlo). Scope of the test: 40 of the 84 messages simulated
-(40 messages x 400 trials x 8 noise levels); error metric is symbol error
-rate (fraction of trials where the decoded label differs from the sent
-label). The simulation script is retained at the local path above and is
-not committed to the repository; rerunning requires that workspace.
+decoder, at the same rate, under additive Gaussian noise. The simulation
+used precomputed annihilator matrices and vectorized Monte Carlo. Scope of
+the test: 40 of the 84 messages simulated (40 messages x 400 trials x 8
+noise levels); error metric is symbol error rate (fraction of trials where
+the decoded label differs from the sent label).
+
+Every number below is unreplayed: the simulation script, its annihilator
+matrices and its seeds are absent from the repository and from the build
+host, so the table and the tie and signature counts are reported values
+without a retained implementation. A committed replay with fixed seeds
+under `docs/evidence/c5_zero_divisor_code/` and a checksum ledger would
+admit them; until then the falsification stands as unverified (issue #314 carries the falsifier).
 
 ## Result: falsified, within the tested scope
 

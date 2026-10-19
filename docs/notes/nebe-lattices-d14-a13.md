@@ -26,6 +26,13 @@ tables were not needed.
 [P] The A13 entry records NAME A13, DIMENSION 13, DET 14, DIVISORS
 1 14 (x12), MINIMAL_NORM 13, KISSING_NUMBER 28, GROUP_NAME C2 x S14.
 
+[I] The MINIMAL_NORM and KISSING_NUMBER fields describe the dual A13*
+scaled by 14: A13* has minimal norm 13/14 and kissing number 28 (the
+vectors of the classes +/-1 modulo the root lattice). The root lattice A13
+itself has minimal norm 2 and kissing number 182 = 14 x 13, its roots
+e_i - e_j. The repository's assessor-lattice identification uses rank and
+determinant alone, which both readings share.
+
 [I] These are the standard lattice data against which the repository's
 computed identifications were checked: the integer span of the 84 both-sign
 assessor blades has rank 14 and Gram determinant 4 (D14); the integer span
