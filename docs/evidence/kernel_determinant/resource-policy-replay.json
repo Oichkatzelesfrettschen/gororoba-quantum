@@ -1,0 +1,13 @@
+{
+  "original_manifest_sha256": "afa99d083567ae5ed0f4c65e91b5dd26104af731e300d54bd272b0323fd48052",
+  "original_parallel_sha256": "f0d18ed619f99a1ea6f58a7c4d3b2be7450f82b9ac99831552281a5526b737d2",
+  "replays": [
+    "\"$PYTHON\" -B -W error docs/evidence/kernel_determinant/replay.py --check",
+    "\"$PYTHON\" -B -O -W error docs/evidence/kernel_determinant/replay.py --check"
+  ],
+  "resource_policy_commit": "5af15e2",
+  "resource_policy_source": "gororoba_quantum/parallel.py",
+  "resource_policy_source_sha256": "911394df2a4d60807bef3f9a0e2181f37049659d1dc3105657c616f50b7995bc",
+  "schema": "kernel-determinant-resource-policy-replay-v1",
+  "scope": "The original source ledger retains its bytes. New checksums bind the half-CPU worker policy after normal and optimized exact finite-result replay; the stored algebraic result and proof-obligation files reproduce unchanged. Runtime speedup and QPU evidence remain separate."
+}
