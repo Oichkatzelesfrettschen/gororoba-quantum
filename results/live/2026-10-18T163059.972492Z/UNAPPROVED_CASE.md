@@ -1,6 +1,6 @@
 # Unapproved QPU case: n21-orbit-rca
 
-Status: UNAPPROVED. The saved record describes a feasible submit-free dry run. Writing this case supplies zero authorization and submits zero QPU jobs.
+Status: RETIRED. The saved record describes a submit-free dry run that HANDOFF_NOTES.md retires; it is retained as evidence of the planner state that produced it. Writing this case supplies zero authorization and submits zero QPU jobs.
 
 The selected bounded-search candidate is `candidate-003-shots-7040` at 7040 shots per PUB. Global optimality remains outside the claim.
 
@@ -215,44 +215,9 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --out ../results/live
 ```
 
-## Approval-only submission template
+## Withdrawn submission
 
-Execute the following command only after the owner explicitly approves this concrete case and its ceilings. Keep the complete saved run at the repository-relative location above; copying temporary evidence preserves record.json and isa.qpy byte-for-byte. The runner compares fresh source, dependency, policy, calibration, layout, and QPY evidence with the approved record, consumes its approval once, and stops for renewed approval when the comparison changes. It plans only over the backends this record found eligible, so a backend whose queue or status changes after the dry run cannot enter the plan.
-
-```sh
-cd gororoba_quantum
-PYTHON="${PYTHON:-$(command -v python3)}"
-"$PYTHON" live_run.py \
-  --family n21-orbit-rca \
-  --shot-allocation uniform \
-  --objective minimum_charge \
-  --local-compute auto \
-  --local-compute-method density_matrix_dynamic_statevector \
-  --simulation-threads 12 \
-  --simulation-memory-mb 512 \
-  --optimize \
-  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
-  --shots 7040 \
-  --seeds 8 \
-  --max-pending 25 \
-  --min-remaining-seconds 60.0 \
-  --max-execution-seconds 22 \
-  --no-isolated-reference \
-  --cross-group-buffer \
-  --shot-tiers 7040 \
-  --replica-tiers 1,2,4 \
-  --optimizer-candidates 6 \
-  --model-shots 131072 \
-  --precision 0.08 \
-  --alpha 0.05 \
-  --power 0.8 \
-  --simulation-alpha 0.01 \
-  --job-overhead-seconds 2.3 \
-  --classical-latency-us 20.0 \
-  --reserve-seconds 0.0 \
-  --max-total-execution-seconds 22.0 \
-  --out ../results/live \
-  --approved-record ../results/live/2026-10-18T163059.972492Z \
-  --approved-record-sha256 d43ee2ec981d0bbe6276a6cf2a205ab1cfc6510cb231640688ed70e72f583171 \
-  --submit
-```
+The submit command is withdrawn. This dry run's cost carries the 20 us
+classical-latency allowance the planner no longer applies, and HANDOFF_NOTES.md
+retires it in favor of a fresh short-delay dry run, so this record names no
+approvable submission.
