@@ -13,18 +13,22 @@ GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.
 [ci/gates.json](ci/gates.json) lists each gate as one command with its
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool sized to the runner's CPUs and keeps going past failures, so a
-red shard lists every failing gate. Each gate records its measured seconds;
-shards are assigned longest-first by estimated occupied CPU-slot seconds.
+red shard lists every failing gate. Shards are assigned longest-first by
+occupied CPU-slot seconds: the measured wall seconds of
+[ci/gate_timings.json](ci/gate_timings.json) (`ci/merge_gate_timings.py`
+folds shard `--timings` records into it, gate core-599 holds it to the
+manifest) times each gate's allocated slots, and the manifest estimate for
+an unmeasured gate.
 The stable `--shard-cpus` profile defaults to the recorded four-CPU runner;
-actual gate concurrency follows each runner's detected allocation. Pull requests run the `pr` tier and affected
-`full` gates on six shards;
-pushes to main use the same selection on twelve shards. Nightly and manual
-runs execute every gate on twelve shards. The changed-path selection follows
+actual gate concurrency follows each runner's detected allocation. Every
+event runs twelve shards. Pull requests and pushes to main run the `pr` tier
+and affected `full` gates; nightly and manual runs execute every gate. The changed-path selection follows
 local Python imports and the dynamic data/source scopes in
 [ci/full_gate_inputs.json](ci/full_gate_inputs.json). Every full gate declares
 its non-imported inputs there, including source digests and JSON-selected
 raw evidence; a missing declaration fails selection. CI and dependency-pin
-changes select every gate, and an unavailable diff base runs the full suite.
+changes and an unavailable diff base select every gate, and the gate ledger
+(Gate cost below) then skips each selected gate whose key is unchanged.
 The import closure resolves against the files `git ls-files --cached --others
 --exclude-standard` lists (`gate_inputs.checkout_files`), the modules a CI
 clone of the same tree holds, so an ignored tree never widens it. Build trees,
@@ -234,11 +238,26 @@ it ran.
   passes reruns on the base through `ci/run_gates.py --gates`, so a failure
   under load never becomes a standing shared failure. `--no-cache` runs the
   base every time.
-- Skip a gate only on evidence that its inputs are unchanged. The import
-  closure `gate_inputs` follows covers modules, while whole-tree record
-  gates (core-368, core-270) reach their inputs through glob, directory
-  listing and git; a skip rule for pr-tier gates needs each gate's recorded
-  read set and a self-test that plants a missed input.
+- Skip a gate only on evidence that its inputs are unchanged.
+  `ci/run_gates.py --ledger-out` runs each gate with
+  `ci/read_trace/sitecustomize.py` on PYTHONPATH, whose audit hook records
+  the repository files every Python process of the gate opens (a `.pyc` as
+  its source), the directories it lists and the glob patterns it expands,
+  spawn-pool children included. After a pass, `ci/gate_ledger.py` stores the
+  gate's key: the manifest entry, allocated workers, tracer digest, host
+  identity (`ci/host_identity.py`: interpreters, distributions, PATH tools
+  and keyed variables, shared with the premerge cache) and the read set's
+  content. `--ledger` reports SKIP when the recomputed key matches, so a pin
+  change reruns every gate through the interpreter identity. A failure, or a
+  run the trace cannot cover, stores nothing and removes the earlier entry:
+  a shell command other than `"$PYTHON"` invocations joined by `&&`, an `-I`,
+  `-E` or `-S` interpreter, a write inside the repository outside
+  `__pycache__`, a non-Python child or a child environment that drops the
+  trace. CI saves the merged ledger from main only (job `ledger`), and the
+  nightly run executes every gate with `--ledger-audit`, failing on a gate
+  the ledger would have skipped that fails, the net for reads without an
+  audit event (os.stat, existence checks, C extensions opening files).
+  Gate core-598 plants every read kind and every escape.
 - Check with an explicit raise, never `assert`. `python -O` strips every
   assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
   check holds in every interpreter mode and each gate runs its command once.
