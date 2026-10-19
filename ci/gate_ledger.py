@@ -30,6 +30,7 @@ import glob
 import hashlib
 import json
 import os
+import re
 import shlex
 import stat
 import sys
@@ -47,6 +48,10 @@ MANIFEST_FIELDS = ("cmd", "cwd", "runtime", "workers", "requires", "parent", "ca
 # command holding one reads paths no traced process lists.
 SHELL_METACHARACTERS = ("|", ";", ">", "<", "`", "$", "\n", "&", "*", "?", "[", "~", "(", ")")
 PYTHON_WORD = "$PYTHON"
+# A leading NAME=value sets the child's environment only; the command string,
+# and so the assignment, is part of every gate key through MANIFEST_FIELDS.
+ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*=")
+ESCAPING_ASSIGNMENTS = frozenset(("PYTHON", "PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP"))
 THREADED_FILES = 400
 # Interpreter and lint caches appear in directory listings as gates run; their
 # contents are derived from the sources the read set already hashes.
@@ -96,6 +101,11 @@ def shell_untraceable(command: str) -> str | None:
             words = shlex.split(segment)
         except ValueError:
             return "shell command does not parse"
+        while words and ASSIGNMENT.match(words[0]):
+            name = words[0].partition("=")[0]
+            if name in ESCAPING_ASSIGNMENTS or name.startswith("GOROROBA_READ_TRACE"):
+                return f"{name}= replaces the interpreter or the tracer path"
+            words = words[1:]
         if not words or words[0] != PYTHON_WORD:
             return f"shell runs {words[0] if words else 'nothing'}"
         if flag := python_flags_escape(words[1:]):
@@ -522,6 +532,9 @@ def self_test() -> None:
         ('"$PYTHON" x.py ~/data', True),
         ('"$PYTHON" x.py "$RUNNER_TEMP/out"', True),
         ('"$PYTHON" x.py $(ls)', True),
+        ('PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" x.py && "$PYTHON" y.py', False),
+        ('PYTHONPATH=elsewhere "$PYTHON" x.py', True),
+        ('GOROROBA_READ_TRACE= "$PYTHON" x.py', True),
     ):
         if (shell_untraceable(command) is not None) != escapes:
             raise RuntimeError(f"shell classification of {command!r} is wrong")
