@@ -122,14 +122,14 @@ def now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ")
 
 
-def fetch_status(url: str) -> tuple[int, bytes]:
-    """GET url, retrying 429, 5xx and transport failures with backoff; returns the final status and body."""
+def fetch_status(url: str) -> tuple[int, bytes, str]:
+    """GET url, retrying 429, 5xx and transport failures with backoff; returns the status, body and final URL."""
     status = 0
     for attempt in range(ATTEMPTS):
         try:
             request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(request, timeout=60) as response:
-                return 200, response.read()
+                return 200, response.read(), response.geturl()
         except urllib.error.HTTPError as error:
             status = error.code
             error.close()
@@ -138,11 +138,11 @@ def fetch_status(url: str) -> tuple[int, bytes]:
         except (urllib.error.URLError, TimeoutError, ConnectionError):
             status = 0
         time.sleep(2**attempt)
-    return status, b""
+    return status, b"", url
 
 
 def fetch(url: str) -> bytes:
-    status, data = fetch_status(url)
+    status, data, _ = fetch_status(url)
     if status != 200:
         raise SystemExit(f"{url}: HTTP {status}")
     return data
@@ -260,10 +260,13 @@ def docs_inventory(base: Path, root: Path) -> dict[str, str]:
 
 def render_page(flag: str, stamp: str, task: tuple[str, Path]) -> tuple[str, Path, int, str | None]:
     url, path = task
-    status, data = fetch_status(url)
+    status, data, final = fetch_status(url)
     if status != 200:
         return url, path, status, None
-    text = header(url, stamp, flag, data) + absolute_links(to_markdown(docs_fragment(data.decode("utf-8"))), url)
+    # A redirect off the pinned release would file another release's page under this one.
+    if not final.startswith(DOCS):
+        raise SystemExit(f"{url}: redirected to {final}, outside {DOCS}")
+    text = header(url, stamp, flag, data) + absolute_links(to_markdown(docs_fragment(data.decode("utf-8"))), final)
     return url, path, 200, text
 
 
@@ -427,7 +430,7 @@ def check_changelog(base: Path) -> None:
     head, _, body = data.partition(b"\n\n")
     expected = changelog_header(record["url"], "", record["sha256"], sha256(body)).split("\n")
     lines = head.decode("utf-8").split("\n")
-    if lines[0] != expected[0] or lines[2].split("; ", 1)[1:] != expected[2].split("; ", 1)[1:]:
+    if lines[0] != expected[0] or lines[2] != expected[2]:
         raise SystemExit("changelog header differs from the PyPI sdist record or the CHANGELOG.md sha256")
 
 
@@ -540,6 +543,19 @@ def self_test() -> int:
             original = edit_manifest(kind, partial(move_source, name))
             expect(f"{kind} row with another source", "differs from the pinned")
             manifest_path(kind, base).write_bytes(original)
+        log = changelog_path(base)
+        log_bytes = log.read_bytes()
+        sdist = sdist_record(base)["sha256"].encode()
+        forged = log_bytes.replace(sdist, b"0" * len(sdist), 1)
+        log.write_bytes(forged)
+
+        def rehash_log(doc: dict[str, Any]) -> None:
+            next(row for row in doc["files"] if row["path"] == rel(log, root))["sha256"] = sha256(forged)
+
+        original = edit_manifest("changelog", rehash_log)
+        expect("changelog header naming another sdist", "changelog header differs")
+        manifest_path("changelog", base).write_bytes(original)
+        log.write_bytes(log_bytes)
         inv = package_dir("iqm-pulse", base) / "objects.inv"
         inv_bytes = inv.read_bytes()
         grown = replace_inventory(inv_bytes, "added_page std:doc -1 added_page.html Added")

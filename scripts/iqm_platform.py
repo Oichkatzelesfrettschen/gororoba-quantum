@@ -265,12 +265,22 @@ def snapshot(out: Path, client: Client) -> None:
         kinds = sorted({m.group(1) for p in spec["paths"] if (m := QC_ARTIFACTS_PATH.match(p))})
         for kind in kinds:
             fetch(f"{base}/artifacts/{kind}.json", f"{root}/artifacts/{kind}")
-        calibration = f"{API}/calibration-sets/{qc}/default"
-        fetch(f"{base}/calibration/set.json", calibration)
-        fetch(f"{base}/calibration/dynamic-quantum-architecture.json", f"{calibration}/dynamic-quantum-architecture")
-        fetch(f"{base}/calibration/metrics.json", f"{calibration}/metrics")
+        # The default set moves with every calibration, so the architecture
+        # and metrics are read by the id the default resolved to.
+        calibration_set = json.loads(fetch(f"{base}/calibration/set.json", f"{API}/calibration-sets/{qc}/default"))
+        pinned = f"{API}/calibration-sets/{qc}/{calibration_set['observation_set_id']}"
+        fetch(f"{base}/calibration/dynamic-quantum-architecture.json", f"{pinned}/dynamic-quantum-architecture")
+        fetch(f"{base}/calibration/metrics.json", f"{pinned}/metrics")
+    prune(out, index)
     (out / "index.json").write_bytes(canonical(index))
     (out / "hardware.json").write_bytes(canonical(derive(out)))
+
+
+def prune(out: Path, index: dict[str, Any]) -> None:
+    """Remove every file the new index omits, so a QC or artifact the service dropped leaves nothing behind."""
+    for stale in sorted(p for p in out.rglob("*") if p.is_file()):
+        if stale.relative_to(out).as_posix() not in {*index["files"], "index.json", "hardware.json"}:
+            stale.unlink()
 
 
 def notifications(out: Path, jar_path: Path) -> None:
@@ -506,6 +516,15 @@ def check(directory: Path, agents: list[Path] | None = None) -> None:
     for rel in index["files"]:
         if rel.startswith("account/") and re.search(r'"(id|email|name|accountId)"', (directory / rel).read_text()):
             raise PlatformError(f"{rel}: carries an account identity field")
+    for rel in sorted(r for r in index["files"] if r.endswith("/calibration/set.json")):
+        base = rel.removesuffix("set.json")
+        ids = {
+            load_json(directory, rel)["observation_set_id"],
+            load_json(directory, base + "dynamic-quantum-architecture.json")["calibration_set_id"],
+            load_json(directory, base + "metrics.json")["describes_id"],
+        }
+        if len(ids) != 1:
+            raise PlatformError(f"{base}: set, architecture and metrics name calibration sets {sorted(ids)}")
     check_mcp()
     hardware = derive(directory)
     if (directory / "hardware.json").read_bytes() != canonical(hardware):
@@ -592,6 +611,11 @@ def refresh(path: Path, min_days: float, days: int, transport: Transport | None 
                 },
             )
         staged = read_tokens(pending)
+        installed = (staged.get("access_token"), staged.get("refresh_token"))
+        if installed == (tokens.get("access_token"), tokens.get("refresh_token")):
+            # The install wrote the live file and stopped before removing the pending one.
+            pending.unlink()
+            return "refreshed"
         if staged.get("used_refresh_token") != tokens.get("refresh_token"):
             raise PlatformError(
                 f"{pending} was staged from another refresh token than {path} holds; inspect it by hand"
@@ -651,6 +675,30 @@ def self_test(evidence: Path) -> None:
             lambda: hardware.write_bytes(kept.replace(b'"qubits": 20', b'"qubits": 21', 1)),
             lambda: hardware.write_bytes(kept),
         )
+        metrics = root / "qc/garnet/calibration/metrics.json"
+        measured = metrics.read_bytes()
+        document = json.loads(measured)
+        document["describes_id"] = "00000000-0000-0000-0000-000000000000"
+        mixed = canonical(document)
+        index = json.loads(original)
+        index["files"]["qc/garnet/calibration/metrics.json"]["sha256"] = sha256(mixed)
+
+        def mix() -> None:
+            metrics.write_bytes(mixed)
+            index_path.write_bytes(canonical(index))
+
+        def unmix() -> None:
+            metrics.write_bytes(measured)
+            index_path.write_bytes(original)
+
+        mutate("metrics of another calibration set", mix, unmix)
+        index = json.loads(original)
+        del index["files"]["server/about.json"]
+        prune(root, index)
+        if target.exists() or not (root / "server/versions.json").exists():
+            raise PlatformError("self-test: prune kept a dropped file or removed an indexed one")
+        target.write_bytes(saved)
+        check(root)
         stale = Path(scratch) / "AGENTS.md"
         text = agents.read_text()
         start = text.index(BEGIN) + len(BEGIN)
@@ -730,6 +778,14 @@ def self_test_refresh(scratch: Path) -> None:
     expect_failure("a stale pending file", lambda: refresh(path, 14, 30, StubServer([], apply_on_failure=False)))
     if read_tokens(path)["access_token"] != "old-access-AAAAA":
         raise PlatformError("self-test: a stale pending file replaced the live token")
+
+    # A pending pair already installed, interrupted before its removal, completes without a server call.
+    reset()
+    write_private(path, installed)
+    write_private(pending, {**installed, "used_refresh_token": "old-refresh"})
+    server = StubServer([], apply_on_failure=False)
+    if refresh(path, 14, 30, server) != "refreshed" or pending.exists() or server.calls:
+        raise PlatformError(f"self-test: an installed pending pair blocked refresh: {server.calls}")
 
     # A leftover world-readable temporary file never lends its mode to the tokens file.
     tmp = path.with_name(path.name + ".tmp")
