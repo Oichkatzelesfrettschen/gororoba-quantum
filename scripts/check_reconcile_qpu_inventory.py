@@ -102,7 +102,9 @@ def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str
     run = root / "results/live/synthetic-failed"
     run.mkdir(parents=True)
     (run / "isa.qpy").write_bytes(b"synthetic failed-job circuit bytes")
-    write(run / "record.json", {"submission": {"qpy_archive_sha256": audit.digest(run / "isa.qpy")}})
+    sent = {"job_id": "failed-job", "backend": "synthetic-backend"}
+    record = {"submission": {"qpy_archive_sha256": audit.digest(run / "isa.qpy"), "jobs": [sent]}}
+    write(run / "record.json", record)
     times = {"running": "2026-10-12T01:00:00Z", "finished": "2026-10-12T01:00:03Z"}
     entry = {
         "backend": "synthetic-backend",
@@ -168,6 +170,16 @@ def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str
         write(run / "collect.json", broken)
         rejects(audit, source, reason)
     write(run / "collect.json", collection)
+    # An unrelated run's collection names the failed job with matching backend, status and charge.
+    record_mutants: list[list[dict[str, str]]] = [
+        [],
+        [{"job_id": "other-job", "backend": "synthetic-backend"}],
+        [{"job_id": "failed-job", "backend": "other-backend"}],
+    ]
+    for jobs in record_mutants:
+        write(run / "record.json", {"submission": record["submission"] | {"jobs": jobs}})
+        rejects(audit, source, "absent from the jobs its collection's run record submitted")
+    write(run / "record.json", record)
     (run / "isa.qpy").write_bytes(b"altered failed-job circuit bytes")
     rejects(audit, source, "isa.qpy differs")
     (run / "isa.qpy").write_bytes(b"synthetic failed-job circuit bytes")
