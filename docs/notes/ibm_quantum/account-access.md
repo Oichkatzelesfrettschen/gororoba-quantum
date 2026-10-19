@@ -2,8 +2,10 @@
 
 The repository reaches IBM Quantum through qiskit-ibm-runtime 0.50.0 only.
 No IBM MCP server is registered: `claude mcp list` shows the quantum-inspire,
-openquantum, quandela and kaggle servers, each of whose read tools answered on
-2026-10-19, so every IBM read is a script call under the repository's Python.
+openquantum, quandela and kaggle servers connected, and on 2026-10-19
+qi_backends, qi_jobs, get_credits, qd_availability and get_accelerator_quota
+each answered, so every IBM read is a script call under the repository's
+Python.
 
 ## Accounts
 
@@ -44,7 +46,10 @@ this way carry `qpu_charge_time_seconds` of 2, 2, 5 and 5 in
 after they ended, while the account's consumed seconds already include the
 14 s: the primary's consumption rose from 382 s to 402 s between the
 inventory observation and the probe, which equals the two completed jobs'
-3 s each plus the four failed charges.
+3 s each plus the four failed charges. The usage period's start moved
+from 2026-09-20T09:20Z to 2026-09-21T05:13Z between the two readings, and
+`reconcile_qpu_inventory.window_charge` over the inventory's jobs reads
+382 s in either period, so no job left the window.
 
 `scripts/observe_qpu_job_inventory.py` records DONE, ERROR and CANCELLED
 jobs and refuses while any job is unfinished or its usage status differs
