@@ -170,6 +170,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Murch, Weber, Macklin and Siddiqi 2013 -- Observing single quantum trajectories of a superconducting qubit](notes/1305.7270.md) | [PDF](https://arxiv.org/pdf/1305.7270v2) | `1305.7270v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1305.7270v2) |
 | [Cramer et al. 2010 -- Efficient quantum state tomography](notes/1101.4366.md) | [PDF](https://arxiv.org/pdf/1101.4366v1) | `1101.4366v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1101.4366v1) |
 | [Baez 2002 -- The Octonions](notes/math-0105155.md) | [PDF](https://arxiv.org/pdf/math/0105155v4) | `math-0105155v4.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0105155v4) |
+| [De Marrais 2002 -- Flying Higher Than a Box-Kite: Kite-Chain Middens, Sand Mandalas, and Zero-Divisor Patterns in the 2^n-ions Beyond the Sedenions (arXiv math/0207003)](notes/math-0207003.md) | [PDF](https://arxiv.org/pdf/math/0207003v2) | `math-0207003v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0207003v2) |
 | [Procopio et al. 2017 -- Experimental Test of Hyper-Complex Quantum Theories](notes/1602.01624.md) | [PDF](https://arxiv.org/pdf/1602.01624v2) | `1602.01624v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1602.01624v2) |
 | [Adler 2017 -- Does the Peres experiment using photons test for hyper-complex (quaternionic) quantum theories?](notes/1604.04950.md) | [PDF](https://arxiv.org/pdf/1604.04950v3) | `1604.04950v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1604.04950v3) |
 | [Procopio, Rozema, Dakic and Walther 2017 -- Comment on Adler's Peres-experiment critique](notes/1607.01648.md) | [PDF](https://arxiv.org/pdf/1607.01648v1) | `1607.01648v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1607.01648v1) |
@@ -188,6 +189,15 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Sank et al. 2016 -- measurement-induced state transitions (arXiv 1606.05721)](notes/1606.05721.md) | [PDF](https://arxiv.org/pdf/1606.05721v2) | `1606.05721v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1606.05721v2) |
 
 ## Licensed software source snapshots
+The [Nebe--Sloane lattice catalogue note](notes/nebe-lattices-d14-a13.md)
+records the inspected D14 (dimension 14, determinant 4) and A13 (dimension
+13, determinant 14) entries used as independent checks of the repository's
+assessor-blade lattice identifications. The [AFLOW prototype
+note](notes/aflow-a_cf4-225-a.md) records the inspected A_cF4_225_a
+face-centered-cubic (Cu-type, Fm-3m) designation used as the
+crystallographic comparison prototype. Both are external web references;
+response hashes identify the inspected bytes.
+
 
 These archives preserve the exact original upstream bytes and license notices.
 Source inspection supplies candidate proof interfaces and independent

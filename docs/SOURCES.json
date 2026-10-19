@@ -1377,6 +1377,33 @@
       "retrieved_at_utc": "2026-10-17T05:32:36+00:00",
       "reading_scope": "arXiv:2402.17833v2 HTML rendering: Carrera Vazquez et al., Eagle QPUs, appendix B.1 switch latency of the order of 0.5 us (reference [18] of arXiv:2604.25863v3)",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://www.math.rwth-aachen.de/~Gabriele.Nebe/LATTICES/D14.html",
+      "note": "docs/notes/nebe-lattices-d14-a13.md",
+      "sha256": "032039560532561fb8a46c81ac6c6e72c3515cc9dfa3143d189be6e9628f7b6a",
+      "bytes": 12642,
+      "retrieved_at_utc": "2026-10-19T16:35:00+00:00",
+      "reading_scope": "NAME, DIMENSION, DET fields of the D14 catalogue entry",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://www.math.rwth-aachen.de/~Gabriele.Nebe/LATTICES/A13.html",
+      "note": "docs/notes/nebe-lattices-d14-a13.md",
+      "sha256": "4eb3f2dd31f5fa742d791d6ab4fc457920853c638e9701b76d55e229c2eb75bd",
+      "bytes": 16931,
+      "retrieved_at_utc": "2026-10-19T16:35:00+00:00",
+      "reading_scope": "NAME, DIMENSION, DET, MINIMAL_NORM, KISSING_NUMBER fields of the A13 catalogue entry",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://aflow.org/p/A_cF4_225_a-001/",
+      "note": "docs/notes/aflow-a_cf4-225-a.md",
+      "sha256": "55f198df0f98bf73e7d3d690750680df5d4201ba2d8cde5108e706839c63d2ca",
+      "bytes": 37260,
+      "retrieved_at_utc": "2026-10-19T16:35:00+00:00",
+      "reading_scope": "Prototype designation header (Pearson symbol, space group, structure name)",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -5207,6 +5234,35 @@
         "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
         "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
       }
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/math/0207003v2",
+      "note": "docs/notes/math-0207003.md",
+      "audited_at_utc": "2026-10-19T16:35:00+00:00",
+      "status": "external_only",
+      "sha256": "4ce77adf6d0ac2cdde814d7f93ccf4b26da7cfe172a53ff5c18b3f6629a4cf3a",
+      "bytes": 304671,
+      "pages": 20,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "4ce77adf6d0ac2cdde814d7f93ccf4b26da7cfe172a53ff5c18b3f6629a4cf3a",
+        "verified_at_utc": "2026-10-19T16:35:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "https://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/math/0207003v2",
+        "evidence_sha256": "d2b5980c686f1cd50dd3d94efc10a6b29974e2e61067f4b05bd4f6d1dd6489d9",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The assumed license grants arXiv a perpetual non-exclusive distribution right for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission.",
+        "pdf_notice_assessment": "The inspected PDF carries no redistribution license statement in its front matter; the arXiv abstract page is the license evidence."
+      },
+      "excluded_published_path": "docs/pdf/math-0207003v2.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0207003v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The assumed license authorizes arXiv distribution for pre-2004 submissions. The inspected exact-version metadata establishes no general downstream rehosting permission."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
