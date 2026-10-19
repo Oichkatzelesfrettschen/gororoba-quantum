@@ -242,21 +242,26 @@ it ran.
   `ci/run_gates.py --ledger-out` runs each gate with
   `ci/read_trace/sitecustomize.py` on PYTHONPATH, whose audit hook records
   the repository files every Python process of the gate opens (a `.pyc` as
-  its source), the directories it lists and the glob patterns it expands,
-  spawn-pool children included. After a pass, `ci/gate_ledger.py` stores the
+  its source), the directories it lists, the glob patterns it expands, the
+  paths it probes through os.stat and os.lstat (existence and file type) and
+  every symbolic link those paths cross (its link text), from every thread
+  and spawn-pool child. After a pass, `ci/gate_ledger.py` stores the
   gate's key: the manifest entry, allocated workers, tracer digest, host
   identity (`ci/host_identity.py`: interpreters, distributions, PATH tools
   and keyed variables, shared with the premerge cache) and the read set's
   content. `--ledger` reports SKIP when the recomputed key matches, so a pin
   change reruns every gate through the interpreter identity. A failure, or a
   run the trace cannot cover, stores nothing and removes the earlier entry:
-  a shell command other than `"$PYTHON"` invocations joined by `&&`, an `-I`,
+  a shell command other than `"$PYTHON"` invocations joined by `&&` (a glob,
+  tilde or parameter outside `"$PYTHON"` expands before any traced process), an `-I`,
   `-E` or `-S` interpreter, a write inside the repository outside
   `__pycache__`, a non-Python child or a child environment that drops the
   trace. CI saves the merged ledger from main only (job `ledger`), and the
   nightly run executes every gate with `--ledger-audit`, failing on a gate
-  the ledger would have skipped that fails, the net for reads without an
-  audit event (os.stat, existence checks, C extensions opening files).
+  the ledger would have skipped that fails. That run bounds a missed read to
+  one day on main; it is the only net for reads the tracer cannot see (the
+  wall clock, C extensions opening files, stat through a dir_fd), so a check
+  against an expiry or a rolling window relies on it.
   Gate core-598 plants every read kind and every escape.
 - Check with an explicit raise, never `assert`. `python -O` strips every
   assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
