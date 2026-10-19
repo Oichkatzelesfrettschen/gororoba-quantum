@@ -83,7 +83,8 @@ GRAPHQL_INTROSPECTION = (
     "{ name description type { kind name ofType { kind name ofType { kind name ofType { kind name } } } } "
     "defaultValue } type { kind name ofType { kind name ofType { kind name ofType { kind name } } } } } "
     "inputFields { name description type { kind name ofType { kind name ofType { kind name } } } "
-    "defaultValue } enumValues(includeDeprecated: true) { name description isDeprecated } } } }"
+    "defaultValue } interfaces { kind name } possibleTypes { kind name } "
+    "enumValues(includeDeprecated: true) { name description isDeprecated } } } }"
 )
 QC_ARTIFACTS_PATH = re.compile(r"^/api/v1/quantum-computers/[^/]+/artifacts/([a-z-]+)$")
 LOCUS = re.compile(r"(?:QB\d+|COMPR\d+)")

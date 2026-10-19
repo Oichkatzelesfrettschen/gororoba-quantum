@@ -1282,8 +1282,10 @@ Python 3.13 environment under `/opt/iqm-resonance-stack`, interpreter
 transpile and Aer run, MOVE routing, the client's URL rules). The API token
 and its refresh token live in `~/.config/iqm/tokens.json` (directory 700,
 file 600) as `{access_token, refresh_token}`, outside every checkout, and
-`IQM_TOKENS_FILE` names it to iqm-client, scripts/iqm_platform.py and the
-MCP server alike. `iqm_platform.py refresh` renews the pair through the
+`IQM_TOKENS_FILE` names it to scripts/iqm_platform.py and the MCP server.
+iqm-client takes the access token as `token=`: its `TokensFileReader`
+decodes a JWT `exp` claim, finds none in an opaque Resonance token and
+rejects the file as expired. `iqm_platform.py refresh` renews the pair through the
 two-phase refresh and activate calls under an flock, so a lost response
 keeps the new token in `tokens.json.pending`. CI never imports the stack:
 its gates read retained JSON with the standard library.
@@ -1292,9 +1294,14 @@ its gates read retained JSON with the standard library.
 2026-10-19 and for Garnet and Sirius on 2026-10-21, with downtime from 02:00
 to about 15:00 UTC. The client pins already match it (iqm-client 36.0.0,
 final RZ gates kept by default, Pulla folded into IQMClient,
-`submit_circuit_job`); the retained snapshot is the pre-upgrade baseline at
-station control 49.0.3, and a snapshot after the second window records the
-upgraded stations.
+`submit_circuit_job`). The retained snapshot (2026-10-19T15:58Z) holds
+Emerald and emerald:mock at station control 50.0.0 and Garnet, Sirius and
+their mocks at 49.0.3, under IQM Server 3.0.1; Emerald gained `measure_012`
+and the job route `sweep_results_streaming` with an unchanged ISA
+([os-4.7-emerald.md](docs/notes/iqm/os-4.7-emerald.md)), and iqm-client
+36.0.0 transpiles for all three QPUs. The all-49.0.3 baseline is
+[hardware-pre-4.7.md](docs/notes/iqm/hardware-pre-4.7.md); a snapshot after
+the second window records Garnet and Sirius.
 
 **MCP.** `iqm` is registered at Claude Code user scope and in
 `~/.codex/config.toml` as `/usr/bin/python3 -I scripts/iqm_mcp_server.py`
@@ -1315,14 +1322,14 @@ table from it and fails when either changes alone:
 <!-- iqm-facts:begin -->
 | QC (alias) | type | QPU chip (mask, variant) | qubits | resonators | couplings | gates (default implementation) | shots / circuits / instructions max | PAYG credits/s | timeslot | IQM station control |
 |---|---|---|---|---|---|---|---|---|---|---|
-| IQM Emerald (`emerald`) | qpu | M216_F0W102525_H03_F08 (M216, H03) | 54 | - | 90 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_fidelity (shelved_constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 30000 | 0.75 | 2400.00 per PT1H | 49.0.3 |
-| IQM Emerald (mock) (`emerald:mock`) | mock | M160_W0_H01_Z99 (M160, H01) | 54 | - | 90 | cc_prx (prx_composite), cz (tgss), measure (constant), measure_fidelity (constant), prx (drag_gaussian), reset_wait (reset_wait) | 200000 / 1000 / 10000 | 0.00 | - | 49.0.3 |
+| IQM Emerald (`emerald`) | qpu | M216_F0W102525_H03_F08 (M216, H03) | 54 | - | 90 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_012 (constant), measure_fidelity (shelved_constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 30000 | 0.75 | 2400.00 per PT1H | 50.0.0 |
+| IQM Emerald (mock) (`emerald:mock`) | mock | M160_W0_H01_Z99 (M160, H01) | 54 | - | 90 | cc_prx (prx_composite), cz (tgss), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_gaussian), reset_wait (reset_wait) | 200000 / 1000 / 10000 | 0.00 | - | 50.0.0 |
 | IQM Garnet (`garnet`) | qpu | M194_F0W2114_P08_B15 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_fidelity (constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 10000 | 0.50 | 1800.00 per PT1H | 49.0.3 |
 | IQM Garnet (mock) (`garnet:mock`) | mock | M194_W0_P08_Z99 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), prx (drag_crf), reset_wait (reset_wait) | 20000 / 500 / 10000 | 0.00 | - | 49.0.3 |
 | IQM Sirius (`sirius`) | qpu | M186_F0W2259_ND1_O12 (M186, ND1) | 16 | COMPR1 | 24 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 75000 | 0.30 | 1080.00 per PT1H | 49.0.3 |
 | IQM Sirius (mock) (`sirius:mock`) | mock | M186_W0_ND1_Z99 (M186, ND1) | 24 | COMPR1 | 24 | cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), reset_wait (reset_wait) | 20000 / 200 / 20000 | 0.67 | - | 49.0.3 |
 
-Account: PERSONAL with 30.00 credits expiring 2026-11-01T00:00:00+00:00; IQM Server 3.0.0, API v1; token scopes job_execution.
+Account: PERSONAL with 30.00 credits expiring 2026-11-01T00:00:00+00:00; IQM Server 3.0.1.20261019072700, API v1; token scopes job_execution.
 <!-- iqm-facts:end -->
 
 **Gates.** core-588 (`capture_iqm_docs.py --check`), core-589 (its

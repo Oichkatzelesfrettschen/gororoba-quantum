@@ -4,9 +4,12 @@ These are the specifications of the six IQM Resonance targets as the
 snapshot of 2026-10-19T06:08Z read them (`index.json` `captured_at`), before IQM OS
 4.7 reached Garnet and Sirius (2026-10-21) and inside Emerald's announced
 upgrade window, while every station still reported IQM station control
-49.0.3 and IQM Server 3.0.0. Every value comes from
+49.0.3 and IQM Server 3.0.0. Every value comes from that snapshot of
 [docs/evidence/iqm/](../../evidence/iqm/) (`hardware.json` and the raw
-records beside it). Quality figures belong to the default calibration sets
+records beside it), retained in the tree through commit 2009f0f and readable
+with `git show 2009f0f:docs/evidence/iqm/hardware.json`; the retained
+directory now holds the later snapshot that
+[os-4.7-emerald.md](os-4.7-emerald.md) compares. Quality figures belong to the default calibration sets
 of that morning and change with every calibration; structure, limits and
 prices change with releases. A post-upgrade snapshot compared against this
 one measures what IQM OS 4.7 changed.
@@ -74,4 +77,4 @@ retired `cocos.resonance.meetiqm.com`, which iqm-client 36 rejects.
 Per-qubit rows (T1, T2, T2 echo, PRX fidelity, readout fidelity and both
 assignment errors, drive and readout frequency, PRX and measure duration)
 and per-pair CZ fidelity, duration and implementation are in
-`docs/evidence/iqm/hardware.json`.
+`hardware.json` at commit 2009f0f.

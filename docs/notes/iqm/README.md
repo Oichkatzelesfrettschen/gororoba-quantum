@@ -15,12 +15,13 @@ they said when read.
 | `pypi/` | release metadata and file sha256 of the fifteen pinned distributions (`--pypi`) |
 | `changelog/iqm-client-36.0.0.md` | the CHANGELOG of the iqm-client 36.0.0 sdist (`--changelog`) |
 | `constraints-iqm-qccsw-4.7.0.txt` | IQM's client constraints for IQM OS 4.7.0 plus the integration pins |
-| `hardware-pre-4.7.md` | the pre-upgrade specifications of all six targets, from the retained snapshot |
+| `hardware-pre-4.7.md` | the pre-upgrade specifications of all six targets, from the 06:08Z snapshot at commit 2009f0f |
+| `os-4.7-emerald.md` | what IQM OS 4.7 changed on Emerald: versions, `measure_012`, API, settings, calibration, client |
 | `python-stack.md`, `python-stack-versions.json` | every distribution installed in the client stack, with version, license, imports and requirements |
 | `../../evidence/iqm/` | the account snapshot: server, per-QC records, configuration artifacts, calibration sets, metrics, the update feed, `hardware.json` (`scripts/iqm_platform.py snapshot`) |
 
 The unversioned https://docs.iqm.tech/PACKAGE/ still served IQM OS 4.6 on
-2026-10-19 (byte-identical inventories); the capture pins `/4.7/`.
+2026-10-19, before and after Emerald's upgrade (iqm-client 35.0.3); the capture pins `/4.7/`.
 
 ## IQM OS 4.7 upgrade (2026-10-19 and 2026-10-21)
 
@@ -61,11 +62,16 @@ The dashboard's update feed (`server/notifications.json`, created
   `strategy="NONE"` and runs without readout twirling; REMWorkflow reports
   the QPU job ids it submitted.
 
-The retained snapshot was read at 2026-10-19T06:08Z, inside Emerald's
-announced window, while every station still reported IQM station control
-49.0.3 and IQM Server 3.0.0. It is the pre-upgrade baseline; a snapshot after
-2026-10-21T16:00Z records the 4.7 stations, and the difference between the
-two is the measured upgrade.
+The retained snapshot was read at 2026-10-19T15:58Z, after Emerald's
+window: Emerald and emerald:mock report IQM station control 50.0.0, Garnet,
+Sirius and their mocks 49.0.3, and the server 3.0.1. What Emerald's upgrade
+changed, measured against the 06:08Z baseline, is in
+[os-4.7-emerald.md](os-4.7-emerald.md): a `measure_012` three-state readout,
+the job route `sweep_results_streaming`, a `flat_width` field on Slepian
+pulses and 398 new settings parameters, with the native ISA, limits and
+prices unchanged. The baseline's specifications are in
+[hardware-pre-4.7.md](hardware-pre-4.7.md). A snapshot after
+2026-10-21T16:00Z records Garnet and Sirius on 4.7.
 
 ## Account and credential
 
@@ -81,10 +87,13 @@ expires 2027-01-19, and so does its refresh token. An account holds at most
 
 The token pair lives in `~/.config/iqm/tokens.json` (directory 700, file
 600) as `{"access_token", "refresh_token"}`, outside every checkout.
-`IQM_TOKENS_FILE` names it to every consumer: iqm-client 36's
-`TokensFileReader` reads `access_token` from it and rereads the file whenever
-a token's lifetime is unknown, which holds for every opaque Resonance token,
-so a refreshed file reaches running clients without a restart.
+`IQM_TOKENS_FILE` names it to scripts/iqm_platform.py and the MCP server,
+which reread it on every call, so a refreshed file reaches them without a
+restart. iqm-client takes the access token as `token=` read from that file
+(see [Qiskit](#qiskit)): iqm-client 36's `TokensFileReader` passes the token
+to `TokenManager.time_left_seconds`, which decodes a JWT `exp` claim, and an
+opaque Resonance token has none, so the reader raises "Access token in file
+has expired or is not valid" for a token the API accepts.
 
 `"$PYTHON" scripts/iqm_platform.py refresh` renews the token through
 `POST /api/v1/tokens/current/refresh` with the refresh token as Bearer. A
@@ -158,14 +167,14 @@ the mutations `inviteAccountMembers`, `resendAccountInvitation`,
 <!-- iqm-facts:begin -->
 | QC (alias) | type | QPU chip (mask, variant) | qubits | resonators | couplings | gates (default implementation) | shots / circuits / instructions max | PAYG credits/s | timeslot | IQM station control |
 |---|---|---|---|---|---|---|---|---|---|---|
-| IQM Emerald (`emerald`) | qpu | M216_F0W102525_H03_F08 (M216, H03) | 54 | - | 90 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_fidelity (shelved_constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 30000 | 0.75 | 2400.00 per PT1H | 49.0.3 |
-| IQM Emerald (mock) (`emerald:mock`) | mock | M160_W0_H01_Z99 (M160, H01) | 54 | - | 90 | cc_prx (prx_composite), cz (tgss), measure (constant), measure_fidelity (constant), prx (drag_gaussian), reset_wait (reset_wait) | 200000 / 1000 / 10000 | 0.00 | - | 49.0.3 |
+| IQM Emerald (`emerald`) | qpu | M216_F0W102525_H03_F08 (M216, H03) | 54 | - | 90 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_012 (constant), measure_fidelity (shelved_constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 30000 | 0.75 | 2400.00 per PT1H | 50.0.0 |
+| IQM Emerald (mock) (`emerald:mock`) | mock | M160_W0_H01_Z99 (M160, H01) | 54 | - | 90 | cc_prx (prx_composite), cz (tgss), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_gaussian), reset_wait (reset_wait) | 200000 / 1000 / 10000 | 0.00 | - | 50.0.0 |
 | IQM Garnet (`garnet`) | qpu | M194_F0W2114_P08_B15 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_fidelity (constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 10000 | 0.50 | 1800.00 per PT1H | 49.0.3 |
 | IQM Garnet (mock) (`garnet:mock`) | mock | M194_W0_P08_Z99 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), prx (drag_crf), reset_wait (reset_wait) | 20000 / 500 / 10000 | 0.00 | - | 49.0.3 |
 | IQM Sirius (`sirius`) | qpu | M186_F0W2259_ND1_O12 (M186, ND1) | 16 | COMPR1 | 24 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 75000 | 0.30 | 1080.00 per PT1H | 49.0.3 |
 | IQM Sirius (mock) (`sirius:mock`) | mock | M186_W0_ND1_Z99 (M186, ND1) | 24 | COMPR1 | 24 | cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), reset_wait (reset_wait) | 20000 / 200 / 20000 | 0.67 | - | 49.0.3 |
 
-Account: PERSONAL with 30.00 credits expiring 2026-11-01T00:00:00+00:00; IQM Server 3.0.0, API v1; token scopes job_execution.
+Account: PERSONAL with 30.00 credits expiring 2026-11-01T00:00:00+00:00; IQM Server 3.0.1.20261019072700, API v1; token scopes job_execution.
 <!-- iqm-facts:end -->
 
 All three QPUs are transmon chips with a drive line and a flux line per
@@ -181,22 +190,24 @@ Medians of the default calibration sets read at the snapshot:
 
 | QC | T1 | T2 (Ramsey) | T2 echo | PRX RB fidelity | readout fidelity | CZ IRB fidelity | PRX | CZ | measure |
 |---|---|---|---|---|---|---|---|---|---|
-| Emerald | 50 us | 15 us | 38 us | 0.99967 | 0.98848 | 0.99632 | 24 ns | 40 ns | 360 ns |
+| Emerald | 49 us | 15 us | 38 us | 0.99968 | 0.98845 | 0.99728 | 24 ns | 40 ns | 360 ns |
 | Garnet | 42 us | 9 us | 22 us | 0.99934 | 0.97945 | 0.99425 | 16 ns | 40 ns | 480 ns |
 | Sirius | 26 us | 10 us | 24 us | 0.99902 | 0.98335 | 0.97400 | 40 ns | 104 ns | 400 ns |
 
 - **Emerald**: Crystal 54, chip M216 variant H03 (`M216_F0W102525_H03_F08`),
   station MX07_Aphrodite_CD3. 54 qubits on a square lattice, 90 tunable
   couplers, 8 probe lines, 214 launchers. Drive frequencies 3.802 to
-  4.207 GHz, readout 5.101 to 6.053 GHz; T1 11 to 92 us. CZ is calibrated
+  4.207 GHz, readout 5.101 to 6.053 GHz; T1 8.6 to 82 us. CZ is calibrated
   on 85 of the 90 couplings: `slepian_crf` on 83 and `crf_acstarkcrf` on
   QB44-QB50 and QB50-QB51. The DQA override map also names QB49-QB50 and
   QB54-QB50, which no CZ implementation lists as a locus, so the transpiler
   routes around them; QB6-QB7 carries an IRB metric but no CZ locus either.
   Its `measure_fidelity` default is `shelved_constant`, a readout that
-  shelves the excited state to level 2 first. Weakest operational loci: CZ
-  QB43-QB35 0.908, QB38-QB37 0.957 and QB50-QB51 0.963; readout QB10 0.898
-  and QB6 0.910.
+  shelves the excited state to level 2 first. Since station control 50.0.0
+  it also offers `measure_012` (`constant`), a three-state readout, on QB43
+  alone (all 54 qubits of emerald:mock). Weakest operational loci: CZ
+  QB43-QB35 0.950, QB44-QB50 0.966 and QB50-QB51 0.967; readout QB10 0.899
+  and QB6 0.921.
 - **Garnet**: chip M194 variant P08 (`M194_F0W2114_P08_B15`), "Apollo
   station in XLD10.S1". 20 qubits, 30 couplers, 3 probe lines. Drive 4.488
   to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 15 to 57 us. CZ
@@ -284,11 +295,13 @@ constraints file, lock and pkgver.
 ## Qiskit
 
 ```python
+import json
 import os
 from iqm.qiskit_iqm import IQMProvider, transpile_to_IQM
 
-provider = IQMProvider("https://resonance.iqm.tech/", quantum_computer="garnet",
-                       tokens_file=os.environ["IQM_TOKENS_FILE"])
+with open(os.environ["IQM_TOKENS_FILE"], encoding="utf-8") as handle:
+    token = json.load(handle)["access_token"]
+provider = IQMProvider("https://resonance.iqm.tech/", quantum_computer="garnet", token=token)
 backend = provider.get_backend()
 isa = transpile_to_IQM(circuit, backend, seed_transpiler=7)
 ```
