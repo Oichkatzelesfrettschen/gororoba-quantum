@@ -6165,9 +6165,9 @@
         "docs/notes/quantum_inspire/tuna_zz_qx_preflight.md"
       ],
       "gates": {
-        "core-588": "freshness",
-        "core-589": "admission",
-        "core-590": "freshness"
+        "core-594": "freshness",
+        "core-595": "admission",
+        "core-596": "freshness"
       },
       "acquisitions": [],
       "assumptions": [],

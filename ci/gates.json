@@ -1999,7 +1999,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs-all",
-   "name": "core-591",
+   "name": "core-597",
    "seconds": 300.0,
    "tier": "full",
    "workers": "all"
@@ -3689,7 +3689,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17 && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test",
-   "name": "core-588",
+   "name": "core-594",
    "seconds": 4.0,
    "tier": "pr"
   },
@@ -3697,7 +3697,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_analysis.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_analysis.py --self-test",
-   "name": "core-589",
+   "name": "core-595",
    "seconds": 8.0,
    "tier": "pr"
   },
@@ -3705,7 +3705,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
-   "name": "core-590",
+   "name": "core-596",
    "seconds": 4.0,
    "tier": "pr"
   },
@@ -3723,6 +3723,38 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_control_parameters.py --self-test",
    "name": "core-565",
    "seconds": 3.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_iqm_docs.py --check",
+   "name": "core-588",
+   "seconds": 1.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_iqm_docs.py --self-test",
+   "name": "core-589",
+   "seconds": 9.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py check docs/evidence/iqm --agents AGENTS.md docs/notes/iqm/README.md",
+   "name": "core-590",
+   "seconds": 0.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py --self-test",
+   "name": "core-591",
+   "seconds": 2.4,
    "tier": "pr"
   }
  ],

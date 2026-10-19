@@ -1,0 +1,51 @@
+{
+ "name": "cirq-core",
+ "version": "1.7.0",
+ "summary": "A framework for creating, editing, and invoking Noisy Intermediate Scale Quantum (NISQ) circuits.",
+ "requires_python": ">=3.11.0",
+ "requires_dist": [
+  "attrs>=21.3.0",
+  "duet>=0.2.8",
+  "matplotlib~=3.9",
+  "networkx~=3.4",
+  "numpy~=2.1",
+  "pandas<3.1.0.dev,>=2.3",
+  "scipy~=1.15",
+  "sympy",
+  "tqdm>=4.12",
+  "ply>=3.6; extra == \"contrib\"",
+  "pylatex~=1.4; extra == \"contrib\"",
+  "quimb~=1.8; extra == \"contrib\"",
+  "opt_einsum; extra == \"contrib\""
+ ],
+ "classifiers": [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering :: Quantum Computing",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed"
+ ],
+ "project_urls": {
+  "Homepage": "http://github.com/quantumlib/cirq"
+ },
+ "files": [
+  {
+   "filename": "cirq_core-1.7.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/da/28/fd3d6b68b4944f0f61a07e14f7ea0823aca50160a4662ab016863e24cb37/cirq_core-1.7.0-py3-none-any.whl",
+   "upload_time_iso_8601": "2026-06-29T22:26:51.045510Z",
+   "size": 2116400,
+   "sha256": "9d2e9610b06e2b2b2195184f44c0df4e94f31485831f8e1c6a96c858b7897bce"
+  }
+ ]
+}

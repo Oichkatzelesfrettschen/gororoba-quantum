@@ -1,0 +1,48 @@
+{
+ "name": "iqm-data-definitions",
+ "version": "3.1.0",
+ "summary": "Common repository for data definitions inside IQM",
+ "requires_python": "<3.15,>=3.11",
+ "requires_dist": [
+  "numpy<3.0,>=1.26.4",
+  "protobuf<8.0,>=6.33.6",
+  "scipy-stubs",
+  "scipy<2.0,>=1.11.4",
+  "types-protobuf",
+  "numpy==2.3.5; extra == \"pin-all\"",
+  "optype==0.15.0; extra == \"pin-all\"",
+  "protobuf==6.33.6; extra == \"pin-all\"",
+  "scipy==1.17.0; extra == \"pin-all\"",
+  "scipy-stubs==1.16.0.0; extra == \"pin-all\"",
+  "types-protobuf==6.32.1.20251210; extra == \"pin-all\"",
+  "typing-extensions==4.15.0; python_full_version < \"3.13\" and extra == \"pin-all\""
+ ],
+ "classifiers": [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Physics"
+ ],
+ "project_urls": {
+  "Documentation": "https://docs.iqm.tech/iqm-data-definitions/",
+  "Homepage": "https://pypi.org/project/iqm-data-definitions/"
+ },
+ "files": [
+  {
+   "filename": "iqm_data_definitions-3.1.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/cb/d6/1b49d1a2e43550e3dee512484567ca162603638fa5dd2ee09dd99d8ab23b/iqm_data_definitions-3.1.0-py3-none-any.whl",
+   "upload_time_iso_8601": "2026-10-08T14:07:10.942248Z",
+   "size": 86328,
+   "sha256": "346348d976fc1b435995fd1ea5ec8d279f639fce2956f96f94f81c1a31bbf2c5"
+  },
+  {
+   "filename": "iqm_data_definitions-3.1.0.tar.gz",
+   "packagetype": "sdist",
+   "url": "https://files.pythonhosted.org/packages/7a/3a/7d7b2123f9a3da2dd1ad38bf3496581640421ead8b08b4307afea05c6d04/iqm_data_definitions-3.1.0.tar.gz",
+   "upload_time_iso_8601": "2026-10-08T14:07:12.228841Z",
+   "size": 67913,
+   "sha256": "60f6314a0cdd8946ac134939eba97336b6a3f02411e5c8968e930dc798c46af9"
+  }
+ ]
+}

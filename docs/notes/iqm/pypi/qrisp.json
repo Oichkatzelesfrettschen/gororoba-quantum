@@ -1,0 +1,82 @@
+{
+ "name": "qrisp",
+ "version": "0.9.10",
+ "summary": "A high-level quantum programming language",
+ "requires_python": "<3.14,>=3.11",
+ "requires_dist": [
+  "numpy<2.5,>=2.0",
+  "sympy<=1.13",
+  "qiskit<2.6,>=0.44.0",
+  "matplotlib>=3.5.1",
+  "scipy>=1.10.0",
+  "numba",
+  "networkx",
+  "tqdm",
+  "dill",
+  "psutil",
+  "jax==0.7.1",
+  "jaxlib==0.7.1",
+  "qiskit-aqt-provider>=1.15.0; extra == \"aqt\"",
+  "qiskit-aer; extra == \"qiskit\"",
+  "qiskit-ibm-runtime; extra == \"qiskit\"",
+  "iqm-client[qrisp]; extra == \"iqm\"",
+  "pennylane-catalyst==0.15.0; extra == \"catalyst\"",
+  "pennylane; extra == \"catalyst\"",
+  "xdsl==0.59.0; extra == \"xdsl\"",
+  "qrisp-cudaq; extra == \"cudaq\"",
+  "sphinx<10,>=7; extra == \"docs\"",
+  "nbsphinx==0.9.8; extra == \"docs\"",
+  "ipykernel==7.4.0; extra == \"docs\"",
+  "texext==0.6.8; extra == \"docs\"",
+  "numpydoc==1.11.0; extra == \"docs\"",
+  "sphinx-sitemap==2.9.0; extra == \"docs\"",
+  "sphinx-copybutton==0.5.2; extra == \"docs\"",
+  "sphinx-design==0.7.0; extra == \"docs\"",
+  "sphinx-thebe==0.3.1; extra == \"docs\"",
+  "pydata-sphinx-theme==0.23.0; extra == \"docs\"",
+  "ruff==0.16.5; extra == \"dev-code-style\"",
+  "pytest==9.1.1; extra == \"dev-testing\"",
+  "pytest-cov>=6.0; extra == \"dev-testing\"",
+  "qiskit-aer; extra == \"dev-testing\"",
+  "pyscf; extra == \"dev-testing\"",
+  "cirq; extra == \"dev-testing\"",
+  "tqecd; extra == \"dev-testing\"",
+  "iqm-client[qrisp]; extra == \"dev-testing\"",
+  "qrisp[dev-code-style,dev-testing]; extra == \"dev\"",
+  "qrisp[catalyst,dev,docs,iqm,qiskit,xdsl]; extra == \"all\""
+ ],
+ "classifiers": [
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Quantum Computing",
+  "Topic :: Software Development :: Compilers"
+ ],
+ "project_urls": {
+  "Bug Tracker": "https://github.com/eclipse-qrisp/Qrisp/issues",
+  "Homepage": "https://github.com/eclipse-qrisp/Qrisp"
+ },
+ "files": [
+  {
+   "filename": "qrisp-0.9.10-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/a7/da/afc430f0dd6dcba9a4a464904a577fab641f0c1ef2014d6fcd9c3c744151/qrisp-0.9.10-py3-none-any.whl",
+   "upload_time_iso_8601": "2026-10-17T15:08:06.479767Z",
+   "size": 1237281,
+   "sha256": "c17854a28ed4f9c4cc8caaea6bcfa81f36641e456558e8c67166280ff93e7d6d"
+  },
+  {
+   "filename": "qrisp-0.9.10.tar.gz",
+   "packagetype": "sdist",
+   "url": "https://files.pythonhosted.org/packages/1b/5b/6565d6ecca3a6c70bd237a69c8f06593a09f4909cade83bddc6c7ae8829a/qrisp-0.9.10.tar.gz",
+   "upload_time_iso_8601": "2026-10-17T15:08:09.132953Z",
+   "size": 931989,
+   "sha256": "058f042d3a9f099d2ff6cc9abab8b4e347c4332300459c097edf4fc014b67a3a"
+  }
+ ]
+}

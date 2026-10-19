@@ -63,7 +63,7 @@ PAIR_COST_CAP by a sha256 over every added pair's distances, and replay_pairs()
 replays the first PAIR_SAMPLE. A hand-altered distance is caught only when
 its pair is sampled. The token ``pairs-all`` replays every merge-added pair
 through the process pool (replay_all_pairs), so a hand-altered distance in
-any pair fails; gate core-591 runs it on the full tier.
+any pair fails; gate core-597 runs it on the full tier.
 ``--self-test`` exercises the merge, its removal and the exact path's rule
 and seeds on synthetic records.
 
