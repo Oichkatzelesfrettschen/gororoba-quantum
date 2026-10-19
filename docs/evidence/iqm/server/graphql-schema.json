@@ -40,8 +40,10 @@
             }
           }
         ],
+        "interfaces": null,
         "kind": "INPUT_OBJECT",
-        "name": "AccessInfo"
+        "name": "AccessInfo",
+        "possibleTypes": null
       },
       {
         "description": "Account a user can be authenticated to \u2014 organization, team, or personal.",
@@ -97,8 +99,27 @@
           }
         ],
         "inputFields": null,
+        "interfaces": null,
         "kind": "INTERFACE",
-        "name": "Account"
+        "name": "Account",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "PersonalAccount"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Organization"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Team"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "DeletedAccount"
+          }
+        ]
       },
       {
         "description": "A user's membership in an account (organization, team, or personal), including their role.",
@@ -249,8 +270,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "AccountMember"
+        "name": "AccountMember",
+        "possibleTypes": null
       },
       {
         "description": "The role of a user within an account (organization or team).",
@@ -273,8 +296,10 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "AccountRole"
+        "name": "AccountRole",
+        "possibleTypes": null
       },
       {
         "description": "Kind of account: personal, organization, or team.",
@@ -297,16 +322,116 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "AccountType"
+        "name": "AccountType",
+        "possibleTypes": null
+      },
+      {
+        "description": "A change to the balance with no usage behind it: credits added, revoked,\ncorrected or expired.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the entry.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the change was recorded.",
+            "isDeprecated": false,
+            "name": "timestamp",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Signed change to the balance. A negative amount means that credits left\nthe account.",
+            "isDeprecated": false,
+            "name": "amount",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "What changed the balance.",
+            "isDeprecated": false,
+            "name": "action",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CreditAction",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account whose balance changed: the organization itself or one of\nits teams.",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "CreditHistoryEntry"
+          }
+        ],
+        "kind": "OBJECT",
+        "name": "AdjustmentCreditHistoryEntry",
+        "possibleTypes": null
       },
       {
         "description": "The `Boolean` scalar type represents `true` or `false`.",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "Boolean"
+        "name": "Boolean",
+        "possibleTypes": null
       },
       {
         "description": "A credit balance held by an account. Balances are rendered as decimal strings\n(for example `\"1234.56\"`).",
@@ -362,16 +487,189 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "Credit"
+        "name": "Credit",
+        "possibleTypes": null
+      },
+      {
+        "description": "What changed a credit balance.",
+        "enumValues": [
+          {
+            "description": "Credits added to the account, either purchased or granted.",
+            "isDeprecated": false,
+            "name": "ADD_CREDITS"
+          },
+          {
+            "description": "Credits added by the account's monthly plan.",
+            "isDeprecated": false,
+            "name": "ADD_MONTHLY_CREDITS"
+          },
+          {
+            "description": "Bonus credits, for example for signing up or for inviting a new user.",
+            "isDeprecated": false,
+            "name": "ADD_BONUS_CREDITS"
+          },
+          {
+            "description": "Credits spent on booking one or more timeslots.",
+            "isDeprecated": false,
+            "name": "BOOK_TIMESLOT"
+          },
+          {
+            "description": "Credits returned for one or more cancelled timeslots.",
+            "isDeprecated": false,
+            "name": "REFUND_TIMESLOT"
+          },
+          {
+            "description": "Credits charged for a running job.",
+            "isDeprecated": false,
+            "name": "EXECUTE_QUEUED_JOB"
+          },
+          {
+            "description": "Credits removed from the account by a system administrator.",
+            "isDeprecated": false,
+            "name": "REVOKE_CREDITS"
+          },
+          {
+            "description": "A manual correction of the balance by a system administrator.",
+            "isDeprecated": false,
+            "name": "ADJUST_CREDITS"
+          },
+          {
+            "description": "Credits moved between an organization and one of its teams.",
+            "isDeprecated": false,
+            "name": "TRANSFER_CREDITS"
+          },
+          {
+            "description": "Credits removed because they expired.",
+            "isDeprecated": false,
+            "name": "EXPIRE_CREDITS"
+          }
+        ],
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "kind": "ENUM",
+        "name": "CreditAction",
+        "possibleTypes": null
       },
       {
         "description": "An amount of account credits, exchanged as a decimal string with at most two fraction digits (for example `\"1234.56\"`). Amounts are strings rather than numbers so that no decimal precision is lost in transit.",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "CreditAmount"
+        "name": "CreditAmount",
+        "possibleTypes": null
+      },
+      {
+        "description": "One change to the credit balance of an organization or a team.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the entry.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the change was recorded.",
+            "isDeprecated": false,
+            "name": "timestamp",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Signed change to the balance. A negative amount means that credits left the account.",
+            "isDeprecated": false,
+            "name": "amount",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "What changed the balance.",
+            "isDeprecated": false,
+            "name": "action",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CreditAction",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account whose balance changed: the organization itself or one of its teams.",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "interfaces": null,
+        "kind": "INTERFACE",
+        "name": "CreditHistoryEntry",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "PaygJobCreditHistoryEntry"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "TimeslotCreditHistoryEntry"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "TransferCreditHistoryEntry"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "AdjustmentCreditHistoryEntry"
+          }
+        ]
       },
       {
         "description": "The two credits affected by a credit transfer, after the transfer completed.",
@@ -411,8 +709,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "CreditTransferResult"
+        "name": "CreditTransferResult",
+        "possibleTypes": null
       },
       {
         "description": "The authenticated subject making the request, exposing their profile and current account context.",
@@ -448,24 +748,39 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "CurrentSubject"
+        "name": "CurrentSubject",
+        "possibleTypes": null
       },
       {
         "description": "Input/Output is an RFC3339 string, for example `2025-06-01T10:00:00Z` or `2025-01-01T00:00:00+02:00`.",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "DateTime"
+        "name": "DateTime",
+        "possibleTypes": null
       },
       {
         "description": "Outcome of `deleteTeam`: either the team was deleted\n([`TeamDeletionResult`](#type:TeamDeletionResult)) or the supplied checksum\nwas stale\n([`TeamDeletionChecksumMismatch`](#type:TeamDeletionChecksumMismatch)).",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "UNION",
-        "name": "DeleteTeamResult"
+        "name": "DeleteTeamResult",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "TeamDeletionResult"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "TeamDeletionChecksumMismatch"
+          }
+        ]
       },
       {
         "description": "An account that has been deleted.\n\nReturned in place of a personal or team account that no longer exists, so\nthat references to it \u2014 such as the owner of a past job \u2014 still resolve.\nOnly the account's original id and type remain available; the name is always\n\"Deleted account\" and no other details are exposed.",
@@ -521,8 +836,15 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Account"
+          }
+        ],
         "kind": "OBJECT",
-        "name": "DeletedAccount"
+        "name": "DeletedAccount",
+        "possibleTypes": null
       },
       {
         "description": "A member invitation that could not be sent.",
@@ -562,16 +884,20 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "FailedInvite"
+        "name": "FailedInvite",
+        "possibleTypes": null
       },
       {
         "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "Float"
+        "name": "Float",
+        "possibleTypes": null
       },
       {
         "description": "A user who was a member of an account but no longer is \u2014 their membership\nwas removed, or their user account was deleted.\n\nReturned in place of an [`AccountMember`](#type:AccountMember) so a reference\nto the former member still resolves. Only the identifier remains \u2014 matching\nthe underlying user and the former membership \u2014 no name, email, or role is\navailable.",
@@ -595,16 +921,20 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "FormerMember"
+        "name": "FormerMember",
+        "possibleTypes": null
       },
       {
         "description": null,
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "ID"
+        "name": "ID",
+        "possibleTypes": null
       },
       {
         "description": "A time interval bounded by a start and end timestamp.",
@@ -640,16 +970,20 @@
             }
           }
         ],
+        "interfaces": null,
         "kind": "INPUT_OBJECT",
-        "name": "InputTimeRange"
+        "name": "InputTimeRange",
+        "possibleTypes": null
       },
       {
         "description": "The `Int` scalar type represents non-fractional whole numeric values.",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "Int"
+        "name": "Int",
+        "possibleTypes": null
       },
       {
         "description": "Summary of a batch member invitation operation.",
@@ -703,8 +1037,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "InviteSummary"
+        "name": "InviteSummary",
+        "possibleTypes": null
       },
       {
         "description": "A quantum job submitted by a user, including its status, execution details and produced artifacts.",
@@ -1042,8 +1378,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "Job"
+        "name": "Job",
+        "possibleTypes": null
       },
       {
         "description": "An artifact produced by a job execution (e.g. measurement results, sweep data).",
@@ -1099,8 +1437,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "JobArtifact"
+        "name": "JobArtifact",
+        "possibleTypes": null
       },
       {
         "description": "Criteria for filtering a list of jobs.",
@@ -1135,8 +1475,10 @@
             }
           }
         ],
+        "interfaces": null,
         "kind": "INPUT_OBJECT",
-        "name": "JobFilters"
+        "name": "JobFilters",
+        "possibleTypes": null
       },
       {
         "description": "Summary of a job's input payload.",
@@ -1180,8 +1522,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "JobInputSummary"
+        "name": "JobInputSummary",
+        "possibleTypes": null
       },
       {
         "description": "The kind of workload a job represents.",
@@ -1199,8 +1543,10 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "JobKind"
+        "name": "JobKind",
+        "possibleTypes": null
       },
       {
         "description": "Timing and billing metrics recorded for a job.\nThe total runtime, `runtimeSeconds`, is `compilationSeconds` plus\n`executionSeconds`. Credits are charged on `billedSeconds`, which is `runtimeSeconds` rounded up to whole\nseconds.",
@@ -1268,8 +1614,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "JobMetrics"
+        "name": "JobMetrics",
+        "possibleTypes": null
       },
       {
         "description": "The externally visible execution status of a job.",
@@ -1302,16 +1650,29 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "JobStatus"
+        "name": "JobStatus",
+        "possibleTypes": null
       },
       {
-        "description": "The submitter of a job: either a current\n[`AccountMember`](#type:AccountMember), or a\n[`FormerMember`](#type:FormerMember) when the submitter is no longer a member\nof the account.",
+        "description": "The user who submitted a job: either a current\n[`AccountMember`](#type:AccountMember), or a\n[`FormerMember`](#type:FormerMember) when they are no longer a member of\nthe account.",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "UNION",
-        "name": "JobSubmitter"
+        "name": "JobSubmitter",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "AccountMember"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "FormerMember"
+          }
+        ]
       },
       {
         "description": "Single occurred event in the job timeline",
@@ -1367,8 +1728,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "JobTimelineEvent"
+        "name": "JobTimelineEvent",
+        "possibleTypes": null
       },
       {
         "description": "A single member invitation: the recipient email and the role to grant on acceptance.",
@@ -1404,8 +1767,10 @@
             }
           }
         ],
+        "interfaces": null,
         "kind": "INPUT_OBJECT",
-        "name": "MemberInvitationInput"
+        "name": "MemberInvitationInput",
+        "possibleTypes": null
       },
       {
         "description": null,
@@ -1836,11 +2201,29 @@
                 "ofType": null
               }
             }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Returns the current user's referral link, creating it first if they do\nnot already have one. Safe to call repeatedly: the link is stable once\ncreated.",
+            "isDeprecated": false,
+            "name": "ensureReferralLink",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Referral",
+                "ofType": null
+              }
+            }
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "Mutation"
+        "name": "Mutation",
+        "possibleTypes": null
       },
       {
         "description": "An organization account grouping multiple users and teams.",
@@ -2101,11 +2484,200 @@
                 "ofType": null
               }
             }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Time the history covers.",
+                "name": "range",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "InputTimeRange",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "1",
+                "description": "1-based page number",
+                "name": "page",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "10",
+                "description": "Number of items per page",
+                "name": "pageSize",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "ASC",
+                "description": "Sort direction on `timestamp`",
+                "name": "sorting",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "SortOrder",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Only entries with one of these actions. Omit it or pass `null` for every action. An empty list matches no entries.",
+                "name": "actions",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "CreditAction",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns the changes to the organization's own credit balance in a time\nrange, sorted by `timestamp`. Like `usageReport`,\nthis excludes every team. Use `combinedCreditHistory` for the\norganization and its teams together.\n\nThe range must not span more than 123 days.",
+            "isDeprecated": false,
+            "name": "creditHistory",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedCreditHistoryEntryList",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Time the history covers.",
+                "name": "range",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "InputTimeRange",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "1",
+                "description": "1-based page number",
+                "name": "page",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "10",
+                "description": "Number of items per page",
+                "name": "pageSize",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "ASC",
+                "description": "Sort direction on `timestamp`",
+                "name": "sorting",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "SortOrder",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Only entries with one of these actions. Omit for all actions.",
+                "name": "actions",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "CreditAction",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns the changes to the credit balances of this organization and\nevery team under it, deleted teams included, in a time range. The\nentries are sorted by `timestamp`. A transfer\nbetween the organization and a team appears once for each side.\n\nThe range must not span more than 123 days.",
+            "isDeprecated": false,
+            "name": "combinedCreditHistory",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedCreditHistoryEntryList",
+                "ofType": null
+              }
+            }
           }
         ],
         "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Account"
+          }
+        ],
         "kind": "OBJECT",
-        "name": "Organization"
+        "name": "Organization",
+        "possibleTypes": null
       },
       {
         "description": "A single page of results together with the total count of matching items.",
@@ -2152,8 +2724,60 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "PaginatedAccountMemberList"
+        "name": "PaginatedAccountMemberList",
+        "possibleTypes": null
+      },
+      {
+        "description": "A single page of results together with the total count of matching items.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Items on the current page.",
+            "isDeprecated": false,
+            "name": "items",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INTERFACE",
+                    "name": "CreditHistoryEntry"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Total number of items matching the query across all pages.",
+            "isDeprecated": false,
+            "name": "total",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "kind": "OBJECT",
+        "name": "PaginatedCreditHistoryEntryList",
+        "possibleTypes": null
       },
       {
         "description": "A single page of results together with the total count of matching items.",
@@ -2200,8 +2824,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "PaginatedJobList"
+        "name": "PaginatedJobList",
+        "possibleTypes": null
       },
       {
         "description": "A single page of results together with the total count of matching items.",
@@ -2248,8 +2874,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "PaginatedQuantumComputerList"
+        "name": "PaginatedQuantumComputerList",
+        "possibleTypes": null
       },
       {
         "description": "A single page of results together with the total count of matching items.",
@@ -2296,8 +2924,142 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "PaginatedTeamList"
+        "name": "PaginatedTeamList",
+        "possibleTypes": null
+      },
+      {
+        "description": "Credits charged for one job run.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the entry.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the change was recorded.",
+            "isDeprecated": false,
+            "name": "timestamp",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Signed change to the balance. A negative amount means that credits left\nthe account.",
+            "isDeprecated": false,
+            "name": "amount",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "What changed the balance. Always `EXECUTE_QUEUED_JOB` for this type.",
+            "isDeprecated": false,
+            "name": "action",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CreditAction",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account whose balance changed: the organization itself or one of\nits teams.",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The quantum computer that ran the job. Null if the job or the quantum\ncomputer no longer exists.",
+            "isDeprecated": false,
+            "name": "quantumComputer",
+            "type": {
+              "kind": "OBJECT",
+              "name": "QuantumComputer",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Seconds the job spent executing on the quantum computer. Null if the job\nrecorded none or no longer exists.",
+            "isDeprecated": false,
+            "name": "executionSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Seconds spent compiling the job. Null if the job recorded none or no\nlonger exists.",
+            "isDeprecated": false,
+            "name": "compilationSeconds",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            }
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "CreditHistoryEntry"
+          }
+        ],
+        "kind": "OBJECT",
+        "name": "PaygJobCreditHistoryEntry",
+        "possibleTypes": null
       },
       {
         "description": "A personal account belonging to a single user.",
@@ -2365,8 +3127,15 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Account"
+          }
+        ],
         "kind": "OBJECT",
-        "name": "PersonalAccount"
+        "name": "PersonalAccount",
+        "possibleTypes": null
       },
       {
         "description": "Additional information and links for a quantum computer.",
@@ -2430,8 +3199,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QcAdditionalInfo"
+        "name": "QcAdditionalInfo",
+        "possibleTypes": null
       },
       {
         "description": "Backend type of a quantum computer.",
@@ -2449,8 +3220,10 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "QcBackendType"
+        "name": "QcBackendType",
+        "possibleTypes": null
       },
       {
         "description": "Health of a quantum computer.",
@@ -2490,8 +3263,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QcHealth"
+        "name": "QcHealth",
+        "possibleTypes": null
       },
       {
         "description": "Pricing information for a quantum computer.",
@@ -2527,8 +3302,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QcPricing"
+        "name": "QcPricing",
+        "possibleTypes": null
       },
       {
         "description": "Timeslot booking pricing for a quantum computer.",
@@ -2568,8 +3345,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QcTimeslotPricing"
+        "name": "QcTimeslotPricing",
+        "possibleTypes": null
       },
       {
         "description": "A quantum computer available on the platform.",
@@ -2800,8 +3579,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QuantumComputer"
+        "name": "QuantumComputer",
+        "possibleTypes": null
       },
       {
         "description": "A static configuration artifact associated with a quantum computer.",
@@ -2857,8 +3638,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QuantumComputerArtifact"
+        "name": "QuantumComputerArtifact",
+        "possibleTypes": null
       },
       {
         "description": "Job size limits of a quantum computer.",
@@ -2946,8 +3729,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QuantumComputerLimits"
+        "name": "QuantumComputerLimits",
+        "possibleTypes": null
       },
       {
         "description": "Operational status of a quantum computer.",
@@ -2970,8 +3755,10 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "QuantumComputerOperationalStatus"
+        "name": "QuantumComputerOperationalStatus",
+        "possibleTypes": null
       },
       {
         "description": "Time one account spent on a single quantum computer.",
@@ -3027,8 +3814,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "QuantumComputerUsageTotals"
+        "name": "QuantumComputerUsageTotals",
+        "possibleTypes": null
       },
       {
         "description": "Filters, sorting and pagination for the `quantumComputers` query.",
@@ -3109,8 +3898,10 @@
             }
           }
         ],
+        "interfaces": null,
         "kind": "INPUT_OBJECT",
-        "name": "QuantumComputersInput"
+        "name": "QuantumComputersInput",
+        "possibleTypes": null
       },
       {
         "description": "Field by which the quantum computer listing can be ordered.",
@@ -3128,8 +3919,10 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "QuantumComputersSortBy"
+        "name": "QuantumComputersSortBy",
+        "possibleTypes": null
       },
       {
         "description": null,
@@ -3384,11 +4177,116 @@
               "name": "Credit",
               "ofType": null
             }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Returns the current user's referral link and invite state. The link is\n`null` until the user creates one with `ensureReferralLink`.",
+            "isDeprecated": false,
+            "name": "referral",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Referral",
+                "ofType": null
+              }
+            }
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "Query"
+        "name": "Query",
+        "possibleTypes": null
+      },
+      {
+        "description": "The current user's referral link and the state of their referrals: how\nmany they have left, the referral cap, and the credit terms for a\nsuccessful referral. Only ever returned by `referral` or\n`ensureReferralLink`, so the type itself adds no further access check.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The shareable referral link, or `null` if the user has not created one\nyet (see `ensureReferralLink`).",
+            "isDeprecated": false,
+            "name": "link",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "How many people have successfully signed up through this link so far.",
+            "isDeprecated": false,
+            "name": "referralsUsed",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The most successful sign-ups a single link can ever earn credits for.",
+            "isDeprecated": false,
+            "name": "maxReferrals",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Credits granted to both the referrer and the new user for each\nsuccessful referral.",
+            "isDeprecated": false,
+            "name": "referralBonus",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "How many months the granted credits stay valid before they expire.",
+            "isDeprecated": false,
+            "name": "creditValidityMonths",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "kind": "OBJECT",
+        "name": "Referral",
+        "possibleTypes": null
       },
       {
         "description": "A removal that failed, with the reason.",
@@ -3428,8 +4326,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "RemoveAccountMemberFailure"
+        "name": "RemoveAccountMemberFailure",
+        "possibleTypes": null
       },
       {
         "description": "Result of a batch account member (Organization or Team) removal.",
@@ -3483,8 +4383,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "RemoveAccountMemberResult"
+        "name": "RemoveAccountMemberResult",
+        "possibleTypes": null
       },
       {
         "description": "Sort direction applied to an ordered list of results.",
@@ -3502,16 +4404,20 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "SortOrder"
+        "name": "SortOrder",
+        "possibleTypes": null
       },
       {
         "description": "The `String` scalar type represents textual data, represented as UTF-8\ncharacter sequences. The String type is most often used by GraphQL to\nrepresent free-form human-readable text.",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "String"
+        "name": "String",
+        "possibleTypes": null
       },
       {
         "description": "A member invitation that was created successfully.",
@@ -3551,8 +4457,19 @@
           }
         ],
         "inputFields": null,
+        "interfaces": null,
         "kind": "INTERFACE",
-        "name": "SuccessfulInvite"
+        "name": "SuccessfulInvite",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "SuccessfulInviteViaEmail"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "SuccessfulInviteViaLink"
+          }
+        ]
       },
       {
         "description": "An invitation that has been emailed to the user.",
@@ -3592,8 +4509,15 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "SuccessfulInvite"
+          }
+        ],
         "kind": "OBJECT",
-        "name": "SuccessfulInviteViaEmail"
+        "name": "SuccessfulInviteViaEmail",
+        "possibleTypes": null
       },
       {
         "description": "An invitation that could not be emailed, because the system has no email\nservice.",
@@ -3649,8 +4573,15 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "SuccessfulInvite"
+          }
+        ],
         "kind": "OBJECT",
-        "name": "SuccessfulInviteViaLink"
+        "name": "SuccessfulInviteViaLink",
+        "possibleTypes": null
       },
       {
         "description": "A team subgroup within an organization.",
@@ -3837,11 +4768,109 @@
                 "ofType": null
               }
             }
+          },
+          {
+            "args": [
+              {
+                "defaultValue": null,
+                "description": "Time the history covers.",
+                "name": "range",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "InputTimeRange",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "1",
+                "description": "1-based page number",
+                "name": "page",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "10",
+                "description": "Number of items per page",
+                "name": "pageSize",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": "ASC",
+                "description": "Sort direction on `timestamp`",
+                "name": "sorting",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "SortOrder",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "defaultValue": null,
+                "description": "Only entries with one of these actions. Omit for all actions.",
+                "name": "actions",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "CreditAction",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            ],
+            "deprecationReason": null,
+            "description": "Returns the changes to the team's credit balance in a time range, sorted by `timestamp`.\n\nThe range must not span more than 123 days.",
+            "isDeprecated": false,
+            "name": "creditHistory",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginatedCreditHistoryEntryList",
+                "ofType": null
+              }
+            }
           }
         ],
         "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Account"
+          }
+        ],
         "kind": "OBJECT",
-        "name": "Team"
+        "name": "Team",
+        "possibleTypes": null
       },
       {
         "description": "Returned by `deleteTeam` when a supplied `expectedChecksum` no longer matches\nthe team's current state. No deletion is performed; the caller should review\nthe fresh plan (which carries a new checksum) and retry.",
@@ -3865,8 +4894,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "TeamDeletionChecksumMismatch"
+        "name": "TeamDeletionChecksumMismatch",
+        "possibleTypes": null
       },
       {
         "description": "Read-only preview of what deleting a team would remove. Returned by the\n`teamDeletionPlan` query and inside a checksum mismatch on `deleteTeam`.",
@@ -4034,8 +5065,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "TeamDeletionPlan"
+        "name": "TeamDeletionPlan",
+        "possibleTypes": null
       },
       {
         "description": "Actual counts and amounts after a team was deleted.",
@@ -4187,8 +5220,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "TeamDeletionResult"
+        "name": "TeamDeletionResult",
+        "possibleTypes": null
       },
       {
         "description": "A reserved time window during which an account has exclusive access to a quantum computer.",
@@ -4272,16 +5307,228 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "Timeslot"
+        "name": "Timeslot",
+        "possibleTypes": null
+      },
+      {
+        "description": "Credits spent on or returned for one or more timeslots. A booking of several\ntimeslots at once produces a single entry that covers all of them.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the entry.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the change was recorded.",
+            "isDeprecated": false,
+            "name": "timestamp",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Signed change to the balance. A negative amount means that credits left\nthe account.",
+            "isDeprecated": false,
+            "name": "amount",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "What changed the balance: `BOOK_TIMESLOT` or `REFUND_TIMESLOT`.",
+            "isDeprecated": false,
+            "name": "action",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CreditAction",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account whose balance changed: the organization itself or one of\nits teams.",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "CreditHistoryEntry"
+          }
+        ],
+        "kind": "OBJECT",
+        "name": "TimeslotCreditHistoryEntry",
+        "possibleTypes": null
+      },
+      {
+        "description": "One side of a credit transfer between an organization and one of its teams.\nA transfer produces two entries, one for each account.",
+        "enumValues": null,
+        "fields": [
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Unique identifier of the entry.",
+            "isDeprecated": false,
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "When the change was recorded.",
+            "isDeprecated": false,
+            "name": "timestamp",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "Signed change to the balance. A negative amount means that credits left\nthe account.",
+            "isDeprecated": false,
+            "name": "amount",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "CreditAmount",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "What changed the balance. Always `TRANSFER_CREDITS` for this type.",
+            "isDeprecated": false,
+            "name": "action",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CreditAction",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account whose balance changed: the organization itself or one of\nits teams.",
+            "isDeprecated": false,
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "args": [],
+            "deprecationReason": null,
+            "description": "The account on the other side of the transfer. If `amount` is positive,\nthe credits came from this account. If it is negative, they went to it.",
+            "isDeprecated": false,
+            "name": "otherAccount",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INTERFACE",
+                "name": "Account",
+                "ofType": null
+              }
+            }
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "CreditHistoryEntry"
+          }
+        ],
+        "kind": "OBJECT",
+        "name": "TransferCreditHistoryEntry",
+        "possibleTypes": null
       },
       {
         "description": "A UUID is a unique 128-bit number, stored as 16 octets. UUIDs are parsed as\nStrings within GraphQL. UUIDs are used to assign unique identifiers to\nentities without requiring a central allocating authority.\n\n# References\n\n* [Wikipedia: Universally Unique Identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier)\n* [RFC4122: A Universally Unique Identifier (UUID) URN Namespace](http://tools.ietf.org/html/rfc4122)",
         "enumValues": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "SCALAR",
-        "name": "UUID"
+        "name": "UUID",
+        "possibleTypes": null
       },
       {
         "description": "Consumption figures for one account, or for several added together.\n\nTotal runtime is `compilationSeconds` plus `executionSeconds`.",
@@ -4360,8 +5607,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "UsageTotals"
+        "name": "UsageTotals",
+        "possibleTypes": null
       },
       {
         "description": "A person's identity in the system.",
@@ -4413,8 +5662,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "User"
+        "name": "User",
+        "possibleTypes": null
       },
       {
         "description": "A Directive provides a way to describe alternate runtime execution and type\nvalidation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution\nbehavior in ways field arguments will not suffice, such as conditionally\nincluding or skipping a field. Directives provide this by describing\nadditional information to the executor.",
@@ -4527,8 +5778,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "__Directive"
+        "name": "__Directive",
+        "possibleTypes": null
       },
       {
         "description": "A Directive can be adjacent to many parts of the GraphQL language, a\n__DirectiveLocation describes one such possible adjacencies.",
@@ -4631,8 +5884,10 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "__DirectiveLocation"
+        "name": "__DirectiveLocation",
+        "possibleTypes": null
       },
       {
         "description": "One possible value for a given Enum. Enum values are unique values, not a\nplaceholder for a string or numeric value. However an Enum value is returned\nin a JSON response as a string.",
@@ -4696,8 +5951,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "__EnumValue"
+        "name": "__EnumValue",
+        "possibleTypes": null
       },
       {
         "description": "Object and Interface types are described by a list of Fields, each of which\nhas a name, potentially a list of arguments, and a return type.",
@@ -4815,8 +6072,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "__Field"
+        "name": "__Field",
+        "possibleTypes": null
       },
       {
         "description": "Arguments provided to Fields or Directives and the input fields of an\nInputObject are represented as Input Values which describe their type and\noptionally a default value.",
@@ -4908,8 +6167,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "__InputValue"
+        "name": "__InputValue",
+        "possibleTypes": null
       },
       {
         "description": "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes\nall available types and directives on the server, as well as the entry\npoints for query, mutation, and subscription operations.",
@@ -5019,8 +6280,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "__Schema"
+        "name": "__Schema",
+        "possibleTypes": null
       },
       {
         "description": "The fundamental unit of any GraphQL Schema is the type. There are many kinds\nof types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about\nthat type. Scalar types provide no information beyond a name and\ndescription, while Enum types provide their values. Object and Interface\ntypes provide the fields they describe. Abstract types, Union and Interface,\nprovide the Object types possible at runtime. List and NonNull types compose\nother types.",
@@ -5249,8 +6512,10 @@
           }
         ],
         "inputFields": null,
+        "interfaces": [],
         "kind": "OBJECT",
-        "name": "__Type"
+        "name": "__Type",
+        "possibleTypes": null
       },
       {
         "description": "An enum describing what kind of type a given `__Type` is.",
@@ -5298,8 +6563,10 @@
         ],
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
         "kind": "ENUM",
-        "name": "__TypeKind"
+        "name": "__TypeKind",
+        "possibleTypes": null
       }
     ]
   }
