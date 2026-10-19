@@ -2163,11 +2163,13 @@ def _split_spectator_reads(visibilities: dict[str, float]) -> dict[str, dict[str
 def _check_overlap_split() -> dict[str, str]:
     """Planted truths reach the preregistered overlap-split verdicts.
 
-    Overlap: the unbracketed pair keeps 0.55 of the nominal pair's contrast,
-    so window_overlap_loss passes; equal pairs fail it. Readout dephasing
+    Pinned loss: window_delay keeps 0.55 of nominal's contrast, so
+    window_delay_pinned_loss passes; equal pairs fail it. Overlap: the
+    unbracketed pair keeps 0.55 of window_delay's contrast, so
+    window_overlap_loss passes; equal pairs fail it. Readout dephasing
     (reset_only 0.6, idle 0.97, immediate 0.98) passes
     spectator_readout_dephasing and fails spectator_idle_dephasing;
-    intrinsic idle dephasing (idle and reset_only 0.6, immediate 0.98)
+    unrecorded-control idle loss (idle and reset_only 0.6, immediate 0.98)
     passes the idle contract and fails the readout one; a preparation floor
     (every kind 0.6) fails both. The planned overlap-split names agree with
     the analyzer's, an absent unbracketed pair is not admissible, and an
@@ -2182,18 +2184,24 @@ def _check_overlap_split() -> dict[str, str]:
         return {arm: np.round((kept * law + (1 - kept) * 0.25) * CONTRACT_SHOTS) for arm, law in nominal_law.items()}
 
     verdicts = {}
-    overlap = magnitude_decline(pair(0.55), pair(1.0), alpha)
+    if (
+        magnitude_decline(pair(0.55), pair(1.0), alpha)["status"] != "pass"
+        or magnitude_decline(pair(1.0), pair(1.0), alpha)["status"] != "fail"
+    ):
+        raise RuntimeError("window_delay_pinned_loss misreads a 0.55 loss or an equal pair")
+    verdicts["pinned_loss"] = "pinned pass; equal pinned fail"
+    overlap = magnitude_decline(pair(0.55 * 0.8), pair(0.8), alpha)
     if overlap["status"] != "pass" or not math.isclose(
         overlap["contrast_magnitude"] / overlap["reference_contrast_magnitude"], 0.55, rel_tol=1e-3
     ):
-        raise RuntimeError(f"an overlap loss to 0.55 of the nominal contrast fails window_overlap_loss: {overlap}")
+        raise RuntimeError(f"an overlap loss to 0.55 of the window_delay contrast fails window_overlap_loss: {overlap}")
     verdicts["overlap"] = "overlap pass"
-    if magnitude_decline(pair(1.0), pair(1.0), alpha)["status"] != "fail":
-        raise RuntimeError("equal unbracketed and nominal contrasts pass window_overlap_loss")
+    if magnitude_decline(pair(0.8), pair(0.8), alpha)["status"] != "fail":
+        raise RuntimeError("equal unbracketed and bracketed window_delay contrasts pass window_overlap_loss")
     verdicts["no_overlap"] = "overlap fail"
     for label, truth, expected in (
         ("readout_dephasing", {"reset_only": 0.6, "idle": 0.97, "immediate": 0.98}, ("pass", "fail")),
-        ("intrinsic_dephasing", {"reset_only": 0.6, "idle": 0.6, "immediate": 0.98}, ("fail", "pass")),
+        ("unrecorded_control_idle_loss", {"reset_only": 0.6, "idle": 0.6, "immediate": 0.98}, ("fail", "pass")),
         ("preparation_floor", {"reset_only": 0.6, "idle": 0.6, "immediate": 0.6}, ("fail", "fail")),
     ):
         reads = _split_spectator_reads(truth)
@@ -2228,23 +2236,32 @@ def _check_overlap_split() -> dict[str, str]:
     roles = {
         name: role
         for name, role in _contract_roles({7: {0: -1, 1: -1}}).items()
-        if name.startswith(orbit_pair("nominal") + "_")
+        if name.startswith(tuple(f"{orbit_pair(variant)}_{arm}" for variant in OVERLAP_BRACKETED for arm in ARMS))
     }
     if split_admissibility(roles)["admissible"]:
         raise RuntimeError("an overlap split without its unbracketed pair is admissible")
+    unbracketed = [f"{orbit_pair(OVERLAP_UNBRACKETED)}_{arm}" for arm in ARMS]
     shifted = _contract_roles({9: {0: 1, 1: 1}})
-    for arm in ARMS:
-        roles[f"{orbit_pair('unbracketed')}_{arm}"] = shifted[f"{orbit_pair('nominal')}_{arm}"] | {"unresolved": [3]}
+    for arm, name in zip(ARMS, unbracketed, strict=True):
+        roles[name] = shifted[f"{orbit_pair('window_delay')}_{arm}"] | {"unresolved": [3]}
     admitted = split_admissibility(roles)
-    if not admitted["admissible"] or admitted["exempt"] != sorted(f"{orbit_pair('unbracketed')}_{arm}" for arm in ARMS):
+    if not admitted["admissible"] or admitted["exempt"] != sorted(unbracketed):
         raise RuntimeError(f"an unbracketed coupling gates the overlap split: {admitted}")
-    pairs = {orbit_pair("nominal"): pair(1.0), orbit_pair("unbracketed"): pair(0.55)}
+    without_delay = {name: role for name, role in roles.items() if "_window_delay_" not in name or name in unbracketed}
+    if split_admissibility(without_delay)["admissible"]:
+        raise RuntimeError("an overlap split without its bracketed window_delay pair is admissible")
+    pairs = {
+        orbit_pair("nominal"): pair(1.0),
+        orbit_pair("window_delay"): pair(0.55),
+        orbit_pair(OVERLAP_UNBRACKETED): pair(0.55),
+    }
     results = overlap_contract_results(
         roles, pairs, _split_spectator_reads({"reset_only": 0.6, "idle": 0.97, "immediate": 0.98})
     )
-    if [results[name]["status"] for name in OVERLAP_CONTRACTS] != ["pass", "pass", "fail"]:
+    if [results[name]["status"] for name in OVERLAP_CONTRACTS] != ["pass", "fail", "pass", "fail"]:
         raise RuntimeError(f"the overlap contracts read {results}")
-    if contract_alpha(False) != CONTRACT_ALPHA or not math.isclose(contract_alpha(True), FAMILY_ALPHA / 3):
+    verdicts["combined"] = "pinned pass, overlap fail, readout pass, idle fail"
+    if contract_alpha(False) != CONTRACT_ALPHA or not math.isclose(contract_alpha(True), FAMILY_ALPHA / 4):
         raise RuntimeError("the per-contract alpha does not follow the configuration's contracts")
     return verdicts
 
@@ -2534,18 +2551,26 @@ SPECTATOR_QUADRATURES = ("x", "y")
 SPECTATOR_PREFIX = "n21_spectator_"
 SPECTATOR_MEMBERS = tuple(f"{SPECTATOR_PREFIX}{k}_{q}" for k in SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES)
 # The overlap split (diagnostic_experiments.n21_orbit_rca_group,
-# overlap_split) pairs the bracketed nominal arm with the same program
-# without its window barriers and reads qubit 2 at once (immediate), across
-# an idle of the control's measure plus reset durations (idle), and across
-# the reset_only reference.
+# overlap_split) holds the bracketed nominal and window_delay pairs and
+# window_delay without its window barriers, and reads qubit 2 at once
+# (immediate), across an idle of the control's measure plus reset durations
+# with the unrecorded control in |+> (idle), and across the reset_only
+# reference.
 SPLIT_SPECTATOR_KINDS = ("immediate", "idle", "reset_only")
 SPLIT_SPECTATOR_MEMBERS = tuple(
     f"{SPECTATOR_PREFIX}{k}_{q}" for k in SPLIT_SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES
 )
 ALL_SPECTATOR_MEMBERS = (*SPECTATOR_MEMBERS, *(m for m in SPLIT_SPECTATOR_MEMBERS if m not in SPECTATOR_MEMBERS))
-OVERLAP_PAIRS = ("nominal", "unbracketed")
-UNBRACKETED_PREFIX = "n21_orbit_unbracketed_"
-OVERLAP_CONTRACTS = ("window_overlap_loss", "spectator_readout_dephasing", "spectator_idle_dephasing")
+OVERLAP_BRACKETED = ("nominal", "window_delay")
+OVERLAP_UNBRACKETED = "window_delay_unbracketed"
+OVERLAP_PAIRS = (*OVERLAP_BRACKETED, OVERLAP_UNBRACKETED)
+UNBRACKETED_MARK = "_unbracketed_"
+OVERLAP_CONTRACTS = (
+    "window_delay_pinned_loss",
+    "window_overlap_loss",
+    "spectator_readout_dephasing",
+    "spectator_idle_dephasing",
+)
 # The herald bit of logical qubit 2; its excitation maps |+> to |->.
 SPECTATOR_HERALD_BIT = 2
 # Bonferroni over the five contracts holds their family-wise error at FAMILY_ALPHA.
@@ -2560,7 +2585,7 @@ def orbit_pair(variant: str) -> str:
 
 def overlap_split(names: list[str]) -> bool:
     """Whether a record's members form the overlap split: an unbracketed orbit arm is present."""
-    return any(name.startswith(UNBRACKETED_PREFIX) for name in names)
+    return any(name.startswith("n21_orbit_") and UNBRACKETED_MARK in name for name in names)
 
 
 def contract_names(split: bool) -> tuple[str, ...]:
@@ -2625,16 +2650,20 @@ def admissibility(roles: dict[str, dict[str, Any]], variants: tuple[str, ...] = 
 
 
 def split_admissibility(roles: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    """Admissibility of an overlap split: the nominal pair as admissibility reads it, and the unbracketed pair present.
+    """Admissibility of an overlap split: the bracketed pairs as admissibility reads them, the unbracketed pair present.
 
     The unbracketed arms may play a work-qubit gate in the control's window,
-    so their coupling can differ from the nominal one; window_overlap_loss
+    so their coupling can differ from the bracketed one; window_overlap_loss
     compares contrast magnitudes, which remove the work phase, so their
     coupling and probes gate nothing and exempt lists them.
     """
-    bracketed = {name: role for name, role in roles.items() if not name.startswith(UNBRACKETED_PREFIX)}
-    admitted = admissibility(bracketed, ("nominal",))
-    absent = [f"{orbit_pair('unbracketed')}_{arm}" for arm in ARMS if f"{orbit_pair('unbracketed')}_{arm}" not in roles]
+    bracketed = {name: role for name, role in roles.items() if UNBRACKETED_MARK not in name}
+    admitted = admissibility(bracketed, OVERLAP_BRACKETED)
+    absent = [
+        f"{orbit_pair(OVERLAP_UNBRACKETED)}_{arm}"
+        for arm in ARMS
+        if f"{orbit_pair(OVERLAP_UNBRACKETED)}_{arm}" not in roles
+    ]
     admitted["missing"] = [*admitted["missing"], *absent]
     admitted["admissible"] = admitted["admissible"] and not absent
     admitted["exempt"] = sorted(set(roles) - set(bracketed))
@@ -3353,15 +3382,20 @@ def overlap_contract_results(
 ) -> dict[str, dict[str, Any]]:
     """Every overlap-split contract's status and deciding numbers, each at contract_alpha(True).
 
-    window_overlap_loss passes when the unbracketed pair's contrast
-    magnitude lies below the bracketed nominal pair's (magnitude_decline):
-    a work-qubit operation that overlaps the control's readout costs
-    coherence. spectator_readout_dephasing passes when qubit 2's reset_only
-    visibility lies below its idle one: the reset's readout of the control
-    dephases qubit 2. spectator_idle_dephasing passes when the idle
-    visibility lies below the immediate one: qubit 2 dephases over an idle of
-    the window's length. herald_margin counts against the magnitude
-    contract's pass and spectator_herald_margin against the spectator
+    window_delay_pinned_loss passes when the bracketed window_delay pair's
+    contrast magnitude lies below the bracketed nominal pair's
+    (magnitude_decline): the added idle costs contrast on the pinned roles.
+    window_overlap_loss passes when the window_delay_unbracketed magnitude
+    lies below the bracketed window_delay one: work-qubit operations that
+    overlap the control's measure-plus-reset span cost contrast on this
+    calibration; the unbracketed arm can hold one CZ fewer, which biases
+    against a pass. spectator_readout_dephasing passes when qubit 2's
+    reset_only visibility lies below its idle one: the reset's readout of
+    the control dephases qubit 2. spectator_idle_dephasing passes when the
+    idle visibility lies below the immediate one: a loss across an idle with
+    the unrecorded control in |+>, T2* together with an unrecorded ZZ to the
+    control, not T2 alone. herald_margin counts against the magnitude
+    contracts' passes and spectator_herald_margin against the spectator
     contracts'. A split that fails split_admissibility reports every
     contract not_admissible.
     """
@@ -3370,8 +3404,11 @@ def overlap_contract_results(
         return not_admissible(admitted, OVERLAP_CONTRACTS)
     alpha = contract_alpha(True)
     return {
+        "window_delay_pinned_loss": magnitude_decline(
+            pairs[orbit_pair("window_delay")], pairs[orbit_pair("nominal")], alpha, herald_margin
+        ),
         "window_overlap_loss": magnitude_decline(
-            pairs[orbit_pair("unbracketed")], pairs[orbit_pair("nominal")], alpha, herald_margin
+            pairs[orbit_pair(OVERLAP_UNBRACKETED)], pairs[orbit_pair("window_delay")], alpha, herald_margin
         ),
         "spectator_readout_dephasing": spectator_decline(
             spectators, "reset_only", "idle", alpha, spectator_herald_margin

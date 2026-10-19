@@ -151,22 +151,35 @@ source per member. The report also records the analyzer's sha256, and
 `--expected-analyzer-sha256 HEX` refuses any other analyzer.
 
 `--overlap-split` (with `--pin-layout`; policy and family configuration bind
-it, the configuration with the control's `reset_dt`) replaces the window
-sweep with ten members: the nominal pair, the same pair without its window
-barriers (`n21_orbit_unbracketed_*`, whose compiled multipliers may play a
-work-qubit CZ during the control's readout), and qubit-2 spectators read at
-once (`immediate`), across an idle of measure plus reset durations with no
-reset (`idle`), and across the `reset_only` reference, each in X and Y. The
-immediate and idle spectators reset the control after qubit 2's readout, so
-the group stays one dynamic job (gate core-593). The analyzer reads the
-configuration from the members present and evaluates three contracts at
-0.05 / 3: window_overlap_loss passes when the unbracketed magnitude lies below
-the nominal one, spectator_readout_dephasing when the reset_only visibility
-lies below the idle one, and spectator_idle_dephasing when the idle
-visibility lies below the immediate one; the immediate visibility is reported
-against the ideal 1 and decides nothing. Admissibility reads the nominal pair
-alone, since the magnitude removes the work phase that an unbracketed
-coupling would change.
+it, the configuration with the control's `reset_dt`, `overlap_arm:
+window_delay` and each orbit arm's routed CZ and sx counts) replaces the
+window sweep with twelve members: the bracketed nominal and window_delay
+pairs, window_delay without its window barriers
+(`n21_orbit_window_delay_unbracketed_*`, whose compiled multipliers may play
+work-qubit gates during the control's measure-plus-reset span under the
+backend scheduler), and qubit-2 spectators read at once (`immediate`),
+across an idle of measure plus reset durations with no reset and the
+unrecorded control in |+> (`idle`), and across the `reset_only` reference,
+each in X and Y. The immediate and idle spectators reset the control after
+qubit 2's readout, so the group stays one dynamic job (gate core-593). The
+analyzer reads the configuration from the members present and evaluates four
+contracts at 0.05 / 4: window_delay_pinned_loss passes when the bracketed
+window_delay magnitude lies below the nominal one, window_overlap_loss when
+the unbracketed window_delay magnitude lies below the bracketed one,
+spectator_readout_dephasing when the reset_only visibility lies below the
+idle one, and spectator_idle_dephasing when the idle visibility lies below
+the immediate one, a loss across an unrecorded-control idle (T2* together
+with an unrecorded ZZ to the |+> control, not T2 alone); the immediate
+visibility is reported against the ideal 1 and decides nothing. Removing the
+barriers lets the transpiler resynthesize the block around the window, and
+on FakeFez under 142,136,143,144 the unbracketed arm holds 43 CZ against 44;
+fewer CZ raise its contrast, so the bias runs against an overlap pass and a
+fail is unresolved. A pass shows that overlap costs magnitude on that
+calibration, not that it caused the 2026-10-13T083417 loss. Admissibility
+reads the bracketed pairs alone, since the magnitude removes the work phase
+that an unbracketed coupling would change. A configuration without
+`overlap_arm` rebuilds the earlier ten-member split (nominal paired with
+nominal_unbarriered) for retained records.
 
 `--init-herald` (policy and family configuration bind it) measures every
 qubit into a `herald` register before the program, then a barrier over all
