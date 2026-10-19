@@ -68,6 +68,7 @@ from typing import Any
 from unittest import mock
 
 import pins
+from host_identity import KEY_PREFIXES, KEY_VARIABLES, identity
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MAX_SECONDS = 5.0
@@ -78,41 +79,6 @@ MERGE_IDENTITY = ["-c", "user.name=premerge", "-c", "user.email=premerge@localho
 VERDICT = re.compile(r"^(PASS|FAIL) (\S+) ")
 FAILURE_TAIL = re.compile(r"^=== (\S+) exit ")
 CACHE_SCHEMA = "gororoba-premerge-base-v1"
-# Gates read these to choose a device, toolchain, live or replay path, thread
-# count or warning policy, so each one's value enters the cache key.
-KEY_PREFIXES = (
-    "GOROROBA_",
-    "QI_",
-    "OQ_",
-    "QD_",
-    "QISKIT_",
-    "PYTHON",
-    "OMP_",
-    "OPENBLAS_",
-    "MKL_",
-    "BLIS_",
-    "VECLIB_",
-    "NUMEXPR_",
-    "RAYON_",
-    "MYPY",
-    "MPL",
-    "UV_",
-    "XDG_",
-    "LD_",
-    "CUDA_",
-)
-KEY_VARIABLES = ("GLIBC_TUNABLES", "PATH", "HOME", "VIRTUAL_ENV", "TMPDIR")
-# Gates run these from PATH (ci/pinned_tool.py prefers an installed ruff or
-# mypy at its pin and otherwise runs the pin through uv), so each one's
-# resolved file identity enters the key.
-KEY_TOOLS = ("ruff", "mypy", "uv", "shellcheck", "git", "sha256sum", "rocq")
-# These name interpreters of the separate service stacks; their installed
-# distributions enter the key beside the path.
-KEY_INTERPRETERS = ("QI_PYTHON", "OQ_PYTHON", "QD_PYTHON")
-DISTRIBUTIONS = (
-    "import importlib.metadata as m, json, sys; "
-    "print(json.dumps([sys.version, sorted({(d.metadata['Name'] or '', d.version) for d in m.distributions()})]))"
-)
 
 
 def git(repo: Path, *args: str, check: bool = True) -> str:
@@ -152,26 +118,6 @@ def default_cache() -> Path:
     return Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "gororoba-quantum" / "premerge"
 
 
-def interpreter_identity(python: str) -> list[Any]:
-    """The interpreter's real path, version and installed distributions as a gate run under it sees them."""
-    completed = subprocess.run(
-        [python, "-c", DISTRIBUTIONS], cwd=tempfile.gettempdir(), capture_output=True, text=True, check=False
-    )
-    if completed.returncode != 0:
-        raise SystemExit(f"premerge: {python} cannot list its distributions:\n{completed.stderr.strip()}")
-    return [os.path.realpath(python), json.loads(completed.stdout)]
-
-
-def tool_identity(name: str) -> list[Any] | None:
-    """The resolved path, size and modification time of a PATH tool, or None when PATH lacks it."""
-    found = shutil.which(name)
-    if found is None:
-        return None
-    real = os.path.realpath(found)
-    status = os.stat(real)
-    return [real, status.st_size, status.st_mtime_ns]
-
-
 def cache_key(base_commit: str, max_seconds: float, replay: dict[str, str]) -> tuple[str, dict[str, Any]]:
     """The digest naming a base result and the components it covers.
 
@@ -179,25 +125,11 @@ def cache_key(base_commit: str, max_seconds: float, replay: dict[str, str]) -> t
     carries (QISKIT_IBM_TOKEN matches the QISKIT_ prefix) never reaches the
     cache file.
     """
-    environment = {
-        name: hashlib.sha256(value.encode()).hexdigest()
-        for name, value in sorted(os.environ.items())
-        if name.startswith(KEY_PREFIXES) or name in KEY_VARIABLES
-    }
-    services = {
-        name: interpreter_identity(os.environ[name])
-        for name in KEY_INTERPRETERS
-        if os.environ.get(name) and os.access(os.environ[name], os.X_OK)
-    }
     components = {
         "schema": CACHE_SCHEMA,
         "base": base_commit,
         "max_seconds": max_seconds,
-        "python": interpreter_identity(interpreter()),
-        "replay": {variable: interpreter_identity(path) for variable, path in sorted(replay.items())},
-        "environment": environment,
-        "services": services,
-        "tools": {name: tool_identity(name) for name in KEY_TOOLS},
+        **identity(os.environ, interpreter(), replay),
     }
     digest = hashlib.sha256(json.dumps(components, sort_keys=True).encode()).hexdigest()
     return digest, components
@@ -428,6 +360,9 @@ def self_test() -> None:
         runner_files = (
             "ci/run_gates.py",
             "ci/gate_inputs.py",
+            "ci/gate_ledger.py",
+            "ci/host_identity.py",
+            "ci/read_trace/sitecustomize.py",
             "ci/pins.py",
             "ci/requirements-replay.txt",
             "gororoba_quantum/parallel.py",

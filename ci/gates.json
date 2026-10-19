@@ -4,7 +4,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/check_gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/check_pins.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/check_gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/check_pins.py ci/gate_ledger.py ci/host_identity.py ci/read_trace/sitecustomize.py",
    "name": "core-000",
    "seconds": 0.7,
    "tier": "pr"
@@ -3755,6 +3755,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py --self-test",
    "name": "core-591",
    "seconds": 2.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "ci",
+   "cmd": "\"$PYTHON\" -B -W error gate_ledger.py --self-test",
+   "name": "core-598",
+   "seconds": 1.5,
    "tier": "pr"
   }
  ],

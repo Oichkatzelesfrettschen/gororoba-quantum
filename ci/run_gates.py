@@ -44,11 +44,14 @@ import sys
 import time
 from collections.abc import Iterator
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
+from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
 import gate_inputs
+import gate_ledger
+import host_identity
 import pins
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -86,7 +89,9 @@ def _cpus() -> int:
     return parallel.available_cpus()
 
 
-def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple[dict[str, Any], int, float, str]:
+def _run(
+    gate: dict[str, Any], environment: dict[str, str], root: Path, trace: Path | None = None
+) -> tuple[dict[str, Any], int, float, str]:
     start = time.monotonic()
     environment = dict(environment)
     environment.setdefault("GOROROBA_WORKERS", "1")
@@ -95,6 +100,11 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
         if not environment.get(variable):
             return gate, 127, 0.0, f"historical runtime {runtime} requires {variable}"
         environment = dict(environment, PYTHON=environment[variable])
+    if trace is not None:
+        trace.mkdir(parents=True)
+        pythons = [environment.get("PYTHON", ""), *(environment.get(name, "") for name in REPLAY_INTERPRETERS.values())]
+        resolved = [os.path.realpath(found) for found in map(_which, pythons) if found]
+        environment = gate_ledger.trace_environment(environment, trace, root, resolved)
     try:
         with TemporaryDirectory(prefix="ci-gate-resources-") as temporary:
             resource_file = Path(temporary) / "usage.json"
@@ -124,6 +134,12 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
     except ValueError as error:
         return gate, 127, time.monotonic() - start, f"gate resource record is invalid: {error}"
     return measured, completed.returncode, time.monotonic() - start, completed.stdout
+
+
+def _which(name: str) -> str | None:
+    import shutil
+
+    return shutil.which(name) if name else None
 
 
 def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | None = None) -> int:
@@ -220,7 +236,7 @@ def environment_for(device: str | None, requires: str | None = None) -> dict[str
 
 
 def run_all(
-    gates: list[dict[str, Any]], environment: dict[str, str], root: Path
+    gates: list[dict[str, Any]], environment: dict[str, str], root: Path, traces: Path | None = None
 ) -> Iterator[tuple[dict[str, Any], int, float, str]]:
     """Share detected CPU slots across independent gates and their process pools."""
     capacity = _cpus()
@@ -234,13 +250,95 @@ def run_all(
                 if workers > available:
                     continue
                 child_environment = dict(environment, GOROROBA_WORKERS=str(workers))
-                active[pool.submit(_run, gate, child_environment, root)] = workers
+                trace = None if traces is None else traces / gate["name"]
+                arguments = (gate, child_environment, root) if trace is None else (gate, child_environment, root, trace)
+                active[pool.submit(_run, *arguments)] = workers
                 available -= workers
                 pending.remove(gate)
             completed, _ = wait(active, return_when=FIRST_COMPLETED)
             for future in completed:
                 available += active.pop(future)
                 yield future.result()
+
+
+@dataclass
+class GateResult:
+    """One gate's verdict: PASS or FAIL from a run, SKIP from a matching ledger entry."""
+
+    gate: dict[str, Any]
+    status: int
+    seconds: float
+    output: str
+    verdict: str
+    untraceable: list[str] = field(default_factory=list)
+
+
+def execute(
+    gates: list[dict[str, Any]],
+    environment: dict[str, str],
+    root: Path,
+    ledger: Path | None = None,
+    ledger_out: Path | None = None,
+    audit: Path | None = None,
+) -> Iterator[GateResult]:
+    """Run gates, skipping those whose ledger key matches, and record traceable passes.
+
+    With ``audit`` every gate runs; a gate the ledger at that path would
+    have skipped and that fails now yields verdict FAIL with ``untraceable``
+    naming the audit, so the caller reports the ledger miss.
+    """
+    tracing = ledger_out is not None or audit is not None
+    stored = gate_ledger.load(ledger if audit is None else audit)
+    if not tracing and ledger is None:
+        for gate, status, seconds, output in run_all(gates, environment, root):
+            yield GateResult(gate, status, seconds, output, "PASS" if status == 0 else "FAIL")
+        return
+    replay = {variable: environment[variable] for variable in REPLAY_INTERPRETERS.values() if environment.get(variable)}
+    host = gate_ledger.host_digest(host_identity.identity(environment, environment["PYTHON"], replay))
+    content = gate_ledger.Content(root)
+    capacity = _cpus()
+    cap = environment.get("GOROROBA_WORKERS")
+
+    def key(gate: dict[str, Any], reads: dict[str, list[Any]]) -> str:
+        return gate_ledger.gate_key(gate, allocated_workers(gate, capacity, cap), host, reads, content)
+
+    matching = {
+        gate["name"]
+        for gate in gates
+        if gate["name"] in stored and stored[gate["name"]]["key"] == key(gate, stored[gate["name"]]["reads"])
+    }
+    entries = dict(gate_ledger.load(ledger)) if ledger_out is not None else {}
+    to_run = gates if audit is not None else [gate for gate in gates if gate["name"] not in matching]
+    if audit is None:
+        for gate in gates:
+            if gate["name"] in matching:
+                yield GateResult(gate, 0, 0.0, "", "SKIP")
+    # Running gates may read files other gates rewrite; digests taken before
+    # the runs describe the skip decision only.
+    content.forget()
+    with TemporaryDirectory(prefix="ci-read-trace-") as temporary:
+        traces = Path(temporary) if tracing else None
+        for gate, status, seconds, output in run_all(to_run, environment, root, traces):
+            reasons: list[str] = []
+            verdict = "PASS" if status == 0 else "FAIL"
+            if traces is None:
+                pass
+            elif status == 0:
+                shell = gate_ledger.shell_untraceable(gate["cmd"])
+                reads, reasons = gate_ledger.read_trace(traces / gate["name"])
+                if shell is not None:
+                    reasons = [shell, *reasons]
+                if reads is not None and not reasons:
+                    entries[gate["name"]] = {"key": key(gate, reads), "reads": reads}
+                else:
+                    entries.pop(gate["name"], None)
+            else:
+                entries.pop(gate["name"], None)
+                if audit is not None and gate["name"] in matching:
+                    reasons = [f"ledger {audit} would have skipped this failing gate"]
+            yield GateResult(gate, status, seconds, output, verdict, reasons)
+    if ledger_out is not None:
+        gate_ledger.write(ledger_out, entries, [gate["name"] for gate in gates])
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -284,7 +382,16 @@ def main(argv: list[str] | None = None) -> int:
         "--replay-python",
         help="interpreter for historical-runtime gates; it must hold every pin of ci/requirements-replay.txt",
     )
+    parser.add_argument("--ledger", type=Path, help="skip gates whose ledger key in this file is unchanged")
+    parser.add_argument("--ledger-out", type=Path, help="trace every gate and write the merged ledger of this run")
+    parser.add_argument(
+        "--ledger-audit",
+        type=Path,
+        help="run every gate and fail on each one this ledger would have skipped that fails now",
+    )
     arguments = parser.parse_args(argv)
+    if arguments.ledger_audit is not None and arguments.ledger is not None:
+        parser.error("--ledger-audit runs every gate; it excludes --ledger")
     if arguments.shard_cpus < 1:
         parser.error("--shard-cpus must be positive")
     shard, count = (int(part) for part in arguments.shard.split("/"))
@@ -335,9 +442,17 @@ def main(argv: list[str] | None = None) -> int:
         else:
             environment[variable] = interpreter
     failures = []
+    skipped = []
+    audit_misses = []
     started = time.monotonic()
     timings = []
-    for gate, status, seconds, output in run_all(selected, environment, ROOT):
+    outcomes = execute(selected, environment, ROOT, arguments.ledger, arguments.ledger_out, arguments.ledger_audit)
+    for result in outcomes:
+        gate, status, seconds, output = result.gate, result.status, result.seconds, result.output
+        if result.verdict == "SKIP":
+            skipped.append(gate["name"])
+            print(f"SKIP {gate['name']}  ledger key unchanged", flush=True)
+            continue
         timings.append(
             {
                 "name": gate["name"],
@@ -348,10 +463,13 @@ def main(argv: list[str] | None = None) -> int:
                 "runtime": gate.get("runtime", "current"),
             }
         )
-        verdict = "PASS" if status == 0 else "FAIL"
-        print(f"{verdict} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
+        print(f"{result.verdict} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
+        if arguments.ledger_out is not None and status == 0 and result.untraceable:
+            print(f"  untraceable {gate['name']}: {'; '.join(result.untraceable[:3])}", flush=True)
         if status != 0:
             failures.append((gate, status, output))
+            if arguments.ledger_audit is not None and result.untraceable:
+                audit_misses.append(gate["name"])
             tail = "\n".join(output.splitlines()[-TAIL_LINES:])
             print(f"\n=== {gate['name']} exit {status} in {gate['cwd']}\n{gate['cmd']}\n{tail}", flush=True)
     if arguments.timings is not None:
@@ -365,14 +483,20 @@ def main(argv: list[str] | None = None) -> int:
                     "cpu_capacity": _cpus(),
                     "shard_cpus": arguments.shard_cpus,
                     "gates": sorted(timings, key=lambda row: str(row["name"])),
+                    "skipped": sorted(skipped),
+                    "ledger_audit_misses": sorted(audit_misses),
                 },
                 indent=2,
             )
             + "\n"
         )
-    passed = len(selected) - len(failures)
+    passed = len(selected) - len(failures) - len(skipped)
     device = environment.get("GOROROBA_AER_DEVICE", "CPU")
-    print(f"\n{passed} passed, {len(failures)} failed of {len(selected)} gates in shard {shard}/{count} on {device}")
+    cached = f", {len(skipped)} skipped" if skipped else ""
+    summary = f"{passed} passed, {len(failures)} failed{cached} of {len(selected)} gates"
+    print(f"\n{summary} in shard {shard}/{count} on {device}")
+    if audit_misses:
+        print(f"ledger audit: the ledger would have skipped failing gates {', '.join(audit_misses)}")
     return 1 if failures else 0
 
 
