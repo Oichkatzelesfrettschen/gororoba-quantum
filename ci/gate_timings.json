@@ -1,5 +1,4 @@
 {
- "schema": "gororoba-gate-measured-v1",
  "gates": {
   "core-000": {
    "wall_seconds": 5.69,
@@ -1816,26 +1815,6 @@
    "cpu_seconds": 1.94,
    "workers": 1
   },
-  "core-513--dephasing_0_6": {
-   "wall_seconds": 66.9,
-   "cpu_seconds": 66.66,
-   "workers": 1
-  },
-  "core-513--out_of_family": {
-   "wall_seconds": 73.94,
-   "cpu_seconds": 73.4,
-   "workers": 1
-  },
-  "core-513--s3_simulator": {
-   "wall_seconds": 41.64,
-   "cpu_seconds": 41.38,
-   "workers": 1
-  },
-  "core-513--static_0_1": {
-   "wall_seconds": 87.11,
-   "cpu_seconds": 86.05,
-   "workers": 1
-  },
   "core-514": {
    "wall_seconds": 134.91,
    "cpu_seconds": 134.4,
@@ -2149,26 +2128,6 @@
   "core-596": {
    "wall_seconds": 1.56,
    "cpu_seconds": 1.5,
-   "workers": 1
-  },
-  "core-597--slice0": {
-   "wall_seconds": 338.6,
-   "cpu_seconds": 338.02,
-   "workers": 1
-  },
-  "core-597--slice1": {
-   "wall_seconds": 445.56,
-   "cpu_seconds": 444.04,
-   "workers": 1
-  },
-  "core-597--slice2": {
-   "wall_seconds": 48.93,
-   "cpu_seconds": 48.22,
-   "workers": 1
-  },
-  "core-597--slice3": {
-   "wall_seconds": 278.54,
-   "cpu_seconds": 275.37,
    "workers": 1
   },
   "core-598": {
@@ -2541,5 +2500,6 @@
    "cpu_seconds": 0.1,
    "workers": 1
   }
- }
+ },
+ "schema": "gororoba-gate-measured-v1"
 }

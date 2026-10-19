@@ -22,13 +22,16 @@ an unmeasured gate.
 The stable `--shard-cpus` profile defaults to the recorded four-CPU runner;
 actual gate concurrency follows each runner's detected allocation. Every
 event runs twelve shards. Pull requests and pushes to main run the `pr` tier
-and affected `full` gates; nightly and manual runs execute every gate. The changed-path selection follows
-local Python imports and the dynamic data/source scopes in
-[ci/full_gate_inputs.json](ci/full_gate_inputs.json). Every full gate declares
-its non-imported inputs there, including source digests and JSON-selected
-raw evidence; a missing declaration fails selection. CI and dependency-pin
-changes and an unavailable diff base select every gate, and the gate ledger
-(Gate cost below) then skips each selected gate whose key is unchanged.
+alone: lint, type checks and regression gates of at most 30 s measured wall
+time each. Every longer gate is `full` tier and runs on the nightly and
+manual events, which execute every gate; a gate that grows past 30 s moves
+to `full` and is never split into cases to stay on pull requests. The gate
+ledger (Gate cost below) skips each `pr` gate whose key is unchanged.
+`ci/run_gates.py --changed-files` still selects the `full` gates a diff
+reaches, through local Python imports and the dynamic data/source scopes
+of [ci/full_gate_inputs.json](ci/full_gate_inputs.json), where every full
+gate declares its non-imported inputs; a missing declaration fails that
+selection.
 The import closure resolves against the files `git ls-files --cached --others
 --exclude-standard` lists (`gate_inputs.checkout_files`), the modules a CI
 clone of the same tree holds, so an ignored tree never widens it. Build trees,
@@ -46,7 +49,7 @@ with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard and the `qi-stack` and `external-ground-truth` jobs are green and its
 review threads are resolved; a red main or nightly run is fixed in the next
-change. The `qi-stack` job applies the same changed-input selection to the gates
+change. The `qi-stack` job applies the same tier rule to the gates
 that ci/gates.json
 tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 ([Quantum Inspire](#quantum-inspire)). The

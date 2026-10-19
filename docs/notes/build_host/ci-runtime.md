@@ -90,9 +90,9 @@ reported by the initial hosted run.
 
 ## Selection and resource boundaries
 
-- PRs always run the behavioral `pr` tier and add affected `full` gates.
-  Main pushes apply that selection to their before/after diff. Nightly and
-  manual events execute the entire manifest.
+- PRs and main pushes run the `pr` tier alone, gates of at most 30 s
+  measured wall time. Nightly and manual events execute the entire manifest,
+  every `full` gate included.
 - `git diff --no-renames --name-only -z` retains both sides of renames,
   deleted paths and filenames containing whitespace. A missing base triggers
   exhaustive selection. Fetch/diff failures select exhaustive verification.
