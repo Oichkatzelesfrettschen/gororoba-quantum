@@ -142,7 +142,7 @@ def verify_reduced_rank_certificate(matrix_rows: RationalMatrix, certificate: Re
             and kernel.extract(free, range(len(free))) == sp.eye(len(free))
             and matrix * kernel == sp.zeros(dimension, len(free))
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -319,7 +319,7 @@ def verify_skew_schur_chart(chart: SkewSchurChart) -> bool:
             and (complement.T * matrix * complement).det() != 0
             and matrix * kernel == sp.zeros(DIMENSION, reduced_size)
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -437,7 +437,7 @@ def verify_skew_schur_point(chart: SkewSchurChart, point: SkewSchurPoint) -> boo
             and matrix * full_kernel == sp.zeros(DIMENSION, point.nullity)
             and projection * full_kernel == reduced_kernel
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -634,7 +634,7 @@ def verify_linearized_schur_constraint(chart: SkewSchurChart, constraint: Linear
         _matrix(constraint.nullspace_basis, 30, 30 - constraint.rank)
         _matrix(constraint.unit_base_nullspace_basis, 30, 29 - constraint.rank)
         return constraint == chart.derivative_at_center()
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 

@@ -37,7 +37,7 @@ def _require(condition: bool, message: str) -> None:
 def _reject(action: Any, message: str) -> None:
     try:
         action()
-    except (ValueError, live_run.LiveRunError):
+    except ValueError, live_run.LiveRunError:
         return
     raise RuntimeError(message)
 

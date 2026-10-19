@@ -146,7 +146,7 @@ def _rank_family(snapshot: live_run.Snapshot) -> tuple[list[live_run.Choice], di
 def _rejected(operation: Any, label: str) -> None:
     try:
         operation()
-    except (live_run.LiveRunError, ValueError):
+    except live_run.LiveRunError, ValueError:
         return
     raise RuntimeError(f"malformed algebra boundary accepted: {label}")
 

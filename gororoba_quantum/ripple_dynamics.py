@@ -383,7 +383,7 @@ def check_edge(edge: EdgeExperiment) -> float:
 def _expect_rejection(operation: Callable[[], object], label: str) -> None:
     try:
         operation()
-    except (ValueError, RippleCheckFailed):
+    except ValueError, RippleCheckFailed:
         return
     raise RippleCheckFailed(f"negative control survived: {label}")
 

@@ -337,7 +337,7 @@ def verify_schur_acceleration_certificate(chart: SkewSchurChart, certificate: Sc
             kernel.T * acceleration_matrix * kernel + 2 * quadratic == sp.zeros(reduced_dimension)
             and center.dot(acceleration) == -stored_direction.dot(stored_direction)
         )
-    except (ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError):
+    except ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError:
         return False
 
 
@@ -363,7 +363,7 @@ def verify_acceleration_member(
             direct_second == sp.zeros(chart.reduced_dimension)
             and center.dot(sp.Matrix(values)) == -direction.dot(direction)
         )
-    except (ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError):
+    except ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError:
         return False
 
 

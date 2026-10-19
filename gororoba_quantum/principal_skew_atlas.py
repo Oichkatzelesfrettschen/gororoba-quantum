@@ -100,7 +100,7 @@ def _verify_residual(matrix_rows: RationalMatrix, certificate: ReducedRankCertif
             and kernel.extract(free, range(len(free))) == sp.eye(len(free))
             and matrix * kernel == sp.zeros(dimension, len(free))
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -289,7 +289,7 @@ def verify_principal_skew_point(point: PrincipalSkewPoint) -> bool:
             and kernel_projection * full_kernel == sp.eye(nullity)
             and kernel_metric == full_kernel.T * full_kernel
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -371,7 +371,7 @@ def verify_principal_cover_selection(selection: PrincipalCoverSelection) -> bool
             and selection.pivot_determinant * (half - 1) ** 2 >= norm**2
             and selection.inverse_norm_squared * norm <= half - 1
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -467,7 +467,7 @@ def verify_principal_pivot_selection(selection: PrincipalPivotSelection) -> bool
             return False
         point = selection.chart.reduce(values)
         return point.reduced_certificate.rank == 0 and point.pivot_determinant == selection.pivot_determinant
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -576,7 +576,7 @@ def verify_principal_overlap(overlap: PrincipalOverlap) -> bool:
             * source_kernel
             == _matrix(source.kernel_metric, nullity, nullity)
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 
@@ -608,7 +608,7 @@ def verify_overlap_cocycle(first: PrincipalOverlap, second: PrincipalOverlap, di
             and _matrix(second.kernel_transport, nullity, nullity) * _matrix(first.kernel_transport, nullity, nullity)
             == _matrix(direct.kernel_transport, nullity, nullity)
         )
-    except (ValueError, TypeError, AttributeError, IndexError):
+    except ValueError, TypeError, AttributeError, IndexError:
         return False
 
 

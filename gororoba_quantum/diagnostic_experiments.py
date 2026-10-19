@@ -438,9 +438,9 @@ def n21_orbit_rca_group(
                 f"n21_spectator_{kind}_{quadrature}",
                 n21_spectator_ramsey(kind, quadrature, measure_dt=window_delay_dt, init_herald=init_herald),
                 (
-                    lift_phase_law(n21_spectator_law(quadrature), clbits)
+                    lift_phase_law(n21_spectator_law(kind, quadrature), clbits)
                     if init_herald
-                    else np.asarray(n21_spectator_law(quadrature), dtype=float)
+                    else np.asarray(n21_spectator_law(kind, quadrature), dtype=float)
                 ),
                 weights=lifted(_SPECTATOR_ONE),
             )

@@ -301,7 +301,7 @@ def sampled(command: list[str], ngpus: int) -> dict[str, Any]:
             parts = [part.strip() for part in line.split(",")]
             try:
                 index, used = int(parts[0]), float(parts[1])
-            except (IndexError, ValueError):
+            except IndexError, ValueError:
                 continue
             peaks[index] = max(peaks.get(index, 0.0), used)
     outcome["gpu_peak_memory_mib"] = {str(k): v for k, v in sorted(peaks.items())}

@@ -2269,7 +2269,7 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
         ideal = qpe_diagnostics.ideal_compiled_probabilities(isa)
         _require(np.allclose(ideal, member.ideal, rtol=0, atol=1e-10), f"{member.name}: the heralded ideal moved")
         unheralded = (
-            qpe_diagnostics.n21_spectator_law(member.name[-1])
+            qpe_diagnostics.n21_spectator_law(*member.name.removeprefix("n21_spectator_").rsplit("_", 1))
             if member.name.startswith("n21_spectator_")
             else n21_labeled_law("_no_feedback" not in member.name)
         )

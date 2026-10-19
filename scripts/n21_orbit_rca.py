@@ -2008,12 +2008,14 @@ def _check_between_arm() -> None:
 
 
 def _spectator_reads(
-    measured: float, measured_phase: float, reference: float, reference_phase: float
+    measured: float, measured_phase: float, reference: float, reference_phase: float, branch_turn: float = 0.0
 ) -> dict[str, dict[str, np.ndarray]]:
     """Exact expected spectator counts at CONTRACT_SHOTS: each kind's visibility and qubit-2 phase.
 
     Qubit 2 reads 1 in X with probability (1 - R cos phi) / 2 and in Y with
-    (1 - R sin phi) / 2; the control bit reads 0.
+    (1 - R sin phi) / 2. The measured control bit splits the shots evenly,
+    branch 1 turned by branch_turn about branch 0 and the two branches
+    centered on phi; the unwritten reset_only bit reads 0.
     """
     reads: dict[str, dict[str, np.ndarray]] = {}
     for kind, visibility, phase in (
@@ -2021,9 +2023,18 @@ def _spectator_reads(
         ("reset_only", reference, reference_phase),
     ):
         reads[kind] = {}
-        for quadrature, projection in (("x", math.cos(phase)), ("y", math.sin(phase))):
-            one = round((1 - visibility * projection) / 2 * CONTRACT_SHOTS)
-            reads[kind][quadrature] = np.array([CONTRACT_SHOTS - one, 0, one, 0], dtype=float)
+        for quadrature in SPECTATOR_QUADRATURES:
+            vector = np.zeros(4)
+            branches = (
+                ((0, phase - branch_turn / 2), (1, phase + branch_turn / 2)) if kind == "measured" else ((0, phase),)
+            )
+            for control, angle in branches:
+                shots = CONTRACT_SHOTS // len(branches)
+                projection = math.cos(angle) if quadrature == "x" else math.sin(angle)
+                one = round((1 - visibility * projection) / 2 * shots)
+                vector[control] += shots - one
+                vector[control + 2] += one
+            reads[kind][quadrature] = vector
     return reads
 
 
@@ -2108,6 +2119,13 @@ def _check_window_sweep() -> dict[str, str]:
         raise RuntimeError(f"spectator_counts tallies {tallied}, not qubit 2 on clbit 1")
     if spectator_contract(None, CONTRACT_ALPHA)["status"] != "not_evaluable":
         raise RuntimeError("the spectator contract evaluates without spectator members")
+    for planted in (0.0, 0.4, -2.5):
+        turn = spectator_branch_phase(_spectator_reads(0.9, 0.3, 1.0, 0.0, planted)["measured"])
+        if abs(turn["turn_rad"] - planted) > 5 * turn["standard_error_rad"] or turn["standard_error_rad"] > 0.05:
+            raise RuntimeError(f"spectator_branch_phase reads {turn} for a planted turn of {planted} rad")
+    rotated_only = spectator_contract(_spectator_reads(0.9, 0.3, 0.9, 0.3, 0.4), CONTRACT_ALPHA)
+    if rotated_only["status"] != "pass":
+        raise RuntimeError(f"a branch turn of 0.4 rad does not lower the pooled measured visibility: {rotated_only}")
     if (
         spectator_margin({"present": False}) != 0.0
         or spectator_margin(
@@ -2639,6 +2657,40 @@ def spectator_visibility(counts: dict[str, np.ndarray]) -> tuple[float, float, f
     if visibility == 0.0:
         return x, y, visibility, x_variance + y_variance
     return x, y, visibility, (x**2 * x_variance + y**2 * y_variance) / visibility**2
+
+
+def spectator_branch_phase(counts: dict[str, np.ndarray]) -> dict[str, Any]:
+    """Qubit 2's phase turn between the measured control's recorded branches, with its normal-approximation SE.
+
+    Each recorded control bit b selects the shots whose qubit-2 X and Y
+    reads give (<X>_b, <Y>_b) and phase phi_b = atan2(<Y>_b, <X>_b); the
+    turn phi_1 - phi_0, wrapped to (-pi, pi], estimates a ZZ coupling between
+    the control and qubit 2 integrated over the window. The delta method
+    gives var phi_b = (Y^2 var X + X^2 var Y) / R^4. The turn is descriptive
+    and decides no contract.
+    """
+    phases = []
+    for branch in (0, 1):
+        values = []
+        for quadrature in SPECTATOR_QUADRATURES:
+            zero, one = float(counts[quadrature][branch]), float(counts[quadrature][branch + 2])
+            shots = zero + one
+            if shots == 0:
+                return {"status": "not_evaluable", "reason": f"no shots record control bit {branch}"}
+            expectation = (zero - one) / shots
+            values.append((expectation, (1.0 - expectation**2) / shots))
+        (x, x_variance), (y, y_variance) = values
+        radius = x * x + y * y
+        if radius == 0.0:
+            return {"status": "not_evaluable", "reason": f"branch {branch} reads zero visibility"}
+        phases.append((math.atan2(y, x), (y * y * x_variance + x * x * y_variance) / radius**2))
+    turn = math.remainder(phases[1][0] - phases[0][0], math.tau)
+    return {
+        "status": "descriptive",
+        "branch_phase_rad": [phases[0][0], phases[1][0]],
+        "turn_rad": turn,
+        "standard_error_rad": math.sqrt(phases[0][1] + phases[1][1]),
+    }
 
 
 def spectator_contract(
@@ -3404,6 +3456,7 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
             kind: {quadrature: values.astype(int).tolist() for quadrature, values in reads.items()}
             for kind, reads in spectators.items()
         }
+        report["spectator_branch_phase"] = spectator_branch_phase(spectators["measured"])
     return report
 
 

@@ -76,7 +76,7 @@ def nvidia_smi() -> list[dict[str, str]] | None:
             text=True,
             check=True,
         ).stdout
-    except (OSError, subprocess.CalledProcessError):
+    except OSError, subprocess.CalledProcessError:
         return None
     names = fields.split(",")
     return [dict(zip(names, (v.strip() for v in line.split(",")), strict=True)) for line in out.splitlines() if line]

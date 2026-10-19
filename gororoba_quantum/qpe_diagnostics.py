@@ -370,12 +370,16 @@ def n21_spectator_ramsey(
 ) -> QuantumCircuit:
     """Ramsey of logical qubit 2 across the orbit's control window, on the orbit's four logical qubits.
 
-    Qubit 2 starts in |+> and the others in |0>; barriers over every qubit
-    bracket the control's measurement into clbit 0 and its reset, so qubit 2
-    idles across the window as the orbit's work bits do. reset_only idles the
-    control measure_dt in place of the measurement and leaves clbit 0
-    unwritten. Qubit 2 reads X (h) or Y (sdg, h) into clbit 1: the ideal law
-    is n21_spectator_law. init_herald prepends the orbit's herald readouts
+    Qubit 2 and the control start in |+> and the other qubits in |0>, so
+    the control reads 0 or 1 with equal probability, as it does in the
+    orbit; barriers over every qubit bracket the control's measurement into
+    clbit 0 and its reset, so qubit 2 idles across the window as the orbit's
+    work bits do. A ZZ coupling between the control and qubit 2 then turns
+    qubit 2's phase with the recorded control bit (spectator_branch_phase).
+    reset_only idles the control measure_dt in place of the measurement and
+    leaves clbit 0 unwritten; the reset still projects the control. Qubit 2
+    reads X (h) or Y (sdg, h) into clbit 1: the ideal law is
+    n21_spectator_law. init_herald prepends the orbit's herald readouts
     and barrier.
     """
     if kind not in N21_SPECTATOR_KINDS or quadrature not in N21_SPECTATOR_QUADRATURES:
@@ -392,7 +396,7 @@ def n21_spectator_ramsey(
         for qubit in range(circuit.num_qubits):
             circuit.measure(qubit, herald[qubit])
         circuit.barrier()
-    circuit.h(N21_SPECTATOR_QUBIT)
+    circuit.h([0, N21_SPECTATOR_QUBIT])
     circuit.barrier()
     if kind == "measured":
         circuit.measure(0, phase[0])
@@ -410,13 +414,17 @@ def n21_spectator_ramsey(
     return circuit
 
 
-def n21_spectator_law(quadrature: str) -> tuple[Fraction, ...]:
-    """Ideal law of a spectator Ramsey member over control + 2 * qubit-2 bit: X reads 0, Y reads 0 or 1."""
-    if quadrature == "x":
-        return (Fraction(1), Fraction(0), Fraction(0), Fraction(0))
-    if quadrature == "y":
-        return (Fraction(1, 2), Fraction(0), Fraction(1, 2), Fraction(0))
-    raise ValueError(f"unknown spectator quadrature {quadrature!r}")
+def n21_spectator_law(kind: str, quadrature: str) -> tuple[Fraction, ...]:
+    """Ideal law of a spectator Ramsey member over control + 2 * qubit-2 bit.
+
+    The measured control bit reads 0 or 1 equally; reset_only leaves clbit 0
+    unwritten, so it reads 0. Qubit 2 reads 0 in X and 0 or 1 equally in Y.
+    """
+    if kind not in N21_SPECTATOR_KINDS or quadrature not in N21_SPECTATOR_QUADRATURES:
+        raise ValueError(f"unknown spectator kind {kind!r} or quadrature {quadrature!r}")
+    qubit_two = (Fraction(1), Fraction(0)) if quadrature == "x" else (Fraction(1, 2), Fraction(1, 2))
+    control = (Fraction(1, 2), Fraction(1, 2)) if kind == "measured" else (Fraction(1), Fraction(0))
+    return tuple(control[label & 1] * qubit_two[label >> 1] for label in range(4))
 
 
 def _orbit_branch(
@@ -654,7 +662,7 @@ def _verify() -> None:
             expected_laws.append(expected + (Fraction(0),) * ((1 << heralded.num_clbits) - len(expected)))
     for kind in N21_SPECTATOR_KINDS:
         for quadrature in N21_SPECTATOR_QUADRATURES:
-            law = n21_spectator_law(quadrature)
+            law = n21_spectator_law(kind, quadrature)
             plain = n21_spectator_ramsey(kind, quadrature, measure_dt=416)
             heralded = n21_spectator_ramsey(kind, quadrature, measure_dt=416, init_herald=True)
             _check_herald_structure(heralded, plain, windowed=kind == "measured")

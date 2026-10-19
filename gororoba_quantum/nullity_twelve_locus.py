@@ -378,7 +378,7 @@ def verify_nullity_twelve_locus(certificate: NullityTwelveLocusCertificate) -> b
         pivot = complement.T * _direct_operator(CENTER) * complement
         crosses = [complement.T * _direct_operator(ambient[:, column]) * kernel for column in range(TANGENT_DIMENSION)]
         return coefficients == _independent_coefficients(crosses, pivot.inv(), cokernel)
-    except (ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError):
+    except ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError:
         return False
 
 

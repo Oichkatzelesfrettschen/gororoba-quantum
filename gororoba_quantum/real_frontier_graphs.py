@@ -80,7 +80,7 @@ def verify_circle_pencil(pencil: CirclePencil) -> bool:
             and _equal(fixed * first, sp.zeros(dimension, width))
             and _equal(fixed * second, sp.zeros(dimension, width))
         )
-    except (ValueError, TypeError, AttributeError, sp.polys.polyerrors.BasePolynomialError):
+    except ValueError, TypeError, AttributeError, sp.polys.polyerrors.BasePolynomialError:
         return False
 
 
