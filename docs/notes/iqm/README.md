@@ -15,6 +15,7 @@ they said when read.
 | `pypi/` | release metadata and file sha256 of the fifteen pinned distributions (`--pypi`) |
 | `changelog/iqm-client-36.0.0.md` | the CHANGELOG of the iqm-client 36.0.0 sdist (`--changelog`) |
 | `constraints-iqm-qccsw-4.7.0.txt` | IQM's client constraints for IQM OS 4.7.0 plus the integration pins |
+| `hardware-pre-4.7.md` | the pre-upgrade specifications of all six targets, from the retained snapshot |
 | `python-stack.md`, `python-stack-versions.json` | every distribution installed in the client stack, with version, license, imports and requirements |
 | `../../evidence/iqm/` | the account snapshot: server, per-QC records, configuration artifacts, calibration sets, metrics, the update feed, `hardware.json` (`scripts/iqm_platform.py snapshot`) |
 
@@ -60,7 +61,7 @@ The dashboard's update feed (`server/notifications.json`, created
   `strategy="NONE"` and runs without readout twirling; REMWorkflow reports
   the QPU job ids it submitted.
 
-The retained snapshot was read at 2026-10-19T05:5xZ, inside Emerald's
+The retained snapshot was read at 2026-10-19T06:08Z, inside Emerald's
 announced window, while every station still reported IQM station control
 49.0.3 and IQM Server 3.0.0. It is the pre-upgrade baseline; a snapshot after
 2026-10-21T16:00Z records the 4.7 stations, and the difference between the
