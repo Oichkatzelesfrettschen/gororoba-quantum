@@ -52,7 +52,11 @@ most herald_bound(n), the spread that moves a magnitude contract by a
 quarter of its minimum detectable deficit (B = 0.001276 at 27,648 shots;
 derivation in herald_bound). Every member must read a herald qubit
 through one assignment channel; a refused or unevaluable herald reads every
-contract not_admissible. --self-test-herald checks the sensitivity
+contract not_admissible. An admitted herald's simultaneous upper limits
+leave the magnitude contracts a possible shift, contract_shift_upper_limit,
+which both magnitude contracts subtract from their statistics before they
+decide, so a heralded pass holds for every spread the herald leaves
+possible. --self-test-herald checks the sensitivity
 coefficients, the twin roles on the retained schedule and the admission
 test's operating characteristic. The mechanism fit reads unheralded runs.
 """
@@ -2368,6 +2372,7 @@ def contrast_floor(
     reference: dict[str, np.ndarray],
     factors: tuple[float, float],
     alpha: float,
+    margin: float = 0.0,
 ) -> dict[str, Any]:
     """One-sided test that a pair's contrast magnitude reaches the reference pair's, each arm scaled by its factor.
 
@@ -2381,6 +2386,11 @@ def contrast_floor(
     the bound sampling noise fails it with probability alpha. The signed
     contrast difference of each pair is reported and decides nothing, since
     a work phase moves it.
+
+    margin is subtracted from the statistic before the decision: a heralded
+    run's initial-excitation spread can move m_test - bound by up to the
+    herald's contract_shift_upper_limit (herald_admission), so a pass then
+    holds for every spread the herald's simultaneous upper limits allow.
     """
     feedback_factor, control_factor = factors
     tested, tested_variance = contrast_magnitude(test)
@@ -2391,7 +2401,7 @@ def contrast_floor(
         bound_variance = feedback_factor**2 * x_variance + control_factor**2 * y_variance
     else:
         bound_variance = (feedback_factor**4 * x**2 * x_variance + control_factor**4 * y**2 * y_variance) / bound**2
-    statistic = tested - bound
+    statistic = tested - bound - margin
     error = math.sqrt(tested_variance + bound_variance)
     quantile = float(norm.ppf(1 - alpha))
     upper = statistic + quantile * error
@@ -2408,7 +2418,7 @@ def contrast_floor(
         "standard_error": error,
         "one_sided_quantile": quantile,
         "upper_confidence_limit": upper,
-    }
+    } | ({"herald_margin": margin} if margin else {})
 
 
 class PhaseFit:
@@ -2669,6 +2679,7 @@ def readout_contract(
     t2_us: dict[str, dict[int, float]],
     alpha: float,
     nominal_t2_us: dict[str, dict[int, float]] | None = None,
+    margin: float = 0.0,
 ) -> dict[str, Any]:
     """extra_readout's contrast magnitude stays above the nominal one dephased over each arm's added idle time.
 
@@ -2711,7 +2722,7 @@ def readout_contract(
         math.exp(-sum(added[arm][qubit] * dt / (t2_us[arm][qubit] * 1e-6) for qubit in qubits)) for arm in ARMS
     )
     result = contrast_floor(
-        pairs[orbit_pair("extra_readout")], pairs[orbit_pair("nominal")], (factors[0], factors[1]), alpha
+        pairs[orbit_pair("extra_readout")], pairs[orbit_pair("nominal")], (factors[0], factors[1]), alpha, margin
     )
     return result | {
         "added_idle_dt": {arm: {str(qubit): added[arm][qubit] for qubit in qubits} for arm in ARMS},
@@ -2729,6 +2740,7 @@ def contract_results(
     profiles: SlopeProfiles | None = None,
     render_set: bool = False,
     nominal_t2_us: dict[str, dict[int, float]] | None = None,
+    herald_margin: float = 0.0,
 ) -> dict[str, dict[str, Any]]:
     """Every between-arm contract's status and deciding numbers, each at CONTRACT_ALPHA.
 
@@ -2738,7 +2750,9 @@ def contract_results(
     (readout_contract), and window_echo_restoration, which passes when the
     upper confidence limit of the window_echo contrast magnitude minus the
     nominal one reaches zero (contrast_floor at factors 1). A family that
-    fails admissibility reports every contract not_admissible.
+    fails admissibility reports every contract not_admissible. herald_margin
+    (a heralded run's contract_shift_upper_limit) is subtracted from both
+    magnitude contracts' statistics.
     """
     admitted = admissibility(roles)
     if not admitted["admissible"]:
@@ -2749,9 +2763,11 @@ def contract_results(
         "window_delay_phase_slope": phase_slope_contract(
             profiles, roles, admitted["orientation"], dt, CONTRACT_ALPHA, render_set
         ),
-        "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, CONTRACT_ALPHA, nominal_t2_us),
+        "extra_readout_contrast": readout_contract(
+            pairs, roles, dt, t2_us, CONTRACT_ALPHA, nominal_t2_us, herald_margin
+        ),
         "window_echo_restoration": contrast_floor(
-            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), CONTRACT_ALPHA
+            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), CONTRACT_ALPHA, herald_margin
         ),
     }
 
@@ -2996,6 +3012,11 @@ def herald_refusal(herald: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {name: {"status": "not_admissible"} | reason for name in CONTRACTS}
 
 
+def herald_margin(herald: dict[str, Any]) -> float:
+    """The magnitude-contract margin of an admitted herald, its contract_shift_upper_limit; zero without a herald."""
+    return float(herald["contract_shift_upper_limit"]) if herald["present"] else 0.0
+
+
 def analyzer_sha256() -> str:
     """sha256 of this analyzer's bytes, which a written case names to bind its analysis."""
     return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -3047,7 +3068,14 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
             pair: {arm: values.astype(int).tolist() for arm, values in arms.items()} for pair, arms in pairs.items()
         },
         "contracts": contract_results(
-            roles, pairs, readouts, dt, arm_t2_us(run), render_set=True, nominal_t2_us=arm_t2_us(run, "nominal")
+            roles,
+            pairs,
+            readouts,
+            dt,
+            arm_t2_us(run),
+            render_set=True,
+            nominal_t2_us=arm_t2_us(run, "nominal"),
+            herald_margin=herald_margin(report["herald"]),
         ),
     }
     return report
@@ -3376,9 +3404,31 @@ def _check_herald_operating_characteristic() -> dict[str, float]:
     return rates
 
 
+def _check_herald_margin() -> float:
+    """A magnitude contract that passes at margin zero fails once the herald margin exceeds its upper limit."""
+    arms = {
+        "feedback": np.array([1200.0, 2600.0, 1400.0, 1000.0]),
+        "no_feedback": np.array([1000.0, 1400.0, 2600.0, 1200.0]),
+    }
+    plain = contrast_floor(arms, arms, (1.0, 1.0), CONTRACT_ALPHA)
+    if plain["status"] != "pass" or "herald_margin" in plain:
+        raise RuntimeError(f"an equal pair failed its own floor or carried a margin: {plain}")
+    margin = plain["upper_confidence_limit"] * 1.01
+    held = contrast_floor(arms, arms, (1.0, 1.0), CONTRACT_ALPHA, margin)
+    if held["status"] != "fail" or held["herald_margin"] != margin:
+        raise RuntimeError(f"a herald margin above the upper limit left the contract passing: {held}")
+    if (
+        herald_margin({"present": False}) != 0.0
+        or herald_margin({"present": True, "contract_shift_upper_limit": margin}) != margin
+    ):
+        raise RuntimeError("herald_margin does not read the admitted herald's contract shift")
+    return margin
+
+
 def self_test_herald() -> None:
-    """The herald's sensitivity coefficients, twin roles, run-directory report and operating characteristic."""
+    """The herald's sensitivity coefficients, twin roles, run-directory report, margin and operating characteristic."""
     _check_herald_sensitivity()
+    margin = _check_herald_margin()
     twin = _check_herald_twin_roles()
     rates = _check_herald_operating_characteristic()
     bound = herald_bound(HERALD_DESIGN_SHOTS)
@@ -3388,7 +3438,7 @@ def self_test_herald() -> None:
         f"reads the twin's admissibility, execution-start calibration sources and the analyzer digest, refuses "
         f"a {twin['planted_excess']:.3f} control excess at {twin['shots']} shots, and the mechanism fit refuses "
         f"it; at {HERALD_DESIGN_SHOTS} shots MDE {magnitude_mde(HERALD_DESIGN_SHOTS):.5f}, B {bound:.6f}, "
-        f"refusal rates {rates}"
+        f"refusal rates {rates}; a {margin:.5f} herald margin turns a passing magnitude contract into a failure"
     )
 
 
