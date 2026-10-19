@@ -189,8 +189,10 @@ N21_ORBIT_SWEEP_VARIANTS = ("window_delay_long",)
 # window_echo, without the pulses; elapsed exposure and pulse differences come
 # from the returned schedule. nominal_unbarriered omits both barriers, so the
 # compiler may move work-only gates across the control's measurement and reset.
-N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, *N21_ORBIT_SWEEP_VARIANTS, "window_barrier", "nominal_unbarriered")
-_DELAY_MULTIPLES = {"window_delay": 1, "window_delay_long": 2}
+# window_delay_unbarriered is window_delay without both barriers.
+N21_UNBARRIERED = ("nominal_unbarriered", "window_delay_unbarriered")
+N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, *N21_ORBIT_SWEEP_VARIANTS, "window_barrier", *N21_UNBARRIERED)
+_DELAY_MULTIPLES = {"window_delay": 1, "window_delay_long": 2, "window_delay_unbarriered": 1}
 
 # Spectator Ramsey members prepare logical qubit 2, the work bit for 4, in
 # |+> on the orbit's wires, open and close the same barrier bracket around
@@ -295,7 +297,7 @@ def n21_orbit_diagnostic(
     QPE with the labeled law of n21_labeled_law and performs no order finding
     (Smolin, Smith and Vargo, Nature 499, 163 (2013), doi:10.1038/nature12290).
 
-    Every variant except nominal_unbarriered brackets the control's
+    Every variant except N21_UNBARRIERED brackets the control's
     measurement and reset with barriers over all qubits. window_delay idles
     the control for window_delay_dt after its reset, inside the bracket, so
     the work superposition waits that much longer before the second round;
@@ -335,7 +337,7 @@ def n21_orbit_diagnostic(
     circuit.cswap(0, one, four)
     circuit.cswap(0, four, sixteen)
     circuit.h(0)
-    bracketed = variant != "nominal_unbarriered"
+    bracketed = variant not in N21_UNBARRIERED
     if bracketed:
         circuit.barrier()
     if variant == "window_echo":

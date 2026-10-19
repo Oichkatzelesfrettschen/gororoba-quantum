@@ -2179,7 +2179,11 @@ def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
 
 PINNED_ORBIT_LAYOUT = [142, 136, 143, 144]
 OVERLAP_SPLIT_MEMBERS = [
-    *(f"n21_orbit_{variant}_{arm}" for variant in ("nominal", "unbracketed") for arm in ("feedback", "no_feedback")),
+    *(
+        f"n21_orbit_{variant}_{arm}"
+        for variant in ("nominal", "window_delay", "window_delay_unbracketed")
+        for arm in ("feedback", "no_feedback")
+    ),
     *(f"n21_spectator_{kind}_{q}" for kind in ("immediate", "idle", "reset_only") for q in ("x", "y")),
 ]
 
@@ -2215,10 +2219,14 @@ def _window_bracket_split(snapshot: live_run.Snapshot) -> None:
 
 
 def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
-    """A pinned overlap split plans its ten members and binds the flag only when set.
+    """A pinned overlap split plans its twelve members and binds the flag only when set.
 
-    The group holds the nominal and unbracketed pairs and the immediate, idle
-    and reset_only spectators in X and Y, in that order; the unbracketed arms
+    The group holds the bracketed nominal and window_delay pairs, the
+    window_delay_unbracketed pair and the immediate, idle and reset_only
+    spectators in X and Y, in that order; the window_delay arms of both
+    kinds idle window_delay_dt, the configuration records every orbit arm's
+    CZ and sx counts, and a configuration without overlap_arm rebuilds the
+    earlier ten-member split; the unbracketed arms
     hold a work-qubit operation in the control's window and the bracketed
     ones do not; the idle spectator idles window_delay_dt + reset_dt and the
     immediate one plays no delay, each resetting the control only after
@@ -2242,7 +2250,14 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
         and "window_sweep" not in configuration
         and type(configuration.get("reset_dt")) is int
         and configuration["reset_dt"] > 0
-        and configuration.get("pin_layout") == pin,
+        and configuration.get("pin_layout") == pin
+        and configuration.get("overlap_arm") == "window_delay"
+        and configuration.get("orbit_gate_counts")
+        == {
+            member.name: {gate: int(isa.count_ops().get(gate, 0)) for gate in ("cz", "sx")}
+            for member, isa in zip(choice.group.members, choice.isas, strict=True)
+            if member.name in OVERLAP_SPLIT_MEMBERS[:6]
+        },
         f"the overlap-split configuration reads {configuration}",
     )
     _window_bracket_split(snapshot)
@@ -2253,6 +2268,14 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
         names = [i.operation.name for i in isa.data if i.operation.name in ("measure", "reset")]
         return names == ["measure", "reset"]
 
+    for arm in ("feedback", "no_feedback"):
+        for variant in ("window_delay", "window_delay_unbracketed"):
+            isa = arms[f"n21_orbit_{variant}_{arm}"]
+            delays = [int(i.operation.duration) for i in isa.data if i.operation.name == "delay"]
+            _require(
+                configuration["window_delay_dt"] in delays,
+                f"the {variant} {arm} arm does not idle window_delay_dt: {delays}",
+            )
     for quadrature in ("x", "y"):
         idle = arms[f"n21_spectator_idle_{quadrature}"]
         immediate = arms[f"n21_spectator_immediate_{quadrature}"]
@@ -2279,11 +2302,21 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
         [contract.name for contract in contracts]
         == [
             "n21_orbit_nominal_feedback_contrast",
-            "n21_orbit_unbracketed_feedback_contrast",
-            *(f"{name}_one" for name in OVERLAP_SPLIT_MEMBERS[4:]),
+            "n21_orbit_window_delay_feedback_contrast",
+            "n21_orbit_window_delay_unbracketed_feedback_contrast",
+            *(f"{name}_one" for name in OVERLAP_SPLIT_MEMBERS[6:]),
         ]
-        and all(math.isclose(contract.alpha, 0.05 / 8) for contract in contracts),
+        and all(math.isclose(contract.alpha, 0.05 / 9) for contract in contracts),
         f"the overlap-split family contracts read {[contract.name for contract in contracts]}",
+    )
+    legacy = {key: value for key, value in configuration.items() if key not in ("overlap_arm", "orbit_gate_counts")}
+    _require(
+        [m.name for m in diagnostic_experiments.record_groups({"family_configuration": legacy})[0].members]
+        == [
+            *(f"n21_orbit_{v}_{a}" for v in ("nominal", "unbracketed") for a in ("feedback", "no_feedback")),
+            *OVERLAP_SPLIT_MEMBERS[6:],
+        ],
+        "a configuration without overlap_arm does not rebuild the earlier ten-member split",
     )
     fixture = qpu_cases._fixture()
     location = Path("results/live/fixture/record.json")
@@ -2293,11 +2326,22 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
         "a record without the split replays or describes it",
     )
     fixture["policy"]["design"]["overlap_split"] = True
-    fixture["family_configuration"] = {**fixture.get("family_configuration", {}), "overlap_split": True}
+    fixture["family_configuration"] = {
+        **fixture.get("family_configuration", {}),
+        "overlap_split": True,
+        "overlap_arm": "window_delay",
+        "orbit_gate_counts": configuration["orbit_gate_counts"],
+    }
+    case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+    counts = configuration["orbit_gate_counts"]["n21_orbit_window_delay_unbracketed_feedback"]
     _require(
         "--overlap-split" in qpu_cases._reproduction_arguments(fixture, location)
-        and any("--overlap-split replaces" in line for line in qpu_cases._scientific_case("n21-orbit-rca", fixture)),
-        "a split record's written command or case text omits --overlap-split",
+        and "--overlap-split replaces" in case
+        and "one CZ fewer" in case
+        and "biases window_overlap_loss against a pass" in case
+        and "not that it caused the 2026-10-13T083417 loss" in case
+        and f"hold {counts['cz']} CZ and {counts['sx']} sx unbracketed" in case,
+        f"a split record's written command or case text omits the split, its CZ bias or its scope: {case}",
     )
     try:
         diagnostic_experiments.n21_orbit_rca_group(415, 502, window_sweep=True, overlap_split=True, reset_dt=520)
@@ -2327,8 +2371,9 @@ def _verify_overlap_split_only() -> None:
         _service, snapshot = _fixture()
         _verify_overlap_split(snapshot)
     print(
-        "QPU planning: a pinned n21-orbit-rca overlap split plans the nominal and unbracketed pairs and the "
-        "immediate, idle and reset_only spectators, the unbracketed arms alone hold a window operation, the "
+        "QPU planning: a pinned n21-orbit-rca overlap split plans the bracketed nominal and window_delay pairs, "
+        "the unbracketed window_delay pair and the immediate, idle and reset_only spectators, the unbracketed "
+        "arms alone hold a window operation and their CZ and sx counts enter the configuration, the "
         "configuration and policy bind the split only when set, and live_run refuses it without --pin-layout"
     )
 

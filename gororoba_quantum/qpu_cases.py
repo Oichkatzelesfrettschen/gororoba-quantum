@@ -1415,6 +1415,19 @@ def _empirical_bernstein(record: dict[str, Any], candidate: dict[str, Any]) -> l
     return lines
 
 
+def _gate_count_clause(counts: dict[str, dict[str, int]]) -> str:
+    """The routed CZ and sx counts of the bracketed and unbracketed window_delay feedback arms, or nothing."""
+    bracketed, unbracketed = (
+        counts.get(f"n21_orbit_{variant}_feedback") for variant in ("window_delay", "window_delay_unbracketed")
+    )
+    if bracketed is None or unbracketed is None:
+        return ""
+    return (
+        f" (the routed feedback arms hold {unbracketed['cz']} CZ and {unbracketed['sx']} sx unbracketed against "
+        f"{bracketed['cz']} CZ and {bracketed['sx']} sx bracketed)"
+    )
+
+
 def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
     if family == "et-row":
         from et_campaign import configuration as et_configuration
@@ -1798,7 +1811,28 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "and across the reset_only reference.",
                 "",
             ]
-            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("overlap_split")
+            if family == "n21-orbit-rca"
+            and record.get("family_configuration", {}).get("overlap_split")
+            and "overlap_arm" not in record["family_configuration"]
+            else []
+        ),
+        *(
+            [
+                "--overlap-split replaces the window sweep with the bracketed nominal and window_delay pairs, the "
+                "window_delay pair without its window barriers, so work-qubit gates may overlap the control's "
+                "measure-plus-reset span under the backend scheduler, and qubit-2 spectators read at once, after "
+                "an idle of the control's measure plus reset durations (window_delay_dt + reset_dt) with the "
+                "unrecorded control in |+>, and across the reset_only reference. Removing the barriers lets the "
+                "transpiler resynthesize the block around the window, so the unbracketed arm can play one CZ fewer "
+                "than its bracketed twin"
+                + _gate_count_clause(record["family_configuration"].get("orbit_gate_counts", {}))
+                + "; fewer CZ raise its contrast, which biases window_overlap_loss against a pass, so a fail is "
+                "unresolved rather than evidence that overlap costs nothing. A pass shows that overlap costs "
+                "contrast magnitude on this calibration, not that it caused the 2026-10-13T083417 loss: the "
+                "pin fixes the roles, and the calibration differs.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and "overlap_arm" in record.get("family_configuration", {})
             else []
         ),
         *(

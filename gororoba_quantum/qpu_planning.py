@@ -25,6 +25,7 @@ import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
+    N21_OVERLAP_ARM,
     PATCH_FAMILIES,
     STATE_PREP_ARM_STEPS,
     STATE_PREP_DYNAMIC_ARMS,
@@ -336,6 +337,20 @@ def _control_windows(
     joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
     resized = runtime.Choice(group, candidate.snap, candidate.seed, candidate.layout, isas, scores, joint)
     return resized, windows
+
+
+def orbit_gate_counts(choice: Any) -> dict[str, dict[str, int]]:
+    """CZ and sx counts of each routed orbit arm, a descriptive record of what removing the barriers changes.
+
+    Without the window barriers the transpiler resynthesizes the two-qubit
+    block around the window, so an unbracketed arm can differ from its
+    bracketed twin in CZ count as well as in readout overlap.
+    """
+    return {
+        member.name: {gate: int(isa.count_ops().get(gate, 0)) for gate in ("cz", "sx")}
+        for member, isa in zip(choice.group.members, choice.isas, strict=True)
+        if member.name.startswith("n21_orbit_")
+    }
 
 
 def pinned_orbit_layout(runtime: Any, snapshot: Any, pin: dict[str, Any]) -> list[int]:
@@ -866,7 +881,11 @@ def family_candidates(
                                 **windows.get(id(candidate), {}),
                                 **({"init_herald": True} if herald else {}),
                                 **(
-                                    {"overlap_split": True}
+                                    {
+                                        "overlap_split": True,
+                                        "overlap_arm": N21_OVERLAP_ARM,
+                                        "orbit_gate_counts": orbit_gate_counts(candidate),
+                                    }
                                     if getattr(args, "overlap_split", False)
                                     else {"window_sweep": True}
                                     if args.family == "n21-orbit-rca"

@@ -374,16 +374,25 @@ _N21_WEIGHTS = (0.5, 1.0, 0.5, 0.0)
 _SPECTATOR_ONE = (0.0, 0.0, 1.0, 1.0)
 
 
-# The overlap split pairs the bracketed nominal arm with the same program
-# without its window barriers (qpe_diagnostics variant nominal_unbarriered).
-N21_OVERLAP_PAIRS = ("nominal", "unbracketed")
-_N21_PAIR_BUILDS = {"unbracketed": "nominal_unbarriered"}
+# The overlap split compares bracketed window_delay with bracketed nominal
+# and with window_delay without its window barriers (qpe_diagnostics
+# variant window_delay_unbarriered). A configuration that records no
+# overlap_arm is the earlier split, which paired nominal with
+# nominal_unbarriered; record_groups keeps rebuilding it.
+N21_OVERLAP_PAIRS = {
+    "window_delay": ("nominal", "window_delay", "window_delay_unbracketed"),
+    "nominal": ("nominal", "unbracketed"),
+}
+N21_OVERLAP_ARM = "window_delay"
+_N21_PAIR_BUILDS = {"unbracketed": "nominal_unbarriered", "window_delay_unbracketed": "window_delay_unbarriered"}
 
 
-def n21_orbit_variants(window_sweep: bool = False, overlap_split: bool = False) -> tuple[str, ...]:
-    """The orbit pairs of n21-orbit-rca; window_sweep adds window_delay_long, overlap_split names its two pairs."""
+def n21_orbit_variants(
+    window_sweep: bool = False, overlap_split: bool = False, overlap_arm: str = N21_OVERLAP_ARM
+) -> tuple[str, ...]:
+    """The orbit pairs of n21-orbit-rca; window_sweep adds window_delay_long, overlap_split names its pairs."""
     if overlap_split:
-        return N21_OVERLAP_PAIRS
+        return N21_OVERLAP_PAIRS[overlap_arm]
     return (*N21_ORBIT_VARIANTS, *(N21_ORBIT_SWEEP_VARIANTS if window_sweep else ()))
 
 
@@ -408,6 +417,7 @@ def n21_orbit_rca_group(
     window_sweep: bool = False,
     overlap_split: bool = False,
     reset_dt: int | None = None,
+    overlap_arm: str = N21_OVERLAP_ARM,
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -431,18 +441,22 @@ def n21_orbit_rca_group(
     measure duration (qpu_planning.window_durations), in place of the
     measurement. Every member is dynamic, so the group runs as one job.
 
-    overlap_split replaces the group with ten members: the nominal pair, the
-    unbracketed pair (the same program without the window barriers, so the
-    compiler may play work-qubit gates during the control's readout), and
-    the immediate, idle and reset_only spectators in X and Y; idle idles
+    overlap_split replaces the group with twelve members: the bracketed
+    nominal and window_delay pairs, the window_delay_unbracketed pair (the
+    window_delay program without the window barriers, so the compiler may
+    play work-qubit gates during the control's measure and reset), and the
+    immediate, idle and reset_only spectators in X and Y; idle idles
     window_delay_dt + reset_dt, the control's calibrated measure and reset
-    durations. It excludes window_sweep.
+    durations. overlap_arm "nominal" rebuilds the earlier ten-member split
+    from a record that names no overlap_arm. It excludes window_sweep.
     """
     if overlap_split and window_sweep:
         raise ValueError("overlap_split and window_sweep are separate n21-orbit-rca configurations")
     if overlap_split and (type(reset_dt) is not int or reset_dt <= 0):
         raise ValueError("overlap_split requires a positive integer reset_dt from calibration")
-    variants = n21_orbit_variants(window_sweep, overlap_split)
+    if overlap_arm not in N21_OVERLAP_PAIRS:
+        raise ValueError(f"unknown overlap arm {overlap_arm!r}")
+    variants = n21_orbit_variants(window_sweep, overlap_split, overlap_arm)
     spectating = window_sweep or overlap_split
     clbits = N21_ORBIT_HERALDED_CLBITS if init_herald else 2
 
@@ -559,7 +573,11 @@ def family_contracts(
         # the herald read.
         heralded = bool((configuration or {}).get("init_herald"))
         split = bool((configuration or {}).get("overlap_split"))
-        variants = n21_orbit_variants(bool((configuration or {}).get("window_sweep")), split)
+        variants = n21_orbit_variants(
+            bool((configuration or {}).get("window_sweep")),
+            split,
+            str((configuration or {}).get("overlap_arm", "nominal")),
+        )
         spectators = n21_spectator_members(split) if (configuration or {}).get("window_sweep") or split else ()
 
         def scored(values: tuple[float, ...]) -> tuple[float, ...]:
@@ -673,6 +691,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 bool(family.get("window_sweep", False)),
                 bool(family.get("overlap_split", False)),
                 int(family["reset_dt"]) if "reset_dt" in family else None,
+                str(family.get("overlap_arm", "nominal")),
             )
         ]
     if family.get("name") in N21_FAMILIES:
