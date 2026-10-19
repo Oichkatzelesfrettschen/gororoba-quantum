@@ -13,7 +13,8 @@
   "awaiting_observation": [
     "results/live/2026-10-18T214519.655411Z/raw/dbajs3gc77vs7382ulhg",
     "results/live/2026-10-18T220218.089776Z/raw/dbak4pni0auc73925oc0",
-    "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0"
+    "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0",
+    "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40"
   ],
   "failed_charge_seconds": "0",
   "failed_job_count": 0,

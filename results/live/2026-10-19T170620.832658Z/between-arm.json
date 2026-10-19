@@ -1,0 +1,461 @@
+{
+  "admissibility": {
+    "admissible": true,
+    "differing": {},
+    "exempt": [
+      "n21_orbit_window_delay_unbracketed_feedback",
+      "n21_orbit_window_delay_unbracketed_no_feedback"
+    ],
+    "missing": [],
+    "orientation": {
+      "n21_orbit_nominal_feedback": 1,
+      "n21_orbit_nominal_no_feedback": -1,
+      "n21_orbit_window_delay_feedback": 1,
+      "n21_orbit_window_delay_no_feedback": -1
+    },
+    "reference_coupling": {
+      "136": {
+        "0": -1,
+        "1": -1
+      },
+      "144": {
+        "0": 1,
+        "1": 1
+      }
+    },
+    "reference_member": "n21_orbit_nominal_feedback",
+    "unresolved": {}
+  },
+  "alpha": {
+    "contracts": 4,
+    "family_alpha": 0.05,
+    "per_contract_alpha": 0.0125,
+    "split": "Bonferroni"
+  },
+  "analyzer_sha256": "0ccdb4e716cc806f7715b0188dc07480099d8bc7f3893c8a2a14ffc37dfc483a",
+  "calibration": {
+    "n21_orbit_nominal_feedback": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_nominal_no_feedback": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_feedback": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_no_feedback": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_unbracketed_feedback": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_orbit_window_delay_unbracketed_no_feedback": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_idle_x": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_idle_y": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_immediate_x": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_immediate_y": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_reset_only_x": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    },
+    "n21_spectator_reset_only_y": {
+      "calibration": "2026-10-19T09:47:37-07:00",
+      "source": "execution_start"
+    }
+  },
+  "contracts": {
+    "spectator_idle_dephasing": {
+      "herald_margin": 0.0065285753569814964,
+      "idle_visibility": 0.6107598731905507,
+      "idle_x_expectation": 0.610595703125,
+      "idle_y_expectation": -0.01416015625,
+      "immediate_visibility": 0.9938078137740636,
+      "immediate_x_expectation": 0.99365234375,
+      "immediate_y_expectation": -0.017578125,
+      "one_sided_quantile": 2.241402727604947,
+      "standard_error": 0.0088411615490297,
+      "statistic": -0.3830479405835129,
+      "status": "pass",
+      "upper_confidence_limit": -0.36323133697232174
+    },
+    "spectator_readout_dephasing": {
+      "herald_margin": 0.0065285753569814964,
+      "idle_visibility": 0.6107598731905507,
+      "idle_x_expectation": 0.610595703125,
+      "idle_y_expectation": -0.01416015625,
+      "one_sided_quantile": 2.241402727604947,
+      "reset_only_visibility": 0.5930260712230175,
+      "reset_only_x_expectation": 0.593017578125,
+      "reset_only_y_expectation": -0.003173828125,
+      "standard_error": 0.012479051814306141,
+      "statistic": -0.017733801967533158,
+      "status": "fail",
+      "upper_confidence_limit": 0.010236778806976089
+    },
+    "window_delay_pinned_loss": {
+      "contrast_magnitude": 0.22827882805909638,
+      "herald_margin": 0.017587778415836922,
+      "one_sided_quantile": 2.241402727604947,
+      "reference_contrast_magnitude": 0.23472115068423074,
+      "standard_error": 0.010642151970909352,
+      "statistic": -0.006442322625134361,
+      "status": "fail",
+      "upper_confidence_limit": 0.01741102583004822
+    },
+    "window_overlap_loss": {
+      "contrast_magnitude": 0.09385397231871832,
+      "herald_margin": 0.017587778415836922,
+      "one_sided_quantile": 2.241402727604947,
+      "reference_contrast_magnitude": 0.22827882805909638,
+      "standard_error": 0.010939967485208979,
+      "statistic": -0.13442485574037805,
+      "status": "pass",
+      "upper_confidence_limit": -0.10990398277912121
+    }
+  },
+  "dt_seconds": 4e-09,
+  "dt_source": "record family_configuration.dt_seconds",
+  "herald": {
+    "admissible": true,
+    "alpha": 0.05,
+    "bits": {
+      "0": {
+        "excitation_spread_upper_limit": 0.007107951825007623,
+        "excited_fraction": {
+          "n21_orbit_nominal_feedback": 0.0050048828125,
+          "n21_orbit_nominal_no_feedback": 0.005126953125,
+          "n21_orbit_window_delay_feedback": 0.0054931640625,
+          "n21_orbit_window_delay_no_feedback": 0.007080078125,
+          "n21_orbit_window_delay_unbracketed_feedback": 0.0052490234375,
+          "n21_orbit_window_delay_unbracketed_no_feedback": 0.0078125
+        },
+        "qubit": 142,
+        "readout_contrast": 0.986328125,
+        "role": "control",
+        "spread": 0.0028076171875,
+        "spread_lower_limit": -0.0013969089933675745,
+        "status": "pass",
+        "threshold": 0.0024659220700607443
+      },
+      "1": {
+        "excitation_spread_upper_limit": 0.008138068316257746,
+        "excited_fraction": {
+          "n21_orbit_nominal_feedback": 0.00830078125,
+          "n21_orbit_nominal_no_feedback": 0.009521484375,
+          "n21_orbit_window_delay_feedback": 0.0098876953125,
+          "n21_orbit_window_delay_no_feedback": 0.0093994140625,
+          "n21_orbit_window_delay_unbracketed_feedback": 0.0107421875,
+          "n21_orbit_window_delay_unbracketed_no_feedback": 0.0111083984375
+        },
+        "qubit": 136,
+        "readout_contrast": 0.9775390625,
+        "role": "work_1",
+        "spread": 0.0028076171875,
+        "spread_lower_limit": -0.002341415869653026,
+        "status": "pass",
+        "threshold": 0.002443948507060203
+      },
+      "2": {
+        "excitation_spread_upper_limit": 0.003182200471811384,
+        "excited_fraction": {
+          "n21_orbit_nominal_feedback": 0.001953125,
+          "n21_orbit_nominal_no_feedback": 0.0018310546875,
+          "n21_orbit_window_delay_feedback": 0.0010986328125,
+          "n21_orbit_window_delay_no_feedback": 0.0008544921875,
+          "n21_orbit_window_delay_unbracketed_feedback": 0.00146484375,
+          "n21_orbit_window_delay_unbracketed_no_feedback": 0.0010986328125
+        },
+        "qubit": 143,
+        "readout_contrast": 0.9853515625,
+        "role": "work_4",
+        "spread": 0.0010986328125,
+        "spread_lower_limit": -0.0009388568929552922,
+        "status": "pass",
+        "threshold": 0.002463480563060684
+      },
+      "3": {
+        "excitation_spread_upper_limit": 0.0032285919608890422,
+        "excited_fraction": {
+          "n21_orbit_nominal_feedback": 0.00048828125,
+          "n21_orbit_nominal_no_feedback": 0.0018310546875,
+          "n21_orbit_window_delay_feedback": 0.001220703125,
+          "n21_orbit_window_delay_no_feedback": 0.001708984375,
+          "n21_orbit_window_delay_unbracketed_feedback": 0.0018310546875,
+          "n21_orbit_window_delay_unbracketed_no_feedback": 0.0013427734375
+        },
+        "qubit": 144,
+        "readout_contrast": 0.994140625,
+        "role": "work_16",
+        "spread": 0.0013427734375,
+        "spread_lower_limit": -0.0005247830459287402,
+        "status": "pass",
+        "threshold": 0.0024854541260612255
+      }
+    },
+    "comparisons": 120,
+    "contract_shift_upper_limit": 0.017587778415836922,
+    "evaluable": true,
+    "excitation_spread_bound": 0.0025001031680615864,
+    "one_sided_quantile": 3.3414789560386264,
+    "present": true,
+    "shots": 8192
+  },
+  "measured_counts": {
+    "n21_orbit_nominal": {
+      "feedback": [
+        1459,
+        2085,
+        2479,
+        2169
+      ],
+      "no_feedback": [
+        1491,
+        3052,
+        2518,
+        1131
+      ]
+    },
+    "n21_orbit_window_delay": {
+      "feedback": [
+        1752,
+        1676,
+        2206,
+        2558
+      ],
+      "no_feedback": [
+        1671,
+        2885,
+        2400,
+        1236
+      ]
+    },
+    "n21_orbit_window_delay_unbracketed": {
+      "feedback": [
+        2702,
+        2027,
+        1254,
+        2209
+      ],
+      "no_feedback": [
+        2741,
+        2488,
+        1222,
+        1741
+      ]
+    }
+  },
+  "member_readout": {
+    "n21_orbit_nominal_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.0048828125,
+      "end_e10": 0.0087890625,
+      "mid_e01": 0.0048828125,
+      "mid_e10": 0.0087890625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_nominal_no_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.0048828125,
+      "end_e10": 0.0087890625,
+      "mid_e01": 0.0048828125,
+      "mid_e10": 0.0087890625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_delay_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.0048828125,
+      "end_e10": 0.0087890625,
+      "mid_e01": 0.0048828125,
+      "mid_e10": 0.0087890625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_delay_no_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.0048828125,
+      "end_e10": 0.0087890625,
+      "mid_e01": 0.0048828125,
+      "mid_e10": 0.0087890625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_delay_unbracketed_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.0048828125,
+      "end_e10": 0.0087890625,
+      "mid_e01": 0.0048828125,
+      "mid_e10": 0.0087890625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_delay_unbracketed_no_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.0048828125,
+      "end_e10": 0.0087890625,
+      "mid_e01": 0.0048828125,
+      "mid_e10": 0.0087890625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    }
+  },
+  "schema_version": "n21-orbit-between-arm-contracts-v2",
+  "spectator_counts": {
+    "idle": {
+      "x": [
+        6597,
+        0,
+        1595,
+        0
+      ],
+      "y": [
+        4038,
+        0,
+        4154,
+        0
+      ]
+    },
+    "immediate": {
+      "x": [
+        8166,
+        0,
+        26,
+        0
+      ],
+      "y": [
+        4024,
+        0,
+        4168,
+        0
+      ]
+    },
+    "reset_only": {
+      "x": [
+        6525,
+        0,
+        1667,
+        0
+      ],
+      "y": [
+        4083,
+        0,
+        4109,
+        0
+      ]
+    }
+  },
+  "spectator_herald": {
+    "admissible": true,
+    "alpha": 0.05,
+    "bits": {
+      "0": {
+        "excitation_spread_upper_limit": 0.005072712494633572,
+        "excited_fraction": {
+          "n21_spectator_idle_x": 0.0054931640625,
+          "n21_spectator_idle_y": 0.0047607421875,
+          "n21_spectator_immediate_x": 0.0054931640625,
+          "n21_spectator_immediate_y": 0.004150390625,
+          "n21_spectator_reset_only_x": 0.004638671875,
+          "n21_spectator_reset_only_y": 0.00439453125
+        },
+        "qubit": 142,
+        "readout_contrast": 0.986328125,
+        "role": "control",
+        "spread": 0.0013427734375,
+        "spread_lower_limit": -0.002318467619556535,
+        "status": "pass",
+        "threshold": 0.0024659220700607443
+      },
+      "1": {
+        "excitation_spread_upper_limit": 0.008409645979074596,
+        "excited_fraction": {
+          "n21_spectator_idle_x": 0.0093994140625,
+          "n21_spectator_idle_y": 0.0067138671875,
+          "n21_spectator_immediate_x": 0.010009765625,
+          "n21_spectator_immediate_y": 0.0081787109375,
+          "n21_spectator_reset_only_x": 0.0091552734375,
+          "n21_spectator_reset_only_y": 0.0101318359375
+        },
+        "qubit": 136,
+        "readout_contrast": 0.9775390625,
+        "role": "work_1",
+        "spread": 0.00341796875,
+        "spread_lower_limit": -0.0013864884690410108,
+        "status": "pass",
+        "threshold": 0.002443948507060203
+      },
+      "2": {
+        "excitation_spread_upper_limit": 0.0032642876784907482,
+        "excited_fraction": {
+          "n21_spectator_idle_x": 0.0013427734375,
+          "n21_spectator_idle_y": 0.001220703125,
+          "n21_spectator_immediate_x": 0.001953125,
+          "n21_spectator_immediate_y": 0.000732421875,
+          "n21_spectator_reset_only_x": 0.0009765625,
+          "n21_spectator_reset_only_y": 0.0010986328125
+        },
+        "qubit": 143,
+        "readout_contrast": 0.9853515625,
+        "role": "work_4",
+        "spread": 0.001220703125,
+        "spread_lower_limit": -0.0007756606154144764,
+        "status": "pass",
+        "threshold": 0.002463480563060684
+      },
+      "3": {
+        "excitation_spread_upper_limit": 0.0023764423430195822,
+        "excited_fraction": {
+          "n21_spectator_idle_x": 0.00048828125,
+          "n21_spectator_idle_y": 0.0008544921875,
+          "n21_spectator_immediate_x": 0.001220703125,
+          "n21_spectator_immediate_y": 0.0006103515625,
+          "n21_spectator_reset_only_x": 0.0006103515625,
+          "n21_spectator_reset_only_y": 0.000732421875
+        },
+        "qubit": 144,
+        "readout_contrast": 0.994140625,
+        "role": "work_16",
+        "spread": 0.000732421875,
+        "spread_lower_limit": -0.0008980316667444243,
+        "status": "pass",
+        "threshold": 0.0024854541260612255
+      }
+    },
+    "comparisons": 120,
+    "contract_shift_upper_limit": 0.0149182655056812,
+    "evaluable": true,
+    "excitation_spread_bound": 0.0025001031680615864,
+    "one_sided_quantile": 3.3414789560386264,
+    "present": true,
+    "shots": 8192
+  },
+  "spectator_immediate_visibility": {
+    "ideal_visibility": 1.0,
+    "standard_error": 0.0012579734418321986,
+    "status": "descriptive",
+    "visibility": 0.9938078137740636,
+    "x_expectation": 0.99365234375,
+    "y_expectation": -0.017578125
+  }
+}
