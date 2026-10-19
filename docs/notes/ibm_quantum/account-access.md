@@ -51,9 +51,12 @@ jobs and refuses while any job is unfinished or its usage status differs
 from `complete`, so an observation waits for settlement.
 `scripts/reconcile_qpu_inventory.py` binds a failed job's settled charge to
 the run whose collect.json records `result_unavailable` and counts it in the
-usage-window sum. A job cancelled before it ran bills zero, and the observer
-and reconciliation both refuse a zero charge; such a job blocks observation
-until the inventory rules admit a zero-charge CANCELLED row.
+usage-window sum. A job cancelled before it ran has no running timestamp and
+bills zero; both scripts record it as an unexecuted cancellation that needs
+no archive or collection and adds nothing to the window, while a CANCELLED
+job with a running timestamp or a charge follows the failed-job rule. The
+zero-charge shape is inferred from the service's billing rules; no retained
+job has shown it.
 
 ## Inventory freshness
 

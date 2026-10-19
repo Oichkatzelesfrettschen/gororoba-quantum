@@ -19,6 +19,9 @@ error) bills the QPU lock time it consumed and returns no result, so it has
 no raw archive. Its inventory row carries the failed status with a settled
 positive charge, the run whose collect.json names it with result_unavailable
 holds the same settled charge, and its charge enters the usage-window sum.
+A job cancelled before it ran carries no running timestamp and a zero
+charge; it needs neither an archive nor a collection and adds nothing to
+the window.
 
 The inventory is an observation at observed_at. A raw archive whose run's
 submission started at or after that instant names a job the observation
@@ -88,6 +91,8 @@ def window_charge(jobs: list[dict[str, Any]], usage: dict[str, Any]) -> Decimal:
         times = job.get("timestamps")
         if not isinstance(times, dict):
             raise ValueError(f"job timestamps are missing for {job.get('job_id')}")
+        if unexecuted(job):
+            continue
         running, finished = timestamp(times.get("running")), timestamp(times.get("finished"))
         require(running <= finished <= end, "job execution chronology differs from the account observation")
         if finished < start:
@@ -95,6 +100,16 @@ def window_charge(jobs: list[dict[str, Any]], usage: dict[str, Any]) -> Decimal:
         require(running >= start, "a job straddles the usage-period start; its in-window charge is not recorded")
         total += Decimal(str(job["final_qpu_charge_seconds"]))
     return total
+
+
+def unexecuted(job: dict[str, Any]) -> bool:
+    """A CANCELLED job with no running timestamp and a zero charge never held the QPU."""
+    times = job.get("timestamps") or {}
+    return (
+        job.get("status") == "CANCELLED"
+        and not times.get("running")
+        and Decimal(str(job.get("final_qpu_charge_seconds"))) == 0
+    )
 
 
 def campaign_split(rows: list[dict[str, Any]]) -> tuple[Decimal, Decimal, Decimal]:
@@ -239,6 +254,19 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     rows = []
     for job in jobs:
         identity = job["job_id"]
+        if unexecuted(job):
+            rows.append(
+                {
+                    **job,
+                    "run": None,
+                    "provenance": "unexecuted_cancellation",
+                    "submitted_pub_shots": job["pub_count"] * job["shots_per_pub"],
+                    "raw_data_files": 0,
+                    "metrics_snapshots": 0,
+                    "source_files": {},
+                }
+            )
+            continue
         require(job["usage_status"] == "complete", f"unsettled job {identity}")
         charge = Decimal(str(job["final_qpu_charge_seconds"]))
         require(charge.is_finite() and charge > 0, f"physical charge missing for {identity}")
@@ -375,7 +403,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             "subsequent live jobs require a fresh inventory."
         ),
         "job_count": len(rows),
-        "acquisition_count": len({row["run"] for row in rows}),
+        "acquisition_count": len({row["run"] for row in rows if row["run"] is not None}),
         "pub_count": sum(row["pub_count"] for row in rows),
         "submitted_pub_shots": sum(row["submitted_pub_shots"] for row in rows),
         "indexed_raw_data_files": sum(row["raw_data_files"] for row in rows),

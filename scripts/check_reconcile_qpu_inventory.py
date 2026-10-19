@@ -199,6 +199,37 @@ def awaiting_observation_contract(audit: Any, root: Path, source: Path, snapshot
     write(source, snapshot)
 
 
+def unexecuted_cancellation_contract(audit: Any, source: Path, snapshot: dict[str, Any]) -> None:
+    """A zero-charge CANCELLED job without a running timestamp needs no archive; any execution trace refuses."""
+    cancelled = copy.deepcopy(snapshot)
+    cancelled["jobs"].append(
+        snapshot["jobs"][0]
+        | {
+            "job_id": "cancelled-job",
+            "status": "CANCELLED",
+            "usage_status": None,
+            "final_qpu_charge_seconds": 0,
+            "timestamps": {"created": "2026-10-12T02:00:00Z"},
+        }
+    )
+    write(source, cancelled)
+    result = audit.reconcile(source)
+    audit.require(
+        result["job_count"] == 2 and result["usage_window_charge_seconds"] == "1",
+        "an unexecuted cancellation changed the audit",
+    )
+    for mutate, reason in (
+        (lambda value: value.update(final_qpu_charge_seconds=1), "unsettled job cancelled-job"),
+        (lambda value: value["timestamps"].update(running="2026-10-12T02:00:01Z"), "unsettled job cancelled-job"),
+        (lambda value: value.update(status="ERROR"), "unsettled job cancelled-job"),
+    ):
+        mutant = copy.deepcopy(cancelled)
+        mutate(mutant["jobs"][1])
+        write(source, mutant)
+        rejects(audit, source, reason)
+    write(source, snapshot)
+
+
 def rejects(audit: Any, source: Path, reason: str) -> None:
     """reconcile refuses source with a message naming reason, so a mutant fails for the intended rule."""
     try:
@@ -356,6 +387,7 @@ def main() -> None:
             second_instance_contract(audit, root, source, snapshot, times)
             failed_job_contract(audit, root, source, snapshot)
             awaiting_observation_contract(audit, root, source, snapshot)
+            unexecuted_cancellation_contract(audit, source, snapshot)
             duplicated = copy.deepcopy(index)
             duplicated["metrics"] = ["job_metrics.json", "job_metrics.json"]
             duplicated["metrics_sha256"] = [index["metrics_sha256"][0]] * 2
@@ -379,7 +411,8 @@ def main() -> None:
         "Synthetic inventory contract: 20 inventory mutations, two window chronology mutations, "
         "a repeated metrics snapshot and raw corruption rejected; a failed job binds its settled charge to "
         "its collection under 16 mutations, each refused by its own rule; an archive submitted after the "
-        "observation awaits it; the campaign cutoff splits charges; "
+        "observation awaits it; a zero-charge unexecuted cancellation passes and three execution traces refuse; "
+        "the campaign cutoff splits charges; "
         "replay preserves bytes"
     )
 

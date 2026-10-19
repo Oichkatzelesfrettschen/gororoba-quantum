@@ -57,6 +57,16 @@ def job_row(job: Any) -> dict[str, Any]:
     }
 
 
+def unexecuted_cancellation(row: dict[str, Any]) -> bool:
+    """A job cancelled before it ran: no running timestamp and no charge, so it holds no QPU time."""
+    charge = row["final_qpu_charge_seconds"]
+    return (
+        row["status"] == "CANCELLED"
+        and not (row["timestamps"] or {}).get("running")
+        and (charge is None or charge == 0)
+    )
+
+
 def observe(service: Any) -> dict[str, Any]:
     sys.path.insert(0, str(ROOT / "gororoba_quantum"))
     from live_run import _instance_hash
@@ -65,7 +75,8 @@ def observe(service: Any) -> dict[str, Any]:
     unsettled = [
         row["job_id"]
         for row in rows
-        if row["status"] not in FINISHED_STATUSES
+        if not unexecuted_cancellation(row)
+        and row["status"] not in FINISHED_STATUSES
         or row["usage_status"] != "complete"
         or not isinstance(row["final_qpu_charge_seconds"], int | float)
         or row["final_qpu_charge_seconds"] <= 0
