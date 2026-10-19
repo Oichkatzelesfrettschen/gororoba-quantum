@@ -465,7 +465,7 @@
       "mask_set": "M216",
       "medians": {
         "cz_duration_s": 4e-08,
-        "cz_irb_fidelity": 0.996295,
+        "cz_irb_fidelity": 0.996321,
         "measure_duration_s": 3.6e-07,
         "prx_duration_s": 2.4e-08,
         "prx_fidelity": 0.999672,
@@ -879,10 +879,6 @@
         "QB6__QB5": {
           "cz_duration_s": 4e-08,
           "cz_irb_fidelity": 0.9970311313739696,
-          "implementation": "slepian_crf"
-        },
-        "QB6__QB7": {
-          "cz_irb_fidelity": 0.918333538144794,
           "implementation": "slepian_crf"
         },
         "QB9__QB10": {

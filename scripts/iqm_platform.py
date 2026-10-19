@@ -163,7 +163,9 @@ def read_tokens(path: Path) -> dict[str, str]:
 
 def write_private(path: Path, value: dict[str, Any]) -> None:
     tmp = path.with_name(path.name + ".tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    tmp.unlink(missing_ok=True)
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    os.fchmod(fd, 0o600)
     with os.fdopen(fd, "w") as handle:
         handle.write(json.dumps(value, indent=2) + "\n")
         handle.flush()
@@ -191,7 +193,12 @@ class Client:
         status, _, body = self.send(
             "POST", f"{self.server}/{path}", json.dumps(value).encode(), self.headers(token, True)
         )
-        return status, json.loads(body) if body else None
+        if not body:
+            return status, None
+        try:
+            return status, json.loads(body)
+        except ValueError as error:
+            raise PlatformError(f"POST {path} answered {status} with a non-JSON body") from error
 
     def graphql(self, query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
         status, reply = self.post("api/graphql", {"query": query, "variables": variables or {}})
@@ -344,12 +351,16 @@ def derive_qc(directory: Path, base: str) -> dict[str, Any]:
         }
     cz = dqa["gates"].get("cz", {})
     pairs: dict[str, dict[str, Any]] = {}
-    for impl in cz.get("implementations", {}):
+    for impl, spec in cz.get("implementations", {}).items():
+        # Only loci the DQA lists for an implementation are operational pairs.
+        loci = {"__".join(locus) for locus in spec["loci"]}
         for k, v in pick(m, rf"metrics\.irb\.cz\.{re.escape(impl)}\.(.+?)\.fidelity(?::.*)?").items():
-            pairs.setdefault(k, {})["cz_irb_fidelity"] = v
-            pairs[k]["implementation"] = impl
+            if k in loci:
+                pairs.setdefault(k, {})["cz_irb_fidelity"] = v
+                pairs[k]["implementation"] = impl
         for k, v in pick(c, rf"gates\.cz\.{re.escape(impl)}\.(.+?)\.duration").items():
-            pairs.setdefault(k, {})["cz_duration_s"] = v
+            if k in loci:
+                pairs.setdefault(k, {})["cz_duration_s"] = v
     awg = sorted(
         {
             (p.get("sampling_rate"), p.get("instruction_duration_granularity"), p.get("instruction_duration_min"))
@@ -522,7 +533,8 @@ def check_mcp(server: Path = MCP_SERVER) -> None:
     mutating = tuple(sorted(name for name, notes in tools.items() if notes != "READ"))
     if mutating != MCP_MUTATING:
         raise PlatformError(f"MCP tools {mutating} change remote state, expected {MCP_MUTATING}")
-    if "/jobs/{qc}" in server.read_text() or 'timeslots", {' in server.read_text():
+    text = server.read_text()
+    if "/jobs/{qc}" in text or 'timeslots", {' in text or text.count(".post(") != 1:
         raise PlatformError("the MCP server names a submission or booking route")
 
 
@@ -540,7 +552,11 @@ def current_expiry(client: Client) -> dt.datetime:
     status, body = client.get(f"{API}/tokens")
     if status != 200:
         raise PlatformError(f"tokens listing answered {status}")
-    suffixes = [t for t in json.loads(body)["tokens"] if client.token.endswith(t["last_characters"])]
+    suffixes = [
+        t
+        for t in json.loads(body)["tokens"]
+        if t.get("last_characters") and client.token.endswith(t["last_characters"])
+    ]
     if len(suffixes) != 1:
         raise PlatformError("the tokens listing names the current token zero or several times")
     return dt.datetime.fromisoformat(suffixes[0]["expires_at"].replace("Z", "+00:00"))
@@ -565,7 +581,7 @@ def refresh(path: Path, min_days: float, days: int, transport: Transport | None 
                 }
             }
             status, created = client.post(f"{API}/tokens/current/refresh", body, token=tokens["refresh_token"])
-            if status != 200 or created.get("activated"):
+            if status != 200 or not isinstance(created, dict) or created.get("activated") or not created.get("token"):
                 raise PlatformError(f"refresh answered {status}")
             write_private(
                 pending,
@@ -576,10 +592,16 @@ def refresh(path: Path, min_days: float, days: int, transport: Transport | None 
                 },
             )
         staged = read_tokens(pending)
+        if staged.get("used_refresh_token") != tokens.get("refresh_token"):
+            raise PlatformError(
+                f"{pending} was staged from another refresh token than {path} holds; inspect it by hand"
+            )
         status, _ = client.post(
             f"{API}/tokens/current/activate", {"api_token": staged["access_token"]}, token=staged["used_refresh_token"]
         )
-        if status != 200:
+        # Activation invalidates the refresh token, so a lost success reply
+        # leaves a rerun unable to activate; the staged token then answers.
+        if status != 200 and Client(staged["access_token"], transport).get(f"{API}/tokens")[0] != 200:
             raise PlatformError(f"activate answered {status}; {pending} keeps the new token for a rerun")
         write_private(path, {"access_token": staged["access_token"], "refresh_token": staged["refresh_token"]})
         pending.unlink()
@@ -637,45 +659,85 @@ def self_test(evidence: Path) -> None:
         self_test_refresh(Path(scratch))
 
 
-def self_test_refresh(scratch: Path) -> None:
-    path = scratch / "tokens.json"
-    write_private(path, {"access_token": "old-access-AAAAA", "refresh_token": "old-refresh"})
-    calls: list[str] = []
-    fail_activate = [True]
+class StubServer:
+    """Token endpoints of IQM Server: refresh stages, activate installs, /tokens authenticates active tokens."""
 
-    def stub(method: str, url: str, body: bytes | None, headers: dict[str, str]) -> tuple[int, dict[str, str], bytes]:
-        calls.append(url.rsplit("/", 1)[-1])
+    def __init__(self, activate_replies: list[int], apply_on_failure: bool) -> None:
+        self.active = {"old-access-AAAAA"}
+        self.refresh_valid = True
+        self.replies = activate_replies
+        self.apply_on_failure = apply_on_failure
+        self.calls: list[str] = []
+
+    def __call__(
+        self, method: str, url: str, body: bytes | None, headers: dict[str, str]
+    ) -> tuple[int, dict[str, str], bytes]:
+        bearer = headers["Authorization"].removeprefix("Bearer ")
+        self.calls.append(url.rsplit("/", 1)[-1])
         if url.endswith("/tokens"):
+            if bearer not in self.active:
+                return 401, {}, b"{}"
             soon = (dt.datetime.now(dt.UTC) + dt.timedelta(days=1)).isoformat()
             return 200, {}, json.dumps({"tokens": [{"last_characters": "AAAAA", "expires_at": soon}]}).encode()
         if url.endswith("/refresh"):
-            if (
-                headers["Authorization"] != "Bearer old-refresh"
-                or json.loads(body or b"")["new_token_properties"]["activated"]
-            ):
+            request = json.loads(body or b"{}")
+            if bearer != "old-refresh" or not self.refresh_valid or request["new_token_properties"]["activated"]:
                 return 400, {}, b"{}"
-            return (
-                200,
-                {},
-                json.dumps({"token": "new-access", "refresh_token": "new-refresh", "activated": False}).encode(),
-            )
+            reply = {"token": "new-access", "refresh_token": "new-refresh", "activated": False}
+            return 200, {}, json.dumps(reply).encode()
         if url.endswith("/activate"):
-            if fail_activate[0]:
-                fail_activate[0] = False
-                return 502, {}, b""
-            return 200, {}, b'{"activated_at": "now"}'
+            if bearer != "old-refresh" or not self.refresh_valid:
+                return 401, {}, b"{}"
+            status = self.replies.pop(0) if self.replies else 200
+            if status == 200 or self.apply_on_failure:
+                self.active.add("new-access")
+                self.refresh_valid = False
+            return status, {}, b'{"activated_at": "now"}' if status == 200 else b""
         return 404, {}, b""
 
-    expect_failure("an activation failure", lambda: refresh(path, 14, 30, stub))
+
+def self_test_refresh(scratch: Path) -> None:
+    path = scratch / "tokens.json"
     pending = path.with_name(path.name + ".pending")
+    installed = {"access_token": "new-access", "refresh_token": "new-refresh"}
+
+    def reset() -> None:
+        pending.unlink(missing_ok=True)
+        write_private(path, {"access_token": "old-access-AAAAA", "refresh_token": "old-refresh"})
+
+    # An activation the server rejected keeps the pending token; the rerun activates it.
+    reset()
+    server = StubServer([502], apply_on_failure=False)
+    expect_failure("a rejected activation", lambda: refresh(path, 14, 30, server))
     if not pending.exists() or read_tokens(path)["access_token"] != "old-access-AAAAA":
         raise PlatformError("self-test: refresh lost the pending token or replaced the live one early")
-    if refresh(path, 14, 30, stub) != "refreshed" or calls.count("refresh") != 1:
-        raise PlatformError(f"self-test: refresh did not resume from the pending token: {calls}")
-    if read_tokens(path) != {"access_token": "new-access", "refresh_token": "new-refresh"} or pending.exists():
+    if refresh(path, 14, 30, server) != "refreshed" or server.calls.count("refresh") != 1:
+        raise PlatformError(f"self-test: refresh did not resume from the pending token: {server.calls}")
+    if read_tokens(path) != installed or pending.exists():
         raise PlatformError("self-test: refresh did not install the activated token")
     if os.stat(path).st_mode & 0o077:
         raise PlatformError("self-test: tokens file is readable beyond its owner")
+
+    # An activation that succeeded with a lost reply installs the staged token at once.
+    reset()
+    server = StubServer([502], apply_on_failure=True)
+    if refresh(path, 14, 30, server) != "refreshed" or read_tokens(path) != installed or pending.exists():
+        raise PlatformError("self-test: refresh lost a token the server had already activated")
+
+    # A pending file staged from another refresh token is refused, and the live pair is kept.
+    reset()
+    write_private(pending, {"access_token": "x", "refresh_token": "y", "used_refresh_token": "other-refresh"})
+    expect_failure("a stale pending file", lambda: refresh(path, 14, 30, StubServer([], apply_on_failure=False)))
+    if read_tokens(path)["access_token"] != "old-access-AAAAA":
+        raise PlatformError("self-test: a stale pending file replaced the live token")
+
+    # A leftover world-readable temporary file never lends its mode to the tokens file.
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text("{}")
+    tmp.chmod(0o644)
+    reset()
+    if os.stat(path).st_mode & 0o077:
+        raise PlatformError("self-test: a leftover temporary file widened the tokens file mode")
 
 
 def main() -> int:

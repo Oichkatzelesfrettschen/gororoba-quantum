@@ -180,19 +180,22 @@ Medians of the default calibration sets read at the snapshot:
 
 | QC | T1 | T2 (Ramsey) | T2 echo | PRX RB fidelity | readout fidelity | CZ IRB fidelity | PRX | CZ | measure |
 |---|---|---|---|---|---|---|---|---|---|
-| Emerald | 50 us | 15 us | 38 us | 0.99967 | 0.98848 | 0.99630 | 24 ns | 40 ns | 360 ns |
+| Emerald | 50 us | 15 us | 38 us | 0.99967 | 0.98848 | 0.99632 | 24 ns | 40 ns | 360 ns |
 | Garnet | 42 us | 9 us | 22 us | 0.99934 | 0.97945 | 0.99425 | 16 ns | 40 ns | 480 ns |
 | Sirius | 26 us | 10 us | 24 us | 0.99902 | 0.98335 | 0.97400 | 40 ns | 104 ns | 400 ns |
 
 - **Emerald**: Crystal 54, chip M216 variant H03 (`M216_F0W102525_H03_F08`),
   station MX07_Aphrodite_CD3. 54 qubits on a square lattice, 90 tunable
   couplers, 8 probe lines, 214 launchers. Drive frequencies 3.802 to
-  4.207 GHz, readout 5.101 to 6.053 GHz; T1 11 to 92 us. CZ uses
-  `slepian_crf` on 83 pairs and `crf_acstarkcrf` on the four pairs around
-  QB50 (QB44, QB49, QB51, QB54). Its `measure_fidelity` default is
-  `shelved_constant`, a readout that shelves the excited state to level 2
-  first. Weakest loci: CZ QB43-QB35 0.908 and QB6-QB7 0.918; readout QB10
-  0.898 and QB6 0.910.
+  4.207 GHz, readout 5.101 to 6.053 GHz; T1 11 to 92 us. CZ is calibrated
+  on 85 of the 90 couplings: `slepian_crf` on 83 and `crf_acstarkcrf` on
+  QB44-QB50 and QB50-QB51. The DQA override map also names QB49-QB50 and
+  QB54-QB50, which no CZ implementation lists as a locus, so the transpiler
+  routes around them; QB6-QB7 carries an IRB metric but no CZ locus either.
+  Its `measure_fidelity` default is `shelved_constant`, a readout that
+  shelves the excited state to level 2 first. Weakest operational loci: CZ
+  QB43-QB35 0.908, QB38-QB37 0.957 and QB50-QB51 0.963; readout QB10 0.898
+  and QB6 0.910.
 - **Garnet**: chip M194 variant P08 (`M194_F0W2114_P08_B15`), "Apollo
   station in XLD10.S1". 20 qubits, 30 couplers, 3 probe lines. Drive 4.488
   to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 15 to 57 us. CZ
@@ -208,9 +211,11 @@ Medians of the default calibration sets read at the snapshot:
   include `move_ncz_move` IRB, `xy_move_cz_move` Clifford RB and a
   16-qubit GHZ population and coherence bound. CZ to COMPR1 median 0.974,
   weakest QB11 0.923.
-- **AWG channels** sample at 2 GS/s with an 8-sample (Emerald, Garnet) or
-  16-sample (Sirius) instruction granularity, so every pulse duration is a
-  multiple of 4 ns or 8 ns.
+- **AWG channels** that drive and flux the qubits sample at 2 GS/s with an
+  8-sample (Emerald, Garnet) or 16-sample (Sirius) instruction granularity,
+  so every pulse duration is a multiple of 4 ns or 8 ns; Sirius also lists a
+  10 MS/s channel with single-sample granularity
+  (`artifacts/channel-properties.json`).
 - **Mocks** (`emerald:mock`, `garnet:mock`, `sirius:mock`) run the same API
   against simulated chips (M160, M194, M186 Z99 variants) with their own
   gate implementations and limits (`garnet:mock`: 500 circuits per job;
@@ -254,8 +259,9 @@ package installs a self-contained Python 3.13 environment under
 IQM's 4.7.0 constraints plus the qiskit, cirq and qrisp extras.
 
 - `requirements.lock` pins 184 distributions by sha256
-  (`uv pip compile --python /usr/bin/python3.13 --generate-hashes -c
-  constraints-iqm-qccsw-4.7.0.txt requirements.in`); build() installs it
+  (`uv pip compile --python /usr/bin/python3.13 --python-platform
+  x86_64-manylinux_2_28 --generate-hashes -c constraints-iqm-qccsw-4.7.0.txt
+  requirements.in`); build() installs it
   with `pip --require-hashes --no-deps`, mthree 3.0.0 from its sdist.
 - check() runs `test_iqm_stack.py`, 22 offline tests: the interpreter, every
   constraint and lock pin installed exactly, `pip check`, every module
