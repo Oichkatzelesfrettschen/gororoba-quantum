@@ -63,7 +63,7 @@ PAIR_COST_CAP by a sha256 over every added pair's distances, and replay_pairs()
 replays the first PAIR_SAMPLE. A hand-altered distance is caught only when
 its pair is sampled. The token ``pairs-all`` replays every merge-added pair
 through the process pool (replay_all_pairs), so a hand-altered distance in
-any pair fails; gate core-591 runs it on the full tier.
+any pair fails; gate core-597 runs it on the full tier.
 ``--self-test`` exercises the merge, its removal and the exact path's rule
 and seeds on synthetic records.
 
@@ -114,6 +114,11 @@ MAX_QUBITS = 14
 SEED = 20261016
 # Seed blocks of the main draw and the independent resample never overlap.
 SEED_STRIDE = 100_000
+# Strided slices of the merge-added pairs ranked by pair_cost(): case k replays
+# ranks k, k + PAIR_SLICES, ..., so the cases together replay every pair once
+# and each holds about one costly pair (ci/gates.json case_registry).
+PAIR_SLICES = 4
+PAIR_CASES: dict[str, int] = {"slice0": 0, "slice1": 1, "slice2": 2, "slice3": 3}
 RESAMPLE_SEED = SEED + 50 * SEED_STRIDE
 # Aer seeds experiment k of one call with seed_simulator + 2113 k
 # (controller_execute.hpp, the seed_shift loop of controller_execute).
@@ -1018,7 +1023,7 @@ def replay_pairs(
     return done
 
 
-def replay_all_pairs(result: dict[str, Any], index: dict[str, Any], device: str) -> int:
+def replay_all_pairs(result: dict[str, Any], index: dict[str, Any], device: str, part: int | None = None) -> int:
     """Require every merge-added pair of this host's Aer device to equal snapshot_entry() recomputed, bit for bit.
 
     The pairs run through parallel.ordered_map in pool_order of pair_cost(),
@@ -1034,10 +1039,14 @@ def replay_all_pairs(result: dict[str, Any], index: dict[str, Any], device: str)
         for name, relative in merge["pairs"]
     ]
     costs = pair_costs(result, index)
+    if part is not None:
+        ranked = sorted(range(len(pairs)), key=lambda k: (-costs[pairs[k]], k))
+        pairs = [pairs[k] for k in sorted(ranked[part::PAIR_SLICES])]
     order = pool_order([costs[pair] for pair in pairs])
     mapped = parallel.ordered_map(PairGhost(index, device), [pairs[k] for k in order], min_items=2)
     for k, (fresh, _distances) in zip(order, mapped, strict=True):
         name, relative = pairs[k]
+        print(f"replayed merge-added pair {name} {relative}", flush=True)
         retained = by_run[name]["snapshots"][relative]
         for key in sorted(set(retained) | set(fresh)):
             if key != "seconds":
@@ -1047,7 +1056,7 @@ def replay_all_pairs(result: dict[str, Any], index: dict[str, Any], device: str)
     return len(pairs)
 
 
-def check(path: Path, runs: str, index: dict[str, Any]) -> None:
+def check(path: Path, runs: str, index: dict[str, Any], part: int | None = None) -> None:
     """Validate every run of path, rerun the --runs execution ghosts, and replay merged runs bit for bit.
 
     ``--runs`` names runs by path, ``all`` or the token ``merged``: each run
@@ -1079,7 +1088,7 @@ def check(path: Path, runs: str, index: dict[str, Any]) -> None:
         replayed += 1
     pairs = replay_pairs(retained, index, device) if tokens is None or "pairs" in tokens else 0
     if tokens is not None and "pairs-all" in tokens:
-        pairs += replay_all_pairs(retained, index, device)
+        pairs += replay_all_pairs(retained, index, device, part)
     tokens = None if tokens is None else tokens - {"pairs", "pairs-all"}
     checked = 0
     for run in retained["runs"]:
@@ -1271,6 +1280,9 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--runs", default="all")
+    parser.add_argument(
+        "--case", action="append", choices=tuple(PAIR_CASES), help="replay one strided slice of --runs pairs-all"
+    )
     parser.add_argument("--states", default="all", choices=("execution", "execution,current", "current", "all"))
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
@@ -1299,7 +1311,10 @@ def main() -> int:
         merge(args.merge, args.out or args.merge, calibration_snapshot.aer_device(), index)
         return 0
     if args.check:
-        check(args.check, args.runs, index)
+        parts = [PAIR_CASES[name] for name in args.case or []]
+        require(len(parts) <= 1, "--case names one pair slice")
+        require(not parts or args.runs == "pairs-all", "--case slices --runs pairs-all")
+        check(args.check, args.runs, index, parts[0] if parts else None)
         return 0
     require(args.out is not None, "--out is required")
     runs = audited_runs() if args.runs == "all" else args.runs.split(",")

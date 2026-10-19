@@ -1,0 +1,199 @@
+{
+ "name": "mthree",
+ "version": "3.0.0",
+ "summary": "M3: Matrix-free measurement mitigation",
+ "requires_python": ">=3.9",
+ "requires_dist": [
+  "numpy>=1.23",
+  "scipy>=1.11.1",
+  "cython>=3.0.10",
+  "qiskit>=1.0",
+  "psutil",
+  "orjson>=3.0.0",
+  "runningman>=2.1"
+ ],
+ "classifiers": [
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.9",
+  "Topic :: Scientific/Engineering"
+ ],
+ "project_urls": null,
+ "files": [
+  {
+   "filename": "mthree-3.0.0-cp310-cp310-macosx_12_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/ab/71/8d54b6355b6469735a5cf17988ceae46a529634f12018c35c087c5e777fd/mthree-3.0.0-cp310-cp310-macosx_12_0_arm64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:22:56.851527Z",
+   "size": 1887089,
+   "sha256": "4de4d1a38cf714f4e332d5aeaac65f50cb6d4932357aa906f6677494d016a428"
+  },
+  {
+   "filename": "mthree-3.0.0-cp310-cp310-macosx_12_0_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/2c/7a/6f9c0bb493a6e84437ec5b29791bfcbaecd2b2017bf1fce37ce6cbd7f3ed/mthree-3.0.0-cp310-cp310-macosx_12_0_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:22:59.356785Z",
+   "size": 1923012,
+   "sha256": "4ec13563479ece218c3997dd13067ff4d151ecbd18d7c8f32da80cfedbc360ba"
+  },
+  {
+   "filename": "mthree-3.0.0-cp310-cp310-manylinux_2_34_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/7d/7a/387561d55b6fdfd839325e694bd8b1d59e3e12cde061db3aeb3767883c25/mthree-3.0.0-cp310-cp310-manylinux_2_34_aarch64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:54:25.679450Z",
+   "size": 5457309,
+   "sha256": "e48e17378ce3aa1c2012a4c45693ad62d8ab36efdd786531230550861806bcbc"
+  },
+  {
+   "filename": "mthree-3.0.0-cp310-cp310-manylinux_2_34_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/e3/fc/91d39b949594624506b168916a6aa9124f843279ba48bd0396553b538bc7/mthree-3.0.0-cp310-cp310-manylinux_2_34_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:01.026042Z",
+   "size": 5618637,
+   "sha256": "8e7d251741c2581fb613b4917017315eebbaa73e1795b41a7881f6b272cfb58c"
+  },
+  {
+   "filename": "mthree-3.0.0-cp310-cp310-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/ed/d1/c0c959f08ab3f9ac2faf8d6518acc3085301ee6fcd0cfce11914b1466562/mthree-3.0.0-cp310-cp310-win_amd64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:02.831302Z",
+   "size": 1850691,
+   "sha256": "6525314f23431fe7ac203c8e9b37c9b3e5117a9ee265fe0b98fb4d668d78a3a3"
+  },
+  {
+   "filename": "mthree-3.0.0-cp311-cp311-macosx_12_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/76/f7/27dd504dad516df899737f1c41d02dd161732ead09ce2b0147a57196171f/mthree-3.0.0-cp311-cp311-macosx_12_0_arm64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:04.588595Z",
+   "size": 1886592,
+   "sha256": "4bc5e46d41359a0f46007a3c0f3e2f5a9ba0ff9e0134730a441a83434d2c2d88"
+  },
+  {
+   "filename": "mthree-3.0.0-cp311-cp311-macosx_12_0_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/97/40/58e8c91a177740b22b0528a7dbd0e7d5f7165e00428f429ce0531b618606/mthree-3.0.0-cp311-cp311-macosx_12_0_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:05.954106Z",
+   "size": 1922670,
+   "sha256": "0c22adbbde12129908f2c1b791636c253e5ce2c286cbd37ff6f4e1b6741d86a8"
+  },
+  {
+   "filename": "mthree-3.0.0-cp311-cp311-manylinux_2_34_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/d7/49/dacb56726e209146b80c4eee35a94eb1cc9d19c03e0d5c6b2abf7a3297da/mthree-3.0.0-cp311-cp311-manylinux_2_34_aarch64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:54:27.713046Z",
+   "size": 5731290,
+   "sha256": "e20540a9b5a35e9cc7e06444a97fa337d92f95bc6b164405c6d8564a2a79c3f8"
+  },
+  {
+   "filename": "mthree-3.0.0-cp311-cp311-manylinux_2_34_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/cb/6b/cab924fd235960542e045d79a8f5adc36ce1525d4e3a63775ebcef938e0c/mthree-3.0.0-cp311-cp311-manylinux_2_34_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:07.759682Z",
+   "size": 5887689,
+   "sha256": "dbe8a47e11f8454a05f454a88c5bbcc88ae9def035771f10a85bc17fd6e97487"
+  },
+  {
+   "filename": "mthree-3.0.0-cp311-cp311-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/f6/9d/d39e50ec73a77dd99755e86b1147cbc4a41bef3bbdfccffdb918310b6d82/mthree-3.0.0-cp311-cp311-win_amd64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:09.613219Z",
+   "size": 1851076,
+   "sha256": "5aaee72d32a9f00b0f944ea4514891a0e63e3720ba3a220b60c82308a9c1e831"
+  },
+  {
+   "filename": "mthree-3.0.0-cp312-cp312-macosx_12_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/b6/3e/6d7ac665dbf2a9f7371a890a31b3c538fbafa54eb287aa28df926ff5d20d/mthree-3.0.0-cp312-cp312-macosx_12_0_arm64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:11.314215Z",
+   "size": 1894002,
+   "sha256": "fb055bc19411ca942e621a09c12c8880cfc94f1f67eb3f619ff429b279328a55"
+  },
+  {
+   "filename": "mthree-3.0.0-cp312-cp312-macosx_12_0_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/68/35/ab2bc99fb295a35e4bfbbcdec84d6034f5eb4694c5ee90633be942501411/mthree-3.0.0-cp312-cp312-macosx_12_0_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:13.065990Z",
+   "size": 1933486,
+   "sha256": "7a72f63e8d90bfd24c3b192c8eac37237e7e708c48bca204f973b620df3f5461"
+  },
+  {
+   "filename": "mthree-3.0.0-cp312-cp312-manylinux_2_34_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/d7/d1/813f1fdb13d85cc6d62227e6ff773a31bac6b9e0c3dd9bc2929c4de22cba/mthree-3.0.0-cp312-cp312-manylinux_2_34_aarch64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:54:29.696803Z",
+   "size": 5677049,
+   "sha256": "ebde074471bcc41b10a03fe3bd8084c91abadca640e1bb9fbd8611c610911517"
+  },
+  {
+   "filename": "mthree-3.0.0-cp312-cp312-manylinux_2_34_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/24/c3/69a9bf4d3a2d6a697699262db22fcedaa59c4d07b0954dea1cc0980df2f0/mthree-3.0.0-cp312-cp312-manylinux_2_34_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:14.370660Z",
+   "size": 5857330,
+   "sha256": "4a9e9511f4bccbad4764d0623dd16fbb2fe0796c58efcba2a2b839255528d332"
+  },
+  {
+   "filename": "mthree-3.0.0-cp312-cp312-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/4e/1d/8a583a5f7cd248871346b40f0f53768a712dcd3f4111da1e6b18d7012950/mthree-3.0.0-cp312-cp312-win_amd64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:16.069860Z",
+   "size": 1854870,
+   "sha256": "386f66911b584204e75ed4f7e51b78de8ffc3c704c0d8e1b2aa1fbdbedf51861"
+  },
+  {
+   "filename": "mthree-3.0.0-cp39-cp39-macosx_12_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/42/8f/ffbab95faa3795ec3cae98883544977b8ddc9273aa9b2341ab1b2b04ce4c/mthree-3.0.0-cp39-cp39-macosx_12_0_arm64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:17.814772Z",
+   "size": 1889267,
+   "sha256": "f7253a81e4107f760625b050eb7a2e8d56808be4486ecfa473d41b6c7bf52f72"
+  },
+  {
+   "filename": "mthree-3.0.0-cp39-cp39-macosx_12_0_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/ff/73/a57318098a35ca186b631273d99f3e78a730df9dd9587182f9a15e121d9e/mthree-3.0.0-cp39-cp39-macosx_12_0_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:19.146127Z",
+   "size": 1925430,
+   "sha256": "246350c29244ae5ee30ee01a4ef0de18d18741abfe0ea7bc50bc082093040d07"
+  },
+  {
+   "filename": "mthree-3.0.0-cp39-cp39-manylinux_2_34_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/5b/88/8c8e2ce14740d5b23eaaa73f72c635bcab9c58290cbd282d4b73f9791a5f/mthree-3.0.0-cp39-cp39-manylinux_2_34_aarch64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:54:32.255960Z",
+   "size": 5458036,
+   "sha256": "79da6f2775fa8ca13409d89252176d941c1f93987f3ba4c1860d9e810bd53916"
+  },
+  {
+   "filename": "mthree-3.0.0-cp39-cp39-manylinux_2_34_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/7a/0a/da584665f197289d6e84f36bf68aaabc068bf2eb493c033f0fe92b1034ef/mthree-3.0.0-cp39-cp39-manylinux_2_34_x86_64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:20.642872Z",
+   "size": 5613723,
+   "sha256": "59bafffb27ab194d6f8310226873b9339a4db016ed47215308c58a7777f28c2f"
+  },
+  {
+   "filename": "mthree-3.0.0-cp39-cp39-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/c1/ae/bbeadd90417dd1b48f0b07c5bad1baf6b70b4932a919405e1fa26060a7df/mthree-3.0.0-cp39-cp39-win_amd64.whl",
+   "upload_time_iso_8601": "2025-03-27T21:23:22.425593Z",
+   "size": 1852433,
+   "sha256": "116451d33a0c7601a2c4a243f38bb4e989accec69bdb50ac1672fcab8ad6692b"
+  },
+  {
+   "filename": "mthree-3.0.0.tar.gz",
+   "packagetype": "sdist",
+   "url": "https://files.pythonhosted.org/packages/da/ee/bef8b180cc3d00c8b9753095fda46bf9f25e54cd3fbf094e1e7fc96ced87/mthree-3.0.0.tar.gz",
+   "upload_time_iso_8601": "2025-03-27T21:23:23.771153Z",
+   "size": 1219979,
+   "sha256": "20f2362aec16f06786e659c85136130197965c109179b47ce3416347a65811c5"
+  }
+ ]
+}

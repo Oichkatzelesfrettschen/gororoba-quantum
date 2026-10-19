@@ -2525,7 +2525,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "170e9bd43bea437be4a273a090341cac982587865007ecbb53b054e0a8bc3470"
+          "sha256": "c4d9c9de1e45350e29cf88427a2c2086fb96d14c900d8b45bed179b252d87d4c"
         }
       ],
       "documents": [
@@ -3364,7 +3364,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "170e9bd43bea437be4a273a090341cac982587865007ecbb53b054e0a8bc3470"
+          "sha256": "c4d9c9de1e45350e29cf88427a2c2086fb96d14c900d8b45bed179b252d87d4c"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -6153,11 +6153,11 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/cases/zz_map_tuna_17/plan.json",
-          "sha256": "769640a82e67965bf754d1803b945a61fe7a4932ea7b3ef5b9a32e53bb129bd2"
+          "sha256": "5984166c73f3309c1eea39b967c0d71c971d6a6cf724594573efd8af64d13d40"
         },
         {
           "path": "results/quantum_inspire/cases/zz_map_qx/plan.json",
-          "sha256": "fd0d2c86d53ce2567e637fcf660c25ccf398bd2fe15b821ccbc7547b979ba783"
+          "sha256": "9eaa4f57f40df05d787f3541a0ee6697d9b24f36b9345db87bb98b1711a9f7f8"
         }
       ],
       "documents": [
@@ -6165,9 +6165,9 @@
         "docs/notes/quantum_inspire/tuna_zz_qx_preflight.md"
       ],
       "gates": {
-        "core-588": "freshness",
-        "core-589": "admission",
-        "core-590": "freshness"
+        "core-594": "freshness",
+        "core-595": "admission",
+        "core-596": "freshness"
       },
       "acquisitions": [],
       "assumptions": [],

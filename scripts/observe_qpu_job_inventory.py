@@ -67,11 +67,19 @@ def unexecuted_cancellation(row: dict[str, Any]) -> bool:
     )
 
 
+def zero_unexecuted_charges(rows: list[dict[str, Any]]) -> None:
+    """Record an absent charge of a cancellation that never ran as 0, so every consumer sums it as a number."""
+    for row in rows:
+        if unexecuted_cancellation(row) and row["final_qpu_charge_seconds"] is None:
+            row["final_qpu_charge_seconds"] = 0
+
+
 def observe(service: Any) -> dict[str, Any]:
     sys.path.insert(0, str(ROOT / "gororoba_quantum"))
     from live_run import _instance_hash
 
     rows = sorted((job_row(job) for job in service.jobs(limit=None)), key=lambda row: row["created_at"])
+    zero_unexecuted_charges(rows)
     unsettled = [
         row["job_id"]
         for row in rows
@@ -80,11 +88,12 @@ def observe(service: Any) -> dict[str, Any]:
             row["status"] not in FINISHED_STATUSES
             or row["usage_status"] != "complete"
             or not isinstance(row["final_qpu_charge_seconds"], int | float)
-            or row["final_qpu_charge_seconds"] <= 0
+            or row["final_qpu_charge_seconds"] < 0
+            or (row["final_qpu_charge_seconds"] == 0 and row["status"] != "ERROR")
         )
     ]
     if unsettled:
-        raise RuntimeError(f"jobs without a settled positive charge: {unsettled}; observe again after they settle")
+        raise RuntimeError(f"jobs without a settled charge: {unsettled}; observe again after they settle")
     usage = service.usage()
     return {
         "account_usage": {
@@ -132,9 +141,7 @@ def main() -> int:
     snapshot = observe(ibm_account.open_service(QiskitRuntimeService))
     target = inventory_target(arguments.out, snapshot["instance_crn_hash"])
     target.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
-    # Unexecuted cancellations pass the unsettled gate with a None charge;
-    # they consumed no QPU time and contribute 0 explicitly, not via TypeError.
-    charge = sum((row["final_qpu_charge_seconds"] or 0) for row in snapshot["jobs"])
+    charge = sum(row["final_qpu_charge_seconds"] for row in snapshot["jobs"])
     print(f"{len(snapshot['jobs'])} settled jobs, {charge} s charged; wrote {target}")
     return 0
 

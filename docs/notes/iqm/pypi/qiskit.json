@@ -1,0 +1,116 @@
+{
+ "name": "qiskit",
+ "version": "2.1.2",
+ "summary": "An open-source SDK for working with quantum computers at the level of extended quantum circuits, operators, and primitives.",
+ "requires_python": ">=3.9",
+ "requires_dist": [
+  "rustworkx>=0.15.0",
+  "numpy<3,>=1.17",
+  "scipy>=1.5",
+  "dill>=0.3",
+  "stevedore>=3.0.0",
+  "typing-extensions",
+  "qiskit-qasm3-import>=0.1.0; extra == \"qasm3-import\"",
+  "matplotlib>=3.3; extra == \"visualization\"",
+  "pydot; extra == \"visualization\"",
+  "Pillow>=4.2.1; extra == \"visualization\"",
+  "pylatexenc>=1.4; extra == \"visualization\"",
+  "seaborn>=0.9.0; extra == \"visualization\"",
+  "sympy>=1.3; extra == \"visualization\"",
+  "z3-solver>=4.7; extra == \"crosstalk-pass\"",
+  "python-constraint>=1.4; extra == \"csp-layout-pass\"",
+  "symengine<0.14,>=0.11; extra == \"qpy-compat\"",
+  "sympy>1.3; extra == \"qpy-compat\"",
+  "qiskit[crosstalk-pass,csp-layout-pass,qasm3-import,qpy-compat,visualization]; extra == \"all\""
+ ],
+ "classifiers": [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.9",
+  "Topic :: Scientific/Engineering"
+ ],
+ "project_urls": {
+  "API Reference": "https://quantum.cloud.ibm.com/docs/api/qiskit",
+  "Changelog": "https://quantum.cloud.ibm.com/docs/api/qiskit/release-notes",
+  "Documentation": "https://quantum.cloud.ibm.com/docs",
+  "Homepage": "https://www.ibm.com/quantum/qiskit",
+  "Issues": "https://github.com/Qiskit/qiskit/issues",
+  "Repository": "https://github.com/Qiskit/qiskit"
+ },
+ "files": [
+  {
+   "filename": "qiskit-2.1.2-cp39-abi3-macosx_10_12_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/9e/65/8eb5c1b1fd2503a891e86766d4b78f4416c60bba8267486311aa8ab14ffb/qiskit-2.1.2-cp39-abi3-macosx_10_12_x86_64.whl",
+   "upload_time_iso_8601": "2025-08-19T13:23:52.403171Z",
+   "size": 7251277,
+   "sha256": "72ccf39aed112bfc8a7924b26cb9e5202541421b32e0ad16b020eb8618a868f0"
+  },
+  {
+   "filename": "qiskit-2.1.2-cp39-abi3-macosx_11_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/b7/f8/fa89751445330df5e48539f88bf944bf90626691be279869a38e5ffcd604/qiskit-2.1.2-cp39-abi3-macosx_11_0_arm64.whl",
+   "upload_time_iso_8601": "2025-08-19T13:23:54.542074Z",
+   "size": 6787875,
+   "sha256": "110b96340accf243023efe32b72e78d9a8781cf43190e60adabbd8f208b424cc"
+  },
+  {
+   "filename": "qiskit-2.1.2-cp39-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/40/ef/08abdb667d89b3594b5753b3a578bf692321ca230ecebff49dccbebb9f9f/qiskit-2.1.2-cp39-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+   "upload_time_iso_8601": "2025-08-19T13:23:56.435060Z",
+   "size": 7445237,
+   "sha256": "fc8ff9cba25e59f8f6663a603558af2d45aa2793f4e93766c84bc1a21d9e8a69"
+  },
+  {
+   "filename": "qiskit-2.1.2-cp39-abi3-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/59/d9/7269aabc3f20d141115b1871cd52fd17e86df98b78e5ed33d9638d87cac9/qiskit-2.1.2-cp39-abi3-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl",
+   "upload_time_iso_8601": "2025-08-19T15:29:37.643581Z",
+   "size": 7684458,
+   "sha256": "c751ffaeec861086280c3a2f69527429bdeb851c6bf5fc620d8a9ebd4f168adc"
+  },
+  {
+   "filename": "qiskit-2.1.2-cp39-abi3-manylinux_2_17_s390x.manylinux2014_s390x.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/a7/99/6d269570771e70646b45e46ba79fdbe74093c4e84361cb200f319fb50a9b/qiskit-2.1.2-cp39-abi3-manylinux_2_17_s390x.manylinux2014_s390x.whl",
+   "upload_time_iso_8601": "2025-08-19T15:29:40.017469Z",
+   "size": 7371759,
+   "sha256": "10467a0a76f073b16c31aa8d69c3292f672fd6d215904e717c850e3cd0c90973"
+  },
+  {
+   "filename": "qiskit-2.1.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/fe/99/84ce82ccf31261bcfe1739800e71cbfe9ea57e1034675ec6fb415133fa4c/qiskit-2.1.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "upload_time_iso_8601": "2025-08-19T13:23:58.006742Z",
+   "size": 7430087,
+   "sha256": "ce66d6a3db73f4d1dd546fa13062c2e7fd8120720247426d6c637f6dcf73fa87"
+  },
+  {
+   "filename": "qiskit-2.1.2-cp39-abi3-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/f8/24/45c073dd6790e60985ee57157f06fbb8c44a6f59bf701d0f4e66d9193628/qiskit-2.1.2-cp39-abi3-win_amd64.whl",
+   "upload_time_iso_8601": "2025-08-19T13:24:00.156893Z",
+   "size": 7208244,
+   "sha256": "8c1b3dd2ecea5f2c7878e9ab1b3337f79f2ef0b50e580f6d374cc6ac783e03ba"
+  },
+  {
+   "filename": "qiskit-2.1.2.tar.gz",
+   "packagetype": "sdist",
+   "url": "https://files.pythonhosted.org/packages/99/02/1bad2e34a2d2b4a03abed72e110f1d89f80757dd9e95b30f44a5bc2700f3/qiskit-2.1.2.tar.gz",
+   "upload_time_iso_8601": "2025-08-19T13:24:01.954672Z",
+   "size": 3603245,
+   "sha256": "fd3fe5b212053e18aea66b3903face62e25d7ba0aebd0aa68ea1fb4f14b220e3"
+  }
+ ]
+}

@@ -22,7 +22,11 @@ from qiskit import QuantumCircuit
 from experiment_optimizer import ObservableContract, ObservableTerm
 from experiments import Group, Member, tvd
 from qpe_diagnostics import (
+    N21_ORBIT_SWEEP_VARIANTS,
     N21_ORBIT_VARIANTS,
+    N21_SPECTATOR_KINDS,
+    N21_SPECTATOR_QUADRATURES,
+    N21_SPECTATOR_SPLIT_KINDS,
     folded_diagnostic,
     folded_ideal,
     folded_terminal_weights,
@@ -32,6 +36,8 @@ from qpe_diagnostics import (
     n21_encoded_diagnostic,
     n21_labeled_law,
     n21_orbit_diagnostic,
+    n21_spectator_law,
+    n21_spectator_ramsey,
     phase_marginal,
 )
 
@@ -364,9 +370,55 @@ def state_prep_excitation(excited: float, prob_meas1_prep0: float, prob_meas0_pr
 # bit per qubit (control and the three work bits).
 N21_ORBIT_HERALDED_CLBITS = 6
 _N21_WEIGHTS = (0.5, 1.0, 0.5, 0.0)
+# A spectator member scores the qubit-2 bit, clbit 1 of the phase register.
+_SPECTATOR_ONE = (0.0, 0.0, 1.0, 1.0)
 
 
-def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int, init_herald: bool = False) -> Group:
+# The overlap split compares bracketed window_delay with bracketed nominal
+# and with window_delay without its window barriers (qpe_diagnostics
+# variant window_delay_unbarriered). overlap_arm "nominal", the value
+# record_groups reads from a configuration that records no overlap_arm,
+# pairs nominal with nominal_unbarriered in a ten-member group.
+N21_OVERLAP_PAIRS = {
+    "window_delay": ("nominal", "window_delay", "window_delay_unbracketed"),
+    "nominal": ("nominal", "unbracketed"),
+}
+N21_OVERLAP_ARM = "window_delay"
+_N21_PAIR_BUILDS = {"unbracketed": "nominal_unbarriered", "window_delay_unbracketed": "window_delay_unbarriered"}
+
+
+def n21_orbit_variants(
+    window_sweep: bool = False, overlap_split: bool = False, overlap_arm: str = N21_OVERLAP_ARM
+) -> tuple[str, ...]:
+    """The orbit pairs of n21-orbit-rca; window_sweep adds window_delay_long, overlap_split names its pairs."""
+    if overlap_split:
+        return N21_OVERLAP_PAIRS[overlap_arm]
+    return (*N21_ORBIT_VARIANTS, *(N21_ORBIT_SWEEP_VARIANTS if window_sweep else ()))
+
+
+def n21_spectator_kinds(overlap_split: bool = False) -> tuple[str, ...]:
+    """Spectator kinds of a configuration: the window sweep's, or the overlap split's."""
+    return N21_SPECTATOR_SPLIT_KINDS if overlap_split else N21_SPECTATOR_KINDS
+
+
+def n21_spectator_members(overlap_split: bool = False) -> tuple[str, ...]:
+    """Member names of the spectator Ramsey arms, kind-major."""
+    return tuple(
+        f"n21_spectator_{kind}_{quadrature}"
+        for kind in n21_spectator_kinds(overlap_split)
+        for quadrature in N21_SPECTATOR_QUADRATURES
+    )
+
+
+def n21_orbit_rca_group(
+    window_delay_dt: int,
+    echo_half_dt: int,
+    init_herald: bool = False,
+    window_sweep: bool = False,
+    overlap_split: bool = False,
+    reset_dt: int | None = None,
+    overlap_arm: str = N21_OVERLAP_ARM,
+) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
     Barriers bracket the control's measurement and reset in every variant, so
@@ -381,7 +433,32 @@ def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int, init_herald: bo
     spans the phase and herald bits, so its ideal law, weights and contract
     values are the phase vectors lifted onto all six clbits, and the summary
     reads the phase marginal and each herald bit's excited fraction.
+
+    window_sweep adds the window_delay_long pair, which idles the control
+    twice window_delay_dt, and the four spectator Ramsey members
+    (qpe_diagnostics.n21_spectator_ramsey) on the same logical qubits, whose
+    reset_only reference idles window_delay_dt, the control's calibrated
+    measure duration (qpu_planning.window_durations), in place of the
+    measurement. Every member is dynamic, so the group runs as one job.
+
+    overlap_split replaces the group with twelve members: the bracketed
+    nominal and window_delay pairs, the window_delay_unbracketed pair (the
+    window_delay program without the window barriers, so the compiler may
+    play work-qubit gates during the control's measure and reset), and the
+    immediate, idle and reset_only spectators in X and Y; idle idles
+    window_delay_dt + reset_dt, the control's calibrated measure and reset
+    durations. overlap_arm "nominal" builds the ten-member configuration
+    instead: the nominal pair, nominal without its window barriers
+    (nominal_unbarriered) and the six spectators. It excludes window_sweep.
     """
+    if overlap_split and window_sweep:
+        raise ValueError("overlap_split and window_sweep are separate n21-orbit-rca configurations")
+    if overlap_split and (type(reset_dt) is not int or reset_dt <= 0):
+        raise ValueError("overlap_split requires a positive integer reset_dt from calibration")
+    if overlap_arm not in N21_OVERLAP_PAIRS:
+        raise ValueError(f"unknown overlap arm {overlap_arm!r}")
+    variants = n21_orbit_variants(window_sweep, overlap_split, overlap_arm)
+    spectating = window_sweep or overlap_split
     clbits = N21_ORBIT_HERALDED_CLBITS if init_herald else 2
 
     def lifted(values: Any) -> np.ndarray:
@@ -391,7 +468,11 @@ def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int, init_herald: bo
         Member(
             f"n21_orbit_{variant}_{'feedback' if feedback else 'no_feedback'}",
             n21_orbit_diagnostic(
-                feedback, variant, window_delay_dt=window_delay_dt, echo_half_dt=echo_half_dt, init_herald=init_herald
+                feedback,
+                _N21_PAIR_BUILDS.get(variant, variant),
+                window_delay_dt=window_delay_dt,
+                echo_half_dt=echo_half_dt,
+                init_herald=init_herald,
             ),
             (
                 lift_phase_law(n21_labeled_law(feedback), clbits)
@@ -400,18 +481,43 @@ def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int, init_herald: bo
             ),
             weights=lifted(_N21_WEIGHTS),
         )
-        for variant in N21_ORBIT_VARIANTS
+        for variant in variants
         for feedback in (True, False)
     )
+    if spectating:
+        members += tuple(
+            Member(
+                f"n21_spectator_{kind}_{quadrature}",
+                n21_spectator_ramsey(
+                    kind, quadrature, measure_dt=window_delay_dt, reset_dt=reset_dt, init_herald=init_herald
+                ),
+                (
+                    lift_phase_law(n21_spectator_law(kind, quadrature), clbits)
+                    if init_herald
+                    else np.asarray(n21_spectator_law(kind, quadrature), dtype=float)
+                ),
+                weights=lifted(_SPECTATOR_ONE),
+            )
+            for kind in n21_spectator_kinds(overlap_split)
+            for quadrature in N21_SPECTATOR_QUADRATURES
+        )
 
     def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
         result = {}
-        for variant in N21_ORBIT_VARIANTS:
+        for variant in variants:
             primary = phase_marginal(distributions[f"n21_orbit_{variant}_feedback"])
             control = phase_marginal(distributions[f"n21_orbit_{variant}_no_feedback"])
             result[f"{variant}_feedback_signed_contrast"] = float(primary[1] - primary[3])
             result[f"{variant}_no_feedback_signed_contrast"] = float(control[1] - control[3])
             result[f"{variant}_contrast_difference"] = float(primary[1] - primary[3] - control[1] + control[3])
+        if spectating:
+            for kind in n21_spectator_kinds(overlap_split):
+                expectations = []
+                for quadrature in N21_SPECTATOR_QUADRATURES:
+                    law = phase_marginal(distributions[f"n21_spectator_{kind}_{quadrature}"])
+                    expectations.append(float(law[0] + law[1] - law[2] - law[3]))
+                    result[f"spectator_{kind}_{quadrature}_expectation"] = expectations[-1]
+                result[f"spectator_{kind}_visibility"] = math.hypot(expectations[0], expectations[1])
         if init_herald:
             outcomes = np.arange(1 << clbits)
             for member in members:
@@ -462,14 +568,29 @@ def family_contracts(
 
         return coherence_contracts(precision, alpha, power)
     if family == "n21-orbit-rca":
-        # Four directional endpoints share the requested family-wise alpha. A
-        # heralded member scores its phase label whatever the herald read.
-        signed = (
-            tuple(float(value) for value in lift_phase_values(_SIGNED, N21_ORBIT_HERALDED_CLBITS))
-            if (configuration or {}).get("init_herald")
-            else _SIGNED
+        # One directional endpoint per orbit pair and, with window_sweep or
+        # overlap_split, one precision-only endpoint per spectator member
+        # share the requested family-wise alpha. A heralded member scores its phase label whatever
+        # the herald read.
+        heralded = bool((configuration or {}).get("init_herald"))
+        split = bool((configuration or {}).get("overlap_split"))
+        variants = n21_orbit_variants(
+            bool((configuration or {}).get("window_sweep")),
+            split,
+            str((configuration or {}).get("overlap_arm", "nominal")),
         )
-        return tuple(
+        spectators = n21_spectator_members(split) if (configuration or {}).get("window_sweep") or split else ()
+
+        def scored(values: tuple[float, ...]) -> tuple[float, ...]:
+            return (
+                tuple(float(value) for value in lift_phase_values(values, N21_ORBIT_HERALDED_CLBITS))
+                if heralded
+                else values
+            )
+
+        signed = scored(_SIGNED)
+        share = alpha / (len(variants) + len(spectators))
+        directional = tuple(
             ObservableContract(
                 f"n21_orbit_{variant}_feedback_contrast",
                 (
@@ -477,10 +598,22 @@ def family_contracts(
                     ObservableTerm(f"n21_orbit_{variant}_no_feedback", signed, sign=-1),
                 ),
                 minimum_effect=0.0,
-                alpha=alpha / len(N21_ORBIT_VARIANTS),
+                alpha=share,
                 power=power,
             )
-            for variant in N21_ORBIT_VARIANTS
+            for variant in variants
+        )
+        # The spectator laws hold no feedback effect; their endpoints ask
+        # only for a qubit-2 bit interval of half-width precision.
+        return directional + tuple(
+            ObservableContract(
+                f"{name}_one",
+                (ObservableTerm(name, scored(_SPECTATOR_ONE)),),
+                precision_half_width=precision,
+                alpha=share,
+                power=power,
+            )
+            for name in spectators
         )
     if family in N21_FAMILIES:
         values = _SIGNED
@@ -553,7 +686,13 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
     if family.get("name") == "n21-orbit-rca":
         return [
             n21_orbit_rca_group(
-                int(family["window_delay_dt"]), int(family["echo_half_dt"]), bool(family.get("init_herald", False))
+                int(family["window_delay_dt"]),
+                int(family["echo_half_dt"]),
+                bool(family.get("init_herald", False)),
+                bool(family.get("window_sweep", False)),
+                bool(family.get("overlap_split", False)),
+                int(family["reset_dt"]) if "reset_dt" in family else None,
+                str(family.get("overlap_arm", "nominal")),
             )
         ]
     if family.get("name") in N21_FAMILIES:

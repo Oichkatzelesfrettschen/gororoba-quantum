@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 811,
+ "groups": 816,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,7 +17,7 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 1793,
+ "distinct_members": 1815,
  "entangling_members": 950,
  "unchecked": {},
  "members": [
@@ -937,6 +937,28 @@
    "declared": null
   },
   {
+   "member": "n21_orbit_unbracketed_feedback",
+   "digest": "6a7df75bea3ca83a",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 27,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_unbracketed_no_feedback",
+   "digest": "dff453aab61fba26",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 27,
+   "declared": null
+  },
+  {
    "member": "n21_orbit_window_delay_feedback",
    "digest": "6fbb40a0f542a3c1",
    "kind": "dynamic_law",
@@ -949,7 +971,73 @@
   },
   {
    "member": "n21_orbit_window_delay_feedback",
+   "digest": "86a2b347a0b80201",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_feedback",
    "digest": "c297541b83d3d37b",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_long_feedback",
+   "digest": "24a6dc5d35d862b6",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_long_feedback",
+   "digest": "eed4e2c367ec347e",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_long_no_feedback",
+   "digest": "33ace046a45559b5",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_long_no_feedback",
+   "digest": "6081217c8d06adfb",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_no_feedback",
+   "digest": "d9b9ff8b41eec0f9",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
@@ -972,6 +1060,39 @@
   {
    "member": "n21_orbit_window_delay_no_feedback",
    "digest": "f81f1c094a2f65f9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_unbracketed_feedback",
+   "digest": "231b52cddece6998",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 27,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_delay_unbracketed_no_feedback",
+   "digest": "e2076c3431daedf1",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 27,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_echo_feedback",
+   "digest": "718bb837eb2c6ced",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
@@ -1004,6 +1125,17 @@
   },
   {
    "member": "n21_orbit_window_echo_no_feedback",
+   "digest": "cc90174af1e448d6",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_echo_no_feedback",
    "digest": "ccb64324b8cb9de8",
    "kind": "dynamic_law",
    "templated": false,
@@ -1022,6 +1154,116 @@
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
    "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_x",
+   "digest": "15678912e535d54f",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_y",
+   "digest": "8a49d60f93244ccc",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_immediate_x",
+   "digest": "3985f2aea07c13c9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_immediate_y",
+   "digest": "f6688961268da72a",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_measured_x",
+   "digest": "260856dcc9b625ed",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_measured_y",
+   "digest": "2145ce3e24af3b02",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_reset_only_x",
+   "digest": "16d22e7ef7e6f888",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_reset_only_x",
+   "digest": "e0d8c97519ac7211",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_reset_only_y",
+   "digest": "28f253f814c2a572",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_reset_only_y",
+   "digest": "9e4ee69549c0f897",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
    "declared": null
   },
   {

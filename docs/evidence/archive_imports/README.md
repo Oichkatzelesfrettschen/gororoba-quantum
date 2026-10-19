@@ -36,5 +36,5 @@ revision; the branch commit stays reachable by its hash.
   archive/qpu-campaign-findings (`9848cd2`): every file is in the tree with
   identical bytes.
 - archive/tuna-zz-map (`8b0c3e7`): the static-neighbor ZZ cases are
-  regenerated against the current Quantum Inspire catalogue (gates core-588
-  to core-590), with identical circuits.
+  regenerated against the current Quantum Inspire catalogue (gates core-594
+  to core-596), with identical circuits.

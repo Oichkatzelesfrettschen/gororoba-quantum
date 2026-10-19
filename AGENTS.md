@@ -13,18 +13,22 @@ GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.
 [ci/gates.json](ci/gates.json) lists each gate as one command with its
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool sized to the runner's CPUs and keeps going past failures, so a
-red shard lists every failing gate. Each gate records its measured seconds;
-shards are assigned longest-first by estimated occupied CPU-slot seconds.
+red shard lists every failing gate. Shards are assigned longest-first by
+occupied CPU-slot seconds: the measured wall seconds of
+[ci/gate_timings.json](ci/gate_timings.json) (`ci/merge_gate_timings.py`
+folds shard `--timings` records into it, gate core-599 holds it to the
+manifest) times each gate's allocated slots, and the manifest estimate for
+an unmeasured gate.
 The stable `--shard-cpus` profile defaults to the recorded four-CPU runner;
-actual gate concurrency follows each runner's detected allocation. Pull requests run the `pr` tier and affected
-`full` gates on six shards;
-pushes to main use the same selection on twelve shards. Nightly and manual
-runs execute every gate on twelve shards. The changed-path selection follows
+actual gate concurrency follows each runner's detected allocation. Every
+event runs twelve shards. Pull requests and pushes to main run the `pr` tier
+and affected `full` gates; nightly and manual runs execute every gate. The changed-path selection follows
 local Python imports and the dynamic data/source scopes in
 [ci/full_gate_inputs.json](ci/full_gate_inputs.json). Every full gate declares
 its non-imported inputs there, including source digests and JSON-selected
 raw evidence; a missing declaration fails selection. CI and dependency-pin
-changes select every gate, and an unavailable diff base runs the full suite.
+changes and an unavailable diff base select every gate, and the gate ledger
+(Gate cost below) then skips each selected gate whose key is unchanged.
 The import closure resolves against the files `git ls-files --cached --others
 --exclude-standard` lists (`gate_inputs.checkout_files`), the modules a CI
 clone of the same tree holds, so an ignored tree never widens it. Build trees,
@@ -234,11 +238,31 @@ it ran.
   passes reruns on the base through `ci/run_gates.py --gates`, so a failure
   under load never becomes a standing shared failure. `--no-cache` runs the
   base every time.
-- Skip a gate only on evidence that its inputs are unchanged. The import
-  closure `gate_inputs` follows covers modules, while whole-tree record
-  gates (core-368, core-270) reach their inputs through glob, directory
-  listing and git; a skip rule for pr-tier gates needs each gate's recorded
-  read set and a self-test that plants a missed input.
+- Skip a gate only on evidence that its inputs are unchanged.
+  `ci/run_gates.py --ledger-out` runs each gate with
+  `ci/read_trace/sitecustomize.py` on PYTHONPATH, whose audit hook records
+  the repository files every Python process of the gate opens (a `.pyc` as
+  its source), the directories it lists, the glob patterns it expands, the
+  paths it probes through os.stat and os.lstat (existence and file type) and
+  every symbolic link those paths cross (its link text), from every thread
+  and spawn-pool child. After a pass, `ci/gate_ledger.py` stores the
+  gate's key: the manifest entry, allocated workers, tracer digest, host
+  identity (`ci/host_identity.py`: interpreters, distributions, PATH tools
+  and keyed variables, shared with the premerge cache) and the read set's
+  content. `--ledger` reports SKIP when the recomputed key matches, so a pin
+  change reruns every gate through the interpreter identity. A failure, or a
+  run the trace cannot cover, stores nothing and removes the earlier entry:
+  a shell command other than `"$PYTHON"` invocations joined by `&&` (a glob,
+  tilde or parameter outside `"$PYTHON"` expands before any traced process), an `-I`,
+  `-E` or `-S` interpreter, a write inside the repository outside
+  `__pycache__`, a non-Python child or a child environment that drops the
+  trace. CI saves the merged ledger from main only (job `ledger`), and the
+  nightly run executes every gate with `--ledger-audit`, failing on a gate
+  the ledger would have skipped that fails. That run bounds a missed read to
+  one day on main; it is the only net for reads the tracer cannot see (the
+  wall clock, C extensions opening files, stat through a dir_fd), so a check
+  against an expiry or a rolling window relies on it.
+  Gate core-598 plants every read kind and every escape.
 - Check with an explicit raise, never `assert`. `python -O` strips every
   assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
   check holds in every interpreter mode and each gate runs its command once.
@@ -775,6 +799,7 @@ at those versions, except the linters.
 | python-matplotlib | matplotlib 3.11.2 |
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
 | python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
+| iqm-resonance-stack | IQM OS 4.7 client stack (iqm-client 36.0.0, qiskit 2.1.2, cirq-core 1.7.0, qrisp 0.9.10) as a separate Python 3.13 environment under /opt/iqm-resonance-stack, interpreter `iqm-python` (root AGENTS.md, IQM Resonance) |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
 | python-ruff, mypy | ruff 0.17.0 and mypy 2.3.1, behind the CI pins ruff 0.17.1 and mypy 2.4.0 (a `~/.local/bin` install of ruff 0.14.11 and mypy 1.19.1 precedes them on PATH); the lint gates run the pins through `ci/pinned_tool.py` and uv |
 
@@ -1262,6 +1287,83 @@ compiled-circuit structure, iterations and compilation seeds), the native
 BS.H / PS / PERM decomposition of every sign block, the analysis rules, the
 open conjectures with their falsifiers and the run log. Every run updates it
 in the change that retains the run.
+
+## IQM Resonance
+
+IQM Resonance (IQM Quantum Computers, iqm.tech) is the fifth hardware
+service: the superconducting QPUs Emerald (54 qubits), Garnet (20) and
+Sirius (16 qubits around one computational resonator) and a mock twin of
+each, behind the IQM Server API at https://resonance.iqm.tech.
+[docs/notes/iqm/](docs/notes/iqm/README.md) holds the guide, the IQM OS 4.7
+documentation of ten packages, the PyPI records, the iqm-client changelog
+and the Python stack inventory; the live pages stay the authority because
+they change. iqm.com and developers.iqm.com belong to an unrelated
+advertising company.
+
+**Environment and token.** iqm-client 36.0.0 caps qiskit, pydantic and
+packaging below the system's, so the client stack is the Arch package
+`iqm-resonance-stack` (`~/Github/PKGBUILDs/iqm-resonance-stack`): IQM's
+`constraints-iqm-qccsw-4.7.0.txt` as a 184-distribution sha256 lock in a
+Python 3.13 environment under `/opt/iqm-resonance-stack`, interpreter
+`iqm-python`, whose check() runs 22 offline tests (pins, imports, fake-backend
+transpile and Aer run, MOVE routing, the client's URL rules). The API token
+and its refresh token live in `~/.config/iqm/tokens.json` (directory 700,
+file 600) as `{access_token, refresh_token}`, outside every checkout, and
+`IQM_TOKENS_FILE` names it to scripts/iqm_platform.py and the MCP server.
+iqm-client takes the access token as `token=`: its `TokensFileReader`
+decodes a JWT `exp` claim, finds none in an opaque Resonance token and
+rejects the file as expired. `iqm_platform.py refresh` renews the pair through the
+two-phase refresh and activate calls under an flock, so a lost response
+keeps the new token in `tokens.json.pending`. CI never imports the stack:
+its gates read retained JSON with the standard library.
+
+**IQM OS 4.7.** The update feed announced the major release for Emerald on
+2026-10-19 and for Garnet and Sirius on 2026-10-21, with downtime from 02:00
+to about 15:00 UTC. The client pins already match it (iqm-client 36.0.0,
+final RZ gates kept by default, Pulla folded into IQMClient,
+`submit_circuit_job`). The retained snapshot (2026-10-19T15:58Z) holds
+Emerald and emerald:mock at station control 50.0.0 and Garnet, Sirius and
+their mocks at 49.0.3, under IQM Server 3.0.1; Emerald gained `measure_012`
+and the job route `sweep_results_streaming` with an unchanged ISA
+([os-4.7-emerald.md](docs/notes/iqm/os-4.7-emerald.md)), and iqm-client
+36.0.0 transpiles for all three QPUs. The all-49.0.3 baseline is
+[hardware-pre-4.7.md](docs/notes/iqm/hardware-pre-4.7.md); a snapshot after
+the second window records Garnet and Sirius.
+
+**MCP.** `iqm` is registered at Claude Code user scope and in
+`~/.codex/config.toml` as `/usr/bin/python3 -I scripts/iqm_mcp_server.py`
+with `IQM_TOKENS_FILE`. Claude allows and Codex approves the eleven read
+tools; `iqm_cancel_job` asks every time. The server submits nothing and books
+no timeslot.
+
+**Submission.** Every IQM job, mock or QPU, and every timeslot booking waits
+for the user's approval of a written case, like an IBM, Quantum Inspire,
+Open Quantum or Quandela run: what it measures, why a noise simulation
+cannot answer it, QC, shots, circuits, expected billed seconds and credits,
+and the calibration set it was planned against. A job bills its runtime
+rounded up to whole seconds at the QC's credits per second.
+`"$PYTHON" scripts/iqm_platform.py snapshot --out docs/evidence/iqm` (with
+`IQM_TOKENS_FILE` set) refreshes the catalogue; gate core-590 renders this
+table from it and fails when either changes alone:
+
+<!-- iqm-facts:begin -->
+| QC (alias) | type | QPU chip (mask, variant) | qubits | resonators | couplings | gates (default implementation) | shots / circuits / instructions max | PAYG credits/s | timeslot | IQM station control |
+|---|---|---|---|---|---|---|---|---|---|---|
+| IQM Emerald (`emerald`) | qpu | M216_F0W102525_H03_F08 (M216, H03) | 54 | - | 90 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_012 (constant), measure_fidelity (shelved_constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 30000 | 0.75 | 2400.00 per PT1H | 50.0.0 |
+| IQM Emerald (mock) (`emerald:mock`) | mock | M160_W0_H01_Z99 (M160, H01) | 54 | - | 90 | cc_prx (prx_composite), cz (tgss), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_gaussian), reset_wait (reset_wait) | 200000 / 1000 / 10000 | 0.00 | - | 50.0.0 |
+| IQM Garnet (`garnet`) | qpu | M194_F0W2114_P08_B15 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_fidelity (constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 10000 | 0.50 | 1800.00 per PT1H | 49.0.3 |
+| IQM Garnet (mock) (`garnet:mock`) | mock | M194_W0_P08_Z99 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), prx (drag_crf), reset_wait (reset_wait) | 20000 / 500 / 10000 | 0.00 | - | 49.0.3 |
+| IQM Sirius (`sirius`) | qpu | M186_F0W2259_ND1_O12 (M186, ND1) | 16 | COMPR1 | 24 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 75000 | 0.30 | 1080.00 per PT1H | 49.0.3 |
+| IQM Sirius (mock) (`sirius:mock`) | mock | M186_W0_ND1_Z99 (M186, ND1) | 24 | COMPR1 | 24 | cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), reset_wait (reset_wait) | 20000 / 200 / 20000 | 0.67 | - | 49.0.3 |
+
+Account: PERSONAL with 30.00 credits expiring 2026-11-01T00:00:00+00:00; IQM Server 3.0.1.20261019072700, API v1; token scopes job_execution.
+<!-- iqm-facts:end -->
+
+**Gates.** core-588 (`capture_iqm_docs.py --check`), core-589 (its
+`--self-test`), core-590 (`iqm_platform.py check docs/evidence/iqm --agents
+AGENTS.md docs/notes/iqm/README.md`, which also holds the MCP tool set) and
+core-591 (its `--self-test`, the two-phase refresh on a stubbed transport
+included).
 
 ## Qiskit skills
 

@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 from unittest.mock import patch
 
+import observe_qpu_job_inventory
 import reconcile_qpu_inventory as audit
 
 
@@ -124,7 +125,8 @@ def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str
     )
     inventory_mutants: list[tuple[Any, str]] = [
         (lambda value: value["jobs"][1].update(usage_status="pending"), "unsettled job failed-job"),
-        (lambda value: value["jobs"][1].update(final_qpu_charge_seconds=0), "physical charge missing"),
+        (lambda value: value["jobs"][1].update(final_qpu_charge_seconds=0), "collection charge differs"),
+        (lambda value: value["jobs"][1].update(final_qpu_charge_seconds=-1), "physical charge missing"),
         (lambda value: value["jobs"][1].update(status="RUNNING"), "unfinished service jobs"),
         (lambda value: value["jobs"][1].update(status="CANCELLED"), "collection status differs"),
         (
@@ -137,6 +139,19 @@ def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str
         mutate(mutant)
         write(source, mutant)
         rejects(audit, source, reason)
+    zero = copy.deepcopy(failed)
+    zero["account_usage"] |= {"usage_consumed_seconds": 1, "usage_remaining_seconds": 599}
+    zero["jobs"][1]["final_qpu_charge_seconds"] = 0
+    zero_collection = copy.deepcopy(collection)
+    zero_collection[0]["jobs"]["failed-job"]["usage"]["qpu_charge_time_seconds"] = 0
+    write(source, zero)
+    write(run / "collect.json", zero_collection)
+    result = audit.reconcile(source)
+    audit.require(
+        result["failed_job_count"] == 1 and result["failed_charge_seconds"] == "0",
+        "a finalized zero-charge ERROR job is refused",
+    )
+    write(run / "collect.json", collection)
     write(source, failed)
     collection_mutants: list[tuple[Any, str]] = [
         (lambda value: value["jobs"]["failed-job"].pop("result_unavailable"), "has no collection naming it"),
@@ -227,6 +242,9 @@ def unexecuted_cancellation_contract(audit: Any, source: Path, snapshot: dict[st
         mutate(mutant["jobs"][1])
         write(source, mutant)
         rejects(audit, source, reason)
+    absent = copy.deepcopy(cancelled["jobs"][1]) | {"final_qpu_charge_seconds": None}
+    observe_qpu_job_inventory.zero_unexecuted_charges([absent])
+    audit.require(absent["final_qpu_charge_seconds"] == 0, "an absent unexecuted charge stays None")
     write(source, snapshot)
 
 
@@ -409,8 +427,9 @@ def main() -> None:
                 raise RuntimeError("raw digest mutation admitted")
     print(
         "Synthetic inventory contract: 20 inventory mutations, two window chronology mutations, "
-        "a repeated metrics snapshot and raw corruption rejected; a failed job binds its settled charge to "
-        "its collection under 16 mutations, each refused by its own rule; an archive submitted after the "
+        "a repeated metrics snapshot and raw corruption rejected; a failed job, zero-charge ERROR included, "
+        "binds its settled charge to its collection under 17 mutations, each refused by its own rule; "
+        "an archive submitted after the "
         "observation awaits it; a zero-charge unexecuted cancellation passes and three execution traces refuse; "
         "the campaign cutoff splits charges; "
         "replay preserves bytes"

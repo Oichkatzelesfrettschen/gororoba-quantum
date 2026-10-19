@@ -383,6 +383,20 @@ def _qubit_exclusion(text: str) -> tuple[str, frozenset[int]]:
     return backend_name, frozenset(qubits)
 
 
+def _pinned_layout(text: str) -> dict[str, Any]:
+    """Parse BACKEND:Q,Q,... into the backend name and the physical qubit of each logical qubit, in order."""
+    backend_name, separator, spec = text.partition(":")
+    if not separator or not backend_name or not spec:
+        raise argparse.ArgumentTypeError(f"expected BACKEND:Q,Q,..., got {text!r}")
+    try:
+        qubits = [int(part) for part in spec.split(",")]
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(f"invalid qubit list {spec!r}") from error
+    if any(qubit < 0 for qubit in qubits) or len(set(qubits)) != len(qubits):
+        raise argparse.ArgumentTypeError(f"--pin-layout names distinct nonnegative qubits, got {spec!r}")
+    return {"backend": backend_name, "qubits": qubits}
+
+
 def take_snapshot(service: QiskitRuntimeService, name: str, operator_excluded: Collection[int] = ()) -> Snapshot:
     """Fresh status, Target, and properties for one backend, with the exclusion policy applied.
 
@@ -2012,8 +2026,15 @@ def _trace_failure_summary(trace_by_backend: dict[str, list[dict[str, Any]]]) ->
     return summary
 
 
-def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any]) -> list[Choice]:
-    """Rank every routed (backend, seed, layout) candidate retained for joint selection."""
+def select_candidates(
+    group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any], pinned: list[int] | None = None
+) -> list[Choice]:
+    """Rank every routed (backend, seed, layout) candidate retained for joint selection.
+
+    A pinned layout compiles every seed from that initial layout, and a seed
+    whose compiled initial layout differs from it is rejected, so logical
+    qubit i starts on pinned[i] in every retained candidate.
+    """
     requirements = group_requirements(group)
     candidates: list[Choice] = []
     log[group.name] = {}
@@ -2038,9 +2059,16 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
         primary = group.members[0]
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
             try:
-                isa = _compile_primary(primary.circuit, snap, seed)
+                isa = (
+                    _compile_primary(primary.circuit, snap, seed)
+                    if pinned is None
+                    else _compile(primary.circuit, snap, seed, pinned)
+                )
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "compile_error": type(error).__name__})
+                continue
+            if pinned is not None and (placed := isa.layout.initial_index_layout(filter_ancillas=True)) != pinned:
+                trace.append({"seed": seed, "pinned_layout_moved": placed})
                 continue
             bad = compiled_violations(isa, snap)
             trace.append({"seed": seed, "cz": isa.count_ops().get("cz", 0), "rejected": bad})
@@ -2132,11 +2160,20 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
     )
 
 
-def _prepare_individual_candidate(candidate: Choice, log: dict[str, Any], policy: ReplicaPolicy) -> bool:
-    """Build and validate one candidate for callers that do not need cross-group fusion."""
+def _prepare_individual_candidate(
+    candidate: Choice, log: dict[str, Any], policy: ReplicaPolicy, replicas: list[Replica] | None = None
+) -> bool:
+    """Build and validate one candidate for callers that do not need cross-group fusion.
+
+    Given replicas, the entries rebuild on that admitted set instead of the
+    replica search, which keeps a pinned layout on its named qubits.
+    """
     trace = log[candidate.group.name][candidate.snap.name]
     try:
-        build_entries(candidate, policy)
+        if replicas is None:
+            build_entries(candidate, policy)
+        else:
+            _set_entries(candidate, replicas, policy)
     except (LiveRunError, QiskitError, ValueError) as error:
         trace.append(
             {
@@ -5946,10 +5983,24 @@ def main(argv: list[str] | None = None) -> int:
         "omitted, prep0, reset and x; the policy binds a selection",
     )
     parser.add_argument(
+        "--pin-layout",
+        type=_pinned_layout,
+        metavar="BACKEND:Q,Q,...",
+        help="n21-orbit-rca: place logical qubit i on the i-th physical qubit of BACKEND (control, then the work "
+        "qubits of bits 1, 4 and 16) with no replica search; the policy binds it",
+    )
+    parser.add_argument(
         "--init-herald",
         action="store_true",
         help="n21-orbit-rca: measure every qubit into a herald register before the program, a per-member "
         "initial-excitation reading beside the unchanged labeled law; the policy and family configuration bind it",
+    )
+    parser.add_argument(
+        "--overlap-split",
+        action="store_true",
+        help="n21-orbit-rca with --pin-layout: plan the nominal pair, the same pair without window barriers, and "
+        "immediate, idle and reset_only qubit-2 spectators in place of the window sweep; the policy and family "
+        "configuration bind it",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
@@ -6183,8 +6234,14 @@ def main(argv: list[str] | None = None) -> int:
             args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
         except ValueError as error:
             parser.error(f"--state-prep-arms: {error}")
+    if args.pin_layout is not None and args.family != "n21-orbit-rca":
+        parser.error("--pin-layout applies to the n21-orbit-rca family only")
     if args.init_herald and args.family != "n21-orbit-rca":
         parser.error("--init-herald applies to the n21-orbit-rca family only")
+    if args.overlap_split and args.family != "n21-orbit-rca":
+        parser.error("--overlap-split applies to the n21-orbit-rca family only")
+    if args.overlap_split and args.pin_layout is None:
+        parser.error("--overlap-split requires --pin-layout: the split compares arms on fixed roles")
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":

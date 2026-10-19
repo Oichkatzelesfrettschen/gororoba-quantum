@@ -3183,7 +3183,17 @@ def rule_self_test() -> int:
     return 0
 
 
-def static_self_test() -> int:
+# One case per independent fit of static_self_test; every case draws all of
+# the inputs in the generator's order and fits only its own truth.
+STATIC_CASES: dict[str, str] = {
+    "static_0_1": "static_0.1",
+    "dephasing_0_6": "dephasing_0.6",
+    "out_of_family": "out_of_family",
+    "s3_simulator": "s3",
+}
+
+
+def static_self_test(cases: list[str] | None = None) -> int:
     """The static class is declared on a static truth and on no other.
 
     Uniform random phases are statistically the transpiler's output (section 7 of strategy.md), so 64 of
@@ -3213,15 +3223,19 @@ def static_self_test() -> int:
         "dephasing_0.6": (draw([channel(arch, list(ph), low, sigma=0.6) for ph, low in pairs]), False),
         "out_of_family": (draw([rng.dirichlet(np.full(MODES, 0.3)) for _ in lows]), False),
     }
+    chosen = set(STATIC_CASES.values()) if cases is None else {STATIC_CASES[name] for name in cases}
     seen = {}
     for name, (counts, want) in truths.items():
+        if name not in chosen:
+            continue
         record = static_cross_validation(arch, meshes, lows, counts, ones, dark, (0.1,), folds)
         seen[name] = record["by_tau"]["0.1"]
         if record["static_declared"] != want:
             raise SystemExit(f"self-test: the static class read {record} on the {name} truth")
-    s3 = static_record([RUNS / S3_RUN])
-    if s3["static_declared"]:
-        raise SystemExit(f"self-test: the static class was declared on the simulator's S3 run: {s3}")
+    if "s3" in chosen:
+        s3 = static_record([RUNS / S3_RUN])
+        if s3["static_declared"]:
+            raise SystemExit(f"self-test: the static class was declared on the simulator's S3 run: {s3}")
     print(f"static self-test: declared only on the static truth; {seen}")
     return 0
 
@@ -3301,6 +3315,9 @@ def main() -> int:
     group.add_argument("--check-rca", type=Path)
     group.add_argument("--self-test", action="store_true")
     group.add_argument("--self-test-static", action="store_true")
+    parser.add_argument(
+        "--case", action="append", choices=tuple(STATIC_CASES), help="run named --self-test-static fits only"
+    )
     group.add_argument("--self-test-rule", action="store_true")
     group.add_argument("--static", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--check-static", type=Path, nargs="+", metavar=("OUT", "RUN"))
@@ -3356,7 +3373,7 @@ def main() -> int:
             )
             return 0
         if args.self_test_static:
-            return static_self_test()
+            return static_self_test(args.case)
         if args.self_test_rule:
             return rule_self_test()
         if args.self_test_efficiency:

@@ -269,10 +269,12 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             continue
         require(job["usage_status"] == "complete", f"unsettled job {identity}")
         charge = Decimal(str(job["final_qpu_charge_seconds"]))
-        require(charge.is_finite() and charge > 0, f"physical charge missing for {identity}")
         if job["status"] in FAILED_STATUSES:
+            # A system-error failure bills zero, so a finalized failed job admits a zero charge.
+            require(charge.is_finite() and charge >= 0, f"physical charge missing for {identity}")
             rows.append(failed_row(job, collections.get(identity), charge))
             continue
+        require(charge.is_finite() and charge > 0, f"physical charge missing for {identity}")
         index_path = archives[identity]
         directory = index_path.parent
         run = directory.parent.parent

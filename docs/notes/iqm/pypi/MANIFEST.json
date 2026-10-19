@@ -1,0 +1,83 @@
+{
+ "schema": "iqm-docs-capture-v1",
+ "kind": "pypi",
+ "retrieved_utc": "2026-10-19T06:05Z",
+ "files": [
+  {
+   "path": "docs/notes/iqm/pypi/cirq-core.json",
+   "source": "https://pypi.org/pypi/cirq-core/1.7.0/json",
+   "sha256": "7d954d3d378ab33209ddcf27ac8c96516e2cf447734c9b6e6af359c38c09da2f"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-benchmarks.json",
+   "source": "https://pypi.org/pypi/iqm-benchmarks/3.0.0/json",
+   "sha256": "86509593aed78c3e2e54d38858afc44a346d4ad497340c6813353c93cb42ed3c"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-client.json",
+   "source": "https://pypi.org/pypi/iqm-client/36.0.0/json",
+   "sha256": "8117a6c0942b8252ba32029d06ddba7e54794a3188df18061e5879ad6401ce47"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-data-definitions.json",
+   "source": "https://pypi.org/pypi/iqm-data-definitions/3.1.0/json",
+   "sha256": "67de67c79efc8a9b961cd440938fbf854eb3b2810ab550a50c410aafdbd4d704"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-error-reduction-tools.json",
+   "source": "https://pypi.org/pypi/iqm-error-reduction-tools/0.3.0/json",
+   "sha256": "3b4f5f57e0dbcbc6e3c25424fa199ea72f600fb0e7dae635b1b1892baf1e569e"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-exa-common.json",
+   "source": "https://pypi.org/pypi/iqm-exa-common/29.0.0/json",
+   "sha256": "4947c80868289a834879267b8a8efc67b7397afe95deff3fff200d65d49218d5"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-pulla.json",
+   "source": "https://pypi.org/pypi/iqm-pulla/15.0.0/json",
+   "sha256": "ed635e50b6cd7416a6aa5342a9a1dfbc382d262c923635a8914c29a33a1b4a4b"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-pulse.json",
+   "source": "https://pypi.org/pypi/iqm-pulse/15.0.0/json",
+   "sha256": "7a62cbc215fb552d951c955b2b85a7dec5b872738cb34641ca44de702428099c"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-qaoa.json",
+   "source": "https://pypi.org/pypi/iqm-qaoa/3.0.0/json",
+   "sha256": "8752753b5dde434acf4a41d770e7f58bcf44f0b8ce3d0eb457f490630270420c"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-qubit-selector.json",
+   "source": "https://pypi.org/pypi/iqm-qubit-selector/1.2.0/json",
+   "sha256": "ffea910263906b0ce3bb38924c7a8658e8f521eed5e32580c3ed2f2acb77bc93"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/iqm-station-control-client.json",
+   "source": "https://pypi.org/pypi/iqm-station-control-client/14.0.0/json",
+   "sha256": "c01dad9b42ce085ee4aab859af7d8f1c72a85042f0d26e5c5fedfdf5e8b23209"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/mthree.json",
+   "source": "https://pypi.org/pypi/mthree/3.0.0/json",
+   "sha256": "6217da65e098239e6a6b558e3acc4f8d8cc5efdd07f2b2c830a019fa1e719ed0"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/qiskit-aer.json",
+   "source": "https://pypi.org/pypi/qiskit-aer/0.17.2/json",
+   "sha256": "862cbdc2ad7b398a94b29d11fcd303994180a34cc41c3bd4e046a3c3cf5e26b2"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/qiskit.json",
+   "source": "https://pypi.org/pypi/qiskit/2.1.2/json",
+   "sha256": "75b2ee80024ed4f1182773b83a5f4e3662842349b59ad734734d7d66b11091e1"
+  },
+  {
+   "path": "docs/notes/iqm/pypi/qrisp.json",
+   "source": "https://pypi.org/pypi/qrisp/0.9.10/json",
+   "sha256": "93e33a36b801dbc6e9ddef23160f620497e7ee3fbe344590eb65afbfe16901d7"
+  }
+ ],
+ "unreachable": []
+}

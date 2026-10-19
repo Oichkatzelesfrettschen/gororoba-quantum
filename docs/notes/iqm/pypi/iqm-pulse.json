@@ -1,0 +1,79 @@
+{
+ "name": "iqm-pulse",
+ "version": "15.0.0",
+ "summary": "Library providing interface and implementations for quantum gates and pulse-level hardware instructions.",
+ "requires_python": "<3.15,>=3.11",
+ "requires_dist": [
+  "iqm-data-definitions<4.0.0,>=3.1.0",
+  "iqm-exa-common<30.0.0,>=29.0.0",
+  "jinja2<4,>=3.1.6",
+  "numpy<3,>=2.2",
+  "python-rapidjson<2,>=1.20",
+  "scipy-stubs",
+  "scipy<2,>=1.13.0",
+  "typing-extensions>=4.5.0",
+  "annotated-types==0.7.0; extra == \"pin-all\"",
+  "certifi==2026.1.4; extra == \"pin-all\"",
+  "charset-normalizer==3.4.4; extra == \"pin-all\"",
+  "idna==3.11; extra == \"pin-all\"",
+  "iqm-data-definitions==3.1.0; extra == \"pin-all\"",
+  "iqm-exa-common==29.0.0; extra == \"pin-all\"",
+  "jinja2==3.1.6; extra == \"pin-all\"",
+  "markupsafe==3.0.3; extra == \"pin-all\"",
+  "numpy==2.3.5; extra == \"pin-all\"",
+  "optype==0.15.0; extra == \"pin-all\"",
+  "packaging==24.2; extra == \"pin-all\"",
+  "pandas==2.3.3; extra == \"pin-all\"",
+  "protobuf==6.33.6; extra == \"pin-all\"",
+  "pydantic==2.12.5; extra == \"pin-all\"",
+  "pydantic-core==2.41.5; extra == \"pin-all\"",
+  "python-dateutil==2.9.0.post0; extra == \"pin-all\"",
+  "python-dotenv==1.2.2; extra == \"pin-all\"",
+  "python-rapidjson==1.20; extra == \"pin-all\"",
+  "pytz==2024.1; extra == \"pin-all\"",
+  "requests==2.32.3; extra == \"pin-all\"",
+  "ruamel-yaml==0.17.32; extra == \"pin-all\"",
+  "ruamel-yaml-clib==0.2.11; (python_full_version < \"3.12\" and platform_python_implementation == \"CPython\") and extra == \"pin-all\"",
+  "scipy==1.17.0; extra == \"pin-all\"",
+  "scipy-stubs==1.16.0.0; extra == \"pin-all\"",
+  "six==1.16.0; extra == \"pin-all\"",
+  "types-protobuf==6.32.1.20251210; extra == \"pin-all\"",
+  "types-requests==2.32.4.20260107; extra == \"pin-all\"",
+  "types-six==1.17.0.20251009; extra == \"pin-all\"",
+  "typing-extensions==4.15.0; extra == \"pin-all\"",
+  "typing-inspection==0.4.2; extra == \"pin-all\"",
+  "tzdata==2025.3; extra == \"pin-all\"",
+  "urllib3==2.6.3; extra == \"pin-all\"",
+  "xarray==2024.10.0; extra == \"pin-all\"",
+  "iqm-data-definitions==3.1.0; extra == \"pin-iqm\"",
+  "iqm-exa-common==29.0.0; extra == \"pin-iqm\""
+ ],
+ "classifiers": [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Physics"
+ ],
+ "project_urls": {
+  "Documentation": "https://docs.iqm.tech/iqm-pulse/",
+  "Homepage": "https://pypi.org/project/iqm-pulse/"
+ },
+ "files": [
+  {
+   "filename": "iqm_pulse-15.0.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "url": "https://files.pythonhosted.org/packages/4d/34/e55b7e2fbb91c5f1e39ddc7d8312da5e09cea8a1894b4a32472f1c568ba2/iqm_pulse-15.0.0-py3-none-any.whl",
+   "upload_time_iso_8601": "2026-10-08T14:07:25.573232Z",
+   "size": 446869,
+   "sha256": "4cb1681d19f5b49d95f03fd21e7ba58c349689b8e60acb926d7990934131269b"
+  },
+  {
+   "filename": "iqm_pulse-15.0.0.tar.gz",
+   "packagetype": "sdist",
+   "url": "https://files.pythonhosted.org/packages/7d/03/9e42099d01df10d018c0ea50bdeea8ee2767adfa23106463c3ceb1d24f22/iqm_pulse-15.0.0.tar.gz",
+   "upload_time_iso_8601": "2026-10-08T14:07:27.782780Z",
+   "size": 424586,
+   "sha256": "765f8c5eaa46cd18f28cfa6035aaa229941a0e69711c7cbfa64211a11ce0ca61"
+  }
+ ]
+}
