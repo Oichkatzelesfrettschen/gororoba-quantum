@@ -107,7 +107,7 @@ import parallel  # noqa: E402
 from diagnostic_experiments import record_groups  # noqa: E402
 from experiments import Group, Member, all_experiment_groups  # noqa: E402
 from live_run import OPT_LEVEL  # noqa: E402
-from qpe_diagnostics import ideal_branch_probabilities, n21_labeled_law  # noqa: E402
+from qpe_diagnostics import ideal_branch_probabilities, lift_phase_law, n21_labeled_law  # noqa: E402
 
 OUTPUT = ROOT / "docs/evidence/walk-control-scaffolding/local_member_conformance.json"
 BASIS = ["cz", "id", "rz", "sx", "x"]
@@ -879,12 +879,16 @@ def cross_check_n21() -> None:
     )
     ordered = sorted(members.items())
     results = parallel.ordered_map(_branch_law_and_kind, [member for _key, member in ordered], min_items=2)
-    for ((name, _key), _member), (law, kind) in zip(ordered, results, strict=True):
+    for ((name, _key), member), (law, kind) in zip(ordered, results, strict=True):
         if isinstance(law, str):
             raise SystemExit(f"{name}: unchecked as {law!r}")
         exact = n21_labeled_law(not name.endswith("no_feedback"))
+        # A heralded member adds one all-zero herald bit per qubit above the
+        # two phase bits, so its ideal law is the labeled law lifted onto them.
+        clbits = member.circuit.num_clbits
+        expected_law = lift_phase_law(exact, clbits) if clbits > 2 else [float(value) for value in exact]
         require(
-            np.allclose(law, [float(value) for value in exact], atol=1e-11, rtol=0),
+            np.allclose(law, expected_law, atol=1e-11, rtol=0),
             f"{name}: enumerated law {law} differs from n21_labeled_law {exact}",
         )
         require(kind == "correlated", f"{name}: classified {kind}")
