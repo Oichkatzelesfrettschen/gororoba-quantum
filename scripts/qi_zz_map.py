@@ -481,6 +481,8 @@ def write(directory: Path, catalogue: Path, shots: int | None) -> None:
 
 def check(directory: Path, catalogue: Path, shots: int | None) -> None:
     files = build(catalogue, shots)
+    existing = {path.relative_to(directory).as_posix() for path in directory.rglob("*") if path.is_file()}
+    require(existing == set(files), f"proposal file set differs from regeneration: {sorted(existing ^ set(files))}")
     for relative, content in files.items():
         require((directory / relative).read_text(encoding="utf-8") == content, f"{relative}: differs from regeneration")
     print(f"Tuna ZZ proposal: {len(files)} source-bound files match; 24 edges, 384 Ramsey + 32 readout jobs")
