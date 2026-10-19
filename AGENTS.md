@@ -9,7 +9,24 @@ The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only.
 
-GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
+**CI is disabled.** The GitHub Actions workflow `ci.yml` is disabled on the
+repository pending a redesign, so no gate decides a merge; the Codex review
+loop of [Reviews and merges](#reviews-and-merges) is the merge gate. The
+gate machinery described below stays in the tree as the redesign's starting
+point and runs only when invoked by hand.
+
+**Code style.** Every Python file a change touches passes, before each push:
+- `ruff format` (formatting: 120-column lines, Python 3.14 target, 3.13 for
+  `scripts/qi_*.py`, all set in pyproject.toml);
+- `ruff check` (lint: pycodestyle, pyflakes, import order, bugbear,
+  pyupgrade, and S101, so checks raise explicitly instead of asserting);
+- `mypy` on the touched files (static type checking against the configuration
+  in pyproject.toml).
+Run them through `"$PYTHON" ci/pinned_tool.py TOOL ARGS`, which uses the
+versions ci/requirements-ci.txt pins. Formatting is only ruff format; mypy
+checks types and ruff check catches defects, and neither rewrites code.
+
+GitHub Actions ran every gate ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 [ci/gates.json](ci/gates.json) lists each gate as one command with its
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool sized to the runner's CPUs and keeps going past failures, so a
@@ -43,10 +60,7 @@ record the allocation; the retained audit measured four affinity CPUs and
 about 16 GB on ubuntu-latest. CI uses Ubuntu 26.04, retains an Ubuntu 24.04 compatibility job, and pins
 Node 24 action commits. Jobs use Python 3.14.7
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
-the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard and the `qi-stack` and `external-ground-truth` jobs are green and its
-review threads are resolved; a red main or nightly run is fixed in the next
-change. The `qi-stack` job applies the same changed-input selection to the gates
+the plotting-only `matplotlib==3.11.2`). The `qi-stack` job applies the same changed-input selection to the gates
 that ci/gates.json
 tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 ([Quantum Inspire](#quantum-inspire)). The
@@ -218,8 +232,7 @@ driver, a pin or the workflow (`ci/rocq_changed.sh` holds the path list), and
 adds the stiefel_witness bundle on pushes to main and the nightly schedule.
 Gates core-403 and core-404 hold the pin, the toolchain.txt banners, the path
 list and the open_gororoba fetch in agreement. The manual procedure remains
-the local replay. A pull request merges when `rocq-replay` is green whenever
-it ran.
+the local replay.
 
 **Gate cost.**
 - Measure a gate's cost in CPU seconds. The runner records user and system
@@ -1451,8 +1464,7 @@ code-review quota, the owner decides how the PR proceeds.
    - A claim the source refutes gets the refuting line in the reply.
    - Malformed or adversarial input outside the documented domain gets a reply
      naming the boundary and a follow-up issue.
-3. Fix every reachable thread on the PR's own branch in one commit; CI runs the
-   gates on the push. A change to live_run.py or experiments.py also gets a live dry run,
+3. Fix every reachable thread on the PR's own branch in one commit. A change to live_run.py or experiments.py also gets a live dry run,
    and a change to qiskit-ibm-runtime usage also gets `/migrate-qiskit-ibm-runtime`.
    Then push.
 4. Reply to each thread's root comment with
@@ -1476,21 +1488,20 @@ code-review quota, the owner decides how the PR proceeds.
   `git merge --no-ff`.
 - Rebasing is out because the permission harness denies force-push.
 - When one file conflicts heavily, take the lower branch's reviewed version and
-  re-apply the upper branch's own changes on top. CI reruns every gate; run a dry
-  run on every branch the merge touched.
+  re-apply the upper branch's own changes on top, and run a dry run on every
+  branch the merge touched.
 
-**Merging.** A PR merges when its latest review is clean, every thread is
-resolved, GitHub reports mergeable_state clean, and
-`"$PYTHON" ci/premerge_gates.py BRANCH` exits 0. That script merges the
-branch into origin/main in a scratch worktree and runs every pr-tier gate
-measured at 5 s or less there and on origin/main, each tree through its own
-ci/run_gates.py, with origin/main's passes read from the base cache (Gate
-cost); it fails on a gate the merge breaks. A gate over a
-whole-tree record (core-368 over every case circuit, core-270 over every
-retained run) can pass on two branches separately and fail on their merge,
-and a PR's CI ran against main as it stood then. Full-tier record gates such
-as core-289 (every retained family configuration) run only on main's full
-CI run. Bottom-up, for each PR:
+**Merging.** A PR merges after this sequence:
+1. Codex reviews; every thread is fixed, refuted or bounded and resolved
+   (One round above), and the touched files pass the code-style tools.
+2. The operator reviews the whole PR diff against origin/main, every commit
+   regardless of author, not only the commits written in this loop, and fixes
+   what that review finds.
+3. Codex reviews the head once more; that round's threads are answered and
+   resolved the same way.
+4. GitHub reports mergeable_state clean.
+
+Then, bottom-up, for each PR:
 1. Merge it with a merge commit:
    `gh api -X PUT repos/OWNER/REPO/pulls/PR/merge -f merge_method=merge`.
 2. Retarget the next PR to main: `gh api -X PATCH repos/OWNER/REPO/pulls/NEXT -f base=main`.
