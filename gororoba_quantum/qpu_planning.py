@@ -241,6 +241,16 @@ def control_sites(runtime: Any, isas: list[Any]) -> list[tuple[tuple[str, int], 
     return sites
 
 
+def orbit_sites(sites: list[tuple[tuple[str, int], ...]], members: Any) -> list[tuple[tuple[str, int], ...]]:
+    """The control_sites entries of the orbit arms, in member order.
+
+    A spectator Ramsey arm of n21-orbit-rca reads qubit 2 at its end, and its
+    reset_only reference resets the control before any measurement, so the
+    window durations follow the orbit arms alone.
+    """
+    return [arm for arm, member in zip(sites, members, strict=True) if member.name.startswith("n21_orbit_")]
+
+
 def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     """Physical qubits of the mid-circuit round: each arm's measures through its first reset.
 
@@ -266,12 +276,17 @@ def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]
     recompiled arm must keep its ordered measure and reset sites.
     """
     sites = control_sites(runtime, candidate.isas)
-    controls = window_controls(sites)
+    controls = window_controls(orbit_sites(sites, candidate.group.members))
     window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
     windows = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
     if (window_dt, half_dt) == bound[:2]:
         return candidate, windows
-    group = n21_orbit_rca_group(window_dt, half_dt, has_herald(candidate.group.members[0].circuit))
+    group = n21_orbit_rca_group(
+        window_dt,
+        half_dt,
+        has_herald(candidate.group.members[0].circuit),
+        any(member.name.startswith("n21_spectator_") for member in candidate.group.members),
+    )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
     ]
@@ -697,7 +712,7 @@ def family_candidates(
                 local: dict[str, Any] = {}
                 try:
                     bound = window_durations(runtime, snapshot)
-                    group = n21_orbit_rca_group(bound[0], bound[1], herald)
+                    group = n21_orbit_rca_group(bound[0], bound[1], herald, window_sweep=True)
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
                     trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
@@ -758,6 +773,7 @@ def family_candidates(
                                 "replica_cap": cap,
                                 **windows.get(id(candidate), {}),
                                 **({"init_herald": True} if herald else {}),
+                                **({"window_sweep": True} if args.family == "n21-orbit-rca" else {}),
                             },
                         )
                     )

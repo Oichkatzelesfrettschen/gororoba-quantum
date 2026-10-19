@@ -164,7 +164,14 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         rca_configuration["window_delay_dt"] > 0 and rca_configuration["echo_half_dt"] > 0,
         f"window durations missing from the family configuration: {rca_configuration}",
     )
-    _require(len(rca_choice.isas) == 8, "N=21 window family lost an arm")
+    _require(
+        len(rca_choice.isas) == 14 and rca_configuration.get("window_sweep") is True,
+        "N=21 window family lost an arm or the window sweep",
+    )
+    _require(
+        {pub.kind for pub in live_run.execution_pubs([rca_choice])} == {"dynamic"},
+        "N=21 window family crossed execution kinds",
+    )
     arms = dict(zip((member.name for member in rca_choice.group.members), rca_choice.isas, strict=True))
 
     def ops(name: str) -> dict[str, int]:
@@ -177,6 +184,28 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         extra = ops(f"n21_orbit_extra_readout_{arm}")
         _require(extra["measure"] == nominal["measure"] + 1, f"extra readout was removed from the {arm} arm")
         _require(ops(f"n21_orbit_window_delay_{arm}").get("delay", 0) >= 1, f"window delay left the {arm} arm")
+        long_delays = [
+            int(instruction.operation.duration)
+            for instruction in arms[f"n21_orbit_window_delay_long_{arm}"].data
+            if instruction.operation.name == "delay"
+        ]
+        _require(
+            2 * rca_configuration["window_delay_dt"] in long_delays,
+            f"the long window delay {long_delays} of the {arm} arm is not twice window_delay_dt",
+        )
+    for quadrature in ("x", "y"):
+        measured = ops(f"n21_spectator_measured_{quadrature}")
+        reference = arms[f"n21_spectator_reset_only_{quadrature}"]
+        _require(
+            measured.get("measure") == 2 and measured.get("reset") == 1,
+            f"the measured {quadrature} spectator lost its control readout or reset: {measured}",
+        )
+        _require(
+            dict(reference.count_ops()).get("measure") == 1
+            and rca_configuration["window_delay_dt"]
+            in [int(i.operation.duration) for i in reference.data if i.operation.name == "delay"],
+            f"the reset_only {quadrature} spectator does not idle the control's measure duration",
+        )
         echo_isa = arms[f"n21_orbit_window_echo_{arm}"]
         wires: dict[int, list[str]] = {}
         for instruction in echo_isa.data:
@@ -235,7 +264,7 @@ def _verify_window_control_durations(snapshot: live_run.Snapshot) -> None:
     candidates = qpu_planning.family_candidates(live_run, [heterogeneous], _args("n21-orbit-rca"), trace)
     _require(bool(candidates), f"the heterogeneous Target rejects every N=21 window family: {trace}")
     (choice,), configuration = candidates[0]
-    sites = qpu_planning.control_sites(live_run, choice.isas)
+    sites = qpu_planning.orbit_sites(qpu_planning.control_sites(live_run, choice.isas), choice.group.members)
     controls = qpu_planning.window_controls(sites)
     _require(bool(controls) and slow not in controls, f"the control routed onto {controls}")
     expected = qpu_planning.window_durations(live_run, heterogeneous, controls)
@@ -275,7 +304,10 @@ def _verify_window_control_durations(snapshot: live_run.Snapshot) -> None:
         (window["window_delay_dt"], window["echo_half_dt"]) == uniform[:2],
         f"the terminal readout on {terminal} set the windows {window} instead of {uniform[:2]}",
     )
-    _require(qpu_planning.control_sites(live_run, resized.isas) == sites, "the resized arms moved their measure sites")
+    _require(
+        qpu_planning.orbit_sites(qpu_planning.control_sites(live_run, resized.isas), resized.group.members) == sites,
+        "the resized arms moved their measure sites",
+    )
 
 
 def _verify_heterogeneous_measurement_duration() -> None:
@@ -2123,8 +2155,12 @@ def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
     rca = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-rca"), traces)
     _require(bool(rca), f"FakeFez rejects every N=21 window family: {traces}")
     (choice,), _configuration = rca[0]
-    _require(len(choice.isas) == 8, "N=21 window family lost an arm")
+    _require(len(choice.isas) == 14, "N=21 window family lost an arm")
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        if "_reset_only_" in member.name:
+            # The reference idles in place of the measurement, so no
+            # measurement opens a window.
+            continue
         inside = frozenset({"delay", "x"}) if "_window_echo_" in member.name else frozenset({"delay"})
         found = qpe_diagnostics.window_bracket_violations(isa, inside)
         _require(not found, f"{member.name}: the window holds work-qubit operations {found}")
@@ -2197,14 +2233,16 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
     twins = [
         live_run._compile(member.circuit, choice.snap, choice.seed, choice.layout)
         for member in qpu_planning.n21_orbit_rca_group(
-            int(configuration["window_delay_dt"]), int(configuration["echo_half_dt"])
+            int(configuration["window_delay_dt"]), int(configuration["echo_half_dt"]), window_sweep=True
         ).members
     ]
     _require(
         qpu_planning.control_sites(live_run, choice.isas) == qpu_planning.control_sites(live_run, twins),
         "the herald changes the control's measure and reset sites",
     )
-    controls = qpu_planning.window_controls(qpu_planning.control_sites(live_run, choice.isas))
+    controls = qpu_planning.window_controls(
+        qpu_planning.orbit_sites(qpu_planning.control_sites(live_run, choice.isas), choice.group.members)
+    )
     _require(
         qpu_planning.window_durations(live_run, choice.snap, controls)[:2]
         == (configuration["window_delay_dt"], configuration["echo_half_dt"]),
@@ -2230,10 +2268,17 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
         )
         ideal = qpe_diagnostics.ideal_compiled_probabilities(isa)
         _require(np.allclose(ideal, member.ideal, rtol=0, atol=1e-10), f"{member.name}: the heralded ideal moved")
-        _require(
-            np.allclose(phase_marginal(ideal), [float(v) for v in n21_labeled_law("_no_feedback" not in member.name)]),
-            f"{member.name}: the phase marginal differs from the labeled law",
+        unheralded = (
+            qpe_diagnostics.n21_spectator_law(member.name[-1])
+            if member.name.startswith("n21_spectator_")
+            else n21_labeled_law("_no_feedback" not in member.name)
         )
+        _require(
+            np.allclose(phase_marginal(ideal), [float(v) for v in unheralded]),
+            f"{member.name}: the phase marginal differs from the unheralded law",
+        )
+        if "_reset_only_" in member.name:
+            continue
         inside = frozenset({"delay", "x"}) if "_window_echo_" in member.name else frozenset({"delay"})
         found = qpe_diagnostics.window_bracket_violations(isa, inside)
         _require(
@@ -2255,7 +2300,9 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
     contracts = diagnostic_experiments.family_contracts(
         "n21-orbit-rca", 0.08, 0.05, 0.8, **qpu_planning.contract_configuration("n21-orbit-rca", configuration)
     )
-    plain_contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8)
+    plain_contracts = diagnostic_experiments.family_contracts(
+        "n21-orbit-rca", 0.08, 0.05, 0.8, configuration={"window_sweep": True}
+    )
     for lifted, unlifted in zip(contracts, plain_contracts, strict=True):
         for term, plain_term in zip(lifted.terms, unlifted.terms, strict=True):
             member = next(m for m in choice.group.members if m.name == term.member)
@@ -2275,12 +2322,12 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
         "record_groups lost the heralded members",
     )
     ideal_summary = choice.group.summarize({m.name: m.ideal for m in choice.group.members})
-    plain_group = qpu_planning.n21_orbit_rca_group(1, 1)
+    plain_group = qpu_planning.n21_orbit_rca_group(1, 1, window_sweep=True)
     plain_summary = plain_group.summarize({m.name: m.ideal for m in plain_group.members})
     _require(
         all(ideal_summary[key] == value for key, value in plain_summary.items())
         and all(value == 0.0 for key, value in ideal_summary.items() if "_herald_q" in key)
-        and sum("_herald_q" in key for key in ideal_summary) == 8 * 4,
+        and sum("_herald_q" in key for key in ideal_summary) == 14 * 4,
         f"the heralded summary moved the contrasts or the herald fractions: {ideal_summary}",
     )
     usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
