@@ -16,12 +16,15 @@ gate machinery described below stays in the tree as the redesign's starting
 point and runs only when invoked by hand.
 
 **Code style.** Every Python file a change touches passes, before each push:
-- `ruff format` (formatting: 120-column lines, Python 3.14 target, 3.13 for
-  `scripts/qi_*.py`, all set in pyproject.toml);
+- `ruff format --target-version py313` (formatting: 120-column lines from
+  pyproject.toml, with the Python 3.13 target the shared modules keep for the
+  Quantum Inspire interpreter);
 - `ruff check` (lint: pycodestyle, pyflakes, import order, bugbear,
   pyupgrade, and S101, so checks raise explicitly instead of asserting);
-- `mypy` on the touched files (static type checking against the configuration
-  in pyproject.toml).
+- `mypy` (static type checking against the configuration in pyproject.toml):
+  on the touched files, and over the whole scope of gate core-039 when a
+  change alters a function, class or type signature another module imports,
+  since a per-file run never reads the unchanged callers.
 Run them through `"$PYTHON" ci/pinned_tool.py TOOL ARGS`, which uses the
 versions ci/requirements-ci.txt pins. Formatting is only ruff format; mypy
 checks types and ruff check catches defects, and neither rewrites code.
