@@ -1,0 +1,5682 @@
+{
+  "account": {
+    "account_type": "PERSONAL",
+    "credit": {
+      "currentBalance": "30.00",
+      "expiresAt": "2026-11-01T00:00:00+00:00"
+    }
+  },
+  "api_versions": [
+    {
+      "released": "2025-09-01",
+      "version": "v1"
+    }
+  ],
+  "captured_at": "2026-10-19T06:08:00Z",
+  "quantum_computers": [
+    {
+      "alias": "emerald",
+      "awg_channels": [
+        {
+          "granularity_samples": 8.0,
+          "min_samples": 8.0,
+          "sampling_rate_hz": 2000000000.0
+        }
+      ],
+      "backend_type": "qpu",
+      "calibration_set_id": "b306d0dc-0374-4594-9fa1-4dc45a6c4333",
+      "chip_components": {
+        "launcher": 214,
+        "probe_line": 8,
+        "qubit": 54,
+        "tunable_coupler": 90
+      },
+      "computational_resonators": [],
+      "connectivity": [
+        [
+          "QB1",
+          "QB2"
+        ],
+        [
+          "QB1",
+          "QB5"
+        ],
+        [
+          "QB2",
+          "QB6"
+        ],
+        [
+          "QB3",
+          "QB4"
+        ],
+        [
+          "QB3",
+          "QB9"
+        ],
+        [
+          "QB4",
+          "QB5"
+        ],
+        [
+          "QB4",
+          "QB10"
+        ],
+        [
+          "QB5",
+          "QB6"
+        ],
+        [
+          "QB5",
+          "QB11"
+        ],
+        [
+          "QB6",
+          "QB7"
+        ],
+        [
+          "QB6",
+          "QB12"
+        ],
+        [
+          "QB7",
+          "QB13"
+        ],
+        [
+          "QB8",
+          "QB9"
+        ],
+        [
+          "QB8",
+          "QB16"
+        ],
+        [
+          "QB9",
+          "QB10"
+        ],
+        [
+          "QB9",
+          "QB17"
+        ],
+        [
+          "QB10",
+          "QB11"
+        ],
+        [
+          "QB10",
+          "QB18"
+        ],
+        [
+          "QB11",
+          "QB12"
+        ],
+        [
+          "QB11",
+          "QB19"
+        ],
+        [
+          "QB12",
+          "QB13"
+        ],
+        [
+          "QB12",
+          "QB20"
+        ],
+        [
+          "QB13",
+          "QB14"
+        ],
+        [
+          "QB13",
+          "QB21"
+        ],
+        [
+          "QB14",
+          "QB22"
+        ],
+        [
+          "QB15",
+          "QB16"
+        ],
+        [
+          "QB15",
+          "QB23"
+        ],
+        [
+          "QB16",
+          "QB17"
+        ],
+        [
+          "QB16",
+          "QB24"
+        ],
+        [
+          "QB17",
+          "QB18"
+        ],
+        [
+          "QB17",
+          "QB25"
+        ],
+        [
+          "QB18",
+          "QB19"
+        ],
+        [
+          "QB18",
+          "QB26"
+        ],
+        [
+          "QB19",
+          "QB20"
+        ],
+        [
+          "QB19",
+          "QB27"
+        ],
+        [
+          "QB20",
+          "QB21"
+        ],
+        [
+          "QB20",
+          "QB28"
+        ],
+        [
+          "QB21",
+          "QB22"
+        ],
+        [
+          "QB21",
+          "QB29"
+        ],
+        [
+          "QB22",
+          "QB30"
+        ],
+        [
+          "QB23",
+          "QB24"
+        ],
+        [
+          "QB24",
+          "QB25"
+        ],
+        [
+          "QB24",
+          "QB32"
+        ],
+        [
+          "QB25",
+          "QB26"
+        ],
+        [
+          "QB25",
+          "QB33"
+        ],
+        [
+          "QB26",
+          "QB27"
+        ],
+        [
+          "QB26",
+          "QB34"
+        ],
+        [
+          "QB27",
+          "QB28"
+        ],
+        [
+          "QB27",
+          "QB35"
+        ],
+        [
+          "QB28",
+          "QB29"
+        ],
+        [
+          "QB28",
+          "QB36"
+        ],
+        [
+          "QB29",
+          "QB30"
+        ],
+        [
+          "QB29",
+          "QB37"
+        ],
+        [
+          "QB30",
+          "QB31"
+        ],
+        [
+          "QB30",
+          "QB38"
+        ],
+        [
+          "QB31",
+          "QB39"
+        ],
+        [
+          "QB32",
+          "QB33"
+        ],
+        [
+          "QB32",
+          "QB40"
+        ],
+        [
+          "QB33",
+          "QB34"
+        ],
+        [
+          "QB33",
+          "QB41"
+        ],
+        [
+          "QB34",
+          "QB35"
+        ],
+        [
+          "QB34",
+          "QB42"
+        ],
+        [
+          "QB35",
+          "QB36"
+        ],
+        [
+          "QB35",
+          "QB43"
+        ],
+        [
+          "QB36",
+          "QB37"
+        ],
+        [
+          "QB36",
+          "QB44"
+        ],
+        [
+          "QB37",
+          "QB38"
+        ],
+        [
+          "QB37",
+          "QB45"
+        ],
+        [
+          "QB38",
+          "QB39"
+        ],
+        [
+          "QB38",
+          "QB46"
+        ],
+        [
+          "QB40",
+          "QB41"
+        ],
+        [
+          "QB41",
+          "QB42"
+        ],
+        [
+          "QB41",
+          "QB47"
+        ],
+        [
+          "QB42",
+          "QB43"
+        ],
+        [
+          "QB42",
+          "QB48"
+        ],
+        [
+          "QB43",
+          "QB44"
+        ],
+        [
+          "QB43",
+          "QB49"
+        ],
+        [
+          "QB44",
+          "QB45"
+        ],
+        [
+          "QB44",
+          "QB50"
+        ],
+        [
+          "QB45",
+          "QB46"
+        ],
+        [
+          "QB45",
+          "QB51"
+        ],
+        [
+          "QB47",
+          "QB48"
+        ],
+        [
+          "QB48",
+          "QB49"
+        ],
+        [
+          "QB48",
+          "QB52"
+        ],
+        [
+          "QB49",
+          "QB50"
+        ],
+        [
+          "QB49",
+          "QB53"
+        ],
+        [
+          "QB50",
+          "QB51"
+        ],
+        [
+          "QB50",
+          "QB54"
+        ],
+        [
+          "QB52",
+          "QB53"
+        ],
+        [
+          "QB53",
+          "QB54"
+        ]
+      ],
+      "description": "IQM Emerald is a quantum computer with a Crystal 54 QPU based on superconducting transmon qubits. The qubits are arranged in a square lattice and connected by tunable couplers. The system is calibrated to support arbitrary X and Y rotations as the native single-qubit gate and CZ as the native two-qubit gate.",
+      "display_name": "IQM Emerald",
+      "dut_label": "M216_F0W102525_H03_F08",
+      "gates": {
+        "cc_prx": {
+          "default": "prx_composite",
+          "loci": {
+            "prx_composite": 54
+          },
+          "overrides": {}
+        },
+        "cz": {
+          "default": "slepian_crf",
+          "loci": {
+            "crf_acstarkcrf": 2,
+            "slepian_crf": 83
+          },
+          "overrides": {
+            "QB44,QB50": "crf_acstarkcrf",
+            "QB49,QB50": "crf_acstarkcrf",
+            "QB51,QB50": "crf_acstarkcrf",
+            "QB54,QB50": "crf_acstarkcrf"
+          }
+        },
+        "measure": {
+          "default": "constant",
+          "loci": {
+            "constant": 54
+          },
+          "overrides": {}
+        },
+        "measure_fidelity": {
+          "default": "shelved_constant",
+          "loci": {
+            "constant": 54,
+            "shelved_constant": 54
+          },
+          "overrides": {}
+        },
+        "prx": {
+          "default": "drag_crf_sx",
+          "loci": {
+            "drag_crf_sx": 54
+          },
+          "overrides": {}
+        },
+        "prx_12": {
+          "default": "modulated_drag_crf",
+          "loci": {
+            "modulated_drag_crf": 54
+          },
+          "overrides": {}
+        },
+        "reset_wait": {
+          "default": "reset_wait",
+          "loci": {
+            "reset_wait": 152
+          },
+          "overrides": {}
+        }
+      },
+      "limits": {
+        "max_circuits_per_job": 100,
+        "max_executions_per_job": 2000000,
+        "max_instructions_per_circuit": 30000,
+        "max_queued_jobs_per_user": 200,
+        "max_shots_per_circuit": 20000
+      },
+      "mask_set": "M216",
+      "medians": {
+        "cz_duration_s": 4e-08,
+        "cz_irb_fidelity": 0.996321,
+        "measure_duration_s": 3.6e-07,
+        "prx_duration_s": 2.4e-08,
+        "prx_fidelity": 0.999672,
+        "readout_fidelity": 0.988475,
+        "t1_s": 5.04766e-05,
+        "t2_echo_s": 3.82249e-05,
+        "t2_s": 1.53002e-05
+      },
+      "metrics_created": "2026-10-19T05:29:16.843841Z",
+      "per_pair": {
+        "QB11__QB10": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.99682244008124,
+          "implementation": "slepian_crf"
+        },
+        "QB11__QB12": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9986465190343436,
+          "implementation": "slepian_crf"
+        },
+        "QB11__QB19": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9816401610620844,
+          "implementation": "slepian_crf"
+        },
+        "QB11__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9976737088951114,
+          "implementation": "slepian_crf"
+        },
+        "QB13__QB12": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9794972749882224,
+          "implementation": "slepian_crf"
+        },
+        "QB13__QB14": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.996974413281092,
+          "implementation": "slepian_crf"
+        },
+        "QB13__QB21": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9973655107629038,
+          "implementation": "slepian_crf"
+        },
+        "QB13__QB7": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.996667669761459,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB15": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9985640084099374,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB17": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9951787700405232,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB24": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.998163126311201,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB8": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9897293844171844,
+          "implementation": "slepian_crf"
+        },
+        "QB18__QB10": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9938597010558552,
+          "implementation": "slepian_crf"
+        },
+        "QB18__QB17": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.994004034903455,
+          "implementation": "slepian_crf"
+        },
+        "QB18__QB19": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9799345308771534,
+          "implementation": "slepian_crf"
+        },
+        "QB18__QB26": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9947311013015612,
+          "implementation": "slepian_crf"
+        },
+        "QB1__QB2": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9979618080199442,
+          "implementation": "slepian_crf"
+        },
+        "QB1__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.995693052675202,
+          "implementation": "slepian_crf"
+        },
+        "QB20__QB12": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9900796628870336,
+          "implementation": "slepian_crf"
+        },
+        "QB20__QB19": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9798036745026176,
+          "implementation": "slepian_crf"
+        },
+        "QB20__QB21": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9943619528795792,
+          "implementation": "slepian_crf"
+        },
+        "QB20__QB28": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9968536094768756,
+          "implementation": "slepian_crf"
+        },
+        "QB22__QB14": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9944037906828604,
+          "implementation": "slepian_crf"
+        },
+        "QB22__QB21": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9926648588664008,
+          "implementation": "slepian_crf"
+        },
+        "QB22__QB30": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9984852303501472,
+          "implementation": "slepian_crf"
+        },
+        "QB23__QB24": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9819742388624774,
+          "implementation": "slepian_crf"
+        },
+        "QB25__QB17": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9978835393349764,
+          "implementation": "slepian_crf"
+        },
+        "QB25__QB24": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9971080239288956,
+          "implementation": "slepian_crf"
+        },
+        "QB25__QB26": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9966535106730964,
+          "implementation": "slepian_crf"
+        },
+        "QB25__QB33": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9975144580150314,
+          "implementation": "slepian_crf"
+        },
+        "QB27__QB19": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9805386587904764,
+          "implementation": "slepian_crf"
+        },
+        "QB27__QB26": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9981451772158862,
+          "implementation": "slepian_crf"
+        },
+        "QB27__QB28": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.997104703481072,
+          "implementation": "slepian_crf"
+        },
+        "QB27__QB35": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9942281282788916,
+          "implementation": "slepian_crf"
+        },
+        "QB29__QB21": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9984821557220812,
+          "implementation": "slepian_crf"
+        },
+        "QB29__QB28": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9982378055941844,
+          "implementation": "slepian_crf"
+        },
+        "QB29__QB30": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9984215954749976,
+          "implementation": "slepian_crf"
+        },
+        "QB29__QB37": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.985977021141953,
+          "implementation": "slepian_crf"
+        },
+        "QB31__QB30": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9980151096323064,
+          "implementation": "slepian_crf"
+        },
+        "QB31__QB39": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9963207904875038,
+          "implementation": "slepian_crf"
+        },
+        "QB32__QB33": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.997502366385009,
+          "implementation": "slepian_crf"
+        },
+        "QB32__QB40": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9983437593102586,
+          "implementation": "slepian_crf"
+        },
+        "QB34__QB26": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9966987928967962,
+          "implementation": "slepian_crf"
+        },
+        "QB34__QB33": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9962685738885072,
+          "implementation": "slepian_crf"
+        },
+        "QB34__QB35": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.993553064677926,
+          "implementation": "slepian_crf"
+        },
+        "QB34__QB42": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9982174612650356,
+          "implementation": "slepian_crf"
+        },
+        "QB36__QB28": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9977413047645972,
+          "implementation": "slepian_crf"
+        },
+        "QB36__QB35": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9927652462428838,
+          "implementation": "slepian_crf"
+        },
+        "QB36__QB37": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9868676588180594,
+          "implementation": "slepian_crf"
+        },
+        "QB36__QB44": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9943663748288248,
+          "implementation": "slepian_crf"
+        },
+        "QB38__QB30": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9885897434588572,
+          "implementation": "slepian_crf"
+        },
+        "QB38__QB37": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.957365366866205,
+          "implementation": "slepian_crf"
+        },
+        "QB38__QB39": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9975751773210578,
+          "implementation": "slepian_crf"
+        },
+        "QB38__QB46": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9975661321672734,
+          "implementation": "slepian_crf"
+        },
+        "QB41__QB33": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9969984424304962,
+          "implementation": "slepian_crf"
+        },
+        "QB41__QB40": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9962497026856956,
+          "implementation": "slepian_crf"
+        },
+        "QB41__QB42": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.997130284692878,
+          "implementation": "slepian_crf"
+        },
+        "QB41__QB47": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9960721356987584,
+          "implementation": "slepian_crf"
+        },
+        "QB43__QB35": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9079392297293776,
+          "implementation": "slepian_crf"
+        },
+        "QB43__QB42": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9892811496825152,
+          "implementation": "slepian_crf"
+        },
+        "QB43__QB44": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9965849180751348,
+          "implementation": "slepian_crf"
+        },
+        "QB43__QB49": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9821248504124112,
+          "implementation": "slepian_crf"
+        },
+        "QB44__QB50": {
+          "cz_duration_s": 6e-08,
+          "cz_irb_fidelity": 0.9800942764771502,
+          "implementation": "crf_acstarkcrf"
+        },
+        "QB45__QB37": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9855837026179456,
+          "implementation": "slepian_crf"
+        },
+        "QB45__QB44": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.998627597376352,
+          "implementation": "slepian_crf"
+        },
+        "QB45__QB46": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9979609873024716,
+          "implementation": "slepian_crf"
+        },
+        "QB45__QB51": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.998728919690282,
+          "implementation": "slepian_crf"
+        },
+        "QB48__QB42": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.997817243033252,
+          "implementation": "slepian_crf"
+        },
+        "QB48__QB47": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9981570611658184,
+          "implementation": "slepian_crf"
+        },
+        "QB48__QB49": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9915549135639702,
+          "implementation": "slepian_crf"
+        },
+        "QB48__QB52": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9920332193237604,
+          "implementation": "slepian_crf"
+        },
+        "QB4__QB10": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.992362170419181,
+          "implementation": "slepian_crf"
+        },
+        "QB4__QB3": {
+          "cz_duration_s": 4.8e-08,
+          "cz_irb_fidelity": 0.9946329257144684,
+          "implementation": "slepian_crf"
+        },
+        "QB4__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.997686210886617,
+          "implementation": "slepian_crf"
+        },
+        "QB50__QB51": {
+          "cz_duration_s": 6e-08,
+          "cz_irb_fidelity": 0.9628534730844054,
+          "implementation": "crf_acstarkcrf"
+        },
+        "QB53__QB49": {
+          "cz_duration_s": 5.6e-08,
+          "cz_irb_fidelity": 0.989574725881092,
+          "implementation": "slepian_crf"
+        },
+        "QB53__QB52": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9968994649281764,
+          "implementation": "slepian_crf"
+        },
+        "QB53__QB54": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9975423189213772,
+          "implementation": "slepian_crf"
+        },
+        "QB6__QB12": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9904817659716167,
+          "implementation": "slepian_crf"
+        },
+        "QB6__QB2": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.985151722185582,
+          "implementation": "slepian_crf"
+        },
+        "QB6__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9970311313739696,
+          "implementation": "slepian_crf"
+        },
+        "QB9__QB10": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9953661732734654,
+          "implementation": "slepian_crf"
+        },
+        "QB9__QB17": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9972712333288322,
+          "implementation": "slepian_crf"
+        },
+        "QB9__QB3": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9958420360682742,
+          "implementation": "slepian_crf"
+        },
+        "QB9__QB8": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9973361525009382,
+          "implementation": "slepian_crf"
+        }
+      },
+      "per_qubit": {
+        "QB1": {
+          "drive_frequency_hz": 4009670193.4661713,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997615206761626,
+          "readout_error_0_to_1": 0.0058,
+          "readout_error_1_to_0": 0.0131,
+          "readout_fidelity": 0.99055,
+          "readout_frequency_hz": 5169966666.666667,
+          "t1_s": 4.645973350047388e-05,
+          "t2_echo_s": 3.721162034303701e-05,
+          "t2_s": 1.7946206161750148e-05
+        },
+        "QB10": {
+          "drive_frequency_hz": 3960615834.76705,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9973169792058816,
+          "readout_error_0_to_1": 0.0109,
+          "readout_error_1_to_0": 0.193,
+          "readout_fidelity": 0.89805,
+          "readout_frequency_hz": 5824666666.666667,
+          "t1_s": 5.044046829132977e-05,
+          "t2_echo_s": 7.377128630216409e-05,
+          "t2_s": 2.737731283966015e-05
+        },
+        "QB11": {
+          "drive_frequency_hz": 4090516386.07272,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997344325160384,
+          "readout_error_0_to_1": 0.0067,
+          "readout_error_1_to_0": 0.0089,
+          "readout_fidelity": 0.9922,
+          "readout_frequency_hz": 5442166666.666667,
+          "t1_s": 5.374113608153459e-05,
+          "t2_echo_s": 3.934101622861239e-05,
+          "t2_s": 1.5586115158220483e-05
+        },
+        "QB12": {
+          "drive_frequency_hz": 3941199476.066166,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997531413992338,
+          "readout_error_0_to_1": 0.0092,
+          "readout_error_1_to_0": 0.0168,
+          "readout_fidelity": 0.987,
+          "readout_frequency_hz": 5718866666.666667,
+          "t1_s": 3.9301771062064534e-05,
+          "t2_echo_s": 4.1281700259738955e-05,
+          "t2_s": 1.8003429760969413e-05
+        },
+        "QB13": {
+          "drive_frequency_hz": 4038994522.7252936,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9974279601472256,
+          "readout_error_0_to_1": 0.0036,
+          "readout_error_1_to_0": 0.0444,
+          "readout_fidelity": 0.976,
+          "readout_frequency_hz": 5248600000.0,
+          "t1_s": 1.1829397636457518e-05,
+          "t2_echo_s": 5.029037889612354e-06,
+          "t2_s": 4.336061523030948e-06
+        },
+        "QB14": {
+          "drive_frequency_hz": 3808832221.2420025,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996748002189836,
+          "readout_error_0_to_1": 0.0123,
+          "readout_error_1_to_0": 0.0313,
+          "readout_fidelity": 0.9782,
+          "readout_frequency_hz": 6038133333.333333,
+          "t1_s": 7.391478709588985e-05,
+          "t2_echo_s": 5.04146660091171e-05,
+          "t2_s": 1.583925680527125e-05
+        },
+        "QB15": {
+          "drive_frequency_hz": 3880267557.768207,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997620660527524,
+          "readout_error_0_to_1": 0.0034,
+          "readout_error_1_to_0": 0.0108,
+          "readout_fidelity": 0.9929,
+          "readout_frequency_hz": 6016066666.666667,
+          "t1_s": 4.9843908708562936e-05,
+          "t2_echo_s": 5.25121480461241e-05,
+          "t2_s": 2.334408086045941e-05
+        },
+        "QB16": {
+          "drive_frequency_hz": 3961680303.582349,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9995642120118166,
+          "readout_error_0_to_1": 0.0017,
+          "readout_error_1_to_0": 0.0077,
+          "readout_fidelity": 0.9953,
+          "readout_frequency_hz": 5116366666.666667,
+          "t1_s": 3.518646053063032e-05,
+          "t2_echo_s": 1.6506651503579923e-05,
+          "t2_s": 8.289834208483043e-06
+        },
+        "QB17": {
+          "drive_frequency_hz": 3911540782.571229,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9993579381787556,
+          "readout_error_0_to_1": 0.0028,
+          "readout_error_1_to_0": 0.0114,
+          "readout_fidelity": 0.9929,
+          "readout_frequency_hz": 5283633333.333333,
+          "t1_s": 5.4250533976531656e-05,
+          "t2_echo_s": 4.460801583869268e-05,
+          "t2_s": 1.904973750965137e-05
+        },
+        "QB18": {
+          "drive_frequency_hz": 4097383873.395692,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997010000924228,
+          "readout_error_0_to_1": 0.0063,
+          "readout_error_1_to_0": 0.0133,
+          "readout_fidelity": 0.9902,
+          "readout_frequency_hz": 5664600000.0,
+          "t1_s": 5.375233647546989e-05,
+          "t2_echo_s": 3.945154395830883e-05,
+          "t2_s": 1.5300159685599e-05
+        },
+        "QB19": {
+          "drive_frequency_hz": 3900625555.246859,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9962059418026022,
+          "readout_error_0_to_1": 0.0086,
+          "readout_error_1_to_0": 0.0179,
+          "readout_fidelity": 0.98675,
+          "readout_frequency_hz": 5581933333.333333,
+          "t1_s": 6.178259405911651e-05,
+          "t2_echo_s": 6.192645445518791e-05,
+          "t2_s": 1.9905327089805856e-05
+        },
+        "QB2": {
+          "drive_frequency_hz": 3830914197.669613,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996751792451992,
+          "readout_error_0_to_1": 0.0018,
+          "readout_error_1_to_0": 0.0149,
+          "readout_fidelity": 0.99165,
+          "readout_frequency_hz": 6052742000.0,
+          "t1_s": 3.133138315560125e-05,
+          "t2_echo_s": 3.822491923987723e-05,
+          "t2_s": 1.6609639463188398e-05
+        },
+        "QB20": {
+          "drive_frequency_hz": 4020731817.42858,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9995108386286408,
+          "readout_error_0_to_1": 0.0141,
+          "readout_error_1_to_0": 0.017,
+          "readout_fidelity": 0.98445,
+          "readout_frequency_hz": 5427266666.666667,
+          "t1_s": 3.564443725332277e-05,
+          "t2_echo_s": 2.821222895834416e-05,
+          "t2_s": 1.2743482075476777e-05
+        },
+        "QB21": {
+          "drive_frequency_hz": 3821081658.412509,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997319225772142,
+          "readout_error_0_to_1": 0.0124,
+          "readout_error_1_to_0": 0.0117,
+          "readout_fidelity": 0.98795,
+          "readout_frequency_hz": 5880119333.333333,
+          "t1_s": 6.706753856101691e-05,
+          "t2_echo_s": 4.2518048093551584e-05,
+          "t2_s": 1.488053053289955e-05
+        },
+        "QB22": {
+          "drive_frequency_hz": 3880481583.7591586,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99966367912064,
+          "readout_error_0_to_1": 0.0046,
+          "readout_error_1_to_0": 0.0188,
+          "readout_fidelity": 0.9883,
+          "readout_frequency_hz": 5117000000.0,
+          "t1_s": 3.222461328870756e-05,
+          "t2_echo_s": 2.605230105726956e-05,
+          "t2_s": 1.3088470028649403e-05
+        },
+        "QB23": {
+          "drive_frequency_hz": 4124929660.7412934,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9998010744573084,
+          "readout_error_0_to_1": 0.0077,
+          "readout_error_1_to_0": 0.0267,
+          "readout_fidelity": 0.9828,
+          "readout_frequency_hz": 5854947500.0,
+          "t1_s": 6.18334945956543e-05,
+          "t2_echo_s": 5.200269323790857e-05,
+          "t2_s": 2.4046672522438397e-05
+        },
+        "QB24": {
+          "drive_frequency_hz": 3890374067.0544615,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.999788640858104,
+          "readout_error_0_to_1": 0.013,
+          "readout_error_1_to_0": 0.0161,
+          "readout_fidelity": 0.98545,
+          "readout_frequency_hz": 5694626111.111112,
+          "t1_s": 7.752210960452415e-05,
+          "t2_echo_s": 6.424792992115248e-05,
+          "t2_s": 1.5014523166359303e-05
+        },
+        "QB25": {
+          "drive_frequency_hz": 4020577001.13068,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997668600002806,
+          "readout_error_0_to_1": 0.0059,
+          "readout_error_1_to_0": 0.0085,
+          "readout_fidelity": 0.9928,
+          "readout_frequency_hz": 5566866666.666667,
+          "t1_s": 4.882107028682295e-05,
+          "t2_echo_s": 3.5839674463714866e-05,
+          "t2_s": 2.032416183625277e-05
+        },
+        "QB26": {
+          "drive_frequency_hz": 3811344379.3959417,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997159753230992,
+          "readout_error_0_to_1": 0.0082,
+          "readout_error_1_to_0": 0.0099,
+          "readout_fidelity": 0.99095,
+          "readout_frequency_hz": 5436333333.333333,
+          "t1_s": 6.372894570753203e-05,
+          "t2_echo_s": 3.5529996599627745e-05,
+          "t2_s": 1.1583923678629293e-05
+        },
+        "QB27": {
+          "drive_frequency_hz": 3969917514.3149786,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997970567917064,
+          "readout_error_0_to_1": 0.0072,
+          "readout_error_1_to_0": 0.0091,
+          "readout_fidelity": 0.99185,
+          "readout_frequency_hz": 5584700000.0,
+          "t1_s": 5.2383673267209795e-05,
+          "t2_echo_s": 2.7917307396729372e-05,
+          "t2_s": 1.0223770565590592e-05
+        },
+        "QB28": {
+          "drive_frequency_hz": 3886669456.843392,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.999580509125846,
+          "readout_error_0_to_1": 0.0113,
+          "readout_error_1_to_0": 0.0199,
+          "readout_fidelity": 0.9844,
+          "readout_frequency_hz": 5727845583.333333,
+          "t1_s": 4.9628856014002215e-05,
+          "t2_echo_s": 3.5424085391457026e-05,
+          "t2_s": 8.773930513357599e-06
+        },
+        "QB29": {
+          "drive_frequency_hz": 3950915222.341707,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.999754727194773,
+          "readout_error_0_to_1": 0.0099,
+          "readout_error_1_to_0": 0.0119,
+          "readout_fidelity": 0.9891,
+          "readout_frequency_hz": 5415900000.0,
+          "t1_s": 6.391505408687005e-05,
+          "t2_echo_s": 3.1903352052980514e-05,
+          "t2_s": 1.4862562235144849e-05
+        },
+        "QB3": {
+          "drive_frequency_hz": 3901367881.2585225,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.999648062906568,
+          "readout_error_0_to_1": 0.0147,
+          "readout_error_1_to_0": 0.0165,
+          "readout_fidelity": 0.9844,
+          "readout_frequency_hz": 5146866666.666667,
+          "t1_s": 4.084117334684616e-05,
+          "t2_echo_s": 6.716806162184148e-05,
+          "t2_s": 4.313759950491888e-05
+        },
+        "QB30": {
+          "drive_frequency_hz": 3997585570.654767,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996202946595611,
+          "readout_error_0_to_1": 0.0075,
+          "readout_error_1_to_0": 0.0109,
+          "readout_fidelity": 0.9908,
+          "readout_frequency_hz": 5254166666.666667,
+          "t1_s": 5.4012029015440675e-05,
+          "t2_echo_s": 6.026992338734336e-05,
+          "t2_s": 4.1177995579033265e-05
+        },
+        "QB31": {
+          "drive_frequency_hz": 4080566615.392571,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996921761948944,
+          "readout_error_0_to_1": 0.0197,
+          "readout_error_1_to_0": 0.0128,
+          "readout_fidelity": 0.98375,
+          "readout_frequency_hz": 5130900000.0,
+          "t1_s": 8.21195740952906e-05,
+          "t2_echo_s": 3.809094439538836e-05,
+          "t2_s": 1.3575060310476127e-05
+        },
+        "QB32": {
+          "drive_frequency_hz": 3986522788.275221,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997869920704684,
+          "readout_error_0_to_1": 0.0109,
+          "readout_error_1_to_0": 0.0128,
+          "readout_fidelity": 0.98815,
+          "readout_frequency_hz": 5267500000.0,
+          "t1_s": 6.894951492565061e-05,
+          "t2_echo_s": 4.57394263234957e-05,
+          "t2_s": 2.1591408270131854e-05
+        },
+        "QB33": {
+          "drive_frequency_hz": 3879348663.1637616,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996126718155148,
+          "readout_error_0_to_1": 0.0146,
+          "readout_error_1_to_0": 0.0256,
+          "readout_fidelity": 0.9799,
+          "readout_frequency_hz": 5425068666.666667,
+          "t1_s": 5.882195540594607e-05,
+          "t2_echo_s": 4.385197141624943e-05,
+          "t2_s": 7.701196181487752e-06
+        },
+        "QB34": {
+          "drive_frequency_hz": 4120425096.855047,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997229504531472,
+          "readout_error_0_to_1": 0.0071,
+          "readout_error_1_to_0": 0.0104,
+          "readout_fidelity": 0.99125,
+          "readout_frequency_hz": 5562566666.666667,
+          "t1_s": 5.844677838554304e-05,
+          "t2_echo_s": 1.5468379600737398e-05,
+          "t2_s": 7.363145109938891e-06
+        },
+        "QB35": {
+          "drive_frequency_hz": 3933402209.907794,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9955778418760354,
+          "readout_error_0_to_1": 0.0017,
+          "readout_error_1_to_0": 0.0483,
+          "readout_fidelity": 0.975,
+          "readout_frequency_hz": 5722513333.333334,
+          "t1_s": 1.1012037008223889e-05,
+          "t2_echo_s": 8.862600335543427e-06,
+          "t2_s": 4.619195563893486e-06
+        },
+        "QB36": {
+          "drive_frequency_hz": 3808191463.73858,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997487844337872,
+          "readout_error_0_to_1": 0.0085,
+          "readout_error_1_to_0": 0.0142,
+          "readout_fidelity": 0.98865,
+          "readout_frequency_hz": 5712328222.222222,
+          "t1_s": 5.109934629024508e-05,
+          "t2_echo_s": 2.3055299790172872e-05,
+          "t2_s": 7.6233477370369325e-06
+        },
+        "QB37": {
+          "drive_frequency_hz": 3900937093.041948,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.991100728610777,
+          "readout_error_0_to_1": 0.0093,
+          "readout_error_1_to_0": 0.0938,
+          "readout_fidelity": 0.94845,
+          "readout_frequency_hz": 5549266666.666667,
+          "t1_s": 2.5293548659340925e-05,
+          "t2_echo_s": 2.422205849431454e-05,
+          "t2_s": 7.0963951156503745e-06
+        },
+        "QB38": {
+          "drive_frequency_hz": 3926163581.3914127,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996099078660758,
+          "readout_error_0_to_1": 0.0056,
+          "readout_error_1_to_0": 0.0135,
+          "readout_fidelity": 0.99045,
+          "readout_frequency_hz": 6015009041.666667,
+          "t1_s": 4.127837391720507e-05,
+          "t2_echo_s": 1.7118478000205963e-05,
+          "t2_s": 8.745515881004727e-06
+        },
+        "QB39": {
+          "drive_frequency_hz": 4004476513.8107505,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99966070817484,
+          "readout_error_0_to_1": 0.0019,
+          "readout_error_1_to_0": 0.0116,
+          "readout_fidelity": 0.99325,
+          "readout_frequency_hz": 5295766666.666667,
+          "t1_s": 2.9401604530731157e-05,
+          "t2_echo_s": 4.486252614704508e-05,
+          "t2_s": 2.9705789502622408e-05
+        },
+        "QB4": {
+          "drive_frequency_hz": 4060302910.4139576,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996695784957788,
+          "readout_error_0_to_1": 0.0055,
+          "readout_error_1_to_0": 0.0101,
+          "readout_fidelity": 0.9922,
+          "readout_frequency_hz": 5988233333.333333,
+          "t1_s": 4.216186889474482e-05,
+          "t2_echo_s": 2.8335036114721655e-05,
+          "t2_s": 1.2299820591090692e-05
+        },
+        "QB40": {
+          "drive_frequency_hz": 3869913600.913797,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.999686611393825,
+          "readout_error_0_to_1": 0.0047,
+          "readout_error_1_to_0": 0.0114,
+          "readout_fidelity": 0.99195,
+          "readout_frequency_hz": 5126300000.0,
+          "t1_s": 4.506252330955325e-05,
+          "t2_echo_s": 4.5120888101376526e-05,
+          "t2_s": 1.5464954763228754e-05
+        },
+        "QB41": {
+          "drive_frequency_hz": 3802482623.982376,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.999649072453194,
+          "readout_error_0_to_1": 0.0091,
+          "readout_error_1_to_0": 0.0122,
+          "readout_fidelity": 0.98935,
+          "readout_frequency_hz": 5981666666.666667,
+          "t1_s": 4.9167304872437414e-05,
+          "t2_echo_s": 5.442971063345343e-06,
+          "t2_s": 2.3396738836877933e-06
+        },
+        "QB42": {
+          "drive_frequency_hz": 3919265169.3067527,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997798663022732,
+          "readout_error_0_to_1": 0.01,
+          "readout_error_1_to_0": 0.0153,
+          "readout_fidelity": 0.98735,
+          "readout_frequency_hz": 5844833333.333333,
+          "t1_s": 6.564631869237334e-05,
+          "t2_echo_s": 4.928756542500698e-05,
+          "t2_s": 1.7206686351717137e-05
+        },
+        "QB43": {
+          "drive_frequency_hz": 4106388451.1692047,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996599270779788,
+          "readout_error_0_to_1": 0.002,
+          "readout_error_1_to_0": 0.0101,
+          "readout_fidelity": 0.99395,
+          "readout_frequency_hz": 5421133333.333333,
+          "t1_s": 6.055625118893053e-05,
+          "t2_echo_s": 1.6775538287102007e-05,
+          "t2_s": 7.974878241560202e-06
+        },
+        "QB44": {
+          "drive_frequency_hz": 4042646554.956721,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9989100701752076,
+          "readout_error_0_to_1": 0.007,
+          "readout_error_1_to_0": 0.0328,
+          "readout_fidelity": 0.9801,
+          "readout_frequency_hz": 5565533333.333333,
+          "t1_s": 6.596032674597626e-05,
+          "t2_echo_s": 7.93152438407216e-05,
+          "t2_s": 3.466781366350812e-05
+        },
+        "QB45": {
+          "drive_frequency_hz": 4160266210.036394,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997978356904574,
+          "readout_error_0_to_1": 0.0051,
+          "readout_error_1_to_0": 0.0098,
+          "readout_fidelity": 0.99255,
+          "readout_frequency_hz": 5850900000.0,
+          "t1_s": 6.137904327745978e-05,
+          "t2_echo_s": 3.390431056452194e-05,
+          "t2_s": 1.2038284528128017e-05
+        },
+        "QB46": {
+          "drive_frequency_hz": 3955673327.678981,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9994412924771164,
+          "readout_error_0_to_1": 0.0155,
+          "readout_error_1_to_0": 0.0205,
+          "readout_fidelity": 0.982,
+          "readout_frequency_hz": 5475733333.333333,
+          "t1_s": 2.3426284817273382e-05,
+          "t2_echo_s": 2.560262192645658e-05,
+          "t2_s": 2.6074879445090097e-05
+        },
+        "QB47": {
+          "drive_frequency_hz": 3899746303.4446144,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996790010764588,
+          "readout_error_0_to_1": 0.0253,
+          "readout_error_1_to_0": 0.0105,
+          "readout_fidelity": 0.9821,
+          "readout_frequency_hz": 5100633333.333333,
+          "t1_s": 9.192928548098716e-05,
+          "t2_echo_s": 5.8984027478415325e-05,
+          "t2_s": 1.7876564627251034e-05
+        },
+        "QB48": {
+          "drive_frequency_hz": 3813172946.54197,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997186978876652,
+          "readout_error_0_to_1": 0.0149,
+          "readout_error_1_to_0": 0.0133,
+          "readout_fidelity": 0.9859,
+          "readout_frequency_hz": 5226566666.666667,
+          "t1_s": 6.802151478081963e-05,
+          "t2_echo_s": 1.6571879102906404e-05,
+          "t2_s": 5.4918986932706526e-06
+        },
+        "QB49": {
+          "drive_frequency_hz": 3884519312.8724446,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9954933007166952,
+          "readout_error_0_to_1": 0.0155,
+          "readout_error_1_to_0": 0.0971,
+          "readout_fidelity": 0.9437,
+          "readout_frequency_hz": 5863200000.0,
+          "t1_s": 2.3646119935367224e-05,
+          "t2_echo_s": 3.1816518382411083e-06,
+          "t2_s": null
+        },
+        "QB5": {
+          "drive_frequency_hz": 3869498340.8409023,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996760130628584,
+          "readout_error_0_to_1": 0.0085,
+          "readout_error_1_to_0": 0.0157,
+          "readout_fidelity": 0.9879,
+          "readout_frequency_hz": 5289600000.0,
+          "t1_s": 3.445537149993432e-05,
+          "t2_echo_s": 3.9565208634401894e-05,
+          "t2_s": 2.215664144324099e-05
+        },
+        "QB50": {
+          "drive_frequency_hz": 4207121210.3606105,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996991535696756,
+          "readout_error_0_to_1": 0.0023,
+          "readout_error_1_to_0": 0.0096,
+          "readout_fidelity": 0.99405,
+          "readout_frequency_hz": 5708735333.333334,
+          "t1_s": 4.48381526441263e-05,
+          "t2_echo_s": 6.136710866392378e-05,
+          "t2_s": 4.420239802805229e-05
+        },
+        "QB51": {
+          "drive_frequency_hz": 4047322984.666255,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9995333010158376,
+          "readout_error_0_to_1": 0.0033,
+          "readout_error_1_to_0": 0.0125,
+          "readout_fidelity": 0.9921,
+          "readout_frequency_hz": 5628266666.666667,
+          "t1_s": 5.0752901364386245e-05,
+          "t2_echo_s": 5.508159614264788e-05,
+          "t2_s": 2.8473735670886727e-05
+        },
+        "QB52": {
+          "drive_frequency_hz": 4092179106.849455,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9996260746871936,
+          "readout_error_0_to_1": 0.001,
+          "readout_error_1_to_0": 0.0113,
+          "readout_fidelity": 0.99385,
+          "readout_frequency_hz": 6005534888.888889,
+          "t1_s": 1.8958086187202876e-05,
+          "t2_echo_s": null,
+          "t2_s": 5.837981781682109e-06
+        },
+        "QB53": {
+          "drive_frequency_hz": 3999725501.0751185,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9994158164517498,
+          "readout_error_0_to_1": 0.0177,
+          "readout_error_1_to_0": 0.007,
+          "readout_fidelity": 0.98765,
+          "readout_frequency_hz": 6003500000.0,
+          "t1_s": 7.452057895718749e-05,
+          "t2_echo_s": 3.0235285039114183e-05,
+          "t2_s": 1.5360624925358147e-05
+        },
+        "QB54": {
+          "drive_frequency_hz": 3851167770.5328913,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99972921874828,
+          "readout_error_0_to_1": 0.0107,
+          "readout_error_1_to_0": 0.0143,
+          "readout_fidelity": 0.9875,
+          "readout_frequency_hz": 5795297250.0,
+          "t1_s": 5.051278868295171e-05,
+          "t2_echo_s": 3.929627386208589e-05,
+          "t2_s": 1.5146373038543403e-05
+        },
+        "QB6": {
+          "drive_frequency_hz": 4011427578.2735834,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9990044702922016,
+          "readout_error_0_to_1": 0.0194,
+          "readout_error_1_to_0": 0.1597,
+          "readout_fidelity": 0.91045,
+          "readout_frequency_hz": 5882733333.333333,
+          "t1_s": 4.666490682100194e-05,
+          "t2_echo_s": 2.4170223489891863e-05,
+          "t2_s": 9.821575640910316e-06
+        },
+        "QB7": {
+          "drive_frequency_hz": 3930987198.90907,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9994298447334958,
+          "readout_error_0_to_1": 0.0104,
+          "readout_error_1_to_0": 0.0089,
+          "readout_fidelity": 0.99035,
+          "readout_frequency_hz": 5146233333.333333,
+          "t1_s": 6.443585483164045e-05,
+          "t2_echo_s": 6.084296742438267e-05,
+          "t2_s": 2.002182971158023e-05
+        },
+        "QB8": {
+          "drive_frequency_hz": 3881004519.165946,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9997077494788515,
+          "readout_error_0_to_1": 0.0049,
+          "readout_error_1_to_0": 0.0124,
+          "readout_fidelity": 0.99135,
+          "readout_frequency_hz": 5292433333.333333,
+          "t1_s": 4.933044785187134e-05,
+          "t2_echo_s": 6.851880183005206e-05,
+          "t2_s": 4.537715492252617e-05
+        },
+        "QB9": {
+          "drive_frequency_hz": 4021228383.551122,
+          "measure_duration_s": 3.6e-07,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.9994734479620628,
+          "readout_error_0_to_1": 0.0039,
+          "readout_error_1_to_0": 0.0156,
+          "readout_fidelity": 0.99025,
+          "readout_frequency_hz": 5489533333.333333,
+          "t1_s": 2.4154158186173876e-05,
+          "t2_echo_s": 2.3976682873879116e-05,
+          "t2_s": 1.044171790832853e-05
+        }
+      },
+      "pricing": {
+        "payg_price_per_second": "0.75",
+        "timeslot": {
+          "slot_duration": "PT1H",
+          "slot_price": "2400.00"
+        }
+      },
+      "pulla_enabled": true,
+      "qubits": 54,
+      "static_architecture_qubits": 54,
+      "station_control_version": "49.0.3",
+      "station_label": "MX07_Aphrodite_CD3",
+      "variant": "H03"
+    },
+    {
+      "alias": "emerald:mock",
+      "awg_channels": [
+        {
+          "granularity_samples": 8.0,
+          "min_samples": 8.0,
+          "sampling_rate_hz": 2000000000.0
+        }
+      ],
+      "backend_type": "mock",
+      "calibration_set_id": "6a84c79e-19c5-4e83-aa2b-b83f9eaf9b75",
+      "chip_components": {
+        "launcher": 214,
+        "probe_line": 8,
+        "qubit": 54,
+        "tunable_coupler": 90
+      },
+      "computational_resonators": [],
+      "connectivity": [
+        [
+          "QB1",
+          "QB2"
+        ],
+        [
+          "QB1",
+          "QB5"
+        ],
+        [
+          "QB2",
+          "QB6"
+        ],
+        [
+          "QB3",
+          "QB4"
+        ],
+        [
+          "QB3",
+          "QB9"
+        ],
+        [
+          "QB4",
+          "QB5"
+        ],
+        [
+          "QB4",
+          "QB10"
+        ],
+        [
+          "QB5",
+          "QB6"
+        ],
+        [
+          "QB5",
+          "QB11"
+        ],
+        [
+          "QB6",
+          "QB7"
+        ],
+        [
+          "QB6",
+          "QB12"
+        ],
+        [
+          "QB7",
+          "QB13"
+        ],
+        [
+          "QB8",
+          "QB9"
+        ],
+        [
+          "QB8",
+          "QB16"
+        ],
+        [
+          "QB9",
+          "QB10"
+        ],
+        [
+          "QB9",
+          "QB17"
+        ],
+        [
+          "QB10",
+          "QB11"
+        ],
+        [
+          "QB10",
+          "QB18"
+        ],
+        [
+          "QB11",
+          "QB12"
+        ],
+        [
+          "QB11",
+          "QB19"
+        ],
+        [
+          "QB12",
+          "QB13"
+        ],
+        [
+          "QB12",
+          "QB20"
+        ],
+        [
+          "QB13",
+          "QB14"
+        ],
+        [
+          "QB13",
+          "QB21"
+        ],
+        [
+          "QB14",
+          "QB22"
+        ],
+        [
+          "QB15",
+          "QB16"
+        ],
+        [
+          "QB15",
+          "QB23"
+        ],
+        [
+          "QB16",
+          "QB17"
+        ],
+        [
+          "QB16",
+          "QB24"
+        ],
+        [
+          "QB17",
+          "QB18"
+        ],
+        [
+          "QB17",
+          "QB25"
+        ],
+        [
+          "QB18",
+          "QB19"
+        ],
+        [
+          "QB18",
+          "QB26"
+        ],
+        [
+          "QB19",
+          "QB20"
+        ],
+        [
+          "QB19",
+          "QB27"
+        ],
+        [
+          "QB20",
+          "QB21"
+        ],
+        [
+          "QB20",
+          "QB28"
+        ],
+        [
+          "QB21",
+          "QB22"
+        ],
+        [
+          "QB21",
+          "QB29"
+        ],
+        [
+          "QB22",
+          "QB30"
+        ],
+        [
+          "QB23",
+          "QB24"
+        ],
+        [
+          "QB24",
+          "QB25"
+        ],
+        [
+          "QB24",
+          "QB32"
+        ],
+        [
+          "QB25",
+          "QB26"
+        ],
+        [
+          "QB25",
+          "QB33"
+        ],
+        [
+          "QB26",
+          "QB27"
+        ],
+        [
+          "QB26",
+          "QB34"
+        ],
+        [
+          "QB27",
+          "QB28"
+        ],
+        [
+          "QB27",
+          "QB35"
+        ],
+        [
+          "QB28",
+          "QB29"
+        ],
+        [
+          "QB28",
+          "QB36"
+        ],
+        [
+          "QB29",
+          "QB30"
+        ],
+        [
+          "QB29",
+          "QB37"
+        ],
+        [
+          "QB30",
+          "QB31"
+        ],
+        [
+          "QB30",
+          "QB38"
+        ],
+        [
+          "QB31",
+          "QB39"
+        ],
+        [
+          "QB32",
+          "QB33"
+        ],
+        [
+          "QB32",
+          "QB40"
+        ],
+        [
+          "QB33",
+          "QB34"
+        ],
+        [
+          "QB33",
+          "QB41"
+        ],
+        [
+          "QB34",
+          "QB35"
+        ],
+        [
+          "QB34",
+          "QB42"
+        ],
+        [
+          "QB35",
+          "QB36"
+        ],
+        [
+          "QB35",
+          "QB43"
+        ],
+        [
+          "QB36",
+          "QB37"
+        ],
+        [
+          "QB36",
+          "QB44"
+        ],
+        [
+          "QB37",
+          "QB38"
+        ],
+        [
+          "QB37",
+          "QB45"
+        ],
+        [
+          "QB38",
+          "QB39"
+        ],
+        [
+          "QB38",
+          "QB46"
+        ],
+        [
+          "QB40",
+          "QB41"
+        ],
+        [
+          "QB41",
+          "QB42"
+        ],
+        [
+          "QB41",
+          "QB47"
+        ],
+        [
+          "QB42",
+          "QB43"
+        ],
+        [
+          "QB42",
+          "QB48"
+        ],
+        [
+          "QB43",
+          "QB44"
+        ],
+        [
+          "QB43",
+          "QB49"
+        ],
+        [
+          "QB44",
+          "QB45"
+        ],
+        [
+          "QB44",
+          "QB50"
+        ],
+        [
+          "QB45",
+          "QB46"
+        ],
+        [
+          "QB45",
+          "QB51"
+        ],
+        [
+          "QB47",
+          "QB48"
+        ],
+        [
+          "QB48",
+          "QB49"
+        ],
+        [
+          "QB48",
+          "QB52"
+        ],
+        [
+          "QB49",
+          "QB50"
+        ],
+        [
+          "QB49",
+          "QB53"
+        ],
+        [
+          "QB50",
+          "QB51"
+        ],
+        [
+          "QB50",
+          "QB54"
+        ],
+        [
+          "QB52",
+          "QB53"
+        ],
+        [
+          "QB53",
+          "QB54"
+        ]
+      ],
+      "description": "",
+      "display_name": "IQM Emerald (mock)",
+      "dut_label": "M160_W0_H01_Z99",
+      "gates": {
+        "cc_prx": {
+          "default": "prx_composite",
+          "loci": {
+            "prx_composite": 54
+          },
+          "overrides": {}
+        },
+        "cz": {
+          "default": "tgss",
+          "loci": {
+            "tgss": 90
+          },
+          "overrides": {}
+        },
+        "measure": {
+          "default": "constant",
+          "loci": {
+            "constant": 54
+          },
+          "overrides": {}
+        },
+        "measure_fidelity": {
+          "default": "constant",
+          "loci": {
+            "constant": 54
+          },
+          "overrides": {}
+        },
+        "prx": {
+          "default": "drag_gaussian",
+          "loci": {
+            "drag_gaussian": 54
+          },
+          "overrides": {}
+        },
+        "reset_wait": {
+          "default": "reset_wait",
+          "loci": {
+            "reset_wait": 152
+          },
+          "overrides": {}
+        }
+      },
+      "limits": {
+        "max_circuits_per_job": 1000,
+        "max_executions_per_job": 200000000,
+        "max_instructions_per_circuit": 10000,
+        "max_queued_jobs_per_user": 200,
+        "max_shots_per_circuit": 200000
+      },
+      "mask_set": "M160",
+      "medians": {
+        "cz_duration_s": 8e-08,
+        "cz_irb_fidelity": 0.97,
+        "measure_duration_s": 1.2e-06,
+        "prx_duration_s": 4e-08,
+        "prx_fidelity": 0.99,
+        "readout_fidelity": 0.96,
+        "t1_s": 2e-05,
+        "t2_echo_s": 1.5e-05,
+        "t2_s": 1e-05
+      },
+      "metrics_created": "2026-09-21T05:17:29.990511Z",
+      "per_pair": {
+        "QB10__QB11": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB10__QB18": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB11__QB12": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB11__QB19": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB12__QB13": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB12__QB20": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB13__QB14": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB13__QB21": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB14__QB22": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB15__QB16": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB15__QB23": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB16__QB17": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB16__QB24": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB17__QB18": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB17__QB25": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB18__QB19": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB18__QB26": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB19__QB20": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB19__QB27": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB1__QB2": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB1__QB5": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB20__QB21": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB20__QB28": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB21__QB22": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB21__QB29": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB22__QB30": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB23__QB24": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB24__QB25": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB24__QB32": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB25__QB26": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB25__QB33": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB26__QB27": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB26__QB34": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB27__QB28": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB27__QB35": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB28__QB29": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB28__QB36": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB29__QB30": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB29__QB37": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB2__QB6": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB30__QB31": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB30__QB38": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB31__QB39": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB32__QB33": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB32__QB40": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB33__QB34": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB33__QB41": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB34__QB35": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB34__QB42": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB35__QB36": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB35__QB43": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB36__QB37": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB36__QB44": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB37__QB38": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB37__QB45": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB38__QB39": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB38__QB46": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB3__QB4": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB3__QB9": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB40__QB41": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB41__QB42": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB41__QB47": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB42__QB43": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB42__QB48": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB43__QB44": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB43__QB49": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB44__QB45": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB44__QB50": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB45__QB46": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB45__QB51": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB47__QB48": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB48__QB49": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB48__QB52": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB49__QB50": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB49__QB53": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB4__QB10": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB4__QB5": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB50__QB51": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB50__QB54": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB52__QB53": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB53__QB54": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB5__QB11": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB5__QB6": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB6__QB12": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB6__QB7": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB7__QB13": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB8__QB16": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB8__QB9": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB9__QB10": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        },
+        "QB9__QB17": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "tgss"
+        }
+      },
+      "per_qubit": {
+        "QB1": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB10": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB11": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB12": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB13": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB14": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB15": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB16": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB17": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB18": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB19": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB2": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB20": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB21": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB22": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB23": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB24": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB25": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB26": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB27": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB28": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB29": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB3": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB30": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB31": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB32": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB33": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB34": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB35": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB36": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB37": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB38": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB39": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB4": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB40": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB41": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB42": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB43": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB44": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB45": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB46": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB47": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB48": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB49": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB5": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB50": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB51": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB52": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB53": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB54": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB6": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB7": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB8": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB9": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5500000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        }
+      },
+      "pricing": {
+        "payg_price_per_second": "0.00"
+      },
+      "pulla_enabled": false,
+      "qubits": 54,
+      "static_architecture_qubits": 54,
+      "station_control_version": "49.0.3",
+      "station_label": "Mocked Olympus v2 station - Crystal 54 H01",
+      "variant": "H01"
+    },
+    {
+      "alias": "garnet",
+      "awg_channels": [
+        {
+          "granularity_samples": 8.0,
+          "min_samples": 8.0,
+          "sampling_rate_hz": 2000000000.0
+        }
+      ],
+      "backend_type": "qpu",
+      "calibration_set_id": "04b7af66-cc83-4e7d-bfaa-28236f5ef1b4",
+      "chip_components": {
+        "launcher": 76,
+        "probe_line": 3,
+        "qubit": 20,
+        "tunable_coupler": 30
+      },
+      "computational_resonators": [],
+      "connectivity": [
+        [
+          "QB1",
+          "QB2"
+        ],
+        [
+          "QB1",
+          "QB4"
+        ],
+        [
+          "QB2",
+          "QB5"
+        ],
+        [
+          "QB3",
+          "QB4"
+        ],
+        [
+          "QB3",
+          "QB8"
+        ],
+        [
+          "QB4",
+          "QB5"
+        ],
+        [
+          "QB4",
+          "QB9"
+        ],
+        [
+          "QB5",
+          "QB6"
+        ],
+        [
+          "QB5",
+          "QB10"
+        ],
+        [
+          "QB6",
+          "QB7"
+        ],
+        [
+          "QB6",
+          "QB11"
+        ],
+        [
+          "QB7",
+          "QB12"
+        ],
+        [
+          "QB8",
+          "QB9"
+        ],
+        [
+          "QB8",
+          "QB13"
+        ],
+        [
+          "QB9",
+          "QB10"
+        ],
+        [
+          "QB9",
+          "QB14"
+        ],
+        [
+          "QB10",
+          "QB11"
+        ],
+        [
+          "QB10",
+          "QB15"
+        ],
+        [
+          "QB11",
+          "QB12"
+        ],
+        [
+          "QB11",
+          "QB16"
+        ],
+        [
+          "QB12",
+          "QB17"
+        ],
+        [
+          "QB13",
+          "QB14"
+        ],
+        [
+          "QB14",
+          "QB15"
+        ],
+        [
+          "QB14",
+          "QB18"
+        ],
+        [
+          "QB15",
+          "QB16"
+        ],
+        [
+          "QB15",
+          "QB19"
+        ],
+        [
+          "QB16",
+          "QB17"
+        ],
+        [
+          "QB16",
+          "QB20"
+        ],
+        [
+          "QB18",
+          "QB19"
+        ],
+        [
+          "QB19",
+          "QB20"
+        ]
+      ],
+      "description": "IQM Garnet is a 20-qubit quantum processing unit based on superconducting transmon qubits. The qubits are arranged in a square lattice and connected by tunable couplers. The system is calibrated to support arbitrary X and Y rotations as the native single-qubit gate and CZ as the native two-qubit gate.",
+      "display_name": "IQM Garnet",
+      "dut_label": "M194_F0W2114_P08_B15",
+      "gates": {
+        "cc_prx": {
+          "default": "prx_composite",
+          "loci": {
+            "prx_composite": 20
+          },
+          "overrides": {}
+        },
+        "cz": {
+          "default": "slepian_crf",
+          "loci": {
+            "slepian_crf": 30
+          },
+          "overrides": {}
+        },
+        "measure": {
+          "default": "constant",
+          "loci": {
+            "constant": 20,
+            "fast_constant": 20
+          },
+          "overrides": {}
+        },
+        "measure_fidelity": {
+          "default": "constant",
+          "loci": {
+            "constant": 20
+          },
+          "overrides": {}
+        },
+        "prx": {
+          "default": "drag_crf_sx",
+          "loci": {
+            "drag_crf_sx": 20
+          },
+          "overrides": {}
+        },
+        "prx_12": {
+          "default": "modulated_drag_crf",
+          "loci": {
+            "modulated_drag_crf": 20
+          },
+          "overrides": {}
+        },
+        "reset_wait": {
+          "default": "reset_wait",
+          "loci": {
+            "reset_wait": 53
+          },
+          "overrides": {}
+        }
+      },
+      "limits": {
+        "max_circuits_per_job": 100,
+        "max_executions_per_job": 2000000,
+        "max_instructions_per_circuit": 10000,
+        "max_queued_jobs_per_user": 200,
+        "max_shots_per_circuit": 20000
+      },
+      "mask_set": "M194",
+      "medians": {
+        "cz_duration_s": 4e-08,
+        "cz_irb_fidelity": 0.99425,
+        "measure_duration_s": 4.8e-07,
+        "prx_duration_s": 1.6e-08,
+        "prx_fidelity": 0.999342,
+        "readout_fidelity": 0.97945,
+        "t1_s": 4.2123e-05,
+        "t2_echo_s": 2.23221e-05,
+        "t2_s": 8.94948e-06
+      },
+      "metrics_created": "2026-10-19T02:29:00.136273Z",
+      "per_pair": {
+        "QB10__QB11": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9919221954323034,
+          "implementation": "slepian_crf"
+        },
+        "QB10__QB15": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9883829415738584,
+          "implementation": "slepian_crf"
+        },
+        "QB10__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9901972720519442,
+          "implementation": "slepian_crf"
+        },
+        "QB10__QB9": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9890265735279,
+          "implementation": "slepian_crf"
+        },
+        "QB12__QB11": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9990879705467772,
+          "implementation": "slepian_crf"
+        },
+        "QB12__QB17": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9983812021444513,
+          "implementation": "slepian_crf"
+        },
+        "QB12__QB7": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9973000451111173,
+          "implementation": "slepian_crf"
+        },
+        "QB14__QB13": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9939385061137632,
+          "implementation": "slepian_crf"
+        },
+        "QB14__QB15": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9953082376838368,
+          "implementation": "slepian_crf"
+        },
+        "QB14__QB18": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9955651148875216,
+          "implementation": "slepian_crf"
+        },
+        "QB14__QB9": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9973518281595636,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB11": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9953499191929496,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB15": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9949396186445386,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB17": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9948728004716612,
+          "implementation": "slepian_crf"
+        },
+        "QB16__QB20": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9950201572336348,
+          "implementation": "slepian_crf"
+        },
+        "QB19__QB15": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9945605558318134,
+          "implementation": "slepian_crf"
+        },
+        "QB19__QB18": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9966222592296504,
+          "implementation": "slepian_crf"
+        },
+        "QB19__QB20": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9972447264077684,
+          "implementation": "slepian_crf"
+        },
+        "QB2__QB1": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.993873517157539,
+          "implementation": "slepian_crf"
+        },
+        "QB2__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9905716757810752,
+          "implementation": "slepian_crf"
+        },
+        "QB4__QB1": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.991343840891356,
+          "implementation": "slepian_crf"
+        },
+        "QB4__QB3": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9933196278530584,
+          "implementation": "slepian_crf"
+        },
+        "QB4__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9956381641780911,
+          "implementation": "slepian_crf"
+        },
+        "QB4__QB9": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9928005126614406,
+          "implementation": "slepian_crf"
+        },
+        "QB6__QB11": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9931881690947496,
+          "implementation": "slepian_crf"
+        },
+        "QB6__QB5": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9918979875720408,
+          "implementation": "slepian_crf"
+        },
+        "QB6__QB7": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9905523682590768,
+          "implementation": "slepian_crf"
+        },
+        "QB8__QB13": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.993744153282534,
+          "implementation": "slepian_crf"
+        },
+        "QB8__QB3": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.9948184431459683,
+          "implementation": "slepian_crf"
+        },
+        "QB8__QB9": {
+          "cz_duration_s": 4e-08,
+          "cz_irb_fidelity": 0.993191937375596,
+          "implementation": "slepian_crf"
+        }
+      },
+      "per_qubit": {
+        "QB1": {
+          "drive_frequency_hz": 4599165486.484323,
+          "measure_duration_s": 3.64e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9992339893574164,
+          "readout_error_0_to_1": 0.0079,
+          "readout_error_1_to_0": 0.0166,
+          "readout_fidelity": 0.98775,
+          "readout_frequency_hz": 5061707465.831242,
+          "t1_s": 2.4296416220596382e-05,
+          "t2_echo_s": 1.969651805502648e-05,
+          "t2_s": 1.003885686648605e-05
+        },
+        "QB10": {
+          "drive_frequency_hz": 4770177679.804445,
+          "measure_duration_s": 3.16e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9994163428945192,
+          "readout_error_0_to_1": 0.0087,
+          "readout_error_1_to_0": 0.0167,
+          "readout_fidelity": 0.9873,
+          "readout_frequency_hz": 5563896723.460951,
+          "t1_s": 2.9892021630290967e-05,
+          "t2_echo_s": 2.323403932692744e-05,
+          "t2_s": 1.0586360814608904e-05
+        },
+        "QB11": {
+          "drive_frequency_hz": 4502773862.485882,
+          "measure_duration_s": 4.84e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9994603340989726,
+          "readout_error_0_to_1": 0.0171,
+          "readout_error_1_to_0": 0.025,
+          "readout_fidelity": 0.97895,
+          "readout_frequency_hz": 5710828996.284409,
+          "t1_s": 4.453194558596329e-05,
+          "t2_echo_s": 2.4777571918598983e-05,
+          "t2_s": 1.127920852256021e-05
+        },
+        "QB12": {
+          "drive_frequency_hz": 4692007343.985403,
+          "measure_duration_s": 4.92e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9978098093704262,
+          "readout_error_0_to_1": 0.0134,
+          "readout_error_1_to_0": 0.0158,
+          "readout_fidelity": 0.9854,
+          "readout_frequency_hz": 6030160617.21407,
+          "t1_s": 5.738482192458948e-05,
+          "t2_echo_s": 3.29380264633626e-05,
+          "t2_s": 1.4572558910626082e-05
+        },
+        "QB13": {
+          "drive_frequency_hz": 4506918716.170579,
+          "measure_duration_s": 2.04e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9981701450991264,
+          "readout_error_0_to_1": 0.019,
+          "readout_error_1_to_0": 0.0401,
+          "readout_fidelity": 0.97045,
+          "readout_frequency_hz": 5315230698.188228,
+          "t1_s": 4.860284278417026e-05,
+          "t2_echo_s": 2.4290419825525872e-05,
+          "t2_s": 7.396464866211192e-06
+        },
+        "QB14": {
+          "drive_frequency_hz": 4630583261.35801,
+          "measure_duration_s": 4.2e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.999630614359513,
+          "readout_error_0_to_1": 0.0215,
+          "readout_error_1_to_0": 0.0142,
+          "readout_fidelity": 0.98215,
+          "readout_frequency_hz": 5475451857.745372,
+          "t1_s": 5.02044310562941e-05,
+          "t2_echo_s": 2.2617641973916495e-05,
+          "t2_s": 7.909876885317672e-06
+        },
+        "QB15": {
+          "drive_frequency_hz": 4516016994.106858,
+          "measure_duration_s": 4.92e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.99913609130379,
+          "readout_error_0_to_1": 0.0086,
+          "readout_error_1_to_0": 0.0477,
+          "readout_fidelity": 0.97185,
+          "readout_frequency_hz": 5868415479.917027,
+          "t1_s": 2.0203228848256564e-05,
+          "t2_echo_s": 3.109828712700306e-05,
+          "t2_s": 1.1328544845864649e-05
+        },
+        "QB16": {
+          "drive_frequency_hz": 4623326620.997782,
+          "measure_duration_s": 5.56e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9994538184333064,
+          "readout_error_0_to_1": 0.0135,
+          "readout_error_1_to_0": 0.023,
+          "readout_fidelity": 0.98175,
+          "readout_frequency_hz": 6041559998.112407,
+          "t1_s": 4.337898181405673e-05,
+          "t2_echo_s": 1.962603430062881e-05,
+          "t2_s": 7.804732269724622e-06
+        },
+        "QB17": {
+          "drive_frequency_hz": 4499173862.808438,
+          "measure_duration_s": 4.2e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.999500523352238,
+          "readout_error_0_to_1": 0.0105,
+          "readout_error_1_to_0": 0.0168,
+          "readout_fidelity": 0.98635,
+          "readout_frequency_hz": 5919655127.130638,
+          "t1_s": 4.503521286226594e-05,
+          "t2_echo_s": 2.994568952871814e-05,
+          "t2_s": 1.3761105359487894e-05
+        },
+        "QB18": {
+          "drive_frequency_hz": 4488359666.79608,
+          "measure_duration_s": 3.16e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.999153397601082,
+          "readout_error_0_to_1": 0.0087,
+          "readout_error_1_to_0": 0.063,
+          "readout_fidelity": 0.96415,
+          "readout_frequency_hz": 5704768982.666673,
+          "t1_s": 1.52874899548617e-05,
+          "t2_echo_s": 1.4080933926227715e-05,
+          "t2_s": 4.863478641906985e-06
+        },
+        "QB19": {
+          "drive_frequency_hz": 4644177041.176576,
+          "measure_duration_s": 5.24e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9996405361806382,
+          "readout_error_0_to_1": 0.0309,
+          "readout_error_1_to_0": 0.0211,
+          "readout_fidelity": 0.974,
+          "readout_frequency_hz": 6098293564.088476,
+          "t1_s": 4.15410947757448e-05,
+          "t2_echo_s": 2.468643765798813e-05,
+          "t2_s": 9.347197420467024e-06
+        },
+        "QB2": {
+          "drive_frequency_hz": 4629970225.647496,
+          "measure_duration_s": 5.56e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9993481232644332,
+          "readout_error_0_to_1": 0.0099,
+          "readout_error_1_to_0": 0.0329,
+          "readout_fidelity": 0.9786,
+          "readout_frequency_hz": 5205667612.9009495,
+          "t1_s": 3.141259155817765e-05,
+          "t2_echo_s": 1.6470167679867712e-05,
+          "t2_s": 5.75328377098527e-06
+        },
+        "QB20": {
+          "drive_frequency_hz": 4516317677.017214,
+          "measure_duration_s": 5.24e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9996738770392228,
+          "readout_error_0_to_1": 0.0163,
+          "readout_error_1_to_0": 0.0122,
+          "readout_fidelity": 0.98575,
+          "readout_frequency_hz": 5958220973.05489,
+          "t1_s": 4.576788038932424e-05,
+          "t2_echo_s": 4.7712518537318146e-05,
+          "t2_s": 3.497058018485498e-05
+        },
+        "QB3": {
+          "drive_frequency_hz": 4524552488.213108,
+          "measure_duration_s": 4.44e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9991953691778536,
+          "readout_error_0_to_1": 0.0125,
+          "readout_error_1_to_0": 0.0391,
+          "readout_fidelity": 0.9742,
+          "readout_frequency_hz": 5093774273.035248,
+          "t1_s": 2.1549575637870415e-05,
+          "t2_echo_s": 1.843944698662464e-05,
+          "t2_s": 8.801166297719945e-06
+        },
+        "QB4": {
+          "drive_frequency_hz": 4717369617.145762,
+          "measure_duration_s": 2.68e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9991704542546532,
+          "readout_error_0_to_1": 0.0054,
+          "readout_error_1_to_0": 0.0145,
+          "readout_fidelity": 0.99005,
+          "readout_frequency_hz": 5209362865.617502,
+          "t1_s": 2.710801184954693e-05,
+          "t2_echo_s": 1.5886511291673716e-05,
+          "t2_s": 8.047004860943912e-06
+        },
+        "QB5": {
+          "drive_frequency_hz": 4510439380.082114,
+          "measure_duration_s": 5.56e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9994045672733854,
+          "readout_error_0_to_1": 0.0116,
+          "readout_error_1_to_0": 0.0348,
+          "readout_fidelity": 0.9768,
+          "readout_frequency_hz": 5389053637.705765,
+          "t1_s": 5.3822444706317385e-05,
+          "t2_echo_s": 2.0821281513911584e-05,
+          "t2_s": 9.023865538801162e-06
+        },
+        "QB6": {
+          "drive_frequency_hz": 4661258428.930748,
+          "measure_duration_s": 4.12e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.999337764362424,
+          "readout_error_0_to_1": 0.0162,
+          "readout_error_1_to_0": 0.0201,
+          "readout_fidelity": 0.98185,
+          "readout_frequency_hz": 5537599474.688548,
+          "t1_s": 5.0068547112481725e-05,
+          "t2_echo_s": 2.2026584605564376e-05,
+          "t2_s": 8.875100046983965e-06
+        },
+        "QB7": {
+          "drive_frequency_hz": 4511856445.247719,
+          "measure_duration_s": 5.56e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9972077337506164,
+          "readout_error_0_to_1": 0.0084,
+          "readout_error_1_to_0": 0.0317,
+          "readout_fidelity": 0.97995,
+          "readout_frequency_hz": 5717808640.920819,
+          "t1_s": 3.357250509575638e-05,
+          "t2_echo_s": 1.9126981150635207e-05,
+          "t2_s": 8.090946145040274e-06
+        },
+        "QB8": {
+          "drive_frequency_hz": 4645354072.020091,
+          "measure_duration_s": 4.76e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.9993458337758832,
+          "readout_error_0_to_1": 0.0066,
+          "readout_error_1_to_0": 0.044,
+          "readout_fidelity": 0.9747,
+          "readout_frequency_hz": 5110576986.388726,
+          "t1_s": 1.81577748543028e-05,
+          "t2_echo_s": 1.7645768354771834e-05,
+          "t2_s": 8.08784208063004e-06
+        },
+        "QB9": {
+          "drive_frequency_hz": 4534714059.201823,
+          "measure_duration_s": 5.08e-07,
+          "prx_duration_s": 1.6e-08,
+          "prx_fidelity": 0.999326264315327,
+          "readout_error_0_to_1": 0.0156,
+          "readout_error_1_to_0": 0.03,
+          "readout_fidelity": 0.9772,
+          "readout_frequency_hz": 5397059304.797302,
+          "t1_s": 4.270488673396854e-05,
+          "t2_echo_s": 2.5172559163676704e-05,
+          "t2_s": 1.2059951313835186e-05
+        }
+      },
+      "pricing": {
+        "payg_price_per_second": "0.50",
+        "timeslot": {
+          "slot_duration": "PT1H",
+          "slot_price": "1800.00"
+        }
+      },
+      "pulla_enabled": true,
+      "qubits": 20,
+      "static_architecture_qubits": 20,
+      "station_control_version": "49.0.3",
+      "station_label": "Apollo station in XLD10.S1",
+      "variant": "P08"
+    },
+    {
+      "alias": "garnet:mock",
+      "awg_channels": [
+        {
+          "granularity_samples": 8.0,
+          "min_samples": 8.0,
+          "sampling_rate_hz": 2000000000.0
+        }
+      ],
+      "backend_type": "mock",
+      "calibration_set_id": "59916545-8c4e-482b-8852-e67fbf917647",
+      "chip_components": {
+        "launcher": 76,
+        "probe_line": 3,
+        "qubit": 20,
+        "tunable_coupler": 30
+      },
+      "computational_resonators": [],
+      "connectivity": [
+        [
+          "QB1",
+          "QB2"
+        ],
+        [
+          "QB1",
+          "QB4"
+        ],
+        [
+          "QB2",
+          "QB5"
+        ],
+        [
+          "QB3",
+          "QB4"
+        ],
+        [
+          "QB3",
+          "QB8"
+        ],
+        [
+          "QB4",
+          "QB5"
+        ],
+        [
+          "QB4",
+          "QB9"
+        ],
+        [
+          "QB5",
+          "QB6"
+        ],
+        [
+          "QB5",
+          "QB10"
+        ],
+        [
+          "QB6",
+          "QB7"
+        ],
+        [
+          "QB6",
+          "QB11"
+        ],
+        [
+          "QB7",
+          "QB12"
+        ],
+        [
+          "QB8",
+          "QB9"
+        ],
+        [
+          "QB8",
+          "QB13"
+        ],
+        [
+          "QB9",
+          "QB10"
+        ],
+        [
+          "QB9",
+          "QB14"
+        ],
+        [
+          "QB10",
+          "QB11"
+        ],
+        [
+          "QB10",
+          "QB15"
+        ],
+        [
+          "QB11",
+          "QB12"
+        ],
+        [
+          "QB11",
+          "QB16"
+        ],
+        [
+          "QB12",
+          "QB17"
+        ],
+        [
+          "QB13",
+          "QB14"
+        ],
+        [
+          "QB14",
+          "QB15"
+        ],
+        [
+          "QB14",
+          "QB18"
+        ],
+        [
+          "QB15",
+          "QB16"
+        ],
+        [
+          "QB15",
+          "QB19"
+        ],
+        [
+          "QB16",
+          "QB17"
+        ],
+        [
+          "QB16",
+          "QB20"
+        ],
+        [
+          "QB18",
+          "QB19"
+        ],
+        [
+          "QB19",
+          "QB20"
+        ]
+      ],
+      "description": "",
+      "display_name": "IQM Garnet (mock)",
+      "dut_label": "M194_W0_P08_Z99",
+      "gates": {
+        "cc_prx": {
+          "default": "prx_composite",
+          "loci": {
+            "prx_composite": 20
+          },
+          "overrides": {}
+        },
+        "cz": {
+          "default": "crf_crf",
+          "loci": {
+            "crf_crf": 30
+          },
+          "overrides": {}
+        },
+        "measure": {
+          "default": "constant",
+          "loci": {
+            "constant": 20
+          },
+          "overrides": {}
+        },
+        "measure_fidelity": {
+          "default": "constant",
+          "loci": {
+            "constant": 20
+          },
+          "overrides": {}
+        },
+        "prx": {
+          "default": "drag_crf",
+          "loci": {
+            "drag_crf": 20,
+            "drag_gaussian": 1
+          },
+          "overrides": {
+            "QB1": "drag_gaussian"
+          }
+        },
+        "reset_wait": {
+          "default": "reset_wait",
+          "loci": {
+            "reset_wait": 53
+          },
+          "overrides": {}
+        }
+      },
+      "limits": {
+        "max_circuits_per_job": 500,
+        "max_executions_per_job": 10000000,
+        "max_instructions_per_circuit": 10000,
+        "max_queued_jobs_per_user": 100,
+        "max_shots_per_circuit": 20000
+      },
+      "mask_set": "M194",
+      "medians": {
+        "cz_duration_s": 8e-08,
+        "cz_irb_fidelity": 0.97,
+        "measure_duration_s": 1.2e-06,
+        "prx_duration_s": 4e-08,
+        "prx_fidelity": 0.99,
+        "readout_fidelity": 0.96,
+        "t1_s": 2e-05,
+        "t2_echo_s": 1.5e-05,
+        "t2_s": 1e-05
+      },
+      "metrics_created": "2026-09-09T02:49:04.409639Z",
+      "per_pair": {
+        "QB10__QB11": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB10__QB15": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB10__QB5": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB10__QB9": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB12__QB11": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB12__QB17": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB12__QB7": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB14__QB13": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB14__QB15": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB14__QB18": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB14__QB9": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB16__QB11": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB16__QB15": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB16__QB17": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB16__QB20": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB19__QB15": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB19__QB18": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB19__QB20": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB2__QB1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB2__QB5": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB4__QB1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB4__QB3": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB4__QB5": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB4__QB9": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB6__QB11": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB6__QB5": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB6__QB7": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB8__QB13": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB8__QB3": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB8__QB9": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        }
+      },
+      "per_qubit": {
+        "QB1": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB10": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB11": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB12": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB13": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB14": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB15": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB16": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB17": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB18": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB19": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB2": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB20": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB3": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB4": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB5": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB6": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB7": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB8": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB9": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 7000000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        }
+      },
+      "pricing": {
+        "payg_price_per_second": "0.00"
+      },
+      "pulla_enabled": false,
+      "qubits": 20,
+      "static_architecture_qubits": 20,
+      "station_control_version": "49.0.3",
+      "station_label": "Mocked Olympus v2 station - Crystal 20 P08",
+      "variant": "P08"
+    },
+    {
+      "alias": "sirius",
+      "awg_channels": [
+        {
+          "granularity_samples": 1.0,
+          "min_samples": 1.0,
+          "sampling_rate_hz": 10000000.0
+        },
+        {
+          "granularity_samples": 16.0,
+          "min_samples": 16.0,
+          "sampling_rate_hz": 2000000000.0
+        },
+        {
+          "granularity_samples": 16.0,
+          "min_samples": 32.0,
+          "sampling_rate_hz": 2000000000.0
+        }
+      ],
+      "backend_type": "qpu",
+      "calibration_set_id": "53d7843b-5634-4091-b27c-09c2b3acf9e4",
+      "chip_components": {
+        "computational_resonator": 1,
+        "launcher": 78,
+        "probe_line": 3,
+        "qubit": 24,
+        "tunable_coupler": 24
+      },
+      "computational_resonators": [
+        "COMPR1"
+      ],
+      "connectivity": [
+        [
+          "QB1",
+          "COMPR1"
+        ],
+        [
+          "QB2",
+          "COMPR1"
+        ],
+        [
+          "QB3",
+          "COMPR1"
+        ],
+        [
+          "QB4",
+          "COMPR1"
+        ],
+        [
+          "QB5",
+          "COMPR1"
+        ],
+        [
+          "QB6",
+          "COMPR1"
+        ],
+        [
+          "QB7",
+          "COMPR1"
+        ],
+        [
+          "QB8",
+          "COMPR1"
+        ],
+        [
+          "QB9",
+          "COMPR1"
+        ],
+        [
+          "QB10",
+          "COMPR1"
+        ],
+        [
+          "QB11",
+          "COMPR1"
+        ],
+        [
+          "QB12",
+          "COMPR1"
+        ],
+        [
+          "QB13",
+          "COMPR1"
+        ],
+        [
+          "QB14",
+          "COMPR1"
+        ],
+        [
+          "QB15",
+          "COMPR1"
+        ],
+        [
+          "QB16",
+          "COMPR1"
+        ],
+        [
+          "QB17",
+          "COMPR1"
+        ],
+        [
+          "QB18",
+          "COMPR1"
+        ],
+        [
+          "QB19",
+          "COMPR1"
+        ],
+        [
+          "QB20",
+          "COMPR1"
+        ],
+        [
+          "QB21",
+          "COMPR1"
+        ],
+        [
+          "QB22",
+          "COMPR1"
+        ],
+        [
+          "QB23",
+          "COMPR1"
+        ],
+        [
+          "QB24",
+          "COMPR1"
+        ]
+      ],
+      "description": "IQM Sirius boasts a star topology processor with 16 qubits all connected to one central computational resonator. In addition to single qubit rotations, all qubits can perform CZ gates with the subspace formed by the two lowest energy levels of the resonator. Furthermore, the novel MOVE operation is calibrated to exchange the occupations of the qubit-resonator states 0-1 and 1-0. It can therefore be used to shuttle excitations back and forth between any qubit and the resonator.",
+      "display_name": "IQM Sirius",
+      "dut_label": "M186_F0W2259_ND1_O12",
+      "gates": {
+        "cc_prx": {
+          "default": "prx_composite",
+          "loci": {
+            "prx_composite": 16
+          },
+          "overrides": {}
+        },
+        "cz": {
+          "default": "crf_crf",
+          "loci": {
+            "crf_crf": 14,
+            "tgss": 2
+          },
+          "overrides": {
+            "QB10,COMPR1": "tgss",
+            "QB2,COMPR1": "tgss"
+          }
+        },
+        "measure": {
+          "default": "constant",
+          "loci": {
+            "constant": 16
+          },
+          "overrides": {}
+        },
+        "measure_fidelity": {
+          "default": "constant",
+          "loci": {
+            "constant": 24
+          },
+          "overrides": {}
+        },
+        "move": {
+          "default": "crf_crf",
+          "loci": {
+            "crf_crf": 16
+          },
+          "overrides": {}
+        },
+        "prx": {
+          "default": "drag_crf",
+          "loci": {
+            "drag_crf": 16
+          },
+          "overrides": {}
+        },
+        "prx_12": {
+          "default": "modulated_drag_crf",
+          "loci": {
+            "modulated_drag_crf": 16
+          },
+          "overrides": {}
+        },
+        "reset_wait": {
+          "default": "reset_wait",
+          "loci": {
+            "reset_wait": 44
+          },
+          "overrides": {}
+        }
+      },
+      "limits": {
+        "max_circuits_per_job": 100,
+        "max_executions_per_job": 2000000,
+        "max_instructions_per_circuit": 75000,
+        "max_queued_jobs_per_user": 200,
+        "max_shots_per_circuit": 20000
+      },
+      "mask_set": "M186",
+      "medians": {
+        "cz_duration_s": 1.04e-07,
+        "cz_irb_fidelity": 0.973999,
+        "measure_duration_s": 4e-07,
+        "prx_duration_s": 4e-08,
+        "prx_fidelity": 0.999016,
+        "readout_fidelity": 0.98335,
+        "t1_s": 2.63855e-05,
+        "t2_echo_s": 2.44486e-05,
+        "t2_s": 9.77987e-06
+      },
+      "metrics_created": "2026-10-19T05:44:59.161034Z",
+      "per_pair": {
+        "QB10__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.9750653538149792,
+          "implementation": "tgss"
+        },
+        "QB11__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9226207665380188,
+          "implementation": "crf_crf"
+        },
+        "QB13__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9730998970394498,
+          "implementation": "crf_crf"
+        },
+        "QB15__COMPR1": {
+          "cz_duration_s": 1.12e-07,
+          "cz_irb_fidelity": 0.973809996329034,
+          "implementation": "crf_crf"
+        },
+        "QB17__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9729689022047306,
+          "implementation": "crf_crf"
+        },
+        "QB19__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9724859472095028,
+          "implementation": "crf_crf"
+        },
+        "QB1__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9745974954015592,
+          "implementation": "crf_crf"
+        },
+        "QB20__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9812007222977924,
+          "implementation": "crf_crf"
+        },
+        "QB21__COMPR1": {
+          "cz_duration_s": 1.36e-07,
+          "cz_irb_fidelity": 0.9649544737027104,
+          "implementation": "crf_crf"
+        },
+        "QB23__COMPR1": {
+          "cz_duration_s": 1.12e-07,
+          "cz_irb_fidelity": 0.9714660651675916,
+          "implementation": "crf_crf"
+        },
+        "QB2__COMPR1": {
+          "cz_duration_s": 8.000000000000001e-08,
+          "cz_irb_fidelity": 0.9684339380573144,
+          "implementation": "tgss"
+        },
+        "QB3__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9741880824902934,
+          "implementation": "crf_crf"
+        },
+        "QB4__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.976480622004692,
+          "implementation": "crf_crf"
+        },
+        "QB5__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.978980476982405,
+          "implementation": "crf_crf"
+        },
+        "QB8__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9791832138223228,
+          "implementation": "crf_crf"
+        },
+        "QB9__COMPR1": {
+          "cz_duration_s": 1.04e-07,
+          "cz_irb_fidelity": 0.9799734000495628,
+          "implementation": "crf_crf"
+        }
+      },
+      "per_qubit": {
+        "QB1": {
+          "drive_frequency_hz": 4725480619.716968,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9988671441625808,
+          "readout_error_0_to_1": 0.0094,
+          "readout_error_1_to_0": 0.0211,
+          "readout_fidelity": 0.98475,
+          "readout_frequency_hz": 5482022222.222222,
+          "t1_s": 2.663620718766701e-05,
+          "t2_echo_s": 2.200693729631173e-05,
+          "t2_s": 1.5433311836542363e-05
+        },
+        "QB10": {
+          "drive_frequency_hz": 4485263472.328069,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.998506634262994,
+          "readout_error_0_to_1": 0.006,
+          "readout_error_1_to_0": 0.0223,
+          "readout_fidelity": 0.98585,
+          "readout_frequency_hz": 5091944444.444445,
+          "t1_s": 1.8842588020118715e-05,
+          "t2_echo_s": 2.0044782721828365e-05,
+          "t2_s": 5.4376251711618055e-06
+        },
+        "QB11": {
+          "drive_frequency_hz": 4585384621.939826,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9991116788836516,
+          "readout_error_0_to_1": 0.0028,
+          "readout_error_1_to_0": 0.0217,
+          "readout_fidelity": 0.98775,
+          "readout_frequency_hz": 5228988888.888888,
+          "t1_s": 2.4736739918332884e-05,
+          "t2_echo_s": 2.6932597239016616e-05,
+          "t2_s": 1.504761610691523e-05
+        },
+        "QB13": {
+          "drive_frequency_hz": 4446408747.481104,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9986858073165568,
+          "readout_error_0_to_1": 0.0119,
+          "readout_error_1_to_0": 0.0242,
+          "readout_fidelity": 0.98195,
+          "readout_frequency_hz": 5368955555.555555,
+          "t1_s": 1.957347975145804e-05,
+          "t2_echo_s": 9.132561970706396e-06,
+          "t2_s": 2.5907933673195034e-06
+        },
+        "QB15": {
+          "drive_frequency_hz": 4704248350.429077,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9991619987543368,
+          "readout_error_0_to_1": 0.0056,
+          "readout_error_1_to_0": 0.0191,
+          "readout_fidelity": 0.98765,
+          "readout_frequency_hz": 5518888888.888889,
+          "t1_s": 2.510007874895309e-05,
+          "t2_echo_s": 3.2621453053044846e-05,
+          "t2_s": 2.2363389939118876e-05
+        },
+        "QB17": {
+          "drive_frequency_hz": 4625885557.304372,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9985787603904572,
+          "readout_error_0_to_1": 0.0132,
+          "readout_error_1_to_0": 0.0244,
+          "readout_fidelity": 0.9812,
+          "readout_frequency_hz": 5672688888.888889,
+          "t1_s": 4.669192495656257e-05,
+          "t2_echo_s": 1.8535574283173565e-05,
+          "t2_s": 3.281776973491733e-06
+        },
+        "QB19": {
+          "drive_frequency_hz": 4650543981.556829,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9991612893129064,
+          "readout_error_0_to_1": 0.0082,
+          "readout_error_1_to_0": 0.0349,
+          "readout_fidelity": 0.97845,
+          "readout_frequency_hz": 5826555555.555555,
+          "t1_s": 3.015600847297071e-05,
+          "t2_echo_s": 2.68901846344751e-05,
+          "t2_s": 6.737475132062481e-06
+        },
+        "QB2": {
+          "drive_frequency_hz": 4490065188.546569,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9975557997187896,
+          "readout_error_0_to_1": 0.0055,
+          "readout_error_1_to_0": 0.0358,
+          "readout_fidelity": 0.97935,
+          "readout_frequency_hz": 6054033333.333333,
+          "t1_s": 2.5939743708754665e-05,
+          "t2_echo_s": 4.221191646851994e-05,
+          "t2_s": 2.0356094283821435e-05
+        },
+        "QB20": {
+          "drive_frequency_hz": 4541971079.512613,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.999338281207068,
+          "readout_error_0_to_1": 0.0142,
+          "readout_error_1_to_0": 0.023,
+          "readout_fidelity": 0.9814,
+          "readout_frequency_hz": 5820844444.444445,
+          "t1_s": 2.6134860861533284e-05,
+          "t2_echo_s": 3.4841937133406304e-05,
+          "t2_s": 2.5674026410991048e-05
+        },
+        "QB21": {
+          "drive_frequency_hz": 4692077661.107289,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.998970193528726,
+          "readout_error_0_to_1": 0.0062,
+          "readout_error_1_to_0": 0.0201,
+          "readout_fidelity": 0.98685,
+          "readout_frequency_hz": 5977088888.888888,
+          "t1_s": 2.733467067716257e-05,
+          "t2_echo_s": 2.84677245945876e-05,
+          "t2_s": 9.789736122925411e-06
+        },
+        "QB23": {
+          "drive_frequency_hz": 4640373517.59214,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9990762061817194,
+          "readout_error_0_to_1": 0.0189,
+          "readout_error_1_to_0": 0.0294,
+          "readout_fidelity": 0.97585,
+          "readout_frequency_hz": 6130688888.888889,
+          "t1_s": 3.635663691344468e-05,
+          "t2_echo_s": 2.898306713892865e-05,
+          "t2_s": 2.617627828355409e-05
+        },
+        "QB3": {
+          "drive_frequency_hz": 4643662274.250446,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9987977078826132,
+          "readout_error_0_to_1": 0.0068,
+          "readout_error_1_to_0": 0.0176,
+          "readout_fidelity": 0.9878,
+          "readout_frequency_hz": 5361033333.333333,
+          "t1_s": 3.321531546765679e-05,
+          "t2_echo_s": 1.0024542221635288e-05,
+          "t2_s": 4.856845997520761e-06
+        },
+        "QB4": {
+          "drive_frequency_hz": 4548451797.59814,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9992592628112186,
+          "readout_error_0_to_1": 0.0137,
+          "readout_error_1_to_0": 0.0224,
+          "readout_fidelity": 0.98195,
+          "readout_frequency_hz": 5929833333.333333,
+          "t1_s": 2.954635475326987e-05,
+          "t2_echo_s": 2.85779259674611e-05,
+          "t2_s": 1.7344359353396813e-05
+        },
+        "QB5": {
+          "drive_frequency_hz": 4593347043.848379,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9992537215910848,
+          "readout_error_0_to_1": 0.006,
+          "readout_error_1_to_0": 0.0212,
+          "readout_fidelity": 0.9864,
+          "readout_frequency_hz": 5208233333.333333,
+          "t1_s": 1.5722907231461376e-05,
+          "t2_echo_s": 1.610905814079543e-05,
+          "t2_s": 9.770010101972384e-06
+        },
+        "QB8": {
+          "drive_frequency_hz": 4492283261.554694,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9985261600299032,
+          "readout_error_0_to_1": 0.0079,
+          "readout_error_1_to_0": 0.0336,
+          "readout_fidelity": 0.97925,
+          "readout_frequency_hz": 5647577777.777778,
+          "t1_s": 2.444369545719075e-05,
+          "t2_echo_s": 2.2003341304594693e-05,
+          "t2_s": 7.210460854859359e-06
+        },
+        "QB9": {
+          "drive_frequency_hz": 4553647268.899978,
+          "measure_duration_s": 4e-07,
+          "prx_duration_s": 4e-08,
+          "prx_fidelity": 0.9990612078354244,
+          "readout_error_0_to_1": 0.0057,
+          "readout_error_1_to_0": 0.0181,
+          "readout_fidelity": 0.9881,
+          "readout_frequency_hz": 5077633333.333334,
+          "t1_s": 3.5557134957198925e-05,
+          "t2_echo_s": 1.5402156637419116e-05,
+          "t2_s": 3.3921887355639747e-06
+        }
+      },
+      "pricing": {
+        "payg_price_per_second": "0.30",
+        "timeslot": {
+          "slot_duration": "PT1H",
+          "slot_price": "1080.00"
+        }
+      },
+      "pulla_enabled": true,
+      "qubits": 16,
+      "static_architecture_qubits": 24,
+      "station_control_version": "49.0.3",
+      "station_label": "Charon, a 24Donis in MX03.S1",
+      "variant": "ND1"
+    },
+    {
+      "alias": "sirius:mock",
+      "awg_channels": [
+        {
+          "granularity_samples": 16.0,
+          "min_samples": 16.0,
+          "sampling_rate_hz": 2000000000.0
+        },
+        {
+          "granularity_samples": 16.0,
+          "min_samples": 32.0,
+          "sampling_rate_hz": 2000000000.0
+        }
+      ],
+      "backend_type": "mock",
+      "calibration_set_id": "bd66eda7-69c0-4559-bed2-012f6d4d6405",
+      "chip_components": {
+        "computational_resonator": 1,
+        "launcher": 78,
+        "probe_line": 3,
+        "qubit": 24,
+        "tunable_coupler": 24
+      },
+      "computational_resonators": [
+        "COMPR1"
+      ],
+      "connectivity": [
+        [
+          "QB1",
+          "COMPR1"
+        ],
+        [
+          "QB2",
+          "COMPR1"
+        ],
+        [
+          "QB3",
+          "COMPR1"
+        ],
+        [
+          "QB4",
+          "COMPR1"
+        ],
+        [
+          "QB5",
+          "COMPR1"
+        ],
+        [
+          "QB6",
+          "COMPR1"
+        ],
+        [
+          "QB7",
+          "COMPR1"
+        ],
+        [
+          "QB8",
+          "COMPR1"
+        ],
+        [
+          "QB9",
+          "COMPR1"
+        ],
+        [
+          "QB10",
+          "COMPR1"
+        ],
+        [
+          "QB11",
+          "COMPR1"
+        ],
+        [
+          "QB12",
+          "COMPR1"
+        ],
+        [
+          "QB13",
+          "COMPR1"
+        ],
+        [
+          "QB14",
+          "COMPR1"
+        ],
+        [
+          "QB15",
+          "COMPR1"
+        ],
+        [
+          "QB16",
+          "COMPR1"
+        ],
+        [
+          "QB17",
+          "COMPR1"
+        ],
+        [
+          "QB18",
+          "COMPR1"
+        ],
+        [
+          "QB19",
+          "COMPR1"
+        ],
+        [
+          "QB20",
+          "COMPR1"
+        ],
+        [
+          "QB21",
+          "COMPR1"
+        ],
+        [
+          "QB22",
+          "COMPR1"
+        ],
+        [
+          "QB23",
+          "COMPR1"
+        ],
+        [
+          "QB24",
+          "COMPR1"
+        ]
+      ],
+      "description": "IQM Sirius boasts a star topology processor with 16 qubits all connected to one central computational resonator. In addition to single qubit rotations, all qubits can perform CZ gates with the subspace formed by the two lowest energy levels of the resonator. Furthermore, the novel MOVE operation is calibrated to exchange the occupations of the qubit-resonator states 0-1 and 1-0. It can therefore be used to shuttle excitations back and forth between any qubit and the resonator.",
+      "display_name": "IQM Sirius (mock)",
+      "dut_label": "M186_W0_ND1_Z99",
+      "gates": {
+        "cz": {
+          "default": "crf_crf",
+          "loci": {
+            "crf_crf": 24
+          },
+          "overrides": {}
+        },
+        "measure": {
+          "default": "constant",
+          "loci": {
+            "constant": 24
+          },
+          "overrides": {}
+        },
+        "measure_fidelity": {
+          "default": "constant",
+          "loci": {
+            "constant": 24
+          },
+          "overrides": {}
+        },
+        "move": {
+          "default": "crf_crf",
+          "loci": {
+            "crf_crf": 24
+          },
+          "overrides": {}
+        },
+        "prx": {
+          "default": "drag_crf",
+          "loci": {
+            "drag_crf": 24
+          },
+          "overrides": {}
+        },
+        "reset_wait": {
+          "default": "reset_wait",
+          "loci": {
+            "reset_wait": 52
+          },
+          "overrides": {}
+        }
+      },
+      "limits": {
+        "max_circuits_per_job": 200,
+        "max_executions_per_job": 4000000,
+        "max_instructions_per_circuit": 20000,
+        "max_queued_jobs_per_user": 100,
+        "max_shots_per_circuit": 20000
+      },
+      "mask_set": "M186",
+      "medians": {
+        "cz_duration_s": 8e-08,
+        "cz_irb_fidelity": 0.97,
+        "measure_duration_s": 1.2e-06,
+        "prx_duration_s": 2.4e-08,
+        "prx_fidelity": 0.99,
+        "readout_fidelity": 0.96,
+        "t1_s": 2e-05,
+        "t2_echo_s": 1.5e-05,
+        "t2_s": 1e-05
+      },
+      "metrics_created": "2026-09-21T05:16:55.995341Z",
+      "per_pair": {
+        "QB10__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB11__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB12__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB13__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB14__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB15__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB16__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB17__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB18__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB19__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB1__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB20__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB21__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB22__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB23__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB24__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB2__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB3__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB4__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB5__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB6__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB7__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB8__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        },
+        "QB9__COMPR1": {
+          "cz_duration_s": 8e-08,
+          "cz_irb_fidelity": 0.97,
+          "implementation": "crf_crf"
+        }
+      },
+      "per_qubit": {
+        "QB1": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB10": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB11": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB12": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB13": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB14": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB15": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB16": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB17": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB18": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB19": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB2": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB20": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB21": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB22": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB23": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB24": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB3": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB4": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB5": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB6": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB7": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB8": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        },
+        "QB9": {
+          "drive_frequency_hz": 4000000000.0,
+          "measure_duration_s": 1.2e-06,
+          "prx_duration_s": 2.4e-08,
+          "prx_fidelity": 0.99,
+          "readout_error_0_to_1": 0.02,
+          "readout_error_1_to_0": 0.02,
+          "readout_fidelity": 0.96,
+          "readout_frequency_hz": 5600000000.0,
+          "t1_s": 2e-05,
+          "t2_echo_s": 1.5e-05,
+          "t2_s": 1e-05
+        }
+      },
+      "pricing": {
+        "payg_price_per_second": "0.67"
+      },
+      "pulla_enabled": false,
+      "qubits": 24,
+      "static_architecture_qubits": 24,
+      "station_control_version": "49.0.3",
+      "station_label": "Mocked ZI station - Star 24 ND1",
+      "variant": "ND1"
+    }
+  ],
+  "schema": "iqm-hardware-v1",
+  "server_version": "3.0.0",
+  "tokens": [
+    {
+      "expires_at": "2027-01-19T07:59:59.999Z",
+      "refreshable": true,
+      "scopes": [
+        "job_execution"
+      ]
+    }
+  ]
+}

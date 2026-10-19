@@ -1,0 +1,2223 @@
+{
+  "interpreter": "3.13.15",
+  "prefix": "/opt/iqm-resonance-stack",
+  "distributions": {
+    "alabaster": {
+      "version": "1.0.0",
+      "license": null,
+      "summary": "A light, configurable Sphinx theme",
+      "imports": [
+        "alabaster"
+      ],
+      "requires": []
+    },
+    "alembic": {
+      "version": "1.20.0",
+      "license": "MIT",
+      "summary": "A database migration tool for SQLAlchemy.",
+      "imports": [
+        "alembic"
+      ],
+      "requires": [
+        "Mako",
+        "SQLAlchemy>=2.0",
+        "tomli; python_version < \"3.11\"",
+        "typing-extensions>=4.12"
+      ]
+    },
+    "annotated-types": {
+      "version": "0.8.0",
+      "license": "MIT",
+      "summary": "Reusable constraint types to use with typing.Annotated",
+      "imports": [
+        "annotated_types"
+      ],
+      "requires": []
+    },
+    "asteval": {
+      "version": "1.0.10",
+      "license": "MIT",
+      "summary": "Safe, minimalistic evaluator of python expression using ast module",
+      "imports": [
+        "asteval"
+      ],
+      "requires": []
+    },
+    "asttokens": {
+      "version": "3.0.2",
+      "license": "Apache 2.0",
+      "summary": "Annotate AST trees with source code positions",
+      "imports": [
+        "asttokens"
+      ],
+      "requires": []
+    },
+    "attrs": {
+      "version": "26.1.0",
+      "license": "MIT",
+      "summary": "Classes Without Boilerplate",
+      "imports": [
+        "attr",
+        "attrs"
+      ],
+      "requires": []
+    },
+    "autoray": {
+      "version": "0.11.0",
+      "license": "Apache-2.0",
+      "summary": "Abstract your array operations.",
+      "imports": [
+        "autoray"
+      ],
+      "requires": []
+    },
+    "babel": {
+      "version": "2.18.0",
+      "license": "BSD-3-Clause",
+      "summary": "Internationalization utilities",
+      "imports": [
+        "babel"
+      ],
+      "requires": [
+        "pytz>=2015.7; python_version < \"3.9\""
+      ]
+    },
+    "certifi": {
+      "version": "2026.10.18",
+      "license": "MPL-2.0",
+      "summary": "Python package for providing Mozilla's CA Bundle.",
+      "imports": [
+        "certifi"
+      ],
+      "requires": []
+    },
+    "cffi": {
+      "version": "2.1.1",
+      "license": "MIT-0",
+      "summary": "Foreign Function Interface for Python calling C code.",
+      "imports": [
+        "_cffi_backend",
+        "cffi"
+      ],
+      "requires": [
+        "pycparser; implementation_name != \"PyPy\""
+      ]
+    },
+    "charset-normalizer": {
+      "version": "3.5.2",
+      "license": "MIT",
+      "summary": "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.",
+      "imports": [
+        "charset_normalizer"
+      ],
+      "requires": []
+    },
+    "cirq-core": {
+      "version": "1.7.0",
+      "license": "Apache-2.0",
+      "summary": "A framework for creating, editing, and invoking Noisy Intermediate Scale Quantum (NISQ) circuits.",
+      "imports": [
+        "cirq"
+      ],
+      "requires": [
+        "attrs>=21.3.0",
+        "duet>=0.2.8",
+        "matplotlib~=3.9",
+        "networkx~=3.4",
+        "numpy~=2.1",
+        "pandas<3.1.0.dev,>=2.3",
+        "scipy~=1.15",
+        "sympy",
+        "tqdm>=4.12"
+      ]
+    },
+    "clarabel": {
+      "version": "0.11.1",
+      "license": "Apache-2.0",
+      "summary": "Clarabel Conic Interior Point Solver for Rust / Python",
+      "imports": [
+        "clarabel"
+      ],
+      "requires": [
+        "cffi",
+        "numpy",
+        "scipy"
+      ]
+    },
+    "click": {
+      "version": "8.5.0",
+      "license": "BSD-3-Clause",
+      "summary": "Composable command line interface toolkit",
+      "imports": [
+        "click"
+      ],
+      "requires": []
+    },
+    "cloudpickle": {
+      "version": "3.1.2",
+      "license": "BSD-3-Clause",
+      "summary": "Pickler class to extend the standard pickle.Pickler functionality",
+      "imports": [
+        "cloudpickle"
+      ],
+      "requires": []
+    },
+    "colorlog": {
+      "version": "6.12.0",
+      "license": "MIT License",
+      "summary": "Add colours to the output of Python's logging module.",
+      "imports": [
+        "colorlog"
+      ],
+      "requires": [
+        "colorama; sys_platform == \"win32\""
+      ]
+    },
+    "comm": {
+      "version": "0.2.3",
+      "license": "BSD 3-Clause License",
+      "summary": "Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc.",
+      "imports": [
+        "comm"
+      ],
+      "requires": []
+    },
+    "contourpy": {
+      "version": "1.4.0",
+      "license": "BSD-3-Clause",
+      "summary": "Python library for calculating contours of 2D quadrilateral grids",
+      "imports": [
+        "contourpy"
+      ],
+      "requires": [
+        "numpy>=2.0"
+      ]
+    },
+    "cotengra": {
+      "version": "0.8.2",
+      "license": "Apache-2.0",
+      "summary": "Hyper optimized contraction trees for large tensor networks and einsums.",
+      "imports": [
+        "cotengra"
+      ],
+      "requires": [
+        "autoray"
+      ]
+    },
+    "cryptography": {
+      "version": "50.0.2",
+      "license": "Apache-2.0 OR BSD-3-Clause",
+      "summary": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+      "imports": [
+        "cryptography"
+      ],
+      "requires": [
+        "cffi>=2.0.0 ; platform_python_implementation != 'PyPy'",
+        "typing-extensions>=4.13.2 ; python_full_version < '3.11'"
+      ]
+    },
+    "cvxpy": {
+      "version": "1.9.3",
+      "license": "Apache-2.0",
+      "summary": "A domain-specific language for modeling convex optimization problems in Python.",
+      "imports": [
+        "_cvxcore",
+        "cvxpy",
+        "setup"
+      ],
+      "requires": [
+        "clarabel>=0.5.0",
+        "highspy>=1.14.0",
+        "numpy>=2.0.0",
+        "osqp>=1.0.0",
+        "qdldl>=0.1.7.post0",
+        "scipy>=1.13.0",
+        "scs>=3.2.4.post1",
+        "sparsediffpy<0.7.0,>=0.6.0"
+      ]
+    },
+    "cycler": {
+      "version": "0.12.1",
+      "license": "Copyright (c) 2015, matplotlib project",
+      "summary": "Composable style cycles",
+      "imports": [
+        "cycler"
+      ],
+      "requires": []
+    },
+    "Cython": {
+      "version": "3.3.0",
+      "license": "Apache-2.0",
+      "summary": "The Cython compiler for writing C extensions in the Python language.",
+      "imports": [
+        "Cython",
+        "cython",
+        "pyximport"
+      ],
+      "requires": []
+    },
+    "cytoolz": {
+      "version": "1.2.0",
+      "license": "BSD-3-Clause",
+      "summary": "Cython implementation of Toolz: High performance functional utilities",
+      "imports": [
+        "cytoolz"
+      ],
+      "requires": [
+        "toolz>=0.8.0",
+        "toolz>=1.2.0; python_version >= \"3.15\""
+      ]
+    },
+    "debugpy": {
+      "version": "1.8.22",
+      "license": "MIT",
+      "summary": "An implementation of the Debug Adapter Protocol for Python",
+      "imports": [
+        "debugpy"
+      ],
+      "requires": []
+    },
+    "dill": {
+      "version": "0.4.1",
+      "license": "BSD-3-Clause",
+      "summary": "serialize all of Python",
+      "imports": [
+        "dill"
+      ],
+      "requires": []
+    },
+    "dimod": {
+      "version": "0.12.22",
+      "license": "Apache 2.0",
+      "summary": "A shared API for binary quadratic model samplers.",
+      "imports": [
+        "dimod"
+      ],
+      "requires": [
+        "numpy>=1.17.3"
+      ]
+    },
+    "docutils": {
+      "version": "0.22.4",
+      "license": null,
+      "summary": "Docutils -- Python Documentation Utilities",
+      "imports": [
+        "docutils"
+      ],
+      "requires": []
+    },
+    "duet": {
+      "version": "0.2.9",
+      "license": "Apache 2",
+      "summary": "A simple future-based async library for python.",
+      "imports": [
+        "duet"
+      ],
+      "requires": [
+        "typing-extensions (>=3.10.0) ; python_version <= \"3.7\""
+      ]
+    },
+    "executing": {
+      "version": "2.3.0",
+      "license": "MIT",
+      "summary": "Get the currently executing AST node of a frame, and other information",
+      "imports": [
+        "executing"
+      ],
+      "requires": []
+    },
+    "fastjsonschema": {
+      "version": "2.22.2",
+      "license": "BSD-3-Clause",
+      "summary": "Fastest Python implementation of JSON schema",
+      "imports": [
+        "fastjsonschema"
+      ],
+      "requires": []
+    },
+    "fonttools": {
+      "version": "4.67.0",
+      "license": "MIT",
+      "summary": "Tools to manipulate font files",
+      "imports": [
+        "fontTools"
+      ],
+      "requires": []
+    },
+    "googleapis-common-protos": {
+      "version": "1.75.5",
+      "license": "Apache-2.0",
+      "summary": "Common protobufs used in Google APIs",
+      "imports": [
+        "google"
+      ],
+      "requires": [
+        "protobuf<8.0.0,>=6.33.5"
+      ]
+    },
+    "grpcio": {
+      "version": "1.84.0",
+      "license": "Apache-2.0",
+      "summary": "HTTP/2-based RPC framework",
+      "imports": [
+        "grpc"
+      ],
+      "requires": [
+        "typing-extensions~=4.12"
+      ]
+    },
+    "highspy": {
+      "version": "1.15.1",
+      "license": "MIT",
+      "summary": "A thin set of pybind11 wrappers to HiGHS",
+      "imports": [
+        "highspy"
+      ],
+      "requires": [
+        "numpy",
+        "typing_extensions; python_version < \"3.10\""
+      ]
+    },
+    "ibm-cloud-sdk-core": {
+      "version": "3.28.0",
+      "license": null,
+      "summary": "Core library used by SDKs for IBM Cloud Services",
+      "imports": [
+        "ibm_cloud_sdk_core"
+      ],
+      "requires": [
+        "PyJWT<3.0.0,>=2.11.0",
+        "python_dateutil<3.0.0,>=2.9.0",
+        "requests<3.0.0,>=2.32.4",
+        "urllib3<3.0.0,>=2.4.0"
+      ]
+    },
+    "ibm-platform-services": {
+      "version": "0.77.1",
+      "license": null,
+      "summary": "Python client library for IBM Cloud Platform Services",
+      "imports": [
+        "ibm_platform_services"
+      ],
+      "requires": [
+        "ibm_cloud_sdk_core<4.0.0,>=3.24.4"
+      ]
+    },
+    "idna": {
+      "version": "3.20",
+      "license": "BSD-3-Clause",
+      "summary": "Internationalized Domain Names in Applications (IDNA)",
+      "imports": [
+        "idna"
+      ],
+      "requires": []
+    },
+    "imagesize": {
+      "version": "2.0.1",
+      "license": "MIT",
+      "summary": "Get image size from headers (BMP/PNG/JPEG/JPEG2000/GIF/TIFF/SVG/Netpbm/WebP/AVIF/HEIC/HEIF)",
+      "imports": [
+        "imagesize"
+      ],
+      "requires": []
+    },
+    "importlib_metadata": {
+      "version": "9.0.1",
+      "license": "Apache-2.0",
+      "summary": "Read metadata from Python packages",
+      "imports": [
+        "importlib_metadata"
+      ],
+      "requires": [
+        "zipp>=3.20"
+      ]
+    },
+    "iniconfig": {
+      "version": "2.3.1",
+      "license": "MIT",
+      "summary": "brain-dead simple config-ini parsing",
+      "imports": [
+        "iniconfig"
+      ],
+      "requires": []
+    },
+    "ipykernel": {
+      "version": "7.4.0",
+      "license": "BSD-3-Clause",
+      "summary": "IPython Kernel for Jupyter",
+      "imports": [
+        "ipykernel",
+        "ipykernel_launcher.py"
+      ],
+      "requires": [
+        "appnope>=0.1.2; platform_system == 'Darwin'",
+        "comm>=0.1.1",
+        "debugpy>=1.6.5",
+        "ipython>=7.23.1",
+        "jupyter-client>=8.9.0",
+        "jupyter-core!=6.0.*,>=5.1",
+        "matplotlib-inline>=0.1",
+        "nest-asyncio2>=1.7.0",
+        "packaging>=22",
+        "pyzmq>=25",
+        "tornado>=6.5.7",
+        "traitlets>=5.4.0"
+      ]
+    },
+    "ipython": {
+      "version": "9.17.1",
+      "license": "BSD-3-Clause",
+      "summary": "IPython: Productive Interactive Computing",
+      "imports": [
+        "IPython"
+      ],
+      "requires": [
+        "colorama>=0.4.4; sys_platform == \"win32\"",
+        "ipython-pygments-lexers>=1.0.0",
+        "jedi>=0.18.2",
+        "matplotlib-inline>=0.1.6",
+        "pexpect>4.6; sys_platform != \"win32\" and sys_platform != \"emscripten\"",
+        "prompt_toolkit<3.1.0,>=3.0.41",
+        "psutil>=7; sys_platform != \"emscripten\" and sys_platform != \"cygwin\"",
+        "pygments>=2.14.0",
+        "stack_data>=0.6.0",
+        "traitlets>=5.13.0",
+        "typing_extensions>=4.6; python_version < \"3.12\""
+      ]
+    },
+    "ipython_pygments_lexers": {
+      "version": "1.1.1",
+      "license": null,
+      "summary": "Defines a variety of Pygments lexers for highlighting IPython code.",
+      "imports": [
+        "ipython_pygments_lexers.py"
+      ],
+      "requires": [
+        "pygments"
+      ]
+    },
+    "iqm-benchmarks": {
+      "version": "3.0.0",
+      "license": "Apache License",
+      "summary": "Benchmarks and characterization on IQM quantum processors",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "cvxpy<2,>=1.8",
+        "iqm-client[qiskit]>=36.0.0,<37.0.0",
+        "iqm-pulla>=15.0.0,<16.0.0",
+        "iqm-pulse>=15.0.0,<16.0.0",
+        "iqm-station-control-client>=14.0.0,<15.0.0",
+        "lmfit<2,>=1.2",
+        "matplotlib<4,>=3.9.2",
+        "more-itertools<12,>=11.1.0",
+        "mthree<4,>=3.0",
+        "myst-nb<2,>=1.2.0",
+        "networkx<4,>=3.3",
+        "numba<0.64,>=0.61.0",
+        "numpy<3,>=2.2",
+        "pycurl<8,>=7.45.3",
+        "pyyaml!=5.4.0,!=5.4.1,!=6.0.0",
+        "qiskit-ibm-runtime<=0.43.1",
+        "qiskit<2.2,>=1.2.4",
+        "requests<3,>=2.32.3",
+        "rustworkx<=1",
+        "tqdm<5,>=4.66.5",
+        "types-requests",
+        "uncertainties<3.3,>=3.2.2",
+        "xarray>=2024.10.0"
+      ]
+    },
+    "iqm-client": {
+      "version": "36.0.0",
+      "license": "Apache-2.0",
+      "summary": "Client library for accessing an IQM quantum computer",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "iqm-exa-common>=29.0.0,<30.0.0",
+        "iqm-pulla>=15.0.0,<16.0.0",
+        "iqm-pulse>=15.0.0,<16.0.0",
+        "iqm-station-control-client>=14.0.0,<15.0.0",
+        "numpy<3,>=2.2",
+        "packaging<25,>=24.0",
+        "pydantic<2.13.0,>=2.12.4",
+        "requests<3,>=2.32.3"
+      ]
+    },
+    "iqm-data-definitions": {
+      "version": "3.1.0",
+      "license": "Apache License",
+      "summary": "Common repository for data definitions inside IQM",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "numpy<3.0,>=1.26.4",
+        "protobuf<8.0,>=6.33.6",
+        "scipy-stubs",
+        "scipy<2.0,>=1.11.4",
+        "types-protobuf"
+      ]
+    },
+    "iqm-error-reduction-tools": {
+      "version": "0.3.0",
+      "license": null,
+      "summary": "Client library for error reduction on IQM quantum computers.",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "iqm-client[qiskit]>=36.0.0,<37.0.0",
+        "iqm-pulla>=15.0.0,<16.0.0",
+        "iqm-pulse>=15.0.0,<16.0.0",
+        "matplotlib<4,>=3.9",
+        "mthree<4,>=3",
+        "numpy<3.0,>=2.2",
+        "qiskit<2.2,>=2.0",
+        "qrisp<0.10,>=0.9.5",
+        "rustworkx<0.18,>=0.17",
+        "seaborn<0.14,>=0.13.2"
+      ]
+    },
+    "iqm-exa-common": {
+      "version": "29.0.0",
+      "license": "Apache License",
+      "summary": "Framework for control and measurement of superconducting qubits: common library",
+      "imports": [
+        "exa"
+      ],
+      "requires": [
+        "iqm-data-definitions>=3.1.0,<4.0.0",
+        "jinja2<4,>=3.1.6",
+        "numpy<3,>=2.2",
+        "pydantic<2.13.0,>=2.12.4",
+        "python-dotenv<2,>=1.0",
+        "requests<3,>=2.32.3",
+        "ruamel-yaml<0.20,>=0.17.32",
+        "six<2,>=1.16.0",
+        "types-requests",
+        "types-six",
+        "typing-extensions>=4.5.0",
+        "xarray>=2024.10.0"
+      ]
+    },
+    "iqm-pulla": {
+      "version": "15.0.0",
+      "license": "Apache-2.0",
+      "summary": "Client library for compiling quantum circuits into pulse-level instruction schedules for IQM quantum computers",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "ipython",
+        "iqm-data-definitions>=3.1.0,<4.0.0",
+        "iqm-exa-common>=29.0.0,<30.0.0",
+        "iqm-pulse>=15.0.0,<16.0.0",
+        "iqm-station-control-client>=14.0.0,<15.0.0",
+        "pylatexenc<3,>=2.10",
+        "scipy-stubs",
+        "scipy<2,>=1.13.0",
+        "xarray>=2024.10.0"
+      ]
+    },
+    "iqm-pulse": {
+      "version": "15.0.0",
+      "license": "Apache License",
+      "summary": "Library providing interface and implementations for quantum gates and pulse-level hardware instructions.",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "iqm-data-definitions>=3.1.0,<4.0.0",
+        "iqm-exa-common>=29.0.0,<30.0.0",
+        "jinja2<4,>=3.1.6",
+        "numpy<3,>=2.2",
+        "python-rapidjson<2,>=1.20",
+        "scipy-stubs",
+        "scipy<2,>=1.13.0",
+        "typing-extensions>=4.5.0"
+      ]
+    },
+    "iqm-qaoa": {
+      "version": "3.0.0",
+      "license": "Copyright (c) 2024-2025 IQM Quantum Computers",
+      "summary": "Set up and run QAOA experiments",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "cvxpy<2,>=1.8",
+        "dimod>=0.12.17",
+        "iqm-client[qiskit]>=36.0.0,<37.0.0",
+        "iqm-qubit-selector>=1.2.0,<2.0.0",
+        "matplotlib<4.0,>=3.9.0",
+        "networkx>=3.3",
+        "numba>=0.61.0",
+        "numpy<3.0,>=2.2",
+        "optuna<5,>=4.8.0",
+        "qiskit-aer>=0.14.2",
+        "qiskit>=1.2.4",
+        "quimb>=1.10.0",
+        "requests<3.0,>=2.32.3",
+        "scipy-stubs",
+        "scipy>=1.13.0",
+        "types-networkx"
+      ]
+    },
+    "iqm-qubit-selector": {
+      "version": "1.2.0",
+      "license": "Apache License",
+      "summary": "Enable optimal qubit layout selection within the QPU",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "iqm-client[qiskit]>=36.0.0,<37.0.0",
+        "iqm-pulla>=15.0.0,<16.0.0",
+        "iqm-pulse>=15.0.0,<16.0.0",
+        "iqm-station-control-client>=14.0.0,<15.0.0",
+        "numpy<3,>=2.2",
+        "qiskit<2.2,>=1.2.4",
+        "rustworkx<=1"
+      ]
+    },
+    "iqm-station-control-client": {
+      "version": "14.0.0",
+      "license": "Apache License",
+      "summary": "Python client for communicating with Station Control Service",
+      "imports": [
+        "iqm"
+      ],
+      "requires": [
+        "grpcio<2,>=1.65.4",
+        "iqm-data-definitions>=3.1.0,<4.0.0",
+        "iqm-exa-common>=29.0.0,<30.0.0",
+        "iqm-pulse>=15.0.0,<16.0.0",
+        "opentelemetry-exporter-otlp<2,>=1.25.0",
+        "pydantic<2.13.0,>=2.12.4",
+        "pyyaml<7,>=6.0",
+        "requests<3,>=2.32.3",
+        "tqdm<5,>=4.59.0",
+        "types-protobuf",
+        "types-requests",
+        "types-tqdm"
+      ]
+    },
+    "jax": {
+      "version": "0.7.1",
+      "license": "Apache-2.0",
+      "summary": "Differentiate, compile, and transform Numpy code.",
+      "imports": [
+        "jax"
+      ],
+      "requires": [
+        "jaxlib<=0.7.1,>=0.7.1",
+        "ml_dtypes>=0.5.0",
+        "numpy>=1.26",
+        "opt_einsum",
+        "scipy>=1.12"
+      ]
+    },
+    "jaxlib": {
+      "version": "0.7.1",
+      "license": "Apache-2.0",
+      "summary": "XLA library for JAX",
+      "imports": [
+        "jaxlib"
+      ],
+      "requires": [
+        "ml_dtypes>=0.5.0",
+        "numpy>=1.26",
+        "scipy>=1.12"
+      ]
+    },
+    "jedi": {
+      "version": "0.20.1",
+      "license": "MIT",
+      "summary": "An autocompletion tool for Python that can be used for text editors.",
+      "imports": [
+        "jedi"
+      ],
+      "requires": [
+        "parso <0.9.0,>=0.8.7"
+      ]
+    },
+    "Jinja2": {
+      "version": "3.1.6",
+      "license": null,
+      "summary": "A very fast and expressive template engine.",
+      "imports": [
+        "jinja2"
+      ],
+      "requires": [
+        "MarkupSafe>=2.0"
+      ]
+    },
+    "joblib": {
+      "version": "1.6.0",
+      "license": "BSD-3-Clause",
+      "summary": "Lightweight pipelining with Python functions",
+      "imports": [
+        "joblib"
+      ],
+      "requires": [
+        "cloudpickle>=3.0"
+      ]
+    },
+    "jsonschema": {
+      "version": "4.26.0",
+      "license": "MIT",
+      "summary": "An implementation of JSON Schema validation for Python",
+      "imports": [
+        "jsonschema"
+      ],
+      "requires": [
+        "attrs>=22.2.0",
+        "jsonschema-specifications>=2023.03.6",
+        "referencing>=0.28.4",
+        "rpds-py>=0.25.0"
+      ]
+    },
+    "jsonschema-specifications": {
+      "version": "2025.9.1",
+      "license": "MIT",
+      "summary": "The JSON Schema meta-schemas and vocabularies, exposed as a Registry",
+      "imports": [
+        "jsonschema_specifications"
+      ],
+      "requires": [
+        "referencing>=0.31.0"
+      ]
+    },
+    "jupyter-cache": {
+      "version": "1.0.1",
+      "license": null,
+      "summary": "A defined interface for working with a cache of jupyter notebooks.",
+      "imports": [
+        "jupyter_cache"
+      ],
+      "requires": [
+        "attrs",
+        "click",
+        "importlib-metadata",
+        "nbclient>=0.2",
+        "nbformat",
+        "pyyaml",
+        "sqlalchemy>=1.3.12,<3",
+        "tabulate"
+      ]
+    },
+    "jupyter_client": {
+      "version": "8.10.0",
+      "license": "BSD 3-Clause License",
+      "summary": "Jupyter protocol implementation and client libraries",
+      "imports": [
+        "jupyter_client"
+      ],
+      "requires": [
+        "jupyter-core>=5.1",
+        "python-dateutil>=2.8.2",
+        "pyzmq>=25.0",
+        "tornado>=6.4.1",
+        "traitlets>=5.3",
+        "typing-extensions>=4.13.0"
+      ]
+    },
+    "jupyter_core": {
+      "version": "5.9.1",
+      "license": "BSD-3-Clause",
+      "summary": "Jupyter core package. A base package on which Jupyter projects rely.",
+      "imports": [
+        "jupyter.py",
+        "jupyter_core"
+      ],
+      "requires": [
+        "platformdirs>=2.5",
+        "traitlets>=5.3"
+      ]
+    },
+    "kiwisolver": {
+      "version": "1.5.1",
+      "license": "=========================",
+      "summary": "A fast implementation of the Cassowary constraint solver",
+      "imports": [
+        "kiwisolver"
+      ],
+      "requires": []
+    },
+    "llvmlite": {
+      "version": "0.46.0",
+      "license": "BSD-2-Clause AND Apache-2.0 WITH LLVM-exception",
+      "summary": "lightweight wrapper around basic LLVM functionality",
+      "imports": [
+        "llvmlite"
+      ],
+      "requires": []
+    },
+    "lmfit": {
+      "version": "1.3.4",
+      "license": "BSD-3-Clause",
+      "summary": "Least-Squares Minimization with Bounds and Constraints",
+      "imports": [
+        "lmfit"
+      ],
+      "requires": [
+        "asteval>=1.0",
+        "dill>=0.3.4",
+        "numpy>=1.24",
+        "scipy>=1.10.0",
+        "uncertainties>=3.2.2"
+      ]
+    },
+    "Mako": {
+      "version": "1.4.3",
+      "license": "MIT",
+      "summary": "A super-fast templating language that borrows the best ideas from the existing templating languages.",
+      "imports": [
+        "mako"
+      ],
+      "requires": [
+        "MarkupSafe>=2.0"
+      ]
+    },
+    "markdown-it-py": {
+      "version": "4.2.0",
+      "license": null,
+      "summary": "Python port of markdown-it. Markdown parsing, done right!",
+      "imports": [
+        "markdown_it"
+      ],
+      "requires": [
+        "mdurl~=0.1"
+      ]
+    },
+    "MarkupSafe": {
+      "version": "3.0.4",
+      "license": "BSD-3-Clause",
+      "summary": "Safely add untrusted strings to HTML/XML markup.",
+      "imports": [
+        "markupsafe"
+      ],
+      "requires": []
+    },
+    "matplotlib": {
+      "version": "3.11.2",
+      "license": "License agreement for matplotlib versions 1.3.0 and later",
+      "summary": "Python plotting package",
+      "imports": [
+        "matplotlib",
+        "mpl_toolkits",
+        "pylab.py"
+      ],
+      "requires": [
+        "contourpy>=1.0.1",
+        "cycler>=0.10",
+        "fonttools>=4.28.2",
+        "kiwisolver>=1.3.1",
+        "numpy>=1.25",
+        "packaging>=20.0",
+        "pillow>=9",
+        "pyparsing>=3",
+        "python-dateutil>=2.7"
+      ]
+    },
+    "matplotlib-inline": {
+      "version": "0.2.2",
+      "license": "BSD-3-Clause",
+      "summary": "Inline Matplotlib backend for Jupyter",
+      "imports": [
+        "matplotlib_inline"
+      ],
+      "requires": [
+        "traitlets"
+      ]
+    },
+    "mdit-py-plugins": {
+      "version": "0.6.1",
+      "license": null,
+      "summary": "Collection of plugins for markdown-it-py",
+      "imports": [
+        "mdit_py_plugins"
+      ],
+      "requires": [
+        "markdown-it-py>=2.0.0,<5.0.0"
+      ]
+    },
+    "mdurl": {
+      "version": "0.1.2",
+      "license": null,
+      "summary": "Markdown URL utilities",
+      "imports": [
+        "mdurl"
+      ],
+      "requires": []
+    },
+    "ml_dtypes": {
+      "version": "0.6.0",
+      "license": "Apache-2.0",
+      "summary": "ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning.",
+      "imports": [
+        "ml_dtypes"
+      ],
+      "requires": [
+        "numpy>=2.0.0",
+        "numpy>=2.1.0; python_version >= \"3.13\"",
+        "numpy>=2.3.0; python_version >= \"3.14\""
+      ]
+    },
+    "more-itertools": {
+      "version": "11.2.1",
+      "license": "MIT",
+      "summary": "More routines for operating on iterables, beyond itertools",
+      "imports": [
+        "more_itertools"
+      ],
+      "requires": []
+    },
+    "mpmath": {
+      "version": "1.3.0",
+      "license": "BSD",
+      "summary": "Python library for arbitrary-precision floating-point arithmetic",
+      "imports": [
+        "mpmath"
+      ],
+      "requires": []
+    },
+    "mthree": {
+      "version": "3.0.0",
+      "license": "Apache 2.0",
+      "summary": "M3: Matrix-free measurement mitigation",
+      "imports": [
+        "mthree"
+      ],
+      "requires": [
+        "cython>=3.0.10",
+        "numpy>=1.23",
+        "orjson>=3.0.0",
+        "psutil",
+        "qiskit>=1.0",
+        "runningman>=2.1",
+        "scipy>=1.11.1"
+      ]
+    },
+    "myst-nb": {
+      "version": "1.4.0",
+      "license": "BSD-3-Clause",
+      "summary": "A Jupyter Notebook Sphinx reader built on top of the MyST markdown parser.",
+      "imports": [
+        "myst_nb"
+      ],
+      "requires": [
+        "importlib_metadata",
+        "ipykernel",
+        "ipython",
+        "jupyter-cache>=0.5",
+        "myst-parser>=1.0.0",
+        "nbclient",
+        "nbformat>=5.0",
+        "pyyaml",
+        "sphinx>=5",
+        "typing-extensions"
+      ]
+    },
+    "myst-parser": {
+      "version": "5.1.0",
+      "license": null,
+      "summary": "An extended [CommonMark](https://spec.commonmark.org/) compliant parser,",
+      "imports": [
+        "myst_parser"
+      ],
+      "requires": [
+        "docutils>=0.20,<0.23",
+        "jinja2",
+        "markdown-it-py~=4.2",
+        "mdit-py-plugins~=0.6,>=0.6.1",
+        "pyyaml",
+        "sphinx>=8,<10"
+      ]
+    },
+    "nbclient": {
+      "version": "0.11.0",
+      "license": "BSD 3-Clause License",
+      "summary": "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor.",
+      "imports": [
+        "nbclient"
+      ],
+      "requires": [
+        "jupyter-client>=7.0.0",
+        "jupyter-core>=5.4.0",
+        "nbformat>=5.2.0",
+        "traitlets>=5.13"
+      ]
+    },
+    "nbformat": {
+      "version": "5.11.1",
+      "license": "BSD 3-Clause License",
+      "summary": "The Jupyter Notebook format",
+      "imports": [
+        "nbformat"
+      ],
+      "requires": [
+        "fastjsonschema>=2.15",
+        "jsonschema>=2.6",
+        "jupyter-core!=5.0.*,>=4.12",
+        "traitlets>=5.1"
+      ]
+    },
+    "nest-asyncio2": {
+      "version": "1.7.4",
+      "license": "BSD",
+      "summary": "Patch asyncio to allow nested event loops",
+      "imports": [
+        "nest_asyncio2"
+      ],
+      "requires": []
+    },
+    "networkx": {
+      "version": "3.7",
+      "license": "BSD-3-Clause",
+      "summary": "Python package for creating and manipulating graphs and networks",
+      "imports": [
+        "networkx"
+      ],
+      "requires": []
+    },
+    "numba": {
+      "version": "0.63.1",
+      "license": "BSD",
+      "summary": "compiling Python code using LLVM",
+      "imports": [
+        "numba"
+      ],
+      "requires": [
+        "llvmlite<0.47,>=0.46.0dev0",
+        "numpy<2.4,>=1.22"
+      ]
+    },
+    "numpy": {
+      "version": "2.3.5",
+      "license": "Copyright (c) 2005-2025, NumPy Developers.",
+      "summary": "Fundamental package for array computing in Python",
+      "imports": [
+        "numpy"
+      ],
+      "requires": []
+    },
+    "numpy-typing-compat": {
+      "version": "20260602.2.3",
+      "license": "BSD-3-Clause",
+      "summary": "Static typing compatibility layer for older versions of NumPy",
+      "imports": [
+        "numpy_typing_compat"
+      ],
+      "requires": [
+        "numpy>=2.3,<2.4"
+      ]
+    },
+    "opentelemetry-api": {
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Python API",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "typing-extensions>=4.5.0"
+      ]
+    },
+    "opentelemetry-exporter-http-transport": {
+      "version": "0.66b1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Exporters HTTP transport",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "opentelemetry-api~=1.15"
+      ]
+    },
+    "opentelemetry-exporter-otlp": {
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Collector Exporters",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "opentelemetry-exporter-otlp-proto-grpc==1.45.1",
+        "opentelemetry-exporter-otlp-proto-http==1.45.1"
+      ]
+    },
+    "opentelemetry-exporter-otlp-common": {
+      "version": "0.66b1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry OTLP HTTP export utilities",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "opentelemetry-sdk~=1.45.1"
+      ]
+    },
+    "opentelemetry-exporter-otlp-proto-common": {
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Protobuf encoding",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "opentelemetry-proto==1.45.1"
+      ]
+    },
+    "opentelemetry-exporter-otlp-proto-grpc": {
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Collector Protobuf over gRPC Exporter",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "googleapis-common-protos~=1.57",
+        "grpcio<2.0.0,>=1.63.2; python_version < '3.13'",
+        "grpcio<2.0.0,>=1.66.2; python_version == '3.13'",
+        "grpcio<2.0.0,>=1.75.1; python_version >= '3.14'",
+        "opentelemetry-api~=1.15",
+        "opentelemetry-exporter-otlp-common==0.66b1",
+        "opentelemetry-exporter-otlp-proto-common==1.45.1",
+        "opentelemetry-proto==1.45.1",
+        "opentelemetry-sdk~=1.45.1",
+        "typing-extensions>=4.6.0"
+      ]
+    },
+    "opentelemetry-exporter-otlp-proto-http": {
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Collector Protobuf over HTTP Exporter",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "googleapis-common-protos~=1.52",
+        "opentelemetry-api~=1.15",
+        "opentelemetry-exporter-http-transport[requests]==0.66b1",
+        "opentelemetry-exporter-otlp-common==0.66b1",
+        "opentelemetry-exporter-otlp-proto-common==1.45.1",
+        "opentelemetry-proto==1.45.1",
+        "opentelemetry-sdk~=1.45.1",
+        "requests~=2.7",
+        "typing-extensions>=4.5.0"
+      ]
+    },
+    "opentelemetry-proto": {
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Python Proto",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "protobuf<8.0,>=5.0"
+      ]
+    },
+    "opentelemetry-sdk": {
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Python SDK",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "opentelemetry-api==1.45.1",
+        "opentelemetry-semantic-conventions==0.66b1",
+        "typing-extensions>=4.5.0"
+      ]
+    },
+    "opentelemetry-semantic-conventions": {
+      "version": "0.66b1",
+      "license": "Apache-2.0",
+      "summary": "OpenTelemetry Semantic Conventions",
+      "imports": [
+        "opentelemetry"
+      ],
+      "requires": [
+        "opentelemetry-api==1.45.1",
+        "typing-extensions>=4.5.0"
+      ]
+    },
+    "opt_einsum": {
+      "version": "3.4.0",
+      "license": "MIT",
+      "summary": "Path optimization of einsum functions.",
+      "imports": [
+        "opt_einsum"
+      ],
+      "requires": []
+    },
+    "optuna": {
+      "version": "4.9.0",
+      "license": null,
+      "summary": "A hyperparameter optimization framework",
+      "imports": [
+        "optuna"
+      ],
+      "requires": [
+        "PyYAML",
+        "alembic>=1.5.0",
+        "colorlog",
+        "numpy",
+        "packaging>=20.0",
+        "sqlalchemy>=1.4.2",
+        "tqdm"
+      ]
+    },
+    "optype": {
+      "version": "0.19.0",
+      "license": "BSD-3-Clause",
+      "summary": "Building Blocks for Precise & Flexible Type Hints",
+      "imports": [
+        "optype"
+      ],
+      "requires": [
+        "typing-extensions>=4.10 ; python_full_version < '3.13'"
+      ]
+    },
+    "ordered-set": {
+      "version": "4.1.0",
+      "license": null,
+      "summary": "An OrderedSet is a custom MutableSet that remembers its order, so that every",
+      "imports": [
+        "ordered_set"
+      ],
+      "requires": []
+    },
+    "orjson": {
+      "version": "3.13.0",
+      "license": "MPL-2.0 AND (Apache-2.0 OR MIT)",
+      "summary": "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy",
+      "imports": [
+        "orjson"
+      ],
+      "requires": []
+    },
+    "osqp": {
+      "version": "1.1.3",
+      "license": "Apache-2.0",
+      "summary": "OSQP: The Operator Splitting QP Solver",
+      "imports": [
+        "osqp"
+      ],
+      "requires": [
+        "jinja2",
+        "joblib",
+        "numpy>=1.7",
+        "scipy>=0.13.2",
+        "setuptools"
+      ]
+    },
+    "packaging": {
+      "version": "24.2",
+      "license": null,
+      "summary": "Core utilities for Python packages",
+      "imports": [
+        "packaging"
+      ],
+      "requires": []
+    },
+    "pandas": {
+      "version": "3.0.6",
+      "license": "BSD 3-Clause License",
+      "summary": "Powerful data structures for data analysis, time series, and statistics",
+      "imports": [
+        "pandas"
+      ],
+      "requires": [
+        "numpy>=1.26.0; python_version < \"3.14\"",
+        "numpy>=2.3.3; python_version >= \"3.14\"",
+        "python-dateutil>=2.8.2",
+        "tzdata; sys_platform == \"emscripten\"",
+        "tzdata; sys_platform == \"win32\""
+      ]
+    },
+    "parso": {
+      "version": "0.8.7",
+      "license": "MIT",
+      "summary": "A Python Parser",
+      "imports": [
+        "parso"
+      ],
+      "requires": []
+    },
+    "pexpect": {
+      "version": "4.9.0",
+      "license": "ISC license",
+      "summary": "Pexpect allows easy control of interactive console applications.",
+      "imports": [
+        "pexpect"
+      ],
+      "requires": [
+        "ptyprocess (>=0.5)"
+      ]
+    },
+    "pillow": {
+      "version": "13.0.0",
+      "license": "MIT-CMU",
+      "summary": "Python Imaging Library (fork)",
+      "imports": [
+        "PIL"
+      ],
+      "requires": []
+    },
+    "pip": {
+      "version": "25.3",
+      "license": "MIT",
+      "summary": "The PyPA recommended tool for installing Python packages.",
+      "imports": [
+        "pip"
+      ],
+      "requires": []
+    },
+    "platformdirs": {
+      "version": "4.13.5",
+      "license": "MIT",
+      "summary": "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
+      "imports": [
+        "platformdirs"
+      ],
+      "requires": []
+    },
+    "pluggy": {
+      "version": "1.7.0",
+      "license": "MIT",
+      "summary": "plugin and hook calling mechanisms for python",
+      "imports": [
+        "pluggy"
+      ],
+      "requires": []
+    },
+    "ply": {
+      "version": "3.11",
+      "license": "BSD",
+      "summary": "Python Lex & Yacc",
+      "imports": [
+        "ply"
+      ],
+      "requires": []
+    },
+    "prompt_toolkit": {
+      "version": "3.0.53",
+      "license": null,
+      "summary": "Library for building powerful interactive command lines in Python",
+      "imports": [
+        "prompt_toolkit"
+      ],
+      "requires": [
+        "wcwidth>=0.1.4"
+      ]
+    },
+    "protobuf": {
+      "version": "7.36.2",
+      "license": "3-Clause BSD License",
+      "summary": null,
+      "imports": [
+        "google"
+      ],
+      "requires": []
+    },
+    "psutil": {
+      "version": "7.2.2",
+      "license": "BSD-3-Clause",
+      "summary": "Cross-platform lib for process and system monitoring.",
+      "imports": [
+        "psutil"
+      ],
+      "requires": []
+    },
+    "ptyprocess": {
+      "version": "0.7.0",
+      "license": "UNKNOWN",
+      "summary": "Run a subprocess in a pseudo terminal",
+      "imports": [
+        "ptyprocess"
+      ],
+      "requires": []
+    },
+    "pure_eval": {
+      "version": "0.2.4",
+      "license": "MIT",
+      "summary": "Safely evaluate AST nodes without side effects",
+      "imports": [
+        "pure_eval"
+      ],
+      "requires": []
+    },
+    "pycparser": {
+      "version": "3.11",
+      "license": "BSD-3-Clause",
+      "summary": "C parser in Python",
+      "imports": [
+        "pycparser"
+      ],
+      "requires": []
+    },
+    "pycurl": {
+      "version": "7.48.0",
+      "license": "LGPL-2.1-only OR MIT",
+      "summary": "PycURL -- A Python Interface To The cURL library",
+      "imports": [
+        "curl",
+        "pycurl"
+      ],
+      "requires": []
+    },
+    "pydantic": {
+      "version": "2.12.5",
+      "license": "MIT",
+      "summary": "Data validation using Python type hints",
+      "imports": [
+        "pydantic"
+      ],
+      "requires": [
+        "annotated-types>=0.6.0",
+        "pydantic-core==2.41.5",
+        "typing-extensions>=4.14.1",
+        "typing-inspection>=0.4.2"
+      ]
+    },
+    "pydantic_core": {
+      "version": "2.41.5",
+      "license": "MIT",
+      "summary": "Core functionality for Pydantic validation and serialization",
+      "imports": [
+        "pydantic_core"
+      ],
+      "requires": [
+        "typing-extensions>=4.14.1"
+      ]
+    },
+    "Pygments": {
+      "version": "2.21.0",
+      "license": "BSD-2-Clause",
+      "summary": "Pygments is a syntax highlighting package written in Python.",
+      "imports": [
+        "pygments"
+      ],
+      "requires": []
+    },
+    "PyJWT": {
+      "version": "2.15.1",
+      "license": "MIT",
+      "summary": "JSON Web Token implementation in Python",
+      "imports": [
+        "jwt"
+      ],
+      "requires": [
+        "typing_extensions>=4.0; python_version < \"3.11\""
+      ]
+    },
+    "PyLaTeX": {
+      "version": "1.4.2",
+      "license": "MIT",
+      "summary": "A Python library for creating LaTeX files and snippets",
+      "imports": [
+        "pylatex"
+      ],
+      "requires": [
+        "ordered-set"
+      ]
+    },
+    "pylatexenc": {
+      "version": "2.11",
+      "license": "MIT",
+      "summary": "Simple LaTeX parser providing latex-to-unicode and unicode-to-latex conversion",
+      "imports": [
+        "pylatexenc"
+      ],
+      "requires": []
+    },
+    "PyMatching": {
+      "version": "2.4.0",
+      "license": "Apache 2",
+      "summary": "A package for decoding quantum error correcting codes using minimum-weight perfect matching.",
+      "imports": [
+        "pymatching"
+      ],
+      "requires": [
+        "matplotlib",
+        "networkx",
+        "numpy",
+        "scipy"
+      ]
+    },
+    "pyparsing": {
+      "version": "3.3.3",
+      "license": "MIT",
+      "summary": "pyparsing - Classes and methods to define and execute parsing grammars",
+      "imports": [
+        "pyparsing"
+      ],
+      "requires": []
+    },
+    "pyspnego": {
+      "version": "0.12.4",
+      "license": "MIT",
+      "summary": "Windows Negotiate Authentication Client and Server",
+      "imports": [
+        "spnego"
+      ],
+      "requires": [
+        "cryptography",
+        "sspilib>=0.5.0; sys_platform == \"win32\""
+      ]
+    },
+    "pytest": {
+      "version": "9.1.1",
+      "license": "MIT",
+      "summary": "pytest: simple powerful testing with Python",
+      "imports": [
+        "_pytest",
+        "py",
+        "pytest"
+      ],
+      "requires": [
+        "colorama>=0.4; sys_platform == \"win32\"",
+        "exceptiongroup>=1; python_version < \"3.11\"",
+        "iniconfig>=1.0.1",
+        "packaging>=22",
+        "pluggy<2,>=1.5",
+        "pygments>=2.7.2",
+        "tomli>=1; python_version < \"3.11\""
+      ]
+    },
+    "python-dateutil": {
+      "version": "2.9.0.post0",
+      "license": "Dual License",
+      "summary": "Extensions to the standard Python datetime module",
+      "imports": [
+        "dateutil"
+      ],
+      "requires": [
+        "six >=1.5"
+      ]
+    },
+    "python-dotenv": {
+      "version": "1.2.4",
+      "license": "BSD-3-Clause",
+      "summary": "Read key-value pairs from a .env file and set them as environment variables",
+      "imports": [
+        "dotenv"
+      ],
+      "requires": []
+    },
+    "python-rapidjson": {
+      "version": "1.25",
+      "license": "MIT License",
+      "summary": "Python wrapper around rapidjson",
+      "imports": [
+        "rapidjson",
+        "rapidjson-stubs"
+      ],
+      "requires": []
+    },
+    "PyYAML": {
+      "version": "6.0.3",
+      "license": "MIT",
+      "summary": "YAML parser and emitter for Python",
+      "imports": [
+        "_yaml",
+        "yaml"
+      ],
+      "requires": []
+    },
+    "pyzmq": {
+      "version": "27.2.0",
+      "license": "BSD-3-Clause",
+      "summary": "Python bindings for 0MQ",
+      "imports": [
+        "zmq"
+      ],
+      "requires": [
+        "cffi; implementation_name == \"pypy\""
+      ]
+    },
+    "qdldl": {
+      "version": "0.1.9.post1",
+      "license": "Apache 2.0",
+      "summary": "QDLDL, a free LDL factorization routine.",
+      "imports": [
+        "qdldl"
+      ],
+      "requires": [
+        "numpy>=1.7",
+        "scipy>=0.13.2"
+      ]
+    },
+    "qiskit": {
+      "version": "2.1.2",
+      "license": "Apache 2.0",
+      "summary": "An open-source SDK for working with quantum computers at the level of extended quantum circuits, operators, and primitives.",
+      "imports": [
+        "qiskit"
+      ],
+      "requires": [
+        "dill>=0.3",
+        "numpy<3,>=1.17",
+        "rustworkx>=0.15.0",
+        "scipy>=1.5",
+        "stevedore>=3.0.0",
+        "typing-extensions"
+      ]
+    },
+    "qiskit-aer": {
+      "version": "0.17.2",
+      "license": "Apache 2.0",
+      "summary": "Aer - High performance simulators for Qiskit",
+      "imports": [
+        "qiskit_aer"
+      ],
+      "requires": [
+        "numpy>=1.16.3",
+        "psutil>=5",
+        "python-dateutil>=2.8.0",
+        "qiskit>=1.1.0",
+        "scipy>=1.0"
+      ]
+    },
+    "qiskit-ibm-runtime": {
+      "version": "0.43.1",
+      "license": "Apache 2.0",
+      "summary": "IBM Quantum client for Qiskit Runtime.",
+      "imports": [
+        "qiskit_ibm_runtime"
+      ],
+      "requires": [
+        "ibm-platform-services>=0.22.6",
+        "numpy>=1.13",
+        "packaging",
+        "pydantic>=2.5.0",
+        "python-dateutil>=2.8.0",
+        "qiskit>=1.4.1",
+        "requests-ntlm>=1.1.0",
+        "requests>=2.19",
+        "urllib3>=1.21.1"
+      ]
+    },
+    "qrisp": {
+      "version": "0.9.10",
+      "license": "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0",
+      "summary": "A high-level quantum programming language",
+      "imports": [
+        "qrisp"
+      ],
+      "requires": [
+        "dill",
+        "jax==0.7.1",
+        "jaxlib==0.7.1",
+        "matplotlib>=3.5.1",
+        "networkx",
+        "numba",
+        "numpy<2.5,>=2.0",
+        "psutil",
+        "qiskit<2.6,>=0.44.0",
+        "scipy>=1.10.0",
+        "sympy<=1.13",
+        "tqdm"
+      ]
+    },
+    "quimb": {
+      "version": "1.15.0",
+      "license": "Apache-2.0",
+      "summary": "Quantum information and many-body library.",
+      "imports": [
+        "quimb"
+      ],
+      "requires": [
+        "autoray>=0.8",
+        "cotengra>=0.7.1",
+        "cytoolz>=0.8.0",
+        "numba>=0.39",
+        "numpy>=1.17",
+        "psutil>=4.3.1",
+        "scipy>=1.16.0",
+        "tqdm>=4"
+      ]
+    },
+    "referencing": {
+      "version": "0.37.0",
+      "license": "MIT",
+      "summary": "JSON Referencing + Python",
+      "imports": [
+        "referencing"
+      ],
+      "requires": [
+        "attrs>=22.2.0",
+        "rpds-py>=0.7.0",
+        "typing-extensions>=4.4.0; python_version < '3.13'"
+      ]
+    },
+    "requests": {
+      "version": "2.34.2",
+      "license": "Apache-2.0",
+      "summary": "Python HTTP for Humans.",
+      "imports": [
+        "requests"
+      ],
+      "requires": [
+        "certifi>=2023.5.7",
+        "charset_normalizer<4,>=2",
+        "idna<4,>=2.5",
+        "urllib3<3,>=1.26"
+      ]
+    },
+    "requests_ntlm": {
+      "version": "1.3.0",
+      "license": "ISC",
+      "summary": "This package allows for HTTP NTLM authentication using the requests library.",
+      "imports": [
+        "requests_ntlm"
+      ],
+      "requires": [
+        "cryptography >=1.3",
+        "pyspnego >=0.4.0",
+        "requests >=2.0.0"
+      ]
+    },
+    "roman-numerals": {
+      "version": "4.1.0",
+      "license": "0BSD OR CC0-1.0",
+      "summary": "Manipulate well-formed Roman numerals",
+      "imports": [
+        "roman_numerals"
+      ],
+      "requires": []
+    },
+    "rpds-py": {
+      "version": "2026.9.1",
+      "license": "MIT",
+      "summary": "Python bindings to Rust's persistent data structures (rpds)",
+      "imports": [
+        "rpds"
+      ],
+      "requires": []
+    },
+    "ruamel.yaml": {
+      "version": "0.19.1",
+      "license": "MIT",
+      "summary": "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order",
+      "imports": [
+        "ruamel"
+      ],
+      "requires": []
+    },
+    "runningman": {
+      "version": "2.3.0",
+      "license": "Apache 2.0",
+      "summary": "RunningMan",
+      "imports": [
+        "runningman"
+      ],
+      "requires": [
+        "qiskit_ibm_runtime>=0.22"
+      ]
+    },
+    "rustworkx": {
+      "version": "0.17.1",
+      "license": "Apache-2.0",
+      "summary": "A High-Performance Graph Library for Python",
+      "imports": [
+        "rustworkx"
+      ],
+      "requires": [
+        "numpy<3,>=1.16.0"
+      ]
+    },
+    "scipy": {
+      "version": "1.18.1",
+      "license": "Copyright (c) 2001-2002 Enthought, Inc. 2003, SciPy Developers.",
+      "summary": "Fundamental algorithms for scientific computing in Python",
+      "imports": [
+        "scipy"
+      ],
+      "requires": [
+        "numpy<2.8,>=2.0.0"
+      ]
+    },
+    "scipy-stubs": {
+      "version": "1.18.1.1",
+      "license": "BSD-3-Clause",
+      "summary": "The official type stubs for SciPy",
+      "imports": [],
+      "requires": [
+        "optype[numpy]>=0.15.0,<0.20"
+      ]
+    },
+    "scs": {
+      "version": "3.3.1",
+      "license": "MIT License",
+      "summary": "Splitting conic solver",
+      "imports": [
+        "scs"
+      ],
+      "requires": [
+        "numpy",
+        "scipy"
+      ]
+    },
+    "seaborn": {
+      "version": "0.13.2",
+      "license": null,
+      "summary": "Statistical data visualization",
+      "imports": [
+        "seaborn"
+      ],
+      "requires": [
+        "matplotlib>=3.4,!=3.6.1",
+        "numpy>=1.20,!=1.24.0",
+        "pandas>=1.2"
+      ]
+    },
+    "setuptools": {
+      "version": "84.0.0",
+      "license": "MIT",
+      "summary": "Most extensible Python build backend with support for C/C++ extension modules",
+      "imports": [
+        "_distutils_hack",
+        "setuptools"
+      ],
+      "requires": []
+    },
+    "six": {
+      "version": "1.17.0",
+      "license": "MIT",
+      "summary": "Python 2 and 3 compatibility utilities",
+      "imports": [
+        "six"
+      ],
+      "requires": []
+    },
+    "snowballstemmer": {
+      "version": "3.1.1",
+      "license": "BSD-3-Clause",
+      "summary": "This package provides 36 stemmers for 34 languages generated from Snowball algorithms.",
+      "imports": [
+        "snowballstemmer"
+      ],
+      "requires": []
+    },
+    "sparsediffpy": {
+      "version": "0.6.1",
+      "license": "Apache-2.0",
+      "summary": "Python bindings for SparseDiffEngine algorithmic differentiation",
+      "imports": [
+        "sparsediffpy"
+      ],
+      "requires": [
+        "numpy>=2.0.0"
+      ]
+    },
+    "Sphinx": {
+      "version": "9.1.0",
+      "license": "BSD-2-Clause",
+      "summary": "Python documentation generator",
+      "imports": [
+        "sphinx"
+      ],
+      "requires": [
+        "Jinja2>=3.1",
+        "Pygments>=2.17",
+        "alabaster>=0.7.14",
+        "babel>=2.13",
+        "colorama>=0.4.6; sys_platform == 'win32'",
+        "docutils>=0.21,<0.23",
+        "imagesize>=1.3",
+        "packaging>=23.0",
+        "requests>=2.30.0",
+        "roman-numerals>=1.0.0",
+        "snowballstemmer>=2.2",
+        "sphinxcontrib-applehelp>=1.0.7",
+        "sphinxcontrib-devhelp>=1.0.6",
+        "sphinxcontrib-htmlhelp>=2.0.6",
+        "sphinxcontrib-jsmath>=1.0.1",
+        "sphinxcontrib-qthelp>=1.0.6",
+        "sphinxcontrib-serializinghtml>=1.1.9"
+      ]
+    },
+    "sphinxcontrib-applehelp": {
+      "version": "2.0.0",
+      "license": null,
+      "summary": "sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books",
+      "imports": [
+        "sphinxcontrib"
+      ],
+      "requires": []
+    },
+    "sphinxcontrib-devhelp": {
+      "version": "2.0.0",
+      "license": null,
+      "summary": "sphinxcontrib-devhelp is a sphinx extension which outputs Devhelp documents",
+      "imports": [
+        "sphinxcontrib"
+      ],
+      "requires": []
+    },
+    "sphinxcontrib-htmlhelp": {
+      "version": "2.1.0",
+      "license": null,
+      "summary": "sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files",
+      "imports": [
+        "sphinxcontrib"
+      ],
+      "requires": []
+    },
+    "sphinxcontrib-jsmath": {
+      "version": "1.0.1",
+      "license": "BSD",
+      "summary": "A sphinx extension which renders display math in HTML via JavaScript",
+      "imports": [
+        "sphinxcontrib"
+      ],
+      "requires": []
+    },
+    "sphinxcontrib-qthelp": {
+      "version": "2.0.0",
+      "license": null,
+      "summary": "sphinxcontrib-qthelp is a sphinx extension which outputs QtHelp documents",
+      "imports": [
+        "sphinxcontrib"
+      ],
+      "requires": []
+    },
+    "sphinxcontrib-serializinghtml": {
+      "version": "2.0.0",
+      "license": null,
+      "summary": "sphinxcontrib-serializinghtml is a sphinx extension which outputs \"serialized\" HTML files (json and pickle)",
+      "imports": [
+        "sphinxcontrib"
+      ],
+      "requires": []
+    },
+    "SQLAlchemy": {
+      "version": "2.1.5",
+      "license": "MIT",
+      "summary": "Database Abstraction Library",
+      "imports": [
+        "sqlalchemy"
+      ],
+      "requires": [
+        "typing-extensions>=4.6.0"
+      ]
+    },
+    "stack-data": {
+      "version": "0.6.3",
+      "license": "MIT",
+      "summary": "Extract data from python stack frames and tracebacks for informative displays",
+      "imports": [
+        "stack_data"
+      ],
+      "requires": [
+        "asttokens >=2.1.0",
+        "executing >=1.2.0",
+        "pure-eval"
+      ]
+    },
+    "stevedore": {
+      "version": "5.9.1",
+      "license": "Apache-2.0",
+      "summary": "Manage dynamic plugins for Python applications",
+      "imports": [
+        "stevedore"
+      ],
+      "requires": []
+    },
+    "stim": {
+      "version": "1.16.0",
+      "license": "Apache 2",
+      "summary": "A fast library for analyzing with quantum stabilizer circuits.",
+      "imports": [
+        "stim"
+      ],
+      "requires": [
+        "numpy"
+      ]
+    },
+    "sympy": {
+      "version": "1.13.0",
+      "license": "BSD",
+      "summary": "Computer algebra system (CAS) in Python",
+      "imports": [
+        "isympy",
+        "sympy"
+      ],
+      "requires": [
+        "mpmath <1.4,>=1.1.0"
+      ]
+    },
+    "tabulate": {
+      "version": "0.10.0",
+      "license": "MIT",
+      "summary": "Pretty-print tabular data",
+      "imports": [
+        "tabulate"
+      ],
+      "requires": []
+    },
+    "toolz": {
+      "version": "1.2.0",
+      "license": "BSD-3-Clause",
+      "summary": "List processing tools and functional utilities",
+      "imports": [
+        "tlz",
+        "toolz"
+      ],
+      "requires": []
+    },
+    "tornado": {
+      "version": "6.5.10",
+      "license": "Apache-2.0",
+      "summary": "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.",
+      "imports": [
+        "tornado"
+      ],
+      "requires": []
+    },
+    "tqdm": {
+      "version": "4.70.1",
+      "license": "MPL-2.0 AND MIT",
+      "summary": "Fast, Extensible Progress Meter",
+      "imports": [
+        "tqdm"
+      ],
+      "requires": [
+        "colorama; platform_system == \"Windows\""
+      ]
+    },
+    "traitlets": {
+      "version": "5.16.1",
+      "license": "BSD 3-Clause License",
+      "summary": "Traitlets Python configuration system",
+      "imports": [
+        "traitlets"
+      ],
+      "requires": []
+    },
+    "types-networkx": {
+      "version": "3.6.1.20261018",
+      "license": "Apache-2.0",
+      "summary": "Typing stubs for networkx",
+      "imports": [
+        "networkx-stubs"
+      ],
+      "requires": []
+    },
+    "types-protobuf": {
+      "version": "7.35.1.20260906",
+      "license": "Apache-2.0",
+      "summary": "Typing stubs for protobuf",
+      "imports": [
+        "google-stubs"
+      ],
+      "requires": []
+    },
+    "types-requests": {
+      "version": "2.33.0.20261006",
+      "license": "Apache-2.0",
+      "summary": "Typing stubs for requests",
+      "imports": [
+        "requests-stubs"
+      ],
+      "requires": [
+        "urllib3>=2"
+      ]
+    },
+    "types-six": {
+      "version": "1.17.0.20261008",
+      "license": "Apache-2.0",
+      "summary": "Typing stubs for six",
+      "imports": [
+        "six-stubs"
+      ],
+      "requires": []
+    },
+    "types-tqdm": {
+      "version": "4.70.0.20260906",
+      "license": "Apache-2.0",
+      "summary": "Typing stubs for tqdm",
+      "imports": [
+        "tqdm-stubs"
+      ],
+      "requires": []
+    },
+    "typing-inspection": {
+      "version": "0.4.4",
+      "license": "MIT",
+      "summary": "Runtime typing introspection tools",
+      "imports": [
+        "typing_inspection"
+      ],
+      "requires": [
+        "typing-extensions>=4.15.0"
+      ]
+    },
+    "typing_extensions": {
+      "version": "4.16.0",
+      "license": "PSF-2.0",
+      "summary": "Backported and Experimental Type Hints for Python 3.9+",
+      "imports": [
+        "typing_extensions.py"
+      ],
+      "requires": []
+    },
+    "uncertainties": {
+      "version": "3.2.3",
+      "license": "Revised BSD License",
+      "summary": "calculations with values with uncertainties, error propagation",
+      "imports": [
+        "uncertainties"
+      ],
+      "requires": []
+    },
+    "urllib3": {
+      "version": "2.8.0",
+      "license": "MIT",
+      "summary": "HTTP library with thread-safe connection pooling, file post, and more.",
+      "imports": [
+        "urllib3"
+      ],
+      "requires": []
+    },
+    "wcwidth": {
+      "version": "0.9.2",
+      "license": null,
+      "summary": "Measures the displayed width of unicode strings in a terminal",
+      "imports": [
+        "wcwidth"
+      ],
+      "requires": []
+    },
+    "xarray": {
+      "version": "2026.9.0",
+      "license": "Apache-2.0",
+      "summary": "N-D labeled arrays and datasets in Python",
+      "imports": [
+        "xarray"
+      ],
+      "requires": [
+        "numpy>=1.26",
+        "packaging>=24.2",
+        "pandas>=2.2"
+      ]
+    },
+    "zipp": {
+      "version": "4.1.1",
+      "license": "MIT",
+      "summary": "Backport of pathlib-compatible object wrapper for zip files",
+      "imports": [
+        "zipp"
+      ],
+      "requires": []
+    }
+  }
+}

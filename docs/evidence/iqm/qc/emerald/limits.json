@@ -1,0 +1,1 @@
+{"max_instructions_per_circuit":30000,"max_shots_per_circuit":20000,"max_circuits_per_job":100,"max_executions_per_job":2000000,"max_queued_jobs_per_user":200}

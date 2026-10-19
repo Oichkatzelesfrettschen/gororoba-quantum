@@ -1,0 +1,13 @@
+{
+ "schema": "iqm-docs-capture-v1",
+ "kind": "changelog",
+ "retrieved_utc": "2026-10-19T06:05Z",
+ "files": [
+  {
+   "path": "docs/notes/iqm/changelog/iqm-client-36.0.0.md",
+   "source": "https://files.pythonhosted.org/packages/05/ca/4a7d8ca4d0a8fb07a1d80ec0b1dc7a9d6ee1b7c432fe56856763cfc3d375/iqm_client-36.0.0.tar.gz",
+   "sha256": "c383c79e077491ec927d5e8f9cac9a1411014cb5f64fb43249094724c68dca6a"
+  }
+ ],
+ "unreachable": []
+}

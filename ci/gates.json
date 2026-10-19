@@ -3659,6 +3659,38 @@
    "name": "core-584",
    "seconds": 180,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_iqm_docs.py --check",
+   "name": "core-588",
+   "seconds": 1.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_iqm_docs.py --self-test",
+   "name": "core-589",
+   "seconds": 9.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py check docs/evidence/iqm --agents AGENTS.md docs/notes/iqm/README.md",
+   "name": "core-590",
+   "seconds": 0.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py --self-test",
+   "name": "core-591",
+   "seconds": 2.4,
+   "tier": "pr"
   }
  ],
  "excluded": [
