@@ -55,7 +55,15 @@ those runs and pairs to be BASE byte for byte, less the replaced runs whose
 recorded digests BASE matches, so a merged result still carries the bytes
 the kernel that produced BASE wrote. ``--check --runs merged`` replays the
 execution-snapshot ghost of every run a merge ghosted in full, bit for bit
-on the merge's Aer device.
+on the merge's Aer device. The token ``pairs`` adds the replay of the
+(run, snapshot) pairs a merge added to retained runs, bit for bit: the merge
+ran on a CPU host and no kernel output holds those pairs, so no retained
+shard bytes bind them. sampled_pairs() ranks the pairs of pair_cost() at most
+PAIR_COST_CAP by a sha256 over every added pair's distances, and replay_pairs()
+replays the first PAIR_SAMPLE. A hand-altered distance is caught only when
+its pair is sampled. The token ``pairs-all`` replays every merge-added pair
+through the process pool (replay_all_pairs), so a hand-altered distance in
+any pair fails; gate core-591 runs it on the full tier.
 ``--self-test`` exercises the merge, its removal and the exact path's rule
 and seeds on synthetic records.
 
@@ -84,6 +92,7 @@ import json
 import math
 import sys
 import time
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -930,6 +939,114 @@ def replay_merged(run: dict[str, Any], index: dict[str, Any], device: str) -> No
     require(fresh == run["self_check"], f"{name}: self check differs from the replayed resample")
 
 
+PAIR_SAMPLE = 4
+PAIR_COST_CAP = 1.0e6
+
+
+def sampled_pairs(result: dict[str, Any], costs: dict[tuple[str, str], float]) -> list[tuple[str, str, str]]:
+    """Up to PAIR_SAMPLE merge-added (run, snapshot, device) pairs of cost at most PAIR_COST_CAP, picked by a digest.
+
+    Each pair ranks by sha256 over every added pair's retained distances and
+    its own path, so a hand-altered distance reshuffles the ranking and the
+    ranking cannot be read off the merge record. ``costs`` is pair_cost() per
+    pair; a dearer pair is never sampled.
+    """
+    by_run = {run["run"]: run for run in result["runs"]}
+    chosen: dict[tuple[str, str], str] = {}
+    for merge in result.get("merged", []):
+        for name, relative in merge["pairs"]:
+            require(relative in by_run[name]["snapshots"], f"{name}: merged pair {relative} is not retained")
+            chosen[name, relative] = merge["device"]
+    salt = hashlib.sha256(
+        json.dumps([[n, r, by_run[n]["snapshots"][r]["tvd"]] for n, r in sorted(chosen)]).encode()
+    ).hexdigest()
+    eligible = [pair for pair in chosen if costs[pair] <= PAIR_COST_CAP]
+    ranked = sorted(eligible, key=lambda pair: hashlib.sha256(f"{salt}:{pair[0]}:{pair[1]}".encode()).hexdigest())
+    return [(name, relative, chosen[name, relative]) for name, relative in ranked[:PAIR_SAMPLE]]
+
+
+def pair_costs(result: dict[str, Any], index: dict[str, Any]) -> dict[tuple[str, str], float]:
+    """pair_cost() of every (run, snapshot) pair a merge added to a retained run."""
+    prepared: dict[str, dict[str, Any]] = {}
+    out: dict[tuple[str, str], float] = {}
+    for merge in result.get("merged", []):
+        for name, relative in merge["pairs"]:
+            if name not in prepared:
+                prepared[name] = prepare(name, index)
+            out[name, relative] = pair_cost(prepared[name])
+    return out
+
+
+def replay_pairs(
+    result: dict[str, Any],
+    index: dict[str, Any],
+    device: str,
+    costs: dict[tuple[str, str], float] | None = None,
+    ghost: Callable[[str, str, str], dict[str, Any]] | None = None,
+) -> int:
+    """Require the sampled merge-added pairs' retained entries to equal snapshot_entry() recomputed, bit for bit.
+
+    The sampled pairs are the ones sampled_pairs() ranks first. A pair whose
+    merge ran on another Aer device than this host is skipped, since seeded
+    counts differ across devices. A pair outside the sample (dearer than
+    PAIR_COST_CAP, or ranked after PAIR_SAMPLE) keeps only validate() and
+    --provenance, so a hand-altered distance in such a pair passes. Returns
+    the number of pairs replayed.
+    """
+    by_run = {run["run"]: run for run in result["runs"]}
+    if costs is None:
+        costs = pair_costs(result, index)
+
+    def simulate(name: str, relative: str, merge_device: str) -> dict[str, Any]:
+        prepared = prepare(name, index)
+        current = index["current"][prepared["backend"]]
+        return snapshot_entry(prepared, relative, current, merge_device, prepared["members"])[0]
+
+    replay = ghost or simulate
+    done = 0
+    for name, relative, merge_device in sampled_pairs(result, costs):
+        if merge_device != device:
+            continue
+        retained = by_run[name]["snapshots"][relative]
+        fresh = replay(name, relative, merge_device)
+        for key in sorted(set(retained) | set(fresh)):
+            if key != "seconds":
+                require(
+                    fresh.get(key) == retained.get(key), f"{name}: merged pair {relative} {key} differs from its replay"
+                )
+        done += 1
+    return done
+
+
+def replay_all_pairs(result: dict[str, Any], index: dict[str, Any], device: str) -> int:
+    """Require every merge-added pair of this host's Aer device to equal snapshot_entry() recomputed, bit for bit.
+
+    The pairs run through parallel.ordered_map in pool_order of pair_cost(),
+    so a pass covers every added pair; pairs merged on another device are
+    skipped, since seeded counts differ across devices. Returns the number
+    of pairs replayed.
+    """
+    by_run = {run["run"]: run for run in result["runs"]}
+    pairs = [
+        (name, relative)
+        for merge in result.get("merged", [])
+        if merge["device"] == device
+        for name, relative in merge["pairs"]
+    ]
+    costs = pair_costs(result, index)
+    order = pool_order([costs[pair] for pair in pairs])
+    mapped = parallel.ordered_map(PairGhost(index, device), [pairs[k] for k in order], min_items=2)
+    for k, (fresh, _distances) in zip(order, mapped, strict=True):
+        name, relative = pairs[k]
+        retained = by_run[name]["snapshots"][relative]
+        for key in sorted(set(retained) | set(fresh)):
+            if key != "seconds":
+                require(
+                    fresh.get(key) == retained.get(key), f"{name}: merged pair {relative} {key} differs from its replay"
+                )
+    return len(pairs)
+
+
 def check(path: Path, runs: str, index: dict[str, Any]) -> None:
     """Validate every run of path, rerun the --runs execution ghosts, and replay merged runs bit for bit.
 
@@ -960,6 +1077,10 @@ def check(path: Path, runs: str, index: dict[str, Any]) -> None:
             continue
         replay_merged(by_run[name], index, device)
         replayed += 1
+    pairs = replay_pairs(retained, index, device) if tokens is None or "pairs" in tokens else 0
+    if tokens is not None and "pairs-all" in tokens:
+        pairs += replay_all_pairs(retained, index, device)
+    tokens = None if tokens is None else tokens - {"pairs", "pairs-all"}
     checked = 0
     for run in retained["runs"]:
         if "skipped" in run or (tokens is not None and run["run"] not in tokens):
@@ -979,12 +1100,12 @@ def check(path: Path, runs: str, index: dict[str, Any]) -> None:
                 f"{run['run']}: {old} vs {new}",
             )
     require(
-        checked + replayed > 0 and (tokens is None or checked == len(tokens)),
+        checked + replayed + pairs > 0 and (tokens is None or checked == len(tokens)),
         "--runs names a run FILE lacks",
     )
     print(
         f"{path}: execution-state ghosts of {checked} runs reproduced on {device}; "
-        f"{replayed} merged runs replayed bit for bit"
+        f"{replayed} merged runs and {pairs} sampled merge-added pairs replayed bit for bit"
     )
 
 
@@ -1068,6 +1189,33 @@ def self_test() -> None:
         require("digest differs" in str(reason), f"self-test: {reason}")
     else:
         raise SystemExit("self-test: a forged replaced digest passed")
+    pair_result = merged_result(retained, {}, pairs, [(new_entry, {})], {"device": "CPU"})
+    costs = {("results/live/a", "p1"): 1.0}
+    truth = {"results/live/a": {"p1": new_entry}}
+
+    def truthful(name: str, relative: str, _device: str) -> dict[str, Any]:
+        return dict(truth[name][relative], seconds=9.0)
+
+    require(replay_pairs(pair_result, {}, "CPU", costs, truthful) == 1, "self-test: pair not replayed")
+    require(replay_pairs(pair_result, {}, "GPU", costs, truthful) == 0, "self-test: other device replayed")
+    require(
+        replay_pairs(pair_result, {}, "CPU", {("results/live/a", "p1"): 2 * PAIR_COST_CAP}, truthful) == 0, "cost cap"
+    )
+    forged_pair = json.loads(serialize(pair_result))
+    forged_run = forged_pair["runs"][0]
+    forged_run["snapshots"]["p1"]["tvd"]["m"] = [0.25]
+    forged_run["summary"] = summarize(forged_run["snapshots"], forged_run["execution_snapshot"])
+    try:
+        replay_pairs(forged_pair, {}, "CPU", costs, truthful)
+    except SystemExit as reason:
+        require("differs from its replay" in str(reason), f"self-test: {reason}")
+    else:
+        raise SystemExit("self-test: a hand-altered merged pair passed")
+    ranks = [
+        sampled_pairs(pair_result, {("results/live/a", "p1"): 1.0}),
+        sampled_pairs(pair_result, {("results/live/a", "p1"): 1.0}),
+    ]
+    require(ranks[0] == ranks[1] == [("results/live/a", "p1", "CPU")], "self-test: pair sample")
     order = pool_order([1.0, 9.0, 3.0, 7.0, 5.0])
     require(order == [1, 0, 3, 2, 4], f"self-test: pool order {order}")
     # The exact path: dynamic circuits at EXACT_MIN_SHOTS draw from their law
