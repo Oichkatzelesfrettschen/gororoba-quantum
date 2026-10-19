@@ -24,6 +24,7 @@ from experiments import Group, Member, tvd
 from qpe_diagnostics import (
     N21_ORBIT_SWEEP_VARIANTS,
     N21_ORBIT_VARIANTS,
+    N21_SPECTATOR_GROUND_KINDS,
     N21_SPECTATOR_KINDS,
     N21_SPECTATOR_QUADRATURES,
     N21_SPECTATOR_SPLIT_KINDS,
@@ -388,24 +389,34 @@ _N21_PAIR_BUILDS = {"unbracketed": "nominal_unbarriered", "window_delay_unbracke
 
 
 def n21_orbit_variants(
-    window_sweep: bool = False, overlap_split: bool = False, overlap_arm: str = N21_OVERLAP_ARM
+    window_sweep: bool = False,
+    overlap_split: bool = False,
+    overlap_arm: str = N21_OVERLAP_ARM,
+    ground_control_split: bool = False,
 ) -> tuple[str, ...]:
-    """The orbit pairs of n21-orbit-rca; window_sweep adds window_delay_long, overlap_split names its pairs."""
+    """The orbit pairs of n21-orbit-rca; window_sweep adds window_delay_long, overlap_split names its pairs.
+
+    ground_control_split holds no orbit pair.
+    """
+    if ground_control_split:
+        return ()
     if overlap_split:
         return N21_OVERLAP_PAIRS[overlap_arm]
     return (*N21_ORBIT_VARIANTS, *(N21_ORBIT_SWEEP_VARIANTS if window_sweep else ()))
 
 
-def n21_spectator_kinds(overlap_split: bool = False) -> tuple[str, ...]:
-    """Spectator kinds of a configuration: the window sweep's, or the overlap split's."""
+def n21_spectator_kinds(overlap_split: bool = False, ground_control_split: bool = False) -> tuple[str, ...]:
+    """Spectator kinds of a configuration: the window sweep's, the overlap split's or the ground-control split's."""
+    if ground_control_split:
+        return N21_SPECTATOR_GROUND_KINDS
     return N21_SPECTATOR_SPLIT_KINDS if overlap_split else N21_SPECTATOR_KINDS
 
 
-def n21_spectator_members(overlap_split: bool = False) -> tuple[str, ...]:
+def n21_spectator_members(overlap_split: bool = False, ground_control_split: bool = False) -> tuple[str, ...]:
     """Member names of the spectator Ramsey arms, kind-major."""
     return tuple(
         f"n21_spectator_{kind}_{quadrature}"
-        for kind in n21_spectator_kinds(overlap_split)
+        for kind in n21_spectator_kinds(overlap_split, ground_control_split)
         for quadrature in N21_SPECTATOR_QUADRATURES
     )
 
@@ -418,6 +429,7 @@ def n21_orbit_rca_group(
     overlap_split: bool = False,
     reset_dt: int | None = None,
     overlap_arm: str = N21_OVERLAP_ARM,
+    ground_control_split: bool = False,
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -450,15 +462,24 @@ def n21_orbit_rca_group(
     durations. overlap_arm "nominal" builds the ten-member configuration
     instead: the nominal pair, nominal without its window barriers
     (nominal_unbarriered) and the six spectators. It excludes window_sweep.
+
+    ground_control_split holds six members and no orbit pair: the
+    immediate, idle and idle_ground spectators in X and Y. idle_ground is
+    idle with the control in |0>, so a ZZ phase to the control becomes a
+    fixed rotation of qubit 2 that its X and Y visibility does not see. It
+    excludes window_sweep and overlap_split.
     """
     if overlap_split and window_sweep:
         raise ValueError("overlap_split and window_sweep are separate n21-orbit-rca configurations")
-    if overlap_split and (type(reset_dt) is not int or reset_dt <= 0):
-        raise ValueError("overlap_split requires a positive integer reset_dt from calibration")
+    if ground_control_split and (window_sweep or overlap_split):
+        raise ValueError("ground_control_split excludes window_sweep and overlap_split")
+    if (overlap_split or ground_control_split) and (type(reset_dt) is not int or reset_dt <= 0):
+        split_name = "ground_control_split" if ground_control_split else "overlap_split"
+        raise ValueError(f"{split_name} requires a positive integer reset_dt from calibration")
     if overlap_arm not in N21_OVERLAP_PAIRS:
         raise ValueError(f"unknown overlap arm {overlap_arm!r}")
-    variants = n21_orbit_variants(window_sweep, overlap_split, overlap_arm)
-    spectating = window_sweep or overlap_split
+    variants = n21_orbit_variants(window_sweep, overlap_split, overlap_arm, ground_control_split)
+    spectating = window_sweep or overlap_split or ground_control_split
     clbits = N21_ORBIT_HERALDED_CLBITS if init_herald else 2
 
     def lifted(values: Any) -> np.ndarray:
@@ -498,7 +519,7 @@ def n21_orbit_rca_group(
                 ),
                 weights=lifted(_SPECTATOR_ONE),
             )
-            for kind in n21_spectator_kinds(overlap_split)
+            for kind in n21_spectator_kinds(overlap_split, ground_control_split)
             for quadrature in N21_SPECTATOR_QUADRATURES
         )
 
@@ -511,7 +532,7 @@ def n21_orbit_rca_group(
             result[f"{variant}_no_feedback_signed_contrast"] = float(control[1] - control[3])
             result[f"{variant}_contrast_difference"] = float(primary[1] - primary[3] - control[1] + control[3])
         if spectating:
-            for kind in n21_spectator_kinds(overlap_split):
+            for kind in n21_spectator_kinds(overlap_split, ground_control_split):
                 expectations = []
                 for quadrature in N21_SPECTATOR_QUADRATURES:
                     law = phase_marginal(distributions[f"n21_spectator_{kind}_{quadrature}"])
@@ -574,12 +595,16 @@ def family_contracts(
         # the herald read.
         heralded = bool((configuration or {}).get("init_herald"))
         split = bool((configuration or {}).get("overlap_split"))
+        ground = bool((configuration or {}).get("ground_control_split"))
         variants = n21_orbit_variants(
             bool((configuration or {}).get("window_sweep")),
             split,
             str((configuration or {}).get("overlap_arm", "nominal")),
+            ground,
         )
-        spectators = n21_spectator_members(split) if (configuration or {}).get("window_sweep") or split else ()
+        spectators = (
+            n21_spectator_members(split, ground) if (configuration or {}).get("window_sweep") or split or ground else ()
+        )
 
         def scored(values: tuple[float, ...]) -> tuple[float, ...]:
             return (
@@ -693,6 +718,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 bool(family.get("overlap_split", False)),
                 int(family["reset_dt"]) if "reset_dt" in family else None,
                 str(family.get("overlap_arm", "nominal")),
+                bool(family.get("ground_control_split", False)),
             )
         ]
     if family.get("name") in N21_FAMILIES:

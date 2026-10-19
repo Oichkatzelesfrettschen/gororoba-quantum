@@ -76,14 +76,15 @@ def settings(args: Any) -> dict[str, Any]:
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
     state-prep arm selection, the n21-orbit-rca initialization herald, its
-    overlap split and its pinned layout join them only when given, so a plan without them keeps its settings
-    unchanged.
+    overlap split, its ground-control split and its pinned layout join them
+    only when given, so a plan without them keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
     arms = getattr(args, "state_prep_arms", None)
     herald = {"init_herald": True} if getattr(args, "init_herald", False) else {}
     split = {"overlap_split": True} if getattr(args, "overlap_split", False) else {}
+    ground = {"ground_control_split": True} if getattr(args, "ground_control_split", False) else {}
     pin = getattr(args, "pin_layout", None)
     return (
         {
@@ -116,6 +117,7 @@ def settings(args: Any) -> dict[str, Any]:
         | ({"state_prep_arms": list(arms)} if arms is not None else {})
         | herald
         | split
+        | ground
         | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
     )
 
@@ -275,6 +277,37 @@ def orbit_sites(sites: list[tuple[tuple[str, int], ...]], members: Any) -> list[
     return [arm for arm, member in zip(sites, members, strict=True) if member.name.startswith("n21_orbit_")]
 
 
+def ground_split(members: Any) -> bool:
+    """Whether a group is the ground-control split, which holds spectator arms and no orbit arm."""
+    names = [member.name for member in members]
+    return not any(name.startswith("n21_orbit_") for name in names) and any(
+        name.startswith("n21_spectator_idle_ground_") for name in names
+    )
+
+
+def spectator_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
+    """Physical qubits of the control's resets in the ground-control split's arms.
+
+    Each immediate, idle and idle_ground arm resets the control once, after
+    qubit 2's readout, so the reset sites name the control whose measure and
+    reset durations size the idle.
+    """
+    controls: set[int] = set()
+    for arm in sites:
+        resets = [qubit for name, qubit in arm if name == "reset"]
+        if len(resets) != 1:
+            raise ValueError(f"a ground-control spectator arm lacks its single control reset: {arm}")
+        controls.update(resets)
+    return sorted(controls)
+
+
+def candidate_controls(sites: list[tuple[tuple[str, int], ...]], members: Any) -> list[int]:
+    """The control qubits that size a candidate's windows: the orbit window, or the spectator resets."""
+    if ground_split(members):
+        return spectator_controls(sites)
+    return window_controls(orbit_sites(sites, members))
+
+
 def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     """Physical qubits of the mid-circuit round: each arm's measures through its first reset.
 
@@ -302,10 +335,12 @@ def _control_windows(
     recompiled arm must keep its ordered measure and reset sites.
     reset_bound, the backend-wide reset length of an overlap split
     (reset_window_dt), resizes to the control's own reset with the windows
-    and enters them as reset_dt.
+    and enters them as reset_dt. A ground-control split reads its control
+    from the spectator arms' resets (candidate_controls).
     """
     sites = control_sites(runtime, candidate.isas)
-    controls = window_controls(orbit_sites(sites, candidate.group.members))
+    ground = ground_split(candidate.group.members)
+    controls = candidate_controls(sites, candidate.group.members)
     window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
     windows: dict[str, Any] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
     split = reset_bound is not None
@@ -319,8 +354,9 @@ def _control_windows(
         half_dt,
         has_herald(candidate.group.members[0].circuit),
         not split and any(member.name.startswith("n21_spectator_") for member in candidate.group.members),
-        overlap_split=split,
+        overlap_split=split and not ground,
         reset_dt=reset_dt,
+        ground_control_split=ground,
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -385,7 +421,7 @@ def pinned_roles_violations(runtime: Any, choice: Any, layout: list[int]) -> lis
             reasons.append(f"{member.name}: the arm starts on {initial}, not the pinned layout {layout}")
         if outside := sorted(set(runtime._physical(isa)) - set(layout)):
             reasons.append(f"{member.name}: routing leaves the pinned layout through qubits {outside}")
-    controls = window_controls(orbit_sites(control_sites(runtime, choice.isas), choice.group.members))
+    controls = candidate_controls(control_sites(runtime, choice.isas), choice.group.members)
     if controls != [layout[0]]:
         reasons.append(f"the orbit window plays on {controls}, not the pinned control {layout[0]}")
     return reasons
@@ -801,7 +837,10 @@ def family_candidates(
             # The overlap split replaces the window sweep and needs the
             # control's reset length beside the window durations.
             pin = getattr(args, "pin_layout", None)
-            split = bool(getattr(args, "overlap_split", False))
+            # The ground-control split holds spectator arms alone and also
+            # idles the control's measure plus reset length.
+            ground = bool(getattr(args, "ground_control_split", False))
+            split = bool(getattr(args, "overlap_split", False)) or ground
             for snapshot in snapshots:
                 local: dict[str, Any] = {}
                 try:
@@ -809,7 +848,13 @@ def family_candidates(
                     bound = window_durations(runtime, snapshot)
                     reset_bound = reset_window_dt(runtime, snapshot) if split else None
                     group = n21_orbit_rca_group(
-                        bound[0], bound[1], herald, window_sweep=not split, overlap_split=split, reset_dt=reset_bound
+                        bound[0],
+                        bound[1],
+                        herald,
+                        window_sweep=not split,
+                        overlap_split=split and not ground,
+                        reset_dt=reset_bound,
+                        ground_control_split=ground,
                     )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
@@ -887,6 +932,8 @@ def family_candidates(
                                         "orbit_gate_counts": orbit_gate_counts(candidate),
                                     }
                                     if getattr(args, "overlap_split", False)
+                                    else {"ground_control_split": True}
+                                    if getattr(args, "ground_control_split", False)
                                     else {"window_sweep": True}
                                     if args.family == "n21-orbit-rca"
                                     else {}

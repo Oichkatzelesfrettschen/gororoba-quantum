@@ -1205,7 +1205,7 @@ def _compile_primary(qc: QuantumCircuit, snap: Snapshot, seed: int) -> QuantumCi
         for layout in component_layouts(snap, qc.num_qubits):
             try:
                 return _compile(qc, snap, seed, layout)
-            except (QiskitError, ValueError):
+            except QiskitError, ValueError:
                 continue
         raise
 
@@ -3847,7 +3847,7 @@ def consume_approval(approved_dir: Path, run_name: str) -> dict[str, Any]:
     except FileExistsError:
         try:
             earlier = json.loads(marker.read_text())
-        except (OSError, ValueError):
+        except OSError, ValueError:
             earlier = {}
         raise LiveRunError(
             f"the approved record {approved_dir.name} was already consumed by run "
@@ -3997,7 +3997,7 @@ def _optional_repetition_delay(backend: Any) -> float | None:
     """The backend's configured repetition delay in seconds, or None for a fixed repetition rate."""
     try:
         return qpu_planning.repetition_delay(backend)
-    except (ValueError, AttributeError):
+    except ValueError, AttributeError:
         return None
 
 
@@ -6002,6 +6002,13 @@ def main(argv: list[str] | None = None) -> int:
         "immediate, idle and reset_only qubit-2 spectators in place of the window sweep; the policy and family "
         "configuration bind it",
     )
+    parser.add_argument(
+        "--ground-control-split",
+        action="store_true",
+        help="n21-orbit-rca with --pin-layout: plan only the immediate, idle and idle_ground qubit-2 spectators in "
+        "X and Y, idle_ground holding the control in |0>, so control-state-dependent dephasing separates from "
+        "qubit 2's own idle dephasing; the policy and family configuration bind it",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -6242,6 +6249,12 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--overlap-split applies to the n21-orbit-rca family only")
     if args.overlap_split and args.pin_layout is None:
         parser.error("--overlap-split requires --pin-layout: the split compares arms on fixed roles")
+    if args.ground_control_split and args.family != "n21-orbit-rca":
+        parser.error("--ground-control-split applies to the n21-orbit-rca family only")
+    if args.ground_control_split and args.pin_layout is None:
+        parser.error("--ground-control-split requires --pin-layout: the split compares arms on fixed roles")
+    if args.ground_control_split and args.overlap_split:
+        parser.error("--ground-control-split and --overlap-split are separate n21-orbit-rca configurations")
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
