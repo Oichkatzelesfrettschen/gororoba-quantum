@@ -76,13 +76,16 @@ def observe(service: Any) -> dict[str, Any]:
         row["job_id"]
         for row in rows
         if not unexecuted_cancellation(row)
-        and row["status"] not in FINISHED_STATUSES
-        or row["usage_status"] != "complete"
-        or not isinstance(row["final_qpu_charge_seconds"], int | float)
-        or row["final_qpu_charge_seconds"] <= 0
+        and (
+            row["status"] not in FINISHED_STATUSES
+            or row["usage_status"] != "complete"
+            or not isinstance(row["final_qpu_charge_seconds"], int | float)
+            or row["final_qpu_charge_seconds"] < 0
+            or (row["final_qpu_charge_seconds"] == 0 and row["status"] != "ERROR")
+        )
     ]
     if unsettled:
-        raise RuntimeError(f"jobs without a settled positive charge: {unsettled}; observe again after they settle")
+        raise RuntimeError(f"jobs without a settled charge: {unsettled}; observe again after they settle")
     usage = service.usage()
     return {
         "account_usage": {
