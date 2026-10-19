@@ -2525,7 +2525,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "b6785e370eb39bebb11a98785e60ce8b3024331b3ac2650a0716c3b4f1387849"
+          "sha256": "e52240eca2282b781bbbf5b1af73757c5bf363c541a31ac24c04c757114185a8"
         }
       ],
       "documents": [
@@ -3364,7 +3364,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "b6785e370eb39bebb11a98785e60ce8b3024331b3ac2650a0716c3b4f1387849"
+          "sha256": "e52240eca2282b781bbbf5b1af73757c5bf363c541a31ac24c04c757114185a8"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
