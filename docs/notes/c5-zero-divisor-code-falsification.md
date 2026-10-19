@@ -18,9 +18,13 @@ $0 simulation, defined before running: the 84-pair annihilation code must
 beat a random 84-codeword spherical code in 16 dimensions with a matched-filter
 decoder, at the same rate, under additive Gaussian noise. Script:
 `~/workspace/c5-sim/sim_c5.py` (precomputed annihilator matrices, vectorized
-Monte Carlo, 40 messages x 400 trials x 8 noise levels).
+Monte Carlo). Scope of the test: 40 of the 84 messages simulated
+(40 messages x 400 trials x 8 noise levels); error metric is symbol error
+rate (fraction of trials where the decoded label differs from the sent
+label). The simulation script is retained at the local path above and is
+not committed to the repository; rerunning requires that workspace.
 
-## Result: falsified
+## Result: falsified, within the tested scope
 
 | noise sigma | algebraic + annihilation (C5) | algebraic + matched filter | random + matched filter |
 |---|---|---|---|
@@ -30,8 +34,8 @@ Monte Carlo, 40 messages x 400 trials x 8 noise levels).
 | 0.20 | 0.800 | 0.316 | 0.046 |
 | 0.50 | 0.949 | 0.777 | 0.714 |
 
-C5 fails at near-zero noise (BER 0.76) where random coding is perfect (BER 0.00).
-The gap is not close and not a tuning problem.
+C5 fails at near-zero noise (symbol error rate 0.76) where random coding is
+perfect (0.00). The gap is not close and not a tuning problem.
 
 ## Structural cause
 
@@ -40,19 +44,55 @@ The gap is not close and not a tuning problem.
   ways on almost every message.
 - Only 35 distinct annihilator-set signatures exist among the 84 codewords.
 - Only 57 distinct transmitted blades (27 duplicates from the edge-to-blade
-  mapping), which floors even matched-filter decoding at 0.275.
+  mapping). The 0.275 matched-filter floor is the measured symbol error rate
+  at near-zero noise on the tested 40-message subset; the non-injective
+  encoding bounds the achievable rate below what 84 distinct codewords
+  would support, since duplicate transmissions are indistinguishable by any
+  decoder.
 
 A rescue was attempted: decoding by full 84-dimensional annihilation profile
-instead of argmin. It also fails (BER 0.575 at zero noise; the signatures
-collide).
+instead of argmin. It also fails (symbol error rate 0.575 at zero noise;
+the signatures collide).
 
-## The no-go
+## Scope of the no-go
 
-The exactness of the nulls is inseparable from their ambiguity. The symmetry
-that makes a_i * b_i = 0 exact guarantees each blade a crowd of exact
-annihilators. Infinite-contrast nulls and undecodable messages are the same
-phenomenon. This is a structural property of the construction, established by
-counting, not a simulation artifact.
+The falsification covers the tested configuration only: the 84-label
+encoder with its 57 distinct transmitted blades, the incoherent null-argmin
+decoder, and the 84-profile decoder, under additive Gaussian noise at the
+tested sigma levels. Within that configuration, the exactness of the nulls
+is inseparable from their ambiguity: the symmetry that makes a_i * b_i = 0
+exact guarantees each blade a crowd of exact annihilators. This is a
+property of the tested encoder/decoder pair, established by counting, not
+a simulation artifact.
+
+It does not establish that null-based communication is structurally
+impossible in general. The tested decoders are incoherent: they discard
+phase and output-mode information. A different decoder family is a
+different experiment.
+
+## Measurement hierarchy: coherent readouts exceed incoherent probes
+
+The coherent projector Pi_+=(I+iJ)/2 with J=L_{e_8} discriminates the
+complex states |psi+>=(u+ic)/sqrt(2) and |psi->=(u-ic)/sqrt(2) with
+probabilities exactly 1 and 0 (verified exact), while all 21 incoherent
+product-energy probes return identical values on both states.
+
+Two qualifications are required. First, psi+ and psi- are complex
+superpositions, not real zero divisors; Pi_+ is a coherent algebraic
+projector, not an annihilator test. It is therefore not an instance of
+null-based communication in C5's sense and does not falsify the C5 result
+above. Second, Pi_+ does not recover the real frame angle: it returns 1/2
+on every real frame state b(theta).
+
+What Pi_+ establishes is that the C5 failure is a decoder failure, not an
+information-destruction result. The zero-divisor structure's information
+survives the algebra: for the logical subspace C=span{u,c}, the map
+L_a|_C/sqrt(mu_a) is an isometric embedding whenever mu_a>0, so the
+coherent output preserves the encoded qubit even when scalar success
+probabilities contain no information about it. The incoherent
+null-argmin readout discards information that a coherent algebraic
+measurement retains. Coherent algebraic measurements strictly exceed
+incoherent probes in resolving power on zero-divisor-adjacent structure.
 
 ## What survives
 
@@ -65,6 +105,6 @@ The zero divisors remain pathology with structure, not machinery.
 ## Distribution-shift note
 
 Per the standing rule, a same-calibration simulation win would not have
-counted as a real falsifier either. Here the code fails at zero noise, so no
-shift axis can rescue it: the no-go holds in every session, on every mesh,
-by counting.
+counted as a real falsifier either. Here the tested code fails at zero
+noise, so no shift axis rescues that configuration: the failure is in the
+encoder/decoder pair itself, visible before any hardware variation enters.

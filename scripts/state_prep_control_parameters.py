@@ -386,8 +386,14 @@ def _planner(record: dict[str, Any], job: dict[str, Any]) -> dict[str, Any]:
     """The selected candidate's cost model for this job, matched by backend and PUB names."""
     optimization = record.get("optimization") or {}
     candidates = optimization.get("candidates") or []
-    require(bool(candidates), "the record holds no optimization candidate")
-    candidate = candidates[0]
+    selected = optimization.get("selected")
+    require(selected is not None, "the record names no selected optimization candidate")
+    selected_candidates = [cand for cand in candidates if cand.get("name") == selected]
+    require(
+        len(selected_candidates) == 1,
+        f"the record holds {len(selected_candidates)} candidates named {selected!r}; expected exactly one",
+    )
+    candidate = selected_candidates[0]
     names = [str(pub["name"]) for pub in job["pubs"]]
     matched = [
         planned

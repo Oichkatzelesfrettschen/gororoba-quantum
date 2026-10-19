@@ -76,10 +76,12 @@ def observe(service: Any) -> dict[str, Any]:
         row["job_id"]
         for row in rows
         if not unexecuted_cancellation(row)
-        and row["status"] not in FINISHED_STATUSES
-        or row["usage_status"] != "complete"
-        or not isinstance(row["final_qpu_charge_seconds"], int | float)
-        or row["final_qpu_charge_seconds"] <= 0
+        and (
+            row["status"] not in FINISHED_STATUSES
+            or row["usage_status"] != "complete"
+            or not isinstance(row["final_qpu_charge_seconds"], int | float)
+            or row["final_qpu_charge_seconds"] <= 0
+        )
     ]
     if unsettled:
         raise RuntimeError(f"jobs without a settled positive charge: {unsettled}; observe again after they settle")
@@ -130,7 +132,9 @@ def main() -> int:
     snapshot = observe(ibm_account.open_service(QiskitRuntimeService))
     target = inventory_target(arguments.out, snapshot["instance_crn_hash"])
     target.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
-    charge = sum(row["final_qpu_charge_seconds"] for row in snapshot["jobs"])
+    # Unexecuted cancellations pass the unsettled gate with a None charge;
+    # they consumed no QPU time and contribute 0 explicitly, not via TypeError.
+    charge = sum((row["final_qpu_charge_seconds"] or 0) for row in snapshot["jobs"])
     print(f"{len(snapshot['jobs'])} settled jobs, {charge} s charged; wrote {target}")
     return 0
 
