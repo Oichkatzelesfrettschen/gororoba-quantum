@@ -164,7 +164,7 @@ def _cgroup_v2_quota(cpu_max: Path) -> float | None:
         if quota_text == "max":
             return None
         quota, period = int(quota_text), int(period_text)
-    except OSError, ValueError:
+    except (OSError, ValueError):
         return None
     return quota / period if quota > 0 and period > 0 else None
 
@@ -172,7 +172,7 @@ def _cgroup_v2_quota(cpu_max: Path) -> float | None:
 def _cgroup_v1_quota(quota_file: Path, period_file: Path) -> float | None:
     try:
         quota, period = int(quota_file.read_text()), int(period_file.read_text())
-    except OSError, ValueError:
+    except (OSError, ValueError):
         return None
     return quota / period if quota > 0 and period > 0 else None
 

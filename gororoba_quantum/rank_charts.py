@@ -173,7 +173,7 @@ def verify_rank_certificate(
             and input_norm_squared == sum((value * value for value in values), Fraction(0))
             and block_encoding_alpha == sum((abs(value) for value in values), Fraction(0))
         )
-    except ValueError, TypeError, AttributeError, IndexError:
+    except (ValueError, TypeError, AttributeError, IndexError):
         return False
 
 

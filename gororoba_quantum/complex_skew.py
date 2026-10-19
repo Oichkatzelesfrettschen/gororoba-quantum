@@ -292,7 +292,7 @@ def verify_kernel_chart(chart: ComplexKernelChart) -> bool:
             and chart.hermitian_metric == (chart.frame.H * chart.frame).applyfunc(sp.simplify)
             and sp.Matrix(multiplication_matrix(values)) * chart.real_frame == sp.zeros(len(values), 2 * len(free))
         )
-    except ValueError, TypeError, AttributeError, IndexError:
+    except (ValueError, TypeError, AttributeError, IndexError):
         return False
 
 

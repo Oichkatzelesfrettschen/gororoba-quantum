@@ -372,7 +372,7 @@ def calibration_identity(content: bytes) -> dict[str, Any] | None:
     """
     try:
         data = json.loads(content)
-    except UnicodeDecodeError, json.JSONDecodeError:
+    except (UnicodeDecodeError, json.JSONDecodeError):
         return None
     if not (isinstance(data, dict) and str(data.get("schema", "")).startswith(CALIBRATION_SCHEMA_PREFIX)):
         return None

@@ -76,7 +76,7 @@ def _polynomial(value: sp.Expr) -> bool:
             and value.free_symbols <= set(POLYNOMIAL_VARIABLES)
             and sp.Poly(value, *POLYNOMIAL_VARIABLES, domain=sp.QQ).domain == sp.QQ
         )
-    except BasePolynomialError, TypeError, ValueError, AttributeError:
+    except (BasePolynomialError, TypeError, ValueError, AttributeError):
         return False
 
 
@@ -184,7 +184,7 @@ def verify_nullity_twelve_slice(point: NullityTwelveSlicePoint) -> bool:
             and point.rank_certificate.side == "left"
             and point.rank_certificate.nullity == 12
         )
-    except ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError:
+    except (ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError):
         return False
 
 
@@ -513,7 +513,7 @@ def verify_nullity_twelve_curves(certificate: NullityTwelveCurvesCertificate) ->
         ):
             return False
         return _verify_internal_geometry()
-    except ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError, BasePolynomialError:
+    except (ValueError, TypeError, AttributeError, IndexError, ZeroDivisionError, BasePolynomialError):
         return False
 
 

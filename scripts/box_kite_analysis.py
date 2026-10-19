@@ -251,7 +251,7 @@ def bit_matrix(shots: list[str], width: int, order: str) -> np.ndarray | None:
     """Shots as an (n, width) array of 0 and 1 whose column q is qubit q; None when a character is neither."""
     try:
         data = np.frombuffer("".join(shots).encode("ascii"), dtype=np.uint8).reshape(len(shots), width) - 48
-    except UnicodeEncodeError, ValueError:
+    except (UnicodeEncodeError, ValueError):
         return None
     if bool((data > 1).any()):
         return None
@@ -376,7 +376,7 @@ def load_batch(run: Path, base: Path, cases_root: Path = CASES) -> Batch:
             stamp = job["job"].get("finished_at")
             try:
                 datetime.fromisoformat(stamp)
-            except TypeError, ValueError:
+            except (TypeError, ValueError):
                 fail(f"{run}/{file}: the bracketed series interpolates in job finish time; finished_at is {stamp!r}")
             finished[file] = stamp
         shots[file] = raw

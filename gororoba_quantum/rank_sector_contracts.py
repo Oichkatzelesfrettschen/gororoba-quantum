@@ -202,7 +202,7 @@ def _circuit_sector(sector: int) -> dict[str, Any]:
 def _expect_rejected(operation: Callable[[], object], label: str) -> None:
     try:
         operation()
-    except ValueError, RuntimeError:
+    except (ValueError, RuntimeError):
         return
     raise RuntimeError(f"invalid rank-sector input accepted: {label}")
 
