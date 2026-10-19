@@ -318,6 +318,17 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if "init_herald" in design:
         _require(design["init_herald"] is True, "init_herald is recorded only when set")
         arguments.append("--init-herald")
+    if "pin_layout" in design:
+        pin = design["pin_layout"]
+        _require(
+            isinstance(pin, dict)
+            and isinstance(pin.get("backend"), str)
+            and isinstance(pin.get("qubits"), list)
+            and bool(pin["qubits"])
+            and all(type(qubit) is int and qubit >= 0 for qubit in pin["qubits"]),
+            "pin_layout names a backend and its nonnegative qubits",
+        )
+        arguments.extend(["--pin-layout", f"{pin['backend']}:" + ",".join(map(str, pin["qubits"]))])
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -1774,6 +1785,24 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_sweep")
+            else []
+        ),
+        *(
+            [
+                "--pin-layout places logical qubit i on the i-th named qubit (control, then the work qubits of "
+                "bits 1, 4 and 16) with one identity replica, so the roles are "
+                + ", ".join(
+                    f"{role} {qubit}"
+                    for role, qubit in zip(
+                        ("control", "work bit 1", "work bit 4", "work bit 16"),
+                        record["family_configuration"]["pin_layout"]["qubits"],
+                        strict=False,
+                    )
+                )
+                + ".",
+                "",
+            ]
+            if family == "n21-orbit-rca" and "pin_layout" in record.get("family_configuration", {})
             else []
         ),
         *(

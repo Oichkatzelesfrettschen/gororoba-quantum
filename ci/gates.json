@@ -3212,6 +3212,14 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --pin-layout",
+   "name": "core-592",
+   "seconds": 15.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --init-herald",
    "name": "core-445",
    "seconds": 24.0,

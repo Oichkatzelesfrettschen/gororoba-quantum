@@ -2174,6 +2174,84 @@ def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
         )
 
 
+PINNED_ORBIT_LAYOUT = [142, 136, 143, 144]
+
+
+def _verify_pin_layout(snapshot: live_run.Snapshot) -> None:
+    """A pinned n21-orbit-rca plan keeps every role on its named qubit and binds the pin in its policy.
+
+    The pinned candidate's replica places logical qubit i on the i-th named
+    qubit with the window on the pinned control; a pin naming another
+    backend or a qubit the calibration excludes refuses the snapshot, and an
+    unpinned plan's settings carry no pin key.
+    """
+    _require("pin_layout" not in qpu_planning.settings(_args("n21-orbit-rca")), "an unpinned plan carries a pin")
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    args = _args("n21-orbit-rca", pin_layout=pin)
+    _require(qpu_planning.settings(args).get("pin_layout") == pin, "the policy settings drop the pin")
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], args, traces)
+    _require(bool(candidates), f"FakeFez refuses the pinned layout: {traces.get('family_rejections')}")
+    for (choice,), configuration in candidates:
+        _require(configuration.get("pin_layout") == pin, f"the configuration records {configuration.get('pin_layout')}")
+        _require(len(choice.replicas) == 1, "a pinned plan placed more than one replica")
+        placed = [choice.replicas[0].mapping.get(qubit) for qubit in choice.layout]
+        _require(placed == PINNED_ORBIT_LAYOUT, f"the pinned replica places the roles on {placed}")
+        controls = qpu_planning.window_controls(
+            qpu_planning.orbit_sites(
+                qpu_planning.control_sites(live_run, [entry.packed for entry in choice.entries]), choice.group.members
+            )
+        )
+        _require(controls == [PINNED_ORBIT_LAYOUT[0]], f"the packed window plays on {controls}")
+    for refused, reason in (
+        ({"backend": "another_backend", "qubits": PINNED_ORBIT_LAYOUT}, "names another_backend"),
+        (pin, "calibration excludes [143]"),
+    ):
+        fixture = copy.copy(snapshot)
+        if refused is pin:
+            fixture.excluded_qubits = {**snapshot.excluded_qubits, 143: "operator exclusion"}
+        rejected: dict[str, Any] = {}
+        try:
+            qpu_planning.family_candidates(live_run, [fixture], _args("n21-orbit-rca", pin_layout=refused), rejected)
+        except live_run.LiveRunError:
+            pass
+        else:
+            raise RuntimeError(f"a pin that {reason} still planned")
+        found = [row["reason"] for row in rejected.get("family_rejections", [])]
+        _require(any(reason in text for text in found), f"the refusal reads {found}, not {reason!r}")
+    stderr = io.StringIO()
+    with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+        live_run.main(
+            [
+                "--family",
+                "n21-orbit-feedback",
+                "--pin-layout",
+                f"{snapshot.name}:142,136,143,144",
+                "--max-execution-seconds",
+                "10",
+                "--max-total-execution-seconds",
+                "10",
+            ]
+        )
+    _require(
+        "--pin-layout applies to the n21-orbit-rca family only" in stderr.getvalue(), "another family took the pin"
+    )
+
+
+def _verify_pin_layout_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_pin_layout(snapshot)
+    print(
+        "QPU planning: a pinned n21-orbit-rca plan places each logical qubit and the window on its named qubit "
+        "with one identity replica and binds the pin in policy and configuration; another backend or an "
+        "excluded pinned qubit refuses, and another family rejects the flag"
+    )
+
+
 def _herald_renamed(isa: Any) -> Any:
     """isa with every classical register renamed, so no register plays the herald role."""
     from qiskit import ClassicalRegister, QuantumCircuit
@@ -2456,8 +2534,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--init-herald", action="store_true", help="run only the n21-orbit-rca initialization-herald contract"
     )
+    parser.add_argument("--pin-layout", action="store_true", help="run only the n21-orbit-rca pinned-layout contract")
     parsed = parser.parse_args()
-    if parsed.serialized_noise:
+    if parsed.pin_layout:
+        _verify_pin_layout_only()
+    elif parsed.serialized_noise:
         _verify_serialized_noise_only()
     elif parsed.window_bracket:
         _verify_window_bracket_only()

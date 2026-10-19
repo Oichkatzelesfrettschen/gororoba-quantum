@@ -73,14 +73,15 @@ def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
-    state-prep arm selection and the n21-orbit-rca initialization herald
-    join them only when given, so a plan without them keeps its settings
+    state-prep arm selection, the n21-orbit-rca initialization herald and
+    its pinned layout join them only when given, so a plan without them keeps its settings
     unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
     arms = getattr(args, "state_prep_arms", None)
     herald = {"init_herald": True} if getattr(args, "init_herald", False) else {}
+    pin = getattr(args, "pin_layout", None)
     return (
         {
             name: getattr(args, name, default)
@@ -111,6 +112,7 @@ def settings(args: Any) -> dict[str, Any]:
         | bernstein
         | ({"state_prep_arms": list(arms)} if arms is not None else {})
         | herald
+        | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
     )
 
 
@@ -266,7 +268,7 @@ def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     return sorted(window)
 
 
-def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]) -> tuple[Any, dict[str, float]]:
+def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]) -> tuple[Any, dict[str, Any]]:
     """Resize one routed window candidate to its control's own measure and reset durations.
 
     The candidate was routed with the backend-wide bound. The windows come
@@ -302,6 +304,44 @@ def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]
     joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
     resized = runtime.Choice(group, candidate.snap, candidate.seed, candidate.layout, isas, scores, joint)
     return resized, windows
+
+
+def pinned_orbit_layout(runtime: Any, snapshot: Any, pin: dict[str, Any]) -> list[int]:
+    """The physical qubit of each n21-orbit-rca logical qubit on snapshot under --pin-layout.
+
+    A pin names one backend and the qubits of the group's logical order, so
+    another backend, a qubit outside the device or one the fresh calibration
+    excludes refuses the snapshot rather than moving a role.
+    """
+    qubits = [int(qubit) for qubit in pin["qubits"]]
+    if snapshot.name != pin["backend"]:
+        raise runtime.LiveRunError(f"the pinned layout names {pin['backend']} qubits")
+    outside = [qubit for qubit in qubits if qubit >= snapshot.backend.target.num_qubits]
+    excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
+    if outside or excluded:
+        raise runtime.LiveRunError(f"pinned qubits {outside} lie outside the device; calibration excludes {excluded}")
+    return qubits
+
+
+def pinned_roles_violations(runtime: Any, choice: Any, layout: list[int]) -> list[str]:
+    """Reasons a routed pinned candidate moves a role off its pinned qubit.
+
+    Every arm must start logical qubit i on layout[i], touch no other
+    qubit, and play the orbit window's measure and reset on the pinned
+    control. Routing swaps among the work qubits stay part of the compiled
+    program, which the QPY bytes and the approval bind.
+    """
+    reasons = []
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        initial = isa.layout.initial_index_layout(filter_ancillas=True)[: len(layout)]
+        if initial != layout:
+            reasons.append(f"{member.name}: the arm starts on {initial}, not the pinned layout {layout}")
+        if outside := sorted(set(runtime._physical(isa)) - set(layout)):
+            reasons.append(f"{member.name}: routing leaves the pinned layout through qubits {outside}")
+    controls = window_controls(orbit_sites(control_sites(runtime, choice.isas), choice.group.members))
+    if controls != [layout[0]]:
+        reasons.append(f"the orbit window plays on {controls}, not the pinned control {layout[0]}")
+    return reasons
 
 
 def control_timing_dt(target: Any, control: int) -> tuple[float, float]:
@@ -699,7 +739,7 @@ def family_candidates(
     candidates: list[tuple[list[Any], dict[str, Any]]] = []
     if args.family in (*N21_FAMILIES, "n21-orbit-rca"):
         routed = []
-        windows: dict[int, dict[str, float]] = {}
+        windows: dict[int, dict[str, Any]] = {}
         herald = bool(getattr(args, "init_herald", False))
         if args.family == "n21-orbit-rca":
             # Window durations come from each backend's calibration, so each
@@ -708,12 +748,17 @@ def family_candidates(
             # leaves the others in the search; the trace records its reason.
             # Routing uses the backend-wide bound, and each routed candidate
             # then takes its control's own measure and reset durations.
+            # A pinned layout compiles every arm from the named qubits and
+            # keeps the identity replica, so the replica search cannot
+            # permute the roles.
+            pin = getattr(args, "pin_layout", None)
             for snapshot in snapshots:
                 local: dict[str, Any] = {}
                 try:
+                    pinned = None if pin is None else pinned_orbit_layout(runtime, snapshot, pin)
                     bound = window_durations(runtime, snapshot)
                     group = n21_orbit_rca_group(bound[0], bound[1], herald, window_sweep=True)
-                    placed = runtime.select_candidates(group, [snapshot], args.seeds, local)
+                    placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
                     trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
                     continue
@@ -721,6 +766,10 @@ def family_candidates(
                 for placement in placed:
                     try:
                         choice, window = _control_windows(runtime, placement, bound)
+                        if pinned is not None:
+                            if moved := pinned_roles_violations(runtime, choice, pinned):
+                                raise runtime.LiveRunError("; ".join(moved))
+                            window = window | {"pin_layout": {"backend": snapshot.name, "qubits": pinned}}
                     except (runtime.LiveRunError, QiskitError, ValueError) as error:
                         trace.setdefault("family_rejections", []).append(
                             {
@@ -758,7 +807,12 @@ def family_candidates(
             for cap in sorted(set(tiers)):
                 trial = copy.copy(candidate)
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
-                if runtime._prepare_individual_candidate(trial, trace, policy):
+                pinned_replicas = (
+                    [Replica(0, {qubit: qubit for qubit in candidate.layout}, min(candidate.member_scores))]
+                    if "pin_layout" in windows.get(id(candidate), {})
+                    else None
+                )
+                if runtime._prepare_individual_candidate(trial, trace, policy, pinned_replicas):
                     # A cap above the floor-admitted replica count places the
                     # same replicas as a smaller cap; one copy enters the search.
                     replicas = [tuple(replica.qubits) for replica in trial.replicas]
