@@ -33,28 +33,53 @@ env:
 jobs:
   gates:
     needs: changes
-    name: gates ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
+    name: gates ${{ matrix.shard }}/12
     runs-on: ubuntu-26.04
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        shard: ${{ fromJSON(github.event_name == 'pull_request' && '[0,1,2,3,4,5]' || '[0,1,2,3,4,5,6,7,8,9,10,11]') }}
+        # Twelve shards reach the core-597 floor under ci/gate_timings.json;
+        # with the other jobs a run holds 17 of the 20 concurrent free-plan jobs.
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     env:
       PYTHONHASHSEED: "0"
       MPLBACKEND: Agg
+      PINS_VENV: /home/runner/.cache/gororoba-ci/pins-venv
+      REPLAY_VENV: /home/runner/.cache/gororoba-ci/replay-venv
+      LEDGER: /home/runner/.cache/gororoba-ci/ledger/gate-ledger.json
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        id: python
         with:
           python-version: "3.14.7"
-          cache: pip
-          cache-dependency-path: |
-            requirements.txt
-            ci/requirements-ci.txt
-            ci/requirements-replay.txt
+      # The pinned environment is a venv keyed by every file that decides its
+      # contents, so a hit reuses exactly what ci/install_pins.sh would build.
+      - name: Restore the pinned environment
+        id: pins-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.PINS_VENV }}
+          key: pins-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('requirements.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
       - name: Install pinned dependencies
-        run: sh ci/install_pins.sh
+        if: steps.pins-cache.outputs.cache-hit != 'true'
+        env:
+          BASE_PYTHON: ${{ steps.python.outputs.python-path }}
+        run: |
+          set -eu
+          "$BASE_PYTHON" -m venv "$PINS_VENV"
+          PYTHON="$PINS_VENV/bin/python" sh ci/install_pins.sh
+      - name: Save the pinned environment
+        if: steps.pins-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.PINS_VENV }}
+          key: ${{ steps.pins-cache.outputs.cache-primary-key }}
+      - name: Use the pinned environment
+        run: |
+          echo "PYTHON=$PINS_VENV/bin/python" >> "$GITHUB_ENV"
+          echo "$PINS_VENV/bin" >> "$GITHUB_PATH"
       - name: Runner specs
         run: |
           "$PYTHON" ci/runner_specs.py
@@ -67,30 +92,109 @@ jobs:
         id: plan
         run: >-
           "$PYTHON" ci/run_gates.py --tier full
-          --shard ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
+          --shard ${{ matrix.shard }}/12
           ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
           --plan ${{ runner.temp }}/gate-plan.json --github-output "$GITHUB_OUTPUT"
-      - name: Install the recorded compiler runtime
+      - name: Restore the recorded compiler runtime
+        id: replay-cache
         if: steps.plan.outputs.historical == 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.REPLAY_VENV }}
+          key: replay-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('ci/requirements-replay.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
+      - name: Install the recorded compiler runtime
+        if: steps.plan.outputs.historical == 'true' && steps.replay-cache.outputs.cache-hit != 'true'
+        env:
+          BASE_PYTHON: ${{ steps.python.outputs.python-path }}
         run: |
           set -eu
-          "$PYTHON" -m venv "$RUNNER_TEMP/historical-compiler"
-          replay="$RUNNER_TEMP/historical-compiler/bin/python"
-          PYTHON="$replay" REQUIREMENTS_FILE=ci/requirements-replay.txt sh ci/install_pins.sh
-          echo "REPLAY_PYTHON=$replay" >> "$GITHUB_ENV"
+          "$BASE_PYTHON" -m venv "$REPLAY_VENV"
+          PYTHON="$REPLAY_VENV/bin/python" REQUIREMENTS_FILE=ci/requirements-replay.txt sh ci/install_pins.sh
+      - name: Save the recorded compiler runtime
+        if: steps.plan.outputs.historical == 'true' && steps.replay-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.REPLAY_VENV }}
+          key: ${{ steps.replay-cache.outputs.cache-primary-key }}
+      - name: Use the recorded compiler runtime
+        if: steps.plan.outputs.historical == 'true'
+        run: echo "REPLAY_PYTHON=$REPLAY_VENV/bin/python" >> "$GITHUB_ENV"
+      # Only push-to-main and nightly runs save a ledger (job ledger), so a
+      # pull request reads main's latest ledger and can never write one.
+      - name: Restore the gate ledger
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.LEDGER }}
+          key: gate-ledger-${{ github.sha }}
+          restore-keys: gate-ledger-
       - name: Run shard
+        # Pull requests and pushes skip gates whose ledger key is unchanged;
+        # nightly and manual runs run every gate and audit the ledger.
         run: >-
           "$PYTHON" ci/run_gates.py
           --tier full
           ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
+          ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '--ledger-audit' || '--ledger' }} "$LEDGER"
+          --ledger-out ${{ runner.temp }}/gate-ledger.json
           --timings ${{ runner.temp }}/gate-timings.json
-          --shard ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
+          --shard ${{ matrix.shard }}/12
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
         if: always()
         with:
           name: gate-timings-${{ matrix.shard }}
           path: ${{ runner.temp }}/gate-timings.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: gate-ledger-${{ matrix.shard }}
+          path: ${{ runner.temp }}/gate-ledger.json
+          if-no-files-found: ignore
+
+  ledger:
+    name: merge the gate ledger
+    needs: gates
+    if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    env:
+      LEDGER: /home/runner/.cache/gororoba-ci/ledger/gate-ledger.json
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        with:
+          python-version: "3.14.7"
+      - name: Restore the gate ledger
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.LEDGER }}
+          key: gate-ledger-${{ github.sha }}
+          restore-keys: gate-ledger-
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
+        with:
+          pattern: gate-*
+          path: ${{ runner.temp }}/shards
+      # A shard's ledger names every gate it decided, so its failures drop
+      # their earlier entries; a shard that uploaded nothing leaves its gates'
+      # entries to the key check of the next run.
+      - name: Merge the shard ledgers and timings
+        run: |
+          set -eu
+          base=""
+          [ ! -f "$LEDGER" ] || base="--base $LEDGER"
+          # shellcheck disable=SC2086
+          "$PYTHON" -B ci/gate_ledger.py merge $base "$RUNNER_TEMP/gate-ledger.json" "$RUNNER_TEMP"/shards/gate-ledger-*/gate-ledger.json
+          mkdir -p "$(dirname "$LEDGER")"
+          cp "$RUNNER_TEMP/gate-ledger.json" "$LEDGER"
+          "$PYTHON" -B ci/merge_gate_timings.py --base ci/gate_timings.json "$RUNNER_TEMP/gate_timings.json" "$RUNNER_TEMP"/shards/gate-timings-*/gate-timings.json
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.LEDGER }}
+          key: gate-ledger-${{ github.sha }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        with:
+          name: merged-gate-timings
+          path: ${{ runner.temp }}/gate_timings.json
 
   qi-stack:
     needs: changes
