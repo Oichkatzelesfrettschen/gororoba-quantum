@@ -169,7 +169,17 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Wang et al. 2009 -- Decoherence Dynamics of Complex Photon States in a Superconducting Circuit](notes/0909.4585.md) | [PDF](https://arxiv.org/pdf/0909.4585v1) | `0909.4585v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0909.4585v1) |
 | [Murch, Weber, Macklin and Siddiqi 2013 -- Observing single quantum trajectories of a superconducting qubit](notes/1305.7270.md) | [PDF](https://arxiv.org/pdf/1305.7270v2) | `1305.7270v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1305.7270v2) |
 | [Cramer et al. 2010 -- Efficient quantum state tomography](notes/1101.4366.md) | [PDF](https://arxiv.org/pdf/1101.4366v1) | `1101.4366v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1101.4366v1) |
+| [Brown 1972 -- Structure of Zero Divisors, and Other Algebraic Structures, in Higher Dimensional Real Cayley-Dickson Algebras (PhD dissertation, Univ. of Missouri--Rolla)](notes/brown-1972-dissertation.md) | [Dissertation record](https://scholarsmine.mst.edu/doctoral_dissertations/2088) | — | [Open access](https://scholarsmine.mst.edu/doctoral_dissertations/2088) |
+| [Moreno 1997 -- The Zero Divisors of the Cayley-Dickson Algebras over the Real Numbers (arXiv q-alg/9710013)](notes/q-alg-9710013.md) | [PDF](https://arxiv.org/pdf/q-alg/9710013v1) | `q-alg-9710013v1.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/q-alg/9710013v1) |
+| [De Marrais 2000 -- The 42 Assessors and the Box-Kites They Fly (arXiv math/0011260)](notes/math-0011260.md) | [PDF](https://arxiv.org/pdf/math/0011260v1) | `math-0011260v1.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0011260v1) |
 | [Baez 2002 -- The Octonions](notes/math-0105155.md) | [PDF](https://arxiv.org/pdf/math/0105155v4) | `math-0105155v4.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0105155v4) |
+| [De Marrais 2002 -- Flying Higher Than a Box-Kite: Kite-Chain Middens, Sand Mandalas, and Zero-Divisor Patterns in the 2^n-ions Beyond the Sedenions (arXiv math/0207003)](notes/math-0207003.md) | [PDF](https://arxiv.org/pdf/math/0207003v2) | `math-0207003v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0207003v2) |
+| [De Marrais 2004 -- Box-Kites III: Quizzical Quaternions, Mock Octonions, and Other Zero-Divisor-Suppressing Structures (arXiv math/0403113)](notes/math-0403113.md) | [PDF](https://arxiv.org/pdf/math/0403113v1) | `math-0403113v1.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0403113v1) |
+| [De Marrais 2006 -- Presto! Digitization, Part I (arXiv math/0603281)](notes/math-0603281.md) | [PDF](https://arxiv.org/pdf/math/0603281v1) | `math-0603281v1.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0603281v1) |
+| [De Marrais 2007 -- Placeholder Substructures I (arXiv math/0703745; Complex Systems 17, 125-142)](notes/math-0703745.md) | [PDF](https://arxiv.org/pdf/math/0703745v3) | `math-0703745v3.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0703745v3) |
+| [De Marrais 2007 -- Placeholder Substructures II (arXiv 0704.0026)](notes/0704-0026.md) | [PDF](https://arxiv.org/pdf/0704.0026v3) | `0704.0026v3.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/0704.0026v3) |
+| [De Marrais 2007 -- Placeholder Substructures III (arXiv 0704.0112)](notes/0704-0112.md) | [PDF](https://arxiv.org/pdf/0704.0112v3) | `0704.0112v3.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/0704.0112v3) |
+| [Guterman and Zhilina 2021 -- Relation Graphs of the Sedenion Algebra (J. Math. Sci. 255(3), 254-270, DOI 10.1007/s10958-021-05367-6; arXiv 2608.26903 is the same work)](notes/2608-26903.md) | [PDF](https://arxiv.org/pdf/2608.26903v1) | `2608.26903v1.pdf` | [ArXiv non-exclusive distribution grant](https://arxiv.org/abs/2608.26903v1) |
 | [Procopio et al. 2017 -- Experimental Test of Hyper-Complex Quantum Theories](notes/1602.01624.md) | [PDF](https://arxiv.org/pdf/1602.01624v2) | `1602.01624v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1602.01624v2) |
 | [Adler 2017 -- Does the Peres experiment using photons test for hyper-complex (quaternionic) quantum theories?](notes/1604.04950.md) | [PDF](https://arxiv.org/pdf/1604.04950v3) | `1604.04950v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1604.04950v3) |
 | [Procopio, Rozema, Dakic and Walther 2017 -- Comment on Adler's Peres-experiment critique](notes/1607.01648.md) | [PDF](https://arxiv.org/pdf/1607.01648v1) | `1607.01648v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1607.01648v1) |
@@ -188,6 +198,15 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Sank et al. 2016 -- measurement-induced state transitions (arXiv 1606.05721)](notes/1606.05721.md) | [PDF](https://arxiv.org/pdf/1606.05721v2) | `1606.05721v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1606.05721v2) |
 
 ## Licensed software source snapshots
+The [Nebe--Sloane lattice catalogue note](notes/nebe-lattices-d14-a13.md)
+records the inspected D14 (dimension 14, determinant 4) and A13 (dimension
+13, determinant 14) entries used as independent checks of the repository's
+assessor-blade lattice identifications. The [AFLOW prototype
+note](notes/aflow-a_cf4-225-a.md) records the inspected A_cF4_225_a
+face-centered-cubic (Cu-type, Fm-3m) designation used as the
+crystallographic comparison prototype. Both are external web references;
+response hashes identify the inspected bytes.
+
 
 These archives preserve the exact original upstream bytes and license notices.
 Source inspection supplies candidate proof interfaces and independent

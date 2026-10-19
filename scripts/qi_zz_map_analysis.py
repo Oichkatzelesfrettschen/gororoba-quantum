@@ -84,8 +84,10 @@ def read_batch(task: dict[str, Any]) -> dict[str, Any]:
     results = json.loads(read("results.json"))
     submission_schema = submission.get("schema")
     require(submission_schema in {"qi-submission-v1", "qi-submission-v2"}, "missing submission provenance")
-    if submission_schema == "qi-submission-v2" or "cases_sha256" in submission:
-        require(submission.get("cases_sha256") == digest(case_bytes), "submission cases.json digest mismatch")
+    # The cases binding is identical for v1 and v2 receipts. A historical v1
+    # receipt that predates the binding carries no cases_sha256 and fails
+    # loudly here instead of passing with weaker provenance.
+    require(submission.get("cases_sha256") == digest(case_bytes), "submission cases.json digest mismatch")
     if submission_schema == "qi-submission-v2":
         require(submission.get("state") == "enqueued", "submission batch was not enqueued")
     require(submission.get("backend") == task["backend"], "submission backend mismatch")
@@ -109,8 +111,8 @@ def read_batch(task: dict[str, Any]) -> dict[str, Any]:
             "planned role/delay/quadrature metadata differs from retained cases.json",
         )
         require(digest(read(name)) == row["sha256"] == case_rows[name]["sha256"], "circuit hash mismatch")
-        if submission_schema == "qi-submission-v2":
-            require(submitted_hashes[name] == row["sha256"], "submission job circuit digest mismatch")
+        # The per-job circuit digest binding is identical for v1 and v2 receipts.
+        require(submitted_hashes[name] == row["sha256"], "submission job circuit digest mismatch")
         retained = completed[name]
         job = retained["job"]
         require(job["status"] == "completed", f"job for {name} is incomplete")
@@ -735,7 +737,8 @@ def provenance_self_test() -> None:
             "backend_type_id": 7,
             "shots": 2,
             "batch_job": "synthetic-batch",
-            "jobs": [{"file": "fixture.cq", "job": "synthetic-job"}],
+            "cases_sha256": digest(case_bytes),
+            "jobs": [{"file": "fixture.cq", "job": "synthetic-job", "sha256": row["sha256"]}],
         }
         submission_path = batch / "submission.json"
         submission_path.write_text(json.dumps(submission))
@@ -791,7 +794,10 @@ def provenance_self_test() -> None:
                 raise AssertionError("a changed cases.json digest was accepted")
         for changes, message in (
             ({"state": "created"}, "submission batch was not enqueued"),
-            ({"jobs": submission["jobs"]}, "submission job circuit digest mismatch"),
+            (
+                {"jobs": [{"file": "fixture.cq", "job": "synthetic-job"}]},
+                "submission job circuit digest mismatch",
+            ),
             (
                 {"jobs": [{"file": "fixture.cq", "job": "synthetic-job", "sha256": "0" * 64}]},
                 "submission job circuit digest mismatch",
@@ -813,6 +819,24 @@ def provenance_self_test() -> None:
             pass
         else:
             raise AssertionError("a v2 receipt accepted an absent cases.json digest")
+        # v1 receipts face the same bindings: a v1 receipt without them fails loudly.
+        for receipt, message in (
+            (
+                {key: value for key, value in submission.items() if key != "cases_sha256"},
+                "submission cases.json digest mismatch",
+            ),
+            (
+                {**submission, "jobs": [{"file": "fixture.cq", "job": "synthetic-job"}]},
+                "submission job circuit digest mismatch",
+            ),
+        ):
+            submission_path.write_text(json.dumps(receipt))
+            try:
+                read_batch(task)
+            except ValueError as error:
+                require(str(error) == message, "v1 negative fixture failed for an unrelated reason")
+            else:
+                raise AssertionError("a v1 receipt accepted missing digest provenance")
         submission_path.write_text(json.dumps(submission))
         changed_task = {**task, "rows": [{**row, "pairs": [{"edge": [0, 1], "prepared": [1, 0]}]}]}
         try:
