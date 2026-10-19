@@ -572,7 +572,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     arguments = parser.parse_args(argv)
     if arguments.self_test:
-        self_test()
+        # The contracts build synthetic trees without historical-runtime
+        # gates, so the shard's own replay environment cannot decide them;
+        # the strict-runtime case sets PINS_REQUIRED itself.
+        hermetic = {key: value for key, value in os.environ.items() if key != pins.PINS_REQUIRED}
+        with mock.patch.dict(os.environ, hermetic, clear=True):
+            self_test()
         return 0
     if arguments.ref is None:
         parser.error("REF is required unless --self-test")
