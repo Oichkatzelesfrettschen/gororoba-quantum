@@ -2479,7 +2479,8 @@ def readout_inverse(isa: QuantumCircuit, props: Any, symmetric: bool = False) ->
     the least significant index bit. Aer's noise model applies the symmetric
     readout_error by default; noise_simulator replaces it with the same
     asymmetric channel, so in simulation and on hardware the inversion matches
-    the channel applied.
+    the channel applied. A clbit that no measurement writes reads its
+    initial 0 through the identity channel.
 
     symmetric replaces both flip probabilities with their mean: measurement
     twirling randomizes the measured bit and reverses it classically, so a
@@ -2491,7 +2492,9 @@ def readout_inverse(isa: QuantumCircuit, props: Any, symmetric: bool = False) ->
             writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
     inverse: np.ndarray = np.ones((1, 1))
     for clbit in reversed(range(isa.num_clbits)):
-        e10, e01 = readout_flips(props, writer[clbit])
+        # A clbit no measurement writes holds its initial 0 and passes
+        # through the identity channel.
+        e10, e01 = readout_flips(props, writer[clbit]) if clbit in writer else (0.0, 0.0)
         if symmetric:
             e10 = e01 = (e10 + e01) / 2.0
         inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
