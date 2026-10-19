@@ -338,10 +338,12 @@ def _package_task(item: tuple[str, str, dict[str, Any] | int]) -> bool:
     name, kind, payload = item
     product = package_product(name)
     if kind == "kernel":
-        assert isinstance(payload, int)
+        if not isinstance(payload, int):
+            raise TypeError(f"kernel task for {name} carries {type(payload).__name__}, not an int unit")
         x0 = psi(payload, Fraction(0), Fraction(0), Fraction(0), Fraction(0))
         return all(not any(product(x0, v)) for v in kernel_basis(x0))
-    assert isinstance(payload, dict)
+    if not isinstance(payload, dict):
+        raise TypeError(f"table task for {name} carries {type(payload).__name__}, not a node record")
     point = psi(payload["unit"], *[Fraction(v) for v in payload["params"]])
     columns = [product(point, [Fraction(int(k == c)) for k in range(DIM)]) for c in range(DIM)]
     table = [columns[c][r] for r in range(DIM) for c in range(DIM)]
