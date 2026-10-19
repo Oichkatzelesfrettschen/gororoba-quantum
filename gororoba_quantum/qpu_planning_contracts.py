@@ -2334,15 +2334,30 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
     }
     case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
     counts = configuration["orbit_gate_counts"]["n21_orbit_window_delay_unbracketed_feedback"]
+    bracketed_cz = configuration["orbit_gate_counts"]["n21_orbit_window_delay_feedback"]["cz"]
     _require(
         "--overlap-split" in qpu_cases._reproduction_arguments(fixture, location)
         and "--overlap-split replaces" in case
-        and "one CZ fewer" in case
-        and "biases window_overlap_loss against a pass" in case
+        and qpu_cases._gate_count_bias(configuration["orbit_gate_counts"]) in case
         and "not that it caused the 2026-10-13T083417 loss" in case
         and f"hold {counts['cz']} CZ and {counts['sx']} sx unbracketed" in case,
         f"a split record's written command or case text omits the split, its CZ bias or its scope: {case}",
     )
+    # The bias sentence follows the recorded CZ difference in each direction.
+    for unbracketed_cz, phrase in (
+        (bracketed_cz - 2, "plays 2 CZ fewer than its bracketed twin"),
+        (bracketed_cz, "biases window_overlap_loss in neither direction"),
+        (bracketed_cz + 3, "plays 3 CZ more than its bracketed twin"),
+    ):
+        varied = {
+            "n21_orbit_window_delay_feedback": {"cz": bracketed_cz, "sx": 0},
+            "n21_orbit_window_delay_unbracketed_feedback": {"cz": unbracketed_cz, "sx": 0},
+        }
+        fixture["family_configuration"]["orbit_gate_counts"] = varied
+        varied_case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+        _require(phrase in varied_case, f"the case text misstates a CZ difference of {bracketed_cz - unbracketed_cz}")
+    if bracketed_cz - counts["cz"] > 0:
+        _require("biases window_overlap_loss against a pass" in case, "the recorded CZ deficit reads unbiased")
     try:
         diagnostic_experiments.n21_orbit_rca_group(415, 502, window_sweep=True, overlap_split=True, reset_dt=520)
     except ValueError:

@@ -1428,6 +1428,32 @@ def _gate_count_clause(counts: dict[str, dict[str, int]]) -> str:
     )
 
 
+def _gate_count_bias(counts: dict[str, dict[str, int]]) -> str:
+    """The direction in which the arms' routed CZ difference biases window_overlap_loss."""
+    bracketed, unbracketed = (
+        counts.get(f"n21_orbit_{variant}_feedback") for variant in ("window_delay", "window_delay_unbracketed")
+    )
+    if bracketed is None or unbracketed is None:
+        return (
+            "; the record holds no routed gate counts, so a CZ difference between the arms can bias "
+            "window_overlap_loss in either direction."
+        )
+    difference = int(bracketed["cz"]) - int(unbracketed["cz"])
+    if difference > 0:
+        return (
+            f"; the unbracketed arm plays {difference} CZ fewer than its bracketed twin, and fewer CZ raise its "
+            "contrast, which biases window_overlap_loss against a pass, so a fail is unresolved rather than "
+            "evidence that overlap costs nothing."
+        )
+    if difference < 0:
+        return (
+            f"; the unbracketed arm plays {-difference} CZ more than its bracketed twin, and more CZ lower its "
+            "contrast, which biases window_overlap_loss toward a pass, so a pass is unresolved rather than "
+            "evidence that overlap costs contrast."
+        )
+    return "; both arms play the same CZ count, so the gate count biases window_overlap_loss in neither direction."
+
+
 def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
     if family == "et-row":
         from et_campaign import configuration as et_configuration
@@ -1823,12 +1849,11 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "measure-plus-reset span under the backend scheduler, and qubit-2 spectators read at once, after "
                 "an idle of the control's measure plus reset durations (window_delay_dt + reset_dt) with the "
                 "unrecorded control in |+>, and across the reset_only reference. Removing the barriers lets the "
-                "transpiler resynthesize the block around the window, so the unbracketed arm can play one CZ fewer "
-                "than its bracketed twin"
+                "transpiler resynthesize the block around the window"
                 + _gate_count_clause(record["family_configuration"].get("orbit_gate_counts", {}))
-                + "; fewer CZ raise its contrast, which biases window_overlap_loss against a pass, so a fail is "
-                "unresolved rather than evidence that overlap costs nothing. A pass shows that overlap costs "
-                "contrast magnitude on this calibration, not that it caused the 2026-10-13T083417 loss: the "
+                + _gate_count_bias(record["family_configuration"].get("orbit_gate_counts", {}))
+                + " A resolved pass shows that overlap costs contrast magnitude on this calibration, not that it "
+                "caused the 2026-10-13T083417 loss: the "
                 "pin fixes the roles, and the calibration differs.",
                 "",
             ]
