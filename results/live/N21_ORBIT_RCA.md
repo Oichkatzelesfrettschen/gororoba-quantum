@@ -180,6 +180,55 @@ candidates remain and the next acquisition separates them:
 - The control's state after reset is imperfect: the orbit magnitude falls
   by one step at the first added window and stays flat as it grows.
 
+## Window sweep on a barrier-equalized run
+
+Record 2026-10-19T151959.226467Z, job dbb3auvi0auc7392sfs0, ibm_fez under
+the 2026-10-19T07:44:14-07:00 calibration, 14 PUBs of 16384 shots with the
+initialization herald, 18 s charged; analysis in
+[between-arm.json](2026-10-19T151959.226467Z/between-arm.json). The family
+is admissible and both heralds admit (contract shift upper limits 0.0132
+orbit, 0.0112 spectator). The placement reuses the four qubits of 083417
+with other roles: control 144, work bit 1 on 142, work bit 4 on 143, work
+bit 16 on 136, against control 142, 136, 143, 144 there, so neither run
+predicts the other.
+
+| Pair | Contrast magnitude |
+|---|---:|
+| nominal | 0.151 |
+| window_delay (+415 dt) | 0.144 |
+| window_delay_long (+830 dt) | 0.152 |
+| extra_readout | 0.142 |
+| window_echo | 0.147 |
+
+Each magnitude carries a standard error near 0.008. Contracts at alpha 0.01:
+
+- window_delay_ramp fails: the doubled delay reads 0.008 above the single
+  one, so added window length costs no resolved coherence on this
+  assignment, and neither a growing loss nor a one-time step appears.
+- extra_readout_contrast fails through the herald margin alone: the
+  magnitude lies 0.006 +- 0.008 below its T2 bound before the 0.013 margin.
+- window_echo_restoration passes with an upper limit of +0.0002.
+- spectator_window_dephasing fails: qubit 143 reads visibility 0.587
+  across the measured control and 0.591 across the reset-only reference.
+- window_delay_phase_slope fails (statistic 40.4 against 6.63): the two
+  coupled qubits, 136 (+) and 142 (-), lengthen by the same 415 dt, so the
+  signed exposure stays 519 dt while the fitted phase moves from -1.16 to
+  -0.93 rad. A static detuning on the coupled qubits does not describe the
+  phase.
+
+The spectator branches differ by -0.114 +- 0.027 rad between the control's
+recorded outcomes, a ZZ(144, 143) phase over the window (descriptive). Both
+spectator kinds hold 0.59 visibility against 0.99 in the calibration model,
+so qubit 143 loses coherence across the window without the control's
+measurement, and the branch turn reduces the pooled visibility by under
+1 percent. 143's own dephasing and a disturbance from the control's reset
+remain the candidates; a 143 Ramsey with an idle control separates them.
+
+The 083417 window loss of about 45 percent does not appear on this
+assignment and calibration. The role assignment and the calibration week
+both changed between the runs, so a run that holds the control on 142
+separates them.
+
 ## Mitigation
 
 The explicit delay-X-delay-X echo survives transpilation (planning contract)
