@@ -273,8 +273,12 @@ def distribution(params: dict[str, float], feed_forward: bool, window: np.ndarra
 
 
 def is_orbit(name: str) -> bool:
-    """Whether a member name is an orbit member of ORBIT_VARIANTS rather than a spectator Ramsey member."""
-    return name in {f"{orbit_pair(variant)}_{arm}" for variant in ORBIT_VARIANTS for arm in ARMS}
+    """Whether a member is an orbit member: every member except a spectator Ramsey member (SPECTATOR_MEMBERS).
+
+    Records of n21-orbit-feedback name their pair without a variant, so the
+    test names the spectators rather than listing the orbit variants.
+    """
+    return name not in SPECTATOR_MEMBERS
 
 
 def _group(run: Path) -> dict[str, Any]:
@@ -2090,7 +2094,11 @@ def _check_window_sweep() -> dict[str, str]:
     if (
         spectator_margin({"present": False}) != 0.0
         or spectator_margin(
-            {"present": True, "bits": {str(SPECTATOR_HERALD_BIT): {"excitation_spread_upper_limit": 0.002}}}
+            {
+                "present": True,
+                "admissible": True,
+                "bits": {str(SPECTATOR_HERALD_BIT): {"excitation_spread_upper_limit": 0.002}},
+            }
         )
         != 0.004
     ):
@@ -2669,7 +2677,11 @@ def spectator_counts(run: Path) -> dict[str, dict[str, np.ndarray]] | None:
 
 
 def spectator_margin(herald: dict[str, Any]) -> float:
-    """The R shift an admitted spectator herald leaves possible; zero without a herald.
+    """The R shift an admitted spectator herald leaves possible; zero without one, whose contract is refused.
+
+    The spectator admission tests the spread against herald_bound, the
+    orbit's threshold; the margin, not that threshold, carries the spectator
+    contract's protection.
 
     An initial excitation of qubit 2 maps |+> to |->, so an excited fraction
     eps scales (<X>, <Y>) by 1 - 2 eps; a member spread at most Delta moves
@@ -2678,7 +2690,7 @@ def spectator_margin(herald: dict[str, Any]) -> float:
     herald bit over the spectator members (herald_admission). Excitations of
     the other qubits leave qubit 2's state alone.
     """
-    if not herald["present"]:
+    if not herald["present"] or not herald["admissible"]:
         return 0.0
     return 2.0 * float(herald["bits"][str(SPECTATOR_HERALD_BIT)]["excitation_spread_upper_limit"])
 
@@ -3335,8 +3347,6 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
         "admissibility": admitted,
     }
     gated = contract_gate(admitted, report["herald"])
-    if gated is None and report["spectator_herald"]["present"] and not report["spectator_herald"]["admissible"]:
-        gated = herald_refusal(report["spectator_herald"])
     if gated is not None:
         report["contracts"] = gated
         return report
@@ -3365,6 +3375,13 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
             spectator_herald_margin=spectator_margin(report["spectator_herald"]),
         ),
     }
+    # A spectator herald that the admission refuses or cannot evaluate
+    # refuses the spectator contract alone; the orbit contracts read the
+    # orbit herald.
+    if report["spectator_herald"]["present"] and not report["spectator_herald"]["admissible"]:
+        report["contracts"]["spectator_window_dephasing"] = herald_refusal(report["spectator_herald"])[
+            "spectator_window_dephasing"
+        ]
     if spectators is not None:
         report["spectator_counts"] = {
             kind: {quadrature: values.astype(int).tolist() for quadrature, values in reads.items()}

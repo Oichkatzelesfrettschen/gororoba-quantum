@@ -463,7 +463,7 @@ def n21_orbit_rca_group(
                     law = phase_marginal(distributions[f"n21_spectator_{kind}_{quadrature}"])
                     expectations.append(float(law[0] + law[1] - law[2] - law[3]))
                     result[f"spectator_{kind}_{quadrature}_expectation"] = expectations[-1]
-                result[f"spectator_{kind}_visibility"] = float(np.hypot(*expectations))
+                result[f"spectator_{kind}_visibility"] = math.hypot(expectations[0], expectations[1])
         if init_herald:
             outcomes = np.arange(1 << clbits)
             for member in members:
