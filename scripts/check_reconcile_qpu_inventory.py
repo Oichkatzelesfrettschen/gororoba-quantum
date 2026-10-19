@@ -96,6 +96,80 @@ def second_instance_contract(
     write(backup_path, backup)
 
 
+def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str, Any]) -> None:
+    """A failed job binds its settled charge to the collection that names it and keeps no raw archive."""
+    run = root / "results/live/synthetic-failed"
+    run.mkdir(parents=True)
+    (run / "isa.qpy").write_bytes(b"synthetic failed-job circuit bytes")
+    write(run / "record.json", {"submission": {"qpy_archive_sha256": audit.digest(run / "isa.qpy")}})
+    times = {"running": "2026-10-12T01:00:00Z", "finished": "2026-10-12T01:00:03Z"}
+    entry = {
+        "backend": "synthetic-backend",
+        "usage": {"job_status": "ERROR", "usage_status": "final", "qpu_charge_time_seconds": 3},
+        "result_unavailable": "RuntimeJobMaxTimeoutError: ran longer than the maximum execution time",
+    }
+    collection: list[Any] = [{"submission_complete": True, "jobs": {"failed-job": entry}}]
+    write(run / "collect.json", collection)
+    failed = copy.deepcopy(snapshot)
+    failed["account_usage"] |= {"usage_consumed_seconds": 4, "usage_remaining_seconds": 596}
+    failed["jobs"].append(
+        snapshot["jobs"][0]
+        | {"job_id": "failed-job", "status": "ERROR", "final_qpu_charge_seconds": 3, "timestamps": times}
+    )
+    write(source, failed)
+    result = audit.reconcile(source)
+    audit.require(
+        result["failed_job_count"] == 1 and result["failed_charge_seconds"] == "3" and result["job_count"] == 2,
+        "failed-job audit differs",
+    )
+    inventory_mutants: list[Any] = [
+        lambda value: value["jobs"][1].update(usage_status="pending"),
+        lambda value: value["jobs"][1].update(final_qpu_charge_seconds=0),
+        lambda value: value["jobs"][1].update(status="RUNNING"),
+        lambda value: value["jobs"][1].update(status="CANCELLED"),
+        lambda value: value["account_usage"].update(usage_consumed_seconds=1, usage_remaining_seconds=599),
+    ]
+    for mutate in inventory_mutants:
+        mutant = copy.deepcopy(failed)
+        mutate(mutant)
+        write(source, mutant)
+        rejects(audit, source, "a mutated failed-job inventory")
+    write(source, failed)
+    collection_mutants: list[Any] = [
+        lambda value: value["jobs"]["failed-job"].pop("result_unavailable"),
+        lambda value: value["jobs"]["failed-job"].update(result_unavailable=""),
+        lambda value: value["jobs"]["failed-job"]["usage"].update(usage_status="pending"),
+        lambda value: value["jobs"]["failed-job"]["usage"].update(qpu_charge_time_seconds=2),
+        lambda value: value["jobs"]["failed-job"].update(backend="other-backend"),
+        lambda value: value.update(submission_complete=False),
+    ]
+    for mutate in collection_mutants:
+        broken = copy.deepcopy(collection)
+        mutate(broken[0])
+        write(run / "collect.json", broken)
+        rejects(audit, source, "a mutated failed-job collection")
+    write(run / "collect.json", collection)
+    raw = run / "raw/failed-job"
+    raw.mkdir(parents=True)
+    write(raw / "index.json", {"job_id": "failed-job", "files": {}, "metrics": [], "metrics_sha256": []})
+    rejects(audit, source, "a failed job with a raw archive")
+    (raw / "index.json").unlink()
+    raw.rmdir()
+    (run / "collect.json").unlink()
+    rejects(audit, source, "a failed job without a collection")
+    write(run / "collect.json", collection)
+    write(source, snapshot)
+    (run / "collect.json").unlink()
+
+
+def rejects(audit: Any, source: Path, label: str) -> None:
+    try:
+        audit.reconcile(source)
+    except ValueError:
+        return
+    raise RuntimeError(f"{label} was admitted")
+
+
 def main() -> None:
     with TemporaryDirectory(prefix="qpu-inventory-contract-") as temporary:
         root = Path(temporary)
@@ -241,6 +315,7 @@ def main() -> None:
             }
             audit.require(before == after, "replay altered retained inputs")
             second_instance_contract(audit, root, source, snapshot, times)
+            failed_job_contract(audit, root, source, snapshot)
             duplicated = copy.deepcopy(index)
             duplicated["metrics"] = ["job_metrics.json", "job_metrics.json"]
             duplicated["metrics_sha256"] = [index["metrics_sha256"][0]] * 2
@@ -262,7 +337,8 @@ def main() -> None:
                 raise RuntimeError("raw digest mutation admitted")
     print(
         "Synthetic inventory contract: 20 inventory mutations, two window chronology mutations, "
-        "a repeated metrics snapshot and raw corruption rejected; the campaign cutoff splits charges; "
+        "a repeated metrics snapshot and raw corruption rejected; a failed job binds its settled charge to "
+        "its collection under 13 mutations; the campaign cutoff splits charges; "
         "replay preserves bytes"
     )
 

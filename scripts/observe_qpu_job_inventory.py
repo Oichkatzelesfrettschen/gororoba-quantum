@@ -3,9 +3,10 @@
 The observation calls service.jobs(limit=None), decodes each job's
 QuantumProgram input for its PUB count and shots, and reads its finalized
 metrics for the settled charge and execution timestamps, then records the
-account's usage window. It submits nothing. Every job must be DONE with
-complete usage and a positive charge, so a run with any job still settling
-refuses and is repeated later. scripts/reconcile_qpu_inventory.py --check
+account's usage window. It submits nothing. Every job must have finished,
+DONE or failed (ERROR or CANCELLED, which bill the lock time they consumed
+and return no result), with complete usage and a positive charge, so a run
+with any job still queued, running or settling refuses and is repeated later. scripts/reconcile_qpu_inventory.py --check
 binds the written snapshot to every retained raw archive offline.
 
 GOROROBA_IBM_ACCOUNT selects a saved account; an instance other than the one
@@ -29,9 +30,11 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import ibm_account  # noqa: E402
 
 SCHEMA = "completed-qpu-job-inventory-v1"
+FINISHED_STATUSES = frozenset({"DONE", "ERROR", "CANCELLED"})
 BOUNDARY = (
     "Read-only service.jobs(limit=None), decoded QuantumProgram inputs and finalized metrics. Physical jobs "
-    "require positive settled charge; local simulations and mock results are separate evidence."
+    "require a finished status (DONE, ERROR or CANCELLED) and positive settled charge; local simulations and "
+    "mock results are separate evidence."
 )
 
 
@@ -62,7 +65,7 @@ def observe(service: Any) -> dict[str, Any]:
     unsettled = [
         row["job_id"]
         for row in rows
-        if row["status"] != "DONE"
+        if row["status"] not in FINISHED_STATUSES
         or row["usage_status"] != "complete"
         or not isinstance(row["final_qpu_charge_seconds"], int | float)
         or row["final_qpu_charge_seconds"] <= 0
