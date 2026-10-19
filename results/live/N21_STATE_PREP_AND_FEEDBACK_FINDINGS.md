@@ -64,3 +64,29 @@ difference spans a dynamic and a static job as well as the shot history.
 Shots with two or more excited qubits match the independent-qubit
 expectation within counting error (70 against 58.3 at prep0 50 us, 74
 against 67.9 at x_history 50 us).
+
+## Correlated initialization against the independent model
+
+`results/live/state-prep-control-parameters.json` (E_correlation) gives, per
+control cell, the variance of the excited-qubit count across the placed
+qubits against the Poisson-binomial variance the independent marginals
+predict. A correlated initialization channel would raise that ratio in the
+x_history cells above the prep0 cells of the same placement and delay,
+whose readout is the same and whose history is near `|0>`. The excess of
+the ratio over 1, with standard errors from each cell's count histogram
+(fourth central moment over shots):
+
+| Delay | x_history excess | prep0 excess | Difference | z |
+|---|---|---|---|---|
+| 20 us | 0.0503 +- 0.0096 | 0.0521 +- 0.0096 | -0.0018 | -0.13 |
+| 50 us | 0.0598 +- 0.0097 | 0.0594 +- 0.0098 | +0.0004 | 0.03 |
+| 250 us | 0.0623 +- 0.0143 | 0.0734 +- 0.0150 | -0.0111 | -0.54 |
+
+The x_history excess equals the prep0 excess at every delay, so the
+5 to 7 percent variance excess is common to both histories: correlated
+readout or a common-mode event independent of the preceding shot's end
+state. The independent preparation channel of
+`dynamic_density.with_prep_excitation` stands, and a joint preparation
+channel has no resolvable pattern to estimate. A future cell pair whose
+x_history excess exceeds its prep0 excess by more than the joint standard
+error reopens the question.
