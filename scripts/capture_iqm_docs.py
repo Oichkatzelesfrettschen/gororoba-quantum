@@ -278,7 +278,11 @@ def capture_docs() -> tuple[list[dict[str, Any]], dict[str, Any]]:
     packages = []
     for package, version in DOCS_PACKAGES:
         url = f"{DOCS}{package}/objects.inv"
-        data = fetch(url)
+        status, data, final = fetch_status(url)
+        if status != 200:
+            raise SystemExit(f"{url}: HTTP {status}")
+        if not final.startswith(DOCS):
+            raise SystemExit(f"{url}: redirected to {final}, outside {DOCS}")
         found, entries = parse_inventory(data)
         if found != version:
             raise SystemExit(f"{url}: reports version {found}, pinned {version}")

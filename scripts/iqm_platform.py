@@ -271,9 +271,22 @@ def snapshot(out: Path, client: Client) -> None:
         pinned = f"{API}/calibration-sets/{qc}/{calibration_set['observation_set_id']}"
         fetch(f"{base}/calibration/dynamic-quantum-architecture.json", f"{pinned}/dynamic-quantum-architecture")
         fetch(f"{base}/calibration/metrics.json", f"{pinned}/metrics")
+    carry_feed(out, index)
     prune(out, index)
     (out / "index.json").write_bytes(canonical(index))
     (out / "hardware.json").write_bytes(canonical(derive(out)))
+
+
+NOTIFICATIONS = "server/notifications.json"
+
+
+def carry_feed(out: Path, index: dict[str, Any]) -> None:
+    """Keep the retained update feed: it needs the browser session, which a token snapshot lacks."""
+    previous = out / "index.json"
+    if previous.is_file():
+        feed = json.loads(previous.read_text())["files"].get(NOTIFICATIONS)
+        if feed and (out / NOTIFICATIONS).is_file():
+            index["files"][NOTIFICATIONS] = feed
 
 
 def prune(out: Path, index: dict[str, Any]) -> None:
@@ -295,7 +308,7 @@ def notifications(out: Path, jar_path: Path) -> None:
     status, _, body = urllib_transport(opener)("GET", f"{SERVER}/{url_path}", None, headers)
     if status != 200:
         raise PlatformError(f"notifications answered {status}")
-    rel = "server/notifications.json"
+    rel = NOTIFICATIONS
     (out / rel).write_bytes(body)
     index = json.loads((out / "index.json").read_text())
     index["files"][rel] = {
@@ -694,7 +707,11 @@ def self_test(evidence: Path) -> None:
         mutate("metrics of another calibration set", mix, unmix)
         index = json.loads(original)
         del index["files"]["server/about.json"]
+        del index["files"][NOTIFICATIONS]
+        carry_feed(root, index)
         prune(root, index)
+        if not (root / NOTIFICATIONS).exists() or NOTIFICATIONS not in index["files"]:
+            raise PlatformError("self-test: a token snapshot dropped the retained update feed")
         if target.exists() or not (root / "server/versions.json").exists():
             raise PlatformError("self-test: prune kept a dropped file or removed an indexed one")
         target.write_bytes(saved)
