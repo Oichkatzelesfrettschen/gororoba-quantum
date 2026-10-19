@@ -1888,6 +1888,30 @@ def _check_between_arm() -> None:
     passing = dict.fromkeys(CONTRACTS, "pass")
     if {name: result["status"] for name, result in results.items()} != passing:
         raise RuntimeError(f"a family planted on every contract returns {results}")
+    # A plain record (the four bracketed pairs, no sweep or split members)
+    # reads the first three contracts at FAMILY_ALPHA / 3, admissible
+    # without window_delay_long.
+    plain_record = Path(__file__).resolve().parents[1] / "results/live/2026-10-18T062500.711287Z/record.json"
+    plain_names = [m["name"] for m in json.loads(plain_record.read_text())["groups"][0]["members"]]
+    long_pair = orbit_pair("window_delay_long")
+    plain_roles = {name: role for name, role in roles.items() if not name.startswith(long_pair + "_")}
+    plain_pairs = {name: arms for name, arms in pairs.items() if name != long_pair}
+    plain = contract_results(
+        plain_roles,
+        plain_pairs,
+        {name: readouts[name] for name in plain_roles},
+        dt,
+        t2_us,
+        SlopeProfiles(plain_pairs, readouts, phase_fits(plain_pairs, readouts)),
+        shape="plain",
+    )
+    if (
+        record_shape(plain_names) != "plain"
+        or not math.isclose(contract_alpha("plain"), FAMILY_ALPHA / 3)
+        or {name: result["status"] for name, result in plain.items()} != dict.fromkeys(CONTRACTS[:3], "pass")
+        or plain["window_echo_restoration"]["one_sided_quantile"] != float(norm.ppf(1 - FAMILY_ALPHA / 3))
+    ):
+        raise RuntimeError(f"a plain record reads {plain} at shape {record_shape(plain_names)}")
     if (
         contract_results(roles, pairs, readouts, dt, t2_us, profiles, nominal_t2_us=t2_us, spectators=spectators)
         != results
@@ -2175,7 +2199,7 @@ def _check_overlap_split() -> dict[str, str]:
     the analyzer's, an absent unbracketed pair is not admissible, and an
     unbracketed coupling that differs from the nominal one gates nothing.
     """
-    alpha = contract_alpha(True)
+    alpha = contract_alpha("split")
     readout = _readout(0.001, 0.006)
     nominal_law = {arm: distribution(readout | {"round1": 0.05, "round2": 0.02}, arm == "feedback") for arm in ARMS}
 
@@ -2261,7 +2285,7 @@ def _check_overlap_split() -> dict[str, str]:
     if [results[name]["status"] for name in OVERLAP_CONTRACTS] != ["pass", "fail", "pass", "fail"]:
         raise RuntimeError(f"the overlap contracts read {results}")
     verdicts["combined"] = "pinned pass, overlap fail, readout pass, idle fail"
-    if contract_alpha(False) != CONTRACT_ALPHA or not math.isclose(contract_alpha(True), FAMILY_ALPHA / 4):
+    if contract_alpha("sweep") != CONTRACT_ALPHA or not math.isclose(contract_alpha("split"), FAMILY_ALPHA / 4):
         raise RuntimeError("the per-contract alpha does not follow the configuration's contracts")
     return verdicts
 
@@ -2588,14 +2612,32 @@ def overlap_split(names: list[str]) -> bool:
     return any(name.startswith("n21_orbit_") and UNBRACKETED_MARK in name for name in names)
 
 
-def contract_names(split: bool) -> tuple[str, ...]:
-    """The preregistered contracts of a configuration, read from the members present (overlap_split)."""
-    return OVERLAP_CONTRACTS if split else CONTRACTS
+# Shapes of an n21-orbit-rca record, read from its members (record_shape):
+# plain holds the four bracketed pairs and the first three contracts, sweep
+# adds window_delay_long and the measured spectators and all five, and the
+# overlap split holds its own four.
+PLAIN_VARIANTS = tuple(variant for variant in ORBIT_VARIANTS if variant != "window_delay_long")
+SHAPE_CONTRACTS = {"plain": CONTRACTS[:3], "sweep": CONTRACTS, "split": OVERLAP_CONTRACTS}
+SHAPE_VARIANTS = {"plain": PLAIN_VARIANTS, "sweep": ORBIT_VARIANTS, "split": OVERLAP_BRACKETED}
 
 
-def contract_alpha(split: bool) -> float:
-    """Bonferroni level of each contract: FAMILY_ALPHA over the configuration's contracts."""
-    return FAMILY_ALPHA / len(contract_names(split))
+def record_shape(names: list[str]) -> str:
+    """split with an unbracketed orbit arm, sweep with window_delay_long or a measured spectator, else plain."""
+    if overlap_split(names):
+        return "split"
+    if any(name.startswith(orbit_pair("window_delay_long") + "_") or name in SPECTATOR_MEMBERS for name in names):
+        return "sweep"
+    return "plain"
+
+
+def contract_names(shape: str) -> tuple[str, ...]:
+    """The preregistered contracts of a record shape (record_shape)."""
+    return SHAPE_CONTRACTS[shape]
+
+
+def contract_alpha(shape: str) -> float:
+    """Bonferroni level of each contract: FAMILY_ALPHA over the shape's contracts."""
+    return FAMILY_ALPHA / len(contract_names(shape))
 
 
 def normalized_coupling(coupling: dict[Any, dict[Any, Any]]) -> dict[int, dict[int, int]]:
@@ -3332,8 +3374,12 @@ def contract_results(
     herald_margin: float = 0.0,
     spectators: dict[str, dict[str, np.ndarray]] | None = None,
     spectator_herald_margin: float = 0.0,
+    shape: str = "sweep",
 ) -> dict[str, dict[str, Any]]:
-    """Every between-arm contract's status and deciding numbers, each at CONTRACT_ALPHA.
+    """Every between-arm contract of a plain or sweep record (record_shape), each at contract_alpha(shape).
+
+    A plain record reads the first three contracts over PLAIN_VARIANTS; a
+    sweep record reads all five over ORBIT_VARIANTS.
 
     The contracts are preregistered, their statistics, levels and decision
     rules independent of any run's counts:
@@ -3351,26 +3397,28 @@ def contract_results(
     statistics and added to the ramp's upper limit; spectator_herald_margin
     counts against the spectator contract's pass.
     """
-    admitted = admissibility(roles)
+    names = contract_names(shape)
+    admitted = admissibility(roles, SHAPE_VARIANTS[shape])
     if not admitted["admissible"]:
-        return not_admissible(admitted)
+        return not_admissible(admitted, names)
     if profiles is None:
         profiles = SlopeProfiles(pairs, readouts, phase_fits(pairs, readouts))
-    return {
+    alpha = contract_alpha(shape)
+    results = {
         "window_delay_phase_slope": phase_slope_contract(
-            profiles, roles, admitted["orientation"], dt, CONTRACT_ALPHA, render_set
+            profiles, roles, admitted["orientation"], dt, alpha, render_set
         ),
-        "extra_readout_contrast": readout_contract(
-            pairs, roles, dt, t2_us, CONTRACT_ALPHA, nominal_t2_us, herald_margin
-        ),
+        "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, alpha, nominal_t2_us, herald_margin),
         "window_echo_restoration": contrast_floor(
-            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), CONTRACT_ALPHA, herald_margin
+            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), alpha, herald_margin
         ),
-        "window_delay_ramp": magnitude_decline(
-            pairs[orbit_pair("window_delay_long")], pairs[orbit_pair("window_delay")], CONTRACT_ALPHA, herald_margin
-        ),
-        "spectator_window_dephasing": spectator_contract(spectators, CONTRACT_ALPHA, spectator_herald_margin),
     }
+    if shape == "sweep":
+        results["window_delay_ramp"] = magnitude_decline(
+            pairs[orbit_pair("window_delay_long")], pairs[orbit_pair("window_delay")], alpha, herald_margin
+        )
+        results["spectator_window_dephasing"] = spectator_contract(spectators, alpha, spectator_herald_margin)
+    return results
 
 
 def overlap_contract_results(
@@ -3380,7 +3428,7 @@ def overlap_contract_results(
     herald_margin: float = 0.0,
     spectator_herald_margin: float = 0.0,
 ) -> dict[str, dict[str, Any]]:
-    """Every overlap-split contract's status and deciding numbers, each at contract_alpha(True).
+    """Every overlap-split contract's status and deciding numbers, each at contract_alpha("split").
 
     window_delay_pinned_loss passes when the bracketed window_delay pair's
     contrast magnitude lies below the bracketed nominal pair's
@@ -3402,7 +3450,7 @@ def overlap_contract_results(
     admitted = split_admissibility(roles)
     if not admitted["admissible"]:
         return not_admissible(admitted, OVERLAP_CONTRACTS)
-    alpha = contract_alpha(True)
+    alpha = contract_alpha("split")
     return {
         "window_delay_pinned_loss": magnitude_decline(
             pairs[orbit_pair("window_delay")], pairs[orbit_pair("nominal")], alpha, herald_margin
@@ -3455,7 +3503,7 @@ HERALD_ALPHA = 0.05
 HERALD_DESIGN_SHOTS = 27648
 
 
-def magnitude_mde(shots: int) -> float:
+def magnitude_mde(shots: int, alpha: float = CONTRACT_ALPHA) -> float:
     """Minimum detectable deficit of a magnitude contract at CONTRACT_ALPHA and MAGNITUDE_POWER.
 
     Each arm's labeled law puts 1/2 on outcomes 1 and 3 (the first bit is
@@ -3466,10 +3514,10 @@ def magnitude_mde(shots: int) -> float:
     power MAGNITUDE_POWER is (z_(1 - alpha) + z_power) / sqrt(n): 0.01905 at
     HERALD_DESIGN_SHOTS.
     """
-    return float(norm.ppf(1 - CONTRACT_ALPHA) + norm.ppf(MAGNITUDE_POWER)) / math.sqrt(shots)
+    return float(norm.ppf(1 - alpha) + norm.ppf(MAGNITUDE_POWER)) / math.sqrt(shots)
 
 
-def herald_bound(shots: int) -> float:
+def herald_bound(shots: int, alpha: float = CONTRACT_ALPHA) -> float:
     """Largest member spread B of the initial excitation on every herald bit that the admission accepts.
 
     A member-dependent excitation with spread Delta_k on herald bit k moves
@@ -3486,7 +3534,7 @@ def herald_bound(shots: int) -> float:
     sign; a common excitation of work 4 or 16 enters each pair through its
     own phase, which the herald cannot separate from readout P(1|0).
     """
-    return HERALD_MDE_FRACTION * magnitude_mde(shots) / (2 * CONTRAST_CEILING * sum(HERALD_SENSITIVITY))
+    return HERALD_MDE_FRACTION * magnitude_mde(shots, alpha) / (2 * CONTRAST_CEILING * sum(HERALD_SENSITIVITY))
 
 
 def herald_counts(run: Path, select: Callable[[str], bool] = is_orbit) -> dict[int, dict[str, Any]] | None:
@@ -3599,9 +3647,15 @@ def herald_admission(
 
 
 def herald_report(
-    run: Path, calibrations: dict[str, dict[str, Any]], select: Callable[[str], bool] = is_orbit
+    run: Path,
+    calibrations: dict[str, dict[str, Any]],
+    select: Callable[[str], bool] = is_orbit,
+    alpha: float = CONTRACT_ALPHA,
 ) -> dict[str, Any]:
     """herald_admission of RUN at herald_bound of its smallest member shot count, or {"present": False}.
+
+    alpha is the per-contract level of the record's shape (contract_alpha),
+    so the bound follows the contracts it protects.
 
     herald_admission removes prob_meas1_prep0 as common to the members, so
     every member reads each herald qubit through one assignment channel
@@ -3640,7 +3694,7 @@ def herald_report(
             "differing_channels": differing,
             "shots": shots,
         }
-    return herald_admission(counts, contrasts, herald_bound(shots)) | {"evaluable": True, "shots": shots}
+    return herald_admission(counts, contrasts, herald_bound(shots, alpha)) | {"evaluable": True, "shots": shots}
 
 
 def contract_gate(
@@ -3688,9 +3742,11 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
     (herald_refusal).
     """
     roles = window_roles(run)
-    split = overlap_split([member["name"] for member in _group(run)["members"]])
-    names = contract_names(split)
-    admitted = split_admissibility(roles) if split else admissibility(roles)
+    shape = record_shape([member["name"] for member in _group(run)["members"]])
+    split = shape == "split"
+    names = contract_names(shape)
+    alpha = contract_alpha(shape)
+    admitted = split_admissibility(roles) if split else admissibility(roles, SHAPE_VARIANTS[shape])
     calibrations = execution_calibration(run)
     report: dict[str, Any] = {
         "schema_version": BETWEEN_ARM_SCHEMA,
@@ -3699,13 +3755,13 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
             name: {"source": entry["source"], "calibration": entry["calibration"]}
             for name, entry in calibrations.items()
         },
-        "herald": herald_report(run, calibrations),
-        "spectator_herald": herald_report(run, calibrations, lambda name: name in ALL_SPECTATOR_MEMBERS),
+        "herald": herald_report(run, calibrations, alpha=alpha),
+        "spectator_herald": herald_report(run, calibrations, lambda name: name in ALL_SPECTATOR_MEMBERS, alpha),
         "alpha": {
             "family_alpha": FAMILY_ALPHA,
             "split": "Bonferroni",
             "contracts": len(names),
-            "per_contract_alpha": contract_alpha(split),
+            "per_contract_alpha": alpha,
         },
         "admissibility": admitted,
     }
@@ -3745,6 +3801,7 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
                 herald_margin=herald_margin(report["herald"]),
                 spectators=spectators,
                 spectator_herald_margin=spectator_margin(report["spectator_herald"]),
+                shape=shape,
             )
         ),
     }
@@ -4051,11 +4108,11 @@ def _check_herald_twin_roles() -> dict[str, Any]:
             seen.update(kwargs, t2_us=args[4])
             return {}
 
-        with mock.patch.object(module, "admissibility", lambda _roles: passed):
+        with mock.patch.object(module, "admissibility", lambda _roles, _variants=ORBIT_VARIANTS: passed):
             behind = between_arm_report(planted_run, None)["contracts"]
             with mock.patch.object(module, "contract_results", spy):
                 between_arm_report(lone, None)
-        if behind != herald_refusal(refused["herald"]):
+        if behind != herald_refusal(refused["herald"], contract_names("plain")):
             raise RuntimeError(f"between_arm_report reads {behind} behind a refused herald")
         if seen.get("t2_us") != arm_t2_us(lone) or seen.get("nominal_t2_us") != arm_t2_us(lone, "nominal"):
             raise RuntimeError(f"between_arm_report hands contract_results T2 {seen}")
