@@ -455,7 +455,13 @@ def check_tree(root: Path) -> int:
         if absent := sorted(listed - present):
             raise SystemExit(f"{kind}: manifest row {absent[0]} has no captured file")
         pinned = inventory(kind, base, root)
-        failed = {item["url"] for item in doc["unreachable"]}
+        unreachable = doc["unreachable"]
+        for item in unreachable:
+            if set(item) != {"url", "status"} or not isinstance(item["status"], int) or item["status"] == 200:
+                raise SystemExit(f"{kind}: unreachable entry {item} is not a failed fetch")
+        failed = {item["url"] for item in unreachable}
+        if len(failed) != len(unreachable):
+            raise SystemExit(f"{kind}: an unreachable entry repeats a URL")
         if stray := sorted(failed - set(pinned.values())):
             raise SystemExit(f"{kind}: unreachable entry {stray[0]} is outside the captured inventory")
         expected = {path for path, url in pinned.items() if url not in failed}
@@ -560,6 +566,20 @@ def self_test() -> int:
         expect("changelog header naming another sdist", "changelog header differs")
         manifest_path("changelog", base).write_bytes(original)
         log.write_bytes(log_bytes)
+        page = page_path("iqm-client", "user_guide_qiskit", base)
+        page_url = inventory("docs", base, root)[rel(page, root)]
+        page_bytes = page.read_bytes()
+        page.unlink()
+
+        def mark_reached(status: int, copies: int, doc: dict[str, Any]) -> None:
+            drop_row(rel(page, root), doc)
+            doc["unreachable"] = [{"url": page_url, "status": status}] * copies
+
+        for label, status, copies in (("a fetched page", 200, 1), ("a repeated URL", 404, 2)):
+            original = edit_manifest("docs", partial(mark_reached, status, copies))
+            expect(f"unreachable entry naming {label}", "unreachable entry")
+            manifest_path("docs", base).write_bytes(original)
+        page.write_bytes(page_bytes)
         inv = package_dir("iqm-pulse", base) / "objects.inv"
         inv_bytes = inv.read_bytes()
         grown = replace_inventory(inv_bytes, "added_page std:doc -1 added_page.html Added")
