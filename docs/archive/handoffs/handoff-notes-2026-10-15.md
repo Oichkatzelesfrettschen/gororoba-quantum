@@ -1,5 +1,7 @@
 # Handoff Notes: Chat Session 2026-10-15 (Ferreton → Claude Code)
 
+> CI is disabled and the Codex review loop is the merge gate (AGENTS.md "Layout and gates"); the text below keeps its recorded form.
+
 > Audit: `docs/evidence/simulation-notebook-audit/README.md` reads every
 > notebook named here against its retained Kaggle log, and
 > `docs/state/research_state.json` carries the resulting claim status.

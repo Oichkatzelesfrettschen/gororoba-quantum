@@ -2,7 +2,7 @@
 
 `scripts/box_kite_cases.py` generates, from
 `docs/evidence/box_kite_census/census.json`, the case directories of
-[experiment-program.md](experiment-program.md) sections 4(a), (d), (e), (f)
+[experiment-program.md](../../notes/box_kites/experiment-program.md) sections 4(a), (d), (e), (f)
 and (g), and `scripts/box_kite_qx_sweep.py` runs the exhaustive families on
 qxelarator. Nothing has been submitted to any backend.
 

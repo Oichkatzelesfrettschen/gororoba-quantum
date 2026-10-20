@@ -1,5 +1,7 @@
 # Handoff notes
 
+> CI is disabled and the Codex review loop is the merge gate (AGENTS.md "Layout and gates"); the text below keeps its recorded form.
+
 ## Gate list on main
 
 - Every gate runs its command once in normal Python. Ruff rule S101 rejects
@@ -211,7 +213,7 @@ ET approval preflight uses deduplicated parallel ideal validation. The focused a
   and a low-budget opening lets the large entry right after it pass. The
   split is descriptive, because the rule was read off the jobs it counts. The contingency table, the covariate check and
   the falsification plan are in
-  `docs/notes/quandela/belenos-first-load-hypothesis-2026-10-18.md`, and
+  `docs/archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md`, and
   the campaign record is in `docs/notes/quandela/strategy.md`.
 - The jobs left, in order, each its own job, collected and read before the
   next is planned:

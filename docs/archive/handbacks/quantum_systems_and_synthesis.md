@@ -13,7 +13,7 @@ The labels above describe the imported audit snapshot. A reproduced [V]
 claim carries the finite check stated beside it; the label supplies neither
 an all-input proof nor a continuing assertion about every later revision.
 The [hardware plan](../../../gororoba_quantum/HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
-and [QuMC note](../2102.05321.md) carry the reconciled execution policy and
+and [QuMC note](../../notes/2102.05321.md) carry the reconciled execution policy and
 remaining checks.
 
 ## The finding that changes a retained claim
@@ -74,7 +74,7 @@ remaining checks.
 - [A] The imported allocator snapshot excludes neighbors within a group
   and enforces only disjointness across groups, permitting adjacency. The
   retained pilot belongs to that policy: the
-  [prior-work synthesis](../prior_work_synthesis.md#what-the-device-showed-in-the-units-it-reports)
+  [prior-work synthesis](../../notes/prior_work_synthesis.md#what-the-device-showed-in-the-units-it-reports)
   reports a cross-group neighbor in its packed PUB. That historical
   placement remains part of the pilot's evidence.
 - The allocator's default `cross_group_buffer=true` excludes other groups'
@@ -82,7 +82,7 @@ remaining checks.
   `--no-cross-group-buffer` explicitly selects disjointness alone. The
   policy change leaves the pilot's placements intact; the detailed
   all-record adjacency census remains a separate check in the
-  [QuMC note](../2102.05321.md#action-items).
+  [QuMC note](../../notes/2102.05321.md#action-items).
 
 ## Kissinger and Meijer-van de Griend 2019 (1904.00633)
 

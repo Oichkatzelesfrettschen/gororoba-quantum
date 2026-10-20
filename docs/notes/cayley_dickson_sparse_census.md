@@ -3,7 +3,7 @@
 The exact census has one current numerical owner: the dimension-32 entry in
 [annihilator_strata.json](../../results/hw_estimate/annihilator_strata.json).
 The per-paper notes own the published theorems. The independent scratch
-calculation in the [group-theory handback](handbacks/cayley_dickson_group_theory.md)
+calculation in the [group-theory handback](../archive/handbacks/cayley_dickson_group_theory.md)
 provides historical corroboration of the same finite count.
 
 ## Dimension-32 domain and complete count
