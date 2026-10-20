@@ -2334,12 +2334,35 @@ def _check_ground_control_split() -> dict[str, str]:
         raise RuntimeError(
             f"the ground-control split accepted window_sweep {sweep}, overlap_split {split}, reset_dt {reset}"
         )
-    if not math.isclose(contract_alpha("ground"), FAMILY_ALPHA / 2):
-        raise RuntimeError("the ground-control per-contract alpha does not follow its two contracts")
+    if not math.isclose(contract_alpha("ground"), FAMILY_ALPHA / 3):
+        raise RuntimeError("the ground-control alpha does not split over its herald and two contracts")
     verdicts["control_excited"] = _check_ground_control_excitation()
     verdicts["schedules"] = _check_ground_schedules()
     verdicts["correlated_herald"] = _check_ground_correlated_herald()
+    verdicts["empty_selection"] = _check_ground_empty_selection()
     return verdicts
+
+
+def _check_ground_empty_selection() -> str:
+    """A member whose control herald reads 1 in every shot leaves the herald not evaluable and the contracts refused."""
+    members = {"a": ["0000"] * 100, "b": ["0001"] * 100}
+    control = HERALD_ROLES.index("control")
+    counts = {
+        k: {"qubit": k, "members": {name: herald_excitation(bits, 4, k, control) for name, bits in members.items()}}
+        for k in range(4)
+    }
+    calibrations = {
+        name: {
+            "source": "plant",
+            "values": {str(k): {"prob_meas1_prep0": 0.01, "prob_meas0_prep1": 0.01} for k in range(4)},
+        }
+        for name in members
+    }
+    herald = herald_evaluation(counts, calibrations, contract_alpha("ground"))
+    gated = contract_gate({"admissible": True}, herald, GROUND_CONTRACTS)
+    if herald["evaluable"] or gated is None or any(entry["status"] != "not_admissible" for entry in gated.values()):
+        raise RuntimeError(f"a member with no selected shot reads herald {herald} and contracts {gated}")
+    return "a member without selected shots leaves the herald not evaluable"
 
 
 def _check_ground_correlated_herald() -> str:
@@ -2824,9 +2847,20 @@ def contract_names(shape: str) -> tuple[str, ...]:
     return SHAPE_CONTRACTS[shape]
 
 
+# The ground-control split's herald admission is one more test event of its
+# family: its contracts read only the shots its herald selects, so Bonferroni
+# splits FAMILY_ALPHA equally over the herald admission and both contracts.
+SHAPE_HERALD_EVENTS = {"ground": 1}
+
+
 def contract_alpha(shape: str) -> float:
-    """Bonferroni level of each contract: FAMILY_ALPHA over the shape's contracts."""
-    return FAMILY_ALPHA / len(contract_names(shape))
+    """Bonferroni level of each contract: FAMILY_ALPHA over the shape's contracts and herald events.
+
+    The ground shape counts its herald admission (SHAPE_HERALD_EVENTS), so
+    its herald and its two contracts each run at FAMILY_ALPHA / 3 and their
+    union holds FAMILY_ALPHA.
+    """
+    return FAMILY_ALPHA / (len(contract_names(shape)) + SHAPE_HERALD_EVENTS.get(shape, 0))
 
 
 def normalized_coupling(coupling: dict[Any, dict[Any, Any]]) -> dict[int, dict[int, int]]:
@@ -3882,9 +3916,11 @@ def ground_report(run: Path) -> dict[str, Any]:
         ),
         "alpha": {
             "family_alpha": FAMILY_ALPHA,
-            "split": "Bonferroni",
+            "split": "Bonferroni over the spectator herald admission and the contracts",
             "contracts": len(names),
+            "herald_events": SHAPE_HERALD_EVENTS["ground"],
             "per_contract_alpha": alpha,
+            "herald_alpha": alpha,
         },
         "admissibility": admitted,
     }
@@ -4125,10 +4161,30 @@ def herald_report(
     or unretained channels leaves the herald not evaluable, which no
     contract reads past; the report names each member's calibration source.
     """
-    counts = herald_counts(run, select, condition)
+    return herald_evaluation(herald_counts(run, select, condition), calibrations, alpha)
+
+
+def herald_evaluation(
+    counts: dict[int, dict[str, Any]] | None, calibrations: dict[str, dict[str, Any]], alpha: float
+) -> dict[str, Any]:
+    """herald_report of counts already in hand (herald_counts).
+
+    A member that keeps no selected shot leaves the herald not evaluable,
+    so no contract reads counts without a denominator.
+    """
     if not counts:
         return {"present": False}
     shots = min(n for entry in counts.values() for _excited, n in entry["members"].values())
+    if shots == 0:
+        empty = sorted({name for entry in counts.values() for name, (_e, n) in entry["members"].items() if n == 0})
+        return {
+            "present": True,
+            "evaluable": False,
+            "admissible": False,
+            "reason": f"members {empty} keep no shot the herald selects",
+            "differing_channels": {},
+            "shots": 0,
+        }
     contrasts = {}
     differing = {}
     for entry in counts.values():
@@ -4169,7 +4225,11 @@ def contract_gate(
 def herald_refusal(herald: dict[str, Any], names: tuple[str, ...] = CONTRACTS) -> dict[str, dict[str, Any]]:
     """Every contract not_admissible behind a heralded run that the herald does not admit."""
     if not herald["evaluable"]:
-        reason = {"herald": "not_evaluable", "differing_channels": herald["differing_channels"]}
+        reason = {
+            "herald": "not_evaluable",
+            "reason": herald["reason"],
+            "differing_channels": herald["differing_channels"],
+        }
     else:
         reason = {
             "herald": "refused",
@@ -4709,13 +4769,14 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(f"analyzer sha256: {report['analyzer_sha256']}")
         print(f"admissibility: {'admissible' if report['admissibility']['admissible'] else 'not admissible'}")
-        herald = report["herald"]
-        if not herald["present"]:
-            print("herald: absent")
-        elif not herald["evaluable"]:
-            print(f"herald: not evaluable ({herald['reason']})")
-        else:
-            print(f"herald: {'admissible' if herald['admissible'] else 'refused'}")
+        for label, key in (("herald", "herald"), ("spectator herald", "spectator_herald")):
+            herald = report.get(key, {"present": False})
+            if not herald["present"]:
+                print(f"{label}: absent")
+            elif not herald["evaluable"]:
+                print(f"{label}: not evaluable ({herald['reason']})")
+            else:
+                print(f"{label}: {'admissible' if herald['admissible'] else 'refused'}")
         for name, contract in report["contracts"].items():
             print(f"{name}: {contract['status']}")
         if arguments.out:

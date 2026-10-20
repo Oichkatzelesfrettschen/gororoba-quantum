@@ -2505,6 +2505,10 @@ def _verify_ground_control_split(snapshot: live_run.Snapshot) -> None:
             ["--family", "n21-orbit-rca", "--ground-control-split", "--overlap-split", *pinned, *ceilings],
             "--ground-control-split and --overlap-split are separate",
         ),
+        (
+            ["--family", "n21-orbit-rca", "--ground-control-split", *pinned, *ceilings],
+            "--ground-control-split requires --init-herald",
+        ),
     ):
         stderr = io.StringIO()
         with redirect_stderr(stderr), contextlib.suppress(SystemExit):
@@ -2523,7 +2527,7 @@ def _verify_ground_control_split_only() -> None:
         "QPU planning: a pinned n21-orbit-rca ground-control split plans the immediate, idle and idle_ground "
         "spectators alone, idle_ground idles the control in |0> for measure plus reset, the configuration, "
         "policy, written command and case bind the split only when set, and live_run refuses it without "
-        "--pin-layout, on another family or beside --overlap-split"
+        "--pin-layout or --init-herald, on another family or beside --overlap-split"
     )
 
 

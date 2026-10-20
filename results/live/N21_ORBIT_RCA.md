@@ -283,15 +283,16 @@ expectations: at once (immediate), after the 836 dt idle with the control in
 
 | Contract | Measured | Verdict |
 |---|---|---|
-| spectator_control_zz | idle 0.616 against idle_ground 0.622 (upper limit +0.019) | fail |
-| spectator_ground_idle_dephasing | idle_ground 0.622 against immediate 0.989 (upper limit -0.350) | pass |
+| spectator_control_zz | idle 0.616 against idle_ground 0.622 (upper limit +0.021) | fail |
+| spectator_ground_idle_dephasing | idle_ground 0.622 against immediate 0.989 (upper limit -0.348) | pass |
 
 Both arms keep only the shots whose initialization herald reads the control
-0, and the spectator herald admits those shots at the per-contract alpha
-0.025 with a 0.0099 margin. A failed spectator_control_zz bounds the ZZ share
+0, and the spectator herald admits those shots; Bonferroni splits the family
+alpha 0.05 equally over that admission and both contracts (0.0167 each), and
+the herald leaves a 0.0101 margin. A failed spectator_control_zz bounds the ZZ share
 rather than excluding it: holding the control in |0> recovers 0.005 of
-visibility, and at most 0.040 (the 0.025 lower confidence limit of the
-idle-minus-idle_ground statistic, -0.030, plus the herald margin), against
+visibility, and at most 0.042 (the 0.0167 lower confidence limit of the
+idle-minus-idle_ground statistic, -0.032, plus the herald margin), against
 the 0.367 qubit 143 loses across the idle with the control grounded. A
 control-state-dependent coupling to 142 therefore accounts for at most about
 11 percent of the window loss. The dominant loss, about 37 percent of the

@@ -6258,6 +6258,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--ground-control-split requires --pin-layout: the split compares arms on fixed roles")
     if args.ground_control_split and args.overlap_split:
         parser.error("--ground-control-split and --overlap-split are separate n21-orbit-rca configurations")
+    if args.ground_control_split and not args.init_herald:
+        parser.error(
+            "--ground-control-split requires --init-herald: idle_ground's contracts read only shots whose "
+            "herald reads the control 0"
+        )
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":

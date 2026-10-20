@@ -48,10 +48,12 @@
   "alpha": {
     "contracts": 2,
     "family_alpha": 0.05,
-    "per_contract_alpha": 0.025,
-    "split": "Bonferroni"
+    "herald_alpha": 0.016666666666666666,
+    "herald_events": 1,
+    "per_contract_alpha": 0.016666666666666666,
+    "split": "Bonferroni over the spectator herald admission and the contracts"
   },
-  "analyzer_sha256": "90748708b1efc85f9f5952313dc5ffceec1c81c15deb226ee3a59140750675b1",
+  "analyzer_sha256": "d04ce0fddd35f2c314d9e73290a97846421d8e2e6cd1c879a43f9538fb933783",
   "calibration": {
     "n21_spectator_idle_ground_x": {
       "calibration": "2026-10-19T15:07:33-07:00",
@@ -80,32 +82,32 @@
   },
   "contracts": {
     "spectator_control_zz": {
-      "herald_margin": 0.009894848233733945,
+      "herald_margin": 0.010072688126721852,
       "idle_ground_visibility": 0.6216392978892653,
       "idle_ground_x_expectation": 0.6152619310514047,
       "idle_ground_y_expectation": 0.08881538650006125,
       "idle_visibility": 0.616346683877809,
       "idle_x_expectation": 0.6108930323846908,
       "idle_y_expectation": 0.08181037654850976,
-      "one_sided_quantile": 1.959963984540054,
+      "one_sided_quantile": 2.128045234184983,
       "standard_error": 0.012443843162497914,
       "statistic": -0.005292614011456309,
       "status": "fail",
-      "upper_confidence_limit": 0.01909687041630461
+      "upper_confidence_limit": 0.021188447125442766
     },
     "spectator_ground_idle_dephasing": {
-      "herald_margin": 0.009894848233733945,
+      "herald_margin": 0.010072688126721852,
       "idle_ground_visibility": 0.6216392978892653,
       "idle_ground_x_expectation": 0.6152619310514047,
       "idle_ground_y_expectation": 0.08881538650006125,
       "immediate_visibility": 0.9889893007883717,
       "immediate_x_expectation": 0.9889570552147239,
       "immediate_y_expectation": -0.007986239095712003,
-      "one_sided_quantile": 1.959963984540054,
+      "one_sided_quantile": 2.128045234184983,
       "standard_error": 0.008936996632194032,
       "statistic": -0.36735000289910635,
       "status": "pass",
-      "upper_confidence_limit": -0.3498338113700503
+      "upper_confidence_limit": -0.3483316698080386
     }
   },
   "control_herald_conditioning": {
@@ -189,10 +191,10 @@
   },
   "spectator_herald": {
     "admissible": true,
-    "alpha": 0.025,
+    "alpha": 0.016666666666666666,
     "bits": {
       "0": {
-        "excitation_spread_upper_limit": 0.0006199195374316432,
+        "excitation_spread_upper_limit": 0.0006385144160302185,
         "excited_fraction": {
           "n21_spectator_idle_ground_x": 0.0,
           "n21_spectator_idle_ground_y": 0.0,
@@ -205,12 +207,12 @@
         "readout_contrast": 0.988525390625,
         "role": "control",
         "spread": 0.0,
-        "spread_lower_limit": -0.000611476700105944,
+        "spread_lower_limit": -0.0006298277988024915,
         "status": "pass",
-        "threshold": 0.002192694393599997
+        "threshold": 0.0023242452068263594
       },
       "1": {
-        "excitation_spread_upper_limit": 0.005217036904909579,
+        "excitation_spread_upper_limit": 0.0053130674857436964,
         "excited_fraction": {
           "n21_spectator_idle_ground_x": 0.002944423997055576,
           "n21_spectator_idle_ground_y": 0.002940095553105476,
@@ -223,12 +225,12 @@
         "readout_contrast": 0.9736328125,
         "role": "work_1",
         "spread": 0.001963701933207704,
-        "spread_lower_limit": -0.0011529780665969114,
+        "spread_lower_limit": -0.0012464765911004406,
         "status": "pass",
-        "threshold": 0.002159660469665791
+        "threshold": 0.0022892294109220844
       },
       "2": {
-        "excitation_spread_upper_limit": 0.0049474241168669724,
+        "excitation_spread_upper_limit": 0.005036344063360926,
         "excited_fraction": {
           "n21_spectator_idle_ground_x": 0.001717580664949086,
           "n21_spectator_idle_ground_y": 0.003062599534484871,
@@ -241,12 +243,12 @@
         "readout_contrast": 0.989013671875,
         "role": "work_4",
         "spread": 0.0019624978433924255,
-        "spread_lower_limit": -0.0009690671030765032,
+        "spread_lower_limit": -0.0010570101458614151,
         "status": "pass",
-        "threshold": 0.0021937774730732495
+        "threshold": 0.0023253932657084668
       },
       "3": {
-        "excitation_spread_upper_limit": 0.005912450804250828,
+        "excitation_spread_upper_limit": 0.006034356836828979,
         "excited_fraction": {
           "n21_spectator_idle_ground_x": 0.005520794994479205,
           "n21_spectator_idle_ground_y": 0.005022663236555188,
@@ -259,16 +261,16 @@
         "readout_contrast": 0.99169921875,
         "role": "work_16",
         "spread": 0.0018346867351546033,
-        "spread_lower_limit": -0.002195228258804637,
+        "spread_lower_limit": -0.0023161223760733013,
         "status": "pass",
-        "threshold": 0.002199734410176139
+        "threshold": 0.002331707589560057
       }
     },
     "comparisons": 120,
-    "contract_shift_upper_limit": 0.014088312911004233,
+    "contract_shift_upper_limit": 0.014365749059091971,
     "evaluable": true,
-    "excitation_spread_bound": 0.0022181467612214342,
-    "one_sided_quantile": 3.5292960888347347,
+    "excitation_spread_bound": 0.0023512245905558823,
+    "one_sided_quantile": 3.635188198352059,
     "present": true,
     "shots": 8139
   },
