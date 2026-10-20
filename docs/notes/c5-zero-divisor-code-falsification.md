@@ -51,7 +51,12 @@ decodes without error at low noise while the null-argmin decoder errs at
 0.76, because each blade has 4 exact annihilators. The first-partner encoder
 alone would not show this, since its 28 blades hold every decoder at 0.750.
 
-## Result: falsified, within the tested scope
+## Reported result (withdrawn as a replayable record)
+
+The original run reported the table below from an unrecorded 57-blade
+encoder. Its C5 column matches the replay; its matched-filter column
+belongs to that encoder alone and reproduces under neither replayed
+encoder.
 
 | noise sigma | algebraic + annihilation (C5) | algebraic + matched filter | random + matched filter |
 |---|---|---|---|
@@ -62,35 +67,36 @@ alone would not show this, since its 28 blades hold every decoder at 0.750.
 | 0.50 | 0.949 | 0.777 | 0.714 |
 
 C5 fails at near-zero noise (symbol error rate 0.76) where random coding is
-perfect (0.00). The gap is not close and not a tuning problem.
+perfect (0.00), and the replay confirms that gap.
 
 ## Structural cause
 
-- Mean 3.9 exact annihilator ties per codeword: each transmitted blade is
-  killed exactly by ~4 of the 84 annihilators, so argmin decoding ties ~5
-  ways on almost every message.
-- Only 35 distinct annihilator-set signatures exist among the 84 codewords.
-- Only 57 distinct transmitted blades (27 duplicates from the edge-to-blade
-  mapping). The 0.275 matched-filter floor is the measured symbol error rate
-  at near-zero noise on the tested 40-message subset; the non-injective
-  encoding bounds the achievable rate below what 84 distinct codewords
-  would support, since duplicate transmissions are indistinguishable by any
-  decoder.
+Every signed two-support left factor of `cd_core`'s corpus annihilates
+exactly 4 partners, and the relation is symmetric, so every transmitted
+partner blade has exactly 4 exact annihilators among the 84 left factors
+and the null-argmin decoder ties 4 ways on every message. With noise the
+four exact nulls stay near zero and argmin picks among them, so the symbol
+error rate tends to 3/4 as sigma tends to 0 for any encoder that sends a
+partner blade; both replayed encoders read 0.750 at sigma 0 and 0.76 at
+sigma 0.01. The reported 3.9 mean ties, 35 signatures and 57 distinct
+blades do not arise under the replayed definitions (4.0, 28 or 42, 28 or
+84) and are withdrawn.
 
-A rescue was attempted: decoding by full 84-dimensional annihilation profile
-instead of argmin. It also fails (symbol error rate 0.575 at zero noise;
-the signatures collide).
+The rescue decoder, which matches the full 84-component annihilation
+profile against each message's noiseless profile, also fails: messages
+sharing a signature collide, 0.600 at zero noise on the 40-message subset
+under the matching encoder (42 signatures) against the reported 0.575.
 
 ## Scope of the no-go
 
-The falsification covers the tested configuration only: the 84-label
-encoder with its 57 distinct transmitted blades, the incoherent null-argmin
-decoder, and the 84-profile decoder, under additive Gaussian noise at the
-tested sigma levels. Within that configuration, the exactness of the nulls
-is inseparable from their ambiguity: the symmetry that makes a_i * b_i = 0
-exact guarantees each blade a crowd of exact annihilators. This is a
-property of the tested encoder/decoder pair, established by counting, not
-a simulation artifact.
+The falsification covers partner-blade encoders of the 84 left factors,
+the incoherent null-argmin decoder and the 84-profile decoder, under
+additive Gaussian noise at the tested sigma levels. Within that scope the
+exactness of the nulls is inseparable from their ambiguity: the symmetry
+that makes a_i * b_i = 0 exact gives each blade 4 exact annihilators. The
+perfect-matching control encoder was added after the first-partner results
+to separate the decoder from code-book collisions, and the 4-annihilator
+count, not either encoder, fixes the 3/4 floor.
 
 It does not establish that null-based communication is structurally
 impossible in general. The tested decoders are incoherent: they discard
