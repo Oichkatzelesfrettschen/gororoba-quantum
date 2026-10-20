@@ -10,8 +10,9 @@ package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only.
 
 **CI is disabled.** The GitHub Actions workflow `ci.yml` is disabled on the
-repository pending a redesign, so no gate decides a merge; the Codex review
-loop of [Reviews and merges](#reviews-and-merges) is the merge gate. The
+repository pending a redesign. The gate suites run on the PR head before merge,
+never per commit or push, and the Codex review loop of
+[Reviews and merges](#reviews-and-merges) is the merge gate. The
 gate machinery described below stays in the tree as the redesign's starting
 point and runs only when invoked by hand.
 
