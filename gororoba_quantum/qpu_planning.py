@@ -58,7 +58,7 @@ from experiment_optimizer import (
     planned_empirical_bernstein,
 )
 from packing import Replica
-from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_probabilities
+from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_probabilities, n21_ramsey_multiple
 
 
 def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
@@ -85,6 +85,8 @@ def settings(args: Any) -> dict[str, Any]:
     herald = {"init_herald": True} if getattr(args, "init_herald", False) else {}
     split = {"overlap_split": True} if getattr(args, "overlap_split", False) else {}
     ground = {"ground_control_split": True} if getattr(args, "ground_control_split", False) else {}
+    windows = getattr(args, "ramsey_windows", None)
+    ramsey = {"ramsey_windows": list(windows)} if windows else {}
     pin = getattr(args, "pin_layout", None)
     return (
         {
@@ -118,6 +120,7 @@ def settings(args: Any) -> dict[str, Any]:
         | herald
         | split
         | ground
+        | ramsey
         | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
     )
 
@@ -285,6 +288,12 @@ def ground_split(members: Any) -> bool:
     )
 
 
+def ramsey_windows_of(members: Any) -> tuple[int, ...]:
+    """The ground Ramsey sweep's idle multiples a group's member names carry; () for any other group."""
+    found = (n21_ramsey_multiple(member.name) for member in members)
+    return tuple(sorted({key[0] for key in found if key is not None}))
+
+
 def spectator_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     """Physical qubits of the control's resets in the ground-control split's arms.
 
@@ -340,6 +349,7 @@ def _control_windows(
     """
     sites = control_sites(runtime, candidate.isas)
     ground = ground_split(candidate.group.members)
+    ramsey = ramsey_windows_of(candidate.group.members)
     controls = candidate_controls(sites, candidate.group.members)
     window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
     windows: dict[str, Any] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
@@ -357,6 +367,7 @@ def _control_windows(
         overlap_split=split and not ground,
         reset_dt=reset_dt,
         ground_control_split=ground,
+        ramsey_windows=ramsey,
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -840,6 +851,7 @@ def family_candidates(
             # The ground-control split holds spectator arms alone and also
             # idles the control's measure plus reset length.
             ground = bool(getattr(args, "ground_control_split", False))
+            ramsey = tuple(getattr(args, "ramsey_windows", None) or ())
             split = bool(getattr(args, "overlap_split", False)) or ground
             for snapshot in snapshots:
                 local: dict[str, Any] = {}
@@ -855,6 +867,7 @@ def family_candidates(
                         overlap_split=split and not ground,
                         reset_dt=reset_bound,
                         ground_control_split=ground,
+                        ramsey_windows=ramsey,
                     )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
@@ -932,7 +945,14 @@ def family_candidates(
                                         "orbit_gate_counts": orbit_gate_counts(candidate),
                                     }
                                     if getattr(args, "overlap_split", False)
-                                    else {"ground_control_split": True}
+                                    else {
+                                        "ground_control_split": True,
+                                        **(
+                                            {"ramsey_windows": list(args.ramsey_windows)}
+                                            if getattr(args, "ramsey_windows", None)
+                                            else {}
+                                        ),
+                                    }
                                     if getattr(args, "ground_control_split", False)
                                     else {"window_sweep": True}
                                     if args.family == "n21-orbit-rca"

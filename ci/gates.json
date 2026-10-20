@@ -1435,6 +1435,22 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_spectator_ramsey.py --self-check",
+   "name": "core-601",
+   "seconds": 10.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --ground-ramsey-sweep",
+   "name": "core-602",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONWARNINGS=error \"$PYTHON\" patch_characterization.py",
    "name": "core-193",

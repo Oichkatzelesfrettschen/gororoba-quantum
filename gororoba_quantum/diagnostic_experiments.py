@@ -37,6 +37,7 @@ from qpe_diagnostics import (
     n21_encoded_diagnostic,
     n21_labeled_law,
     n21_orbit_diagnostic,
+    n21_ramsey_name,
     n21_spectator_law,
     n21_spectator_ramsey,
     phase_marginal,
@@ -412,8 +413,39 @@ def n21_spectator_kinds(overlap_split: bool = False, ground_control_split: bool 
     return N21_SPECTATOR_SPLIT_KINDS if overlap_split else N21_SPECTATOR_KINDS
 
 
-def n21_spectator_members(overlap_split: bool = False, ground_control_split: bool = False) -> tuple[str, ...]:
-    """Member names of the spectator Ramsey arms, kind-major."""
+def n21_ramsey_windows(windows: Any) -> tuple[int, ...]:
+    """The ground Ramsey sweep's idle multiples, sorted; a non-positive, repeated or empty list raises.
+
+    The sweep needs at least two idle exposures beside immediate's zero to
+    fit a decay and a phase slope.
+    """
+    values = tuple(windows)
+    if (
+        len(values) < 2
+        or any(type(value) is not int or value < 1 for value in values)
+        or len(set(values)) != len(values)
+    ):
+        raise ValueError(f"ramsey_windows needs at least two distinct positive integer multiples, not {values}")
+    return tuple(sorted(values))
+
+
+def n21_spectator_members(
+    overlap_split: bool = False, ground_control_split: bool = False, ramsey_windows: tuple[int, ...] = ()
+) -> tuple[str, ...]:
+    """Member names of the spectator Ramsey arms, kind-major.
+
+    ramsey_windows replaces the ground-control split's idle and idle_ground
+    with idle_ground at each idle multiple (n21_ramsey_name) after immediate.
+    """
+    if ramsey_windows:
+        return (
+            *(f"n21_spectator_immediate_{quadrature}" for quadrature in N21_SPECTATOR_QUADRATURES),
+            *(
+                n21_ramsey_name(multiple, quadrature)
+                for multiple in n21_ramsey_windows(ramsey_windows)
+                for quadrature in N21_SPECTATOR_QUADRATURES
+            ),
+        )
     return tuple(
         f"n21_spectator_{kind}_{quadrature}"
         for kind in n21_spectator_kinds(overlap_split, ground_control_split)
@@ -430,6 +462,7 @@ def n21_orbit_rca_group(
     reset_dt: int | None = None,
     overlap_arm: str = N21_OVERLAP_ARM,
     ground_control_split: bool = False,
+    ramsey_windows: tuple[int, ...] = (),
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -468,7 +501,15 @@ def n21_orbit_rca_group(
     idle with the control in |0>, so a ZZ phase to the control becomes a
     fixed rotation of qubit 2 that its X and Y visibility does not see. It
     excludes window_sweep and overlap_split.
+
+    ramsey_windows, with ground_control_split, is the ground Ramsey sweep:
+    immediate and idle_ground at each idle multiple m of window_delay_dt +
+    reset_dt, in X and Y, with no idle arm, so qubit 2's decay and phase
+    slope are read with the control in |0> (n21_spectator_members).
     """
+    if ramsey_windows and not ground_control_split:
+        raise ValueError("ramsey_windows is a ground_control_split configuration")
+    ramsey = n21_ramsey_windows(ramsey_windows) if ramsey_windows else ()
     if overlap_split and window_sweep:
         raise ValueError("overlap_split and window_sweep are separate n21-orbit-rca configurations")
     if ground_control_split and (window_sweep or overlap_split):
@@ -505,12 +546,25 @@ def n21_orbit_rca_group(
         for variant in variants
         for feedback in (True, False)
     )
+    spectator_arms = (
+        [("immediate", 1)] + [("idle_ground", multiple) for multiple in ramsey]
+        if ramsey
+        else [(kind, 1) for kind in n21_spectator_kinds(overlap_split, ground_control_split)]
+    )
+    arms = [
+        (kind, multiple, quadrature) for kind, multiple in spectator_arms for quadrature in N21_SPECTATOR_QUADRATURES
+    ]
     if spectating:
         members += tuple(
             Member(
-                f"n21_spectator_{kind}_{quadrature}",
+                name,
                 n21_spectator_ramsey(
-                    kind, quadrature, measure_dt=window_delay_dt, reset_dt=reset_dt, init_herald=init_herald
+                    kind,
+                    quadrature,
+                    measure_dt=window_delay_dt,
+                    reset_dt=reset_dt,
+                    init_herald=init_herald,
+                    idle_multiple=multiple,
                 ),
                 (
                     lift_phase_law(n21_spectator_law(kind, quadrature), clbits)
@@ -519,8 +573,9 @@ def n21_orbit_rca_group(
                 ),
                 weights=lifted(_SPECTATOR_ONE),
             )
-            for kind in n21_spectator_kinds(overlap_split, ground_control_split)
-            for quadrature in N21_SPECTATOR_QUADRATURES
+            for (kind, multiple, quadrature), name in zip(
+                arms, n21_spectator_members(overlap_split, ground_control_split, ramsey), strict=True
+            )
         )
 
     def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
@@ -532,13 +587,15 @@ def n21_orbit_rca_group(
             result[f"{variant}_no_feedback_signed_contrast"] = float(control[1] - control[3])
             result[f"{variant}_contrast_difference"] = float(primary[1] - primary[3] - control[1] + control[3])
         if spectating:
-            for kind in n21_spectator_kinds(overlap_split, ground_control_split):
+            names = n21_spectator_members(overlap_split, ground_control_split, ramsey)
+            for pair in range(0, len(names), len(N21_SPECTATOR_QUADRATURES)):
                 expectations = []
-                for quadrature in N21_SPECTATOR_QUADRATURES:
-                    law = phase_marginal(distributions[f"n21_spectator_{kind}_{quadrature}"])
+                stem = names[pair].removeprefix("n21_spectator_").rsplit("_", 1)[0]
+                for name in names[pair : pair + len(N21_SPECTATOR_QUADRATURES)]:
+                    law = phase_marginal(distributions[name])
                     expectations.append(float(law[0] + law[1] - law[2] - law[3]))
-                    result[f"spectator_{kind}_{quadrature}_expectation"] = expectations[-1]
-                result[f"spectator_{kind}_visibility"] = math.hypot(expectations[0], expectations[1])
+                    result[f"spectator_{name.removeprefix('n21_spectator_')}_expectation"] = expectations[-1]
+                result[f"spectator_{stem}_visibility"] = math.hypot(expectations[0], expectations[1])
         if init_herald:
             outcomes = np.arange(1 << clbits)
             for member in members:
@@ -603,7 +660,9 @@ def family_contracts(
             ground,
         )
         spectators = (
-            n21_spectator_members(split, ground) if (configuration or {}).get("window_sweep") or split or ground else ()
+            n21_spectator_members(split, ground, tuple((configuration or {}).get("ramsey_windows", ())))
+            if (configuration or {}).get("window_sweep") or split or ground
+            else ()
         )
 
         def scored(values: tuple[float, ...]) -> tuple[float, ...]:
@@ -719,6 +778,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 int(family["reset_dt"]) if "reset_dt" in family else None,
                 str(family.get("overlap_arm", "nominal")),
                 bool(family.get("ground_control_split", False)),
+                tuple(int(multiple) for multiple in family.get("ramsey_windows", ())),
             )
         ]
     if family.get("name") in N21_FAMILIES:
