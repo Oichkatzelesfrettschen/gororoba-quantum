@@ -59,7 +59,7 @@
  "schema": "bdsc-records-v1",
  "synthetic_validation": {
   "all_expected": true,
-  "controls": 27,
+  "controls": 33,
   "scope": "the analysis procedure under its assumptions; no hardware certificate"
  },
  "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794"

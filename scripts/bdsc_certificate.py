@@ -75,6 +75,8 @@ HALF_ROOT: Q2 = (Fraction(0), Fraction(1, 2))
 ALLOCATION = "two-block"
 CONTROL_TRIALS = 100_000
 DEEP_TRIALS = 1_000_000
+IDEAL_TIERS = (3_000, 5_000, 7_500, 10_000, 30_000, 100_000)
+BACKGROUNDS = (0.0, 0.002, 0.005, 0.01, 0.02)
 COVERAGE_TRIALS = 10_000
 COVERAGE_REPLICATES = 64
 THEOREM_EFFECTS = 512
@@ -624,6 +626,12 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "unbound_target": lambda r: r.__setitem__("target_sha256", "0" * 64),
         "common_effect_unsupported": lambda r: r["premises"].__setitem__("common_effect", "unsupported"),
         "sampling_law_unsupported": lambda r: r["premises"].__setitem__("bernoulli_sampling", "unsupported"),
+        "boolean_count": lambda r: r["rows"][2].__setitem__("selected", False),
+        "nan_conditioning": lambda r: r.__setitem__("conditioning_delta", float("nan")),
+        "negative_bias": lambda r: r.__setitem__("preparation_bias_bound", -0.5),
+        "string_bias": lambda r: r.__setitem__("preparation_bias_bound", "0.1"),
+        "row_not_object": lambda r: r["rows"].__setitem__(3, None),
+        "premises_not_object": lambda r: r.__setitem__("premises", ["common_effect"]),
     }
     for name, mutate in mutations.items():
         record = copy.deepcopy(base)
@@ -684,6 +692,13 @@ def expected_counts(effect: np.ndarray, n: int) -> dict[str, tuple[int, int]]:
     return {s.name: (int(round(pk * n)), n) for s, pk in zip(bdsc.bank(), p, strict=True)}
 
 
+def _expected_reading(item: tuple[str, int, float]) -> dict[str, Any]:
+    """The certificate of beta I + (1 - beta) E0 at expected counts under one allocation and trial count."""
+    allocation, n, beta = item
+    effect = bdsc.background(beta) if beta else bdsc.ideal_effect()
+    return bdsc.analyze(expected_counts(effect, n), bdsc.ALPHA_ALLOCATIONS[allocation])
+
+
 def _systematic_limit(item: tuple[int, str]) -> float:
     """The largest per-setting bias bound or acceptance delta under which E0's expected counts still certify."""
     n, key = item
@@ -726,32 +741,32 @@ def planning_record(target: dict[str, Any], catalogue: dict[str, Any]) -> dict[s
     sin2 = math.sin(math.radians(bdsc.ANGLE_LIMIT_DEG)) ** 2
     n_min = math.ceil(math.log(0.025) / math.log(1 - 0.45 * sin2 / 4))
     require(n_min == 1086, f"zero-event trace route needs {n_min} trials, handoff 1086")
+    ideal_items = [(allocation, n, 0.0) for allocation in bdsc.ALPHA_ALLOCATIONS for n in IDEAL_TIERS]
+    background_items = [(ALLOCATION, n, beta) for beta in BACKGROUNDS for n in bdsc.PLANNING_TRIALS]
+    floor_items = [(ALLOCATION, n, 0.0) for n in bdsc.PLANNING_TRIALS]
+    readings = parallel.ordered_map(_expected_reading, ideal_items + background_items + floor_items)
+    ideal_readings = readings[: len(ideal_items)]
+    background_readings = readings[len(ideal_items) : len(ideal_items) + len(background_items)]
+    floor_readings = readings[len(ideal_items) + len(background_items) :]
     ideal_rows = []
-    for allocation in bdsc.ALPHA_ALLOCATIONS:
-        for n in (3_000, 5_000, 7_500, 10_000, 30_000, 100_000):
-            r = bdsc.analyze(expected_counts(bdsc.ideal_effect(), n), bdsc.ALPHA_ALLOCATIONS[allocation])
-            ideal_rows.append(
-                {
-                    "allocation": allocation,
-                    "n": n,
-                    "a_U": round(r["a_U"], 12),
-                    "l_U": round(r["l_U"], 12),
-                    "gamma_L": round(r["gamma_L"], 12),
-                    "theta_max_bound_deg": None
-                    if r["theta_max_bound_deg"] is None
-                    else round(r["theta_max_bound_deg"], 9),
-                    "disposition": r["disposition"],
-                }
-            )
+    for (allocation, n, _), r in zip(ideal_items, ideal_readings, strict=True):
+        ideal_rows.append(
+            {
+                "allocation": allocation,
+                "n": n,
+                "a_U": round(r["a_U"], 12),
+                "l_U": round(r["l_U"], 12),
+                "gamma_L": round(r["gamma_L"], 12),
+                "theta_max_bound_deg": None if r["theta_max_bound_deg"] is None else round(r["theta_max_bound_deg"], 9),
+                "disposition": r["disposition"],
+            }
+        )
     background_rows = []
-    for beta in (0.0, 0.002, 0.005, 0.01, 0.02):
+    for beta in BACKGROUNDS:
         tiers = [
             n
-            for n in bdsc.PLANNING_TRIALS
-            if bdsc.analyze(expected_counts(bdsc.background(beta), n), bdsc.ALPHA_ALLOCATIONS[ALLOCATION])[
-                "disposition"
-            ]
-            == "certified"
+            for (_, n, b), r in zip(background_items, background_readings, strict=True)
+            if b == beta and r["disposition"] == "certified"
         ]
         background_rows.append({"beta": beta, "smallest_certifying_n": tiers[0] if tiers else None})
     tolerance_items = [
@@ -765,10 +780,10 @@ def planning_record(target: dict[str, Any], catalogue: dict[str, Any]) -> dict[s
             if item_n == n:
                 row[f"max_{key}"] = limit
         tolerance_rows.append(row)
-    floors = []
-    for n in bdsc.PLANNING_TRIALS:
-        r = bdsc.analyze(expected_counts(bdsc.ideal_effect(), n), bdsc.ALPHA_ALLOCATIONS[ALLOCATION])
-        floors.append({"n": n, "min_lambda_min_C": round(min(r["a_U"], r["l_U"]) / sin2 + r["radius_C"], 12)})
+    floors = [
+        {"n": n, "min_lambda_min_C": round(min(r["a_U"], r["l_U"]) / sin2 + r["radius_C"], 12)}
+        for (_, n, _), r in zip(floor_items, floor_readings, strict=True)
+    ]
     chip = catalogue["processors"][CHIP]["perfs"]
     u = numeric_unitary([[(Fraction(a), Fraction(b)) for a, b in row] for row in target["U24"]])
     t_out = chip["Transmission per mode (%)"]["t_out"]

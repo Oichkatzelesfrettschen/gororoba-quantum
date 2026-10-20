@@ -54,9 +54,14 @@ DARK_RATIO c_L (a certified fifth low-response direction) or the lower bound
 on lambda_max(A) is at least TARGET_RATIO c_L (a certified bright direction
 inside the target space); otherwise "not_certified". Both criteria are
 ratios, so a scale factor common to every response, such as the
-transmittance under an emitted-photon denominator, changes no disposition;
-a record whose radius exceeds its signal reads "not_certified", since
-gamma_L = 0 there means insufficient precision rather than a fifth null.
+transmittance under an emitted-photon denominator, changes no disposition.
+gamma_L = 0 alone identifies nothing, since it can mean insufficient
+precision; the fifth-direction claim rests on the upper bound gamma_U, which
+holds on the same confidence event.
+
+The "cal" share of an allocation covers the calibration that supports a
+record's declared preparation bias bound and acceptance delta; analyze
+spends only the A and C shares.
 """
 
 from __future__ import annotations
@@ -289,6 +294,8 @@ def block_bound(
     conditioning: float = 0.0,
 ) -> BlockBound:
     """Simultaneous operator-norm radius of one block at failure probability alpha."""
+    require(math.isfinite(conditioning) and conditioning >= 0, "conditioning delta must be finite and nonnegative")
+    require(bias is None or bool(np.all(np.isfinite(bias)) and np.all(np.asarray(bias) >= 0)), "bias must be >= 0")
     p = k / n
     count = len(d)
     lo, hi = clopper_pearson(k, n, alpha / 2 / count)
@@ -444,7 +451,7 @@ def scalar_deviation(d: np.ndarray) -> tuple[float, float]:
     """(tau, delta) minimizing delta in (1 - delta) tau I <= D <= (1 + delta) tau I."""
     w = np.linalg.eigvalsh(d)
     tau = float(w[0] + w[-1]) / 2
-    return tau, float(w[-1] - w[0]) / (w[-1] + w[0])
+    return tau, float((w[-1] - w[0]) / (w[-1] + w[0]))
 
 
 # --- acquisition records -------------------------------------------------------------------
@@ -457,6 +464,14 @@ PREMISES = ("common_effect", "bernoulli_sampling", "acceptance_model", "preparat
 STOPPING = "fixed-n"
 
 
+def _count(value: Any) -> bool:
+    return type(value) is int
+
+
+def _bound(value: Any) -> bool:
+    return type(value) in (int, float) and math.isfinite(value) and value >= 0
+
+
 def evaluate(record: dict[str, Any], frozen: dict[str, Any]) -> dict[str, Any]:
     """Disposition of one acquisition record against the frozen target identity, mask and bank."""
     reasons: list[str] = []
@@ -465,25 +480,38 @@ def evaluate(record: dict[str, Any], frozen: dict[str, Any]) -> dict[str, Any]:
         if not condition:
             reasons.append(reason)
 
+    if not isinstance(record, dict):
+        return {"disposition": "inadmissible", "reasons": ["record is not an object"]}
     check(record.get("schema") == RECORD_SCHEMA, "schema differs")
     check(record.get("target_sha256") == frozen["target_sha256"], "target identity differs from the frozen target")
     check(record.get("selected_modes") == frozen["selected_modes"], "selected-output map differs from the frozen map")
     check(record.get("stopping") == STOPPING, "stopping rule is not the frozen fixed-n rule")
-    real_only = bool(record.get("real_only", False))
+    real_only = record.get("real_only", False)
+    check(isinstance(real_only, bool), "real_only is not a boolean")
+    real_only = real_only is True
     premises = record.get("premises", {})
+    check(isinstance(premises, dict), "premises is not an object")
+    premises = premises if isinstance(premises, dict) else {}
     needed = PREMISES + (("real_effect",) if real_only else ())
     for name in needed:
         check(premises.get(name) == "supported", f"premise {name} is not supported")
+    bias = record.get("preparation_bias_bound", 0.0)
+    conditioning = record.get("conditioning_delta", 0.0)
+    check(_bound(bias), "preparation_bias_bound is not a finite nonnegative number")
+    check(_bound(conditioning), "conditioning_delta is not a finite nonnegative number")
     rows = record.get("rows", [])
+    check(isinstance(rows, list) and all(isinstance(row, dict) for row in rows), "rows are not a list of objects")
+    rows = [row for row in rows if isinstance(row, dict)] if isinstance(rows, list) else []
     names = [row.get("setting") for row in rows]
-    check(len(names) == len(set(names)), "a preparation identity repeats")
+    check(all(isinstance(n, str) for n in names), "a preparation identity is not a string")
+    check(len(names) == len(set(map(str, names))), "a preparation identity repeats")
     expected = sorted(s.name for s in bank(real_only))
     check(sorted(n for n in names if isinstance(n, str)) == expected, "preparation identities differ from the bank")
     n_fixed = frozen.get("trials_per_setting")
     counts: dict[str, tuple[int, int]] = {}
     for row in rows:
         k, n = row.get("selected"), row.get("eligible")
-        valid = isinstance(k, int) and isinstance(n, int) and 0 <= k <= n and n > 0
+        valid = _count(k) and _count(n) and 0 <= k <= n and n > 0
         check(valid, f"invalid trial counts at {row.get('setting')}")
         check(n_fixed is None or n == n_fixed, f"eligible trials at {row.get('setting')} differ from the frozen n")
         if valid and isinstance(row.get("setting"), str):
@@ -491,13 +519,7 @@ def evaluate(record: dict[str, Any], frozen: dict[str, Any]) -> dict[str, Any]:
     if reasons:
         return {"disposition": "inadmissible", "reasons": reasons}
     allocation = ALPHA_ALLOCATIONS[frozen["alpha_allocation"]]
-    out = analyze(
-        counts,
-        allocation,
-        real_only,
-        bias=float(record.get("preparation_bias_bound", 0.0)),
-        conditioning=float(record.get("conditioning_delta", 0.0)),
-    )
+    out = analyze(counts, allocation, real_only, bias=float(bias), conditioning=float(conditioning))
     out["reasons"] = []
     return out
 

@@ -424,6 +424,65 @@
    "reasons": [
     "premise bernoulli_sampling is not supported"
    ]
+  },
+  {
+   "control": "boolean_count",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "invalid trial counts at A-basis-02"
+   ]
+  },
+  {
+   "control": "nan_conditioning",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "conditioning_delta is not a finite nonnegative number"
+   ]
+  },
+  {
+   "control": "negative_bias",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "preparation_bias_bound is not a finite nonnegative number"
+   ]
+  },
+  {
+   "control": "string_bias",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "preparation_bias_bound is not a finite nonnegative number"
+   ]
+  },
+  {
+   "control": "row_not_object",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "rows are not a list of objects",
+    "preparation identities differ from the bank"
+   ]
+  },
+  {
+   "control": "premises_not_object",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "premises is not an object",
+    "premise common_effect is not supported",
+    "premise bernoulli_sampling is not supported",
+    "premise acceptance_model is not supported",
+    "premise preparation_bound is not supported"
+   ]
   }
  ],
  "coverage": {

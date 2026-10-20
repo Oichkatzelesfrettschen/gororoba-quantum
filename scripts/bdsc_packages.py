@@ -445,7 +445,9 @@ def write(out: Path) -> None:
 def check(out: Path) -> None:
     data = json.loads(out.read_text(encoding="utf-8"))
     summary = replay(data)
-    if available() and versions() == data["versions"]:
+    if available():
+        installed = versions()
+        require(installed == data["versions"], f"installed packages {installed} differ from the record; rewrite it")
         close(record(), data, "packages")
         mode = "live re-derivation matches"
     else:
