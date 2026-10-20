@@ -6251,7 +6251,7 @@
     },
     {
       "id": "hw-kingston-rep-delay-timeout",
-      "statement": "Four ibm_kingston initialization-control jobs of 100,000 shots ended in error 1305, the service's ran-longer-than timeout, with no result: at a 0 us repetition delay (inside the configuration's rep_delay_range of 0 to 2 ms, accepted by the service's range check, below the 20 us floor of IBM's changelog) both jobs stayed running for 129 s and 207 s and reported no circuit execution time, and at 20 us both jobs overran their 6 s execution ceiling. The service billed 2 s for each 0 us job and 5 s for each 20 us job, 14 s in all, and the settled charges match the account inventory.",
+      "statement": "Four ibm_kingston initialization-control jobs of 100,000 shots ended in error 1305, the service's ran-longer-than timeout, with no result: at a 0 us repetition delay (inside the configuration's rep_delay_range of 0 to 2 ms, accepted by the service's range check, below the 20 us floor of IBM's changelog) both jobs stayed running for 129 s and 207 s and reported no circuit execution time, and at 20 us both jobs ended in 1305 under a 6 s execution ceiling. The service billed 2 s for each 0 us job and 5 s for each 20 us job, 14 s in all, and the settled charges match the account inventory.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
