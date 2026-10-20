@@ -2688,6 +2688,215 @@ def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
         _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
 
 
+SEGMENTED_SWEEP: dict[str, Any] = {
+    "delays_dt": [0, 693, 819],
+    "segments": 4,
+    "backaction_delays_dt": [693],
+    "backaction_pre_idle_dt": 1250,
+}
+
+
+def _verify_segmented_sweep(snapshot: live_run.Snapshot) -> None:
+    """A pinned segmented ground sweep plans xy and z arms per delay plus backaction arms and binds its analyzer.
+
+    Each arm plays, on the pinned spectator only, K segments of herald,
+    preparation, an idle of exactly the configured dt (none at 0), basis
+    change and readout, with a reset opening every segment after the first;
+    the control plays its segment-1 herald alone; no ISA holds a
+    classically conditioned block. The policy binds the configuration and
+    the closure of scripts/n21_q143_segmented_sweep.py while a plan without
+    the sweep keeps its settings; record_groups, family_contracts and the
+    written command rebuild it, and live_run refuses malformed flags.
+    """
+    plain = qpu_planning.settings(_args("n21-orbit-rca"))
+    _require(
+        "segmented_sweep" not in plain and "segmented_analyzer_closure" not in plain,
+        "an absent segmented sweep entered the policy",
+    )
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    arguments = _args(
+        "n21-orbit-rca", pin_layout=pin, ground_control_split=True, init_herald=True, segmented_sweep=SEGMENTED_SWEEP
+    )
+    settings = qpu_planning.settings(arguments)
+    scripts = Path(qpu_planning.__file__).resolve().parents[1] / "scripts"
+    expected_files = {
+        f"scripts/{name}": hashlib.sha256((scripts / name).read_bytes()).hexdigest()
+        for name in (
+            "n21_orbit_rca.py",
+            "n21_q143_beat_model.py",
+            "n21_q143_segmented_sweep.py",
+            "n21_spectator_ramsey.py",
+        )
+    }
+    _require(
+        settings.get("segmented_sweep") == SEGMENTED_SWEEP
+        and settings.get("segmented_analyzer_closure", {}).get("files") == expected_files
+        and "ramsey_analyzer_closure" not in settings,
+        f"the policy binds {settings.get('segmented_sweep')} with closure {settings.get('segmented_analyzer_closure')}",
+    )
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)
+    _require(bool(candidates), f"FakeFez refuses the pinned segmented sweep: {traces.get('family_rejections')}")
+    (choice,), configuration = candidates[0]
+    names = [member.name for member in choice.group.members]
+    expected = [
+        f"n21_spectator_segmented_{kind}_d{delay}" for delay in SEGMENTED_SWEEP["delays_dt"] for kind in ("xy", "z")
+    ] + ["n21_spectator_segmented_xy_d693_pre1250"]
+    _require(names == expected, f"the segmented sweep plans {names}")
+    _require(
+        configuration.get("segmented_sweep") == SEGMENTED_SWEEP
+        and configuration.get("ground_control_split") is True
+        and configuration.get("init_herald") is True
+        and configuration.get("pin_layout") == pin,
+        f"the segmented configuration reads {configuration}",
+    )
+    control, spectator = PINNED_ORBIT_LAYOUT[0], PINNED_ORBIT_LAYOUT[2]
+
+    def wire_ops(isa: Any, wire: int) -> list[tuple[str, int | None]]:
+        return [
+            (i.operation.name, int(i.operation.duration) if i.operation.name == "delay" else None)
+            for i in isa.data
+            if i.operation.name not in ("barrier", "rz") and any(isa.find_bit(q).index == wire for q in i.qubits)
+        ]
+
+    segments = int(SEGMENTED_SWEEP["segments"])
+    for name, isa in zip(names, choice.isas, strict=True):
+        _require(
+            not any(i.operation.name in ("if_else", "while_loop", "for_loop", "switch_case") for i in isa.data),
+            f"{name} holds a control-flow block",
+        )
+        kind, delay, pre = qpe_diagnostics.n21_segmented_key(name) or ("", 0, 0)
+        expected_ops: list[tuple[str, int | None]] = []
+        for index, basis in enumerate(qpe_diagnostics.n21_segment_bases(kind, segments)):
+            expected_ops += [("reset", None)] if index else []
+            expected_ops += [("measure", None)]
+            expected_ops += [("delay", pre)] if pre else []
+            expected_ops += [("x", None)] if basis == "z" else [("sx", None)]
+            expected_ops += [("delay", delay)] if delay else []
+            expected_ops += [] if basis == "z" else [("sx", None)]
+            expected_ops += [("measure", None)]
+        found = wire_ops(isa, spectator)
+        _require(found == expected_ops, f"{name} plays {found} on the spectator, not {expected_ops}")
+        _require(wire_ops(isa, control) == [("measure", None)], f"{name} plays {wire_ops(isa, control)} on the control")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([member.name for member in rebuilt[0].members] == names, "record_groups does not rebuild the sweep")
+    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration)
+    _require(
+        [contract.name for contract in contracts] == [f"{name}_one" for name in expected],
+        f"the segmented family contracts read {[contract.name for contract in contracts]}",
+    )
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    fixture["policy"]["design"]["ground_control_split"] = True
+    fixture["policy"]["design"]["segmented_sweep"] = SEGMENTED_SWEEP
+    fixture["family_configuration"] = {
+        **fixture.get("family_configuration", {}),
+        "ground_control_split": True,
+        "segmented_sweep": SEGMENTED_SWEEP,
+    }
+    replay = qpu_cases._reproduction_arguments(fixture, location)
+    case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+    _require(
+        replay[replay.index("--segmented-delays-dt") + 1] == "0,693,819"
+        and replay[replay.index("--segments") + 1] == "4"
+        and replay[replay.index("--backaction-delays-dt") + 1] == "693"
+        and replay[replay.index("--backaction-pre-idle-dt") + 1] == "1250"
+        and "--segmented-delays-dt is the segmented ground sweep" in case,
+        f"a segmented record's written command or case text omits the sweep: {replay}",
+    )
+    for config, message in (
+        (SEGMENTED_SWEEP | {"segments": 3}, "segments must be even"),
+        (SEGMENTED_SWEEP | {"segments": 8}, "segments must be even"),
+        (SEGMENTED_SWEEP | {"delays_dt": [0, 1]}, "delays_dt needs"),
+        (SEGMENTED_SWEEP | {"backaction_delays_dt": [5]}, "must be distinct members"),
+    ):
+        try:
+            diagnostic_experiments.n21_segmented_config(config)
+        except ValueError as error:
+            _require(message in str(error), f"{config} raised {error}, not {message!r}")
+        else:
+            raise RuntimeError(f"the segmented configuration accepted {config}")
+    ceilings = ["--max-execution-seconds", "10", "--max-total-execution-seconds", "10"]
+    pinned = ["--pin-layout", f"{snapshot.name}:{','.join(str(q) for q in PINNED_ORBIT_LAYOUT)}"]
+    sweep = ["--segmented-delays-dt", "0,693", "--segments", "4"]
+    for argv, message in (
+        (["--family", "n21-orbit-rca", *sweep, "--init-herald", *pinned, *ceilings], "requires --ground-control-split"),
+        (
+            [
+                "--family",
+                "n21-orbit-rca",
+                "--ground-control-split",
+                "--init-herald",
+                "--segments",
+                "4",
+                *pinned,
+                *ceilings,
+            ],
+            "apply only with --segmented-delays-dt",
+        ),
+        (
+            [
+                "--family",
+                "n21-orbit-rca",
+                "--ground-control-split",
+                "--init-herald",
+                "--segmented-delays-dt",
+                "0,693",
+                *pinned,
+                *ceilings,
+            ],
+            "requires --segments",
+        ),
+        (
+            [
+                "--family",
+                "n21-orbit-rca",
+                "--ground-control-split",
+                "--init-herald",
+                *sweep,
+                "--ramsey-windows",
+                "1,2",
+                *pinned,
+                *ceilings,
+            ],
+            "separate ground sweeps",
+        ),
+        (
+            [
+                "--family",
+                "n21-orbit-rca",
+                "--ground-control-split",
+                "--init-herald",
+                *sweep,
+                "--backaction-delays-dt",
+                "0",
+                *pinned,
+                *ceilings,
+            ],
+            "go together",
+        ),
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+            live_run.main(argv)
+        _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
+
+
+def _verify_segmented_sweep_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_segmented_sweep(snapshot)
+    print(
+        "QPU planning: a pinned segmented ground sweep plans an xy and a z arm per delay and its backaction arms, "
+        "plays each segment's herald, preparation, exact idle, basis change and readout on the spectator alone "
+        "with no control flow, binds its configuration and analyzer closure, and rebuilds, contracts, replays and "
+        "refuses malformed flags"
+    )
+
+
 def _verify_ground_ramsey_sweep_only() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
@@ -3104,8 +3313,15 @@ if __name__ == "__main__":
         action="store_true",
         help="run only the n21-orbit-rca ground Ramsey sweep contract",
     )
+    parser.add_argument(
+        "--segmented-sweep",
+        action="store_true",
+        help="run only the n21-orbit-rca segmented ground sweep contract",
+    )
     parsed = parser.parse_args()
-    if parsed.ground_ramsey_sweep:
+    if parsed.segmented_sweep:
+        _verify_segmented_sweep_only()
+    elif parsed.ground_ramsey_sweep:
         _verify_ground_ramsey_sweep_only()
     elif parsed.ground_control_split:
         _verify_ground_control_split_only()

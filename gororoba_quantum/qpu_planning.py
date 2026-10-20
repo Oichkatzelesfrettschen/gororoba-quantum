@@ -60,7 +60,13 @@ from experiment_optimizer import (
     planned_empirical_bernstein,
 )
 from packing import Replica
-from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_probabilities, n21_ramsey_multiple
+from qpe_diagnostics import (
+    has_herald,
+    herald_measurement,
+    ideal_compiled_probabilities,
+    n21_ramsey_multiple,
+    n21_segmented_key,
+)
 
 # The ground Ramsey sweep's preregistered analysis. Its source closure (the
 # analyzer and every scripts/ module it imports, transitively) joins the
@@ -69,6 +75,9 @@ from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_proba
 # the submission refuse with approval_required.
 SCRIPTS_DIR = Path(__file__).resolve().parents[1] / "scripts"
 RAMSEY_ANALYZER = SCRIPTS_DIR / "n21_spectator_ramsey.py"
+# The segmented ground sweep's preregistered analysis, bound the same way
+# under its own design key.
+SEGMENTED_ANALYZER = SCRIPTS_DIR / "n21_q143_segmented_sweep.py"
 
 
 def scripts_closure(entry: Path) -> list[Path]:
@@ -97,10 +106,17 @@ def scripts_closure(entry: Path) -> list[Path]:
 
 def ramsey_analyzer_closure() -> dict[str, Any]:
     """Per-file sha256 of the analyzer's scripts/ closure and the sha256 of that map's canonical JSON."""
-    files = {
-        f"scripts/{path.name}": hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in scripts_closure(RAMSEY_ANALYZER)
-    }
+    return analyzer_closure(RAMSEY_ANALYZER)
+
+
+def segmented_analyzer_closure() -> dict[str, Any]:
+    """analyzer_closure of the segmented ground sweep's analysis."""
+    return analyzer_closure(SEGMENTED_ANALYZER)
+
+
+def analyzer_closure(entry: Path) -> dict[str, Any]:
+    """Per-file sha256 of entry's scripts/ closure and the sha256 of that map's canonical JSON."""
+    files = {f"scripts/{path.name}": hashlib.sha256(path.read_bytes()).hexdigest() for path in scripts_closure(entry)}
     digest = hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()
     return {"sha256": digest, "files": files}
 
@@ -131,6 +147,8 @@ def settings(args: Any) -> dict[str, Any]:
     ground = {"ground_control_split": True} if getattr(args, "ground_control_split", False) else {}
     windows = getattr(args, "ramsey_windows", None)
     ramsey = {"ramsey_windows": list(windows), "ramsey_analyzer_closure": ramsey_analyzer_closure()} if windows else {}
+    sweep = getattr(args, "segmented_sweep", None)
+    segmented = {"segmented_sweep": sweep, "segmented_analyzer_closure": segmented_analyzer_closure()} if sweep else {}
     pin = getattr(args, "pin_layout", None)
     return (
         {
@@ -165,6 +183,7 @@ def settings(args: Any) -> dict[str, Any]:
         | split
         | ground
         | ramsey
+        | segmented
         | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
     )
 
@@ -328,8 +347,42 @@ def ground_split(members: Any) -> bool:
     """Whether a group is the ground-control split, which holds spectator arms and no orbit arm."""
     names = [member.name for member in members]
     return not any(name.startswith("n21_orbit_") for name in names) and any(
-        name.startswith("n21_spectator_idle_ground_") for name in names
+        name.startswith("n21_spectator_idle_ground_") or n21_segmented_key(name) is not None for name in names
     )
+
+
+def segmented_config_of(members: Any) -> dict[str, Any] | None:
+    """The segmented ground sweep configuration a group's members carry, or None for any other group.
+
+    Every member reads its segments into s<k>_read registers, so the
+    segment count is the number of those registers.
+    """
+    keys = [(n21_segmented_key(member.name), member) for member in members]
+    if not any(key is not None for key, _member in keys):
+        return None
+    if any(key is None for key, _member in keys):
+        raise ValueError("a segmented sweep group holds members of another kind")
+    counts = {sum(1 for register in member.circuit.cregs if register.name.endswith("_read")) for _key, member in keys}
+    if len(counts) != 1:
+        raise ValueError(f"segmented members read {sorted(counts)} segments; one count is planned")
+    pres = {key[2] for key, _member in keys if key is not None and key[2]}
+    if len(pres) > 1:
+        raise ValueError(f"segmented backaction arms idle {sorted(pres)} dt; one pre-idle is planned")
+    return {
+        "delays_dt": sorted({key[1] for key, _member in keys if key is not None and not key[2]}),
+        "segments": counts.pop(),
+        "backaction_delays_dt": sorted({key[1] for key, _member in keys if key is not None and key[2]}),
+        "backaction_pre_idle_dt": pres.pop() if pres else 0,
+    }
+
+
+def segmented_violations(sites: list[tuple[tuple[str, int], ...]], spectator: int) -> list[str]:
+    """Reasons a segmented arm plays a mid-circuit measure or reset off the pinned spectator."""
+    return [
+        f"a segmented arm reads or resets qubits {sorted({qubit for _name, qubit in arm} - {spectator})}"
+        for arm in sites
+        if {qubit for _name, qubit in arm} != {spectator}
+    ]
 
 
 def ramsey_windows_of(members: Any) -> tuple[int, ...]:
@@ -394,7 +447,14 @@ def _control_windows(
     sites = control_sites(runtime, candidate.isas)
     ground = ground_split(candidate.group.members)
     ramsey = ramsey_windows_of(candidate.group.members)
-    controls = candidate_controls(sites, candidate.group.members)
+    segmented = segmented_config_of(candidate.group.members)
+    # A segmented arm never measures or resets the control after its
+    # herald; the control is logical qubit 0's initial physical qubit.
+    controls = (
+        [candidate.isas[0].layout.initial_index_layout(filter_ancillas=True)[0]]
+        if segmented is not None
+        else candidate_controls(sites, candidate.group.members)
+    )
     window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
     windows: dict[str, Any] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
     split = reset_bound is not None
@@ -412,6 +472,7 @@ def _control_windows(
         reset_dt=reset_dt,
         ground_control_split=ground,
         ramsey_windows=ramsey,
+        segmented=segmented,
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -476,6 +537,8 @@ def pinned_roles_violations(runtime: Any, choice: Any, layout: list[int]) -> lis
             reasons.append(f"{member.name}: the arm starts on {initial}, not the pinned layout {layout}")
         if outside := sorted(set(runtime._physical(isa)) - set(layout)):
             reasons.append(f"{member.name}: routing leaves the pinned layout through qubits {outside}")
+    if segmented_config_of(choice.group.members) is not None:
+        return reasons + segmented_violations(control_sites(runtime, choice.isas), layout[2])
     controls = candidate_controls(control_sites(runtime, choice.isas), choice.group.members)
     if controls != [layout[0]]:
         reasons.append(f"the orbit window plays on {controls}, not the pinned control {layout[0]}")
@@ -896,6 +959,7 @@ def family_candidates(
             # idles the control's measure plus reset length.
             ground = bool(getattr(args, "ground_control_split", False))
             ramsey = tuple(getattr(args, "ramsey_windows", None) or ())
+            sweep = getattr(args, "segmented_sweep", None)
             split = bool(getattr(args, "overlap_split", False)) or ground
             for snapshot in snapshots:
                 local: dict[str, Any] = {}
@@ -912,6 +976,7 @@ def family_candidates(
                         reset_dt=reset_bound,
                         ground_control_split=ground,
                         ramsey_windows=ramsey,
+                        segmented=sweep,
                     )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
@@ -994,6 +1059,11 @@ def family_candidates(
                                         **(
                                             {"ramsey_windows": list(args.ramsey_windows)}
                                             if getattr(args, "ramsey_windows", None)
+                                            else {}
+                                        ),
+                                        **(
+                                            {"segmented_sweep": args.segmented_sweep}
+                                            if getattr(args, "segmented_sweep", None)
                                             else {}
                                         ),
                                     }

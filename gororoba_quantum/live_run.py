@@ -74,6 +74,7 @@ from diagnostic_experiments import (
     N21_FAMILIES,
     PATCH_FAMILIES,
     n21_ramsey_windows,
+    n21_segmented_config,
     record_groups,
     state_prep_arms,
 )
@@ -5901,6 +5902,17 @@ def _positive_int(text: str) -> int:
     return value
 
 
+def _dt_list(text: str) -> list[int]:
+    """Comma-separated non-negative integer durations in dt."""
+    try:
+        values = [int(part) for part in text.split(",")]
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(f"needs comma-separated integers, got {text!r}") from error
+    if any(value < 0 for value in values):
+        raise argparse.ArgumentTypeError(f"needs non-negative durations, got {values}")
+    return values
+
+
 def _ramsey_windows(text: str) -> list[int]:
     """Comma-separated idle multiples of the ground Ramsey sweep, sorted (diagnostic_experiments.n21_ramsey_windows)."""
     try:
@@ -6029,6 +6041,29 @@ def main(argv: list[str] | None = None) -> int:
         "times the control's measure plus reset durations, in X and Y, with no idle arm; at least two distinct "
         "positive multiples, which the policy and family configuration bind sorted",
     )
+    parser.add_argument(
+        "--segmented-delays-dt",
+        type=_dt_list,
+        metavar="D,D,...",
+        help="with --ground-control-split: the segmented ground sweep, an X/Y-alternating and a Z-after-X arm of "
+        "qubit 2 at each idle (0 or at least 2 dt), --segments readouts per shot, each with its own herald; the "
+        "policy and family configuration bind it with its analyzer closure",
+    )
+    parser.add_argument(
+        "--segments",
+        type=int,
+        default=None,
+        help="with --segmented-delays-dt: readout segments per shot, even, at most qpe_diagnostics.N21_SEGMENTED_MAX",
+    )
+    parser.add_argument(
+        "--backaction-delays-dt",
+        type=_dt_list,
+        default=None,
+        metavar="D,D,...",
+        help="with --segmented-delays-dt: delays that also run an X/Y arm idling --backaction-pre-idle-dt between "
+        "herald and preparation (the herald-backaction control)",
+    )
+    parser.add_argument("--backaction-pre-idle-dt", type=int, default=None, help="with --backaction-delays-dt")
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -6277,6 +6312,32 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--ground-control-split and --overlap-split are separate n21-orbit-rca configurations")
     if args.ramsey_windows is not None and not args.ground_control_split:
         parser.error("--ramsey-windows requires --ground-control-split: the sweep reads idle_ground arms")
+    args.segmented_sweep = None
+    segmented_flags = (args.segments, args.backaction_delays_dt, args.backaction_pre_idle_dt)
+    if args.segmented_delays_dt is None and any(value is not None for value in segmented_flags):
+        parser.error("--segments and --backaction-* apply only with --segmented-delays-dt")
+    if args.segmented_delays_dt is not None:
+        if not args.ground_control_split:
+            parser.error("--segmented-delays-dt requires --ground-control-split: its arms hold the control in |0>")
+        if args.ramsey_windows is not None:
+            parser.error("--segmented-delays-dt and --ramsey-windows are separate ground sweeps")
+        if args.segments is None:
+            parser.error("--segmented-delays-dt requires --segments")
+        if (args.backaction_delays_dt is None) != (args.backaction_pre_idle_dt is None):
+            parser.error("--backaction-delays-dt and --backaction-pre-idle-dt go together")
+        try:
+            args.segmented_sweep = n21_segmented_config(
+                {
+                    "delays_dt": args.segmented_delays_dt,
+                    "segments": args.segments,
+                    "backaction_delays_dt": args.backaction_delays_dt or [],
+                    "backaction_pre_idle_dt": args.backaction_pre_idle_dt or 0,
+                }
+            )
+        except ValueError as error:
+            parser.error(f"--segmented-delays-dt: {error}")
+        if args.dd or args.twirl:
+            parser.error("--segmented-delays-dt runs without dynamical decoupling or twirling")
     if args.ground_control_split and not args.init_herald:
         parser.error(
             "--ground-control-split requires --init-herald: idle_ground's contracts read only shots whose "
