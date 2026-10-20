@@ -3,7 +3,7 @@
 Status: DRAFT. Each claim names its source; a claim no reachable document
 supports is marked unverified, and the [Unverified](#unverified) section lists
 them. The ibm_kingston endpoint of 2026-10-18 comes from
-[N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md](../../results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md).
+[N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md](../../../results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md).
 
 The `n21-feedback-encoded` family (N=21, a=4, two semiclassical phase-estimation
 rounds, 7 logical qubits, 2 classical bits) compares a feed-forward arm with an
@@ -30,7 +30,7 @@ ideal contrast difference of 0.25. The circuit needs:
 6. A routed two-qubit-gate budget small enough that the attenuated contrast stays
    measurable. Three noise-model values exist for the 713-CZ ibm_kingston
    routing of the encoded circuit: 0.0417 under the 2026-10-16 calibration
-   ([linear_conjugation](../evidence/linear_conjugation/README.md); 739 is that
+   ([linear_conjugation](../../evidence/linear_conjugation/README.md); 739 is that
    table's median over the admitted cosets), 0.0310 at plan time in the run's
    `record.json`, and 0.0344 replayed at the execution calibration. They retain
    0.17 to 0.12 of the ideal 0.25; the measured endpoint below reproduces none
@@ -147,7 +147,7 @@ The two-arm design needs equal shots per arm, so the working budget is about
 13,500 shots per arm. Emerald gives (12 - 0.18) / 0.00096 = 12,312 per arm.
 
 Shots needed. The family's admitted contract
-([N21_USAGE_BUDGET.md](../../gororoba_quantum/N21_USAGE_BUDGET.md)) sizes a run
+([N21_USAGE_BUDGET.md](../../../gororoba_quantum/N21_USAGE_BUDGET.md)) sizes a run
 so that detection at alpha plus power 0.8 fits the contrast: K / sqrt(n) <= c
 with K = 9.724 under Hoeffding, so n = (K / c)^2 shots per arm. The
 empirical-Bernstein opt-in's K of about 9.16 holds near 90,112 Kingston shots
@@ -202,11 +202,11 @@ measurement. Quota rows are what the page states; sources are cited per row.
 
 | Service | FF support | Qubits, connectivity | Free quota | Data terms | Eligibility | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Open Quantum, IQM Garnet / Emerald (Online, `accepting_jobs` false at the 2026-10-17 read) | `dynamic_circuits` feature, `cc_prx`, `measure_ff` ([catalogue](../evidence/open_quantum/catalogue.json)); QASM lowering unverified | 20 / 54, square lattice, 99.51 / 99.5 percent median CZ ([Garnet page](open_quantum/site/providers_iqm_garnet.md)) | 25 Spark credits at signup and 25 every 90 days, claimed by hand ([free-credits page](open_quantum/site/free-credits.md)) | Public tier: circuits and results public, retained by Quantum Rings ([README](open_quantum/README.md)) | Account exists | Verified catalogue; FF path unverified |
+| Open Quantum, IQM Garnet / Emerald (Online, `accepting_jobs` false at the 2026-10-17 read) | `dynamic_circuits` feature, `cc_prx`, `measure_ff` ([catalogue](../../evidence/open_quantum/catalogue.json)); QASM lowering unverified | 20 / 54, square lattice, 99.51 / 99.5 percent median CZ ([Garnet page](../open_quantum/site/providers_iqm_garnet.md)) | 25 Spark credits at signup and 25 every 90 days, claimed by hand ([free-credits page](../open_quantum/site/free-credits.md)) | Public tier: circuits and results public, retained by Quantum Rings ([README](../open_quantum/README.md)) | Account exists | Verified catalogue; FF path unverified |
 | IBM Open Plan, ibm_kingston | `if_else`, tested by the family | 156, heavy-hex | 10 min per 28 days; a one-time 180 min over 12 months for users who log 20 min in any 12 months, opt-in ([IBM blog 2026-03-16](https://www.ibm.com/quantum/blog/open-plan-updates)); the job inventory records 382 s, so 818 s more must accrue before the offer opens | IBM data terms not reviewed | Non-trial Open Plan account | Same machine, larger budget; the 10 min per 28 days is the 600 s rolling window `AGENTS.md` records. Measured null at 713 CZ on 2026-10-18 |
 | Amazon Braket, IQM Garnet / Emerald | `measure_ff`, `cc_prx`, experimental, verbatim only; MCM bits not returned; repeated control after an active reset excluded ([developer guide](https://docs.aws.amazon.com/braket/latest/developerguide/braket-experimental-capabilities.html)) | 20 / 54, 2 / 4 groups | None for QPUs; $0.30 per task + $0.00145 (Garnet) / $0.00160 (Emerald) per shot ([pricing](https://aws.amazon.com/braket/pricing/)) | AWS terms, not reviewed | Any AWS account | Excludes this circuit (reset then control); paid |
 | IQM Resonance Starter | Not documented for Resonance; the IQM Qiskit guide says availability depends on the instrument | Crystal 54, Crystal 20, Star 24 beta ([IQM](https://www.iqm.tech/products/iqm-resonance)) | Up to 30 credits per month, availability-dependent; pay-as-you-go from $0.30 per QPU second; credit-to-second conversion unstated (inferred 1 s, unverified) | Unstated on the page | Unstated | FF on Resonance unverified |
-| EuroHPC quantum pilot call (Euro-Q-Exa, Lucy, Piast-Q, VLQ) | Not mentioned; VLQ is IQM-built per the [Open Quantum IQM page](open_quantum/site/providers_iqm.md), FF unverified | Not stated | Free; rolling cut-offs on 1 Nov and 1 Dec 2026 ([EuroHPC](https://www.eurohpc-ju.europa.eu/eurohpc-ju-opens-access-its-quantum-computers-2026-06-25_en)) | Not mentioned | Research, public sector or industry in Europe | Unverified FF; eligibility depends on the owner's location |
+| EuroHPC quantum pilot call (Euro-Q-Exa, Lucy, Piast-Q, VLQ) | Not mentioned; VLQ is IQM-built per the [Open Quantum IQM page](../open_quantum/site/providers_iqm.md), FF unverified | Not stated | Free; rolling cut-offs on 1 Nov and 1 Dec 2026 ([EuroHPC](https://www.eurohpc-ju.europa.eu/eurohpc-ju-opens-access-its-quantum-computers-2026-06-25_en)) | Not mentioned | Research, public sector or industry in Europe | Unverified FF; eligibility depends on the owner's location |
 | Azure Quantum, Quantinuum H2-1 / H2-2 | Conditional logic on measurement results via Qiskit `c_if` or Q# `if`, QIR Adaptive RI ([provider page](https://learn.microsoft.com/azure/quantum/provider-quantinuum)). The page's `c_if` example does not exist in Qiskit 2.5.2 (`QuantumCircuit.x(0)` returns an instruction with no `c_if`); the repo's circuit uses `if_test`, so a port needs the provider's control-flow path, unverified | 56, all-to-all | None on hardware; syntax checkers free; emulator free with a hardware subscription; HQC = 5 + C(N1q + 10 N2q + 5 Nm)/5000 ([pricing](https://learn.microsoft.com/azure/quantum/pricing)); Standard plan $125,000 per month for 10k HQC | Azure terms, not reviewed | Pay-as-you-go via sales contact | Expressive, not free; the $500-per-provider workspace credit is not on the pages fetched: unverified |
 | Quantinuum Helios (direct) | Real-time control engine, Guppy language ([coverage](https://www.constellationr.com/insights/news/quantinuum-launches-helios-quantum-computer-touts-fidelity-enterprise-customers)); conditional examples on the Helios MCMR page ([docs](http://docs.quantinuum.com/systems/trainings/helios/getting_started/mcmr.html)) | 98, all-to-all | None found for individuals; institutional agreements only (UWA, DeiC) | Not reviewed | Institutions | Access route unverified |
 | Open Quantum, IonQ Forte / AQT IBEX / Rigetti Cepheus | Catalogue lists `mid_circuit_measure` for IonQ and no `dynamic_circuits` for any of the three | 36 / 12 / 108 | Same Spark balance | Public | Account exists | No FF through Open Quantum |
@@ -221,7 +221,7 @@ measurement. Quota rows are what the page states; sources are cited per row.
 | Alice & Bob (Boson 4) | Searched: no feed-forward statement found; cat-qubit test chip on Google Cloud Marketplace ([report](https://quantumcomputingreport.com/alice-bob-is-making-access-to-their-boson-4-cat-qubit-test-chip-available-to-researchers-through-the-google-cloud-marketplace/)) | Test chip | None found | Not reviewed | Researchers | No feed-forward documentation found |
 | SpinQ cloud | Searched: no mid-circuit or feedback statement found ([SpinQ cloud](https://www.spinquanta.com/products-services/quantum-computing-cloud-platform)) | 2 / 3 / 5 / 8 | None found | Not reviewed | Not reviewed | Below 7 qubits |
 | Pasqal Fresnel | Analog neutral-atom device ([Azure pricing](https://learn.microsoft.com/azure/quantum/pricing)) | 100 | n/a | n/a | n/a | Not gate-based for this circuit |
-| Quandela Cloud, qpu:belenos / qpu:ascella | None: each platform accepts a linear-optical circuit and returns `probs`, `samples`, `sample_count` or `entropy` at the end of the run ([Quandela guide](quandela/README.md)) | 24 / 12 photonic modes | 200 credits per month, QPU shots at 1e-06 credits | Content stays the user's, service license only | Account exists | Excluded: no mid-circuit measurement or conditioned gate |
+| Quandela Cloud, qpu:belenos / qpu:ascella | None: each platform accepts a linear-optical circuit and returns `probs`, `samples`, `sample_count` or `entropy` at the end of the run ([Quandela guide](../quandela/README.md)) | 24 / 12 photonic modes | 200 credits per month, QPU shots at 1e-06 credits | Content stays the user's, service license only | Account exists | Excluded: no mid-circuit measurement or conditioned gate |
 
 ## Ranking
 

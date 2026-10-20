@@ -1,8 +1,8 @@
 # Box-kite experiment program
 
-[experiment-program.md](experiment-program.md) is the design: every family's
+[experiment-program.md](../../box_kites/experiment-program.md) is the design: every family's
 claim, observable, circuit, census prediction, falsifier, backend and batch
-plan, citing [census.json](../../evidence/box_kite_census/census.json).
+plan, citing [census.json](../../../evidence/box_kite_census/census.json).
 
 The read-only inventories it draws on each name their sources by path and
 line; the sources stay the authority.

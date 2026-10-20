@@ -38,8 +38,8 @@ The repaired manifest uses the median observed primary-lane duration from
 these two samples where a sample exists. Native-thread limits and code
 changes require fresh hosted samples before claiming a workflow speedup.
 
-[Main timing records](../../evidence/ci_runtime/main.json) and
-[PR timing records](../../evidence/ci_runtime/pr.json) retain job/step totals
+[Main timing records](../evidence/ci_runtime/main.json) and
+[PR timing records](../evidence/ci_runtime/pr.json) retain job/step totals
 and every parsed gate sample. The reports keep the QI lane distinct.
 
 ## Compiler construction cost
@@ -59,13 +59,13 @@ The contract runs in normal and optimized Python. The full all-seeds replay
 checks retained routed gates, layout, feedback stages, selected seeds, depth,
 duration and count-derived summaries separately.
 
-[Target construction timings](../../evidence/ci_runtime/target_build.json)
+[Target construction timings](../evidence/ci_runtime/target_build.json)
 measure one retained snapshot on the build host. The measurement isolates
 construction cost; the end-to-end hosted comparison remains a separate check.
 The normal-mode all-seeds replay reproduced all 144 compilations and
 derived fields in 102.33 seconds on the build host; optimized Python
 reproduced the same denominator in 82.07 seconds.
-[Local replay records](../../evidence/ci_runtime/local_replay.json) bind the
+[Local replay records](../evidence/ci_runtime/local_replay.json) bind the
 commands and results to the script digest and tool versions. The historical hosted
 gate took 1,779.9 seconds for both Python modes on a different machine;
 those two measurements establish different execution boundaries.
@@ -158,7 +158,7 @@ wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
 counts default to one so nested native pools share the same finite allocation.
 Explicit local native overrides remain visible in runner-spec output.
 
-The [spawn budget probe](../../evidence/ci_runtime/cpu_budget.json) reproduced
+The [spawn budget probe](../evidence/ci_runtime/cpu_budget.json) reproduced
 an allocation leak on a 12-CPU host: a two-slot parent gave its pool children
 another two-worker budget and 12 default simulator threads. `workers()` and
 `default_threads()` now share the affinity/quota-bounded `GOROROBA_WORKERS` cap.
@@ -185,7 +185,7 @@ elapsed times; elapsed totals remain distinct from billed runner intervals.
 
 ## Exact arithmetic and dependency qualification
 
-[Rank-sector benchmark samples and program](../../evidence/ci_runtime/rank_sector.json)
+[Rank-sector benchmark samples and program](../evidence/ci_runtime/rank_sector.json)
 retain the exact method and measured environment. Rank-sector success probabilities now accumulate 16 sparse rational products
 into the full 32-coordinate image instead of constructing a dense SymPy matrix
 per call. A 256-case contract compares exact Fractions with the independent full
@@ -195,7 +195,7 @@ the containing repetition-delay check measured median 1.4091 s and 0.5988 s.
 These measurements describe the build host. Both Python modes passed the full
 rank-sector circuit and exact-arithmetic contracts.
 
-The [dependency audit](../../evidence/ci_runtime/dependencies.json) checks 78
+The [dependency audit](../evidence/ci_runtime/dependencies.json) checks 78
 packages against release metadata. Current pins advance Qiskit to 2.6.0,
 Pydantic to 2.14.1, IBM schemas to 0.13.20261016, Ruff to 0.17.1, mypy to 2.4.0
 and Playwright to 1.64.0; threadpoolctl 3.7.0 reports actual loaded native pools.
@@ -306,7 +306,7 @@ that the upstream router accepts every admission Target directly.
 
 The planted-detuning contract draws all 20 random streams before dispatching
 independent fits through the spawn pool. The fitter arithmetic remains identical.
-[The retained benchmark](../../evidence/ci_runtime/patch_window.json) measured
+[The retained benchmark](../evidence/ci_runtime/patch_window.json) measured
 83.956804 s serially and 29.859811 s with four workers, including spawn, on a
 shared host. All result dictionaries and random streams match byte for byte.
 The observed 2.81-fold speedup is one local sample.
@@ -326,7 +326,7 @@ historical-compiler provisioning remains in the GitHub shard planner.
 
 The coherent-family and fringe full replays also reserve the detected CPU
 allocation for their existing edge, bootstrap and resimulation pools. Their
-[local four-worker qualification](../../evidence/ci_runtime/atlas_pool.json)
+[local four-worker qualification](../evidence/ci_runtime/atlas_pool.json)
 reproduces both lane-4 backends in normal and optimized Python at unchanged
 tolerances. The one-worker hosted samples were 905.0 s and 757.7 s; the local
 four-worker samples use a different machine and establish qualification rather
@@ -336,14 +336,14 @@ The QI job's first qualified artifact exposed another single-slot pool: the
 box-kite binding replay used 426.84 user CPU seconds over 428.32 elapsed seconds
 with four CPUs available. Both box-kite emulator gates and the N21 conformance
 gate now reserve the allocation for their existing ordered pools. The
-[local four-worker replay](../../evidence/ci_runtime/qi_pool.json) passes all
+[local four-worker replay](../evidence/ci_runtime/qi_pool.json) passes all
 three commands with `GOROROBA_QI_REQUIRED=1`, including exact retained seeded
 counts and the original reset-law and mutation checks. Local walls are 155.64 s for the binding replay,
 34.30 s for N21 conformance and 12.71 s for the short box-kite replay; hosted measurements remain separate.
 
 ## Complete Ubuntu 26.04 qualification and refreshed estimates
 
-[Run 39089695277](../../evidence/ci_runtime/ubuntu26-qualified.json) passed all
+[Run 39089695277](../evidence/ci_runtime/ubuntu26-qualified.json) passed all
 491 primary cases and five QI-required gates, Ubuntu 24.04 compatibility,
 external ground truth and Rocq replay. The receipt includes the per-gate CPU,
 RSS and worker artifacts. The six primary shard walls were 210.54, 624.94,
@@ -368,7 +368,7 @@ static optimizer checks keep one slot per process.
 The final long-case profile qualifies the broad planning and repetition-delay
 contracts with four workers. Their existing placement/process and simulation
 paths use multiple CPUs and preserve the original assertions. The
-[local receipt](../../evidence/ci_runtime/planning_pool.json) records walls
+[local receipt](../evidence/ci_runtime/planning_pool.json) records walls
 123.83 s and 121.34 s, with 209.33 s and 258.94 s of user CPU. Both gates now
 reserve the allocation. Their provisional manifest estimates explicitly carry
 `timing_origin: local-four-worker-qualification`; the timing refresher removes

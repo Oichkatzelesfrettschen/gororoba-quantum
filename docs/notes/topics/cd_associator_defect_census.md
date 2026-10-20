@@ -1,11 +1,11 @@
 # Non-associating basis triples along the Cayley-Dickson ladder
 
-[scripts/cd_associator_defect_census.py](../../scripts/cd_associator_defect_census.py)
+[scripts/cd_associator_defect_census.py](../../../scripts/cd_associator_defect_census.py)
 counts ordered triples (a, b, c) of basis indices of the algebra of
 dimension D = 2^n whose two bracketings differ, using
 omega(a, b, c) = s(a, b) s(a^b, c) s(b, c) s(a, b^c) from `cd_core.cd_sign`,
 the value of `predict.associator_phase(D, a, b)[c]`. The retained run is
-[census.json](../evidence/cd_associator_defect_census/census.json); the CI
+[census.json](../../evidence/cd_associator_defect_census/census.json); the CI
 gate repeats the exhaustive checks through D = 128, pairs through 64,
 subspaces through 32 and the lifting certificate for lower dimension up to
 32, and the full-tier gate replays the retained run. Tags: [P] source
@@ -15,10 +15,10 @@ statement, [E] finite evidence, [T] proved below, [I] interpretation.
 
 | Statement | Status |
 |---|---|
-| Every linearly dependent triple associates | [T] Kirshtein Lemma 3 ([1207.4230](1207.4230.md)): it generates a subloop of order at most 8 |
+| Every linearly dependent triple associates | [T] Kirshtein Lemma 3 ([1207.4230](../1207.4230.md)): it generates a subloop of order at most 8 |
 | Non-associating ordered triples: N(D) = (D-2)(D-4)(D+6)/2 = (D^3 - 28D + 48)/2; fraction (D+6)/(2(D-1)) among independent triples, 1/2 - 14/D^2 + 24/D^3 among all D^3 | [T] Theorem 1; [E] exhaustive 8 to 512, sampled to 4096 |
 | An independent pair has 0 associating completions when D/2 lies in span{a, b}, and D/2 - 4 otherwise; 3(D-2) and (D-2)(D-4) pairs of each kind | [T] Theorem 2 (D >= 16 for the "exactly when" reading; at D = 8 both counts are 0); [E] 16 to 256 |
-| Each 3-dimensional index plane W carries a linear functional l_W with omega(a, b, c) = -(-1)^l_W(a xor c) on its ordered bases; 168 non-associating triples when l_W = 0 and 72 otherwise; O(D) = (D-2)(D-4)(D+48)/1344 and Q(D) = (D-2)(D-4)(D-8)/192 planes of each type | [T] Theorem 3; [E] the 168/72 counts on every plane through 128; counts agree with [Wilmot](2505.11747.md) Table 5 (prior tabulation) |
+| Each 3-dimensional index plane W carries a linear functional l_W with omega(a, b, c) = -(-1)^l_W(a xor c) on its ordered bases; 168 non-associating triples when l_W = 0 and 72 otherwise; O(D) = (D-2)(D-4)(D+48)/1344 and Q(D) = (D-2)(D-4)(D-8)/192 planes of each type | [T] Theorem 3; [E] the 168/72 counts on every plane through 128; counts agree with [Wilmot](../2505.11747.md) Table 5 (prior tabulation) |
 | omega(1, 6, k) = (-1)^popcount((D-2) & k) | [T] Theorem 4 |
 | The pair (D/2+1, D/4+3): omega = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; algebraic degree n - 2; Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 | [E] eight-point formula and degree 16 to 4096, support, amplitude and nonlinearity laws 32 to 4096 (at D = 16 support 4, amplitude 1/2, nonlinearity 4); no proof yet |
 | With indices 0 to 23 as one block: ordered complement pairs landing in the block 24D - 704 (23D - 680 off-diagonal), block pairs landing in the complement 128 | [T] i >= 24 meets k < 8 inside the complement always and k in [8, 24) only for i >= 32 |
@@ -31,7 +31,7 @@ when x, y are distinct and nonzero.
 
 **Lemma 1 (commutation).** s_d(y, x) = s_d(x, y) (-1)^kappa(x, y): distinct
 nonzero basis units anticommute and every other pair commutes
-([left_mult_sign_rank.md](left_mult_sign_rank.md), Lemma 1; Kirshtein
+([left_mult_sign_rank.md](../left_mult_sign_rank.md), Lemma 1; Kirshtein
 Lemma 3, item 1).
 
 **Lemma 2 (sign lifting).** s_2d(a + u d, b + v d) = s_d(a, b)
@@ -100,7 +100,7 @@ to the mask, giving mask D - 2.
 
 ## Relation to known results
 
-- [P] Wilmot ([2505.11747v3](2505.11747.md), Table 5 and Theorem 8)
+- [P] Wilmot ([2505.11747v3](../2505.11747.md), Table 5 and Theorem 8)
   tabulates the octonion subalgebra counts 1, 8, 50, 310, 2046, 14478,
   107950, 831470 and the quasi-octonion totals 7, 105, 1085, 9765, 82677,
   680085, 5516245 along the ladder, with a recurrence argued by induction.
@@ -127,10 +127,10 @@ to the mask, giving mask D - 2.
   open.
 - [I] omega is the coboundary of the sign cochain s on (Z_2)^n, so its
   cocycle identity holds by construction and defines no nontrivial
-  cohomology class ([Albuquerque-Majid](math-9802116.md)). Split doublings
+  cohomology class ([Albuquerque-Majid](../math-9802116.md)). Split doublings
   change s by a symmetric bilinear form, whose coboundary vanishes, so split
   algebras carry the same omega with a different quadratic form
-  ([packages/splitoct.md](packages/splitoct.md)).
+  ([packages/splitoct.md](../packages/splitoct.md)).
 - [I] For the cross-scale pair the dominant Walsh outcome carries probability
   (1 - 16/D)^2 and the remaining mass 32/D - 256/D^2 (0.0078 at D = 4096):
   growing support and degree coexist with a function eight truth-table

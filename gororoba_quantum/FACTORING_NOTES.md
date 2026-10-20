@@ -202,7 +202,7 @@ so standard Shor post-processing rejects the odd order. The full counterfamily
 refutes a universal exponential displacement claim without weakening the
 base-two theorem. The detailed carry-mask derivation, source witnesses,
 exclusion argument, and overlap count live in
-`docs/notes/open_gororoba_survey_deep_notes.md`.
+`docs/notes/topics/open_gororoba_survey_deep_notes.md`.
 
 **Signed Mersenne powers also have a direct circuit boundary.** For every
 `1 <= x < 2^n-1`, multiplication by `-2^k` is a cyclic rotation followed by

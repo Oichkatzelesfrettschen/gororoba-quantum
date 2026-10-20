@@ -334,7 +334,7 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/check_verify_sources.py
 sha256sum -c docs/PDF_SHA256SUMS
 ```
 
-[Library overview](README.md) maps paper relevance. [Numerics](notes/numerics_best_practice.md)
+[Library overview](README.md) maps paper relevance. [Numerics](notes/topics/numerics_best_practice.md)
 collects the conditioning, precision, vectorization and runtime-package rules. The
 [coordinated roadmap](RESEARCH_ROADMAP.md) retains the cumulative mathematics,
 proof, optimizer, review, and hardware obligations. The next hardware priority
@@ -370,7 +370,7 @@ The [Heron r2 tile packing note](notes/heron_spatial_multiprogramming.md) packs 
 snapshot coupling map, composes one circuit per tile into one wide circuit, and states per-backend RZZ and
 repetition-delay arithmetic from Target values, audited in
 [spatial_multiprogramming_audit.json](evidence/heron_platform/spatial_multiprogramming_audit.json).
-The [N=21 feed-forward backend note](notes/n21_feedforward_backends.md) states the real-time conditioned-gate requirement of
+The [N=21 feed-forward backend note](notes/topics/n21_feedforward_backends.md) states the real-time conditioned-gate requirement of
 the n21-feedback-encoded family, what IQM cc_prx and measure_ff express, the Open Quantum shot arithmetic on Garnet and
 Emerald, and a provider survey with access terms, each web source dated.
 

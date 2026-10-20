@@ -7,7 +7,7 @@ scripts against cd_core.py outside the repository and carried by no gate;
 [V] marks a claim the orchestrator re-verified in this tree; [P] marks a
 statement of the source. Those labels preserve the original review's
 evidence status. The [Reggiani note](../../notes/2411.18881.md) and
-[shared census](../../notes/cayley_dickson_sparse_census.md) own current bundle and
+[shared census](../../notes/topics/cayley_dickson_sparse_census.md) own current bundle and
 finite-count interpretations.
 
 ## Reggiani 2024 (2411.18881): known theorem reproduced

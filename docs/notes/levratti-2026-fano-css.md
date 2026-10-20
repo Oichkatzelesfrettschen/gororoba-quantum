@@ -82,4 +82,4 @@ The [active-stabilizer PDF audit](levratti-2026-active-stabilizers.md#mathematic
 6. Keep the Steane reference in DESIGN_NOTES.md as a labeled reference point; if a Steane-syndrome embedding of the three-qubit register is ever wanted as a statement, derive it from S_Z(w) = {k : <k, w> = 1} and test it by statevector on seven qubits. This manuscript supplies no QPU data and creates no approval case under the QPU time rule. Source: Theorem 3.1(ii).
 7. Add the README.md table row for this note with ratings (a) none, (b) high, (c) none, and the caveat that the source is an author-hosted manuscript. Source: this note.
 
-Items 2 and 3 are gated by `left_multiplication_products` in [scripts/octonion_structure_checks.py](../../scripts/octonion_structure_checks.py), with the sign table in [octonion_structure_checks.md](octonion_structure_checks.md).
+Items 2 and 3 are gated by `left_multiplication_products` in [scripts/octonion_structure_checks.py](../../scripts/octonion_structure_checks.py), with the sign table in [octonion_structure_checks.md](topics/octonion_structure_checks.md).

@@ -23,8 +23,8 @@ convention: doubling (a,b)(c,d) = (ac - conj(d) b, da + b conj(c)), basis index 
 bit-string, e_p e_q = gamma(p,q) e_{p^q} with gamma = cd_core.cd_sign. "RC" in the
 status column means "recomputed". Two authorities carry the recomputations:
 
-- The retained census, [scripts/box_kite_census.py](../../../scripts/box_kite_census.py)
-  with its record [docs/evidence/box_kite_census/census.json](../../evidence/box_kite_census/census.json)
+- The retained census, [scripts/box_kite_census.py](../../../../scripts/box_kite_census.py)
+  with its record [docs/evidence/box_kite_census/census.json](../../../evidence/box_kite_census/census.json)
   (gates core-372 and core-373), built on cd_core alone. Every 16D box-kite fact the
   experiment program uses comes from it; the table "Recomputation authority" below
   names the census field for each row.

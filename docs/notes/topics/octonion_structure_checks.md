@@ -1,10 +1,10 @@
 # Octonion associator codes, box-kite frustration and walk sectors
 
-[scripts/octonion_structure_checks.py](../../scripts/octonion_structure_checks.py)
+[scripts/octonion_structure_checks.py](../../../scripts/octonion_structure_checks.py)
 recomputes the statements below from `cd_core.cd_sign` and
 `predict.associator_phase` in integer, rational or cyclotomic-integer
 arithmetic; the whole-operator periods are gated in
-[ripple_dynamics.py](../../gororoba_quantum/ripple_dynamics.py). It runs as a CI
+[ripple_dynamics.py](../../../gororoba_quantum/ripple_dynamics.py). It runs as a CI
 gate. Tags: [P] prior or textbook result, [E]
 finite check, [T] proved here, [I] interpretation.
 
@@ -15,11 +15,11 @@ finite check, [T] proved here, [I] interpretation.
 | Each of the seven signed sedenion box-kites has 12 edges and 8 triangles of sign -1; shared vertex signs give frustration minimum 4, shared phases give minimum 3 | [T] below; [E] all 64 sign assignments per kite, the 120-degree phase assignment in rational cosines, and the proof's identity as an exact coefficient comparison of two bilinear forms in the unit phasors, which covers every phase assignment |
 | For the walk cores of the pairs (25, 31) and (9, 22) at D = 32, U^120 = I and the weight of the initial state on the primitive-k eigenvalue sector is (1/120) sum_{t<120} <0|U^t|0> c_k(t) | [E] U^120 = I exactly; [T] the sector formula below, Fourier inversion on Z_120 ([P] standard); [E] weights (25, 31): order 6 and 8, 1/2 each; (9, 22): orders 1, 2, 3, 5, 6 with 11/30, 1/6, 1/12, 3/10, 1/12 and zero weight on order 8 |
 | The first return of the initial state is the order of the eigenvalue ratios lambda / lambda_0 over the weighted spectrum, which equals the lcm of the weighted orders when lambda = 1 carries weight: 30 for (9, 22). For (25, 31) no weight sits on lambda = 1; its weighted eigenvalues exp(2 pi i n / 120) have n in {15, 45, 75, 105} and {20, 100}, ratio order 24, which equals lcm(6, 8) = 24 | [T] below; [E] both first returns from exact amplitudes; the weighted support from exact zero tests of 120 q_n = sum_t <0&#124;U^t&#124;0> zeta^{-n t} in Z[zeta_120] modulo Phi_120, consistent with the exact sector weights and calibrated on three known spectra |
-| The whole operator returns at 120 for (9, 22) and at 24 for (25, 31); the order-8 sector of (9, 22) carries no initial weight, so the state returns at 30 | [E] operator periods gated in [ripple_dynamics.py](../../gororoba_quantum/ripple_dynamics.py) (`EXPECTED_PERIODS`) |
+| The whole operator returns at 120 for (9, 22) and at 24 for (25, 31); the order-8 sector of (9, 22) carries no initial weight, so the state returns at 30 | [E] operator periods gated in [ripple_dynamics.py](../../../gororoba_quantum/ripple_dynamics.py) (`EXPECTED_PERIODS`) |
 | The pure embedding a -> (a, 0) multiplies as diag(L_a, R_a); G = L_a^T L_a / &#124;a&#124;^2 has unit diagonal, and Delta = tr(G^2)/d - 1 and the rank ratio are unchanged by the embedding, zero divisors included | [T] below; [E] block structure, L_conj(a) = L_a^T, R_a = C L_conj(a) C, Delta and the ranks in integer and rational arithmetic for 10 integer vectors and the zero divisor e1 + e10 at D = 16 and 32 (rank 12 of 16 and 24 of 32) |
 | The doubling (a, b)(c, d) = (ac - d conj(b), conj(a) d + c b) and the repository doubling are intertwined by T(a, b) = (T(a), conj(T(b))) | [E] all 340 basis pairs at D = 2 to 16; bilinearity extends each stage to all real coefficients |
 | On each Fano line {p, q, p xor q}, L_p L_q L_{p xor q} = eps_L (-1)^{<x, v_L>} with v_L orthogonal to the line; eps_L = -1 on (1,2,3), (1,4,5), (2,4,6), (2,5,7), (3,4,7) and +1 on (1,6,7), (3,5,6) | [E] all 7 lines through the signed-permutation form L_m e_x = cd_sign(m, x) e_{m xor x}; Levratti's Fano-line duality (Table 1) states the Z-string correspondence |
-| 63 of the 105 sedenion pairs have {L_p, L_q} = 0; L_a^T L_a = 2I - t {L_i, L_j} for a = e_i + t e_j, so only the other 42 pairs can carry a zero divisor, and they are exactly the index pairs of the 336-row corpus | [E] counts, the Gram identity for both signs of t on every pair, and set equality; [P] the 63/42 counts are Levratti's Remark 5.4, whose route through L_p L_q = epsilon L_{p xor q} fails (see [the review note](levratti-2026-fano-css.md)) |
+| 63 of the 105 sedenion pairs have {L_p, L_q} = 0; L_a^T L_a = 2I - t {L_i, L_j} for a = e_i + t e_j, so only the other 42 pairs can carry a zero divisor, and they are exactly the index pairs of the 336-row corpus | [E] counts, the Gram identity for both signs of t on every pair, and set equality; [P] the 63/42 counts are Levratti's Remark 5.4, whose route through L_p L_q = epsilon L_{p xor q} fails (see [the review note](../levratti-2026-fano-css.md)) |
 
 ## Proofs
 
@@ -84,15 +84,15 @@ divisors included.
   claimed.
 - [I] The box-kite gap (4 for shared signs, 3 for shared phases) is a
   shared-parameter benchmark for the signed kites the
-  [switching check](../sources/open_gororoba/check_signed_kite_switching.py)
+  [switching check](../../sources/open_gororoba/check_signed_kite_switching.py)
   already certifies. It is not a Bell or contextuality inequality, and no
   hardware experiment measures it.
 - [I] The walk return periods (24, 24) and (30, 120) are already gated in
-  [ripple_dynamics.py](../../gororoba_quantum/ripple_dynamics.py); the sector
+  [ripple_dynamics.py](../../../gororoba_quantum/ripple_dynamics.py); the sector
   weights explain them.
 - [I] The rank path a(t) = e1 + (t-1)^2 e10 + t(3-t) e18/2 - t(t-1) e25/2, its
   coset blocks and its nullities belong to
-  [rank_attachments.py](../../gororoba_quantum/rank_attachments.py) and the
+  [rank_attachments.py](../../../gororoba_quantum/rank_attachments.py) and the
   rank-stratum topology; only the embedding invariance of Delta is added here.
   Delta measures norm distortion; d / (1 + Delta) bounds the rank from below
   and does not measure it.

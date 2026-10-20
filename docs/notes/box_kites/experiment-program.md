@@ -40,7 +40,7 @@ questions the census cannot settle: how much contrast survives, at which
 depth, and whether coherence and associator signs survive a stated layout.
 
 Monograph claims enter only as the census recomputes them;
-[inventory-monographs.md](inventory-monographs.md) names the census field of
+[inventory-monographs.md](../topics/box-kites/inventory-monographs.md) names the census field of
 each row, and rows marked "not retained" stay second-hand.
 
 ## 2. Method: one specification, many witnesses
@@ -396,7 +396,7 @@ emulator's raw rates rather than as an algebraic result.
 **Admitted layout (revisitable).** The exclusion set is {0, 5, 6, 7, 9}. q0,
 q6 and q9 fail on readout and pi-pulse grounds (readout batch 04:18:39Z,
 2026-10-17: q9 idle P1 0.27 in a gate-free circuit, q0 and q6 prepared in |1>
-read 0.39 and 0.14; [inventory-quantum-inspire-backends.md](inventory-quantum-inspire-backends.md)).
+read 0.39 and 0.14; [inventory-quantum-inspire-backends.md](../topics/box-kites/inventory-quantum-inspire-backends.md)).
 q5, q6 and q7 fall under a Ramsey visibility floor of 0.5 (minimum over
 neighbor sectors at 2 us, results/quantum_inspire/coupler_zz_tuna_17_analysis.json,
 runs 2026-10-16T224924Z-coupler_zz_tuna_17-batch-00..03): q5 0.043, q6 0.270,

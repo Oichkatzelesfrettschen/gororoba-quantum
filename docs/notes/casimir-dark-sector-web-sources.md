@@ -19,7 +19,7 @@ No PDF of these works is retained.
 
 ## Mapping to this repository
 
-- [I] The census in [cd_associator_defect_census.md](cd_associator_defect_census.md) splits the 15 three-dimensional index subspaces of the sedenions 8 to 7, matching the octonion and power-associative subalgebra counts of [Wilmot](2505.11747.md); the Cawagas record binds only the bibliographic identity.
+- [I] The census in [cd_associator_defect_census.md](topics/cd_associator_defect_census.md) splits the 15 three-dimensional index subspaces of the sedenions 8 to 7, matching the octonion and power-associative subalgebra counts of [Wilmot](2505.11747.md); the Cawagas record binds only the bibliographic identity.
 - [I] The symmetron and atom-interferometer ([2511.09750](2511.09750.md)) sources fix what a laboratory scalar-force claim must include: a screening model, a source geometry, and an independent calibration of Newtonian gravity.
 - [I] Inacio et al. and [Ma et al.](2601.00483.md) supply a conventional-electrodynamics discriminator (Drude against plasma) that precedes attributing any Casimir residual to a new interaction; [0902.4022](0902.4022.md) carries the real-material baseline.
 - [I] The registered patch-window endpoints report nondetection, not equivalence; the ASA statement is the general reference for not reading a non-rejected null as evidence of absence.

@@ -283,7 +283,7 @@ ET approval preflight uses deduplicated parallel ideal validation. The focused a
 
 ## N=21 feed-forward on other backends
 
-`docs/notes/n21_feedforward_backends.md` ranks the services that can run the
+`docs/notes/topics/n21_feedforward_backends.md` ranks the services that can run the
 feedback-encoded N=21 circuit and closes on owner actions. Open Quantum's IQM
 Garnet and Emerald lead the ranking and wait on two inputs: the backends
 accepting jobs again, and a square-lattice routing of the circuit, which no

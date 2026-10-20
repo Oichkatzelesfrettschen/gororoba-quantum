@@ -60,7 +60,7 @@ under `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/` or
 `~/.local/share/`: `git worktree remove` deletes ignored files with the
 worktree, and a wheel or venv built inside one goes with it.
 Gate seconds are scheduling estimates, independent of tier membership.
-[CI runtime analysis](../docs/notes/build_host/ci-runtime.md) records the timing
+[CI runtime analysis](../docs/runbooks/ci-runtime.md) records the timing
 denominators, measured bottlenecks and replay commands. Runner-spec logs
 record the allocation; the retained audit measured four affinity CPUs and
 about 16 GB on ubuntu-latest. CI uses Ubuntu 26.04, retains an Ubuntu 24.04 compatibility job, and pins
@@ -160,7 +160,7 @@ returns the reference's bits on the record's own streams and on adversarial
 inputs. The bits agree when the batched code keeps the scalar arithmetic
 order, repeats builtin `sum()`'s Neumaier compensation, and sends every
 replicate-dependent `exp` and `** 2` through `math.exp` and `math.pow`;
-[vectorized-fits.md](../docs/notes/build_host/vectorized-fits.md) gives the
+[vectorized-fits.md](../docs/runbooks/vectorized-fits.md) gives the
 rules, the equivalence gates and the measured speedup.
 
 A change to live_run.py or experiments.py also gets a dry run,

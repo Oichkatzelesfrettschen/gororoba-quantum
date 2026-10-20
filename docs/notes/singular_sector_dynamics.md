@@ -8,7 +8,7 @@ repository can build from `L_a`: the Hermitian dilation's frequencies, the
 exactness of a product-formula step, and the frozen response of amplitude
 amplification on Design B's block encoding. Together they answer the
 measurement-foundations review recorded in
-[qpu_vacuum_cd_review_reconciliation.md](qpu_vacuum_cd_review_reconciliation.md):
+[qpu_vacuum_cd_review_reconciliation.md](topics/qpu_vacuum_cd_review_reconciliation.md):
 the algebra decomposes into computable sectors, and those sectors predict which
 hardware response carries new information.
 
@@ -60,7 +60,7 @@ both `(e_a e_c) e_b` and `e_a(e_c e_b)` equal `s`. So the four indices of
 `span(i, j)` always lie in `S-`. Expanding both associators through the
 basis signs gives `k in S+` exactly when `omega(i, j, k) != omega(j, i, k)`,
 where `omega` is the associator sign of the
-[defect census](cd_associator_defect_census.md). Census Theorem 3 gives
+[defect census](topics/cd_associator_defect_census.md). Census Theorem 3 gives
 `omega = -(-1)^l_W(a XOR c)` on a quasi-octonion plane `W` and `omega = -1` on
 an octonion plane. So `k` lies in `S+` exactly when the plane
 `W = span(i, j, k)` is quasi-octonion and `l_W(i XOR j) = 1`. A quasi-octonion
@@ -111,7 +111,7 @@ two-term element is this recursion, and its relation to BDI II Theorem 8.1 is
 unchecked. At D = 16 the count 63 is Levratti's Remark 5.4
 ([note](levratti-2026-fano-css.md)), and the Gram identity
 `L_a^T L_a = 2I - t {L_i, L_j}` with the 63/42 split is already gated in
-[octonion_structure_checks.md](octonion_structure_checks.md); its annihilator
+[octonion_structure_checks.md](topics/octonion_structure_checks.md); its annihilator
 of `e1 + e10`, `span{e4 - e15, e5 + e14, e6 - e13, e7 + e12}`, is this note's
 dark sector. Label: new proof, derived from census Theorem 3 and the doubling
 formula; a comparison with de Marrais's higher-dimensional counts remains

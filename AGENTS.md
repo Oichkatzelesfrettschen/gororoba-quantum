@@ -39,7 +39,7 @@ replicates with numpy before it is pooled, and a gate proves the batched path
 returns the scalar reference's bits: it keeps the scalar arithmetic order,
 repeats `sum()`'s Neumaier compensation and sends every replicate-dependent
 `exp` and `** 2` through `math.exp` and `math.pow`
-([vectorized-fits.md](docs/notes/build_host/vectorized-fits.md)). Mock outcomes
+([vectorized-fits.md](docs/runbooks/vectorized-fits.md)). Mock outcomes
 (`--native-dry-run` timing) never enter scientific analysis or measured
 visualizations. Local shells, CI and Kaggle start Python with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, which the combined Qiskit

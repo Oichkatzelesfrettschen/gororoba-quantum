@@ -1081,7 +1081,7 @@
         }
       ],
       "documents": [
-        "docs/notes/cd_associator_defect_census.md"
+        "docs/notes/topics/cd_associator_defect_census.md"
       ],
       "gates": {
         "core-212": "replay",
@@ -1105,7 +1105,7 @@
       "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
       "evidence": [],
       "documents": [
-        "docs/notes/cd_associator_defect_census.md"
+        "docs/notes/topics/cd_associator_defect_census.md"
       ],
       "gates": {},
       "acquisitions": [],
@@ -2920,7 +2920,7 @@
         }
       ],
       "documents": [
-        "docs/notes/cross_experiment_scope.md"
+        "docs/notes/topics/cross_experiment_scope.md"
       ],
       "gates": {
         "core-276": "replay"

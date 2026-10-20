@@ -7,7 +7,7 @@ that would decide it.
 
 ## Least squares and conditioning
 
-The [least-squares conditioning study](../evidence/lsq_conditioning/README.md)
+The [least-squares conditioning study](../../evidence/lsq_conditioning/README.md)
 (`scripts/lsq_conditioning_study.py`, gates core-489 and core-492) measures
 2716 atlas fits against an exact `Fraction` solution and an independent
 p-adic solution.
@@ -59,7 +59,7 @@ p-adic solution.
   cleaned noise model; under the raw calibration model the gap is 1.06e-9
   per outcome and 2.0e-9 in the contrast, which is Aer's own truncation of
   noise components at 1e-10, not rounding
-  ([cross-check](../evidence/n21_exact_model/README.md), core-487). The
+  ([cross-check](../../evidence/n21_exact_model/README.md), core-487). The
   run's statistical radii are about 1e-2. Aer accepts only
   `precision="double"` and `"single"`.
 - **Extra precision reduces rounding by 2^-(p-53) and nothing else.** The
@@ -114,7 +114,7 @@ OpenMP start one thread per CPU in every process unless
 workers asks for N times the CPUs' threads; AOCL-BLAS (BLIS) on the build
 host reports one thread. Measured on the build host (12 logical CPUs) under
 CI's OpenBLAS 0.3.34, the n21 cross-check replay (core-487) with six workers
-([observations](../evidence/blas_worker_threads/observations.json), single
+([observations](../../evidence/blas_worker_threads/observations.json), single
 wall-clock runs on a host whose load average other jobs set between 27 and
 85):
 
@@ -184,13 +184,13 @@ stack, as core-489 does for pyadic. Versions below are the build host's.
 | numpy | 2.5.4 (CI pin) | arrays, einsum, linalg through AOCL-BLAS 5.3.0 on the host | longdouble has no linalg |
 | scipy | 1.18.1 (CI pin) | `scipy.linalg` (QR with pivoting, `lstsq` drivers, `solve_triangular`), sparse, optimize | |
 | numba | 0.68.0 | JIT for scalar loops numpy cannot vectorize (shot-ordered register decoding, branch walks) | not in CI; Kaggle `quantum-tools` group |
-| jax / jaxlib | 0.9.0 | `jax_bridge` density-matrix sweeps, batched over error scales, on CPU | host only; complex64 storage; TPU is a target no retained run has qualified ([TPU research](kaggle/tpu-research.md)) |
+| jax / jaxlib | 0.9.0 | `jax_bridge` density-matrix sweeps, batched over error scales, on CPU | host only; complex64 storage; TPU is a target no retained run has qualified ([TPU research](../kaggle/tpu-research.md)) |
 | cupy | 14.2.0 | numpy-shaped GPU arrays on the RTX 4070 Ti | host only; the GPU's nominal float64 throughput is 1/64 of float32 (a hardware ratio, not a measured workload speed) |
 | opt_einsum, cotengra, quimb | 3.4.0, 0.8.2, 1.15.0 | contraction order search and tensor networks | host only; quimb and cotengra are the `quantum-tools` Kaggle group |
 | threadpoolctl | 3.6.0 | limit BLAS threads per process | host only |
 | python-flint | 0.9.0 (CI pin) | exact rank modulo p (`nmod_mat`), RREF null spaces (`fmpq_mat`), SymPy's ground types | Kaggle images take it through `--ci-env` or the `exact-arithmetic` group |
 | gmpy2 | 2.3.2 | fast big integers and rationals where `Fraction` dominates a profile | host only |
-| pyadic | 0.3.0 | `ModP`, `PAdic`, rational reconstruction | not in CI; Kaggle `exact-arithmetic` group; [note](packages/manual/pyadic.md) |
+| pyadic | 0.3.0 | `ModP`, `PAdic`, rational reconstruction | not in CI; Kaggle `exact-arithmetic` group; [note](../packages/manual/pyadic.md) |
 | galois | 0.4.11 | finite-field numpy arrays and linear algebra | `quantum-tools` group |
 | mpmath | 1.4.1 | arbitrary-precision reals and complexes | CI pin through `ci/install_pins.sh` |
 | cython | 3.3.0 | compiled extensions | no compiled module in the tree |

@@ -30,12 +30,12 @@ download record, or the source text.
 
 ## Mapping to this repository
 
-- [I] Repository claim: "degree alone carries no security claim" (literature/notes/open_gororoba_handoff.md, Boolean functions row).
+- [I] Repository claim: "degree alone carries no security claim" (literature/notes/topics/open_gororoba_handoff.md, Boolean functions row).
   - Source: Abstract and Sec. 3; Table 2 rows Sigma_2^n and Sigma_n^n.
   - Model map: Sigma_2^n has degree 2 with maximal nonlinearity (n even) and AI 2; Sigma_n^n has degree n with nonlinearity 1 and AI 1. This one pair ranks degree against nonlinearity and against annihilator immunity in opposite order, so neither measure follows from degree. Roetteler's footnote (note 0811.3208) states the degree-nonlinearity point for bent functions of degree 2. The bound AI <= degree is a one-directional inequality, not an implication in the other direction.
   - Label: known theorem reproduced.
   - Not established by the source: any statement about hidden-shift or other quantum query cost. All six measures are classical cryptanalytic distances from linearity.
-- [I] Repository claim: "f(u, t) = [u != 0] + t stays the permanent negative control (degree n - 1, nonlinearity 2, algebraic immunity 2, verified through n = 11 in the replay)" (literature/notes/open_gororoba_handoff.md, Boolean functions row).
+- [I] Repository claim: "f(u, t) = [u != 0] + t stays the permanent negative control (degree n - 1, nonlinearity 2, algebraic immunity 2, verified through n = 11 in the replay)" (literature/notes/topics/open_gororoba_handoff.md, Boolean functions row).
   - Source: Table 2 row Sigma_n^n; Sec. 2.4 (adding a linear function changes AI by at most 1).
   - Model map: with u in F_2^(n-1), [u != 0] = OR_(n-1)(u) = 1 + Sigma_(n-1)^(n-1)(u + 1), a translate and complement of the AND function. The six measures are affine invariants, and nonlinearity, degree, and AI are unchanged by adding 1, so OR_(n-1) has the profile of Sigma_(n-1)^(n-1): degree n - 1, nonlinearity 1 on n - 1 variables, AI 1. Adding the linear variable t keeps the degree at n - 1 and, by the Sec. 2.4 bound, gives AI at most 2, which is the pattern of the repository's values (degree n - 1, AI 2). The nonlinearity 2 is the repository's measurement. The function f is not in the paper.
   - Label: new implementation or measurement (the values of nonlinearity and annihilator immunity for this specific f, through n = 11).

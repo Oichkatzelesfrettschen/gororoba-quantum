@@ -12,18 +12,18 @@ divisors). Those two failures are the operational content of a sedenion
 witness; neither "realized" nor "cannot be realized" has a meaning beyond
 them.
 
-[scripts/octonion_structure_checks.py](../../scripts/octonion_structure_checks.py)
+[scripts/octonion_structure_checks.py](../../../scripts/octonion_structure_checks.py)
 (`left_multiplication_products`) gates every exact value below, and
-[scripts/design_c_hardware_verdict.py](../../scripts/design_c_hardware_verdict.py)
+[scripts/design_c_hardware_verdict.py](../../../scripts/design_c_hardware_verdict.py)
 gates the measured Design C verdicts.
 
 ## Proposal components against the repository
 
 | Component | Status | Repository artifact |
 |---|---|---|
-| Associator interferometer on three 4-qubit registers | exists in a smaller form | Design A ([DESIGN_NOTES.md](../../gororoba_quantum/DESIGN_NOTES.md)): three qubits, no ancilla, all 21 octonion pairs read as Fano Z-strings; Design C: Walsh spectra of the associator phase at D = 8, 16, 32 |
+| Associator interferometer on three 4-qubit registers | exists in a smaller form | Design A ([DESIGN_NOTES.md](../../../gororoba_quantum/DESIGN_NOTES.md)): three qubits, no ancilla, all 21 octonion pairs read as Fano Z-strings; Design C: Walsh spectra of the associator phase at D = 8, 16, 32 |
 | Zero-divisor annihilation circuit | exists as a one-ancilla LCU | Design B: (L_{e_i} + L_{e_j}) / 2 on (e_k + s e_l) / sqrt(2), P(anc = 0) = &#124;ab&#124;^2 / 8; Design D: the phase-resolved fringe (1 - s cos phi) / 2, checked for all 168 zero-divisor pairs |
-| Branch-signed coherence estimator | exists | [coherence_window.py](../../gororoba_quantum/coherence_window.py): (-1)^b0-weighted rho_{01,10} after the N = 21 orbit round |
+| Branch-signed coherence estimator | exists | [coherence_window.py](../../../gororoba_quantum/coherence_window.py): (-1)^b0-weighted rho_{01,10} after the N = 21 orbit round |
 | Multiplication gate as a CZ network | refuted | the bivariate sign (i, j) -> cd_sign(i, j) has algebraic degree log2(D), 4 at D = 16; Design B compiles its degree-4 sign diagonal through DiagonalGate |
 | Classical-shadow associator estimation | not adopted | a random-Pauli shadow's variance grows as 3^w with observable weight w; Designs A to D read each associator or annihilator observable from one circuit |
 | Box-kite frustration gap as a contextuality witness | refuted | F is a classical function of the vertex phases; the [structure note](octonion_structure_checks.md) states that the 4-versus-3 gap is a shared-parameter benchmark and no Bell or contextuality inequality |
@@ -50,7 +50,7 @@ associator slices span RM(1, 3), whose Construction A is E8.
 
 Design C ran inside the ripple campaign on ibm_fez (calibration 2026-10-12
 19:20 PDT, 4096 shots per spectrum,
-[measured-ripple.json](../../results/ripple/measured-ripple.json)). Its
+[measured-ripple.json](../../../results/ripple/measured-ripple.json)). Its
 falsifier asks that the measured Walsh distribution sit closer in total
 variation distance to the true prediction than to the flip and omit
 controls by more than the shot-noise TVD (99th percentile of 2000 seeded
@@ -75,7 +75,7 @@ The `zero_divisor_fringe` group has 14 members on five qubits: Design B's
 dark and bright witnesses and their mirror twins, Design D's nine-point
 phase sweep (phi = k pi / 4, k = 0 to 8) and one isolated dark reference.
 The retained submit-free dry run
-[2026-10-14T055754.499747Z](../../results/live/2026-10-14T055754.499747Z/record.json)
+[2026-10-14T055754.499747Z](../../../results/live/2026-10-14T055754.499747Z/record.json)
 plans it on ibm_fez (calibration 2026-10-13 22:42 PDT) with two replicas, on
 physical qubits 103-106, 117 and 24-26, 37, 45, at 40 to 42 CZ, packed with
 the other static groups. The calibration noise model predicts

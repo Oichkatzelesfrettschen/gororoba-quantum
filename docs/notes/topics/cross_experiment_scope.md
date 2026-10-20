@@ -2,7 +2,7 @@
 
 Every retained acquisition placed its groups on physical tiles, and later
 runs flagged some of those qubits. This note reads the exposure matrix of
-[exposure.json](../evidence/walk-control-scaffolding/exposure.json)
+[exposure.json](../../evidence/walk-control-scaffolding/exposure.json)
 (`scripts/scaffolding_exposure.py`, gate core-276) against the registered
 claims in `docs/state/research_state.json`. It then scopes the diagnostics
 that separate the open mechanisms. Everything below comes from retained data
@@ -36,7 +36,7 @@ and needs no QPU time unless it says so.
    - The measured-bit arm follows the recorded first bit. The known-label arm
      ignores it.
    - Independent, state-preserving assignment error is excluded
-     ([novel-insights](../evidence/novel-insights/REPORT.md), section 2).
+     ([novel-insights](../../evidence/novel-insights/REPORT.md), section 2).
    - Where the recorded 0 reflects a real state change of qubit 79, following
      the recorded bit corrects the actual state, so that part of the defect
      favors measured correction. A common cause behind both the misread and
@@ -118,4 +118,4 @@ than the seconds do.
   tests how faithfully the hardware carries the sign function. It needs
   per-triple circuits outside the shared walk template.
 
-Design validation that needs more simulation than the build host gives can run on Kaggle accelerators; [kaggle/workflow.md](kaggle/workflow.md) states what they buy and how their results enter the research state.
+Design validation that needs more simulation than the build host gives can run on Kaggle accelerators; [kaggle/workflow.md](../kaggle/workflow.md) states what they buy and how their results enter the research state.

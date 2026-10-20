@@ -8,7 +8,7 @@ claim the orchestrator re-verified in this tree; [P] marks a statement of the
 source. Every claim below is also in the per-source note with its theorem
 number. This handback preserves the original delegate evidence. Current
 paper interpretations live in the linked per-paper notes; the
-[shared census](../../notes/cayley_dickson_sparse_census.md) records later exact
+[shared census](../../notes/topics/cayley_dickson_sparse_census.md) records later exact
 implementation status.
 
 ## Kirshtein 2012 (1207.4230): known theorem reproduced
@@ -69,7 +69,7 @@ implementation status.
 - [A] The original review supplies a paper-based list, fixtures with
   nullities 16, 12, 8, and 4, and an independent floating-point SVD census
   of 930 two-term elements. [V] The retained exact implementation now
-  agrees with that count; the [shared census](../../notes/cayley_dickson_sparse_census.md)
+  agrees with that count; the [shared census](../../notes/topics/cayley_dickson_sparse_census.md)
   owns its denominator, histogram, replay, and certification boundary.
 - [A] The original review identifies an index typo in Proposition 15.6;
   the [BDI note](../../notes/math-0511691.md) owns the correction and proof locator.

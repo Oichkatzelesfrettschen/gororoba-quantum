@@ -5,7 +5,7 @@ replay of a retained run all spend their time in local simulation of the
 same Aer noise model. This note decomposes where that time goes, names
 the package interface and the setting that remove each part, and records
 which candidates were measured and rejected. QPU seconds belong to
-[qpu_run_economy.md](../qpu_run_economy.md).
+[qpu_run_economy.md](../notes/qpu_run_economy.md).
 
 ## Planner stages
 
@@ -78,7 +78,7 @@ stays the falsifier and its cost stays in the plan. `dynamic_density`
 agrees with Aer's density-matrix method to 1.2e-15 on the cleaned noise
 model and to 1.06e-9 on the raw calibration model, whose small error
 components Aer truncates (gate core-487,
-docs/notes/numerics_best_practice.md). Its cost grows with 4^n in the active qubits and
+docs/notes/topics/numerics_best_practice.md). Its cost grows with 4^n in the active qubits and
 with the number of distinct recorded values, so it serves 7-qubit dynamic
 circuits in seconds and wide one-qubit families not at all; a wide
 one-qubit family is a batch of independent 2 x 2 laws instead.

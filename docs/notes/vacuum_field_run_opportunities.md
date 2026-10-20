@@ -183,4 +183,4 @@ and a cavity needs its own boundary-adapted inequality. Casimir residuals
 first face the Drude-plasma discriminators of [Ma et al.](2601.00483.md) and
 Inacio et al. (web-source note) before any new-force attribution. The
 open_gororoba vacuum-model code checks live in
-[open_gororoba_handoff.md](open_gororoba_handoff.md#vacuum-model-code-checks).
+[open_gororoba_handoff.md](topics/open_gororoba_handoff.md#vacuum-model-code-checks).
