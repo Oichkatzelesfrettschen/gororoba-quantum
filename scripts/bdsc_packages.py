@@ -63,6 +63,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import bdsc_certificate as cert  # noqa: E402
 
 import bdsc  # noqa: E402
+import parallel  # noqa: E402
 
 SCHEMA = "bdsc-packages-v1"
 TARGET = ROOT / "docs/evidence/bdsc/target.json"
@@ -220,67 +221,76 @@ def householder(v: np.ndarray, wire: int) -> np.ndarray:
     return np.asarray(phase * (np.eye(cert.MODES) - 2 * np.outer(u, u.conj()) / np.vdot(u, u)))
 
 
-def optics_entry(target: dict[str, Any]) -> dict[str, Any]:
+def native_circuit(p_in: list[int], p_out: list[int]) -> Any:
     import perceval as pcvl
 
-    u = cert.numeric_unitary([[(Fraction(a), Fraction(b)) for a, b in row] for row in target["U24"]])
-    p_in, p_out = native_permutations(target)
     native = pcvl.Circuit(cert.MODES).add(0, pcvl.PERM(p_in))
     for wire in range(0, cert.MODES, 2):
         native.add(wire, pcvl.BS.H())
-    native.add(0, pcvl.PERM(p_out))
-    native_error = float(np.max(np.abs(np.array(native.compute_unitary()) - u)))
-    source = target["source_mode"]
-    selected = target["selected_modes"]
+    return native.add(0, pcvl.PERM(p_out))
+
+
+OpticsItem = tuple[str, np.ndarray, list[int], list[int], int, list[int]]
+
+
+def _optics_setting(item: OpticsItem) -> dict[str, Any]:
+    """SLOS shares of one setting: lossless, uniform NoiseModel loss, per-mode LC loss and NoiseModel g2."""
+    import perceval as pcvl
+
+    name, psi, p_in, p_out, source, selected = item
     photon = [0] * cert.MODES
     photon[source] = 1
-    model = bdsc.acceptance(u, selected, LC_EFFICIENCY)
+    v = np.zeros(cert.MODES, dtype=complex)
+    v[: bdsc.DIM] = psi
+    prep = pcvl.Unitary(pcvl.Matrix(householder(v, source)))
+    circuit = pcvl.Circuit(cert.MODES).add(0, prep).add(0, native_circuit(p_in, p_out))
 
-    def share(processor: Any) -> tuple[float, float, float]:
+    def share(processor: Any, filtered: bool) -> tuple[float, float, float]:
+        processor.with_input(pcvl.BasicState(photon))
+        if filtered:
+            processor.min_detected_photons_filter(1)
         result = pcvl.algorithm.Sampler(processor).probs()
         dist = result["results"]
         sel = sum(float(p) for state, p in dist.items() if any(state[m] >= 1 for m in selected))
         multi = sum(float(p) for state, p in dist.items() if state.n > 1)
         return sel, multi, float(result["global_perf"])
 
-    rows = []
+    lc = pcvl.Processor("SLOS", circuit)
+    for mode, eta in enumerate(LC_EFFICIENCY):
+        if eta < 1:
+            lc.add(mode, pcvl.LC(1 - eta))
+    g2_noise = pcvl.NoiseModel(g2=G2, indistinguishability=INDISTINGUISHABILITY)
+    sel_ideal, _, _ = share(pcvl.Processor("SLOS", circuit), False)
+    sel_lossy, _, perf_lossy = share(
+        pcvl.Processor("SLOS", circuit, noise=pcvl.NoiseModel(transmittance=TRANSMITTANCE)), True
+    )
+    sel_lc, _, perf_lc = share(lc, True)
+    sel_g2, multi_g2, _ = share(pcvl.Processor("SLOS", circuit, noise=g2_noise), True)
+    return {
+        "setting": name,
+        "selected_ideal": round(sel_ideal, 15),
+        "selected_uniform_loss": round(sel_lossy, 15),
+        "uniform_loss_perf": round(perf_lossy, 15),
+        "selected_lc": round(sel_lc, 15),
+        "lc_acceptance": round(perf_lc, 15),
+        "selected_g2": round(sel_g2, 15),
+        "multi_photon_g2": round(multi_g2, 15),
+    }
+
+
+def optics_entry(target: dict[str, Any]) -> dict[str, Any]:
+    u = cert.numeric_unitary([[(Fraction(a), Fraction(b)) for a, b in row] for row in target["U24"]])
+    p_in, p_out = native_permutations(target)
+    native_error = float(np.max(np.abs(np.array(native_circuit(p_in, p_out).compute_unitary()) - u)))
+    source = target["source_mode"]
+    selected = target["selected_modes"]
+    model = bdsc.acceptance(u, selected, LC_EFFICIENCY)
     states = [(s.name, bdsc.state(s)) for s in bdsc.bank()] + [(s["name"], s["state"]) for s in bdsc.pilot_settings()]
-    for name, psi in states:
-        v = np.zeros(cert.MODES, dtype=complex)
-        v[: bdsc.DIM] = psi
-        circuit = pcvl.Circuit(cert.MODES).add(0, pcvl.Unitary(pcvl.Matrix(householder(v, source)))).add(0, native)
-        ideal = pcvl.Processor("SLOS", circuit)
-        ideal.with_input(pcvl.BasicState(photon))
-        lossy = pcvl.Processor("SLOS", circuit, noise=pcvl.NoiseModel(transmittance=TRANSMITTANCE))
-        lossy.with_input(pcvl.BasicState(photon))
-        lossy.min_detected_photons_filter(1)
-        lc = pcvl.Processor("SLOS", circuit)
-        for mode, eta in enumerate(LC_EFFICIENCY):
-            if eta < 1:
-                lc.add(mode, pcvl.LC(1 - eta))
-        lc.with_input(pcvl.BasicState(photon))
-        lc.min_detected_photons_filter(1)
-        noisy = pcvl.Processor("SLOS", circuit, noise=pcvl.NoiseModel(g2=G2, indistinguishability=INDISTINGUISHABILITY))
-        noisy.with_input(pcvl.BasicState(photon))
-        noisy.min_detected_photons_filter(1)
-        sel_ideal, _, _ = share(ideal)
-        sel_lossy, _, perf_lossy = share(lossy)
-        sel_lc, _, perf_lc = share(lc)
-        sel_g2, multi_g2, _ = share(noisy)
+    items: list[OpticsItem] = [(name, psi, p_in, p_out, source, selected) for name, psi in states]
+    rows = parallel.ordered_map(_optics_setting, items)
+    for row, (_, psi) in zip(rows, states, strict=True):
         predicted = float(np.real(np.conj(psi) @ model["G"] @ psi) / np.real(np.conj(psi) @ model["D"] @ psi))
-        rows.append(
-            {
-                "setting": name,
-                "selected_ideal": round(sel_ideal, 15),
-                "selected_uniform_loss": round(sel_lossy, 15),
-                "uniform_loss_perf": round(perf_lossy, 15),
-                "selected_lc": round(sel_lc, 15),
-                "selected_lc_predicted": round(predicted, 15),
-                "lc_acceptance": round(perf_lc, 15),
-                "selected_g2": round(sel_g2, 15),
-                "multi_photon_g2": round(multi_g2, 15),
-            }
-        )
+        row["selected_lc_predicted"] = round(predicted, 15)
     return {
         "native": {"perm_in": p_in, "perm_out": p_out, "beam_splitters": "BS.H on (2j, 2j + 1), j = 0..11"},
         "native_max_error": native_error,

@@ -65,7 +65,17 @@ a_U < gamma_L give:
   eigenvectors.
 
 The cross block never enters, and Tr A bounds lambda_max(A) as well. The
-self-test checks all three inequalities on 512 random effects.
+self-test checks all three inequalities on 1024 effects. 1023 of them have
+a < gamma, and a near-tight family reaches sin^2 theta / (a / gamma) =
+0.997.
+
+A record is certified when min(a_U, l_U) < gamma_L and the angle bound is
+at most 10 degrees. Otherwise it reads alternative structure when the
+complement's certified brightest response c_L is positive and either
+gamma_U <= 0.1 c_L (a fifth low-response direction) or a_L >= 0.1 c_L (a
+bright direction inside K). Every other record reads not certified. The
+ratios make a common scale, such as transmittance under an emitted-photon
+denominator, change no disposition.
 
 ## Preparation bank and estimator
 
@@ -94,10 +104,10 @@ trials for E0 and for a 1 % background).
 
 | Control | Disposition |
 |---|---|
-| E0; exact kernel with complement spectrum 0.3..0.9; rotation 5 degrees; background 0.002 | certified |
-| E_R, E_I (complex bank); rotation 30 degrees; F = 0.0606 E0 on an emitted-photon denominator | alternative structure |
+| E0; exact kernel with complement spectrum 0.3..0.9; rotation 5 degrees; background 0.002; F = 0.0606 E0 at 10^6 trials | certified |
+| E_R, E_I (complex bank); rotation 30 degrees | alternative structure |
 | E_I on the 88-setting bank with real_effect asserted | certified, uncovered: the false certificate the complex bank prevents |
-| background 0.05; acceptance imbalance 0.8; preparation error 0.02 | not certified |
+| F = 0.0606 E0 at 10^5 trials; background 0.05; acceptance imbalance 0.8; preparation error 0.02 | not certified |
 | missing, duplicated or miscounted rows; changed mask; optional stopping; unbound target; any unsupported premise | inadmissible |
 
 ## Planning

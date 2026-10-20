@@ -74,9 +74,11 @@ CHECK_TOLERANCE = 1e-9
 HALF_ROOT: Q2 = (Fraction(0), Fraction(1, 2))
 ALLOCATION = "two-block"
 CONTROL_TRIALS = 100_000
+DEEP_TRIALS = 1_000_000
 COVERAGE_TRIALS = 10_000
 COVERAGE_REPLICATES = 64
 THEOREM_EFFECTS = 512
+THEOREM_NONTRIVIAL_MIN = 800
 # Historical qpu:belenos rates (docs/notes/quandela/strategy.md section 1a): an iterated job spends about 6.3 s
 # per iteration plus 26 us per sample within the 300 s job limit, bills 1 credit plus 1e-6 per shot of its
 # largest iteration, and runs one job at a time against 200 Explorer credits a month.
@@ -482,12 +484,17 @@ def summary(result: dict[str, Any], truth: np.ndarray | None) -> dict[str, Any]:
 def controls_record(target: dict[str, Any]) -> dict[str, Any]:
     n = CONTROL_TRIALS
     frozen = frozen_identity(target, n)
-    rows: list[dict[str, Any]] = []
+    jobs: list[ControlJob] = []
 
-    def run(name: str, purpose: str, expected: str, record: dict[str, Any], truth: np.ndarray | None) -> None:
-        result = bdsc.evaluate(record, frozen)
-        row = {"control": name, "purpose": purpose, "expected": expected, **summary(result, truth)}
-        rows.append(row)
+    def run(
+        name: str,
+        purpose: str,
+        expected: str,
+        record: dict[str, Any],
+        truth: np.ndarray | None,
+        identity: dict[str, Any] | None = None,
+    ) -> None:
+        jobs.append((name, purpose, expected, record, truth, frozen if identity is None else identity))
 
     def counts(effect: np.ndarray, seed: int, real_only: bool = False) -> dict[str, tuple[int, int]]:
         return bdsc.sample_counts(effect, n, seed, real_only)
@@ -495,34 +502,87 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
     e0 = bdsc.ideal_effect()
     run("ideal", "E0 itself", "certified", bdsc.record_from_counts(counts(e0, 1), frozen), e0)
     er = bdsc.extra_real_null()
-    run("extra_real_null", "E_R: a fifth null on (e1 - e2)/sqrt2", "alternative_structure",
-        bdsc.record_from_counts(counts(er, 2), frozen), er)  # fmt: skip
+    run(
+        "extra_real_null",
+        "E_R: a fifth null on (e1 - e2)/sqrt2",
+        "alternative_structure",
+        bdsc.record_from_counts(counts(er, 2), frozen),
+        er,
+    )
     ei = bdsc.extra_imag_null()
-    run("extra_imag_null", "E_I: a fifth null on (e1 + i e2)/sqrt2, complex bank", "alternative_structure",
-        bdsc.record_from_counts(counts(ei, 3), frozen), ei)  # fmt: skip
+    run(
+        "extra_imag_null",
+        "E_I: a fifth null on (e1 + i e2)/sqrt2, complex bank",
+        "alternative_structure",
+        bdsc.record_from_counts(counts(ei, 3), frozen),
+        ei,
+    )
     real_counts = counts(ei, 3, real_only=True)
     support_but_real = {name: "supported" for name in bdsc.PREMISES}
-    run("extra_imag_null_real_bank", "E_I on the 88-setting bank without an established real effect",
-        "inadmissible", bdsc.record_from_counts(real_counts, frozen, support_but_real, real_only=True), ei)  # fmt: skip
-    run("extra_imag_null_real_bank_forced", "the same 88 settings with real_effect asserted: the false certificate "
-        "the complex bank exists to prevent", "certified",
-        bdsc.record_from_counts(real_counts, frozen, real_only=True), ei)  # fmt: skip
+    run(
+        "extra_imag_null_real_bank",
+        "E_I on the 88-setting bank without an established real effect",
+        "inadmissible",
+        bdsc.record_from_counts(real_counts, frozen, support_but_real, real_only=True),
+        ei,
+    )
+    run(
+        "extra_imag_null_real_bank_forced",
+        "the same 88 settings with real_effect asserted: the false certificate the complex bank exists to prevent",
+        "certified",
+        bdsc.record_from_counts(real_counts, frozen, real_only=True),
+        ei,
+    )
     other = bdsc.kernel_other_spectrum()
-    run("kernel_other_spectrum", "exact kernel, complement spectrum 0.3..0.9", "certified",
-        bdsc.record_from_counts(counts(other, 4), frozen), other)  # fmt: skip
+    run(
+        "kernel_other_spectrum",
+        "exact kernel, complement spectrum 0.3..0.9",
+        "certified",
+        bdsc.record_from_counts(counts(other, 4), frozen),
+        other,
+    )
     small = bdsc.rotated(5.0)
-    run("rotated_5deg", "low space rotated 5 degrees toward f_9", "certified",
-        bdsc.record_from_counts(counts(small, 5), frozen), small)  # fmt: skip
+    run(
+        "rotated_5deg",
+        "low space rotated 5 degrees toward f_9",
+        "certified",
+        bdsc.record_from_counts(counts(small, 5), frozen),
+        small,
+    )
     large = bdsc.rotated(30.0)
-    run("rotated_30deg", "low space rotated 30 degrees toward f_9", "alternative_structure",
-        bdsc.record_from_counts(counts(large, 6), frozen), large)  # fmt: skip
+    run(
+        "rotated_30deg",
+        "low space rotated 30 degrees toward f_9",
+        "alternative_structure",
+        bdsc.record_from_counts(counts(large, 6), frozen),
+        large,
+    )
     dim = bdsc.attenuated(0.0606)
-    run("attenuated_unconditional", "F = 0.0606 E0 on an emitted-photon denominator", "alternative_structure",
-        bdsc.record_from_counts(counts(dim, 7), frozen), dim)  # fmt: skip
+    run(
+        "attenuated_unconditional",
+        "F = 0.0606 E0 on an emitted-photon denominator",
+        "not_certified",
+        bdsc.record_from_counts(counts(dim, 7), frozen),
+        dim,
+    )
+    deep = frozen_identity(target, DEEP_TRIALS)
+    run(
+        "attenuated_unconditional_deep",
+        f"the same effect at {DEEP_TRIALS} trials: a common scale changes no disposition",
+        "certified",
+        bdsc.record_from_counts(bdsc.sample_counts(dim, DEEP_TRIALS, 7), deep),
+        dim,
+        deep,
+    )
     for beta, expected in ((0.002, "certified"), (0.05, "not_certified")):
         bg = bdsc.background(beta)
-        run(f"background_{beta}", f"F = {beta} I + (1 - {beta}) E0: background stays in a", expected,
-            bdsc.record_from_counts(counts(bg, 8), frozen), bg)  # fmt: skip
+        run(
+            f"background_{beta}",
+            f"F = {beta} I + (1 - {beta}) E0: background stays in a",
+            expected,
+            bdsc.record_from_counts(counts(bg, 8), frozen),
+            bg,
+        )
     unsupported = {**support_but_real, "acceptance_model": "unsupported"}
     for floor, step, expected in ((0.98, 0.005, "certified"), (0.8, 0.05, "not_certified")):
         eta = [1.0] * MODES
@@ -530,15 +590,29 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
             eta[mode] = floor + step * j
         conditioned = conditioned_counts(target, n, 9, eta)
         label = f"nonscalar_acceptance_{floor}"
-        run(f"{label}_unbounded", f"bright-output efficiencies {floor}.. with the acceptance model unsupported",
-            "inadmissible", bdsc.record_from_counts(conditioned["counts"], frozen, unsupported), None)  # fmt: skip
-        run(f"{label}_bounded", f"the same counts with the computed delta {conditioned['delta']:.6f}", expected,
+        run(
+            f"{label}_unbounded",
+            f"bright-output efficiencies {floor}.. with the acceptance model unsupported",
+            "inadmissible",
+            bdsc.record_from_counts(conditioned["counts"], frozen, unsupported),
+            None,
+        )
+        run(
+            f"{label}_bounded",
+            f"the same counts with the computed delta {conditioned['delta']:.6f}",
+            expected,
             bdsc.record_from_counts(conditioned["counts"], frozen, conditioning_delta=conditioned["delta"]),
-            conditioned["effect"])  # fmt: skip
+            conditioned["effect"],
+        )
     for size, bound, expected in ((0.0005, 0.0011, "certified"), (0.02, 0.0404, "not_certified")):
         noisy = perturbed_counts(e0, n, 10, size)
-        run(f"label_dependent_preparation_{size}", f"per-label state error of norm {size} with bias bound {bound}",
-            expected, bdsc.record_from_counts(noisy, frozen, preparation_bias_bound=bound), e0)  # fmt: skip
+        run(
+            f"label_dependent_preparation_{size}",
+            f"per-label state error of norm {size} with bias bound {bound}",
+            expected,
+            bdsc.record_from_counts(noisy, frozen, preparation_bias_bound=bound),
+            e0,
+        )
     base = bdsc.record_from_counts(counts(e0, 11), frozen)
     mutations = {
         "altered_detector_map": lambda r: r.__setitem__("selected_modes", list(reversed(r["selected_modes"]))),
@@ -555,6 +629,7 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         record = copy.deepcopy(base)
         mutate(record)
         run(name, "record or premise defect", "inadmissible", record, None)
+    rows = parallel.ordered_map(_evaluate_control, jobs)
     for row in rows:
         require(row["disposition"] == row["expected"], f"control {row['control']} read {row['disposition']}")
         require(row.get("covered", True) or row["control"].endswith("_forced"), f"control {row['control']} uncovered")
@@ -564,11 +639,20 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "target_sha256": target["target_sha256"],
         "trials_per_setting": n,
         "alpha_allocation": ALLOCATION,
-        "dark_ceiling": bdsc.DARK_CEILING,
-        "target_floor": bdsc.TARGET_FLOOR,
+        "dark_ratio": bdsc.DARK_RATIO,
+        "target_ratio": bdsc.TARGET_RATIO,
         "controls": rows,
         "coverage": coverage(target),
     }
+
+
+ControlJob = tuple[str, str, str, dict[str, Any], np.ndarray | None, dict[str, Any]]
+
+
+def _evaluate_control(job: ControlJob) -> dict[str, Any]:
+    name, purpose, expected, record, truth, identity = job
+    result = bdsc.evaluate(record, identity)
+    return {"control": name, "purpose": purpose, "expected": expected, **summary(result, truth)}
 
 
 def _coverage_replicate(item: tuple[str, int, int]) -> tuple[bool, bool]:
@@ -598,6 +682,19 @@ def coverage(target: dict[str, Any]) -> dict[str, Any]:
 def expected_counts(effect: np.ndarray, n: int) -> dict[str, tuple[int, int]]:
     p = bdsc.probabilities(effect, bdsc.bank())
     return {s.name: (int(round(pk * n)), n) for s, pk in zip(bdsc.bank(), p, strict=True)}
+
+
+def _systematic_limit(item: tuple[int, str]) -> float:
+    """The largest per-setting bias bound or acceptance delta under which E0's expected counts still certify."""
+    n, key = item
+    counts = expected_counts(bdsc.ideal_effect(), n)
+    low, high = 0.0, 0.1
+    for _ in range(40):
+        mid = (low + high) / 2
+        bias, conditioning = (mid, 0.0) if key == "preparation_bias_bound" else (0.0, mid)
+        result = bdsc.analyze(counts, bdsc.ALPHA_ALLOCATIONS[ALLOCATION], bias=bias, conditioning=conditioning)
+        low, high = (mid, high) if result["disposition"] == "certified" else (low, mid)
+    return round(low, 9)
 
 
 def resource_row(n: int) -> dict[str, Any]:
@@ -657,19 +754,16 @@ def planning_record(target: dict[str, Any], catalogue: dict[str, Any]) -> dict[s
             == "certified"
         ]
         background_rows.append({"beta": beta, "smallest_certifying_n": tiers[0] if tiers else None})
+    tolerance_items = [
+        (n, key) for n in bdsc.PLANNING_TRIALS for key in ("preparation_bias_bound", "conditioning_delta")
+    ]
+    limits = parallel.ordered_map(_systematic_limit, tolerance_items)
     tolerance_rows = []
     for n in bdsc.PLANNING_TRIALS:
-        counts = expected_counts(bdsc.ideal_effect(), n)
         row: dict[str, Any] = {"n": n}
-        for key in ("preparation_bias_bound", "conditioning_delta"):
-            low, high = 0.0, 0.1
-            for _ in range(40):
-                mid = (low + high) / 2
-                bias, conditioning = (mid, 0.0) if key == "preparation_bias_bound" else (0.0, mid)
-                result = bdsc.analyze(counts, bdsc.ALPHA_ALLOCATIONS[ALLOCATION], bias=bias, conditioning=conditioning)
-                certified = result["disposition"] == "certified"
-                low, high = (mid, high) if certified else (low, mid)
-            row[f"max_{key}"] = round(low, 9)
+        for (item_n, key), limit in zip(tolerance_items, limits, strict=True):
+            if item_n == n:
+                row[f"max_{key}"] = limit
         tolerance_rows.append(row)
     floors = []
     for n in bdsc.PLANNING_TRIALS:
@@ -877,17 +971,35 @@ def _random_effect(seed: int) -> np.ndarray:
     """A random effect near E0: a random unitary tilt of its frame and random eigenvalues in [0, 1]."""
     rng = np.random.default_rng(seed)
     z = rng.normal(size=(bdsc.DIM, bdsc.DIM)) + 1j * rng.normal(size=(bdsc.DIM, bdsc.DIM))
-    h = (z + z.conj().T) * rng.uniform(0.0, 0.3)
+    h = (z + z.conj().T) * rng.uniform(0.0, 0.05)
     w, v = np.linalg.eigh(h)
     tilt = v @ np.diag(np.exp(1j * w)) @ v.conj().T
-    low = rng.uniform(0.0, 0.2, size=4)
-    high = rng.uniform(0.05, 1.0, size=12)
+    low = rng.uniform(0.0, 0.1, size=4)
+    high = rng.uniform(0.2, 1.0, size=12)
     frame = tilt @ bdsc.full_frame()
     return np.asarray(frame @ np.diag(np.concatenate([low, high])) @ frame.conj().T)
 
 
-def _theorem_item(seed: int) -> bool:
-    return bool(bdsc.theorem_holds(_random_effect(seed))["ok"])
+def _tight_effect(seed: int) -> np.ndarray:
+    """F = gamma (I - P~) + eps P~ with P~ the kernel rotated toward the bright partners: sin^2 theta near a/gamma."""
+    rng = np.random.default_rng(seed)
+    k, q = bdsc.kernel_frame(), bdsc.complement_frame()
+    low = np.zeros((bdsc.DIM, bdsc.KERNEL_DIM))
+    for j in range(bdsc.KERNEL_DIM):
+        t = math.radians(rng.uniform(0.0, 20.0))
+        low[:, j] = math.cos(t) * k[:, j] + math.sin(t) * q[:, 8 + j]
+    p = low @ low.T
+    gamma, eps = rng.uniform(0.2, 1.0), rng.uniform(0.0, 1e-6)
+    return np.asarray(gamma * (np.eye(bdsc.DIM) - p) + eps * p, dtype=complex)
+
+
+def _theorem_item(item: tuple[str, int]) -> tuple[bool, bool, float]:
+    """(theorem holds, a < gamma, sin^2 theta / (a / gamma)) for one random or near-tight effect."""
+    family, seed = item
+    exact = bdsc.theorem_holds(_random_effect(seed) if family == "random" else _tight_effect(seed))
+    nontrivial = exact["a"] < exact["gamma"]
+    ratio = math.sin(math.radians(exact["theta"])) ** 2 / (exact["a"] / exact["gamma"]) if nontrivial else 0.0
+    return bool(exact["ok"]), nontrivial, ratio
 
 
 def self_test() -> int:
@@ -956,8 +1068,13 @@ def self_test() -> int:
     expected_im = float(np.imag(k1 @ coupled @ f9))
     require(abs(readout["im_d_q"] - expected_im) < 1e-6, f"self-test: pilot Im d {readout['im_d_q']} vs {expected_im}")
     # Certificate theorem on random effects.
-    ok = parallel.ordered_map(_theorem_item, list(range(THEOREM_EFFECTS)))
-    require(all(ok), f"self-test: theorem fails on {[i for i, v in enumerate(ok) if not v][:5]}")
+    items = [(family, seed) for family in ("random", "tight") for seed in range(THEOREM_EFFECTS)]
+    outcomes = parallel.ordered_map(_theorem_item, items)
+    require(all(ok for ok, _, _ in outcomes), "self-test: the certificate theorem fails on an effect")
+    nontrivial = sum(flag for _, flag, _ in outcomes)
+    tightest = max(ratio for _, _, ratio in outcomes)
+    require(nontrivial >= THEOREM_NONTRIVIAL_MIN, f"self-test: only {nontrivial} effects have a < gamma")
+    require(tightest > 0.99, f"self-test: the angle bound is never approached (ratio {tightest})")
     # Acceptance: uniform efficiency is scalar, a pair imbalance is not.
     un = numeric_unitary(u)
     require(
@@ -969,7 +1086,10 @@ def self_test() -> int:
     require(
         bdsc.scalar_deviation(bdsc.acceptance(un, target["selected_modes"], eta)["D"])[1] > 0.1, "self-test: imbalance"
     )
-    print(f"bdsc self-test: exact, unitary, bank, pilot, acceptance and {THEOREM_EFFECTS} theorem checks pass")
+    print(
+        f"bdsc self-test: exact, unitary, bank, pilot and acceptance checks pass; theorem on {len(items)} effects, "
+        f"{nontrivial} with a < gamma, tightest sin^2 theta / (a / gamma) = {tightest:.6f}"
+    )
     return 0
 
 

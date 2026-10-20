@@ -46,12 +46,17 @@ effect probability p_F = Tr(G_A rho)/tau obey |p_F - p_c| <= delta p_c.
 Both enter as extra weights on the same |D_s| row sums.
 
 Disposition. "inadmissible" when a record check or a declared premise
-fails; "alternative_structure" when the upper bound on lambda_min(C) is at
-most DARK_CEILING (a certified fifth low-response direction) or the lower
-bound on lambda_max(A) is at least TARGET_FLOOR (a certified bright
-direction inside the target space); "certified" when min(a_U, l_U) <
-gamma_L and the angle bound is at most ANGLE_LIMIT_DEG; otherwise
-"not_certified".
+fails; "certified" when min(a_U, l_U) < gamma_L and the angle bound is at
+most ANGLE_LIMIT_DEG; "alternative_structure" when the complement's
+brightest direction has a positive certified response c_L (the lower bound
+on lambda_max(C)) and either the upper bound on lambda_min(C) is at most
+DARK_RATIO c_L (a certified fifth low-response direction) or the lower bound
+on lambda_max(A) is at least TARGET_RATIO c_L (a certified bright direction
+inside the target space); otherwise "not_certified". Both criteria are
+ratios, so a scale factor common to every response, such as the
+transmittance under an emitted-photon denominator, changes no disposition;
+a record whose radius exceeds its signal reads "not_certified", since
+gamma_L = 0 there means insufficient precision rather than a fifth null.
 """
 
 from __future__ import annotations
@@ -72,8 +77,8 @@ X_LABELS = (1, 10)
 KERNEL_PAIRS = ((7, 12, 1), (6, 13, -1), (5, 14, 1), (4, 15, -1))
 MIDDLE_LABELS = (0, 1, 2, 3, 8, 9, 10, 11)
 ANGLE_LIMIT_DEG = 10.0
-DARK_CEILING = 0.1
-TARGET_FLOOR = 0.1
+DARK_RATIO = 0.1
+TARGET_RATIO = 0.1
 ALPHA_ALLOCATIONS = {
     "two-block": {"A": 0.025, "C": 0.025, "cal": 0.0},
     "with-calibration": {"A": 0.02, "C": 0.02, "cal": 0.01},
@@ -325,10 +330,11 @@ def certificate(a: BlockBound, c: BlockBound) -> dict[str, Any]:
     gamma_upper = float(eig_c[0]) + c.radius
     bound = min(a_upper, l_upper)
     angle = angle_bound_deg(bound, gamma_lower)
-    if gamma_upper <= DARK_CEILING or a_lower >= TARGET_FLOOR:
-        disposition = "alternative_structure"
-    elif angle is not None and angle <= ANGLE_LIMIT_DEG:
+    bright_lower = float(eig_c[-1]) - c.radius
+    if angle is not None and angle <= ANGLE_LIMIT_DEG:
         disposition = "certified"
+    elif bright_lower > 0 and (gamma_upper <= DARK_RATIO * bright_lower or a_lower >= TARGET_RATIO * bright_lower):
+        disposition = "alternative_structure"
     else:
         disposition = "not_certified"
     fields = {
@@ -348,6 +354,7 @@ def certificate(a: BlockBound, c: BlockBound) -> dict[str, Any]:
         "l_U": l_upper,
         "gamma_L": gamma_lower,
         "gamma_U": gamma_upper,
+        "c_L": bright_lower,
         "gap_L": gamma_lower - bound,
     }
     out: dict[str, Any] = {key: float(value) for key, value in fields.items()}

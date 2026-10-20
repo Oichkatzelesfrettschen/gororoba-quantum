@@ -162,8 +162,8 @@
    "a_U": 0.000882261125,
    "control": "attenuated_unconditional",
    "covered": true,
-   "disposition": "alternative_structure",
-   "expected": "alternative_structure",
+   "disposition": "not_certified",
+   "expected": "not_certified",
    "gamma_L": 0.0,
    "gamma_U": 0.07559816975,
    "l_U": 0.000313898184,
@@ -172,6 +172,27 @@
    "radius_C": 0.049663906901,
    "reasons": [],
    "theta_max_bound_deg": null,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.0303,
+    "theta": 8.53774e-07
+   }
+  },
+  {
+   "a_L": -8.8229228e-05,
+   "a_U": 8.8229228e-05,
+   "control": "attenuated_unconditional_deep",
+   "covered": true,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.013196770343,
+   "gamma_U": 0.044575370925,
+   "l_U": 3.1390927e-05,
+   "purpose": "the same effect at 1000000 trials: a common scale changes no disposition",
+   "radius_A": 8.8229228e-05,
+   "radius_C": 0.015689300291,
+   "reasons": [],
+   "theta_max_bound_deg": 2.795523828176,
    "truth": {
     "a": 0.0,
     "gamma": 0.0303,
@@ -417,10 +438,10 @@
   "replicates": 64,
   "trials_per_setting": 10000
  },
- "dark_ceiling": 0.1,
+ "dark_ratio": 0.1,
  "record": "controls",
  "schema": "bdsc-records-v1",
- "target_floor": 0.1,
+ "target_ratio": 0.1,
  "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794",
  "trials_per_setting": 100000
 }
