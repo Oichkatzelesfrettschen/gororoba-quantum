@@ -21,6 +21,11 @@ QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token" \
     --agents AGENTS.md docs/notes/quandela/README.md
 ```
 
+When the service omits a chip architecture from a processor record, `snapshot`
+keeps the retained copy and names the platform in `architecture_carried`. The
+mesh tooling then reads the last observed couplers, not a read of today's chip.
+[calibration.md](calibration.md) gives the current state of the field.
+
 A changed table fails `check` until AGENTS.md and the README carry the new
 facts table.
 
@@ -80,7 +85,9 @@ print(qpu.estimate_required_shots(computation, nsamples=10_000))
 transmittance and filter locally. On 2026-10-17 it answered 682042 shots for
 10000 two-photon coincidences on `qpu:belenos`, which at 1e-06 credits per
 shot is 0.68 credits; the per-job price the account's offer page shows adds
-to it. A case quotes the estimate of its own experiment from a fresh
+to it. On 2026-10-19 the same call answered 640066 shots, after the processor
+figures had moved; [setup-verification.md](setup-verification.md) records the
+read, and this page does not isolate the cause. A case quotes the estimate of its own experiment from a fresh
 `qd_platform` read.
 
 ## 5. Send a job (after an approved case)

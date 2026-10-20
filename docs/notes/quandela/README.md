@@ -21,6 +21,9 @@ change; the captures below record what they said when read.
 | `offer/` | the portal and webide strings that define offers and credits, with the bundle each sits in (`--offer`) |
 | `pypi/` | release metadata and file sha256 of perceval-quandela, exqalibur, perceval-interop and scmver (`--pypi`) |
 | `../../evidence/quandela/catalogue.json` | the account snapshot: Explorer platforms, processor records, job limits, token usage (`scripts/qd_platform.py snapshot`) |
+| `platform-specifications.md` | each QPU and simulator: modes, photons, inputs, commands, performance figures at the snapshot and live, the chip architecture, the contradictions in the record |
+| `calibration.md` | each QPU's calibration state, the Belenos history from the QPU run records, the gating rules and their enforcement, open items |
+| `setup-verification.md` | installed versions, token and MCP configuration, the approval policy, the verification record and what was not run |
 
 ## Installation
 
@@ -276,7 +279,9 @@ number-resolving.
 Status, performance figures, availability statistics and maintenance live
 in `catalogue.json` and change between reads. At the snapshot,
 `qpu:belenos` reported HOM 94.2 %, a 4.94 MHz clock and a weekly
-maintenance window, and `qpu:ascella` read `calibration`. The Belenos
+maintenance window, and `qpu:ascella` reported `available`, as the retained
+file shows. [platform-specifications.md](platform-specifications.md) and
+[calibration.md](calibration.md) hold the live reads and the Belenos history. The Belenos
 documentation gives the n-photon coincidence rate as
 `Clock [MHz] x (Transmittance x Brightness)^n`, which sets how long a
 sampling job on n photons runs against the 300 s limit; a case computes it

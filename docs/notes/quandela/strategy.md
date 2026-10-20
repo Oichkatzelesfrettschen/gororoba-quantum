@@ -902,9 +902,11 @@ equations used here. Five findings set the plan:
 
 Design rules taken from it, in order:
 
-1. Gate a QPU job on calibration state: plan records HOM and g2 and checks
-   the live couplers. A two-photon case waits until HOM is back above 90 %,
-   the settled state of the cited episode; a one-photon case runs on the
+1. Gate a QPU job on calibration state: plan records HOM and g2, checks
+   the live couplers, and warns on stderr when a two-photon case meets HOM at
+   or below 90 %. A two-photon case should wait until HOM is back above 90 %,
+   the settled state of the cited episode; plan warns and does not hold it. A
+   one-photon case runs on the
    coupler check alone, because the identical-mesh replay showed the
    bright block's leak unchanged across a fall of HOM from 92.6 % to 57.6 %.
 2. Run every production configuration as an ensemble of equivalent compiles
