@@ -91,7 +91,7 @@ every process.
   independent-marginal prediction.
 
 
-ET row integration provides exact signed fixtures, coherent row circuits, reusable operator compilation, complete acquisition controls, collection reconstruction, and calibrated paired inference. The experiment contract and replay commands are documented in gororoba_quantum/ET_ROWS.md and docs/evidence/et_rows/README.md. The evidence bundle retains the frozen Heron planning record and native circuit archive.
+ET row integration provides exact signed fixtures, coherent row circuits, reusable operator compilation, complete acquisition controls, collection reconstruction, and calibrated paired inference. The experiment contract and replay commands are documented in docs/design/et-rows.md and docs/evidence/et_rows/README.md. The evidence bundle retains the frozen Heron planning record and native circuit archive.
 
 ET hardware acquisition remains held. The retained Heron r2 qualification refuses the fixed campaign on quota and calibrated inference grounds. Further acquisition requires adequate calibration precision, statistical power, and available allowance, followed by approval of the concrete execution case. Doubling, Tuna native synthesis, and optical transformation conformance retain separate qualification gates. The shutdown reconciliation preserves the incoming optimizer exception check; a fresh CI replay of the shutdown merge remains deferred.
 

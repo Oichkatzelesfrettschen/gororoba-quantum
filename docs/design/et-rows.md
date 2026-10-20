@@ -106,7 +106,7 @@ identities. Whole-table graph operators, Tuna angle-grid synthesis and
 Belenos transformation conformance remain separately tracked experiments.
 
 The retained current-Target comparison in
-[`docs/evidence/et_rows/README.md`](../docs/evidence/et_rows/README.md#current-heron-qualification)
+[`docs/evidence/et_rows/README.md`](../evidence/et_rows/README.md#current-heron-qualification)
 compiled the complete D32 campaign on Kingston, Fez and Marrakesh, then
 refused all three candidates. The fixed allocation fails calibrated inference;
 the invocation's 360-second aggregate ceiling plus 10-second reserve also

@@ -256,9 +256,9 @@ The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31
   the derivations, all-dimensional restricted construction, and global proof obligations.
 - `gororoba_quantum/compile_evidence.py` -- reproducible multi-seed FakeFez
   compilation with pass-level synthesis, routing, layout, and topology capture.
-- `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
+- `docs/design/factoring-notes.md` -- what Cayley-Dickson structure can and
   cannot contribute to Shor's algorithm, against the RSA-2048 resource floor.
-- `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
+- `docs/design/hybrid-shor.md` -- host/QPU boundary, coefficient
   derivations, bounded hardware frontier, evidence levels, falsifiers, and the
   roadmap beyond `N = 15`.
 - `gororoba_quantum/MODULAR_SYNTHESIS.md` -- the N=21 impossibility

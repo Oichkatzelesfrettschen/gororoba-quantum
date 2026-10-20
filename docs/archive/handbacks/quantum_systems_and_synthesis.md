@@ -135,7 +135,7 @@ sensitivity. Its N = 21, a = 4 two-bit check compares sorted sampled
 probabilities. A hardware case must first establish labeled probabilities
 and the register-to-phase mapping against an independent exact branch or
 coherent-QPE calculation; sorted masses alone permit label permutations.
-[HYBRID_SHOR.md](../../../gororoba_quantum/HYBRID_SHOR.md#evidence-levels)
+[HYBRID_SHOR.md](../../design/hybrid-shor.md#evidence-levels)
 states the phase-insensitive factor-yield boundary and identifies folded
 QPE as the first record's feed-forward test. The
 [hardware queue](../../../gororoba_quantum/HARDWARE_PLAN.md#hardware-evidence-and-next-cases)

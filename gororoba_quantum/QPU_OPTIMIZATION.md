@@ -491,7 +491,7 @@ The planner reads `backend.configuration().default_rep_delay` in seconds,
 validates the backend's repetition-delay support and range, and binds the
 value to `sampler.options.execution.rep_delay`. The serialized backend
 configuration uses microseconds; mixing those two interfaces changes the
-cost by a factor of a million. [Numerical environment validation](NUMPY_VALIDATION.md#execution-time-units)
+cost by a factor of a million. [Numerical environment validation](../docs/design/numpy-validation.md#execution-time-units)
 records the SDK source and tested option paths.
 
 `--max-execution-seconds` caps each job. The sum of every backend/kind job's

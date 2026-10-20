@@ -200,7 +200,7 @@ Two notes survey the sister repository rather than a paper:
   recursion and its circuit, closed forms for the defect and edge counts, and
   replay scripts.
 
-gororoba_quantum/FACTORING_NOTES.md re-checks the sign recursion and the
+docs/design/factoring-notes.md re-checks the sign recursion and the
 defect count independently.
 
 The first eight quantum and factoring papers in the table contain no Cayley-Dickson,
@@ -218,7 +218,7 @@ manifests bind their hashes.
 | Annihilator ledger | `bd5d6b2e97165d560df588084098056fce5a2fd1` | `02f4cf4fb7dee46e5fd87052cf5d4c0a81087c848948bad17af246b764f080d5` | [topology verification](../results/hw_estimate/cayley_dickson_topology_verification.json), `source_sha256` |
 | Rank-topology ledger | `f4eda251822b380d695564fcf39a7a9e528f994e` | `bd478146132ddade390396b5b330f3a08091b2ebae83d9bacab1d23644756a30` | [rank verification](../results/hw_estimate/rank_topology_verification.json), `documentation_sha256` |
 
-[FACTORING_NOTES.md](../gororoba_quantum/FACTORING_NOTES.md) carries the factoring
+[FACTORING_NOTES.md](design/factoring-notes.md) carries the factoring
 analysis.
 
 

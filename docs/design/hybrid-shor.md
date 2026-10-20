@@ -63,7 +63,7 @@ controlled arithmetic and the decoder on hardware and nothing about the
 semiclassical inverse QFT; folded QPE, whose eigenstate inputs make the
 second bit deterministic only under the correct conditional phase, is the
 feed-forward test that record contains. For N = 21, a = 4 at two phase
-bits (order 3), the [source notes](../docs/notes/1111.4147.md) propose
+bits (order 3), the [source notes](../notes/1111.4147.md) propose
 probabilities (3/8, 1/4, 1/8, 1/4) with feed-forward and
 (3/8, 1/8, 1/8, 3/8) without it, in phase-index order (0, 1, 2, 3), a total
 variation distance of 1/8. `qpe_diagnostics.py` derives the exact labeled
@@ -72,9 +72,9 @@ order `b0 + 2*b1`, and rejects a swapped-register mutation.
 `order_finding.py` also checks the sampled frequencies against those labeled
 laws. Order recovery is zero at two bits, so the proposed observable is the
 labeled distribution; the
-[hardware plan](HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
+[hardware plan](../../gororoba_quantum/HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
 tracks statistical admission and the separate approval boundary. The
-[semiclassical-QFT source note](../docs/notes/quant-ph-9511007.md)
+[semiclassical-QFT source note](../notes/quant-ph-9511007.md)
 grounds the independent coherent-QPE comparison.
 
 ## Host and QPU boundary
@@ -189,7 +189,7 @@ multiplier `2^k`, so any nonzero exact scaled LCU over signed XOR translations
 has effective normalization at least T. The direct circuit and the LCU
 dictionary therefore rank the positive rotation in opposite ways: the direct
 circuit needs `n-gcd(n,k)` swaps while the effective LCU normalization grows
-exponentially whenever `gcd(n,k)=1`. `FACTORING_NOTES.md` derives the bound and
+exponentially whenever `gcd(n,k)=1`. `factoring-notes.md` derives the bound and
 its non-universal base boundary.
 
 ### ANF compute, swap, uncompute

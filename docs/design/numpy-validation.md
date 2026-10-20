@@ -17,7 +17,7 @@ The numerical baseline uses Python 3.14.7 and these installed versions:
 | SciPy | 1.18.1 |
 | SymPy | 1.14.0 |
 
-Run the repository's [complete gates](../ci/AGENTS.md#layout-and-gates) with
+Run the repository's [complete gates](../../ci/AGENTS.md#layout-and-gates) with
 `PYTHONDONTWRITEBYTECODE=1`, `PYTHONWARNINGS=error`, and
 `GOROROBA_WORKERS=2`. The complete gate list passes on baseline source commit
 `fbf683d1141b1b2efd8b32f4a06cba6cb5881b22` under NumPy 2.5.4.

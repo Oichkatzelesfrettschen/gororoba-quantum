@@ -25,7 +25,7 @@ at dim 8 already is Bernstein-Vazirani, and to certified non-Clifford benchmarks
 gate class that dominates factoring cost. The checks behind each claim are
 named inline; literature notes live under docs/notes/.
 
-`HYBRID_SHOR.md` carries the implemented host/QPU architecture, Boolean
+`hybrid-shor.md` carries the implemented host/QPU architecture, Boolean
 coefficient derivation, exact bounded synthesis, compiler evidence, admission
 falsifiers, and roadmap.
 
@@ -481,7 +481,7 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/mod15_signed_multiplier_census.py \
   Reed-Muller solver in `verify.check_pathion_separator_sign_bridge` rejects
   every degree-at-most-two polynomial on the 15 labels before recovering the
   cubic witness.
-- The [latest C881 proof](../docs/notes/c881_exhaustive_proof.md) rejects all
+- The [latest C881 proof](../notes/c881_exhaustive_proof.md) rejects all
   2048 degree-at-most-two coefficient choices, proves their completeness, and
   checks the cubic witness. The independent local solver reconstructs that
   finite lower bound. The verifier hash-pins the freshly audited source before
