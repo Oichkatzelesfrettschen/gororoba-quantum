@@ -187,7 +187,7 @@ The IBM service inventory observed at 2026-10-18T09:20:42.042591+00:00 holds 28 
 
 The Quantum Inspire ledger retrieved at 2026-10-18T18:45:31+00:00 lists 292 jobs with 6076416 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 31 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 31 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents
