@@ -473,7 +473,11 @@ def _bound(value: Any) -> bool:
 
 
 def evaluate(record: dict[str, Any], frozen: dict[str, Any]) -> dict[str, Any]:
-    """Disposition of one acquisition record against the frozen target identity, mask and bank."""
+    """Disposition of one acquisition record against the frozen target identity, bank digest, mask and bank.
+
+    The bank digest binds each setting name to its preparation state, so counts recorded under one bank
+    never reach the reconstruction of another bank that reuses the setting names.
+    """
     reasons: list[str] = []
 
     def check(condition: bool, reason: str) -> None:
@@ -484,6 +488,7 @@ def evaluate(record: dict[str, Any], frozen: dict[str, Any]) -> dict[str, Any]:
         return {"disposition": "inadmissible", "reasons": ["record is not an object"]}
     check(record.get("schema") == RECORD_SCHEMA, "schema differs")
     check(record.get("target_sha256") == frozen["target_sha256"], "target identity differs from the frozen target")
+    check(record.get("bank_sha256") == frozen["bank_sha256"], "bank identity differs from the frozen bank")
     check(record.get("selected_modes") == frozen["selected_modes"], "selected-output map differs from the frozen map")
     check(record.get("stopping") == STOPPING, "stopping rule is not the frozen fixed-n rule")
     real_only = record.get("real_only", False)
@@ -534,6 +539,7 @@ def record_from_counts(
     return {
         "schema": RECORD_SCHEMA,
         "target_sha256": frozen["target_sha256"],
+        "bank_sha256": frozen["bank_sha256"],
         "selected_modes": list(frozen["selected_modes"]),
         "stopping": STOPPING,
         "premises": support if premises is None else premises,

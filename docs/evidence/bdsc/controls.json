@@ -1,5 +1,6 @@
 {
  "alpha_allocation": "two-block",
+ "bank_sha256": "d88a66a693cba1af98275763b1775d1c31a5fefa8e574541d6c543d9d9b73e83",
  "controls": [
   {
    "a_L": -0.000882261125,
@@ -405,6 +406,15 @@
    "purpose": "record or premise defect",
    "reasons": [
     "target identity differs from the frozen target"
+   ]
+  },
+  {
+   "control": "unbound_bank",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "bank identity differs from the frozen bank"
    ]
   },
   {

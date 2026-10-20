@@ -6,9 +6,11 @@ result enters only through the identity map onto it that
 docs/evidence/algebra_packages/tables.json already certifies.
 
 - Algebra. python-hypercomplex (cayley_dickson_algebra(4, Fraction)) and
-  hyprat (mu = -1) form L_int = L_(e1 + e10) column by column from exact
-  products, so E0 = L_int^T L_int / 4 and x w_j = 0 for the four kernel
-  vectors come from each package's own multiplication.
+  hyprat (mu = -1) each record all 256 basis products e_i e_j, which the
+  replay holds to cd_core.cd_sign under the identity map, and form
+  L_int = L_(e1 + e10) column by column from exact products, so
+  E0 = L_int^T L_int / 4 and x w_j = 0 for the four kernel vectors come from
+  each package's own multiplication.
 - Exact linear algebra. python-flint fmpq_mat gives rank E0 = 12,
   rank(E0 - I/2) = 8, rank(E0 - I) = 12, E0 (2 E0 - I)(E0 - I) = 0 and the
   characteristic polynomial x^4 (x - 1/2)^8 (x - 1)^4; with E0 W_K = 0 and
@@ -32,7 +34,8 @@ docs/evidence/algebra_packages/tables.json already certifies.
   conversion at p = 1e-4 and 10^4 samples reads the zero-count frequency
   against the binomial (1 - p)^n and the mean count against n p; the gap
   falsifies Bernoulli trials for converted counts, and the clip at 0 biases
-  a small probability upward.
+  a small probability upward. Each draw runs under its own seed, drawn in
+  order from one generator, and blocks of draws map through parallel.py.
 
 --write OUT runs every package (build host) and writes the record; --check
 OUT replays it with numpy alone (shares against the exact ideals and the
@@ -63,6 +66,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import bdsc_certificate as cert  # noqa: E402
 
 import bdsc  # noqa: E402
+import cd_core  # noqa: E402
 import parallel  # noqa: E402
 
 SCHEMA = "bdsc-packages-v1"
@@ -80,6 +84,19 @@ CONVERSION_COUNT = 10_000
 CONVERSION_DRAWS = 20_000
 CONVERSION_SEED = 20261020
 CONVERSION_Z_MIN = 6.0
+CONVERSION_BLOCK = 500
+ALGEBRA_PACKAGES = ("hypercomplex", "hyprat")
+RECORD_KEYS = (
+    "schema",
+    "target_sha256",
+    "versions",
+    "algebra",
+    "flint",
+    "sympy",
+    "optics",
+    "conversion",
+    "perceval_sources_sha256",
+)
 
 
 def require(condition: bool, message: str) -> None:
@@ -136,6 +153,24 @@ def package_products() -> dict[str, Any]:
     return {"hypercomplex": hc, "hyprat": hr}
 
 
+def basis_table(product: Any) -> list[list[int]]:
+    """Signed labels s (k + 1) with e_i e_j = s e_k over all 256 sedenion basis pairs."""
+    table = []
+    for i in range(bdsc.DIM):
+        row = []
+        for j in range(bdsc.DIM):
+            out = product(unit_vector(i), unit_vector(j))
+            support = [k for k, v in enumerate(out) if v != 0]
+            require(len(support) == 1 and abs(out[support[0]]) == 1, f"e{i} e{j} is not a signed basis element")
+            row.append(int(out[support[0]]) * (support[0] + 1))
+        table.append(row)
+    return table
+
+
+def cd_core_table() -> list[list[int]]:
+    return [[cd_core.cd_sign(bdsc.DIM, i, j) * ((i ^ j) + 1) for j in range(bdsc.DIM)] for i in range(bdsc.DIM)]
+
+
 def algebra_entry(product: Any, frame: list[dict[str, Any]]) -> dict[str, Any]:
     x = x_coefficients()
     columns = [product(x, unit_vector(q)) for q in range(bdsc.DIM)]
@@ -144,7 +179,7 @@ def algebra_entry(product: Any, frame: list[dict[str, Any]]) -> dict[str, Any]:
     kernel = {
         f["name"]: all(v == 0 for v in product(x, [Fraction(w) for w in f["w"]])) for f in frame if f["block"] == "A"
     }
-    return {"E0": cert.fractions_text(effect), "kernel_annihilated": kernel}
+    return {"E0": cert.fractions_text(effect), "kernel_annihilated": kernel, "basis_table": basis_table(product)}
 
 
 def flint_entry(effect: list[list[Fraction]], frame: list[dict[str, Any]]) -> dict[str, Any]:
@@ -303,31 +338,46 @@ def optics_entry(target: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def conversion_entry() -> dict[str, Any]:
-    """Zero-count frequency of Perceval's probs_to_sample_count against the binomial at one small p."""
+def _conversion_block(seeds: list[int]) -> tuple[int, int]:
+    """(zero draws, selected total) of probs_to_sample_count, each draw under its own seed."""
     import perceval as pcvl
     from perceval.utils.conversion import probs_to_sample_count
 
-    np.random.seed(CONVERSION_SEED)
-    random.seed(CONVERSION_SEED)
     selected, other = pcvl.BasicState([1, 0]), pcvl.BasicState([0, 1])
     dist = pcvl.BSDistribution()
     dist[selected] = CONVERSION_P
     dist[other] = 1 - CONVERSION_P
     zeros = 0
     total = 0
-    for _ in range(CONVERSION_DRAWS):
+    for seed in seeds:
+        # probs_to_sample_count draws its perturbation from numpy's global generator and its rounding
+        # repair from the random module, so both are seeded per draw.
+        np.random.seed(seed)
+        random.seed(seed)
         counts = probs_to_sample_count(dist, count=CONVERSION_COUNT)
         k = int(counts[selected]) if selected in counts else 0
         zeros += k == 0
         total += k
+    return zeros, total
+
+
+def conversion_entry() -> dict[str, Any]:
+    """Zero-count frequency of Perceval's probs_to_sample_count against the binomial at one small p.
+
+    Every draw's seed comes from one generator before the map, so pooled and serial runs return the same
+    counts whatever the block size.
+    """
+    seeds = [int(v) for v in np.random.default_rng(CONVERSION_SEED).integers(0, 2**32, size=CONVERSION_DRAWS)]
+    blocks = [seeds[i : i + CONVERSION_BLOCK] for i in range(0, len(seeds), CONVERSION_BLOCK)]
+    results = parallel.ordered_map(_conversion_block, blocks)
     return {
         "p": CONVERSION_P,
         "count": CONVERSION_COUNT,
         "draws": CONVERSION_DRAWS,
         "seed": CONVERSION_SEED,
-        "zero_draws": zeros,
-        "selected_total": total,
+        "seeding": "per-draw seeds from numpy default_rng(seed).integers(0, 2**32) set on np.random and random",
+        "zero_draws": sum(z for z, _ in results),
+        "selected_total": sum(t for _, t in results),
     }
 
 
@@ -375,9 +425,16 @@ def replay(data: dict[str, Any]) -> dict[str, Any]:
     target = json.loads(TARGET.read_text(encoding="utf-8"))
     bank = json.loads(BANK.read_text(encoding="utf-8"))
     require(data["schema"] == SCHEMA and data["target_sha256"] == target["target_sha256"], "record identity differs")
+    require(sorted(data) == sorted(RECORD_KEYS), f"record sections {sorted(data)} differ from {sorted(RECORD_KEYS)}")
+    require(sorted(data["algebra"]) == sorted(ALGEBRA_PACKAGES), "algebra entries differ from hypercomplex and hyprat")
+    kernel_names = sorted(f["name"] for f in cert.integer_frame() if f["block"] == "A")
+    reference = cd_core_table()
     for name, entry in data["algebra"].items():
+        require(sorted(entry) == ["E0", "basis_table", "kernel_annihilated"], f"{name}: algebra fields differ")
+        require(entry["basis_table"] == reference, f"{name}: a basis product differs from cd_core")
         require(entry["E0"] == target["E0"], f"{name}: E0 differs from the target")
-        require(all(entry["kernel_annihilated"].values()), f"{name}: a kernel vector survives x w")
+        require(sorted(entry["kernel_annihilated"]) == kernel_names, f"{name}: kernel vectors differ from the frame")
+        require(all(v is True for v in entry["kernel_annihilated"].values()), f"{name}: a kernel vector survives x w")
     fl = data["flint"]
     require(
         (fl["rank_E0"], fl["rank_E0_minus_half"], fl["rank_E0_minus_one"], fl["rank_W_K"]) == (12, 8, 12, 4),

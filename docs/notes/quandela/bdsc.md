@@ -83,7 +83,8 @@ Each block is reconstructed from basis states, real pairs
 (f_i + f_j)/sqrt2 and imaginary pairs (f_i + i f_j)/sqrt2: 16 settings for
 A and 144 for C, 160 in all. `bank.json` carries each setting's state, its
 24-mode chip column U24 psi_s and its exact ideal selected probability.
-The real 88-setting bank is blind to E_I = E0 + (i/2)(|e1><e2| - |e2><e1|):
+`bank_sha256` binds each setting name to its state, and an acquisition
+record carries it beside `target_sha256`. The real 88-setting bank is blind to E_I = E0 + (i/2)(|e1><e2| - |e2><e1|):
 E_I and E0 differ on exactly one bank setting, C-imag-01-02, and E_R on
 exactly C-real-01-02.
 
@@ -108,7 +109,7 @@ trials for E0 and for a 1 % background).
 | E_R, E_I (complex bank); rotation 30 degrees | alternative structure |
 | E_I on the 88-setting bank with real_effect asserted | certified, uncovered: the false certificate the complex bank prevents |
 | F = 0.0606 E0 at 10^5 trials; background 0.05; acceptance imbalance 0.8; preparation error 0.02 | not certified |
-| missing, duplicated or miscounted rows; changed mask; optional stopping; unbound target; any unsupported premise | inadmissible |
+| missing, duplicated or miscounted rows; changed mask; optional stopping; unbound target or bank digest; any unsupported premise | inadmissible |
 
 ## Planning
 
@@ -135,7 +136,7 @@ trials for E0 and for a 1 % background).
 | M0 algebra | passed | `target.json`, `packages/packages.json` |
 | M1 optical target | passed | U24 exact; Perceval native circuit and SLOS shares within 1e-9 on 184 settings |
 | M2 native compilation | blocked | the service re-transpiles every circuit and keeps only the occupied column (jobs 1d7160c1, e5b74123; strategy.md sections 4 and 7), so no fixed measurement stage exists apart from the preparation |
-| M3 acquisition | blocked | DetectorBalancing is the default mitigation; Perceval 1.3.1's probs_to_sample_count reads a zero-count frequency of 0.311 against the binomial 0.368 (z = -16.7) and a mean of 1.064 against 1.000 at p = 1e-4, n = 10^4; the receipt t_out taken as efficiencies gives an acceptance deviation of 0.97; off-cone clicks have no model |
+| M3 acquisition | blocked | DetectorBalancing is the default mitigation; Perceval 1.3.1's probs_to_sample_count reads a zero-count frequency of 0.305 against the binomial 0.368 (z = -18.3) and a mean of 1.079 against 1.000 at p = 1e-4, n = 10^4 over 20000 seeded draws; the receipt t_out taken as efficiencies gives an acceptance deviation of 0.97; off-cone clicks have no model |
 | M4 fixed effect | blocked | the compiled mesh, and with it the error channel, follows the target column, which follows the preparation label |
 | M5 to M9 | not started | the pilot of `pilot.json` waits for an approved case |
 

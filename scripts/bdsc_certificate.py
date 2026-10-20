@@ -435,6 +435,7 @@ def pilot_record(target: dict[str, Any]) -> dict[str, Any]:
 def frozen_identity(target: dict[str, Any], n: int) -> dict[str, Any]:
     return {
         "target_sha256": target["target_sha256"],
+        "bank_sha256": bank_record(target)["bank_sha256"],
         "selected_modes": target["selected_modes"],
         "alpha_allocation": ALLOCATION,
         "trials_per_setting": n,
@@ -624,6 +625,7 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "changed_trial_count": lambda r: r["rows"][1].__setitem__("eligible", n - 1),
         "optional_stopping": lambda r: r.__setitem__("stopping", "until-certified"),
         "unbound_target": lambda r: r.__setitem__("target_sha256", "0" * 64),
+        "unbound_bank": lambda r: r.__setitem__("bank_sha256", "0" * 64),
         "common_effect_unsupported": lambda r: r["premises"].__setitem__("common_effect", "unsupported"),
         "sampling_law_unsupported": lambda r: r["premises"].__setitem__("bernoulli_sampling", "unsupported"),
         "boolean_count": lambda r: r["rows"][2].__setitem__("selected", False),
@@ -645,6 +647,7 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "schema": SCHEMA,
         "record": "controls",
         "target_sha256": target["target_sha256"],
+        "bank_sha256": frozen["bank_sha256"],
         "trials_per_setting": n,
         "alpha_allocation": ALLOCATION,
         "dark_ratio": bdsc.DARK_RATIO,
@@ -861,6 +864,11 @@ def planning_record(target: dict[str, Any], catalogue: dict[str, Any]) -> dict[s
 
 def qualification_record(target: dict[str, Any], controls: dict[str, Any], planning: dict[str, Any]) -> dict[str, Any]:
     strategy = "docs/notes/quandela/strategy.md"
+    conversion = json.loads((ROOT / "docs/evidence/bdsc/packages/packages.json").read_text(encoding="utf-8"))[
+        "conversion"
+    ]
+    converted_zero = conversion["zero_draws"] / conversion["draws"]
+    binomial_zero = (1 - conversion["p"]) ** conversion["count"]
     milestones = [
         {"milestone": "M0", "status": "passed", "evidence": "target.json exact_checks (Fractions)"},
         {
@@ -882,8 +890,9 @@ def qualification_record(target: dict[str, Any], controls: dict[str, Any], plann
             "evidence": f"{strategy} section 2: DetectorBalancing is the default mitigation; physical_perf follows "
             "the requested budget; off-cone clicks on modes 0, 1 and 5 have no model; the receipt t_out and dark rates "
             "contradict the detected light. docs/evidence/bdsc/packages/packages.json: Perceval 1.3.1's "
-            "probs_to_sample_count, the conversion DetectorBalancing ends in, reads a zero-count frequency of 0.311 "
-            "against the binomial 0.368 at p = 1e-4 and n = 10^4, so converted counts are not Bernoulli trials",
+            "probs_to_sample_count, the conversion DetectorBalancing ends in, reads a zero-count frequency of "
+            f"{converted_zero:.3f} against the binomial {binomial_zero:.3f} at p = {conversion['p']:g} and "
+            f"n = {conversion['count']}, so converted counts are not Bernoulli trials",
             "acceptance_delta_under_receipt": planning["acceptance_under_receipt_t_out"]["delta"],
         },
         {
