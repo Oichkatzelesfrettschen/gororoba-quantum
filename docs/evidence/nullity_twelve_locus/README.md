@@ -56,7 +56,9 @@ those hashes again after execution.
 rank witnesses, real-locus identities, curve identities, and runtime
 versions. Sparse records specify their matrix shape and encode
 every omitted entry as zero. `SHA256SUMS` binds the README, replay, independent curve proof and result.
-Source or dependency changes require reviewed regeneration.
+Source or dependency changes require reviewed regeneration; `--check`
+carries the retained Python patch release when major.minor agree (gate
+core-609).
 
 The calculations use exact CPU algebra and submit zero QPU jobs. The
 complete local rank locus, its attachments and global topological invariants
