@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import platform
+import re
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -249,16 +250,20 @@ def audit(root: Path) -> dict[str, Any]:
 def adopt_recorded_interpreter(record: dict[str, Any], retained: dict[str, Any]) -> None:
     """Carry the retained interpreter release into a replay under the same Python major.minor.
 
-    The patch release names the interpreter that wrote result.json and is
-    provenance; every certificate field still compares byte for byte, and a
-    replay under another major.minor keeps its own version and differs.
+    The patch release names the interpreter that wrote result.json; every
+    other field compares byte for byte, and a replay under another
+    major.minor, or against a retained value that is not a MAJOR.MINOR.PATCH
+    release, keeps its own version and differs.
     """
     for holder, key, kept in (
         (record, "python_version", retained),
         (record.get("versions"), "python", retained.get("versions")),
     ):
         if isinstance(holder, dict) and isinstance(kept, dict) and key in holder and isinstance(kept.get(key), str):
-            if kept[key].split(".")[:2] == str(holder[key]).split(".")[:2]:
+            if (
+                re.fullmatch(r"\d+\.\d+\.\d+", kept[key])
+                and kept[key].split(".")[:2] == str(holder[key]).split(".")[:2]
+            ):
                 holder[key] = kept[key]
 
 
