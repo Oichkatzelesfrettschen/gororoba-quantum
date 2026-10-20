@@ -208,7 +208,12 @@ N21_SPECTATOR_KINDS = ("measured", "reset_only")
 # preparation and readout floor, idle dephasing and the control's
 # reset readout.
 N21_SPECTATOR_SPLIT_KINDS = ("immediate", "idle", "reset_only")
-N21_SPECTATOR_BUILDABLE = ("measured", "immediate", "idle", "reset_only")
+# idle_ground is idle with the control left in |0>: a ZZ coupling to the
+# control then rotates qubit 2 by a fixed angle, which leaves the X and Y
+# visibility unchanged, so idle against idle_ground separates
+# control-state-dependent dephasing from qubit 2's own idle dephasing.
+N21_SPECTATOR_GROUND_KINDS = ("immediate", "idle", "idle_ground")
+N21_SPECTATOR_BUILDABLE = ("measured", "immediate", "idle", "idle_ground", "reset_only")
 N21_SPECTATOR_QUADRATURES = ("x", "y")
 
 # The initialization herald measures every qubit into its own register before
@@ -394,8 +399,9 @@ def n21_spectator_ramsey(
     leaves clbit 0 unwritten; the reset still projects the control, since a
     Heron r2 reset is a readout followed by a conditional flip. idle idles
     the control measure_dt + reset_dt inside the same bracket with no reset,
-    and immediate reads qubit 2 right after the barrier that follows its
-    preparation, with no window; both reset the control only after a
+    idle_ground is idle with no H on the control, so the control idles in
+    |0>; immediate reads qubit 2 right after the barrier that follows its
+    preparation, with no window; all three reset the control only after a
     barrier that follows qubit 2's readout. Qubit 2
     reads X (h) or Y (sdg, h) into clbit 1: the ideal law is
     n21_spectator_law. init_herald prepends the orbit's herald readouts
@@ -403,10 +409,10 @@ def n21_spectator_ramsey(
     """
     if kind not in N21_SPECTATOR_BUILDABLE or quadrature not in N21_SPECTATOR_QUADRATURES:
         raise ValueError(f"unknown spectator kind {kind!r} or quadrature {quadrature!r}")
-    if kind in ("reset_only", "idle") and (type(measure_dt) is not int or measure_dt <= 0):
+    if kind in ("reset_only", "idle", "idle_ground") and (type(measure_dt) is not int or measure_dt <= 0):
         raise ValueError(f"{kind} requires a positive integer measure_dt from calibration")
-    if kind == "idle" and (type(reset_dt) is not int or reset_dt <= 0):
-        raise ValueError("idle requires a positive integer reset_dt from calibration")
+    if kind in ("idle", "idle_ground") and (type(reset_dt) is not int or reset_dt <= 0):
+        raise ValueError(f"{kind} requires a positive integer reset_dt from calibration")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
     phase = ClassicalRegister(2, "phase")
@@ -417,7 +423,7 @@ def n21_spectator_ramsey(
         for qubit in range(circuit.num_qubits):
             circuit.measure(qubit, herald[qubit])
         circuit.barrier()
-    circuit.h([0, N21_SPECTATOR_QUBIT])
+    circuit.h([N21_SPECTATOR_QUBIT] if kind == "idle_ground" else [0, N21_SPECTATOR_QUBIT])
     circuit.barrier()
     if kind == "measured":
         circuit.measure(0, phase[0])
@@ -426,7 +432,7 @@ def n21_spectator_ramsey(
     elif kind != "immediate":
         if measure_dt is None:
             raise AssertionError
-        if kind == "idle":
+        if kind in ("idle", "idle_ground"):
             if reset_dt is None:
                 raise AssertionError
             circuit.delay(measure_dt + reset_dt, 0, unit="dt")
@@ -438,7 +444,7 @@ def n21_spectator_ramsey(
         circuit.sdg(N21_SPECTATOR_QUBIT)
     circuit.h(N21_SPECTATOR_QUBIT)
     circuit.measure(N21_SPECTATOR_QUBIT, phase[1])
-    if kind in ("immediate", "idle"):
+    if kind in ("immediate", "idle", "idle_ground"):
         # A reset of the control after qubit 2's readout makes the circuit
         # dynamic (local_compute.is_dynamic), so it shares the orbit arms'
         # job; the barrier places it after that readout.
@@ -744,7 +750,7 @@ def _verify() -> None:
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
     print(
         "QPE diagnostics: 16 folded laws, the N=21 laws of every orbit variant with their heralded twins, and the "
-        "eight spectator Ramsey laws with theirs match exact circuit branches and sampled labels; heralded circuits "
+        "ten spectator Ramsey laws with theirs match exact circuit branches and sampled labels; heralded circuits "
         "measure every qubit before a full barrier, read the window bracket of their unheralded twins and "
         "marginalize to the unheralded law"
     )

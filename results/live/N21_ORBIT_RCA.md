@@ -269,6 +269,45 @@ ZZ phase to 142; a 143 Ramsey with the control in |0> separates the two.
 The nominal magnitude reads 0.235 on these roles against 0.151 on the
 control-144 assignment of 151959.
 
+## Spectator dephasing with the control grounded
+
+Record 2026-10-19T231043.083602Z, job dbba739gv2cc73e81dg0, ibm_fez under
+the 2026-10-19T15:07:33-07:00 calibration, 6 PUBs of 8192 shots with the
+initialization herald, 5 s charged; analysis in
+[between-arm.json](2026-10-19T231043.083602Z/between-arm.json).
+`--pin-layout ibm_fez:142,136,143,144` keeps the roles of the readout-overlap
+split. Each arm reads qubit 143's Ramsey visibility from its X and Y
+expectations: at once (immediate), after the 836 dt idle with the control in
+|+> (idle), and after the same idle with the control held in |0>
+(idle_ground). Contracts at alpha 0.025, herald shift bound 0.020:
+
+| Contract | Measured | Verdict |
+|---|---|---|
+| spectator_control_zz | idle 0.616 against idle_ground 0.622 (upper limit +0.021) | fail |
+| spectator_ground_idle_dephasing | idle_ground 0.622 against immediate 0.989 (upper limit -0.348) | pass |
+
+Both arms keep only the shots whose initialization herald reads the control
+0, and the spectator herald admits those shots; Bonferroni splits the family
+alpha 0.05 equally over that admission and both contracts (0.0167 each), and
+the herald leaves a 0.0101 margin. A failed spectator_control_zz bounds the ZZ share
+rather than excluding it: holding the control in |0> recovers 0.005 of
+visibility, and at most 0.042 (the 0.0167 lower confidence limit of the
+idle-minus-idle_ground statistic, -0.032, plus the herald margin), against
+the 0.367 qubit 143 loses across the idle with the control grounded. A
+control-state-dependent coupling to 142 therefore accounts for at most about
+11 percent of the window loss. The dominant loss, about 37 percent of the
+Ramsey visibility across 836 dt (3.3 us), is 143's own idle dephasing, which
+a pure exponential decay places near T2* of 7 us against the reported echo
+T2 of 111 us: a quasi-static detuning or low-frequency noise that an echo
+removes, so the work CZ overlap of the previous section acts on a register
+already dephasing during the window.
+
+Open: a Ramsey delay sweep on 143 with the control grounded, read at X and Y,
+fits T2* and the detuning; an oscillating phase identifies a coherent
+detuning that a frame correction or the delay-X-delay-X echo cancels, and a
+monotone decay at fixed phase identifies incoherent low-frequency noise that
+only the echo addresses.
+
 ## Mitigation
 
 The explicit delay-X-delay-X echo survives transpilation (planning contract)

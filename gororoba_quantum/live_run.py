@@ -2479,7 +2479,8 @@ def readout_inverse(isa: QuantumCircuit, props: Any, symmetric: bool = False) ->
     the least significant index bit. Aer's noise model applies the symmetric
     readout_error by default; noise_simulator replaces it with the same
     asymmetric channel, so in simulation and on hardware the inversion matches
-    the channel applied.
+    the channel applied. A clbit that no measurement writes reads its
+    initial 0 through the identity channel.
 
     symmetric replaces both flip probabilities with their mean: measurement
     twirling randomizes the measured bit and reverses it classically, so a
@@ -2491,7 +2492,9 @@ def readout_inverse(isa: QuantumCircuit, props: Any, symmetric: bool = False) ->
             writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
     inverse: np.ndarray = np.ones((1, 1))
     for clbit in reversed(range(isa.num_clbits)):
-        e10, e01 = readout_flips(props, writer[clbit])
+        # A clbit no measurement writes holds its initial 0 and passes
+        # through the identity channel.
+        e10, e01 = readout_flips(props, writer[clbit]) if clbit in writer else (0.0, 0.0)
         if symmetric:
             e10 = e01 = (e10 + e01) / 2.0
         inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
@@ -6002,6 +6005,13 @@ def main(argv: list[str] | None = None) -> int:
         "immediate, idle and reset_only qubit-2 spectators in place of the window sweep; the policy and family "
         "configuration bind it",
     )
+    parser.add_argument(
+        "--ground-control-split",
+        action="store_true",
+        help="n21-orbit-rca with --pin-layout: plan only the immediate, idle and idle_ground qubit-2 spectators in "
+        "X and Y, idle_ground holding the control in |0>, so control-state-dependent dephasing separates from "
+        "qubit 2's own idle dephasing; the policy and family configuration bind it",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -6242,6 +6252,17 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--overlap-split applies to the n21-orbit-rca family only")
     if args.overlap_split and args.pin_layout is None:
         parser.error("--overlap-split requires --pin-layout: the split compares arms on fixed roles")
+    if args.ground_control_split and args.family != "n21-orbit-rca":
+        parser.error("--ground-control-split applies to the n21-orbit-rca family only")
+    if args.ground_control_split and args.pin_layout is None:
+        parser.error("--ground-control-split requires --pin-layout: the split compares arms on fixed roles")
+    if args.ground_control_split and args.overlap_split:
+        parser.error("--ground-control-split and --overlap-split are separate n21-orbit-rca configurations")
+    if args.ground_control_split and not args.init_herald:
+        parser.error(
+            "--ground-control-split requires --init-herald: idle_ground's contracts read only shots whose "
+            "herald reads the control 0"
+        )
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":

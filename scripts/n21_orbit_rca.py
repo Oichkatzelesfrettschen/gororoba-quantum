@@ -2290,6 +2290,188 @@ def _check_overlap_split() -> dict[str, str]:
     return verdicts
 
 
+def _check_ground_control_split() -> dict[str, str]:
+    """Planted truths reach the preregistered ground-control-split verdicts.
+
+    ZZ to the control (idle 0.6, idle_ground 0.98, immediate 0.99) passes
+    spectator_control_zz and fails spectator_ground_idle_dephasing;
+    intrinsic idle dephasing (idle and idle_ground 0.6, immediate 0.99)
+    fails the first and passes the second; no loss (every kind 0.99) fails
+    both. The planned ground-control-split names agree with the analyzer's,
+    and the split excludes the window sweep and the overlap split.
+    """
+    verdicts = {}
+    for label, truth, expected in (
+        ("control_zz", {"idle": 0.6, "idle_ground": 0.98, "immediate": 0.99}, ("pass", "fail")),
+        ("intrinsic_idle", {"idle": 0.6, "idle_ground": 0.6, "immediate": 0.99}, ("fail", "pass")),
+        ("null", {"idle": 0.99, "idle_ground": 0.99, "immediate": 0.99}, ("fail", "fail")),
+    ):
+        results = ground_contract_results(_split_spectator_reads(truth))
+        found = tuple(results[name]["status"] for name in GROUND_CONTRACTS)
+        if found != expected:
+            raise RuntimeError(f"the {label} truth reads {dict(zip(GROUND_CONTRACTS, found, strict=True))}")
+        verdicts[label] = ", ".join(f"{name} {status}" for name, status in zip(GROUND_CONTRACTS, found, strict=True))
+    if ground_contract_results(None)["spectator_control_zz"]["status"] != "not_evaluable":
+        raise RuntimeError("a ground-control contract evaluates without spectator members")
+    from diagnostic_experiments import n21_orbit_rca_group, n21_orbit_variants, n21_spectator_members
+
+    names = [member.name for member in n21_orbit_rca_group(415, 502, reset_dt=520, ground_control_split=True).members]
+    if (
+        names != list(GROUND_SPECTATOR_MEMBERS)
+        or n21_orbit_variants(ground_control_split=True) != ()
+        or n21_spectator_members(ground_control_split=True) != GROUND_SPECTATOR_MEMBERS
+        or record_shape(names) != "ground"
+        or record_shape(list(SPLIT_SPECTATOR_MEMBERS)) == "ground"
+    ):
+        raise RuntimeError(f"the analyzer's ground-control-split names differ from the planned members {names}")
+    for sweep, split, reset in ((True, False, 520), (False, True, 520), (False, False, None)):
+        try:
+            n21_orbit_rca_group(
+                415, 502, window_sweep=sweep, overlap_split=split, reset_dt=reset, ground_control_split=True
+            )
+        except ValueError:
+            continue
+        raise RuntimeError(
+            f"the ground-control split accepted window_sweep {sweep}, overlap_split {split}, reset_dt {reset}"
+        )
+    if not math.isclose(contract_alpha("ground"), FAMILY_ALPHA / 3):
+        raise RuntimeError("the ground-control alpha does not split over its herald and two contracts")
+    verdicts["control_excited"] = _check_ground_control_excitation()
+    verdicts["schedules"] = _check_ground_schedules()
+    verdicts["correlated_herald"] = _check_ground_correlated_herald()
+    verdicts["empty_selection"] = _check_ground_empty_selection()
+    return verdicts
+
+
+def _check_ground_empty_selection() -> str:
+    """A member whose control herald reads 1 in every shot leaves the herald not evaluable and the contracts refused."""
+    members = {"a": ["0000"] * 100, "b": ["0001"] * 100}
+    control = HERALD_ROLES.index("control")
+    counts = {
+        k: {"qubit": k, "members": {name: herald_excitation(bits, 4, k, control) for name, bits in members.items()}}
+        for k in range(4)
+    }
+    calibrations = {
+        name: {
+            "source": "plant",
+            "values": {str(k): {"prob_meas1_prep0": 0.01, "prob_meas0_prep1": 0.01} for k in range(4)},
+        }
+        for name in members
+    }
+    herald = herald_evaluation(counts, calibrations, contract_alpha("ground"))
+    gated = contract_gate({"admissible": True}, herald, GROUND_CONTRACTS)
+    if herald["evaluable"] or gated is None or any(entry["status"] != "not_admissible" for entry in gated.values()):
+        raise RuntimeError(f"a member with no selected shot reads herald {herald} and contracts {gated}")
+    return "a member without selected shots leaves the herald not evaluable"
+
+
+def _check_ground_correlated_herald() -> str:
+    """A qubit-2 excitation correlated with the control's passes the whole-shot herald and fails the selected one.
+
+    Two members of 8192 shots each excite the control in 200 shots and
+    qubit 2 in 200 shots, so both marginals agree; member a excites qubit 2
+    only together with the control and member b only with the control in
+    |0>. Over every shot the spread is zero and the herald admits; over the
+    shots whose control herald reads 0 (herald_excitation), b reads 200
+    excitations of qubit 2 against a's none, which the admission refuses.
+    """
+    shots, excited = 8192, 200
+    members = {
+        "a": ["0101"] * excited + ["0000"] * (shots - excited),
+        "b": ["0001"] * excited + ["0100"] * excited + ["0000"] * (shots - 2 * excited),
+    }
+    bound = herald_bound(shots, contract_alpha("ground"))
+    found = []
+    for condition in (None, HERALD_ROLES.index("control")):
+        counts = {
+            k: {
+                "qubit": k,
+                "members": {name: herald_excitation(bits, 4, k, condition) for name, bits in members.items()},
+            }
+            for k in range(4)
+        }
+        found.append(
+            herald_admission(counts, dict.fromkeys(range(4), 1.0), bound, contract_alpha("ground"))["admissible"]
+        )
+    if found != [True, False]:
+        raise RuntimeError(f"the correlated herald plant reads admissible {found} over all and selected shots")
+    return "whole-shot herald admits, control-selected herald refuses"
+
+
+def _check_ground_control_excitation() -> str:
+    """A control-excited idle_ground ensemble passes spectator_ground_idle_dephasing only without the herald condition.
+
+    Every kind keeps visibility 0.99 on shots whose control starts in |0>;
+    3000 added idle_ground shots herald the control 1 and read qubit 2 at
+    visibility 0, the ZZ-averaged law of a control held in |1>. Counted
+    whole, idle_ground then reads below immediate; conditioned on the
+    herald reading the control 0 (conditioned_tally), it does not.
+    """
+    clean = _split_spectator_reads(dict.fromkeys(GROUND_SPECTATOR_KINDS, 0.99))
+    excited = 3000
+    whole: dict[str, dict[str, np.ndarray]] = {}
+    conditioned: dict[str, dict[str, np.ndarray]] = {}
+    for kind, reads in clean.items():
+        for quadrature, counts in reads.items():
+            phases = ["00"] * int(counts[0]) + ["10"] * int(counts[2])
+            heralds = ["0000"] * len(phases)
+            if kind == "idle_ground":
+                phases += ["00", "10"] * (excited // 2)
+                heralds += ["0001"] * excited
+            whole.setdefault(kind, {})[quadrature] = conditioned_tally(phases, ["0000"] * len(phases), 3)
+            conditioned.setdefault(kind, {})[quadrature] = conditioned_tally(phases, heralds, 3)
+    found = (
+        ground_contract_results(whole)["spectator_ground_idle_dephasing"]["status"],
+        ground_contract_results(conditioned)["spectator_ground_idle_dephasing"]["status"],
+    )
+    if found != ("pass", "fail"):
+        raise RuntimeError(f"the control-excited ensemble reads {found} whole and herald-conditioned")
+    return "whole pass, herald-conditioned fail"
+
+
+def _check_ground_schedules() -> str:
+    """Planted compiled schedules reach the ground-control admission verdicts.
+
+    The template mirrors the split's compiled members (control 142,
+    spectator 143, an 836 dt window); a control pulse in idle_ground, a
+    shortened idle_ground exposure with no control delay, and a longer idle
+    exposure each make the split inadmissible.
+    """
+    control, spectator, window = 142, 143, 836
+
+    def plays(kind: str, exposure: int, prepared: bool) -> list[tuple[int, int, str, int]]:
+        start = 1290
+        found = [(start, 6, "sx", spectator), (start + 6 + exposure, 6, "sx", spectator)]
+        found.append((start + 13 + exposure, 180, "measure", spectator))
+        if prepared:
+            found.append((start, 6, "sx", control))
+        found.append((start + 400 + exposure, 180, "reset", control))
+        return found
+
+    def schedules(changes: dict[str, tuple[int, bool, int]]) -> dict[str, dict[str, Any]]:
+        built = {}
+        for name in GROUND_SPECTATOR_MEMBERS:
+            kind = name.removeprefix(SPECTATOR_PREFIX).rsplit("_", 1)[0]
+            exposure, prepared, delay = (0, True, 0) if kind == "immediate" else (window, kind != "idle_ground", window)
+            exposure, prepared, delay = changes.get(name, (exposure, prepared, delay))
+            built[name] = ground_member_schedule(plays(kind, exposure, prepared), control, delay)
+        return built
+
+    if not ground_admissibility(schedules({}), control, window)["admissible"]:
+        raise RuntimeError("the intended ground-control schedules read inadmissible")
+    for label, changes in (
+        ("control prepared in idle_ground", {f"{SPECTATOR_PREFIX}idle_ground_x": (window, True, window)}),
+        ("idle_ground without its delay", {f"{SPECTATOR_PREFIX}idle_ground_y": (0, False, 0)}),
+        ("longer idle exposure", {f"{SPECTATOR_PREFIX}idle_x": (window + 100, True, window)}),
+    ):
+        admitted = ground_admissibility(schedules(changes), control, window)
+        if admitted["admissible"] or set(admitted["differing"]) != set(changes):
+            raise RuntimeError(f"the ground-control admission accepts {label}: {admitted['differing']}")
+    if ground_admissibility({}, control, window)["missing"] != list(GROUND_SPECTATOR_MEMBERS):
+        raise RuntimeError("the ground-control admission accepts a record without its members")
+    return "intended admissible; control prepared, missing delay and unequal exposure refused"
+
+
 def self_check() -> None:
     """Recover a known work phase from exact expected counts and reject the depolarizing baseline."""
     _check_exact_laws()
@@ -2301,6 +2483,7 @@ def self_check() -> None:
     _check_between_arm()
     verdicts = _check_window_sweep()
     split_verdicts = _check_overlap_split()
+    ground_verdicts = _check_ground_control_split()
     readout = _readout(0.001, 0.006)
     truth = readout | {"round1": 0.1, "round2": 0.02, "phase_one": 0.5}
     counts = {
@@ -2325,11 +2508,12 @@ def self_check() -> None:
         "N=21 orbit RCA: exact laws, manifest binding, seeded static basins, piecewise window exposure, "
         "regeneration tolerance, between-arm contracts and admissibility, planted-phase recovery, "
         f"branch-window, and baseline rejection checks pass; window sweep truths read {verdicts}; "
-        f"overlap split truths read {split_verdicts}"
+        f"overlap split truths read {split_verdicts}; ground-control split truths read {ground_verdicts}"
     )
 
 
 RETAINED = "rca-mechanism-fit.json"
+BETWEEN_ARM_RETAINED = "between-arm.json"
 SCHEMA_VERSION = "n21-orbit-rca-mechanism-fit-v2"
 
 
@@ -2584,7 +2768,17 @@ SPLIT_SPECTATOR_KINDS = ("immediate", "idle", "reset_only")
 SPLIT_SPECTATOR_MEMBERS = tuple(
     f"{SPECTATOR_PREFIX}{k}_{q}" for k in SPLIT_SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES
 )
-ALL_SPECTATOR_MEMBERS = (*SPECTATOR_MEMBERS, *(m for m in SPLIT_SPECTATOR_MEMBERS if m not in SPECTATOR_MEMBERS))
+# The ground-control split (n21_orbit_rca_group, ground_control_split) holds
+# no orbit pair and reads qubit 2 at once (immediate), across the idle with
+# the unrecorded control in |+> (idle), and across the same idle with the
+# control in |0> (idle_ground). A ZZ coupling to a control in |0> is a fixed
+# rotation of qubit 2, which leaves its X and Y visibility unchanged.
+GROUND_SPECTATOR_KINDS = ("immediate", "idle", "idle_ground")
+GROUND_SPECTATOR_MEMBERS = tuple(
+    f"{SPECTATOR_PREFIX}{k}_{q}" for k in GROUND_SPECTATOR_KINDS for q in SPECTATOR_QUADRATURES
+)
+ALL_SPECTATOR_MEMBERS = tuple(dict.fromkeys((*SPECTATOR_MEMBERS, *SPLIT_SPECTATOR_MEMBERS, *GROUND_SPECTATOR_MEMBERS)))
+GROUND_CONTRACTS = ("spectator_control_zz", "spectator_ground_idle_dephasing")
 OVERLAP_BRACKETED = ("nominal", "window_delay")
 OVERLAP_UNBRACKETED = "window_delay_unbracketed"
 OVERLAP_PAIRS = (*OVERLAP_BRACKETED, OVERLAP_UNBRACKETED)
@@ -2617,12 +2811,30 @@ def overlap_split(names: list[str]) -> bool:
 # adds window_delay_long and the measured spectators and all five, and the
 # overlap split holds its own four.
 PLAIN_VARIANTS = tuple(variant for variant in ORBIT_VARIANTS if variant != "window_delay_long")
-SHAPE_CONTRACTS = {"plain": CONTRACTS[:3], "sweep": CONTRACTS, "split": OVERLAP_CONTRACTS}
-SHAPE_VARIANTS = {"plain": PLAIN_VARIANTS, "sweep": ORBIT_VARIANTS, "split": OVERLAP_BRACKETED}
+SHAPE_CONTRACTS = {
+    "plain": CONTRACTS[:3],
+    "sweep": CONTRACTS,
+    "split": OVERLAP_CONTRACTS,
+    "ground": GROUND_CONTRACTS,
+}
+SHAPE_VARIANTS: dict[str, tuple[str, ...]] = {
+    "plain": PLAIN_VARIANTS,
+    "sweep": ORBIT_VARIANTS,
+    "split": OVERLAP_BRACKETED,
+    "ground": (),
+}
+
+
+def ground_control_split(names: list[str]) -> bool:
+    """Whether a record's members form the ground-control split: an idle_ground spectator is present."""
+    return any(name.startswith(f"{SPECTATOR_PREFIX}idle_ground_") for name in names)
 
 
 def record_shape(names: list[str]) -> str:
-    """split with an unbracketed orbit arm, sweep with window_delay_long or a measured spectator, else plain."""
+    """ground with an idle_ground spectator, split with an unbracketed orbit arm, sweep with
+    window_delay_long or a measured spectator, else plain."""
+    if ground_control_split(names):
+        return "ground"
     if overlap_split(names):
         return "split"
     if any(name.startswith(orbit_pair("window_delay_long") + "_") or name in SPECTATOR_MEMBERS for name in names):
@@ -2635,9 +2847,20 @@ def contract_names(shape: str) -> tuple[str, ...]:
     return SHAPE_CONTRACTS[shape]
 
 
+# The ground-control split's herald admission is one more test event of its
+# family: its contracts read only the shots its herald selects, so Bonferroni
+# splits FAMILY_ALPHA equally over the herald admission and both contracts.
+SHAPE_HERALD_EVENTS = {"ground": 1}
+
+
 def contract_alpha(shape: str) -> float:
-    """Bonferroni level of each contract: FAMILY_ALPHA over the shape's contracts."""
-    return FAMILY_ALPHA / len(contract_names(shape))
+    """Bonferroni level of each contract: FAMILY_ALPHA over the shape's contracts and herald events.
+
+    The ground shape counts its herald admission (SHAPE_HERALD_EVENTS), so
+    its herald and its two contracts each run at FAMILY_ALPHA / 3 and their
+    union holds FAMILY_ALPHA.
+    """
+    return FAMILY_ALPHA / (len(contract_names(shape)) + SHAPE_HERALD_EVENTS.get(shape, 0))
 
 
 def normalized_coupling(coupling: dict[Any, dict[Any, Any]]) -> dict[int, dict[int, int]]:
@@ -3011,8 +3234,9 @@ def immediate_visibility(spectators: dict[str, dict[str, np.ndarray]] | None) ->
 def spectator_counts(run: Path) -> dict[str, dict[str, np.ndarray]] | None:
     """Per spectator kind and quadrature, counts over control + 2 * qubit-2 bit; None without spectator members.
 
-    The kinds present must be the window sweep's (SPECTATOR_KINDS) or the
-    overlap split's (SPLIT_SPECTATOR_KINDS), each in both quadratures.
+    The kinds present must be the window sweep's (SPECTATOR_KINDS), the
+    overlap split's (SPLIT_SPECTATOR_KINDS) or the ground-control split's
+    (GROUND_SPECTATOR_KINDS), each in both quadratures.
     """
     members = [member["name"] for member in _group(run)["members"]]
     if not set(ALL_SPECTATOR_MEMBERS) & set(members):
@@ -3024,12 +3248,16 @@ def spectator_counts(run: Path) -> dict[str, dict[str, np.ndarray]] | None:
         kind, quadrature = name.removeprefix("n21_spectator_").rsplit("_", 1)
         tally = Counter(int(value[1]) + 2 * int(value[0]) for value in payload["registers"][REGISTER]["bitstrings"])
         found.setdefault(kind, {})[quadrature] = np.array([tally[label] for label in range(4)], dtype=float)
-    kinds = SPLIT_SPECTATOR_KINDS if {"immediate", "idle"} & set(found) else SPECTATOR_KINDS
+    kinds: tuple[str, ...]
+    expected: tuple[str, ...]
+    if "idle_ground" in found:
+        kinds, expected = GROUND_SPECTATOR_KINDS, GROUND_SPECTATOR_MEMBERS
+    elif {"immediate", "idle"} & set(found):
+        kinds, expected = SPLIT_SPECTATOR_KINDS, SPLIT_SPECTATOR_MEMBERS
+    else:
+        kinds, expected = SPECTATOR_KINDS, SPECTATOR_MEMBERS
     if set(found) != set(kinds) or any(set(found[kind]) != set(SPECTATOR_QUADRATURES) for kind in kinds):
-        raise RuntimeError(
-            f"the record holds spectator members {sorted(found)}, not all of "
-            f"{SPLIT_SPECTATOR_MEMBERS if kinds == SPLIT_SPECTATOR_KINDS else SPECTATOR_MEMBERS}"
-        )
+        raise RuntimeError(f"the record holds spectator members {sorted(found)}, not all of {expected}")
     return found
 
 
@@ -3465,6 +3693,259 @@ def overlap_contract_results(
     }
 
 
+def ground_contract_results(
+    spectators: dict[str, dict[str, np.ndarray]] | None, spectator_herald_margin: float = 0.0
+) -> dict[str, dict[str, Any]]:
+    """Every ground-control-split contract's status and deciding numbers, each at contract_alpha("ground").
+
+    spectator_control_zz passes when qubit 2's idle visibility, with the
+    unrecorded control in |+>, lies below its idle_ground visibility, with
+    the control in |0>: a ZZ coupling to the control averages two phases
+    over the unrecorded control state and dephases qubit 2, while a control
+    in |0> turns the same coupling into one fixed rotation that the X and Y
+    visibility does not see, so a pass names control-state-dependent
+    dephasing. spectator_ground_idle_dephasing passes when the idle_ground
+    visibility lies below the immediate one: qubit 2 dephases across the
+    idle with the control static, its own T2* and any coupling to a qubit
+    the split does not hold in a fixed state. spectator_herald_margin
+    counts against both passes.
+    """
+    alpha = contract_alpha("ground")
+    return {
+        "spectator_control_zz": spectator_decline(spectators, "idle", "idle_ground", alpha, spectator_herald_margin),
+        "spectator_ground_idle_dephasing": spectator_decline(
+            spectators, "idle_ground", "immediate", alpha, spectator_herald_margin
+        ),
+    }
+
+
+def ground_member_schedule(
+    plays: list[tuple[int, int, str, int]], control: int, control_delay_dt: int
+) -> dict[str, Any]:
+    """The compiled schedule facts of one ground-control-split member that its admission reads.
+
+    plays are the member's returned pulses without its herald readouts
+    (_without_prefix). The spectator is the wire of the last measure play.
+    Its exposure runs from the end of its first pulse, the preparation, to
+    the start of its last pulse before that readout, the basis change; an
+    immediate member's two pulses abut and read 0. control_prepared records
+    a control pulse other than measure or reset before the spectator's
+    readout, and control_delay_dt the summed compiled delay on the control.
+    """
+    readouts = [play for play in sorted(plays) if play[2] == "measure"]
+    if not readouts:
+        raise ValueError("the member's schedule holds no readout after its herald")
+    readout_start, _length, _name, spectator = readouts[-1]
+    pulses = sorted(play for play in plays if play[3] == spectator and play[2] != "measure" and play[0] < readout_start)
+    if len(pulses) < 2:
+        raise ValueError(
+            f"qubit {spectator} plays {len(pulses)} pulses before its readout, not a preparation and a basis change"
+        )
+    first_start, first_length, _name, _wire = pulses[0]
+    return {
+        "spectator": spectator,
+        "exposure_dt": pulses[-1][0] - (first_start + first_length),
+        "control_prepared": any(
+            wire == control and name not in ("measure", "reset") and start < readout_start
+            for start, _length, name, wire in plays
+        ),
+        "control_delay_dt": control_delay_dt,
+    }
+
+
+def ground_admissibility(schedules: dict[str, dict[str, Any]], control: int, intended_dt: int) -> dict[str, Any]:
+    """Whether the six compiled ground-control-split members expose qubit 2 as the split intends.
+
+    Every GROUND_SPECTATOR_MEMBERS member must be present, read one
+    spectator other than the control, and hold the schedule of its kind
+    (ground_member_schedule): immediate exposes the spectator 0 dt with no
+    control delay, idle and idle_ground expose it intended_dt (the family's
+    window_delay_dt + reset_dt) across a control delay of intended_dt, and
+    the control is prepared in immediate and idle and never in idle_ground,
+    so idle against idle_ground differs only in the control's state.
+    """
+    missing = [name for name in GROUND_SPECTATOR_MEMBERS if name not in schedules]
+    spectators = {schedule["spectator"] for schedule in schedules.values()}
+    differing: dict[str, Any] = {}
+    unresolved: dict[str, list[str]] = {}
+    if len(spectators) > 1 or control in spectators:
+        unresolved["spectator"] = [f"the members read spectators {sorted(spectators)} beside control {control}"]
+    for name, schedule in schedules.items():
+        kind = name.removeprefix(SPECTATOR_PREFIX).rsplit("_", 1)[0]
+        window = 0 if kind == "immediate" else intended_dt
+        expected = {"exposure_dt": window, "control_prepared": kind != "idle_ground", "control_delay_dt": window}
+        found = {key: schedule[key] for key in expected}
+        if found != expected:
+            differing[name] = {"expected": expected, "found": found}
+    return {
+        "admissible": not (missing or differing or unresolved),
+        "differing": differing,
+        "unresolved": unresolved,
+        "missing": missing,
+        "control": control,
+        "intended_dt": intended_dt,
+        "schedules": schedules,
+    }
+
+
+def ground_schedules(run: Path) -> tuple[dict[str, dict[str, Any]], int, dict[str, list[str]]]:
+    """ground_member_schedule of every spectator member from the archived ISA and the returned timing.
+
+    The control is the one wire every member resets; members whose schedule
+    cannot be read land in the returned unresolved map.
+    """
+    names = [member["name"] for member in _group(run)["members"]]
+    circuits = _circuits(run)
+    resets = {
+        circuit.find_bit(instruction.qubits[0]).index
+        for circuit in circuits
+        for instruction in circuit.data
+        if instruction.operation.name == "reset"
+    }
+    if len(resets) != 1:
+        raise RuntimeError(f"the ground-control members reset qubits {sorted(resets)}, not one control")
+    (control,) = resets
+    schedules: dict[str, dict[str, Any]] = {}
+    unresolved: dict[str, list[str]] = {}
+    for name, circuit, payload in zip(names, circuits, raw_pubs(run), strict=True):
+        if name not in ALL_SPECTATOR_MEMBERS:
+            continue
+        delays = [
+            instruction.operation
+            for instruction in circuit.data
+            if instruction.operation.name == "delay" and circuit.find_bit(instruction.qubits[0]).index == control
+        ]
+        if any(delay.unit != "dt" for delay in delays):
+            unresolved[name] = ["a control delay is not in dt"]
+            continue
+        try:
+            _program, prefix = herald_program(circuit)
+            plays = _without_prefix(_plays(payload), prefix)
+            schedules[name] = ground_member_schedule(plays, control, sum(int(delay.duration) for delay in delays))
+        except ValueError as error:
+            unresolved[name] = [str(error)]
+    return schedules, control, unresolved
+
+
+def conditioned_tally(phases: list[str], heralds: list[str], position: int) -> np.ndarray:
+    """Counts over control + 2 * qubit-2 bit of the shots whose herald string reads 0 at position."""
+    if len(heralds) != len(phases):
+        raise RuntimeError(f"{len(heralds)} herald and {len(phases)} phase shots")
+    tally = Counter(
+        int(value[1]) + 2 * int(value[0])
+        for value, herald in zip(phases, heralds, strict=True)
+        if herald[position] == "0"
+    )
+    return np.array([tally[label] for label in range(4)], dtype=float)
+
+
+def ground_spectator_reads(run: Path, control: int) -> tuple[dict[str, dict[str, np.ndarray]] | None, dict[str, Any]]:
+    """spectator_counts over the shots whose initialization herald reads the control 0, and the kept fractions.
+
+    idle_ground names the control in |0>; an initial excitation the herald
+    records would hold it in |1> and give qubit 2 a ZZ phase the idle arm
+    also averages, so every kind keeps only the shots whose herald bit on
+    the control reads 0. A record without the herald returns None, which no
+    ground contract reads past.
+    """
+    from qpe_diagnostics import HERALD_REGISTER, register_role
+
+    names = [member["name"] for member in _group(run)["members"]]
+    found: dict[str, dict[str, np.ndarray]] = {}
+    kept: dict[str, list[int]] = {}
+    for name, circuit, payload in zip(names, _circuits(run), raw_pubs(run), strict=True):
+        if name not in GROUND_SPECTATOR_MEMBERS:
+            continue
+        registers = [register for register in circuit.cregs if register_role(register.name) == HERALD_REGISTER]
+        if not registers:
+            return None, {"present": False}
+        (register,) = registers
+        writer = {
+            circuit.find_bit(i.clbits[0]).index: circuit.find_bit(i.qubits[0]).index
+            for i in circuit.data
+            if i.operation.name == "measure"
+        }
+        bits = [k for k, clbit in enumerate(register) if writer[circuit.find_bit(clbit).index] == control]
+        if len(bits) != 1:
+            raise RuntimeError(f"{name} reads the control {control} on herald bits {bits}, not one")
+        position = register.size - 1 - bits[0]
+        heralds = payload["registers"][register.name]["bitstrings"]
+        phases = payload["registers"][REGISTER]["bitstrings"]
+        kind, quadrature = name.removeprefix(SPECTATOR_PREFIX).rsplit("_", 1)
+        found.setdefault(kind, {})[quadrature] = conditioned_tally(phases, heralds, position)
+        kept[name] = [int(found[kind][quadrature].sum()), len(phases)]
+    conditioning = {
+        "present": True,
+        "control": control,
+        "rule": "keep shots whose initialization herald reads the control 0",
+        "kept_shots": kept,
+    }
+    return found, conditioning
+
+
+def ground_report(run: Path) -> dict[str, Any]:
+    """The between-arm report of a ground-control split: spectator counts and its two contracts.
+
+    The split holds no orbit pair. Admissibility reads the six compiled
+    members (ground_admissibility over ground_schedules), and the counts keep
+    only shots whose herald reads the control 0 (ground_spectator_reads).
+    The spectator herald's admission and margin read those same shots, so
+    an excitation of qubit 2 correlated with the control's is bounded where
+    the contracts read it; an unheralded record reads both contracts
+    not_evaluable.
+    """
+    names = contract_names("ground")
+    alpha = contract_alpha("ground")
+    family = json.loads((run / "record.json").read_text())["family_configuration"]
+    schedules, control, unresolved = ground_schedules(run)
+    admitted = ground_admissibility(schedules, control, int(family["window_delay_dt"]) + int(family["reset_dt"]))
+    if unresolved:
+        admitted["unresolved"] |= unresolved
+        admitted["admissible"] = False
+    calibrations = execution_calibration(run)
+    report: dict[str, Any] = {
+        "schema_version": BETWEEN_ARM_SCHEMA,
+        "analyzer_sha256": analyzer_sha256(),
+        "calibration": {
+            name: {"source": entry["source"], "calibration": entry["calibration"]}
+            for name, entry in calibrations.items()
+        },
+        "herald": {"present": False},
+        "spectator_herald": herald_report(
+            run, calibrations, lambda name: name in ALL_SPECTATOR_MEMBERS, alpha, HERALD_ROLES.index("control")
+        ),
+        "alpha": {
+            "family_alpha": FAMILY_ALPHA,
+            "split": "Bonferroni over the spectator herald admission and the contracts",
+            "contracts": len(names),
+            "herald_events": SHAPE_HERALD_EVENTS["ground"],
+            "per_contract_alpha": alpha,
+            "herald_alpha": alpha,
+        },
+        "admissibility": admitted,
+    }
+    herald = report["spectator_herald"]
+    if herald.get("evaluable") and herald["bits"][str(HERALD_ROLES.index("control"))]["qubit"] != control:
+        raise RuntimeError(f"the control herald bit reads a qubit other than the control {control}")
+    gated = contract_gate(admitted, herald, names)
+    if gated is not None:
+        report["contracts"] = gated
+        return report
+    spectators, conditioning = ground_spectator_reads(run, control)
+    report["control_herald_conditioning"] = conditioning
+    if spectators is None:
+        reason = "the record carries no initialization herald on the control, so idle_ground's control state is unread"
+        report["contracts"] = {name: {"status": "not_evaluable", "reason": reason} for name in names}
+        return report
+    report["contracts"] = ground_contract_results(spectators, spectator_margin(report["spectator_herald"]))
+    report["spectator_counts"] = {
+        kind: {quadrature: values.astype(int).tolist() for quadrature, values in reads.items()}
+        for kind, reads in spectators.items()
+    }
+    report["spectator_immediate_visibility"] = immediate_visibility(spectators)
+    return report
+
+
 def arm_t2_us(run: Path, variant: str = "extra_readout") -> dict[str, dict[int, float]]:
     """Per arm, T2 in microseconds of each placed qubit at the variant member's calibration.
 
@@ -3537,11 +4018,21 @@ def herald_bound(shots: int, alpha: float = CONTRACT_ALPHA) -> float:
     return HERALD_MDE_FRACTION * magnitude_mde(shots, alpha) / (2 * CONTRAST_CEILING * sum(HERALD_SENSITIVITY))
 
 
-def herald_counts(run: Path, select: Callable[[str], bool] = is_orbit) -> dict[int, dict[str, Any]] | None:
+def herald_excitation(bits: list[str], size: int, k: int, condition: int | None = None) -> tuple[int, int]:
+    """(excited shots, shots) of herald bit k, over the shots whose herald bit condition reads 0 when given."""
+    kept = [value for value in bits if condition is None or value[size - 1 - condition] == "0"]
+    return sum(value[size - 1 - k] == "1" for value in kept), len(kept)
+
+
+def herald_counts(
+    run: Path, select: Callable[[str], bool] = is_orbit, condition: int | None = None
+) -> dict[int, dict[str, Any]] | None:
     """Per herald bit, its physical qubit and each selected member's (excited shots, shots); None unheralded.
 
     select picks the members by name: the orbit members, whose laws
-    HERALD_SENSITIVITY bounds, by default.
+    HERALD_SENSITIVITY bounds, by default. condition names a herald bit
+    whose 0 reading selects the shots counted (herald_excitation), so an
+    analysis that keeps those shots reads its herald on the same shots.
 
     Each herald clbit's physical qubit is the wire of the archived ISA's
     measurement into it; every member must read bit k on the same qubit.
@@ -3571,8 +4062,7 @@ def herald_counts(run: Path, select: Callable[[str], bool] = is_orbit) -> dict[i
             entry = found.setdefault(k, {"qubit": qubit, "members": {}})
             if entry["qubit"] != qubit:
                 raise RuntimeError(f"{name} reads herald bit {k} on qubit {qubit}, another member on {entry['qubit']}")
-            excited = sum(value[register.size - 1 - k] == "1" for value in bits)
-            entry["members"][name] = (excited, len(bits))
+            entry["members"][name] = herald_excitation(bits, register.size, k, condition)
     if any(heralded) and not all(heralded):
         raise RuntimeError("some members carry the initialization herald and others do not")
     return found if any(heralded) else None
@@ -3651,8 +4141,12 @@ def herald_report(
     calibrations: dict[str, dict[str, Any]],
     select: Callable[[str], bool] = is_orbit,
     alpha: float = CONTRACT_ALPHA,
+    condition: int | None = None,
 ) -> dict[str, Any]:
     """herald_admission of RUN at herald_bound of its smallest member shot count, or {"present": False}.
+
+    condition restricts every member to the shots whose herald bit condition
+    reads 0 (herald_counts).
 
     alpha is the per-contract level of the record's shape (contract_alpha),
     so the bound follows the contracts it protects.
@@ -3667,10 +4161,30 @@ def herald_report(
     or unretained channels leaves the herald not evaluable, which no
     contract reads past; the report names each member's calibration source.
     """
-    counts = herald_counts(run, select)
+    return herald_evaluation(herald_counts(run, select, condition), calibrations, alpha)
+
+
+def herald_evaluation(
+    counts: dict[int, dict[str, Any]] | None, calibrations: dict[str, dict[str, Any]], alpha: float
+) -> dict[str, Any]:
+    """herald_report of counts already in hand (herald_counts).
+
+    A member that keeps no selected shot leaves the herald not evaluable,
+    so no contract reads counts without a denominator.
+    """
     if not counts:
         return {"present": False}
     shots = min(n for entry in counts.values() for _excited, n in entry["members"].values())
+    if shots == 0:
+        empty = sorted({name for entry in counts.values() for name, (_e, n) in entry["members"].items() if n == 0})
+        return {
+            "present": True,
+            "evaluable": False,
+            "admissible": False,
+            "reason": f"members {empty} keep no shot the herald selects",
+            "differing_channels": {},
+            "shots": 0,
+        }
     contrasts = {}
     differing = {}
     for entry in counts.values():
@@ -3694,7 +4208,7 @@ def herald_report(
             "differing_channels": differing,
             "shots": shots,
         }
-    return herald_admission(counts, contrasts, herald_bound(shots, alpha)) | {"evaluable": True, "shots": shots}
+    return herald_admission(counts, contrasts, herald_bound(shots, alpha), alpha) | {"evaluable": True, "shots": shots}
 
 
 def contract_gate(
@@ -3711,7 +4225,11 @@ def contract_gate(
 def herald_refusal(herald: dict[str, Any], names: tuple[str, ...] = CONTRACTS) -> dict[str, dict[str, Any]]:
     """Every contract not_admissible behind a heralded run that the herald does not admit."""
     if not herald["evaluable"]:
-        reason = {"herald": "not_evaluable", "differing_channels": herald["differing_channels"]}
+        reason = {
+            "herald": "not_evaluable",
+            "reason": herald["reason"],
+            "differing_channels": herald["differing_channels"],
+        }
     else:
         reason = {
             "herald": "refused",
@@ -3741,8 +4259,10 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
     the herald does not admit reads every contract not_admissible
     (herald_refusal).
     """
-    roles = window_roles(run)
     shape = record_shape([member["name"] for member in _group(run)["members"]])
+    if shape == "ground":
+        return ground_report(run)
+    roles = window_roles(run)
     split = shape == "split"
     names = contract_names(shape)
     alpha = contract_alpha(shape)
@@ -4198,7 +4718,14 @@ def main(argv: list[str] | None = None) -> int:
         help="control-qubit P(1|0) and P(0|1); default reads IBM properties at the record's calibration",
     )
     parser.add_argument("--self-check", action="store_true")
-    parser.add_argument("--check", action="store_true", help=f"regenerate RUN_DIR/{RETAINED} and require it to agree")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help=(
+            f"regenerate RUN_DIR/{RETAINED}, or with --between-arm RUN_DIR/{BETWEEN_ARM_RETAINED}, "
+            "and require it to agree"
+        ),
+    )
     parser.add_argument(
         "--between-arm",
         type=Path,
@@ -4231,18 +4758,25 @@ def main(argv: list[str] | None = None) -> int:
         self_check()
         return 0
     if arguments.between_arm is not None:
-        if arguments.run is not None or arguments.check:
-            parser.error("--between-arm names its own run directory and takes no RUN_DIR or --check")
+        if arguments.run is not None:
+            parser.error("--between-arm names its own run directory and takes no RUN_DIR")
         report = between_arm_report(arguments.between_arm, tuple(arguments.readout) if arguments.readout else None)
+        if arguments.check:
+            retained = arguments.between_arm / BETWEEN_ARM_RETAINED
+            if retained.read_bytes() != serialize(report).encode():
+                raise SystemExit(f"{retained} differs from the report its archived raw files regenerate")
+            print(f"{retained}: regenerated byte for byte from the archived circuits and raw files")
+            return 0
         print(f"analyzer sha256: {report['analyzer_sha256']}")
         print(f"admissibility: {'admissible' if report['admissibility']['admissible'] else 'not admissible'}")
-        herald = report["herald"]
-        if not herald["present"]:
-            print("herald: absent")
-        elif not herald["evaluable"]:
-            print(f"herald: not evaluable ({herald['reason']})")
-        else:
-            print(f"herald: {'admissible' if herald['admissible'] else 'refused'}")
+        for label, key in (("herald", "herald"), ("spectator herald", "spectator_herald")):
+            herald = report.get(key, {"present": False})
+            if not herald["present"]:
+                print(f"{label}: absent")
+            elif not herald["evaluable"]:
+                print(f"{label}: not evaluable ({herald['reason']})")
+            else:
+                print(f"{label}: {'admissible' if herald['admissible'] else 'refused'}")
         for name, contract in report["contracts"].items():
             print(f"{name}: {contract['status']}")
         if arguments.out:

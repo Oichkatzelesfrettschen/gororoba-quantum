@@ -2378,6 +2378,159 @@ def _verify_overlap_split(snapshot: live_run.Snapshot) -> None:
         _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
 
 
+GROUND_CONTROL_SPLIT_MEMBERS = [
+    f"n21_spectator_{kind}_{q}" for kind in ("immediate", "idle", "idle_ground") for q in ("x", "y")
+]
+
+
+def _verify_ground_control_split(snapshot: live_run.Snapshot) -> None:
+    """A pinned ground-control split plans its six spectators and binds the flag only when set.
+
+    The group holds the immediate, idle and idle_ground spectators in X and
+    Y and no orbit arm; idle and idle_ground idle window_delay_dt + reset_dt
+    on the pinned control, idle_ground plays no gate on the control before
+    that idle, so the control stays in |0>, and every arm resets the control
+    only after qubit 2's readout; the configuration records
+    ground_control_split and reset_dt and neither window_sweep nor
+    overlap_split, and record_groups and family_contracts rebuild it; the
+    policy carries ground_control_split only when set; a record's written
+    command and case replay it only when set; live_run refuses the flag
+    without --pin-layout, on another family or beside --overlap-split, and
+    the group refuses it beside window_sweep or overlap_split.
+    """
+    _require(
+        "ground_control_split" not in qpu_planning.settings(_args("n21-orbit-rca")),
+        "an absent ground-control split entered the policy",
+    )
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    arguments = _args("n21-orbit-rca", pin_layout=pin, ground_control_split=True)
+    _require(
+        qpu_planning.settings(arguments).get("ground_control_split") is True,
+        "the policy settings drop the ground-control split",
+    )
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)
+    _require(bool(candidates), f"FakeFez refuses the pinned ground split: {traces.get('family_rejections')}")
+    (choice,), configuration = candidates[0]
+    names = [member.name for member in choice.group.members]
+    _require(names == GROUND_CONTROL_SPLIT_MEMBERS, f"the ground-control split plans {names}")
+    _require(
+        configuration.get("ground_control_split") is True
+        and "window_sweep" not in configuration
+        and "overlap_split" not in configuration
+        and type(configuration.get("reset_dt")) is int
+        and configuration["reset_dt"] > 0
+        and configuration.get("pin_layout") == pin,
+        f"the ground-control-split configuration reads {configuration}",
+    )
+    arms = dict(zip(names, choice.isas, strict=True))
+    control = PINNED_ORBIT_LAYOUT[0]
+    window = configuration["window_delay_dt"] + configuration["reset_dt"]
+
+    def control_ops(isa: Any) -> list[tuple[str, int | None]]:
+        return [
+            (i.operation.name, int(i.operation.duration) if i.operation.name == "delay" else None)
+            for i in isa.data
+            if i.operation.name != "barrier" and any(isa.find_bit(q).index == control for q in i.qubits)
+        ]
+
+    for quadrature in ("x", "y"):
+        immediate = control_ops(arms[f"n21_spectator_immediate_{quadrature}"])
+        idle = control_ops(arms[f"n21_spectator_idle_{quadrature}"])
+        ground = control_ops(arms[f"n21_spectator_idle_ground_{quadrature}"])
+        _require(
+            ("delay", window) in idle and idle[-1] == ("reset", None),
+            f"the idle {quadrature} spectator plays {idle} on the control, not measure plus reset then a reset",
+        )
+        _require(
+            ground == [("delay", window), ("reset", None)],
+            f"the idle_ground {quadrature} spectator plays {ground} on the control, not an idle in |0> and a reset",
+        )
+        _require(
+            idle[: idle.index(("delay", window))] != [],
+            f"the idle {quadrature} spectator prepares no |+> on the control: {idle}",
+        )
+        _require(
+            not any(name == "delay" for name, _ in immediate) and immediate[-1] == ("reset", None),
+            f"the immediate {quadrature} spectator plays a window on the control: {immediate}",
+        )
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require(
+        [member.name for member in rebuilt[0].members] == names,
+        "record_groups does not rebuild the ground-control split",
+    )
+    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration)
+    _require(
+        [contract.name for contract in contracts] == [f"{name}_one" for name in GROUND_CONTROL_SPLIT_MEMBERS]
+        and all(math.isclose(contract.alpha, 0.05 / 6) for contract in contracts),
+        f"the ground-control-split family contracts read {[contract.name for contract in contracts]}",
+    )
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    _require(
+        "--ground-control-split" not in qpu_cases._reproduction_arguments(fixture, location)
+        and not any("--ground-control-split" in line for line in qpu_cases._scientific_case("n21-orbit-rca", fixture)),
+        "a record without the ground-control split replays or describes it",
+    )
+    fixture["policy"]["design"]["ground_control_split"] = True
+    fixture["family_configuration"] = {**fixture.get("family_configuration", {}), "ground_control_split": True}
+    case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+    _require(
+        "--ground-control-split" in qpu_cases._reproduction_arguments(fixture, location)
+        and "--ground-control-split plans only qubit-2 spectators" in case,
+        f"a ground-control-split record's written command or case text omits the split: {case}",
+    )
+    for sweep, split in ((True, False), (False, True)):
+        try:
+            diagnostic_experiments.n21_orbit_rca_group(
+                415, 502, window_sweep=sweep, overlap_split=split, reset_dt=520, ground_control_split=True
+            )
+        except ValueError:
+            continue
+        raise RuntimeError(
+            f"the group accepted ground_control_split beside window_sweep {sweep}, overlap_split {split}"
+        )
+    ceilings = ["--max-execution-seconds", "10", "--max-total-execution-seconds", "10"]
+    pinned = ["--pin-layout", f"{snapshot.name}:{','.join(str(q) for q in PINNED_ORBIT_LAYOUT)}"]
+    for argv, message in (
+        (
+            ["--family", "n21-orbit-rca", "--ground-control-split", *ceilings],
+            "--ground-control-split requires --pin-layout",
+        ),
+        (
+            ["--family", "n21-orbit-feedback", "--ground-control-split", *ceilings],
+            "--ground-control-split applies to the n21-orbit-rca family only",
+        ),
+        (
+            ["--family", "n21-orbit-rca", "--ground-control-split", "--overlap-split", *pinned, *ceilings],
+            "--ground-control-split and --overlap-split are separate",
+        ),
+        (
+            ["--family", "n21-orbit-rca", "--ground-control-split", *pinned, *ceilings],
+            "--ground-control-split requires --init-herald",
+        ),
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+            live_run.main(argv)
+        _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
+
+
+def _verify_ground_control_split_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_ground_control_split(snapshot)
+    print(
+        "QPU planning: a pinned n21-orbit-rca ground-control split plans the immediate, idle and idle_ground "
+        "spectators alone, idle_ground idles the control in |0> for measure plus reset, the configuration, "
+        "policy, written command and case bind the split only when set, and live_run refuses it without "
+        "--pin-layout or --init-herald, on another family or beside --overlap-split"
+    )
+
+
 def _verify_overlap_split_only() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
@@ -2754,8 +2907,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--overlap-split", action="store_true", help="run only the n21-orbit-rca overlap-split contract"
     )
+    parser.add_argument(
+        "--ground-control-split",
+        action="store_true",
+        help="run only the n21-orbit-rca ground-control-split contract",
+    )
     parsed = parser.parse_args()
-    if parsed.overlap_split:
+    if parsed.ground_control_split:
+        _verify_ground_control_split_only()
+    elif parsed.overlap_split:
         _verify_overlap_split_only()
     elif parsed.pin_layout:
         _verify_pin_layout_only()

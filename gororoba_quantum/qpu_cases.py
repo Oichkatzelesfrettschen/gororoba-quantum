@@ -321,6 +321,9 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if "overlap_split" in design:
         _require(design["overlap_split"] is True, "overlap_split is recorded only when set")
         arguments.append("--overlap-split")
+    if "ground_control_split" in design:
+        _require(design["ground_control_split"] is True, "ground_control_split is recorded only when set")
+        arguments.append("--ground-control-split")
     if "pin_layout" in design:
         pin = design["pin_layout"]
         _require(
@@ -1858,6 +1861,19 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-orbit-rca" and "overlap_arm" in record.get("family_configuration", {})
+            else []
+        ),
+        *(
+            [
+                "--ground-control-split plans only qubit-2 spectators: read at once, after an idle of the "
+                "control's measure plus reset durations (window_delay_dt + reset_dt) with the unrecorded control "
+                "in |+>, and after the same idle with the control in |0> (idle_ground). A ZZ coupling to a control "
+                "in |0> is a fixed rotation that the X and Y visibility does not see, so idle below idle_ground "
+                "names control-state-dependent dephasing and idle_ground below immediate names qubit 2's own idle "
+                "dephasing.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("ground_control_split")
             else []
         ),
         *(
