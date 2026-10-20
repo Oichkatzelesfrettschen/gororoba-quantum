@@ -20,9 +20,11 @@ This script holds the exact layer and the retained records.
   column U24 psi_s reaches the chip, so the records carry, per setting,
   that 24-vector, the source mode and the 12/12 selected-output mask.
 - Assignment. A_1..A_12 are the twelve outputs with the lowest receipt dark
-  rate (ties by mode) of the retained qpu:belenos catalogue, D_1..D_12 the
-  rest in mode order; the source is the connected input with the highest
-  receipt t_in. Both receipt fields are dated planning inputs.
+  rate (ties by mode) of the frozen qpu:belenos receipt
+  (docs/evidence/bdsc/inputs/receipt.json, the catalogue retrieval of
+  2026-10-17T17:53:31Z), D_1..D_12 the rest in mode order; the source is
+  the connected input with the highest receipt t_in. Both receipt fields
+  are dated planning inputs, and a later catalogue leaves them unchanged.
 
 Records under docs/evidence/bdsc/: target.json (algebra, frames, U24,
 mask), bank.json (the 160 settings with their states, chip columns and
@@ -64,7 +66,10 @@ import bdsc  # noqa: E402
 import parallel  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 
-CATALOGUE = ROOT / "docs/evidence/quandela/catalogue.json"
+# The qpu:belenos receipt the target was planned against, frozen from the catalogue retrieval of
+# 2026-10-17T17:53:31Z: a catalogue refresh is new calibration, and a target planned from it is a new target.
+RECEIPT = ROOT / "docs/evidence/bdsc/inputs/receipt.json"
+RECEIPT_SCHEMA = "bdsc-receipt-v1"
 EVIDENCE = ROOT / "docs/evidence/bdsc"
 CHIP = "qpu:belenos"
 MODES = 24
@@ -233,7 +238,12 @@ def kernel_projector(frame: list[dict[str, Any]]) -> FracMatrix:
 
 
 def load_catalogue() -> dict[str, Any]:
-    data: dict[str, Any] = json.loads(CATALOGUE.read_text(encoding="utf-8"))
+    """The frozen receipt, shaped as the catalogue slice the assignment and planning read."""
+    data: dict[str, Any] = json.loads(RECEIPT.read_text(encoding="utf-8"))
+    require(data.get("schema") == RECEIPT_SCHEMA and data.get("processor") == CHIP, "receipt identity differs")
+    chip = data["processors"][CHIP]
+    body = json.dumps(chip, sort_keys=True, separators=(",", ":")).encode()
+    require(hashlib.sha256(body).hexdigest() == data["processor_sha256"], "receipt processor digest differs")
     return data
 
 

@@ -51,9 +51,12 @@ and PERM_out with no phase shifter, because each output pair's 2 x 2 block
 is BS.H itself.
 
 The selected outputs are the twelve modes with the lowest receipt dark rate
-in the retained qpu:belenos catalogue (12, 13, 16, 18, 19, 20, 21, 22, 23,
+in the qpu:belenos catalogue retrieved 2026-10-17 (12, 13, 16, 18, 19, 20, 21, 22, 23,
 4, 6, 7), and the source is connected input 6, the highest receipt t_in.
-Both are dated planning inputs.
+Both are dated planning inputs. `inputs/receipt.json` freezes that catalogue entry
+(retrieval 2026-10-17T17:53:31Z) with its digest, so a catalogue refresh
+leaves the target unchanged; a target planned from a newer receipt is a new
+target with a new `target_sha256`.
 
 ## Certificate
 
