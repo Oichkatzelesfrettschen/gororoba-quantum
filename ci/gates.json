@@ -954,6 +954,22 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay.py --check",
+   "name": "sources-389",
+   "seconds": 18.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "docs/evidence/c5_zero_divisor_code",
+   "cmd": "sha256sum -c SHA256SUMS",
+   "name": "sources-390",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_geometry/replay.py --check",
    "name": "sources-134",
    "seconds": 16.6,

@@ -22,12 +22,34 @@ the test: 40 of the 84 messages simulated (40 messages x 400 trials x 8
 noise levels); error metric is symbol error rate (fraction of trials where
 the decoded label differs from the sent label).
 
-Every number below is unreplayed: the simulation script, its annihilator
-matrices and its seeds are absent from the repository and from the build
-host, so the table and the tie and signature counts are reported values
-without a retained implementation. A committed replay with fixed seeds
-under `docs/evidence/c5_zero_divisor_code/` and a checksum ledger would
-admit them; until then the falsification stands as unverified (issue #314 carries the falsifier).
+Replay status (issue #314): the seeded replay under
+`docs/evidence/c5_zero_divisor_code/` builds the code from `cd_core`'s sign
+table with definitions fixed before computing, under the literal
+first-partner encoder and an injective perfect-matching control encoder.
+The table and counts in the sections below are the original reported
+values; the replayed values sit in the next section. Replay command:
+`PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay.py --check`.
+
+## Replay verdict: counts withdrawn, decoder failure confirmed
+
+| quantity | reported | first_partner | matching |
+|---|---|---|---|
+| C5 symbol error rate, sigma 0.01 | 0.762 | 0.760 | 0.762 |
+| random + matched filter, sigma 0.01 | 0.000 | 0.000 | 0.000 |
+| algebraic + matched filter, sigma 0.01 | 0.275 | 0.750 | 0.000 |
+| 84-profile decoder, zero noise | 0.575 | 0.750 | 0.600 |
+| mean annihilator ties | 3.9 | 4.0 | 4.0 |
+| distinct signatures | 35 | 28 | 42 |
+| distinct blades | 57 | 28 | 84 |
+
+The issue's falsifier requires the three counts to match exactly; they match
+under neither encoder, so the reported counts and the 57-blade structural
+cause are withdrawn. Every left factor has exactly 4 annihilating partners,
+so every tie count is 4 and a mean of 3.9 cannot arise. The decoder failure
+stands on the injective control: with 84 distinct blades the matched filter
+decodes without error at low noise while the null-argmin decoder errs at
+0.76, because each blade has 4 exact annihilators. The first-partner encoder
+alone would not show this, since its 28 blades hold every decoder at 0.750.
 
 ## Result: falsified, within the tested scope
 
