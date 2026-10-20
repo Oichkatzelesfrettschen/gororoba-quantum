@@ -1,0 +1,2037 @@
+{
+  "aliases": [
+    {
+      "df_khz": -1884.26,
+      "n": -6,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0886951,
+      "telegraph_gamma_per_us": 0.00315534,
+      "tls_delta_nll": -0.0886942,
+      "tls_gamma_per_us": 0.0183418,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": -534.038,
+        "g_khz": 903.503,
+        "omega_khz": 1884.27,
+        "swap_depth_4a(1-a)": 0.919674
+      }
+    },
+    {
+      "df_khz": -1585.22,
+      "n": -5,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0896108,
+      "telegraph_gamma_per_us": 0.00316508,
+      "tls_delta_nll": -0.0896114,
+      "tls_gamma_per_us": 0.0183573,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": -449.251,
+        "g_khz": 760.118,
+        "omega_khz": 1585.23,
+        "swap_depth_4a(1-a)": 0.919685
+      }
+    },
+    {
+      "df_khz": -1286.18,
+      "n": -4,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0909211,
+      "telegraph_gamma_per_us": 0.00319496,
+      "tls_delta_nll": -0.0909218,
+      "tls_gamma_per_us": 0.0183777,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": -364.469,
+        "g_khz": 616.732,
+        "omega_khz": 1286.19,
+        "swap_depth_4a(1-a)": 0.9197
+      }
+    },
+    {
+      "df_khz": -987.134,
+      "n": -3,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0929417,
+      "telegraph_gamma_per_us": 0.00322712,
+      "tls_delta_nll": -0.0929405,
+      "tls_gamma_per_us": 0.0184263,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": -279.67,
+        "g_khz": 473.35,
+        "omega_khz": 987.145,
+        "swap_depth_4a(1-a)": 0.919735
+      }
+    },
+    {
+      "df_khz": -688.091,
+      "n": -2,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0964143,
+      "telegraph_gamma_per_us": 0.00328956,
+      "tls_delta_nll": -0.0964148,
+      "tls_gamma_per_us": 0.0184791,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": -194.9,
+        "g_khz": 329.965,
+        "omega_khz": 688.108,
+        "swap_depth_4a(1-a)": 0.919775
+      }
+    },
+    {
+      "df_khz": -389.048,
+      "n": -1,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.103249,
+      "telegraph_gamma_per_us": 0.0033316,
+      "tls_delta_nll": -0.103249,
+      "tls_gamma_per_us": 0.0185358,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": -110.171,
+        "g_khz": 186.578,
+        "omega_khz": 389.08,
+        "swap_depth_4a(1-a)": 0.919822
+      }
+    },
+    {
+      "df_khz": -90.0048,
+      "n": 0,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0895066,
+      "telegraph_gamma_per_us": 0.00205105,
+      "tls_delta_nll": -0.0895065,
+      "tls_gamma_per_us": 0.0171592,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": -25.6572,
+        "g_khz": 43.1807,
+        "omega_khz": 90.0921,
+        "swap_depth_4a(1-a)": 0.918895
+      }
+    },
+    {
+      "df_khz": 209.038,
+      "n": 1,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.034833,
+      "telegraph_gamma_per_us": 0.0016815,
+      "tls_delta_nll": -0.0348329,
+      "tls_gamma_per_us": 0.0167213,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": 59.676,
+        "g_khz": 100.186,
+        "omega_khz": 209.07,
+        "swap_depth_4a(1-a)": 0.918526
+      }
+    },
+    {
+      "df_khz": 508.081,
+      "n": 2,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0624265,
+      "telegraph_gamma_per_us": 0.00253533,
+      "tls_delta_nll": -0.062426,
+      "tls_gamma_per_us": 0.0176655,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": 144.437,
+        "g_khz": 243.57,
+        "omega_khz": 508.102,
+        "swap_depth_4a(1-a)": 0.919192
+      }
+    },
+    {
+      "df_khz": 807.124,
+      "n": 3,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0704357,
+      "telegraph_gamma_per_us": 0.00274657,
+      "tls_delta_nll": -0.0704355,
+      "tls_gamma_per_us": 0.0178931,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": 229.214,
+        "g_khz": 386.954,
+        "omega_khz": 807.139,
+        "swap_depth_4a(1-a)": 0.919353
+      }
+    },
+    {
+      "df_khz": 1106.17,
+      "n": 4,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0740898,
+      "telegraph_gamma_per_us": 0.0028452,
+      "tls_delta_nll": -0.07409,
+      "tls_gamma_per_us": 0.0179926,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": 313.999,
+        "g_khz": 530.339,
+        "omega_khz": 1106.18,
+        "swap_depth_4a(1-a)": 0.919424
+      }
+    },
+    {
+      "df_khz": 1405.21,
+      "n": 5,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0761651,
+      "telegraph_gamma_per_us": 0.00289268,
+      "tls_delta_nll": -0.0761651,
+      "tls_gamma_per_us": 0.018046,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": 398.791,
+        "g_khz": 673.722,
+        "omega_khz": 1405.22,
+        "swap_depth_4a(1-a)": 0.919462
+      }
+    },
+    {
+      "df_khz": 1704.25,
+      "n": 6,
+      "static_delta_nll": 0.0,
+      "telegraph_delta_nll": -0.0774979,
+      "telegraph_gamma_per_us": 0.00291157,
+      "tls_delta_nll": -0.0774988,
+      "tls_gamma_per_us": 0.0180781,
+      "tls_physics": {
+        "delta_qubit_minus_tls_khz": 483.588,
+        "g_khz": 817.106,
+        "omega_khz": 1704.26,
+        "swap_depth_4a(1-a)": 0.919485
+      }
+    }
+  ],
+  "bootstrap": {
+    "procedure": "replicates drawn from the fitted null (points and calibration counts) before any fit; single and static refit globally (batched least-squares grid, pooled L-BFGS-B); telegraph and tls refit from the replicate's static fit at every RATE_STARTS rate",
+    "seed": 20261020,
+    "single_vs_static_under_single": {
+      "exceeding": 0,
+      "observed": 11654.0,
+      "p_value": 0.0153846,
+      "replicate_max": 6.92951,
+      "replicate_quantiles": {
+        "0.5": 0.717654,
+        "0.9": 4.56902,
+        "0.95": 5.47775,
+        "0.99": 6.792
+      },
+      "replicates": 64
+    },
+    "static_vs_telegraph_under_static": {
+      "exceeding": 21,
+      "observed": 0.206498,
+      "p_value": 0.338462,
+      "replicate_max": 12.2481,
+      "replicate_quantiles": {
+        "0.5": 0.0111767,
+        "0.9": 2.07268,
+        "0.95": 3.65043,
+        "0.99": 7.3814
+      },
+      "replicates": 64
+    },
+    "static_vs_tls_under_static": {
+      "exceeding": 44,
+      "observed": 0.206498,
+      "p_value": 0.692308,
+      "replicate_max": 8.79957,
+      "replicate_quantiles": {
+        "0.5": 0.548134,
+        "0.9": 2.93978,
+        "0.95": 3.61275,
+        "0.99": 7.81127
+      },
+      "replicates": 64
+    }
+  },
+  "comparison": {
+    "bic_observations": 168939.0,
+    "models": {
+      "single": {
+        "aic": 197254.0,
+        "bic": 197314.0,
+        "degrees_of_freedom": 10,
+        "delta_aic": 11650.0,
+        "delta_bic": 11629.9,
+        "deviance_vs_saturated": 11663.3,
+        "negative_log_likelihood": 98621.0,
+        "parameters": 6
+      },
+      "static": {
+        "aic": 185604.0,
+        "bic": 185684.0,
+        "degrees_of_freedom": 8,
+        "delta_aic": 0.0,
+        "delta_bic": 0.0,
+        "deviance_vs_saturated": 9.29214,
+        "negative_log_likelihood": 92794.0,
+        "parameters": 8
+      },
+      "telegraph": {
+        "aic": 185606.0,
+        "bic": 185696.0,
+        "degrees_of_freedom": 7,
+        "delta_aic": 1.7935,
+        "delta_bic": 11.8308,
+        "deviance_vs_saturated": 9.08565,
+        "negative_log_likelihood": 92793.9,
+        "parameters": 9
+      },
+      "tls": {
+        "aic": 185606.0,
+        "bic": 185696.0,
+        "degrees_of_freedom": 7,
+        "delta_aic": 1.7935,
+        "delta_bic": 11.8308,
+        "deviance_vs_saturated": 9.08565,
+        "negative_log_likelihood": 92793.9,
+        "parameters": 9
+      }
+    }
+  },
+  "equal_parity_occupation": {
+    "a": 0.643828,
+    "wald_error": 0.00280051,
+    "z_from_half": 51.3578
+  },
+  "follow_up": {
+    "designs": {
+      "coprime_swap": {
+        "alias_neighbor_llr": [
+          {
+            "alternative_n": -5,
+            "expected_llr": 2288.8,
+            "truth_n": -6
+          },
+          {
+            "alternative_n": -6,
+            "expected_llr": 2393.83,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 2355.0,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -5,
+            "expected_llr": 2298.48,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 2261.11,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 2362.06,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 2410.86,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 2384.9,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 1958.74,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 1675.2,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 2165.75,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 2447.03,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 2406.27,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 2523.1,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 2318.02,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 2339.01,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 2461.08,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 2451.81,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 2487.5,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 1973.1,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 1598.89,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 2098.14,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 6,
+            "expected_llr": 2403.59,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 2426.91,
+            "truth_n": 6
+          }
+        ],
+        "bases": [
+          "x",
+          "y",
+          "z"
+        ],
+        "billed_execution_plus_run_offset_s": 13.8074,
+        "billed_rule_s": 14.7367,
+        "delays_dt": [
+          0,
+          693,
+          819,
+          1386,
+          1638,
+          2079,
+          2457,
+          2772,
+          3276,
+          3465,
+          4095,
+          4158,
+          4851,
+          4914,
+          5544,
+          5733,
+          6237,
+          6552,
+          6930,
+          7371,
+          7623,
+          8190,
+          8316
+        ],
+        "members": 69,
+        "purpose": "693 and 819 dt lattices (gcd 63 dt) in X and Y, plus Z after an X preparation (TLS swap)",
+        "shots_per_member": 2048,
+        "static_truth_vs_tls_llr": 2645.66,
+        "static_wald_at_fit": {
+          "a": 0.00372642,
+          "df_mhz": 0.000136717,
+          "f1_mhz": 0.000108606,
+          "t_us": 5.13529
+        },
+        "telegraph_truth_vs_static_llr": {
+          "0.01": 1.722,
+          "0.03": 11.0857,
+          "0.1": 46.0184
+        },
+        "tls_truth_vs_static_llr": 25645.2,
+        "worst_alias_log10_posterior_odds": -694.387,
+        "worst_alias_pair": {
+          "alternative_n": 5,
+          "expected_llr": 1598.89,
+          "truth_n": 4
+        }
+      },
+      "coprime_swap_long": {
+        "alias_neighbor_llr": [
+          {
+            "alternative_n": -5,
+            "expected_llr": 2523.89,
+            "truth_n": -6
+          },
+          {
+            "alternative_n": -6,
+            "expected_llr": 2510.8,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 2459.96,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -5,
+            "expected_llr": 2427.38,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 2341.24,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 2442.13,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 2475.48,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 2460.31,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 2138.5,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 1894.63,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 2278.46,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 2532.04,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 2494.83,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 2612.11,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 2434.24,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 2446.49,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 2583.84,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 2552.15,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 2578.08,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 2078.74,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 1771.47,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 2248.03,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 6,
+            "expected_llr": 2490.81,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 2503.78,
+            "truth_n": 6
+          }
+        ],
+        "bases": [
+          "x",
+          "y",
+          "z"
+        ],
+        "billed_execution_plus_run_offset_s": 20.1216,
+        "billed_rule_s": 21.2683,
+        "delays_dt": [
+          0,
+          693,
+          819,
+          1386,
+          1638,
+          2079,
+          2457,
+          2772,
+          3276,
+          3465,
+          4095,
+          4158,
+          4851,
+          4914,
+          5544,
+          5733,
+          6237,
+          6552,
+          6930,
+          7371,
+          7623,
+          8190,
+          8316,
+          15000,
+          30000,
+          60000,
+          90000
+        ],
+        "members": 81,
+        "purpose": "coprime_swap plus X, Y and Z at 60, 120, 240 and 360 us for the envelope and slow switching",
+        "shots_per_member": 2048,
+        "static_truth_vs_tls_llr": 2763.41,
+        "static_wald_at_fit": {
+          "a": 0.00363223,
+          "df_mhz": 9.43011e-05,
+          "f1_mhz": 6.80238e-05,
+          "t_us": 4.43538
+        },
+        "telegraph_truth_vs_static_llr": {
+          "0.01": 3.34672,
+          "0.03": 14.0357,
+          "0.1": 46.2089
+        },
+        "tls_truth_vs_static_llr": 26975.7,
+        "worst_alias_log10_posterior_odds": -769.339,
+        "worst_alias_pair": {
+          "alternative_n": 5,
+          "expected_llr": 1771.47,
+          "truth_n": 4
+        }
+      },
+      "dense": {
+        "alias_neighbor_llr": [
+          {
+            "alternative_n": -5,
+            "expected_llr": 4466.55,
+            "truth_n": -6
+          },
+          {
+            "alternative_n": -6,
+            "expected_llr": 4467.44,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 4467.43,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -5,
+            "expected_llr": 4469.96,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 4469.94,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 4471.1,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 4471.06,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 4464.63,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 4464.58,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 4452.76,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 4453.88,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 4480.7,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 4477.34,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 4459.4,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 4461.77,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 4459.26,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 4459.28,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 4462.19,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 4462.25,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 4464.33,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 4464.35,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 4462.76,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 6,
+            "expected_llr": 4462.79,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 4462.84,
+            "truth_n": 6
+          }
+        ],
+        "bases": [
+          "x",
+          "y"
+        ],
+        "billed_execution_plus_run_offset_s": 14.1091,
+        "billed_rule_s": 15.0656,
+        "delays_dt": [
+          0,
+          63,
+          126,
+          189,
+          252,
+          315,
+          378,
+          441,
+          504,
+          567,
+          630,
+          693,
+          756,
+          819,
+          882,
+          945,
+          1008,
+          1071,
+          1134,
+          1197,
+          1260,
+          1323,
+          1386,
+          1449,
+          1512,
+          1575,
+          1638,
+          1701,
+          1764,
+          1827,
+          1890,
+          1953,
+          2016,
+          2079,
+          2142,
+          2205,
+          2268,
+          2331,
+          2394,
+          2457,
+          2520,
+          2583,
+          2646,
+          2709,
+          2772,
+          2835,
+          2898,
+          2961,
+          3024,
+          3087,
+          3150,
+          3213,
+          3276,
+          3339,
+          3402,
+          3465,
+          3528,
+          3591,
+          3654,
+          3717,
+          3780,
+          3843,
+          3906,
+          3969,
+          4032,
+          4095,
+          4158,
+          4221,
+          4284,
+          4347,
+          4410,
+          4473,
+          4536,
+          4599,
+          4662,
+          4725,
+          4788,
+          4851,
+          4914,
+          4977,
+          5040,
+          5103,
+          5166,
+          5229,
+          5292,
+          5355,
+          5418,
+          5481,
+          5544,
+          5607,
+          5670,
+          5733,
+          5796,
+          5859,
+          5922,
+          5985,
+          6048,
+          6111,
+          6174,
+          6237,
+          6300,
+          6363,
+          6426,
+          6489,
+          6552,
+          6615,
+          6678,
+          6741,
+          6804,
+          6867,
+          6930,
+          6993,
+          7056,
+          7119,
+          7182,
+          7245,
+          7308,
+          7371,
+          7434,
+          7497,
+          7560,
+          7623,
+          7686,
+          7749,
+          7812,
+          7875,
+          7938,
+          8001,
+          8064,
+          8127,
+          8190,
+          8253,
+          8316,
+          8379,
+          8442,
+          8505,
+          8568,
+          8631,
+          8694,
+          8757,
+          8820
+        ],
+        "members": 282,
+        "purpose": "uniform 0.252 us complex Ramsey grid to 35.3 us",
+        "shots_per_member": 512,
+        "static_truth_vs_tls_llr": 2.382e-07,
+        "static_wald_at_fit": {
+          "a": 0.00303632,
+          "df_mhz": 0.000108341,
+          "f1_mhz": 8.5845e-05,
+          "t_us": 4.25685
+        },
+        "telegraph_truth_vs_static_llr": {
+          "0.01": 2.7518,
+          "0.03": 17.6061,
+          "0.1": 74.5136
+        },
+        "tls_truth_vs_static_llr": 0.28808,
+        "worst_alias_log10_posterior_odds": -1933.81,
+        "worst_alias_pair": {
+          "alternative_n": -2,
+          "expected_llr": 4452.76,
+          "truth_n": -1
+        }
+      },
+      "run_lattice": {
+        "alias_neighbor_llr": [
+          {
+            "alternative_n": -5,
+            "expected_llr": 0.0,
+            "truth_n": -6
+          },
+          {
+            "alternative_n": -6,
+            "expected_llr": 0.0,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 0.0,
+            "truth_n": -5
+          },
+          {
+            "alternative_n": -5,
+            "expected_llr": 0.0,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 0.0,
+            "truth_n": -4
+          },
+          {
+            "alternative_n": -4,
+            "expected_llr": 0.0,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 0.0,
+            "truth_n": -3
+          },
+          {
+            "alternative_n": -3,
+            "expected_llr": 0.0,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 0.0,
+            "truth_n": -2
+          },
+          {
+            "alternative_n": -2,
+            "expected_llr": 0.0,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 0.0,
+            "truth_n": -1
+          },
+          {
+            "alternative_n": -1,
+            "expected_llr": 0.0,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 0.0,
+            "truth_n": 0
+          },
+          {
+            "alternative_n": 0,
+            "expected_llr": 0.0,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 0.0,
+            "truth_n": 1
+          },
+          {
+            "alternative_n": 1,
+            "expected_llr": 0.0,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 0.0,
+            "truth_n": 2
+          },
+          {
+            "alternative_n": 2,
+            "expected_llr": 0.0,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 0.0,
+            "truth_n": 3
+          },
+          {
+            "alternative_n": 3,
+            "expected_llr": 0.0,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 0.0,
+            "truth_n": 4
+          },
+          {
+            "alternative_n": 4,
+            "expected_llr": 0.0,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 6,
+            "expected_llr": 0.0,
+            "truth_n": 5
+          },
+          {
+            "alternative_n": 5,
+            "expected_llr": 0.0,
+            "truth_n": 6
+          }
+        ],
+        "bases": [
+          "x",
+          "y"
+        ],
+        "billed_execution_plus_run_offset_s": 15.0001,
+        "billed_rule_s": 16.2012,
+        "delays_dt": [
+          0,
+          836,
+          1672,
+          2508,
+          3344,
+          4180,
+          5016
+        ],
+        "members": 14,
+        "purpose": "the retained run's lattice, the reference whose relative aliases tie",
+        "shots_per_member": 12288,
+        "static_truth_vs_tls_llr": 2.23757e-05,
+        "static_wald_at_fit": {
+          "a": 0.0027747,
+          "df_mhz": 0.000145471,
+          "f1_mhz": 0.000121642,
+          "t_us": 6.04835
+        },
+        "telegraph_truth_vs_static_llr": {
+          "0.01": 1.92305,
+          "0.03": 14.2901,
+          "0.1": 86.4253
+        },
+        "tls_truth_vs_static_llr": 0.10455,
+        "worst_alias_log10_posterior_odds": 0.0,
+        "worst_alias_pair": {
+          "alternative_n": -5,
+          "expected_llr": 0.0,
+          "truth_n": -6
+        }
+      }
+    },
+    "recommended": "coprime_swap",
+    "repeat_plan": {
+      "billed_rule_s_total": 58.9467,
+      "design": "coprime_swap",
+      "discriminators": {
+        "charge_parity": "a near 1/2 in every repeat (equal parity occupation) while df moves with the offset charge n_g, |df| <= |eps1 - eps0|; Z after X shows T1 decay without swap",
+        "static_unexplained": "a, df and f1 constant across repeats and no Z swap",
+        "tls_exchange": "g = |df| sqrt(a (1 - a)) constant across repeats while Delta = df (2a - 1) and a wander with the TLS frequency; Z after X shows swap oscillation at Omega = |df| with depth 4 a (1 - a)"
+      },
+      "homogeneity_test": "chi-square of each per-repeat estimate against its inverse-variance mean (3 degrees of freedom for 4 repeats), at the family alpha of the follow-up case",
+      "per_repeat_fit": "static, telegraph and tls at the resolved alias; record a, df, f1, g, Delta per repeat",
+      "repeats": 4,
+      "spacing": "at least 60 min apart, so each repeat runs under a separate calibration cycle (Heron r2 monitoring is roughly hourly)"
+    },
+    "selection_rule": "cheapest design whose worst neighboring-alias, tls-versus-static and static-versus-tls expected log-likelihood ratios all reach 50.0",
+    "status": "descriptive design data; live_run and the planner carry no delay-member builder for it"
+  },
+  "lattice": {
+    "band_mhz": 2.0,
+    "common_mode": "every frequency shifted by n f0 predicts the same counts in every model (exact)",
+    "f0_khz": 299.043,
+    "relative_single_static": "df shifted by n f0 predicts the same counts in single and static (exact)",
+    "relative_telegraph_tls": "df shifted by n f0 changes the prediction only through the dissipative mixing of the two lines (rate gamma or gamma_tls) and the swap readout",
+    "t0_dt": 836,
+    "t0_us": 3.344
+  },
+  "likelihood_ratios": {
+    "single_vs_static": 11654.0,
+    "static_vs_telegraph": 0.206498,
+    "static_vs_tls": 0.206498
+  },
+  "models": {
+    "single": {
+      "at_bound": [
+        "amplitude"
+      ],
+      "condition_number": 78032.0,
+      "description": "one frequency with an exponential envelope",
+      "estimates": {
+        "amplitude": 1.0,
+        "e0": 0.0273488,
+        "e1": 0.00389714,
+        "f_mhz": 0.0255001,
+        "phi": -0.0847683,
+        "t_us": 24.6229
+      },
+      "parameter_names": [
+        "amplitude",
+        "t_us",
+        "phi",
+        "e0",
+        "e1",
+        "f_mhz"
+      ],
+      "standard_errors": {
+        "amplitude": "at_bound",
+        "e0": 0.00117721,
+        "e1": 0.000953072,
+        "f_mhz": 0.000137424,
+        "phi": 0.00713719,
+        "t_us": 0.308143
+      }
+    },
+    "static": {
+      "at_bound": [
+        "amplitude"
+      ],
+      "condition_number": 248492.0,
+      "description": "classical two-frequency mixture fixed within each shot",
+      "estimates": {
+        "a": 0.643828,
+        "amplitude": 1.0,
+        "df_mhz": -0.0900048,
+        "e0": 0.00201044,
+        "e1": 0.0079617,
+        "f1_mhz": 0.0248834,
+        "phi": -0.0294331,
+        "t_us": 134.248
+      },
+      "parameter_names": [
+        "amplitude",
+        "t_us",
+        "phi",
+        "e0",
+        "e1",
+        "a",
+        "f1_mhz",
+        "df_mhz"
+      ],
+      "standard_errors": {
+        "a": 0.00280051,
+        "amplitude": "at_bound",
+        "df_mhz": 0.000146688,
+        "e0": 0.000372189,
+        "e1": 0.00129732,
+        "f1_mhz": 0.000122684,
+        "phi": 0.00774111,
+        "t_us": 6.10045
+      }
+    },
+    "telegraph": {
+      "at_bound": [
+        "amplitude"
+      ],
+      "condition_number": 307519.0,
+      "description": "Kubo-Anderson two-state frequency switching at total rate gamma",
+      "estimates": {
+        "a": 0.641581,
+        "amplitude": 1.0,
+        "df_mhz": -0.38908,
+        "e0": 0.00199503,
+        "e1": 0.00813307,
+        "f1_mhz": 0.024907,
+        "gamma_per_us": 0.0033316,
+        "phi": -0.029424,
+        "t_us": 168.506
+      },
+      "parameter_names": [
+        "amplitude",
+        "t_us",
+        "phi",
+        "e0",
+        "e1",
+        "a",
+        "f1_mhz",
+        "df_mhz",
+        "gamma_per_us"
+      ],
+      "standard_errors": {
+        "a": 0.00570153,
+        "amplitude": "at_bound",
+        "df_mhz": 0.000164697,
+        "e0": 0.000372517,
+        "e1": 0.00136998,
+        "f1_mhz": 0.000133771,
+        "gamma_per_us": 0.00746938,
+        "phi": 0.00774358,
+        "t_us": 97.0485
+      }
+    },
+    "tls": {
+      "at_bound": [
+        "amplitude"
+      ],
+      "condition_number": 310359.0,
+      "description": "qubit exchange-coupled to a damped two-level system (Lindblad, 4 x 4 density matrix)",
+      "estimates": {
+        "a": 0.641579,
+        "amplitude": 1.0,
+        "df_mhz": -0.38908,
+        "e0": 0.00199483,
+        "e1": 0.00813263,
+        "f1_mhz": 0.024907,
+        "gamma_tls_per_us": 0.0185358,
+        "phi": -0.0294241,
+        "t_us": 168.549
+      },
+      "parameter_names": [
+        "amplitude",
+        "t_us",
+        "phi",
+        "e0",
+        "e1",
+        "a",
+        "f1_mhz",
+        "df_mhz",
+        "gamma_tls_per_us"
+      ],
+      "standard_errors": {
+        "a": 0.00570151,
+        "amplitude": "at_bound",
+        "df_mhz": 0.000164697,
+        "e0": 0.0003725,
+        "e1": 0.00136995,
+        "f1_mhz": 0.000133771,
+        "gamma_tls_per_us": 0.00816553,
+        "phi": 0.00774357,
+        "t_us": 97.1007
+      }
+    }
+  },
+  "parity_band": {
+    "grid": [
+      {
+        "ec_ghz": 0.28,
+        "ej_over_ec": 36.4292,
+        "f01_ghz": 4.5,
+        "max_splitting_khz": 168.337
+      },
+      {
+        "ec_ghz": 0.3,
+        "ej_over_ec": 32.0,
+        "f01_ghz": 4.5,
+        "max_splitting_khz": 448.232
+      },
+      {
+        "ec_ghz": 0.32,
+        "ej_over_ec": 28.3599,
+        "f01_ghz": 4.5,
+        "max_splitting_khz": 1050.85
+      },
+      {
+        "ec_ghz": 0.34,
+        "ej_over_ec": 25.3304,
+        "f01_ghz": 4.5,
+        "max_splitting_khz": 2219.25
+      },
+      {
+        "ec_ghz": 0.28,
+        "ej_over_ec": 41.1454,
+        "f01_ghz": 4.8,
+        "max_splitting_khz": 67.0785
+      },
+      {
+        "ec_ghz": 0.3,
+        "ej_over_ec": 36.125,
+        "f01_ghz": 4.8,
+        "max_splitting_khz": 191.707
+      },
+      {
+        "ec_ghz": 0.32,
+        "ej_over_ec": 32.0,
+        "f01_ghz": 4.8,
+        "max_splitting_khz": 478.114
+      },
+      {
+        "ec_ghz": 0.34,
+        "ej_over_ec": 28.5679,
+        "f01_ghz": 4.8,
+        "max_splitting_khz": 1066.26
+      },
+      {
+        "ec_ghz": 0.28,
+        "ej_over_ec": 46.1486,
+        "f01_ghz": 5.1,
+        "max_splitting_khz": 26.4993
+      },
+      {
+        "ec_ghz": 0.3,
+        "ej_over_ec": 40.5,
+        "f01_ghz": 5.1,
+        "max_splitting_khz": 81.2928
+      },
+      {
+        "ec_ghz": 0.32,
+        "ej_over_ec": 35.8599,
+        "f01_ghz": 5.1,
+        "max_splitting_khz": 215.692
+      },
+      {
+        "ec_ghz": 0.34,
+        "ej_over_ec": 32.0,
+        "f01_ghz": 5.1,
+        "max_splitting_khz": 507.996
+      },
+      {
+        "ec_ghz": 0.28,
+        "ej_over_ec": 51.4388,
+        "f01_ghz": 5.4,
+        "max_splitting_khz": 10.3882
+      },
+      {
+        "ec_ghz": 0.3,
+        "ej_over_ec": 45.125,
+        "f01_ghz": 5.4,
+        "max_splitting_khz": 34.2095
+      },
+      {
+        "ec_ghz": 0.32,
+        "ej_over_ec": 39.9395,
+        "f01_ghz": 5.4,
+        "max_splitting_khz": 96.5702
+      },
+      {
+        "ec_ghz": 0.34,
+        "ej_over_ec": 35.6267,
+        "f01_ghz": 5.4,
+        "max_splitting_khz": 240.211
+      }
+    ],
+    "max_splitting_khz_range": [
+      10.3882,
+      2219.25
+    ],
+    "source": "Koch et al. 2007 eq. 2.18; Heron r2 properties publish no frequency or anharmonicity for 143"
+  },
+  "run": "2026-10-20T031212.175942Z",
+  "run_cost": {
+    "base_duration_dt": 2981,
+    "charge_minus_execution_s": 2.62135,
+    "circuits_execution_time_s": 12.3787,
+    "execution_rule_s": 12.3787,
+    "exposures_dt": [
+      0,
+      836,
+      1672,
+      2508,
+      3344,
+      4180,
+      5016
+    ],
+    "qpu_charge_time_s": 15.0,
+    "rule_s": 16.2012,
+    "shots": 12288
+  },
+  "schema_version": "n21-q143-beat-model-v1",
+  "sign": {
+    "df_khz": -90.0048,
+    "mirror_delta_nll": 5434.4,
+    "mirror_df_khz": 90.0048,
+    "reading": "the heavier line's phase track fixes the sign of df: the mirror df -> -df (the visibility-only twin) refits worse by mirror_delta_nll"
+  },
+  "source": {
+    "exposure_dt": [
+      0,
+      836,
+      1672,
+      2508,
+      3344,
+      4180,
+      5016
+    ],
+    "points": [
+      [
+        0,
+        "x",
+        12046,
+        12070
+      ],
+      [
+        0,
+        "y",
+        5838,
+        12068
+      ],
+      [
+        836,
+        "x",
+        9739,
+        12088
+      ],
+      [
+        836,
+        "y",
+        5824,
+        12055
+      ],
+      [
+        1672,
+        "x",
+        6115,
+        12038
+      ],
+      [
+        1672,
+        "y",
+        8426,
+        12080
+      ],
+      [
+        2508,
+        "x",
+        5011,
+        12088
+      ],
+      [
+        2508,
+        "y",
+        11274,
+        12069
+      ],
+      [
+        3344,
+        "x",
+        5853,
+        12058
+      ],
+      [
+        3344,
+        "y",
+        10530,
+        12087
+      ],
+      [
+        4180,
+        "x",
+        4699,
+        12063
+      ],
+      [
+        4180,
+        "y",
+        6803,
+        12061
+      ],
+      [
+        5016,
+        "x",
+        2059,
+        12057
+      ],
+      [
+        5016,
+        "y",
+        4514,
+        12057
+      ]
+    ],
+    "readout_counts": {
+      "e0_prob_meas1_prep0": 10,
+      "e1_prob_meas0_prep1": 35,
+      "of": 4096
+    },
+    "selection": "all_zero: shots whose initialization herald reads every pinned qubit 0",
+    "t1_us": 111.983
+  },
+  "static_profile": {
+    "delta_nll": [
+      5525.62,
+      5532.88,
+      5544.53,
+      5560.18,
+      5579.22,
+      5600.91,
+      5624.38,
+      5648.69,
+      5672.9,
+      5696.14,
+      5717.68,
+      5736.95,
+      5753.57,
+      5767.35,
+      5778.29,
+      5786.48,
+      5792.07,
+      5795.2,
+      5795.86,
+      5793.82,
+      5788.49,
+      5778.79,
+      5763.06,
+      5738.89,
+      5703.23,
+      5652.38,
+      5582.2,
+      5488.11,
+      5365.02,
+      5207.15,
+      5007.85,
+      4758.68,
+      4445.12,
+      4056.56,
+      3638.57,
+      3219.05,
+      2809.56,
+      2417.73,
+      2048.26,
+      1704.04,
+      1387.13,
+      1098.37,
+      836.477,
+      602.617,
+      399.043,
+      229.51,
+      100.107,
+      20.1482,
+      2.00766,
+      58.7446,
+      199.676,
+      425.626,
+      727.612,
+      1090.38,
+      1497.08,
+      1931.52,
+      2378.35,
+      2822.74,
+      3250.77,
+      3650.7,
+      4014.19,
+      4336.67,
+      4616.98,
+      4856.48,
+      5058.14,
+      5225.79,
+      5363.55,
+      5475.47,
+      5565.31,
+      5636.46,
+      5691.91,
+      5734.27,
+      5765.84,
+      5788.62,
+      5804.4,
+      5814.77,
+      5821.12,
+      5824.65,
+      5826.34,
+      5826.94,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5849.58,
+      5867.5,
+      5891.02,
+      5920.55,
+      5956.59,
+      5999.8,
+      6051.02,
+      6111.35,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5827.01,
+      5824.44,
+      5815.49,
+      5800.31,
+      5779.67,
+      5754.81,
+      5727.3,
+      5698.76,
+      5670.73,
+      5644.45,
+      5620.85,
+      5600.57,
+      5583.98,
+      5571.21,
+      5562.24,
+      5556.89,
+      5554.89,
+      5555.87,
+      5559.41,
+      5565.03,
+      5572.23,
+      5580.52,
+      5589.37,
+      5598.31,
+      5606.87,
+      5614.65,
+      5621.25,
+      5626.36,
+      5629.67,
+      5630.92,
+      5629.9,
+      5626.4,
+      5620.24,
+      5611.26,
+      5599.36,
+      5584.47,
+      5566.6,
+      5545.86,
+      5522.5,
+      5496.88,
+      5469.54,
+      5441.13,
+      5412.44,
+      5384.36,
+      5357.82,
+      5333.74,
+      5313.02,
+      5296.48,
+      5284.79,
+      5278.48,
+      5277.9,
+      5283.18,
+      5294.25,
+      5310.81,
+      5332.35,
+      5358.17,
+      5387.43,
+      5419.16,
+      5452.36,
+      5486.01,
+      5519.16,
+      5550.97,
+      5580.75,
+      5607.96,
+      5632.22,
+      5653.35,
+      5671.26,
+      5685.98,
+      5697.6,
+      5706.25,
+      5712.05,
+      5715.12,
+      5715.52,
+      5713.3,
+      5708.46,
+      5701.0,
+      5690.95,
+      5678.4,
+      5663.53,
+      5646.69,
+      5628.36,
+      5609.22,
+      5590.07,
+      5571.83,
+      5555.39,
+      5541.62,
+      5531.27,
+      5524.91,
+      5522.96
+    ],
+    "df_khz": [
+      -149.522,
+      -148.276,
+      -147.03,
+      -145.783,
+      -144.537,
+      -143.291,
+      -142.045,
+      -140.799,
+      -139.553,
+      -138.307,
+      -137.061,
+      -135.815,
+      -134.569,
+      -133.323,
+      -132.077,
+      -130.831,
+      -129.585,
+      -128.339,
+      -127.093,
+      -125.847,
+      -124.601,
+      -123.355,
+      -122.109,
+      -120.863,
+      -119.617,
+      -118.371,
+      -117.125,
+      -115.879,
+      -114.633,
+      -113.387,
+      -112.141,
+      -110.895,
+      -109.649,
+      -108.403,
+      -107.157,
+      -105.911,
+      -104.665,
+      -103.419,
+      -102.173,
+      -100.927,
+      -99.681,
+      -98.435,
+      -97.189,
+      -95.943,
+      -94.697,
+      -93.451,
+      -92.2049,
+      -90.9589,
+      -89.7129,
+      -88.4669,
+      -87.2209,
+      -85.9749,
+      -84.7289,
+      -83.4829,
+      -82.2368,
+      -80.9908,
+      -79.7448,
+      -78.4988,
+      -77.2528,
+      -76.0068,
+      -74.7608,
+      -73.5148,
+      -72.2687,
+      -71.0227,
+      -69.7767,
+      -68.5307,
+      -67.2847,
+      -66.0387,
+      -64.7927,
+      -63.5467,
+      -62.3006,
+      -61.0546,
+      -59.8086,
+      -58.5626,
+      -57.3166,
+      -56.0706,
+      -54.8246,
+      -53.5785,
+      -52.3325,
+      -51.0865,
+      -49.8405,
+      -48.5945,
+      -47.3485,
+      -46.1025,
+      -44.8565,
+      -43.6104,
+      -42.3644,
+      -41.1184,
+      -39.8724,
+      -38.6264,
+      -37.3804,
+      -36.1344,
+      -34.8884,
+      -33.6423,
+      -32.3963,
+      -31.1503,
+      -29.9043,
+      -28.6583,
+      -27.4123,
+      -26.1663,
+      -24.9203,
+      -23.6742,
+      -22.4282,
+      -21.1822,
+      -19.9362,
+      -18.6902,
+      -17.4442,
+      -16.1982,
+      -14.9522,
+      -13.7061,
+      -12.4601,
+      -11.2141,
+      -9.9681,
+      -8.72209,
+      -7.47608,
+      -6.23006,
+      -4.98405,
+      -3.73804,
+      -2.49203,
+      -1.24601,
+      0.0,
+      1.24601,
+      2.49203,
+      3.73804,
+      4.98405,
+      6.23006,
+      7.47608,
+      8.72209,
+      9.9681,
+      11.2141,
+      12.4601,
+      13.7061,
+      14.9522,
+      16.1982,
+      17.4442,
+      18.6902,
+      19.9362,
+      21.1822,
+      22.4282,
+      23.6742,
+      24.9203,
+      26.1663,
+      27.4123,
+      28.6583,
+      29.9043,
+      31.1503,
+      32.3963,
+      33.6423,
+      34.8884,
+      36.1344,
+      37.3804,
+      38.6264,
+      39.8724,
+      41.1184,
+      42.3644,
+      43.6104,
+      44.8565,
+      46.1025,
+      47.3485,
+      48.5945,
+      49.8405,
+      51.0865,
+      52.3325,
+      53.5785,
+      54.8246,
+      56.0706,
+      57.3166,
+      58.5626,
+      59.8086,
+      61.0546,
+      62.3006,
+      63.5467,
+      64.7927,
+      66.0387,
+      67.2847,
+      68.5307,
+      69.7767,
+      71.0227,
+      72.2687,
+      73.5148,
+      74.7608,
+      76.0068,
+      77.2528,
+      78.4988,
+      79.7448,
+      80.9908,
+      82.2368,
+      83.4829,
+      84.7289,
+      85.9749,
+      87.2209,
+      88.4669,
+      89.7129,
+      90.9589,
+      92.2049,
+      93.451,
+      94.697,
+      95.943,
+      97.189,
+      98.435,
+      99.681,
+      100.927,
+      102.173,
+      103.419,
+      104.665,
+      105.911,
+      107.157,
+      108.403,
+      109.649,
+      110.895,
+      112.141,
+      113.387,
+      114.633,
+      115.879,
+      117.125,
+      118.371,
+      119.617,
+      120.863,
+      122.109,
+      123.355,
+      124.601,
+      125.847,
+      127.093,
+      128.339,
+      129.585,
+      130.831,
+      132.077,
+      133.323,
+      134.569,
+      135.815,
+      137.061,
+      138.307,
+      139.553,
+      140.799,
+      142.045,
+      143.291,
+      144.537,
+      145.783,
+      147.03,
+      148.276
+    ],
+    "local_minima_delta_nll": [
+      2.00766,
+      5277.9,
+      5522.96,
+      5554.89,
+      5827.01,
+      5827.01
+    ],
+    "local_minima_khz": [
+      -89.7129,
+      100.927,
+      148.276,
+      58.5626,
+      17.4442,
+      -48.5945
+    ]
+  },
+  "status": "descriptive: post hoc models of the preregistered sweep, outside its preregistration",
+  "tls_physics_at_best": {
+    "delta_qubit_minus_tls_khz": -110.171,
+    "g_khz": 186.578,
+    "omega_khz": 389.08,
+    "swap_depth_4a(1-a)": 0.919822
+  },
+  "tls_population": "unidentified: a two-level qubit's Ramsey coherence is independent of the TLS thermal population p (self-check tls_population); the fits fix p = 0"
+}
