@@ -74,7 +74,7 @@ Codex's default for any other tool is `prompt`. The table matches the README's t
 
 ### Project permissions
 
-`.claude/settings.local.json` in the checkout is git-ignored (`.gitignore` names `.claude/`), so it is local to this machine. Its quandela rules were a `Read` grant over the token directory and two one-time `chmod` grants. Both are removed: the MCP server and the scripts read the token inside their own processes, so the agent needs no read grant. The user-level deny that keeps the agent from reading the token directory is still to apply; see Open items below.
+The token is read by the MCP server and the scripts, each in its own process, through the path `QUANDELA_TOKEN_FILE` names. No agent permission rule needs to read it. The token directory's protection is an open item below.
 
 ## Verification record
 
@@ -86,7 +86,7 @@ The checks ran on 2026-10-19 (Pacific). Checks 9 to 11 ran against the primary c
 | 2 | Perceval, system interpreter, isolated | `/usr/bin/python3 -I -c "import perceval"` | 1.3.1 |
 | 3 | Quickstart step 2, local HOM | `pcvl.Processor("SLOS", pcvl.BS())` with input `[1, 1]` | `\|0,2>` 0.5, `\|2,0>` 0.5 |
 | 4 | Quickstart step 3, constructor (GET only) | `RemoteComputer(QuandelaCommunicationLayer("qpu:belenos", token=...))` | constraints: 24 modes, 12 photons |
-| 5 | Quickstart step 4, shot estimate (client side) | `estimate_required_shots`, 10000 samples, two-photon filter | 640066 shots, against 682042 on 2026-10-17 |
+| 5 | Quickstart step 4, shot estimate (client side) | `estimate_required_shots`, 10000 samples, two-photon filter | 640066 shots on 2026-10-19; the estimate is not retained, and a case records its own |
 | 6 | Local unitary through MCP | `qd_simulate_local`, 50:50 beam splitter, input `[1, 1]` | `\|2,0>` 0.5, `\|0,2>` 0.5; Perceval 1.3.1 |
 | 7 | MCP reads | `qd_platforms`, `qd_platform` on both QPUs (with and without bulk), `qd_availability`, `qd_usage` | all returned; the Belenos bulk read returned no architecture, twice |
 | 8 | Ascella architecture identity | processor record read through `qd_platform.request`, compared with the snapshot | identical: 3670 characters, same SHA-256 prefix |
@@ -101,7 +101,7 @@ The checks ran on 2026-10-19 (Pacific). Checks 9 to 11 ran against the primary c
 
 Check 10 is expected behavior, not a fault. `-I` keeps the script's directory off `sys.path`, and `qd_platform.py` imports `oq_platform` from `scripts/`. The CLI runs under plain `$PYTHON`, which is how the gates and the runner invoke it. The MCP server runs under `-I` and places its own directory on `sys.path`, so it imports `oq_platform`; check 7 exercised that path through the registered server.
 
-Check 5 moved from 682042 to 640066 between two dated reads. The processor figures changed between the same reads ([platform-specifications.md](platform-specifications.md)). This check does not isolate the cause.
+Check 5's estimate depends on the processor figures, which changed between reads ([platform-specifications.md](platform-specifications.md)). The earlier estimate was not retained, so this record does not show the size of that change or isolate its cause.
 
 ### Not run
 
@@ -109,21 +109,19 @@ Check 5 moved from 682042 to 640066 between two dated reads. The processor figur
 - The Codex `quandela` server. Its configuration was read; no Codex session started it.
 - A real job: no case was approved, so `qd_job_status` and `qd_job_result` were not called on a job. No job was submitted, and no QRNG or notebook session was opened.
 - The snapshot refresh. It is pending (see [calibration.md](calibration.md), open item 2).
-- Everything changed after the checks above: the `plan` HOM warning, the `PlatformError` on a missing architecture, the architecture carry in `snapshot`, and their self-test fixtures. Each awaits `qd_platform.py --self-test`, core-502, core-503, ruff and mypy.
+- The checks in the table above predate the `plan` HOM warning, the `PlatformError` on a missing architecture, and the architecture carry in `snapshot`. For those changes, `qd_platform.py --self-test`, `ruff format --check`, `ruff check` and `mypy` pass under Python 3.14.7. The core-502 and core-503 gates and the pr-tier run happen on the PR head before merge.
 - The tier-full gates (core-513, core-515, core-534, core-537 and the others marked `full`).
 - The `claude mcp add` command above. It is shown from the CLI's help text and was not executed.
 
 ## Open items
 
-1. **Token-directory deny, not yet applied.** The local grant is removed. The user-level settings (`~/.claude/settings.json`, `permissions.deny`) need these entries, so that worktree sessions and the Read tool cannot open the token file:
+1. **Token-directory deny, not yet in place.** The user-level settings file (`permissions.deny`) needs these entries, so that agent sessions cannot read or write the token directory with the file tools:
 
    ```json
-   "Read(//home/eirikr/.config/quandela/**)",
-   "Edit(//home/eirikr/.config/quandela/**)",
-   "Write(//home/eirikr/.config/quandela/**)"
+   "Read(~/.config/quandela/**)",
+   "Edit(~/.config/quandela/**)",
+   "Write(~/.config/quandela/**)"
    ```
 
-   The change to that file was refused in the session that made this edit, so it is not in place.
-2. **Local `Bash` allow.** `.claude/settings.local.json` still allows every Bash command, which permits a shell read of the token file. Narrowing that grant is the user's decision.
-3. **Codex server not exercised.** The configuration is verified; a live launch is not.
-4. **Snapshot refresh.** Pending: `snapshot()` now carries the retained architecture when the live record omits it. See [calibration.md](calibration.md), open item 2.
+2. **Codex server not exercised.** The configuration is verified; a live launch is not.
+3. **Snapshot refresh.** Pending: `snapshot()` now carries the retained architecture when the live record omits it. See [calibration.md](calibration.md), open item 2.

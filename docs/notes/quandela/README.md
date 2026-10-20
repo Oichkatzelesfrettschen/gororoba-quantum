@@ -280,8 +280,9 @@ Status, performance figures, availability statistics and maintenance live
 in `catalogue.json` and change between reads. At the snapshot,
 `qpu:belenos` reported HOM 94.2 %, a 4.94 MHz clock and a weekly
 maintenance window, and `qpu:ascella` reported `available`, as the retained
-file shows. [platform-specifications.md](platform-specifications.md) and
-[calibration.md](calibration.md) hold the live reads and the Belenos history. The Belenos
+file shows. The two live processor reads of 2026-10-20 04:09 UTC are retained
+under `docs/evidence/quandela/`, and [platform-specifications.md](platform-specifications.md)
+and [calibration.md](calibration.md) cite them and hold the Belenos history. The Belenos
 documentation gives the n-photon coincidence rate as
 `Clock [MHz] x (Transmittance x Brightness)^n`, which sets how long a
 sampling job on n photons runs against the 300 s limit; a case computes it

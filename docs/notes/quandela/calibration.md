@@ -6,14 +6,14 @@ This page gives the calibration state of each QPU, the history the repository re
 
 The records carry four things under that name or its effects:
 
-- **Platform status.** A string on each processor record. `available`, `running` and `calibration` have been observed. The OpenAPI description types `status` as a free string, so the value set is observed, not specified. `calibration` appears only in [strategy.md](strategy.md) ("Calibration windows": `qpu:belenos` reported it around 2026-10-17 22:15 UTC); no retained file carries it. `plan` refuses any status other than `available` ([`scripts/qd_platform.py`](../../../scripts/qd_platform.py), `plan`).
+- **Platform status.** A string on each Explorer row and each processor record. `available`, `running` and `calibration` have been observed. The OpenAPI description types `status` as a free string, so the value set is observed, not specified. `calibration` appears only in [strategy.md](strategy.md) ("Calibration windows": `qpu:belenos` reported it around 2026-10-17 22:15 UTC); no retained file carries it. `plan` refuses any Explorer-row status other than `available` ([`scripts/qd_platform.py`](../../../scripts/qd_platform.py), `plan`).
 - **Performance figures.** Clock, transmittance, HOM visibility, g2, dark counts per detector and transmission per mode. They change between reads. Each QPU run's `submission.json` keeps the figures as read at plan time, under `perfs_at_plan`.
 - **Coupler angles.** The Rx couplers in `specs.architecture`. A recalibration changes them, and the transpiler's output for a compilation seed depends on them ([strategy.md](strategy.md): "Coupler angles change with recalibration").
 - **Maintenance.** The weekly window on the Explorer row.
 
 ## Current state
 
-Live read, 2026-10-19 Pacific.
+Live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.
 
 | | Ascella | Belenos |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ Live read, 2026-10-19 Pacific.
 | Transmittance | 5.25 % | 6.06 % |
 | Maximum dark count | 1885 /s, mode 10 | 412.7 /s, mode 5 |
 | Architecture in the live record | yes, identical to the snapshot | no |
-| Next maintenance | none listed | 2026-10-22 07:30 to 11:00 UTC |
+| Next maintenance (snapshot) | none listed | 2026-10-22 07:30 to 11:00 UTC |
 
 ## Belenos calibration history
 
@@ -41,7 +41,7 @@ The timeline combines the catalogue reads with `perfs_at_plan` from the 17 QPU r
 | 2026-10-18 09:03 to 09:05 | 3 QPU runs | available | 57.9 % | 2.88 % | 1.0 % | 41.1 /s, mode 5 |
 | 2026-10-18 15:53 | 1 QPU run | available | 57.6 % | 2.95 % | 1.0 % | 78.4 /s, mode 5 |
 | 2026-10-18 19:05 to 19:36 | 2 QPU runs | available | 58.3 % | 2.69 % | 1.1 % | 255.4 /s, mode 5 |
-| 2026-10-19 (Pacific) | live read | running | 88.5 % | 6.06 % | 0.9 % | 412.7 /s, mode 5 |
+| 2026-10-20 04:09 | live read, retained | running | 88.5 % | 6.06 % | 0.9 % | 412.7 /s, mode 5 |
 
 In one line: HOM read 94.2 % on 2026-10-17, then 92.6 % at the first QPU run. A calibration was observed around 22:15 UTC. From the next run at 02:55 UTC on 2026-10-18 to the last run at 19:36 UTC, HOM stayed between 57.0 % and 58.3 %. The live read on 2026-10-19 is 88.5 %.
 
@@ -52,7 +52,7 @@ In one line: HOM read 94.2 % on 2026-10-17, then 92.6 % at the first QPU run. A 
 ## Ascella calibration
 
 - **Snapshot**, 2026-10-17 17:53 UTC: available; HOM 87.74 %; transmittance 5.14 %; g2 1.8 %; maximum dark count 1428 /s on mode 10.
-- **Live read**, 2026-10-19 Pacific: available; HOM 87.48 %; transmittance 5.25 %; g2 1.9 %; maximum dark count 1885 /s on mode 10.
+- **Live read**, 2026-10-20 04:09 UTC: available; HOM 87.48 %; transmittance 5.25 %; g2 1.9 %; maximum dark count 1885 /s on mode 10.
 - **Architecture.** Identical between the two reads (same length and SHA-256 prefix). The coupler angles run from 1.4204 to 1.4739 rad, all below pi/2.
 - **History.** No Ascella QPU run is retained, so the Ascella record has two points, not a timeline.
 - **Correction.** The README said `qpu:ascella` "read `calibration`" at the snapshot. The retained snapshot does not support that. The same commit that added the sentence (`af0e57c`) retains an Ascella record with status `available`. The README now states the retained value.
@@ -62,7 +62,7 @@ In one line: HOM read 94.2 % on 2026-10-17, then 92.6 % at the first QPU run. A 
 | Rule | Where documented | Enforced in code |
 | --- | --- | --- |
 | Refuse a QPU job unless status is `available` | strategy.md, "Calibration windows" | yes: `plan` |
-| Refuse a mesh or seeded case whose live couplers or symbols differ from the case | [AGENTS.md](../../../AGENTS.md), Quandela Cloud section, "Mesh control" | yes: `live_mesh` and `live_architecture` read `specs.architecture` |
+| Refuse a mesh case whose live couplers or symbols differ from the case, and a case seeded from a retained run on `qpu:belenos` whose live couplers differ from the retained catalogue | [AGENTS.md](../../../AGENTS.md), Quandela Cloud section, "Mesh control" | yes: `live_mesh` for mesh cases, `live_architecture` for seeded cases on `qpu:belenos`; other QPU cases get no coupler check |
 | Two-photon cases wait until HOM is above 90 % | strategy.md, "Design rules taken from it", item 1 | warns, does not hold: `plan` reads HOM and prints a stderr warning when it is absent or at or below 90 % |
 
 Consequences for Belenos on 2026-10-19:
@@ -82,8 +82,8 @@ Consequences for Belenos on 2026-10-19:
 
 ## Sources
 
-- [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-17T17:53:31Z.
-- Commit `af0e57c`: its catalogue was retrieved 2026-10-17T17:31:00Z, and it introduced the README sentence corrected above.
+- [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-17T17:53:31+00:00.
+- Commit `af0e57c`: its catalogue was retrieved 2026-10-17T17:31:00+00:00, and it introduced the README sentence corrected above.
 - `results/quandela/runs/*/submission.json`: `perfs_at_plan` and `platform_at_plan` for the 17 QPU runs, and the computed circuits checked with `same_mesh`.
 - [strategy.md](strategy.md): "Calibration windows" and "Design rules taken from it".
-- The live reads of 2026-10-19 Pacific, not retained as a file.
+- The live processor reads, retained under [`docs/evidence/quandela/`](../../evidence/quandela/) as `live-processor-qpu-belenos-2026-10-20T04-09-24Z.json` and `live-processor-qpu-ascella-2026-10-20T04-09-25Z.json`.
