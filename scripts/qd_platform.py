@@ -22,7 +22,9 @@ Subcommands:
   the token's job availability (/api/jobs/availability) and its usage report
   (/api/tokens/usage/report) without token ids, and the cloud API version.
   It refuses to run unless QUANDELA_TOKEN_FILE names the token file, and it
-  creates, cancels and submits nothing.
+  creates, cancels and submits nothing. A processor record the service returns
+  without specs.architecture keeps the retained catalogue's copy, named in
+  architecture_carried with the time its couplers were last observed.
 - check DIR [--agents FILE...] (offline) requires the catalogue to carry its
   schema and no account identifier (FORBIDDEN_KEYS at any depth), one
   processor record per Explorer platform, photon and mode limits that agree
@@ -43,7 +45,9 @@ Subcommands:
   prints the result: the circuit matches its cases.json sha256, the platform
   is one the case admits, is available and allows the case's max_duration,
   S stays within max_duration, P plus max_shots times the live price per
-  shot stays within C, the processor's perfs (g2 among them) are recorded,
+  shot stays within C, the processor's perfs (HOM and g2 among them) are
+  recorded, and a two-photon case on a QPU whose HOM visibility is absent or
+  not above 90 % draws a warning on stderr,
   the token has no running or queued job, and Perceval's
   estimate_required_shots for max_samples stays within max_shots. It builds
   the job body through Perceval's own RemoteComputer.prepare_payload and
@@ -80,7 +84,9 @@ Subcommands:
   refuses a recollection whose bytes differ, run_facts refuses an edited raw result, case or job body, a
   missing approval, a token field, another job id and an uncollected run,
   and parse_counts refuses other tags, annotated or repeated states and an
-  oversized zipped result.
+  oversized zipped result, and that a missing chip architecture raises
+  PlatformError, a two-photon case below 90 % HOM warns, and a snapshot keeps
+  the retained chip with its observation time.
 
 Usage: QUANDELA_TOKEN_FILE=TOKEN "$PYTHON" scripts/qd_platform.py snapshot --out DIR
        QUANDELA_TOKEN_FILE=TOKEN "$PYTHON" scripts/qd_platform.py (plan | submit | collect) RUN_DIR ...
@@ -172,6 +178,10 @@ MCP_MUTATING = ("qd_cancel_job",)
 MCP_SERVER = Path(__file__).with_name("qd_mcp_server.py")
 BEGIN = "<!-- quandela-facts:begin -->\n"
 END = "<!-- quandela-facts:end -->"
+ARCHITECTURE = "architecture"
+# strategy.md, "Design rules taken from it", item 1: a block with two photons should wait until HOM visibility is above
+# this percent. plan warns on a QPU case below it and does not hold the case.
+HOM_FLOOR = 90.0
 
 
 class PlatformError(RuntimeError):
@@ -293,6 +303,51 @@ def versions() -> dict[str, str | None]:
     return found
 
 
+def retained_catalogue(out: Path) -> dict[str, Any] | None:
+    """The catalogue an earlier snapshot wrote to out, or None when out holds none."""
+    path = out / "catalogue.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+
+
+def chip_architecture(record: Any) -> str | None:
+    """The record's non-empty specs.architecture, or None when the record lacks one or carries it as null."""
+    specs = record.get("specs") if isinstance(record, dict) else None
+    blob = specs.get(ARCHITECTURE) if isinstance(specs, dict) else None
+    return blob if isinstance(blob, str) and blob else None
+
+
+def architecture_provenance(
+    processors: dict[str, dict[str, Any]],
+    retained: dict[str, Any] | None,
+    stamp: str,
+    qpus: frozenset[str] = frozenset(),
+) -> tuple[dict[str, str], list[str]]:
+    """Stamp each chip architecture with the time its couplers were last read, and return the carried names.
+
+    A record the service omits, or sends as null, keeps the retained copy,
+    stamped with the time that copy was observed. The carried names go into
+    the catalogue, so a reader sees which couplers this snapshot did not read.
+    """
+    source = retained or {}
+    observed: dict[str, str] = {}
+    carried: list[str] = []
+    for name, record in processors.items():
+        if not isinstance(record.get("specs"), dict):
+            record["specs"] = {}
+        if chip_architecture(record) is not None:
+            observed[name] = stamp
+            continue
+        kept = chip_architecture(source.get("processors", {}).get(name))
+        if kept is None:
+            if name in qpus:
+                print(f"{name}: no chip architecture live or retained", file=sys.stderr)
+            continue
+        record["specs"][ARCHITECTURE] = kept
+        observed[name] = source.get("architecture_observed_utc", {}).get(name, source["retrieved_utc"])
+        carried.append(name)
+    return observed, sorted(carried)
+
+
 def snapshot(out: Path) -> None:
     token()
     rows = get("/api/platforms/public/explorer", auth=False)
@@ -302,9 +357,14 @@ def snapshot(out: Path) -> None:
         for row in get("/api/platforms/public", auth=False)
     ]
     processors = {row["name"]: get(platform_route(row["name"])) for row in explorer}
+    stamp = now()
+    qpus = frozenset(row["name"] for row in explorer if row["type"] == "qpu")
+    observed, carried = architecture_provenance(processors, retained_catalogue(out), stamp, qpus)
+    if carried:
+        print(f"carried specs.architecture from the retained catalogue for {', '.join(carried)}", file=sys.stderr)
     catalogue = {
         "schema": CATALOGUE_SCHEMA,
-        "retrieved_utc": now(),
+        "retrieved_utc": stamp,
         "api": API,
         "api_version": get("/openapi.json", auth=False)["info"]["version"],
         "versions": versions(),
@@ -315,6 +375,8 @@ def snapshot(out: Path) -> None:
         "public_platforms": sorted(public, key=lambda p: p["name"]),
         "explorer_platforms": explorer,
         "processors": processors,
+        "architecture_observed_utc": observed,
+        "architecture_carried": carried,
     }
     out.mkdir(parents=True, exist_ok=True)
     (out / "catalogue.json").write_text(json.dumps(scrub(catalogue), indent=1, sort_keys=True) + "\n", encoding="utf-8")
@@ -701,11 +763,43 @@ def iteration_budgets(manifest: dict[str, Any]) -> list[tuple[int, int]]:
     return [(manifest["max_samples"] // steps, manifest["max_shots"] // steps)] * steps
 
 
-def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
+def architecture_blob(processor: dict[str, Any], platform: str) -> str:
+    """The record's specs.architecture, the field every coupler check decodes; without it no check can run."""
+    blob = chip_architecture(processor)
+    if blob is None:
+        raise PlatformError(f"{platform}: the live record has no specs.architecture, so its couplers cannot be checked")
+    return blob
+
+
+def block_photons(circuit: dict[str, Any]) -> int:
+    """The most photons any one interfering block receives: the input modes under each component.
+
+    A mesh setting names one input_mode, so it injects one photon. A circuit
+    without components counts as one block spanning its input_state.
+    """
+    state = circuit.get("input_state")
+    if state is None:
+        return 1
+    spans = [(block["at"], len(block["unitary"])) for block in circuit.get("components", [])] or [(0, len(state))]
+    return max(sum(state[at : at + size]) for at, size in spans)
+
+
+def hom_warning(platform: str, perfs: dict[str, Any], photons: int, case: str) -> str | None:
+    """The warning for two photons in one block when the live HOM visibility is absent or not above HOM_FLOOR."""
+    hom = perfs.get("HOM (%)")
+    if photons < 2 or (isinstance(hom, int | float) and hom > HOM_FLOOR):
+        return None
+    return (
+        f"warning: {case} puts {photons} photons in one interfering block and {platform} reports HOM {hom!r} %, "
+        f"not above {HOM_FLOOR:g} %; strategy.md design rule 1 asks that block to wait until HOM recovers"
+    )
+
+
+def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str) -> None:
     """Refuse a mesh case when the platform's live architecture carries other couplers or symbols than the case."""
     import qd_belenos_mesh as mesh
 
-    live = mesh.decode(processor["specs"]["architecture"])
+    live = mesh.decode(architecture_blob(processor, platform))
     spec = circuit["architecture"]
     if [p for k, _, p in live if k == "ps"] != spec["symbols"] or [[m, p[0]] for k, m, p in live if k == "bs"] != spec[
         "couplers"
@@ -720,7 +814,7 @@ def live_architecture(processor: dict[str, Any], platform: str) -> None:
 
     if platform != mesh.CHIP:
         return
-    live = mesh.decode(processor["specs"]["architecture"])
+    live = mesh.decode(architecture_blob(processor, platform))
     retained = mesh.architecture(mesh.load_catalogue())
     if [(k, m, p) for k, m, p in live if k == "bs"] != [(k, m, p) for k, m, p in retained if k == "bs"] or [
         p for k, _, p in live if k == "ps"
@@ -861,9 +955,15 @@ def plan(
             f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
         )
     processor = get(platform_route(platform))
-    perfs = scrub(processor.get("perfs", {}))
+    if processor.get("status") != "available":
+        raise PlatformError(f"{platform} processor is {processor.get('status')}")
+    perfs = scrub(processor.get("perfs") or {})
+    if row["type"] == "qpu":
+        message = hom_warning(platform, perfs, block_photons(circuit), case_dir.name)
+        if message is not None:
+            print(message, file=sys.stderr)
     if manifest.get("gate_form") == "mesh":
-        live_mesh(processor, circuit)
+        live_mesh(processor, circuit, platform)
     if "seeded_from" in manifest:
         live_architecture(processor, platform)
     counters = availability()
@@ -1415,6 +1515,7 @@ def runner_self_test() -> int:
         "refuse": False,
         "result": result,
         "status": "completed",
+        "processor_status": "available",
     }
 
     def fake_request(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
@@ -1431,7 +1532,7 @@ def runner_self_test() -> int:
                 raise RefusedError(f"GET {route}: HTTP 404 no result")
             return str(service["result"]).encode("utf-8")
         if route == platform_route("sim:belenos"):
-            return {"perfs": {"g2 (%)": 1.0, "HOM (%)": 94.2}, "token_id": 7}
+            return {"status": service["processor_status"], "perfs": {"g2 (%)": 1.0, "HOM (%)": 94.2}, "token_id": 7}
         if route == "/api/tokens/usage/report":
             return [{"total_jobs": 1, "usage": [{"job": "job-a", "token_label": "secret-label"}], "token_id": 7}]
         raise AssertionError(f"unexpected {method} {route}")
@@ -1473,6 +1574,14 @@ def runner_self_test() -> int:
             refuse("expected seconds past max_duration", lambda: plan(run, "sim:belenos", 1.0, 301.0, 0.0), "exceed")
             service["row"] = {**row, "status": "maintenance"}
             refuse("a platform under maintenance", lambda: plan(run, "sim:belenos", 1.0, 10.0, 0.0), "is maintenance")
+            service["row"] = row
+            service["processor_status"] = "calibration"
+            refuse(
+                "a processor under calibration",
+                lambda: plan(run, "sim:belenos", 1.0, 10.0, 0.0),
+                "processor is calibration",
+            )
+            service["processor_status"] = "available"
             service["row"] = {**row, "price_per_shot": 1e-6}
             refuse("a ceiling above the case's credits", lambda: plan(run, "sim:belenos", 0.0, 10.0, 0.0), "above")
             service["row"], service["idle"] = row, {**idle, "num_jobs_in_queue": 1}
@@ -1655,6 +1764,20 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
     names = [row["name"] for row in catalogue["explorer_platforms"]]
     if len(set(names)) != len(names) or set(catalogue["processors"]) != set(names):
         raise SystemExit("processor records differ from the Explorer platforms")
+    chipped = {name for name, record in catalogue["processors"].items() if chip_architecture(record) is not None}
+    if "architecture_observed_utc" not in catalogue or "architecture_carried" not in catalogue:
+        raise SystemExit("the catalogue lacks its architecture provenance markers")
+    stamped = set(catalogue["architecture_observed_utc"])
+    carried_names = set(catalogue["architecture_carried"])
+    if "qpu:belenos" not in chipped:
+        raise SystemExit("qpu:belenos carries no chip architecture, so the mesh checks cannot run")
+    if stamped != chipped or not carried_names <= stamped:
+        raise SystemExit("architecture markers do not name exactly the platforms with a chip architecture")
+    for name, stamp in catalogue["architecture_observed_utc"].items():
+        try:
+            datetime.datetime.fromisoformat(stamp)
+        except (TypeError, ValueError):
+            raise SystemExit(f"{name}: architecture_observed_utc {stamp!r} is not an ISO timestamp") from None
     for row in catalogue["explorer_platforms"]:
         name = row["name"]
         price, duration = row.get("price_per_shot"), row.get("max_duration")
@@ -1740,6 +1863,14 @@ def self_test() -> None:
             "qd_mcp_server.py", "import functools\n", "import functools\nimport urllib.request\n"
         ),
         "price missing": catalogue(lambda c: c["explorer_platforms"][0].pop("price_per_shot")),
+        "belenos without architecture": catalogue(lambda c: c["processors"]["qpu:belenos"]["specs"].pop(ARCHITECTURE)),
+        "carried name without a chip": catalogue(lambda c: c.update(architecture_carried=["qpu:nonexistent"])),
+        "missing provenance markers": catalogue(lambda c: c.pop("architecture_observed_utc")),
+        "stamp missing for a chip": catalogue(lambda c: c["architecture_observed_utc"].pop("sim:belenos")),
+        "null observation time": catalogue(lambda c: c["architecture_observed_utc"].update({"qpu:belenos": None})),
+        "malformed observation time": catalogue(
+            lambda c: c["architecture_observed_utc"].update({"qpu:belenos": "yesterday"})
+        ),
         "server marks cancel read-only": text(
             "qd_mcp_server.py", "@server.tool(annotations=MUTATE)", "@server.tool(annotations=READ)"
         ),
@@ -1759,6 +1890,46 @@ def self_test() -> None:
             except SystemExit:
                 continue
             raise AssertionError(f"check accepted {label}")
+    missing: list[dict[str, Any]] = [{}, {"specs": {}}, {"specs": None}, {"specs": {"architecture": None}}]
+    for record in missing:
+        try:
+            architecture_blob(record, "qpu:belenos")
+        except PlatformError:
+            continue
+        raise AssertionError("architecture_blob accepted a record without a usable specs.architecture")
+    if hom_warning("qpu:belenos", {"HOM (%)": 90.0}, 2, "case") is None:
+        raise AssertionError("hom_warning is silent at the 90 % floor")
+    if hom_warning("qpu:belenos", {"HOM (%)": 90.01}, 2, "case") is not None:
+        raise AssertionError("hom_warning fires above the floor")
+    if hom_warning("qpu:belenos", {}, 2, "case") is None:
+        raise AssertionError("hom_warning is silent on two photons in one block without a HOM figure")
+    if hom_warning("qpu:belenos", {"HOM (%)": 88.5}, 1, "case") is not None:
+        raise AssertionError("hom_warning fires on one photon per block")
+    packed: dict[str, Any] = {
+        "input_state": [1, 0, 0, 0, 1, 0, 0, 0],
+        "components": [{"at": 0, "unitary": [0] * 4}, {"at": 4, "unitary": [0] * 4}],
+    }
+    if block_photons(packed) != 1:
+        raise AssertionError("block_photons counts photons in disjoint blocks together")
+    pair: dict[str, Any] = {"input_state": [0, 0, 0, 0, 1, 1, 0, 0], "components": [{"at": 4, "unitary": [0] * 4}]}
+    if block_photons(pair) != 2:
+        raise AssertionError("block_photons misses two photons in one block")
+    if block_photons({"input_state": [1, 1]}) != 2 or block_photons({"settings": [{"input_mode": 3}]}) != 1:
+        raise AssertionError("block_photons misreads a circuit without components or a mesh setting")
+    retained: dict[str, Any] = {
+        "retrieved_utc": "2026-10-17T17:53:31+00:00",
+        "processors": {"qpu:belenos": {"specs": {"architecture": "b"}}},
+    }
+    records: dict[str, dict[str, Any]] = {"qpu:belenos": {"specs": {}}, "sim:x": {"specs": None}}
+    observed, carried = architecture_provenance(records, retained, "2026-10-19T00:00:00+00:00")
+    if records["qpu:belenos"]["specs"] != {"architecture": "b"} or carried != ["qpu:belenos"]:
+        raise AssertionError("architecture_provenance does not carry the retained chip")
+    if observed != {"qpu:belenos": "2026-10-17T17:53:31+00:00"}:
+        raise AssertionError("architecture_provenance does not keep the retained observation time")
+    chained: dict[str, Any] = {**retained, "architecture_observed_utc": {"qpu:belenos": "2026-10-16T00:00:00+00:00"}}
+    chained_observed, _ = architecture_provenance({"qpu:belenos": {"specs": {}}}, chained, "2026-10-19T00:00:00+00:00")
+    if chained_observed != {"qpu:belenos": "2026-10-16T00:00:00+00:00"}:
+        raise AssertionError("architecture_provenance replaces an earlier observation time with the snapshot time")
     print(f"qd_platform self-test: {len(edits)} catalogue rejections, {runner_self_test()} runner rejections")
 
 

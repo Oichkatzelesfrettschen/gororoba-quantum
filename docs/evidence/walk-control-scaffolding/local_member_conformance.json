@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 816,
+ "groups": 817,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,7 +17,7 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 1815,
+ "distinct_members": 1817,
  "entangling_members": 950,
  "unchecked": {},
  "members": [
@@ -1154,6 +1154,28 @@
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
    "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_x",
+   "digest": "594e3824e05c897b",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_y",
+   "digest": "8ed9f8322a29250f",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
    "declared": null
   },
   {
