@@ -245,9 +245,24 @@ From gororoba_quantum/, after approval:
   --reserve-seconds 0.0 --max-total-execution-seconds 30.0 \
   --init-herald --ground-control-split --ramsey-windows 1,2,3,4,5,6 \
   --pin-layout ibm_fez:142,136,143,144 --out ../results/live --submit \
-  --approved-record ../results/live/RECORD_DIR/record.json \
+  --approved-record ../results/live/RECORD_DIR \
   --approved-record-sha256 RECORD_SHA256
 ```
+
+`--approved-record` takes the dry run's record directory, where the first
+batch writes approval-consumed.json beside record.json; a path to
+record.json itself raises NotADirectoryError before any job is sent.
+`--approved-record-sha256` is the digest of that directory's record.json.
+
+## Run outcome
+
+Approved dry run [2026-10-20T031107.452802Z](2026-10-20T031107.452802Z/record.json)
+(record sha256 eded1b04...7df25, consumed); run
+[2026-10-20T031212.175942Z](2026-10-20T031212.175942Z/collect.json), job
+dbbdog8c77vs73846ceg, 15 s charged. The preregistered analysis is
+[ramsey.json](2026-10-20T031212.175942Z/ramsey.json) (gate core-603), and
+its reading is the section "Ramsey delay sweep with the control grounded"
+of [N21_ORBIT_RCA.md](N21_ORBIT_RCA.md).
 
 ## Failure modes considered
 
