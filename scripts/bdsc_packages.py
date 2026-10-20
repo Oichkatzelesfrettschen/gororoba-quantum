@@ -85,6 +85,7 @@ CONVERSION_DRAWS = 20_000
 CONVERSION_SEED = 20261020
 CONVERSION_Z_MIN = 6.0
 CONVERSION_BLOCK = 500
+CONVERSION_SEEDING = "per-draw seeds from numpy default_rng(seed).integers(0, 2**32) set on np.random and random"
 ALGEBRA_PACKAGES = ("hypercomplex", "hyprat")
 RECORD_KEYS = (
     "schema",
@@ -375,7 +376,7 @@ def conversion_entry() -> dict[str, Any]:
         "count": CONVERSION_COUNT,
         "draws": CONVERSION_DRAWS,
         "seed": CONVERSION_SEED,
-        "seeding": "per-draw seeds from numpy default_rng(seed).integers(0, 2**32) set on np.random and random",
+        "seeding": CONVERSION_SEEDING,
         "zero_draws": sum(z for z, _ in results),
         "selected_total": sum(t for _, t in results),
     }
@@ -412,6 +413,13 @@ def record() -> dict[str, Any]:
 
 
 # --- replay --------------------------------------------------------------------------------
+
+
+def mean_z(entry: dict[str, Any]) -> float:
+    """z score of the recorded mean count against the binomial mean n p."""
+    mean = entry["p"] * entry["count"]
+    se = math.sqrt(mean * (1 - entry["p"]) / entry["draws"])
+    return (entry["selected_total"] / entry["draws"] - mean) / se
 
 
 def binomial_zero_z(entry: dict[str, Any]) -> tuple[float, float]:
@@ -472,8 +480,25 @@ def replay(data: dict[str, Any]) -> dict[str, Any]:
         multi = max(multi, row["multi_photon_g2"])
     for key, value in worst.items():
         require(value < SHARE_TOLERANCE, f"Perceval {key} share deviates by {value}")
-    p0, z = binomial_zero_z(data["conversion"])
-    require(abs(z) >= CONVERSION_Z_MIN, f"converted counts read binomial (z = {z:.2f})")
+    conversion = data["conversion"]
+    frozen = {
+        "p": CONVERSION_P,
+        "count": CONVERSION_COUNT,
+        "draws": CONVERSION_DRAWS,
+        "seed": CONVERSION_SEED,
+        "seeding": CONVERSION_SEEDING,
+    }
+    require(sorted(conversion) == sorted([*frozen, "zero_draws", "selected_total"]), "conversion fields differ")
+    require({k: conversion[k] for k in frozen} == frozen, "conversion experiment differs from the frozen constants")
+    zeros, total = conversion["zero_draws"], conversion["selected_total"]
+    require(type(zeros) is int and 0 <= zeros <= CONVERSION_DRAWS, "conversion zero_draws out of range")
+    require(type(total) is int and 0 <= total <= CONVERSION_DRAWS * CONVERSION_COUNT, "conversion total out of range")
+    p0, z = binomial_zero_z(conversion)
+    z_mean = mean_z(conversion)
+    # The clip at 0 empties zero counts and lifts the mean: the zero frequency must read below the binomial
+    # and the mean above n p, each by CONVERSION_Z_MIN standard errors.
+    require(z <= -CONVERSION_Z_MIN, f"converted zero frequency reads binomial (z = {z:.2f})")
+    require(z_mean >= CONVERSION_Z_MIN, f"converted mean reads binomial (z = {z_mean:.2f})")
     return {
         "settings": len(optics["settings"]),
         "worst_share_error": worst,
