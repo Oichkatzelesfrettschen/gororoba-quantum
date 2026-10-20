@@ -1470,7 +1470,7 @@
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_beat_model.py results/live/2026-10-20T031212.175942Z --check",
    "name": "core-605",
-   "seconds": 270.0,
+   "seconds": 60.0,
    "tier": "full",
    "workers": "all"
   },

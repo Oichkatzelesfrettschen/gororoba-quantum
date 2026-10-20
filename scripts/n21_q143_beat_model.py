@@ -18,9 +18,14 @@ and e1 = P(0 | 1) = prob_meas0_prep1:
 
     mu_measured = (1 - e0 - e1) mu + (e1 - e0)
 
-The calibration reports e0 and e1 as counts out of CALIBRATION_SHOTS, and
-the likelihood carries both as nuisances with their binomial calibration
-terms, so the coherence amplitude A stays physical (A <= 1).
+e0 and e1 enter as the published execution-start values, fixed: the
+backend publishes no calibration shot count behind them. The coherence
+amplitude stays physical (A <= 1).
+
+X and Y of one delay come from separate PUBs of one job, whose execution
+order the service does not guarantee, so pairing them into S(t) assumes no
+drift between the two PUBs; the per-basis fits (basis_alone) test the beat
+without that pairing.
 
 Models, each g(t):
 - single: exp(2 pi i f t), one frequency (the null of a beat).
@@ -66,6 +71,7 @@ from typing import Any
 import numpy as np
 from scipy.linalg import expm
 from scipy.optimize import minimize
+from scipy.stats import chi2
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
@@ -82,7 +88,6 @@ DT_US = 0.004
 WINDOW_DT = 836
 T0_US = WINDOW_DT * DT_US
 F0_MHZ = 1.0 / T0_US
-CALIBRATION_SHOTS = 4096
 # The alias enumeration band. A TLS coupling resolved as a beat needs
 # Omega within the band the Ramsey idles can follow; 2 MHz bounds the
 # relative alias search and the follow-up design's unaliased band.
@@ -106,13 +111,13 @@ PROFILE_POINTS = 240
 FREQUENCY_STARTS = 48
 T_BOUNDS = (1.0, 2000.0)
 RATE_BOUNDS = (0.0, 50.0)
-ERROR_BOUNDS = (1e-5, 0.05)
 BOOTSTRAP_REPLICATES = 64
 BOOTSTRAP_SEED = 20261020
-# Thermal populations of the planted TLS check; p leaves the two-level
-# Ramsey signal unchanged, so the fits fix it at 0 and report it
-# unidentified.
-TLS_POPULATION = 0.0
+# TLS populations the follow-up evaluation spans: p leaves the two-level
+# Ramsey signal unchanged, so the fits read p = 0, while the Z swap depth
+# (1 - p) 4 a (1 - a) and every design separation that uses it take their
+# worst case over this grid.
+POPULATION_GRID = (0.0, 0.25, 0.5, 0.75, 1.0)
 # Transmon anharmonicity of the three-level check (MHz). Heron r2
 # properties publish no anharmonicity (docs/notes/ibm_quantum/
 # heron-r2-readout-resonator.md), so the check uses a typical fixed-frequency
@@ -129,15 +134,20 @@ def names(model: str) -> tuple[str, ...]:
     return COMMON + SPECIFIC[model]
 
 
-def bounds(model: str, t1_us: float) -> list[tuple[float | None, float | None]]:
-    """Search bounds of a model's parameters; tls bounds T by 2 T1, the pure-dephasing floor."""
-    upper_t = min(T_BOUNDS[1], 2.0 * t1_us) if model == "tls" else T_BOUNDS[1]
+def bounds(model: str, data: Data) -> list[tuple[float | None, float | None]]:
+    """Search bounds of a model's parameters.
+
+    tls bounds T by 2 T1, the pure-dephasing floor. e0 and e1 are pinned at
+    the published assignment errors: the backend reports them without
+    their calibration shot count, so they enter as fixed values.
+    """
+    upper_t = min(T_BOUNDS[1], 2.0 * data.t1_us) if model == "tls" else T_BOUNDS[1]
     common: list[tuple[float | None, float | None]] = [
         (0.0, 1.0),
         (T_BOUNDS[0], upper_t),
         (None, None),
-        ERROR_BOUNDS,
-        ERROR_BOUNDS,
+        (data.e0, data.e0),
+        (data.e1, data.e1),
     ]
     specific: dict[str, list[tuple[float | None, float | None]]] = {
         "single": [(None, None)],
@@ -152,7 +162,11 @@ def bounds(model: str, t1_us: float) -> list[tuple[float | None, float | None]]:
 
 
 class Data:
-    """Herald-selected counts of one quadrature per point, with the readout calibration counts."""
+    """Herald-selected counts of one quadrature per point, the published assignment errors and T1.
+
+    population is the TLS thermal population p the tls model evaluates
+    with; the Ramsey coherence is independent of it, the Z swap is not.
+    """
 
     def __init__(
         self,
@@ -160,9 +174,10 @@ class Data:
         bases: np.ndarray,
         zeros: np.ndarray,
         shots: np.ndarray,
-        e0_count: float,
-        e1_count: float,
+        e0: float,
+        e1: float,
         t1_us: float,
+        population: float = 0.0,
     ) -> None:
         self.times = np.asarray(times, dtype=float)
         # 0 reads X, 1 reads Y after a |+> preparation; 2 reads Z after a
@@ -170,16 +185,32 @@ class Data:
         self.bases = np.asarray(bases, dtype=np.int64)
         self.zeros = np.asarray(zeros, dtype=float)
         self.shots = np.asarray(shots, dtype=float)
-        self.e0_count = e0_count
-        self.e1_count = e1_count
+        self.e0 = e0
+        self.e1 = e1
         self.t1_us = t1_us
+        self.population = population
 
-    def replicate(self, zeros: np.ndarray, e0_count: float, e1_count: float) -> Data:
-        return Data(self.times, self.bases, zeros, self.shots, e0_count, e1_count, self.t1_us)
+    def replicate(self, zeros: np.ndarray) -> Data:
+        return Data(self.times, self.bases, zeros, self.shots, self.e0, self.e1, self.t1_us, self.population)
+
+    def subset(self, keep: np.ndarray) -> Data:
+        return Data(
+            self.times[keep],
+            self.bases[keep],
+            self.zeros[keep],
+            self.shots[keep],
+            self.e0,
+            self.e1,
+            self.t1_us,
+            self.population,
+        )
+
+    def at_population(self, population: float) -> Data:
+        return Data(self.times, self.bases, self.zeros, self.shots, self.e0, self.e1, self.t1_us, population)
 
 
-def calibration_counts(calibrations: dict[str, dict[str, Any]]) -> tuple[int, int, float]:
-    """(e0, e1) counts out of CALIBRATION_SHOTS and T1 of qubit 143, one value over every member."""
+def calibration_values(calibrations: dict[str, dict[str, Any]]) -> tuple[float, float, float]:
+    """Published (e0, e1) and T1 of qubit 143, one value over every member."""
     found = {
         (
             float(entry["values"][str(SPECTATOR)]["prob_meas1_prep0"]),
@@ -191,13 +222,7 @@ def calibration_counts(calibrations: dict[str, dict[str, Any]]) -> tuple[int, in
     if len(found) != 1:
         raise RuntimeError(f"members read qubit {SPECTATOR} under {len(found)} calibrations; one is modelled")
     ((e0, e1, t1),) = found
-    counts = []
-    for value in (e0, e1):
-        count = value * CALIBRATION_SHOTS
-        if abs(count - round(count)) > 1e-9:
-            raise RuntimeError(f"assignment error {value} is not a count out of {CALIBRATION_SHOTS}")
-        counts.append(round(count))
-    return counts[0], counts[1], t1
+    return e0, e1, t1
 
 
 def run_data(run: Path) -> tuple[Data, dict[str, Any]]:
@@ -211,7 +236,7 @@ def run_data(run: Path) -> tuple[Data, dict[str, Any]]:
     reads, _conditioning, _bits = ramsey.run_reads(run, control)
     if reads is None:
         raise RuntimeError(f"{run} carries no initialization herald")
-    e0, e1, t1 = calibration_counts(rca.execution_calibration(run))
+    e0, e1, t1 = calibration_values(rca.execution_calibration(run))
     rows = sorted(
         (int(schedules[name]["exposure_dt"]), name.rsplit("_", 1)[1], zeros, shots)
         for name, (zeros, shots) in reads["all_zero"].items()
@@ -229,7 +254,7 @@ def run_data(run: Path) -> tuple[Data, dict[str, Any]]:
         "selection": "all_zero: shots whose initialization herald reads every pinned qubit 0",
         "points": [list(row) for row in rows],
         "exposure_dt": sorted({row[0] for row in rows}),
-        "readout_counts": {"e0_prob_meas1_prep0": e0, "e1_prob_meas0_prep1": e1, "of": CALIBRATION_SHOTS},
+        "readout_fixed": {"e0_prob_meas1_prep0": e0, "e1_prob_meas0_prep1": e1},
         "t1_us": t1,
     }
     return data, source
@@ -345,13 +370,13 @@ def tls_signal(
     return np.asarray(2.0 * ground - 1.0 + 0j)
 
 
-def coherence(model: str, params: np.ndarray, times: np.ndarray, t1_us: float) -> np.ndarray:
+def coherence(model: str, params: np.ndarray, times: np.ndarray, t1_us: float, population: float = 0.0) -> np.ndarray:
     """S(t) = <X> + i <Y> of a |+> preparation."""
     amplitude, t_us, phi = params[0], params[1], params[2]
     rest = params[5:]
     if model == "tls":
         fq, ft, coupling = tls_hamiltonian(*rest[:3])
-        shape = tls_signal(fq, ft, coupling, t_us, t1_us, rest[3], TLS_POPULATION, times)
+        shape = tls_signal(fq, ft, coupling, t_us, t1_us, rest[3], population, times)
         return np.asarray(amplitude * np.exp(1j * phi) * shape)
     envelope = amplitude * np.exp(1j * phi - times / t_us)
     if model == "single":
@@ -364,11 +389,13 @@ def coherence(model: str, params: np.ndarray, times: np.ndarray, t1_us: float) -
     return np.asarray(envelope * telegraph_kernel(a, f1, df, rest[3], times))
 
 
-def population_z(model: str, params: np.ndarray, times: np.ndarray, t1_us: float) -> np.ndarray:
+def population_z(
+    model: str, params: np.ndarray, times: np.ndarray, t1_us: float, population: float = 0.0
+) -> np.ndarray:
     """<Z> after a |1> preparation: T1 decay for the frequency models, the exchange swap for tls."""
     if model == "tls":
         fq, ft, coupling = tls_hamiltonian(*params[5:8])
-        return np.real(tls_signal(fq, ft, coupling, params[1], t1_us, params[8], TLS_POPULATION, times, basis="z"))
+        return np.real(tls_signal(fq, ft, coupling, params[1], t1_us, params[8], population, times, basis="z"))
     return np.asarray(1.0 - 2.0 * np.exp(-times / t1_us))
 
 
@@ -376,10 +403,10 @@ def true_mean(model: str, params: np.ndarray, data: Data) -> np.ndarray:
     mean = np.empty(data.times.size)
     ramsey_points = data.bases < 2
     if ramsey_points.any():
-        signal = coherence(model, params, data.times[ramsey_points], data.t1_us)
+        signal = coherence(model, params, data.times[ramsey_points], data.t1_us, data.population)
         mean[ramsey_points] = np.where(data.bases[ramsey_points] == 0, signal.real, signal.imag)
     if (~ramsey_points).any():
-        mean[~ramsey_points] = population_z(model, params, data.times[~ramsey_points], data.t1_us)
+        mean[~ramsey_points] = population_z(model, params, data.times[~ramsey_points], data.t1_us, data.population)
     return mean
 
 
@@ -388,32 +415,22 @@ def measured_mean(model: str, params: np.ndarray, data: Data) -> np.ndarray:
     return np.asarray((1.0 - e0 - e1) * true_mean(model, params, data) + (e1 - e0))
 
 
-def calibration_nll(e0: float, e1: float, data: Data) -> float:
-    total = 0.0
-    for value, count in ((e0, data.e0_count), (e1, data.e1_count)):
-        total -= count * math.log(value) + (CALIBRATION_SHOTS - count) * math.log1p(-value)
-    return total
-
-
 def negative_log_likelihood(params: np.ndarray, model: str, data: Data) -> float:
-    """Binomial NLL of every point's zero count plus the calibration counts' binomial terms."""
+    """Binomial NLL of every point's zero count."""
     probability = 0.5 * (1.0 + measured_mean(model, params, data))
     if np.any(probability <= 0.0) or np.any(probability >= 1.0) or not np.all(np.isfinite(probability)):
         return 1e18
     counts = data.zeros * np.log(probability) + (data.shots - data.zeros) * np.log1p(-probability)
-    return float(-counts.sum()) + calibration_nll(float(params[3]), float(params[4]), data)
+    return float(-counts.sum())
 
 
 def saturated_nll(data: Data) -> float:
-    """NLL at p = zeros / shots for every point and the calibration counts at their own rates."""
+    """NLL at p = zeros / shots for every point."""
     total = 0.0
     for zeros, shots in zip(data.zeros, data.shots, strict=True):
         for count in (zeros, shots - zeros):
             if count > 0:
                 total -= count * math.log(count / shots)
-    for count in (data.e0_count, data.e1_count):
-        rate = count / CALIBRATION_SHOTS
-        total -= count * math.log(rate) + (CALIBRATION_SHOTS - count) * math.log1p(-rate)
     return total
 
 
@@ -443,10 +460,19 @@ def _search_nll(search: np.ndarray, model: str, data: Data, scale: np.ndarray) -
 
 
 def refine(
-    model: str, data: Data, start: np.ndarray, fixed: dict[int, float] | None = None
+    model: str,
+    data: Data,
+    start: np.ndarray,
+    fixed: dict[int, float] | None = None,
+    window: dict[int, tuple[float, float]] | None = None,
 ) -> tuple[float, np.ndarray]:
-    """Bounded L-BFGS-B from a start, restarted once from its own optimum; fixed pins parameters by index."""
-    limits = bounds(model, data.t1_us)
+    """Bounded L-BFGS-B from a start, restarted once from its own optimum.
+
+    fixed pins parameters by index; window bounds parameters by index.
+    """
+    limits = bounds(model, data)
+    for index, pair in (window or {}).items():
+        limits[index] = pair
     initial = np.array(start, dtype=float)
     for index, value in (fixed or {}).items():
         initial[index] = value
@@ -537,7 +563,7 @@ class ProfilePoint:
 
     def __call__(self, df: float) -> tuple[float, list[float]]:
         data = self.data
-        e0, e1 = data.e0_count / CALIBRATION_SHOTS, data.e1_count / CALIBRATION_SHOTS
+        e0, e1 = data.e0, data.e1
         times, signal = complex_signal(data, e0, e1)
         f1 = grid_frequencies(FREQUENCY_STARTS)
         residual, c1, c2 = pair_least_squares(times, signal[None, :], f1, np.full(f1.size, df), self.t_us)
@@ -589,11 +615,12 @@ class StartRefine:
 
 
 class Refit:
-    """(model, data, starts) -> the lowest free refit over the starts; pool-picklable."""
+    """(model, data, starts[, window]) -> the lowest refit over the starts; pool-picklable."""
 
-    def __call__(self, item: tuple[str, Data, list[list[float]]]) -> tuple[float, list[float]]:
-        model, data, starts = item
-        found = [refine(model, data, np.array(start)) for start in starts]
+    def __call__(self, item: tuple[Any, ...]) -> tuple[float, list[float]]:
+        model, data, starts = item[:3]
+        window = item[3] if len(item) > 3 else None
+        found = [refine(model, data, np.array(start), window=window) for start in starts]
         value, params = min(found, key=lambda pair: pair[0])
         return value, [float(x) for x in params]
 
@@ -676,7 +703,7 @@ def global_fits(replicates: list[Data]) -> list[dict[str, tuple[float, list[floa
     starts_static: list = []
     for low in range(0, len(replicates), GRID_BLOCK):
         block = replicates[low : low + GRID_BLOCK]
-        readout = [(d.e0_count / CALIBRATION_SHOTS, d.e1_count / CALIBRATION_SHOTS) for d in block]
+        readout = [(d.e0, d.e1) for d in block]
         rows = [complex_signal(d, e0, e1) for d, (e0, e1) in zip(block, readout, strict=True)]
         times = rows[0][0]
         signals = np.array([row[1] for row in rows])
@@ -724,22 +751,22 @@ def fisher_information(model: str, params: np.ndarray, data: Data) -> np.ndarray
     jacobian = np.empty((data.times.size, params.size))
     for index in range(params.size):
         step = 1e-6 * max(1.0, abs(float(params[index])))
-        if index in (3, 4):
-            step = 1e-7
         upper, lower = params.copy(), params.copy()
         upper[index] += step
         lower[index] -= step
         jacobian[:, index] = (measured_mean(model, upper, data) - measured_mean(model, lower, data)) / (2 * step)
     information = jacobian.T @ ((data.shots / (1.0 - mean**2))[:, None] * jacobian)
-    for index in (3, 4):
-        value = float(params[index])
-        information[index, index] += CALIBRATION_SHOTS / (value * (1.0 - value))
     return np.asarray(information)
 
 
-def at_bound(model: str, params: np.ndarray, t1_us: float) -> list[str]:
+FIXED = ("e0", "e1")
+
+
+def at_bound(model: str, params: np.ndarray, data: Data) -> list[str]:
     found = []
-    for name, value, (low, high) in zip(names(model), params, bounds(model, t1_us), strict=True):
+    for name, value, (low, high) in zip(names(model), params, bounds(model, data), strict=True):
+        if name in FIXED:
+            continue
         if (low is not None and abs(value - low) < 1e-6 * max(1.0, abs(low))) or (
             high is not None and abs(value - high) < 1e-6 * max(1.0, abs(high))
         ):
@@ -754,13 +781,13 @@ def wald(model: str, params: np.ndarray, data: Data) -> dict[str, Any]:
     its own value), so the identifiability ratio compares directions of
     like scale rather than the units of microseconds and readout errors.
     """
-    bounded = at_bound(model, params, data.t1_us)
-    free = [index for index, name in enumerate(names(model)) if name not in bounded]
+    bounded = at_bound(model, params, data)
+    free = [index for index, name in enumerate(names(model)) if name not in bounded and name not in FIXED]
     scale = search_scale(model)
     scale[1] = float(params[1])
     information = fisher_information(model, params, data) * np.outer(scale, scale)
     errors, condition = ramsey.wald_errors(information[np.ix_(free, free)])
-    standard: dict[str, float | str | None] = dict.fromkeys(names(model), "at_bound")
+    standard: dict[str, float | str | None] = {name: "fixed" if name in FIXED else "at_bound" for name in names(model)}
     for column, index in enumerate(free):
         error = errors[column]
         standard[names(model)[index]] = None if error is None else error * float(scale[index])
@@ -802,13 +829,15 @@ def parameters(model: str, params: np.ndarray) -> dict[str, float]:
     return values
 
 
-def tls_physics(values: dict[str, float]) -> dict[str, float]:
+def tls_physics(values: dict[str, float]) -> dict[str, Any]:
     fq, ft, coupling = tls_hamiltonian(values["a"], values["f1_mhz"], values["df_mhz"])
     return {
         "omega_khz": abs(values["df_mhz"]) * 1e3,
         "delta_qubit_minus_tls_khz": (fq - ft) * 1e3,
         "g_khz": coupling * 1e3,
-        "swap_depth_4a(1-a)": 4.0 * values["a"] * (1.0 - values["a"]),
+        "swap_depth_by_population": {
+            str(p): (1.0 - p) * 4.0 * values["a"] * (1.0 - values["a"]) for p in POPULATION_GRID
+        },
     }
 
 
@@ -854,7 +883,9 @@ def parity_band() -> dict[str, Any]:
             )
     splittings = [row["max_splitting_khz"] for row in rows]
     return {
-        "source": "Koch et al. 2007 eq. 2.18; Heron r2 properties publish no frequency or anharmonicity for 143",
+        "status": "hypothetical sensitivity study: the grid spans generic fixed-frequency transmon parameters; "
+        "Heron r2 properties publish no frequency or anharmonicity for 143, so no row describes 143",
+        "source": "Koch et al. 2007 eq. 2.18",
         "grid": rows,
         "max_splitting_khz_range": [min(splittings), max(splittings)],
     }
@@ -903,12 +934,10 @@ def alias_table(data: Data, static: tuple[float, np.ndarray]) -> list[dict[str, 
 
 
 def draw_replicates(model: str, params: np.ndarray, data: Data, count: int, rng: np.random.Generator) -> list[Data]:
-    """count replicates of the run's counts and calibration counts under a fitted model, drawn in order."""
+    """count replicates of the run's counts under a fitted model, drawn in order."""
     probability = 0.5 * (1.0 + measured_mean(model, params, data))
     zeros = rng.binomial(data.shots.astype(np.int64)[None, :], probability[None, :], size=(count, data.shots.size))
-    e0 = rng.binomial(CALIBRATION_SHOTS, float(params[3]), size=count)
-    e1 = rng.binomial(CALIBRATION_SHOTS, float(params[4]), size=count)
-    return [data.replicate(zeros[k].astype(float), int(max(e0[k], 1)), int(max(e1[k], 1))) for k in range(count)]
+    return [data.replicate(zeros[k].astype(float)) for k in range(count)]
 
 
 def tail(statistics: list[float], observed: float) -> dict[str, Any]:
@@ -938,8 +967,8 @@ def bootstrap(
     under_single = draw_replicates("single", single[1], data, BOOTSTRAP_REPLICATES, rng)
     under_static = draw_replicates("static", static[1], data, BOOTSTRAP_REPLICATES, rng)
     fits = global_fits(under_single)
-    rows = [complex_signal(d, d.e0_count / CALIBRATION_SHOTS, d.e1_count / CALIBRATION_SHOTS) for d in under_single]
-    readout = [(d.e0_count / CALIBRATION_SHOTS, d.e1_count / CALIBRATION_SHOTS) for d in under_single]
+    rows = [complex_signal(d, d.e0, d.e1) for d in under_single]
+    readout = [(d.e0, d.e1) for d in under_single]
     signals = np.array([row[1] for row in rows])
     batched = grid_starts(signals[:GRID_BLOCK], rows[0][0], readout[:GRID_BLOCK])
     grid_rows_equal = all(
@@ -987,6 +1016,16 @@ LONG_DT = (15000, 30000, 60000, 90000)
 DENSE_STEP_DT = 63
 DENSE_COUNT = 140
 TELEGRAPH_PROBES = (0.01, 0.03, 0.1)
+# Herald-backaction controls: the same X and Y reads with no initialization
+# herald, and with a fixed idle after the herald before the preparation, at
+# a subset of the coprime delays. A beat that survives both arms unchanged
+# is intrinsic to 143; one that moves with them follows the herald.
+CONTROL_DT = (0, 2457, 4095, 6237, 8190)
+POST_HERALD_IDLE_DT = 2000
+PAIRED = (
+    "X and Y (and Z) of each delay run as adjacent entries of one PUB's parameter sweep, so both quadratures of "
+    "a delay share the PUB's shot interleaving and no inter-PUB drift separates them"
+)
 
 
 def coprime_delays() -> list[int]:
@@ -998,26 +1037,40 @@ def designs() -> dict[str, dict[str, Any]]:
     ramsey_coprime = [(basis, delay) for delay in coprime for basis in ("x", "y")]
     swap = [("z", delay) for delay in coprime]
     long_block = [(basis, delay) for delay in LONG_DT for basis in ("x", "y", "z")]
+    # Cost members of the controls: the no-herald arm at the base duration
+    # (an upper bound, since it drops the herald) and the idle arm with its
+    # fixed post-herald idle added to the delay.
+    controls = [(basis, delay) for delay in CONTROL_DT for basis in ("x", "y")] + [
+        (basis, delay + POST_HERALD_IDLE_DT) for delay in CONTROL_DT for basis in ("x", "y")
+    ]
     return {
         "run_lattice": {
             "members": [(basis, WINDOW_DT * k) for k in range(7) for basis in ("x", "y")],
             "shots": 12288,
             "purpose": "the retained run's lattice, the reference whose relative aliases tie",
+            "pairing": "retained: X and Y of a delay in separate PUBs of one job, in an execution order the "
+            "service does not guarantee",
         },
         "dense": {
             "members": [(basis, DENSE_STEP_DT * k) for k in range(DENSE_COUNT + 1) for basis in ("x", "y")],
             "shots": 512,
             "purpose": "uniform 0.252 us complex Ramsey grid to 35.3 us",
+            "pairing": PAIRED,
         },
         "coprime_swap": {
             "members": ramsey_coprime + swap,
             "shots": 2048,
-            "purpose": "693 and 819 dt lattices (gcd 63 dt) in X and Y, plus Z after an X preparation (TLS swap)",
+            "purpose": "693 and 819 dt lattices (gcd 63 dt) in X and Y, plus Z after an X preparation (TLS swap), "
+            "plus the no-herald and post-herald-idle control arms",
+            "pairing": PAIRED,
+            "controls": controls,
         },
         "coprime_swap_long": {
             "members": ramsey_coprime + swap + long_block,
             "shots": 2048,
             "purpose": "coprime_swap plus X, Y and Z at 60, 120, 240 and 360 us for the envelope and slow switching",
+            "pairing": PAIRED,
+            "controls": controls,
         },
     }
 
@@ -1030,18 +1083,16 @@ def design_data(members: list[tuple[str, int]], shots: int, template: Data) -> D
         bases,
         np.zeros(len(members)),
         np.full(len(members), float(shots)),
-        template.e0_count,
-        template.e1_count,
+        template.e0,
+        template.e1,
         template.t1_us,
     )
 
 
 def asimov(model: str, params: np.ndarray, design: Data) -> Data:
-    """Expected counts of a design under a model: zeros n p and calibration counts at the model's e0, e1."""
+    """Expected zero counts n p of a design under a model."""
     probability = 0.5 * (1.0 + measured_mean(model, params, design))
-    return design.replicate(
-        design.shots * probability, CALIBRATION_SHOTS * float(params[3]), CALIBRATION_SHOTS * float(params[4])
-    )
+    return design.replicate(design.shots * probability)
 
 
 class ExpectedLLR:
@@ -1054,11 +1105,12 @@ class ExpectedLLR:
     the design draws.
     """
 
-    def __call__(self, item: tuple[str, list[float], str, list[list[float]], Data]) -> float:
-        truth_model, truth, alternative, starts, design = item
+    def __call__(self, item: tuple[Any, ...]) -> float:
+        truth_model, truth, alternative, starts, design = item[:5]
+        window = item[5] if len(item) > 5 else None
         expected = asimov(truth_model, np.array(truth), design)
         own = negative_log_likelihood(np.array(truth), truth_model, expected)
-        best, _params = Refit()((alternative, expected, starts))
+        best, _params = Refit()((alternative, expected, starts, window))
         return max(best - own, 0.0)
 
 
@@ -1088,17 +1140,24 @@ def evaluate_designs(
     results: dict[str, Any] = {}
     for label, spec in designs().items():
         design = design_data(spec["members"], spec["shots"], data)
-        items: list[tuple[str, list[float], str, list[list[float]], Data]] = []
+        items: list[tuple[Any, ...]] = []
         pairs = []
         for df in alias_df:
             truth = [float(x) for x in shifted(params, df)]
             for other in alias_df:
                 if other != df:
-                    items.append(("static", truth, "static", [[float(x) for x in shifted(params, other)]], design))
+                    # The alternative's df stays inside its own alias cell,
+                    # so the ratio measures separation from that alias and
+                    # never a refit that drifts back to the truth's.
+                    cell = {7: (other - 0.5 * F0_MHZ, other + 0.5 * F0_MHZ)}
+                    start = [[float(x) for x in shifted(params, other)]]
+                    items.append(("static", truth, "static", start, design, cell))
                     pairs.append((alias_index(df, reference), alias_index(other, reference)))
         static_start = [[float(x) for x in shifted(params, tls_params[7])]]
-        items.append(("tls", tls_params, "static", static_start, design))
-        items.append(("static", static_start[0], "tls", [tls_params], design))
+        for population in POPULATION_GRID:
+            at_p = design.at_population(population)
+            items.append(("tls", tls_params, "static", static_start, at_p))
+            items.append(("static", static_start[0], "tls", [tls_params], at_p))
         for rate in TELEGRAPH_PROBES:
             best_static = [[float(x) for x in params]]
             items.append(("telegraph", [*best_static[0], rate], "static", best_static, design))
@@ -1107,9 +1166,13 @@ def evaluate_designs(
             {"truth_n": a, "alternative_n": b, "expected_llr": v} for (a, b), v in zip(pairs, found, strict=False)
         ]
         tail_values = found[len(pairs) :]
+        grid = len(POPULATION_GRID)
+        tls_vs_static = tail_values[0 : 2 * grid : 2]
+        static_vs_tls = tail_values[1 : 2 * grid : 2]
+        telegraph_values = tail_values[2 * grid :]
         worst = min(alias_rows, key=lambda row: row["expected_llr"])
         precision = wald("static", np.array(params), design)["standard_errors"]
-        cost = billed_seconds(spec["members"], spec["shots"], base_dt)
+        cost = billed_seconds(spec["members"] + spec.get("controls", []), spec["shots"], base_dt)
         results[label] = {
             "purpose": spec["purpose"],
             "members": len(spec["members"]),
@@ -1117,14 +1180,27 @@ def evaluate_designs(
             "delays_dt": sorted({delay for _basis, delay in spec["members"]}),
             "bases": sorted({basis for basis, _delay in spec["members"]}),
             "billed_rule_s": cost["rule_s"],
+            "controls_billed_rule_s": (
+                billed_seconds(spec["controls"], spec["shots"], base_dt)["rule_s"] - JOB_OVERHEAD_S
+                if spec.get("controls")
+                else 0.0
+            ),
             "billed_execution_plus_run_offset_s": cost["execution_s"] + charge_offset_s,
             "alias_pair_llr": alias_rows,
             "worst_alias_pair": worst,
             "worst_alias_log10_posterior_odds": -worst["expected_llr"] / math.log(10.0),
-            "tls_truth_vs_static_llr": tail_values[0],
-            "static_truth_vs_tls_llr": tail_values[1],
+            "pairing": spec["pairing"],
+            "herald_controls": len(spec.get("controls", [])),
+            "tls_truth_vs_static_llr_by_population": dict(
+                zip((str(p) for p in POPULATION_GRID), tls_vs_static, strict=True)
+            ),
+            "static_truth_vs_tls_llr_by_population": dict(
+                zip((str(p) for p in POPULATION_GRID), static_vs_tls, strict=True)
+            ),
+            "tls_truth_vs_static_llr": min(tls_vs_static),
+            "static_truth_vs_tls_llr": min(static_vs_tls),
             "telegraph_truth_vs_static_llr": dict(
-                zip((str(r) for r in TELEGRAPH_PROBES), tail_values[2:], strict=True)
+                zip((str(r) for r in TELEGRAPH_PROBES), telegraph_values, strict=True)
             ),
             "static_wald_at_fit": {key: precision[key] for key in ("a", "f1_mhz", "df_mhz", "t_us")},
         }
@@ -1137,10 +1213,12 @@ SEPARATION_LLR = 50.0
 
 
 def recommend(results: dict[str, Any]) -> str:
+    """Cheapest design with herald controls whose worst separations (TLS p over POPULATION_GRID) reach the target."""
     eligible = [
         label
         for label, row in results.items()
-        if min(row["worst_alias_pair"]["expected_llr"], row["tls_truth_vs_static_llr"], row["static_truth_vs_tls_llr"])
+        if row["herald_controls"] > 0
+        and min(row["worst_alias_pair"]["expected_llr"], row["tls_truth_vs_static_llr"], row["static_truth_vs_tls_llr"])
         >= SEPARATION_LLR
     ]
     if not eligible:
@@ -1152,16 +1230,18 @@ def repeat_plan(design: str, cost: float) -> dict[str, Any]:
     return {
         "design": design,
         "repeats": 4,
-        "spacing": "at least 60 min apart, so each repeat runs under a separate calibration cycle (Heron r2 "
-        "monitoring is roughly hourly)",
+        "spacing": "at least 60 min apart; the repeats are time-separated. A pair counts as two calibration "
+        "cycles only when the execution-start calibration each run records (properties at execution) differs in "
+        "identity and in 143's values; parameter monitoring runs about hourly and recalibrates only on a deviation "
+        "(docs/notes/ibm_quantum/calibration-jobs.md), so 60 min alone does not guarantee a new calibration",
         "billed_rule_s_total": 4 * cost,
         "per_repeat_fit": "static, telegraph and tls at the resolved alias; record a, df, f1, g, Delta per repeat",
         "discriminators": {
             "charge_parity": "a near the same value in every repeat (1/2 at equal parity occupation) while df "
-            "moves with the offset "
-            "charge n_g, |df| <= |eps1 - eps0|; Z after X shows T1 decay without swap",
+            "moves with the offset charge n_g; Z after X shows T1 decay without swap",
             "tls_exchange": "g = |df| sqrt(a (1 - a)) constant across repeats while Delta = df (2a - 1) and a wander "
-            "with the TLS frequency; Z after X shows swap oscillation at Omega = |df| with depth 4 a (1 - a)",
+            "with the TLS frequency; Z after X shows swap oscillation at Omega = |df| with depth "
+            "(1 - p) 4 a (1 - a), absent only for a TLS held excited (p = 1)",
             "static_unexplained": "a, df and f1 constant across repeats and no Z swap",
         },
         "homogeneity_test": "chi-square of each per-repeat estimate against its inverse-variance mean "
@@ -1170,6 +1250,41 @@ def repeat_plan(design: str, cost: float) -> dict[str, Any]:
 
 
 # Report -------------------------------------------------------------------
+
+
+def basis_alone(data: Data, static: tuple[float, np.ndarray]) -> dict[str, Any]:
+    """single and static fitted to X alone and to Y alone, so no X/Y pairing across PUBs enters.
+
+    One quadrature reads A e^(-t/T) times the cosine (X) or sine (Y) of the
+    phase; a single damped sinusoid has 4 free parameters on 7 points, the
+    static mixture 6. Its deviance against the saturated fit is chi-square
+    with 3 degrees of freedom when one damped sinusoid describes the basis.
+    """
+    result: dict[str, Any] = {}
+    for basis, label in ((0, "x"), (1, "y")):
+        sub = data.subset(data.bases == basis)
+        single_starts = [
+            [0.9, 60.0, phase, data.e0, data.e1, float(f)]
+            for f in grid_frequencies(FREQUENCY_STARTS)
+            for phase in (0.0, math.pi / 2)
+        ]
+        static_starts = [[float(x) for x in static[1]]]
+        single, static_fit = parallel.ordered_map(
+            Refit(), [("single", sub, single_starts), ("static", sub, static_starts)], min_items=2
+        )
+        saturated = saturated_nll(sub)
+        deviance = 2.0 * (single[0] - saturated)
+        free = sub.times.size - 4
+        result[label] = {
+            "points": int(sub.times.size),
+            "single_deviance": deviance,
+            "single_degrees_of_freedom": free,
+            "single_p_value": float(chi2.sf(deviance, free)),
+            "static_deviance": 2.0 * (static_fit[0] - saturated),
+            "static_degrees_of_freedom": sub.times.size - 6,
+            "single_vs_static_lr": 2.0 * (single[0] - static_fit[0]),
+        }
+    return result
 
 
 def run_costs(run: Path, exposures: list[int]) -> dict[str, Any]:
@@ -1210,12 +1325,12 @@ def comparison(data: Data, fits: dict[str, tuple[float, np.ndarray]]) -> dict[st
     saturated = saturated_nll(data)
     rows = {}
     for model, (value, _params) in fits.items():
-        size = len(names(model))
+        size = len(names(model)) - len(FIXED)
         rows[model] = {
             "parameters": size,
             "negative_log_likelihood": value,
             "deviance_vs_saturated": 2.0 * (value - saturated),
-            "degrees_of_freedom": data.times.size + 2 - size,
+            "degrees_of_freedom": data.times.size - size,
             **information_criteria(value, size, observations),
         }
     best_aic = min(row["aic"] for row in rows.values())
@@ -1292,7 +1407,8 @@ def report(run: Path) -> dict[str, Any]:
             for model, (_value, params) in fits.items()
         },
         "tls_population": "unidentified: a two-level qubit's Ramsey coherence is independent of the TLS thermal "
-        "population p (self-check tls_population); the fits fix p = 0",
+        "population p (self-check tls); the fits read p = 0, and every follow-up separation that uses the Z swap "
+        "takes its worst case over POPULATION_GRID",
         "tls_physics_at_best": tls_physics(parameters("tls", tls[1])),
         "static_profile": {
             "df_khz": [row[0] * 1e3 for row in profile],
@@ -1314,6 +1430,7 @@ def report(run: Path) -> dict[str, Any]:
             {key: value for key, value in row.items() if key not in ("telegraph_params", "tls_params")}
             for row in aliases
         ],
+        "basis_alone": basis_alone(data, static),
         "parity_band": parity_band(),
         "equal_parity_occupation": {
             "a": a_value,
@@ -1349,7 +1466,7 @@ PLANT_T1_US = 112.0
 
 def _plant_data(model: str, params: np.ndarray) -> Data:
     members = designs()["run_lattice"]["members"]
-    template = Data(np.zeros(1), np.zeros(1), np.zeros(1), np.ones(1), 10, 35, PLANT_T1_US)
+    template = Data(np.zeros(1), np.zeros(1), np.zeros(1), np.ones(1), 0.0025, 0.0085, PLANT_T1_US)
     return asimov(model, params, design_data(members, 12288, template))
 
 
@@ -1441,11 +1558,15 @@ def _check_tls() -> dict[str, float]:
     _require(law < 1e-9, f"closed tls departs from the two-line law by {law}")
     _require(population < 1e-9, f"tls Ramsey signal moves with p by {population}")
     _require(abs(depth - 4 * a * (1 - a)) < 1e-3, f"swap depth {depth}, expected {4 * a * (1 - a)}")
+    half = np.real(tls_signal(fq, ft, coupling, huge, huge, 0.0, 0.5, fine, basis="z"))
+    half_depth = float((half.max() - half.min()) / 2.0)
+    _require(abs(half_depth - 0.5 * 4 * a * (1 - a)) < 1e-3, f"swap depth at p = 1/2 reads {half_depth}")
     _require(float(np.abs(cold3 - cold).max()) < 1e-9, "three-level cold tls departs from two-level")
     return {
         "two_line_gap": law,
         "population_gap": population,
         "swap_depth": depth,
+        "swap_depth_half_population": half_depth,
         "three_level_cold_gap": float(np.abs(cold3 - cold).max()),
         "three_level_warm_shift": float(np.abs(warm3 - warm).max()),
     }
@@ -1456,7 +1577,7 @@ def _check_batched_grid() -> dict[str, bool]:
     rng = np.random.default_rng(7)
     data = _plant_data("static", PLANT_STATIC)
     replicates = draw_replicates("static", PLANT_STATIC, data, 3, rng)
-    rows = [complex_signal(d, d.e0_count / CALIBRATION_SHOTS, d.e1_count / CALIBRATION_SHOTS) for d in replicates]
+    rows = [complex_signal(d, d.e0, d.e1) for d in replicates]
     times = rows[0][0]
     signals = np.array([row[1] for row in rows])
     f1 = np.tile(grid_frequencies(8), 16)
@@ -1466,7 +1587,7 @@ def _check_batched_grid() -> dict[str, bool]:
     for k in range(len(rows)):
         alone = pair_least_squares(times, signals[k : k + 1], f1, df, GRID_T_US)
         equal &= all(np.array_equal(b[k], s[0]) for b, s in zip(batch, alone, strict=True))
-    readout = [(d.e0_count / CALIBRATION_SHOTS, d.e1_count / CALIBRATION_SHOTS) for d in replicates]
+    readout = [(d.e0, d.e1) for d in replicates]
     starts = grid_starts(signals, times, readout)
     alone_starts = [grid_starts(signals[k : k + 1], times, readout[k : k + 1]) for k in range(len(rows))]
     same = all(
