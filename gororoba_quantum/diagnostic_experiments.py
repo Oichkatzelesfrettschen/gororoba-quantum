@@ -547,9 +547,9 @@ def n21_orbit_rca_group(
         for feedback in (True, False)
     )
     spectator_arms = (
-        [("immediate", 1)] + [("idle_ground", multiple) for multiple in ramsey]
+        [("immediate", None)] + [("idle_ground", multiple) for multiple in ramsey]
         if ramsey
-        else [(kind, 1) for kind in n21_spectator_kinds(overlap_split, ground_control_split)]
+        else [(kind, None) for kind in n21_spectator_kinds(overlap_split, ground_control_split)]
     )
     arms = [
         (kind, multiple, quadrature) for kind, multiple in spectator_arms for quadrature in N21_SPECTATOR_QUADRATURES

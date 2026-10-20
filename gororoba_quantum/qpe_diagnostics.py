@@ -410,7 +410,7 @@ def n21_spectator_ramsey(
     measure_dt: int | None = None,
     reset_dt: int | None = None,
     init_herald: bool = False,
-    idle_multiple: int = 1,
+    idle_multiple: int | None = None,
 ) -> QuantumCircuit:
     """Ramsey of logical qubit 2 across the orbit's control window, on the orbit's four logical qubits.
 
@@ -430,7 +430,9 @@ def n21_spectator_ramsey(
     barrier that follows qubit 2's readout. Qubit 2
     reads X (h) or Y (sdg, h) into clbit 1: the ideal law is
     n21_spectator_law. init_herald prepends the orbit's herald readouts
-    and barrier.
+    and barrier. idle_multiple, given for idle_ground only, makes the
+    member a ground Ramsey sweep arm: its control delay is idle_multiple *
+    (measure_dt + reset_dt) and its name is n21_ramsey_name.
     """
     if kind not in N21_SPECTATOR_BUILDABLE or quadrature not in N21_SPECTATOR_QUADRATURES:
         raise ValueError(f"unknown spectator kind {kind!r} or quadrature {quadrature!r}")
@@ -438,7 +440,7 @@ def n21_spectator_ramsey(
         raise ValueError(f"{kind} requires a positive integer measure_dt from calibration")
     if kind in ("idle", "idle_ground") and (type(reset_dt) is not int or reset_dt <= 0):
         raise ValueError(f"{kind} requires a positive integer reset_dt from calibration")
-    if type(idle_multiple) is not int or idle_multiple < 1 or (idle_multiple != 1 and kind != "idle_ground"):
+    if idle_multiple is not None and (type(idle_multiple) is not int or idle_multiple < 1 or kind != "idle_ground"):
         raise ValueError(f"idle_multiple {idle_multiple!r} applies to idle_ground as a positive integer only")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
@@ -462,7 +464,7 @@ def n21_spectator_ramsey(
         if kind in ("idle", "idle_ground"):
             if reset_dt is None:
                 raise AssertionError
-            circuit.delay(idle_multiple * (measure_dt + reset_dt), 0, unit="dt")
+            circuit.delay((idle_multiple or 1) * (measure_dt + reset_dt), 0, unit="dt")
         else:
             circuit.delay(measure_dt, 0, unit="dt")
             circuit.reset(0)
@@ -477,7 +479,7 @@ def n21_spectator_ramsey(
         # job; the barrier places it after that readout.
         circuit.barrier()
         circuit.reset(0)
-    name = n21_ramsey_name(idle_multiple, quadrature) if idle_multiple != 1 else f"n21_spectator_{kind}_{quadrature}"
+    name = f"n21_spectator_{kind}_{quadrature}" if idle_multiple is None else n21_ramsey_name(idle_multiple, quadrature)
     circuit.name = name + ("_heralded" if init_herald else "")
     return circuit
 

@@ -2584,10 +2584,12 @@ def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
                 and not any(op in ("sx", "x", "rz") for op, _ in ops[: len(ops) - 2] if op != "measure"),
                 f"{name} plays {ops} on the control, not a herald, an idle in |0> and a reset",
             )
-        program = [op for op in wire_ops(isa, spectator) if op[0] != "rz"]
-        physical = [op for op, _ in program if op not in ("delay",)]
+        # The barriers alone hold the spectator across the control's idle,
+        # so any delay instruction on it is an inserted idle the exposure
+        # does not name, and any further pulse is a decoupling pulse.
+        program = [op for op, _ in wire_ops(isa, spectator) if op != "rz"]
         _require(
-            physical == ["measure", "sx", "sx", "measure"],
+            program == ["measure", "sx", "sx", "measure"],
             f"{name} plays {program} on the spectator, not a herald, a preparation, a basis change and a readout",
         )
     rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})

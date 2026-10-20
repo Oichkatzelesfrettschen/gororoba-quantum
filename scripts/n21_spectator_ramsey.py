@@ -405,19 +405,29 @@ def run_schedules(run: Path) -> tuple[dict[str, dict[str, Any]], int, dict[str, 
     return schedules, control, unresolved
 
 
-def conditioned_zeros(phases: list[str], heralds: list[str], position: int) -> tuple[int, int]:
-    """(qubit-2 zeros, shots) over the shots whose herald string reads 0 at position; clbit 1 is qubit 2."""
-    tally = rca.conditioned_tally(phases, heralds, position)
-    return int(tally[0] + tally[1]), int(tally.sum())
+def conditioned_zeros(phases: list[str], heralds: list[str], positions: tuple[int, ...]) -> tuple[int, int]:
+    """(qubit-2 zeros, shots) over the shots whose herald string reads 0 at every position; clbit 1 is qubit 2."""
+    if len(heralds) != len(phases):
+        raise RuntimeError(f"{len(heralds)} herald and {len(phases)} phase shots")
+    kept = [value for value, herald in zip(phases, heralds, strict=True) if all(herald[k] == "0" for k in positions)]
+    return sum(value[0] == "0" for value in kept), len(kept)
 
 
-def run_reads(run: Path, control: int) -> tuple[dict[str, tuple[int, int]] | None, dict[str, Any]]:
-    """Per member, herald-conditioned (zeros, shots) of qubit 2; None for a record without the herald."""
+# Selections over the initialization herald. Qubit 143 couples on the Fez
+# coupling map (docs/evidence/heron_platform/targets.json, cz qargs) to 136,
+# 142 and 144, every other pinned qubit, so an excited neighbor of any role
+# shifts its frequency by that ZZ. The primary selection keeps the shots
+# whose herald reads all four pinned qubits 0; control-only is secondary.
+SELECTIONS = ("all_zero", "control_zero")
+
+
+def run_reads(run: Path, control: int) -> tuple[dict[str, dict[str, tuple[int, int]]] | None, dict[str, Any]]:
+    """Per selection and member, herald-conditioned (zeros, shots) of qubit 2; None without the herald."""
     from qpe_diagnostics import HERALD_REGISTER, register_role
 
     names = [member["name"] for member in rca._group(run)["members"]]
-    reads: dict[str, tuple[int, int]] = {}
-    kept: dict[str, list[int]] = {}
+    reads: dict[str, dict[str, tuple[int, int]]] = {selection: {} for selection in SELECTIONS}
+    totals: dict[str, int] = {}
     for name, circuit, payload in zip(names, rca._circuits(run), rca.raw_pubs(run), strict=True):
         registers = [register for register in circuit.cregs if register_role(register.name) == HERALD_REGISTER]
         if not registers:
@@ -433,14 +443,36 @@ def run_reads(run: Path, control: int) -> tuple[dict[str, tuple[int, int]] | Non
             raise RuntimeError(f"{name} reads the control {control} on herald bits {bits}, not one")
         heralds = payload["registers"][register.name]["bitstrings"]
         phases = payload["registers"][rca.REGISTER]["bitstrings"]
-        reads[name] = conditioned_zeros(phases, heralds, register.size - 1 - bits[0])
-        kept[name] = [reads[name][1], len(phases)]
+        everything = tuple(register.size - 1 - k for k in range(register.size))
+        reads["all_zero"][name] = conditioned_zeros(phases, heralds, everything)
+        reads["control_zero"][name] = conditioned_zeros(phases, heralds, (register.size - 1 - bits[0],))
+        totals[name] = len(phases)
     return reads, {
         "present": True,
         "control": control,
-        "rule": "keep shots whose initialization herald reads the control 0",
-        "kept_shots": kept,
+        "primary": "all_zero: keep shots whose initialization herald reads every pinned qubit 0",
+        "secondary": "control_zero: keep shots whose initialization herald reads the control 0",
+        "kept_shots": {
+            selection: {name: [reads[selection][name][1], totals[name]] for name in totals} for selection in SELECTIONS
+        },
     }
+
+
+def selection_admission(reads: dict[str, tuple[int, int]], totals: dict[str, int], alpha: float) -> dict[str, Any]:
+    """Whether the rejected fraction of the primary selection differs between members beyond herald_bound.
+
+    On the all-zero shots every herald bit reads 0, so a per-bit excitation
+    test is empty there; the admission instead tests the member spread of
+    the rejected fraction (the probability that any pinned qubit heralds 1)
+    with n21_orbit_rca.herald_admission at unit readout contrast, so the
+    kept shots of every member come from one initial ensemble.
+    """
+    counts = {
+        0: {"qubit": -1, "members": {name: (totals[name] - kept, totals[name]) for name, (_z, kept) in reads.items()}}
+    }
+    shots = min(totals.values())
+    admitted = rca.herald_admission(counts, {-1: 1.0}, rca.herald_bound(shots, alpha), alpha)
+    return admitted | {"present": True, "evaluable": True, "shots": shots, "rule": "rejected-fraction spread"}
 
 
 def evaluate(
@@ -448,11 +480,11 @@ def evaluate(
 ) -> dict[str, Any]:
     """Fits and verdicts of herald-conditioned reads; an empty selection or absent herald reads not_evaluable."""
     if reads is None:
-        reason = "the record carries no initialization herald on the control"
+        reason = "the record carries no initialization herald"
         return {"tests": {name: {"status": "not_evaluable", "reason": reason} for name in TESTS[1:]}}
     empty = sorted(name for name, (_zeros, shots) in reads.items() if shots == 0)
     if empty:
-        reason = f"members {empty} keep no shot whose herald reads the control 0"
+        reason = f"members {empty} keep no shot the herald selects"
         return {"tests": {name: {"status": "not_evaluable", "reason": reason} for name in TESTS[1:]}}
     points = [
         (exposures_dt[name] * dt_us, name.rsplit("_", 1)[1], zeros, shots)
@@ -479,27 +511,35 @@ def report(run: Path) -> dict[str, Any]:
         admitted["unresolved"] |= unresolved
         admitted["admissible"] = False
     calibrations = rca.execution_calibration(run)
-    herald = rca.herald_report(
-        run, calibrations, lambda name: member_key(name) is not None, TEST_ALPHA, rca.HERALD_ROLES.index("control")
-    )
+    reads, conditioning = run_reads(run, control)
     output: dict[str, Any] = {
         "schema_version": SCHEMA,
         "analyzer_sha256": analyzer_sha256(),
         "alpha": {"family_alpha": FAMILY_ALPHA, "tests": list(TESTS), "per_test_alpha": TEST_ALPHA},
         "admissibility": admitted,
-        "spectator_herald": herald,
+        "herald_conditioning": conditioning,
+        # Descriptive: each herald bit's member spread over the control-zero shots.
+        "control_zero_bit_herald": rca.herald_report(
+            run, calibrations, lambda name: member_key(name) is not None, TEST_ALPHA, rca.HERALD_ROLES.index("control")
+        ),
     }
     if not admitted["admissible"]:
         output["tests"] = {name: {"status": "not_admissible", "reason": "schedule"} for name in TESTS[1:]}
         return output
-    if herald["present"] and not herald["admissible"]:
+    if reads is None:
+        output |= evaluate(None, {}, 0.0)
+        return output
+    totals = {name: pair[1] for name, pair in conditioning["kept_shots"]["all_zero"].items()}
+    herald = selection_admission(reads["all_zero"], totals, TEST_ALPHA)
+    output["spectator_herald"] = herald
+    if not herald["admissible"]:
         output["tests"] = rca.herald_refusal(herald, TESTS[1:])
         return output
-    reads, conditioning = run_reads(run, control)
-    output["control_herald_conditioning"] = conditioning
     exposures = {name: int(schedule["exposure_dt"]) for name, schedule in schedules.items()}
-    output |= evaluate(reads, exposures, float(family["dt_seconds"]) * 1e6)
-    output["spectator_herald_margin"] = rca.spectator_margin(herald)
+    dt_us = float(family["dt_seconds"]) * 1e6
+    output |= evaluate(reads["all_zero"], exposures, dt_us)
+    secondary = evaluate(reads["control_zero"], exposures, dt_us)
+    output["secondary_control_zero"] = {"status": "descriptive", **secondary}
     return output
 
 
@@ -557,7 +597,7 @@ def _check_rz_sign() -> float:
     for multiple in (0, *DESIGN_MULTIPLES):
         for quadrature in QUADRATURES:
             kind = "immediate" if multiple == 0 else "idle_ground"
-            built = n21_spectator_ramsey(kind, quadrature, measure_dt=415, reset_dt=421, idle_multiple=max(multiple, 1))
+            built = n21_spectator_ramsey(kind, quadrature, measure_dt=415, reset_dt=421, idle_multiple=multiple or None)
             probed = QuantumCircuit(*built.qregs, *built.cregs)
             for instruction in built.data:
                 probed.append(instruction)
@@ -598,7 +638,7 @@ def _check_control_excited() -> dict[str, str]:
         added = excited[(time, quadrature)]
         phases += ["00"] * added + ["10"] * (3686 - added)
         heralds = ["0000"] * shots + ["0001"] * 3686
-        reads_conditioned[name] = conditioned_zeros(phases, heralds, 3)
+        reads_conditioned[name] = conditioned_zeros(phases, heralds, (3,))
         reads_mixed[name] = (sum(value[0] == "0" for value in phases), len(phases))
     conditioned = evaluate(reads_conditioned, exposure_dt, DT_US)["tests"]
     mixed = evaluate(reads_mixed, exposure_dt, DT_US)["tests"]
@@ -612,10 +652,50 @@ def _check_control_excited() -> dict[str, str]:
     }
 
 
+def _check_neighbor_excited() -> dict[str, Any]:
+    """An excited-neighbor subpopulation biases the control-only fit and leaves the all-zero fit at the truth.
+
+    Every member gains 15 percent added shots that herald work bit 1 (herald
+    bit 1, a 143 neighbor) excited and the control 0, and read qubit 2 under
+    the ZZ shift such a neighbor imposes, a 0.1 MHz detuning; the control-only
+    selection keeps them, the all-zero selection drops them.
+    """
+    exposures = design_exposures_us()
+    added = round(0.15 * DESIGN_SHOTS)
+    shifted = {
+        (time, quadrature): zeros
+        for time, quadrature, zeros, _shots in expected_points(EXPONENTIAL | {"detuning_mhz": 0.1}, exposures, added)
+    }
+    selections: dict[str, dict[str, tuple[int, int]]] = {"all_zero": {}, "control_zero": {}}
+    exposure_dt: dict[str, int] = {}
+    for time, quadrature, zeros, shots in expected_points(EXPONENTIAL, exposures, DESIGN_SHOTS):
+        multiple = round(time / (WINDOW_DT * DT_US))
+        name = f"m{multiple}_{quadrature}"
+        exposure_dt[name] = multiple * WINDOW_DT
+        excited = shifted[(time, quadrature)]
+        phases = ["00"] * zeros + ["10"] * (shots - zeros) + ["00"] * excited + ["10"] * (added - excited)
+        heralds = ["0000"] * shots + ["0010"] * added
+        selections["all_zero"][name] = conditioned_zeros(phases, heralds, (0, 1, 2, 3))
+        selections["control_zero"][name] = conditioned_zeros(phases, heralds, (3,))
+    found = {label: evaluate(reads, exposure_dt, DT_US) for label, reads in selections.items()}
+    primary = found["all_zero"]["fits"]["free"]["estimates"]
+    secondary = found["control_zero"]["fits"]["free"]["estimates"]
+    if abs(primary["beta"] - 1.0) > 0.02 or abs(primary["t2_star_us"] - 7.2) > 0.15:
+        raise RuntimeError(f"the all-zero selection misses the truth: {primary}")
+    shift = abs(secondary["t2_star_us"] - 7.2) / found["control_zero"]["fits"]["free"]["standard_errors"]["t2_star_us"]
+    beta_shift = abs(secondary["beta"] - 1.0) / found["control_zero"]["fits"]["free"]["standard_errors"]["beta"]
+    if max(shift, beta_shift) < 3.0:
+        raise RuntimeError(f"the control-only selection keeps the excited neighbor without bias: {secondary}")
+    return {
+        "all_zero": f"beta {primary['beta']:.3f} T2* {primary['t2_star_us']:.3f}",
+        "control_zero": f"beta {secondary['beta']:.3f} T2* {secondary['t2_star_us']:.3f}",
+    }
+
+
 def _check_empty_selection() -> str:
     phases = ["00"] * 10
     heralds = ["0001"] * 10
-    reads = {"m0_x": conditioned_zeros(phases, heralds, 3), "m1_x": (5, 10)}
+    reads = {"m0_x": conditioned_zeros(phases, heralds, (3,)), "m1_x": (5, 10)}
     tests = evaluate(reads, {"m0_x": 0, "m1_x": WINDOW_DT}, DT_US)["tests"]
     if any(test["status"] != "not_evaluable" for test in tests.values()):
         raise RuntimeError(f"an empty herald selection reads {tests}")
@@ -694,6 +774,7 @@ def self_check() -> dict[str, Any]:
         "plants": _check_plants(),
         "rz_sign_detuning_mhz": _check_rz_sign(),
         "control_excited": _check_control_excited(),
+        "neighbor_excited": _check_neighbor_excited(),
         "empty_selection": _check_empty_selection(),
         "schedules": _check_schedules(),
     }
