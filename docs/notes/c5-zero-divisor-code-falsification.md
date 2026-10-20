@@ -1,4 +1,4 @@
-# C5: zero-divisor code — falsified thought experiment (2026-10-19)
+# C5: zero-divisor code -- reported falsification withdrawn, replayed decoder failure (2026-10-19)
 
 ## The conjecture
 
@@ -24,39 +24,45 @@ the decoded label differs from the sent label).
 
 Replay status (issue #314): the seeded replay under
 `docs/evidence/c5_zero_divisor_code/` builds the code from `cd_core`'s sign
-table with definitions fixed before computing, under the literal
-first-partner encoder and an injective perfect-matching control encoder.
-The table and counts in the sections below are the original reported
-values; the replayed values sit in the next section. Replay command:
+table. The literal first-partner encoder was fixed before computing; the
+injective perfect-matching encoder is a control added after the
+first-partner results were seen. The "Reported result" table below keeps the
+original values; every other number in this note is replayed. Replay
+command:
 `PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay.py --check`.
 
-## Replay verdict: counts withdrawn, decoder failure confirmed
+## Replay verdict: the reported falsification is withdrawn
+
+Issue #314's rule withdraws the falsification if the decoder matches or
+beats random coding at low noise or if the counts differ. The counts differ
+under every tested encoder, so the reported falsification, with its counts,
+its 0.275 matched-filter floor and its 0.575 profile rate, is withdrawn.
 
 | quantity | reported | first_partner | matching |
 |---|---|---|---|
-| C5 symbol error rate, sigma 0.01 | 0.762 | 0.760 | 0.762 |
+| C5 symbol error rate, sigma 0.01, 40-message subset | 0.762 | 0.760 | 0.762 |
+| C5 symbol error rate, sigma 0.01, all 84 messages | -- | 0.750 | 0.751 |
 | random + matched filter, sigma 0.01 | 0.000 | 0.000 | 0.000 |
-| algebraic + matched filter, sigma 0.01 | 0.275 | 0.750 | 0.000 |
-| 84-profile decoder, zero noise | 0.575 | 0.750 | 0.600 |
+| algebraic + matched filter, sigma 0.01, all 84 | -- | 0.667 | 0.000 |
+| algebraic + matched filter, sigma 0.01, subset | 0.275 | 0.750 | 0.000 |
+| 84-profile decoder, sigma 0, subset | 0.575 | 0.750 | 0.600 |
 | mean annihilator ties | 3.9 | 4.0 | 4.0 |
 | distinct signatures | 35 | 28 | 42 |
 | distinct blades | 57 | 28 | 84 |
 
-The issue's falsifier requires the three counts to match exactly; they match
-under neither encoder, so the reported counts and the 57-blade structural
-cause are withdrawn. Every left factor has exactly 4 annihilating partners,
-so every tie count is 4 and a mean of 3.9 cannot arise. The decoder failure
-stands on the injective control: with 84 distinct blades the matched filter
-decodes without error at low noise while the null-argmin decoder errs at
-0.76, because each blade has 4 exact annihilators. The first-partner encoder
-alone would not show this, since its 28 blades hold every decoder at 0.750.
+The replay supports a narrower, new finding. Under the post-hoc matching
+control, with 84 distinct blades, the matched filter decodes every message
+at low noise while the null-argmin decoder errs at 0.751 over all 84
+messages at sigma 0.01 (0.762 on the 40-message subset), against 0.000 for
+random coding. The first-partner encoder alone cannot show this, because its
+28 blades bound every decoder at 1 - 28/84 = 0.667 over all 84 messages.
 
 ## Reported result (withdrawn as a replayable record)
 
-The original run reported the table below from an unrecorded 57-blade
-encoder. Its C5 column matches the replay; its matched-filter column
-belongs to that encoder alone and reproduces under neither replayed
-encoder.
+The original run reported the table below from an encoder the note never
+recorded. Its C5 column lies within about two standard errors of the
+replayed subset rates; its matched-filter column reproduces under neither
+replayed encoder.
 
 | noise sigma | algebraic + annihilation (C5) | algebraic + matched filter | random + matched filter |
 |---|---|---|---|
@@ -67,36 +73,34 @@ encoder.
 | 0.50 | 0.949 | 0.777 | 0.714 |
 
 C5 fails at near-zero noise (symbol error rate 0.76) where random coding is
-perfect (0.00), and the replay confirms that gap.
+perfect (0.00); the replay finds the same gap on its own encoders.
 
-## Structural cause
+## Structural cause (replayed)
 
 Every signed two-support left factor of `cd_core`'s corpus annihilates
 exactly 4 partners, and the relation is symmetric, so every transmitted
-partner blade has exactly 4 exact annihilators among the 84 left factors
-and the null-argmin decoder ties 4 ways on every message. With noise the
-four exact nulls stay near zero and argmin picks among them, so the symbol
-error rate tends to 3/4 as sigma tends to 0 for any encoder that sends a
-partner blade; both replayed encoders read 0.750 at sigma 0 and 0.76 at
-sigma 0.01. The reported 3.9 mean ties, 35 signatures and 57 distinct
+partner blade has exactly 4 exact annihilators among the 84 left factors.
+At sigma 0 the decoder ties 4 ways and resolves to the lowest index, which
+errs on 56 of 84 messages (0.667, both encoders). With noise the four exact
+nulls stay near zero and argmin no longer singles out the sender's
+annihilator: the all-84 rate is 0.750 at sigma 0.001 to 0.1 under both
+tested encoders. The reported 3.9 mean ties, 35 signatures and 57 distinct
 blades do not arise under the replayed definitions (4.0, 28 or 42, 28 or
-84) and are withdrawn.
+84).
 
 The rescue decoder, which matches the full 84-component annihilation
 profile against each message's noiseless profile, also fails: messages
-sharing a signature collide, 0.600 at zero noise on the 40-message subset
-under the matching encoder (42 signatures) against the reported 0.575.
+sharing a signature collide, 0.500 over all 84 messages and 0.600 on the
+subset at sigma 0 under the matching encoder (42 signatures).
 
 ## Scope of the no-go
 
-The falsification covers partner-blade encoders of the 84 left factors,
-the incoherent null-argmin decoder and the 84-profile decoder, under
-additive Gaussian noise at the tested sigma levels. Within that scope the
-exactness of the nulls is inseparable from their ambiguity: the symmetry
-that makes a_i * b_i = 0 exact gives each blade 4 exact annihilators. The
-perfect-matching control encoder was added after the first-partner results
-to separate the decoder from code-book collisions, and the 4-annihilator
-count, not either encoder, fixes the 3/4 floor.
+The replayed failure covers the two tested partner-blade encoders of the 84
+left factors, the incoherent null-argmin decoder and the 84-profile
+decoder, under additive Gaussian noise at the tested sigma levels. Within
+that scope the exactness of the nulls is inseparable from their ambiguity:
+the symmetry that makes a_i * b_i = 0 exact gives each blade 4 exact
+annihilators. Other encoders are untested.
 
 It does not establish that null-based communication is structurally
 impossible in general. The tested decoders are incoherent: they discard
@@ -132,7 +136,7 @@ incoherent probes in resolving power on zero-divisor-adjacent structure.
 The antenna metaphor retires as a code but remains valid as description: the
 sigma_min rose is a radiation pattern, the 168 ruling planes are null
 directions, sigma_min is channel gain. The receive half was always the real
-half — the dark ports are null-attenuation measurements, and that stands.
+half -- the dark ports are null-attenuation measurements, and that stands.
 The zero divisors remain pathology with structure, not machinery.
 
 ## Distribution-shift note

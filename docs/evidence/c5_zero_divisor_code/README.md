@@ -23,12 +23,6 @@ results are known.
   scaled to unit norm, `x_i = b_i / sqrt(2)`. The note does not say how an
   edge picks its blade; the first partner is the literal choice that needs no
   further parameter.
-- **Injective control encoder.** The first-partner rule sends only 28
-  distinct blades, so it cannot separate the decoder from collisions in the
-  code book. The `matching` encoder sends each left factor its mate in the
-  first perfect matching of the annihilation graph (depth-first in sorted
-  order, `perfect_matching`): 84 distinct blades, each still annihilated by
-  exactly 4 left factors. Both encoders see the same seeded noise.
 - **Noise.** The receiver sees `v = x_i + sigma n` with `n` standard normal in
   16 dimensions. The replay evaluates `b_i + sqrt(2) sigma n`, which is
   `sqrt(2) v`, so every decoder compares the same quantities and the
@@ -68,6 +62,17 @@ results are known.
   batched with numpy in a single process, so the result does not depend on a
   worker count.
 
+## Control added after the first-partner results
+
+The first-partner rule sends only 28 distinct blades, which hold every
+decoder at 1 - 28/84 = 0.667 over all 84 messages, so it cannot separate
+the decoder from collisions in the code book. After those results were
+seen, the `matching` encoder was added: each left factor sends its mate in
+the first perfect matching of the annihilation graph (depth-first in sorted
+order, `perfect_matching`), giving 84 distinct blades, each still
+annihilated by exactly 4 left factors. Both encoders see the same seeded
+noise. It is a post-hoc control and enters no preregistered verdict.
+
 ## Result
 
 Counts under the definitions above (`result.json`, `counts`):
@@ -100,16 +105,16 @@ own codewords, profile the 84-component annihilation-profile decoder:
 | 0.5 | 0.705 | 0.952 | 0.904 | 0.948 | 0.950 | 0.745 | 0.929 |
 | 1 | 0.923 | 0.981 | 0.966 | 0.982 | 0.981 | 0.929 | 0.980 |
 
-Under first_partner every decoder sits at the 0.750 floor its 28 blades
-impose, so that encoder tests the code book, not the decoder. Under matching
-the matched filter resolves all 84 blades without error at low noise while
-the annihilation decoder still errs at 0.762 at sigma 0.01: each blade has
-4 exact annihilators and argmin picks among them, so the failure belongs to
-the null-argmin decoder. The profile decoder resolves pairs of messages
-that share a signature and errs at 0.600 on the subset (0.500 over all 84,
-42 signatures for 84 messages). The note's matched-filter floor (0.275) and
-profile rate (0.575) belong to its unrecorded 57-blade encoder and reproduce
-under neither encoder.
+Over all 84 messages (`ser_84`), first_partner holds every decoder at
+0.667 at sigma 0 (28 distinct blades) and the C5 decoder at 0.750 from
+sigma 0.001 to 0.1; the subset reads 0.750 at sigma 0 because 30 of its 40
+messages share a blade with a lower-index message. Under matching the
+matched filter resolves all 84 blades without error at low noise while the
+annihilation decoder errs at 0.751 over all 84 at sigma 0.01: each blade
+has 4 exact annihilators and argmin no longer singles out the sender's. The
+profile decoder errs at 0.500 over all 84 (0.600 on the subset), since 42
+signatures cover 84 messages. The note's matched-filter floor (0.275) and
+profile rate (0.575) reproduce under neither encoder.
 
 ## Replay
 
