@@ -1183,13 +1183,14 @@ Decommissioned at the snapshot: `sim:gpu:medium`.
 <!-- quandela-facts:end -->
 
 Status, performance figures, availability statistics and maintenance
-windows change between reads and live only in the catalogue.
+windows change between reads and live in the catalogue. The live processor
+reads that the guide cites are retained under `docs/evidence/quandela/`.
 
 **Runner.** A run directory is a copy of one case `job-NN/` under
 `results/quandela/runs/UTC-PLATFORM-SERIES-job-NN/`. `qd_platform.py plan
 RUN_DIR --platform NAME --max-credits C --expected-seconds S
 --per-job-credits P` makes every submit check read-only (digest, platform
-status and duration, S within max_duration, P plus max_shots times the live
+status on the Explorer row and on the processor record, duration, S within max_duration, P plus max_shots times the live
 price within C, no running or queued job, Perceval's shot estimate within
 max_shots), records the processor's performance figures and prints the body
 Perceval would send; the written case states S, P and C and quotes it. `submit`
