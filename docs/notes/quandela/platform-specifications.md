@@ -3,7 +3,7 @@
 This page records the specification of each Quandela quantum processor (QPU) and of the simulators on the same API. Two sources feed it, and each figure names its source:
 
 - **Snapshot**: [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-20T08:51:26+00:00, with the Belenos chip architecture carried from 2026-10-17T17:53:31+00:00 because the live record had none. The 2026-10-17 snapshot that the earlier figures come from is in commit `bfcfda2`. Gate core-502 checks the facts table in [README.md](README.md) and [AGENTS.md](../../../AGENTS.md) against this file.
-- **Live processor reads**: the processor records of `qpu:belenos` and `qpu:ascella`, read on 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). Only these two records are retained from the live session. Availability counters, usage totals and the daily availability series read in the same session are not retained here; the snapshot's `statistic` and `token_usage` fields hold the 2026-10-17 values.
+- **Live processor reads**: the processor records of `qpu:belenos` and `qpu:ascella`, read on 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). Only these two records are retained from the live session. The 04:09 UTC session's own availability and usage responses are not retained separately; the 2026-10-20 08:51 UTC snapshot's `account`, `statistic` and `token_usage` fields carry those figures as the catalogue read them.
 
 Calibration state, including the Belenos history, is in [calibration.md](calibration.md). Installed software and configuration are in [setup-verification.md](setup-verification.md).
 
@@ -75,9 +75,9 @@ Each is reported as the record states it. None is resolved here.
 
 ## Limits and availability
 
-- **Job limits** (snapshot `account.availability`): 1 running job, 1 queued job, 10 Quantum Toolbox jobs. The counters at the snapshot were 0, 0 and 0.
-- **Account usage** (snapshot `token_usage`): no jobs at the snapshot. Later usage is not retained here; `qd_usage` reads it live.
-- **Explorer availability**: each Explorer row's `statistic` field carries the daily series in the snapshot. Days after 2026-10-17 are not retained here.
+- **Job limits** (2026-10-20 08:51 UTC snapshot, `account.availability`): 1 running job, 1 queued job, 10 Quantum Toolbox jobs. The counters at that snapshot were 0, 0 and 0.
+- **Account usage** (2026-10-20 08:51 UTC snapshot, `token_usage`): 31 jobs in total, 17 on `qpu:belenos` (1380 s) and 14 on `sim:belenos` (772 s), with 0 credits charged on both entries.
+- **Explorer availability**: each Explorer row's `statistic` field carries the daily series in the 2026-10-20 08:51 UTC snapshot. For `qpu:belenos` and `qpu:ascella` it runs from 2026-10-13 to 2026-10-20.
 - **Weekly maintenance** (snapshot Explorer row): `qpu:belenos` 2026-10-22 07:30 to 11:00 UTC (00:30 to 04:00 PDT). `qpu:ascella` lists none.
 
 ## What moved since the snapshot
