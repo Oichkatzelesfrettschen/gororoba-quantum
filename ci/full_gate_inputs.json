@@ -34,6 +34,9 @@
     "core-605": [
       "results/live/2026-10-20T031212.175942Z/**"
     ],
+    "core-608": [
+      "results/live/n21-q143-segmented-design.json"
+    ],
     "core-289": [
       "docs/evidence/walk-control-scaffolding/local_member_conformance.json",
       "results/live/*/record.json"

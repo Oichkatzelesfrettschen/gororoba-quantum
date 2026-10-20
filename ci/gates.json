@@ -1476,6 +1476,31 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --self-check",
+   "name": "core-606",
+   "seconds": 47.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --segmented-sweep",
+   "name": "core-607",
+   "seconds": 20.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-check results/live/n21-q143-segmented-design.json",
+   "name": "core-608",
+   "seconds": 600.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONWARNINGS=error \"$PYTHON\" patch_characterization.py",
    "name": "core-193",
