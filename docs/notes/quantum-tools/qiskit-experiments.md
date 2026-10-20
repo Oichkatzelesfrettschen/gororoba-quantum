@@ -43,7 +43,7 @@ Run every script that calls `.run(...)` under `if __name__ == "__main__":` (see 
   `MitigatedStateTomography` and `MitigatedProcessTomography` variants (listed
   in the library; not run here), for small registers (3^n measurement bases),
   the density-matrix reconstruction behind the coherence settings listed in
-  gororoba_quantum/AGENTS.md.
+  docs/notes/algebra_circuit_rules.md.
 - Not covered: pulse-level calibration experiments (IBM removed pulse-level
   control on 3 February 2025; `FineDrag` and `FineSXDrag` appear in the
   library and were not run) and device queries. Running an
@@ -221,7 +221,7 @@ experiments gain nothing from it.
 - `T1(physical_qubits, delays)` takes seconds and has no `unit=` argument
   (`TypeError: T1.__init__() got an unexpected keyword argument 'unit'`).
 - The retained snapshot Target reports `granularity` 1 and `min_length` 1, so
-  delay rounding is fine; the live Target's timing constraints (gororoba_quantum/AGENTS.md)
+  delay rounding is fine; the live Target's timing constraints (docs/notes/ibm_heron_platform.md)
   are the authority for hardware.
 - Quality labels (`good`) judge the fit, not agreement with the calibration.
   The example's `EPG_sx` (0.00042 +/- 0.00006) is the quantity to compare with

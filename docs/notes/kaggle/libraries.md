@@ -37,7 +37,7 @@ Why the local recipes exist:
 - **python-kagglesdk** builds from the AUR recipe unchanged: the PyPI sdist
   under a pinned sha256, depending on python-requests and python-protobuf.
 
-A broken or missing package is rebuilt the way gororoba_quantum/AGENTS.md
+A broken or missing package is rebuilt the way docs/notes/build_host/python-stack.md
 prescribes for the Python stack: python-kagglesdk first, from the AUR
 through paru, since `~/Github/PKGBUILDs` holds no recipe for it; then
 `makepkg -si --nocheck` in `~/Github/PKGBUILDs/python-jupytext`,

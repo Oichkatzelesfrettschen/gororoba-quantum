@@ -1,4 +1,4 @@
-"""Snapshot of the Heron Targets the account reaches, and the gororoba_quantum/AGENTS.md facts derived from them.
+"""Snapshot of the Heron Targets the account reaches, and the docs/notes/ibm_heron_platform.md facts derived from them.
 
 --out FILE (local, network) lists the account's hardware backends through
 QiskitRuntimeService and reads each one twice, plainly and with
@@ -13,7 +13,7 @@ credential, instance or account identifier enters the file.
 --check FILE (CI, offline) requires the snapshot's backends to be exactly
 ROSTER, recomputes every fact from the retained per-qubit values, requires
 each to hold on every backend, and requires the retained "facts" block to
-equal the recomputation, so a refreshed snapshot that contradicts gororoba_quantum/AGENTS.md
+equal the recomputation, so a refreshed snapshot that contradicts docs/notes/ibm_heron_platform.md
 fails until the text changes with it. Each backend's backend_version, when
 present, is a nonempty string and its processor_type a string dictionary with
 family and revision; a snapshot without backend_version passes.
@@ -49,7 +49,7 @@ INSTRUCTIONS = (
 FRACTIONAL = ("rzz", "rx", "cz", "sx")
 TIMING = {"granularity": 1, "min_length": 2, "pulse_alignment": 1, "acquire_alignment": 1}
 BASIS = ["cz", "id", "rz", "sx", "x", "xslow"]
-# The backends the Heron execution facts section of gororoba_quantum/AGENTS.md names; a refreshed
+# The backends the Execution facts section of docs/notes/ibm_heron_platform.md names; a refreshed
 # snapshot with another roster fails until the section and this tuple change together.
 ROSTER = ("ibm_fez", "ibm_kingston", "ibm_marrakesh")
 # rzz reports its own error, not the cz value, on more than this fraction of pairs.
@@ -145,7 +145,7 @@ def matching(a: dict[str, list[Any]], b: dict[str, list[Any]]) -> tuple[int, int
 
 
 def facts(data: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    """Each gororoba_quantum/AGENTS.md Heron fact, evaluated per backend from the retained values."""
+    """Each docs/notes/ibm_heron_platform.md Heron fact, evaluated per backend from the retained values."""
     out: dict[str, dict[str, Any]] = {}
     for name, b in sorted(data["backends"].items()):
         ins, frac = b["instructions"], b["fractional_instructions"]

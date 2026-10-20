@@ -15,7 +15,7 @@ and what it must prove before its output counts.
 | Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. An account without Persona identity verification gets a 4-core CPU machine for every TPU request; a verified account's request queues for a TPU, one batch session at a time (docs/notes/kaggle/tpu-research.md) | Qiskit or Aer |
 | Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |
 | A 15-qubit run (decision-gated) | the substrate an approved written case names: Kaggle T4 x2 or build host Aer, a GPU state wider than one T4 cache-blocked across both (`calibration_snapshot.blocking_options`; docs/notes/kaggle/gpu-runbook.md), or Tuna-17 through Quantum Inspire, whose `submit` refuses while another session's hardware job is live | any substrate the case does not name |
-| IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 16 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |
+| IBM Heron r2 (ibm_fez, ibm_kingston, ibm_marrakesh) | 16 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |
 | GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |
 | Build host (Arch, RTX 4070 Ti 12 GB; guide in the untracked `docs/local/`) | development, dry runs, calibration exports, CPU replays, the Arch-packaged hypercomplex stack and SageMath | runs the routing rule sends to Kaggle |
 

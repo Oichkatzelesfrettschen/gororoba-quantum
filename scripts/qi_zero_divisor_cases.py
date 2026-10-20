@@ -1,6 +1,6 @@
 """Exact Clifford+T zero-divisor witness for Tuna-17: Design B's dark, bright and fixture cases in a balanced rotation.
 
-The fixed-operand LCU of Design B (gororoba_quantum/AGENTS.md, "Zero-product
+The fixed-operand LCU of Design B (docs/notes/algebra_circuit_rules.md, "Zero-product
 witnesses") applies (L_{e1} + L_{e10})/2 to b = (e_k + e^{i phase} e_l)/sqrt2
 and reads the selector: P(s = 0) = ||(e1 + e10)(e_k +- e_l)||^2 / 8, which is
 ||x y||^2 / 2 for the normalized operands x and y. The cases are the
@@ -99,7 +99,7 @@ from select_lcu import anf_coefficients, joint_select_signs, sparse_pair_prep  #
 PACKAGE_TABLES = ROOT / "docs/evidence/algebra_packages/tables.json"
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
 # Packages whose retained D = 16 table is identical to cd_core
-# (gororoba_quantum/AGENTS.md, "Cayley-Dickson packages on the build host").
+# (docs/notes/algebra_circuit_rules.md, "Cayley-Dickson packages on the build host").
 IDENTICAL_PACKAGES = ("hypercomplex", "hypercomplex-engine", "Cayley-Calculator", "cayley-dickson")
 
 BACKEND = "tuna_17"

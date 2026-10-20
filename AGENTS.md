@@ -100,21 +100,42 @@ Grounding binds all operations through two authoritative pillars:
      (including Rocq formal certificates for `TargetFlipN21`, `FoldAverageDescent`,
      `TerminalChannelSeparation`, and `C881`).
    - Sedenion, octonion, and Cayley-Dickson multiplication conventions codified in
-     `gororoba_quantum/cd_core.py` and the Algebra Circuit Design Rules of gororoba_quantum/AGENTS.md.
+     `gororoba_quantum/cd_core.py` and the Algebra Circuit Design Rules of
+     docs/notes/algebra_circuit_rules.md.
 
 Every module, test contract, and hardware execution plan reflects these recorded sources.
 When an algebraic sign, gate duration, layout connectivity, or error rate is needed, code
 directly imports or validates against the registered repository artifact.
 
 
-## Algebra rules and Heron facts
+## Algebra rules and Heron r2 facts
 
-Circuit work that encodes Cayley-Dickson arithmetic on a qubit register follows
-the algebra circuit design rules of [gororoba_quantum/AGENTS.md](gororoba_quantum/AGENTS.md)
-(scripts/AGENTS.md repeats them byte for byte). The same file holds the Heron r2
-execution facts, the Python stack of the build host and the package table. A
-design reads the live Target as the timing authority and
-`service.backends()` before it names a backend.
+Binding rules for circuit and hardware work, before the notes open:
+
+- `a -> L_a` is a linear encoding, never an algebra homomorphism.
+- `|0>` is `e_0 = 1`, the identity, never the zero vector. A zero product is a
+  heralded branch of zero probability while the full state keeps norm 1.
+- Algebra index bit `b` sits on register qubit `b` (little-endian, as in
+  Qiskit outcome strings).
+- A sign register needs `|->` for phase kickback; `|0>` records a which-path
+  label.
+- Certify every zero-divisor pair with `cd_core` before circuit work.
+  `gororoba_quantum/cd_core.py` is the specification, and a package result
+  enters evidence only through a declared map onto it, checked on every basis
+  pair.
+- The account reaches ibm_fez, ibm_kingston and ibm_marrakesh, all Heron r2:
+  156 qubits, heavy-hex, basis cz, id, rz, sx, x and xslow. The live Target is
+  the timing authority (dt 4 ns), and `service.backends()` precedes naming a
+  backend.
+- IBM removed pulse-level control on 3 February 2025; designs use the gate
+  set, fractional gates and dynamic circuits.
+
+The full rules, witnesses, observables and the Cayley-Dickson package table are
+in [docs/notes/algebra_circuit_rules.md](docs/notes/algebra_circuit_rules.md).
+The Heron r2 execution facts are in
+[docs/notes/ibm_heron_platform.md](docs/notes/ibm_heron_platform.md), and the
+build-host Python stack in
+[docs/notes/build_host/python-stack.md](docs/notes/build_host/python-stack.md).
 
 ## QPU time and calibration
 
@@ -358,7 +379,7 @@ unresolveReviewThread.
   run it as data: live_run.py records each backend's `backend_version` and
   `processor_type` from its configuration in `backends`, `system_inventory`
   and each group, and the properties' `backend_version` at each execution
-  start in collect.json. Calibration and Heron Target snapshots carry the
+  start in collect.json. Calibration and Heron r2 Target snapshots carry the
   same fields; a simulation record that copies a snapshot's calibration
   stamp copies them too (`calibration_snapshot.backend_identity`) beside the
   Aer version and device, and one that names its snapshot by path reaches

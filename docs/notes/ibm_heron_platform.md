@@ -32,15 +32,18 @@ granularity 1, min_length 2, pulse_alignment 1, acquire_alignment 1,
 default repetition delay 250 us, `rep_delay_range` [0, 2 ms], basis gates
 cz, id, rz, sx, x, xslow, and supported instructions that include
 `measure_2`, `measure_reset`, `measure_reset_2`, `reset_2` and `store`.
-`rx` reports the `sx` error on every qubit. The preset transpiler at
-optimization levels 1 to 3 emitted no `xslow` for a 5-qubit circuit of X,
-SX, RX and CX gates. ibm_fez reported maintenance with 55 pending jobs
+`xslow` is a native 1 us X sharing its reported error with `x` and `sx` on
+every qubit, and `rx` reports the `sx` error on every qubit. The preset
+transpiler at optimization levels 1 to 3 never emits `xslow` (none appeared
+for a 5-qubit circuit of X, SX, RX and CX gates), so it appears only where a
+circuit names it. ibm_fez reported maintenance with 55 pending jobs
 shortly before the read; its Target stayed readable.
 
 [I] The `rzz` errors contradict the fractional-gates guide's statement that
 the reported value is a copy of the non-fractional counterpart: the copy
 holds for `rx`, not for `rzz` on these backends at this read. On ibm_fez and
-ibm_marrakesh the median `rzz` error exceeds `cz`, so a fractional
+ibm_marrakesh the median `rzz` error exceeds `cz`; `rzz` reports its own
+error on more than 90 percent of pairs on every backend, so a fractional
 decomposition is not a free improvement.
 
 ## Documentation pages and retrieval
@@ -82,11 +85,77 @@ and then fails at execution
 A design below 50 us therefore takes the changelog's 20 us as the floor,
 and the configuration's range only as the upper bound.
 
+## Execution facts
+
+The account reaches ibm_fez, ibm_kingston and ibm_marrakesh, all Heron r2
+(156 qubits, heavy-hex, native CZ). Heron r3 and Nighthawk (square grid)
+exist in IBM's processor list and are absent from this account, so
+`service.backends()` is the authority before a design names a backend.
+`scripts/heron_target_snapshot.py --out` reads the live Targets into
+`docs/evidence/heron_platform/targets.json`, and gate core-254 recomputes
+every per-backend fact of the measured paragraph above from it; a refreshed
+snapshot that contradicts this note fails until the text changes with it. The
+rules below restate the [P] pages and [M] reads as design constraints.
+
+- **The Target is the timing authority.** A design reads the timing
+  constraints from the Target and assumes no 16-sample alignment.
+  live_run.py binds them into the calibration identity.
+- **Measurement variants.** `measure_2` (`MidCircuitMeasure`) is the shorter
+  mid-circuit readout IBM recommends where supported, with a higher reported
+  assignment error than `measure`. A reset is a measurement followed by a
+  conditional flip, since `reset` lasts exactly as long as `measure_reset`
+  and `reset_2` as long as `measure_reset_2` on every qubit. Switching
+  variants changes the physical measurement and needs its own control; Aer
+  lacks `measure_2`, so local simulation needs an explicit representation
+  (QPU_EXECUTION_ROADMAP.md).
+- **Dynamic-circuit limits** (execute-dynamic-circuits guide): one level of
+  `if` with no nesting, no reset or measurement inside a conditional,
+  operands of at most 32 bits, no loops, switch or arithmetic, and a
+  per-job broadcast budget of about 300 broadcasts of 60 bits or 2400 of 1
+  bit.
+- **Repetition delay.** The range changes over time, so a design reads
+  `backend.rep_delay_range`. A lower delay raises state-preparation error,
+  and `rep_delay` is one value per job.
+- **Execution order.** Circuits iterate column-wise over shots; neither PUB
+  order nor single-batch execution of a job is guaranteed, so adjacent
+  entries of a shot array are not adjacent physical executions.
+- **Billing** is QPU lock time with about 2 s of overhead per sub-job, and
+  the service splits a job too large for its execution engine into
+  sub-jobs. `scheduler_timing` and the compilation circuit time are
+  schedule evidence, not billing. In job and batch mode a job cancelled or
+  failed by user error bills what it consumed, preparation overhead
+  included, and a system error bills zero; a session bills its active
+  wall-clock time, idle time and failed jobs included.
+- **Calibration** runs as roughly hourly monitoring interleaved with user
+  jobs plus triggered recalibration, under two hours a day on Heron, so two
+  jobs submitted together, or one job waiting in the queue, can execute
+  under a calibration other than the one it was planned against.
+  live_run.py checks calibration at each submitted batch, and `--collect`
+  fetches `properties(datetime=...)` and `target_history(datetime=...)` at
+  each PUB's execution start and replays under them, so the planning
+  Target and the execution calibration are separate identities.
+- **Fractional gates** (`use_fractional_gates=True`, experimental):
+  `rzz(theta)` for 0 < theta <= pi/2 and `rx(theta)` for any theta; a bound
+  parameter outside that range fails the job; Pauli twirling, PEC and PEA
+  are unsupported with them and TREX is supported. A fractional
+  decomposition is an intervention with its own controls, never a silent
+  substitution.
+- **Stretch** (Qiskit 2.0 or later) resolves at compile time and adds any
+  remainder to the first delay that uses it; the resolved values come from
+  the experimental execution options `stretch_values` and
+  `scheduler_timing`, and equal symbolic halves are checked against them.
+- **Runtime 0.48 to 0.50.** 0.48 deprecates differing `pub.shots` across the
+  PUBs of one job; 0.49 adds `MidCircuitReset` and
+  `ConvertToMidCircuitResetAndMeasure`; 0.50 adds the client-side
+  `executor_sampler.Sampler`, moves `max_execution_time` to the top level
+  (live_run.py sets it there) and adds `XSlowGate`. `store` is a supported
+  instruction from runtime 0.47.
+
+The Python stack the build host runs against these pins is in
+[python-stack.md](build_host/python-stack.md).
+
 ## Mapping to this repository
 
-- [I] The Heron execution facts section of gororoba_quantum/AGENTS.md states the rules these
-  measurements and pages support; core-254 holds the measured
-  ones to the retained snapshot.
 - [I] live_run.py already sets `max_execution_time` at the Sampler's top
   level, records the timing constraints in the calibration identity, and
   replays collected PUBs under the calibration at their execution start.
