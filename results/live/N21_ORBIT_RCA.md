@@ -296,17 +296,67 @@ idle-minus-idle_ground statistic, -0.032, plus the herald margin), against
 the 0.367 qubit 143 loses across the idle with the control grounded. A
 control-state-dependent coupling to 142 therefore accounts for at most about
 11 percent of the window loss. The dominant loss, about 37 percent of the
-Ramsey visibility across 836 dt (3.3 us), is 143's own idle dephasing, which
-a pure exponential decay places near T2* of 7 us against the reported echo
-T2 of 111 us: a quasi-static detuning or low-frequency noise that an echo
-removes, so the work CZ overlap of the previous section acts on a register
-already dephasing during the window.
+Ramsey visibility across 836 dt (3.3 us), belongs to 143 itself and not to
+its coupling with the control. A pure exponential decay through these two
+points would place T2* near 7 us; the delay sweep of the next section
+refutes that reading, because the visibility revives at longer idles, so
+the 3.3 us loss is the first descent of a coherent beat rather than
+dephasing.
 
-Open: a Ramsey delay sweep on 143 with the control grounded, read at X and Y,
-fits T2* and the detuning; an oscillating phase identifies a coherent
-detuning that a frame correction or the delay-X-delay-X echo cancels, and a
-monotone decay at fixed phase identifies incoherent low-frequency noise that
-only the echo addresses.
+## Ramsey delay sweep with the control grounded
+
+Approved dry run 2026-10-20T031107.452802Z (consumed), run
+2026-10-20T031212.175942Z, job dbbdog8c77vs73846ceg, ibm_fez, 14 PUBs of
+12288 shots with the initialization herald, 15 s charged; preregistered
+analysis in [ramsey.json](2026-10-20T031212.175942Z/ramsey.json)
+(scripts/n21_spectator_ramsey.py, gate core-603), case in
+[N21_SPECTATOR_RAMSEY_CASE.md](N21_SPECTATOR_RAMSEY_CASE.md). The pinned
+roles of the previous section hold; qubit 143 idles k windows of 836 dt with
+control 142 in |0>, and each delay reads X and Y over the shots whose herald
+reads all four pinned qubits 0.
+
+| Idle (us) | 0 | 3.344 | 6.688 | 10.032 | 13.376 | 16.720 | 20.064 |
+|---|---|---|---|---|---|---|---|
+| Visibility | 0.997 | 0.612 | 0.395 | 0.885 | 0.743 | 0.255 | 0.705 |
+
+Preregistered verdicts, family alpha 0.05 split equally over four tests
+(0.0125 each):
+
+| Test | Reading | Verdict |
+|---|---|---|
+| spectator_herald_admission | every bit (142, 136, 143, 144) passes its excitation-spread bound | admitted |
+| decay_shape | free stretch exponent beta 0.5, at the fit's lower bound | neither |
+| detuning | 26.3 kHz, interval 25.7 to 27.0 kHz | detuned |
+| ringdown_consistency | no fixed beta extrapolates the idle points to t = 0 | not_evaluable |
+
+The shape fit sits on its 0.5 bound, so its Wald interval (0.41 to 0.59)
+describes no identified parameter, and the detuning comes from a
+single-frequency model the data contradict, so 26.3 kHz is no valid
+detuning estimate. The control-only selection reads the same visibilities
+within 0.002.
+
+Finding: visibility falls to 0.395 at 6.7 us, revives to 0.885 at 10.0 us,
+falls to 0.255 at 16.7 us and revives to 0.705 at 20.1 us. A dephasing
+envelope is monotone, so the window loss is coherent beating between two
+frequency components of qubit 143, and T2* of 7 us is withdrawn.
+
+Descriptive fit, outside the preregistration: the two-component model
+V(t) = |a + (1 - a) exp(2 pi i df t)| exp(-t / T) fits the seven points
+with a = 0.65, an envelope T near 126 us and residual sum of squares
+3.8e-5. The 3.344 us sampling aliases df: 89.8, 209.3, 388.8 and 508.3 kHz
+fit equally, so the splitting is undetermined beyond df = 89.8 + k 299.0
+or 209.3 + k 299.0 kHz.
+
+Inference, medium confidence: a 0.65 / 0.35 split between two frequencies
+fits charge-parity splitting of 143's transition or a coupling to a
+two-level system. A ZZ shift from an excited neighbor is disfavored,
+because the all-zero herald selection removes shots with any pinned
+neighbor excited and reads the same beat. A dense sweep at about 0.25 us
+steps over 0 to 20 us resolves both components and df without aliasing;
+repeating it over hours separates a parity splitting, whose df stays fixed
+while the weights follow the parity occupation, from a TLS coupling, whose
+df drifts with the TLS frequency. A single-component decay at that
+resolution falsifies the beat reading.
 
 ## Mitigation
 

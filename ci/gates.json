@@ -1451,6 +1451,14 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --check",
+   "name": "core-603",
+   "seconds": 4.1,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONWARNINGS=error \"$PYTHON\" patch_characterization.py",
    "name": "core-193",
