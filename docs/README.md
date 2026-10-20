@@ -13,8 +13,8 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 25 licensed PDFs and two aliases;
-97 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 26 licensed PDFs and two aliases;
+101 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
@@ -248,6 +248,7 @@ hardware cases retain their independent admission gates.
 | Singular sectors and dilation | [sector split, census link and dynamics](notes/singular_sector_dynamics.md): dark, bright and anticommuting sectors of every two-term element, the Hermitian dilation's frequencies, product-formula exactness, the frozen Design B walk and its echo-matched control; [LCU](notes/1202.5822.md), [oblivious amplification](notes/1312.1414.md), [Hamiltonian block encoding](notes/2510.06316.md), [QSVT](notes/1806.01838.md) |
 | Measurement foundations | [coherence decay](notes/0909.4585.md), [trajectories](notes/1305.7270.md), [efficient tomography](notes/1101.4366.md), [pulse removal, tomography API and early superconducting tomography](notes/measurement_foundations_web_sources.md); which laboratory reconstructions transfer to the cloud gate set |
 | Hypercomplex theory and operational encodings | [normed division algebras](notes/math-0105155.md), [single-photon hypercomplex test](notes/1602.01624.md) with [Adler's critique](notes/1604.04950.md) and [the reply](notes/1607.01648.md), [superconducting](notes/2210.10255.md) and [trapped-ion](notes/2305.03766.md) non-Abelian anyons, [Crossref records](notes/hypercomplex_quantum_crossref_records.md), [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md); encoding an algebra in complex quantum mechanics against testing a hypercomplex theory |
+| Dark-subspace certificate | [source map](notes/quandela/bdsc_sources.md): [eigentheory](notes/0905.2987.md), [detector tomography](notes/0807.2444.md), [GST](notes/2009.07301.md), [optical dilation](notes/1712.01413.md), [interferometer design](notes/1603.08788.md), [matrix Bernstein](notes/1004.4389.md), [subspace verification](notes/2410.12551.md); target spectrum, Kraus dilation, confidence radii and the preparation premise |
 
 ## Historical action items and current status
 

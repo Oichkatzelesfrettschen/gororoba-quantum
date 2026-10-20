@@ -11,6 +11,9 @@ reconstruction, the confidence radii and the certificate;
 under `docs/evidence/bdsc/`; `scripts/bdsc_packages.py` re-derives them
 through Perceval, python-hypercomplex, hyprat, python-flint and sympy.
 No acquisition, upload or cloud submission is authorized by these records.
+[bdsc_sources.md](bdsc_sources.md) separates the established algebra, the
+mathematical instrumentation and the statistical inference the certificate
+rests on, with each source's registered copy.
 
 ## Target
 

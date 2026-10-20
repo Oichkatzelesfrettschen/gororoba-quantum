@@ -7,8 +7,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 25 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 97 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 26 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 101 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -60,6 +60,7 @@ each source license in force.
 | [Levratti: active stabilizers and Cayley-Dickson zero-divisor supports](notes/levratti-2026-active-stabilizers.md) | [levratti-2026-active-stabilizers.pdf](pdf/levratti-2026-active-stabilizers.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [van der Schoot et al. 2023 -- quantum metrics on Quantum Inspire Starmon-5 (arXiv 2310.01120)](notes/2310.01120.md) | [2310.01120v1.pdf](pdf/2310.01120v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Nation et al. 2021 -- scalable measurement-error mitigation, M3 (arXiv 2108.12518)](notes/2108.12518.md) | [2108.12518v1.pdf](pdf/2108.12518v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Chen et al. 2025 -- Quantum subspace verification for error correction codes (arXiv 2410.12551)](notes/2410.12551.md) | [2410.12551v1.pdf](pdf/2410.12551v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Levratti 2026 -- Fano Duality, Projective Orthogonality and the CSS Bridge (author-hosted manuscript)](notes/levratti-2026-fano-css.md) | [levratti-2026-fano-css.pdf](pdf/levratti-2026-fano-css.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Covariant quantum kernels for data with group structure](notes/s41567-023-02340-9.md) | [2105.03406.pdf](pdf/2105.03406.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Challenges and opportunities in quantum optimization](notes/s42254-024-00770-9.md) | [2312.02279.pdf](pdf/2312.02279.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
@@ -88,9 +89,11 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 
 | Source note | Original download | Local filename in `docs/local_source_cache/` | Hosting evidence |
 | --- | --- | --- | --- |
+| [Lundeen et al. 2009 -- Tomography of quantum detectors (arXiv 0807.2444)](notes/0807.2444.md) | [PDF](https://arxiv.org/pdf/0807.2444v1) | `0807.2444v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0807.2444v1) |
 | [Roetteler 2008 -- Quantum algorithms for highly non-linear Boolean functions (arXiv 0811.3208)](notes/0811.3208.md) | [PDF](https://arxiv.org/pdf/0811.3208v2) | `0811.3208v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0811.3208v2) |
 | [Biss, Christensen, Dugger, Isaksen 2009 -- Eigentheory of Cayley-Dickson algebras (arXiv 0905.2987)](notes/0905.2987.md) | [PDF](https://arxiv.org/pdf/0905.2987v1) | `0905.2987v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0905.2987v1) |
 | [Roetteler 2009 -- Hidden shift for quadratics and for functions of large Gowers norm (arXiv 0911.4724)](notes/0911.4724.md) | [PDF](https://arxiv.org/pdf/0911.4724v1) | `0911.4724v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0911.4724v1) |
+| [Tropp 2012 -- User-friendly tail bounds for sums of random matrices (arXiv 1004.4389)](notes/1004.4389.md) | [PDF](https://arxiv.org/pdf/1004.4389v7) | `1004.4389v7.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1004.4389v7) |
 | [Gavinsky, Roetteler, Roland 2011 -- Quantum algorithm for the Boolean hidden shift problem (arXiv 1103.3017)](notes/1103.3017.md) | [PDF](https://arxiv.org/pdf/1103.3017v1) | `1103.3017v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1103.3017v1) |
 | [Decker, Ivanyos, Santha, Wocjan 2011 -- Hidden Symmetry Subgroup Problems (arXiv 1107.2189)](notes/1107.2189.md) | [PDF](https://arxiv.org/pdf/1107.2189v2) | `1107.2189v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1107.2189v2) |
 | [Martin-Lopez et al. 2012 -- Experimental realization of Shor's quantum factoring algorithm using qubit recycling (arXiv 1111.4147)](notes/1111.4147.md) | [PDF](https://arxiv.org/pdf/1111.4147v2) | `1111.4147v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1111.4147v2) |
@@ -99,6 +102,8 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Bremner, Montanaro and Shepherd -- approximate IQP sampling and cubic phases](notes/1504.07999.md) | [PDF](https://arxiv.org/pdf/1504.07999v2) | `1504.07999v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1504.07999v2) |
 | [Bales 2016 -- An alternate Cayley-Dickson product (arXiv 1602.02317)](notes/1602.02317.md) | [PDF](https://arxiv.org/pdf/1602.02317v1) | `1602.02317v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1602.02317v1) |
 | [Bales 2016 -- Periodicity of the Cayley-Dickson twists (arXiv 1602.02843)](notes/1602.02843.md) | [PDF](https://arxiv.org/pdf/1602.02843v3) | `1602.02843v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1602.02843v3) |
+| [Clements et al. 2016 -- Optimal design for universal multiport interferometers (arXiv 1603.08788)](notes/1603.08788.md) | [PDF](https://arxiv.org/pdf/1603.08788v2) | `1603.08788v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1603.08788v2) |
+| [Tischler, Rockstuhl, Slowik 2018 -- linear optical transformations with loss and gain (arXiv 1712.01413)](notes/1712.01413.md) | [PDF](https://arxiv.org/pdf/1712.01413v2) | `1712.01413v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1712.01413v2) |
 | [Gilyen, Su, Low, and Wiebe 2018 -- Quantum singular value transformation and beyond: exponential improvements for quantum matrix arithmetics (arXiv 1806.01838)](notes/1806.01838.md) | [PDF](https://arxiv.org/pdf/1806.01838v1) | `1806.01838v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1806.01838v1) |
 | [Rudinger et al. 2019 -- Probing context-dependent errors in quantum processors](notes/1810.05651.md) | [PDF](https://arxiv.org/pdf/1810.05651v1) | `1810.05651v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1810.05651v1) |
 | [Freedman, Shokrian-Zini, and Wang 2019 -- Quantum computing with octonions (arXiv 1811.08580)](notes/1811.08580.md) | [PDF](https://arxiv.org/pdf/1811.08580v5) | `1811.08580v5.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1811.08580v5) |
