@@ -52,8 +52,8 @@ experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 ## Source library and research replay
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
-replays. `literature -> docs` preserves recorded paths; new Markdown links use
-`docs/`. Immutable source ledgers retain their recorded bytes. The
+replays, and [docs/README.md](docs/README.md) is the map of every document.
+`literature -> docs` preserves recorded paths; new Markdown links use `docs/`. Immutable source ledgers retain their recorded bytes. The
 `sources` suite in ci/gates.json covers the source registry, the evidence
 replays and their checksum ledgers.
 

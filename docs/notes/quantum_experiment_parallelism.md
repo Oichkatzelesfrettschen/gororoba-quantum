@@ -23,7 +23,7 @@ they grant zero QPU execution approval.
 
 1. [I] Classical research can establish algebraic identities, exact finite
    classifications, proof certificates and cheaper synthesis. The
-   [Cayley-Dickson source notes](../README.md) and
+   [Cayley-Dickson source notes](../sources/README.md) and
    [claim boundaries](../../gororoba_quantum/CLAIM_BOUNDARIES.md) already
    distinguish finite evidence, formal proof and candidate general results.
 2. [I] Hardware research can identify model residuals, schedule effects,

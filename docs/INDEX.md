@@ -334,7 +334,7 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/check_verify_sources.py
 sha256sum -c docs/PDF_SHA256SUMS
 ```
 
-[Library overview](README.md) maps paper relevance. [Numerics](notes/topics/numerics_best_practice.md)
+[Library overview](sources/README.md) maps paper relevance. [Numerics](notes/topics/numerics_best_practice.md)
 collects the conditioning, precision, vectorization and runtime-package rules. The
 [coordinated roadmap](RESEARCH_ROADMAP.md) retains the cumulative mathematics,
 proof, optimizer, review, and hardware obligations. The next hardware priority
