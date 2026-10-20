@@ -47,7 +47,7 @@ product samples are
 | [pyoctonion](pyoctonion.md) | identical table | D = 8 exhaustive | doubling over pyquaternion |
 | [Octonion-Sedenion](octonion-sedenion.md) | identical table | D = 8, 16 exhaustive | doubling over numpy-quaternion; sedenions read with its own octonion module bound |
 
-Each package is installed as the Arch package named in the gororoba_quantum/AGENTS.md
+Each package is installed as the Arch package named in the docs/notes/algebra_circuit_rules.md
 algebra section and rebuilt from its local PKGBUILD when broken; a rebuild
 re-runs `--extract` so the pinned digest binds the reinstalled files.
 

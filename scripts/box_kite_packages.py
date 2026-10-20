@@ -1,6 +1,6 @@
 """Box-kite facts recomputed through each Cayley-Dickson package's declared map onto cd_core.
 
-A witness is one package at one dimension with the map the gororoba_quantum/AGENTS.md
+A witness is one package at one dimension with the map the docs/notes/algebra_circuit_rules.md
 package table declares: identity, a signed relabeling (python-octonion), the
 opposite algebra or the e3/e5/e6 sign flip (SageMath), or the split relation
 (same XOR index and associator signs, e4..e7 squaring to +1). Each witness

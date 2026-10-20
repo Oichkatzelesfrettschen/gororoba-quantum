@@ -32,7 +32,7 @@ Per the class docstrings (read from the installed source, not run):
   executor call contacts IBM. This is the readout-mitigation route for hardware
   jobs, while [mthree.md](mthree.md) and qiskit-experiments mitigators work
   on counts.
-- gororoba_quantum/AGENTS.md notes that fractional gates support TREX and not Pauli
+- docs/notes/ibm_heron_platform.md notes that fractional gates support TREX and not Pauli
   twirling, PEC or PEA.
 
 ## API ENTRY POINTS

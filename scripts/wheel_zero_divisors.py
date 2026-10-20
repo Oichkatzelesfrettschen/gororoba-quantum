@@ -103,7 +103,8 @@ Matrix = list[list[Fraction]]
 GVector = tuple[gw.GaussianRational, ...]
 ZERO = Fraction(0)
 # Cayley-Dickson basis invariants under cd_core's convention: ordered pairs of imaginary units that
-# anticommute and basis triples whose associator is nonzero (gororoba_quantum/AGENTS.md: 1848 of 4096 at D = 16).
+# anticommute and basis triples whose associator is nonzero (docs/notes/algebra_circuit_rules.md: 1848 of 4096 at
+# D = 16).
 EXPECTED_BASIS_COUNTS = {
     "4": {"ordered_noncommuting_pairs": 6, "nonassociating_triples": 0, "triples": 64},
     "8": {"ordered_noncommuting_pairs": 42, "nonassociating_triples": 168, "triples": 512},

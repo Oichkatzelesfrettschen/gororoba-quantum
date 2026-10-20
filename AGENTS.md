@@ -31,7 +31,19 @@ A gate command run outside ci/run_gates.py needs `PYTHON` exported
 and every gate exits 127 in 0.0 s. A check raises explicitly and never uses
 `assert`, which `python -O` strips. Every CPU-bound loop over independent items
 runs through parallel.py, an order-preserving spawn pool, and a serial loop
-over such items is a defect review rejects. A change to live_run.py or
+over such items is a defect review rejects; items that share a seeded generator
+draw every item's inputs first, in the generator's order, and then map, so
+pooled and serial runs write the same bytes. A classical estimator over many
+synthetic replicates (a null calibration, a bootstrap) is batched across
+replicates with numpy before it is pooled, and a gate proves the batched path
+returns the scalar reference's bits: it keeps the scalar arithmetic order,
+repeats `sum()`'s Neumaier compensation and sends every replicate-dependent
+`exp` and `** 2` through `math.exp` and `math.pow`
+([vectorized-fits.md](docs/notes/build_host/vectorized-fits.md)). Mock outcomes
+(`--native-dry-run` timing) never enter scientific analysis or measured
+visualizations. Local shells, CI and Kaggle start Python with
+`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, which the combined Qiskit
+Rust and Aer OpenMP extensions require. A change to live_run.py or
 experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 ../results/live`, whose audit record lands under results/live/. A change to
 `proofs/`, a replay bundle or its receipts follows the Rocq replay of
@@ -88,21 +100,42 @@ Grounding binds all operations through two authoritative pillars:
      (including Rocq formal certificates for `TargetFlipN21`, `FoldAverageDescent`,
      `TerminalChannelSeparation`, and `C881`).
    - Sedenion, octonion, and Cayley-Dickson multiplication conventions codified in
-     `gororoba_quantum/cd_core.py` and the Algebra Circuit Design Rules of gororoba_quantum/AGENTS.md.
+     `gororoba_quantum/cd_core.py` and the Algebra Circuit Design Rules of
+     docs/notes/algebra_circuit_rules.md.
 
 Every module, test contract, and hardware execution plan reflects these recorded sources.
 When an algebraic sign, gate duration, layout connectivity, or error rate is needed, code
 directly imports or validates against the registered repository artifact.
 
 
-## Algebra rules and Heron facts
+## Algebra rules and Heron r2 facts
 
-Circuit work that encodes Cayley-Dickson arithmetic on a qubit register follows
-the algebra circuit design rules of [gororoba_quantum/AGENTS.md](gororoba_quantum/AGENTS.md)
-(scripts/AGENTS.md repeats them byte for byte). The same file holds the Heron r2
-execution facts, the Python stack of the build host and the package table. A
-design reads the live Target as the timing authority and
-`service.backends()` before it names a backend.
+Binding rules for circuit and hardware work, before the notes open:
+
+- `a -> L_a` is a linear encoding, never an algebra homomorphism.
+- `|0>` is `e_0 = 1`, the identity, never the zero vector. A zero product is a
+  heralded branch of zero probability while the full state keeps norm 1.
+- Algebra index bit `b` sits on register qubit `b` (little-endian, as in
+  Qiskit outcome strings).
+- A sign register needs `|->` for phase kickback; `|0>` records a which-path
+  label.
+- Certify every zero-divisor pair with `cd_core` before circuit work.
+  `gororoba_quantum/cd_core.py` is the specification, and a package result
+  enters evidence only through a declared map onto it, checked on every basis
+  pair.
+- The account reaches ibm_fez, ibm_kingston and ibm_marrakesh, all Heron r2:
+  156 qubits, heavy-hex, basis cz, id, rz, sx, x and xslow. The live Target is
+  the timing authority (dt 4 ns), and `service.backends()` precedes naming a
+  backend.
+- IBM removed pulse-level control on 3 February 2025; designs use the gate
+  set, fractional gates and dynamic circuits.
+
+The full rules, witnesses, observables and the Cayley-Dickson package table are
+in [docs/notes/algebra_circuit_rules.md](docs/notes/algebra_circuit_rules.md).
+The Heron r2 execution facts are in
+[docs/notes/ibm_heron_platform.md](docs/notes/ibm_heron_platform.md), and the
+build-host Python stack in
+[docs/notes/build_host/python-stack.md](docs/notes/build_host/python-stack.md).
 
 ## QPU time and calibration
 
@@ -346,7 +379,7 @@ unresolveReviewThread.
   run it as data: live_run.py records each backend's `backend_version` and
   `processor_type` from its configuration in `backends`, `system_inventory`
   and each group, and the properties' `backend_version` at each execution
-  start in collect.json. Calibration and Heron Target snapshots carry the
+  start in collect.json. Calibration and Heron r2 Target snapshots carry the
   same fields; a simulation record that copies a snapshot's calibration
   stamp copies them too (`calibration_snapshot.backend_identity`) beside the
   Aer version and device, and one that names its snapshot by path reaches

@@ -147,7 +147,7 @@ reproduces the ideal law.
 
 ## Relation to the repository's IBM noise
 
-The repository simulates IBM Heron with live_run's noise model (gate
+The repository simulates IBM Heron r2 with live_run's noise model (gate
 depolarizing, thermal relaxation, asymmetric readout per qubit;
 gororoba_quantum/calibration_snapshot.py), whose recorded boundary excludes
 coherent error, crosstalk and leakage. That model class predicts, for these
@@ -181,13 +181,13 @@ target outcome. Every Tuna-17 signal above is therefore outside the model
 class: the drive-induced target shifts, the Q1/Q2
 simultaneous-drive degradation and the Q6/Q8/Q9 over-rotation. The idle
 phases (-0.03 to -0.12 rad over 840 ns, a frequency offset of 5 to 23 kHz)
-sit at the tens-of-kHz scale of the Heron idle detunings in
+sit at the tens-of-kHz scale of the Heron r2 idle detunings in
 hw-idle-detuning-scale (40.9 kHz between two Kingston work qubits).
 
 ## Zero-divisor witness on Tuna-17 (preregistered)
 
 `scripts/qi_zero_divisor_cases.py` builds Design B's fixed-operand LCU for
-a = e1 + e10 (gororoba_quantum/AGENTS.md, "Zero-product witnesses"): the dark witness
+a = e1 + e10 (docs/notes/algebra_circuit_rules.md, "Zero-product witnesses"): the dark witness
 (e1 + e10)(e4 - e15) = 0 (ideal P(s = 0) = 0), the bright control
 (e1 + e10)(e4 + e15) (ideal 1) and the negative fixture (e1 + e10)(e2 - e13)
 (ideal 1/2). Before writing a circuit, `certify()` computes every product with

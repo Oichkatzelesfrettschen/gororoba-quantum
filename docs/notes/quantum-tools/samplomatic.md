@@ -25,7 +25,7 @@ out = samplex.sample(num_randomizations=3, rng=1)   # SamplexOutput
 
 - The client-side `Sampler` of qiskit-ibm-runtime 0.50 twirls through
   samplomatic; the package is the 0.50 floor in `requirements.txt` and
-  gororoba_quantum/AGENTS.md. A boxed circuit builds into a template with one `rz`/`sx`
+  docs/notes/build_host/python-stack.md. A boxed circuit builds into a template with one `rz`/`sx`
   parameter group per twirled gate and a samplex that fills the parameters
   and the measurement bit-flip corrections.
 - Understanding twirl overhead: the example shows `parameter_values` of

@@ -514,7 +514,7 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/mod15_signed_multiplier_census.py \
 **Semiclassical order finding on dynamic circuits.**
 - Gidney's QFT is semiclassical: n - 1 adaptively phased gates driven by
   mid-circuit measurement.
-- The smallest exact Heron surface is order finding for a = 2 mod 15. Its
+- The smallest exact Heron r2 surface is order finding for a = 2 mod 15. Its
   multiplier, a cyclic rotation of the four work bits, is the exact permutation
   on every input rather than a circuit compiled from the known answer (Smolin,
   Smith, and Vargo, Nature 499, 163 (2013)).

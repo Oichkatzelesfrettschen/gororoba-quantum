@@ -121,7 +121,7 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
   (`designs.lcu_witness`) for $x = (e_i + e_j)/\sqrt{2}$ and $y = (e_k + \text{sign}\, e_l)/\sqrt{2}$.
   `cd_core.cd_multiply` certifies the pair and metadata records $P(s=0) = \|xy\|^2/2$: 0 for the
   dark pair $(e_1 + e_{10})(e_4 - e_{15}) = 0$, 1 for its bright control $(e_4 + e_{15})$, and 1/2 for
-  the negative regression fixture $(e_1 + e_{10})(e_2 - e_{13})$ (`gororoba_quantum/AGENTS.md`, Algebra Circuit Design Rules).
+  the negative regression fixture $(e_1 + e_{10})(e_2 - e_{13})$ (`docs/notes/algebra_circuit_rules.md`, Algebra Circuit Design Rules).
 - **`sedenion_associator_witness(i, j, k)`** (5 qubits): Hadamard test on $\mathbb{S}_{16}$ (4 data
   qubits + 1 control ancilla). Control qubit 4 prepares $|+\rangle$. Branch 0 applies $L_{(e_i e_j) e_k}$
   and branch 1 applies $L_{e_i} L_{e_j} L_{e_k}$. Post-measurement expectation $\langle Z_c \rangle =
@@ -184,7 +184,7 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
   `boolean_anf.quadratic_polar_rank`) and shifted $g(x) = f(x \oplus s)$. Implements Roetteler's (2010) algorithm:
   $H^{\otimes n} \to O_g \to H^{\otimes n} \to O_f \to H^{\otimes n} \to \text{Measure}$.
   In ideal execution, measures hidden shift $s$ with probability 1.0. The ideal circuit is constructed from
-  $\{H, CZ, Z\}$, compiling to native Heron ISA instructions $\{cz, rz, sx, x\}$ after transpilation.
+  $\{H, CZ, Z\}$, compiling to native Heron r2 ISA instructions $\{cz, rz, sx, x\}$ after transpilation.
 
 ## Primary research literature grounding
 
