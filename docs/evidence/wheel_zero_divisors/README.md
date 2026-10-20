@@ -87,7 +87,7 @@ Basis counts from `cd_core`:
 | 8 | 42 | 168 of 512 |
 | 16 | 210 | 1848 of 4096 |
 
-The 1848 of 4096 is the count in AGENTS.md's 25/256 witness expectation.
+The 1848 of 4096 is the count in gororoba_quantum/AGENTS.md's 25/256 witness expectation.
 
 ### W2: the Gram detector is exact for left zero divisors. PASS
 

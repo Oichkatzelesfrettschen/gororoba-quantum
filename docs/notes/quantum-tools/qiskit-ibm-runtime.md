@@ -44,7 +44,7 @@ fails instead of reaching the service.
 - `dry_run=True` on `Sampler.run`. Read from the source (`executor_sampler/sampler.py`):
   the docstring states the dry run is processed server-side and returns
   randomized mock data. It contacts IBM, so it was not run, and it belongs to the
-  `--native-dry-run` path that the root AGENTS.md describes.
+  `--native-dry-run` path that ci/AGENTS.md describes.
 - Not run: `QiskitRuntimeService`, `Session`, `Batch`, `Executor`,
   `NoiseLearner*`, `usage()`, job retrieval.
 

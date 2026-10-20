@@ -381,4 +381,4 @@ Steffen 2006 and Hofheinz 2009 superconducting tomography papers.
 The [hypercomplex and anyon Crossref note](notes/hypercomplex_quantum_crossref_records.md) binds the
 versions of record of the hypercomplex-theory exchange and the two non-Abelian anyon experiments.
 The [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md) retains the arithmetic behind the
-algebra circuit design rules of AGENTS.md.
+algebra circuit design rules of gororoba_quantum/AGENTS.md.

@@ -207,7 +207,7 @@ CPU, single-threaded Python. No GPU path.
 - `compare_tensors` allocates 2^n x 2^n tensors; it is a small-circuit check.
 - ZX simplification preserves a unitary up to a global scalar; Hadamard-test
   controlled blocks must carry their relative phase explicitly
-  (root AGENTS.md, "Signs, workspace and measurement basis").
+  (gororoba_quantum/AGENTS.md, "Signs, workspace and measurement basis").
 
 ## LICENSE
 

@@ -35,7 +35,7 @@ from cd_core. Five products come out of one census read:
   Rz(-pi/2), qubit 0 at the leftmost character of the emulator's results.
 
 Encodings, each read through the selector's success outcome P(selector = 0)
-(root AGENTS.md, "Zero-product witnesses"):
+(gororoba_quantum/AGENTS.md, "Zero-product witnesses"):
 
 - Full Design B (5 qubits, data 0-3 and selector 4) wraps
   designs.lcu_witness: (L_{e_L} + L_{e_U})/2 on y = (e_L' + y_sign e_U')/sqrt2,

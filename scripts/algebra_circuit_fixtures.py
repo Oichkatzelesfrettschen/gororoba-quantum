@@ -1,6 +1,6 @@
 """Regression fixtures for the algebra circuit design rules, run on the repository's own circuit builders.
 
-Each fixture binds one rule of the AGENTS.md algebra circuit design rules to
+Each fixture binds one rule of the gororoba_quantum/AGENTS.md algebra circuit design rules to
 the code that a hardware case would compile:
 
 1. Zero-product witnesses. cd_core gives (e1 + e10)(e2 - e13) = e3 + e7 + e8

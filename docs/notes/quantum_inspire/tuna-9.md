@@ -206,7 +206,7 @@ which proves they parse and compile and nothing about the device.
 ## Do a Tuna-9 run once it is online
 
 A run needs the owner's approval of a written case (root AGENTS.md,
-"Quantum Inspire"); no metered quota is spent.
+"Hardware services"); no metered quota is spent.
 
 1. Confirm the device state now: `qi_backend` for type 6 and
    `qi_hardware_status`. Proceed only when `status` is idle (or executing and

@@ -1,17 +1,18 @@
 # scripts agent guide
 
 This file applies to the analysis, checker and rendering scripts under `scripts/`. The repository's root AGENTS.md
-carries every other rule and loads first; the section below repeats its
-algebra circuit design rules byte for byte so they bind work started here.
+carries every other rule and loads first; the section below repeats the
+algebra circuit design rules of gororoba_quantum/AGENTS.md byte for byte so
+they bind work started here.
 Paths are repository-relative.
 
 <!-- algebra-circuit-rules:begin -->
 ## Algebra circuit design rules
 
 These rules bind every circuit, case, analysis and note that encodes
-Cayley-Dickson arithmetic on a qubit register. The root AGENTS.md,
-gororoba_quantum/AGENTS.md and scripts/AGENTS.md carry this section with
-identical bytes; `ci/check_agents_sections.py` fails on any difference.
+Cayley-Dickson arithmetic on a qubit register. gororoba_quantum/AGENTS.md
+owns this section and scripts/AGENTS.md repeats it with identical bytes;
+`ci/check_agents_sections.py` fails on any difference.
 `docs/evidence/reviewer_associator_audit/` replays the numeric claims below
 (gate sources-240), and `scripts/algebra_circuit_fixtures.py`
 (gate core-251) runs the zero-product, Hadamard-basis and

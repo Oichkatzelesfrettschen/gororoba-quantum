@@ -14,7 +14,7 @@ The [Koebisu research note](koebisu_rank_stratum_research.md) connects the prima
 
 The inspected `open_gororoba` checkout has HEAD `abbf13cada78d9b106fc610a36f6eea54567ecfc`. Both the initial and final observations report exactly ` M .gitignore` and `?? .ignore` in `git status --short`; both report the same HEAD. The audit preserves those concurrent edits. The audit writes its report, copied proof sources, compiler outputs, and exact counterexample results under temporary storage. The audit performs read-only source inspection in the sister checkout and invokes zero QPU submissions.
 
-The repository guide separates source propositions, implementation conformance, and phenomenological mapping (`AGENTS.md:318-348`). Its matched-control rules require support, dimension, parameter count, temporal receptive field, and measurement procedure to match (`AGENTS.md:390-404`). Its falsifier rule prioritizes the cheapest decisive test (`AGENTS.md:406-432`). Those rules directly support model discrimination and an optimizer decision before broad atlas sampling.
+The repository guide separates source propositions, implementation conformance, and phenomenological mapping (`AGENTS.md`, "Mandatory source and hardware grounding"). Its matched-control rules require support, dimension, parameter count, temporal receptive field, and measurement procedure to match (`AGENTS.md:390-404`). Its falsifier rule prioritizes the cheapest decisive test (`AGENTS.md:406-432`). Those rules directly support model discrimination and an optimizer decision before broad atlas sampling.
 
 ## What the existing implementations and theorems actually establish
 

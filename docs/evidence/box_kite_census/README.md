@@ -59,9 +59,9 @@ build host (it multiplies through every package, 6.5 minutes on 12 CPUs);
 ## Package witnesses
 
 `package_witnesses` recomputes the box-kite facts through every package of
-the repository's Cayley-Dickson stack (root AGENTS.md, "Cayley-Dickson,
+the repository's Cayley-Dickson stack (gororoba_quantum/AGENTS.md, "Cayley-Dickson,
 quaternion and Clifford packages"; `docs/notes/packages/`) under the map the
-AGENTS.md table declares, with `scripts/box_kite_packages.py`. A fact is the
+gororoba_quantum/AGENTS.md table declares, with `scripts/box_kite_packages.py`. A fact is the
 sha256 of its canonical JSON, and a witness agrees when its digest equals
 cd_core's; packages are never polled against each other.
 
@@ -81,7 +81,7 @@ cd_core's; packages are never polled against each other.
 
 numpy-quaternion, quaternionic, pyquaternion, clifford, kingdon, galgebra and
 mathdunders are not witnesses: they carry no D = 8 or D = 16 product, and
-root AGENTS.md rests no octonion or sedenion statement on a Clifford algebra.
+gororoba_quantum/AGENTS.md rests no octonion or sedenion statement on a Clifford algebra.
 
 D = 16 facts: `two_blade_norms` (210 x 210), `kite_structure` (assessors,
 struts and edge zero sign sets derived from the norms), `design_b_products`
@@ -104,7 +104,7 @@ the package's retained basis table under the same map (tables.json, and
 `sagemath_octonion_table.json` for both Sage entries) and require equality
 with the retained element verdicts; the wrapper's expressions are re-parsed
 against cd_core. A package that fails to import is retained with its error
-and no facts, and is rebuilt from its PKGBUILD (root AGENTS.md) before the
+and no facts, and is rebuilt from its PKGBUILD (gororoba_quantum/AGENTS.md) before the
 record is regenerated.
 
 ## open_gororoba comparison

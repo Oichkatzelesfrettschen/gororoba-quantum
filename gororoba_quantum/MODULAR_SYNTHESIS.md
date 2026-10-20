@@ -324,7 +324,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --out results/hw_estimate/n21_affine_residual_challenger.json
 ```
 
-The fresh Rocq replay command is in AGENTS.md. The open set consists of
+The fresh Rocq replay command is in ci/AGENTS.md. The open set consists of
 fresh live Target compilation, degraded-edge filtering, a noisy primary lower
 bound above the exact uniform decoder null, an identity-null upper bound below
 the primary, and dynamic-duration accounting that includes classical latency.

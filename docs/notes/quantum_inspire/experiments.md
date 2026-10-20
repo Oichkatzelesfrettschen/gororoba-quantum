@@ -187,7 +187,7 @@ hw-idle-detuning-scale (40.9 kHz between two Kingston work qubits).
 ## Zero-divisor witness on Tuna-17 (preregistered)
 
 `scripts/qi_zero_divisor_cases.py` builds Design B's fixed-operand LCU for
-a = e1 + e10 (root AGENTS.md, "Zero-product witnesses"): the dark witness
+a = e1 + e10 (gororoba_quantum/AGENTS.md, "Zero-product witnesses"): the dark witness
 (e1 + e10)(e4 - e15) = 0 (ideal P(s = 0) = 0), the bright control
 (e1 + e10)(e4 + e15) (ideal 1) and the negative fixture (e1 + e10)(e2 - e13)
 (ideal 1/2). Before writing a circuit, `certify()` computes every product with

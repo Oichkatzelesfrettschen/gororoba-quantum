@@ -30,7 +30,7 @@ The timings are in `docs/evidence/aer_gpu_configuration/README.md` and
    density matrix runs 8.5 s on the 4 CPUs against 3.0 s on a T4 at 10
    qubits and 1955 s against 111 s at 14; a dynamic density matrix 69.6 s
    against 24.3 s at 6. Statevector trajectories of the 7-qubit N=21
-   feed-forward circuits run faster on the CPUs (root AGENTS.md,
+   feed-forward circuits run faster on the CPUs (docs/notes/kaggle/README.md,
    "Simulation on Kaggle"). A GPU push needs a GPU question.
 2. **Optimize the classical code first.** Batch replicate estimators with
    numpy under the bit-equality rules (below,

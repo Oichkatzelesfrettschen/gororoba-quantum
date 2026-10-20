@@ -63,7 +63,7 @@ In one line: HOM read 94.2 % on 2026-10-17, then 92.6 % at the first QPU run. A 
 | Rule | Where documented | Enforced in code |
 | --- | --- | --- |
 | Refuse a job unless the Explorer row and the processor record both read `available` | strategy.md, "Calibration windows" | yes: `plan` checks both |
-| Refuse a mesh case whose live couplers or symbols differ from the case, and a case seeded from a retained run on `qpu:belenos` whose live couplers differ from the retained catalogue | [AGENTS.md](../../../AGENTS.md), Quandela Cloud section, "Mesh control" | yes: `live_mesh` for mesh cases, `live_architecture` for seeded cases on `qpu:belenos`; other QPU cases get no coupler check |
+| Refuse a mesh case whose live couplers or symbols differ from the case, and a case seeded from a retained run on `qpu:belenos` whose live couplers differ from the retained catalogue | [README.md](README.md), section "Mesh control" | yes: `live_mesh` for mesh cases, `live_architecture` for seeded cases on `qpu:belenos`; other QPU cases get no coupler check |
 | Two-photon cases wait until HOM is above 90 % | strategy.md, "Design rules taken from it", item 1 | warns, does not hold: `plan` reads HOM and prints a stderr warning when it is absent or at or below 90 % |
 
 Consequences for Belenos on 2026-10-19:

@@ -1,10 +1,10 @@
 """Check that the replicated AGENTS.md sections bind every directory that carries them.
 
-The root AGENTS.md owns each section in SECTIONS, delimited by
-`<!-- NAME:begin -->` and `<!-- NAME:end -->`, and every nested AGENTS.md
-listed for it repeats it byte for byte: the algebra circuit design rules in
-gororoba_quantum/ and scripts/, the Heron execution facts in
-gororoba_quantum/. The root and each nested directory carry a CLAUDE.md whose
+The owner named in SECTIONS holds each section, delimited by
+`<!-- NAME:begin -->` and `<!-- NAME:end -->`, and every copy directory listed
+for it repeats it byte for byte: gororoba_quantum/AGENTS.md owns the algebra
+circuit design rules, which scripts/AGENTS.md repeats, and the Heron execution
+facts, which have no copy. The root and each nested directory carry a CLAUDE.md whose
 entire content is the loader line `@AGENTS.md` followed by one LF, so an agent
 started in any of them reads the same rules. The loader format is fixed bytes: a CLAUDE.md
 that adds prose, comments, fences or a different line ending fails, which
@@ -19,12 +19,13 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SECTIONS = {
-    "algebra-circuit-rules": ("gororoba_quantum", "scripts"),
-    "heron-execution-facts": ("gororoba_quantum",),
+# section name -> (owner directory, directories that repeat the owner's bytes)
+SECTIONS: dict[str, tuple[str, tuple[str, ...]]] = {
+    "algebra-circuit-rules": ("gororoba_quantum", ("scripts",)),
+    "heron-execution-facts": ("gororoba_quantum", ()),
 }
 LOADER = b"@AGENTS.md\n"
-NESTED = ("gororoba_quantum", "scripts")
+NESTED = ("gororoba_quantum", "scripts", "ci")
 
 
 def read(path: Path) -> bytes:
@@ -85,12 +86,13 @@ def main(argv: list[str]) -> int:
     if argv:
         raise SystemExit("usage: check_agents_sections.py [--self-test]")
     sizes = []
-    for name, directories in SECTIONS.items():
-        reference = section(ROOT / "AGENTS.md", name)
-        for directory in directories:
+    for name, (owner, copies) in SECTIONS.items():
+        reference = section(ROOT / owner / "AGENTS.md", name)
+        for directory in copies:
             if section(ROOT / directory / "AGENTS.md", name) != reference:
-                raise SystemExit(f"{directory}/AGENTS.md: {name} differs from the root AGENTS.md")
-        sizes.append(f"{name} in root and {', '.join(directories)} ({len(reference)} bytes)")
+                raise SystemExit(f"{directory}/AGENTS.md: {name} differs from {owner}/AGENTS.md")
+        holders = ", ".join((owner, *copies))
+        sizes.append(f"{name} in {holders} ({len(reference)} bytes)")
     for directory in ("", *NESTED):
         loader = ROOT / directory / "CLAUDE.md"
         if not is_loader(read(loader)):

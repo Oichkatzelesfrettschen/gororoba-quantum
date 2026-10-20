@@ -133,7 +133,7 @@ A second external review corrected a proposed protocol for encoding sedenion
 arithmetic on qubits. Its CPU audit is retained unchanged in
 [reviewer_associator_audit](../evidence/reviewer_associator_audit/PROVENANCE.md),
 and its rules bind circuit work through the algebra circuit design rules of
-AGENTS.md. [sedenion_hardware_witness_review.md](sedenion_hardware_witness_review.md)
+gororoba_quantum/AGENTS.md. [sedenion_hardware_witness_review.md](sedenion_hardware_witness_review.md)
 reviewed the same proposal against the repository's designs.
 
 | Claim | Status | Evidence |

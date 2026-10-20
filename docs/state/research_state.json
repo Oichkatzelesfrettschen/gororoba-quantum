@@ -1893,7 +1893,7 @@
       "boundary": "Ideal semantics only.",
       "evidence": [],
       "documents": [
-        "AGENTS.md"
+        "gororoba_quantum/AGENTS.md"
       ],
       "gates": {
         "core-251": "replay"

@@ -14,7 +14,7 @@ OptionsModel(rep_delay=250e-6).model_dump_json()
 
 | Substrate | Status |
 | --- | --- |
-| Build host | python-ibm-quantum-schemas 0.12.20260921 (Arch), the runtime 0.50 floor in the root AGENTS.md; pydantic 2.13.5 |
+| Build host | python-ibm-quantum-schemas 0.12.20260921 (Arch), the runtime 0.50 floor in gororoba_quantum/AGENTS.md; pydantic 2.13.5 |
 | Kaggle | `ibm-quantum-schemas==0.12.20260921` in the `quantum-tools` group (`scripts/kaggle_run.py` `PIN_GROUPS`), the host's version, so a kernel cannot resolve a newer release under `qiskit-ibm-runtime`'s `<1` bound; `pydantic` arrives as a runtime dependency; one of the seven pins added to the group after the retained CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`, whose `pin_groups.json` records the twelve earlier members only; not yet installed on a kernel |
 
 ## CAPABILITIES IN THIS REPOSITORY
@@ -25,8 +25,8 @@ OptionsModel(rep_delay=250e-6).model_dump_json()
   `StretchValueModel`, `PauliLindbladMapModel` and the QPY/OpenQASM 3 data
   wrappers (names introspected; the example constructs `OptionsModel`).
 - `SchedulerTimingModel` and `StretchValueModel` are the schemas behind the
-  `scheduler_timing` and `stretch_values` execution options named in the root
-  AGENTS.md ("Stretch", "Billing"); they model the scheduler timing and stretch
+  `scheduler_timing` and `stretch_values` execution options named in
+  gororoba_quantum/AGENTS.md ("Stretch", "Billing"); they model the scheduler timing and stretch
   data of a result, which is schedule evidence and not billing evidence.
 - Versions: `executor` carries `version_0_1` through `version_2_0`, `sampler`
   and `estimator` `version_0_1`, `noise_learner_v3` `version_0_1` to

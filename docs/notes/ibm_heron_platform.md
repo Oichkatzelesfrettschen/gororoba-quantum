@@ -84,7 +84,7 @@ and the configuration's range only as the upper bound.
 
 ## Mapping to this repository
 
-- [I] The Heron execution facts section of AGENTS.md states the rules these
+- [I] The Heron execution facts section of gororoba_quantum/AGENTS.md states the rules these
   measurements and pages support; core-254 holds the measured
   ones to the retained snapshot.
 - [I] live_run.py already sets `max_execution_time` at the Sampler's top

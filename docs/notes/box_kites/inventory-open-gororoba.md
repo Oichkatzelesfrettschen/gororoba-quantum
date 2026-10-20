@@ -5,7 +5,7 @@ Compiled 2026-10-17 from a read-only search of the open_gororoba repository
 f540610412409004c4f8f0843dbee6352e6a293a; every path, count and claim id below
 refers to that tree, and registry/claims.toml at that commit is the status
 authority. Nothing was built or run. gororoba_quantum/cd_core.py is the
-specification (root AGENTS.md), so a box-kite fact enters a design only after
+specification (gororoba_quantum/AGENTS.md), so a box-kite fact enters a design only after
 recomputation from cd_core, and this inventory locates the sibling code.
 
 ## Code clusters

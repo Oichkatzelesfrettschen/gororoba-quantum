@@ -20,7 +20,7 @@ the run, record or gate that carries its evidence; a statement marked
 - The Ry emulator rejects any bit declaration and fails `measure` at compile
   ([ry-emulator.md](ry-emulator.md), gate core-385 over the three probe runs).
 - QX and Tuna put qubit 0 at the rightmost character; the Ry emulator puts it
-  at the leftmost (AGENTS.md, Quantum Inspire execution facts).
+  at the leftmost (README.md, Binding rules, execution facts).
 
 ## Readout calibration drift
 

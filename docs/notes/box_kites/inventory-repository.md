@@ -52,9 +52,9 @@ docs/sources/open_gororoba/check_signed_kite_switching.py: characteristic_polyno
 - results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00/-01 (per-batch series, on branch qi/zero-divisor-per-batch-runs): dark 0, bright 1, fixture 0.4977.
 - Coupler ZZ map and crosstalk/teleport runs of 2026-10-16 (not algebra witnesses).
 
-## 4. Rules (AGENTS.md root, verbatim sections)
+## 4. Rules (gororoba_quantum/AGENTS.md and the Quantum Inspire guide, verbatim sections)
 
-See AGENTS.md "Algebra circuit design rules": bullets "Zero-product witnesses" and "Observables and claims" (the LCU success law P(s=0) = ||xy||^2 / 2 for Design B, M M^dag = D I so P = ||xy||^2 / D for the universal contraction; diagonal fixed-pair witness reconstructs no coherence; 2^w Pauli settings for a selected coherence; register counts 4+1, 4+1, 8+1, 12+1+workspace; the interferometer is an associator-sign interference witness, no holonomy or braiding claim).
+See gororoba_quantum/AGENTS.md "Algebra circuit design rules": bullets "Zero-product witnesses" and "Observables and claims" (the LCU success law P(s=0) = ||xy||^2 / 2 for Design B, M M^dag = D I so P = ||xy||^2 / D for the universal contraction; diagonal fixed-pair witness reconstructs no coherence; 2^w Pauli settings for a selected coherence; register counts 4+1, 4+1, 8+1, 12+1+workspace; the interferometer is an associator-sign interference witness, no holonomy or braiding claim).
 Quantum Inspire "Execution facts": Tuna 20 ns single-qubit, 60 ns CZ, 800 ns measurement, 200 or 500 us init, angles quantized to pi/36, ALAP scheduling, wait(n) in 20 ns cycles, mid-circuit measurement allowed, no binary-controlled gates (feed-forward in post-processing); bit order QX/Tuna q0 rightmost, Ry q0 leftmost; Ry takes no measurement statements and measures every qubit at the end (H+CNOT with a bit register failed with "error interpreting cQASM script"); write cQASM directly with explicit wait for timing.
 
 ## 5. Gates
@@ -63,4 +63,4 @@ core-001/002 (ruff), core-039 (mypy), core-228/229 (octonion_structure_checks), 
 
 ## Reuse
 
-Top builders: designs.design_b_zero_divisor (+ lcu_witness), designs.design_a_associator, designs.left_mult_gate. design_a_associator is the three-qubit octonion construction and lcu_witness the five-qubit (4 data + 1 ancilla) sedenion one; the AGENTS.md register counts describe the controlled sedenion tests. octonion_structure_checks.box_kites() already enumerates the seven signed sedenion box-kites.
+Top builders: designs.design_b_zero_divisor (+ lcu_witness), designs.design_a_associator, designs.left_mult_gate. design_a_associator is the three-qubit octonion construction and lcu_witness the five-qubit (4 data + 1 ancilla) sedenion one; the gororoba_quantum/AGENTS.md register counts describe the controlled sedenion tests. octonion_structure_checks.box_kites() already enumerates the seven signed sedenion box-kites.
