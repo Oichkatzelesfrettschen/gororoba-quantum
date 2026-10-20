@@ -283,17 +283,22 @@ expectations: at once (immediate), after the 836 dt idle with the control in
 
 | Contract | Measured | Verdict |
 |---|---|---|
-| spectator_control_zz | idle 0.615 against idle_ground 0.622 (upper limit +0.017) | fail |
-| spectator_ground_idle_dephasing | idle_ground 0.622 against immediate 0.989 (upper limit -0.349) | pass |
+| spectator_control_zz | idle 0.616 against idle_ground 0.622 (upper limit +0.019) | fail |
+| spectator_ground_idle_dephasing | idle_ground 0.622 against immediate 0.989 (upper limit -0.350) | pass |
 
-Holding the control in |0> recovers none of the visibility: a ZZ phase to
-142 would average 143's coherence over the control's two branches only with
-the control in |+>, and the two idles agree within 0.007. Qubit 143 loses
-about 37 percent of its Ramsey visibility across 836 dt (3.3 us) on its own,
-which a pure exponential decay places near T2* of 7 us against the reported
-echo T2 of 111 us. The window loss on 143 is therefore its own idle
-dephasing, a quasi-static detuning or low-frequency noise that an echo
-removes, and the work CZ overlap of the previous section acts on a register
+Both arms keep only the shots whose initialization herald reads the control
+0, and the spectator herald admits those shots at the per-contract alpha
+0.025 with a 0.0099 margin. A failed spectator_control_zz bounds the ZZ share
+rather than excluding it: holding the control in |0> recovers 0.005 of
+visibility, and at most 0.040 (the 0.025 lower confidence limit of the
+idle-minus-idle_ground statistic, -0.030, plus the herald margin), against
+the 0.367 qubit 143 loses across the idle with the control grounded. A
+control-state-dependent coupling to 142 therefore accounts for at most about
+11 percent of the window loss. The dominant loss, about 37 percent of the
+Ramsey visibility across 836 dt (3.3 us), is 143's own idle dephasing, which
+a pure exponential decay places near T2* of 7 us against the reported echo
+T2 of 111 us: a quasi-static detuning or low-frequency noise that an echo
+removes, so the work CZ overlap of the previous section acts on a register
 already dephasing during the window.
 
 Open: a Ramsey delay sweep on 143 with the control grounded, read at X and Y,

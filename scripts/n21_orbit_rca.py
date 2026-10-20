@@ -2338,7 +2338,41 @@ def _check_ground_control_split() -> dict[str, str]:
         raise RuntimeError("the ground-control per-contract alpha does not follow its two contracts")
     verdicts["control_excited"] = _check_ground_control_excitation()
     verdicts["schedules"] = _check_ground_schedules()
+    verdicts["correlated_herald"] = _check_ground_correlated_herald()
     return verdicts
+
+
+def _check_ground_correlated_herald() -> str:
+    """A qubit-2 excitation correlated with the control's passes the whole-shot herald and fails the selected one.
+
+    Two members of 8192 shots each excite the control in 200 shots and
+    qubit 2 in 200 shots, so both marginals agree; member a excites qubit 2
+    only together with the control and member b only with the control in
+    |0>. Over every shot the spread is zero and the herald admits; over the
+    shots whose control herald reads 0 (herald_excitation), b reads 200
+    excitations of qubit 2 against a's none, which the admission refuses.
+    """
+    shots, excited = 8192, 200
+    members = {
+        "a": ["0101"] * excited + ["0000"] * (shots - excited),
+        "b": ["0001"] * excited + ["0100"] * excited + ["0000"] * (shots - 2 * excited),
+    }
+    bound = herald_bound(shots, contract_alpha("ground"))
+    found = []
+    for condition in (None, HERALD_ROLES.index("control")):
+        counts = {
+            k: {
+                "qubit": k,
+                "members": {name: herald_excitation(bits, 4, k, condition) for name, bits in members.items()},
+            }
+            for k in range(4)
+        }
+        found.append(
+            herald_admission(counts, dict.fromkeys(range(4), 1.0), bound, contract_alpha("ground"))["admissible"]
+        )
+    if found != [True, False]:
+        raise RuntimeError(f"the correlated herald plant reads admissible {found} over all and selected shots")
+    return "whole-shot herald admits, control-selected herald refuses"
 
 
 def _check_ground_control_excitation() -> str:
@@ -3819,10 +3853,12 @@ def ground_report(run: Path) -> dict[str, Any]:
     """The between-arm report of a ground-control split: spectator counts and its two contracts.
 
     The split holds no orbit pair. Admissibility reads the six compiled
-    members (ground_admissibility over ground_schedules), the spectator
-    herald gates the contracts, and the counts keep only shots whose herald
-    reads the control 0 (ground_spectator_reads); an unheralded record reads
-    both contracts not_evaluable.
+    members (ground_admissibility over ground_schedules), and the counts keep
+    only shots whose herald reads the control 0 (ground_spectator_reads).
+    The spectator herald's admission and margin read those same shots, so
+    an excitation of qubit 2 correlated with the control's is bounded where
+    the contracts read it; an unheralded record reads both contracts
+    not_evaluable.
     """
     names = contract_names("ground")
     alpha = contract_alpha("ground")
@@ -3841,7 +3877,9 @@ def ground_report(run: Path) -> dict[str, Any]:
             for name, entry in calibrations.items()
         },
         "herald": {"present": False},
-        "spectator_herald": herald_report(run, calibrations, lambda name: name in ALL_SPECTATOR_MEMBERS, alpha),
+        "spectator_herald": herald_report(
+            run, calibrations, lambda name: name in ALL_SPECTATOR_MEMBERS, alpha, HERALD_ROLES.index("control")
+        ),
         "alpha": {
             "family_alpha": FAMILY_ALPHA,
             "split": "Bonferroni",
@@ -3850,7 +3888,10 @@ def ground_report(run: Path) -> dict[str, Any]:
         },
         "admissibility": admitted,
     }
-    gated = contract_gate(admitted, report["spectator_herald"], names)
+    herald = report["spectator_herald"]
+    if herald.get("evaluable") and herald["bits"][str(HERALD_ROLES.index("control"))]["qubit"] != control:
+        raise RuntimeError(f"the control herald bit reads a qubit other than the control {control}")
+    gated = contract_gate(admitted, herald, names)
     if gated is not None:
         report["contracts"] = gated
         return report
@@ -3941,11 +3982,21 @@ def herald_bound(shots: int, alpha: float = CONTRACT_ALPHA) -> float:
     return HERALD_MDE_FRACTION * magnitude_mde(shots, alpha) / (2 * CONTRAST_CEILING * sum(HERALD_SENSITIVITY))
 
 
-def herald_counts(run: Path, select: Callable[[str], bool] = is_orbit) -> dict[int, dict[str, Any]] | None:
+def herald_excitation(bits: list[str], size: int, k: int, condition: int | None = None) -> tuple[int, int]:
+    """(excited shots, shots) of herald bit k, over the shots whose herald bit condition reads 0 when given."""
+    kept = [value for value in bits if condition is None or value[size - 1 - condition] == "0"]
+    return sum(value[size - 1 - k] == "1" for value in kept), len(kept)
+
+
+def herald_counts(
+    run: Path, select: Callable[[str], bool] = is_orbit, condition: int | None = None
+) -> dict[int, dict[str, Any]] | None:
     """Per herald bit, its physical qubit and each selected member's (excited shots, shots); None unheralded.
 
     select picks the members by name: the orbit members, whose laws
-    HERALD_SENSITIVITY bounds, by default.
+    HERALD_SENSITIVITY bounds, by default. condition names a herald bit
+    whose 0 reading selects the shots counted (herald_excitation), so an
+    analysis that keeps those shots reads its herald on the same shots.
 
     Each herald clbit's physical qubit is the wire of the archived ISA's
     measurement into it; every member must read bit k on the same qubit.
@@ -3975,8 +4026,7 @@ def herald_counts(run: Path, select: Callable[[str], bool] = is_orbit) -> dict[i
             entry = found.setdefault(k, {"qubit": qubit, "members": {}})
             if entry["qubit"] != qubit:
                 raise RuntimeError(f"{name} reads herald bit {k} on qubit {qubit}, another member on {entry['qubit']}")
-            excited = sum(value[register.size - 1 - k] == "1" for value in bits)
-            entry["members"][name] = (excited, len(bits))
+            entry["members"][name] = herald_excitation(bits, register.size, k, condition)
     if any(heralded) and not all(heralded):
         raise RuntimeError("some members carry the initialization herald and others do not")
     return found if any(heralded) else None
@@ -4055,8 +4105,12 @@ def herald_report(
     calibrations: dict[str, dict[str, Any]],
     select: Callable[[str], bool] = is_orbit,
     alpha: float = CONTRACT_ALPHA,
+    condition: int | None = None,
 ) -> dict[str, Any]:
     """herald_admission of RUN at herald_bound of its smallest member shot count, or {"present": False}.
+
+    condition restricts every member to the shots whose herald bit condition
+    reads 0 (herald_counts).
 
     alpha is the per-contract level of the record's shape (contract_alpha),
     so the bound follows the contracts it protects.
@@ -4071,7 +4125,7 @@ def herald_report(
     or unretained channels leaves the herald not evaluable, which no
     contract reads past; the report names each member's calibration source.
     """
-    counts = herald_counts(run, select)
+    counts = herald_counts(run, select, condition)
     if not counts:
         return {"present": False}
     shots = min(n for entry in counts.values() for _excited, n in entry["members"].values())
@@ -4098,7 +4152,7 @@ def herald_report(
             "differing_channels": differing,
             "shots": shots,
         }
-    return herald_admission(counts, contrasts, herald_bound(shots, alpha)) | {"evaluable": True, "shots": shots}
+    return herald_admission(counts, contrasts, herald_bound(shots, alpha), alpha) | {"evaluable": True, "shots": shots}
 
 
 def contract_gate(

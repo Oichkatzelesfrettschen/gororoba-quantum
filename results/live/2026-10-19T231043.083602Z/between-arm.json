@@ -51,7 +51,7 @@
     "per_contract_alpha": 0.025,
     "split": "Bonferroni"
   },
-  "analyzer_sha256": "6abf263d84c01fb55d68b236c374b0e4410c0faf768941e0b5e42d20eab3ffc7",
+  "analyzer_sha256": "90748708b1efc85f9f5952313dc5ffceec1c81c15deb226ee3a59140750675b1",
   "calibration": {
     "n21_spectator_idle_ground_x": {
       "calibration": "2026-10-19T15:07:33-07:00",
@@ -80,7 +80,7 @@
   },
   "contracts": {
     "spectator_control_zz": {
-      "herald_margin": 0.009839821395834556,
+      "herald_margin": 0.009894848233733945,
       "idle_ground_visibility": 0.6216392978892653,
       "idle_ground_x_expectation": 0.6152619310514047,
       "idle_ground_y_expectation": 0.08881538650006125,
@@ -94,7 +94,7 @@
       "upper_confidence_limit": 0.01909687041630461
     },
     "spectator_ground_idle_dephasing": {
-      "herald_margin": 0.009839821395834556,
+      "herald_margin": 0.009894848233733945,
       "idle_ground_visibility": 0.6216392978892653,
       "idle_ground_x_expectation": 0.6152619310514047,
       "idle_ground_y_expectation": 0.08881538650006125,
@@ -189,88 +189,88 @@
   },
   "spectator_herald": {
     "admissible": true,
-    "alpha": 0.05,
+    "alpha": 0.025,
     "bits": {
       "0": {
-        "excitation_spread_upper_limit": 0.0067333706357690735,
+        "excitation_spread_upper_limit": 0.0006199195374316432,
         "excited_fraction": {
-          "n21_spectator_idle_ground_x": 0.0050048828125,
-          "n21_spectator_idle_ground_y": 0.0035400390625,
-          "n21_spectator_idle_x": 0.0048828125,
-          "n21_spectator_idle_y": 0.0047607421875,
-          "n21_spectator_immediate_x": 0.005126953125,
-          "n21_spectator_immediate_y": 0.0064697265625
+          "n21_spectator_idle_ground_x": 0.0,
+          "n21_spectator_idle_ground_y": 0.0,
+          "n21_spectator_idle_x": 0.0,
+          "n21_spectator_idle_y": 0.0,
+          "n21_spectator_immediate_x": 0.0,
+          "n21_spectator_immediate_y": 0.0
         },
         "qubit": 142,
         "readout_contrast": 0.988525390625,
         "role": "control",
-        "spread": 0.0029296875,
-        "spread_lower_limit": -0.0007981630002604156,
+        "spread": 0.0,
+        "spread_lower_limit": -0.000611476700105944,
         "status": "pass",
-        "threshold": 0.00218558981720594
+        "threshold": 0.002192694393599997
       },
       "1": {
-        "excitation_spread_upper_limit": 0.005020572569571213,
+        "excitation_spread_upper_limit": 0.005217036904909579,
         "excited_fraction": {
-          "n21_spectator_idle_ground_x": 0.0029296875,
-          "n21_spectator_idle_ground_y": 0.0029296875,
-          "n21_spectator_idle_x": 0.0020751953125,
-          "n21_spectator_idle_y": 0.0030517578125,
-          "n21_spectator_immediate_x": 0.0040283203125,
-          "n21_spectator_immediate_y": 0.0032958984375
+          "n21_spectator_idle_ground_x": 0.002944423997055576,
+          "n21_spectator_idle_ground_y": 0.002940095553105476,
+          "n21_spectator_idle_x": 0.002085377821393523,
+          "n21_spectator_idle_y": 0.003066355942597817,
+          "n21_spectator_immediate_x": 0.004049079754601227,
+          "n21_spectator_immediate_y": 0.003317360855141909
         },
         "qubit": 136,
         "readout_contrast": 0.9736328125,
         "role": "work_1",
-        "spread": 0.001953125,
-        "spread_lower_limit": -0.0009828976328145641,
+        "spread": 0.001963701933207704,
+        "spread_lower_limit": -0.0011529780665969114,
         "status": "pass",
-        "threshold": 0.0021526629268997996
+        "threshold": 0.002159660469665791
       },
       "2": {
-        "excitation_spread_upper_limit": 0.004919910697917278,
+        "excitation_spread_upper_limit": 0.0049474241168669724,
         "excited_fraction": {
-          "n21_spectator_idle_ground_x": 0.001708984375,
-          "n21_spectator_idle_ground_y": 0.0030517578125,
-          "n21_spectator_idle_x": 0.0037841796875,
-          "n21_spectator_idle_y": 0.0029296875,
-          "n21_spectator_immediate_x": 0.003173828125,
-          "n21_spectator_immediate_y": 0.003173828125
+          "n21_spectator_idle_ground_x": 0.001717580664949086,
+          "n21_spectator_idle_ground_y": 0.003062599534484871,
+          "n21_spectator_idle_x": 0.0036800785083415115,
+          "n21_spectator_idle_y": 0.002943701704893904,
+          "n21_spectator_immediate_x": 0.003067484662576687,
+          "n21_spectator_immediate_y": 0.0031944956382848016
         },
         "qubit": 143,
         "readout_contrast": 0.989013671875,
         "role": "work_4",
-        "spread": 0.0020751953125,
-        "spread_lower_limit": -0.0007164813512832652,
+        "spread": 0.0019624978433924255,
+        "spread_lower_limit": -0.0009690671030765032,
         "status": "pass",
-        "threshold": 0.0021866693873799116
+        "threshold": 0.0021937774730732495
       },
       "3": {
-        "excitation_spread_upper_limit": 0.0056709364039215044,
+        "excitation_spread_upper_limit": 0.005912450804250828,
         "excited_fraction": {
-          "n21_spectator_idle_ground_x": 0.0054931640625,
-          "n21_spectator_idle_ground_y": 0.0050048828125,
-          "n21_spectator_idle_x": 0.005126953125,
-          "n21_spectator_idle_y": 0.006103515625,
-          "n21_spectator_immediate_x": 0.006103515625,
-          "n21_spectator_immediate_y": 0.0042724609375
+          "n21_spectator_idle_ground_x": 0.005520794994479205,
+          "n21_spectator_idle_ground_y": 0.005022663236555188,
+          "n21_spectator_idle_x": 0.005152109911678116,
+          "n21_spectator_idle_y": 0.006132711885195634,
+          "n21_spectator_immediate_x": 0.006134969325153374,
+          "n21_spectator_immediate_y": 0.004300282589998771
         },
         "qubit": 144,
         "readout_contrast": 0.99169921875,
         "role": "work_16",
-        "spread": 0.0018310546875,
-        "spread_lower_limit": -0.0019626476777960715,
+        "spread": 0.0018346867351546033,
+        "spread_lower_limit": -0.002195228258804637,
         "status": "pass",
-        "threshold": 0.0021926070233367566
+        "threshold": 0.002199734410176139
       }
     },
     "comparisons": 120,
-    "contract_shift_upper_limit": 0.019834504022393465,
+    "contract_shift_upper_limit": 0.014088312911004233,
     "evaluable": true,
-    "excitation_spread_bound": 0.0022109597162942776,
-    "one_sided_quantile": 3.3414789560386264,
+    "excitation_spread_bound": 0.0022181467612214342,
+    "one_sided_quantile": 3.5292960888347347,
     "present": true,
-    "shots": 8192
+    "shots": 8139
   },
   "spectator_immediate_visibility": {
     "ideal_visibility": 1.0,
