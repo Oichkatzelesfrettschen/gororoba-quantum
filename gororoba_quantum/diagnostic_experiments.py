@@ -38,6 +38,10 @@ from qpe_diagnostics import (
     n21_labeled_law,
     n21_orbit_diagnostic,
     n21_ramsey_name,
+    n21_segment_read_clbits,
+    n21_segmented_law,
+    n21_segmented_name,
+    n21_segmented_ramsey,
     n21_spectator_law,
     n21_spectator_ramsey,
     phase_marginal,
@@ -429,6 +433,54 @@ def n21_ramsey_windows(windows: Any) -> tuple[int, ...]:
     return tuple(sorted(values))
 
 
+def n21_segmented_config(config: Any) -> dict[str, Any]:
+    """The segmented ground sweep's configuration, validated and in canonical order; anything else raises.
+
+    delays_dt: distinct idles, 0 or at least 2 dt (min_length); segments:
+    an even count in [2, N21_SEGMENTED_MAX], so X and Y alternate in pairs;
+    backaction_delays_dt: delays among delays_dt that also run with
+    backaction_pre_idle_dt (at least 2 dt) between herald and preparation.
+    """
+    from qpe_diagnostics import N21_SEGMENTED_MAX
+
+    if not isinstance(config, dict) or set(config) != {
+        "delays_dt",
+        "segments",
+        "backaction_delays_dt",
+        "backaction_pre_idle_dt",
+    }:
+        raise ValueError(f"a segmented sweep configuration names delays, segments and its backaction arms: {config}")
+    delays = list(config["delays_dt"])
+    segments = config["segments"]
+    controls = list(config["backaction_delays_dt"])
+    pre = config["backaction_pre_idle_dt"]
+    if len(delays) < 2 or any(type(d) is not int or d < 0 or d == 1 for d in delays) or len(set(delays)) != len(delays):
+        raise ValueError(f"delays_dt needs at least two distinct delays of 0 or >= 2 dt, not {delays}")
+    if type(segments) is not int or segments % 2 or not 2 <= segments <= N21_SEGMENTED_MAX:
+        raise ValueError(f"segments must be even in [2, {N21_SEGMENTED_MAX}], not {segments!r}")
+    if len(set(controls)) != len(controls) or not set(controls) <= set(delays):
+        raise ValueError(f"backaction_delays_dt {controls} must be distinct members of delays_dt")
+    if controls and (type(pre) is not int or pre < 2):
+        raise ValueError(f"backaction_pre_idle_dt must be an integer >= 2 dt with backaction arms, not {pre!r}")
+    if not controls and pre != 0:
+        raise ValueError("backaction_pre_idle_dt is 0 without backaction arms")
+    return {
+        "delays_dt": sorted(delays),
+        "segments": segments,
+        "backaction_delays_dt": sorted(controls),
+        "backaction_pre_idle_dt": pre,
+    }
+
+
+def n21_segmented_arms(config: dict[str, Any]) -> tuple[tuple[str, int, int], ...]:
+    """(kind, delay_dt, pre_idle_dt) of every segmented arm: xy then z per delay, then the backaction xy arms."""
+    checked = n21_segmented_config(config)
+    return (
+        *((kind, delay, 0) for delay in checked["delays_dt"] for kind in ("xy", "z")),
+        *(("xy", delay, checked["backaction_pre_idle_dt"]) for delay in checked["backaction_delays_dt"]),
+    )
+
+
 def n21_spectator_members(
     overlap_split: bool = False, ground_control_split: bool = False, ramsey_windows: tuple[int, ...] = ()
 ) -> tuple[str, ...]:
@@ -463,6 +515,7 @@ def n21_orbit_rca_group(
     overlap_arm: str = N21_OVERLAP_ARM,
     ground_control_split: bool = False,
     ramsey_windows: tuple[int, ...] = (),
+    segmented: dict[str, Any] | None = None,
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -506,9 +559,21 @@ def n21_orbit_rca_group(
     immediate and idle_ground at each idle multiple m of window_delay_dt +
     reset_dt, in X and Y, with no idle arm, so qubit 2's decay and phase
     slope are read with the control in |0> (n21_spectator_members).
+
+    segmented, with ground_control_split, replaces every spectator arm with
+    the segmented ground sweep (qpe_diagnostics.n21_segmented_ramsey):
+    an xy and a z arm at each delay of n21_segmented_config and the
+    backaction xy arms. Its idles are absolute dt, independent of the
+    control's window durations.
     """
     if ramsey_windows and not ground_control_split:
         raise ValueError("ramsey_windows is a ground_control_split configuration")
+    if segmented is not None:
+        if not ground_control_split or ramsey_windows:
+            raise ValueError("segmented is a ground_control_split configuration without ramsey_windows")
+        if not init_herald:
+            raise ValueError("segmented arms carry their own heralds; the configuration requires init_herald")
+        return n21_segmented_group(segmented)
     ramsey = n21_ramsey_windows(ramsey_windows) if ramsey_windows else ()
     if overlap_split and window_sweep:
         raise ValueError("overlap_split and window_sweep are separate n21-orbit-rca configurations")
@@ -608,6 +673,42 @@ def n21_orbit_rca_group(
     return Group("n21_orbit_rca", members, summarize)
 
 
+def n21_segmented_group(config: dict[str, Any]) -> Group:
+    """The segmented ground sweep as one n21_orbit_rca group: one member per n21_segmented_arms entry.
+
+    A member's weights read segment 1's readout bit, so its contract is a
+    precision interval on the first read whatever later segments record.
+    """
+    checked = n21_segmented_config(config)
+    segments = checked["segments"]
+    read = n21_segment_read_clbits(segments)[0]
+    outcomes = np.arange(1 << (3 + 2 * segments))
+    first = ((outcomes >> read) & 1).astype(float)
+    members = tuple(
+        Member(
+            n21_segmented_name(kind, delay, pre),
+            n21_segmented_ramsey(kind, delay, segments, pre),
+            n21_segmented_law(kind, segments),
+            weights=first,
+        )
+        for kind, delay, pre in n21_segmented_arms(checked)
+    )
+    reads = n21_segment_read_clbits(segments)
+
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        result = {}
+        for member in members:
+            distribution = np.asarray(distributions[member.name], dtype=float)
+            for index, clbit in enumerate(reads):
+                one = ((outcomes >> clbit) & 1).astype(float)
+                result[f"{member.name.removeprefix('n21_spectator_segmented_')}_s{index + 1}_one"] = float(
+                    distribution @ one
+                )
+        return result
+
+    return Group("n21_orbit_rca", members, summarize)
+
+
 def family_contracts(
     family: str, precision: float, alpha: float, power: float, configuration: dict[str, Any] | None = None
 ) -> tuple[ObservableContract, ...]:
@@ -650,6 +751,22 @@ def family_contracts(
         # overlap_split, one precision-only endpoint per spectator member
         # share the requested family-wise alpha. A heralded member scores its phase label whatever
         # the herald read.
+        if (configuration or {}).get("segmented_sweep") is not None:
+            # One precision endpoint per segmented arm on its segment-1 read;
+            # the preregistered analysis (scripts/n21_q143_segmented_sweep.py)
+            # reads every segment.
+            group = n21_segmented_group((configuration or {})["segmented_sweep"])
+            share = alpha / len(group.members)
+            return tuple(
+                ObservableContract(
+                    f"{member.name}_one",
+                    (ObservableTerm(member.name, tuple(float(x) for x in np.asarray(member.weights))),),
+                    precision_half_width=precision,
+                    alpha=share,
+                    power=power,
+                )
+                for member in group.members
+            )
         heralded = bool((configuration or {}).get("init_herald"))
         split = bool((configuration or {}).get("overlap_split"))
         ground = bool((configuration or {}).get("ground_control_split"))
@@ -779,6 +896,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 str(family.get("overlap_arm", "nominal")),
                 bool(family.get("ground_control_split", False)),
                 tuple(int(multiple) for multiple in family.get("ramsey_windows", ())),
+                family.get("segmented_sweep"),
             )
         ]
     if family.get("name") in N21_FAMILIES:
