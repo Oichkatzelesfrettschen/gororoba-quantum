@@ -56,9 +56,10 @@ AGENTS.md criterion for IBM hardware below 16 qubits.
   the 7.2 us exponential T2* (4.1 times the 4.9 us Gaussian T) the retained
   point implies; the uniform spacing makes delta identifiable modulo
   1/3.344 us = 299 kHz, so |delta| < 149.5 kHz reads unaliased. Log spacing
-  would open a wider final gap and shrink that band. The fold of delta into
-  that band holds only because the exposures are consecutive integer
-  multiples of one window. The retained point's
+  would open a wider final gap and shrink that band. The band is 1 / (2
+  spacing) for the lattice spacing, dt times the gcd of every exposure in
+  dt, here one window; delta folds into it because every exposure is an
+  integer multiple of that spacing. The retained point's
   phase turn, atan2 of idle_ground (0.615, 0.089) minus immediate
   (0.989, -0.008), is 0.151 rad, about 7 kHz modulo 299 kHz.
 - Shots: 12288 per PUB, 172,032 in all, `--rep-delay 5e-05`.
@@ -112,7 +113,10 @@ pinned layout), 12288 shots per PUB, the policy above (rep_delay 50 us,
 twirl off, dd none, 30 s ceilings) and an expected bill of at most about
 17 s. A dry run whose window moves from 836 dt, whose circuits differ in
 structure, or whose estimated charge exceeds 13.5 s needs a fresh user
-approval.
+approval. The policy design carries `ramsey_analyzer_sha256`, the sha256
+of scripts/n21_spectator_ramsey.py, so an analyzer changed after the
+approved dry run makes the approved record's policy differ and the
+submission refuse with approval_required (gate core-602).
 
 The development dry run (from this branch, 2026-10-19T18:56:47-07:00
 calibration) planned one dynamic job of 14 PUBs, estimated charge 13.50 s
@@ -122,7 +126,7 @@ policy twirl false, dd null, `control_flow` empty; it is not retained.
 ## Preregistered analysis
 
 `"$PYTHON" scripts/n21_spectator_ramsey.py RUN_DIR --out RUN_DIR/ramsey.json
---expected-analyzer-sha256 760f3f5be5f82397af371c95578696aa1fc48f09e6116823ecf63ebbc428fd33` after `--collect`, and
+--expected-analyzer-sha256 0f54ade5b8d4351dcaabbb26749ea742588a616198a7dc93901ac4f20f2df09b` after `--collect`, and
 `--check` regenerates it from the archived raw files.
 
 1. Admissibility (returned scheduler timing): every member reads one
@@ -138,16 +142,27 @@ policy twirl false, dd null, `control_flow` empty; it is not retained.
    any role shifts 143's frequency by its ZZ; 136 and 142 are not coupled
    to each other. The control-only selection (herald reads 142 0) is fitted
    too and reported as secondary, descriptive.
-3. Family alpha 0.05, Bonferroni over four events, 0.0125 each: herald
-   admission on the primary shots, the detuning test, the decay-shape
-   test and the ringdown consistency test. On all-zero shots every herald bit reads 0, so the admission tests
-   the member spread of the rejected fraction (any pinned qubit heralds 1)
-   with n21_orbit_rca.herald_admission at herald_bound; a refusal leaves
-   both tests not_admissible. The per-bit spread over the control-zero
-   shots is reported descriptively.
+3. Family alpha: the record's policy.design alpha (0.05 here; a record
+   without one is refused), Bonferroni over four events, 0.0125 each:
+   herald admission, the detuning test, the decay-shape test and the
+   ringdown consistency test. The admission reads each pinned bit's
+   excited fraction per member among the shots whose other herald bits
+   read 0, through that qubit's asymmetric assignment channel
+   (prob_meas1_prep0, prob_meas0_prep1) in each member's execution
+   calibration, and refuses when any bit's member spread exceeds
+   herald_bound; n21_orbit_rca.herald_evaluation splits the 0.0125 over
+   every bit and ordered member pair. A refusal leaves the other tests
+   not_admissible. The per-bit spread over the control-zero shots is
+   reported descriptively.
 4. Fits: free beta, beta = 1 and beta = 2, each over all 28 binomial reads,
    starts spread over the alias band, the estimate of delta folded into it;
    Wald intervals from the expected Fisher information at the estimate.
+   The search parameterizes A = u (1 - |b|) with u in [0, 1], so every
+   candidate's means lie inside (-1, 1) and neither the likelihood nor the
+   information clips one. An information eigenvalue below 1e-10 of the
+   largest marks an unidentified direction; a decision whose parameter
+   (delta, or beta and T2*) has weight on it, or whose interval is wider
+   than the alias band or the beta search range, reads not_evaluable.
 5. Detuning: "detuned" when the two-sided 0.0125 interval of delta (free
    beta) excludes 0, else "unresolved"; the sign convention is that rz(+theta)
    on qubit 2 advances phi by +theta (self-check plant through the built
@@ -160,12 +175,14 @@ policy twirl false, dd null, `control_flow` empty; it is not retained.
    bound or makes it weakly identified, and the Wald interval then reads
    unresolved rather than a shape.
 7. Ringdown consistency: the 1 to 6 window points alone are fitted at
-   beta = 1 and beta = 2, the fit with the larger likelihood extrapolates
-   to A(0), and A(0) minus the immediate visibility hypot(<X>, <Y>) gets
-   a two-sided 0.0125 interval (Wald error of A(0), delta-method error of
-   the visibility): "consistent" when it holds 0, "transient" when it lies
-   below 0 (visibility lost before the first idle, the herald back-action
-   signature), "excess" when above. A transient verdict makes the decay
+   beta = 1 and beta = 2, and the fit with the larger likelihood predicts
+   the immediate pair as b + A (cos phi0, sin phi0), offset and phase
+   included. The measured immediate (<X>, <Y>) minus that prediction is
+   tested jointly, chi-square on 2 degrees of freedom over the binomial
+   variances plus the prediction's delta-method covariance, at 0.0125:
+   "consistent" when accepted, "transient" when refused with the measured
+   pair farther from b than predicted (visibility lost before the first
+   idle, the herald back-action signature), "excess" otherwise. A transient verdict makes the decay
    fit describe the stationary decay after the transient, not T2* from
    preparation.
 
@@ -190,7 +207,12 @@ bit 1 excited with a 0.1 MHz ZZ shift moves the control-only fit to beta
 rz(+2 pi 0.03 MHz t) inserted into the built circuits reads +0.03 MHz; an
 added 30 percent of shots that herald the control 1 with a 0.3 MHz turn
 moves the unconditioned fit off the plant while the conditioned fit
-recovers it; an empty herald selection reads not_evaluable; a decoupling
+recovers it; a zero-visibility truth reads both decisions not_evaluable;
+counts drawn exactly from the model with offset 0.03 and phi0 0 read
+ringdown-consistent at 4.2 million shots; windows 1, 3 and 4 give the
+one-window band and recover a 100 kHz detuning; one herald bit rising and
+another falling between members, the any-bit fraction fixed, refuses the
+admission; an empty herald selection reads not_evaluable; a decoupling
 pulse, a short idle or a prepared control refuses admissibility.
 
 ## Submit command

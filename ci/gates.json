@@ -1438,7 +1438,7 @@
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_spectator_ramsey.py --self-check",
    "name": "core-601",
-   "seconds": 22.5,
+   "seconds": 25.7,
    "tier": "pr"
   },
   {

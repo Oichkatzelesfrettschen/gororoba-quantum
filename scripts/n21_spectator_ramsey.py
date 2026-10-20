@@ -52,7 +52,7 @@ from typing import Any
 
 import numpy as np
 from scipy.optimize import minimize
-from scipy.stats import norm
+from scipy.stats import chi2, norm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
@@ -61,17 +61,28 @@ import n21_orbit_rca as rca  # noqa: E402
 
 import parallel  # noqa: E402
 
+# A record's family alpha is its policy.design alpha (report reads it and
+# refuses a record without one); FAMILY_ALPHA is the plants' and --design's.
 FAMILY_ALPHA = 0.05
 TESTS = ("spectator_herald_admission", "detuning", "decay_shape", "ringdown_consistency")
 TEST_ALPHA = FAMILY_ALPHA / len(TESTS)
+DT_US = 0.004
 SCHEMA = "n21-spectator-ramsey-v1"
 RETAINED = "ramsey.json"
 PARAMETERS = ("amplitude", "t2_star_us", "beta", "detuning_mhz", "phi0", "offset")
 QUADRATURES = ("x", "y")
-# Parameter bounds of the likelihood search: beta spans sub-exponential to
-# super-Gaussian decay, T2* spans 0.5 to 500 us, the offset is a readout
-# asymmetry of a few percent.
-BOUNDS = ((0.0, 1.2), (0.5, 500.0), (0.5, 4.0), (None, None), (None, None), (-0.2, 0.2))
+# The likelihood searches (u, T2*, beta, delta, phi0, b) with the amplitude
+# A = u (1 - |b|) (1 - FEASIBLE_MARGIN), so |<Q>| <= |b| + A < 1 at every
+# candidate and no mean is clipped: beta spans sub-exponential to
+# super-Gaussian decay, T2* 0.5 to 500 us, the offset a readout asymmetry of
+# a few percent.
+BOUNDS = ((0.0, 1.0), (0.5, 500.0), (0.5, 4.0), (None, None), (None, None), (-0.2, 0.2))
+FEASIBLE_MARGIN = 1e-9
+# An information eigenvalue below this fraction of the largest spans a
+# direction the data do not identify; a parameter with weight on it reads
+# unidentified and its decision not_evaluable.
+IDENTIFIABILITY_RATIO = 1e-10
+NULL_WEIGHT = 1e-6
 DETUNING_STARTS = 25
 # Exposures above this many dt read the member as an idle; immediate's
 # preparation and basis-change pulses abut.
@@ -86,26 +97,32 @@ def mean_expectation(params: np.ndarray, times: np.ndarray, quadratures: np.ndar
     return offset + envelope * np.where(quadratures == 0, np.cos(angle), np.sin(angle))
 
 
-def _clipped(mean: np.ndarray) -> np.ndarray:
-    return np.clip(mean, -1.0 + 1e-12, 1.0 - 1e-12)
+def natural(search: np.ndarray) -> np.ndarray:
+    """Model parameters of a search point: amplitude u (1 - |b|) (1 - FEASIBLE_MARGIN), the rest unchanged."""
+    params = np.array(search, dtype=float)
+    params[0] = search[0] * (1.0 - abs(search[5])) * (1.0 - FEASIBLE_MARGIN)
+    return params
 
 
 def negative_log_likelihood(
-    params: np.ndarray, times: np.ndarray, quadratures: np.ndarray, zeros: np.ndarray, shots: np.ndarray
+    search: np.ndarray, times: np.ndarray, quadratures: np.ndarray, zeros: np.ndarray, shots: np.ndarray
 ) -> float:
-    probability = (1.0 + _clipped(mean_expectation(params, times, quadratures))) / 2.0
+    probability = (1.0 + mean_expectation(natural(search), times, quadratures)) / 2.0
     return float(-(zeros * np.log(probability) + (shots - zeros) * np.log1p(-probability)).sum())
 
 
-def fisher_covariance(
+def fisher_information(
     params: np.ndarray, times: np.ndarray, quadratures: np.ndarray, shots: np.ndarray, free: tuple[int, ...]
 ) -> np.ndarray:
-    """Inverse expected Fisher information of the free parameters.
+    """Expected Fisher information of the free model parameters, from the likelihood's own unclipped mean.
 
     A binomial read of p = (1 + mu) / 2 carries information n / (1 - mu^2)
-    about mu; the Jacobian of mu is taken by central differences.
+    about mu; the Jacobian of mu is taken by central differences. params is
+    feasible (|mu| < 1), so the weights are finite.
     """
-    mean = _clipped(mean_expectation(params, times, quadratures))
+    mean = mean_expectation(params, times, quadratures)
+    if np.any(np.abs(mean) >= 1.0):
+        raise ValueError("an infeasible parameter point reached the Fisher information")
     jacobian = np.empty((times.size, len(free)))
     for column, index in enumerate(free):
         step = 1e-6 * max(1.0, abs(float(params[index])))
@@ -116,8 +133,34 @@ def fisher_covariance(
             mean_expectation(upper, times, quadratures) - mean_expectation(lower, times, quadratures)
         ) / (2 * step)
     weights = shots / (1.0 - mean**2)
-    information = jacobian.T @ (weights[:, None] * jacobian)
-    return np.asarray(np.linalg.pinv(information))
+    return np.asarray(jacobian.T @ (weights[:, None] * jacobian))
+
+
+def wald_errors(information: np.ndarray) -> tuple[list[float | None], float]:
+    """Per free parameter, its Wald standard error, or None when the information leaves it unidentified.
+
+    The eigenvectors whose eigenvalues fall below IDENTIFIABILITY_RATIO of
+    the largest span the unidentified directions; a parameter with weight
+    above NULL_WEIGHT on any of them has no Wald error. Every other
+    parameter is an estimable function, orthogonal to those directions, and
+    its variance is its diagonal entry of the inverse on the identified
+    eigenspace. Returns the errors and the information's condition number.
+    """
+    values, vectors = np.linalg.eigh(information)
+    top = float(values.max())
+    if top <= 0.0:
+        return [None] * len(values), math.inf
+    kept = values > IDENTIFIABILITY_RATIO * top
+    null = vectors[:, ~kept]
+    inverse = (vectors[:, kept] / values[kept]) @ vectors[:, kept].T
+    errors: list[float | None] = []
+    for index in range(len(values)):
+        if null.size and float(np.abs(null[index]).max()) > NULL_WEIGHT:
+            errors.append(None)
+        else:
+            errors.append(float(math.sqrt(max(inverse[index, index], 0.0))))
+    condition = top / float(values.min()) if float(values.min()) > 0.0 else math.inf
+    return errors, condition
 
 
 class StartFit:
@@ -146,14 +189,31 @@ class StartFit:
         return float(result.fun), [float(value) for value in result.x]
 
 
-def alias_bound_mhz(times: np.ndarray) -> float:
-    """Largest |delta| the grid identifies: 1 / (2 gap) over the largest gap between distinct exposures."""
-    distinct = np.unique(times)
-    return float(1.0 / (2.0 * np.diff(distinct).max()))
+def lattice_spacing_us(times: np.ndarray, dt_us: float = DT_US) -> float:
+    """The exposures' lattice spacing: dt times the gcd of every nonzero exposure in whole dt."""
+    ticks = np.rint(np.asarray(times) / dt_us).astype(np.int64)
+    nonzero = ticks[ticks > 0]
+    if nonzero.size == 0:
+        raise ValueError("a decay fit needs a nonzero exposure")
+    return float(np.gcd.reduce(nonzero)) * dt_us
+
+
+def alias_bound_mhz(times: np.ndarray, dt_us: float = DT_US) -> float:
+    """Largest |delta| the exposures identify: 1 / (2 spacing) for the gcd lattice spacing.
+
+    Every exposure is an integer multiple of the spacing, so delta and
+    delta + k / spacing predict the same counts at every point.
+    """
+    return float(1.0 / (2.0 * lattice_spacing_us(times, dt_us)))
 
 
 def fit_model(
-    times: np.ndarray, quadratures: np.ndarray, zeros: np.ndarray, shots: np.ndarray, fixed_beta: float | None
+    times: np.ndarray,
+    quadratures: np.ndarray,
+    zeros: np.ndarray,
+    shots: np.ndarray,
+    fixed_beta: float | None,
+    dt_us: float = DT_US,
 ) -> dict[str, Any]:
     """Binomial maximum likelihood with Wald intervals; fixed_beta None fits beta free.
 
@@ -176,21 +236,24 @@ def fit_model(
             0.0,
         ]
     )
-    alias = alias_bound_mhz(times)
+    alias = alias_bound_mhz(times, dt_us)
     starts = [float(value) for value in np.linspace(-alias, alias, DETUNING_STARTS)]
     found = parallel.ordered_map(StartFit(data, fixed_beta, start), starts, min_items=DETUNING_STARTS + 1)
     value, best = min(found, key=lambda item: (round(item[0], 9), abs(item[1][3])))
-    params = np.array(best)
-    # On a uniform exposure lattice of spacing gap, delta and delta + k / gap
-    # predict the same counts; the estimate is folded into the alias band.
+    params = natural(np.array(best))
+    # Every exposure is a multiple of the lattice spacing, so delta and
+    # delta + k / spacing predict the same counts; the estimate is folded
+    # into the alias band.
     params[3] = math.remainder(params[3], 2 * alias)
     params[4] = math.remainder(params[4], 2 * math.pi)
     free = tuple(index for index in range(len(PARAMETERS)) if not (fixed_beta is not None and index == 2))
-    covariance = fisher_covariance(params, times, quadratures, shots, free)
-    errors = dict.fromkeys(PARAMETERS, 0.0)
+    found_errors, condition = wald_errors(fisher_information(params, times, quadratures, shots, free))
+    errors: dict[str, float | None] = dict.fromkeys(PARAMETERS, 0.0)
     for column, index in enumerate(free):
-        errors[PARAMETERS[index]] = float(math.sqrt(max(covariance[column, column], 0.0)))
+        errors[PARAMETERS[index]] = found_errors[column]
     return {
+        "condition_number": condition,
+        "unidentified": [name for name, error in errors.items() if error is None],
         "beta": "free" if fixed_beta is None else fixed_beta,
         "negative_log_likelihood": value,
         "estimates": dict(zip(PARAMETERS, (float(v) for v in params), strict=True)),
@@ -205,9 +268,34 @@ def interval(estimate: float, error: float, alpha: float) -> list[float]:
 
 
 def decisions(free: dict[str, Any], alpha: float = TEST_ALPHA) -> dict[str, Any]:
-    """The preregistered detuning and decay-shape verdicts of the free-beta fit at alpha each."""
+    """The preregistered detuning and decay-shape verdicts of the free-beta fit at alpha each.
+
+    A decision whose parameter the information leaves unidentified
+    (wald_errors) reads not_evaluable, and so does a detuning interval wider
+    than the alias band or a beta interval wider than its search range.
+    """
     estimates, errors = free["estimates"], free["standard_errors"]
-    detuning = interval(estimates["detuning_mhz"], errors["detuning_mhz"], alpha)
+    result: dict[str, Any] = {}
+    alias = free["alias_bound_mhz"]
+    if errors["detuning_mhz"] is None or 2 * float(norm.ppf(1 - alpha / 2)) * errors["detuning_mhz"] > 2 * alias:
+        result["detuning"] = {"status": "not_evaluable", "reason": "delta is unidentified within the alias band"}
+    else:
+        detuning = interval(estimates["detuning_mhz"], errors["detuning_mhz"], alpha)
+        result["detuning"] = {
+            "status": "detuned" if detuning[0] > 0 or detuning[1] < 0 else "unresolved",
+            "estimate_khz": 1e3 * estimates["detuning_mhz"],
+            "interval_khz": [1e3 * value for value in detuning],
+            "alias_bound_khz": 1e3 * alias,
+            "alpha": alpha,
+        }
+    span = BOUNDS[2][1] - BOUNDS[2][0]
+    if (
+        errors["beta"] is None
+        or errors["t2_star_us"] is None
+        or 2 * float(norm.ppf(1 - alpha / 2)) * errors["beta"] > span
+    ):
+        result["decay_shape"] = {"status": "not_evaluable", "reason": "beta or T2* is unidentified"}
+        return result
     beta = interval(estimates["beta"], errors["beta"], alpha)
     holds = {value: beta[0] <= value <= beta[1] for value in (1.0, 2.0)}
     shape = (
@@ -219,35 +307,29 @@ def decisions(free: dict[str, Any], alpha: float = TEST_ALPHA) -> dict[str, Any]
         if holds[2.0]
         else "neither"
     )
-    return {
-        "detuning": {
-            "status": "detuned" if detuning[0] > 0 or detuning[1] < 0 else "unresolved",
-            "estimate_khz": 1e3 * estimates["detuning_mhz"],
-            "interval_khz": [1e3 * value for value in detuning],
-            "alias_bound_khz": 1e3 * free["alias_bound_mhz"],
-            "alpha": alpha,
-        },
-        "decay_shape": {
-            "status": shape,
-            "beta": estimates["beta"],
-            "interval": beta,
-            "t2_star_us": estimates["t2_star_us"],
-            "t2_star_interval_us": interval(estimates["t2_star_us"], errors["t2_star_us"], alpha),
-            "alpha": alpha,
-        },
+    result["decay_shape"] = {
+        "status": shape,
+        "beta": estimates["beta"],
+        "interval": beta,
+        "t2_star_us": estimates["t2_star_us"],
+        "t2_star_interval_us": interval(estimates["t2_star_us"], errors["t2_star_us"], alpha),
+        "alpha": alpha,
     }
+    return result
 
 
-def fit_counts(points: list[tuple[float, str, int, int]], alpha: float = TEST_ALPHA) -> dict[str, Any]:
+def fit_counts(
+    points: list[tuple[float, str, int, int]], alpha: float = TEST_ALPHA, dt_us: float = DT_US
+) -> dict[str, Any]:
     """Every fit and verdict of (exposure_us, quadrature, zeros, shots) points."""
     times = np.array([point[0] for point in points], dtype=float)
     quadratures = np.array([QUADRATURES.index(point[1]) for point in points])
     zeros = np.array([point[2] for point in points], dtype=float)
     shots = np.array([point[3] for point in points], dtype=float)
     fits = {
-        "free": fit_model(times, quadratures, zeros, shots, None),
-        "exponential": fit_model(times, quadratures, zeros, shots, 1.0),
-        "gaussian": fit_model(times, quadratures, zeros, shots, 2.0),
+        "free": fit_model(times, quadratures, zeros, shots, None, dt_us),
+        "exponential": fit_model(times, quadratures, zeros, shots, 1.0, dt_us),
+        "gaussian": fit_model(times, quadratures, zeros, shots, 2.0, dt_us),
     }
     by_time: dict[float, dict[str, float]] = {}
     for time, quadrature, zero, shot in points:
@@ -262,25 +344,28 @@ def fit_counts(points: list[tuple[float, str, int, int]], alpha: float = TEST_AL
     ]
     return {
         "fits": fits,
-        "decisions": decisions(fits["free"], alpha) | {"ringdown_consistency": ringdown_test(points, alpha)},
+        "decisions": decisions(fits["free"], alpha) | {"ringdown_consistency": ringdown_test(points, alpha, dt_us)},
         "derived": derived,
     }
 
 
-def ringdown_test(points: list[tuple[float, str, int, int]], alpha: float = TEST_ALPHA) -> dict[str, Any]:
-    """Whether the idle points' decay extrapolates to the immediate point's visibility.
+def ringdown_test(
+    points: list[tuple[float, str, int, int]], alpha: float = TEST_ALPHA, dt_us: float = DT_US
+) -> dict[str, Any]:
+    """Whether the idle points' model predicts the immediate point's X and Y expectations.
 
     A transient right after the herald (readout ringdown, AC-Stark shift,
     measurement-induced dephasing) removes visibility before the first idle
     point and leaves a slower stationary decay. The exposures above 0 alone
-    are fitted at beta = 1 and at beta = 2, and the fit with the larger
-    likelihood (equal parameter counts) extrapolates to an amplitude A(0);
-    a free beta extrapolates with too wide an error to test. A transient
-    leaves A(0) below the
-    visibility hypot(<X>, <Y>) read at exposure 0. The statistic is A(0)
-    minus that visibility, with the Wald error of A(0) and the delta-method
-    error of the visibility; "consistent" when its two-sided alpha interval
-    holds 0, "transient" when it lies below 0, "excess" when above.
+    are fitted at beta = 1 and at beta = 2 (a free beta extrapolates with
+    too wide an error to test), and the fit with the larger likelihood
+    predicts (<X>, <Y>) at t = 0 as b + A (cos phi0, sin phi0), offset and
+    phase included. The measured immediate pair minus that prediction is
+    tested jointly: chi-square with 2 degrees of freedom over the binomial
+    variances plus the prediction's delta-method covariance, against the
+    1 - alpha quantile. A refusal reads "transient" when the measured pair
+    lies farther from b than the predicted amplitude along the predicted
+    direction, else "excess"; an acceptance reads "consistent".
     """
     later = [point for point in points if point[0] > 0.0]
     first = {point[1]: point for point in points if point[0] == 0.0}
@@ -291,26 +376,44 @@ def ringdown_test(points: list[tuple[float, str, int, int]], alpha: float = TEST
     zeros = np.array([point[2] for point in later], dtype=float)
     shots = np.array([point[3] for point in later], dtype=float)
     late = min(
-        (fit_model(times, quadratures, zeros, shots, beta) for beta in (1.0, 2.0)),
+        (fit_model(times, quadratures, zeros, shots, beta, dt_us) for beta in (1.0, 2.0)),
         key=lambda fitted: fitted["negative_log_likelihood"],
     )
-    reads = []
-    for quadrature in QUADRATURES:
-        _time, _quadrature, zero, shot = first[quadrature]
-        mean = 2.0 * zero / shot - 1.0
-        reads.append((mean, (1.0 - mean**2) / shot))
-    (x, x_variance), (y, y_variance) = reads
-    visibility = math.hypot(x, y)
-    variance = (x**2 * x_variance + y**2 * y_variance) / visibility**2 if visibility else x_variance + y_variance
-    statistic = late["estimates"]["amplitude"] - visibility
-    error = math.sqrt(late["standard_errors"]["amplitude"] ** 2 + variance)
-    low, high = interval(statistic, error, alpha)
+    if late["unidentified"]:
+        return {"status": "not_evaluable", "reason": f"the idle fit leaves {late['unidentified']} unidentified"}
+    params = np.array([late["estimates"][name] for name in PARAMETERS])
+    zero_time = np.zeros(len(QUADRATURES))
+    index = np.arange(len(QUADRATURES))
+    predicted = mean_expectation(params, zero_time, index)
+    free = (0, 1, 3, 4, 5)
+    jacobian = np.empty((len(QUADRATURES), len(free)))
+    for column, parameter in enumerate(free):
+        step = 1e-6 * max(1.0, abs(float(params[parameter])))
+        upper, lower = params.copy(), params.copy()
+        upper[parameter] += step
+        lower[parameter] -= step
+        jacobian[:, column] = (
+            mean_expectation(upper, zero_time, index) - mean_expectation(lower, zero_time, index)
+        ) / (2 * step)
+    information = fisher_information(params, times, quadratures, shots, free)
+    values, vectors = np.linalg.eigh(information)
+    covariance = (vectors / values) @ vectors.T
+    measured = np.array([2.0 * first[q][2] / first[q][3] - 1.0 for q in QUADRATURES])
+    variance = np.diag([(1.0 - value**2) / first[q][3] for value, q in zip(measured, QUADRATURES, strict=True)])
+    total = variance + jacobian @ covariance @ jacobian.T
+    difference = measured - predicted
+    statistic = float(difference @ np.linalg.solve(total, difference))
+    quantile = float(chi2.ppf(1 - alpha, len(QUADRATURES)))
+    direction = predicted - params[5]
+    norm_direction = float(np.linalg.norm(direction))
+    along = float(difference @ direction / norm_direction) if norm_direction > 0 else 0.0
     return {
-        "status": "transient" if high < 0 else "excess" if low > 0 else "consistent",
-        "extrapolated_amplitude": late["estimates"]["amplitude"],
-        "immediate_visibility": visibility,
-        "statistic": statistic,
-        "interval": [low, high],
+        "status": "consistent" if statistic <= quantile else "transient" if along > 0 else "excess",
+        "predicted": predicted.tolist(),
+        "measured": measured.tolist(),
+        "chi_square": statistic,
+        "quantile": quantile,
+        "along_predicted": along,
         "late_fit": late,
         "alpha": alpha,
     }
@@ -338,10 +441,10 @@ def design_precision(truth: dict[str, float], exposures_us: list[float], shots: 
     quantile = float(norm.ppf(1 - TEST_ALPHA / 2))
     report: dict[str, Any] = {"truth": truth, "exposures_us": exposures_us, "shots_per_circuit": shots}
     for label, free in (("free", (0, 1, 2, 3, 4, 5)), ("fixed_beta", (0, 1, 3, 4, 5))):
-        covariance = fisher_covariance(params, times, quadratures, counts, free)
+        errors, _condition = wald_errors(fisher_information(params, times, quadratures, counts, free))
         report[label] = {
-            PARAMETERS[index]: quantile * math.sqrt(max(covariance[column, column], 0.0))
-            for column, index in enumerate(free)
+            PARAMETERS[index]: None if error is None else quantile * error
+            for index, error in zip(free, errors, strict=True)
         }
     report["detuning_half_width_khz"] = 1e3 * report["free"]["detuning_mhz"]
     report["alias_bound_khz"] = 1e3 * alias_bound_mhz(times)
@@ -474,17 +577,53 @@ def conditioned_zeros(phases: list[str], heralds: list[str], positions: tuple[in
 SELECTIONS = ("all_zero", "control_zero")
 
 
-def run_reads(run: Path, control: int) -> tuple[dict[str, dict[str, tuple[int, int]]] | None, dict[str, Any]]:
-    """Per selection and member, herald-conditioned (zeros, shots) of qubit 2; None without the herald."""
+def bit_excitations(heralds: list[str], size: int) -> dict[int, tuple[int, int]]:
+    """Per herald bit k, (shots reading k excited, shots) among the shots whose other herald bits read 0.
+
+    Bitstrings put bit 0 rightmost. Conditioning on the other bits isolates
+    each qubit's own initial excitation, so a rise on one bit and a fall on
+    another stay visible where their sum would cancel.
+    """
+    result = {}
+    for k in range(size):
+        others = [value for value in heralds if all(value[size - 1 - j] == "0" for j in range(size) if j != k)]
+        result[k] = (sum(value[size - 1 - k] == "1" for value in others), len(others))
+    return result
+
+
+def pinned_admission(
+    bit_counts: dict[int, dict[str, Any]], calibrations: dict[str, dict[str, Any]], alpha: float
+) -> dict[str, Any]:
+    """The herald admission of the all-zero selection: every pinned bit's member spread at alpha.
+
+    n21_orbit_rca.herald_evaluation reads each bit's excited fraction per
+    member (bit_excitations) through that qubit's retained asymmetric
+    assignment channel (prob_meas1_prep0, prob_meas0_prep1) from each
+    member's execution calibration and splits alpha over every bit and
+    ordered member pair, so the admission stays inside its alpha share.
+    """
+    return rca.herald_evaluation(bit_counts, calibrations, alpha) | {
+        "rule": "per-bit excitation spread among shots whose other herald bits read 0"
+    }
+
+
+def run_reads(
+    run: Path, control: int
+) -> tuple[dict[str, dict[str, tuple[int, int]]] | None, dict[str, Any], dict[int, dict[str, Any]]]:
+    """Per selection and member, herald-conditioned (zeros, shots) of qubit 2, and the per-bit herald counts.
+
+    None without the herald.
+    """
     from qpe_diagnostics import HERALD_REGISTER, register_role
 
     names = [member["name"] for member in rca._group(run)["members"]]
     reads: dict[str, dict[str, tuple[int, int]]] = {selection: {} for selection in SELECTIONS}
     totals: dict[str, int] = {}
+    bit_counts: dict[int, dict[str, Any]] = {}
     for name, circuit, payload in zip(names, rca._circuits(run), rca.raw_pubs(run), strict=True):
         registers = [register for register in circuit.cregs if register_role(register.name) == HERALD_REGISTER]
         if not registers:
-            return None, {"present": False}
+            return None, {"present": False}, {}
         (register,) = registers
         writer = {
             circuit.find_bit(i.clbits[0]).index: circuit.find_bit(i.qubits[0]).index
@@ -500,32 +639,26 @@ def run_reads(run: Path, control: int) -> tuple[dict[str, dict[str, tuple[int, i
         reads["all_zero"][name] = conditioned_zeros(phases, heralds, everything)
         reads["control_zero"][name] = conditioned_zeros(phases, heralds, (register.size - 1 - bits[0],))
         totals[name] = len(phases)
-    return reads, {
-        "present": True,
-        "control": control,
-        "primary": "all_zero: keep shots whose initialization herald reads every pinned qubit 0",
-        "secondary": "control_zero: keep shots whose initialization herald reads the control 0",
-        "kept_shots": {
-            selection: {name: [reads[selection][name][1], totals[name]] for name in totals} for selection in SELECTIONS
+        for k, counted in bit_excitations(heralds, register.size).items():
+            qubit = writer[circuit.find_bit(register[k]).index]
+            entry = bit_counts.setdefault(k, {"qubit": qubit, "members": {}})
+            if entry["qubit"] != qubit:
+                raise RuntimeError(f"{name} reads herald bit {k} on qubit {qubit}, another member on {entry['qubit']}")
+            entry["members"][name] = counted
+    return (
+        reads,
+        {
+            "present": True,
+            "control": control,
+            "primary": "all_zero: keep shots whose initialization herald reads every pinned qubit 0",
+            "secondary": "control_zero: keep shots whose initialization herald reads the control 0",
+            "kept_shots": {
+                selection: {name: [reads[selection][name][1], totals[name]] for name in totals}
+                for selection in SELECTIONS
+            },
         },
-    }
-
-
-def selection_admission(reads: dict[str, tuple[int, int]], totals: dict[str, int], alpha: float) -> dict[str, Any]:
-    """Whether the rejected fraction of the primary selection differs between members beyond herald_bound.
-
-    On the all-zero shots every herald bit reads 0, so a per-bit excitation
-    test is empty there; the admission instead tests the member spread of
-    the rejected fraction (the probability that any pinned qubit heralds 1)
-    with n21_orbit_rca.herald_admission at unit readout contrast, so the
-    kept shots of every member come from one initial ensemble.
-    """
-    counts = {
-        0: {"qubit": -1, "members": {name: (totals[name] - kept, totals[name]) for name, (_z, kept) in reads.items()}}
-    }
-    shots = min(totals.values())
-    admitted = rca.herald_admission(counts, {-1: 1.0}, rca.herald_bound(shots, alpha), alpha)
-    return admitted | {"present": True, "evaluable": True, "shots": shots, "rule": "rejected-fraction spread"}
+        bit_counts,
+    )
 
 
 def evaluate(
@@ -543,7 +676,7 @@ def evaluate(
         (exposures_dt[name] * dt_us, name.rsplit("_", 1)[1], zeros, shots)
         for name, (zeros, shots) in sorted(reads.items(), key=lambda item: (exposures_dt[item[0]], item[0]))
     ]
-    fitted = fit_counts(points, alpha)
+    fitted = fit_counts(points, alpha, dt_us)
     return {"points": [list(point) for point in points], **fitted, "tests": fitted["decisions"]}
 
 
@@ -563,17 +696,22 @@ def report(run: Path) -> dict[str, Any]:
     if unresolved:
         admitted["unresolved"] |= unresolved
         admitted["admissible"] = False
+    design = record.get("policy", {}).get("design", {})
+    if "alpha" not in design:
+        raise RuntimeError(f"{run} records no policy.design alpha, the family alpha the tests split")
+    family_alpha = float(design["alpha"])
+    test_alpha = family_alpha / len(TESTS)
     calibrations = rca.execution_calibration(run)
-    reads, conditioning = run_reads(run, control)
+    reads, conditioning, bit_counts = run_reads(run, control)
     output: dict[str, Any] = {
         "schema_version": SCHEMA,
         "analyzer_sha256": analyzer_sha256(),
-        "alpha": {"family_alpha": FAMILY_ALPHA, "tests": list(TESTS), "per_test_alpha": TEST_ALPHA},
+        "alpha": {"family_alpha": family_alpha, "tests": list(TESTS), "per_test_alpha": test_alpha},
         "admissibility": admitted,
         "herald_conditioning": conditioning,
         # Descriptive: each herald bit's member spread over the control-zero shots.
         "control_zero_bit_herald": rca.herald_report(
-            run, calibrations, lambda name: member_key(name) is not None, TEST_ALPHA, rca.HERALD_ROLES.index("control")
+            run, calibrations, lambda name: member_key(name) is not None, test_alpha, rca.HERALD_ROLES.index("control")
         ),
     }
     if not admitted["admissible"]:
@@ -582,16 +720,15 @@ def report(run: Path) -> dict[str, Any]:
     if reads is None:
         output |= evaluate(None, {}, 0.0)
         return output
-    totals = {name: pair[1] for name, pair in conditioning["kept_shots"]["all_zero"].items()}
-    herald = selection_admission(reads["all_zero"], totals, TEST_ALPHA)
+    herald = pinned_admission(bit_counts, calibrations, test_alpha)
     output["spectator_herald"] = herald
     if not herald["admissible"]:
         output["tests"] = rca.herald_refusal(herald, TESTS[1:])
         return output
     exposures = {name: int(schedule["exposure_dt"]) for name, schedule in schedules.items()}
     dt_us = float(family["dt_seconds"]) * 1e6
-    output |= evaluate(reads["all_zero"], exposures, dt_us)
-    secondary = evaluate(reads["control_zero"], exposures, dt_us)
+    output |= evaluate(reads["all_zero"], exposures, dt_us, test_alpha)
+    secondary = evaluate(reads["control_zero"], exposures, dt_us, test_alpha)
     output["secondary_control_zero"] = {"status": "descriptive", **secondary}
     return output
 
@@ -600,7 +737,6 @@ def report(run: Path) -> dict[str, Any]:
 # idle_ground 0.622 after 836 dt (3.344 us), an exponential T2* of 7.2 us or
 # a Gaussian T of 4.9 us; the plants sit there at the design shot count.
 WINDOW_DT = 836
-DT_US = 0.004
 DESIGN_MULTIPLES = (1, 2, 3, 4, 5, 6)
 DESIGN_SHOTS = 12288
 EXPONENTIAL = {"amplitude": 0.989, "t2_star_us": 7.2, "beta": 1.0, "detuning_mhz": 0.0, "phi0": 0.0, "offset": 0.0}
@@ -724,6 +860,63 @@ def _check_ringdown() -> dict[str, str]:
     if (pure, gaussian, transient) != ("consistent", "consistent", "transient"):
         raise RuntimeError(f"the ringdown test reads pure {pure}, gaussian {gaussian} and transient {transient}")
     return {"pure_exponential": pure, "pure_gaussian": gaussian, "transient_plus_exponential": transient}
+
+
+def _check_identifiability() -> dict[str, str]:
+    """A zero-visibility truth leaves delta, beta and T2* unidentified, so both decisions read not_evaluable."""
+    tests = _plant(EXPONENTIAL | {"amplitude": 0.0})["decisions"]
+    found = {name: tests[name]["status"] for name in ("detuning", "decay_shape")}
+    if set(found.values()) != {"not_evaluable"}:
+        raise RuntimeError(f"a zero-visibility plant reads {found}")
+    return found
+
+
+def _check_ringdown_offset() -> str:
+    """Counts drawn exactly from the model with a positive offset and phi0 = 0 read consistent at high shots."""
+    truth = EXPONENTIAL | {"offset": 0.03, "amplitude": 0.95}
+    status = ringdown_test(expected_points(truth, design_exposures_us(), 1 << 22))["status"]
+    if status != "consistent":
+        raise RuntimeError(f"the offset model plant reads {status}")
+    return status
+
+
+def _check_alias_lattice() -> dict[str, float]:
+    """Windows 1, 3 and 4 form a one-window lattice: the band is 1 / (2 window) and a 100 kHz truth survives."""
+    exposures = design_exposures_us((1, 3, 4))
+    band = alias_bound_mhz(np.array(exposures))
+    found = fit_counts(expected_points(DETUNED | {"detuning_mhz": 0.1}, exposures, DESIGN_SHOTS))
+    estimate = found["fits"]["free"]["estimates"]["detuning_mhz"]
+    if abs(band - 1.0 / (2.0 * WINDOW_DT * DT_US)) > 1e-9 or abs(estimate - 0.1) > 1e-3:
+        raise RuntimeError(f"windows 1, 3, 4 read band {band} MHz and delta {estimate} MHz")
+    return {"alias_bound_mhz": band, "detuning_mhz": estimate}
+
+
+def _check_bit_admission() -> dict[str, bool]:
+    """One bit rising and another falling between members, the any-bit fraction fixed, refuses the herald."""
+    channel = {"prob_meas1_prep0": 0.0025, "prob_meas0_prep1": 0.0085}
+    calibrations = {
+        name: {"source": "plant", "values": {str(q): channel for q in (142, 136, 143, 144)}} for name in ("a", "b")
+    }
+    shots = DESIGN_SHOTS
+
+    def heralds(excited_bit: int) -> list[str]:
+        flipped = ["0"] * 4
+        flipped[3 - excited_bit] = "1"
+        return ["0000"] * (shots - 400) + ["".join(flipped)] * 400
+
+    def counts(by_member: dict[str, list[str]]) -> dict[int, dict[str, Any]]:
+        result: dict[int, dict[str, Any]] = {}
+        for name, values in by_member.items():
+            for k, counted in bit_excitations(values, 4).items():
+                result.setdefault(k, {"qubit": (142, 136, 143, 144)[k], "members": {}})["members"][name] = counted
+        return result
+
+    swapped = pinned_admission(counts({"a": heralds(1), "b": heralds(2)}), calibrations, TEST_ALPHA)
+    same = pinned_admission(counts({"a": heralds(1), "b": heralds(1)}), calibrations, TEST_ALPHA)
+    found = {"swapped": bool(swapped["admissible"]), "same": bool(same["admissible"])}
+    if found != {"swapped": False, "same": True}:
+        raise RuntimeError(f"the per-bit herald admission reads {found}")
+    return found
 
 
 def _check_neighbor_excited() -> dict[str, Any]:
@@ -850,6 +1043,10 @@ def self_check() -> dict[str, Any]:
         "control_excited": _check_control_excited(),
         "neighbor_excited": _check_neighbor_excited(),
         "ringdown": _check_ringdown(),
+        "identifiability": _check_identifiability(),
+        "ringdown_offset": _check_ringdown_offset(),
+        "alias_lattice": _check_alias_lattice(),
+        "bit_admission": _check_bit_admission(),
         "empty_selection": _check_empty_selection(),
         "schedules": _check_schedules(),
     }

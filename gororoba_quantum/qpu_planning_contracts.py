@@ -2545,6 +2545,32 @@ def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
         qpu_planning.settings(arguments).get("ramsey_windows") == RAMSEY_WINDOWS,
         "the policy settings drop the ground Ramsey multiples",
     )
+    analyzer = Path(qpu_planning.__file__).resolve().parents[1] / "scripts" / "n21_spectator_ramsey.py"
+    bound = qpu_planning.settings(arguments).get("ramsey_analyzer_sha256")
+    _require(
+        bound == hashlib.sha256(analyzer.read_bytes()).hexdigest(),
+        f"the policy binds analyzer sha256 {bound}, not the bytes of {analyzer.name}",
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        approved_dir = Path(scratch)
+        approved = {
+            "state": "planned",
+            "policy": {"design": qpu_planning.settings(arguments)},
+            "groups": [],
+        }
+        (approved_dir / "record.json").write_text(json.dumps(approved))
+        (approved_dir / "isa.qpy").write_bytes(b"ramsey")
+        qpy_digest = hashlib.sha256(b"ramsey").hexdigest()
+        _require(
+            not live_run.approved_record_mismatches(approved_dir, json.loads(json.dumps(approved)), qpy_digest),
+            "an unchanged ground Ramsey plan differs from its own approved record",
+        )
+        changed = json.loads(json.dumps(approved))
+        changed["policy"]["design"]["ramsey_analyzer_sha256"] = "0" * 64
+        _require(
+            "policy differs" in live_run.approved_record_mismatches(approved_dir, changed, qpy_digest),
+            "a changed Ramsey analyzer leaves the approved record's policy equal",
+        )
     traces: dict[str, Any] = {}
     candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)
     _require(bool(candidates), f"FakeFez refuses the pinned ground Ramsey sweep: {traces.get('family_rejections')}")

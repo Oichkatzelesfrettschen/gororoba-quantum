@@ -8,6 +8,7 @@ the optimizer receives explicit scientific quantities and accounting units.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import math
 import threading
@@ -60,6 +61,16 @@ from experiment_optimizer import (
 from packing import Replica
 from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_probabilities, n21_ramsey_multiple
 
+# The ground Ramsey sweep's preregistered analysis; its sha256 joins the
+# approval-bound design, so a changed analyzer makes the approved record's
+# policy differ and the submission refuse with approval_required.
+RAMSEY_ANALYZER = Path(__file__).resolve().parents[1] / "scripts" / "n21_spectator_ramsey.py"
+
+
+def ramsey_analyzer_sha256() -> str:
+    """sha256 of scripts/n21_spectator_ramsey.py, the analysis a ground Ramsey approval binds."""
+    return hashlib.sha256(RAMSEY_ANALYZER.read_bytes()).hexdigest()
+
 
 def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
     """family_contracts' configuration keyword for a family whose contracts read its candidate's configuration.
@@ -86,7 +97,7 @@ def settings(args: Any) -> dict[str, Any]:
     split = {"overlap_split": True} if getattr(args, "overlap_split", False) else {}
     ground = {"ground_control_split": True} if getattr(args, "ground_control_split", False) else {}
     windows = getattr(args, "ramsey_windows", None)
-    ramsey = {"ramsey_windows": list(windows)} if windows else {}
+    ramsey = {"ramsey_windows": list(windows), "ramsey_analyzer_sha256": ramsey_analyzer_sha256()} if windows else {}
     pin = getattr(args, "pin_layout", None)
     return (
         {
