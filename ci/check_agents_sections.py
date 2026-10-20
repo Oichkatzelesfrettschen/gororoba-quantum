@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # section name -> (owner directory, directories that repeat the owner's bytes)
 SECTIONS: dict[str, tuple[str, tuple[str, ...]]] = {
     "algebra-circuit-rules": ("gororoba_quantum", ("scripts",)),
-    "heron-execution-facts": ("gororoba_quantum", ()),
+    "heron-execution-facts": ("gororoba_quantum", ("scripts",)),
 }
 LOADER = b"@AGENTS.md\n"
 NESTED = ("gororoba_quantum", "scripts", "ci")

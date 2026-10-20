@@ -144,3 +144,130 @@ sedenion statement never rests on them.
 | python-galgebra | `galgebra` | 0.6.0 | Cl(0,2) identical at D = 4 | symbolic geometric algebra and calculus | a one-generator algebra needs coordinates; a scalar needs `sympy.S.One` |
 | python-hyprat | `hyprat` | 0.2.0 (GitHub tag) | identical at D = 8, 16 (measured to 32) at mu = -1; signs (-1, -1, +1) give the split octonions | exact rational Cayley-Dickson algebras with a doubling parameter, Hurwitz quaternions | `Hy.from_array(coeffs, signs=...)` names the algebra, lowest level first |
 <!-- algebra-circuit-rules:end -->
+
+<!-- heron-execution-facts:begin -->
+## Heron execution facts
+
+gororoba_quantum/AGENTS.md owns this section and scripts/AGENTS.md repeats
+it byte for byte (gate core-250). The account reaches ibm_fez, ibm_kingston
+and ibm_marrakesh, all Heron r2: 156 qubits, heavy-hex, native CZ, basis
+cz, id, rz, sx, x and xslow. Heron r3 and Nighthawk (square grid) exist in
+IBM's processor list and are absent from this account, so
+`service.backends()` is the authority before a design names a backend.
+`scripts/heron_target_snapshot.py --out` reads the live Targets into
+`docs/evidence/heron_platform/targets.json`, and gate core-254
+recomputes every per-backend fact below from it; a refreshed snapshot that
+contradicts this section fails until the text changes with it. Measured
+values and the documentation captures are in
+`docs/notes/ibm_heron_platform.md`.
+
+- **The Target is the timing authority.** dt is 4 ns and the timing
+  constraints read granularity 1, min_length 2, pulse and acquire alignment
+  1; a design reads them from the Target and assumes no 16-sample
+  alignment. live_run.py binds them into the calibration identity.
+- **Measurement variants.** `measure_2` (`MidCircuitMeasure`) is the shorter
+  mid-circuit readout IBM recommends where supported, with a higher reported
+  assignment error than `measure`. `reset` lasts exactly as long as
+  `measure_reset` and `reset_2` as long as `measure_reset_2` on every qubit,
+  so a reset is a measurement followed by a conditional flip. Switching
+  variants changes the physical measurement and needs its own control; Aer
+  lacks `measure_2`, so local simulation needs an explicit representation
+  (QPU_EXECUTION_ROADMAP.md).
+- **`xslow`** is a native 1 us X that shares its reported error with `x` and
+  `sx` on every qubit; the preset transpiler at optimization levels 1 to 3
+  never emits it, so it appears only where a circuit names it.
+- **Dynamic-circuit limits** (execute-dynamic-circuits guide): one level of
+  `if` with no nesting, no reset or measurement inside a conditional,
+  operands of at most 32 bits, no loops, switch or arithmetic, and a
+  per-job broadcast budget of about 300 broadcasts of 60 bits or 2400 of 1
+  bit. `store` is a supported instruction from runtime 0.47.
+- **Repetition delay** defaults to 250 us within `backend.rep_delay_range`,
+  0 to 2 ms on all three; the range changes over time, so a design reads
+  it. A lower delay raises state-preparation error, and `rep_delay` is one
+  value per job.
+- **Execution order.** Circuits iterate column-wise over shots; neither PUB
+  order nor single-batch execution of a job is guaranteed, so adjacent
+  entries of a shot array are not adjacent physical executions.
+- **Billing** is QPU lock time with about 2 s of overhead per sub-job, and
+  the service splits a job too large for its execution engine into
+  sub-jobs. `scheduler_timing` and the compilation circuit time are
+  schedule evidence, not billing. In job and batch mode a job cancelled or
+  failed by user error bills what it consumed, preparation overhead
+  included, and a system error bills zero; a session bills its active
+  wall-clock time, idle time and failed jobs included.
+- **Calibration** runs as roughly hourly monitoring interleaved with user
+  jobs plus triggered recalibration, under two hours a day on Heron, so two
+  jobs submitted together, or one job waiting in the queue, can execute
+  under a calibration other than the one it was planned against.
+  live_run.py checks calibration at each submitted batch, and `--collect`
+  fetches `properties(datetime=...)` and `target_history(datetime=...)` at
+  each PUB's execution start and replays under them, so the planning
+  Target and the execution calibration are separate identities.
+- **Fractional gates** (`use_fractional_gates=True`, experimental):
+  `rzz(theta)` for 0 < theta <= pi/2 and `rx(theta)` for any theta; a bound
+  parameter outside that range fails the job; Pauli twirling, PEC and PEA
+  are unsupported with them and TREX is supported. Reported `rx` errors copy
+  `sx` on every qubit, while `rzz` reports its own error on more than 90
+  percent of pairs and can exceed `cz`. A fractional decomposition is an
+  intervention with its own controls, never a silent substitution.
+- **Stretch** (Qiskit 2.0 or later) resolves at compile time and adds any
+  remainder to the first delay that uses it; the resolved values come from
+  the experimental execution options `stretch_values` and
+  `scheduler_timing`, and equal symbolic halves are checked against them.
+- **Runtime 0.48 to 0.50.** 0.48 deprecates differing `pub.shots` across the
+  PUBs of one job; 0.49 adds `MidCircuitReset` and
+  `ConvertToMidCircuitResetAndMeasure`; 0.50 adds the client-side
+  `executor_sampler.Sampler`, moves `max_execution_time` to the top level
+  (live_run.py sets it there) and adds `XSlowGate`.
+
+**Python stack on the build host.** requirements.txt and
+ci/requirements-ci.txt pin what CI runs; the build host runs Arch packages
+at those versions, except the linters.
+
+| Arch package | Pin it carries |
+|---|---|
+| python-qiskit | qiskit 2.5.2 |
+| python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.50.0 |
+| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2, pkgrel 2: CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
+| cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.17.2-2 links |
+| cutensor | cutensor 2.8.1.0, the tensor library libcutensornet.so.2 loads |
+| cuda | cuda 13.4.2 (nvcc 13.4.92): the toolkit both packages build against and the libcublas and libcusolver the module loads from /opt/cuda/lib64 |
+| python-samplomatic | samplomatic 0.21.0, the runtime 0.50 floor |
+| python-ibm-quantum-schemas | ibm-quantum-schemas 0.12.20260921, the runtime 0.50 floor |
+| python-numpy, python-scipy | numpy 2.5.4, scipy 1.18.1 |
+| python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
+| python-matplotlib | matplotlib 3.11.2 |
+| python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
+| python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
+| iqm-resonance-stack | IQM OS 4.7 client stack (iqm-client 36.0.0, qiskit 2.1.2, cirq-core 1.7.0, qrisp 0.9.10) as a separate Python 3.13 environment under /opt/iqm-resonance-stack, interpreter `iqm-python` (docs/notes/iqm/README.md) |
+| python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
+| python-ruff, mypy | ruff 0.17.0 and mypy 2.3.1, behind the CI pins ruff 0.17.1 and mypy 2.4.0 (a `~/.local/bin` install of ruff 0.14.11 and mypy 1.19.1 precedes them on PATH); the lint gates run the pins through `ci/pinned_tool.py` and uv |
+
+A broken or missing package is rebuilt and reinstalled from its PKGBUILD in
+`~/Github/PKGBUILDs` with `makepkg -si --nocheck` in the package
+directory: python-qiskit-aer and python-samplomatic before
+python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
+`blas` and `lapack` virtuals that the installed AMD AOCL libraries provide,
+which leaves AOCL in place; a package without a local PKGBUILD comes from
+the distribution repositories through pacman or paru. python-qiskit-experiments
+has a local PKGBUILD over the PyPI sdist: the AUR builds the GitHub tag
+archive, which lacks the randomized-benchmarking `.npz` tables, so
+`qiskit_experiments.library` fails to import. After a rebuild,
+`"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
+submit-free dry run confirm the stack. python-qiskit-aer-cuda builds against
+the cuquantum package of the same directory tree and installs in one
+`pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to the
+AOCL providers and builds the module as C++20, which CUDA 13's CCCL 3
+headers and fmt 12 require. `readelf -d` on
+`qiskit_aer/backends/controller_wrappers.cpython-314-x86_64-linux-gnu.so`
+lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;
+a module without them raises `Simulation device "GPU" does not support
+cuStateVec on this system` on `cuStateVec_enable=True`.
+`docs/notes/build_host/custatevec.md` holds the requirement list, the build
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
+qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
+account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
+stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
+version in `environment.json`, and holds no IBM credential
+(`kaggle_kernel/AGENTS.md`).
+<!-- heron-execution-facts:end -->

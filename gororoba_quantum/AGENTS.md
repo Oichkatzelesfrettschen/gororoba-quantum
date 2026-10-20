@@ -149,7 +149,8 @@ sedenion statement never rests on them.
 <!-- heron-execution-facts:begin -->
 ## Heron execution facts
 
-gororoba_quantum/AGENTS.md owns this section (gate core-250). The account reaches ibm_fez, ibm_kingston
+gororoba_quantum/AGENTS.md owns this section and scripts/AGENTS.md repeats
+it byte for byte (gate core-250). The account reaches ibm_fez, ibm_kingston
 and ibm_marrakesh, all Heron r2: 156 qubits, heavy-hex, native CZ, basis
 cz, id, rz, sx, x and xslow. Heron r3 and Nighthawk (square grid) exist in
 IBM's processor list and are absent from this account, so

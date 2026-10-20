@@ -31,7 +31,19 @@ A gate command run outside ci/run_gates.py needs `PYTHON` exported
 and every gate exits 127 in 0.0 s. A check raises explicitly and never uses
 `assert`, which `python -O` strips. Every CPU-bound loop over independent items
 runs through parallel.py, an order-preserving spawn pool, and a serial loop
-over such items is a defect review rejects. A change to live_run.py or
+over such items is a defect review rejects; items that share a seeded generator
+draw every item's inputs first, in the generator's order, and then map, so
+pooled and serial runs write the same bytes. A classical estimator over many
+synthetic replicates (a null calibration, a bootstrap) is batched across
+replicates with numpy before it is pooled, and a gate proves the batched path
+returns the scalar reference's bits: it keeps the scalar arithmetic order,
+repeats `sum()`'s Neumaier compensation and sends every replicate-dependent
+`exp` and `** 2` through `math.exp` and `math.pow`
+([vectorized-fits.md](docs/notes/build_host/vectorized-fits.md)). Mock outcomes
+(`--native-dry-run` timing) never enter scientific analysis or measured
+visualizations. Local shells, CI and Kaggle start Python with
+`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, which the combined Qiskit
+Rust and Aer OpenMP extensions require. A change to live_run.py or
 experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 ../results/live`, whose audit record lands under results/live/. A change to
 `proofs/`, a replay bundle or its receipts follows the Rocq replay of
