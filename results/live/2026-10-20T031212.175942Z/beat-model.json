@@ -4848,5 +4848,61 @@
       "1.0": 0.0
     }
   },
-  "tls_population": "unidentified: a two-level qubit's Ramsey coherence is independent of the TLS thermal population p (self-check tls); the fits read p = 0, and every follow-up separation that uses the Z swap takes its worst case over POPULATION_GRID"
+  "tls_population": "the closed pair's Ramsey coherence is independent of the TLS thermal population p (self-check tls); under dissipation p enters through the TLS relaxation, and tls_population_profile refits the retained data at fixed p in [0, 1]. The tls entries of models, aliases and comparison are conditional on p = 0; the follow-up separations take their worst case over POPULATION_GRID separately",
+  "tls_population_profile": {
+    "delta_nll": [
+      0.000764799,
+      0.000130925,
+      0.0,
+      6.01117e-05,
+      0.000231264,
+      0.000764811,
+      0.0991704,
+      3.16986,
+      12.4726,
+      27.7168,
+      48.628
+    ],
+    "excluded_at_95": [
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ],
+    "flat_within_0.01": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5
+    ],
+    "gamma_tls_per_us": [
+      0.0181818,
+      0.01474,
+      0.0112284,
+      0.00766364,
+      0.00402489,
+      0.000319079,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_rise": 48.628,
+    "populations": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ]
+  }
 }

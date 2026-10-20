@@ -299,9 +299,9 @@ control-state-dependent coupling to 142 therefore accounts for at most about
 Ramsey visibility across 836 dt (3.3 us), belongs to 143 itself and not to
 its coupling with the control. A pure exponential decay through these two
 points would place T2* near 7 us; the delay sweep of the next section
-refutes that reading, because the visibility revives at longer idles, so
-the 3.3 us loss is the first descent of a coherent beat rather than
-dephasing.
+rejects a monotone single-component decay, because the visibility revives
+at longer idles, and reads the 3.3 us loss as consistent with the first
+descent of a two-component beat.
 
 ## Ramsey delay sweep with the control grounded
 
@@ -336,9 +336,11 @@ detuning estimate. The control-only selection reads the same visibilities
 within 0.002.
 
 Finding: visibility falls to 0.395 at 6.7 us, revives to 0.885 at 10.0 us,
-falls to 0.255 at 16.7 us and revives to 0.705 at 20.1 us. A dephasing
-envelope is monotone, so the window loss is coherent beating between two
-frequency components of qubit 143, and T2* of 7 us is withdrawn.
+falls to 0.255 at 16.7 us and revives to 0.705 at 20.1 us. A monotone
+single-component decay cannot revive, so it is rejected, and the window
+loss is consistent with two frequency components of qubit 143; such a
+mixture is itself an inhomogeneous dephasing that revives, so the revival
+does not exclude dephasing. T2* of 7 us is withdrawn.
 
 Descriptive fit, outside the preregistration: the two-component model
 V(t) = |a + (1 - a) exp(2 pi i df t)| exp(-t / T) fits the seven points
@@ -367,9 +369,13 @@ analysis (scripts/n21_q143_beat_model.py; gate core-604 runs its planted
 self-check, core-605 regenerates the file byte for byte). The data are the
 all-zero herald-selected counts of the 14 PUBs.
 
-**Signal and readout.** Each model predicts S(t) = <X> + i<Y> = A e^(i phi)
-e^(-t/T) g(t) (t in us, frequencies in MHz, a level raised by E contributes
-e^(-2 pi i E t)). The measured mean is (1 - e0 - e1) mu + (e1 - e0) with
+**Signal and readout.** single, static and telegraph predict
+S(t) = <X> + i<Y> = A e^(i phi) e^(-t/T) g(t) (t in us, frequencies in MHz,
+a level raised by E contributes e^(-2 pi i E t)). tls predicts
+S(t) = A e^(i phi) S_L(t), with S_L(t) = 2 Tr_TLS rho_{1,0}(t) from the
+Lindblad solution, whose decay comes from the dissipators alone: the
+qubit dephasing rate 1/T - 1/(2 T1) sets T, and no further envelope
+multiplies it. The measured mean is (1 - e0 - e1) mu + (e1 - e0) with
 e0 = prob_meas1_prep0 = 0.00244 and e1 = prob_meas0_prep1 = 0.00854, the
 published execution-start values of qubit 143, held fixed: the backend
 publishes no calibration shot count behind them. The likelihood is
@@ -385,12 +391,12 @@ freedom and Y alone with 2925 on 3, while the two-line form leaves 5.6 and
 so the beat survives without pairing; the joint phase reading below still
 uses the pairing.
 
-| Model | g(t) | Free parameters |
+| Model | g(t), or the tls signal | Free parameters |
 |---|---|---|
 | single | e^(2 pi i f t) | A, T, phi, f (4) |
 | static | a e^(2 pi i f1 t) + (1 - a) e^(2 pi i (f1 + df) t), a >= 1/2 | + a, f1, df (6) |
 | telegraph | 1^T exp(M t) p, M = 2 pi i diag(f1, f1 + df) + W, p = (a, 1 - a), W stationary at p with total rate gamma | + gamma (7) |
-| tls | Lindblad, qubit x TLS, H = fq n_q + ft n_t + g (s+ t- + s- t+), qubit T1 (calibrated) and dephasing, TLS relaxation gamma_tls | + gamma_tls (7) |
+| tls | none: S_L(t) from Lindblad, qubit x TLS, H = fq n_q + ft n_t + g (s+ t- + s- t+), qubit T1 (calibrated) and dephasing, TLS relaxation gamma_tls | + gamma_tls (7) |
 
 Telegraph returns static at gamma = 0 and narrows to the mean line,
 e^(2 pi i fbar t - a (1 - a) (2 pi df)^2 t / gamma), at gamma >> 2 pi |df|
@@ -398,10 +404,16 @@ e^(2 pi i fbar t - a (1 - a) (2 pi df)^2 t / gamma), at gamma >> 2 pi |df|
 weight cos^2 theta and sin^2 theta on its two dressed lines in both TLS
 branches, so its Ramsey signal is static with Omega = sqrt(Delta^2 + 4 g^2)
 = |df|, Delta = df (2a - 1) and g = |df| sqrt(a (1 - a)), and the TLS
-thermal population p drops out of it exactly (self-check tls). A
-three-level transmon moves the warm signal by 4e-4 over 20 us at an
-assumed anharmonicity of -300 MHz, so p stays unidentified and the fits
-read p = 0. The Z read after an X preparation does depend on p: the swap
+thermal population p drops out of it exactly for the closed pair
+(self-check tls; a three-level transmon moves the warm signal by 4e-4 over
+20 us at an assumed anharmonicity of -300 MHz). Under dissipation p enters
+through the TLS relaxation, so the dissipative tls fit of the retained
+data is profiled in p (tls_population_profile): flat within 0.01 in NLL
+for p from 0 to 0.5 (0.10 at 0.6), so p is unidentified there, and
+excluded at 95 percent for p >= 0.7 (rise 3.2 at 0.7, 48.6 at 1). Every
+tls number in the fits, alias table and comparison below is conditional
+on p = 0, inside the flat stretch; the follow-up grid over p is a separate
+worst-case evaluation. The Z read after an X preparation does depend on p: the swap
 depth is (1 - p) 4 a (1 - a), 0.92 at p = 0 and 0 at p = 1 (self-check:
 0.455 at p = 1/2 for a = 0.65).
 

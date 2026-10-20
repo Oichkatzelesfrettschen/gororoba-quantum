@@ -1252,6 +1252,35 @@ def repeat_plan(design: str, cost: float) -> dict[str, Any]:
 # Report -------------------------------------------------------------------
 
 
+PROFILE_POPULATIONS = tuple(k / 10 for k in range(11))
+
+
+def population_profile(data: Data, tls: tuple[float, np.ndarray]) -> dict[str, Any]:
+    """The dissipative tls fit of the retained data refitted at each fixed TLS population p.
+
+    p enters the Ramsey signal only through the TLS relaxation dissipator,
+    so the profile reads how far the retained counts constrain it: a p
+    whose profile rises by more than chi2(1, 0.95) / 2 = 1.92 is excluded
+    at 95 percent, and a flat stretch leaves p unidentified there.
+    """
+    start = [[float(x) for x in tls[1]]]
+    found = parallel.ordered_map(
+        Refit(), [("tls", data.at_population(p), start) for p in PROFILE_POPULATIONS], min_items=2
+    )
+    values = [value for value, _params in found]
+    low = min(values)
+    rise = [value - low for value in values]
+    cut = 0.5 * float(chi2.ppf(0.95, 1))
+    return {
+        "populations": list(PROFILE_POPULATIONS),
+        "delta_nll": rise,
+        "gamma_tls_per_us": [params[8] for _value, params in found],
+        "max_rise": max(rise),
+        "excluded_at_95": [p for p, r in zip(PROFILE_POPULATIONS, rise, strict=True) if r > cut],
+        "flat_within_0.01": [p for p, r in zip(PROFILE_POPULATIONS, rise, strict=True) if r < 0.01],
+    }
+
+
 def basis_alone(data: Data, static: tuple[float, np.ndarray]) -> dict[str, Any]:
     """single and static fitted to X alone and to Y alone, so no X/Y pairing across PUBs enters.
 
@@ -1406,9 +1435,11 @@ def report(run: Path) -> dict[str, Any]:
             }
             for model, (_value, params) in fits.items()
         },
-        "tls_population": "unidentified: a two-level qubit's Ramsey coherence is independent of the TLS thermal "
-        "population p (self-check tls); the fits read p = 0, and every follow-up separation that uses the Z swap "
-        "takes its worst case over POPULATION_GRID",
+        "tls_population": "the closed pair's Ramsey coherence is independent of the TLS thermal population p "
+        "(self-check tls); under dissipation p enters through the TLS relaxation, and tls_population_profile "
+        "refits the retained data at fixed p in [0, 1]. The tls entries of models, aliases and comparison are "
+        "conditional on p = 0; the follow-up separations take their worst case over POPULATION_GRID separately",
+        "tls_population_profile": population_profile(data, tls),
         "tls_physics_at_best": tls_physics(parameters("tls", tls[1])),
         "static_profile": {
             "df_khz": [row[0] * 1e3 for row in profile],
