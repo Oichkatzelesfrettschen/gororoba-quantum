@@ -1773,6 +1773,11 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
         raise SystemExit("qpu:belenos carries no chip architecture, so the mesh checks cannot run")
     if stamped != chipped or not carried_names <= stamped:
         raise SystemExit("architecture markers do not name exactly the platforms with a chip architecture")
+    for name, stamp in catalogue["architecture_observed_utc"].items():
+        try:
+            datetime.datetime.fromisoformat(stamp)
+        except (TypeError, ValueError):
+            raise SystemExit(f"{name}: architecture_observed_utc {stamp!r} is not an ISO timestamp") from None
     for row in catalogue["explorer_platforms"]:
         name = row["name"]
         price, duration = row.get("price_per_shot"), row.get("max_duration")
@@ -1862,6 +1867,10 @@ def self_test() -> None:
         "carried name without a chip": catalogue(lambda c: c.update(architecture_carried=["qpu:nonexistent"])),
         "missing provenance markers": catalogue(lambda c: c.pop("architecture_observed_utc")),
         "stamp missing for a chip": catalogue(lambda c: c["architecture_observed_utc"].pop("sim:belenos")),
+        "null observation time": catalogue(lambda c: c["architecture_observed_utc"].update({"qpu:belenos": None})),
+        "malformed observation time": catalogue(
+            lambda c: c["architecture_observed_utc"].update({"qpu:belenos": "yesterday"})
+        ),
         "server marks cancel read-only": text(
             "qd_mcp_server.py", "@server.tool(annotations=MUTATE)", "@server.tool(annotations=READ)"
         ),
