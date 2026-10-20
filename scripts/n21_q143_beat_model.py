@@ -938,6 +938,16 @@ def bootstrap(
     under_single = draw_replicates("single", single[1], data, BOOTSTRAP_REPLICATES, rng)
     under_static = draw_replicates("static", static[1], data, BOOTSTRAP_REPLICATES, rng)
     fits = global_fits(under_single)
+    rows = [complex_signal(d, d.e0_count / CALIBRATION_SHOTS, d.e1_count / CALIBRATION_SHOTS) for d in under_single]
+    readout = [(d.e0_count / CALIBRATION_SHOTS, d.e1_count / CALIBRATION_SHOTS) for d in under_single]
+    signals = np.array([row[1] for row in rows])
+    batched = grid_starts(signals[:GRID_BLOCK], rows[0][0], readout[:GRID_BLOCK])
+    grid_rows_equal = all(
+        grid_starts(signals[k : k + 1], rows[0][0], readout[k : k + 1]) == ([batched[0][k]], [batched[1][k]])
+        for k in range(GRID_BLOCK)
+    )
+    if not grid_rows_equal:
+        raise RuntimeError("a batched grid row of the bootstrap replicates differs from the row solved alone")
     beat = [2.0 * (fit["single"][0] - fit["static"][0]) for fit in fits]
     static_fits = parallel.ordered_map(
         Refit(), [("static", replicate, [[float(x) for x in static[1]]]) for replicate in under_static]
@@ -953,6 +963,7 @@ def bootstrap(
     exchange = [2.0 * (static_fits[k][0] - extended[2 * k + 1][0]) for k in range(BOOTSTRAP_REPLICATES)]
     return {
         "seed": BOOTSTRAP_SEED,
+        "batched_grid_rows_equal_alone": grid_rows_equal,
         "single_vs_static_under_single": tail(beat, observed["single_vs_static"]),
         "static_vs_telegraph_under_static": tail(switching, observed["static_vs_telegraph"]),
         "static_vs_tls_under_static": tail(exchange, observed["static_vs_tls"]),
@@ -1079,14 +1090,12 @@ def evaluate_designs(
         design = design_data(spec["members"], spec["shots"], data)
         items: list[tuple[str, list[float], str, list[list[float]], Data]] = []
         pairs = []
-        for position, df in enumerate(alias_df):
+        for df in alias_df:
             truth = [float(x) for x in shifted(params, df)]
-            for neighbor in (position - 1, position + 1):
-                if 0 <= neighbor < len(alias_df):
-                    items.append(
-                        ("static", truth, "static", [[float(x) for x in shifted(params, alias_df[neighbor])]], design)
-                    )
-                    pairs.append((alias_index(df, reference), alias_index(alias_df[neighbor], reference)))
+            for other in alias_df:
+                if other != df:
+                    items.append(("static", truth, "static", [[float(x) for x in shifted(params, other)]], design))
+                    pairs.append((alias_index(df, reference), alias_index(other, reference)))
         static_start = [[float(x) for x in shifted(params, tls_params[7])]]
         items.append(("tls", tls_params, "static", static_start, design))
         items.append(("static", static_start[0], "tls", [tls_params], design))
@@ -1109,7 +1118,7 @@ def evaluate_designs(
             "bases": sorted({basis for basis, _delay in spec["members"]}),
             "billed_rule_s": cost["rule_s"],
             "billed_execution_plus_run_offset_s": cost["execution_s"] + charge_offset_s,
-            "alias_neighbor_llr": alias_rows,
+            "alias_pair_llr": alias_rows,
             "worst_alias_pair": worst,
             "worst_alias_log10_posterior_odds": -worst["expected_llr"] / math.log(10.0),
             "tls_truth_vs_static_llr": tail_values[0],
@@ -1148,7 +1157,8 @@ def repeat_plan(design: str, cost: float) -> dict[str, Any]:
         "billed_rule_s_total": 4 * cost,
         "per_repeat_fit": "static, telegraph and tls at the resolved alias; record a, df, f1, g, Delta per repeat",
         "discriminators": {
-            "charge_parity": "a near 1/2 in every repeat (equal parity occupation) while df moves with the offset "
+            "charge_parity": "a near the same value in every repeat (1/2 at equal parity occupation) while df "
+            "moves with the offset "
             "charge n_g, |df| <= |eps1 - eps0|; Z after X shows T1 decay without swap",
             "tls_exchange": "g = |df| sqrt(a (1 - a)) constant across repeats while Delta = df (2a - 1) and a wander "
             "with the TLS frequency; Z after X shows swap oscillation at Omega = |df| with depth 4 a (1 - a)",
@@ -1230,7 +1240,15 @@ def report(run: Path) -> dict[str, Any]:
     static_params[7] = fold(static_params[7])
     static = (negative_log_likelihood(static_params, "static", data), static_params)
     mirror = ProfilePoint(data, GRID_T_US)(fold(-float(static_params[7])))
+    # The lowest profile minimum outside the fitted residue class.
+    other_minimum = min(
+        (k for k in minima if abs(fold(profile[k][0] - float(static_params[7]))) > 2.0 * F0_MHZ / PROFILE_POINTS),
+        key=lambda k: profile[k][1],
+    )
     aliases = alias_table(data, static)
+    # The bootstrap refits each replicate at its own static alias, so the
+    # observed statistics it calibrates are read at n = 0.
+    (static_alias,) = [row for row in aliases if row["n"] == 0]
     telegraph_row = min(aliases, key=lambda row: row["telegraph_delta_nll"])
     tls_row = min(aliases, key=lambda row: row["tls_delta_nll"])
     telegraph = (static[0] + telegraph_row["telegraph_delta_nll"], np.array(telegraph_row["telegraph_params"]))
@@ -1238,8 +1256,10 @@ def report(run: Path) -> dict[str, Any]:
     fits = {"single": single, "static": static, "telegraph": telegraph, "tls": tls}
     observed = {
         "single_vs_static": 2.0 * (single[0] - static[0]),
-        "static_vs_telegraph": 2.0 * (static[0] - min(telegraph[0], static[0])),
-        "static_vs_tls": 2.0 * (static[0] - tls[0]),
+        "static_vs_telegraph": 2.0 * (static[0] - min(static_alias["telegraph_delta_nll"] + static[0], static[0])),
+        "static_vs_tls": 2.0 * (static[0] - min(static_alias["tls_delta_nll"] + static[0], static[0])),
+        "static_vs_telegraph_best_alias": 2.0 * (static[0] - min(telegraph[0], static[0])),
+        "static_vs_tls_best_alias": 2.0 * (static[0] - min(tls[0], static[0])),
     }
     costs = run_costs(run, source["exposure_dt"])
     calibrated = bootstrap(data, single, static, observed)
@@ -1280,12 +1300,15 @@ def report(run: Path) -> dict[str, Any]:
             "local_minima_khz": [profile[k][0] * 1e3 for k in minima[:6]],
             "local_minima_delta_nll": [profile[k][1] - static[0] for k in minima[:6]],
         },
-        "sign": {
+        "residue_class": {
             "df_khz": float(static_params[7]) * 1e3,
             "mirror_df_khz": fold(-float(static_params[7])) * 1e3,
             "mirror_delta_nll": mirror[0] - static[0],
-            "reading": "the heavier line's phase track fixes the sign of df: the mirror df -> -df "
-            "(the visibility-only twin) refits worse by mirror_delta_nll",
+            "best_other_minimum_df_khz": profile[other_minimum][0] * 1e3,
+            "best_other_minimum_delta_nll": profile[other_minimum][1] - static[0],
+            "reading": "X and Y fix the residue class of df modulo f0, not its sign: the class of -df "
+            "(the visibility-only twin) refits worse by mirror_delta_nll, while the aliases df + n f0 of "
+            "either sign tie; every magnitude |df| of the visibility-only fit stays, each with one sign",
         },
         "aliases": [
             {key: value for key, value in row.items() if key not in ("telegraph_params", "tls_params")}
@@ -1304,7 +1327,7 @@ def report(run: Path) -> dict[str, Any]:
         "follow_up": {
             "status": "descriptive design data; live_run and the planner carry no delay-member builder for it",
             "designs": design,
-            "selection_rule": f"cheapest design whose worst neighboring-alias, tls-versus-static and "
+            "selection_rule": f"cheapest design whose worst alias-pair, tls-versus-static and "
             f"static-versus-tls expected log-likelihood ratios all reach {SEPARATION_LLR}",
             "recommended": recommended,
             "repeat_plan": repeat_plan(recommended, design[recommended]["billed_rule_s"]),
