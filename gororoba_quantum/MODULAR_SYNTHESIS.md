@@ -259,7 +259,7 @@ coupling map.
 The family stays linear by design. An arbitrary permutation B would reduce
 to choosing a relabeling of f's cycle structure, which is a choice made from
 the order itself, the compiled-answer construction of Smolin, Smith and Vargo
-([1301.7007](../docs/notes/1301.7007.md)). A linear B keeps the work
+([1301.7007](../docs/notes/papers/1301.7007.md)). A linear B keeps the work
 register a linear re-encoding of the residue bits, and both the search and
 the synthesis read the complete truth table, exactly as the unencoded
 compiler does. The replay gates and the retained records are listed in

@@ -43,7 +43,7 @@ this repository lacks).
 | Dark-dark products return to the 24-index block in 24D - 704 ordered pairs | verified and proved | XOR count proof in the census note |
 | The associator defect is the coboundary of the sign cochain, so its cocycle identity carries no nontrivial class | verified | the identity holds by construction; the census note records it |
 | Kirshtein Lemma 3 characterizes non-association exactly by the O_16 subloop | corrected | the lemma gives sufficient conditions; [1207.4230.md](../1207.4230.md) now quotes them; quasi-octonion subspaces carry 72 non-associating triples |
-| The sedenions have 8 octonion and 7 other 8-dimensional basis subalgebras | verified | census subspace split at D = 16 and the eight octonion and seven power-associative subalgebras of [Wilmot](../2505.11747.md); the Cawagas record binds bibliographic identity only |
+| The sedenions have 8 octonion and 7 other 8-dimensional basis subalgebras | verified | census subspace split at D = 16 and the eight octonion and seven power-associative subalgebras of [Wilmot](../papers/2505.11747.md); the Cawagas record binds bibliographic identity only |
 | The N=21 orbit laws are (3/8, 1/4, 1/8, 1/4) with feedback and (3/8, 1/8, 1/8, 3/8) without, contrast difference 1/4 | verified | `law` in results/live/2026-10-13T201757.782152Z/orbit_refit.py and `qpe_diagnostics.n21_labeled_law` |
 | A first-swap prefix has zero control coherence on the full-cycle eigenstate chi+ = (e1 + w^2 e4 + w e16)/sqrt(3), while the full multiplier gives exp(2 pi i/3) | verified | direct evaluation: <chi+|S_41|chi+> = 0, <chi+|U|chi+> = -1/2 + i sqrt(3)/2; a prefix-phase design needs probes with nonzero overlap |
 | rho_{01,10} = (<XX> + <YY> + i(<XY> - <YX>))/4 for |ab> ordering | verified | checked on a random two-qubit density matrix; the conjugate convention fails, so a selected-coherence case fixes the register order before acquisition |
@@ -56,7 +56,7 @@ this repository lacks).
 | cd_core._determinant is fraction-free | corrected | it divided in floats; it now eliminates over Fractions |
 | The QET record-flip optimum is sqrt(C^2 + (1-2q)^2 A^2) - C and E_B has a cancellation-free rationalized form | verified | scripts/qet_two_qubit_reference.py checks both and the local-energy identity |
 | `total, bob_local = hamiltonians(h, k)` fails the enabled Ruff F rules | refuted | F841 excludes tuple unpacking (RUF059 covers it, not selected); the variable now feeds the local-energy identity check |
-| The two-qubit QET protocol injects h^2/r and lets Bob extract sqrt(h^2+4k^2) - (h^2+2k^2)/r | verified | scripts/qet_two_qubit_reference.py at machine precision; the supplied grid search sat about 4e-8 below the optimum at k = 0.1; the model matches [Hotta](../1002.0200.md) under sigma^z -> -sigma^z |
+| The two-qubit QET protocol injects h^2/r and lets Bob extract sqrt(h^2+4k^2) - (h^2+2k^2)/r | verified | scripts/qet_two_qubit_reference.py at machine precision; the supplied grid search sat about 4e-8 below the optimum at k = 0.1; the model matches [Hotta](../papers/1002.0200.md) under sigma^z -> -sigma^z |
 
 ## Sister project (open_gororoba, read-only here)
 
@@ -74,20 +74,20 @@ this repository lacks).
 
 | Claim | Status | Evidence |
 |---|---|---|
-| Dark SRF improved dark-photon limits by modeling frequency instability (March 2026) | verified | [2510.02427](../2510.02427.md), PRL 136, 111802 |
-| ALPS II sets 1.5e-9 1/GeV below about 0.1 meV | verified | [2512.14110](../2512.14110.md) |
-| A dielectric haloscope excludes 387.72 to 391.03 ueV (February 2026) | verified | [2503.23354](../2503.23354.md), PRL 136, 071001 |
-| A levitated force sensor improved symmetron limits by more than six orders | verified | Nature Astronomy 9, 598 ([web-source note](../casimir-dark-sector-web-sources.md)) |
-| An atom-interferometry proposal uses sequence alternation and in situ gravity calibration (April 2026) | verified | [2511.09750](../2511.09750.md), PRD 113, 084047 |
-| A worldline dynamical-Casimir paper treats imperfect time-dependent boundaries (July 2026) | verified | [2604.13237](../2604.13237.md), v3 dated 2026-07-22 with journal DOI 10.1103/vn2g-ryw1 |
-| QET has been demonstrated on superconducting hardware | verified | [2301.02666](../2301.02666.md) |
-| LZ reported one high-energy recoil at 2.6 sigma global (September 2026) | verified | [2609.02823](../2609.02823.md) |
-| DES Y6 shows a 2.3 to 3.2 sigma preference for evolving dark energy | verified | the DES Y6 results page states 2.2 to 3.0 sigma by data combination and 2.3 to 3.2 sigma when one probe is left out (web-source note); the 3x2pt paper ([2601.14559](../2601.14559.md)) alone reports w consistent with -1 |
-| A July 2026 Nano Letters paper proposes a magnetic-fluid Drude-plasma discriminator | verified | accepted 2026-07-08, PubMed entry 2026-07-14, issue 26(34) dated 2026-09-02 (web-source note); companion prediction [2601.00483](../2601.00483.md) |
-| Ford and Roman bound negative energy density | verified | [gr-qc/9607003](../gr-qc-9607003.md) |
+| Dark SRF improved dark-photon limits by modeling frequency instability (March 2026) | verified | [2510.02427](../papers/2510.02427.md), PRL 136, 111802 |
+| ALPS II sets 1.5e-9 1/GeV below about 0.1 meV | verified | [2512.14110](../papers/2512.14110.md) |
+| A dielectric haloscope excludes 387.72 to 391.03 ueV (February 2026) | verified | [2503.23354](../papers/2503.23354.md), PRL 136, 071001 |
+| A levitated force sensor improved symmetron limits by more than six orders | verified | Nature Astronomy 9, 598 ([web-source note](../papers/casimir-dark-sector-web-sources.md)) |
+| An atom-interferometry proposal uses sequence alternation and in situ gravity calibration (April 2026) | verified | [2511.09750](../papers/2511.09750.md), PRD 113, 084047 |
+| A worldline dynamical-Casimir paper treats imperfect time-dependent boundaries (July 2026) | verified | [2604.13237](../papers/2604.13237.md), v3 dated 2026-07-22 with journal DOI 10.1103/vn2g-ryw1 |
+| QET has been demonstrated on superconducting hardware | verified | [2301.02666](../papers/2301.02666.md) |
+| LZ reported one high-energy recoil at 2.6 sigma global (September 2026) | verified | [2609.02823](../papers/2609.02823.md) |
+| DES Y6 shows a 2.3 to 3.2 sigma preference for evolving dark energy | verified | the DES Y6 results page states 2.2 to 3.0 sigma by data combination and 2.3 to 3.2 sigma when one probe is left out (web-source note); the 3x2pt paper ([2601.14559](../papers/2601.14559.md)) alone reports w consistent with -1 |
+| A July 2026 Nano Letters paper proposes a magnetic-fluid Drude-plasma discriminator | verified | accepted 2026-07-08, PubMed entry 2026-07-14, issue 26(34) dated 2026-09-02 (web-source note); companion prediction [2601.00483](../papers/2601.00483.md) |
+| Ford and Roman bound negative energy density | verified | [gr-qc/9607003](../papers/gr-qc-9607003.md) |
 | The ASA statement warns against reading nondetection as absence | verified | web-source note |
 | IBM batch jobs may run out of order with calibrations between them | verified | web-source note |
-| The dynamical Casimir effect is experimentally demonstrated | verified | [1105.4714](../1105.4714.md), already registered |
+| The dynamical Casimir effect is experimentally demonstrated | verified | [1105.4714](../papers/1105.4714.md), already registered |
 | Ideal Casimir pressures and energy densities (50 to 1000 nm), the 10 mV electrostatic pressures, sphere-plane forces for R = 50 um, the Yukawa pressure -2.11e-16 alpha Pa and the 100 nm mass equivalent -4.82e-17 kg/m^3 | verified | recomputed from hbar, c, epsilon_0 and G; ideal-conductor benchmarks only |
 
 ## Measurement-foundations review
@@ -106,25 +106,25 @@ it prompted.
 |---|---|---|
 | Computational-basis counts give P(01) = P(10) = 1/2 for every (\|10> + e^{i phi}\|01>)/sqrt2 and for the incoherent mixture; <01\|rho\|10> is e^{i phi}/2 for the superposition and 0 for the mixture | verified | direct evaluation; the rho_{01,10} Pauli identity row above fixes the register order |
 | A global phase has no observable effect; relative phases and coherences are the reconstruction target | verified | rho is invariant under psi -> e^{i chi} psi |
-| Superconducting hardware has reconstructed two-qubit density matrices (Steffen 2006) and resonator superpositions by Wigner tomography (Hofheinz 2009) | verified | Crossref identities in [measurement_foundations_web_sources.md](../measurement_foundations_web_sources.md); content beyond bibliographic identity was not read |
-| Wang et al. 2009 measured the time evolution of selected density-matrix elements and separated relaxation from dephasing | verified | the abstract of [0909.4585](../0909.4585.md) states both |
-| Murch et al. 2013 tracked measurement-conditioned trajectories with tomographic checks, using continuous weak measurement | verified | [1305.7270](../1305.7270.md); the continuous record has no cloud-interface counterpart |
-| Unrestricted pulse-level control was removed from IBM access in February 2025 | refined | the changelog entry of 3 February 2025 removes pulse-level control on all IBM Quantum processors and points to fractional gates ([web-source note](../measurement_foundations_web_sources.md)) |
+| Superconducting hardware has reconstructed two-qubit density matrices (Steffen 2006) and resonator superpositions by Wigner tomography (Hofheinz 2009) | verified | Crossref identities in [measurement_foundations_web_sources.md](../papers/measurement_foundations_web_sources.md); content beyond bibliographic identity was not read |
+| Wang et al. 2009 measured the time evolution of selected density-matrix elements and separated relaxation from dephasing | verified | the abstract of [0909.4585](../papers/0909.4585.md) states both |
+| Murch et al. 2013 tracked measurement-conditioned trajectories with tomographic checks, using continuous weak measurement | verified | [1305.7270](../papers/1305.7270.md); the continuous record has no cloud-interface counterpart |
+| Unrestricted pulse-level control was removed from IBM access in February 2025 | refined | the changelog entry of 3 February 2025 removes pulse-level control on all IBM Quantum processors and points to fractional gates ([web-source note](../papers/measurement_foundations_web_sources.md)) |
 | Qiskit Experiments StateTomography supports selected bases and qubits and clbit-conditioned reconstruction; ParallelExperiment runs subsystem tomography | verified and refined | release 0.14.2 pages (web-source note); the branch-signed C = sum_b p_b (-1)^b <01\|rho_b\|10> is one linear functional of the conditional states, read with XX, XY, YX, YY plus ZZ: five settings per context against nine for conditional two-qubit tomography |
 | The supplied atlas defines P = I - H H^T with frames F_k satisfying F_k^T F_k = I and F_k F_k^T = P | refined | the identities hold by construction for any orthonormal H and any orthonormal basis F_k of range(P); the attachment is outside the repository, so its particular frames remain unchecked |
-| Biss and collaborators supply annihilator and eigentheoretic foundations; Reggiani relates the sedenion zero-divisor pairs to G_2 and the elements to V_2(R^7) | verified and refined | [0905.2987](../0905.2987.md), [math-0511691](../math-0511691.md), [2411.18881](../2411.18881.md); the diffeomorphisms are Moreno's (Reggiani's Theorem 2.2), Reggiani contributes the induced Riemannian geometry |
+| Biss and collaborators supply annihilator and eigentheoretic foundations; Reggiani relates the sedenion zero-divisor pairs to G_2 and the elements to V_2(R^7) | verified and refined | [0905.2987](../0905.2987.md), [math-0511691](../math-0511691.md), [2411.18881](../papers/2411.18881.md); the diffeomorphisms are Moreno's (Reggiani's Theorem 2.2), Reggiani contributes the induced Riemannian geometry |
 | (L_a L_b - L_ab) c = -(a, b, c), and no faithful associative operator representation of a non-associative product exists | verified | statement 7 of scripts/singular_sector_dynamics.py on 40 integer sedenion triples; a homomorphism into an associative algebra forces every represented associator to vanish |
 | The Hermitian dilation H_a of L_a keeps annihilator vectors dark and flips the block with sin^2(g sigma t / alpha) | verified and refined | imaginary a gives H_a = (iY) (x) L_a; two-term elements have sigma in {0, sqrt2, 2} in every dimension ([singular-sector note](../singular_sector_dynamics.md)) |
 | a = e1 + e10 with dark input v_- = (e4 - e15)/sqrt2 and bright input v_+ = (e4 + e15)/sqrt2: L_a v_- = 0, L_a^T L_a v_+ = 4 v_+, so P_- = 0 and P_+ = sin^2(g t) at alpha = 2 | verified | exact integer check in the cd_core convention; the pair is corpus row (1, 10, 1, 4, 15, -1), Design B's dark partner |
 | The dilation gives an explicit, previously unavailable route from an annihilator to a measurable dark/bright response | refined | Design B and Design D already measure that response at alpha = 2; one product-formula step reproduces Design B times sin^2(2 theta), and amplitude amplification of Design B is frozen at 0, 1/2 and 1; only the sqrt2 line of the anticommuting sector is new, and it needs several steps or an exact synthesis |
 | Five state-register qubits suffice, with synthesis cost accounted separately | verified and refined | four algebra qubits and one block or LCU ancilla; the FakeFez record prices one dark probe at 42 CZ and one amplification round at 131 CZ |
 | After the first orbit bit the branch coherences are (-1)^b e^{i phi}/2, the unsigned average is zero, and the signed estimate returns e^{i phi}/2 | verified | the branch-unsigned row above; the branch-signed coherence-window case (PR #79) implements the signed estimator |
-| A coherent rotation turns arg C, dephasing shrinks \|C\|, and a symmetric branch-report error scales C by 1 - 2 epsilon | verified and refined | the report error and dephasing both scale \|C\| and stay confounded in it; arg C alone separates a coherent rotation, and epsilon needs an independent instrument characterization such as [2103.03008](../2103.03008.md) |
+| A coherent rotation turns arg C, dephasing shrinks \|C\|, and a symmetric branch-report error scales C by 1 - 2 epsilon | verified and refined | the report error and dephasing both scale \|C\| and stay confounded in it; arg C alone separates a coherent rotation, and epsilon needs an independent instrument characterization such as [2103.03008](../papers/2103.03008.md) |
 | dp_x/dt = (2/hbar) sum_y Im(H_xy rho_yx), and one unitary step adds the y != z interference terms to the population update | verified | statement 6 of the checker; the ripple walk's incoherent part is uniform at every depth, so its depth-two structure is interference |
-| An n-qubit density matrix has 4^n - 1 real parameters; efficient tomography exploits structure and classical shadows cost depends on the observables | verified | [1101.4366](../1101.4366.md) (the review's unnamed arXiv citation), [2002.08953](../2002.08953.md) |
-| Kang et al. demonstrated a three-qubit dark-photon search architecture, PRL 135, 181004 (2025) | verified | [2503.18315](../2503.18315.md) and its Crossref record (published 2025-10-29) |
-| Kang and Su, ACM Transactions on Quantum Computing 7(4), Article 26 (2026) | corrected | Crossref lists volume 7, issue 4, pages 1-86 and no article number; arXiv 2510.06316v3 ([note](../2510.06316.md)) |
-| Childs-Wiebe LCU, QSVT, GST, mid-circuit GST and QET on IBM hardware supply the cited foundations | verified | [1202.5822](../1202.5822.md), [1806.01838](../1806.01838.md), [2009.07301](../2009.07301.md), [2103.03008](../2103.03008.md), [2301.02666](../2301.02666.md) |
+| An n-qubit density matrix has 4^n - 1 real parameters; efficient tomography exploits structure and classical shadows cost depends on the observables | verified | [1101.4366](../papers/1101.4366.md) (the review's unnamed arXiv citation), [2002.08953](../papers/2002.08953.md) |
+| Kang et al. demonstrated a three-qubit dark-photon search architecture, PRL 135, 181004 (2025) | verified | [2503.18315](../papers/2503.18315.md) and its Crossref record (published 2025-10-29) |
+| Kang and Su, ACM Transactions on Quantum Computing 7(4), Article 26 (2026) | corrected | Crossref lists volume 7, issue 4, pages 1-86 and no article number; arXiv 2510.06316v3 ([note](../papers/2510.06316.md)) |
+| Childs-Wiebe LCU, QSVT, GST, mid-circuit GST and QET on IBM hardware supply the cited foundations | verified | [1202.5822](../papers/1202.5822.md), [1806.01838](../papers/1806.01838.md), [2009.07301](../papers/2009.07301.md), [2103.03008](../papers/2103.03008.md), [2301.02666](../papers/2301.02666.md) |
 | An algebraic annihilator, an engineered dark state and a particle-physics dark sector are three different objects | verified | the singular-sector note's consequences; no repository witness carries an electromagnetic coupling |
 
 ## Sedenion-circuit protocol review
@@ -144,9 +144,9 @@ reviewed the same proposal against the repository's designs.
 | The proposed interferometer reads the associator sign with X after its final Hadamard | corrected | X before the final H, or Z after it, gives Re<psi_L\|psi_R>; X after it gives 0 for balanced branches (audit `Hadamard_basis_check`) |
 | A uniform superposition of all triples reads the associator sign as -1 | corrected | it gives 1 - 2(1848/4096) = 25/256; 1848 of the 4096 basis triples do not associate |
 | The universal coefficient contraction is unitary | corrected | M M^dagger = 16 I, so the success Kraus operator is M/4 and P = \|\|xy\|\|^2/16 |
-| Photonic lattice interferometers have simulated quaternionic and octonionic quantum theory | refuted as stated | the verified experiment, [1602.01624](../1602.01624.md), bounds non-commuting phases and reports no hypercomplex amplitudes; [Adler](../1604.04950.md) and [the authors' reply](../1607.01648.md) dispute its scope |
-| Adler's critique is a 2016 preprint, and the reply is titled after the preprint | refined | Adler's article is Physical Review A 95, 060101 (2017); the reply is arXiv 1607.01648, Physical Review A 96, 036101 ([Crossref note](../hypercomplex_quantum_crossref_records.md)) |
-| Non-Abelian anyon experiments demonstrate operational encodings | verified and refined | [2210.10255](../2210.10255.md) and [2305.03766](../2305.03766.md) specify states, fusion rules, braids and measurements; braiding is noncommutative and associative, so they bear on operational realization and not on non-associativity |
+| Photonic lattice interferometers have simulated quaternionic and octonionic quantum theory | refuted as stated | the verified experiment, [1602.01624](../papers/1602.01624.md), bounds non-commuting phases and reports no hypercomplex amplitudes; [Adler](../papers/1604.04950.md) and [the authors' reply](../papers/1607.01648.md) dispute its scope |
+| Adler's critique is a 2016 preprint, and the reply is titled after the preprint | refined | Adler's article is Physical Review A 95, 060101 (2017); the reply is arXiv 1607.01648, Physical Review A 96, 036101 ([Crossref note](../papers/hypercomplex_quantum_crossref_records.md)) |
+| Non-Abelian anyon experiments demonstrate operational encodings | verified and refined | [2210.10255](../papers/2210.10255.md) and [2305.03766](../papers/2305.03766.md) specify states, fusion rules, braids and measurements; braiding is noncommutative and associative, so they bear on operational realization and not on non-associativity |
 
 ## Out of scope for this repository
 

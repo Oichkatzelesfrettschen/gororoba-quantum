@@ -58,7 +58,7 @@ and hardware performance require their own checks.
   QPY, per-member register, timing and approval contracts determine whether
   adopting an API preserves the scientific experiment. Graph distance alone
   establishes a placement condition; measured context effects require the
-  [characterization sources](1908.09855.md).
+  [characterization sources](papers/1908.09855.md).
 - [I] Preserve joint shot alignment before marginal analysis. Separate
   component histograms discard information needed to estimate covariance
   between simultaneous outcomes.

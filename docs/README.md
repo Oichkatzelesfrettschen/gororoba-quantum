@@ -79,8 +79,8 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | note | paper | (a) | (b) | (c) |
 |---|---|---|---|---|
 | s41567-023-02340-9 | Glick et al., Covariant quantum kernels for data with group structure, Nat. Phys. 20, 479 (2024); preprint arXiv:2105.03406 | medium | low | low |
-| [s41586-026-10423-9](notes/s41586-026-10423-9.md) | Matsumoto et al., Two-qubit logic and teleportation with mobile spin qubits in silicon, Nature 653, 391 (2026) | low | none | none |
-| [s41567-026-03466-2](notes/s41567-026-03466-2.md) | Wu et al., Simultaneous high-fidelity single-qubit gates in a spin qubit array, Nat. Phys. (2026) | low | none | none |
+| [s41586-026-10423-9](notes/papers/s41586-026-10423-9.md) | Matsumoto et al., Two-qubit logic and teleportation with mobile spin qubits in silicon, Nature 653, 391 (2026) | low | none | none |
+| [s41567-026-03466-2](notes/papers/s41567-026-03466-2.md) | Wu et al., Simultaneous high-fidelity single-qubit gates in a spin qubit array, Nat. Phys. (2026) | low | none | none |
 | [2102.01682](notes/2102.01682.md) | Corcoles et al., Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits, PRL 127, 100501 (2021) | high | none | low |
 | 2411.05760 | Deshpande et al., Dynamic parameterized quantum circuits | low | none | none |
 | s42254-024-00770-9 | Abbas et al., Challenges and opportunities in quantum optimization, Nat. Rev. Phys. 6, 718 (2024); preprint arXiv:2312.02279 | high | none | low |
@@ -110,16 +110,16 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | quant-ph-9511007 | Griffiths and Niu, Semiclassical Fourier transform for quantum computation (1996) | medium | none | high |
 | 1111.4147 | Martin-Lopez et al., Shor's algorithm with qubit recycling (2012) | medium | none | high |
 | 2102.05321 | Niu and Todri-Sanial, Multi-programming for NISQ quantum computing (QuMC) | high | none | none |
-| [das-2019-multiprogramming](notes/das-2019-multiprogramming.md) | Das et al., A Case for Multi-Programming Quantum Computers (MICRO 2019) | high | none | low |
-| [2112.07091](notes/2112.07091.md) | Ohkura, Satoh, Van Meter, Simultaneous execution of quantum circuits (palloq) | high | none | low |
-| [2109.01714](notes/2109.01714.md) | Resch et al., Accelerating Variational Quantum Algorithms Using Circuit Concurrency (CQCS) | high | none | low |
-| [2112.00387](notes/2112.00387.md) | Niu and Todri-Sanial, How Parallel Circuit Execution Can Be Useful for NISQ Computing? (QuCP) | high | none | low |
-| [1204.6308](notes/1204.6308.md) | Gambetta et al., Characterization of addressability by simultaneous randomized benchmarking (2012) | high | none | low |
-| [1810.08240](notes/1810.08240.md) | Howard et al., Time-uniform confidence sequences (2021 journal; inspected v9, 2022) | high | none | low |
-| [1810.05651](notes/1810.05651.md) | Rudinger et al., Probing Context-Dependent Errors in Quantum Processors (2019) | high | none | low |
-| [1908.09855](notes/1908.09855.md) | Sarovar et al., Detecting crosstalk errors in quantum information processors (2020) | high | none | low |
-| [1907.13608](notes/1907.13608.md) | Proctor et al., Detecting and tracking drift in quantum information processors (2020) | high | none | low |
-| [1504.07999](notes/1504.07999.md) | Bremner, Montanaro, Shepherd, Average-case complexity versus approximate simulation of commuting quantum computations (2016) | low | medium | low |
+| [das-2019-multiprogramming](notes/papers/das-2019-multiprogramming.md) | Das et al., A Case for Multi-Programming Quantum Computers (MICRO 2019) | high | none | low |
+| [2112.07091](notes/papers/2112.07091.md) | Ohkura, Satoh, Van Meter, Simultaneous execution of quantum circuits (palloq) | high | none | low |
+| [2109.01714](notes/papers/2109.01714.md) | Resch et al., Accelerating Variational Quantum Algorithms Using Circuit Concurrency (CQCS) | high | none | low |
+| [2112.00387](notes/papers/2112.00387.md) | Niu and Todri-Sanial, How Parallel Circuit Execution Can Be Useful for NISQ Computing? (QuCP) | high | none | low |
+| [1204.6308](notes/papers/1204.6308.md) | Gambetta et al., Characterization of addressability by simultaneous randomized benchmarking (2012) | high | none | low |
+| [1810.08240](notes/papers/1810.08240.md) | Howard et al., Time-uniform confidence sequences (2021 journal; inspected v9, 2022) | high | none | low |
+| [1810.05651](notes/papers/1810.05651.md) | Rudinger et al., Probing Context-Dependent Errors in Quantum Processors (2019) | high | none | low |
+| [1908.09855](notes/papers/1908.09855.md) | Sarovar et al., Detecting crosstalk errors in quantum information processors (2020) | high | none | low |
+| [1907.13608](notes/papers/1907.13608.md) | Proctor et al., Detecting and tracking drift in quantum information processors (2020) | high | none | low |
+| [1504.07999](notes/papers/1504.07999.md) | Bremner, Montanaro, Shepherd, Average-case complexity versus approximate simulation of commuting quantum computations (2016) | low | medium | low |
 | 1904.00633 | Kissinger and Meijer-van de Griend, CNOT circuit extraction for topologically-constrained quantum memories (2019) | medium | none | medium |
 | 1806.01838 | Gilyen, Su, Low, Wiebe, Quantum singular value transformation and beyond (2018) | low | low | none |
 | 1811.08580 | Freedman, Shokrian-Zini, Wang, Quantum computing with octonions (2018) | none | medium | none |
@@ -128,38 +128,38 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [2102.01682](notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
 | [2608.08232](notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
 | [2608.26893](notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
-| [2608.28176](notes/2608.28176.md) | Zhilina, Orthogonality graphs Part I (2021 journal; 2026 arXiv posting) | none | high | none |
-| [2608.28163](notes/2608.28163.md) | Zhilina, Orthogonality graphs Part II (2021 journal; 2026 arXiv posting) | none | high | none |
-| [2103.03008](notes/2103.03008.md) | Rudinger et al., Quantum-instrument GST (2021 preprint, 2022 journal) | high | none | none |
-| [2602.03938](notes/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
+| [2608.28176](notes/papers/2608.28176.md) | Zhilina, Orthogonality graphs Part I (2021 journal; 2026 arXiv posting) | none | high | none |
+| [2608.28163](notes/papers/2608.28163.md) | Zhilina, Orthogonality graphs Part II (2021 journal; 2026 arXiv posting) | none | high | none |
+| [2103.03008](notes/papers/2103.03008.md) | Rudinger et al., Quantum-instrument GST (2021 preprint, 2022 journal) | high | none | none |
+| [2602.03938](notes/papers/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
 | [Coste](notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |
 | [Hatcher](notes/hatcher-algebraic-topology.md) | Algebraic Topology, Chapter 0, attachment and quotient hypotheses | none | method | none |
 | [Carlstrom](notes/wheels-carlstrom.md) | Wheels: total division by zero, the wheel of fractions and its axioms (2001 report; MSCS 2004) | none | method | none |
-| [1903.02492](notes/1903.02492.md) | Rol et al., Net Zero bipolar flux-pulse CZ gate (2019) | high | medium | low |
-| [2008.07411](notes/2008.07411.md) | Negirneac et al., Sudden Net Zero CZ gate (PRL 126, 220502, 2021) | high | medium | low |
-| [2102.13071](notes/2102.13071.md) | Marques et al., logical-qubit operations on a Surface-7 transmon processor (Nat. Phys. 18, 80, 2022) | medium | low | low |
-| [1708.07677](notes/1708.07677.md) | Fu et al., QuMA experimental control microarchitecture (2017) | medium | none | none |
-| [1808.02449](notes/1808.02449.md) | Fu et al., eQASM executable QISA with explicit timing (HPCA 2019) | medium | none | none |
-| [2310.01120](notes/2310.01120.md) | van der Schoot et al., quantum metrics on Quantum Inspire Starmon-5 (2023) | high | none | medium |
-| [1809.01043](notes/1809.01043.md) | Klimov et al., T1 fluctuations from two-level-system spectral diffusion (PRL 121, 090502, 2018) | medium | medium | none |
-| [1901.05352](notes/1901.05352.md) | Schloer et al., low-frequency burst noise from single fluctuators in a transmon (PRL 123, 190502, 2019) | medium | medium | none |
-| [1903.01043](notes/1903.01043.md) | Sung et al., non-Gaussian noise spectroscopy with a flux qubit sensor (Nat. Commun. 10, 3715, 2019) | low | medium | none |
-| [2006.14044](notes/2006.14044.md) | Bravyi et al., tensor-product and CTMP readout-error mitigation (PRA 103, 042605, 2021) | medium | high | low |
-| [2108.12518](notes/2108.12518.md) | Nation et al., matrix-free measurement mitigation (M3; PRX Quantum 2, 040326, 2021) | medium | high | low |
-| [1801.07904](notes/1801.07904.md) | Heinsoo et al., rapid multiplexed readout and its crosstalk (PR Applied 10, 034040, 2018) | medium | medium | low |
-| [2002.01471](notes/2002.01471.md) | Geller, rigorous justification of transition-matrix measurement correction (QST 5, 03LT01, 2020) | low | high | low |
-| [1606.05721](notes/1606.05721.md) | Sank et al., measurement-induced state transitions (PRL 117, 190503, 2016) | low | low | low |
-| [2403.09514](notes/2403.09514.md) | Baeumer et al., Quantum Fourier transform using dynamic circuits, PRL 133, 150602 (2024) | high | none | medium |
-| [2403.06852](notes/2403.06852.md) | Seif et al., Suppressing correlated noise via context-aware compiling, ISCA 2024 | high | none | low |
-| [1101.4707](notes/1101.4707.md) | Bylander et al., Noise spectroscopy through dynamical decoupling with a superconducting flux qubit, Nat. Phys. 7, 565 (2011) | medium | none | none |
-| [1612.00858](notes/1612.00858.md) | McKay et al., Efficient Z gates for quantum computing, PRA 96, 022330 (2017) | high | none | low |
-| [1207.1655](notes/1207.1655.md) | Granade et al., Robust online Hamiltonian learning, NJP 14, 103013 (2012) | medium | none | none |
-| [1504.06597](notes/1504.06597.md) | Sheldon et al., Characterizing errors on qubit operations via iterative randomized benchmarking, PRA 93, 012301 (2016) | medium | none | none |
-| [1502.02677](notes/1502.02677.md) | Kimmel, Low and Yoder, Robust calibration via robust phase estimation, PRA 92, 062315 (2015); erratum PRA 104, 069901 (2021) | medium | none | none |
-| [1301.7007](notes/1301.7007.md) | Smolin, Smith and Vargo, Oversimplifying quantum factoring, Nature 499, 163 (2013) | low | none | high |
-| [0907.3740](notes/0907.3740.md) | Maurer and Pontil, Empirical Bernstein bounds and sample variance penalization, COLT 2009 | medium | none | none |
-| [2010.09686](notes/2010.09686.md) | Waudby-Smith and Ramdas, Estimating means of bounded random variables by betting, JRSSB 86, 1 (2024) | medium | none | none |
-| [hoeffding-1963](notes/hoeffding-1963.md) | Hoeffding, Probability inequalities for sums of bounded random variables, JASA 58, 13 (1963) | high | none | none |
+| [1903.02492](notes/papers/1903.02492.md) | Rol et al., Net Zero bipolar flux-pulse CZ gate (2019) | high | medium | low |
+| [2008.07411](notes/papers/2008.07411.md) | Negirneac et al., Sudden Net Zero CZ gate (PRL 126, 220502, 2021) | high | medium | low |
+| [2102.13071](notes/papers/2102.13071.md) | Marques et al., logical-qubit operations on a Surface-7 transmon processor (Nat. Phys. 18, 80, 2022) | medium | low | low |
+| [1708.07677](notes/papers/1708.07677.md) | Fu et al., QuMA experimental control microarchitecture (2017) | medium | none | none |
+| [1808.02449](notes/papers/1808.02449.md) | Fu et al., eQASM executable QISA with explicit timing (HPCA 2019) | medium | none | none |
+| [2310.01120](notes/papers/2310.01120.md) | van der Schoot et al., quantum metrics on Quantum Inspire Starmon-5 (2023) | high | none | medium |
+| [1809.01043](notes/papers/1809.01043.md) | Klimov et al., T1 fluctuations from two-level-system spectral diffusion (PRL 121, 090502, 2018) | medium | medium | none |
+| [1901.05352](notes/papers/1901.05352.md) | Schloer et al., low-frequency burst noise from single fluctuators in a transmon (PRL 123, 190502, 2019) | medium | medium | none |
+| [1903.01043](notes/papers/1903.01043.md) | Sung et al., non-Gaussian noise spectroscopy with a flux qubit sensor (Nat. Commun. 10, 3715, 2019) | low | medium | none |
+| [2006.14044](notes/papers/2006.14044.md) | Bravyi et al., tensor-product and CTMP readout-error mitigation (PRA 103, 042605, 2021) | medium | high | low |
+| [2108.12518](notes/papers/2108.12518.md) | Nation et al., matrix-free measurement mitigation (M3; PRX Quantum 2, 040326, 2021) | medium | high | low |
+| [1801.07904](notes/papers/1801.07904.md) | Heinsoo et al., rapid multiplexed readout and its crosstalk (PR Applied 10, 034040, 2018) | medium | medium | low |
+| [2002.01471](notes/papers/2002.01471.md) | Geller, rigorous justification of transition-matrix measurement correction (QST 5, 03LT01, 2020) | low | high | low |
+| [1606.05721](notes/papers/1606.05721.md) | Sank et al., measurement-induced state transitions (PRL 117, 190503, 2016) | low | low | low |
+| [2403.09514](notes/papers/2403.09514.md) | Baeumer et al., Quantum Fourier transform using dynamic circuits, PRL 133, 150602 (2024) | high | none | medium |
+| [2403.06852](notes/papers/2403.06852.md) | Seif et al., Suppressing correlated noise via context-aware compiling, ISCA 2024 | high | none | low |
+| [1101.4707](notes/papers/1101.4707.md) | Bylander et al., Noise spectroscopy through dynamical decoupling with a superconducting flux qubit, Nat. Phys. 7, 565 (2011) | medium | none | none |
+| [1612.00858](notes/papers/1612.00858.md) | McKay et al., Efficient Z gates for quantum computing, PRA 96, 022330 (2017) | high | none | low |
+| [1207.1655](notes/papers/1207.1655.md) | Granade et al., Robust online Hamiltonian learning, NJP 14, 103013 (2012) | medium | none | none |
+| [1504.06597](notes/papers/1504.06597.md) | Sheldon et al., Characterizing errors on qubit operations via iterative randomized benchmarking, PRA 93, 012301 (2016) | medium | none | none |
+| [1502.02677](notes/papers/1502.02677.md) | Kimmel, Low and Yoder, Robust calibration via robust phase estimation, PRA 92, 062315 (2015); erratum PRA 104, 069901 (2021) | medium | none | none |
+| [1301.7007](notes/papers/1301.7007.md) | Smolin, Smith and Vargo, Oversimplifying quantum factoring, Nature 499, 163 (2013) | low | none | high |
+| [0907.3740](notes/papers/0907.3740.md) | Maurer and Pontil, Empirical Bernstein bounds and sample variance penalization, COLT 2009 | medium | none | none |
+| [2010.09686](notes/papers/2010.09686.md) | Waudby-Smith and Ramdas, Estimating means of bounded random variables by betting, JRSSB 86, 1 (2024) | medium | none | none |
+| [hoeffding-1963](notes/papers/hoeffding-1963.md) | Hoeffding, Probability inequalities for sums of bounded random variables, JASA 58, 13 (1963) | high | none | none |
 
 The [parallel-experiment synthesis](notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
@@ -185,7 +185,7 @@ gates carry their own evidence links.
 The per-paper notes own current citations, hypotheses, theorem locators, and
 typographical corrections: [BDI 2005](notes/math-0511691.md),
 [BCDI 2007](notes/math-0702075.md), [BCDI 2009](notes/0905.2987.md), and
-[Reggiani 2024](notes/2411.18881.md). The
+[Reggiani 2024](notes/papers/2411.18881.md). The
 [shared sparse census](notes/topics/cayley_dickson_sparse_census.md) owns count
 conventions and routes the dimension-32 count to its canonical exact JSON.
 
@@ -233,22 +233,22 @@ hardware cases retain their independent admission gates.
 
 | Additional source group | Notes and application |
 | --- | --- |
-| Curve realization | [Basu--Roy](notes/1803.00505.md), [Greenberg](notes/greenberg-henselian-lifting.md), expanded [BCDI II](notes/math-0702075.md) and [Coste](notes/coste-semialgebraic-geometry.md); real-arc and lifting hypotheses |
-| Formal interfaces | [SQIR/VOQC](notes/sqir-voqc-proof-interfaces.md), [MathComp/CoqEAL](notes/mathcomp-coqeal-matrix-certificates.md), [CoqInterval](notes/coqinterval-certified-enclosures.md); checked semantics, rank witnesses and numerical enclosures |
-| Identification and resource design | [GST](notes/2009.07301.md), expanded [QILGST](notes/2103.03008.md), [optimal design](notes/quant-ph-0411093.md), [SHOALS](notes/2201.13438.md), [shadows](notes/2002.08953.md); gauge, measurement choice and complete costs |
+| Curve realization | [Basu--Roy](notes/1803.00505.md), [Greenberg](notes/papers/greenberg-henselian-lifting.md), expanded [BCDI II](notes/math-0702075.md) and [Coste](notes/coste-semialgebraic-geometry.md); real-arc and lifting hypotheses |
+| Formal interfaces | [SQIR/VOQC](notes/papers/sqir-voqc-proof-interfaces.md), [MathComp/CoqEAL](notes/papers/mathcomp-coqeal-matrix-certificates.md), [CoqInterval](notes/papers/coqinterval-certified-enclosures.md); checked semantics, rank witnesses and numerical enclosures |
+| Identification and resource design | [GST](notes/papers/2009.07301.md), expanded [QILGST](notes/papers/2103.03008.md), [optimal design](notes/papers/quant-ph-0411093.md), [SHOALS](notes/papers/2201.13438.md), [shadows](notes/papers/2002.08953.md); gauge, measurement choice and complete costs |
 | Device noise | [Schoelkopf](notes/cond-mat-0210247.md), [Clerk](notes/0810.4729.md), [Jin](notes/1412.2772.md); spectral convention, residual populations and calibrated inference |
-| Encoded field models | [Digital optics](notes/1909.04408.md), [Gaussian coherence](notes/1610.03272.md), [lattice Casimir](notes/2105.02032.md), [Gaussian simulation](notes/quant-ph-0109047.md), [collision models](notes/2106.11974.md); encoding, model bias and classical baselines |
-| Physical interpretation and execution | [Physical DCE](notes/1105.4714.md), [real-material Casimir](notes/0902.4022.md), [circuit QED](notes/2005.12667.md), [IBM policy](notes/ibm_fractional_execution_sources.md); apparatus, observable and runtime boundaries |
-| Vacuum, dark sector and negative energy | [ALPS II](notes/2512.14110.md), [Dark SRF](notes/2510.02427.md), [dielectric haloscope](notes/2503.23354.md), [qubit haloscope](notes/2503.18315.md), [atom interferometry](notes/2511.09750.md), [LZ](notes/2609.02823.md), [DES Y6](notes/2601.14559.md), [worldline DCE](notes/2604.13237.md), [magnetic-fluid Casimir](notes/2601.00483.md), [quantum inequalities](notes/gr-qc-9607003.md), [QET theory](notes/1002.0200.md) and [hardware](notes/2301.02666.md), [journal and IBM pages](notes/casimir-dark-sector-web-sources.md); exclusions, nuisances and energy accounting before any new-physics reading |
-| Cayley-Dickson associator structure | [defect census](notes/topics/cd_associator_defect_census.md), [Wilmot](notes/2505.11747.md), [Kirshtein](notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
+| Encoded field models | [Digital optics](notes/1909.04408.md), [Gaussian coherence](notes/papers/1610.03272.md), [lattice Casimir](notes/papers/2105.02032.md), [Gaussian simulation](notes/papers/quant-ph-0109047.md), [collision models](notes/2106.11974.md); encoding, model bias and classical baselines |
+| Physical interpretation and execution | [Physical DCE](notes/papers/1105.4714.md), [real-material Casimir](notes/papers/0902.4022.md), [circuit QED](notes/papers/2005.12667.md), [IBM policy](notes/papers/ibm_fractional_execution_sources.md); apparatus, observable and runtime boundaries |
+| Vacuum, dark sector and negative energy | [ALPS II](notes/papers/2512.14110.md), [Dark SRF](notes/papers/2510.02427.md), [dielectric haloscope](notes/papers/2503.23354.md), [qubit haloscope](notes/papers/2503.18315.md), [atom interferometry](notes/papers/2511.09750.md), [LZ](notes/papers/2609.02823.md), [DES Y6](notes/papers/2601.14559.md), [worldline DCE](notes/papers/2604.13237.md), [magnetic-fluid Casimir](notes/papers/2601.00483.md), [quantum inequalities](notes/papers/gr-qc-9607003.md), [QET theory](notes/papers/1002.0200.md) and [hardware](notes/papers/2301.02666.md), [journal and IBM pages](notes/papers/casimir-dark-sector-web-sources.md); exclusions, nuisances and energy accounting before any new-physics reading |
+| Cayley-Dickson associator structure | [defect census](notes/topics/cd_associator_defect_census.md), [Wilmot](notes/papers/2505.11747.md), [Kirshtein](notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
 | External algebra packages | [package index](notes/packages/README.md): measured relation of eight hypercomplex packages to cd_core, independence, licenses and correct use |
 | Octonion structure checks | [associator codes, box-kite frustration and walk sectors](notes/topics/octonion_structure_checks.md): RM(1,3) and E8 from the associator slices, shared-sign and shared-phase frustration minima 4 and 3, exact walk sector weights by Ramanujan sums, and the doubling-convention bridge |
 | Sedenion hardware witnesses | [review of an external proposal](notes/topics/sedenion_hardware_witness_review.md): the encoding Designs A to D measure, exact corrections (the annihilator of e1 + e10, the degree-4 sign, the post-selected zero-divisor observable), the measured Design C verdicts and the zero-divisor test's price |
 | Review reconciliation | [QPU, Cayley-Dickson and vacuum review claims](notes/topics/qpu_vacuum_cd_review_reconciliation.md); each claim with its status and settling artifact |
-| Singular sectors and dilation | [sector split, census link and dynamics](notes/singular_sector_dynamics.md): dark, bright and anticommuting sectors of every two-term element, the Hermitian dilation's frequencies, product-formula exactness, the frozen Design B walk and its echo-matched control; [LCU](notes/1202.5822.md), [oblivious amplification](notes/1312.1414.md), [Hamiltonian block encoding](notes/2510.06316.md), [QSVT](notes/1806.01838.md) |
-| Measurement foundations | [coherence decay](notes/0909.4585.md), [trajectories](notes/1305.7270.md), [efficient tomography](notes/1101.4366.md), [pulse removal, tomography API and early superconducting tomography](notes/measurement_foundations_web_sources.md); which laboratory reconstructions transfer to the cloud gate set |
-| Hypercomplex theory and operational encodings | [normed division algebras](notes/math-0105155.md), [single-photon hypercomplex test](notes/1602.01624.md) with [Adler's critique](notes/1604.04950.md) and [the reply](notes/1607.01648.md), [superconducting](notes/2210.10255.md) and [trapped-ion](notes/2305.03766.md) non-Abelian anyons, [Crossref records](notes/hypercomplex_quantum_crossref_records.md), [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md); encoding an algebra in complex quantum mechanics against testing a hypercomplex theory |
-| Dark-subspace certificate | [source map](notes/quandela/bdsc_sources.md): [eigentheory](notes/0905.2987.md), [detector tomography](notes/0807.2444.md), [GST](notes/2009.07301.md), [optical dilation](notes/1712.01413.md), [interferometer design](notes/1603.08788.md), [matrix Bernstein](notes/1004.4389.md), [subspace verification](notes/2410.12551.md); target spectrum, Kraus dilation, confidence radii and the preparation premise |
+| Singular sectors and dilation | [sector split, census link and dynamics](notes/singular_sector_dynamics.md): dark, bright and anticommuting sectors of every two-term element, the Hermitian dilation's frequencies, product-formula exactness, the frozen Design B walk and its echo-matched control; [LCU](notes/papers/1202.5822.md), [oblivious amplification](notes/papers/1312.1414.md), [Hamiltonian block encoding](notes/papers/2510.06316.md), [QSVT](notes/papers/1806.01838.md) |
+| Measurement foundations | [coherence decay](notes/papers/0909.4585.md), [trajectories](notes/papers/1305.7270.md), [efficient tomography](notes/papers/1101.4366.md), [pulse removal, tomography API and early superconducting tomography](notes/papers/measurement_foundations_web_sources.md); which laboratory reconstructions transfer to the cloud gate set |
+| Hypercomplex theory and operational encodings | [normed division algebras](notes/papers/math-0105155.md), [single-photon hypercomplex test](notes/papers/1602.01624.md) with [Adler's critique](notes/papers/1604.04950.md) and [the reply](notes/papers/1607.01648.md), [superconducting](notes/papers/2210.10255.md) and [trapped-ion](notes/papers/2305.03766.md) non-Abelian anyons, [Crossref records](notes/papers/hypercomplex_quantum_crossref_records.md), [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md); encoding an algebra in complex quantum mechanics against testing a hypercomplex theory |
+| Dark-subspace certificate | [source map](notes/quandela/bdsc_sources.md): [eigentheory](notes/0905.2987.md), [detector tomography](notes/papers/0807.2444.md), [GST](notes/papers/2009.07301.md), [optical dilation](notes/papers/1712.01413.md), [interferometer design](notes/papers/1603.08788.md), [matrix Bernstein](notes/papers/1004.4389.md), [subspace verification](notes/papers/2410.12551.md); target spectrum, Kraus dilation, confidence radii and the preparation premise |
 
 ## Historical action items and current status
 

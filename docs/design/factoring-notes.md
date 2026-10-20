@@ -31,7 +31,7 @@ falsifiers, and roadmap.
 
 ## Reference baseline
 
-Gidney 2025 (arXiv:2505.15917, note docs/notes/2505.15917.md) is the
+Gidney 2025 (arXiv:2505.15917, note docs/notes/papers/2505.15917.md) is the
 reference construction. It proves no lower bound; its costs are those of one
 construction. At n = 2048 with 0.1% uniform gate error, a 1 us surface-code
 cycle and a 10 us reaction time, it needs:

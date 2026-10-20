@@ -37,7 +37,7 @@ CRN; `instance_id` and `plan_id` of `usage()` are dropped.
 3. IBM's guides as transcribed in this directory and recorded in
    [ibm_heron_platform.md](../ibm_heron_platform.md),
    [ibm-runtime-execution-guides.md](../ibm-runtime-execution-guides.md) and
-   [ibm_fractional_execution_sources.md](../ibm_fractional_execution_sources.md).
+   [ibm_fractional_execution_sources.md](../papers/ibm_fractional_execution_sources.md).
 4. Repository records: [N21_USAGE_BUDGET.md](../../../gororoba_quantum/N21_USAGE_BUDGET.md),
    [QPU_OPTIMIZATION.md](../../../gororoba_quantum/QPU_OPTIMIZATION.md) and the
    retained runs under `results/live/`.

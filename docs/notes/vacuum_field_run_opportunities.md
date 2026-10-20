@@ -12,15 +12,15 @@ instrument response and independent calibration. [P] marks a source result;
 - [P] [Sabin](1909.04408.md) reports a beam-splitter experiment on IBM Q5
   Tenerife. The paper derives two-mode squeezing and proposes DCE as an
   application; the reported hardware frequencies concern the beam splitter.
-- [P] [Samos-Saenz de Buruaga and Sabin](1610.03272.md) study a perturbative
+- [P] [Samos-Saenz de Buruaga and Sabin](papers/1610.03272.md) study a perturbative
   Gaussian coherence measure. That entropy-based scalar differs from the
   phase-odd real pair correlator proposed here; its thermal and detuning
   assumptions bound the no-threshold statement.
-- [P] [Wilson et al.](1105.4714.md) physically modulate a SQUID boundary and
+- [P] [Wilson et al.](papers/1105.4714.md) physically modulate a SQUID boundary and
   measure synchronized sideband correlations and two-mode squeezing. Their
   pump-phase-dependent complex correlator supplies direct prior art for phase
   intervention; an encoded qubit correlator has a different physical meaning.
-- [P] [Stecenko et al.](2105.02032.md) use an IBM quantum simulator to estimate
+- [P] [Stecenko et al.](papers/2105.02032.md) use an IBM quantum simulator to estimate
   reference-subtracted energies of free lattice fields. The source supplies
   simulation precedent, with explicit classical mode-sum references.
 - [P] [Schoelkopf et al.](cond-mat-0210247.md) and
@@ -30,12 +30,12 @@ instrument response and independent calibration. [P] marks a source result;
 - [P] [Jin et al.](1412.2772.md) measure residual excited-state population
   using additional transmon-level control/readout. That capability and
   calibration differ from a binary gate-and-delay experiment.
-- [P] [Bartlett et al.](quant-ph-0109047.md) delimit efficient Gaussian
+- [P] [Bartlett et al.](papers/quant-ph-0109047.md) delimit efficient Gaussian
   simulation for the stated preparations, operations and quadrature
   measurements. [Collision models](2106.11974.md) distinguish fresh bath
   inputs, reset replacement channels and correlated repeated interactions.
-- [P] [Circuit QED](2005.12667.md) is RMP 93, 025005; it is a circuit-QED
-  review. The [real-material Casimir review](0902.4022.md) is RMP 81, 1827.
+- [P] [Circuit QED](papers/2005.12667.md) is RMP 93, 025005; it is a circuit-QED
+  review. The [real-material Casimir review](papers/0902.4022.md) is RMP 81, 1827.
   Their models and physical measurement surfaces remain distinct.
 
 ## Retained finite reference
@@ -93,12 +93,12 @@ supply zero additional submission authority.
 | --- | --- | --- | --- | --- |
 | Phase-odd `Re<ab>` under the equal-occupation pair Hamiltonian | Sabin squeezing construction; Wilson phase correlations; finite full/reduced replay and infinite Gaussian reference | Zero coupling, both phases, occupation-matched diagonal mixture, first-moment checks, full-encoding reference; declare sector invariance and omitted loss channels | Price four endpoint settings, phase/control arms, replicas and covariance together; reject incorrect observable pullback or a model-bias envelope exceeding tolerance | CPU reference retained; qualify compiled unitary, shot precision and model cutoff before a hardware case |
 | Cutoff convergence of coherence, occupations and commutator | Finite ladder identity and exact finite evolution | Compare cutoffs and interaction strengths against a declared observable tolerance; separate cutoff, synthesis and device errors | Include additional encodings/settings in the cost; reject an accepted cutoff when any preregistered bias exceeds its tolerance | Finite reference retained; select target tolerance and synthesis independently |
-| Fractional versus conventional synthesis of the same finite unitary | [IBM source note](ibm_fractional_execution_sources.md); exact matrix reference | Same Hamiltonian/time, matched patch, routed controls, valid bound RZZ angles, client compatibility, verified global/relative phases | Price routing, reset, measurement, controls and job splits; compare returned usage and endpoint error; gate count alone is insufficient | Public policy checked; live Target, installed-client and full-unitary qualification required |
-| Packed-minus-isolated endpoint distortion | [Parallelism](quantum_experiment_parallelism.md), [crosstalk](1908.09855.md), [drift](1907.13608.md) | Fix focal circuit; rotate companion, patch and time conditions; preserve joint shots and sparse references | Price fused critical path plus all controls; declare a distortion margin and covariance model; reject precision or equivalence failure | Design precedent exists; new family requires its own compiled and costed matched design |
+| Fractional versus conventional synthesis of the same finite unitary | [IBM source note](papers/ibm_fractional_execution_sources.md); exact matrix reference | Same Hamiltonian/time, matched patch, routed controls, valid bound RZZ angles, client compatibility, verified global/relative phases | Price routing, reset, measurement, controls and job splits; compare returned usage and endpoint error; gate count alone is insufficient | Public policy checked; live Target, installed-client and full-unitary qualification required |
+| Packed-minus-isolated endpoint distortion | [Parallelism](quantum_experiment_parallelism.md), [crosstalk](papers/1908.09855.md), [drift](papers/1907.13608.md) | Fix focal circuit; rotate companion, patch and time conditions; preserve joint shots and sparse references | Price fused critical path plus all controls; declare a distortion margin and covariance model; reject precision or equivalence failure | Design precedent exists; new family requires its own compiled and costed matched design |
 | Excitation/relaxation rates and effective residual populations | Schoelkopf/Clerk spectral equations; Jin calibration constraints; finite SPAM counterexample | Independent preparation/readout constraints, declared delays, stationarity/drift checks, leakage model; thermodynamic temperature needs equilibrium assumptions | Long delays, calibration shots and context controls count; reject vacuum isolation or absolute rates when nuisance parameters remain unidentifiable | Source and counterexample retained; establish calibration identifiability before Fisher/shot allocation |
 | Fresh versus reused bath collision channel | Collision review Eq. 4.7; finite exchange-channel reference | Correct diagonal mixed preparation, fresh independent bath per collision, matched reset schedules; retain joint-record scope | Price randomization/purification, reset and width separately; coherent RY preparation or shared hidden bath correlations falsify the intended mixture model | Small CPU law retained; certify the complete channel and implementation controls |
 | Encoded force derivative or constructed rank-spectrum susceptibility | Real-material review; free-lattice Casimir source; sister-project model contracts | Specify self-adjoint Hamiltonian, Hilbert space, Gram convention, multiplicities, units, regulator, reference energy, length map and parameter-dependent encoding | Price preparation/synthesis/observable estimation and classical baseline; omitted identity/reference/basis derivatives or uncalibrated physical map reject the interpretation | Model-only opportunity; no physical force/radiation calibration established |
-| Two-qubit quantum energy teleportation: Bob's local energy drop after Alice's X measurement | [Hotta](1002.0200.md) minimal model; [Ikeda](2301.02666.md) IBM hardware precedent; exact reference [scripts/qet_two_qubit_reference.py](../../scripts/qet_two_qubit_reference.py) (E_A = h^2/r, E_B = sqrt(h^2+4k^2) - (h^2+2k^2)/r) | Ground-state reference, measurement only, correct feedback, randomized feedback, fixed rotation, sign-reversed feedback, product-state reference; Z_A, Z_B and X_A X_B from calibrated settings | Price every arm and setting; reject when correct feedback fails to lower Bob's energy beyond the controls' envelope; a failure characterizes the device, not field theory | Exact reference gated; no case written and no QPU time assigned |
+| Two-qubit quantum energy teleportation: Bob's local energy drop after Alice's X measurement | [Hotta](papers/1002.0200.md) minimal model; [Ikeda](papers/2301.02666.md) IBM hardware precedent; exact reference [scripts/qet_two_qubit_reference.py](../../scripts/qet_two_qubit_reference.py) (E_A = h^2/r, E_B = sqrt(h^2+4k^2) - (h^2+2k^2)/r) | Ground-state reference, measurement only, correct feedback, randomized feedback, fixed rotation, sign-reversed feedback, product-state reference; Z_A, Z_B and X_A X_B from calibrated settings | Price every arm and setting; reject when correct feedback fails to lower Bob's energy beyond the controls' envelope; a failure characterizes the device, not field theory | Exact reference gated; no case written and no QPU time assigned |
 
 [I] For paired rate curves the observable model is
 `p_obs(t)=r0+(1-r0-r1)[p_eq+(p_init-p_eq)exp(-Gamma*t)]`.
@@ -110,7 +110,7 @@ before interpreting `Gamma_up/Gamma_down` as a thermal relation.
 
 [I] Derived endpoints from the same shots share covariance. Fisher information
 must remove gauge/nuisance degeneracies, and fixed-sample bounds require their
-fixed design. [Time-uniform inference](1810.08240.md) requires its own filtration,
+fixed design. [Time-uniform inference](papers/1810.08240.md) requires its own filtration,
 conditional-mean, multiplicity and stopping contracts. A statistical early stop
 cannot refund shots already acquired in a submitted job.
 
@@ -168,19 +168,19 @@ remain mandatory baselines; non-Clifford gates alone establish no advantage.
 
 [I] A dark-sector or vacuum-energy reading of any residual names its field
 content and coupling (scalar, pseudoscalar or kinetically mixed vector),
-compares the claimed region with current exclusions ([ALPS II](2512.14110.md),
-[Dark SRF](2510.02427.md), [dielectric haloscope](2503.23354.md), the
+compares the claimed region with current exclusions ([ALPS II](papers/2512.14110.md),
+[Dark SRF](papers/2510.02427.md), [dielectric haloscope](papers/2503.23354.md), the
 symmetron force sensor in
-[casimir-dark-sector-web-sources.md](casimir-dark-sector-web-sources.md)),
+[casimir-dark-sector-web-sources.md](papers/casimir-dark-sector-web-sources.md)),
 and models the conventional nuisances those searches fit, such as resonator
 frequency instability and Newtonian source gravity
-([2511.09750](2511.09750.md)). A QPU circuit residual has no physical
+([2511.09750](papers/2511.09750.md)). A QPU circuit residual has no physical
 dark-sector source and stays a device-model discrepancy until an external,
 separately predicted dependence appears. Negative local energy in a
 boundary geometry or a QET protocol leaves total energy at or above the
-ground state; [Ford and Roman](gr-qc-9607003.md) bound free-field sampling,
+ground state; [Ford and Roman](papers/gr-qc-9607003.md) bound free-field sampling,
 and a cavity needs its own boundary-adapted inequality. Casimir residuals
-first face the Drude-plasma discriminators of [Ma et al.](2601.00483.md) and
+first face the Drude-plasma discriminators of [Ma et al.](papers/2601.00483.md) and
 Inacio et al. (web-source note) before any new-force attribution. The
 open_gororoba vacuum-model code checks live in
 [open_gororoba_handoff.md](topics/open_gororoba_handoff.md#vacuum-model-code-checks).

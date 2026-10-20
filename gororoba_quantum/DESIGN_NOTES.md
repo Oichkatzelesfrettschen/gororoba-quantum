@@ -153,7 +153,7 @@ Measured (results/hw_estimate/ibm_fez_record.json, calibration
 model gives P1 = 0.9685.
 
 Prior work on the same seven strings: Levratti (2026, author-hosted,
-docs/notes/levratti-2026-fano-css.md) reaches the identical dual
+docs/notes/papers/levratti-2026-fano-css.md) reaches the identical dual
 Z-string Z^v of each Fano line by projective orthogonality from a Clifford
 triple product and ties it to Steane stabilizer supports by group labeling;
 every one of the 21 associator phases here is that Z^v with v orthogonal to
@@ -337,7 +337,7 @@ result. The sign-kernel order and rank are known in loop coordinates
 Walsh classes above are candidate results pending the comparison with the
 published twist formulas (docs/notes/1602.02843.md); the Fano Z-string
 has close prior conceptual overlap
-(docs/notes/levratti-2026-fano-css.md); the Fano-Hamming-Steane
+(docs/notes/papers/levratti-2026-fano-css.md); the Fano-Hamming-Steane
 incidence below is standard.
 
 ## Reference: Fano plane and the Steane code

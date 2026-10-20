@@ -293,8 +293,8 @@ the sum has a trace-preserving constraint. Positivity restricts the domain;
 rank/structure assumptions reduce dimension only after justification. Unknown
 SPAM adds parameters and, in gate-set methods, gauge freedom.
 
-The [Rudinger instrument-GST source](2103.03008.md) supplies the relevant
-experimental framework. The [Wysocki source](2602.03938.md) studies an
+The [Rudinger instrument-GST source](papers/2103.03008.md) supplies the relevant
+experimental framework. The [Wysocki source](papers/2602.03938.md) studies an
 interpretable small-Markovian-error model; it does not attribute the retained
 Heron r2 discrepancy. A tomography plan needs preparation/measurement rank
 checks, CP/TP constraints, leakage/outcome completeness, gauge interpretation,
@@ -316,7 +316,7 @@ answer a smaller scientific question with a separately justified protocol.
 Repeatedly inspecting ordinary fixed-sample intervals changes their coverage.
 Use a prespecified finite set of looks with alpha allocated across every look
 and endpoint, or prove an anytime-valid confidence sequence/e-process.
-The [Howard et al. source](1810.08240.md) develops time-uniform guarantees;
+The [Howard et al. source](papers/1810.08240.md) develops time-uniform guarantees;
 those guarantees still depend on declared filtration and conditional moment
 assumptions. The paper also covers changing conditional means for a running
 average of those means. Such a target does not establish a constant hardware

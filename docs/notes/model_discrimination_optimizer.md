@@ -10,12 +10,12 @@ execution assignment. Both proposed atlas cases remain unapproved.
 
 | Question | Sources | Useful design consequence |
 | --- | --- | --- |
-| What does feedback cost or improve? | [Corcoles](2102.01682.md), [semiclassical QFT](quant-ph-9511007.md), [qubit recycling](1111.4147.md) | Compare the specified estimator and unitary-power access; measurement count differs from billed seconds. |
-| Can readout explain the residual? | [QILGST](2103.03008.md), [interpretable instruments](2602.03938.md), [Pauli-noise ambiguity](2505.22629.md) | Separate classical report error from continuing-state disturbance and coherent error. Identifiability comes before fitting. |
-| Does packing change the mechanism? | [QuMC](2102.05321.md), [palloq](2112.07091.md), [Sarovar](1908.09855.md), [Rudinger](1810.05651.md) | Treat companion activity and patch as controls; a qubit-distance rule supplies a placement constraint, not measured independence. |
-| Does time confound the contrast? | [Proctor](1907.13608.md), [NIST blocking](quantum_experiment_design_sources.md) | Preserve shot order, execution windows and balanced placement; inspect drift and dependence before using stationary-repetition intervals. |
+| What does feedback cost or improve? | [Corcoles](2102.01682.md), [semiclassical QFT](papers/quant-ph-9511007.md), [qubit recycling](papers/1111.4147.md) | Compare the specified estimator and unitary-power access; measurement count differs from billed seconds. |
+| Can readout explain the residual? | [QILGST](papers/2103.03008.md), [interpretable instruments](papers/2602.03938.md), [Pauli-noise ambiguity](2505.22629.md) | Separate classical report error from continuing-state disturbance and coherent error. Identifiability comes before fitting. |
+| Does packing change the mechanism? | [QuMC](2102.05321.md), [palloq](papers/2112.07091.md), [Sarovar](papers/1908.09855.md), [Rudinger](papers/1810.05651.md) | Treat companion activity and patch as controls; a qubit-distance rule supplies a placement constraint, not measured independence. |
+| Does time confound the contrast? | [Proctor](papers/1907.13608.md), [NIST blocking](quantum_experiment_design_sources.md) | Preserve shot order, execution windows and balanced placement; inspect drift and dependence before using stationary-repetition intervals. |
 | Where do seconds go? | [IBM usage documentation](quantum_experiment_design_sources.md), [retained timing](../../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) | Price initialization/repetition and job overhead alongside compiled duration; reduce shots only against a declared precision target. |
-| What does an algebraic fringe establish? | [Koebisu](2608.08232.md), [Reggiani](2411.18881.md), [Zhilina](2608.28163.md), [block encoding](1806.01838.md) | Distinguish finite circuit validation, continuous topology, and normalization-dependent uncertainty. |
+| What does an algebraic fringe establish? | [Koebisu](2608.08232.md), [Reggiani](papers/2411.18881.md), [Zhilina](papers/2608.28163.md), [block encoding](papers/1806.01838.md) | Distinguish finite circuit validation, continuous topology, and normalization-dependent uncertainty. |
 
 ## Existing observations constrain models
 

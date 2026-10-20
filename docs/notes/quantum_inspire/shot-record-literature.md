@@ -19,7 +19,7 @@ from the sources combined with the retained records.
 
 A line at f cycles per shot is f / T_shot hertz for a constant shot interval
 T_shot, and a record of N shots resolves frequency steps of 1 / N cycles per
-shot ([Proctor et al.](../1907.13608.md) state that conversion to hertz needs
+shot ([Proctor et al.](../papers/1907.13608.md) state that conversion to hertz needs
 the actual sample timing and that a transform index is only a basis-function
 index).
 
@@ -41,9 +41,9 @@ index).
 
 ## 1. Flux-pulsed CZ gates and their sensitivity to flux amplitude and noise
 
-Sources: [Rol et al. 2019, arXiv 1903.02492](../1903.02492.md),
-[Negirneac et al. 2021, arXiv 2008.07411](../2008.07411.md),
-[Marques et al. 2022, arXiv 2102.13071](../2102.13071.md).
+Sources: [Rol et al. 2019, arXiv 1903.02492](../papers/1903.02492.md),
+[Negirneac et al. 2021, arXiv 2008.07411](../papers/2008.07411.md),
+[Marques et al. 2022, arXiv 2102.13071](../papers/2102.13071.md).
 
 What they establish:
 
@@ -87,10 +87,10 @@ What the literature does not settle:
 
 ## 2. Quantum Inspire platform and Tuna device sources
 
-Sources: [Fu et al. 2017, arXiv 1708.07677](../1708.07677.md),
-[Fu et al. 2019, arXiv 1808.02449](../1808.02449.md),
-[van der Schoot et al. 2023, arXiv 2310.01120](../2310.01120.md), with
-[Marques et al.](../2102.13071.md) above for the lab's device lineage.
+Sources: [Fu et al. 2017, arXiv 1708.07677](../papers/1708.07677.md),
+[Fu et al. 2019, arXiv 1808.02449](../papers/1808.02449.md),
+[van der Schoot et al. 2023, arXiv 2310.01120](../papers/2310.01120.md), with
+[Marques et al.](../papers/2102.13071.md) above for the lab's device lineage.
 
 What they establish:
 
@@ -125,11 +125,11 @@ What the literature does not settle:
 
 ## 3. Noise spectroscopy from time-ordered measurement records
 
-Sources: [Klimov et al. 2018, arXiv 1809.01043](../1809.01043.md),
-[Schloer et al. 2019, arXiv 1901.05352](../1901.05352.md),
-[Sung et al. 2019, arXiv 1903.01043](../1903.01043.md); already registered:
-[Proctor et al., arXiv 1907.13608](../1907.13608.md) (time-ordered outcome
-spectra and drift tests) and [Rudinger et al., arXiv 1810.05651](../1810.05651.md)
+Sources: [Klimov et al. 2018, arXiv 1809.01043](../papers/1809.01043.md),
+[Schloer et al. 2019, arXiv 1901.05352](../papers/1901.05352.md),
+[Sung et al. 2019, arXiv 1903.01043](../papers/1903.01043.md); already registered:
+[Proctor et al., arXiv 1907.13608](../papers/1907.13608.md) (time-ordered outcome
+spectra and drift tests) and [Rudinger et al., arXiv 1810.05651](../papers/1810.05651.md)
 (context-dependent errors).
 
 What they establish:
@@ -183,14 +183,14 @@ third harmonic alone does not discriminate between them.
 
 ## 4. Readout crosstalk and context-dependent assignment error
 
-Sources: [Bravyi et al. 2021, arXiv 2006.14044](../2006.14044.md),
-[Nation et al. 2021, arXiv 2108.12518](../2108.12518.md),
-[Heinsoo et al. 2018, arXiv 1801.07904](../1801.07904.md),
-[Geller 2020, arXiv 2002.01471](../2002.01471.md),
-[Sank et al. 2016, arXiv 1606.05721](../1606.05721.md), and the
-Starmon-5 study [van der Schoot et al.](../2310.01120.md); already
-registered: [Sarovar et al., arXiv 1908.09855](../1908.09855.md) (crosstalk
-detection) and [Rudinger et al.](../1810.05651.md).
+Sources: [Bravyi et al. 2021, arXiv 2006.14044](../papers/2006.14044.md),
+[Nation et al. 2021, arXiv 2108.12518](../papers/2108.12518.md),
+[Heinsoo et al. 2018, arXiv 1801.07904](../papers/1801.07904.md),
+[Geller 2020, arXiv 2002.01471](../papers/2002.01471.md),
+[Sank et al. 2016, arXiv 1606.05721](../papers/1606.05721.md), and the
+Starmon-5 study [van der Schoot et al.](../papers/2310.01120.md); already
+registered: [Sarovar et al., arXiv 1908.09855](../papers/1908.09855.md) (crosstalk
+detection) and [Rudinger et al.](../papers/1810.05651.md).
 
 What they establish:
 

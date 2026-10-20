@@ -399,7 +399,7 @@ fabricate precision.
 An endpoint whose plan carries an `EmpiricalBernsteinDesign` (live_run
 `--empirical-bernstein`, N21 families under `--model-method exact`) also
 reads the empirical-Bernstein radius of Maurer and Pontil
-([arXiv:0907.3740](../docs/notes/0907.3740.md), Theorem 4). For the `n`
+([arXiv:0907.3740](../docs/notes/papers/0907.3740.md), Theorem 4). For the `n`
 scores of one PUB, range `R` and sample variance `V_n` (denominator
 `n - 1`), the one-sided radius at tail `d` is
 `sqrt(2 V_n ln(2 / d) / n) + 7 R ln(2 / d) / (3 (n - 1))`; the two-sided

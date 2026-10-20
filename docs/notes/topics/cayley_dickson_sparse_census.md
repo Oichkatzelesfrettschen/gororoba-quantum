@@ -75,7 +75,7 @@ does not discharge those obligations.
 
 ## Sedenion counts refer to different objects
 
-The [Reggiani note](../2411.18881.md) owns the paper interpretation and
+The [Reggiani note](../papers/2411.18881.md) owns the paper interpretation and
 normalization. The following counts distinguish its table from the repository
 corpus used by [designs.py](../../../gororoba_quantum/designs.py):
 

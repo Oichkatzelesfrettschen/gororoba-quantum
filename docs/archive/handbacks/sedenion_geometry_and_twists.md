@@ -6,7 +6,7 @@ Final statement of the delegate that wrote 2411.18881.md, 2512.13002.md,
 scripts against cd_core.py outside the repository and carried by no gate;
 [V] marks a claim the orchestrator re-verified in this tree; [P] marks a
 statement of the source. Those labels preserve the original review's
-evidence status. The [Reggiani note](../../notes/2411.18881.md) and
+evidence status. The [Reggiani note](../../notes/papers/2411.18881.md) and
 [shared census](../../notes/topics/cayley_dickson_sparse_census.md) own current bundle and
 finite-count interpretations.
 
