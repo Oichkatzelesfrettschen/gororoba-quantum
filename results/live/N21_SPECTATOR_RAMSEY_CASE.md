@@ -76,11 +76,16 @@ AGENTS.md criterion for IBM hardware below 16 qubits.
   sequence of about 8.85 us, which adds 172,032 x 8.85 us = 1.52 s, so the
   expected bill is about 15.0 s, and about 17 s if the service splits the
   job once (about 2 s per sub-job). The planner is left unchanged.
-- Ceiling: `--max-execution-seconds 30`, 2.2 times the estimate, so an
-  overrun of the per-shot model ends the job well past the expected lock
-  time rather than at it; `--max-total-execution-seconds 30`,
-  `--reserve-seconds 0`, `--min-remaining-seconds 60`. The dry run read 166 s
-  remaining.
+- Ceiling: `--max-execution-seconds 30` and `--max-total-execution-seconds
+  30`, `--reserve-seconds 0`, `--min-remaining-seconds 60`. The retained
+  ground-split job dbba739gv2cc73e81dg0 (raw/.../job_metrics.json) reports
+  circuits_execution_time 3.153 s against 2.815 s of planned shot time, a
+  ratio of 1.12 (0.97 once its 49,152 x 8.85 us INIT/FINI is added), and a
+  charge of 5 s against 5.12 s planned; its 190 s from running to finished
+  under a 15 s ceiling shows the ceiling binds QPU time, not wall time.
+  Scaled to this job: 11.20 s x 1.12 = 12.57 s + 2.3 s overhead + 2 s for
+  one sub-job split = 16.9 s; 1.5 x 16.9 = 25.3 s stays below 30, so the
+  ceiling stays at 30 s, 1.78 times the scaled lock time.
 - Twirling off, dynamical decoupling none (policy `twirl` false, `dd` null):
   every member is dynamic (the final control reset), IBM's Sampler rejects
   DD on dynamic circuits, and a DD pulse on 143 would turn the Ramsey into
@@ -92,24 +97,32 @@ AGENTS.md criterion for IBM hardware below 16 qubits.
   (`control_flow` empty in the record), 6 classical bits per circuit, no
   broadcast; the reset is the only dynamic operation.
 
-## Dry run
+## Approval record and envelope
 
-Record [2026-10-20T020939.118505Z](2026-10-20T020939.118505Z/record.json),
-planned from commit e1491b0 with sources_modified false, under the
-2026-10-19T18:56:47-07:00 ibm_fez calibration (window_delay_dt 415,
-reset_dt 421, so one window is 836 dt):
+The binding approved record is the submit-free dry run made from main
+after this change merges, immediately before `--submit`, with the command
+below minus `--submit` and its approval flags. Its record.json path and
+sha256 replace RECORD_DIR and RECORD_SHA256 in the submit command. That
+record, approval-consumed.json, the collection, ramsey.json and the
+regenerated retention audit land together in the post-run results change.
 
-- record.json sha256 `123dd1e06c815510ad5c9827e62d7cef332d3d496946f27f307a403685dca654`
-- isa.qpy sha256 `ed6094da6a282b2d5fc64ca678f63c107c565f1acc6eeddd701ac9b251c999dc`
-- one dynamic job, 14 PUBs of 12288 shots, estimated charge 13.50 s
-  (11.20 s of shots, 0.677 s for an immediate PUB to 0.923 s at 6 windows)
-- budget plan admitted against 166 s remaining, ceiling 30 s
-- policy twirl false, dd null, rep_delay 5e-05 s; `control_flow` empty
+This case approves the envelope: 14 members of the structure above
+(immediate and idle_ground at 1 to 6 windows, X and Y, all-qubit herald,
+pinned layout), 12288 shots per PUB, the policy above (rep_delay 50 us,
+twirl off, dd none, 30 s ceilings) and an expected bill of at most about
+17 s. A dry run whose window moves from 836 dt, whose circuits differ in
+structure, or whose estimated charge exceeds 13.5 s needs a fresh user
+approval.
+
+The development dry run (from this branch, 2026-10-19T18:56:47-07:00
+calibration) planned one dynamic job of 14 PUBs, estimated charge 13.50 s
+(0.677 s for an immediate PUB to 0.923 s at 6 windows), 166 s remaining,
+policy twirl false, dd null, `control_flow` empty; it is not retained.
 
 ## Preregistered analysis
 
 `"$PYTHON" scripts/n21_spectator_ramsey.py RUN_DIR --out RUN_DIR/ramsey.json
---expected-analyzer-sha256 5dfa006d8387ad089c4360f878e0068752fd57018e8c71b80583cc6e4ef4a8a0` after `--collect`, and
+--expected-analyzer-sha256 760f3f5be5f82397af371c95578696aa1fc48f09e6116823ecf63ebbc428fd33` after `--collect`, and
 `--check` regenerates it from the archived raw files.
 
 1. Admissibility (returned scheduler timing): every member reads one
@@ -125,9 +138,9 @@ reset_dt 421, so one window is 836 dt):
    any role shifts 143's frequency by its ZZ; 136 and 142 are not coupled
    to each other. The control-only selection (herald reads 142 0) is fitted
    too and reported as secondary, descriptive.
-3. Family alpha 0.05, Bonferroni over three events, 0.0167 each: herald
-   admission on the primary shots, the detuning test and the decay-shape
-   test. On all-zero shots every herald bit reads 0, so the admission tests
+3. Family alpha 0.05, Bonferroni over four events, 0.0125 each: herald
+   admission on the primary shots, the detuning test, the decay-shape
+   test and the ringdown consistency test. On all-zero shots every herald bit reads 0, so the admission tests
    the member spread of the rejected fraction (any pinned qubit heralds 1)
    with n21_orbit_rca.herald_admission at herald_bound; a refusal leaves
    both tests not_admissible. The per-bit spread over the control-zero
@@ -135,32 +148,43 @@ reset_dt 421, so one window is 836 dt):
 4. Fits: free beta, beta = 1 and beta = 2, each over all 28 binomial reads,
    starts spread over the alias band, the estimate of delta folded into it;
    Wald intervals from the expected Fisher information at the estimate.
-5. Detuning: "detuned" when the two-sided 0.0167 interval of delta (free
+5. Detuning: "detuned" when the two-sided 0.0125 interval of delta (free
    beta) excludes 0, else "unresolved"; the sign convention is that rz(+theta)
    on qubit 2 advances phi by +theta (self-check plant through the built
    circuits).
-6. Shape: the two-sided 0.0167 interval of beta; "exponential" if it holds
+6. Shape: the two-sided 0.0125 interval of beta; "exponential" if it holds
    1 and not 2, "gaussian" if 2 and not 1, "unresolved" if both, "neither"
    if neither. T2* is reported from all three fits; the verdict names
    which one describes the decay. The shape test's power assumes the
    retained 7.2 us decay; a much shorter or longer T2* puts beta near a
    bound or makes it weakly identified, and the Wald interval then reads
    unresolved rather than a shape.
+7. Ringdown consistency: the 1 to 6 window points alone are fitted at
+   beta = 1 and beta = 2, the fit with the larger likelihood extrapolates
+   to A(0), and A(0) minus the immediate visibility hypot(<X>, <Y>) gets
+   a two-sided 0.0125 interval (Wald error of A(0), delta-method error of
+   the visibility): "consistent" when it holds 0, "transient" when it lies
+   below 0 (visibility lost before the first idle, the herald back-action
+   signature), "excess" when above. A transient verdict makes the decay
+   fit describe the stationary decay after the transient, not T2* from
+   preparation.
 
 Expected precision at the design (Fisher information at noise-free counts,
-`--design`, two-sided 0.0167 half-widths):
+`--design`, two-sided 0.0125 half-widths):
 
 | Truth | T2* | beta | delta | A |
 |---|---|---|---|---|
-| exponential, T2* 7.2 us, delta 0 | +-0.44 us | +-0.065 | +-1.66 kHz | +-0.025 |
-| Gaussian, T 4.9 us, delta 0 | +-0.13 us | +-0.13 | +-1.80 kHz | +-0.008 |
+| exponential, T2* 7.2 us, delta 0 | +-0.46 us | +-0.068 | +-1.7 kHz | +-0.026 |
+| Gaussian, T 4.9 us, delta 0 | +-0.13 us | +-0.14 | +-1.9 kHz | +-0.009 |
 
 So the shape rule separates beta = 1 from 2 by more than ten half-widths,
 and a 7 kHz detuning, the retained point's phase reading, sits about four
 half-widths from 0.
 
 Self-check (gate core-601) plants: an exponential and a Gaussian truth
-reach their shapes with delta unresolved; a 40 kHz truth reads detuned; a 15 percent subpopulation heralding work
+reach their shapes with delta unresolved; a 40 kHz truth reads detuned; pure exponential and Gaussian decays pass
+the ringdown test and 20 percent lost with a 0.4 us time constant on top
+of the 7.2 us exponential fails it; a 15 percent subpopulation heralding work
 bit 1 excited with a 0.1 MHz ZZ shift moves the control-only fit to beta
 0.71 and T2* 6.45 us while the all-zero fit stays at beta 1.000, T2* 7.200; a
 rz(+2 pi 0.03 MHz t) inserted into the built circuits reads +0.03 MHz; an
@@ -187,8 +211,8 @@ From gororoba_quantum/, after approval:
   --reserve-seconds 0.0 --max-total-execution-seconds 30.0 \
   --init-herald --ground-control-split --ramsey-windows 1,2,3,4,5,6 \
   --pin-layout ibm_fez:142,136,143,144 --out ../results/live --submit \
-  --approved-record ../results/live/2026-10-20T020939.118505Z/record.json \
-  --approved-record-sha256 123dd1e06c815510ad5c9827e62d7cef332d3d496946f27f307a403685dca654
+  --approved-record ../results/live/RECORD_DIR/record.json \
+  --approved-record-sha256 RECORD_SHA256
 ```
 
 ## Failure modes considered

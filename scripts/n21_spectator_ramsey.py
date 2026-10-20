@@ -62,7 +62,7 @@ import n21_orbit_rca as rca  # noqa: E402
 import parallel  # noqa: E402
 
 FAMILY_ALPHA = 0.05
-TESTS = ("spectator_herald_admission", "detuning", "decay_shape")
+TESTS = ("spectator_herald_admission", "detuning", "decay_shape", "ringdown_consistency")
 TEST_ALPHA = FAMILY_ALPHA / len(TESTS)
 SCHEMA = "n21-spectator-ramsey-v1"
 RETAINED = "ramsey.json"
@@ -260,7 +260,60 @@ def fit_counts(points: list[tuple[float, str, int, int]], alpha: float = TEST_AL
         }
         for time, values in sorted(by_time.items())
     ]
-    return {"fits": fits, "decisions": decisions(fits["free"], alpha), "derived": derived}
+    return {
+        "fits": fits,
+        "decisions": decisions(fits["free"], alpha) | {"ringdown_consistency": ringdown_test(points, alpha)},
+        "derived": derived,
+    }
+
+
+def ringdown_test(points: list[tuple[float, str, int, int]], alpha: float = TEST_ALPHA) -> dict[str, Any]:
+    """Whether the idle points' decay extrapolates to the immediate point's visibility.
+
+    A transient right after the herald (readout ringdown, AC-Stark shift,
+    measurement-induced dephasing) removes visibility before the first idle
+    point and leaves a slower stationary decay. The exposures above 0 alone
+    are fitted at beta = 1 and at beta = 2, and the fit with the larger
+    likelihood (equal parameter counts) extrapolates to an amplitude A(0);
+    a free beta extrapolates with too wide an error to test. A transient
+    leaves A(0) below the
+    visibility hypot(<X>, <Y>) read at exposure 0. The statistic is A(0)
+    minus that visibility, with the Wald error of A(0) and the delta-method
+    error of the visibility; "consistent" when its two-sided alpha interval
+    holds 0, "transient" when it lies below 0, "excess" when above.
+    """
+    later = [point for point in points if point[0] > 0.0]
+    first = {point[1]: point for point in points if point[0] == 0.0}
+    if len(first) != len(QUADRATURES) or len({point[0] for point in later}) < 3:
+        return {"status": "not_evaluable", "reason": "the record holds no immediate pair or fewer than three idles"}
+    times = np.array([point[0] for point in later], dtype=float)
+    quadratures = np.array([QUADRATURES.index(point[1]) for point in later])
+    zeros = np.array([point[2] for point in later], dtype=float)
+    shots = np.array([point[3] for point in later], dtype=float)
+    late = min(
+        (fit_model(times, quadratures, zeros, shots, beta) for beta in (1.0, 2.0)),
+        key=lambda fitted: fitted["negative_log_likelihood"],
+    )
+    reads = []
+    for quadrature in QUADRATURES:
+        _time, _quadrature, zero, shot = first[quadrature]
+        mean = 2.0 * zero / shot - 1.0
+        reads.append((mean, (1.0 - mean**2) / shot))
+    (x, x_variance), (y, y_variance) = reads
+    visibility = math.hypot(x, y)
+    variance = (x**2 * x_variance + y**2 * y_variance) / visibility**2 if visibility else x_variance + y_variance
+    statistic = late["estimates"]["amplitude"] - visibility
+    error = math.sqrt(late["standard_errors"]["amplitude"] ** 2 + variance)
+    low, high = interval(statistic, error, alpha)
+    return {
+        "status": "transient" if high < 0 else "excess" if low > 0 else "consistent",
+        "extrapolated_amplitude": late["estimates"]["amplitude"],
+        "immediate_visibility": visibility,
+        "statistic": statistic,
+        "interval": [low, high],
+        "late_fit": late,
+        "alpha": alpha,
+    }
 
 
 def expected_points(
@@ -652,6 +705,27 @@ def _check_control_excited() -> dict[str, str]:
     }
 
 
+def _check_ringdown() -> dict[str, str]:
+    """Pure exponential and Gaussian decays pass the ringdown test; a fast transient plus an exponential fails it.
+
+    The transient plant mixes 20 percent of coherence lost with a 0.4 us
+    time constant into the 7.2 us exponential, the shape a post-herald
+    transient leaves; a pure Gaussian also passes.
+    """
+    exposures = design_exposures_us()
+    pure = ringdown_test(expected_points(EXPONENTIAL, exposures, DESIGN_SHOTS))["status"]
+    gaussian = ringdown_test(expected_points(GAUSSIAN, exposures, DESIGN_SHOTS))["status"]
+    mixed = []
+    for time in exposures:
+        envelope = 0.989 * (0.8 * math.exp(-time / 7.2) + 0.2 * math.exp(-time / 0.4))
+        for quadrature, mean in zip(QUADRATURES, (envelope, 0.0), strict=True):
+            mixed.append((time, quadrature, round(DESIGN_SHOTS * (1.0 + mean) / 2.0), DESIGN_SHOTS))
+    transient = ringdown_test(mixed)["status"]
+    if (pure, gaussian, transient) != ("consistent", "consistent", "transient"):
+        raise RuntimeError(f"the ringdown test reads pure {pure}, gaussian {gaussian} and transient {transient}")
+    return {"pure_exponential": pure, "pure_gaussian": gaussian, "transient_plus_exponential": transient}
+
+
 def _check_neighbor_excited() -> dict[str, Any]:
     """An excited-neighbor subpopulation biases the control-only fit and leaves the all-zero fit at the truth.
 
@@ -775,6 +849,7 @@ def self_check() -> dict[str, Any]:
         "rz_sign_detuning_mhz": _check_rz_sign(),
         "control_excited": _check_control_excited(),
         "neighbor_excited": _check_neighbor_excited(),
+        "ringdown": _check_ringdown(),
         "empty_selection": _check_empty_selection(),
         "schedules": _check_schedules(),
     }
