@@ -3834,6 +3834,30 @@
    "name": "core-599",
    "seconds": 0.5,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc",
+   "name": "core-606",
+   "seconds": 7.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --self-test",
+   "name": "core-607",
+   "seconds": 1.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json",
+   "name": "core-608",
+   "seconds": 1.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
