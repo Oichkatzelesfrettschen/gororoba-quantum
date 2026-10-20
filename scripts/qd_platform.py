@@ -955,6 +955,8 @@ def plan(
             f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
         )
     processor = get(platform_route(platform))
+    if processor.get("status") != "available":
+        raise PlatformError(f"{platform} processor is {processor.get('status')}")
     perfs = scrub(processor.get("perfs") or {})
     if row["type"] == "qpu":
         message = hom_warning(platform, perfs, block_photons(circuit), case_dir.name)
@@ -1513,6 +1515,7 @@ def runner_self_test() -> int:
         "refuse": False,
         "result": result,
         "status": "completed",
+        "processor_status": "available",
     }
 
     def fake_request(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
@@ -1529,7 +1532,7 @@ def runner_self_test() -> int:
                 raise RefusedError(f"GET {route}: HTTP 404 no result")
             return str(service["result"]).encode("utf-8")
         if route == platform_route("sim:belenos"):
-            return {"perfs": {"g2 (%)": 1.0, "HOM (%)": 94.2}, "token_id": 7}
+            return {"status": service["processor_status"], "perfs": {"g2 (%)": 1.0, "HOM (%)": 94.2}, "token_id": 7}
         if route == "/api/tokens/usage/report":
             return [{"total_jobs": 1, "usage": [{"job": "job-a", "token_label": "secret-label"}], "token_id": 7}]
         raise AssertionError(f"unexpected {method} {route}")
@@ -1571,6 +1574,14 @@ def runner_self_test() -> int:
             refuse("expected seconds past max_duration", lambda: plan(run, "sim:belenos", 1.0, 301.0, 0.0), "exceed")
             service["row"] = {**row, "status": "maintenance"}
             refuse("a platform under maintenance", lambda: plan(run, "sim:belenos", 1.0, 10.0, 0.0), "is maintenance")
+            service["row"] = row
+            service["processor_status"] = "calibration"
+            refuse(
+                "a processor under calibration",
+                lambda: plan(run, "sim:belenos", 1.0, 10.0, 0.0),
+                "processor is calibration",
+            )
+            service["processor_status"] = "available"
             service["row"] = {**row, "price_per_shot": 1e-6}
             refuse("a ceiling above the case's credits", lambda: plan(run, "sim:belenos", 0.0, 10.0, 0.0), "above")
             service["row"], service["idle"] = row, {**idle, "num_jobs_in_queue": 1}
@@ -1754,12 +1765,14 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
     if len(set(names)) != len(names) or set(catalogue["processors"]) != set(names):
         raise SystemExit("processor records differ from the Explorer platforms")
     chipped = {name for name, record in catalogue["processors"].items() if chip_architecture(record) is not None}
-    stamped = set(catalogue.get("architecture_observed_utc", {}))
-    carried_names = set(catalogue.get("architecture_carried", []))
+    if "architecture_observed_utc" not in catalogue or "architecture_carried" not in catalogue:
+        raise SystemExit("the catalogue lacks its architecture provenance markers")
+    stamped = set(catalogue["architecture_observed_utc"])
+    carried_names = set(catalogue["architecture_carried"])
     if "qpu:belenos" not in chipped:
         raise SystemExit("qpu:belenos carries no chip architecture, so the mesh checks cannot run")
-    if not stamped <= chipped or not carried_names <= stamped:
-        raise SystemExit("architecture markers name a platform without a stamped chip architecture")
+    if stamped != chipped or not carried_names <= stamped:
+        raise SystemExit("architecture markers do not name exactly the platforms with a chip architecture")
     for row in catalogue["explorer_platforms"]:
         name = row["name"]
         price, duration = row.get("price_per_shot"), row.get("max_duration")
@@ -1847,6 +1860,8 @@ def self_test() -> None:
         "price missing": catalogue(lambda c: c["explorer_platforms"][0].pop("price_per_shot")),
         "belenos without architecture": catalogue(lambda c: c["processors"]["qpu:belenos"]["specs"].pop(ARCHITECTURE)),
         "carried name without a chip": catalogue(lambda c: c.update(architecture_carried=["qpu:nonexistent"])),
+        "missing provenance markers": catalogue(lambda c: c.pop("architecture_observed_utc")),
+        "stamp missing for a chip": catalogue(lambda c: c["architecture_observed_utc"].pop("sim:belenos")),
         "server marks cancel read-only": text(
             "qd_mcp_server.py", "@server.tool(annotations=MUTATE)", "@server.tool(annotations=READ)"
         ),
