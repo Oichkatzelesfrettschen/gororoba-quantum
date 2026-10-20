@@ -186,8 +186,18 @@ def failed_row(job: dict[str, Any], run: Path | None, charge: Decimal) -> dict[s
     require(entry["usage"]["job_status"] == job["status"], f"collection status differs for {identity}")
     require(entry["usage"]["usage_status"] == "final", f"collection usage is unsettled for failed job {identity}")
     require(Decimal(str(entry["usage"]["qpu_charge_time_seconds"])) == charge, "collection charge differs")
-    submitted = read(run / "record.json")["submission"]["qpy_archive_sha256"]
-    require(digest(run / "isa.qpy") == submitted, "isa.qpy differs from the submitted circuit archive")
+    submission = read(run / "record.json")["submission"]
+    require(
+        any(
+            isinstance(sent, dict) and sent.get("job_id") == identity and sent.get("backend") == job["backend"]
+            for sent in submission.get("jobs") or []
+        ),
+        f"failed job {identity} is absent from the jobs its collection's run record submitted",
+    )
+    require(
+        digest(run / "isa.qpy") == submission["qpy_archive_sha256"],
+        "isa.qpy differs from the submitted circuit archive",
+    )
     return {
         **job,
         "run": str(run.relative_to(ROOT)),
