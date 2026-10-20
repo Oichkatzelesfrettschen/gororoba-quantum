@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import cd_core  # noqa: E402
+import parallel  # noqa: E402
 
 DIM = 16
 SEED = 314
@@ -113,8 +114,76 @@ def deterministic_counts(
     }
 
 
+def score_twins(lefts: list[tuple[int, int, int]]) -> dict[str, Any]:
+    """Group the left factors by their integer Gram matrix L_a^T L_a.
+
+    ||L_a v||^2 = v^T L_a^T L_a v, so factors sharing a Gram matrix score
+    every received vector alike and the annihilation decoder cannot separate
+    them at any sigma.
+    """
+    groups: dict[bytes, list[int]] = {}
+    for index, a in enumerate(lefts):
+        matrix = np.array(cd_core.left_mult_matrix(DIM, vector(a)), dtype=np.int64)
+        groups.setdefault((matrix.T @ matrix).tobytes(), []).append(index)
+    sizes = [len(members) for members in groups.values()]
+    return {
+        "gram_classes": len(groups),
+        "class_size_histogram": {str(n): sizes.count(n) for n in sorted(set(sizes))},
+    }
+
+
 def _symbol_errors(decoded: np.ndarray, sent: np.ndarray) -> int:
     return int(np.count_nonzero(decoded != sent))
+
+
+class SigmaRow:
+    """One sigma's decoded rates; a module-level class so parallel.ordered_map can pickle it."""
+
+    def __init__(
+        self, random_book: np.ndarray, stack: np.ndarray, books: dict[str, np.ndarray], subset: np.ndarray
+    ) -> None:
+        self.random_book = random_book
+        self.stack = stack
+        self.books = books
+        self.subset = subset
+
+    def profile(self, y: np.ndarray) -> np.ndarray:
+        out = (y @ self.stack.T).reshape(len(y), len(self.random_book), DIM)
+        return np.sqrt((out * out).sum(axis=2))
+
+    def __call__(self, item: tuple[float, np.ndarray]) -> dict[str, Any]:
+        sigma, noise = item
+        messages = len(self.random_book)
+        sent_all = np.repeat(np.arange(messages), TRIALS)
+        mask = np.isin(sent_all, self.subset)
+
+        def rates(guess: np.ndarray) -> dict[str, Any]:
+            sub_errors = _symbol_errors(guess[mask], sent_all[mask])
+            all_errors = _symbol_errors(guess, sent_all)
+            return {
+                "ser_40": round(sub_errors / int(mask.sum()), 6),
+                "ser_84": round(all_errors / len(sent_all), 6),
+                "errors_40": sub_errors,
+                "errors_84": all_errors,
+            }
+
+        z = noise.reshape(-1, DIM)
+        rnd = self.random_book[sent_all] + sigma * z
+        random_parts = [np.argmax(rnd[lo : lo + CHUNK] @ self.random_book.T, axis=1) for lo in range(0, len(z), CHUNK)]
+        row: dict[str, Any] = {"sigma": sigma, "random_mf": rates(np.concatenate(random_parts))}
+        for name, signal in self.books.items():
+            templates = self.profile(signal)
+            alg = signal[sent_all] + np.sqrt(2.0) * sigma * z
+            decoded: dict[str, list[np.ndarray]] = {"c5": [], "algebraic_mf": [], "profile": []}
+            for lo in range(0, len(z), CHUNK):
+                y = alg[lo : lo + CHUNK]
+                annihilation = self.profile(y)
+                decoded["c5"].append(np.argmin(annihilation, axis=1))
+                decoded["algebraic_mf"].append(np.argmax(y @ signal.T, axis=1))
+                gap = annihilation[:, None, :] - templates[None, :, :]
+                decoded["profile"].append(np.argmin((gap * gap).sum(axis=2), axis=1))
+            row[name] = {decoder: rates(np.concatenate(parts)) for decoder, parts in decoded.items()}
+        return row
 
 
 def simulate(lefts: list[tuple[int, int, int]], books: dict[str, list[tuple[int, int, int]]]) -> list[dict[str, Any]]:
@@ -126,46 +195,9 @@ def simulate(lefts: list[tuple[int, int, int]], books: dict[str, list[tuple[int,
     noise = {sigma: rng.standard_normal((len(lefts), TRIALS, DIM)) for sigma in SIGMAS}
 
     lmat = np.array([cd_core.left_mult_matrix(DIM, vector(a)) for a in lefts])
-    stack = lmat.reshape(len(lefts) * DIM, DIM)
-
-    def profile(y: np.ndarray) -> np.ndarray:
-        out = (y @ stack.T).reshape(len(y), len(lefts), DIM)
-        return np.sqrt((out * out).sum(axis=2))
-
-    sent_all = np.repeat(np.arange(len(lefts)), TRIALS)
-    mask = np.isin(sent_all, subset)
-
-    def rates(guess: np.ndarray) -> dict[str, Any]:
-        sub_errors = _symbol_errors(guess[mask], sent_all[mask])
-        all_errors = _symbol_errors(guess, sent_all)
-        return {
-            "ser_40": round(sub_errors / int(mask.sum()), 6),
-            "ser_84": round(all_errors / len(sent_all), 6),
-            "errors_40": sub_errors,
-            "errors_84": all_errors,
-        }
-
-    rows = []
-    for sigma in SIGMAS:
-        z = noise[sigma].reshape(-1, DIM)
-        rnd = random_book[sent_all] + sigma * z
-        random_parts = [np.argmax(rnd[lo : lo + CHUNK] @ random_book.T, axis=1) for lo in range(0, len(z), CHUNK)]
-        row: dict[str, Any] = {"sigma": sigma, "random_mf": rates(np.concatenate(random_parts))}
-        for name, blades in books.items():
-            signal = np.array([vector(b) for b in blades])
-            templates = profile(signal)
-            alg = signal[sent_all] + np.sqrt(2.0) * sigma * z
-            decoded: dict[str, list[np.ndarray]] = {"c5": [], "algebraic_mf": [], "profile": []}
-            for lo in range(0, len(z), CHUNK):
-                y = alg[lo : lo + CHUNK]
-                annihilation = profile(y)
-                decoded["c5"].append(np.argmin(annihilation, axis=1))
-                decoded["algebraic_mf"].append(np.argmax(y @ signal.T, axis=1))
-                gap = annihilation[:, None, :] - templates[None, :, :]
-                decoded["profile"].append(np.argmin((gap * gap).sum(axis=2), axis=1))
-            row[name] = {decoder: rates(np.concatenate(parts)) for decoder, parts in decoded.items()}
-        rows.append(row)
-    return rows
+    signals = {name: np.array([vector(b) for b in blades]) for name, blades in books.items()}
+    row = SigmaRow(random_book, lmat.reshape(len(lefts) * DIM, DIM), signals, subset)
+    return parallel.ordered_map(row, [(sigma, noise[sigma]) for sigma in SIGMAS], min_items=1)
 
 
 def audit() -> dict[str, Any]:
@@ -178,6 +210,7 @@ def audit() -> dict[str, Any]:
         "messages_simulated": MESSAGES,
         "trials_per_message": TRIALS,
         "counts": {name: deterministic_counts(lefts, partners, blades) for name, blades in books.items()},
+        "score_twins": score_twins(lefts),
         "symbol_error_rates": simulate(lefts, books),
     }
 

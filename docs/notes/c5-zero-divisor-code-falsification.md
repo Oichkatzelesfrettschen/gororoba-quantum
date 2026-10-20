@@ -88,6 +88,12 @@ tested encoders. The reported 3.9 mean ties, 35 signatures and 57 distinct
 blades do not arise under the replayed definitions (4.0, 28 or 42, 28 or
 84).
 
+The C5 score itself is degenerate. The 84 left factors form 42 pairs that
+share the Gram matrix `L_a^T L_a`, and `||L_a v||^2 = v^T L_a^T L_a v`, so
+both factors of a pair score every received vector alike at every sigma.
+argmin resolves an exact floating-point tie to the lower index, so the
+higher member of such a pair is decoded only where rounding favors it.
+
 The rescue decoder, which matches the full 84-component annihilation
 profile against each message's noiseless profile, also fails: messages
 sharing a signature collide, 0.500 over all 84 messages and 0.600 on the

@@ -35,8 +35,12 @@ results are known.
   the same 400 trials per message and are retained as a second figure.
 - **Annihilation decoder (C5).** `ihat = argmin_j ||L_{a_j} v||`, where
   `L_a` is the 16 x 16 left-multiplication matrix of `a`
-  (`cd_core.left_mult_matrix`). Exact ties resolve to the lowest `j`; they
-  occur only at sigma = 0.
+  (`cd_core.left_mult_matrix`). An exact floating-point tie resolves to the
+  lowest `j`. The 84 left factors fall into 42 pairs sharing the Gram matrix
+  `L_a^T L_a` (`result.json`, `score_twins`), and
+  `||L_a v||^2 = v^T L_a^T L_a v`, so the two factors of a pair score every
+  received vector alike: their scores tie exactly or differ by rounding at
+  every sigma, and the decoder cannot separate them.
 - **Algebraic + matched filter.** `ihat = argmax_j <v, x_j>` over the 84
   codewords `x_j`; identical codewords tie exactly and resolve to the lowest
   `j`.
@@ -58,9 +62,10 @@ results are known.
 - **Distinct blade.** The number of distinct `b_i` over the 84 messages.
 - **Seed.** `numpy.random.default_rng(314)`. Draw order: the 40-message
   subset, the random codebook, then one noise block per sigma in grid order,
-  each shaped (84 messages, 400 trials, 16); the 40-message figures read the subset rows of that block. Trials are
-  batched with numpy in a single process, so the result does not depend on a
-  worker count.
+  each shaped (84 messages, 400 trials, 16); the 40-message figures read the
+  subset rows of that block. Every block is drawn before any decoding, and
+  `parallel.ordered_map` decodes the sigma rows in grid order, so the result
+  does not depend on the worker count.
 
 ## Control added after the first-partner results
 

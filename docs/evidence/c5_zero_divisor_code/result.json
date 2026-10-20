@@ -30,6 +30,12 @@
   "messages_simulated": 40,
   "numpy": "2.5",
   "python": "3.14",
+  "score_twins": {
+    "class_size_histogram": {
+      "2": 42
+    },
+    "gram_classes": 42
+  },
   "seed": 314,
   "symbol_error_rates": [
     {
