@@ -113,10 +113,17 @@ pinned layout), 12288 shots per PUB, the policy above (rep_delay 50 us,
 twirl off, dd none, 30 s ceilings) and an expected bill of at most about
 17 s. A dry run whose window moves from 836 dt, whose circuits differ in
 structure, or whose estimated charge exceeds 13.5 s needs a fresh user
-approval. The policy design carries `ramsey_analyzer_sha256`, the sha256
-of scripts/n21_spectator_ramsey.py, so an analyzer changed after the
-approved dry run makes the approved record's policy differ and the
-submission refuse with approval_required (gate core-602).
+approval. The policy design carries `ramsey_analyzer_closure`: the sha256 of
+scripts/n21_spectator_ramsey.py and of every scripts/ module it imports
+transitively (scripts/n21_orbit_rca.py), and the sha256 of that map.
+experiment_digest covers gororoba_quantum/. A change to any closure file
+after the approved dry run makes the approved record's policy differ and
+the submission refuse with approval_required (gate core-602 changes
+n21_orbit_rca.py alone), and the analyzer refuses a record whose bound
+closure differs from its own. At this change the closure sha256 is
+`46d2411ed6a7f56dea2ae33d61575e6d089391906b53349ca3e48a0543cd94cf`
+(n21_spectator_ramsey.py `05440fac...59368`, n21_orbit_rca.py
+`d04ce0fd...33783`); the approved dry run records the value in force.
 
 The development dry run (from this branch, 2026-10-19T18:56:47-07:00
 calibration) planned one dynamic job of 14 PUBs, estimated charge 13.50 s
@@ -126,7 +133,7 @@ policy twirl false, dd null, `control_flow` empty; it is not retained.
 ## Preregistered analysis
 
 `"$PYTHON" scripts/n21_spectator_ramsey.py RUN_DIR --out RUN_DIR/ramsey.json
---expected-analyzer-sha256 0f54ade5b8d4351dcaabbb26749ea742588a616198a7dc93901ac4f20f2df09b` after `--collect`, and
+--expected-analyzer-sha256 05440fac02b2e83ef3584b25a766029bf6cc019f9c76fb9ca41791cc4ce59368` after `--collect`, and
 `--check` regenerates it from the archived raw files.
 
 1. Admissibility (returned scheduler timing): every member reads one
@@ -174,8 +181,11 @@ policy twirl false, dd null, `control_flow` empty; it is not retained.
    retained 7.2 us decay; a much shorter or longer T2* puts beta near a
    bound or makes it weakly identified, and the Wald interval then reads
    unresolved rather than a shape.
-7. Ringdown consistency: the 1 to 6 window points alone are fitted at
-   beta = 1 and beta = 2, and the fit with the larger likelihood predicts
+7. Ringdown consistency: evaluated only after an exponential or gaussian
+   shape verdict; any other shape reads not_evaluable, since no fixed beta
+   then describes the idle decay (a transient strong enough to bend the
+   full fit off beta 1 and 2 shows first as a "neither" shape). The 1 to 6
+   window points alone are fitted at that verdict's beta, which predicts
    the immediate pair as b + A (cos phi0, sin phi0), offset and phase
    included. The measured immediate (<X>, <Y>) minus that prediction is
    tested jointly, chi-square on 2 degrees of freedom over the binomial
@@ -201,13 +211,15 @@ half-widths from 0.
 Self-check (gate core-601) plants: an exponential and a Gaussian truth
 reach their shapes with delta unresolved; a 40 kHz truth reads detuned; pure exponential and Gaussian decays pass
 the ringdown test and 20 percent lost with a 0.4 us time constant on top
-of the 7.2 us exponential fails it; a 15 percent subpopulation heralding work
+of the 7.2 us exponential fails it at beta 1 (through the full chain its
+shape reads neither and the ringdown test not_evaluable); a 15 percent subpopulation heralding work
 bit 1 excited with a 0.1 MHz ZZ shift moves the control-only fit to beta
 0.71 and T2* 6.45 us while the all-zero fit stays at beta 1.000, T2* 7.200; a
 rz(+2 pi 0.03 MHz t) inserted into the built circuits reads +0.03 MHz; an
 added 30 percent of shots that herald the control 1 with a 0.3 MHz turn
 moves the unconditioned fit off the plant while the conditioned fit
-recovers it; a zero-visibility truth reads both decisions not_evaluable;
+recovers it; a noiseless beta 1.5 truth at 4.2 million shots reads the
+ringdown test not_evaluable; a zero-visibility truth reads both decisions not_evaluable;
 counts drawn exactly from the model with offset 0.03 and phi0 0 read
 ringdown-consistent at 4.2 million shots; windows 1, 3 and 4 give the
 one-window band and recover a 100 kHz detuning; one herald bit rising and

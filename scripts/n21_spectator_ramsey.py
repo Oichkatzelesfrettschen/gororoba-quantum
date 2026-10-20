@@ -21,19 +21,27 @@ jointly, so a low visibility enters through its counts and never through
 hypot or atan2 of noisy expectations; visibility and phase per member are
 derived descriptions.
 
-Decisions, each at FAMILY_ALPHA / 3 (Bonferroni over the spectator herald
-admission, the detuning test and the decay-shape test):
-- herald admission: n21_orbit_rca.herald_report over the sweep members,
-  conditioned on the control's herald bit; a refused or unevaluable herald
-  leaves both tests not_admissible.
+Decisions, four tests at the record's policy.design alpha over
+len(TESTS) each (Bonferroni; FAMILY_ALPHA / len(TESTS) for the plants and
+--design):
+- herald admission: each pinned herald bit's excited fraction per member
+  among shots whose other herald bits read 0, through the qubit's
+  asymmetric readout channel (n21_orbit_rca.herald_evaluation); a refused
+  or unevaluable herald leaves the other tests not_admissible.
 - detuning: the two-sided Wald interval of delta in the free-beta fit;
-  "detuned" when it excludes 0, else "unresolved" with the interval as
-  the bound. delta is identified modulo 1 / (largest exposure gap), so the
-  report carries the alias bound 1 / (2 gap) the grid sets.
+  "detuned" when it excludes 0, else "unresolved". delta is identified
+  modulo 1 / spacing for the exposures' gcd lattice spacing, so the report
+  carries the alias bound 1 / (2 spacing).
 - decay shape: the two-sided Wald interval of beta in the free-beta fit;
   "exponential" when it holds 1 and excludes 2, "gaussian" when it holds 2
   and excludes 1, "unresolved" when it holds both, "neither" when it holds
   neither. T2* is reported from the free fit and from both fixed-beta fits.
+- ringdown consistency: only after an exponential or gaussian shape, the
+  idle points at that beta predict the immediate pair (ringdown_test);
+  any other shape leaves it not_evaluable.
+An unidentified parameter leaves its decision not_evaluable. The report
+refuses a record whose policy.design ramsey_analyzer_closure differs from
+this analyzer's own source closure.
 
 --design prints the Fisher-information precision of a grid at stated truths
 and shots (no sampling); --self-check runs the planted truths; --check
@@ -67,6 +75,8 @@ FAMILY_ALPHA = 0.05
 TESTS = ("spectator_herald_admission", "detuning", "decay_shape", "ringdown_consistency")
 TEST_ALPHA = FAMILY_ALPHA / len(TESTS)
 DT_US = 0.004
+# The fixed beta of each shape verdict the ringdown test extrapolates with.
+SHAPE_BETA = {"exponential": 1.0, "gaussian": 2.0}
 SCHEMA = "n21-spectator-ramsey-v1"
 RETAINED = "ramsey.json"
 PARAMETERS = ("amplitude", "t2_star_us", "beta", "detuning_mhz", "phi0", "offset")
@@ -342,24 +352,29 @@ def fit_counts(
         }
         for time, values in sorted(by_time.items())
     ]
-    return {
-        "fits": fits,
-        "decisions": decisions(fits["free"], alpha) | {"ringdown_consistency": ringdown_test(points, alpha, dt_us)},
-        "derived": derived,
-    }
+    found = decisions(fits["free"], alpha)
+    shape = found["decay_shape"]["status"]
+    if shape in SHAPE_BETA:
+        found["ringdown_consistency"] = ringdown_test(points, alpha, dt_us, SHAPE_BETA[shape])
+    else:
+        found["ringdown_consistency"] = {
+            "status": "not_evaluable",
+            "reason": f"the shape test reads {shape}, so no fixed beta extrapolates the idle points to t = 0",
+        }
+    return {"fits": fits, "decisions": found, "derived": derived}
 
 
 def ringdown_test(
-    points: list[tuple[float, str, int, int]], alpha: float = TEST_ALPHA, dt_us: float = DT_US
+    points: list[tuple[float, str, int, int]], alpha: float = TEST_ALPHA, dt_us: float = DT_US, beta: float = 1.0
 ) -> dict[str, Any]:
     """Whether the idle points' model predicts the immediate point's X and Y expectations.
 
     A transient right after the herald (readout ringdown, AC-Stark shift,
     measurement-induced dephasing) removes visibility before the first idle
     point and leaves a slower stationary decay. The exposures above 0 alone
-    are fitted at beta = 1 and at beta = 2 (a free beta extrapolates with
-    too wide an error to test), and the fit with the larger likelihood
-    predicts (<X>, <Y>) at t = 0 as b + A (cos phi0, sin phi0), offset and
+    are fitted at the shape test's beta (fit_counts passes 1 or 2 after an
+    exponential or gaussian verdict; a free beta extrapolates with too wide
+    an error to test), and that fit predicts (<X>, <Y>) at t = 0 as b + A (cos phi0, sin phi0), offset and
     phase included. The measured immediate pair minus that prediction is
     tested jointly: chi-square with 2 degrees of freedom over the binomial
     variances plus the prediction's delta-method covariance, against the
@@ -375,10 +390,7 @@ def ringdown_test(
     quadratures = np.array([QUADRATURES.index(point[1]) for point in later])
     zeros = np.array([point[2] for point in later], dtype=float)
     shots = np.array([point[3] for point in later], dtype=float)
-    late = min(
-        (fit_model(times, quadratures, zeros, shots, beta, dt_us) for beta in (1.0, 2.0)),
-        key=lambda fitted: fitted["negative_log_likelihood"],
-    )
+    late = fit_model(times, quadratures, zeros, shots, beta, dt_us)
     if late["unidentified"]:
         return {"status": "not_evaluable", "reason": f"the idle fit leaves {late['unidentified']} unidentified"}
     params = np.array([late["estimates"][name] for name in PARAMETERS])
@@ -680,6 +692,21 @@ def evaluate(
     return {"points": [list(point) for point in points], **fitted, "tests": fitted["decisions"]}
 
 
+def closure_mismatch(design: dict[str, Any], own: dict[str, Any]) -> str | None:
+    """Why a record's bound analyzer closure differs from this analyzer's own, or None when they agree."""
+    bound = design.get("ramsey_analyzer_closure")
+    if not isinstance(bound, dict):
+        return "the record's policy.design binds no ramsey_analyzer_closure"
+    if bound != own:
+        changed = sorted(
+            name
+            for name in set(bound.get("files", {})) | set(own["files"])
+            if bound.get("files", {}).get(name) != own["files"].get(name)
+        )
+        return f"the analyzer closure differs from the approved one in {changed}"
+    return None
+
+
 def analyzer_sha256() -> str:
     return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
@@ -699,6 +726,11 @@ def report(run: Path) -> dict[str, Any]:
     design = record.get("policy", {}).get("design", {})
     if "alpha" not in design:
         raise RuntimeError(f"{run} records no policy.design alpha, the family alpha the tests split")
+    from qpu_planning import ramsey_analyzer_closure
+
+    own = ramsey_analyzer_closure()
+    if (mismatch := closure_mismatch(design, own)) is not None:
+        raise RuntimeError(f"{run}: {mismatch}")
     family_alpha = float(design["alpha"])
     test_alpha = family_alpha / len(TESTS)
     calibrations = rca.execution_calibration(run)
@@ -706,6 +738,7 @@ def report(run: Path) -> dict[str, Any]:
     output: dict[str, Any] = {
         "schema_version": SCHEMA,
         "analyzer_sha256": analyzer_sha256(),
+        "analyzer_closure": own,
         "alpha": {"family_alpha": family_alpha, "tests": list(TESTS), "per_test_alpha": test_alpha},
         "admissibility": admitted,
         "herald_conditioning": conditioning,
@@ -718,6 +751,11 @@ def report(run: Path) -> dict[str, Any]:
         output["tests"] = {name: {"status": "not_admissible", "reason": "schedule"} for name in TESTS[1:]}
         return output
     if reads is None:
+        output["spectator_herald"] = {
+            "present": False,
+            "status": "not_evaluable",
+            "reason": "the record carries no initialization herald",
+        }
         output |= evaluate(None, {}, 0.0)
         return output
     herald = pinned_admission(bit_counts, calibrations, test_alpha)
@@ -849,17 +887,45 @@ def _check_ringdown() -> dict[str, str]:
     transient leaves; a pure Gaussian also passes.
     """
     exposures = design_exposures_us()
-    pure = ringdown_test(expected_points(EXPONENTIAL, exposures, DESIGN_SHOTS))["status"]
-    gaussian = ringdown_test(expected_points(GAUSSIAN, exposures, DESIGN_SHOTS))["status"]
+
+    def chained(points: list[tuple[float, str, int, int]]) -> str:
+        return str(fit_counts(points)["decisions"]["ringdown_consistency"]["status"])
+
+    pure = chained(expected_points(EXPONENTIAL, exposures, DESIGN_SHOTS))
+    gaussian = chained(expected_points(GAUSSIAN, exposures, DESIGN_SHOTS))
+    intermediate = chained(expected_points(EXPONENTIAL | {"beta": 1.5}, exposures, 1 << 22))
     mixed = []
     for time in exposures:
         envelope = 0.989 * (0.8 * math.exp(-time / 7.2) + 0.2 * math.exp(-time / 0.4))
         for quadrature, mean in zip(QUADRATURES, (envelope, 0.0), strict=True):
             mixed.append((time, quadrature, round(DESIGN_SHOTS * (1.0 + mean) / 2.0), DESIGN_SHOTS))
-    transient = ringdown_test(mixed)["status"]
-    if (pure, gaussian, transient) != ("consistent", "consistent", "transient"):
-        raise RuntimeError(f"the ringdown test reads pure {pure}, gaussian {gaussian} and transient {transient}")
-    return {"pure_exponential": pure, "pure_gaussian": gaussian, "transient_plus_exponential": transient}
+    transient = ringdown_test(mixed, beta=1.0)["status"]
+    found = (pure, gaussian, intermediate, transient)
+    if found != ("consistent", "consistent", "not_evaluable", "transient"):
+        raise RuntimeError(f"the ringdown test reads pure, gaussian, beta 1.5 and transient as {found}")
+    return {
+        "pure_exponential": pure,
+        "pure_gaussian": gaussian,
+        "beta_1_5": intermediate,
+        "transient_plus_exponential_at_beta_1": transient,
+        "transient_plus_exponential_chained": chained(mixed),
+    }
+
+
+def _check_closure() -> str:
+    """The bound closure is refused when absent or when one file's sha256 differs, and accepted when equal."""
+    from qpu_planning import ramsey_analyzer_closure
+
+    own = ramsey_analyzer_closure()
+    changed = {"sha256": "0" * 64, "files": {**own["files"], "scripts/n21_orbit_rca.py": "0" * 64}}
+    found = (
+        closure_mismatch({"ramsey_analyzer_closure": own}, own),
+        closure_mismatch({}, own),
+        closure_mismatch({"ramsey_analyzer_closure": changed}, own),
+    )
+    if found[0] is not None or found[1] is None or found[2] is None or "n21_orbit_rca" not in found[2]:
+        raise RuntimeError(f"the closure check reads {found}")
+    return "refuses absent and changed closures"
 
 
 def _check_identifiability() -> dict[str, str]:
@@ -874,7 +940,9 @@ def _check_identifiability() -> dict[str, str]:
 def _check_ringdown_offset() -> str:
     """Counts drawn exactly from the model with a positive offset and phi0 = 0 read consistent at high shots."""
     truth = EXPONENTIAL | {"offset": 0.03, "amplitude": 0.95}
-    status = ringdown_test(expected_points(truth, design_exposures_us(), 1 << 22))["status"]
+    status = fit_counts(expected_points(truth, design_exposures_us(), 1 << 22))["decisions"]["ringdown_consistency"][
+        "status"
+    ]
     if status != "consistent":
         raise RuntimeError(f"the offset model plant reads {status}")
     return status
@@ -1047,6 +1115,7 @@ def self_check() -> dict[str, Any]:
         "ringdown_offset": _check_ringdown_offset(),
         "alias_lattice": _check_alias_lattice(),
         "bit_admission": _check_bit_admission(),
+        "closure": _check_closure(),
         "empty_selection": _check_empty_selection(),
         "schedules": _check_schedules(),
     }

@@ -2545,15 +2545,20 @@ def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
         qpu_planning.settings(arguments).get("ramsey_windows") == RAMSEY_WINDOWS,
         "the policy settings drop the ground Ramsey multiples",
     )
-    analyzer = Path(qpu_planning.__file__).resolve().parents[1] / "scripts" / "n21_spectator_ramsey.py"
-    bound = qpu_planning.settings(arguments).get("ramsey_analyzer_sha256")
+    scripts = Path(qpu_planning.__file__).resolve().parents[1] / "scripts"
+    bound = qpu_planning.settings(arguments).get("ramsey_analyzer_closure")
+    expected_files = {
+        f"scripts/{name}": hashlib.sha256((scripts / name).read_bytes()).hexdigest()
+        for name in ("n21_orbit_rca.py", "n21_spectator_ramsey.py")
+    }
     _require(
-        bound == hashlib.sha256(analyzer.read_bytes()).hexdigest(),
-        f"the policy binds analyzer sha256 {bound}, not the bytes of {analyzer.name}",
+        isinstance(bound, dict) and bound.get("files") == expected_files,
+        f"the policy binds the analyzer closure {bound}, not {sorted(expected_files)} at their bytes",
     )
     with tempfile.TemporaryDirectory() as scratch:
-        approved_dir = Path(scratch)
-        approved = {
+        approved_dir = Path(scratch) / "approved"
+        approved_dir.mkdir()
+        approved: dict[str, Any] = {
             "state": "planned",
             "policy": {"design": qpu_planning.settings(arguments)},
             "groups": [],
@@ -2565,11 +2570,24 @@ def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
             not live_run.approved_record_mismatches(approved_dir, json.loads(json.dumps(approved)), qpy_digest),
             "an unchanged ground Ramsey plan differs from its own approved record",
         )
-        changed = json.loads(json.dumps(approved))
-        changed["policy"]["design"]["ramsey_analyzer_sha256"] = "0" * 64
+        # A copy of scripts/ whose n21_orbit_rca.py alone gains one byte.
+        copied = Path(scratch) / "scripts"
+        copied.mkdir()
+        for name in expected_files:
+            source = scripts / Path(name).name
+            (copied / source.name).write_bytes(source.read_bytes())
+        (copied / "n21_orbit_rca.py").write_bytes((scripts / "n21_orbit_rca.py").read_bytes() + b"\n")
+        with (
+            patch.object(qpu_planning, "SCRIPTS_DIR", copied),
+            patch.object(qpu_planning, "RAMSEY_ANALYZER", copied / "n21_spectator_ramsey.py"),
+        ):
+            moved = qpu_planning.settings(arguments)
+        changed = {**approved, "policy": {"design": moved}}
         _require(
-            "policy differs" in live_run.approved_record_mismatches(approved_dir, changed, qpy_digest),
-            "a changed Ramsey analyzer leaves the approved record's policy equal",
+            moved["ramsey_analyzer_closure"]["files"]["scripts/n21_spectator_ramsey.py"]
+            == expected_files["scripts/n21_spectator_ramsey.py"]
+            and "policy differs" in live_run.approved_record_mismatches(approved_dir, changed, qpy_digest),
+            "a change to n21_orbit_rca.py alone leaves the approved record's policy equal",
         )
     traces: dict[str, Any] = {}
     candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)

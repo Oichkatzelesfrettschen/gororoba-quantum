@@ -7,6 +7,7 @@ the optimizer receives explicit scientific quantities and accounting units.
 
 from __future__ import annotations
 
+import ast
 import copy
 import hashlib
 import json
@@ -61,15 +62,47 @@ from experiment_optimizer import (
 from packing import Replica
 from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_probabilities, n21_ramsey_multiple
 
-# The ground Ramsey sweep's preregistered analysis; its sha256 joins the
-# approval-bound design, so a changed analyzer makes the approved record's
-# policy differ and the submission refuse with approval_required.
-RAMSEY_ANALYZER = Path(__file__).resolve().parents[1] / "scripts" / "n21_spectator_ramsey.py"
+# The ground Ramsey sweep's preregistered analysis. Its source closure (the
+# analyzer and every scripts/ module it imports, transitively) joins the
+# approval-bound design; experiment_digest covers gororoba_quantum/, so a
+# change to any closure file makes the approved record's policy differ and
+# the submission refuse with approval_required.
+SCRIPTS_DIR = Path(__file__).resolve().parents[1] / "scripts"
+RAMSEY_ANALYZER = SCRIPTS_DIR / "n21_spectator_ramsey.py"
 
 
-def ramsey_analyzer_sha256() -> str:
-    """sha256 of scripts/n21_spectator_ramsey.py, the analysis a ground Ramsey approval binds."""
-    return hashlib.sha256(RAMSEY_ANALYZER.read_bytes()).hexdigest()
+def scripts_closure(entry: Path) -> list[Path]:
+    """entry and every scripts/ module its imports reach, at any nesting, sorted by name."""
+    seen: dict[str, Path] = {}
+    pending = [entry]
+    while pending:
+        path = pending.pop()
+        if path.name in seen:
+            continue
+        seen[path.name] = path
+        for node in ast.walk(ast.parse(path.read_text(), str(path))):
+            names = (
+                [alias.name for alias in node.names]
+                if isinstance(node, ast.Import)
+                else [node.module]
+                if isinstance(node, ast.ImportFrom) and node.module and node.level == 0
+                else []
+            )
+            for name in names:
+                candidate = SCRIPTS_DIR / f"{name.split('.')[0]}.py"
+                if candidate.is_file():
+                    pending.append(candidate)
+    return [seen[name] for name in sorted(seen)]
+
+
+def ramsey_analyzer_closure() -> dict[str, Any]:
+    """Per-file sha256 of the analyzer's scripts/ closure and the sha256 of that map's canonical JSON."""
+    files = {
+        f"scripts/{path.name}": hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in scripts_closure(RAMSEY_ANALYZER)
+    }
+    digest = hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()
+    return {"sha256": digest, "files": files}
 
 
 def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
@@ -97,7 +130,7 @@ def settings(args: Any) -> dict[str, Any]:
     split = {"overlap_split": True} if getattr(args, "overlap_split", False) else {}
     ground = {"ground_control_split": True} if getattr(args, "ground_control_split", False) else {}
     windows = getattr(args, "ramsey_windows", None)
-    ramsey = {"ramsey_windows": list(windows), "ramsey_analyzer_sha256": ramsey_analyzer_sha256()} if windows else {}
+    ramsey = {"ramsey_windows": list(windows), "ramsey_analyzer_closure": ramsey_analyzer_closure()} if windows else {}
     pin = getattr(args, "pin_layout", None)
     return (
         {
