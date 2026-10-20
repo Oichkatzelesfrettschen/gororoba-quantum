@@ -108,7 +108,7 @@ Check 5's estimate depends on the processor figures, which changed between reads
 - The PKGBUILD `check()` of `python-perceval-quandela` (836 tests). The README records its result at build time; it was not run on this date.
 - The Codex `quandela` server. Its configuration was read; no Codex session started it.
 - A real job: no case was approved, so `qd_job_status` and `qd_job_result` were not called on a job. No job was submitted, and no QRNG or notebook session was opened.
-- The snapshot refresh. It is pending (see [calibration.md](calibration.md), open item 2).
+- The snapshot refresh ran on 2026-10-20 at 08:51 UTC from the user's shell, not by an agent. The branch's snapshot logic reproduced the committed catalogue offline from the same responses (see [calibration.md](calibration.md), open item 2).
 - The checks in the table above predate the `plan` HOM warning, the `PlatformError` on a missing architecture, and the architecture carry in `snapshot`. For those changes, `qd_platform.py --self-test`, `ruff format --check`, `ruff check` and `mypy` pass under Python 3.14.7. The core-502 and core-503 gates and the pr-tier run happen on the PR head before merge.
 - The tier-full gates (core-513, core-515, core-534, core-537 and the others marked `full`).
 - The `claude mcp add` command above. It is shown from the CLI's help text and was not executed.
@@ -124,4 +124,4 @@ Check 5's estimate depends on the processor figures, which changed between reads
    ```
 
 2. **Codex server not exercised.** The configuration is verified; a live launch is not.
-3. **Snapshot refresh.** Pending: `snapshot()` now carries the retained architecture when the live record omits it. See [calibration.md](calibration.md), open item 2.
+3. **Snapshot refresh.** Done on 2026-10-20 at 08:51 UTC, with the Belenos chip carried from 2026-10-17. See [calibration.md](calibration.md), open item 2.

@@ -2,7 +2,7 @@
 
 This page records the specification of each Quandela quantum processor (QPU) and of the simulators on the same API. Two sources feed it, and each figure names its source:
 
-- **Snapshot**: [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-17T17:53:31+00:00. Gate core-502 checks the facts table in [README.md](README.md) and [AGENTS.md](../../../AGENTS.md) against this file.
+- **Snapshot**: [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-20T08:51:26+00:00, with the Belenos chip architecture carried from 2026-10-17T17:53:31+00:00 because the live record had none. The 2026-10-17 snapshot that the earlier figures come from is in commit `bfcfda2`. Gate core-502 checks the facts table in [README.md](README.md) and [AGENTS.md](../../../AGENTS.md) against this file.
 - **Live processor reads**: the processor records of `qpu:belenos` and `qpu:ascella`, read on 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). Only these two records are retained from the live session. Availability counters, usage totals and the daily availability series read in the same session are not retained here; the snapshot's `statistic` and `token_usage` fields hold the 2026-10-17 values.
 
 Calibration state, including the Belenos history, is in [calibration.md](calibration.md). Installed software and configuration are in [setup-verification.md](setup-verification.md).
@@ -27,7 +27,7 @@ Calibration state, including the Belenos history, is in [calibration.md](calibra
 
 ### Performance
 
-| Figure | Ascella, snapshot 2026-10-17 | Ascella, live 2026-10-20 04:09 UTC | Belenos, snapshot 2026-10-17 | Belenos, live 2026-10-20 04:09 UTC |
+| Figure | Ascella, snapshot 2026-10-17 (`bfcfda2`) | Ascella, live 2026-10-20 04:09 UTC | Belenos, snapshot 2026-10-17 (`bfcfda2`) | Belenos, live 2026-10-20 04:09 UTC |
 | --- | --- | --- | --- | --- |
 | Clock | 13.33 MHz | 13.33 MHz | 4.94 MHz | 4.94 MHz |
 | Transmittance | 5.14 % | 5.25 % | 2.89 % | 6.06 % |
@@ -38,7 +38,7 @@ Calibration state, including the Belenos history, is in [calibration.md](calibra
 | Transmission per output mode (t_out) | 77.32 to 111.05 % | 77.86 to 110.28 % | 4.29 to 398.55 % | 58.05 to 124.05 % |
 | Status | available | available | available | running |
 
-The Belenos snapshot column is the retained file. The catalogue commit `af0e57c` (retrieved 2026-10-17T17:31:00+00:00) carries the same Belenos figures but reads `running`. The t_out figures are relative units, as [strategy.md](strategy.md) records them, so values above 100 % are not transmission fractions. t_in is nonzero only on the photon-source input modes.
+The Belenos snapshot column is the 2026-10-17 record in commit `bfcfda2`. The catalogue commit `af0e57c` (retrieved 2026-10-17T17:31:00+00:00) carries the same Belenos figures but reads `running`. The t_out figures are relative units, as [strategy.md](strategy.md) records them, so values above 100 % are not transmission fractions. t_in is nonzero only on the photon-source input modes.
 
 Derived rates:
 
@@ -82,6 +82,6 @@ Each is reported as the record states it. None is resolved here.
 
 ## What moved since the snapshot
 
-Belenos moved most. Transmittance rose from 2.89 % to 6.06 %, HOM fell from 94.2 % to 88.5 %, and the maximum dark count rose from 38.2 to 412.7 /s on mode 5. The QPU run records hold the states between those reads, and [calibration.md](calibration.md) gives them.
+Belenos moved most. Transmittance rose from 2.89 % to 6.06 % in the 04:09 UTC live read of 2026-10-20, and HOM fell from 94.2 % to 88.5 %. The 08:51 UTC catalogue of the same day reads `calibration`, with transmittance 5.97 %, HOM 82.5 %, g2 0.9 % and a maximum dark count of 298.5 /s on mode 5. Its architecture is absent from the live record, so the carried 2026-10-17 copy stands. The QPU run records hold the states between those reads, and [calibration.md](calibration.md) gives them.
 
-Ascella moved little: transmittance 5.14 % to 5.25 %, HOM 87.74 % to 87.48 %, g2 1.8 % to 1.9 %. Its maximum dark count rose from 1428 to 1885 /s on mode 10.
+Ascella moved little: transmittance 5.14 % to 5.25 % by the 04:09 UTC read, HOM 87.74 % to 87.48 %, g2 1.8 % to 1.9 %. Its maximum dark count rose from 1428 to 1885 /s on mode 10. At 08:51 UTC on 2026-10-20 the catalogue reads transmittance 5.23 %, HOM 87.28 %, g2 2.0 % and a maximum dark count of 2169 /s on mode 10.

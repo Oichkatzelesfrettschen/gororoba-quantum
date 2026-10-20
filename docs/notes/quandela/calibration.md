@@ -6,7 +6,7 @@ This page gives the calibration state of each QPU, the history the repository re
 
 The records carry four things under that name or its effects:
 
-- **Platform status.** A string on each Explorer row and each processor record. `available`, `running` and `calibration` have been observed. The OpenAPI description types `status` as a free string, so the value set is observed, not specified. `calibration` appears only in [strategy.md](strategy.md) ("Calibration windows": `qpu:belenos` reported it around 2026-10-17 22:15 UTC); no retained file carries it. `plan` refuses any Explorer-row status other than `available` ([`scripts/qd_platform.py`](../../../scripts/qd_platform.py), `plan`).
+- **Platform status.** A string on each Explorer row and each processor record. `available`, `running` and `calibration` have been observed. The OpenAPI description types `status` as a free string, so the value set is observed, not specified. `calibration` is reported by the catalogue retrieved 2026-10-20 08:51 UTC for `qpu:belenos`, and [strategy.md](strategy.md) records it around 2026-10-17 22:15 UTC ("Calibration windows"); no other retained file carries it. `plan` refuses any Explorer-row status other than `available` ([`scripts/qd_platform.py`](../../../scripts/qd_platform.py), `plan`).
 - **Performance figures.** Clock, transmittance, HOM visibility, g2, dark counts per detector and transmission per mode. They change between reads. Each QPU run's `submission.json` keeps the figures as read at plan time, under `perfs_at_plan`.
 - **Coupler angles.** The Rx couplers in `specs.architecture`. A recalibration changes them, and the transpiler's output for a compilation seed depends on them ([strategy.md](strategy.md): "Coupler angles change with recalibration").
 - **Maintenance.** The weekly window on the Explorer row.
@@ -42,6 +42,7 @@ The timeline combines the catalogue reads with `perfs_at_plan` from the 17 QPU r
 | 2026-10-18 15:53 | 1 QPU run | available | 57.6 % | 2.95 % | 1.0 % | 78.4 /s, mode 5 |
 | 2026-10-18 19:05 to 19:36 | 2 QPU runs | available | 58.3 % | 2.69 % | 1.1 % | 255.4 /s, mode 5 |
 | 2026-10-20 04:09 | live read, retained | running | 88.5 % | 6.06 % | 0.9 % | 412.7 /s, mode 5 |
+| 2026-10-20 08:51 | catalogue, retained | calibration | 82.5 % | 5.97 % | 0.9 % | 298.5 /s, mode 5 |
 
 In one line: HOM read 94.2 % on 2026-10-17, then 92.6 % at the first QPU run. A calibration was observed around 22:15 UTC. From the next run at 02:55 UTC on 2026-10-18 to the last run at 19:36 UTC, HOM stayed between 57.0 % and 58.3 %. The live read on 2026-10-19 is 88.5 %.
 
@@ -73,8 +74,8 @@ Consequences for Belenos on 2026-10-19:
 
 ## Open items
 
-1. **Missing Belenos fields.** The live record of 2026-10-19 lacks `specs.architecture`, `commands`, `default_mitigations` and `known_mitigations`; `available_commands` is present. The 17:31 UTC record of 2026-10-17 was `running` and carried all four, so the status does not explain the omission. The cause is not identified. Test: re-read the record after the status returns to `available` and note the time. If the fields return, the omission was transient.
-2. **Snapshot refresh pending.** `snapshot()` in [`scripts/qd_platform.py`](../../../scripts/qd_platform.py) keeps the retained chip architecture when the service omits it. It names the platform in `architecture_carried` and stamps `architecture_observed_utc` with the time the couplers were last read, so the carried couplers are not presented as a read of today's chip. The refresh has not been run: `catalogue.json` is still the 2026-10-17 retained file. Running it, diffing the result and passing core-502 remain to do.
+1. **Missing Belenos fields.** The live records of 2026-10-20 04:09 UTC and 08:51 UTC lack `specs.architecture`, `commands`, `default_mitigations`, `known_mitigations` and `specs.type`; `available_commands` is present. The 17:31 UTC record of 2026-10-17 was `running` and carried all four, so the status does not explain the omission. The cause is not identified. Test: re-read the record after the status returns to `available` and note the time. If the fields return, the omission was transient.
+2. **Snapshot refreshed, Belenos chip carried.** The catalogue was refreshed on 2026-10-20 at 08:51 UTC, and `qpu:belenos` reads `calibration` in it. Its live record had no architecture, so `snapshot()` in [`scripts/qd_platform.py`](../../../scripts/qd_platform.py) carries the 2026-10-17 copy: `architecture_carried` names `qpu:belenos`, and `architecture_observed_utc` stamps it 2026-10-17T17:53:31+00:00, so the carried couplers are not presented as a read of today's chip. The refresh ran from the primary checkout, whose code predates the carry. The branch's snapshot logic, given the same responses, wrote the committed file. The facts table is unchanged, so core-502 passes.
 3. **HOM rule is a warning.** `plan` warns on a two-photon case whose HOM is absent or at or below 90 %; it does not hold the case. Whether it should hold one is a decision for the user.
 4. **Failure mode in `plan`.** `architecture_blob` raises `PlatformError` on a missing `specs.architecture`, in place of the earlier `KeyError`. The self-test covers the helper; no live record has exercised the path.
 5. **Coupler state after 2026-10-18 19:36 UTC.** Unknown until the architecture returns.
@@ -82,7 +83,7 @@ Consequences for Belenos on 2026-10-19:
 
 ## Sources
 
-- [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-17T17:53:31+00:00.
+- [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-20T08:51:26+00:00. The 2026-10-17 copy is in commit `bfcfda2`.
 - Commit `af0e57c`: its catalogue was retrieved 2026-10-17T17:31:00+00:00, and it introduced the README sentence corrected above.
 - `results/quandela/runs/*/submission.json`: `perfs_at_plan` and `platform_at_plan` for the 17 QPU runs, and the computed circuits checked with `same_mesh`.
 - [strategy.md](strategy.md): "Calibration windows" and "Design rules taken from it".

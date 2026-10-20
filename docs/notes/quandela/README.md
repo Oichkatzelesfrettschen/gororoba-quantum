@@ -277,10 +277,11 @@ the Belenos documentation states that some detectors are quasi
 number-resolving.
 
 Status, performance figures, availability statistics and maintenance live
-in `catalogue.json` and change between reads. At the snapshot,
-`qpu:belenos` reported HOM 94.2 %, a 4.94 MHz clock and a weekly
-maintenance window, and `qpu:ascella` reported `available`, as the retained
-file shows. The two live processor reads of 2026-10-20 04:09 UTC are retained
+in `catalogue.json` and change between reads. At the 2026-10-17
+snapshot, in commit `bfcfda2`, `qpu:belenos` reported HOM 94.2 %, a 4.94 MHz
+clock and a weekly maintenance window, and `qpu:ascella` reported `available`.
+The catalogue retrieved 2026-10-20 08:51 UTC reads `qpu:belenos` as
+`calibration`, with its chip architecture carried from 2026-10-17. The two live processor reads of 2026-10-20 04:09 UTC are retained
 under `docs/evidence/quandela/`, and [platform-specifications.md](platform-specifications.md)
 and [calibration.md](calibration.md) cite them and hold the Belenos history. The Belenos
 documentation gives the n-photon coincidence rate as
