@@ -24,6 +24,10 @@
       "results/live/2026-10-13T083417.634585Z/**",
       "docs/evidence/heron_platform/targets.json"
     ],
+    "core-600": [
+      "results/live/2026-10-19T231043.083602Z/**",
+      "docs/evidence/heron_platform/targets.json"
+    ],
     "core-289": [
       "docs/evidence/walk-control-scaffolding/local_member_conformance.json",
       "results/live/*/record.json"

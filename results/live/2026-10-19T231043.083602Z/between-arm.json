@@ -1,8 +1,48 @@
 {
   "admissibility": {
     "admissible": true,
+    "control": 142,
     "differing": {},
+    "intended_dt": 836,
     "missing": [],
+    "schedules": {
+      "n21_spectator_idle_ground_x": {
+        "control_delay_dt": 836,
+        "control_prepared": false,
+        "exposure_dt": 836,
+        "spectator": 143
+      },
+      "n21_spectator_idle_ground_y": {
+        "control_delay_dt": 836,
+        "control_prepared": false,
+        "exposure_dt": 836,
+        "spectator": 143
+      },
+      "n21_spectator_idle_x": {
+        "control_delay_dt": 836,
+        "control_prepared": true,
+        "exposure_dt": 836,
+        "spectator": 143
+      },
+      "n21_spectator_idle_y": {
+        "control_delay_dt": 836,
+        "control_prepared": true,
+        "exposure_dt": 836,
+        "spectator": 143
+      },
+      "n21_spectator_immediate_x": {
+        "control_delay_dt": 0,
+        "control_prepared": true,
+        "exposure_dt": 0,
+        "spectator": 143
+      },
+      "n21_spectator_immediate_y": {
+        "control_delay_dt": 0,
+        "control_prepared": true,
+        "exposure_dt": 0,
+        "spectator": 143
+      }
+    },
     "unresolved": {}
   },
   "alpha": {
@@ -11,7 +51,7 @@
     "per_contract_alpha": 0.025,
     "split": "Bonferroni"
   },
-  "analyzer_sha256": "ddb1a965228779ac103dfbd7cb1b19c9b5b881a16544d2791f1f8c417dad1952",
+  "analyzer_sha256": "6abf263d84c01fb55d68b236c374b0e4410c0faf768941e0b5e42d20eab3ffc7",
   "calibration": {
     "n21_spectator_idle_ground_x": {
       "calibration": "2026-10-19T15:07:33-07:00",
@@ -41,32 +81,63 @@
   "contracts": {
     "spectator_control_zz": {
       "herald_margin": 0.009839821395834556,
-      "idle_ground_visibility": 0.6223095204878807,
-      "idle_ground_x_expectation": 0.615966796875,
-      "idle_ground_y_expectation": 0.088623046875,
-      "idle_visibility": 0.6153880578297835,
-      "idle_x_expectation": 0.60986328125,
-      "idle_y_expectation": 0.082275390625,
+      "idle_ground_visibility": 0.6216392978892653,
+      "idle_ground_x_expectation": 0.6152619310514047,
+      "idle_ground_y_expectation": 0.08881538650006125,
+      "idle_visibility": 0.616346683877809,
+      "idle_x_expectation": 0.6108930323846908,
+      "idle_y_expectation": 0.08181037654850976,
       "one_sided_quantile": 1.959963984540054,
-      "standard_error": 0.01241531076806979,
-      "statistic": -0.006921462658097233,
+      "standard_error": 0.012443843162497914,
+      "statistic": -0.005292614011456309,
       "status": "fail",
-      "upper_confidence_limit": 0.017412099304191873
+      "upper_confidence_limit": 0.01909687041630461
     },
     "spectator_ground_idle_dephasing": {
       "herald_margin": 0.009839821395834556,
-      "idle_ground_visibility": 0.6223095204878807,
-      "idle_ground_x_expectation": 0.615966796875,
-      "idle_ground_y_expectation": 0.088623046875,
-      "immediate_visibility": 0.9887966576140125,
-      "immediate_x_expectation": 0.98876953125,
-      "immediate_y_expectation": -0.00732421875,
+      "idle_ground_visibility": 0.6216392978892653,
+      "idle_ground_x_expectation": 0.6152619310514047,
+      "idle_ground_y_expectation": 0.08881538650006125,
+      "immediate_visibility": 0.9889893007883717,
+      "immediate_x_expectation": 0.9889570552147239,
+      "immediate_y_expectation": -0.007986239095712003,
       "one_sided_quantile": 1.959963984540054,
-      "standard_error": 0.008911106356411307,
-      "statistic": -0.3664871371261318,
+      "standard_error": 0.008936996632194032,
+      "statistic": -0.36735000289910635,
       "status": "pass",
-      "upper_confidence_limit": -0.34902168960515967
+      "upper_confidence_limit": -0.3498338113700503
     }
+  },
+  "control_herald_conditioning": {
+    "control": 142,
+    "kept_shots": {
+      "n21_spectator_idle_ground_x": [
+        8151,
+        8192
+      ],
+      "n21_spectator_idle_ground_y": [
+        8163,
+        8192
+      ],
+      "n21_spectator_idle_x": [
+        8152,
+        8192
+      ],
+      "n21_spectator_idle_y": [
+        8153,
+        8192
+      ],
+      "n21_spectator_immediate_x": [
+        8150,
+        8192
+      ],
+      "n21_spectator_immediate_y": [
+        8139,
+        8192
+      ]
+    },
+    "present": true,
+    "rule": "keep shots whose initialization herald reads the control 0"
   },
   "herald": {
     "present": false
@@ -75,43 +146,43 @@
   "spectator_counts": {
     "idle": {
       "x": [
-        6594,
+        6566,
         0,
-        1598,
+        1586,
         0
       ],
       "y": [
-        4433,
+        4410,
         0,
-        3759,
+        3743,
         0
       ]
     },
     "idle_ground": {
       "x": [
-        6619,
+        6583,
         0,
-        1573,
+        1568,
         0
       ],
       "y": [
-        4459,
+        4444,
         0,
-        3733,
+        3719,
         0
       ]
     },
     "immediate": {
       "x": [
-        8146,
+        8105,
         0,
-        46,
+        45,
         0
       ],
       "y": [
-        4066,
+        4037,
         0,
-        4126,
+        4102,
         0
       ]
     }
@@ -203,10 +274,10 @@
   },
   "spectator_immediate_visibility": {
     "ideal_visibility": 1.0,
-    "standard_error": 0.001653168284427043,
+    "standard_error": 0.0016440188213440092,
     "status": "descriptive",
-    "visibility": 0.9887966576140125,
-    "x_expectation": 0.98876953125,
-    "y_expectation": -0.00732421875
+    "visibility": 0.9889893007883717,
+    "x_expectation": 0.9889570552147239,
+    "y_expectation": -0.007986239095712003
   }
 }
