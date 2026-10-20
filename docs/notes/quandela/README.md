@@ -359,6 +359,14 @@ and `perceval.serialization.deserialize` evaluates parameter expressions.
 [strategy.md](strategy.md) is the living guide to cost, platform behavior,
 native circuits, analysis and open conjectures on Belenos, with the run log.
 
+## Dark-subspace certificate
+
+[bdsc.md](bdsc.md) specifies the certificate of a four-dimensional
+low-response eigenspace aligned with the kernel of L_x, x = (e1 + e10)/sqrt2:
+the exact target, the 24-mode measurement, the 160-setting preparation bank,
+the confidence construction, the synthetic controls and the qpu:belenos
+qualification record, which stops at native compilation (M2).
+
 ## Photonic box-kite family
 
 `scripts/qd_box_kite_cases.py` builds every circuit from

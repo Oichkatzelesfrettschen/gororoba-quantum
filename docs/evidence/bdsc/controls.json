@@ -1,0 +1,426 @@
+{
+ "alpha_allocation": "two-block",
+ "controls": [
+  {
+   "a_L": -0.000882261125,
+   "a_U": 0.000882261125,
+   "control": "ideal",
+   "covered": true,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.436099245664,
+   "gamma_U": 0.535427059466,
+   "l_U": 0.000313898184,
+   "purpose": "E0 itself",
+   "radius_A": 0.000882261125,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": 1.537363196487,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.5,
+    "theta": 8.53774e-07
+   }
+  },
+  {
+   "a_L": -0.000882261125,
+   "a_U": 0.000882261125,
+   "control": "extra_real_null",
+   "covered": true,
+   "disposition": "alternative_structure",
+   "expected": "alternative_structure",
+   "gamma_L": 0.0,
+   "gamma_U": 0.0483839787,
+   "l_U": 0.000313898184,
+   "purpose": "E_R: a fifth null on (e1 - e2)/sqrt2",
+   "radius_A": 0.000882261125,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": null,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.0,
+    "theta": 89.999998792582
+   }
+  },
+  {
+   "a_L": -0.000882261125,
+   "a_U": 0.000882261125,
+   "control": "extra_imag_null",
+   "covered": true,
+   "disposition": "alternative_structure",
+   "expected": "alternative_structure",
+   "gamma_L": 0.0,
+   "gamma_U": 0.049528697145,
+   "l_U": 0.000313898184,
+   "purpose": "E_I: a fifth null on (e1 + i e2)/sqrt2, complex bank",
+   "radius_A": 0.000882261125,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": null,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.0,
+    "theta": 89.999998792582
+   }
+  },
+  {
+   "control": "extra_imag_null_real_bank",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "E_I on the 88-setting bank without an established real effect",
+   "reasons": [
+    "premise real_effect is not supported"
+   ]
+  },
+  {
+   "a_L": -0.000516424073,
+   "a_U": 0.000516424073,
+   "control": "extra_imag_null_real_bank_forced",
+   "covered": false,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.45852930467,
+   "gamma_U": 0.53034164343,
+   "l_U": 0.00029509947,
+   "purpose": "the same 88 settings with real_effect asserted: the false certificate the complex bank exists to prevent",
+   "radius_A": 0.000516424073,
+   "radius_C": 0.03590616938,
+   "reasons": [],
+   "theta_max_bound_deg": 1.453683609702,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.0,
+    "theta": 89.999998792582
+   }
+  },
+  {
+   "a_L": -0.000882261125,
+   "a_U": 0.000882261125,
+   "control": "kernel_other_spectrum",
+   "covered": true,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.251306595399,
+   "gamma_U": 0.350634409201,
+   "l_U": 0.000313898184,
+   "purpose": "exact kernel, complement spectrum 0.3..0.9",
+   "radius_A": 0.000882261125,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": 2.025375455637,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.3,
+    "theta": 1.599798e-06
+   }
+  },
+  {
+   "a_L": 0.001015914054,
+   "a_U": 0.014745737728,
+   "control": "rotated_5deg",
+   "covered": true,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.438029058692,
+   "gamma_U": 0.537356872494,
+   "l_U": 0.009046114193,
+   "purpose": "low space rotated 5 degrees toward f_9",
+   "radius_A": 0.006864911837,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": 8.262443171664,
+   "truth": {
+    "a": 0.007596123494,
+    "gamma": 0.5,
+    "theta": 5.0
+   }
+  },
+  {
+   "a_L": 0.230994863375,
+   "a_U": 0.271353201294,
+   "control": "rotated_30deg",
+   "covered": true,
+   "disposition": "alternative_structure",
+   "expected": "alternative_structure",
+   "gamma_L": 0.43976221187,
+   "gamma_U": 0.539090025673,
+   "l_U": 0.255966600928,
+   "purpose": "low space rotated 30 degrees toward f_9",
+   "radius_A": 0.02017916896,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": 49.722874783297,
+   "truth": {
+    "a": 0.25,
+    "gamma": 0.5,
+    "theta": 30.0
+   }
+  },
+  {
+   "a_L": -0.000882261125,
+   "a_U": 0.000882261125,
+   "control": "attenuated_unconditional",
+   "covered": true,
+   "disposition": "alternative_structure",
+   "expected": "alternative_structure",
+   "gamma_L": 0.0,
+   "gamma_U": 0.07559816975,
+   "l_U": 0.000313898184,
+   "purpose": "F = 0.0606 E0 on an emitted-photon denominator",
+   "radius_A": 0.000882261125,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": null,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.0303,
+    "theta": 8.53774e-07
+   }
+  },
+  {
+   "a_L": -0.003631047591,
+   "a_U": 0.008298131545,
+   "control": "background_0.002",
+   "covered": true,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.440525704897,
+   "gamma_U": 0.5398535187,
+   "l_U": 0.010169186181,
+   "purpose": "F = 0.002 I + (1 - 0.002) E0: background stays in a",
+   "radius_A": 0.005964589568,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": 7.888603681546,
+   "truth": {
+    "a": 0.002,
+    "gamma": 0.501,
+    "theta": 8.53774e-07
+   }
+  },
+  {
+   "a_L": 0.031034345398,
+   "a_U": 0.071392683318,
+   "control": "background_0.05",
+   "covered": true,
+   "disposition": "not_certified",
+   "expected": "not_certified",
+   "gamma_L": 0.464529129066,
+   "gamma_U": 0.563856942869,
+   "l_U": 0.208646498852,
+   "purpose": "F = 0.05 I + (1 - 0.05) E0: background stays in a",
+   "radius_A": 0.02017916896,
+   "radius_C": 0.049663906901,
+   "reasons": [],
+   "theta_max_bound_deg": 23.080931413005,
+   "truth": {
+    "a": 0.05,
+    "gamma": 0.525,
+    "theta": 8.53774e-07
+   }
+  },
+  {
+   "control": "nonscalar_acceptance_0.98_unbounded",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "bright-output efficiencies 0.98.. with the acceptance model unsupported",
+   "reasons": [
+    "premise acceptance_model is not supported"
+   ]
+  },
+  {
+   "a_L": -0.000891172853,
+   "a_U": 0.000891172853,
+   "control": "nonscalar_acceptance_0.98_bounded",
+   "covered": true,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.118264129571,
+   "gamma_U": 0.860789412327,
+   "l_U": 0.000317068873,
+   "purpose": "the same counts with the computed delta 0.010101",
+   "radius_A": 0.000891172853,
+   "radius_C": 0.371262641378,
+   "reasons": [],
+   "theta_max_bound_deg": 2.968022350606,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.505050505051,
+    "theta": 1.145607e-06
+   }
+  },
+  {
+   "control": "nonscalar_acceptance_0.8_unbounded",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "bright-output efficiencies 0.8.. with the acceptance model unsupported",
+   "reasons": [
+    "premise acceptance_model is not supported"
+   ]
+  },
+  {
+   "a_L": -0.000980290139,
+   "a_U": 0.000980290139,
+   "control": "nonscalar_acceptance_0.8_bounded",
+   "covered": true,
+   "disposition": "not_certified",
+   "expected": "not_certified",
+   "gamma_L": 0.0,
+   "gamma_U": 4.035645149953,
+   "l_U": 0.00034877576,
+   "purpose": "the same counts with the computed delta 0.111111",
+   "radius_A": 0.000980290139,
+   "radius_C": 3.577383184358,
+   "reasons": [],
+   "theta_max_bound_deg": null,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.555555555556,
+    "theta": 1.300682e-06
+   }
+  },
+  {
+   "a_L": -0.013249165881,
+   "a_U": 0.013249165881,
+   "control": "label_dependent_preparation_0.0005",
+   "covered": true,
+   "disposition": "certified",
+   "expected": "certified",
+   "gamma_L": 0.39619081147,
+   "gamma_U": 0.580342593482,
+   "l_U": 0.004713898184,
+   "purpose": "per-label state error of norm 0.0005 with bias bound 0.0011",
+   "radius_A": 0.013249165881,
+   "radius_C": 0.092075891006,
+   "reasons": [],
+   "theta_max_bound_deg": 6.262179662398,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.5,
+    "theta": 8.53774e-07
+   }
+  },
+  {
+   "a_L": -0.4561127826,
+   "a_U": 0.456849034335,
+   "control": "label_dependent_preparation_0.02",
+   "covered": true,
+   "disposition": "not_certified",
+   "expected": "not_certified",
+   "gamma_L": 0.0,
+   "gamma_U": 2.095528053547,
+   "l_U": 0.163316241436,
+   "purpose": "per-label state error of norm 0.02 with bias bound 0.0404",
+   "radius_A": 0.456480908467,
+   "radius_C": 1.60734041402,
+   "reasons": [],
+   "theta_max_bound_deg": null,
+   "truth": {
+    "a": 0.0,
+    "gamma": 0.5,
+    "theta": 8.53774e-07
+   }
+  },
+  {
+   "control": "altered_detector_map",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "selected-output map differs from the frozen map"
+   ]
+  },
+  {
+   "control": "missing_preparation",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "preparation identities differ from the bank"
+   ]
+  },
+  {
+   "control": "duplicated_preparation",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "a preparation identity repeats",
+    "preparation identities differ from the bank"
+   ]
+  },
+  {
+   "control": "invalid_trial_count",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "invalid trial counts at A-basis-00"
+   ]
+  },
+  {
+   "control": "changed_trial_count",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "eligible trials at A-basis-01 differ from the frozen n"
+   ]
+  },
+  {
+   "control": "optional_stopping",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "stopping rule is not the frozen fixed-n rule"
+   ]
+  },
+  {
+   "control": "unbound_target",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "target identity differs from the frozen target"
+   ]
+  },
+  {
+   "control": "common_effect_unsupported",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "premise common_effect is not supported"
+   ]
+  },
+  {
+   "control": "sampling_law_unsupported",
+   "disposition": "inadmissible",
+   "expected": "inadmissible",
+   "purpose": "record or premise defect",
+   "reasons": [
+    "premise bernoulli_sampling is not supported"
+   ]
+  }
+ ],
+ "coverage": {
+  "background_0.01": {
+   "a_covered": 64,
+   "gamma_covered": 64
+  },
+  "ideal": {
+   "a_covered": 64,
+   "gamma_covered": 64
+  },
+  "replicates": 64,
+  "trials_per_setting": 10000
+ },
+ "dark_ceiling": 0.1,
+ "record": "controls",
+ "schema": "bdsc-records-v1",
+ "target_floor": 0.1,
+ "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794",
+ "trials_per_setting": 100000
+}
