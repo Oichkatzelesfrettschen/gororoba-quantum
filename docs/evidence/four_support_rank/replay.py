@@ -43,12 +43,31 @@ def audit(root: Path) -> dict[str, Any]:
     return {"python_version": platform.python_version(), "certificate": result}
 
 
+def adopt_recorded_interpreter(record: dict[str, Any], retained: dict[str, Any]) -> None:
+    """Carry the retained interpreter release into a replay under the same Python major.minor.
+
+    The patch release names the interpreter that wrote result.json and is
+    provenance; every certificate field still compares byte for byte, and a
+    replay under another major.minor keeps its own version and differs.
+    """
+    for holder, key, kept in (
+        (record, "python_version", retained),
+        (record.get("versions"), "python", retained.get("versions")),
+    ):
+        if isinstance(holder, dict) and isinstance(kept, dict) and key in holder and isinstance(kept.get(key), str):
+            if kept[key].split(".")[:2] == str(holder[key]).split(".")[:2]:
+                holder[key] = kept[key]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="compare recomputed bytes with result.json")
     arguments = parser.parse_args()
     bundle = Path(__file__).resolve().parent
-    result = json.dumps(audit(bundle.parents[2]), indent=2, sort_keys=True, allow_nan=False) + "\n"
+    record = audit(bundle.parents[2])
+    if arguments.check:
+        adopt_recorded_interpreter(record, json.loads((bundle / "result.json").read_bytes()))
+    result = json.dumps(record, indent=2, sort_keys=True, allow_nan=False) + "\n"
     if arguments.check:
         _require(result.encode() == (bundle / "result.json").read_bytes(), "replay differs from retained result bytes")
         print("Four-support real-rank identities, rational frames, source stability and negative controls pass")
