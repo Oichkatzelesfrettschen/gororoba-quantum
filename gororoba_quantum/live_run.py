@@ -1205,7 +1205,7 @@ def _compile_primary(qc: QuantumCircuit, snap: Snapshot, seed: int) -> QuantumCi
         for layout in component_layouts(snap, qc.num_qubits):
             try:
                 return _compile(qc, snap, seed, layout)
-            except QiskitError, ValueError:
+            except (QiskitError, ValueError):
                 continue
         raise
 
@@ -3850,7 +3850,7 @@ def consume_approval(approved_dir: Path, run_name: str) -> dict[str, Any]:
     except FileExistsError:
         try:
             earlier = json.loads(marker.read_text())
-        except OSError, ValueError:
+        except (OSError, ValueError):
             earlier = {}
         raise LiveRunError(
             f"the approved record {approved_dir.name} was already consumed by run "
@@ -4000,7 +4000,7 @@ def _optional_repetition_delay(backend: Any) -> float | None:
     """The backend's configured repetition delay in seconds, or None for a fixed repetition rate."""
     try:
         return qpu_planning.repetition_delay(backend)
-    except ValueError, AttributeError:
+    except (ValueError, AttributeError):
         return None
 
 
