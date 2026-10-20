@@ -1064,6 +1064,76 @@
       "run": "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
       "family": "Belenos payload-class series on Q1's mesh",
       "question": "Two seed-20 entries at 10000 samples on 29dc6ef8, then 11 blocks of 14a96ca6 and 29dc6ef8: does a second entry recover the iterated behavior, and does a 29dc6ef8 acquisition after a load of another mesh fail?"
+    },
+    {
+      "id": "kingston-init-control-xhistory-0us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T201601.788510Z",
+      "family": "state-prep-control",
+      "question": "Does the x_history initialization control complete its shot loop on Kingston at a 0 us repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-prep0-0us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T201618.987131Z",
+      "family": "state-prep-control",
+      "question": "Does the prep0 initialization control complete its shot loop on Kingston at a 0 us repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-xhistory-20us-100k",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T213733.601097Z",
+      "family": "state-prep-control",
+      "question": "Does the x_history initialization control finish 100,000 shots on Kingston at a 20 us repetition delay under a 6 s ceiling?"
+    },
+    {
+      "id": "kingston-init-control-prep0-20us-100k",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T213828.038774Z",
+      "family": "state-prep-control",
+      "question": "Does the prep0 initialization control finish 100,000 shots on Kingston at a 20 us repetition delay under a 6 s ceiling?"
+    },
+    {
+      "id": "kingston-init-control-xhistory-20us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T214519.655411Z",
+      "family": "state-prep-control",
+      "question": "What initialization excitation and excited-count variance does x_history leave on Kingston at a 20 us repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-prep0-20us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T220218.089776Z",
+      "family": "state-prep-control",
+      "question": "What initialization excitation and excited-count variance does prep0 leave on Kingston at a 20 us repetition delay?"
+    },
+    {
+      "id": "fez-n21-orbit-window-sweep",
+      "provider": "ibm",
+      "run": "results/live/2026-10-19T151959.226467Z",
+      "family": "n21-orbit-rca",
+      "question": "Does lengthening the barrier-equalized feed-forward window cost the N=21 orbit contrast on ibm_fez with the control on qubit 144?"
+    },
+    {
+      "id": "fez-n21-orbit-overlap-split",
+      "provider": "ibm",
+      "run": "results/live/2026-10-19T170620.832658Z",
+      "family": "n21-orbit-rca",
+      "question": "Does a work CZ overlapping the control's measure-and-reset span cause the window loss on the pinned 083417 roles?"
+    },
+    {
+      "id": "fez-n21-spectator-ground-control",
+      "provider": "ibm",
+      "run": "results/live/2026-10-19T231043.083602Z",
+      "family": "n21-orbit-rca",
+      "question": "How much of qubit 143's window dephasing depends on the control's state?"
+    },
+    {
+      "id": "fez-n21-spectator-ramsey-sweep",
+      "provider": "ibm",
+      "run": "results/live/2026-10-20T031212.175942Z",
+      "family": "n21-orbit-rca",
+      "question": "Does qubit 143's Ramsey visibility decay monotonically over 0 to 20 us with the control grounded?"
     }
   ],
   "claims": [
@@ -2525,7 +2595,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "2ed2b6d3d29d431aa176e6ad2c4a1628899c3ace6845902d08a75ea6624daeee"
+          "sha256": "1bc32e964509da47d19cdb8ae956bf382dfcfa11f4ee83f1e06d9e42c0873944"
         }
       ],
       "documents": [
@@ -3364,7 +3434,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "2ed2b6d3d29d431aa176e6ad2c4a1628899c3ace6845902d08a75ea6624daeee"
+          "sha256": "1bc32e964509da47d19cdb8ae956bf382dfcfa11f4ee83f1e06d9e42c0873944"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -6176,6 +6246,160 @@
         "hw-idle-detuning-scale",
         "qi-tuna17-coupler-zz-map"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-kingston-rep-delay-timeout",
+      "statement": "Four ibm_kingston initialization-control jobs of 100,000 shots ended in error 1305, the service's ran-longer-than timeout, with no result: at a 0 us repetition delay (inside the configuration's rep_delay_range of 0 to 2 ms, accepted by the service's range check, below the 20 us floor of IBM's changelog) both jobs stayed running for 129 s and 207 s and reported no circuit execution time, and at 20 us both jobs overran their 6 s execution ceiling. The service billed 2 s for each 0 us job and 5 s for each 20 us job, 14 s in all, and the settled charges match the account inventory.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Code 1305 covers every ceiling cancellation in these jobs, so it does not separate a stalled shot loop from an overrun ceiling; that the 0 us jobs never started a shot loop is the inference their zero circuit execution time supports.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T201601.788510Z/collect.json",
+          "sha256": "92ec578ded4c52f572fb286a43623d6c03b805eec0de3026f205a8c9e79d1c94"
+        },
+        {
+          "path": "results/live/2026-10-18T201618.987131Z/collect.json",
+          "sha256": "a58a45eeb312a20ac476e73a6ffbc41a2532a649966b89776a885f5c127d6a51"
+        },
+        {
+          "path": "results/live/2026-10-18T213733.601097Z/collect.json",
+          "sha256": "852764354b51f7bcc12845c8293d9e070f801d2defa75d9b027e978e441a18de"
+        },
+        {
+          "path": "results/live/2026-10-18T213828.038774Z/collect.json",
+          "sha256": "8cdb72869116b8148dbc4b0902678c5aa0c4eda4c2a050c414c7d429e0a08d42"
+        },
+        {
+          "path": "results/live/state-prep-control-parameters.json",
+          "sha256": "db242ba0bbda35c428bc2e4a7af501b086a6e01fffb4d0968fc880df2b5c0c8b"
+        }
+      ],
+      "documents": [
+        "results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md"
+      ],
+      "gates": {
+        "core-564": "replay"
+      },
+      "acquisitions": [
+        "kingston-init-control-xhistory-0us",
+        "kingston-init-control-prep0-0us",
+        "kingston-init-control-xhistory-20us-100k",
+        "kingston-init-control-prep0-20us-100k"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-kingston-init-correlation-common-mode",
+      "statement": "On the 149-qubit ibm_kingston initialization controls, the variance of the excited-qubit count exceeds the independent Poisson-binomial prediction by 5 to 7 percent, and the x_history excess equals the prep0 excess at every delay: 0.0503 +- 0.0096 against 0.0521 +- 0.0096 at 20 us (z -0.13), 0.0598 against 0.0594 at 50 us and 0.0623 against 0.0734 at 250 us. The excess is common to both shot histories, so it belongs to correlated readout or a common-mode event independent of the preceding shot's end state, and the independent preparation channel stands.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Each history difference spans a dynamic and a static job as well as the shot history. A cell pair whose x_history excess exceeds its prep0 excess by more than the joint standard error reopens a joint preparation channel.",
+      "evidence": [
+        {
+          "path": "results/live/state-prep-control-parameters.json",
+          "sha256": "db242ba0bbda35c428bc2e4a7af501b086a6e01fffb4d0968fc880df2b5c0c8b"
+        },
+        {
+          "path": "results/live/2026-10-18T214519.655411Z/collect.json",
+          "sha256": "929db85b683bf22359561a5f9da44e1358b2ce3a2e054d7e719617134dc90a86"
+        },
+        {
+          "path": "results/live/2026-10-18T220218.089776Z/collect.json",
+          "sha256": "3438fa54d94e3a43cd018fa751aa4670891b102cc1a58098701817f334c426f4"
+        }
+      ],
+      "documents": [
+        "results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md"
+      ],
+      "gates": {
+        "core-564": "replay"
+      },
+      "acquisitions": [
+        "kingston-init-control-xhistory-20us",
+        "kingston-init-control-prep0-20us",
+        "kingston-init-control-prep0-50us",
+        "kingston-init-control-prep0-250us",
+        "kingston-init-control-xhistory-50us",
+        "kingston-init-control-xhistory-250us"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-orbit-window-overlap",
+      "statement": "On ibm_fez the N=21 orbit loses no resolved contrast to a longer barrier-equalized feed-forward window: with the control on qubit 144 the window_delay_ramp contract fails (the doubled delay reads 0.008 above the single one), and on the pinned 083417 roles the bracketed window_delay arm reads 0.228 against the nominal 0.235. Dropping the window barriers reproduces the 083417 program and its loss, 0.094 against the bracketed 0.228 (window_overlap_loss passes, upper limit -0.110), so a work CZ(136, 143) left free to run during the control's measure-and-reset span costs about 59 percent of the contrast magnitude on that calibration.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The run establishes the overlap cost on its calibration; that the same overlap produced 083417's loss is the inference its identical program supports. The control-144 and control-142 assignments read different nominal magnitudes (0.151 and 0.235) under different calibrations.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-19T151959.226467Z/between-arm.json",
+          "sha256": "4293ff52c351c0acb48b4c918ad72eef80b8c03a70b9a63f13656b5f5014fc01"
+        },
+        {
+          "path": "results/live/2026-10-19T170620.832658Z/between-arm.json",
+          "sha256": "9c66cfaf31919b6bfc61e12ed2bebe87d478fbf730c468c3c3a0106c5c2d2839"
+        }
+      ],
+      "documents": [
+        "results/live/N21_ORBIT_RCA.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "fez-n21-orbit-window-sweep",
+        "fez-n21-orbit-overlap-split"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-spectator-143-beat",
+      "statement": "Qubit 143 of ibm_fez loses about 37 percent of its Ramsey visibility across the 836 dt (3.3 us) orbit window with control 142 held in |0> (0.622 against 0.989 at once), and a control-state-dependent coupling accounts for at most 0.042 of it (spectator_control_zz fails, idle 0.616 against idle_ground 0.622). The grounded delay sweep reads visibility 0.997, 0.612, 0.395, 0.885, 0.743, 0.255 and 0.705 at 0 to 20.064 us in 3.344 us steps: the revivals reject a monotone single-component decay, and the T2* of 7 us drawn from two points is withdrawn.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The preregistered shape and detuning fits describe no identified parameter (the stretch exponent sits on its bound and the single-frequency model is contradicted). The two-component fit (a = 0.65, envelope near 126 us) is descriptive and post hoc, its splitting aliases at the 3.344 us sampling, and charge-parity splitting against a two-level-system coupling is undecided; a dense 0.25 us sweep resolves both.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-19T231043.083602Z/between-arm.json",
+          "sha256": "7f949559bf1e9d834b800b8df5024178839987b8c5cc17f453ef89e76e31c82d"
+        },
+        {
+          "path": "results/live/2026-10-20T031212.175942Z/ramsey.json",
+          "sha256": "90aa61f156691470ae6074f360b385c8594caa742f1a994a12661d5cb0005d9f"
+        },
+        {
+          "path": "results/live/2026-10-20T031212.175942Z/beat-model.json",
+          "sha256": "421f49223d75f670e1a0f2f76cab97e013dc5049a3799f0813565e6ce8aa0ec4"
+        }
+      ],
+      "documents": [
+        "results/live/N21_ORBIT_RCA.md",
+        "results/live/N21_SPECTATOR_RAMSEY_CASE.md"
+      ],
+      "gates": {
+        "core-600": "replay",
+        "core-603": "replay"
+      },
+      "acquisitions": [
+        "fez-n21-spectator-ground-control",
+        "fez-n21-spectator-ramsey-sweep"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }

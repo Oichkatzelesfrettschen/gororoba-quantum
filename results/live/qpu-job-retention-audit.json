@@ -1,31 +1,24 @@
 {
   "account_reserve_seconds": 60,
   "account_usage_observation": {
-    "usage_consumed_seconds": 382,
+    "usage_consumed_seconds": 449,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-18T09:20:41.985Z",
-      "start_time": "2026-09-20T09:20:41.985Z"
+      "end_time": "2026-10-20T22:49:36.642Z",
+      "start_time": "2026-09-22T22:49:36.642Z"
     },
-    "usage_remaining_seconds": 218
+    "usage_remaining_seconds": 151
   },
-  "acquisition_count": 20,
-  "awaiting_observation": [
-    "results/live/2026-10-18T214519.655411Z/raw/dbajs3gc77vs7382ulhg",
-    "results/live/2026-10-18T220218.089776Z/raw/dbak4pni0auc73925oc0",
-    "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0",
-    "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40",
-    "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0",
-    "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg"
-  ],
-  "failed_charge_seconds": "0",
-  "failed_job_count": 0,
-  "final_charge_seconds": "382",
+  "acquisition_count": 30,
+  "awaiting_observation": [],
+  "failed_charge_seconds": "14",
+  "failed_job_count": 4,
+  "final_charge_seconds": "449",
   "historical_charge_seconds": "49",
-  "indexed_metrics_snapshots": 28,
-  "indexed_raw_data_files": 522,
-  "inventory_sha256": "074c9f0eed51d34770c819799bdc3e776a9248e1809616a8b8e6f3a916c3d6e8",
-  "job_count": 28,
+  "indexed_metrics_snapshots": 34,
+  "indexed_raw_data_files": 576,
+  "inventory_sha256": "431019b4c05696733376d0095440ab63896d3167c62716487042ac67ccea4868",
+  "job_count": 38,
   "jobs": [
     {
       "backend": "ibm_kingston",
@@ -1333,18 +1326,344 @@
         "running": "2026-10-18T09:13:04.379527Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-18T20:16:14.142525+00:00",
+      "final_qpu_charge_seconds": 2,
+      "input_schema_version": "v2.0",
+      "job_id": "dbaii3gc77vs7382spag",
+      "metrics_snapshots": 0,
+      "provenance": "failed_collection",
+      "pub_count": 1,
+      "raw_data_files": 0,
+      "run": "results/live/2026-10-18T201601.788510Z",
+      "shots_per_pub": 100000,
+      "source_files": {
+        "results/live/2026-10-18T201601.788510Z/collect.json": "92ec578ded4c52f572fb286a43623d6c03b805eec0de3026f205a8c9e79d1c94",
+        "results/live/2026-10-18T201601.788510Z/isa.qpy": "b5bf2a7aa5ce5549ca71ee599f45a33733b65dc08953dd340e676000c3413e2f",
+        "results/live/2026-10-18T201601.788510Z/record.json": "90b4422595478e450a9aa7dd54bb05f5bff5eed048626bf12728f2d7f4efdce4"
+      },
+      "status": "ERROR",
+      "submitted_pub_shots": 100000,
+      "timestamps": {
+        "created": "2026-10-18T20:16:14.142525Z",
+        "finished": "2026-10-18T20:18:24.693073Z",
+        "running": "2026-10-18T20:16:15.576982Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-18T20:16:29.840188+00:00",
+      "final_qpu_charge_seconds": 2,
+      "input_schema_version": "v2.0",
+      "job_id": "dbaii7c24mrc7385fjfg",
+      "metrics_snapshots": 0,
+      "provenance": "failed_collection",
+      "pub_count": 1,
+      "raw_data_files": 0,
+      "run": "results/live/2026-10-18T201618.987131Z",
+      "shots_per_pub": 100000,
+      "source_files": {
+        "results/live/2026-10-18T201618.987131Z/collect.json": "a58a45eeb312a20ac476e73a6ffbc41a2532a649966b89776a885f5c127d6a51",
+        "results/live/2026-10-18T201618.987131Z/isa.qpy": "6b14adc51f9236831c905ebd888fc57b275f982e4f960966cce452cc967b422e",
+        "results/live/2026-10-18T201618.987131Z/record.json": "ce50a6438a153e5aeda8e9f52d61b8d6a7bb9cf08f40c47a19006e30aa26e30d"
+      },
+      "status": "ERROR",
+      "submitted_pub_shots": 100000,
+      "timestamps": {
+        "created": "2026-10-18T20:16:29.840188Z",
+        "finished": "2026-10-18T20:19:59.709237Z",
+        "running": "2026-10-18T20:16:33.023749Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-18T21:38:15.836181+00:00",
+      "final_qpu_charge_seconds": 5,
+      "input_schema_version": "v2.0",
+      "job_id": "dbajohs24mrc7385hcfg",
+      "metrics_snapshots": 0,
+      "provenance": "failed_collection",
+      "pub_count": 1,
+      "raw_data_files": 0,
+      "run": "results/live/2026-10-18T213733.601097Z",
+      "shots_per_pub": 100000,
+      "source_files": {
+        "results/live/2026-10-18T213733.601097Z/collect.json": "852764354b51f7bcc12845c8293d9e070f801d2defa75d9b027e978e441a18de",
+        "results/live/2026-10-18T213733.601097Z/isa.qpy": "b5bf2a7aa5ce5549ca71ee599f45a33733b65dc08953dd340e676000c3413e2f",
+        "results/live/2026-10-18T213733.601097Z/record.json": "ced3522806c64598effa1a46d55f74928c0253eda7168b4f5086af7ba1eba049"
+      },
+      "status": "ERROR",
+      "submitted_pub_shots": 100000,
+      "timestamps": {
+        "created": "2026-10-18T21:38:15.836181Z",
+        "finished": "2026-10-18T21:38:26.870555Z",
+        "running": "2026-10-18T21:38:17.583751Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-18T21:39:49.683635+00:00",
+      "final_qpu_charge_seconds": 5,
+      "input_schema_version": "v2.0",
+      "job_id": "dbajp9c24mrc7385hda0",
+      "metrics_snapshots": 0,
+      "provenance": "failed_collection",
+      "pub_count": 1,
+      "raw_data_files": 0,
+      "run": "results/live/2026-10-18T213828.038774Z",
+      "shots_per_pub": 100000,
+      "source_files": {
+        "results/live/2026-10-18T213828.038774Z/collect.json": "8cdb72869116b8148dbc4b0902678c5aa0c4eda4c2a050c414c7d429e0a08d42",
+        "results/live/2026-10-18T213828.038774Z/isa.qpy": "6b14adc51f9236831c905ebd888fc57b275f982e4f960966cce452cc967b422e",
+        "results/live/2026-10-18T213828.038774Z/record.json": "ffc194c5b8c0ca0c5bb95fc3494ee22180abb1c17497e017d974eec39560ee89"
+      },
+      "status": "ERROR",
+      "submitted_pub_shots": 100000,
+      "timestamps": {
+        "created": "2026-10-18T21:39:49.683635Z",
+        "finished": "2026-10-18T21:40:17.761901Z",
+        "running": "2026-10-18T21:39:50.871118Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-18T21:45:50.111591+00:00",
+      "final_qpu_charge_seconds": 3,
+      "input_schema_version": "v2.0",
+      "job_id": "dbajs3gc77vs7382ulhg",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 1,
+      "raw_data_files": 2,
+      "run": "results/live/2026-10-18T214519.655411Z",
+      "shots_per_pub": 32768,
+      "source_files": {
+        "results/live/2026-10-18T214519.655411Z/collect.json": "929db85b683bf22359561a5f9da44e1358b2ce3a2e054d7e719617134dc90a86",
+        "results/live/2026-10-18T214519.655411Z/isa.qpy": "b5bf2a7aa5ce5549ca71ee599f45a33733b65dc08953dd340e676000c3413e2f",
+        "results/live/2026-10-18T214519.655411Z/raw/dbajs3gc77vs7382ulhg/index.json": "386ca7ace9cfe2d8ab4e31bcabf8548848711a424e7b7c80e16c4532b9471724",
+        "results/live/2026-10-18T214519.655411Z/raw/dbajs3gc77vs7382ulhg/job_metrics.json": "fc98da105a9fcf340350705b0d79ef699aad2f46c6451bec8bf660c2228a2c29",
+        "results/live/2026-10-18T214519.655411Z/raw/dbajs3gc77vs7382ulhg/pub_00.json": "26265c6de6334e5739658c0630fa361af22ff538a9e14ee58681267eb0e042cd",
+        "results/live/2026-10-18T214519.655411Z/raw/dbajs3gc77vs7382ulhg/result_metadata.json": "a6579620f56103584a749e1b12c2191bf3c31459b6d3d500438c20ec514fccef",
+        "results/live/2026-10-18T214519.655411Z/record.json": "9e3d1ff426408d77b84877f85ddf9c0b62ebbdb052baedc3d787be49834698a3"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 32768,
+      "timestamps": {
+        "created": "2026-10-18T21:45:50.111591Z",
+        "finished": "2026-10-18T21:46:08.86536Z",
+        "running": "2026-10-18T21:45:51.652037Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-18T22:04:22.771930+00:00",
+      "final_qpu_charge_seconds": 3,
+      "input_schema_version": "v2.0",
+      "job_id": "dbak4pni0auc73925oc0",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 1,
+      "raw_data_files": 2,
+      "run": "results/live/2026-10-18T220218.089776Z",
+      "shots_per_pub": 32768,
+      "source_files": {
+        "results/live/2026-10-18T220218.089776Z/collect.json": "3438fa54d94e3a43cd018fa751aa4670891b102cc1a58098701817f334c426f4",
+        "results/live/2026-10-18T220218.089776Z/isa.qpy": "6b14adc51f9236831c905ebd888fc57b275f982e4f960966cce452cc967b422e",
+        "results/live/2026-10-18T220218.089776Z/raw/dbak4pni0auc73925oc0/index.json": "5ba055adb1e9a984fa9de9b33d3d5275210b581af3dcc974065626aa40675b4f",
+        "results/live/2026-10-18T220218.089776Z/raw/dbak4pni0auc73925oc0/job_metrics.json": "bc4a264aab9a69a172d57533d6a04be7261cd29664731e06f0d6e022d21cf325",
+        "results/live/2026-10-18T220218.089776Z/raw/dbak4pni0auc73925oc0/pub_00.json": "5d262c1e263062f8abea4012f2ec2dc8c51d9410831247b4710803abf301b1d2",
+        "results/live/2026-10-18T220218.089776Z/raw/dbak4pni0auc73925oc0/result_metadata.json": "8859a8b2db12fa0d99b099e6b6f4dc95f16f90191a18007a3ece754546283368",
+        "results/live/2026-10-18T220218.089776Z/record.json": "907b5209c7e47ee6405edd10ffa4c66ef587a72f580ee3b80390953fe07ce3cf"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 32768,
+      "timestamps": {
+        "created": "2026-10-18T22:04:22.77193Z",
+        "finished": "2026-10-18T22:04:38.076257Z",
+        "running": "2026-10-18T22:04:26.135019Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-19T15:21:31.959252+00:00",
+      "final_qpu_charge_seconds": 18,
+      "input_schema_version": "v2.0",
+      "job_id": "dbb3auvi0auc7392sfs0",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 14,
+      "raw_data_files": 15,
+      "run": "results/live/2026-10-19T151959.226467Z",
+      "shots_per_pub": 16384,
+      "source_files": {
+        "results/live/2026-10-19T151959.226467Z/collect.json": "59adcc05fa86f0f0b7890e6e0992efde5b4cd593c6731bfddcbd46d7231139c6",
+        "results/live/2026-10-19T151959.226467Z/isa.qpy": "86adfcc8512960652069a1c2b12c6794ee3e33a4b5f0039ecbddf53ff49b0cd4",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/index.json": "d6f387550daa8f32a0e0635361e782e806f722c695dbd1a41a01045f8a239e2f",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/job_metrics.json": "482b9b8172ff2e1a566a477c9ae4c9aedfd39860d2f1afca4a5f28dc2c53c363",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_00.json": "b9ccf5fcdedcf67e57c31d859456e70b0878291f5f11e297c50e63cbbf8b83c3",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_01.json": "fce45f7df5bf03d0f8ddfcd520c497e7d128297fcee47f4311284a451764887a",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_02.json": "88eb4a36ff22f857c5d4201a13e31f0c0815bdd3becab3272c7620b64604deec",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_03.json": "f47495de8ddd1e86e60d49250021782bf13facccf411279e3980df597ca25c91",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_04.json": "db25a38b8ea22baede08945cb4eff5d67835a2d7add64f107179b3ca7fc1e891",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_05.json": "44d55fd8390e30f9e5853d1e7202e2846a0eccbfb0ba1bbcaced8dff2d2ef30c",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_06.json": "db4612d0a367b55421a651f9f347b881f48c8ebbb26feef3a3e2487cf23e3796",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_07.json": "eede6c1740f3cb0a15f26d157aaea51a1acfebd1e9f1199d52b097b5cd4e6aa7",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_08.json": "a094fb5e5f1278b32359e4209ef92837cb6197e475c7fb1d11039fe616804f64",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_09.json": "286eb057f07df361ea2246e602c19e9bc0749afbc88c81685740e7be3c5ef93c",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_10.json": "6d1ad4c98b3b04f34a00011f607f2fdceeae2a6a285b331112efbd56b8e68cb0",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_11.json": "bc247c23371cd29bca1051ef0acb77ab0c373911b32eb4dd32fa9fbf3d1eb2fa",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_12.json": "817592705700f81358048c938833bdfa0ed589f335c7f32e69a72a63282427bf",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/pub_13.json": "ef8317a2858b07e3a050522b87fee7f4d71b5e942d63f5aad503c2629fbaea01",
+        "results/live/2026-10-19T151959.226467Z/raw/dbb3auvi0auc7392sfs0/result_metadata.json": "3684a2c9fb8bc2047d5aaac70b35a18f42aa2022d5a5d189ef4d92fbe22c5dfd",
+        "results/live/2026-10-19T151959.226467Z/record.json": "efad7bef7b7fabb685ab016e4d1464b8bd3a757a55cc2247176df800cffd5ba9"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 229376,
+      "timestamps": {
+        "created": "2026-10-19T15:21:31.959252Z",
+        "finished": "2026-10-19T15:22:08.339287Z",
+        "running": "2026-10-19T15:21:32.953913Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-19T17:07:05.003760+00:00",
+      "final_qpu_charge_seconds": 9,
+      "input_schema_version": "v2.0",
+      "job_id": "dbb4se1gv2cc73e7pf40",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 12,
+      "raw_data_files": 13,
+      "run": "results/live/2026-10-19T170620.832658Z",
+      "shots_per_pub": 8192,
+      "source_files": {
+        "results/live/2026-10-19T170620.832658Z/collect.json": "495e840563b26616a041abe89fc853889d663ea13536829f7caba7a102fb07ea",
+        "results/live/2026-10-19T170620.832658Z/isa.qpy": "3dab923b6306cf8bc50eff8e8be549e9427a050abcbbae25a6d24edc21da8e10",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/index.json": "56681f3f7b620d3d4b70862f492ba18e5eac854056e479fad3d240ef58fcab14",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/job_metrics.json": "32fec66995114cb4651d6c98e575b62f121f02be9329b2b93d268f85022da8c4",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_00.json": "75e66c46f4fe9eef39aa8d4215619db39f6fa487258903afcbb4e143d77091de",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_01.json": "5a472d8d6d88d85dba42acbba386da742085874f6c377e4e80bebd2843e9d9c5",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_02.json": "6aeb6b727ff532098348106c22bd914548aecfc7b57fc9f33c5072a2fbcf7770",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_03.json": "28ac1e57e72b048cb21374b5c5a8628d5a370b6b1e8961f857d13f43ed08c251",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_04.json": "69730be2ed3a49b72b3259931b01acad1164856d935f6ed9c5dcdc59e7cb2d93",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_05.json": "17c7a03322f6f104c42c2e7412ad071d94c287acb1d83c49f825995d3c2631ac",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_06.json": "f9be1c622a9acdfb739509f78da37d7ae1dfb64d66f4046bda6088522c166771",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_07.json": "866087cc05a617f9d27a669092e0d26516c213cec2e7c76e403fd8db7e5fd8ce",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_08.json": "bab7726113cc1de4da366fb9b762d51522efdbf4e62794cb6c486e88acd5990b",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_09.json": "1524731fe10be85aca039ddf9e1fc2317ef8c1904c45e106920794f721fa8403",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_10.json": "59bc2bc97fef541aa3f271fd6b838454f99f5cb56f7708d8ac54294403d6df03",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/pub_11.json": "b90deca72f868f165cbf26126a743c824933630c6f575e96dba0e6c036154273",
+        "results/live/2026-10-19T170620.832658Z/raw/dbb4se1gv2cc73e7pf40/result_metadata.json": "5216973aa97f57cc68a8ec22cbd46ed1f2a256c8888d28e65e01da6a391ed731",
+        "results/live/2026-10-19T170620.832658Z/record.json": "8b3c46ea1ff22ca0fed77d2abb1e083b07ce93b55304787bd7a4b87b9b55650f"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 98304,
+      "timestamps": {
+        "created": "2026-10-19T17:07:05.00376Z",
+        "finished": "2026-10-19T17:07:34.124612Z",
+        "running": "2026-10-19T17:07:05.964202Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-19T23:11:09.724976+00:00",
+      "final_qpu_charge_seconds": 5,
+      "input_schema_version": "v2.0",
+      "job_id": "dbba739gv2cc73e81dg0",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 6,
+      "raw_data_files": 7,
+      "run": "results/live/2026-10-19T231043.083602Z",
+      "shots_per_pub": 8192,
+      "source_files": {
+        "results/live/2026-10-19T231043.083602Z/collect.json": "a02508a2e13f3c27ea992917cde3a15b9f740c3cf5af5fea16844ce263f1d7de",
+        "results/live/2026-10-19T231043.083602Z/isa.qpy": "77fd5a9f4a0f58a4f05c43f57e0a1b38f4e0bcd0ee78c17d23b1686fb954e899",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/index.json": "c357849b1d2acfaf48271b90dd1f006f5838c4c6a002883beae98feb94aa0cf5",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/job_metrics.json": "0fb08cd23c08a681009a2be99f31e17357f0243782e569c7898c99a96b5032df",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/pub_00.json": "21c7cdff80d4bb9adea0dda0ebcda5a49a7c0843518205ca552a98396b963222",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/pub_01.json": "9ede0b9031290a42281ec08e1190299ea2f5c197ef5392afea4ba6406641d35e",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/pub_02.json": "40e1e9fb94d4010d6a0d994938064d846ba6777458bb5105742c44fcaddf418f",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/pub_03.json": "1f35d42a3af8dd4ad7cf7e2fba18df7ddbb55eee8bdf2be2b001328959e060a3",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/pub_04.json": "b7afbb445645fad2a923f7af17a6e8e528ed74f31b15ac9337075216390e379e",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/pub_05.json": "2c0898a5f40eedb6547b90cbdcf7af9cd6a36014b5652ab87a1661febbfe644b",
+        "results/live/2026-10-19T231043.083602Z/raw/dbba739gv2cc73e81dg0/result_metadata.json": "e1708ae71f331fa05bacae6051c8531ecf1a4aaba79e02559fcf9b030394dba8",
+        "results/live/2026-10-19T231043.083602Z/record.json": "d67d0b6748cfe89ebbc03ea5347f79074df44a867002a4d257d3f263bc9dffc0"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 49152,
+      "timestamps": {
+        "created": "2026-10-19T23:11:09.724976Z",
+        "finished": "2026-10-19T23:14:20.604221Z",
+        "running": "2026-10-19T23:11:11.008058Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-20T03:13:05.872214+00:00",
+      "final_qpu_charge_seconds": 15,
+      "input_schema_version": "v2.0",
+      "job_id": "dbbdog8c77vs73846ceg",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 14,
+      "raw_data_files": 15,
+      "run": "results/live/2026-10-20T031212.175942Z",
+      "shots_per_pub": 12288,
+      "source_files": {
+        "results/live/2026-10-20T031212.175942Z/collect.json": "36635ffee29126d7cebc41d856e0384023322740314686cf7baaff1ae62b6b43",
+        "results/live/2026-10-20T031212.175942Z/isa.qpy": "ed6094da6a282b2d5fc64ca678f63c107c565f1acc6eeddd701ac9b251c999dc",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/index.json": "18313a3fda1864f47450ba846bcf373129ae911c557abe5853d56fd5bc5941ee",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/job_metrics.json": "636b374bc79f54345501a5a7cc86db3c8d719624dd3a80f26962ecc8d768003e",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_00.json": "148656801db746b06070c23aefc1c0f6936eb760abc96fbf984c1b4e5bd35c55",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_01.json": "3736371d7fbab9b7f131c233c99b59720e9d19c22f4e51136ff23d8948fc1ff4",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_02.json": "016a02fbdee8b842a1f1387cb522d693f47fba2fc8185ea6dedd4306030758dc",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_03.json": "402ddb03f8c14b8c2c0fde8bf85e6d18a744b705400a2f753a2adf28c505c996",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_04.json": "f974c64c503a3b96aa10cf9d07f67137f9a34ba7ed30cbf79e13b564cb465eb1",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_05.json": "efae825f66dd31151d4d0211b7f1b4482def09cb199cbef1043d4ab2664c870e",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_06.json": "f6f18a69b5260a8ddb41d3bb2b90c611a57a381dc19c722490f50dd0b8e2f53c",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_07.json": "d67adf2a3d2cbf4e48d0f29c6742fb7e74d65f47840d92e00a80d5451d320df7",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_08.json": "44725cbf621d9e4f9a0c530a618ff44cb7f46b4a07a569ffbba6a0fed8c55cce",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_09.json": "6538a260261a70477d127f8a5799e38ce2de26f26819555ef5a08280ca120df4",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_10.json": "343da73a243a088e56e93df9fc0eeb9d0a018f3b7edd33b6e4a0650338d449e2",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_11.json": "871bd29d261a5852537501c5fa6c0f50819323c04443661b1a6f96c7d7177ec2",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_12.json": "335bdbe53a35088d5e5d29550a38e01a8a02126755c23c2edf589db64214b994",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/pub_13.json": "bf383ac103931777adadbecab127d645e0168e6254f6971b75bb543c4bb556f4",
+        "results/live/2026-10-20T031212.175942Z/raw/dbbdog8c77vs73846ceg/result_metadata.json": "e8a0645498abae78cea964f2455dbf442f6f3134b7df5d41c34935c555481862",
+        "results/live/2026-10-20T031212.175942Z/record.json": "0deb1b1bad9393b2c7ccaf4366a79557d1950656aed5c617bb59d466d5f021ad"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 172032,
+      "timestamps": {
+        "created": "2026-10-20T03:13:05.872214Z",
+        "finished": "2026-10-20T03:13:26.427533Z",
+        "running": "2026-10-20T03:13:06.770862Z"
+      },
+      "usage_status": "complete"
     }
   ],
-  "later_program_charge_seconds": "172",
+  "later_program_charge_seconds": "239",
   "new_campaign_ceiling_seconds": 180,
   "new_campaign_charge_seconds": "161",
   "new_campaign_cutoff": "2026-10-14T00:00:00Z",
-  "observed_at": "2026-10-18T09:20:42.042591+00:00",
-  "pub_count": 494,
+  "observed_at": "2026-10-20T22:49:36.693055+00:00",
+  "pub_count": 546,
   "replay_source_sha256": "258ede87c94abb5a70d33f1b7a81e7aadaa9338d95e8638fe12d46d98976873b",
   "schema": "qpu-job-retention-audit-v1",
   "scope": "All completed jobs in the retained service inventory have lossless raw archives, and every failed job's settled charge is bound to the collection that records why it returned no result. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
-  "submitted_pub_shots": 1355072,
+  "submitted_pub_shots": 2369472,
   "unallocated_campaign_seconds": "19",
-  "usage_window_charge_seconds": "382"
+  "usage_window_charge_seconds": "449"
 }

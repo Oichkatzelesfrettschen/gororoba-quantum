@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (94 established, 35 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (96 established, 37 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -182,8 +182,18 @@ acquisition of every provider:
 | [2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-03](results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-03) | Quantum Inspire | Walsh exemplar Tuna-17 series | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14](results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14) | Quandela Cloud | Belenos payload-class series on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16](results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16) | Quandela Cloud | Belenos payload-class series on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.02 credits |
+| [2026-10-18T201601.788510Z](results/live/2026-10-18T201601.788510Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 2 s |
+| [2026-10-18T201618.987131Z](results/live/2026-10-18T201618.987131Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 2 s |
+| [2026-10-18T213733.601097Z](results/live/2026-10-18T213733.601097Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 5 s |
+| [2026-10-18T213828.038774Z](results/live/2026-10-18T213828.038774Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 5 s |
+| [2026-10-18T214519.655411Z](results/live/2026-10-18T214519.655411Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-18T220218.089776Z](results/live/2026-10-18T220218.089776Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-19T151959.226467Z](results/live/2026-10-19T151959.226467Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 14 | DONE | 18 s |
+| [2026-10-19T170620.832658Z](results/live/2026-10-19T170620.832658Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 12 | DONE | 9 s |
+| [2026-10-19T231043.083602Z](results/live/2026-10-19T231043.083602Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 6 | DONE | 5 s |
+| [2026-10-20T031212.175942Z](results/live/2026-10-20T031212.175942Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 14 | DONE | 15 s |
 
-The IBM service inventory observed at 2026-10-18T09:20:42.042591+00:00 holds 28 physical jobs with 382 settled seconds; the account then reported 382 of 600 s consumed in the rolling window ending 2026-10-18T09:20:41.985Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-20T22:49:36.693055+00:00 holds 38 physical jobs with 449 settled seconds; the account then reported 449 of 600 s consumed in the rolling window ending 2026-10-20T22:49:36.642Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-18T18:45:31+00:00 lists 292 jobs with 6076416 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
