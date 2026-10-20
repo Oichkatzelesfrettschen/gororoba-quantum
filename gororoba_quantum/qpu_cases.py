@@ -324,6 +324,19 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if "ground_control_split" in design:
         _require(design["ground_control_split"] is True, "ground_control_split is recorded only when set")
         arguments.append("--ground-control-split")
+    if "ramsey_windows" in design:
+        windows = design["ramsey_windows"]
+        _require(
+            isinstance(windows, list)
+            and len(windows) >= 2
+            and all(type(value) is int and value >= 1 for value in windows)
+            and windows == sorted(set(windows)),
+            "ramsey_windows is a sorted list of at least two distinct positive multiples",
+        )
+        _require(
+            design.get("ground_control_split") is True, "ramsey_windows is recorded only with ground_control_split"
+        )
+        arguments.extend(["--ramsey-windows", ",".join(str(value) for value in windows)])
     if "pin_layout" in design:
         pin = design["pin_layout"]
         _require(
@@ -1873,7 +1886,20 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "dephasing.",
                 "",
             ]
-            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("ground_control_split")
+            if family == "n21-orbit-rca"
+            and record.get("family_configuration", {}).get("ground_control_split")
+            and not record.get("family_configuration", {}).get("ramsey_windows")
+            else []
+        ),
+        *(
+            [
+                "--ramsey-windows is the ground Ramsey sweep: qubit 2 read in X and Y at once and after idles of "
+                "each listed multiple of the control's measure plus reset durations with the control in |0> "
+                "(idle_ground), so its decay envelope and phase slope give T2* and the detuning with the control "
+                "static; scripts/n21_spectator_ramsey.py holds the preregistered fit.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("ramsey_windows")
             else []
         ),
         *(

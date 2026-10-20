@@ -73,6 +73,7 @@ from diagnostic_experiments import (
     FAMILY_NAMES,
     N21_FAMILIES,
     PATCH_FAMILIES,
+    n21_ramsey_windows,
     record_groups,
     state_prep_arms,
 )
@@ -5900,6 +5901,14 @@ def _positive_int(text: str) -> int:
     return value
 
 
+def _ramsey_windows(text: str) -> list[int]:
+    """Comma-separated idle multiples of the ground Ramsey sweep, sorted (diagnostic_experiments.n21_ramsey_windows)."""
+    try:
+        return list(n21_ramsey_windows(int(part) for part in text.split(",")))
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+
+
 def _fraction(text: str) -> float:
     value = float(text)
     if not 0.0 < value <= 1.0:
@@ -6011,6 +6020,14 @@ def main(argv: list[str] | None = None) -> int:
         help="n21-orbit-rca with --pin-layout: plan only the immediate, idle and idle_ground qubit-2 spectators in "
         "X and Y, idle_ground holding the control in |0>, so control-state-dependent dephasing separates from "
         "qubit 2's own idle dephasing; the policy and family configuration bind it",
+    )
+    parser.add_argument(
+        "--ramsey-windows",
+        type=_ramsey_windows,
+        metavar="M,M,...",
+        help="with --ground-control-split: the ground Ramsey sweep, immediate and idle_ground at each idle of M "
+        "times the control's measure plus reset durations, in X and Y, with no idle arm; at least two distinct "
+        "positive multiples, which the policy and family configuration bind sorted",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
@@ -6258,6 +6275,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--ground-control-split requires --pin-layout: the split compares arms on fixed roles")
     if args.ground_control_split and args.overlap_split:
         parser.error("--ground-control-split and --overlap-split are separate n21-orbit-rca configurations")
+    if args.ramsey_windows is not None and not args.ground_control_split:
+        parser.error("--ramsey-windows requires --ground-control-split: the sweep reads idle_ground arms")
     if args.ground_control_split and not args.init_herald:
         parser.error(
             "--ground-control-split requires --init-herald: idle_ground's contracts read only shots whose "

@@ -2516,6 +2516,193 @@ def _verify_ground_control_split(snapshot: live_run.Snapshot) -> None:
         _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
 
 
+RAMSEY_WINDOWS = [1, 2, 3, 4, 5, 6]
+
+
+def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
+    """A pinned ground Ramsey sweep plans immediate and idle_ground at each multiple, and binds the multiples.
+
+    The group holds immediate and idle_ground at each idle multiple m in X
+    and Y, no idle arm and no orbit arm; idle_ground at m plays exactly a
+    delay of m * (window_delay_dt + reset_dt) and a reset on the pinned
+    control, and qubit 2 (the pinned spectator) plays only its preparation
+    and basis change around a bare idle, so no decoupling pulse turns the
+    Ramsey into an echo; no ISA holds a classically conditioned block; the
+    configuration and policy carry the sorted multiples, record_groups and
+    family_contracts rebuild them, the written command replays them, and
+    live_run refuses the multiples without --ground-control-split and a
+    single or repeated multiple.
+    """
+    _require(
+        "ramsey_windows" not in qpu_planning.settings(_args("n21-orbit-rca")),
+        "an absent ground Ramsey sweep entered the policy",
+    )
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    arguments = _args(
+        "n21-orbit-rca", pin_layout=pin, ground_control_split=True, init_herald=True, ramsey_windows=RAMSEY_WINDOWS
+    )
+    _require(
+        qpu_planning.settings(arguments).get("ramsey_windows") == RAMSEY_WINDOWS,
+        "the policy settings drop the ground Ramsey multiples",
+    )
+    scripts = Path(qpu_planning.__file__).resolve().parents[1] / "scripts"
+    bound = qpu_planning.settings(arguments).get("ramsey_analyzer_closure")
+    expected_files = {
+        f"scripts/{name}": hashlib.sha256((scripts / name).read_bytes()).hexdigest()
+        for name in ("n21_orbit_rca.py", "n21_spectator_ramsey.py")
+    }
+    _require(
+        isinstance(bound, dict) and bound.get("files") == expected_files,
+        f"the policy binds the analyzer closure {bound}, not {sorted(expected_files)} at their bytes",
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        approved_dir = Path(scratch) / "approved"
+        approved_dir.mkdir()
+        approved: dict[str, Any] = {
+            "state": "planned",
+            "policy": {"design": qpu_planning.settings(arguments)},
+            "groups": [],
+        }
+        (approved_dir / "record.json").write_text(json.dumps(approved))
+        (approved_dir / "isa.qpy").write_bytes(b"ramsey")
+        qpy_digest = hashlib.sha256(b"ramsey").hexdigest()
+        _require(
+            not live_run.approved_record_mismatches(approved_dir, json.loads(json.dumps(approved)), qpy_digest),
+            "an unchanged ground Ramsey plan differs from its own approved record",
+        )
+        # A copy of scripts/ whose n21_orbit_rca.py alone gains one byte.
+        copied = Path(scratch) / "scripts"
+        copied.mkdir()
+        for name in expected_files:
+            source = scripts / Path(name).name
+            (copied / source.name).write_bytes(source.read_bytes())
+        (copied / "n21_orbit_rca.py").write_bytes((scripts / "n21_orbit_rca.py").read_bytes() + b"\n")
+        with (
+            patch.object(qpu_planning, "SCRIPTS_DIR", copied),
+            patch.object(qpu_planning, "RAMSEY_ANALYZER", copied / "n21_spectator_ramsey.py"),
+        ):
+            moved = qpu_planning.settings(arguments)
+        changed = {**approved, "policy": {"design": moved}}
+        _require(
+            moved["ramsey_analyzer_closure"]["files"]["scripts/n21_spectator_ramsey.py"]
+            == expected_files["scripts/n21_spectator_ramsey.py"]
+            and "policy differs" in live_run.approved_record_mismatches(approved_dir, changed, qpy_digest),
+            "a change to n21_orbit_rca.py alone leaves the approved record's policy equal",
+        )
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)
+    _require(bool(candidates), f"FakeFez refuses the pinned ground Ramsey sweep: {traces.get('family_rejections')}")
+    (choice,), configuration = candidates[0]
+    names = [member.name for member in choice.group.members]
+    expected = [f"n21_spectator_immediate_{q}" for q in ("x", "y")] + [
+        f"n21_spectator_idle_ground_w{m}_{q}" for m in RAMSEY_WINDOWS for q in ("x", "y")
+    ]
+    _require(names == expected, f"the ground Ramsey sweep plans {names}")
+    _require(
+        configuration.get("ground_control_split") is True
+        and configuration.get("ramsey_windows") == RAMSEY_WINDOWS
+        and configuration.get("init_herald") is True
+        and configuration.get("pin_layout") == pin,
+        f"the ground Ramsey configuration reads {configuration}",
+    )
+    control, spectator = PINNED_ORBIT_LAYOUT[0], PINNED_ORBIT_LAYOUT[2]
+    window = configuration["window_delay_dt"] + configuration["reset_dt"]
+
+    def wire_ops(isa: Any, wire: int) -> list[tuple[str, int | None]]:
+        return [
+            (i.operation.name, int(i.operation.duration) if i.operation.name == "delay" else None)
+            for i in isa.data
+            if i.operation.name != "barrier" and any(isa.find_bit(q).index == wire for q in i.qubits)
+        ]
+
+    for name, isa in zip(names, choice.isas, strict=True):
+        _require(
+            not any(i.operation.name in ("if_else", "while_loop", "for_loop", "switch_case") for i in isa.data),
+            f"{name} holds a control-flow block",
+        )
+        multiple = 0 if "_immediate_" in name else int(name.rsplit("_w", 1)[1].split("_")[0])
+        ops = wire_ops(isa, control)
+        if multiple:
+            _require(
+                ops[-2:] == [("delay", multiple * window), ("reset", None)]
+                and not any(op in ("sx", "x", "rz") for op, _ in ops[: len(ops) - 2] if op != "measure"),
+                f"{name} plays {ops} on the control, not a herald, an idle in |0> and a reset",
+            )
+        # The barriers alone hold the spectator across the control's idle,
+        # so any delay instruction on it is an inserted idle the exposure
+        # does not name, and any further pulse is a decoupling pulse.
+        program = [op for op, _ in wire_ops(isa, spectator) if op != "rz"]
+        _require(
+            program == ["measure", "sx", "sx", "measure"],
+            f"{name} plays {program} on the spectator, not a herald, a preparation, a basis change and a readout",
+        )
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([member.name for member in rebuilt[0].members] == names, "record_groups does not rebuild the ground sweep")
+    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration)
+    _require(
+        [contract.name for contract in contracts] == [f"{name}_one" for name in expected],
+        f"the ground Ramsey family contracts read {[contract.name for contract in contracts]}",
+    )
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    fixture["policy"]["design"]["ground_control_split"] = True
+    fixture["policy"]["design"]["ramsey_windows"] = RAMSEY_WINDOWS
+    fixture["family_configuration"] = {
+        **fixture.get("family_configuration", {}),
+        "ground_control_split": True,
+        "ramsey_windows": RAMSEY_WINDOWS,
+    }
+    replay = qpu_cases._reproduction_arguments(fixture, location)
+    case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+    _require(
+        "--ramsey-windows" in replay
+        and replay[replay.index("--ramsey-windows") + 1] == "1,2,3,4,5,6"
+        and "--ramsey-windows is the ground Ramsey sweep" in case,
+        f"a ground Ramsey record's written command or case text omits the multiples: {replay}",
+    )
+    try:
+        diagnostic_experiments.n21_orbit_rca_group(415, 502, reset_dt=520, ramsey_windows=(1, 2))
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("the group accepted ramsey_windows without ground_control_split")
+    ceilings = ["--max-execution-seconds", "10", "--max-total-execution-seconds", "10"]
+    pinned = ["--pin-layout", f"{snapshot.name}:{','.join(str(q) for q in PINNED_ORBIT_LAYOUT)}"]
+    for argv, message in (
+        (
+            ["--family", "n21-orbit-rca", "--ramsey-windows", "1,2", "--init-herald", *pinned, *ceilings],
+            "--ramsey-windows requires --ground-control-split",
+        ),
+        (
+            ["--family", "n21-orbit-rca", "--ground-control-split", "--ramsey-windows", "2", *pinned, *ceilings],
+            "at least two distinct positive integer multiples",
+        ),
+        (
+            ["--family", "n21-orbit-rca", "--ground-control-split", "--ramsey-windows", "2,2", *pinned, *ceilings],
+            "at least two distinct positive integer multiples",
+        ),
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+            live_run.main(argv)
+        _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
+
+
+def _verify_ground_ramsey_sweep_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_ground_ramsey_sweep(snapshot)
+    print(
+        "QPU planning: a pinned n21-orbit-rca ground Ramsey sweep plans immediate and idle_ground at each idle "
+        "multiple, idles the control in |0> for m windows with a bare spectator idle and no control flow, binds "
+        "the sorted multiples in the configuration, policy and written command, and live_run refuses them "
+        "without --ground-control-split or with fewer than two distinct multiples"
+    )
+
+
 def _verify_ground_control_split_only() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
@@ -2912,8 +3099,15 @@ if __name__ == "__main__":
         action="store_true",
         help="run only the n21-orbit-rca ground-control-split contract",
     )
+    parser.add_argument(
+        "--ground-ramsey-sweep",
+        action="store_true",
+        help="run only the n21-orbit-rca ground Ramsey sweep contract",
+    )
     parsed = parser.parse_args()
-    if parsed.ground_control_split:
+    if parsed.ground_ramsey_sweep:
+        _verify_ground_ramsey_sweep_only()
+    elif parsed.ground_control_split:
         _verify_ground_control_split_only()
     elif parsed.overlap_split:
         _verify_overlap_split_only()

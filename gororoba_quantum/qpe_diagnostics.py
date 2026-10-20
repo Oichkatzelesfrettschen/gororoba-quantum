@@ -215,6 +215,30 @@ N21_SPECTATOR_SPLIT_KINDS = ("immediate", "idle", "reset_only")
 N21_SPECTATOR_GROUND_KINDS = ("immediate", "idle", "idle_ground")
 N21_SPECTATOR_BUILDABLE = ("measured", "immediate", "idle", "idle_ground", "reset_only")
 N21_SPECTATOR_QUADRATURES = ("x", "y")
+# The ground Ramsey sweep reads idle_ground at whole multiples of the
+# control's measure plus reset idle; a member's name carries its multiple
+# before the quadrature, n21_spectator_idle_ground_w<multiple>_<quadrature>,
+# so the single-idle split's kind parse (rsplit on the quadrature) never
+# reads a sweep member as idle_ground.
+N21_RAMSEY_PREFIX = "n21_spectator_idle_ground_w"
+
+
+def n21_ramsey_name(multiple: int, quadrature: str) -> str:
+    """Member name of the ground Ramsey sweep's idle_ground arm at an idle of multiple windows."""
+    if type(multiple) is not int or multiple < 1 or quadrature not in N21_SPECTATOR_QUADRATURES:
+        raise ValueError(f"a ground Ramsey member needs a positive integer multiple and a quadrature, not {multiple!r}")
+    return f"{N21_RAMSEY_PREFIX}{multiple}_{quadrature}"
+
+
+def n21_ramsey_multiple(name: str) -> tuple[int, str] | None:
+    """(multiple, quadrature) of a ground Ramsey sweep member name, or None for any other member."""
+    if not name.startswith(N21_RAMSEY_PREFIX):
+        return None
+    head, _, quadrature = name.removeprefix(N21_RAMSEY_PREFIX).partition("_")
+    if not head.isdigit() or int(head) < 1 or quadrature not in N21_SPECTATOR_QUADRATURES:
+        return None
+    return int(head), quadrature
+
 
 # The initialization herald measures every qubit into its own register before
 # the program and a barrier over all qubits follows it, so the labeled law
@@ -386,6 +410,7 @@ def n21_spectator_ramsey(
     measure_dt: int | None = None,
     reset_dt: int | None = None,
     init_herald: bool = False,
+    idle_multiple: int | None = None,
 ) -> QuantumCircuit:
     """Ramsey of logical qubit 2 across the orbit's control window, on the orbit's four logical qubits.
 
@@ -405,7 +430,9 @@ def n21_spectator_ramsey(
     barrier that follows qubit 2's readout. Qubit 2
     reads X (h) or Y (sdg, h) into clbit 1: the ideal law is
     n21_spectator_law. init_herald prepends the orbit's herald readouts
-    and barrier.
+    and barrier. idle_multiple, given for idle_ground only, makes the
+    member a ground Ramsey sweep arm: its control delay is idle_multiple *
+    (measure_dt + reset_dt) and its name is n21_ramsey_name.
     """
     if kind not in N21_SPECTATOR_BUILDABLE or quadrature not in N21_SPECTATOR_QUADRATURES:
         raise ValueError(f"unknown spectator kind {kind!r} or quadrature {quadrature!r}")
@@ -413,6 +440,8 @@ def n21_spectator_ramsey(
         raise ValueError(f"{kind} requires a positive integer measure_dt from calibration")
     if kind in ("idle", "idle_ground") and (type(reset_dt) is not int or reset_dt <= 0):
         raise ValueError(f"{kind} requires a positive integer reset_dt from calibration")
+    if idle_multiple is not None and (type(idle_multiple) is not int or idle_multiple < 1 or kind != "idle_ground"):
+        raise ValueError(f"idle_multiple {idle_multiple!r} applies to idle_ground as a positive integer only")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
     phase = ClassicalRegister(2, "phase")
@@ -435,7 +464,7 @@ def n21_spectator_ramsey(
         if kind in ("idle", "idle_ground"):
             if reset_dt is None:
                 raise AssertionError
-            circuit.delay(measure_dt + reset_dt, 0, unit="dt")
+            circuit.delay((idle_multiple or 1) * (measure_dt + reset_dt), 0, unit="dt")
         else:
             circuit.delay(measure_dt, 0, unit="dt")
             circuit.reset(0)
@@ -450,7 +479,8 @@ def n21_spectator_ramsey(
         # job; the barrier places it after that readout.
         circuit.barrier()
         circuit.reset(0)
-    circuit.name = f"n21_spectator_{kind}_{quadrature}" + ("_heralded" if init_herald else "")
+    name = f"n21_spectator_{kind}_{quadrature}" if idle_multiple is None else n21_ramsey_name(idle_multiple, quadrature)
+    circuit.name = name + ("_heralded" if init_herald else "")
     return circuit
 
 
