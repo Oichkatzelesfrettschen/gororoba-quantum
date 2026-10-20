@@ -353,10 +353,154 @@ two-level system. A ZZ shift from an excited neighbor is disfavored,
 because the all-zero herald selection removes shots with any pinned
 neighbor excited and reads the same beat. A dense sweep at about 0.25 us
 steps over 0 to 20 us resolves both components and df without aliasing;
-repeating it over hours separates a parity splitting, whose df stays fixed
-while the weights follow the parity occupation, from a TLS coupling, whose
-df drifts with the TLS frequency. A single-component decay at that
+repeating it over hours separates a parity splitting from a TLS coupling
+by the discriminators of the next section (a parity df moves with the
+offset charge, a TLS keeps g fixed). A single-component decay at that
 resolution falsifies the beat reading.
+
+## Beat models of qubit 143 (descriptive, post hoc)
+
+Everything in this section is descriptive: the models, the band and the
+design were chosen after the sweep was read, outside its preregistration.
+[beat-model.json](2026-10-20T031212.175942Z/beat-model.json) holds the
+analysis (scripts/n21_q143_beat_model.py; gate core-604 runs its planted
+self-check, core-605 regenerates the file byte for byte). The data are the
+all-zero herald-selected counts of the 14 PUBs.
+
+**Signal and readout.** Each model predicts S(t) = <X> + i<Y> = A e^(i phi)
+e^(-t/T) g(t) (t in us, frequencies in MHz, a level raised by E contributes
+e^(-2 pi i E t)). The measured mean is (1 - e0 - e1) mu + (e1 - e0) with
+e0 = prob_meas1_prep0 and e1 = prob_meas0_prep1 of qubit 143 (10 and 35
+counts of 4096 at execution start), carried as nuisances with their
+binomial calibration terms. The likelihood is binomial on every point's
+herald-selected zero count.
+
+| Model | g(t) | Parameters |
+|---|---|---|
+| single | e^(2 pi i f t) | A, T, phi, e0, e1, f (6) |
+| static | a e^(2 pi i f1 t) + (1 - a) e^(2 pi i (f1 + df) t), a >= 1/2 | + a, f1, df (8) |
+| telegraph | 1^T exp(M t) p, M = 2 pi i diag(f1, f1 + df) + W, p = (a, 1 - a), W stationary at p with total rate gamma | + gamma (9) |
+| tls | Lindblad, qubit x TLS, H = fq n_q + ft n_t + g (s+ t- + s- t+), qubit T1 (calibrated) and dephasing, TLS relaxation gamma_tls | + gamma_tls (9) |
+
+Telegraph returns static at gamma = 0 and narrows to the mean line,
+e^(2 pi i fbar t - a (1 - a) (2 pi df)^2 t / gamma), at gamma >> 2 pi |df|
+(Kubo-Anderson; self-check telegraph_limits). The closed exchange pair puts
+weight cos^2 theta and sin^2 theta on its two dressed lines in both TLS
+branches, so its Ramsey signal is static with Omega = sqrt(Delta^2 + 4 g^2)
+= |df|, Delta = df (2a - 1) and g = |df| sqrt(a (1 - a)), and the TLS
+thermal population p drops out exactly (self-check tls: p = 0 and p = 0.3
+agree to rounding). A three-level transmon couples |1, 1> to |2, 0>, which
+moves the warm signal by 4e-4 over 20 us at an assumed anharmonicity of
+-300 MHz, so p stays unidentified and the fits fix p = 0. tls departs from
+static only through the dissipative mixing of the dressed lines and, in a
+design with a Z read after an X preparation, through the population swap
+of depth 4 a (1 - a).
+
+**Lattice.** The idles are k T0, T0 = 836 dt = 3.344 us, f0 = 1 / T0 =
+299.04 kHz. Every model's prediction depends on e^(2 pi i f k T0) only
+through f mod f0 when the whole spectrum shifts (common mode, exact in all
+four models), and static and single also depend on df only mod f0 (exact;
+self-check aliases, gap 0). Telegraph and tls break the relative alias only
+at order gamma T0. X and Y together fix the sign of df: the heavier line's
+phase track is observed, so df -> -df (the twin of the visibility-only fit,
+89.8 versus 209.3 kHz) refits worse by 5434 in NLL.
+
+**Fits.** static: a = 0.6438 +- 0.0028, df = -90.00 +- 0.15 kHz (mod
+299.04), f1 = 24.88 +- 0.12 kHz (mod 299.04), T = 134 +- 6 us, A at its
+bound 1, e0 = 0.0020, e1 = 0.0080; deviance against the saturated model
+9.3 on 8 degrees of freedom. The lighter line's Ramsey frequency sits
+90.0 kHz below the heavier one's, modulo 299.04 kHz; its level energy
+sits that much above.
+
+| Model | NLL - static | 2 dNLL vs static | dAIC | dBIC | Bootstrap p (64 replicates) |
+|---|---|---|---|---|---|
+| single | +5827.0 | 11654 | +11650 | +11630 | below 1/65 (replicate max 6.9) |
+| static | 0 | -- | 0 | 0 | -- |
+| telegraph | -0.103 | 0.21 | +1.8 | +11.8 | 0.34 |
+| tls | -0.103 | 0.21 | +1.8 | +11.8 | 0.69 |
+
+The likelihood ratios are calibrated by parametric bootstrap from the
+fitted null, because single sits inside static at a = 1 with f2
+unidentified and static inside telegraph at the boundary gamma = 0.
+Telegraph (gamma = 0.0033 per us) and tls (gamma_tls = 0.019 per us) reach
+the same NLL at every alias to 1e-3: at these rates each acts as one
+differential damping of the two lines, which the data do not resolve.
+
+**Alias table.** Every df in |df| < 2 MHz ties under static (dNLL 0 to
+rounding); telegraph and tls separate them by at most 0.07 in NLL. g and
+Delta are the tls readings of each alias.
+
+| n | df (kHz) | static dNLL | telegraph dNLL | tls dNLL | g (kHz) | Delta (kHz) |
+|---|---|---|---|---|---|---|
+| -6 | -1884.3 | 0 | -0.089 | -0.089 | 903.5 | -534.0 |
+| -5 | -1585.2 | 0 | -0.090 | -0.090 | 760.1 | -449.3 |
+| -4 | -1286.2 | 0 | -0.091 | -0.091 | 616.7 | -364.5 |
+| -3 | -987.1 | 0 | -0.093 | -0.093 | 473.4 | -279.7 |
+| -2 | -688.1 | 0 | -0.096 | -0.096 | 330.0 | -194.9 |
+| -1 | -389.0 | 0 | -0.103 | -0.103 | 186.6 | -110.2 |
+| 0 | -90.0 | 0 | -0.090 | -0.090 | 43.2 | -25.7 |
+| 1 | 209.0 | 0 | -0.035 | -0.035 | 100.2 | 59.7 |
+| 2 | 508.1 | 0 | -0.062 | -0.062 | 243.6 | 144.4 |
+| 3 | 807.1 | 0 | -0.070 | -0.070 | 387.0 | 229.2 |
+| 4 | 1106.2 | 0 | -0.074 | -0.074 | 530.3 | 314.0 |
+| 5 | 1405.2 | 0 | -0.076 | -0.076 | 673.7 | 398.8 |
+| 6 | 1704.2 | 0 | -0.077 | -0.077 | 817.1 | 483.6 |
+
+**What the data decide.** Decided: two lines, not one (LR 11654); weights
+0.644 / 0.356; the sign of df (lighter line below the heavier one in the
+frame's convention); df = -90.00 kHz modulo 299.04 kHz; an envelope of
+134 us, near 143's calibrated T2 of 111 us, so both lines stay coherent
+over the 20 us sweep. Undecided: which alias n (13 in the band), the
+absolute frequencies modulo 299.04 kHz, and static versus telegraph versus
+tls (no rate is detected). Charge dispersion (Koch et al. 2007, eq. 2.18)
+over f01 4.5 to 5.4 GHz and E_C 0.28 to 0.34 GHz spans 10 kHz to 2.2 MHz,
+since Heron r2 properties publish neither frequency nor anharmonicity for
+143, so every alias fits the parity magnitude. Equal parity occupation
+predicts a = 1/2, and a = 0.644 sits 51 standard errors from it, so a
+parity reading needs an occupation imbalance; an exchange-coupled TLS
+takes a = (1 + |Delta| / Omega) / 2 without constraint.
+
+**Follow-up design** (design data under follow_up in beat-model.json;
+live_run and the planner carry no delay-member builder for it). Expected
+log-likelihood ratios come from Asimov counts: the closest alternative's
+minimum NLL on the truth's expected counts, which equals the summed
+binomial KL divergence. Delays are integer dt; one shot count per PUB.
+
+| Design | Members x shots | Rule (s) | Worst neighboring-alias LLR | tls vs static | static vs tls | telegraph gamma 0.01 / 0.03 / 0.1 per us |
+|---|---|---|---|---|---|---|
+| run_lattice (reference) | 14 x 12288 | 16.2 | 0 | 0.10 | 0.00002 | 1.9 / 14.3 / 86.4 |
+| dense: 0.252 us grid to 35.3 us, X Y | 282 x 512 | 15.1 | 4453 | 0.29 | 0.0000002 | 2.8 / 17.6 / 74.5 |
+| coprime_swap: 693 and 819 dt lattices, X Y Z | 69 x 2048 | 14.7 | 1599 | 25645 | 2646 | 1.7 / 11.1 / 46.0 |
+| coprime_swap_long: + 60 to 360 us | 81 x 2048 | 21.3 | 1771 | 26976 | 2763 | 3.3 / 14.0 / 46.2 |
+
+coprime_swap is the cheapest design that reaches 50 in every column the
+selection rule names: 23 delays (0, multiples of 693 dt to 8316 dt and of
+819 dt to 8190 dt; gcd 63 dt = 0.252 us, an unaliased complex band of
+3.97 MHz), X and Y after the |+> preparation and Z after an X preparation,
+2048 shots each. Its worst alias pair reads posterior odds 10^-694 at
+equal priors, the Z swap separates tls from static by 2646 to 25645, and
+at the static fit its Wald errors are a +- 0.0037, df +- 0.14 kHz, T +- 5
+us. A telegraph rate below about 0.03 per us stays undetected (LLR 11).
+The dense grid resolves the aliases but has no Z read and cannot separate
+tls from static.
+
+**Cost.** The rule 2.3 s + shots x (rep_delay 50 us + INIT/FINI 8.85 us +
+circuit duration) per member gives 16.2 s for the retained run, which was
+charged 15 s; its circuits_execution_time of 12.38 s equals shots x
+(rep_delay + duration) exactly, and the charge adds 2.62 s. coprime_swap
+reads 14.7 s by the rule and 13.8 s by the run's own execution-plus-offset
+measure.
+
+**Repeat in time.** Four coprime_swap runs at least 60 min apart (one
+calibration cycle each), 58.9 s by the rule. Charge parity predicts a near
+the same value each run, df moving with the offset charge within
+|eps1 - eps0|, and plain T1 decay in Z. A TLS predicts g = |df| sqrt(a (1 - a))
+fixed while Delta = df (2a - 1) and a wander with the TLS frequency, and Z
+swap oscillation at Omega = |df| with depth 4 a (1 - a), 0.92 at a = 0.644.
+Constant a, df and f1 with no Z swap leave a static splitting the models
+here do not name. Each per-run estimate enters a chi-square homogeneity
+test against its inverse-variance mean (3 degrees of freedom) at the
+follow-up case's family alpha.
 
 ## Mitigation
 
