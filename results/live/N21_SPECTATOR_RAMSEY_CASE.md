@@ -11,9 +11,10 @@ Ramsey visibility across one 836 dt (3.344 us) idle with the control 142
 held in |0>, and bounded the control-state-dependent ZZ share at about 11
 percent of the window loss. One exposure cannot separate a decay law or a
 coherent detuning. This sweep reads 143 in X and Y at seven exposures, 0 and
-1 to 6 windows of the control's measure plus reset idle (0, 3.344, 6.688,
-10.032, 13.376, 16.72, 20.064 us), with the control in |0> and its
-initialization herald conditioning every shot, and fits
+1 to 6 windows (0, 3.344, 6.688, 10.032, 13.376, 16.72, 20.064 us). A
+window is a length, 836 dt, equal to 142's calibrated measure plus reset
+durations; during it 142 idles in |0> and is neither measured nor reset.
+Every shot is conditioned on its initialization herald, and the sweep fits
 
     <X>(t) = b + A exp(-(t/T2*)^beta) cos(2 pi delta t + phi0)
     <Y>(t) = b + A exp(-(t/T2*)^beta) sin(2 pi delta t + phi0)
@@ -29,7 +30,7 @@ recovers the window loss.
 
 The quantity is a property of the physical qubit 143. The noise model that
 live_run.py builds from the calibration carries the reported T2 (110.9 us
-for 143 at the 2026-10-19T18:42:31-07:00 calibration), an echo time. The
+for 143 at the 2026-10-19T18:56:47-07:00 calibration), an echo time. The
 dry run's Aer prediction reads visibility 0.993 at every exposure out to
 20 us, while the retained hardware read 0.622 at 3.344 us: the decay this
 case measures is absent from every model the repository can build without
@@ -48,11 +49,16 @@ AGENTS.md criterion for IBM hardware below 16 qubits.
   in |0> between barriers, reads 143 in X (h) or Y (sdg, h), then resets the
   control behind a barrier. The delays are integers in dt from the Target's
   measure and reset durations of 142 (dt 4 ns, granularity 1, min_length 2).
+- Immediate point: the control is prepared in |+> (the split's immediate
+  arm, kept byte for byte) and the spectator's exposure is 0, so the
+  control's state cannot act on it; this point pins A and phi0.
 - Grid: a uniform lattice of one window. The largest exposure is 2.8 times
   the 7.2 us exponential T2* (4.1 times the 4.9 us Gaussian T) the retained
   point implies; the uniform spacing makes delta identifiable modulo
   1/3.344 us = 299 kHz, so |delta| < 149.5 kHz reads unaliased. Log spacing
-  would open a wider final gap and shrink that band. The retained point's
+  would open a wider final gap and shrink that band. The fold of delta into
+  that band holds only because the exposures are consecutive integer
+  multiples of one window. The retained point's
   phase turn, atan2 of idle_ground (0.615, 0.089) minus immediate
   (0.989, -0.008), is 0.151 rad, about 7 kHz modulo 299 kHz.
 - Shots: 12288 per PUB, 172,032 in all, `--rep-delay 5e-05`.
@@ -65,9 +71,11 @@ AGENTS.md criterion for IBM hardware below 16 qubits.
   residual excitation is measured and conditioned on rather than assumed.
   At the 250 us default the same 15 s buys about 56k shots, half the
   precision.
-- Cost: planner estimate 2.3 s job overhead + 11.20 s of shots x
-  (rep_delay + schedule) = 13.50 s. One unplanned sub-job split adds about
-  2 s and stays under 17 s.
+- Cost: the planner's estimate is 2.3 s job overhead + 11.20 s of shots x
+  (rep_delay + schedule) = 13.50 s. It omits the per-shot INIT/FINI
+  sequence of about 8.85 us, which adds 172,032 x 8.85 us = 1.52 s, so the
+  expected bill is about 15.0 s, and about 17 s if the service splits the
+  job once (about 2 s per sub-job). The planner is left unchanged.
 - Ceiling: `--max-execution-seconds 30`, 2.2 times the estimate, so an
   overrun of the per-shot model ends the job well past the expected lock
   time rather than at it; `--max-total-execution-seconds 30`,
@@ -86,12 +94,12 @@ AGENTS.md criterion for IBM hardware below 16 qubits.
 
 ## Dry run
 
-Record [2026-10-20T020214.648950Z](2026-10-20T020214.648950Z/record.json),
-planned from commit e0d435a with sources_modified false, under the
-2026-10-19T18:42:31-07:00 ibm_fez calibration (window_delay_dt 415,
+Record [2026-10-20T020939.118505Z](2026-10-20T020939.118505Z/record.json),
+planned from commit e1491b0 with sources_modified false, under the
+2026-10-19T18:56:47-07:00 ibm_fez calibration (window_delay_dt 415,
 reset_dt 421, so one window is 836 dt):
 
-- record.json sha256 `4f4b231fa5141019aae72d92753b130b85eb7deae0ca433012bdb06592b37a9d`
+- record.json sha256 `123dd1e06c815510ad5c9827e62d7cef332d3d496946f27f307a403685dca654`
 - isa.qpy sha256 `ed6094da6a282b2d5fc64ca678f63c107c565f1acc6eeddd701ac9b251c999dc`
 - one dynamic job, 14 PUBs of 12288 shots, estimated charge 13.50 s
   (11.20 s of shots, 0.677 s for an immediate PUB to 0.923 s at 6 windows)
@@ -101,7 +109,7 @@ reset_dt 421, so one window is 836 dt):
 ## Preregistered analysis
 
 `"$PYTHON" scripts/n21_spectator_ramsey.py RUN_DIR --out RUN_DIR/ramsey.json
---expected-analyzer-sha256 3744b701f3de5dfad448c9a458717733c679d1c0882c2624fbe5066d5129230b` after `--collect`, and
+--expected-analyzer-sha256 5dfa006d8387ad089c4360f878e0068752fd57018e8c71b80583cc6e4ef4a8a0` after `--collect`, and
 `--check` regenerates it from the archived raw files.
 
 1. Admissibility (returned scheduler timing): every member reads one
@@ -110,11 +118,20 @@ reset_dt 421, so one window is 836 dt):
    length with no pulse on the control before the readout; every member
    plays exactly two spectator pulses before its readout. A failure leaves
    every test not_admissible.
-2. Shots: only those whose initialization herald reads the control 0.
-3. Family alpha 0.05, Bonferroni over three events, 0.0167 each: the
-   spectator herald admission (n21_orbit_rca.herald_report over the 14
-   members on those shots), the detuning test and the decay-shape test. A
-   refused herald leaves both tests not_admissible.
+2. Shots (primary): only those whose initialization herald reads all four
+   pinned qubits 0. On the Fez coupling map
+   (docs/evidence/heron_platform/targets.json, cz qargs) 143 couples to
+   136, 142 and 144, every other pinned qubit, so an excited neighbor of
+   any role shifts 143's frequency by its ZZ; 136 and 142 are not coupled
+   to each other. The control-only selection (herald reads 142 0) is fitted
+   too and reported as secondary, descriptive.
+3. Family alpha 0.05, Bonferroni over three events, 0.0167 each: herald
+   admission on the primary shots, the detuning test and the decay-shape
+   test. On all-zero shots every herald bit reads 0, so the admission tests
+   the member spread of the rejected fraction (any pinned qubit heralds 1)
+   with n21_orbit_rca.herald_admission at herald_bound; a refusal leaves
+   both tests not_admissible. The per-bit spread over the control-zero
+   shots is reported descriptively.
 4. Fits: free beta, beta = 1 and beta = 2, each over all 28 binomial reads,
    starts spread over the alias band, the estimate of delta folded into it;
    Wald intervals from the expected Fisher information at the estimate.
@@ -125,7 +142,10 @@ reset_dt 421, so one window is 836 dt):
 6. Shape: the two-sided 0.0167 interval of beta; "exponential" if it holds
    1 and not 2, "gaussian" if 2 and not 1, "unresolved" if both, "neither"
    if neither. T2* is reported from all three fits; the verdict names
-   which one describes the decay.
+   which one describes the decay. The shape test's power assumes the
+   retained 7.2 us decay; a much shorter or longer T2* puts beta near a
+   bound or makes it weakly identified, and the Wald interval then reads
+   unresolved rather than a shape.
 
 Expected precision at the design (Fisher information at noise-free counts,
 `--design`, two-sided 0.0167 half-widths):
@@ -140,7 +160,9 @@ and a 7 kHz detuning, the retained point's phase reading, sits about four
 half-widths from 0.
 
 Self-check (gate core-601) plants: an exponential and a Gaussian truth
-reach their shapes with delta unresolved; a 40 kHz truth reads detuned; a
+reach their shapes with delta unresolved; a 40 kHz truth reads detuned; a 15 percent subpopulation heralding work
+bit 1 excited with a 0.1 MHz ZZ shift moves the control-only fit to beta
+0.71 and T2* 6.45 us while the all-zero fit stays at beta 1.000, T2* 7.200; a
 rz(+2 pi 0.03 MHz t) inserted into the built circuits reads +0.03 MHz; an
 added 30 percent of shots that herald the control 1 with a 0.3 MHz turn
 moves the unconditioned fit off the plant while the conditioned fit
@@ -165,11 +187,22 @@ From gororoba_quantum/, after approval:
   --reserve-seconds 0.0 --max-total-execution-seconds 30.0 \
   --init-herald --ground-control-split --ramsey-windows 1,2,3,4,5,6 \
   --pin-layout ibm_fez:142,136,143,144 --out ../results/live --submit \
-  --approved-record ../results/live/2026-10-20T020214.648950Z/record.json \
-  --approved-record-sha256 4f4b231fa5141019aae72d92753b130b85eb7deae0ca433012bdb06592b37a9d
+  --approved-record ../results/live/2026-10-20T020939.118505Z/record.json \
+  --approved-record-sha256 123dd1e06c815510ad5c9827e62d7cef332d3d496946f27f307a403685dca654
 ```
 
 ## Failure modes considered
+
+- Herald readout back-action: every shot starts with readouts of all four
+  qubits, and the readout resonator ringdown, its AC-Stark shift and
+  measurement-induced dephasing after the herald act on 143 at the start
+  of its Ramsey. That is a named confound of the short T2* against the
+  110.9 us echo T2: a time-dependent shift during the first microseconds
+  shows as beta below 1 or a "neither" shape, and a constant phase it
+  imparts is absorbed into phi0. The separating follow-up arm repeats the
+  sweep with a fixed idle inserted between the herald barrier and 143's
+  preparation (or without the herald); a confound moves the early points
+  and beta, an intrinsic decay does not.
 
 - 1305 ceiling cancellation: 30 s ceiling against 13.5 s expected; the
   50 us delay has completed on Heron r2 jobs of this account.
