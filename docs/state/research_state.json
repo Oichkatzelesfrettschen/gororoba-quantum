@@ -1162,6 +1162,41 @@
       "run": "results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1",
       "family": "BDSC qualification pipeline on sim:belenos",
       "question": "does a rerun of the provider-default job complete after the first ended in Worker timeout?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-tc-def-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job tc-def-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-tc-none-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T162332Z-qpu_belenos-bdsc_qualification-tc-none-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job tc-none-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-mm-def-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T162656Z-qpu_belenos-bdsc_qualification-mm-def-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job mm-def-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-mm-none-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T165036Z-qpu_belenos-bdsc_qualification-mm-none-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job mm-none-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-ascella-bdsc-control",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00",
+      "family": "BDSC six-state control on qpu:ascella",
+      "question": "does the same six-state linear-effect test, on a 12-mode union circuit, hold on Ascella?"
     }
   ],
   "claims": [
@@ -6495,6 +6530,71 @@
       "gates": {},
       "acquisitions": [
         "qd-qpu-belenos-bdsc-queue-test"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-epoch1-sum-rules-fail",
+      "statement": "In epoch 1 of the frozen BDSC qualification case on qpu:belenos (jobs 2524f061, b5bdf7f2, 2bc57917, 6d2dac12; 48 settings, 300000 samples each, every iteration's parameters and seed echoed, at most 0.06 % excluded by the one-click rule, 1.6 credits per job) the within-cell sum rules p(+) + p(-) = p(f) + p(g) read 9 violated, 4 inconclusive and 3 compatible of 16 at margin 0.02 on the case's simultaneous Clopper-Pearson event restricted to epoch 1. Under the empty mitigation list the target-complement pair reads f 0.002 to 0.004 and g 0.986 against ideal 0 and 1 while all eight superposition states read 0.375 to 0.437 against 0.5; the cross-template contrasts read 13 compatible, 5 violated and 6 inconclusive of 24. Only the empty-list job returned zero-click outcomes (25 to 140 per iteration), so the provider-default route processes what it returns.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Epoch 1 alone, read before the frozen readout: the case decides only on all 96 observations across both epochs, and admission waits on the provider-contract answers, so this is no qualification verdict. A violated sum rule says the prepared states differ from the requested ones for any fixed effect; attributing it to the compiled mesh's phases rather than the detection stage is an inference the design does not isolate.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1/results.json",
+          "sha256": "e61a04042bfb7377847a588f6eef501fa1979d9cd506f305630380b62bda4e01"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T162332Z-qpu_belenos-bdsc_qualification-tc-none-e1/results.json",
+          "sha256": "ff175522cb3a6a1958c58d8ecf9f1406ad4ede02c3b8ff826a2b98eb3a5b02b2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T162656Z-qpu_belenos-bdsc_qualification-mm-def-e1/results.json",
+          "sha256": "ef91a8811fa3bc466448c1bce86407d3fe710af2e5ef13c178e6ab8861b3ce76"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T165036Z-qpu_belenos-bdsc_qualification-mm-none-e1/results.json",
+          "sha256": "e8f1e8fb944550720b9bfcb58649f49517fcadebeb825ab1e249ded647a83a25"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-mm-def-e1",
+        "qd-qpu-belenos-bdsc-mm-none-e1",
+        "qd-qpu-belenos-bdsc-tc-def-e1",
+        "qd-qpu-belenos-bdsc-tc-none-e1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-ascella-input-port-configuration-error",
+      "statement": "A 12-iteration template job on qpu:ascella (c2edef5d, 2026-10-21 20:34 UTC, platform reading available) ended in error 1 s after starting with failure_code RUNTIME ERROR and 'hardware_info.circuit_input_ports must be defined in the hardware_config to use Instruments.set_pic_input()', every iteration answering that text instead of counts; it was charged nothing (qpu:ascella 0.0 credits for 1 job).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job; the message names the instrument layer's photon-input step, which every Ascella job takes, but whether other job forms fail the same way at this time is not tested.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00/results.json",
+          "sha256": "2f04069c346486a4c6c9bc1e0bacea4dfba76a4d75029f0affb61a952ad36e75"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/calibration.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-ascella-bdsc-control"
       ],
       "assumptions": [],
       "depends_on": [],
