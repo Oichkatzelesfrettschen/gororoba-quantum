@@ -50,6 +50,13 @@
    "status": "partially recorded"
   },
   {
+   "capability": "processor_record_completeness",
+   "evidence": "qpu:belenos records of 2026-10-20 and 2026-10-21 lack specs.architecture, commands, default_mitigations, known_mitigations and type at unchanged software versions, while qpu:ascella and sim:belenos carry them (docs/notes/quandela/calibration.md open item 1); Perceval then treats requested mitigations as unknown and the server default as none",
+   "milestones": "M2, M3",
+   "question": "Why does the qpu:belenos processor record omit these five fields, and which mitigations does the server apply when a request carries none?",
+   "status": "unsupported since 2026-10-20"
+  },
+  {
    "capability": "acceptance_calibration",
    "evidence": "the receipt t_out taken as efficiencies gives delta about 0.97 and contradicts the detected light; off-cone clicks have no model",
    "milestones": "M3",

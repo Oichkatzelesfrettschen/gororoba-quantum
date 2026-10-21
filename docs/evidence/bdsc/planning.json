@@ -75,7 +75,7 @@
   "alpha": 0.01,
   "margin": 0.05,
   "rule": "n >= 8 log(12 / alpha) / m^2: six probabilities under a union bound, four per residual",
-  "scope": "a conservative illustration; exact Clopper-Pearson at the observed probabilities needs fewer",
+  "scope": "the n at which the residual half-width equals the margin, a floor with no power: a compatible reading also needs the estimate inside the remaining band; qualification_case.json's power table sets n",
   "trials_per_preparation": 22689
  },
  "five_space_witness": {
