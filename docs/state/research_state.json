@@ -6454,7 +6454,8 @@
         "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
       ],
       "gates": {
-        "core-617": "replay"
+        "core-617": "replay",
+        "core-619": "replay"
       },
       "acquisitions": [
         "fez-n21-q143-segmented-sweep"
@@ -6472,7 +6473,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The run substituted qubit 47 for 143 under the q143 case's approval; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
+      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
       "evidence": [
         {
           "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
@@ -6486,7 +6487,9 @@
       "documents": [
         "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-620": "replay"
+      },
       "acquisitions": [
         "marrakesh-n21-q47-segmented-baseline"
       ],

@@ -182,8 +182,9 @@ admits ibm_fez's queue (156 pending at the dry run).
 ## Execution
 
 ibm_fez held 1,480 to 1,730 pending jobs from 03:48Z on 2026-10-21, above
-the case's `--max-pending 250`. The approval was carried to ibm_marrakesh,
-which shares the Heron r2 156-qubit numbering: star 142,136,143,144 and
+the case's `--max-pending 250`. Before any submission the owner approved
+the move: "Choose kingston or marrakesh; the hardware specs are the same."
+The run went to ibm_marrakesh, which shares the Heron r2 156-qubit numbering: star 142,136,143,144 and
 137,148,147,146 met calibration exclusions there, and the dry run
 2026-10-21T042551.694368Z (record.json sha256
 9bc5c743165853b7fa861ff726c63dbc8b8c1c03161a17e8776c4e0f243054c8) pinned

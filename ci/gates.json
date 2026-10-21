@@ -1551,6 +1551,24 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "workers": "all",
+   "name": "core-619",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --check --against results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
+   "seconds": 480.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "workers": "all",
+   "name": "core-620",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --check --against results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
+   "seconds": 480.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONWARNINGS=error \"$PYTHON\" patch_characterization.py",
    "name": "core-193",

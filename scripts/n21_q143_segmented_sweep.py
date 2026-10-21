@@ -51,7 +51,9 @@ gaps between idles enter the model as scheduled.
 --design OUT writes the design trade table; RUN_DIR writes
 RUN_DIR/segmented-sweep.json and --check requires equal bytes. An analyzer
 whose closure differs from the one the record binds writes its amended
-analysis beside it as segmented-sweep-<closure digest>.json. The planted
+analysis beside it as segmented-sweep-<closure digest>.json; --check
+--against FILE requires a fresh analysis to equal FILE in every field but
+the analyzer identity (IDENTITY). The planted
 truths live in tests/scripts/test_n21_q143_segmented_sweep.py.
 """
 
@@ -1190,6 +1192,12 @@ def sample(model: str, params: list[float], points: list[Point], rng: np.random.
     return drawn
 
 
+# The fields naming the analyzer that wrote a report rather than its result;
+# --against compares an amended analysis without them, so a closure change
+# elsewhere in gororoba_quantum leaves its replay standing.
+IDENTITY = ("analyzer_closure", "preregistered", "amendment")
+
+
 def retained_name(analysis: dict[str, Any]) -> str:
     """RETAINED for the analyzer the record binds; an amended analyzer's output carries its closure digest.
 
@@ -1209,6 +1217,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run", nargs="?", type=Path)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--against",
+        type=Path,
+        help="with --check, a retained amended analysis whose every field but the analyzer identity must regenerate",
+    )
     parser.add_argument("--design", type=Path, help="write the design trade table here")
     parser.add_argument("--design-check", type=Path, help="require this retained design table to regenerate")
     args = parser.parse_args(argv)
@@ -1226,6 +1239,14 @@ def main(argv: list[str] | None = None) -> int:
     analysis = report(args.run)
     text = serialize(analysis)
     target = args.run / retained_name(analysis)
+    if args.check and args.against is not None:
+        retained = json.loads(args.against.read_text())
+        fresh = json.loads(text)
+        if {k: v for k, v in retained.items() if k not in IDENTITY} != {
+            k: v for k, v in fresh.items() if k not in IDENTITY
+        }:
+            raise RuntimeError(f"{args.against} differs from a fresh analysis outside the analyzer identity")
+        return 0
     if args.check:
         if target.read_text() != text:
             raise RuntimeError(f"{target} differs from a fresh analysis")
