@@ -1270,28 +1270,29 @@ def template_unitary(ops: list[TemplateOp], params: np.ndarray) -> np.ndarray:
 def template_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
     """Angles that put |column_m|^2 on every mode m, then phases that give each mode the column's argument.
 
-    A ladder splitter whose carrier holds weight W keeps cos^2(theta/2) = |c_m|^2 / W on mode m and passes the rest
-    on; the left split of outward-ladder sends sin^2(theta/2) = sum_(m < source) |c_m|^2 to the left ladder.
+    A ladder splitter keeps cos^2(theta/2) of its carrier's weight on mode m and passes sin^2(theta/2) on, so
+    theta = 2 atan2(sqrt(passed), sqrt(kept)) with both weights summed directly from the column; the left split of
+    outward-ladder passes the weight of every mode below the source. atan2 of the two square roots keeps full
+    precision where acos or asin of a ratio near 1 would lose half its digits.
     """
     weight = np.abs(column) ** 2
     ops = template_ops(name, source)
     params = np.zeros(sum(1 for _, _, k in ops if k is not None))
 
-    def angle(keep: float, carried: float) -> float:
-        return 0.0 if carried <= 1e-15 else 2 * math.acos(math.sqrt(min(1.0, max(0.0, keep / carried))))
+    def angle(passed: float, kept: float) -> float:
+        return 2 * math.atan2(math.sqrt(passed), math.sqrt(kept)) if passed + kept > 0 else 0.0
 
     slots = iter(k for kind, _, k in ops if kind == "BS" and k is not None)
     if name == "outward-ladder":
-        left = float(weight[:source].sum())
         if source > 0:
-            params[next(slots)] = 2 * math.asin(math.sqrt(min(1.0, left)))
+            params[next(slots)] = angle(float(weight[:source].sum()), float(weight[source:].sum()))
         for m in range(source - 1, 0, -1):
-            params[next(slots)] = angle(float(weight[m]), float(weight[: m + 1].sum()))
+            params[next(slots)] = angle(float(weight[:m].sum()), float(weight[m]))
         for m in range(source, MODES - 1):
-            params[next(slots)] = angle(float(weight[m]), float(weight[m:].sum()))
+            params[next(slots)] = angle(float(weight[m + 1 :].sum()), float(weight[m]))
     else:
         for m in range(MODES - 1):
-            params[next(slots)] = angle(float(weight[m]), float(weight[m:].sum()))
+            params[next(slots)] = angle(float(weight[m + 1 :].sum()), float(weight[m]))
     reached = template_unitary(ops, params)[:, source]
     for kind, m, k in ops:
         if kind == "PS" and k is not None and abs(column[m]) > 1e-12:
@@ -1315,7 +1316,7 @@ def _case_bank(item: CaseItem) -> dict[str, Any]:
         body = {}
         for name in PREPARATION_DESCRIPTIONS:
             w = template_unitary(template_ops(name, source), template_params(name, column, source))
-            require(np.allclose(w[:, source], column, atol=1e-12), f"{name} template misses the column")
+            require(np.allclose(w[:, source], column, rtol=0, atol=1e-12), f"{name} template misses the column")
             body[name] = np.delete(w, source, axis=1)
         rows.append(
             {
@@ -1848,8 +1849,10 @@ def self_test() -> int:
             reached = {}
             for name in PREPARATION_DESCRIPTIONS:
                 w = template_unitary(template_ops(name, source), template_params(name, column, source))
-                require(np.allclose(w.conj().T @ w, np.eye(MODES), atol=1e-12), f"self-test: {name} not unitary")
-                require(np.allclose(w[:, source], column, atol=1e-12), f"self-test: {name} misses the column")
+                require(
+                    np.allclose(w.conj().T @ w, np.eye(MODES), rtol=0, atol=1e-12), f"self-test: {name} not unitary"
+                )
+                require(np.allclose(w[:, source], column, rtol=0, atol=1e-12), f"self-test: {name} misses the column")
                 reached[name] = w
             first, second = reached.values()
             require(not np.allclose(first, second), "self-test: the two templates coincide")
