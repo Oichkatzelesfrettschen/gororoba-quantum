@@ -141,7 +141,8 @@ and 0.96 of draws), lowering the mean distance from 0.133 to 0.081
 beyond their idle budgets c_idle of 2.14 and 1.84 (`idle_budget.json`,
 which now covers the six new runs that returned shots), and the distance
 still sits seven to eight times above the resample floor. core-339 reads
-the five parts.
+the five parts, and core-614 (full tier) reruns the two orbit-window fits
+on the CPU.
 
 ## Prediction for sweep part a
 

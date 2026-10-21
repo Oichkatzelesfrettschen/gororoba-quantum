@@ -36,6 +36,12 @@
       "results/live/2026-10-19T170620.832658Z/**",
       "docs/evidence/heron_platform/targets.json"
     ],
+    "core-614": [
+      "docs/evidence/ghost_error_scale/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-19T151959.226467Z/**",
+      "results/live/2026-10-19T170620.832658Z/**"
+    ],
     "core-603": [
       "results/live/2026-10-20T031212.175942Z/**"
     ],

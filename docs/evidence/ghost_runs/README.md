@@ -84,8 +84,8 @@ branch-resolved law (`member_law` `exact_multinomial`), since a 100000-shot
 dynamic PUB costs about an hour per snapshot under Aer. The Kingston
 states column counts the new snapshot, and with those 19 runs the
 report's correlations read -0.52 for CZ and +0.28 for readout, CZ error
-higher now on 11 of 19, CZ-free runs included in the CZ figure (the second
-merge below updates them and excludes those runs). The readings below describe the 14 kernel runs under the
+higher now on 11 of 19, including runs executed after the current
+snapshots and CZ-free runs (the second merge below excludes both). The readings below describe the 14 kernel runs under the
 2026-10-16 snapshot set; the new Kingston snapshot widens their state
 ranges to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), beyond
 the 0.001 to 0.032 the first reading states.
@@ -98,10 +98,15 @@ four Kingston init-control runs that requested a 0 us repetition delay, or
 each with `no job of the run returned shots`. The six that returned shots reproduce
 their recorded replays within 0.0056 TV (mean |ghost - recorded|, 0.0005 on
 the two 148-member 20 us control runs), and every retained calibration of
-their backend moves their predicted distance by at most 0.008 TV. With 25
-ghosted runs the report's readout correlation reads +0.29. The CZ
-correlation counts only the 16 runs whose ghosted circuits play CZ (a
-CZ-free run records no CZ change): -0.15, CZ error higher now on 12 of 16.
+their backend moves their predicted distance by at most 0.008 TV.
+
+The current snapshots (2026-10-15) predate the execution of the eleven runs
+of 2026-10-18 to 2026-10-20, so their "current minus execution" column
+compares an older calibration with the one they ran under, and the report
+keeps them out of its correlations (`executed_after_current`). The
+correlations therefore cover the 14 kernel runs: readout +0.32, and CZ
+-0.30 over the 13 whose ghosted circuits play CZ (a CZ-free run, here
+2026-10-15T070847, records no CZ change), CZ error higher now on 9 of 13.
 
 The recovered Kingston wide-control acquisition keeps its submitted circuits
 and raw counts but no planning record, so its members cannot be rebuilt and
@@ -135,9 +140,10 @@ under two calibrations, hence two execution means.
   2 standard error mark is a normal approximation; 2026-10-13T080216 rests
   on 2 PUBs, so its -2.3 is the weakest of the ten.
 - **Whether a noisier model fits better is not settled.** On the qubits
-  each run used, today's mean CZ error is higher on 10 of 14 runs, and its
-  change correlates with the distance change at -0.31. The readout change
-  correlates at +0.32, the opposite sign (report.json `correlations` and
+  each run used, today's mean CZ error is higher on 9 of the 13 runs whose
+  circuits play CZ, and its change correlates with the distance change at
+  -0.30. The readout change correlates at +0.32 over the 14, the opposite
+  sign (report.json `correlations` and
   each run's `calibration_change`, taken on the qubits of the ghosted
   members, against the snapshot most of them ran under). Fourteen runs cannot separate
   these. A sweep that scales the model's gate and readout errors by a
