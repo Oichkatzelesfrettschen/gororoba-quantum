@@ -287,7 +287,7 @@ leftmost; `scripts/box_kite_analysis.py` judges them
 ## Do a Ry emulator run
 
 A Ry run spends no metered quota and still waits for the owner's approval of
-a written case (root AGENTS.md, "Quantum Inspire").
+a written case (root AGENTS.md, "Hardware services").
 
 1. Write the case. No generator emits a Ry case; a new one follows the
    pattern of the others (a `cases.json` with `backend` `Rydberg`,

@@ -26,7 +26,7 @@ unchanged, with ROCQ pointing at the built executable:
   (GOROROBA_ROOT set to the clone),
 - folding_proofs/replay_rocq.sh when ``--folding`` is given, whose complete
   stdout must equal the retained folding_proofs/rocq_replay.log,
-- the TargetFlipN21 procedure of AGENTS.md: ``rocq compile -q -w +all``, no
+- the TargetFlipN21 procedure of ci/AGENTS.md: ``rocq compile -q -w +all``, no
   warning, ``rocq check -silent -o``.
 
 ``--out FILE`` receives the toolchain identity, the build and replay wall

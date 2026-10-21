@@ -1,7 +1,7 @@
 # gororoba-quantum
 
 Quantum circuits whose structure comes from the open_gororoba Cayley-Dickson
-algebra kernel, targeting IBM Quantum Heron backends. Left multiplication by a
+algebra kernel, targeting IBM Quantum Heron r2 backends. Left multiplication by a
 basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
 observables.

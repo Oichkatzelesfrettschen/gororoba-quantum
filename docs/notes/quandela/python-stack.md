@@ -96,7 +96,7 @@ installed.
 
 ### 1.4 Hypercomplex, quaternion and Clifford packages
 
-Relation to `cd_core` is in [AGENTS.md](../../../AGENTS.md) and one note per
+Relation to `cd_core` is in [docs/notes/algebra_circuit_rules.md](../algebra_circuit_rules.md) and one note per
 package under [../packages/](../packages/README.md).
 
 | Distribution | Import | Version | Role |

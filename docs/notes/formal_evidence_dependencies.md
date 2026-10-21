@@ -296,7 +296,7 @@ SPAM adds parameters and, in gate-set methods, gauge freedom.
 The [Rudinger instrument-GST source](2103.03008.md) supplies the relevant
 experimental framework. The [Wysocki source](2602.03938.md) studies an
 interpretable small-Markovian-error model; it does not attribute the retained
-Heron discrepancy. A tomography plan needs preparation/measurement rank
+Heron r2 discrepancy. A tomography plan needs preparation/measurement rank
 checks, CP/TP constraints, leakage/outcome completeness, gauge interpretation,
 an uncertainty metric, drift/Markov tests and held-out predictive checks.
 If a finite Markovian instrument cannot explain context dependence, inspect

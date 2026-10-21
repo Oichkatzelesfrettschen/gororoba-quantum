@@ -17,7 +17,7 @@ Every number below comes from one of three sources, named on each line:
 Status, queue length and heartbeat are snapshot values that change between
 reads (Tuna-17 read `executing`, `calibrating` and `benchmarking` within half an hour); limits,
 gate sets, topology and compiler passes are the structural facts that
-AGENTS.md carries under gate core-347.
+the README carries under gate core-347.
 
 ## Summary
 
@@ -52,7 +52,7 @@ Every type reports `max_jobs_per_batch_job` 5 and `batchjobs_per_queue_limit`
 [faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). On hardware
 the repository applies the reading that satisfies the FAQ whether its "job"
 means a batch or a circuit: at most three circuits per batch and one queued
-batch at a time (`qi_platform.py submit`, root AGENTS.md "Quantum Inspire").
+batch at a time (`qi_platform.py submit`, the README "Binding rules").
 
 Backend instances behind the types (API `/backends`): QX emulator (Cloud),
 Spin-2+ (TU Delft, offline, last heartbeat 2025-12-10), Starmon-7 (TU Delft,

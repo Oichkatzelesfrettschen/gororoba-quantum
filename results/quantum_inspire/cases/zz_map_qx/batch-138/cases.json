@@ -150,7 +150,7 @@
  "source_digests": {
   "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
   "qx_builder_sha256": "3b12db9131033a3663f37920b159e62b940c2e87ef9db10663893216cf67ff8d",
-  "source_tuna_plan_sha256": "5984166c73f3309c1eea39b967c0d71c971d6a6cf724594573efd8af64d13d40"
+  "source_tuna_plan_sha256": "b588c2d7c623841b5801fb7715779cefa88d3ee29f59cc9d7b856a761d174a25"
  },
  "status": "proposed_not_submitted"
 }

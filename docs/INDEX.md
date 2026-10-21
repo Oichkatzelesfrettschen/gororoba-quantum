@@ -347,7 +347,7 @@ The [execution-guide note](notes/ibm-runtime-execution-guides.md) records nine I
 (workload usage, stretch, Sampler options, Sampler inputs and outputs, run-time minimization,
 the client-side Sampler API, real-time backend-property refresh, circuit timing and execution modes) with retrieval SHA-256 and the use each page is cited for.
 
-The [Heron platform note](notes/ibm_heron_platform.md) records the live Targets of ibm_fez, ibm_kingston and ibm_marrakesh
+The [Heron r2 platform note](notes/ibm_heron_platform.md) records the live Targets of ibm_fez, ibm_kingston and ibm_marrakesh
 (measurement variants, xslow, alignment, repetition-delay range, fractional-gate errors) retained in
 [targets.json](evidence/heron_platform/targets.json), and nine further IBM pages (billing, repetition rate, calibration,
 fractional gates, stretch, circuit timing, processor types, dynamic circuits, runtime release notes) with retrieval SHA-256.
@@ -366,7 +366,7 @@ and client-side restriction of the installed qiskit-ibm-runtime 0.50.0 in
 (max_shots, rep_delay range, measure_2, fractional angle bounds) in
 [backends.json](evidence/ibm_runtime_options/backends.json), and states the configuration per workload type with the
 gaps between live_run.py and it.
-The [Heron tile packing note](notes/heron_spatial_multiprogramming.md) packs guard-banded tiles on the
+The [Heron r2 tile packing note](notes/heron_spatial_multiprogramming.md) packs guard-banded tiles on the
 snapshot coupling map, composes one circuit per tile into one wide circuit, and states per-backend RZZ and
 repetition-delay arithmetic from Target values, audited in
 [spatial_multiprogramming_audit.json](evidence/heron_platform/spatial_multiprogramming_audit.json).
@@ -381,4 +381,4 @@ Steffen 2006 and Hofheinz 2009 superconducting tomography papers.
 The [hypercomplex and anyon Crossref note](notes/hypercomplex_quantum_crossref_records.md) binds the
 versions of record of the hypercomplex-theory exchange and the two non-Abelian anyon experiments.
 The [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md) retains the arithmetic behind the
-algebra circuit design rules of AGENTS.md.
+algebra circuit design rules of docs/notes/algebra_circuit_rules.md.

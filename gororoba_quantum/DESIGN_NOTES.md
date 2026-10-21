@@ -5,7 +5,7 @@ algebra kernel. Left multiplication L_{e_m} by a basis unit is a signed
 permutation of the 2^k basis states (e_p * e_q = cd_sign(dim,p,q) e_{p XOR q}),
 so it is unitary on k qubits. The designs turn two algebraic defects that the
 kernel measures classically -- the octonion associator and sedenion zero
-divisors -- into hardware observables on the 156-qubit Heron backends, and
+divisors -- into hardware observables on the 156-qubit Heron r2 backends, and
 extend each into a family: the associator into a Walsh spectrum along the
 doubling ladder (design C), the zero divisor into a phase-resolved fringe
 (design D).

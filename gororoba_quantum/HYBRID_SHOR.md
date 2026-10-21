@@ -1,9 +1,9 @@
-# Hybrid Shor architecture for IBM Heron
+# Hybrid Shor architecture for IBM Heron r2
 
 This repository now carries a bounded, end-to-end Shor decomposition. The
 classical host performs deterministic preprocessing, coefficient extraction,
 resource admission, exact order validation, and factor extraction. An IBM
-Heron backend receives only the semiclassical order-finding circuit selected
+Heron r2 backend receives only the semiclassical order-finding circuit selected
 after live calibration and compilation. The implementation submits a circuit
 only through `live_run.py --submit`, after the written approval gate in
 `AGENTS.md`.

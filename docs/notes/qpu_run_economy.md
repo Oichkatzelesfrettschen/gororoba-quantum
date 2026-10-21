@@ -226,7 +226,7 @@ properties, the dry-run Sampler), numpy (the exact law in
 with one BLAS thread per worker. python-flint, the p-adic and wheel
 arithmetic, and the hypercomplex packages validate least-squares
 conditioning and the Cayley-Dickson algebra (numerics_best_practice.md,
-AGENTS.md); order finding for N = 21 has no Cayley-Dickson content, so
+docs/notes/algebra_circuit_rules.md); order finding for N = 21 has no Cayley-Dickson content, so
 none of them enters its law. The Quantum Inspire QX emulator checks the
 deferred-measurement form of the same circuits (gate core-499) and runs no
 part of the IBM plan.

@@ -673,7 +673,7 @@ within-shot dependence.
 
 ## Verification and sources
 
-The [repository gates](../AGENTS.md#layout-and-gates) run the exact labeled
+The [repository gates](../ci/AGENTS.md#layout-and-gates) run the exact labeled
 QPE checks, standalone optimizer checks, and fake-backend planning
 contracts. The planning checks cover the shared initial mapping,
 per-phase calibrated delay sites, complete static/dynamic job accounting, shot-tier

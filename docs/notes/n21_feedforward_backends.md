@@ -281,7 +281,7 @@ contract on the
 Spark balance: low, set by the unrouted CZ count, by IQM's unknown f (the
 fitted 0.564 to 0.759 transfers no bound), and by whatever removed the effect on
 Heron r2. A Kingston diagnostic that identifies that channel raises this
-rating if it is Heron-specific and lowers it if it is generic to mid-circuit
+rating if it is Heron r2-specific and lowers it if it is generic to mid-circuit
 measurement. The cost
 ordering (Spark before paid Public credits) has high confidence, as it follows
 from the stated rates. No contrast ordering survives

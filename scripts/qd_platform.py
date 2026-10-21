@@ -34,7 +34,7 @@ Subcommands:
   every one read-only except MCP_MUTATING. With --agents it renders
   facts_table and requires each FILE's quandela-facts markers to enclose
   exactly that table, so a refreshed snapshot that changes a limit, a
-  command set or a price fails until AGENTS.md and the Quandela README change
+  command set or a price fails until the Quandela README changes
   with it, and a FILE whose table lists qd_ tools must list exactly
   MCP_TOOLS. Status, performance figures, availability statistics, maintenance
   windows and software versions change between reads and stay out of the
@@ -1805,7 +1805,7 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
 def self_test() -> None:
     root = Path(__file__).resolve().parent.parent
     source = root / "docs" / "evidence" / "quandela"
-    guides = (root / "AGENTS.md", root / "docs" / "notes" / "quandela" / "README.md")
+    guides = (root / "docs" / "notes" / "quandela" / "README.md",)
     check(source, list(guides))
 
     def rewrite(path: Path, change: Callable[[Any], None]) -> None:
@@ -1844,8 +1844,8 @@ def self_test() -> None:
         "photons off the connected modes": catalogue(lambda c: qpu(c)["constraints"].update(max_photon_count=1)),
         "negative price": catalogue(lambda c: c["explorer_platforms"][0].update(price_per_shot=-1)),
         "missing availability counter": catalogue(lambda c: c["account"]["availability"].pop("max_jobs_in_queue")),
-        "edited table": text("AGENTS.md", "| credits per shot |", "| price |"),
-        "stale row": text("AGENTS.md", END, "| stale | row |\n" + END),
+        "edited table": text("README.md", "| credits per shot |", "| price |"),
+        "stale row": text("README.md", END, "| stale | row |\n" + END),
         "README table drops a tool": text("README.md", "| `qd_usage` |", "| usage |"),
         "README drops the tool table": drop_tool_rows,
         "server adds a submit tool": text(

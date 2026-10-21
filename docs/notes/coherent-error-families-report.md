@@ -214,7 +214,7 @@ Readings, per family:
   statement of the spectator state during frequency calibration, or a
   conditional Ramsey run with the partner held in |0>
   (`proposed-conditional-ramsey-hamiltonian`). No repository source gives
-  a static-ZZ magnitude for these Heron couplers, so whether rates of 6 to
+  a static-ZZ magnitude for these Heron r2 couplers, so whether rates of 6 to
   37 kHz are plausible is unsourced.
 - **Joint detuning + ZZ** depends on the frame only through the detuning
   block. With central detuning slopes, the two frames span the same columns

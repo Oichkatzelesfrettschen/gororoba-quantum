@@ -19,7 +19,7 @@ fixed-pair associator witness `U_L^T U_R` as the expected diagonal sign matrix
 on all 256 pairs; the 1848 non-associating
 triples among 4096; the Hadamard-test measurement basis; and a complex-linear
 zero divisor of an associative subalgebra. The algebra circuit design rules
-in the root AGENTS.md cite these results.
+in docs/notes/algebra_circuit_rules.md cite these results.
 
 Gate sources-242 checks the four files against SHA256SUMS, and gate
 sources-240 reruns the audit and compares its printed JSON with `audit_results.json` byte for byte:

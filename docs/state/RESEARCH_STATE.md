@@ -498,7 +498,7 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-040.
 - **algebra-circuit-fixtures** (circuit-conformance check, implementation). The designs.py builders pass the zero-product, Hadamard-basis and workspace fixtures: the dark witness (e1 + e10)(e4 - e15) gives P(s = 0) = 0, its bright control 1, and the four-label negative regression (e1 + e10)(e2 - e13) gives 1/2.
   Boundary: Ideal semantics only.
-  Evidence: [AGENTS.md](../../AGENTS.md).
+  Evidence: [algebra_circuit_rules.md](../notes/algebra_circuit_rules.md).
   Gates: replayed by core-251.
 - **heron-dd-circuit-infrastructure** (circuit-conformance check, implementation). dd_window (none, Hahn, CPMG-2, XY4) refocuses a static detuning in ideal simulation, the routed Steane CPMG-2 patch keeps its seven windows and final frame, and the Bell probe's x and y quadratures read (1 + V cos theta)/2 and (1 + V sin theta)/2.
   Boundary: Tested circuit and statistics infrastructure, not a demonstrated hardware mitigation.

@@ -122,8 +122,8 @@ A dry run validates a hardware case end to end on the emulator before any
 Tuna batch: syntax as the platform parses it, submission and collection,
 result width and order, and the analysis on noiseless data with a known
 answer. Quantum Inspire spends no metered quota on it, and it still waits
-for the owner's approval of the written case (root AGENTS.md, "Quantum
-Inspire").
+for the owner's approval of the written case (root AGENTS.md, "Hardware
+services").
 
 1. Generate the cases with the experiment's generator
    (`--write results/quantum_inspire/cases`) and run its `--check`; a QX

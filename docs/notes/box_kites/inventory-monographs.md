@@ -81,7 +81,7 @@ Source keys (PDF page numbers, 1-based, as rendered by pdftotext):
 Observable conventions used in the last two columns. Basis state |k> is e_k with index bit
 b on qubit b (little-endian, qubit 0 least significant). "LCU P0" is the fixed-operand
 LCU success probability P(s=0) = ||x y||^2 / 2 for normalized x = (e_i + t e_j)/sqrt2 and
-normalized y, as in AGENTS.md. N(xy) denotes the squared norm of the product xy (a pipe-free spelling for table safety). For x, y both normalized two-blades N(xy) takes only
+normalized y, as in docs/notes/algebra_circuit_rules.md. N(xy) denotes the squared norm of the product xy (a pipe-free spelling for table safety). For x, y both normalized two-blades N(xy) takes only
 the values 0, 1, 2 (RC over all 210 x 210 pairs: counts 336, 43428, 336), so P0 is 0,
 1/2 or 1. "Hadamard W" is the associator-sign Hadamard-test witness, whose
 expectation is +1 for an associating basis triple and -1 for a non-associating one.
@@ -163,7 +163,7 @@ explicit instance is listed in the sources: S = 7, assessors (1,14), (4,11), (5,
 (2,13), (3,12), (6,9) with struts (1,14)<->(6,9), (4,11)<->(3,12), (5,10)<->(2,13) and
 zigzag sail on the first three listed vertices (M2 p5). No source lists the other six kites
 or the zero-divisor diagonals as explicit index pairs of the form (e_i +- e_j)(e_k +- e_l) = 0
-beyond the S=7 edge-sign pattern. (The repository's own AGENTS.md names S=3: (e1+e10)(e4-e15)=0.)
+beyond the S=7 edge-sign pattern. (The repository's own docs/notes/algebra_circuit_rules.md names S=3: (e1+e10)(e4-e15)=0.)
 
 Recomputed inventory (RC, convention above). Each row: kite S, X = 8^S, assessors
 (L,U), struts (pairs of strut-opposite assessors):

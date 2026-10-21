@@ -655,7 +655,7 @@ def expect_failure(label: str, action: Callable[[], object]) -> None:
 
 
 def self_test(evidence: Path) -> None:
-    agents = evidence.parent.parent.parent / "AGENTS.md"
+    agents = evidence.parent.parent.parent / "docs" / "notes" / "iqm" / "README.md"
     with tempfile.TemporaryDirectory() as scratch:
         root = Path(scratch) / "iqm"
         shutil.copytree(evidence, root)
@@ -717,7 +717,7 @@ def self_test(evidence: Path) -> None:
             raise PlatformError("self-test: prune kept a dropped file or removed an indexed one")
         target.write_bytes(saved)
         check(root)
-        stale = Path(scratch) / "AGENTS.md"
+        stale = Path(scratch) / agents.name
         text = agents.read_text()
         start = text.index(BEGIN) + len(BEGIN)
         stale.write_text(text[:start] + "| stale |\n" + text[text.index(END) :])
