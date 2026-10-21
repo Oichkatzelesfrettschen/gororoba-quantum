@@ -190,7 +190,7 @@ Properties of the server that its code and gate hold:
 | Tool | Parameters | Effect | Claude / Codex approval |
 |---|---|---|---|
 | `qd_platforms` | none | Explorer platforms with status, seconds per job, credits per shot, daily availability, next maintenance; the public list | allow / approve |
-| `qd_platform` | `name`, `include_bulk` | processor record; `include_bulk` adds the serialized chip and its HTML documentation | allow / approve |
+| `qd_platform` | `name`, `include_bulk` | processor record with a `bulk_fields` map (`present`, `empty` or `absent` per serialized chip and HTML documentation, as the server sent them); a default read replaces a present bulk value with `{"stripped": true, "chars": N}` and `include_bulk` keeps the values | allow / approve |
 | `qd_availability` | none | the token's job limits and occupancy | allow / approve |
 | `qd_usage` | none | jobs and usage per token, token ids removed | allow / approve |
 | `qd_job_status` | `job_id` | one status read | allow / approve |
