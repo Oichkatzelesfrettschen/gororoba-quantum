@@ -18,12 +18,16 @@ them; each run waits for its own written case.
 
 `scripts/qd_platform.py plan` refuses a platform whose Explorer row and
 processor record do not both read `available`, and refuses a mesh-sensitive
-case when the live record lacks `specs.architecture`. The qpu:belenos reads
-of 2026-10-20 04:09 UTC (`running`) and 08:51 UTC (`calibration`) both lack
-the architecture and several processing and version fields
+case when the live record lacks `specs.architecture`. Every qpu:belenos
+read from 2026-10-20 to 2026-10-21 lacks the architecture and the
+`commands`, `default_mitigations`, `known_mitigations` and `type` fields
 ([calibration.md](../notes/quandela/calibration.md)); a missing field reads
-as absent, not as the earlier value. A qualification case therefore starts
-from a fresh read that passes `plan`. The BDSC target keeps its frozen
+as absent, not as the earlier value. The qualification case submits each
+body as a numeric unitary, which the service compiles itself, so it needs
+no architecture; the absent `default_mitigations` leaves the
+provider-default policy's processing undeclared, which the empty-list
+policy avoids. A qualification case therefore starts from a fresh read
+that passes `plan`. The BDSC target keeps its frozen
 2026-10-17 receipt (`docs/evidence/bdsc/inputs/receipt.json`); a
 detector-aware case planned from a newer receipt carries a new target
 digest beside it.
@@ -236,14 +240,20 @@ and makes no dark-subspace claim.
   number. Under E0 itself, one effect across completions, policies and
   epochs, and independent Bernoulli trials, 2000 seeded replicates per
   trial count give the probability that all 128 contrasts read compatible:
-  0 at the earlier 22080, 0.70 at 40000, 0.939 at 45000. The case fixes
+  0 at 22080 (expected counts at the margin), 0.70 at 40000, 0.939 at
+  45000. The case fixes
   45000, the first grid point at or above the 0.9 target. Drift,
   preparation error or a corrected sampling law lower this power.
 - **Resources.** 45000 eligible trials per setting are 4320000 in all;
   max_shots = 2 x 45000 per setting makes the submitted ceiling 8640000
   shots. At the strategy.md billing rule and one job per setting that is
-  104.64 credits. The historical processed-output rates estimate 829 s of
-  QPU time; the 300 s per-job limit caps 96 jobs at 28800 s. The written
+  104.64 credits. One single-computation job per setting takes 13 to 15 s
+  of overhead whatever its samples, plus acquisition near 4 x 10^4
+  one-photon samples per second (strategy.md section 1): 17.25 s per job
+  at 15 s and 90000 shots, 1656 s for 96 jobs; the 300 s per-job limit
+  caps them at 28800 s. One ANU QRNG request of 192 uint16 values (about
+  2 s, no credits, one of the free tier's 100 monthly requests) fixes the
+  96 compilation seeds and both epochs' acquisition order. The written
   case restates credits and seconds from the live `qd_platform.py plan`
   output, which reads the platform's duration limit and price, before
   approval; whether 90000 shots yield 45000 eligible trials on an

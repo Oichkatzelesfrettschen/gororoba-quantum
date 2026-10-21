@@ -36,10 +36,13 @@ No step here is authorized until its written case is approved
    max_shots = 90000 per setting (8640000 shots in all), the three contrast
    families with their 0.05 margins at alpha 0.01, the power of 0.939 under
    E0, the two epochs, the credit and seconds ceilings restated from step 1
-   (104.64 credits and 829 s estimated, 28800 s capped, at the historical
-   rates), the ANU QRNG draw that fixes the order and seeds, the stop
-   conditions below, and the interpretation of each outcome from the
-   design. Wait for approval; the QRNG read is part of what it approves.
+   (104.64 credits and 1656 s estimated at 17.25 s per single job, 28800 s
+   capped), the QRNG read with its own fields from `qrng` in the case
+   record (the keyed ANU Quantum Numbers service, one request of 192 uint16
+   values, about 2 s, no credits, one of the 100 monthly requests, and why
+   a pseudorandom stream does not serve), the stop conditions below, and
+   the interpretation of each outcome from the design. Wait for approval;
+   the QRNG read is part of what it approves.
 3. Draw the acquisition order of the 48 settings of each epoch and the
    compilation seed of each with `scripts/anu_qrng.py draw`, and freeze both
    in the run directories before the first submission.

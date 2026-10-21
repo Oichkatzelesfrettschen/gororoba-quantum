@@ -2141,7 +2141,7 @@
    "inconclusive",
    "not_admitted"
   ],
-  "policies": "no contrast compares provider defaults with the empty list: correction may change the mean",
+  "policies": "no contrast compares provider defaults with the empty list: correction may change the mean; the live qpu:belenos record declares no default mitigation, so the default policy's processing is read from each result's metadata, not from the record",
   "scope": "passing every family is necessary and not sufficient: a service that prepares sqrt(p_s)|A> + sqrt(1 - p_s)|D> for each requested p_s passes them without a fixed measurement"
  },
  "interpretation": [
@@ -2915,6 +2915,17 @@
   "givens": "a chain of 2 x 2 rotations of the source mode against every other mode",
   "householder": "I - 2 w w^dagger with w along phase e_r - column, times the source phase"
  },
+ "qrng": {
+  "credits": 0,
+  "expected_seconds": 2,
+  "quota": "1 of the free tier's 100 requests per calendar month",
+  "requests": 1,
+  "service": "ANU Quantum Numbers (aqn, keyed), scripts/anu_qrng.py draw",
+  "type": "uint16",
+  "use": "the first settings values seed each setting's compilation_seed in observation order; the next settings values sort each epoch's acquisition order",
+  "values": 192,
+  "why_not_simulated": "the seed rule of strategy.md section 1 takes compilation seeds from a retained quantum draw so that neither the operator nor a pseudorandom stream fixes which meshes the case meets"
+ },
  "question": "do the returned observations behave as one fixed linear effect on independently prepared states, at a declared observation level, across preparation descriptions and across a calibration change",
  "record": "qualification_case",
  "resources": {
@@ -2926,9 +2937,10 @@
   "max_shots_per_setting": 90000,
   "max_shots_total": 8640000,
   "seconds_ceiling": 28800,
-  "seconds_historical_estimate": 829.44,
+  "seconds_historical_estimate": 1656.0,
+  "seconds_per_job_estimate": 17.25,
   "settings": 96,
-  "timing_rule": "estimate: 6.3 s per setting plus 2.6e-05 s per sample at max_shots, historical processed-output rates; ceiling: one job per setting at the 300 s per-job limit. The written case restates both from the live plan output"
+  "timing_rule": "estimate: one single-computation job per setting at 15.0 s of overhead (the top of the 13 to 15 s single jobs of strategy.md section 1) plus max_shots at 40000 one-photon samples per second; ceiling: the 300 s per-job limit. The written case restates both from the live plan output"
  },
  "schema": "bdsc-records-v1",
  "stop_conditions": [

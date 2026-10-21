@@ -755,7 +755,11 @@ Contrast = tuple[str, float, tuple[tuple[int, float], ...]]
 
 
 def contrast_readout(
-    selected: np.ndarray, eligible: np.ndarray, contrasts: Sequence[Contrast], alpha: float
+    selected: np.ndarray,
+    eligible: np.ndarray,
+    contrasts: Sequence[Contrast],
+    alpha: float,
+    admitted: np.ndarray | None = None,
 ) -> dict[str, np.ndarray]:
     """Intervals and statuses of prespecified linear contrasts sum_j c_j p_j on one simultaneous event.
 
@@ -764,30 +768,44 @@ def contrast_readout(
     Delta_U the mirror image, so no contrast spends its own error. Each contrast is (family, margin, terms) and reads
     compatible, violated or inconclusive against its margin. selected and eligible carry the observations on their
     last axis; a leading replicate axis evaluates many synthetic records with the same arithmetic, term by term in
-    the declared order, as one record.
+    the declared order, as one record. admitted marks the observations whose observation contract supports
+    Bernoulli trials; a contrast with any term outside it reads not_admitted, and the alpha / P split still counts
+    every observation, so admission never re-allocates error.
     """
     k = np.asarray(selected, dtype=float)
     n = np.asarray(eligible, dtype=float)
     lo, hi = clopper_pearson(k, n, alpha / k.shape[-1])
-    lower = np.empty((*k.shape[:-1], len(contrasts)))
-    upper = np.empty_like(lower)
-    status = np.empty(lower.shape, dtype=object)
-    for index, (_, margin, terms) in enumerate(contrasts):
-        low = np.zeros(k.shape[:-1])
-        high = np.zeros(k.shape[:-1])
-        for j, c in terms:
-            low = low + (c * lo[..., j] if c > 0 else c * hi[..., j])
-            high = high + (c * hi[..., j] if c > 0 else c * lo[..., j])
-        lower[..., index], upper[..., index] = low, high
-        inside = (low >= -margin) & (high <= margin)
-        outside = (low > margin) | (high < -margin)
-        status[..., index] = np.where(inside, "compatible", np.where(outside, "violated", "inconclusive"))
+    # Every contrast is a padded row of (index, coefficient) terms, evaluated for all contrasts at once; the terms
+    # are added in their declared order, and a padding coefficient of 0 adds an exact zero.
+    width = max(len(terms) for _, _, terms in contrasts)
+    index = np.zeros((len(contrasts), width), dtype=int)
+    coefficient = np.zeros((len(contrasts), width))
+    for row, (_, _, terms) in enumerate(contrasts):
+        for column, (j, c) in enumerate(terms):
+            index[row, column], coefficient[row, column] = j, c
+    margin = np.array([m for _, m, _ in contrasts])
+    lo_terms, hi_terms = lo[..., index], hi[..., index]
+    positive = coefficient > 0
+    low_terms = np.where(positive, coefficient * lo_terms, coefficient * hi_terms)
+    high_terms = np.where(positive, coefficient * hi_terms, coefficient * lo_terms)
+    lower, upper = low_terms[..., 0], high_terms[..., 0]
+    for column in range(1, width):
+        lower = lower + low_terms[..., column]
+        upper = upper + high_terms[..., column]
+    inside = (lower >= -margin) & (upper <= margin)
+    outside = (lower > margin) | (upper < -margin)
+    status = np.where(inside, "compatible", np.where(outside, "violated", "inconclusive")).astype(object)
+    if admitted is not None:
+        touched = np.asarray(admitted, dtype=bool)[index] | (coefficient == 0)
+        status[..., ~touched.all(axis=1)] = "not_admitted"
     return {"lower": lower, "upper": upper, "status": status}
 
 
 def hoeffding_consistency_trials(margin: float, alpha: float) -> int:
     """Per-preparation n at which a Hoeffding radius sqrt(log(12/alpha)/(2n)) on six probabilities under a union
-    bound puts a four-probability residual within margin: n >= 8 log(12/alpha) / margin^2."""
+    bound makes a four-probability residual's half-width equal the margin: n >= 8 log(12/alpha) / margin^2. A
+    compatible reading needs |estimate| + half-width <= margin, so this n is a floor with no power; the case's
+    power table sets the trials."""
     return math.ceil(8 * math.log(12 / alpha) / margin**2)
 
 

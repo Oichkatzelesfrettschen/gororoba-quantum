@@ -120,6 +120,11 @@ CASE_POWER_TARGET = 0.9
 CASE_POWER_REPLICATES = 2000
 CASE_POWER_SEED = 20261021
 CASE_REFERENCE_TRIALS = 22_080
+# One single-computation job: 13 to 15 s of overhead whatever its samples, and acquisition near 4 x 10^4
+# one-photon samples per second (strategy.md section 1, jobs aa4218f1, a5f0a8a4, c2eea262, c1eb1cbb).
+SINGLE_JOB_OVERHEAD_SECONDS = 15.0
+SAMPLES_PER_SECOND = 4e4
+QRNG_VALUES = 192
 CASE_TRIAL_GRID = tuple(range(25_000, 60_001, 2_500))
 CASE_PAIRS = {"target-complement": ("K", 0, "Q", 8), "middle-middle": ("Q", 1, "Q", 2)}
 PREPARATION_DESCRIPTIONS = ("householder", "givens")
@@ -986,7 +991,8 @@ def planning_record(target: dict[str, Any], catalogue: dict[str, Any]) -> dict[s
             "alpha": CASE_ALPHA,
             "trials_per_preparation": hoeffding,
             "rule": "n >= 8 log(12 / alpha) / m^2: six probabilities under a union bound, four per residual",
-            "scope": "a conservative illustration; exact Clopper-Pearson at the observed probabilities needs fewer",
+            "scope": "the n at which the residual half-width equals the margin, a floor with no power: a compatible "
+            "reading also needs the estimate inside the remaining band; qualification_case.json's power table sets n",
         },
         "ideal_effect_expected_counts": ideal_rows,
         "required_complement_floor": floors,
@@ -1170,6 +1176,17 @@ def provider_contract_record(target: dict[str, Any]) -> dict[str, Any]:
             "Which server software version and correction calibration produced each result?",
         ),
         (
+            "processor_record_completeness",
+            "M2, M3",
+            "unsupported since 2026-10-20",
+            "qpu:belenos records of 2026-10-20 and 2026-10-21 lack specs.architecture, commands, default_mitigations, "
+            "known_mitigations and type at unchanged software versions, while qpu:ascella and sim:belenos carry them "
+            "(docs/notes/quandela/calibration.md open item 1); Perceval then treats requested mitigations as unknown "
+            "and the server default as none",
+            "Why does the qpu:belenos processor record omit these five fields, and which mitigations does the server "
+            "apply when a request carries none?",
+        ),
+        (
             "acceptance_calibration",
             "M3",
             "unsupported",
@@ -1284,7 +1301,9 @@ def case_observations() -> list[dict[str, Any]]:
 def case_contrasts(observations: list[dict[str, Any]]) -> list[bdsc.Contrast]:
     """Within-cell sum rules, cross-completion differences at one policy and epoch, and cross-epoch differences at
     one completion and policy. No contrast compares processing policies, whose means may differ by design."""
-    index = {tuple(o.values()): j for j, o in enumerate(observations)}
+    index = {
+        (o["pair"], o["preparation"], o["processing"], o["epoch"], o["label"]): j for j, o in enumerate(observations)
+    }
     out: list[bdsc.Contrast] = []
     for pair in CASE_PAIRS:
         for d in PREPARATION_DESCRIPTIONS:
@@ -1346,7 +1365,8 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
     settings = len(observations)
     max_shots = SHOT_HEADROOM * trials
     credits = settings * (CREDITS_PER_JOB + CREDITS_PER_SHOT * max_shots)
-    seconds_historical = settings * (SECONDS_PER_ITERATION + SECONDS_PER_SAMPLE * max_shots)
+    seconds_per_job = SINGLE_JOB_OVERHEAD_SECONDS + max_shots / SAMPLES_PER_SECOND
+    seconds_historical = settings * seconds_per_job
     families = {f: sum(c[0] == f for c in contrasts) for f in CASE_MARGINS}
     return {
         "schema": SCHEMA,
@@ -1365,7 +1385,9 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             "admission": "an observation enters the event only when its policy's observation contract supports "
             "Bernoulli trials; the alpha split counts every observation, so admission never re-allocates error, and "
             "a contrast touching an unadmitted observation reads not_admitted",
-            "policies": "no contrast compares provider defaults with the empty list: correction may change the mean",
+            "policies": "no contrast compares provider defaults with the empty list: correction may change the mean; "
+            "the live qpu:belenos record declares no default mitigation, so the default policy's processing is read "
+            "from each result's metadata, not from the record",
             "epochs": "epoch 2 follows at least one platform calibration cycle, so the epoch family tests "
             "reproducibility across a calibration change; within-epoch stability rests on the randomized order alone, "
             "and the epochs are never pooled into one stationary reconstruction",
@@ -1415,9 +1437,24 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             "seconds_historical_estimate": round(seconds_historical, 3),
             "seconds_ceiling": settings * JOB_SECONDS,
             "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots (strategy.md section 1a)",
-            "timing_rule": f"estimate: {SECONDS_PER_ITERATION} s per setting plus {SECONDS_PER_SAMPLE} s per "
-            f"sample at max_shots, historical processed-output rates; ceiling: one job per setting at the "
-            f"{JOB_SECONDS} s per-job limit. The written case restates both from the live plan output",
+            "seconds_per_job_estimate": seconds_per_job,
+            "timing_rule": f"estimate: one single-computation job per setting at {SINGLE_JOB_OVERHEAD_SECONDS} s of "
+            f"overhead (the top of the 13 to 15 s single jobs of strategy.md section 1) plus max_shots at "
+            f"{SAMPLES_PER_SECOND:g} one-photon samples per second; ceiling: the {JOB_SECONDS} s per-job limit. The "
+            "written case restates both from the live plan output",
+        },
+        "qrng": {
+            "service": "ANU Quantum Numbers (aqn, keyed), scripts/anu_qrng.py draw",
+            "requests": 1,
+            "values": QRNG_VALUES,
+            "type": "uint16",
+            "use": "the first settings values seed each setting's compilation_seed in observation order; the next "
+            "settings values sort each epoch's acquisition order",
+            "expected_seconds": 2,
+            "credits": 0,
+            "quota": "1 of the free tier's 100 requests per calendar month",
+            "why_not_simulated": "the seed rule of strategy.md section 1 takes compilation seeds from a retained "
+            "quantum draw so that neither the operator nor a pseudorandom stream fixes which meshes the case meets",
         },
         "stop_conditions": [
             "scripts/qd_platform.py plan refuses the platform",
@@ -1685,6 +1722,8 @@ def self_test() -> int:
     # families see the coherent difference; the batched readout matches the single record row by row.
     observations = case_observations()
     contrasts = case_contrasts(observations)
+    reloaded = json.loads(json.dumps(observations, sort_keys=True))
+    require(case_contrasts(reloaded) == contrasts, "self-test: contrasts depend on observation key order")
     coherent = {1: {"+": 0.25, "-": -0.25}, 2: {"+i": 0.25, "-i": -0.25}}
     n_exact = 10**7
     probabilities = []
@@ -1699,6 +1738,11 @@ def self_test() -> int:
     require(by_family["sum_rule"] == {"compatible"}, f"self-test: the sum rules read {by_family['sum_rule']}")
     require("violated" in by_family["completion"], "self-test: the completion family misses F_G")
     require("violated" in by_family["epoch"], "self-test: the epoch family misses the X to Y change")
+    admitted = np.array([o["processing"] == "empty-mitigation" for o in observations])
+    gated = bdsc.contrast_readout(k, np.full(k.shape, n_exact), contrasts, CASE_ALPHA, admitted)["status"]
+    for c, plain, masked in zip(contrasts, status, gated, strict=True):
+        inside = all(admitted[j] for j, _ in c[2])
+        require(masked == (plain if inside else "not_admitted"), "self-test: admission mask")
     rng = np.random.default_rng(7)
     batch = rng.binomial(30_000, np.broadcast_to(probabilities, (4, len(probabilities))))
     batched = bdsc.contrast_readout(batch, np.full(batch.shape, 30_000), contrasts, CASE_ALPHA)
@@ -1714,6 +1758,11 @@ def self_test() -> int:
     lossless = numeric_unitary(u)[:, : bdsc.DIM]
     eta_t = np.linspace(0.6, 0.95, MODES)
     require(bdsc.scalar_deviation(bdsc.thinned_acceptance(lossless, eta_t))[1] < 1e-12, "self-test: thinned lossless")
+    histogram = np.array([0, 1, 1000, 10**6])
+    require(np.array_equal(bdsc.thin_histogram(histogram, np.ones(4), rng), histogram), "self-test: q = 1 thinning")
+    require(not bdsc.thin_histogram(histogram, np.zeros(4), rng).any(), "self-test: q = 0 thinning")
+    kept = bdsc.thin_histogram(np.full(1000, 10**4), np.full(1000, 0.3), rng)
+    require(bool(abs(kept.mean() / 3000 - 1) < 0.01 and kept.max() <= 10**4), "self-test: binomial thinning mean")
     lossy = np.diag(np.linspace(0.7, 1.0, MODES)) @ lossless
     require(bdsc.scalar_deviation(bdsc.thinned_acceptance(lossy, eta_t))[1] > 0.1, "self-test: internal loss hidden")
     # Acceptance: uniform efficiency is scalar, a pair imbalance is not.
