@@ -1,12 +1,12 @@
 {
   "account_usage": {
-    "usage_consumed_seconds": 449,
+    "usage_consumed_seconds": 483,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-20T22:49:36.642Z",
-      "start_time": "2026-09-22T22:49:36.642Z"
+      "end_time": "2026-10-21T08:43:37.830Z",
+      "start_time": "2026-09-23T08:43:37.830Z"
     },
-    "usage_remaining_seconds": 151
+    "usage_remaining_seconds": 117
   },
   "complete_service_inventory": true,
   "instance_crn_hash": "e3de05b6901e",
@@ -618,10 +618,42 @@
         "running": "2026-10-20T03:13:06.770862Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_marrakesh",
+      "created_at": "2026-10-21T04:32:57.928318+00:00",
+      "final_qpu_charge_seconds": 18,
+      "input_schema_version": "v2.0",
+      "job_id": "dbc40u8c77vs7385ee0g",
+      "pub_count": 48,
+      "shots_per_pub": 1536,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-21T04:32:57.928318Z",
+        "finished": "2026-10-21T04:34:03.899716Z",
+        "running": "2026-10-21T04:33:35.584446Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-21T06:43:17.651696+00:00",
+      "final_qpu_charge_seconds": 16,
+      "input_schema_version": "v2.0",
+      "job_id": "dbc5u19gv2cc73e9l340",
+      "pub_count": 48,
+      "shots_per_pub": 1536,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-21T06:43:17.651696Z",
+        "finished": "2026-10-21T06:43:41.361565Z",
+        "running": "2026-10-21T06:43:18.870378Z"
+      },
+      "usage_status": "complete"
     }
   ],
   "new_qpu_submissions": 0,
-  "observed_at": "2026-10-20T22:49:36.693055+00:00",
+  "observed_at": "2026-10-21T08:43:37.878426+00:00",
   "retrieval_boundary": "Read-only service.jobs(limit=None), decoded QuantumProgram inputs and finalized metrics. Physical jobs require a finished status (DONE, ERROR or CANCELLED) and positive settled charge; local simulations and mock results are separate evidence.",
   "schema": "completed-qpu-job-inventory-v1"
 }

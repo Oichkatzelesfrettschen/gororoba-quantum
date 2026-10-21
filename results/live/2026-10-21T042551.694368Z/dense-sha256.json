@@ -1,0 +1,9 @@
+{
+ "dropped": {
+  "UNAPPROVED_CASE.md": "cb21f4cf42648b72e09e8bb9dce2f2ebb0af09cefec1933cd160779a7e52e2b7"
+ },
+ "files": {
+  "record.json": "9bc5c743165853b7fa861ff726c63dbc8b8c1c03161a17e8776c4e0f243054c8"
+ },
+ "schema": "dense-run-digests-v1"
+}

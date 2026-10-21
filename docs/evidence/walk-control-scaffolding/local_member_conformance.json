@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 817,
+ "groups": 820,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,9 +17,204 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 1817,
+ "distinct_members": 1877,
  "entangling_members": 950,
- "unchecked": {},
+ "unchecked": {
+  "more than 12 mid-circuit measurements, resets or classical bits": [
+   {
+    "member": "n21_spectator_segmented_xy_d0",
+    "digest": "dc3a4171c75c8316"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d0_pre1250",
+    "digest": "25e8fd3579b13696"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d1386",
+    "digest": "2f9109dcc70397ac"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d1638",
+    "digest": "b1aa9d5c5e07fef0"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d2079",
+    "digest": "9a45a73d0ef2dbed"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d2457",
+    "digest": "e2988b9ff77bf4ba"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d2772",
+    "digest": "a6dde737c7885cef"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d3276",
+    "digest": "ac3e3d3a71a975ff"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d3465",
+    "digest": "34d1a43ee81ff663"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d4095",
+    "digest": "62317898aadae3dd"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d4158",
+    "digest": "28550a96d98e61b3"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d4851",
+    "digest": "5555546c5e805249"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d4914",
+    "digest": "d2d71074875a0841"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d5544",
+    "digest": "2080e77b86b4835e"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d5733",
+    "digest": "0a0b8f64bdb6c201"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d6237",
+    "digest": "ec6ee7c2efedea56"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d6552",
+    "digest": "2928cf37fd614b73"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d693",
+    "digest": "03a0e853db596503"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d6930",
+    "digest": "d6ab3ad11aa5d671"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d693_pre1250",
+    "digest": "e5cf5a579ae7e0c8"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d7371",
+    "digest": "31450db85cc3f11e"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d7623",
+    "digest": "2a80fdfaa2e2859a"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d819",
+    "digest": "31e4d673ae59a425"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d8190",
+    "digest": "1125fef23016c12d"
+   },
+   {
+    "member": "n21_spectator_segmented_xy_d8316",
+    "digest": "067915290bc34d07"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d0",
+    "digest": "b6983bbb6e0cf06a"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d1386",
+    "digest": "4318fd480daab852"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d1638",
+    "digest": "b7e04129c9a58012"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d2079",
+    "digest": "3b1ac507ec265344"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d2457",
+    "digest": "4b78c74a31cb59c9"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d2772",
+    "digest": "400e42ed3f1340c6"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d3276",
+    "digest": "89fc1c67d2873a5b"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d3465",
+    "digest": "ede0201b96581f23"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d4095",
+    "digest": "1b71ffa4afc89500"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d4158",
+    "digest": "8bc685fa31cc38c6"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d4851",
+    "digest": "644cd46a68dfed9c"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d4914",
+    "digest": "66ce2ec251f401fe"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d5544",
+    "digest": "5f92c335084596b5"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d5733",
+    "digest": "99263898eebfd842"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d6237",
+    "digest": "ceba67c3ceece2f8"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d6552",
+    "digest": "b676913c16f92b0f"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d693",
+    "digest": "9016eadbb98ef884"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d6930",
+    "digest": "980f97a83fe8b5fa"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d7371",
+    "digest": "83d7dcedd2d20aa5"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d7623",
+    "digest": "cbb1b1c04a421a0b"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d819",
+    "digest": "2b5cf1ccdb3e193a"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d8190",
+    "digest": "989b01b2258f1caf"
+   },
+   {
+    "member": "n21_spectator_segmented_z_d8316",
+    "digest": "809a26260c9240c7"
+   }
+  ]
+ },
  "members": [
   {
    "member": "baseline_excited",
@@ -1154,6 +1349,138 @@
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
    "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w1_x",
+   "digest": "594e3824e05c897b",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w1_y",
+   "digest": "8ed9f8322a29250f",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w2_x",
+   "digest": "5d78637e2b97fb33",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w2_y",
+   "digest": "23fd06bbfb693803",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w3_x",
+   "digest": "b3692719e0f1af7a",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w3_y",
+   "digest": "dad0210dc20bdff9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w4_x",
+   "digest": "1557d2801aeea9ab",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w4_y",
+   "digest": "edb62459ed52e8ae",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w5_x",
+   "digest": "417f47c457412c75",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w5_y",
+   "digest": "118bee0ccfb7dff8",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w6_x",
+   "digest": "9f6c9e2f4c080bf9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "n21_spectator_idle_ground_w6_y",
+   "digest": "728d0fcc8394bd38",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
    "declared": null
   },
   {

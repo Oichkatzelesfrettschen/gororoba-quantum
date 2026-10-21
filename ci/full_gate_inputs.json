@@ -40,7 +40,8 @@
       "docs/evidence/ghost_error_scale/**",
       "docs/evidence/calibration/history/**",
       "results/live/2026-10-19T151959.226467Z/**",
-      "results/live/2026-10-19T170620.832658Z/**"
+      "results/live/2026-10-19T170620.832658Z/**",
+      "results/live/2026-10-21T064222.721454Z/**"
     ],
     "core-603": [
       "results/live/2026-10-20T031212.175942Z/**"
@@ -129,7 +130,9 @@
       "results/live/2026-10-19T151959.226467Z/**",
       "results/live/2026-10-19T170620.832658Z/**",
       "results/live/2026-10-19T231043.083602Z/**",
-      "results/live/2026-10-20T031212.175942Z/**"
+      "results/live/2026-10-20T031212.175942Z/**",
+      "results/live/2026-10-21T043156.858484Z/**",
+      "results/live/2026-10-21T064222.721454Z/**"
     ],
     "core-597": [
       "docs/evidence/ghost_runs/**",
@@ -149,7 +152,9 @@
       "results/live/2026-10-19T151959.226467Z/**",
       "results/live/2026-10-19T170620.832658Z/**",
       "results/live/2026-10-19T231043.083602Z/**",
-      "results/live/2026-10-20T031212.175942Z/**"
+      "results/live/2026-10-20T031212.175942Z/**",
+      "results/live/2026-10-21T043156.858484Z/**",
+      "results/live/2026-10-21T064222.721454Z/**"
     ],
     "core-311": [
       "docs/evidence/walk_scaffold_channels/**",
@@ -265,6 +270,19 @@
       "results/live/2026-10-18T213828.038774Z/**",
       "results/live/2026-10-18T214519.655411Z/**",
       "results/live/2026-10-18T220218.089776Z/**"
+    ],
+    "core-618": [
+      "results/live/2026-10-21T025706.848746Z/**",
+      "results/live/2026-10-21T042551.694368Z/**",
+      "results/live/2026-10-21T043156.858484Z/**",
+      "results/live/2026-10-21T063625.403699Z/**",
+      "results/live/2026-10-21T064222.721454Z/**"
+    ],
+    "core-619": [
+      "results/live/2026-10-21T064222.721454Z/**"
+    ],
+    "core-620": [
+      "results/live/2026-10-21T043156.858484Z/**"
     ],
     "core-339": [
       "docs/evidence/calibration/**",
