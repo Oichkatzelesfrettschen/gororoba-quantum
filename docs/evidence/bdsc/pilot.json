@@ -3,10 +3,20 @@
  "ideal_readout_at_10000": [
   {
    "C_q": 1.0,
-   "identity_holds": true,
-   "identity_radius": 0.037075561433306904,
-   "identity_residual": 0.0,
+   "delta_I": 0.0,
+   "delta_I_interval": [
+    -0.036228283456479216,
+    0.03622828345647877
+   ],
+   "delta_I_status": "compatible",
+   "delta_R": 0.0,
+   "delta_R_interval": [
+    -0.036228283456479216,
+    0.03622828345647877
+   ],
+   "delta_R_status": "compatible",
    "im_d_q": 0.0,
+   "margin": 0.05,
    "pair": [
     0,
     8
@@ -16,10 +26,20 @@
   },
   {
    "C_q": 0.5,
-   "identity_holds": true,
-   "identity_radius": 0.04962736002473576,
-   "identity_residual": 0.0,
+   "delta_I": 0.0,
+   "delta_I_interval": [
+    -0.04875994423995883,
+    0.04878008204790807
+   ],
+   "delta_I_status": "compatible",
+   "delta_R": 0.0,
+   "delta_R_interval": [
+    -0.04875994423995883,
+    0.04878008204790807
+   ],
+   "delta_R_status": "compatible",
    "im_d_q": 0.0,
+   "margin": 0.05,
    "pair": [
     0,
     0
@@ -29,10 +49,20 @@
   },
   {
    "C_q": 1.0,
-   "identity_holds": true,
-   "identity_radius": 0.037075561433306904,
-   "identity_residual": 0.0,
+   "delta_I": 0.0,
+   "delta_I_interval": [
+    -0.036228283456479216,
+    0.03622828345647877
+   ],
+   "delta_I_status": "compatible",
+   "delta_R": 0.0,
+   "delta_R_interval": [
+    -0.036228283456479216,
+    0.03622828345647877
+   ],
+   "delta_R_status": "compatible",
    "im_d_q": 0.0,
+   "margin": 0.05,
    "pair": [
     0,
     9

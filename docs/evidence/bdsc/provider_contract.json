@@ -1,0 +1,65 @@
+{
+ "capabilities": [
+  {
+   "capability": "full_transform_preservation",
+   "evidence": "docs/notes/quandela/strategy.md sections 4 and 9: sim:belenos jobs 1d7160c1 and e5b74123 kept only the occupied column; qpu:belenos meshes follow the body and the compilation seed",
+   "milestones": "M2",
+   "question": "Can a requested 24-mode transformation, or the induced effect J^dagger T^dagger Q_A T J on the logical inputs, be preserved through compilation on qpu:belenos?",
+   "status": "unsupported on the tested routes"
+  },
+  {
+   "capability": "native_configuration_replay",
+   "evidence": "no documented no_transpile parameter; none is assumed",
+   "milestones": "M2",
+   "question": "Can a native architecture configuration (phase settings) run without state-specific optimization, and be replayed unchanged across jobs?",
+   "status": "unresolved"
+  },
+  {
+   "capability": "preparation_control",
+   "evidence": "a one-photon body reaches the chip as its occupied column, so preparation and readout are one request",
+   "milestones": "M2, M4",
+   "question": "Can coherent inputs be prepared independently of a fixed readout stage, and how is the preparation error bounded?",
+   "status": "unresolved"
+  },
+  {
+   "capability": "returned_circuit_semantics",
+   "evidence": "returned meshes are compared as declared matrices; their physical realization is uncalibrated",
+   "milestones": "M2",
+   "question": "What does a returned compiled circuit describe: the configuration applied, a nominal model, or a post-hoc fit?",
+   "status": "unresolved"
+  },
+  {
+   "capability": "uncorrected_observations",
+   "evidence": "Perceval 1.3 documents mitigations=[] as disabling remote mitigation; the empty list reaching the server is shown for Perceval 1.3.1 PayloadGenerator, its effect on this account is untested",
+   "milestones": "M3",
+   "question": "Does an empty mitigation list return aggregated genuine detector events, and which filtering precedes them?",
+   "status": "unresolved"
+  },
+  {
+   "capability": "count_provenance",
+   "evidence": "docs/evidence/bdsc/packages/packages.json: the default DetectorBalancing path ends in a probability to count conversion whose zero-count law differs from the binomial",
+   "milestones": "M3",
+   "question": "Are returned counts aggregated events or reconstructed from probabilities; are samples in physical order; what do shot, sample and eligible trial mean; which rejected and no-click categories exist?",
+   "status": "unsupported under defaults"
+  },
+  {
+   "capability": "processing_versions",
+   "evidence": "the frozen receipt names server Perceval 1.3.0; the server route of a run is bound per run",
+   "milestones": "M3",
+   "question": "Which server software version and correction calibration produced each result?",
+   "status": "partially recorded"
+  },
+  {
+   "capability": "acceptance_calibration",
+   "evidence": "the receipt t_out taken as efficiencies gives delta about 0.97 and contradicts the detected light; off-cone clicks have no model",
+   "milestones": "M3",
+   "question": "Are per-detector efficiencies, dark counts, dead time and multi-photon threshold behavior available for the selected outputs, at the run's calibration?",
+   "status": "unsupported"
+  }
+ ],
+ "platform": "qpu:belenos",
+ "record": "provider_contract",
+ "resolution": "a capability reads supported only from a provider statement bound to this account or a qualification run; the abstract Experiment representation and local SLOS execution establish none",
+ "schema": "bdsc-records-v1",
+ "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794"
+}

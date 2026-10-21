@@ -30,9 +30,13 @@ Records under docs/evidence/bdsc/: target.json (algebra, frames, U24,
 mask), bank.json (the 160 settings with their states, chip columns and
 exact ideal probabilities; the 88 real settings flagged), pilot.json,
 controls.json (synthetic adversarial controls through bdsc.evaluate),
-planning.json (radius table, zero-event trace route, measured Belenos
-rates) and qualification.json (milestones M0 to M9 with the evidence that
-passes or blocks each).
+planning.json (radius table, zero-event trace route, five-space witness
+and consistency plans, measured Belenos rates), qualification.json
+(milestones M0 to M9 with the evidence that passes or blocks each),
+provider_contract.json (each provider capability the certificate needs,
+its status and its question) and qualification_case.json (the six-state
+consistency case: banks, preparation descriptions, processing policies,
+epochs, margin, trials, cost ceiling and stop conditions).
 
 --write DIR writes the records; --check DIR regenerates them and compares
 (floats within CHECK_TOLERANCE, everything else exactly); --self-test
@@ -74,7 +78,16 @@ EVIDENCE = ROOT / "docs/evidence/bdsc"
 CHIP = "qpu:belenos"
 MODES = 24
 SCHEMA = "bdsc-records-v1"
-FILES = ("target.json", "bank.json", "pilot.json", "controls.json", "planning.json", "qualification.json")
+FILES = (
+    "target.json",
+    "bank.json",
+    "pilot.json",
+    "controls.json",
+    "planning.json",
+    "qualification.json",
+    "provider_contract.json",
+    "qualification_case.json",
+)
 CHECK_TOLERANCE = 1e-9
 HALF_ROOT: Q2 = (Fraction(0), Fraction(1, 2))
 ALLOCATION = "two-block"
@@ -98,6 +111,13 @@ CREDITS_PER_SHOT = 1e-6
 SHOT_HEADROOM = 2
 MONTHLY_CREDITS = 200
 # The handoff's dated snapshot against the retained catalogue; neither is a confidence-qualified calibration.
+WITNESS_BRIGHT_LOWER = 0.9
+WITNESS_ALPHA = 0.025
+CASE_ALPHA = 0.01
+CASE_EPOCH_REFERENCES = ("f", "g")
+CASE_PAIRS = {"target-complement": ("K", 0, "Q", 8), "middle-middle": ("Q", 1, "Q", 2)}
+PREPARATION_DESCRIPTIONS = ("householder", "givens")
+PROCESSING_POLICIES: dict[str, list[str] | None] = {"provider-defaults": None, "empty-mitigation": []}
 HANDOFF_SNAPSHOT = {"transmittance_percent": 6.06, "hom_percent": 88.5, "g2_percent": 0.9, "dark_mode5_per_s": 412.7}
 
 
@@ -487,10 +507,22 @@ def summary(result: dict[str, Any], truth: np.ndarray | None) -> dict[str, Any]:
         if key in result:
             value = result[key]
             out[key] = None if value is None else round(float(value), 12)
+    census = result.get("census")
+    if census is not None:
+        out["census"] = {
+            "consistent": census["consistent"],
+            "findings": census["findings"],
+            **{key: round(float(census[key]), 12) for key in ("a_star", "c_L", "c_U", "U_5", "L_6", "U_6")},
+        }
     if truth is not None and "a_U" in result:
         exact = bdsc.theorem_holds(truth)
         out["truth"] = {key: round(float(exact[key]), 12) for key in ("a", "gamma", "theta")}
         out["covered"] = bool(exact["a"] <= result["a_U"] + 1e-12 and exact["gamma"] >= result["gamma_L"] - 1e-12)
+        upper = np.linalg.eigvalsh(truth)[bdsc.KERNEL_DIM :]
+        intervals = result["census"]["lambda_5_to_16"]
+        out["census_covered"] = bool(
+            all(lo - 1e-12 <= x <= hi + 1e-12 for x, (lo, hi) in zip(upper, intervals, strict=True))
+        )
     return out
 
 
@@ -506,14 +538,16 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         record: dict[str, Any],
         truth: np.ndarray | None,
         identity: dict[str, Any] | None = None,
+        findings: dict[str, str] | None = None,
     ) -> None:
-        jobs.append((name, purpose, expected, record, truth, frozen if identity is None else identity))
+        jobs.append((name, purpose, expected, record, truth, frozen if identity is None else identity, findings or {}))
 
     def counts(effect: np.ndarray, seed: int, real_only: bool = False) -> dict[str, tuple[int, int]]:
         return bdsc.sample_counts(effect, n, seed, real_only)
 
     e0 = bdsc.ideal_effect()
-    run("ideal", "E0 itself", "certified", bdsc.record_from_counts(counts(e0, 1), frozen), e0)
+    no_fifth = {"target_alignment": "supported", "at_least_five_low": "refuted"}
+    run("ideal", "E0 itself", "certified", bdsc.record_from_counts(counts(e0, 1), frozen), e0, findings=no_fifth)
     er = bdsc.extra_real_null()
     run(
         "extra_real_null",
@@ -521,6 +555,7 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "alternative_structure",
         bdsc.record_from_counts(counts(er, 2), frozen),
         er,
+        findings=FIVE_LOW,
     )
     ei = bdsc.extra_imag_null()
     run(
@@ -529,6 +564,7 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "alternative_structure",
         bdsc.record_from_counts(counts(ei, 3), frozen),
         ei,
+        findings=FIVE_LOW,
     )
     real_counts = counts(ei, 3, real_only=True)
     support_but_real = {name: "supported" for name in bdsc.PREMISES}
@@ -569,6 +605,7 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "alternative_structure",
         bdsc.record_from_counts(counts(large, 6), frozen),
         large,
+        findings={"target_bright": "supported", "at_least_five_low": "refuted"},
     )
     dim = bdsc.attenuated(0.0606)
     run(
@@ -586,6 +623,30 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         bdsc.record_from_counts(bdsc.sample_counts(dim, DEEP_TRIALS, 7), deep),
         dim,
         deep,
+    )
+    for name, effect, expected, findings in (
+        ("aligned_fifth_low", bdsc.diagonal_effect([0.05], 1.0), "certified", FIVE_LOW),
+        ("five_designed_low", bdsc.diagonal_effect([0.02], 0.8), "certified", FIVE_LOW),
+        ("six_designed_low", bdsc.diagonal_effect([0.02, 0.03], 0.8), "certified", SIX_LOW),
+        ("coupled_complement_low", bdsc.coupled_complement_effect(), "not_certified", COUPLED_DEEP),
+    ):
+        run(
+            f"{name}_deep",
+            f"{name.replace('_', ' ')} at {DEEP_TRIALS} trials",
+            expected,
+            bdsc.record_from_counts(bdsc.sample_counts(effect, DEEP_TRIALS, 12), deep),
+            effect,
+            deep,
+            findings,
+        )
+    fifth = bdsc.diagonal_effect([0.05], 1.0)
+    run(
+        "aligned_fifth_low",
+        "diag(0^4, 0.05, 1^11) at the control n: eps_C does not resolve 0.05 against 0.1 c_L",
+        "not_certified",
+        bdsc.record_from_counts(counts(fifth, 12), frozen),
+        fifth,
+        findings={"at_least_five_low": "inconclusive"},
     )
     for beta, expected in ((0.002, "certified"), (0.05, "not_certified")):
         bg = bdsc.background(beta)
@@ -645,6 +706,17 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "row_not_object": lambda r: r["rows"].__setitem__(3, None),
         "premises_not_object": lambda r: r.__setitem__("premises", ["common_effect"]),
     }
+    contradicted = bdsc.record_from_counts(
+        {**counts(e0, 13), "C-basis-01": (0, n), "C-basis-02": (0, n), "C-real-01-02": (n, n)}, frozen
+    )
+    run(
+        "range_contradiction",
+        "p_1 = p_2 = 0 with p_(1+2) = 1: Re C_12 = 1 puts a C eigenvalue near -1, outside [0, 1] by more than eps_C",
+        "inconsistent",
+        contradicted,
+        None,
+        findings={"at_least_five_low": "unavailable", "target_alignment": "unavailable"},
+    )
     for name, mutate in mutations.items():
         record = copy.deepcopy(base)
         mutate(record)
@@ -652,7 +724,12 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
     rows = parallel.ordered_map(_evaluate_control, jobs)
     for row in rows:
         require(row["disposition"] == row["expected"], f"control {row['control']} read {row['disposition']}")
-        require(row.get("covered", True) or row["control"].endswith("_forced"), f"control {row['control']} uncovered")
+        forced = row["control"].endswith("_forced")
+        require(row.get("covered", True) or forced, f"control {row['control']} uncovered")
+        require(row.get("census_covered", True) or forced, f"control {row['control']} census uncovered")
+        for key, value in row.get("expected_findings", {}).items():
+            got = row["census"]["findings"][key]
+            require(got == value, f"control {row['control']}: {key} reads {got}, expected {value}")
     return {
         "schema": SCHEMA,
         "record": "controls",
@@ -662,18 +739,76 @@ def controls_record(target: dict[str, Any]) -> dict[str, Any]:
         "alpha_allocation": ALLOCATION,
         "dark_ratio": bdsc.DARK_RATIO,
         "target_ratio": bdsc.TARGET_RATIO,
+        "low_ratio": bdsc.LOW_RATIO,
+        "findings_schema": bdsc.FINDINGS_SCHEMA,
         "controls": rows,
+        "exact_census": exact_census(),
         "coverage": coverage(target),
     }
 
 
-ControlJob = tuple[str, str, str, dict[str, Any], np.ndarray | None, dict[str, Any]]
+ControlJob = tuple[str, str, str, dict[str, Any], np.ndarray | None, dict[str, Any], dict[str, str]]
+FIVE_LOW = {"at_least_five_low": "supported", "exactly_five_low": "supported", "complement_low": "supported"}
+SIX_LOW = {"at_least_five_low": "supported", "exactly_five_low": "refuted", "target_alignment": "supported"}
+COUPLED_DEEP = {"at_least_five_low": "inconclusive", "target_alignment": "inconclusive"}
 
 
 def _evaluate_control(job: ControlJob) -> dict[str, Any]:
-    name, purpose, expected, record, truth, identity = job
+    name, purpose, expected, record, truth, identity, findings = job
     result = bdsc.evaluate(record, identity)
-    return {"control": name, "purpose": purpose, "expected": expected, **summary(result, truth)}
+    out = {"control": name, "purpose": purpose, "expected": expected, **summary(result, truth)}
+    if findings:
+        out["expected_findings"] = findings
+    return out
+
+
+def exact_census() -> list[dict[str, Any]]:
+    """The algebraic layer: census findings on exact blocks at zero radius, independent of sampling."""
+    fixtures: list[tuple[str, np.ndarray, float, dict[str, str]]] = [
+        ("ideal", bdsc.ideal_effect(), 1.0, {"at_least_five_low": "refuted", "exactly_five_low": "refuted"}),
+        ("extra_real_null", bdsc.extra_real_null(), 1.0, FIVE_LOW),
+        ("extra_imag_null", bdsc.extra_imag_null(), 1.0, FIVE_LOW),
+        (
+            "coupled_complement_low",
+            bdsc.coupled_complement_effect(),
+            1.0,
+            {"complement_low": "supported", "at_least_five_low": "inconclusive"},
+        ),
+        ("aligned_fifth_low", bdsc.diagonal_effect([0.05], 1.0), 1.0, FIVE_LOW),
+        ("five_designed_low", bdsc.diagonal_effect([0.02], 0.5), 1.0, FIVE_LOW),
+        ("six_designed_low", bdsc.diagonal_effect([0.02, 0.03], 0.5), 1.0, SIX_LOW),
+        ("aligned_fifth_low_scaled", 0.0606 * bdsc.diagonal_effect([0.05], 1.0), 1.0, FIVE_LOW),
+        ("above_unit_range", bdsc.diagonal_effect([0.05], 1.15), 1.2, FIVE_LOW),
+        ("above_unit_range_capped_at_1", bdsc.diagonal_effect([0.05], 1.15), 1.0, {}),
+    ]
+    rows = []
+    for name, effect, top, expected in fixtures:
+        a, c = bdsc.blocks(effect)
+        census = bdsc.certificate(bdsc.exact_bound(a), bdsc.exact_bound(c), top)["census"]
+        eig = np.linalg.eigvalsh(effect)
+        row = {
+            "fixture": name,
+            "effect_upper": top,
+            "lambda_5": round(float(eig[4]), 12),
+            "lambda_6": round(float(eig[5]), 12),
+            "U_5": round(census["U_5"], 12),
+            "L_6": round(census["L_6"], 12),
+            "consistent": census["consistent"],
+            "findings": census["findings"],
+        }
+        for key, value in expected.items():
+            require(census["findings"][key] == value, f"exact census {name}: {key} reads {census['findings'][key]}")
+        if census["consistent"]:
+            intervals = census["lambda_5_to_16"]
+            require(
+                all(lo - 1e-12 <= x <= hi + 1e-12 for x, (lo, hi) in zip(eig[4:], intervals, strict=True)),
+                f"exact census {name}: an eigenvalue leaves its interval",
+            )
+        rows.append(row)
+    require(rows[3]["U_5"] == rows[3]["lambda_5"] == 0.18, "the coupled example attains lambda_5 = a + mu_1")
+    require(rows[4]["findings"] == rows[7]["findings"], "a common scale changes an exact census finding")
+    require(not rows[9]["consistent"] and all(v == "unavailable" for v in rows[9]["findings"].values()), "cap")
+    return rows
 
 
 def _coverage_replicate(item: tuple[str, int, int]) -> tuple[bool, bool]:
@@ -797,6 +932,12 @@ def planning_record(target: dict[str, Any], catalogue: dict[str, Any]) -> dict[s
         {"n": n, "min_lambda_min_C": round(min(r["a_U"], r["l_U"]) / sin2 + r["radius_C"], 12)}
         for (_, n, _), r in zip(floor_items, floor_readings, strict=True)
     ]
+    witness_threshold = bdsc.LOW_RATIO * WITNESS_BRIGHT_LOWER
+    witness_n = bdsc.zero_event_five_space_trials(witness_threshold, WITNESS_ALPHA)
+    witness_bound = bdsc.five_space_witness(0, witness_n, WITNESS_ALPHA)["lambda_5_upper"]
+    require(witness_n == 204 and round(witness_bound, 7) == 0.0896012, f"five-space witness {witness_n}")
+    hoeffding = bdsc.hoeffding_consistency_trials(bdsc.CONSISTENCY_MARGIN, CASE_ALPHA)
+    require(hoeffding == 22_689, f"Hoeffding consistency plan reads {hoeffding}")
     chip = catalogue["processors"][CHIP]["perfs"]
     u = numeric_unitary([[(Fraction(a), Fraction(b)) for a, b in row] for row in target["U24"]])
     t_out = chip["Transmission per mode (%)"]["t_out"]
@@ -822,6 +963,24 @@ def planning_record(target: dict[str, Any], catalogue: dict[str, Any]) -> dict[s
             "belenos_status": "implausible on qpu:belenos: off-cone one-click samples on modes 0, 1 and 5 come and go "
             "at up to thousands per 40000-sample iteration (strategy.md section 2), and the 12/12 mask uses all 24 "
             "detectors, so a zero-event record cannot be planned for",
+        },
+        "five_space_witness": {
+            "bound": "lambda_5(F) <= lambda_max(S F S) <= Tr(S F) = 5 r_5, S = P + |q><q| for a unit q in Q",
+            "bright_reference_lower": WITNESS_BRIGHT_LOWER,
+            "threshold": round(witness_threshold, 12),
+            "alpha_one_sided": WITNESS_ALPHA,
+            "zero_event_trials": witness_n,
+            "lambda_5_upper_at_zero_events": round(witness_bound, 12),
+            "scope": "conditional on genuine Bernoulli trials of one effect and an independently measured bright "
+            "reference; excludes the reference acquisition, preparation calibration and qualification; zero events "
+            "on qpu:belenos cannot be promised, and approximate conditioning adds (1 + delta) and the bias bound",
+        },
+        "consistency_hoeffding": {
+            "margin": bdsc.CONSISTENCY_MARGIN,
+            "alpha": CASE_ALPHA,
+            "trials_per_preparation": hoeffding,
+            "rule": "n >= 8 log(12 / alpha) / m^2: six probabilities under a union bound, four per residual",
+            "scope": "a conservative illustration; exact Clopper-Pearson at the observed probabilities needs fewer",
         },
         "ideal_effect_expected_counts": ideal_rows,
         "required_complement_floor": floors,
@@ -928,12 +1087,292 @@ def qualification_record(target: dict[str, Any], controls: dict[str, Any], plann
         "target_sha256": target["target_sha256"],
         "milestones": milestones,
         "first_unsupported_premise": "M2",
+        "provider_contract": "provider_contract.json",
+        "next_case": "qualification_case.json",
         "synthetic_validation": {
             "controls": len(controls["controls"]),
             "all_expected": all(r["disposition"] == r["expected"] for r in controls["controls"]),
             "scope": "the analysis procedure under its assumptions; no hardware certificate",
         },
         "authorization": "no acquisition, upload or cloud submission is authorized by these records",
+    }
+
+
+# --- provider contract and qualification case ---------------------------------------------
+
+
+def provider_contract_record(target: dict[str, Any]) -> dict[str, Any]:
+    """Each capability the certificate needs from the provider, its status on this account and its question."""
+    strategy = "docs/notes/quandela/strategy.md"
+    items = [
+        (
+            "full_transform_preservation",
+            "M2",
+            "unsupported on the tested routes",
+            f"{strategy} sections 4 and 9: sim:belenos jobs 1d7160c1 and e5b74123 kept only the occupied column; "
+            "qpu:belenos meshes follow the body and the compilation seed",
+            "Can a requested 24-mode transformation, or the induced effect J^dagger T^dagger Q_A T J on the logical "
+            "inputs, be preserved through compilation on qpu:belenos?",
+        ),
+        (
+            "native_configuration_replay",
+            "M2",
+            "unresolved",
+            "no documented no_transpile parameter; none is assumed",
+            "Can a native architecture configuration (phase settings) run without state-specific optimization, and "
+            "be replayed unchanged across jobs?",
+        ),
+        (
+            "preparation_control",
+            "M2, M4",
+            "unresolved",
+            "a one-photon body reaches the chip as its occupied column, so preparation and readout are one request",
+            "Can coherent inputs be prepared independently of a fixed readout stage, and how is the preparation "
+            "error bounded?",
+        ),
+        (
+            "returned_circuit_semantics",
+            "M2",
+            "unresolved",
+            "returned meshes are compared as declared matrices; their physical realization is uncalibrated",
+            "What does a returned compiled circuit describe: the configuration applied, a nominal model, or a "
+            "post-hoc fit?",
+        ),
+        (
+            "uncorrected_observations",
+            "M3",
+            "unresolved",
+            "Perceval 1.3 documents mitigations=[] as disabling remote mitigation; the empty list reaching the server "
+            "is shown for Perceval 1.3.1 PayloadGenerator, its effect on this account is untested",
+            "Does an empty mitigation list return aggregated genuine detector events, and which filtering precedes "
+            "them?",
+        ),
+        (
+            "count_provenance",
+            "M3",
+            "unsupported under defaults",
+            "docs/evidence/bdsc/packages/packages.json: the default DetectorBalancing path ends in a probability to "
+            "count conversion whose zero-count law differs from the binomial",
+            "Are returned counts aggregated events or reconstructed from probabilities; are samples in physical order; "
+            "what do shot, sample and eligible trial mean; which rejected and no-click categories exist?",
+        ),
+        (
+            "processing_versions",
+            "M3",
+            "partially recorded",
+            "the frozen receipt names server Perceval 1.3.0; the server route of a run is bound per run",
+            "Which server software version and correction calibration produced each result?",
+        ),
+        (
+            "acceptance_calibration",
+            "M3",
+            "unsupported",
+            "the receipt t_out taken as efficiencies gives delta about 0.97 and contradicts the detected light; "
+            "off-cone clicks have no model",
+            "Are per-detector efficiencies, dark counts, dead time and multi-photon threshold behavior available "
+            "for the selected outputs, at the run's calibration?",
+        ),
+    ]
+    return {
+        "schema": SCHEMA,
+        "record": "provider_contract",
+        "target_sha256": target["target_sha256"],
+        "platform": CHIP,
+        "capabilities": [
+            {"capability": name, "milestones": milestones, "status": status, "evidence": evidence, "question": q}
+            for name, milestones, status, evidence, q in items
+        ],
+        "resolution": "a capability reads supported only from a provider statement bound to this account or a "
+        "qualification run; the abstract Experiment representation and local SLOS execution establish none",
+    }
+
+
+def householder_completion(column: np.ndarray, source: int) -> np.ndarray:
+    """A unitary with column[source] = column: a Householder reflection with a phase on the source column."""
+    m = len(column)
+    e = np.zeros(m, dtype=complex)
+    e[source] = 1
+    phase = column[source] / abs(column[source]) if abs(column[source]) > 1e-12 else 1.0
+    w = e * phase - column
+    if np.linalg.norm(w) < 1e-12:
+        return np.asarray(np.eye(m) * phase, dtype=complex)
+    w = w / np.linalg.norm(w)
+    return np.asarray((np.eye(m) - 2 * np.outer(w, w.conj())) @ (np.eye(m) * phase), dtype=complex)
+
+
+def givens_completion(column: np.ndarray, source: int) -> np.ndarray:
+    """A unitary with column[source] = column, built as a chain of 2 x 2 rotations into the source mode."""
+    m = len(column)
+    order = [source] + [k for k in range(m) if k != source]
+    u = np.eye(m, dtype=complex)
+    v = column.astype(complex).copy()
+    for k in reversed(order[1:]):
+        a, b = v[source], v[k]
+        r = math.hypot(abs(a), abs(b))
+        if r < 1e-15:
+            continue
+        g = np.eye(m, dtype=complex)
+        c_, s_ = a / r, b / r
+        g[source, source], g[source, k], g[k, source], g[k, k] = c_.conjugate(), s_.conjugate(), -s_, c_
+        v = g @ v
+        u = u @ g.conj().T
+    return np.asarray(u @ np.diag([v[source] if i == source else 1.0 for i in range(m)]), dtype=complex)
+
+
+CaseItem = tuple[str, np.ndarray, int]
+
+
+def _case_bank(item: CaseItem) -> dict[str, Any]:
+    """One pair's six states with chip columns, the distance between the two completions on the unused columns,
+    and the ideal responses of E0, E_R and E_I; every variant cell of the pair prepares these states."""
+    pair, u, source = item
+    frames = {"K": bdsc.kernel_frame(), "Q": bdsc.complement_frame()}
+    fb, fi, gb, gi = CASE_PAIRS[pair]
+    f, g = frames[fb][:, fi].astype(complex), frames[gb][:, gi].astype(complex)
+    completions = {"householder": householder_completion, "givens": givens_completion}
+    rows: list[dict[str, Any]] = []
+    for label, psi in bdsc.consistency_states(f, g).items():
+        column = chip_column(u, psi)
+        body = {}
+        for name, complete in completions.items():
+            w = complete(column, source)
+            require(np.allclose(w.conj().T @ w, np.eye(MODES), atol=1e-12), f"{name} completion is not unitary")
+            require(np.allclose(w[:, source], column, atol=1e-12), f"{name} completion misses the column")
+            body[name] = np.delete(w, source, axis=1)
+        rows.append(
+            {
+                "label": label,
+                "state_e_basis": complex_list(psi),
+                "chip_column": complex_list(column),
+                "unused_column_distance": round(float(np.linalg.norm(body["householder"] - body["givens"])), 9),
+                "ideal_selected": {
+                    name: round(float(np.real(np.conj(psi) @ effect @ psi)), 12)
+                    for name, effect in (
+                        ("E0", bdsc.ideal_effect()),
+                        ("E_R", bdsc.extra_real_null()),
+                        ("E_I", bdsc.extra_imag_null()),
+                    )
+                },
+            }
+        )
+    for name in ("E0", "E_R", "E_I"):
+        p = {r["label"]: r["ideal_selected"][name] for r in rows}
+        require(abs(p["+"] + p["-"] - p["f"] - p["g"]) < 1e-12, f"{pair} {name}: real sum rule")
+        require(abs(p["+i"] + p["-i"] - p["f"] - p["g"]) < 1e-12, f"{pair} {name}: imaginary sum rule")
+    return {"pair": pair, "f_g": [f"{fb}{fi + 1}", f"{gb}{gi + 1}"], "settings": rows}
+
+
+def _case_trials(margin: float, alpha: float, probabilities: list[float]) -> int:
+    """Smallest n at which the Clopper-Pearson residual intervals at the expected counts lie inside the margin."""
+
+    def inside(n: int) -> bool:
+        counts = dict(zip(bdsc.CONSISTENCY_LABELS, [(int(round(p * n)), n) for p in probabilities], strict=True))
+        readout = bdsc.consistency_readout(counts, alpha, margin)
+        return readout["delta_R_status"] == readout["delta_I_status"] == "compatible"
+
+    low, high = 1, 1
+    while not inside(high):
+        low, high = high, high * 2
+    while high - low > 1:
+        mid = (low + high) // 2
+        low, high = (low, mid) if inside(mid) else (mid, high)
+    return high
+
+
+def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
+    u = numeric_unitary([[(Fraction(a), Fraction(b)) for a, b in row] for row in target["U24"]])
+    banks = parallel.ordered_map(_case_bank, [(pair, u, target["source_mode"]) for pair in CASE_PAIRS])
+    for bank in banks:
+        for row in bank["settings"]:
+            require(row["unused_column_distance"] > 0.1, f"{bank['pair']} {row['label']}: the completions coincide")
+    cells = [
+        {"pair": pair, "preparation": d, "processing": policy, "mitigations": PROCESSING_POLICIES[policy]}
+        for pair in CASE_PAIRS
+        for d in PREPARATION_DESCRIPTIONS
+        for policy in PROCESSING_POLICIES
+    ]
+    cell_count = len(cells)
+    alpha_cell = CASE_ALPHA / cell_count
+    trials = max(
+        _case_trials(
+            bdsc.CONSISTENCY_MARGIN,
+            alpha_cell,
+            [row["ideal_selected"]["E0"] for row in bank["settings"]],
+        )
+        for bank in banks
+    )
+    first_epoch = cell_count * len(bdsc.CONSISTENCY_LABELS)
+    second_epoch = cell_count * len(CASE_EPOCH_REFERENCES)
+    settings = first_epoch + second_epoch
+    shots = settings * trials
+    ceiling = settings * (CREDITS_PER_JOB + CREDITS_PER_SHOT * SHOT_HEADROOM * trials)
+    return {
+        "schema": SCHEMA,
+        "record": "qualification_case",
+        "target_sha256": target["target_sha256"],
+        "question": "do the returned observations behave as one fixed linear effect on independently prepared "
+        "states, at a declared observation level, across preparation descriptions, processing policies and time",
+        "claims": {
+            "low_ratio": bdsc.LOW_RATIO,
+            "findings_schema": bdsc.FINDINGS_SCHEMA,
+            "consistency_margin": bdsc.CONSISTENCY_MARGIN,
+            "alpha": CASE_ALPHA,
+            "alpha_per_cell": alpha_cell,
+            "outcomes": ["compatible", "violated", "inconclusive"],
+            "scope": "passing the sum rules is necessary and not sufficient: a service that prepares "
+            "sqrt(p_s)|A> + sqrt(1 - p_s)|D> for each requested p_s passes them without a fixed measurement",
+        },
+        "banks": banks,
+        "preparation_descriptions": {
+            "householder": "I - 2 w w^dagger with w along phase e_r - column, times the source phase",
+            "givens": "a chain of 2 x 2 rotations of the source mode against every other mode",
+        },
+        "cells": cells,
+        "acquisition": {
+            "trials_per_setting": trials,
+            "trials_rule": "smallest n whose Clopper-Pearson residual intervals at E0's expected counts lie inside "
+            "the margin, Bonferroni over every cell",
+            "epochs": [
+                {"epoch": 1, "settings": first_epoch, "content": "every cell's six states in one randomized order"},
+                {
+                    "epoch": 2,
+                    "settings": second_epoch,
+                    "content": "the f and g references of every cell, separated in time from epoch 1",
+                },
+            ],
+            "randomized_and_retained": [
+                "preparation label",
+                "compilation seed",
+                "processing policy",
+                "acquisition order",
+                "epoch",
+            ],
+            "stopping": bdsc.STOPPING,
+        },
+        "cost": {
+            "settings": settings,
+            "shots": shots,
+            "credit_ceiling_one_job_per_setting": round(ceiling, 6),
+            "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots = 2 x samples (strategy.md section 1a)",
+            "timing": "unknown: the historical rates belong to processed-output jobs under default mitigation",
+        },
+        "stop_conditions": [
+            "scripts/qd_platform.py plan refuses the platform",
+            "a returned result's processing differs from the requested policy",
+            "a job fails or returns fewer eligible trials than the frozen n",
+            "the per-run server version or calibration identity cannot be recorded",
+        ],
+        "interpretation": [
+            {"difference": "between preparation descriptions", "implicates": "preparation, compilation or both"},
+            {"difference": "between epochs", "implicates": "stationarity"},
+            {"difference": "between processing policies", "implicates": "a processing effect, not hardware drift"},
+            {
+                "difference": "a violated sum rule",
+                "implicates": "the combined linear-effect, preparation and conditioning model, without a unique cause",
+            },
+        ],
+        "authorization": "none: the case waits for its written-case approval; a pass supports proposing the "
+        "160-setting run, never running it",
     }
 
 
@@ -948,6 +1387,8 @@ def documents() -> dict[str, str]:
     controls = controls_record(target)
     planning = planning_record(target, catalogue)
     qualification = qualification_record(target, controls, planning)
+    contract = provider_contract_record(target)
+    case = qualification_case_record(target)
     records = {
         "target.json": target,
         "bank.json": bank,
@@ -955,6 +1396,8 @@ def documents() -> dict[str, str]:
         "controls.json": controls,
         "planning.json": planning,
         "qualification.json": qualification,
+        "provider_contract.json": contract,
+        "qualification_case.json": case,
     }
     return {name: json.dumps(value, indent=1, sort_keys=True) + "\n" for name, value in records.items()}
 
@@ -1036,6 +1479,28 @@ def _theorem_item(item: tuple[str, int]) -> tuple[bool, bool, float]:
     return bool(exact["ok"]), nontrivial, ratio
 
 
+CENSUS_EFFECTS = 128
+
+
+def _general_effect(seed: int) -> np.ndarray:
+    """A random effect: Haar unitary from the QR of a complex Gaussian, eigenvalues uniform in [0, 1]."""
+    rng = np.random.default_rng(seed)
+    z = rng.normal(size=(bdsc.DIM, bdsc.DIM)) + 1j * rng.normal(size=(bdsc.DIM, bdsc.DIM))
+    q, r = np.linalg.qr(z)
+    q = q @ np.diag(np.diag(r) / np.abs(np.diag(r)))
+    return np.asarray(q @ np.diag(rng.uniform(0.0, 1.0, size=bdsc.DIM)) @ q.conj().T)
+
+
+def _census_item(seed: int) -> int:
+    """Violations of mu_j <= lambda_(4+j)(F) <= a + mu_j over j = 1..12 on one random effect."""
+    effect = _general_effect(seed)
+    a_block, c_block = bdsc.blocks(effect)
+    a = float(np.linalg.eigvalsh(a_block)[-1])
+    mu = np.linalg.eigvalsh(c_block)
+    lam = np.linalg.eigvalsh(effect)[bdsc.KERNEL_DIM :]
+    return int(np.sum((lam < mu - 1e-12) | (lam > a + mu + 1e-12)))
+
+
 def self_test() -> int:
     catalogue = load_catalogue()
     target = target_record(catalogue)
@@ -1109,6 +1574,45 @@ def self_test() -> int:
     tightest = max(ratio for _, _, ratio in outcomes)
     require(nontrivial >= THEOREM_NONTRIVIAL_MIN, f"self-test: only {nontrivial} effects have a < gamma")
     require(tightest > 0.99, f"self-test: the angle bound is never approached (ratio {tightest})")
+    # Low-eigenvalue census: interlacing and the positivity bound on 12 indexed pairs per random effect.
+    violations = parallel.ordered_map(_census_item, list(range(CENSUS_EFFECTS)))
+    require(sum(violations) == 0, f"self-test: the census inequalities fail {sum(violations)} times")
+    coupled = bdsc.coupled_complement_effect()
+    require(bdsc.is_effect(coupled), "self-test: the coupled census example is not an effect")
+    require(abs(np.linalg.eigvalsh(coupled)[4] - 0.18) < 1e-12, "self-test: the coupled example misses a + mu_1")
+    a_block, c_block = bdsc.blocks(bdsc.diagonal_effect([0.05], 1.15))
+    clipped = bdsc.spectral_census(bdsc.exact_bound(a_block), bdsc.exact_bound(c_block), 1.0)
+    require(not clipped["consistent"], "self-test: an effect above its declared range reads consistent")
+    # Five-space witness: Tr(S F) bounds lambda_5 and vanishes on the matching extra null.
+    for name, direction in bdsc.candidate_directions().items():
+        er = bdsc.extra_real_null() if name == "q_R" else bdsc.extra_imag_null()
+        require(abs(bdsc.five_space_trace(er, direction)) < 1e-12, f"self-test: {name} is not the extra null")
+        for seed in range(8):
+            g = _general_effect(seed)
+            require(
+                np.linalg.eigvalsh(g)[4] <= bdsc.five_space_trace(g, direction) + 1e-12, "self-test: lambda_5 > Tr(SF)"
+            )
+    # Consistency sum rules hold for every fixed linear effect; a 0.1 excess on one state reads violated.
+    states = bdsc.consistency_states(bdsc.complement_frame()[:, 1].astype(complex), bdsc.complement_frame()[:, 2])
+    for seed in range(8):
+        g = _general_effect(seed)
+        pr = {x: float(np.real(np.conj(v) @ g @ v)) for x, v in states.items()}
+        require(abs(pr["+"] + pr["-"] - pr["f"] - pr["g"]) < 1e-12, "self-test: real sum rule")
+        require(abs(pr["+i"] + pr["-i"] - pr["f"] - pr["g"]) < 1e-12, "self-test: imaginary sum rule")
+    n_big = 10**7
+    linear = bdsc.consistency_readout({x: (int(round(0.5 * n_big)), n_big) for x in states}, 0.01)
+    require(linear["delta_R_status"] == linear["delta_I_status"] == "compatible", "self-test: consistency margin")
+    broken_counts = {x: (int(round((0.6 if x == "+" else 0.5) * n_big)), n_big) for x in states}
+    excess = bdsc.consistency_readout(broken_counts, 0.01)
+    require(excess["delta_R_status"] == "violated", "self-test: a 0.1 sum-rule violation is not caught")
+    near = bdsc.consistency_readout({x: (50, 100) for x in states}, 0.01)
+    require(near["delta_R_status"] == "inconclusive", "self-test: an interval around zero alone established a rule")
+    # Thinning equalizes terminal efficiencies and leaves internal loss: D = eta_* T^dagger T.
+    lossless = numeric_unitary(u)[:, : bdsc.DIM]
+    eta_t = np.linspace(0.6, 0.95, MODES)
+    require(bdsc.scalar_deviation(bdsc.thinned_acceptance(lossless, eta_t))[1] < 1e-12, "self-test: thinned lossless")
+    lossy = np.diag(np.linspace(0.7, 1.0, MODES)) @ lossless
+    require(bdsc.scalar_deviation(bdsc.thinned_acceptance(lossy, eta_t))[1] > 0.1, "self-test: internal loss hidden")
     # Acceptance: uniform efficiency is scalar, a pair imbalance is not.
     un = numeric_unitary(u)
     require(
@@ -1121,8 +1625,9 @@ def self_test() -> int:
         bdsc.scalar_deviation(bdsc.acceptance(un, target["selected_modes"], eta)["D"])[1] > 0.1, "self-test: imbalance"
     )
     print(
-        f"bdsc self-test: exact, unitary, bank, pilot and acceptance checks pass; theorem on {len(items)} effects, "
-        f"{nontrivial} with a < gamma, tightest sin^2 theta / (a / gamma) = {tightest:.6f}"
+        f"bdsc self-test: exact, unitary, bank, pilot, witness, consistency, thinning and acceptance checks pass; "
+        f"theorem on {len(items)} effects, {nontrivial} with a < gamma, tightest sin^2 theta / (a / gamma) = "
+        f"{tightest:.6f}; census on {CENSUS_EFFECTS} effects, {CENSUS_EFFECTS * bdsc.COMPLEMENT_DIM} indexed pairs"
     )
     return 0
 
