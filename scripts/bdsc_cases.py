@@ -1,22 +1,25 @@
-"""Belenos six-state qualification case: one runnable Quandela job per template, policy and epoch, and its readout.
+"""Belenos six-state qualification case: one runnable Quandela job per pair, policy and epoch, and its readout.
 
 docs/evidence/bdsc/qualification_case.json fixes the observations, the 8 jobs
 of 12 iterations, the trials and the shot budget; this script turns each job
 into a case directory that scripts/qd_platform.py plans and submits:
 
-- circuit.json (qd-template-circuit-v1): the job's fixed 24-mode template
-  from bdsc_certificate.template_ops, outward-ladder or reverse-ladder, with
-  the photon on source mode 6;
+- circuit.json (qd-template-circuit-v1): the 24-mode ladder-union circuit of
+  bdsc_certificate.union_ops, which carries both templates, with the photon
+  on source mode 6;
 - cases.json (qd-bdsc-cases-v1): gate_form template, command sample_count,
-  min_detected_photons 1, 12 iterations whose settings bind one state's 47
-  parameters and carry its chip column, the policy's mitigations (null for
-  provider defaults, [] to disable them), max_samples and max_shots summed
-  over the iterations, the selected output modes and the eligibility rule.
+  min_detected_photons 1, 12 iterations (the pair's six states under both
+  templates) whose settings bind one template's union parameters and carry
+  the chip column, the policy's mitigations (null for provider defaults, []
+  to disable them), max_samples and max_shots summed over the iterations,
+  the selected output modes and the eligibility rule.
 
 Without --draw the cases carry no compilation seeds, keep the observation
 order and read draft: they plan and do not submit. With --draw (an
 scripts/anu_qrng.py record of at least 192 values) value i seeds observation i
-and value 96 + i orders it within its job.
+and value 96 + i orders it within its job; every manifest names the record's
+repository path and sha256 and every setting its two indices, and a record
+another case's manifests already name is refused.
 
 The readout counts one trial per detection pattern with exactly one click:
 selected when that click is on a selected output, eligible either way.
@@ -27,6 +30,7 @@ Usage:
   "$PYTHON" scripts/bdsc_cases.py --check DIR [--draw FILE]
   "$PYTHON" scripts/bdsc_cases.py --local DIR
   "$PYTHON" scripts/bdsc_cases.py --readout RUN_DIR...
+  "$PYTHON" scripts/bdsc_cases.py --self-test
 """
 
 from __future__ import annotations
@@ -58,6 +62,10 @@ CIRCUIT_SCHEMA = "qd-template-circuit-v1"
 PLATFORMS = ["sim:belenos", "qpu:belenos"]
 MAX_DURATION = 300
 TEMPLATE_TAGS = {"outward-ladder": "out", "reverse-ladder": "rev"}
+# Only the QPU answers the qualification question; sim:belenos stays a planning platform.
+QUALIFYING_PLATFORM = "qpu:belenos"
+# Retained case manifests a QRNG record may already seed.
+MANIFEST_ROOTS = (ROOT / "results/quandela/runs", ROOT / "results/quandela/cases")
 POLICY_TAGS = {"provider-defaults": "def", "empty-mitigation": "none"}
 PAIR_TAGS = {"target-complement": "tc", "middle-middle": "mm"}
 LABEL_TAGS = {"f": "f", "g": "g", "+": "p", "-": "m", "+i": "pi", "-i": "mi"}
@@ -76,11 +84,11 @@ def sha256_bytes(data: bytes) -> str:
 
 
 def job_name(job: dict[str, Any]) -> str:
-    return f"{TEMPLATE_TAGS[job['template']]}-{POLICY_TAGS[job['processing']]}-e{job['epoch']}"
+    return f"{PAIR_TAGS[job['pair']]}-{POLICY_TAGS[job['processing']]}-e{job['epoch']}"
 
 
 def setting_name(observation: dict[str, Any]) -> str:
-    return f"{PAIR_TAGS[observation['pair']]}-{LABEL_TAGS[observation['label']]}"
+    return f"{TEMPLATE_TAGS[observation['preparation']]}-{LABEL_TAGS[observation['label']]}"
 
 
 def load_draw(path: Path | None, settings: int) -> list[int] | None:
@@ -97,6 +105,31 @@ def load_draw(path: Path | None, settings: int) -> list[int] | None:
     return list(record["values"][: 2 * settings])
 
 
+def draw_binding(path: Path) -> dict[str, Any]:
+    """The record's repository path (its name for a record outside the tree) and the sha256 of its bytes."""
+    resolved = path.resolve()
+    name = str(resolved.relative_to(ROOT)) if resolved.is_relative_to(ROOT) else resolved.name
+    return {"record": name, "sha256": sha256_bytes(path.read_bytes())}
+
+
+def draw_claims(binding: dict[str, Any], roots: tuple[Path, ...] = MANIFEST_ROOTS) -> list[str]:
+    """Retained manifests of another case that name the record, by sha256 or by file name, the form older cases
+    used; manifests built from this frozen case may name it, since a rebuild reproduces them."""
+    case_sha256 = sha256_bytes(CASE.read_bytes())
+    claims = []
+    for root in roots:
+        for path in sorted(root.glob("**/cases.json")) if root.is_dir() else []:
+            manifest = json.loads(path.read_text(encoding="utf-8"))
+            named = manifest.get("draw")
+            if isinstance(named, dict):
+                hit = named.get("sha256") == binding["sha256"]
+            else:
+                hit = isinstance(named, str) and named == Path(binding["record"]).name
+            if hit and manifest.get("qualification_case_sha256") != case_sha256:
+                claims.append(str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path))
+    return claims
+
+
 def columns(case: dict[str, Any], target: dict[str, Any]) -> dict[tuple[str, str], np.ndarray]:
     """The chip column U24 psi of every bank state, keyed by (pair, label)."""
     u = cert.numeric_unitary([[(Fraction(a), Fraction(b)) for a, b in row] for row in target["U24"]])
@@ -108,10 +141,10 @@ def columns(case: dict[str, Any], target: dict[str, Any]) -> dict[tuple[str, str
     return out
 
 
-def _job_params(item: tuple[str, list[tuple[int, np.ndarray]], int]) -> dict[int, np.ndarray]:
-    """The template parameters of one job's states, keyed by observation index."""
-    template, members, source = item
-    return {i: cert.template_params(template, column, source) for i, column in members}
+def _job_params(item: tuple[list[tuple[int, str, np.ndarray]], int]) -> dict[int, np.ndarray]:
+    """The union-circuit parameters of one job's settings, each realizing its own template, keyed by observation."""
+    members, source = item
+    return {i: cert.union_params(template, column, source) for i, template, column in members}
 
 
 def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
@@ -121,6 +154,11 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
     target = json.loads(TARGET.read_text(encoding="utf-8"))
     observations = case["observations"]
     values = load_draw(draw, len(observations))
+    binding = None
+    if draw is not None:
+        binding = draw_binding(draw)
+        claims = draw_claims(binding)
+        require(not claims, f"{draw}: another case already draws from this record: {claims[:3]}")
     source = target["source_mode"]
     trials = case["resources"]["eligible_trials_per_setting"]
     max_shots = case["resources"]["max_shots_per_iteration"]
@@ -128,11 +166,13 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
     chip = columns(case, target)
     import parallel
 
-    # Each job's 12 template parameterizations are independent of every other job's, so they run as one pool item.
+    # Each job's 12 parameterizations are independent of every other job's, so they run as one pool item.
     items = [
         (
-            job["template"],
-            [(i, chip[(observations[i]["pair"], observations[i]["label"])]) for i in job["iterations"]],
+            [
+                (i, observations[i]["preparation"], chip[(observations[i]["pair"], observations[i]["label"])])
+                for i in job["iterations"]
+            ],
             source,
         )
         for job in case["jobs"]
@@ -140,12 +180,13 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
     solved = parallel.ordered_map(_job_params, items, min_items=1)
     out: dict[str, dict[str, bytes]] = {}
     for job, params_by_index in zip(case["jobs"], solved, strict=True):
-        ops = cert.template_ops(job["template"], source)
+        require(job["circuit"] == cert.UNION_CIRCUIT, f"job circuit {job['circuit']!r}")
+        ops = cert.union_ops(source)
         input_state = [0] * cert.MODES
         input_state[source] = 1
         circuit = {
             "schema": CIRCUIT_SCHEMA,
-            "template": job["template"],
+            "template": cert.UNION_CIRCUIT,
             "modes": cert.MODES,
             "input_state": input_state,
             "parameters": sum(1 for _, _, k in ops if k is not None),
@@ -163,12 +204,14 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
             setting: dict[str, Any] = {
                 "name": setting_name(o),
                 "observation_index": i,
+                "preparation": o["preparation"],
                 "circuit_params": {f"x{k}": float(v) for k, v in enumerate(params)},
                 "column": [[float(z.real), float(z.imag)] for z in column],
                 "ideal_selected_E0": ideal[(o["pair"], o["label"])],
             }
             if values is not None:
                 setting["compilation_seed"] = values[i]
+                setting["draw_indices"] = {"seed": i, "order": len(observations) + i}
             settings.append(setting)
         name = job_name(job)
         manifest: dict[str, Any] = {
@@ -193,8 +236,8 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
             "circuit": {"file": "circuit.json", "sha256": sha256_bytes(circuit_bytes)},
             "draft": values is None,
         }
-        if values is not None and draw is not None:
-            manifest["draw"] = {"file": draw.name, "seed_offset": 0, "order_offset": len(observations)}
+        if binding is not None:
+            manifest["draw"] = binding
         out[name] = {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
     require(len(out) == len(case["jobs"]), "two jobs share a name")
     return out
@@ -270,17 +313,50 @@ def tally(counts: dict[str, int], selected_modes: list[int]) -> dict[str, int]:
     return out
 
 
-def readout(runs: list[Path], contract: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Every contrast of the frozen case from collected runs, each policy admitted only by its contract."""
+def readout(runs: list[Path], contract: dict[str, Any] | None = None, records: Path = ROOT) -> dict[str, Any]:
+    """Every contrast of the frozen case from collected qpu:belenos runs, each policy admitted only by its contract;
+    records is the directory the manifests' QRNG record path is relative to."""
     case_bytes = CASE.read_bytes()
     case = json.loads(case_bytes)
     observations = case["observations"]
     contrasts = cert.case_contrasts(observations)
     trials = case["resources"]["eligible_trials_per_setting"]
     tallies: dict[int, dict[str, int]] = {}
+    draws: dict[str, list[int]] = {}
     for run in runs:
-        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        manifest_bytes = (run / "cases.json").read_bytes()
+        manifest = json.loads(manifest_bytes)
         result = json.loads((run / "results.json").read_text(encoding="utf-8"))
+        submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+        body_bytes = (run / "job-body.json").read_bytes()
+        # The qualification question concerns the QPU: a simulator run of the same manifests answers nothing here.
+        platform = submission.get("platform")
+        require(
+            platform == QUALIFYING_PLATFORM, f"{run}: ran on {platform!r}, the case qualifies {QUALIFYING_PLATFORM}"
+        )
+        served = result.get("data", {}).get("platform_name", platform)
+        require(served == QUALIFYING_PLATFORM, f"{run}: the service reports {served!r}")
+        require(
+            submission.get("cases_sha256") == sha256_bytes(manifest_bytes),
+            f"{run}: cases.json changed since submission",
+        )
+        require(submission.get("body_sha256") == sha256_bytes(body_bytes), f"{run}: job-body.json is not the sent body")
+        require(result.get("job_id") == submission.get("job_id"), f"{run}: the result answers another job")
+        # A returned iteration names no applied mitigation, so the sent body is the only record of the policy:
+        # Perceval writes the mitigations key exactly when the policy is a list.
+        from perceval.utils.constants import KEY_MITIGATIONS
+
+        requested = cert.PROCESSING_POLICIES[manifest["job_spec"]["processing"]]
+        require(manifest.get("mitigations") == requested, f"{run}: the manifest policy differs from its job")
+        carried = KEY_MITIGATIONS in json.dumps(json.loads(body_bytes))
+        require(carried == (requested is not None), f"{run}: the sent body does not carry the {requested!r} policy")
+        binding = manifest.get("draw")
+        require(isinstance(binding, dict), f"{run}: the manifest names no bound QRNG record")
+        if binding["sha256"] not in draws:
+            record_path = records / binding["record"]
+            require(sha256_bytes(record_path.read_bytes()) == binding["sha256"], f"{run}: the QRNG record changed")
+            draws[binding["sha256"]] = load_draw(record_path, len(observations)) or []
+        require(len(draws) == 1, f"{run}: the runs draw from more than one QRNG record")
         # collect retains the scrubbed status record, whose own status field names the job's end state.
         state = result.get("status", {})
         require(isinstance(state, dict) and state.get("status") == "completed", f"{run}: the job did not complete")
@@ -296,6 +372,9 @@ def readout(runs: list[Path], contract: dict[str, Any] | None = None) -> dict[st
             require(ran.get("circuit_params") == setting["circuit_params"], f"{run}/{setting['name']}: parameters")
             require(ran.get("compilation_seed") == setting["compilation_seed"], f"{run}/{setting['name']}: seed")
             index = setting["observation_index"]
+            values = draws[binding["sha256"]]
+            require(setting["draw_indices"] == {"seed": index, "order": len(observations) + index}, f"{run}: indices")
+            require(setting["compilation_seed"] == values[index], f"{run}/{setting['name']}: seed not drawn")
             require(index not in tallies, f"{run}/{setting['name']}: observation {index} collected twice")
             counted = tally(iteration["counts"], manifest["selected_modes"])
             # Fixed n: an iteration that stopped on its shot limit short of the frozen samples is a stop condition,
@@ -337,6 +416,16 @@ def synthetic_draw(directory: Path, settings: int) -> Path:
     return path
 
 
+def synthetic_body(policy: list[str] | None) -> bytes:
+    """A job body in the shape Perceval writes: the mitigations key appears exactly when the policy is a list."""
+    from perceval.utils.constants import KEY_MITIGATIONS
+
+    payload: dict[str, Any] = {"command": "sample_count"}
+    if policy is not None:
+        payload[KEY_MITIGATIONS] = policy
+    return (json.dumps({"payload": payload}) + "\n").encode()
+
+
 def self_test() -> int:
     """Build seeded jobs, write each as a collected run with ideal E0 counts in collect's shape, and read them out:
     an unsupported contract reads every contrast not_admitted, a supported one reads every contrast compatible, and
@@ -367,16 +456,25 @@ def self_test() -> int:
                 counts = {",".join(one): k, ",".join(miss): trials - k}
                 ran = {key: setting.get(key) for key in ("circuit_params", "compilation_seed")}
                 iterations.append({"iteration": ran, "counts": counts, "samples": trials})
-            result = {"status": {"status": "completed"}, "partial": False, "iterations": iterations}
+            result = {"status": {"status": "completed"}, "partial": False, "iterations": iterations, "job_id": name}
             (run / "results.json").write_text(json.dumps(result), encoding="utf-8")
+            body = synthetic_body(manifest["mitigations"])
+            (run / "job-body.json").write_bytes(body)
+            submission = {
+                "platform": QUALIFYING_PLATFORM,
+                "job_id": name,
+                "cases_sha256": sha256_bytes(files["cases.json"]),
+                "body_sha256": sha256_bytes(body),
+            }
+            (run / "submission.json").write_text(json.dumps(submission), encoding="utf-8")
             runs.append(run)
-        closed = readout(runs)
+        closed = readout(runs, records=root)
         require({c["status"] for c in closed["contrasts"]} == {"not_admitted"}, "self-test: unsupported contract")
         contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
         for capability in contract["capabilities"]:
             if capability["capability"] in ("uncorrected_observations", "count_provenance"):
                 capability["status"] = "supported"
-        opened = readout(runs, contract)
+        opened = readout(runs, contract, root)
         statuses = {(c["family"], c["status"]) for c in opened["contrasts"]}
         empty = [
             c
@@ -385,11 +483,23 @@ def self_test() -> int:
         ]
         require(all(c["status"] == "compatible" for c in empty), f"self-test: ideal counts read {statuses}")
         refusals = 0
-        for mutate in ("draft", "short", "seed", "duplicate"):
+        # Each malformed set must fail on its own check, named by a fragment of the refusal.
+        mutations = {
+            "draft": "a draft case",
+            "short": "samples, the case froze",
+            "seed": ": seed",
+            "duplicate": "collected twice",
+            "simulator": "the case qualifies",
+            "policy": "does not carry",
+        }
+        for mutate, expected in mutations.items():
             target = runs[0]
-            saved = {f: (target / f).read_bytes() for f in ("cases.json", "results.json")}
+            saved = {
+                f: (target / f).read_bytes() for f in ("cases.json", "results.json", "submission.json", "job-body.json")
+            }
             manifest = json.loads(saved["cases.json"])
             result = json.loads(saved["results.json"])
+            submission = json.loads(saved["submission.json"])
             batch = list(runs)
             if mutate == "draft":
                 manifest["draft"] = True
@@ -397,18 +507,33 @@ def self_test() -> int:
                 result["iterations"][0]["samples"] = trials - 1
             elif mutate == "seed":
                 result["iterations"][0]["iteration"]["compilation_seed"] += 1
-            else:
+            elif mutate == "duplicate":
                 batch = [*runs, copy.copy(target)]
+            elif mutate == "simulator":
+                submission["platform"] = "sim:belenos"
+            else:
+                # A body that carries the other policy, sent and digested as such, still differs from the manifest.
+                swapped = synthetic_body(None if manifest["mitigations"] is not None else [])
+                (target / "job-body.json").write_bytes(swapped)
+                submission["body_sha256"] = sha256_bytes(swapped)
             (target / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
             (target / "results.json").write_text(json.dumps(result), encoding="utf-8")
+            submission["cases_sha256"] = sha256_bytes((target / "cases.json").read_bytes())
+            (target / "submission.json").write_text(json.dumps(submission), encoding="utf-8")
             try:
-                readout(batch, contract)
-            except ValueError:
+                readout(batch, contract, root)
+            except ValueError as refusal:
+                require(expected in str(refusal), f"self-test: {mutate} refused for another reason: {refusal}")
                 refusals += 1
             for f, content in saved.items():
                 (target / f).write_bytes(content)
-        require(refusals == 4, f"self-test: {4 - refusals} malformed run sets were read out")
-    print(f"bdsc cases self-test: {len(runs)} synthetic jobs read out; 4 malformed run sets refused")
+        require(refusals == len(mutations), f"self-test: {len(mutations) - refusals} malformed run sets were read out")
+        # A record another case already names is refused before any manifest is built.
+        other = root / "other" / "cases.json"
+        other.parent.mkdir()
+        other.write_text(json.dumps({"draw": draw_binding(draw)}), encoding="utf-8")
+        require(bool(draw_claims(draw_binding(draw), (root / "other",))), "self-test: a reused record was admitted")
+    print(f"bdsc cases self-test: {len(runs)} synthetic jobs read out; {refusals} malformed run sets refused")
     return 0
 
 
