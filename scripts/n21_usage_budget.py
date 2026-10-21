@@ -53,6 +53,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
+import law_encoding  # noqa: E402
 import n21_exact_planning  # noqa: E402
 from diagnostic_experiments import family_contracts  # noqa: E402
 from experiment_optimizer import (  # noqa: E402
@@ -386,7 +387,7 @@ def reference() -> Reference:
 
     rows = pub_rows(candidate)
     group = record["groups"][0]
-    laws = {member["name"]: tuple(member["replicas"][0]["noisy"]) for member in group["members"]}
+    laws = {member["name"]: tuple(law_encoding.dense(member["replicas"][0]["noisy"])) for member in group["members"]}
     exact = record.get("exact_model")
     if exact is not None:
         laws = {row["entry"]: tuple(row["exact"]) for row in exact["replicas"] if row["replica"] == 0}
@@ -919,7 +920,10 @@ def exact_evidence_replay(record: dict[str, Any]) -> None:
     contracts = tuple(
         ObservableContract(
             **{key: value for key, value in contract.items() if key != "terms"},
-            terms=tuple(ObservableTerm(t["member"], tuple(t["values"]), t["sign"]) for t in contract["terms"]),
+            terms=tuple(
+                ObservableTerm(t["member"], tuple(law_encoding.dense(t["values"])), t["sign"])
+                for t in contract["terms"]
+            ),
         )
         for contract in record["observable_contracts"]
     )
