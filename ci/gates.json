@@ -1525,24 +1525,8 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --self-check",
-   "name": "core-606",
-   "seconds": 55.9,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --segmented-sweep",
-   "name": "core-607",
-   "seconds": 4.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-check results/live/n21-q143-segmented-design.json",
-   "name": "core-608",
+   "name": "core-616",
    "seconds": 666.4,
    "tier": "full",
    "workers": "all"

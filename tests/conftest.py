@@ -1,8 +1,8 @@
 """Session setup for the behavioral suite.
 
-ci/ modules import their siblings by bare name (``import run_gates``), as they
-do when run as scripts, so ci/ leads sys.path. run_gates itself places
-gororoba_quantum/ on the path for parallel.py.
+Modules under ci/, gororoba_quantum/ and scripts/ import their siblings by
+bare name (``import run_gates``), as they do when run as scripts, so the
+three directories lead sys.path; no basename repeats across them.
 
 ``-n auto`` sizes the xdist pool by parallel.workers(): the affinity and cgroup
 quota bound, capped by GOROROBA_WORKERS, which ci/run_gates.py sets to the
@@ -22,6 +22,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "ci"))
 sys.path.insert(1, str(ROOT / "gororoba_quantum"))
+sys.path.insert(2, str(ROOT / "scripts"))
 
 import parallel  # noqa: E402
 

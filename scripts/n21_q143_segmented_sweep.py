@@ -43,9 +43,9 @@ Tests share the family alpha equally (TESTS). Decisions read likelihood
 ratios against log(1 / test alpha), an evidential threshold: a model or
 alias whose NLL exceeds the best by more than log(1 / alpha) is excluded.
 
---self-check runs planted truths; --design OUT writes the design trade
-table; RUN_DIR writes RUN_DIR/segmented-sweep.json and --check requires
-equal bytes.
+--design OUT writes the design trade table; RUN_DIR writes
+RUN_DIR/segmented-sweep.json and --check requires equal bytes. The planted
+truths live in tests/scripts/test_n21_q143_segmented_sweep.py.
 """
 
 from __future__ import annotations
@@ -918,147 +918,6 @@ def sample(model: str, params: list[float], points: list[Point], rng: np.random.
     return drawn
 
 
-def _require(condition: bool, message: str) -> None:
-    if not condition:
-        raise RuntimeError(message)
-
-
-def _check_mixture_reduces() -> float:
-    """K = 1: the HMM pattern law equals the binomial of the static coherence."""
-    values = unpack("static", np.array(TRUTH_STATIC))
-    point = Point("x", "xy", 2079, 0, ("x",), (), np.array([[0], [1]]), np.ones(2))
-    logs = hmm_log_likelihood(values, point)
-    t = point.idle_us
-    signal = (
-        values["amplitude"]
-        * np.exp(1j * values["phi"] - t / values["t_us"])
-        * (
-            values["a"] * np.exp(2j * math.pi * values["f1_mhz"] * t)
-            + (1 - values["a"]) * np.exp(2j * math.pi * (values["f1_mhz"] + values["df_mhz"]) * t)
-        )
-    )
-    zero = readout(signal.real, values)
-    gap = abs(math.exp(logs[0]) - zero) + abs(math.exp(logs[1]) - (1 - zero))
-    _require(gap < 1e-12, f"one-segment HMM law differs from the binomial by {gap}")
-    return gap
-
-
-def _check_telegraph_marginal() -> float:
-    """Every segment's marginal under the stationary chain equals the beat model's telegraph kernel."""
-    params = [*TRUTH_STATIC, 0.05]
-    values = unpack("telegraph", np.array(params))
-    point = Point("x", "xy", 1386, 0, ("x", "y", "x", "y"), (NOMINAL_GAP_DT,) * 3, np.zeros((0, 4)), np.zeros(0))
-    patterns, probability = pattern_probabilities("telegraph", values, point)
-    t = point.idle_us
-    kernel = beat.telegraph_kernel(values["a"], values["f1_mhz"], values["df_mhz"], 0.05, np.array([t]))[0]
-    signal = values["amplitude"] * np.exp(1j * values["phi"] - t / values["t_us"]) * kernel
-    worst = 0.0
-    for s, basis in enumerate(point.bases):
-        marginal = float(probability[patterns[:, s] == 0].sum())
-        expected = readout(signal.real if basis == "x" else signal.imag, values)
-        worst = max(worst, abs(marginal - expected))
-    _require(worst < 1e-10, f"telegraph segment marginals differ from the kernel by {worst}")
-    return worst
-
-
-def _plant_points(segments: int, shots: int) -> list[Point]:
-    return design_points(segments, shots)
-
-
-def _check_correlation() -> dict[str, float]:
-    """A static truth correlates segments; the independent-segment tls fit loses to the line mixture."""
-    rng = np.random.default_rng(20261021)
-    points = [p for p in _plant_points(6, 1024) if not p.pre_dt]
-    drawn = primary(sample("static", TRUTH_STATIC, points, rng))
-    static = Fit()(("static", TRUTH_STATIC, drawn, 0))
-    tls = min(
-        (Fit()(("tls", [*TRUTH_STATIC, 0.02, p0], drawn, 0)) for p0 in (0.0, 0.5, 0.95)), key=lambda item: item[0]
-    )
-    margin = tls[0] - static[0]
-    _require(margin > math.log(1.0 / (FAMILY_ALPHA / len(TESTS))), f"a static plant favors tls by {margin}")
-    tls_truth = extend("tls", TRUTH_STATIC)
-    drawn_tls = primary(sample("tls", tls_truth, points, rng))
-    line = Fit()(("static", TRUTH_STATIC, drawn_tls, 0))
-    own = min((Fit()(("tls", [*TRUTH_STATIC, 0.02, p0], drawn_tls, 0)) for p0 in (0.0, 0.5)), key=lambda item: item[0])
-    reverse = line[0] - own[0]
-    _require(reverse > math.log(1.0 / (FAMILY_ALPHA / len(TESTS))), f"a tls plant favors the line mixture by {reverse}")
-    return {"static_plant_tls_minus_static": margin, "tls_plant_static_minus_tls": reverse}
-
-
-def _check_exchangeability() -> dict[str, str]:
-    """Static draws pass; a later-segment offset (residual excitation after reset) fails and forces the fallback."""
-    rng = np.random.default_rng(7)
-    points = [p for p in _plant_points(6, 2048) if not p.pre_dt and p.kind == "xy"]
-    clean = sample("static", TRUTH_STATIC, points, rng)
-    alpha = FAMILY_ALPHA / len(TESTS)
-    passed = exchangeability(clean, alpha)["status"]
-    biased = []
-    for point in clean:
-        patterns = point.patterns.copy()
-        flip = rng.random(patterns.shape) < 0.04
-        flip[:, :2] = False
-        patterns[flip] = 1
-        biased.append(
-            point.with_counts(
-                *tally(
-                    [
-                        tuple(row)
-                        for row, count in zip(patterns.tolist(), point.counts, strict=True)
-                        for _ in range(int(count))
-                    ]
-                )
-            )
-        )
-    failed = exchangeability(biased, alpha)["status"]
-    _require(passed == "exchangeable" and failed == "not_exchangeable", f"exchangeability read {passed}, {failed}")
-    return {"clean": passed, "later_offset": failed}
-
-
-def _check_herald_skip() -> float:
-    """A refused segment marginalizes: the pattern with a -1 equals the sum over both reads."""
-    values = unpack("telegraph", np.array([*TRUTH_STATIC, 0.05]))
-    point = Point(
-        "x",
-        "xy",
-        693,
-        0,
-        ("x", "y", "x", "y"),
-        (NOMINAL_GAP_DT,) * 3,
-        np.array([[0, -1, 1, 0], [0, 0, 1, 0], [0, 1, 1, 0]]),
-        np.ones(3),
-    )
-    logs = hmm_log_likelihood(values, point)
-    gap = abs(math.exp(logs[0]) - math.exp(logs[1]) - math.exp(logs[2]))
-    _require(gap < 1e-12, f"a refused segment does not marginalize: {gap}")
-    return gap
-
-
-def _check_backaction() -> dict[str, str]:
-    rng = np.random.default_rng(11)
-    points = _plant_points(6, 2048)
-    drawn = sample("static", TRUTH_STATIC, points, rng)
-    alpha = FAMILY_ALPHA / len(TESTS)
-    clean = backaction(drawn, alpha)["status"]
-    # Herald backaction plant: the controls lose 10 % of their coherence.
-    dephased = [0.9 * TRUTH_STATIC[0], *TRUTH_STATIC[1:]]
-    shifted = [point for point in drawn if not point.pre_dt]
-    shifted += sample("static", dephased, [point for point in points if point.pre_dt], rng)
-    moved = backaction(shifted, alpha)["status"]
-    _require(clean == "no_backaction" and moved == "backaction", f"backaction read {clean}, {moved}")
-    return {"clean": clean, "shifted": moved}
-
-
-def self_check() -> dict[str, Any]:
-    return {
-        "mixture_reduces": _check_mixture_reduces(),
-        "telegraph_marginal": _check_telegraph_marginal(),
-        "herald_skip": _check_herald_skip(),
-        "exchangeability": _check_exchangeability(),
-        "backaction": _check_backaction(),
-        "correlation": _check_correlation(),
-    }
-
-
 def serialize(value: dict[str, Any]) -> str:
     return json.dumps(beat.rounded(value), indent=1, sort_keys=True) + "\n"
 
@@ -1067,13 +926,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run", nargs="?", type=Path)
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--self-check", action="store_true")
     parser.add_argument("--design", type=Path, help="write the design trade table here")
     parser.add_argument("--design-check", type=Path, help="require this retained design table to regenerate")
     args = parser.parse_args(argv)
-    if args.self_check:
-        print(json.dumps(beat.rounded(self_check()), sort_keys=True))
-        return 0
     if args.design is not None or args.design_check is not None:
         rows = [design_rows(k, s, pairs) for k, s, pairs in DESIGN_TABLE]
         table = serialize({"schema_version": SCHEMA + "-design", "rows": rows})
@@ -1084,7 +939,7 @@ def main(argv: list[str] | None = None) -> int:
         args.design.write_text(table)
         return 0
     if args.run is None:
-        parser.error("name a run directory, --design or --self-check")
+        parser.error("name a run directory or --design")
     text = serialize(report(args.run))
     target = args.run / RETAINED
     if args.check:

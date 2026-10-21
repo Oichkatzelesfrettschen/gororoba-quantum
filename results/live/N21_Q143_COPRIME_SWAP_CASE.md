@@ -47,7 +47,8 @@ itself, the AGENTS.md criterion for IBM hardware below 16 qubits.
 
 The compiled dry-run ISAs place each idle as one delay of exactly the
 configured dt on qubit 143 alone, six times per arm (and the 1250 dt
-pre-idle in the controls); gate core-607 holds that on FakeFez.
+pre-idle in the controls); tests/gororoba_quantum/test_qpu_planning_segmented_sweep.py
+holds that on FakeFez.
 
 ## Optimization: more samples per billed second
 
@@ -67,7 +68,7 @@ unit and more reads per shot is the lever.
 
 Trade table (scripts/n21_q143_segmented_sweep.py --design,
 [n21-q143-segmented-design.json](n21-q143-segmented-design.json), gate
-core-608). Asimov expected LLRs at the retained static fit under the
+core-616). Asimov expected LLRs at the retained static fit under the
 shot-level likelihood with e0, e1 free, df confined to its alias cell for
 every alternative, and the TLS population p0 profiled; tls rows give the
 worst p0 over {0, 0.5, 1}. "1 x 2048" is the uniform one-read design.
@@ -115,7 +116,7 @@ the submission refuse with approval_required.
   not.
 - `RUN_DIR` writes segmented-sweep.json; `--check` requires equal bytes.
 
-Self-check plants (gate core-606): the one-segment chain equals the
+Planted truths (tests/scripts/test_n21_q143_segmented_sweep.py): the one-segment chain equals the
 binomial; segment marginals equal the telegraph kernel; a refused segment
 marginalizes; static draws pass exchangeability and a later-segment offset
 fails it; a 10 % coherence loss in the controls reads backaction; a static

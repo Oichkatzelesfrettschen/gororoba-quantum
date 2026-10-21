@@ -3313,15 +3313,8 @@ if __name__ == "__main__":
         action="store_true",
         help="run only the n21-orbit-rca ground Ramsey sweep contract",
     )
-    parser.add_argument(
-        "--segmented-sweep",
-        action="store_true",
-        help="run only the n21-orbit-rca segmented ground sweep contract",
-    )
     parsed = parser.parse_args()
-    if parsed.segmented_sweep:
-        _verify_segmented_sweep_only()
-    elif parsed.ground_ramsey_sweep:
+    if parsed.ground_ramsey_sweep:
         _verify_ground_ramsey_sweep_only()
     elif parsed.ground_control_split:
         _verify_ground_control_split_only()
