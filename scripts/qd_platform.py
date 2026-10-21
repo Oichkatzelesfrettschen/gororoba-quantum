@@ -41,7 +41,7 @@ Subcommands:
   table.
 - facts DIR prints the table.
 - plan RUN_DIR --platform NAME --max-credits C --expected-seconds S
-  --per-job-credits P (network, read-only) runs every check submit makes and
+  --per-job-credits P [--admit-status STATUS ...] (network, read-only) runs every check submit makes and
   prints the result: the circuit matches its cases.json sha256, the platform
   is one the case admits, is available and allows the case's max_duration,
   S stays within max_duration, P plus the largest iteration's max_shots times
@@ -1065,15 +1065,24 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
 
 
 def plan(
-    case_dir: Path, platform: str, max_credits: float, expected_seconds: float, per_job_credits: float
+    case_dir: Path,
+    platform: str,
+    max_credits: float,
+    expected_seconds: float,
+    per_job_credits: float,
+    admit_statuses: tuple[str, ...] = (),
 ) -> dict[str, Any]:
     """Every check submit makes, read-only: digests, platform, complete cost ceiling, availability and the estimate.
 
     expected_seconds and per_job_credits are the written case's values: the
     offer's per-job price is visible only in the portal, so the case states
     it, and per-job credits plus the largest iteration's max_shots times the live
-    price per shot must stay within max_credits.
+    price per shot must stay within max_credits. The platform must read
+    available on its Explorer row and processor record; admit_statuses names
+    further statuses a written case admits by name, such as running for a test
+    of whether a busy platform accepts a job, and the plan records them.
     """
+    statuses = ("available", *admit_statuses)
     for name, value in (
         ("--max-credits", max_credits),
         ("--expected-seconds", expected_seconds),
@@ -1085,7 +1094,7 @@ def plan(
     if platform not in manifest["platforms"]:
         raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
     row = explorer_row(platform)
-    if row["status"] != "available":
+    if row["status"] not in statuses:
         raise PlatformError(f"{platform} is {row['status']}")
     if manifest["max_duration"] > row["max_duration"]:
         raise PlatformError(f"max_duration {manifest['max_duration']} exceeds the platform's {row['max_duration']}")
@@ -1099,7 +1108,7 @@ def plan(
             f"{billed_shots} billed shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
         )
     processor = get(platform_route(platform))
-    if processor.get("status") != "available":
+    if processor.get("status") not in statuses:
         raise PlatformError(f"{platform} processor is {processor.get('status')}")
     perfs = scrub(processor.get("perfs") or {})
     if row["type"] == "qpu":
@@ -1134,6 +1143,8 @@ def plan(
         "max_credits": max_credits,
         "body": built["body"],
         "body_sha256": sha256_bytes(json.dumps(built["body"], sort_keys=True).encode()),
+        "admitted_statuses": list(statuses),
+        "status_at_plan": {"explorer": row["status"], "processor": processor.get("status")},
         "versions": built["versions"],
         "payload_version_basis": built["payload_version_basis"],
     }
@@ -1162,6 +1173,7 @@ def submit(
     max_credits: float,
     expected_seconds: float,
     per_job_credits: float,
+    admit_statuses: tuple[str, ...] = (),
 ) -> dict[str, Any]:
     """Send one approved case as one job while holding the token's submit lock beside the token file."""
     if not approval.strip():
@@ -1174,7 +1186,7 @@ def submit(
         state_path = case_dir / "submission-state.json"
         if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
-        checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits)
+        checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits, admit_statuses)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
         receipt = {
             "schema": SUBMISSION_SCHEMA,
@@ -1331,7 +1343,8 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
             f"the result answers job {answer.get('job_id') if isinstance(answer, dict) else None}, not {job}"
         )
     shots = answer.get("shots")
-    if not isinstance(shots, int) or shots < 0:
+    # A job that ended without completing (error, canceled) may answer shots null: no count, kept as null.
+    if not (shots is None and not complete) and (not isinstance(shots, int) or shots < 0):
         raise PlatformError(f"the result of job {job} carries shots {shots!r}")
     if status.get("shots") is not None and status["shots"] != shots:
         raise PlatformError(f"job {job}: status shots {status['shots']} differ from the result's {shots}")
@@ -1892,6 +1905,16 @@ def runner_self_test() -> int:
             ),
         }
     ).encode()
+    errored = json.dumps({"job_id": "job-e", "duration": 55, "results": None, "shots": None}).encode()
+    summary = result_summary(errored, "job-e", {"shots": None}, complete=False)
+    if summary != {"shots": None, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}:
+        raise AssertionError(f"an errored result without a shot count parsed as {summary}")
+    try:
+        result_summary(errored, "job-e", {"shots": None})
+    except PlatformError:
+        pass
+    else:
+        raise AssertionError("a completed result without a shot count was accepted")
     summary = result_summary(iterated, "job-i", {"shots": 9})
     if (
         summary["counts"] != {"1,0": 3, "0,1": 5}
@@ -2146,6 +2169,12 @@ def main() -> int:
         p.add_argument("--max-credits", type=float, required=True, help="the written case's credit ceiling")
         p.add_argument("--expected-seconds", type=float, required=True, help="the written case's expected seconds")
         p.add_argument("--per-job-credits", type=float, required=True, help="the offer's per-job price in the case")
+        p.add_argument(
+            "--admit-status",
+            action="append",
+            default=[],
+            help="a platform status besides available that the written case admits by name",
+        )
         if name == "submit":
             p.add_argument("--approval", required=True, help="the user's approval, quoted, kept in submission.json")
     p = sub.add_parser("recover")
@@ -2172,7 +2201,12 @@ def main() -> int:
         try:
             if args.command == "plan":
                 checked = plan(
-                    args.case_dir, args.platform, args.max_credits, args.expected_seconds, args.per_job_credits
+                    args.case_dir,
+                    args.platform,
+                    args.max_credits,
+                    args.expected_seconds,
+                    args.per_job_credits,
+                    tuple(args.admit_status),
                 )
                 print(json.dumps({k: v for k, v in checked.items() if k != "body"}, indent=1, sort_keys=True))
             elif args.command == "submit":
@@ -2183,6 +2217,7 @@ def main() -> int:
                     args.max_credits,
                     args.expected_seconds,
                     args.per_job_credits,
+                    tuple(args.admit_status),
                 )
                 print(f"job {record['job_id']} on {record['platform']}")
             elif args.command == "recover":
