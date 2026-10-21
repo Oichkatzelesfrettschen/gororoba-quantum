@@ -1,6 +1,6 @@
 {
  "schema": "ghost-idle-budget-v1",
- "ghost_runs_sha256": "377bfb3dbf6ed1a01693086f564258d133bedb6aa3ff26051df59efd5b899393",
+ "ghost_runs_sha256": "7718ec59672ec6681cbb9c58d06aaf36ec1c45449c49e0b89e2e1b46291da168",
  "runs": [
   {
    "run": "results/live/2026-10-11T152922.787095Z",
@@ -427,6 +427,40 @@
    "broadcasts": 0,
    "resets": 14,
    "measure_captures": 70
+  },
+  {
+   "run": "results/live/2026-10-21T043156.858484Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json": "5fc7e4d3310d219945ab0486bc44148e72d06d00d2d83f0ac910ac9d7565dd0e"
+   },
+   "isa_qpy_sha256": "ceba88f153223162a0a78d6a203cd9dddfa37ade37c10c2b1e7e018c68af4b3a",
+   "raw_pubs_sha256": "6585158463986b62d357b6f1d4f8b20fdc1b7bc34a161bcfea6e704b8982e2c2",
+   "pubs": 48,
+   "cz": 0,
+   "e_cz": 0.0,
+   "idle_us": 691.224,
+   "e_idle": 1.736755,
+   "c_idle": null,
+   "broadcasts": 0,
+   "resets": 240,
+   "measure_captures": 720
+  },
+  {
+   "run": "results/live/2026-10-21T064222.721454Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": "95d2855e94370f86e5b17b53002d3dbaf58e6584b7d67634ce9b2927966ad2fb"
+   },
+   "isa_qpy_sha256": "988b2804ebf0ef5c1b388a8972cab776ed440224dbd7fbc756cc8cc21e040205",
+   "raw_pubs_sha256": "b7e0ff739207b1bbf63bf31d64560af060b41154f8c5de87b43482e4a8f619f6",
+   "pubs": 48,
+   "cz": 0,
+   "e_cz": 0.0,
+   "idle_us": 274.008,
+   "e_idle": 1.6711,
+   "c_idle": null,
+   "broadcasts": 0,
+   "resets": 240,
+   "measure_captures": 720
   }
  ]
 }

@@ -714,6 +714,52 @@ def member_schedule(stages: list[tuple[int, list[tuple[int, int, str]]]], segmen
     }
 
 
+def member_shots(circuit: Any, payload: dict[str, Any]) -> dict[str, Any]:
+    """One member's registers and, per shot in shot order, its segment pattern or None.
+
+    A pattern holds per segment 0, 1, or -1 for a segment the spectator's
+    herald refused; a shot whose segment-1 herald reads any neighbor excited
+    is None. The spectator is the qubit every segment read is written from.
+    """
+    segments = sum(1 for register in circuit.cregs if register.name.endswith("_read"))
+    writer = {
+        circuit.find_bit(i.clbits[0]).index: circuit.find_bit(i.qubits[0]).index
+        for i in circuit.data
+        if i.operation.name == "measure"
+    }
+    reads = [register_of(circuit, f"s{s + 1}_read") for s in range(segments)]
+    heralds = [register_of(circuit, f"s{s + 1}_herald") for s in range(segments)]
+    spectators = {writer[circuit.find_bit(register[0]).index] for register in reads}
+    if len(spectators) != 1:
+        raise RuntimeError(f"{circuit.name} reads qubits {sorted(spectators)}")
+    (spectator,) = spectators
+    first = heralds[0]
+    first_qubits = [writer[circuit.find_bit(bit).index] for bit in first]
+    own_bit = first.size - 1 - first_qubits.index(spectator)
+    strings = {r.name: payload["registers"][r.name]["bitstrings"] for r in (*reads, *heralds)}
+    patterns: list[tuple[int, ...] | None] = []
+    for shot in range(len(strings[reads[0].name])):
+        initial = strings[first.name][shot]
+        if any(initial[first.size - 1 - k] == "1" for k, qubit in enumerate(first_qubits) if qubit != spectator):
+            patterns.append(None)
+            continue
+        pattern = []
+        for s in range(segments):
+            herald = strings[heralds[s].name][shot]
+            spectator_bit = herald[own_bit] if s == 0 else herald[0]
+            pattern.append(-1 if spectator_bit == "1" else int(strings[reads[s].name][shot][0]))
+        patterns.append(tuple(pattern))
+    return {
+        "segments": segments,
+        "spectator": spectator,
+        "first": first,
+        "first_qubits": first_qubits,
+        "heralds": heralds,
+        "strings": strings,
+        "patterns": patterns,
+    }
+
+
 def run_points(run: Path) -> tuple[list[Point], dict[str, Any], dict[int, dict[str, Any]]]:
     """Points from the raw shots, the schedule admissibility and per-segment herald bit counts.
 
@@ -733,38 +779,14 @@ def run_points(run: Path) -> tuple[list[Point], dict[str, Any], dict[int, dict[s
         if key is None:
             raise RuntimeError(f"{run}: member {name} is not a segmented sweep arm")
         kind, delay, pre = key
-        segments = sum(1 for register in circuit.cregs if register.name.endswith("_read"))
+        shot = member_shots(circuit, payload)
+        segments, strings, first = shot["segments"], shot["strings"], shot["first"]
+        first_qubits, heralds = shot["first_qubits"], shot["heralds"]
         bases = n21_segment_bases(kind, segments)
-        writer = {
-            circuit.find_bit(i.clbits[0]).index: circuit.find_bit(i.qubits[0]).index
-            for i in circuit.data
-            if i.operation.name == "measure"
-        }
-        reads = [register_of(circuit, f"s{s + 1}_read") for s in range(segments)]
-        heralds = [register_of(circuit, f"s{s + 1}_herald") for s in range(segments)]
-        spectators = {writer[circuit.find_bit(register[0]).index] for register in reads}
-        if len(spectators) != 1 or (spectator is not None and spectators != {spectator}):
-            raise RuntimeError(f"{name} reads qubits {sorted(spectators)}, the run's spectator is {spectator}")
-        (spectator,) = spectators
-        first = heralds[0]
-        first_qubits = [writer[circuit.find_bit(bit).index] for bit in first]
-        own_bit = first.size - 1 - first_qubits.index(spectator)
-        strings = {r.name: payload["registers"][r.name]["bitstrings"] for r in (*reads, *heralds)}
-        shots = len(strings[reads[0].name])
-        patterns = []
-        for shot in range(shots):
-            initial = strings[first.name][shot]
-            neighbors = any(
-                initial[first.size - 1 - k] == "1" for k, qubit in enumerate(first_qubits) if qubit != spectator
-            )
-            if neighbors:
-                continue
-            pattern = []
-            for s in range(segments):
-                herald = strings[heralds[s].name][shot]
-                spectator_bit = herald[own_bit] if s == 0 else herald[0]
-                pattern.append(-1 if spectator_bit == "1" else int(strings[reads[s].name][shot][0]))
-            patterns.append(tuple(pattern))
+        if spectator is not None and shot["spectator"] != spectator:
+            raise RuntimeError(f"{name} reads qubit {shot['spectator']}, the run's spectator is {spectator}")
+        spectator = shot["spectator"]
+        patterns = [pattern for pattern in shot["patterns"] if pattern is not None]
         # Herald bit counts: bit k of segment 1 per qubit among shots whose
         # other segment-1 bits read 0; key first.size + s - 1, the spectator's
         # reset herald of segment s + 1.

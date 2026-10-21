@@ -100,6 +100,16 @@ their recorded replays within 0.0056 TV (mean |ghost - recorded|, 0.0005 on
 the two 148-member 20 us control runs), and every retained calibration of
 their backend moves their predicted distance by at most 0.008 TV.
 
+A third merge added the two segmented coprime sweeps of 2026-10-21 (ibm_marrakesh
+qubit 47 and ibm_fez qubit 143, 48 members each, records re-encoded through
+law_encoding with `dense-sha256.json` naming their original digests) with
+one snapshot of each backend (ibm_marrakesh 2026-10-20T19:17:37 and ibm_fez
+22:47:17-07:00), and 21 (run, snapshot) pairs for the retained runs of those
+backends. Both runs reproduce their recorded replays within 0.011 TV (mean
+|ghost - recorded| 0.0089 on Marrakesh, 0.0113 on Fez), and their distances
+to hardware, 0.509 and 0.451 TV, belong to a noise model with one frequency
+line per qubit (`hw-n21-q143-segmented-lines`).
+
 The current snapshots (2026-10-15) predate the execution of the eleven runs
 of 2026-10-18 to 2026-10-20, so their "current minus execution" column
 compares an older calibration with the one they ran under, and the report

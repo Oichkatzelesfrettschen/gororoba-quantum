@@ -140,9 +140,17 @@ and 0.96 of draws), lowering the mean distance from 0.133 to 0.081
 0.105 (-0.043, 0.018, 12 PUBs). c = 12 is a lower bound for both, far
 beyond their idle budgets c_idle of 2.14 and 1.84 (`idle_budget.json`,
 which now covers the six new runs that returned shots), and the distance
-still sits seven to eight times above the resample floor. core-339 reads
-the five parts, and core-614 (full tier) reruns the two orbit-window fits
-on the CPU.
+still sits seven to eight times above the resample floor.
+
+`part_f.json` holds the two segmented coprime sweeps of 2026-10-21, swept on
+the build host's CPU. Their members apply no CZ, so c is unidentified, and
+the readout factor closes little: ibm_marrakesh qubit 47 falls from 0.509 to
+0.469 at the grid top r = 3 against a resample floor of 0.103, and ibm_fez
+qubit 143 from 0.451 to 0.446 at r = 0.5 against 0.081. A model with one
+frequency line per qubit leaves the second line of qubit 143 and the herald
+backaction of qubit 47 outside every error factor
+(`hw-n21-q143-segmented-lines`). core-339 reads the six parts, and core-614
+(full tier) reruns the two orbit-window fits on the CPU.
 
 ## Prediction for sweep part a
 

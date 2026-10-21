@@ -1,0 +1,355 @@
+{
+ "admissibility": {
+  "admissible": false,
+  "differing": {
+   "n21_spectator_segmented_xy_d0": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d0_pre1250": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d1386": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d1638": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d2079": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d2457": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d2772": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d3276": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d3465": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d4095": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d4158": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d4851": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d4914": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d5544": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d5733": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d6237": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d6552": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d693": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d6930": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d693_pre1250": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d7371": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d7623": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d819": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d8190": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_xy_d8316": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d0": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d1386": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d1638": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d2079": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d2457": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d2772": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d3276": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d3465": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d4095": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d4158": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d4851": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d4914": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d5544": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d5733": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d6237": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d6552": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d693": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d6930": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d7371": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d7623": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d819": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d8190": {
+    "reason": "segment 1 plays no herald readout"
+   },
+   "n21_spectator_segmented_z_d8316": {
+    "reason": "segment 1 plays no herald readout"
+   }
+  },
+  "schedules": {},
+  "spectator": 143
+ },
+ "alpha": {
+  "family_alpha": 0.05,
+  "per_test_alpha": 0.00833333,
+  "tests": [
+   "herald_admission",
+   "segment_exchangeability",
+   "herald_backaction",
+   "alias_resolution",
+   "model_decision",
+   "z_memory"
+  ]
+ },
+ "amendment": null,
+ "analyzer_closure": {
+  "files": {
+   "gororoba_quantum/aer_identity.py": "9d2497f680457aa22e0bfc0b90b3990cb75e1ff46b0d9429e299c48a2c73f843",
+   "gororoba_quantum/aer_resources.py": "2a94c1f67b4debdbb50c5c086ab27a64026581d0adbef0070f5810a965ae45b6",
+   "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+   "gororoba_quantum/algebra_planning.py": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+   "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+   "gororoba_quantum/cd_core.py": "5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427",
+   "gororoba_quantum/coherence_window.py": "123c0d02674b31dc9a51ed6af7a5f976dbe907c224ab8ac2025011d2420d80e7",
+   "gororoba_quantum/conditional_ramsey.py": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+   "gororoba_quantum/correction_circuits.py": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3",
+   "gororoba_quantum/correction_collection.py": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8",
+   "gororoba_quantum/correction_planning.py": "375ed74aa40c16ea38434d087618a48d4d137ad701f86d474798841cc01c243d",
+   "gororoba_quantum/correction_schedule.py": "ca6f58c9a9b0067ff5b7ca15c7ac1901ebfc2b65682df48765ef1e69325d7033",
+   "gororoba_quantum/correction_statistics.py": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e",
+   "gororoba_quantum/crossed_tile_template.py": "eb8b56c939f21743a0a24d739a70a0dcfcc84a8b21139b241f0ebb32f1c25935",
+   "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+   "gororoba_quantum/diagnostic_controls.py": "a4ca158766428b1ceebfbabf27783ddc27cad881e67c8766aa6aa80a6a36e118",
+   "gororoba_quantum/diagnostic_experiments.py": "a586786a72822aadfc42d7c39602dd9d789d154279903e4905be368eae19a065",
+   "gororoba_quantum/dynamic_density.py": "3bda5cf1169d4c223696e4c8c0096184ab963b48429df4c49450ff01c3992279",
+   "gororoba_quantum/et_campaign.py": "def989c129a5f0e7bf9b8b7a1f889b592cace88fa49e9e4c3857b4f01940d7ae",
+   "gororoba_quantum/et_planning.py": "3a04aa5cd86099b5f3e178fbec4297d4af3922f4c825211a83a88f1bc6a33d4d",
+   "gororoba_quantum/et_reference.py": "9e946fd826461e9c179013974eb53d26ad4d4af381662383bb2a230189f2ba07",
+   "gororoba_quantum/et_rows.py": "15f9f6e6235c5064aa7c9ca0bcf78873777c997df0cde208fcda90eeb31e91ce",
+   "gororoba_quantum/et_statistics.py": "fd775592dcc7ad31fab565fd5cd4450e6b34d882c80565c60e90495a9359a8db",
+   "gororoba_quantum/experiment_optimizer.py": "402a9d492aa5882a2ca09f36bf88ee84244edf54cd8d2409f6e80a2d8ca59951",
+   "gororoba_quantum/experiments.py": "f8355654f64eedd73fd44087a2915580082c13ca7b61c32f23a4f0d688182402",
+   "gororoba_quantum/factoring.py": "59d8bb783fa58e6079544874b689ee336c4d14b8b348c7f69864d4c9511918c4",
+   "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+   "gororoba_quantum/ibm_account.py": "950cb1b250f92b914acf448fa0088cb1a7bd03214b3aaa9c525102567effb977",
+   "gororoba_quantum/jax_bridge.py": "7aa1d4b7ad3f666bdb19abfc42d920db8345a7f8793fe4972a1f9beda8237bb5",
+   "gororoba_quantum/live_run.py": "5823b55b56a0ec2a95aeec831b07649342ad1facd213dbdb21db8130c4bd4fcf",
+   "gororoba_quantum/local_compute.py": "a799c078fc16a49086ea680b48846c287e7653b1e8ae7c7def97f61ce327bb4a",
+   "gororoba_quantum/maximal_experiments.py": "0d4e4c4d27dd4ac859c74b83d0ce269dece4aee670929f19b8d0391a02b5ec63",
+   "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
+   "gororoba_quantum/n21_exact_planning.py": "1e37cce38d569ed7aecc6417d93675e138506b09a9d04f5844eb218677f401c1",
+   "gororoba_quantum/native_preflight.py": "454892065009078397471cce1ac9852754a5cc3c6a4460335c6c7c37577859c4",
+   "gororoba_quantum/order_finding.py": "18d27d9b007a670f309ba86c0cd0cddd04c75c1d182da4346d1192d4b6dc9001",
+   "gororoba_quantum/packing.py": "09d439700a9643ee947303323a691aff99844ddc0889087a6f6d6358fd6339a4",
+   "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
+   "gororoba_quantum/patch_characterization.py": "b96b75fa85b49308765a226e9cafc45432577778dd1a88aceb3ff70a8018a8b4",
+   "gororoba_quantum/placement_feasibility.py": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf",
+   "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+   "gororoba_quantum/pub_shot_allocation.py": "978d8e4ac7a10818234a806d91b1d7cada4fe1628fd42ec23135a86edbcc6e61",
+   "gororoba_quantum/qpe_diagnostics.py": "d704b45bee784559009f1b90c5d380baff745c3020903768fb8afd9a21231d93",
+   "gororoba_quantum/qpu_cases.py": "a944e0cfe48189862d81729034fce96fff4e4c22949f588c410f27f1d92f9c98",
+   "gororoba_quantum/qpu_planning.py": "36210810d0d6a687330dcee8d10f06ae196bd344505ff41819f3c78ee97eb21d",
+   "gororoba_quantum/qubit_baseline.py": "0d4708051b403a88041cb56a3ff48bb8fbe9630c58f99a5a39110f30878e9df3",
+   "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+   "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+   "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+   "gororoba_quantum/rank_sector_experiments.py": "221bf8ed4043684843f9c6da24161a62ba5bde157078fd2f27e9b8b58d567436",
+   "gororoba_quantum/ripple_contracts.py": "d8aee5a4ef65680330df9246cbfd551ac551c499175130fcd21c54b2e9b147be",
+   "gororoba_quantum/ripple_dynamics.py": "48312cdccf1073fde85dc9945775c284d2a02478bb49b1eaa3251b71a178e822",
+   "gororoba_quantum/ripple_experiments.py": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602",
+   "gororoba_quantum/runtime_contracts.py": "8787cfae717a61dca59d9b8095afe47e86c421b6b8b28a5847a820dae030ec65",
+   "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+   "gororoba_quantum/star_ramsey.py": "fff981f88c7b39958cebd5005a1f6858bd940daa5d00fad12df9bb6cab83326a",
+   "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc",
+   "gororoba_quantum/variance.py": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9",
+   "scripts/n21_orbit_rca.py": "d04ce0fddd35f2c314d9e73290a97846421d8e2e6cd1c879a43f9538fb933783",
+   "scripts/n21_q143_beat_model.py": "b2512533101d877210fa14aaf364292620432aa2a397d3a0f88d9ae49e65f216",
+   "scripts/n21_q143_segmented_sweep.py": "00052af1e0a15b4305d0a01e0de7a85c39c88dcf786cc6338f7dc26ff48cdd36",
+   "scripts/n21_spectator_ramsey.py": "05440fac02b2e83ef3584b25a766029bf6cc019f9c76fb9ca41791cc4ce59368"
+  },
+  "sha256": "1da9f04b1ddafbde02695c057b751ac682ab5a8bff54a2b30f4f23b1b80b7c71"
+ },
+ "herald_admission": {
+  "admissible": true,
+  "bits": {
+   "0": {
+    "excitation_spread_upper_limit": 0.00804764,
+    "prob_meas0_prep1": 0.00585938,
+    "qubit": 142,
+    "readout_contrast": 0.993652,
+    "segment": 1,
+    "spread": 0.00132802,
+    "spread_lower_limit": -0.00456405,
+    "status": "pass",
+    "threshold": 0.441851,
+    "undetected_spread_upper_limit": 4.71541e-05
+   },
+   "1": {
+    "excitation_spread_upper_limit": 0.0209067,
+    "prob_meas0_prep1": 0.0100098,
+    "qubit": 136,
+    "readout_contrast": 0.983887,
+    "segment": 1,
+    "spread": 0.00725548,
+    "spread_lower_limit": -0.00606586,
+    "status": "pass",
+    "threshold": 0.256102,
+    "undetected_spread_upper_limit": 0.000209271
+   },
+   "2": {
+    "excitation_spread_upper_limit": 0.0156856,
+    "prob_meas0_prep1": 0.012207,
+    "qubit": 143,
+    "readout_contrast": 0.987061,
+    "segment": 1,
+    "spread": 0.00526662,
+    "spread_lower_limit": -0.0049397,
+    "status": "pass",
+    "threshold": 0.210681,
+    "undetected_spread_upper_limit": 0.000191474
+   },
+   "3": {
+    "excitation_spread_upper_limit": 0.023783,
+    "prob_meas0_prep1": 0.00610352,
+    "qubit": 144,
+    "readout_contrast": 0.990967,
+    "segment": 1,
+    "spread": 0.00919152,
+    "spread_lower_limit": -0.00521005,
+    "status": "pass",
+    "threshold": 0.42303,
+    "undetected_spread_upper_limit": 0.00014516
+   },
+   "4": {
+    "excitation_spread_upper_limit": 0.0445107,
+    "prob_meas0_prep1": 0.012207,
+    "qubit": 143,
+    "readout_contrast": 0.987061,
+    "segment": 2,
+    "spread": 0.0234375,
+    "spread_lower_limit": 0.00287933,
+    "status": "pass",
+    "threshold": 0.210681,
+    "undetected_spread_upper_limit": 0.000543343
+   },
+   "5": {
+    "excitation_spread_upper_limit": 0.0485766,
+    "prob_meas0_prep1": 0.012207,
+    "qubit": 143,
+    "readout_contrast": 0.987061,
+    "segment": 3,
+    "spread": 0.0253906,
+    "spread_lower_limit": 0.00276721,
+    "status": "pass",
+    "threshold": 0.210681,
+    "undetected_spread_upper_limit": 0.000592976
+   },
+   "6": {
+    "excitation_spread_upper_limit": 0.0542367,
+    "prob_meas0_prep1": 0.012207,
+    "qubit": 143,
+    "readout_contrast": 0.987061,
+    "segment": 4,
+    "spread": 0.030599,
+    "spread_lower_limit": 0.00758341,
+    "status": "pass",
+    "threshold": 0.210681,
+    "undetected_spread_upper_limit": 0.000662069
+   },
+   "7": {
+    "excitation_spread_upper_limit": 0.0516216,
+    "prob_meas0_prep1": 0.012207,
+    "qubit": 143,
+    "readout_contrast": 0.987061,
+    "segment": 5,
+    "spread": 0.0273438,
+    "spread_lower_limit": 0.00366271,
+    "status": "pass",
+    "threshold": 0.210681,
+    "undetected_spread_upper_limit": 0.000630147
+   },
+   "8": {
+    "excitation_spread_upper_limit": 0.0485001,
+    "prob_meas0_prep1": 0.012207,
+    "qubit": 143,
+    "readout_contrast": 0.987061,
+    "segment": 6,
+    "spread": 0.0266927,
+    "spread_lower_limit": 0.00544344,
+    "status": "pass",
+    "threshold": 0.210681,
+    "undetected_spread_upper_limit": 0.000592042
+   }
+  },
+  "comparisons": 20304,
+  "evaluable": true,
+  "excitation_spread_bound": 0.00260551,
+  "one_sided_quantile": 4.93034,
+  "shots": 1506
+ },
+ "kept": {},
+ "preregistered": true,
+ "schema_version": "n21-q143-segmented-sweep-v1",
+ "status": "not_admissible"
+}

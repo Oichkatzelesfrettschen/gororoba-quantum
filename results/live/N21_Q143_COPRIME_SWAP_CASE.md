@@ -172,11 +172,11 @@ approval-consumed.json beside its record.json); `--approved-record-sha256`
 is that record.json's digest. The approving dry run lands under
 results/live/ from this command without `--submit` and the two approval
 flags, after the branch's final commit, so the experiment digest and the
-analyzer closure match. The record stays out of git: each of the 48 PUBs
-writes its ideal law densely over 2^15 outcomes, so record.json reaches 84 MB
-and the written case 16 MB, against about 300 KB for earlier dry runs; the
-dry run above is kept outside the checkout under
-`${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/dry-runs/`. `--max-pending 250`
+analyzer closure match. Its 48 PUBs wrote their ideal laws densely over 2^15
+outcomes (84 MB records, 16 MB cases); the retained dry runs and runs hold
+them re-encoded through law_encoding, and each directory's
+dense-sha256.json names the original record digest the approval binds
+(scripts/encode_wide_run.py --check, gate core-618). `--max-pending 250`
 admits ibm_fez's queue (156 pending at the dry run).
 
 ## Execution
@@ -203,7 +203,7 @@ four or more per measure and reset; it indexed the four orbit herald roles
 with reset-herald keys; and it fixed the spectator at 143. The amended
 analyzer reads the barrier stages of the returned table, the spectator
 from the run, and every herald through its undetected excitation, and
-writes `segmented-sweep-<closure digest>.json` beside the record as an
+writes `segmented-sweep-6d59d710eb61.json` beside the record as an
 amended analysis. On run 2026-10-21T043156.858484Z all 48 members admit
 their schedule (pre-idle 1250 dt on both controls, every idle as
 designed) and the heralds admit; Z members leave about twice the reset
@@ -212,9 +212,7 @@ design predicts and the herald drops. Amended verdicts on qubit 47:
 exchangeable segments (51.5 against 72.1), herald backaction (47.9
 against 13.7, a Wald test of each pair's per-shot X and Y means), z_memory (284 against 42), and a line mixture over tls
 (239) with a 0.048 second line at alias cell -2 (df -0.735 MHz), T1 81
-us and T2* 52 us. Record.json is 84 MB (issue #328), so the run, its raw
-files and the amended analysis are kept with the dry runs outside the
-checkout until sparse ideal laws make the record committable.
+us and T2* 52 us (`hw-n21-q47-segmented-baseline`).
 
 ### ibm_fez qubit 143
 
@@ -229,7 +227,7 @@ The preregistered segmented-sweep.json refuses every member: the ibm_fez
 table opens with a barrier before INIT, which the bound stage reader kept
 as an 842 dt idle ahead of the segment-1 herald. The amended reader starts
 the program at INIT and ends it at FINI, and its analysis
-(segmented-sweep-<closure digest>.json) admits all 48 members (1508 to
+(segmented-sweep-6d59d710eb61.json) admits all 48 members (1508 to
 1528 kept shots each, dead gaps 1264 dt as designed) and every herald.
 
 | Test | qubit 143 (fez) | qubit 47 (marrakesh) |
@@ -256,6 +254,25 @@ charge-parity splitting; this run measures the mixture and its stability
 and leaves the mechanism to a parity-resolved readout. (3) The 1250 dt
 pre-idle moves no quadrature, so the herald readout leaves qubit 143's
 Ramsey unperturbed, where qubit 47 shows backaction under the same design.
+
+Switching time. Shots run column-wise over the 48 PUBs, so consecutive
+shots of one PUB lie 9.656 ms apart (the job's single 14.83 s execution
+chunk over 1536 shots). Each shot's six reads label its line by the
+log-likelihood ratio under the static fit's two lines, informative at the
+half-cycle delays 1386, 1638, 4095, 4158 and 6930 dt (df t near an odd
+half cycle) and empty at the whole-cycle ones. The labels split into two
+clusters (the positive fraction 0.534 matches a = 0.529) and correlate
+across shots: mean autocorrelation 0.552, 0.392, 0.281 and 0.198 at lags of
+1 to 4 columns, a two-state telegraph with tau = 28.3 ms (moving-block
+bootstrap, 64-column blocks, 2.5 to 97.5 percent 20.9 to 32.9 ms) and mean
+dwell 60 and 54 ms in the two lines. The raw reads of the whole-cycle
+delays, where a drift common to both lines would show, stay within 0.090 of
+zero at lag 1 (standard error 0.026). scripts/n21_q143_line_switching.py
+writes line-switching.json beside the run (gate core-617,
+`hw-n21-q143-segmented-lines`). The correlation across 9.7 ms also means
+the per-shot Wald statistics above treat correlated shots as independent:
+the non-rejections and the model and alias margins survive that, while a
+rejection near its threshold would not.
 
 ## Failure modes
 

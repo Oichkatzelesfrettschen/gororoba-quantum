@@ -274,6 +274,56 @@
      "docs/evidence/calibration/history/ibm_kingston/20261018T1427340700.json"
     ]
    ]
+  },
+  {
+   "device": "CPU",
+   "versions": {
+    "qiskit": "2.5.2",
+    "qiskit_aer": "0.17.2"
+   },
+   "seed": 20261016,
+   "runs": [
+    "results/live/2026-10-21T043156.858484Z",
+    "results/live/2026-10-21T064222.721454Z"
+   ],
+   "pairs": [
+    [
+     "results/live/2026-10-13T025444.603480Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-13T032011.664435Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-13T080216.451663Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-13T083417.634585Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-13T201757.782152Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-19T151959.226467Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-19T170620.832658Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-19T231043.083602Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ],
+    [
+     "results/live/2026-10-20T031212.175942Z",
+     "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+    ]
+   ]
   }
  ],
  "runs": [
@@ -4413,6 +4463,14 @@
      "current": false,
      "members": 929,
      "mean_tvd": 0.063865,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 929,
+     "mean_tvd": 0.066621,
      "execution_members": 0,
      "execution_mean_tvd": null
     }
@@ -29591,6 +29649,2805 @@
       ]
      },
      "seconds": 13.14
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "ripple_atlas_lane0_kite1_edge2_4_phase6_atlas": [
+       0.010743
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase3_atlas": [
+       0.087891
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase1_atlas": [
+       0.083008
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase2_atlas": [
+       0.012695
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase7_atlas": [
+       0.066406
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase5_atlas": [
+       0.082275
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase0_atlas": [
+       0.114502
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase4_atlas": [
+       0.095703
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase2_atlas": [
+       0.03711
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase3_atlas": [
+       0.048828
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase4_atlas": [
+       0.206054
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase7_atlas": [
+       0.001953
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase1_atlas": [
+       0.08789
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase7_atlas": [
+       0.111328
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase5_atlas": [
+       0.133789
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase4_atlas": [
+       0.142578
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase4_atlas": [
+       0.15332
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase6_atlas": [
+       0.016602
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase0_atlas": [
+       0.081055
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase7_atlas": [
+       0.157226
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase6_companion_depth2": [
+       0.003906
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase0_atlas": [
+       0.09961
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase1_atlas": [
+       0.125
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase4_atlas": [
+       0.118164
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase6_atlas": [
+       0.032227
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase7_atlas": [
+       0.068359
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase2_atlas": [
+       0.039062
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase2_atlas": [
+       0.008789
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase7_atlas": [
+       0.050781
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase7_atlas": [
+       0.016602
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase1_atlas": [
+       0.129882
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase0_atlas": [
+       0.134766
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase7_atlas": [
+       0.117187
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase1_atlas": [
+       0.021484
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase2_atlas": [
+       0.020507
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase4_atlas": [
+       0.209961
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase5_atlas": [
+       0.108398
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase5_atlas": [
+       0.166993
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase6_atlas": [
+       0.012696
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase4_atlas": [
+       0.094726
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase1_companion_depth1": [
+       0.074218
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase5_atlas": [
+       0.033204
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase7_atlas": [
+       0.166993
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase0_atlas": [
+       0.069336
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase1_atlas": [
+       0.120117
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase2_atlas": [
+       0.000976
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase6_atlas": [
+       0.052734
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase3_atlas": [
+       0.070312
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase2_atlas": [
+       0.058594
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase7_atlas": [
+       0.155274
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase5_atlas": [
+       0.076172
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase6_atlas": [
+       0.054688
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase5_atlas": [
+       0.100586
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase1_atlas": [
+       0.087891
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase6_atlas": [
+       0.019532
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase5_atlas": [
+       0.13086
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase0_atlas": [
+       0.12207
+      ],
+      "ripple_atlas_lane0_kite5_edge1_7_phase4_atlas": [
+       0.124023
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase0_atlas": [
+       0.141602
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase2_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase4_atlas": [
+       0.086914
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase5_companion_depth4": [
+       0.076416
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase0_atlas": [
+       0.205078
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase6_atlas": [
+       0.064453
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase3_atlas": [
+       0.011719
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase3_atlas": [
+       0.145508
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase4_atlas": [
+       0.044922
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase4_companion_depth0": [
+       0.067383
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase3_atlas": [
+       0.033203
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase3_atlas": [
+       0.125977
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase0_atlas": [
+       0.078125
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase1_atlas": [
+       0.097657
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase3_atlas": [
+       0.030273
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase0_companion_depth3": [
+       0.112304
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase6_atlas": [
+       0.039062
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase4_isolated": [
+       0.120361
+      ],
+      "ripple_atlas_lane0_kite1_edge2_4_phase0_isolated": [
+       0.11084
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase1_atlas": [
+       0.099609
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase6_atlas": [
+       0.006836
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase2_atlas": [
+       0.052734
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase2_atlas": [
+       0.038086
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase3_atlas": [
+       0.09668
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase4_atlas": [
+       0.169922
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase5_atlas": [
+       0.076172
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase1_atlas": [
+       0.111329
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase5_atlas": [
+       0.139648
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase0_atlas": [
+       0.182617
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase7_atlas": [
+       0.072266
+      ],
+      "ripple_atlas_lane0_kite1_edge3_7_phase1_atlas": [
+       0.055664
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase2_atlas": [
+       0.058593
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase1_atlas": [
+       0.081055
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase4_atlas": [
+       0.0625
+      ],
+      "ripple_atlas_lane0_kite4_edge2_3_phase3_atlas": [
+       0.100586
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase3_atlas": [
+       0.121094
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase2_atlas": [
+       0.032227
+      ],
+      "ripple_atlas_lane0_kite6_edge1_4_phase0_atlas": [
+       0.09668
+      ],
+      "ripple_atlas_lane0_kite4_edge6_7_phase6_atlas": [
+       0.09961
+      ],
+      "ripple_atlas_lane0_kite7_edge1_3_phase6_atlas": [
+       0.075195
+      ],
+      "ripple_atlas_lane0_kite2_edge3_6_phase7_atlas": [
+       0.038086
+      ],
+      "ripple_atlas_lane0_kite3_edge2_5_phase0_atlas": [
+       0.162109
+      ],
+      "ripple_atlas_lane0_kite5_edge4_7_phase3_atlas": [
+       0.012695
+      ],
+      "ripple_atlas_lane0_kite7_edge3_6_phase5_atlas": [
+       0.177735
+      ],
+      "ripple_atlas_lane0_kite6_edge4_5_phase5_atlas": [
+       0.05957
+      ],
+      "ripple_atlas_lane0_edge7_readout0": [
+       0.00293
+      ],
+      "ripple_atlas_lane0_edge7_readout1": [
+       0.000977
+      ],
+      "ripple_atlas_lane0_edge2_readout0": [
+       0.016602
+      ],
+      "ripple_atlas_lane0_edge2_readout1": [
+       0.026367
+      ],
+      "ripple_atlas_lane0_edge6_readout0": [
+       0.016602
+      ],
+      "ripple_atlas_lane0_edge6_readout1": [
+       0.006836
+      ],
+      "ripple_atlas_lane0_edge0_readout0": [
+       0.0
+      ],
+      "ripple_atlas_lane0_edge0_readout1": [
+       0.000977
+      ],
+      "ripple_atlas_lane0_edge9_readout0": [
+       0.02832
+      ],
+      "ripple_atlas_lane0_edge9_readout1": [
+       0.017578
+      ],
+      "ripple_atlas_lane0_edge10_readout0": [
+       0.033203
+      ],
+      "ripple_atlas_lane0_edge10_readout1": [
+       0.001954
+      ],
+      "ripple_atlas_lane0_edge4_readout0": [
+       0.008789
+      ],
+      "ripple_atlas_lane0_edge4_readout1": [
+       0.012695
+      ],
+      "ripple_atlas_lane0_edge5_readout0": [
+       0.024414
+      ],
+      "ripple_atlas_lane0_edge5_readout1": [
+       0.036133
+      ],
+      "ripple_atlas_lane0_edge3_readout0": [
+       0.035156
+      ],
+      "ripple_atlas_lane0_edge3_readout1": [
+       0.026367
+      ],
+      "ripple_atlas_lane0_edge11_readout0": [
+       0.022461
+      ],
+      "ripple_atlas_lane0_edge11_readout1": [
+       0.011718
+      ],
+      "ripple_atlas_lane0_edge1_readout0": [
+       0.00293
+      ],
+      "ripple_atlas_lane0_edge1_readout1": [
+       0.037109
+      ],
+      "ripple_atlas_lane0_edge8_readout0": [
+       0.030273
+      ],
+      "ripple_atlas_lane0_edge8_readout1": [
+       0.026367
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase6_atlas": [
+       0.125977
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase3_atlas": [
+       0.118165
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase1_atlas": [
+       0.068359
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase2_atlas": [
+       0.083984
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase7_atlas": [
+       0.132813
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase5_atlas": [
+       0.029541
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase0_atlas": [
+       0.056396
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase4_atlas": [
+       0.038818
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase2_atlas": [
+       0.12207
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase3_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase4_atlas": [
+       0.058594
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase7_atlas": [
+       0.016602
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase1_atlas": [
+       0.029296
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase7_atlas": [
+       0.113282
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase5_atlas": [
+       0.042968
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase4_atlas": [
+       0.042969
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase0_isolated": [
+       0.051025
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase4_isolated": [
+       0.055176
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase4_atlas": [
+       0.018554
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase6_atlas": [
+       0.060547
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase0_atlas": [
+       0.043946
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase7_atlas": [
+       0.037109
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase6_companion_depth2": [
+       0.152343
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase0_atlas": [
+       0.057617
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase1_atlas": [
+       0.069336
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase4_atlas": [
+       0.053711
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase6_atlas": [
+       0.108398
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase7_atlas": [
+       0.011719
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase2_atlas": [
+       0.064453
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase2_atlas": [
+       0.021485
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase7_atlas": [
+       0.001953
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase7_atlas": [
+       0.026367
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase1_atlas": [
+       0.022461
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase0_atlas": [
+       0.043945
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase7_atlas": [
+       0.137695
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase1_atlas": [
+       0.03418
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase2_atlas": [
+       0.070313
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase4_atlas": [
+       0.049805
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase5_atlas": [
+       0.043945
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase5_atlas": [
+       0.104492
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase6_atlas": [
+       0.061524
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase4_atlas": [
+       0.086914
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase1_companion_depth1": [
+       0.032227
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase5_atlas": [
+       0.023438
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase7_atlas": [
+       0.008789
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase0_atlas": [
+       0.056641
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase1_atlas": [
+       0.053711
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase2_atlas": [
+       0.12793
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase6_atlas": [
+       0.128906
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase3_atlas": [
+       0.113281
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase2_atlas": [
+       0.076172
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase7_atlas": [
+       0.082032
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase5_atlas": [
+       0.067383
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase6_atlas": [
+       0.064453
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase5_atlas": [
+       0.036133
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase1_atlas": [
+       0.071777
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase6_atlas": [
+       0.032226
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase5_atlas": [
+       0.010743
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase0_atlas": [
+       0.042969
+      ],
+      "ripple_atlas_lane1_kite6_edge1_5_phase4_atlas": [
+       0.041016
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase0_atlas": [
+       0.057617
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase2_atlas": [
+       0.051758
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase4_atlas": [
+       0.040039
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase5_companion_depth4": [
+       0.044434
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase0_atlas": [
+       0.013671
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase6_atlas": [
+       0.057617
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase3_atlas": [
+       0.052734
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase3_atlas": [
+       0.121094
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase4_atlas": [
+       0.047852
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase4_companion_depth0": [
+       0.03125
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase3_atlas": [
+       0.046875
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase3_atlas": [
+       0.068359
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase0_atlas": [
+       0.076172
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase1_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase3_atlas": [
+       0.106445
+      ],
+      "ripple_atlas_lane1_kite2_edge1_4_phase0_companion_depth3": [
+       0.058105
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase6_atlas": [
+       0.145508
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase1_atlas": [
+       0.054688
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase6_atlas": [
+       0.016602
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase2_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase2_atlas": [
+       0.111328
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase3_atlas": [
+       0.12207
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase4_atlas": [
+       0.083985
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase5_atlas": [
+       0.035156
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase1_atlas": [
+       0.029297
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase5_atlas": [
+       0.076171
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase0_atlas": [
+       0.019531
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase7_atlas": [
+       0.143554
+      ],
+      "ripple_atlas_lane1_kite2_edge3_7_phase1_atlas": [
+       0.029297
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase2_atlas": [
+       0.000976
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase1_atlas": [
+       0.007812
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase4_atlas": [
+       0.067383
+      ],
+      "ripple_atlas_lane1_kite5_edge2_3_phase3_atlas": [
+       0.111328
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase3_atlas": [
+       0.078125
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase2_atlas": [
+       0.143554
+      ],
+      "ripple_atlas_lane1_kite7_edge1_4_phase0_atlas": [
+       0.052734
+      ],
+      "ripple_atlas_lane1_kite5_edge6_7_phase6_atlas": [
+       0.042968
+      ],
+      "ripple_atlas_lane1_kite1_edge2_5_phase6_atlas": [
+       0.094726
+      ],
+      "ripple_atlas_lane1_kite3_edge2_6_phase7_atlas": [
+       0.106445
+      ],
+      "ripple_atlas_lane1_kite4_edge2_5_phase0_atlas": [
+       0.027343
+      ],
+      "ripple_atlas_lane1_kite6_edge4_7_phase3_atlas": [
+       0.047852
+      ],
+      "ripple_atlas_lane1_kite1_edge4_6_phase5_atlas": [
+       0.023438
+      ],
+      "ripple_atlas_lane1_kite7_edge4_5_phase5_atlas": [
+       0.001954
+      ],
+      "ripple_atlas_lane1_edge7_readout0": [
+       0.0
+      ],
+      "ripple_atlas_lane1_edge7_readout1": [
+       0.003906
+      ],
+      "ripple_atlas_lane1_edge2_readout0": [
+       0.005859
+      ],
+      "ripple_atlas_lane1_edge2_readout1": [
+       0.014648
+      ],
+      "ripple_atlas_lane1_edge6_readout0": [
+       0.00586
+      ],
+      "ripple_atlas_lane1_edge6_readout1": [
+       0.011719
+      ],
+      "ripple_atlas_lane1_edge0_readout0": [
+       0.007813
+      ],
+      "ripple_atlas_lane1_edge0_readout1": [
+       0.013672
+      ],
+      "ripple_atlas_lane1_edge9_readout0": [
+       0.003906
+      ],
+      "ripple_atlas_lane1_edge9_readout1": [
+       0.003906
+      ],
+      "ripple_atlas_lane1_edge10_readout0": [
+       0.016601
+      ],
+      "ripple_atlas_lane1_edge10_readout1": [
+       0.014648
+      ],
+      "ripple_atlas_lane1_edge4_readout0": [
+       0.002929
+      ],
+      "ripple_atlas_lane1_edge4_readout1": [
+       0.006836
+      ],
+      "ripple_atlas_lane1_edge5_readout0": [
+       0.014649
+      ],
+      "ripple_atlas_lane1_edge5_readout1": [
+       0.0
+      ],
+      "ripple_atlas_lane1_edge3_readout0": [
+       0.013671
+      ],
+      "ripple_atlas_lane1_edge3_readout1": [
+       0.007813
+      ],
+      "ripple_atlas_lane1_edge11_readout0": [
+       0.005859
+      ],
+      "ripple_atlas_lane1_edge11_readout1": [
+       0.013672
+      ],
+      "ripple_atlas_lane1_edge1_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane1_edge1_readout1": [
+       0.042969
+      ],
+      "ripple_atlas_lane1_edge8_readout0": [
+       0.003906
+      ],
+      "ripple_atlas_lane1_edge8_readout1": [
+       0.053711
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase6_atlas": [
+       0.234375
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase3_atlas": [
+       0.22168
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase1_atlas": [
+       0.070313
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase2_atlas": [
+       0.226562
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase7_atlas": [
+       0.238282
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase5_atlas": [
+       0.063721
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase0_atlas": [
+       0.140136
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase4_atlas": [
+       0.12793
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase2_atlas": [
+       0.208008
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase3_atlas": [
+       0.063477
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase4_atlas": [
+       0.138672
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase7_atlas": [
+       0.069336
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase1_atlas": [
+       0.042969
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase7_atlas": [
+       0.226563
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase5_atlas": [
+       0.036133
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase4_atlas": [
+       0.127929
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase4_atlas": [
+       0.092774
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase6_atlas": [
+       0.125
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase0_atlas": [
+       0.054688
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase7_atlas": [
+       0.095703
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase6_companion_depth2": [
+       0.219726
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase0_atlas": [
+       0.057617
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase1_atlas": [
+       0.004883
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase4_atlas": [
+       0.041992
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase6_atlas": [
+       0.240235
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase7_atlas": [
+       0.175781
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase2_atlas": [
+       0.054688
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase2_atlas": [
+       0.157227
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase7_atlas": [
+       0.123047
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase7_atlas": [
+       0.133789
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase1_atlas": [
+       0.080078
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase0_atlas": [
+       0.137695
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase7_atlas": [
+       0.217774
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase1_atlas": [
+       0.030273
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase2_atlas": [
+       0.113281
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase4_atlas": [
+       0.134766
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase5_atlas": [
+       0.010742
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase5_atlas": [
+       0.00293
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase6_atlas": [
+       0.041016
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase4_atlas": [
+       0.110352
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase1_companion_depth1": [
+       0.044922
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase5_atlas": [
+       0.027343
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase7_atlas": [
+       0.21875
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase0_atlas": [
+       0.060547
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase1_atlas": [
+       0.019531
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase2_atlas": [
+       0.163086
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase6_atlas": [
+       0.155273
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase4_isolated": [
+       0.123779
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase0_isolated": [
+       0.136231
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase3_atlas": [
+       0.204101
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase2_atlas": [
+       0.063477
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase7_atlas": [
+       0.296875
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase5_atlas": [
+       0.024414
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase6_atlas": [
+       0.064454
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase5_atlas": [
+       0.006836
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase1_atlas": [
+       0.083008
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase6_atlas": [
+       0.075195
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase5_atlas": [
+       0.073242
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase0_atlas": [
+       0.104492
+      ],
+      "ripple_atlas_lane2_kite7_edge1_5_phase4_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase0_atlas": [
+       0.081055
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase2_atlas": [
+       0.211914
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase4_atlas": [
+       0.09375
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase5_companion_depth4": [
+       0.067627
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase0_atlas": [
+       0.136718
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase6_atlas": [
+       0.118164
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase3_atlas": [
+       0.082031
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase3_atlas": [
+       0.234375
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase4_atlas": [
+       0.067383
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase4_companion_depth0": [
+       0.033204
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase3_atlas": [
+       0.194336
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase3_atlas": [
+       0.220703
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase0_atlas": [
+       0.09375
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase1_atlas": [
+       0.039062
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase3_atlas": [
+       0.088867
+      ],
+      "ripple_atlas_lane2_kite3_edge1_4_phase0_companion_depth3": [
+       0.137695
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase6_atlas": [
+       0.155273
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase1_atlas": [
+       0.101562
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase6_atlas": [
+       0.1875
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase2_atlas": [
+       0.201172
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase2_atlas": [
+       0.068359
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase3_atlas": [
+       0.229492
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase4_atlas": [
+       0.119141
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase5_atlas": [
+       0.004883
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase1_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase5_atlas": [
+       0.060546
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase0_atlas": [
+       0.107422
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase7_atlas": [
+       0.223633
+      ],
+      "ripple_atlas_lane2_kite3_edge2_7_phase1_atlas": [
+       0.033203
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase2_atlas": [
+       0.064453
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase1_atlas": [
+       0.0
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase4_atlas": [
+       0.129883
+      ],
+      "ripple_atlas_lane2_kite6_edge2_3_phase3_atlas": [
+       0.200195
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase3_atlas": [
+       0.09375
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase2_atlas": [
+       0.217774
+      ],
+      "ripple_atlas_lane2_kite1_edge2_6_phase0_atlas": [
+       0.087891
+      ],
+      "ripple_atlas_lane2_kite6_edge5_7_phase6_atlas": [
+       0.046875
+      ],
+      "ripple_atlas_lane2_kite2_edge1_5_phase6_atlas": [
+       0.206054
+      ],
+      "ripple_atlas_lane2_kite4_edge2_7_phase7_atlas": [
+       0.110351
+      ],
+      "ripple_atlas_lane2_kite5_edge2_4_phase0_atlas": [
+       0.050781
+      ],
+      "ripple_atlas_lane2_kite7_edge4_6_phase3_atlas": [
+       0.102539
+      ],
+      "ripple_atlas_lane2_kite2_edge4_5_phase5_atlas": [
+       0.068359
+      ],
+      "ripple_atlas_lane2_kite1_edge4_7_phase5_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane2_edge7_readout0": [
+       0.014648
+      ],
+      "ripple_atlas_lane2_edge7_readout1": [
+       0.010742
+      ],
+      "ripple_atlas_lane2_edge2_readout0": [
+       0.002929
+      ],
+      "ripple_atlas_lane2_edge2_readout1": [
+       0.00293
+      ],
+      "ripple_atlas_lane2_edge6_readout0": [
+       0.009765
+      ],
+      "ripple_atlas_lane2_edge6_readout1": [
+       0.011719
+      ],
+      "ripple_atlas_lane2_edge0_readout0": [
+       0.010742
+      ],
+      "ripple_atlas_lane2_edge0_readout1": [
+       0.018555
+      ],
+      "ripple_atlas_lane2_edge9_readout0": [
+       0.002929
+      ],
+      "ripple_atlas_lane2_edge9_readout1": [
+       0.00293
+      ],
+      "ripple_atlas_lane2_edge10_readout0": [
+       0.019531
+      ],
+      "ripple_atlas_lane2_edge10_readout1": [
+       0.010742
+      ],
+      "ripple_atlas_lane2_edge4_readout0": [
+       0.011718
+      ],
+      "ripple_atlas_lane2_edge4_readout1": [
+       0.017578
+      ],
+      "ripple_atlas_lane2_edge5_readout0": [
+       0.010742
+      ],
+      "ripple_atlas_lane2_edge5_readout1": [
+       0.007812
+      ],
+      "ripple_atlas_lane2_edge3_readout0": [
+       0.015625
+      ],
+      "ripple_atlas_lane2_edge3_readout1": [
+       0.017578
+      ],
+      "ripple_atlas_lane2_edge11_readout0": [
+       0.014649
+      ],
+      "ripple_atlas_lane2_edge11_readout1": [
+       0.005859
+      ],
+      "ripple_atlas_lane2_edge1_readout0": [
+       0.012695
+      ],
+      "ripple_atlas_lane2_edge1_readout1": [
+       0.010743
+      ],
+      "ripple_atlas_lane2_edge8_readout0": [
+       0.013672
+      ],
+      "ripple_atlas_lane2_edge8_readout1": [
+       0.020508
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase6_atlas": [
+       0.158203
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase3_atlas": [
+       0.146484
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase1_atlas": [
+       0.032226
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase2_atlas": [
+       0.135742
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase7_atlas": [
+       0.151367
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase5_atlas": [
+       0.016845
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase0_atlas": [
+       0.078125
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase4_atlas": [
+       0.070801
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase2_atlas": [
+       0.041015
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase3_atlas": [
+       0.116211
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase4_atlas": [
+       0.137696
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase7_atlas": [
+       0.041015
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase4_isolated": [
+       0.082763
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase0_isolated": [
+       0.065918
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase1_atlas": [
+       0.052735
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase7_atlas": [
+       0.135742
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase5_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase4_atlas": [
+       0.102539
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase4_atlas": [
+       0.101563
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase6_atlas": [
+       0.030273
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase0_atlas": [
+       0.164062
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase7_atlas": [
+       0.054688
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase6_companion_depth2": [
+       0.101563
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase0_atlas": [
+       0.142578
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase1_atlas": [
+       0.080078
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase4_atlas": [
+       0.155273
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase6_atlas": [
+       0.026367
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase7_atlas": [
+       0.099609
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase2_atlas": [
+       0.004883
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase2_atlas": [
+       0.032226
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase7_atlas": [
+       0.133789
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase7_atlas": [
+       0.136719
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase1_atlas": [
+       0.086914
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase0_atlas": [
+       0.117188
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase7_atlas": [
+       0.094726
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase1_atlas": [
+       0.0625
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase2_atlas": [
+       0.039063
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase4_atlas": [
+       0.109375
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase5_atlas": [
+       0.073242
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase5_atlas": [
+       0.080078
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase6_atlas": [
+       0.022461
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase4_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase1_companion_depth1": [
+       0.036132
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase5_atlas": [
+       0.072265
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase7_atlas": [
+       0.044922
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase0_atlas": [
+       0.084961
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase1_atlas": [
+       0.116211
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase2_atlas": [
+       0.048828
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase6_atlas": [
+       0.000977
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase3_atlas": [
+       0.049805
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase2_atlas": [
+       0.009766
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase7_atlas": [
+       0.054688
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase5_atlas": [
+       0.055664
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase6_atlas": [
+       0.024414
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase5_atlas": [
+       0.063476
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase1_atlas": [
+       0.05249
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase6_atlas": [
+       0.067383
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase5_atlas": [
+       0.079101
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase0_atlas": [
+       0.15625
+      ],
+      "ripple_atlas_lane3_kite1_edge2_7_phase4_atlas": [
+       0.160156
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase0_atlas": [
+       0.116211
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase2_atlas": [
+       0.06543
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase4_atlas": [
+       0.174805
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase5_companion_depth4": [
+       0.033203
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase0_atlas": [
+       0.121094
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase6_atlas": [
+       0.000976
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase3_atlas": [
+       0.072266
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase3_atlas": [
+       0.045899
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase4_atlas": [
+       0.042969
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase4_companion_depth0": [
+       0.044922
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase3_atlas": [
+       0.088867
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase3_atlas": [
+       0.080079
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase0_atlas": [
+       0.115234
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase1_atlas": [
+       0.099609
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase3_atlas": [
+       0.051758
+      ],
+      "ripple_atlas_lane3_kite4_edge1_2_phase0_companion_depth3": [
+       0.067871
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase6_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase1_atlas": [
+       0.041992
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase6_atlas": [
+       0.075196
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase2_atlas": [
+       0.019531
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase2_atlas": [
+       0.010742
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase3_atlas": [
+       0.133789
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase4_atlas": [
+       0.135742
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase5_atlas": [
+       0.128906
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase1_atlas": [
+       0.155274
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase5_atlas": [
+       0.048828
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase0_atlas": [
+       0.110352
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase7_atlas": [
+       0.058594
+      ],
+      "ripple_atlas_lane3_kite4_edge3_5_phase1_atlas": [
+       0.101562
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase2_atlas": [
+       0.070313
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase1_atlas": [
+       0.043946
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase4_atlas": [
+       0.084961
+      ],
+      "ripple_atlas_lane3_kite7_edge2_3_phase3_atlas": [
+       0.09375
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase3_atlas": [
+       0.050782
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase2_atlas": [
+       0.003906
+      ],
+      "ripple_atlas_lane3_kite2_edge1_6_phase0_atlas": [
+       0.132812
+      ],
+      "ripple_atlas_lane3_kite7_edge5_6_phase6_atlas": [
+       0.003906
+      ],
+      "ripple_atlas_lane3_kite3_edge1_5_phase6_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane3_kite5_edge2_6_phase7_atlas": [
+       0.009766
+      ],
+      "ripple_atlas_lane3_kite6_edge2_5_phase0_atlas": [
+       0.102539
+      ],
+      "ripple_atlas_lane3_kite1_edge5_6_phase3_atlas": [
+       0.126953
+      ],
+      "ripple_atlas_lane3_kite3_edge4_5_phase5_atlas": [
+       0.113282
+      ],
+      "ripple_atlas_lane3_kite2_edge4_7_phase5_atlas": [
+       0.103515
+      ],
+      "ripple_atlas_lane3_edge7_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane3_edge7_readout1": [
+       0.013672
+      ],
+      "ripple_atlas_lane3_edge2_readout0": [
+       0.007813
+      ],
+      "ripple_atlas_lane3_edge2_readout1": [
+       0.013672
+      ],
+      "ripple_atlas_lane3_edge6_readout0": [
+       0.010742
+      ],
+      "ripple_atlas_lane3_edge6_readout1": [
+       0.008789
+      ],
+      "ripple_atlas_lane3_edge0_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane3_edge0_readout1": [
+       0.00586
+      ],
+      "ripple_atlas_lane3_edge9_readout0": [
+       0.007812
+      ],
+      "ripple_atlas_lane3_edge9_readout1": [
+       0.011719
+      ],
+      "ripple_atlas_lane3_edge10_readout0": [
+       0.012695
+      ],
+      "ripple_atlas_lane3_edge10_readout1": [
+       0.004882
+      ],
+      "ripple_atlas_lane3_edge4_readout0": [
+       0.003907
+      ],
+      "ripple_atlas_lane3_edge4_readout1": [
+       0.024415
+      ],
+      "ripple_atlas_lane3_edge5_readout0": [
+       0.009766
+      ],
+      "ripple_atlas_lane3_edge5_readout1": [
+       0.021484
+      ],
+      "ripple_atlas_lane3_edge3_readout0": [
+       0.004883
+      ],
+      "ripple_atlas_lane3_edge3_readout1": [
+       0.003906
+      ],
+      "ripple_atlas_lane3_edge11_readout0": [
+       0.004883
+      ],
+      "ripple_atlas_lane3_edge11_readout1": [
+       0.013672
+      ],
+      "ripple_atlas_lane3_edge1_readout0": [
+       0.021484
+      ],
+      "ripple_atlas_lane3_edge1_readout1": [
+       0.012696
+      ],
+      "ripple_atlas_lane3_edge8_readout0": [
+       0.001953
+      ],
+      "ripple_atlas_lane3_edge8_readout1": [
+       0.00293
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase6_atlas": [
+       0.083008
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase3_atlas": [
+       0.150391
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase1_atlas": [
+       0.003906
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase2_atlas": [
+       0.174805
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase7_atlas": [
+       0.169922
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase5_atlas": [
+       0.004394
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase0_atlas": [
+       0.078614
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase4_atlas": [
+       0.137939
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase2_atlas": [
+       0.03418
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase3_atlas": [
+       0.029297
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase4_atlas": [
+       0.083984
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase7_atlas": [
+       0.111329
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase1_atlas": [
+       0.092773
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase7_atlas": [
+       0.130859
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase5_atlas": [
+       0.053711
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase4_atlas": [
+       0.069336
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase4_atlas": [
+       0.112304
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase6_atlas": [
+       0.005859
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase0_atlas": [
+       0.046875
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase7_atlas": [
+       0.053711
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase0_isolated": [
+       0.11377
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase4_isolated": [
+       0.143066
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase6_companion_depth2": [
+       0.084961
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase0_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase1_atlas": [
+       0.039063
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase4_atlas": [
+       0.128906
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase6_atlas": [
+       0.027344
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase7_atlas": [
+       0.075196
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase2_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase2_atlas": [
+       0.012695
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase7_atlas": [
+       0.02539
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase7_atlas": [
+       0.06836
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase1_atlas": [
+       0.019531
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase0_atlas": [
+       0.095703
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase7_atlas": [
+       0.118164
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase1_atlas": [
+       0.061523
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase2_atlas": [
+       0.044922
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase4_atlas": [
+       0.108399
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase5_atlas": [
+       0.047852
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase5_atlas": [
+       0.027344
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase6_atlas": [
+       0.011719
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase4_atlas": [
+       0.119141
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase1_companion_depth1": [
+       0.035157
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase5_atlas": [
+       0.026368
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase7_atlas": [
+       0.076172
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase0_atlas": [
+       0.084961
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase1_atlas": [
+       0.010742
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase2_atlas": [
+       0.00293
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase6_atlas": [
+       0.06836
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase3_atlas": [
+       0.064454
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase2_atlas": [
+       0.000976
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase7_atlas": [
+       0.008789
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase5_atlas": [
+       0.0625
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase6_atlas": [
+       0.028321
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase5_atlas": [
+       0.085938
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase1_atlas": [
+       0.015869
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase6_atlas": [
+       0.016602
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase5_atlas": [
+       0.018554
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase0_atlas": [
+       0.075196
+      ],
+      "ripple_atlas_lane4_kite2_edge1_7_phase4_atlas": [
+       0.082031
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase0_atlas": [
+       0.101562
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase2_atlas": [
+       0.001953
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase4_atlas": [
+       0.05957
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase5_companion_depth4": [
+       0.009766
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase0_atlas": [
+       0.09375
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase6_atlas": [
+       0.007812
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase3_atlas": [
+       0.146484
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase3_atlas": [
+       0.016602
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase4_atlas": [
+       0.088867
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase4_companion_depth0": [
+       0.071289
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase3_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase3_atlas": [
+       0.108398
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase0_atlas": [
+       0.091796
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase1_atlas": [
+       0.033203
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase3_atlas": [
+       0.041992
+      ],
+      "ripple_atlas_lane4_kite5_edge1_2_phase0_companion_depth3": [
+       0.08545
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase6_atlas": [
+       0.005859
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase1_atlas": [
+       0.02539
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase6_atlas": [
+       0.026367
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase2_atlas": [
+       0.051758
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase2_atlas": [
+       0.013672
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase3_atlas": [
+       0.148438
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase4_atlas": [
+       0.097657
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase5_atlas": [
+       0.067383
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase1_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase5_atlas": [
+       0.025391
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase0_atlas": [
+       0.107421
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase7_atlas": [
+       0.05957
+      ],
+      "ripple_atlas_lane4_kite5_edge3_4_phase1_atlas": [
+       0.071289
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase2_atlas": [
+       0.054687
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase1_atlas": [
+       0.120118
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase4_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane4_kite1_edge3_4_phase3_atlas": [
+       0.085938
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase3_atlas": [
+       0.103515
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase2_atlas": [
+       0.099609
+      ],
+      "ripple_atlas_lane4_kite3_edge1_6_phase0_atlas": [
+       0.099609
+      ],
+      "ripple_atlas_lane4_kite1_edge5_7_phase6_atlas": [
+       0.081055
+      ],
+      "ripple_atlas_lane4_kite4_edge1_3_phase6_atlas": [
+       0.083008
+      ],
+      "ripple_atlas_lane4_kite6_edge2_7_phase7_atlas": [
+       0.041993
+      ],
+      "ripple_atlas_lane4_kite7_edge2_4_phase0_atlas": [
+       0.074219
+      ],
+      "ripple_atlas_lane4_kite2_edge5_6_phase3_atlas": [
+       0.060547
+      ],
+      "ripple_atlas_lane4_kite4_edge3_6_phase5_atlas": [
+       0.026367
+      ],
+      "ripple_atlas_lane4_kite3_edge4_6_phase5_atlas": [
+       0.041015
+      ],
+      "ripple_atlas_lane4_edge7_readout0": [
+       0.012696
+      ],
+      "ripple_atlas_lane4_edge7_readout1": [
+       0.011719
+      ],
+      "ripple_atlas_lane4_edge2_readout0": [
+       0.008789
+      ],
+      "ripple_atlas_lane4_edge2_readout1": [
+       0.001953
+      ],
+      "ripple_atlas_lane4_edge6_readout0": [
+       0.003906
+      ],
+      "ripple_atlas_lane4_edge6_readout1": [
+       0.00293
+      ],
+      "ripple_atlas_lane4_edge0_readout0": [
+       0.006836
+      ],
+      "ripple_atlas_lane4_edge0_readout1": [
+       0.000977
+      ],
+      "ripple_atlas_lane4_edge9_readout0": [
+       0.025391
+      ],
+      "ripple_atlas_lane4_edge9_readout1": [
+       0.005859
+      ],
+      "ripple_atlas_lane4_edge10_readout0": [
+       0.015625
+      ],
+      "ripple_atlas_lane4_edge10_readout1": [
+       0.00293
+      ],
+      "ripple_atlas_lane4_edge4_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane4_edge4_readout1": [
+       0.008789
+      ],
+      "ripple_atlas_lane4_edge5_readout0": [
+       0.012695
+      ],
+      "ripple_atlas_lane4_edge5_readout1": [
+       0.002929
+      ],
+      "ripple_atlas_lane4_edge3_readout0": [
+       0.010742
+      ],
+      "ripple_atlas_lane4_edge3_readout1": [
+       0.00293
+      ],
+      "ripple_atlas_lane4_edge11_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane4_edge11_readout1": [
+       0.004883
+      ],
+      "ripple_atlas_lane4_edge1_readout0": [
+       0.0
+      ],
+      "ripple_atlas_lane4_edge1_readout1": [
+       0.00586
+      ],
+      "ripple_atlas_lane4_edge8_readout0": [
+       0.006836
+      ],
+      "ripple_atlas_lane4_edge8_readout1": [
+       0.00293
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase6_atlas": [
+       0.023438
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase3_atlas": [
+       0.103515
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase1_atlas": [
+       0.000976
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase2_atlas": [
+       0.013672
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase7_atlas": [
+       0.02539
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase5_atlas": [
+       0.024902
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase0_atlas": [
+       0.014648
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase4_atlas": [
+       0.01294
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase2_atlas": [
+       0.038086
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase3_atlas": [
+       0.001954
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase4_atlas": [
+       0.023438
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase7_atlas": [
+       0.056641
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase1_atlas": [
+       0.008789
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase7_atlas": [
+       0.081055
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase5_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase4_atlas": [
+       0.041992
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase4_atlas": [
+       0.059571
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase6_atlas": [
+       0.045899
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase0_atlas": [
+       0.044921
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase7_atlas": [
+       0.0625
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase6_companion_depth2": [
+       0.050781
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase0_atlas": [
+       0.027344
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase1_atlas": [
+       0.050781
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase4_atlas": [
+       0.008789
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase6_atlas": [
+       0.003906
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase7_atlas": [
+       0.007812
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase2_atlas": [
+       0.019531
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase2_atlas": [
+       0.078125
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase7_atlas": [
+       0.00879
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase7_atlas": [
+       0.001953
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase1_atlas": [
+       0.067383
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase0_atlas": [
+       0.011718
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase7_atlas": [
+       0.039063
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase1_atlas": [
+       0.006836
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase2_atlas": [
+       0.03418
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase4_atlas": [
+       0.012695
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase5_atlas": [
+       0.054688
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase5_atlas": [
+       0.02832
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase6_atlas": [
+       0.042969
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase4_atlas": [
+       0.03418
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase1_companion_depth1": [
+       0.013672
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase5_atlas": [
+       0.004883
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase7_atlas": [
+       0.007813
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase0_atlas": [
+       0.03418
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase1_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase2_atlas": [
+       0.083008
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase6_atlas": [
+       0.024414
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase3_atlas": [
+       0.0625
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase2_atlas": [
+       0.010743
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase7_atlas": [
+       0.000977
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase5_atlas": [
+       0.001953
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase6_atlas": [
+       0.035156
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase5_atlas": [
+       0.0
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase1_atlas": [
+       0.005859
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase6_atlas": [
+       0.058594
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase5_atlas": [
+       0.023438
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase0_atlas": [
+       0.019531
+      ],
+      "ripple_atlas_lane5_kite3_edge1_7_phase4_atlas": [
+       0.041016
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase0_atlas": [
+       0.003906
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase2_atlas": [
+       0.024414
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase4_atlas": [
+       0.010742
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase5_companion_depth4": [
+       0.022217
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase0_atlas": [
+       0.051758
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase6_atlas": [
+       0.045898
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase3_atlas": [
+       0.086914
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase3_atlas": [
+       0.006836
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase4_atlas": [
+       0.073242
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase4_companion_depth0": [
+       0.027343
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase3_atlas": [
+       0.076172
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase3_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase0_atlas": [
+       0.034179
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase1_atlas": [
+       0.058593
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase3_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase4_isolated": [
+       0.021241
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase0_isolated": [
+       0.009278
+      ],
+      "ripple_atlas_lane5_kite6_edge1_2_phase0_companion_depth3": [
+       0.018799
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase6_atlas": [
+       0.011718
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase1_atlas": [
+       0.029297
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase6_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase2_atlas": [
+       0.02539
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase2_atlas": [
+       0.004883
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase3_atlas": [
+       0.02539
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase4_atlas": [
+       0.026367
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase5_atlas": [
+       0.005859
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase1_atlas": [
+       0.006836
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase5_atlas": [
+       0.023438
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase0_atlas": [
+       0.023438
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase7_atlas": [
+       0.052734
+      ],
+      "ripple_atlas_lane5_kite6_edge3_4_phase1_atlas": [
+       0.007813
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase2_atlas": [
+       0.097656
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase1_atlas": [
+       0.000976
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase4_atlas": [
+       0.056641
+      ],
+      "ripple_atlas_lane5_kite2_edge3_4_phase3_atlas": [
+       0.008789
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase3_atlas": [
+       0.036133
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase2_atlas": [
+       0.0
+      ],
+      "ripple_atlas_lane5_kite4_edge1_6_phase0_atlas": [
+       0.003907
+      ],
+      "ripple_atlas_lane5_kite2_edge6_7_phase6_atlas": [
+       0.024414
+      ],
+      "ripple_atlas_lane5_kite5_edge1_3_phase6_atlas": [
+       0.088867
+      ],
+      "ripple_atlas_lane5_kite7_edge2_6_phase7_atlas": [
+       0.002929
+      ],
+      "ripple_atlas_lane5_kite1_edge3_5_phase0_atlas": [
+       0.087891
+      ],
+      "ripple_atlas_lane5_kite3_edge5_7_phase3_atlas": [
+       0.008789
+      ],
+      "ripple_atlas_lane5_kite5_edge3_7_phase5_atlas": [
+       0.074219
+      ],
+      "ripple_atlas_lane5_kite4_edge5_6_phase5_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane5_edge7_readout0": [
+       0.003906
+      ],
+      "ripple_atlas_lane5_edge7_readout1": [
+       0.006836
+      ],
+      "ripple_atlas_lane5_edge2_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane5_edge2_readout1": [
+       0.010743
+      ],
+      "ripple_atlas_lane5_edge6_readout0": [
+       0.001953
+      ],
+      "ripple_atlas_lane5_edge6_readout1": [
+       0.001953
+      ],
+      "ripple_atlas_lane5_edge0_readout0": [
+       0.000976
+      ],
+      "ripple_atlas_lane5_edge0_readout1": [
+       0.004883
+      ],
+      "ripple_atlas_lane5_edge9_readout0": [
+       0.003906
+      ],
+      "ripple_atlas_lane5_edge9_readout1": [
+       0.0
+      ],
+      "ripple_atlas_lane5_edge10_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane5_edge10_readout1": [
+       0.003906
+      ],
+      "ripple_atlas_lane5_edge4_readout0": [
+       0.0
+      ],
+      "ripple_atlas_lane5_edge4_readout1": [
+       0.004883
+      ],
+      "ripple_atlas_lane5_edge5_readout0": [
+       0.001953
+      ],
+      "ripple_atlas_lane5_edge5_readout1": [
+       0.006836
+      ],
+      "ripple_atlas_lane5_edge3_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane5_edge3_readout1": [
+       0.004882
+      ],
+      "ripple_atlas_lane5_edge11_readout0": [
+       0.001953
+      ],
+      "ripple_atlas_lane5_edge11_readout1": [
+       0.006836
+      ],
+      "ripple_atlas_lane5_edge1_readout0": [
+       0.002929
+      ],
+      "ripple_atlas_lane5_edge1_readout1": [
+       0.008789
+      ],
+      "ripple_atlas_lane5_edge8_readout0": [
+       0.000976
+      ],
+      "ripple_atlas_lane5_edge8_readout1": [
+       0.005859
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase6_atlas": [
+       0.109375
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase3_atlas": [
+       0.152344
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase1_atlas": [
+       0.009766
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase2_atlas": [
+       0.110351
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase7_atlas": [
+       0.130859
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase5_atlas": [
+       0.00586
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase0_atlas": [
+       0.075683
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase4_atlas": [
+       0.10791
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase2_atlas": [
+       0.054687
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase3_atlas": [
+       0.061523
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase4_atlas": [
+       0.041992
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase7_atlas": [
+       0.194336
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase1_atlas": [
+       0.026367
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase7_atlas": [
+       0.123047
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase5_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase4_atlas": [
+       0.068359
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase4_atlas": [
+       0.038086
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase6_atlas": [
+       0.011719
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase0_atlas": [
+       0.081055
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase7_atlas": [
+       0.116211
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase6_companion_depth2": [
+       0.082031
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase0_atlas": [
+       0.069336
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase1_atlas": [
+       0.019531
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase4_atlas": [
+       0.088867
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase6_atlas": [
+       0.03711
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase7_atlas": [
+       0.015625
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase2_atlas": [
+       0.077148
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase2_atlas": [
+       0.066406
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase7_atlas": [
+       0.06543
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase7_atlas": [
+       0.133789
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase1_atlas": [
+       0.032227
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase0_atlas": [
+       0.078125
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase7_atlas": [
+       0.072265
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase1_atlas": [
+       0.016601
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase2_atlas": [
+       0.095703
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase4_atlas": [
+       0.100586
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase5_atlas": [
+       0.033203
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase0_isolated": [
+       0.099366
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase4_isolated": [
+       0.10083
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase5_atlas": [
+       0.026367
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase6_atlas": [
+       0.055664
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase4_atlas": [
+       0.06543
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase1_companion_depth1": [
+       0.010742
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase5_atlas": [
+       0.002929
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase7_atlas": [
+       0.06543
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase0_atlas": [
+       0.09375
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase1_atlas": [
+       0.003906
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase2_atlas": [
+       0.018555
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase6_atlas": [
+       0.048828
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase3_atlas": [
+       0.077148
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase2_atlas": [
+       0.03711
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase7_atlas": [
+       0.064453
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase5_atlas": [
+       0.009766
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase6_atlas": [
+       0.038085
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase5_atlas": [
+       0.030274
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase1_atlas": [
+       0.007324
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase6_atlas": [
+       0.078125
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase5_atlas": [
+       0.003906
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase0_atlas": [
+       0.03418
+      ],
+      "ripple_atlas_lane6_kite4_edge1_7_phase4_atlas": [
+       0.052735
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase0_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase2_atlas": [
+       0.014649
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase4_atlas": [
+       0.080078
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase5_companion_depth4": [
+       0.004151
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase0_atlas": [
+       0.046875
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase6_atlas": [
+       0.117188
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase3_atlas": [
+       0.196289
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase3_atlas": [
+       0.107422
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase4_atlas": [
+       0.080079
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase4_companion_depth0": [
+       0.066406
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase3_atlas": [
+       0.040039
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase3_atlas": [
+       0.094726
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase0_atlas": [
+       0.089844
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase1_atlas": [
+       0.007813
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase3_atlas": [
+       0.132813
+      ],
+      "ripple_atlas_lane6_kite7_edge1_2_phase0_companion_depth3": [
+       0.084717
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase6_atlas": [
+       0.083985
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase1_atlas": [
+       0.03125
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase6_atlas": [
+       0.03418
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase2_atlas": [
+       0.051758
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase2_atlas": [
+       0.046875
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase3_atlas": [
+       0.125
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase4_atlas": [
+       0.09961
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase5_atlas": [
+       0.024414
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase1_atlas": [
+       0.047852
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase5_atlas": [
+       0.013672
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase0_atlas": [
+       0.050782
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase7_atlas": [
+       0.109375
+      ],
+      "ripple_atlas_lane6_kite7_edge3_5_phase1_atlas": [
+       0.005859
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase2_atlas": [
+       0.175781
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase1_atlas": [
+       0.010743
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase4_atlas": [
+       0.05957
+      ],
+      "ripple_atlas_lane6_kite3_edge2_4_phase3_atlas": [
+       0.058593
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase3_atlas": [
+       0.134765
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase2_atlas": [
+       0.137695
+      ],
+      "ripple_atlas_lane6_kite5_edge1_6_phase0_atlas": [
+       0.036133
+      ],
+      "ripple_atlas_lane6_kite3_edge6_7_phase6_atlas": [
+       0.149414
+      ],
+      "ripple_atlas_lane6_kite6_edge1_3_phase6_atlas": [
+       0.097657
+      ],
+      "ripple_atlas_lane6_kite1_edge3_6_phase7_atlas": [
+       0.112304
+      ],
+      "ripple_atlas_lane6_kite2_edge3_5_phase0_atlas": [
+       0.029296
+      ],
+      "ripple_atlas_lane6_kite4_edge5_7_phase3_atlas": [
+       0.099609
+      ],
+      "ripple_atlas_lane6_kite6_edge3_7_phase5_atlas": [
+       0.004883
+      ],
+      "ripple_atlas_lane6_kite5_edge4_6_phase5_atlas": [
+       0.009766
+      ],
+      "ripple_atlas_lane6_edge7_readout0": [
+       0.001954
+      ],
+      "ripple_atlas_lane6_edge7_readout1": [
+       0.009765
+      ],
+      "ripple_atlas_lane6_edge2_readout0": [
+       0.0
+      ],
+      "ripple_atlas_lane6_edge2_readout1": [
+       0.008789
+      ],
+      "ripple_atlas_lane6_edge6_readout0": [
+       0.011718
+      ],
+      "ripple_atlas_lane6_edge6_readout1": [
+       0.003906
+      ],
+      "ripple_atlas_lane6_edge0_readout0": [
+       0.00293
+      ],
+      "ripple_atlas_lane6_edge0_readout1": [
+       0.017578
+      ],
+      "ripple_atlas_lane6_edge9_readout0": [
+       0.003906
+      ],
+      "ripple_atlas_lane6_edge9_readout1": [
+       0.008789
+      ],
+      "ripple_atlas_lane6_edge10_readout0": [
+       0.007812
+      ],
+      "ripple_atlas_lane6_edge10_readout1": [
+       0.013672
+      ],
+      "ripple_atlas_lane6_edge4_readout0": [
+       0.004883
+      ],
+      "ripple_atlas_lane6_edge4_readout1": [
+       0.006836
+      ],
+      "ripple_atlas_lane6_edge5_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane6_edge5_readout1": [
+       0.006836
+      ],
+      "ripple_atlas_lane6_edge3_readout0": [
+       0.000977
+      ],
+      "ripple_atlas_lane6_edge3_readout1": [
+       0.008789
+      ],
+      "ripple_atlas_lane6_edge11_readout0": [
+       0.0
+      ],
+      "ripple_atlas_lane6_edge11_readout1": [
+       0.00586
+      ],
+      "ripple_atlas_lane6_edge1_readout0": [
+       0.003906
+      ],
+      "ripple_atlas_lane6_edge1_readout1": [
+       0.017578
+      ],
+      "ripple_atlas_lane6_edge8_readout0": [
+       0.011719
+      ],
+      "ripple_atlas_lane6_edge8_readout1": [
+       0.015625
+      ],
+      "ripple_walk_lane0_pair9_22_depth4_packed": [
+       0.097656
+      ],
+      "ripple_walk_lane0_pair25_31_depth4_packed": [
+       0.158447
+      ],
+      "ripple_walk_lane0_pair9_22_depth4_isolated": [
+       0.133789
+      ],
+      "ripple_walk_lane0_pair25_31_depth4_isolated": [
+       0.137451
+      ],
+      "ripple_walk_lane0_pair25_31_depth3_packed": [
+       0.20874
+      ],
+      "ripple_walk_lane0_pair9_22_depth3_packed": [
+       0.17456
+      ],
+      "ripple_walk_lane0_pair25_31_depth2_packed": [
+       0.134765
+      ],
+      "ripple_walk_lane0_pair9_22_depth2_packed": [
+       0.16211
+      ],
+      "ripple_walk_lane0_pair25_31_depth1_packed": [
+       0.239258
+      ],
+      "ripple_walk_lane0_pair9_22_depth1_packed": [
+       0.215821
+      ],
+      "ripple_walk_lane0_pair25_31_depth0_packed": [
+       0.420898
+      ],
+      "ripple_walk_lane0_pair9_22_depth0_packed": [
+       0.421875
+      ],
+      "ripple_walk_lane0_readout0": [
+       0.44043
+      ],
+      "ripple_walk_lane0_readout1": [
+       0.35254
+      ],
+      "ripple_walk_lane1_pair25_31_depth4_packed": [
+       0.266113
+      ],
+      "ripple_walk_lane1_pair9_22_depth4_packed": [
+       0.197509
+      ],
+      "ripple_walk_lane1_pair9_22_depth4_isolated": [
+       0.185304
+      ],
+      "ripple_walk_lane1_pair25_31_depth4_isolated": [
+       0.261474
+      ],
+      "ripple_walk_lane1_pair9_22_depth3_packed": [
+       0.260253
+      ],
+      "ripple_walk_lane1_pair25_31_depth3_packed": [
+       0.198976
+      ],
+      "ripple_walk_lane1_pair9_22_depth2_packed": [
+       0.206055
+      ],
+      "ripple_walk_lane1_pair25_31_depth2_packed": [
+       0.261719
+      ],
+      "ripple_walk_lane1_pair9_22_depth1_packed": [
+       0.282226
+      ],
+      "ripple_walk_lane1_pair25_31_depth1_packed": [
+       0.262695
+      ],
+      "ripple_walk_lane1_pair9_22_depth0_packed": [
+       0.499024
+      ],
+      "ripple_walk_lane1_pair25_31_depth0_packed": [
+       0.545898
+      ],
+      "ripple_walk_lane1_readout0": [
+       0.509766
+      ],
+      "ripple_walk_lane1_readout1": [
+       0.472656
+      ],
+      "ripple_design_c_8_1_4": [
+       0.035644
+      ],
+      "ripple_design_c_8_1_4_isolated": [
+       0.039062
+      ],
+      "ripple_design_c_8_1_4_omit": [
+       0.085938
+      ],
+      "ripple_design_c_8_1_4_flip": [
+       0.070312
+      ],
+      "ripple_design_c_16_1_8": [
+       0.078613
+      ],
+      "ripple_design_c_16_1_8_omit": [
+       0.09082
+      ],
+      "ripple_design_c_16_1_8_flip": [
+       0.100587
+      ],
+      "ripple_design_c_16_1_8_isolated": [
+       0.102538
+      ],
+      "ripple_design_c_32_1_16": [
+       0.149903
+      ],
+      "ripple_design_c_32_1_16_isolated": [
+       0.134763
+      ],
+      "ripple_design_c_32_1_16_omit": [
+       0.149414
+      ],
+      "ripple_design_c_32_1_16_flip": [
+       0.202149
+      ]
+     },
+     "seconds": 28.17
     }
    }
   },
@@ -30029,6 +32886,14 @@
      "current": false,
      "members": 176,
      "mean_tvd": 0.037655,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 176,
+     "mean_tvd": 0.040022,
      "execution_members": 0,
      "execution_mean_tvd": null
     }
@@ -34876,6 +37741,546 @@
       ]
      },
      "seconds": 4.61
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "rank_sector_0_basis_t0d1": [
+       0.032226
+      ],
+      "rank_sector_0_basis_t1d2": [
+       0.017578
+      ],
+      "rank_sector_0_basis_t1d1": [
+       0.023681
+      ],
+      "rank_sector_0_basis_t3d2": [
+       0.027343
+      ],
+      "rank_sector_0_basis_t2d1": [
+       0.013672
+      ],
+      "rank_sector_0_kernel_at_one_t0d1": [
+       0.03125
+      ],
+      "rank_sector_0_kernel_at_one_t1d2": [
+       0.045899
+      ],
+      "rank_sector_0_kernel_at_one_t1d1": [
+       0.047852
+      ],
+      "rank_sector_0_kernel_at_one_t3d2": [
+       0.02832
+      ],
+      "rank_sector_0_kernel_at_one_t2d1": [
+       0.041016
+      ],
+      "rank_sector_0_kernel_at_two_t0d1": [
+       0.041016
+      ],
+      "rank_sector_0_kernel_at_two_t1d2": [
+       0.020019
+      ],
+      "rank_sector_0_kernel_at_two_t1d1": [
+       0.022461
+      ],
+      "rank_sector_0_kernel_at_two_t3d2": [
+       0.055664
+      ],
+      "rank_sector_0_kernel_at_two_t2d1": [
+       0.06836
+      ],
+      "rank_sector_0_bright_at_one_t0d1": [
+       0.040039
+      ],
+      "rank_sector_0_bright_at_one_t1d2": [
+       0.033203
+      ],
+      "rank_sector_0_bright_at_one_t1d1": [
+       0.035889
+      ],
+      "rank_sector_0_bright_at_one_t3d2": [
+       0.050781
+      ],
+      "rank_sector_0_bright_at_one_t2d1": [
+       0.048828
+      ],
+      "rank_sector_0_kernel_at_one_t1d1_reference": [
+       0.068116
+      ],
+      "rank_sector_0_bright_at_one_t1d1_reference": [
+       0.047363
+      ],
+      "rank_sector_1_basis_t0d1": [
+       0.036133
+      ],
+      "rank_sector_1_basis_t1d2": [
+       0.026367
+      ],
+      "rank_sector_1_basis_t1d1": [
+       0.003662
+      ],
+      "rank_sector_1_basis_t3d2": [
+       0.022461
+      ],
+      "rank_sector_1_basis_t2d1": [
+       0.033203
+      ],
+      "rank_sector_1_kernel_at_one_t0d1": [
+       0.033203
+      ],
+      "rank_sector_1_kernel_at_one_t1d2": [
+       0.015625
+      ],
+      "rank_sector_1_kernel_at_one_t1d1": [
+       0.029785
+      ],
+      "rank_sector_1_kernel_at_one_t3d2": [
+       0.026367
+      ],
+      "rank_sector_1_kernel_at_one_t2d1": [
+       0.045898
+      ],
+      "rank_sector_1_kernel_at_two_t0d1": [
+       0.030274
+      ],
+      "rank_sector_1_kernel_at_two_t1d2": [
+       0.015381
+      ],
+      "rank_sector_1_kernel_at_two_t1d1": [
+       0.014161
+      ],
+      "rank_sector_1_kernel_at_two_t3d2": [
+       0.03125
+      ],
+      "rank_sector_1_kernel_at_two_t2d1": [
+       0.048828
+      ],
+      "rank_sector_1_bright_at_one_t0d1": [
+       0.048828
+      ],
+      "rank_sector_1_bright_at_one_t1d2": [
+       0.024414
+      ],
+      "rank_sector_1_bright_at_one_t1d1": [
+       0.031494
+      ],
+      "rank_sector_1_bright_at_one_t3d2": [
+       0.024414
+      ],
+      "rank_sector_1_bright_at_one_t2d1": [
+       0.018555
+      ],
+      "rank_sector_1_kernel_at_one_t1d1_reference": [
+       0.008057
+      ],
+      "rank_sector_1_bright_at_one_t1d1_reference": [
+       0.020996
+      ],
+      "rank_sector_2_basis_t0d1": [
+       0.128906
+      ],
+      "rank_sector_2_basis_t1d2": [
+       0.021485
+      ],
+      "rank_sector_2_basis_t1d1": [
+       0.038086
+      ],
+      "rank_sector_2_basis_t3d2": [
+       0.060547
+      ],
+      "rank_sector_2_basis_t2d1": [
+       0.059571
+      ],
+      "rank_sector_2_kernel_at_one_t0d1": [
+       0.032227
+      ],
+      "rank_sector_2_kernel_at_one_t1d2": [
+       0.033203
+      ],
+      "rank_sector_2_kernel_at_one_t1d1": [
+       0.043213
+      ],
+      "rank_sector_2_kernel_at_one_t3d2": [
+       0.063476
+      ],
+      "rank_sector_2_kernel_at_one_t2d1": [
+       0.049804
+      ],
+      "rank_sector_2_kernel_at_two_t0d1": [
+       0.070313
+      ],
+      "rank_sector_2_kernel_at_two_t1d2": [
+       0.030517
+      ],
+      "rank_sector_2_kernel_at_two_t1d1": [
+       0.037842
+      ],
+      "rank_sector_2_kernel_at_two_t3d2": [
+       0.043946
+      ],
+      "rank_sector_2_kernel_at_two_t2d1": [
+       0.043945
+      ],
+      "rank_sector_2_bright_at_one_t0d1": [
+       0.0625
+      ],
+      "rank_sector_2_bright_at_one_t1d2": [
+       0.03125
+      ],
+      "rank_sector_2_bright_at_one_t1d1": [
+       0.038818
+      ],
+      "rank_sector_2_bright_at_one_t3d2": [
+       0.019531
+      ],
+      "rank_sector_2_bright_at_one_t2d1": [
+       0.069336
+      ],
+      "rank_sector_2_kernel_at_one_t1d1_reference": [
+       0.05249
+      ],
+      "rank_sector_2_bright_at_one_t1d1_reference": [
+       0.064942
+      ],
+      "rank_sector_3_basis_t0d1": [
+       0.040039
+      ],
+      "rank_sector_3_basis_t1d2": [
+       0.033203
+      ],
+      "rank_sector_3_basis_t1d1": [
+       0.036132
+      ],
+      "rank_sector_3_basis_t3d2": [
+       0.046875
+      ],
+      "rank_sector_3_basis_t2d1": [
+       0.041016
+      ],
+      "rank_sector_3_kernel_at_one_t0d1": [
+       0.014649
+      ],
+      "rank_sector_3_kernel_at_one_t1d2": [
+       0.032227
+      ],
+      "rank_sector_3_kernel_at_one_t1d1": [
+       0.036377
+      ],
+      "rank_sector_3_kernel_at_one_t3d2": [
+       0.042969
+      ],
+      "rank_sector_3_kernel_at_one_t2d1": [
+       0.040039
+      ],
+      "rank_sector_3_kernel_at_two_t0d1": [
+       0.017578
+      ],
+      "rank_sector_3_kernel_at_two_t1d2": [
+       0.015137
+      ],
+      "rank_sector_3_kernel_at_two_t1d1": [
+       0.041992
+      ],
+      "rank_sector_3_kernel_at_two_t3d2": [
+       0.021484
+      ],
+      "rank_sector_3_kernel_at_two_t2d1": [
+       0.067383
+      ],
+      "rank_sector_3_bright_at_one_t0d1": [
+       0.019531
+      ],
+      "rank_sector_3_bright_at_one_t1d2": [
+       0.023438
+      ],
+      "rank_sector_3_bright_at_one_t1d1": [
+       0.039307
+      ],
+      "rank_sector_3_bright_at_one_t3d2": [
+       0.033203
+      ],
+      "rank_sector_3_bright_at_one_t2d1": [
+       0.016601
+      ],
+      "rank_sector_3_kernel_at_one_t1d1_reference": [
+       0.035888
+      ],
+      "rank_sector_3_bright_at_one_t1d1_reference": [
+       0.042968
+      ],
+      "rank_sector_4_persistent_kernel_t0d1": [
+       0.027344
+      ],
+      "rank_sector_4_persistent_kernel_t1d2": [
+       0.049805
+      ],
+      "rank_sector_4_persistent_kernel_t1d1": [
+       0.032227
+      ],
+      "rank_sector_4_persistent_kernel_t3d2": [
+       0.018555
+      ],
+      "rank_sector_4_persistent_kernel_t2d1": [
+       0.041992
+      ],
+      "rank_sector_4_pulse_zero_two_t0d1": [
+       0.013672
+      ],
+      "rank_sector_4_pulse_zero_two_t1d2": [
+       0.041993
+      ],
+      "rank_sector_4_pulse_zero_two_t1d1": [
+       0.04419
+      ],
+      "rank_sector_4_pulse_zero_two_t3d2": [
+       0.076172
+      ],
+      "rank_sector_4_pulse_zero_two_t2d1": [
+       0.066407
+      ],
+      "rank_sector_4_pulse_one_two_t0d1": [
+       0.051758
+      ],
+      "rank_sector_4_pulse_one_two_t1d2": [
+       0.023926
+      ],
+      "rank_sector_4_pulse_one_two_t1d1": [
+       0.030762
+      ],
+      "rank_sector_4_pulse_one_two_t3d2": [
+       0.075195
+      ],
+      "rank_sector_4_pulse_one_two_t2d1": [
+       0.086914
+      ],
+      "rank_sector_4_bright_t0d1": [
+       0.042969
+      ],
+      "rank_sector_4_bright_t1d2": [
+       0.046875
+      ],
+      "rank_sector_4_bright_t1d1": [
+       0.039551
+      ],
+      "rank_sector_4_bright_t3d2": [
+       0.060547
+      ],
+      "rank_sector_4_bright_t2d1": [
+       0.058594
+      ],
+      "rank_sector_4_persistent_kernel_t1d1_reference": [
+       0.032715
+      ],
+      "rank_sector_4_bright_t1d1_reference": [
+       0.039307
+      ],
+      "rank_sector_5_persistent_kernel_t0d1": [
+       0.039063
+      ],
+      "rank_sector_5_persistent_kernel_t1d2": [
+       0.046875
+      ],
+      "rank_sector_5_persistent_kernel_t1d1": [
+       0.019532
+      ],
+      "rank_sector_5_persistent_kernel_t3d2": [
+       0.041016
+      ],
+      "rank_sector_5_persistent_kernel_t2d1": [
+       0.058594
+      ],
+      "rank_sector_5_pulse_zero_two_t0d1": [
+       0.023437
+      ],
+      "rank_sector_5_pulse_zero_two_t1d2": [
+       0.03711
+      ],
+      "rank_sector_5_pulse_zero_two_t1d1": [
+       0.024902
+      ],
+      "rank_sector_5_pulse_zero_two_t3d2": [
+       0.061523
+      ],
+      "rank_sector_5_pulse_zero_two_t2d1": [
+       0.030273
+      ],
+      "rank_sector_5_pulse_one_two_t0d1": [
+       0.016602
+      ],
+      "rank_sector_5_pulse_one_two_t1d2": [
+       0.030029
+      ],
+      "rank_sector_5_pulse_one_two_t1d1": [
+       0.022705
+      ],
+      "rank_sector_5_pulse_one_two_t3d2": [
+       0.043946
+      ],
+      "rank_sector_5_pulse_one_two_t2d1": [
+       0.03418
+      ],
+      "rank_sector_5_bright_t0d1": [
+       0.034179
+      ],
+      "rank_sector_5_bright_t1d2": [
+       0.013672
+      ],
+      "rank_sector_5_bright_t1d1": [
+       0.038575
+      ],
+      "rank_sector_5_bright_t3d2": [
+       0.044922
+      ],
+      "rank_sector_5_bright_t2d1": [
+       0.061523
+      ],
+      "rank_sector_5_persistent_kernel_t1d1_reference": [
+       0.017822
+      ],
+      "rank_sector_5_bright_t1d1_reference": [
+       0.036377
+      ],
+      "rank_sector_6_persistent_kernel_t0d1": [
+       0.024414
+      ],
+      "rank_sector_6_persistent_kernel_t1d2": [
+       0.05371
+      ],
+      "rank_sector_6_persistent_kernel_t1d1": [
+       0.026367
+      ],
+      "rank_sector_6_persistent_kernel_t3d2": [
+       0.050781
+      ],
+      "rank_sector_6_persistent_kernel_t2d1": [
+       0.016601
+      ],
+      "rank_sector_6_pulse_zero_two_t0d1": [
+       0.041992
+      ],
+      "rank_sector_6_pulse_zero_two_t1d2": [
+       0.063477
+      ],
+      "rank_sector_6_pulse_zero_two_t1d1": [
+       0.022216
+      ],
+      "rank_sector_6_pulse_zero_two_t3d2": [
+       0.032226
+      ],
+      "rank_sector_6_pulse_zero_two_t2d1": [
+       0.038086
+      ],
+      "rank_sector_6_pulse_one_two_t0d1": [
+       0.012695
+      ],
+      "rank_sector_6_pulse_one_two_t1d2": [
+       0.032226
+      ],
+      "rank_sector_6_pulse_one_two_t1d1": [
+       0.02417
+      ],
+      "rank_sector_6_pulse_one_two_t3d2": [
+       0.023437
+      ],
+      "rank_sector_6_pulse_one_two_t2d1": [
+       0.018555
+      ],
+      "rank_sector_6_bright_t0d1": [
+       0.017578
+      ],
+      "rank_sector_6_bright_t1d2": [
+       0.033203
+      ],
+      "rank_sector_6_bright_t1d1": [
+       0.025879
+      ],
+      "rank_sector_6_bright_t3d2": [
+       0.035156
+      ],
+      "rank_sector_6_bright_t2d1": [
+       0.018555
+      ],
+      "rank_sector_6_persistent_kernel_t1d1_reference": [
+       0.028564
+      ],
+      "rank_sector_6_bright_t1d1_reference": [
+       0.019532
+      ],
+      "rank_sector_7_persistent_kernel_t0d1": [
+       0.058594
+      ],
+      "rank_sector_7_persistent_kernel_t1d2": [
+       0.054688
+      ],
+      "rank_sector_7_persistent_kernel_t1d1": [
+       0.075195
+      ],
+      "rank_sector_7_persistent_kernel_t3d2": [
+       0.045898
+      ],
+      "rank_sector_7_persistent_kernel_t2d1": [
+       0.074219
+      ],
+      "rank_sector_7_pulse_zero_two_t0d1": [
+       0.045899
+      ],
+      "rank_sector_7_pulse_zero_two_t1d2": [
+       0.021484
+      ],
+      "rank_sector_7_pulse_zero_two_t1d1": [
+       0.072998
+      ],
+      "rank_sector_7_pulse_zero_two_t3d2": [
+       0.063476
+      ],
+      "rank_sector_7_pulse_zero_two_t2d1": [
+       0.076172
+      ],
+      "rank_sector_7_pulse_one_two_t0d1": [
+       0.049805
+      ],
+      "rank_sector_7_pulse_one_two_t1d2": [
+       0.041504
+      ],
+      "rank_sector_7_pulse_one_two_t1d1": [
+       0.058106
+      ],
+      "rank_sector_7_pulse_one_two_t3d2": [
+       0.068359
+      ],
+      "rank_sector_7_pulse_one_two_t2d1": [
+       0.061523
+      ],
+      "rank_sector_7_bright_t0d1": [
+       0.063477
+      ],
+      "rank_sector_7_bright_t1d2": [
+       0.042969
+      ],
+      "rank_sector_7_bright_t1d1": [
+       0.06958
+      ],
+      "rank_sector_7_bright_t3d2": [
+       0.086914
+      ],
+      "rank_sector_7_bright_t2d1": [
+       0.081055
+      ],
+      "rank_sector_7_persistent_kernel_t1d1_reference": [
+       0.059326
+      ],
+      "rank_sector_7_bright_t1d1_reference": [
+       0.071045
+      ]
+     },
+     "seconds": 10.52
     }
    }
   },
@@ -34965,6 +38370,14 @@
      "current": false,
      "members": 2,
      "mean_tvd": 0.065552,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 2,
+     "mean_tvd": 0.068971,
      "execution_members": 0,
      "execution_mean_tvd": null
     }
@@ -35114,6 +38527,24 @@
       ]
      },
      "seconds": 9.55
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_orbit_feedback": [
+       0.073731
+      ],
+      "n21_orbit_no_feedback": [
+       0.06421
+      ]
+     },
+     "seconds": 19.53
     }
    }
   },
@@ -35215,6 +38646,14 @@
      "current": false,
      "members": 8,
      "mean_tvd": 0.069031,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 8,
+     "mean_tvd": 0.072327,
      "execution_members": 0,
      "execution_mean_tvd": null
     }
@@ -35526,6 +38965,42 @@
       ]
      },
      "seconds": 29.35
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_orbit_nominal_feedback": [
+       0.080811
+      ],
+      "n21_orbit_nominal_no_feedback": [
+       0.084717
+      ],
+      "n21_orbit_window_delay_feedback": [
+       0.058837
+      ],
+      "n21_orbit_window_delay_no_feedback": [
+       0.102295
+      ],
+      "n21_orbit_extra_readout_feedback": [
+       0.0625
+      ],
+      "n21_orbit_extra_readout_no_feedback": [
+       0.118652
+      ],
+      "n21_orbit_window_echo_feedback": [
+       0.031495
+      ],
+      "n21_orbit_window_echo_no_feedback": [
+       0.039307
+      ]
+     },
+     "seconds": 66.97
     }
    }
   },
@@ -35704,6 +39179,14 @@
      "current": false,
      "members": 46,
      "mean_tvd": 0.029806,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 46,
+     "mean_tvd": 0.030995,
      "execution_members": 0,
      "execution_mean_tvd": null
     }
@@ -37041,6 +40524,156 @@
       ]
      },
      "seconds": 32.66
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "ramsey_plain_x_d900": [
+       0.038085
+      ],
+      "ramsey_plain_y_d900": [
+       0.026367
+      ],
+      "ramsey_plain_x_d1400": [
+       0.031251
+      ],
+      "ramsey_plain_y_d1400": [
+       0.05957
+      ],
+      "ramsey_plain_x_d1900": [
+       0.049805
+      ],
+      "ramsey_plain_y_d1900": [
+       0.049805
+      ],
+      "ramsey_echo_x_d900": [
+       0.019531
+      ],
+      "ramsey_echo_y_d900": [
+       0.032227
+      ],
+      "ramsey_echo_x_d1400": [
+       0.008789
+      ],
+      "ramsey_echo_y_d1400": [
+       0.030274
+      ],
+      "ramsey_echo_x_d1900": [
+       0.004883
+      ],
+      "ramsey_echo_y_d1900": [
+       0.021484
+      ],
+      "ramsey_plain_x_d0": [
+       0.001953
+      ],
+      "ramsey_plain_y_d0": [
+       0.03125
+      ],
+      "ramsey_plain_x_d1900_only_work_a": [
+       0.024414
+      ],
+      "ramsey_plain_y_d1900_only_work_a": [
+       0.03418
+      ],
+      "ramsey_plain_x_d1900_only_work_b": [
+       0.020507
+      ],
+      "ramsey_plain_y_d1900_only_work_b": [
+       0.017578
+      ],
+      "exchange_work_a_d0": [
+       0.015625
+      ],
+      "exchange_work_a_d1900": [
+       0.029298
+      ],
+      "exchange_work_b_d0": [
+       0.016602
+      ],
+      "exchange_work_b_d1900": [
+       0.073243
+      ],
+      "exchange_none_d1900": [
+       0.009765
+      ],
+      "exchange_all_d0": [
+       0.012695
+      ],
+      "window_measure_reset_c0_x_d900": [
+       0.017578
+      ],
+      "window_measure_reset_c0_y_d900": [
+       0.019531
+      ],
+      "window_measure_reset_c1_x_d900": [
+       0.042969
+      ],
+      "window_measure_reset_c1_y_d900": [
+       0.043945
+      ],
+      "window_measure_reset_c0_x_d1400": [
+       0.013672
+      ],
+      "window_measure_reset_c0_y_d1400": [
+       0.040039
+      ],
+      "window_measure_reset_c1_x_d1400": [
+       0.035156
+      ],
+      "window_measure_reset_c1_y_d1400": [
+       0.027344
+      ],
+      "window_measure_reset_c0_x_d1900": [
+       0.052734
+      ],
+      "window_measure_reset_c0_y_d1900": [
+       0.010742
+      ],
+      "window_measure_reset_c1_x_d1900": [
+       0.078126
+      ],
+      "window_measure_reset_c1_y_d1900": [
+       0.038086
+      ],
+      "window_reset_only_c0_x_d1400": [
+       0.03125
+      ],
+      "window_reset_only_c0_y_d1400": [
+       0.053711
+      ],
+      "window_reset_only_c1_x_d1400": [
+       0.02832
+      ],
+      "window_reset_only_c1_y_d1400": [
+       0.041016
+      ],
+      "orbit_nominal_feedback": [
+       0.046876
+      ],
+      "orbit_nominal_no_feedback": [
+       0.06543
+      ],
+      "orbit_window_barrier_feedback": [
+       0.009766
+      ],
+      "orbit_window_barrier_no_feedback": [
+       0.026611
+      ],
+      "orbit_window_echo_feedback": [
+       0.016113
+      ],
+      "orbit_window_echo_no_feedback": [
+       0.027588
+      ]
+     },
+     "seconds": 59.93
     }
    }
   },
@@ -112784,6 +116417,14 @@
      "mean_tvd": 0.13103,
      "execution_members": 0,
      "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 14,
+     "mean_tvd": 0.134683,
+     "execution_members": 0,
+     "execution_mean_tvd": null
     }
    },
    "self_check": {
@@ -113255,6 +116896,60 @@
       ]
      },
      "seconds": 165.41
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_orbit_nominal_feedback": [
+       0.149047
+      ],
+      "n21_orbit_nominal_no_feedback": [
+       0.162354
+      ],
+      "n21_orbit_window_delay_feedback": [
+       0.115112
+      ],
+      "n21_orbit_window_delay_no_feedback": [
+       0.131409
+      ],
+      "n21_orbit_extra_readout_feedback": [
+       0.127929
+      ],
+      "n21_orbit_extra_readout_no_feedback": [
+       0.135986
+      ],
+      "n21_orbit_window_echo_feedback": [
+       0.15686
+      ],
+      "n21_orbit_window_echo_no_feedback": [
+       0.215271
+      ],
+      "n21_orbit_window_delay_long_feedback": [
+       0.104248
+      ],
+      "n21_orbit_window_delay_long_no_feedback": [
+       0.106384
+      ],
+      "n21_spectator_measured_x": [
+       0.211365
+      ],
+      "n21_spectator_measured_y": [
+       0.031128
+      ],
+      "n21_spectator_reset_only_x": [
+       0.20752
+      ],
+      "n21_spectator_reset_only_y": [
+       0.030945
+      ]
+     },
+     "seconds": 146.59
     }
    }
   },
@@ -113378,6 +117073,14 @@
      "current": false,
      "members": 12,
      "mean_tvd": 0.147847,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 12,
+     "mean_tvd": 0.154907,
      "execution_members": 0,
      "execution_mean_tvd": null
     }
@@ -113797,6 +117500,54 @@
       ]
      },
      "seconds": 49.12
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_orbit_nominal_feedback": [
+       0.194092
+      ],
+      "n21_orbit_nominal_no_feedback": [
+       0.413573
+      ],
+      "n21_orbit_window_delay_feedback": [
+       0.198975
+      ],
+      "n21_orbit_window_delay_no_feedback": [
+       0.372681
+      ],
+      "n21_orbit_window_delay_unbracketed_feedback": [
+       0.051269
+      ],
+      "n21_orbit_window_delay_unbracketed_no_feedback": [
+       0.17871
+      ],
+      "n21_spectator_immediate_x": [
+       0.011597
+      ],
+      "n21_spectator_immediate_y": [
+       0.0177
+      ],
+      "n21_spectator_idle_x": [
+       0.199584
+      ],
+      "n21_spectator_idle_y": [
+       0.005859
+      ],
+      "n21_spectator_reset_only_x": [
+       0.206542
+      ],
+      "n21_spectator_reset_only_y": [
+       0.008301
+      ]
+     },
+     "seconds": 81.6
     }
    }
   },
@@ -113902,6 +117653,14 @@
      "current": false,
      "members": 6,
      "mean_tvd": 0.083618,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 6,
+     "mean_tvd": 0.083293,
      "execution_members": 0,
      "execution_mean_tvd": null
     }
@@ -114159,6 +117918,36 @@
       ]
      },
      "seconds": 5.0
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_immediate_x": [
+       0.012573
+      ],
+      "n21_spectator_immediate_y": [
+       0.010376
+      ],
+      "n21_spectator_idle_x": [
+       0.199707
+      ],
+      "n21_spectator_idle_y": [
+       0.043091
+      ],
+      "n21_spectator_idle_ground_x": [
+       0.197021
+      ],
+      "n21_spectator_idle_ground_y": [
+       0.036987
+      ]
+     },
+     "seconds": 14.24
     }
    }
   },
@@ -114290,6 +118079,14 @@
      "mean_tvd": 0.323405,
      "execution_members": 14,
      "execution_mean_tvd": 0.323405
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 14,
+     "mean_tvd": 0.322864,
+     "execution_members": 0,
+     "execution_mean_tvd": null
     }
    },
    "self_check": {
@@ -114761,6 +118558,2340 @@
       ]
      },
      "seconds": 21.15
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_immediate_x": [
+       0.013183
+      ],
+      "n21_spectator_immediate_y": [
+       0.028972
+      ],
+      "n21_spectator_idle_ground_w1_x": [
+       0.201253
+      ],
+      "n21_spectator_idle_ground_w1_y": [
+       0.028646
+      ],
+      "n21_spectator_idle_ground_w2_x": [
+       0.496663
+      ],
+      "n21_spectator_idle_ground_w2_y": [
+       0.191488
+      ],
+      "n21_spectator_idle_ground_w3_x": [
+       0.585368
+      ],
+      "n21_spectator_idle_ground_w3_y": [
+       0.435221
+      ],
+      "n21_spectator_idle_ground_w4_x": [
+       0.516846
+      ],
+      "n21_spectator_idle_ground_w4_y": [
+       0.373779
+      ],
+      "n21_spectator_idle_ground_w5_x": [
+       0.612305
+      ],
+      "n21_spectator_idle_ground_w5_y": [
+       0.068278
+      ],
+      "n21_spectator_idle_ground_w6_x": [
+       0.828531
+      ],
+      "n21_spectator_idle_ground_w6_y": [
+       0.139567
+      ]
+     },
+     "seconds": 23.27
+    }
+   }
+  },
+  {
+   "run": "results/live/2026-10-21T043156.858484Z",
+   "backend": "ibm_marrakesh",
+   "shots": {
+    "1536": 48
+   },
+   "members_ghosted": 48,
+   "members_skipped_width": [],
+   "member_shots": {
+    "n21_spectator_segmented_xy_d0": 1536,
+    "n21_spectator_segmented_z_d0": 1536,
+    "n21_spectator_segmented_xy_d693": 1536,
+    "n21_spectator_segmented_z_d693": 1536,
+    "n21_spectator_segmented_xy_d819": 1536,
+    "n21_spectator_segmented_z_d819": 1536,
+    "n21_spectator_segmented_xy_d1386": 1536,
+    "n21_spectator_segmented_z_d1386": 1536,
+    "n21_spectator_segmented_xy_d1638": 1536,
+    "n21_spectator_segmented_z_d1638": 1536,
+    "n21_spectator_segmented_xy_d2079": 1536,
+    "n21_spectator_segmented_z_d2079": 1536,
+    "n21_spectator_segmented_xy_d2457": 1536,
+    "n21_spectator_segmented_z_d2457": 1536,
+    "n21_spectator_segmented_xy_d2772": 1536,
+    "n21_spectator_segmented_z_d2772": 1536,
+    "n21_spectator_segmented_xy_d3276": 1536,
+    "n21_spectator_segmented_z_d3276": 1536,
+    "n21_spectator_segmented_xy_d3465": 1536,
+    "n21_spectator_segmented_z_d3465": 1536,
+    "n21_spectator_segmented_xy_d4095": 1536,
+    "n21_spectator_segmented_z_d4095": 1536,
+    "n21_spectator_segmented_xy_d4158": 1536,
+    "n21_spectator_segmented_z_d4158": 1536,
+    "n21_spectator_segmented_xy_d4851": 1536,
+    "n21_spectator_segmented_z_d4851": 1536,
+    "n21_spectator_segmented_xy_d4914": 1536,
+    "n21_spectator_segmented_z_d4914": 1536,
+    "n21_spectator_segmented_xy_d5544": 1536,
+    "n21_spectator_segmented_z_d5544": 1536,
+    "n21_spectator_segmented_xy_d5733": 1536,
+    "n21_spectator_segmented_z_d5733": 1536,
+    "n21_spectator_segmented_xy_d6237": 1536,
+    "n21_spectator_segmented_z_d6237": 1536,
+    "n21_spectator_segmented_xy_d6552": 1536,
+    "n21_spectator_segmented_z_d6552": 1536,
+    "n21_spectator_segmented_xy_d6930": 1536,
+    "n21_spectator_segmented_z_d6930": 1536,
+    "n21_spectator_segmented_xy_d7371": 1536,
+    "n21_spectator_segmented_z_d7371": 1536,
+    "n21_spectator_segmented_xy_d7623": 1536,
+    "n21_spectator_segmented_z_d7623": 1536,
+    "n21_spectator_segmented_xy_d8190": 1536,
+    "n21_spectator_segmented_z_d8190": 1536,
+    "n21_spectator_segmented_xy_d8316": 1536,
+    "n21_spectator_segmented_z_d8316": 1536,
+    "n21_spectator_segmented_xy_d0_pre1250": 1536,
+    "n21_spectator_segmented_xy_d693_pre1250": 1536
+   },
+   "member_law": {
+    "n21_spectator_segmented_xy_d0": "aer_sampled",
+    "n21_spectator_segmented_z_d0": "aer_sampled",
+    "n21_spectator_segmented_xy_d693": "aer_sampled",
+    "n21_spectator_segmented_z_d693": "aer_sampled",
+    "n21_spectator_segmented_xy_d819": "aer_sampled",
+    "n21_spectator_segmented_z_d819": "aer_sampled",
+    "n21_spectator_segmented_xy_d1386": "aer_sampled",
+    "n21_spectator_segmented_z_d1386": "aer_sampled",
+    "n21_spectator_segmented_xy_d1638": "aer_sampled",
+    "n21_spectator_segmented_z_d1638": "aer_sampled",
+    "n21_spectator_segmented_xy_d2079": "aer_sampled",
+    "n21_spectator_segmented_z_d2079": "aer_sampled",
+    "n21_spectator_segmented_xy_d2457": "aer_sampled",
+    "n21_spectator_segmented_z_d2457": "aer_sampled",
+    "n21_spectator_segmented_xy_d2772": "aer_sampled",
+    "n21_spectator_segmented_z_d2772": "aer_sampled",
+    "n21_spectator_segmented_xy_d3276": "aer_sampled",
+    "n21_spectator_segmented_z_d3276": "aer_sampled",
+    "n21_spectator_segmented_xy_d3465": "aer_sampled",
+    "n21_spectator_segmented_z_d3465": "aer_sampled",
+    "n21_spectator_segmented_xy_d4095": "aer_sampled",
+    "n21_spectator_segmented_z_d4095": "aer_sampled",
+    "n21_spectator_segmented_xy_d4158": "aer_sampled",
+    "n21_spectator_segmented_z_d4158": "aer_sampled",
+    "n21_spectator_segmented_xy_d4851": "aer_sampled",
+    "n21_spectator_segmented_z_d4851": "aer_sampled",
+    "n21_spectator_segmented_xy_d4914": "aer_sampled",
+    "n21_spectator_segmented_z_d4914": "aer_sampled",
+    "n21_spectator_segmented_xy_d5544": "aer_sampled",
+    "n21_spectator_segmented_z_d5544": "aer_sampled",
+    "n21_spectator_segmented_xy_d5733": "aer_sampled",
+    "n21_spectator_segmented_z_d5733": "aer_sampled",
+    "n21_spectator_segmented_xy_d6237": "aer_sampled",
+    "n21_spectator_segmented_z_d6237": "aer_sampled",
+    "n21_spectator_segmented_xy_d6552": "aer_sampled",
+    "n21_spectator_segmented_z_d6552": "aer_sampled",
+    "n21_spectator_segmented_xy_d6930": "aer_sampled",
+    "n21_spectator_segmented_z_d6930": "aer_sampled",
+    "n21_spectator_segmented_xy_d7371": "aer_sampled",
+    "n21_spectator_segmented_z_d7371": "aer_sampled",
+    "n21_spectator_segmented_xy_d7623": "aer_sampled",
+    "n21_spectator_segmented_z_d7623": "aer_sampled",
+    "n21_spectator_segmented_xy_d8190": "aer_sampled",
+    "n21_spectator_segmented_z_d8190": "aer_sampled",
+    "n21_spectator_segmented_xy_d8316": "aer_sampled",
+    "n21_spectator_segmented_z_d8316": "aer_sampled",
+    "n21_spectator_segmented_xy_d0_pre1250": "aer_sampled",
+    "n21_spectator_segmented_xy_d693_pre1250": "aer_sampled"
+   },
+   "execution_snapshot": {
+    "n21_spectator_segmented_xy_d0": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d0": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d693": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d693": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d819": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d819": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d1386": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d1386": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d1638": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d1638": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d2079": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d2079": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d2457": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d2457": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d2772": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d2772": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d3276": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d3276": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d3465": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d3465": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d4095": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d4095": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d4158": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d4158": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d4851": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d4851": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d4914": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d4914": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d5544": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d5544": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d5733": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d5733": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d6237": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d6237": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d6552": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d6552": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d6930": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d6930": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d7371": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d7371": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d7623": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d7623": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d8190": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d8190": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d8316": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_z_d8316": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d0_pre1250": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "n21_spectator_segmented_xy_d693_pre1250": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json"
+   },
+   "summary": {
+    "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json": {
+     "calibration": "2026-10-15T20:46:35-07:00",
+     "current": true,
+     "members": 48,
+     "mean_tvd": 0.472057,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json": {
+     "calibration": "2026-10-20T19:17:37-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.509042,
+     "execution_members": 48,
+     "execution_mean_tvd": 0.509042
+    }
+   },
+   "self_check": {
+    "pairs": 48,
+    "mean_abs_ghost_minus_recorded_tvd": 0.008898,
+    "max_abs_ghost_minus_recorded_tvd": 0.033208,
+    "mean_abs_ghost_minus_resampled_tvd": 0.009223,
+    "mean_ghost_minus_recorded_tvd": -0.000412,
+    "sd": 0.01137
+   },
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json": {
+     "calibration": "2026-10-15T20:46:35-07:00",
+     "current": true,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.347003
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.332683
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.361326
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.356118
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.373046
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.32552
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.447914
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.300129
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.48307
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.294922
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.544268
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.289711
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.572263
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.301431
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.620441
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.314453
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.666011
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.291014
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.689449
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.295569
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.683589
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.279293
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.727211
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.321612
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.731768
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.315752
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.713538
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.304035
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.74023
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.341141
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.75195
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.324214
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.757159
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.299474
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.74088
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.311843
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.746741
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.339842
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.718095
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.354165
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.712888
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.353512
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.746742
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.349606
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.731118
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.384764
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.300129
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.371091
+      ]
+     },
+     "seconds": 37.88
+    },
+    "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json": {
+     "calibration": "2026-10-20T19:17:37-07:00",
+     "backend_version": "1.0.21",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.183592
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.220053
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.29622
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.251301
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.346349
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.26367
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.46484
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.300778
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.521479
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.28971
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.561195
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.310542
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.621089
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.366532
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.662757
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.362626
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.699864
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.365231
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.733068
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.393224
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.740228
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.392572
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.771481
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.395177
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.783198
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.376948
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.783851
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.384761
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.829422
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.403641
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.835933
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.41015
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.830074
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.414706
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.817051
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.404939
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.826818
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.429028
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.801428
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.394523
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.794918
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.403638
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.817705
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.423819
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.799477
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.406892
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.226558
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.320959
+      ]
+     },
+     "seconds": 66.07
+    }
+   }
+  },
+  {
+   "run": "results/live/2026-10-21T064222.721454Z",
+   "backend": "ibm_fez",
+   "shots": {
+    "1536": 48
+   },
+   "members_ghosted": 48,
+   "members_skipped_width": [],
+   "member_shots": {
+    "n21_spectator_segmented_xy_d0": 1536,
+    "n21_spectator_segmented_z_d0": 1536,
+    "n21_spectator_segmented_xy_d693": 1536,
+    "n21_spectator_segmented_z_d693": 1536,
+    "n21_spectator_segmented_xy_d819": 1536,
+    "n21_spectator_segmented_z_d819": 1536,
+    "n21_spectator_segmented_xy_d1386": 1536,
+    "n21_spectator_segmented_z_d1386": 1536,
+    "n21_spectator_segmented_xy_d1638": 1536,
+    "n21_spectator_segmented_z_d1638": 1536,
+    "n21_spectator_segmented_xy_d2079": 1536,
+    "n21_spectator_segmented_z_d2079": 1536,
+    "n21_spectator_segmented_xy_d2457": 1536,
+    "n21_spectator_segmented_z_d2457": 1536,
+    "n21_spectator_segmented_xy_d2772": 1536,
+    "n21_spectator_segmented_z_d2772": 1536,
+    "n21_spectator_segmented_xy_d3276": 1536,
+    "n21_spectator_segmented_z_d3276": 1536,
+    "n21_spectator_segmented_xy_d3465": 1536,
+    "n21_spectator_segmented_z_d3465": 1536,
+    "n21_spectator_segmented_xy_d4095": 1536,
+    "n21_spectator_segmented_z_d4095": 1536,
+    "n21_spectator_segmented_xy_d4158": 1536,
+    "n21_spectator_segmented_z_d4158": 1536,
+    "n21_spectator_segmented_xy_d4851": 1536,
+    "n21_spectator_segmented_z_d4851": 1536,
+    "n21_spectator_segmented_xy_d4914": 1536,
+    "n21_spectator_segmented_z_d4914": 1536,
+    "n21_spectator_segmented_xy_d5544": 1536,
+    "n21_spectator_segmented_z_d5544": 1536,
+    "n21_spectator_segmented_xy_d5733": 1536,
+    "n21_spectator_segmented_z_d5733": 1536,
+    "n21_spectator_segmented_xy_d6237": 1536,
+    "n21_spectator_segmented_z_d6237": 1536,
+    "n21_spectator_segmented_xy_d6552": 1536,
+    "n21_spectator_segmented_z_d6552": 1536,
+    "n21_spectator_segmented_xy_d6930": 1536,
+    "n21_spectator_segmented_z_d6930": 1536,
+    "n21_spectator_segmented_xy_d7371": 1536,
+    "n21_spectator_segmented_z_d7371": 1536,
+    "n21_spectator_segmented_xy_d7623": 1536,
+    "n21_spectator_segmented_z_d7623": 1536,
+    "n21_spectator_segmented_xy_d8190": 1536,
+    "n21_spectator_segmented_z_d8190": 1536,
+    "n21_spectator_segmented_xy_d8316": 1536,
+    "n21_spectator_segmented_z_d8316": 1536,
+    "n21_spectator_segmented_xy_d0_pre1250": 1536,
+    "n21_spectator_segmented_xy_d693_pre1250": 1536
+   },
+   "member_law": {
+    "n21_spectator_segmented_xy_d0": "aer_sampled",
+    "n21_spectator_segmented_z_d0": "aer_sampled",
+    "n21_spectator_segmented_xy_d693": "aer_sampled",
+    "n21_spectator_segmented_z_d693": "aer_sampled",
+    "n21_spectator_segmented_xy_d819": "aer_sampled",
+    "n21_spectator_segmented_z_d819": "aer_sampled",
+    "n21_spectator_segmented_xy_d1386": "aer_sampled",
+    "n21_spectator_segmented_z_d1386": "aer_sampled",
+    "n21_spectator_segmented_xy_d1638": "aer_sampled",
+    "n21_spectator_segmented_z_d1638": "aer_sampled",
+    "n21_spectator_segmented_xy_d2079": "aer_sampled",
+    "n21_spectator_segmented_z_d2079": "aer_sampled",
+    "n21_spectator_segmented_xy_d2457": "aer_sampled",
+    "n21_spectator_segmented_z_d2457": "aer_sampled",
+    "n21_spectator_segmented_xy_d2772": "aer_sampled",
+    "n21_spectator_segmented_z_d2772": "aer_sampled",
+    "n21_spectator_segmented_xy_d3276": "aer_sampled",
+    "n21_spectator_segmented_z_d3276": "aer_sampled",
+    "n21_spectator_segmented_xy_d3465": "aer_sampled",
+    "n21_spectator_segmented_z_d3465": "aer_sampled",
+    "n21_spectator_segmented_xy_d4095": "aer_sampled",
+    "n21_spectator_segmented_z_d4095": "aer_sampled",
+    "n21_spectator_segmented_xy_d4158": "aer_sampled",
+    "n21_spectator_segmented_z_d4158": "aer_sampled",
+    "n21_spectator_segmented_xy_d4851": "aer_sampled",
+    "n21_spectator_segmented_z_d4851": "aer_sampled",
+    "n21_spectator_segmented_xy_d4914": "aer_sampled",
+    "n21_spectator_segmented_z_d4914": "aer_sampled",
+    "n21_spectator_segmented_xy_d5544": "aer_sampled",
+    "n21_spectator_segmented_z_d5544": "aer_sampled",
+    "n21_spectator_segmented_xy_d5733": "aer_sampled",
+    "n21_spectator_segmented_z_d5733": "aer_sampled",
+    "n21_spectator_segmented_xy_d6237": "aer_sampled",
+    "n21_spectator_segmented_z_d6237": "aer_sampled",
+    "n21_spectator_segmented_xy_d6552": "aer_sampled",
+    "n21_spectator_segmented_z_d6552": "aer_sampled",
+    "n21_spectator_segmented_xy_d6930": "aer_sampled",
+    "n21_spectator_segmented_z_d6930": "aer_sampled",
+    "n21_spectator_segmented_xy_d7371": "aer_sampled",
+    "n21_spectator_segmented_z_d7371": "aer_sampled",
+    "n21_spectator_segmented_xy_d7623": "aer_sampled",
+    "n21_spectator_segmented_z_d7623": "aer_sampled",
+    "n21_spectator_segmented_xy_d8190": "aer_sampled",
+    "n21_spectator_segmented_z_d8190": "aer_sampled",
+    "n21_spectator_segmented_xy_d8316": "aer_sampled",
+    "n21_spectator_segmented_z_d8316": "aer_sampled",
+    "n21_spectator_segmented_xy_d0_pre1250": "aer_sampled",
+    "n21_spectator_segmented_xy_d693_pre1250": "aer_sampled"
+   },
+   "execution_snapshot": {
+    "n21_spectator_segmented_xy_d0": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d0": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d693": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d693": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d819": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d819": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d1386": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d1386": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d1638": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d1638": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d2079": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d2079": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d2457": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d2457": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d2772": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d2772": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d3276": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d3276": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d3465": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d3465": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d4095": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d4095": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d4158": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d4158": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d4851": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d4851": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d4914": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d4914": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d5544": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d5544": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d5733": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d5733": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d6237": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d6237": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d6552": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d6552": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d6930": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d6930": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d7371": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d7371": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d7623": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d7623": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d8190": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d8190": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d8316": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_z_d8316": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d0_pre1250": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "n21_spectator_segmented_xy_d693_pre1250": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json"
+   },
+   "summary": {
+    "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json": {
+     "calibration": "2026-10-12T19:20:46-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.380302,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json": {
+     "calibration": "2026-10-12T23:27:11-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.379745,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json": {
+     "calibration": "2026-10-13T01:01:23-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.379745,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json": {
+     "calibration": "2026-10-13T13:41:52-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.379759,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json": {
+     "calibration": "2026-10-15T20:31:28-07:00",
+     "current": true,
+     "members": 48,
+     "mean_tvd": 0.411171,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T0744140700.json": {
+     "calibration": "2026-10-19T07:44:14-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.39019,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T0947370700.json": {
+     "calibration": "2026-10-19T09:47:37-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.39019,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T1507330700.json": {
+     "calibration": "2026-10-19T15:07:33-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.388684,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T1930420700.json": {
+     "calibration": "2026-10-19T19:30:42-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.388684,
+     "execution_members": 0,
+     "execution_mean_tvd": null
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "current": false,
+     "members": 48,
+     "mean_tvd": 0.451306,
+     "execution_members": 48,
+     "execution_mean_tvd": 0.451306
+    }
+   },
+   "self_check": {
+    "pairs": 48,
+    "mean_abs_ghost_minus_recorded_tvd": 0.011339,
+    "max_abs_ghost_minus_recorded_tvd": 0.035156,
+    "mean_abs_ghost_minus_resampled_tvd": 0.010634,
+    "mean_ghost_minus_recorded_tvd": 0.00027,
+    "sd": 0.014095
+   },
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json": {
+     "calibration": "2026-10-12T19:20:46-07:00",
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.042968
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.145833
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.483069
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.117838
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.533849
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.11263
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.781896
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.126951
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.830724
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.116536
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.917965
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.11263
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.940103
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.109375
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.939452
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.103515
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.902991
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.126953
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.83333
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.112631
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.570309
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.119791
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.551429
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.121745
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.61328
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.108723
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.622395
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.113281
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.798174
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.121742
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.783201
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.139319
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.702473
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.13867
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.622393
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.136716
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.501954
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.137368
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.440105
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.160805
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.434245
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.122393
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.474609
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.136066
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.486978
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.171222
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.054687
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.479162
+      ]
+     },
+     "seconds": 35.31
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json": {
+     "calibration": "2026-10-12T23:27:11-07:00",
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.045572
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.147135
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.483069
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.119791
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.531245
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.112629
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.777339
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.124998
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.82812
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.114583
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.916663
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.111979
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.940103
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.109375
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.938801
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.098958
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.90234
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.12565
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.833981
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.113282
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.569658
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.121093
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.550778
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.119792
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.612629
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.108072
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.621744
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.113281
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.798174
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.12044
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.78255
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.141272
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.701822
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.13867
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.62044
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.138669
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.501303
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.134113
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.440105
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.160154
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.434245
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.123695
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.47526
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.135415
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.487629
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.169268
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.054036
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.47786
+      ]
+     },
+     "seconds": 34.3
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json": {
+     "calibration": "2026-10-13T01:01:23-07:00",
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.045572
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.147135
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.483069
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.119791
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.531245
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.112629
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.777339
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.124998
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.82812
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.114583
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.916663
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.111979
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.940103
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.109375
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.938801
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.098958
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.90234
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.12565
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.833981
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.113282
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.569658
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.121093
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.550778
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.119792
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.612629
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.108072
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.621744
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.113281
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.798174
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.12044
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.78255
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.141272
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.701822
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.13867
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.62044
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.138669
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.501303
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.134113
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.440105
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.160154
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.434245
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.123695
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.47526
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.135415
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.487629
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.169268
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.054036
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.47786
+      ]
+     },
+     "seconds": 25.76
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json": {
+     "calibration": "2026-10-13T13:41:52-07:00",
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.046223
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.145182
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.484371
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.119791
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.531245
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.113931
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.776037
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.124998
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.827469
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.114583
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.916663
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.111979
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.940103
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.110677
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.939452
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.101562
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.90234
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.126952
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.833981
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.11198
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.569658
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.11914
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.550778
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.119141
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.611978
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.108072
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.622395
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.11263
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.796872
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.123695
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.78255
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.138668
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.701822
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.13867
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.62044
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.136065
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.501303
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.135415
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.439454
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.160805
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.434896
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.124998
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.473958
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.133462
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.48828
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.169919
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.05664
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.477209
+      ]
+     },
+     "seconds": 15.23
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json": {
+     "calibration": "2026-10-15T20:31:28-07:00",
+     "current": true,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.045572
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.143229
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.489579
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.128906
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.536453
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.134113
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.787756
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.141274
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.84049
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.146483
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.922522
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.142576
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.949217
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.171223
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.945312
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.153644
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.90885
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.178383
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.843095
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.17643
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.580073
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.195962
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.561193
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.182943
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.630207
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.196614
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.640623
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.182942
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.81445
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.201821
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.800778
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.196612
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.7194
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.212238
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.635413
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.207029
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.527343
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.210284
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.476562
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.162756
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.458985
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.188147
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.498046
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.214188
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.507811
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.208328
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.055989
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.48437
+      ]
+     },
+     "seconds": 13.64
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T0744140700.json": {
+     "calibration": "2026-10-19T07:44:14-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.057291
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.13151
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.479163
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.110676
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.520177
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.102213
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.768225
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.124999
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.820308
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.104819
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.912106
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.134767
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.935546
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.108724
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.928385
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.134767
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.892574
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.16797
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.823565
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.160809
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.555987
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.155599
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.54557
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.178384
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.599609
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.140624
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.608723
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.157552
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.779294
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.173174
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.777342
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.194658
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.684244
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.177082
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.609372
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.184894
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.496094
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.182291
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.411459
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.201171
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.416016
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.181639
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.451823
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.208332
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.473958
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.226562
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.062499
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.476558
+      ]
+     },
+     "seconds": 14.82
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T0947370700.json": {
+     "calibration": "2026-10-19T09:47:37-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.057291
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.13151
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.479163
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.110676
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.520177
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.102213
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.768225
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.124999
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.820308
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.104819
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.912106
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.134767
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.935546
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.108724
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.928385
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.134767
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.892574
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.16797
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.823565
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.160809
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.555987
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.155599
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.54557
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.178384
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.599609
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.140624
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.608723
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.157552
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.779294
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.173174
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.777342
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.194658
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.684244
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.177082
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.609372
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.184894
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.496094
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.182291
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.411459
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.201171
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.416016
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.181639
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.451823
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.208332
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.473958
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.226562
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.062499
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.476558
+      ]
+     },
+     "seconds": 22.1
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T1507330700.json": {
+     "calibration": "2026-10-19T15:07:33-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.053384
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.147786
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.478512
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.111978
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.520177
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.104166
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.769527
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.117837
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.820959
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.108724
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.912106
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.126954
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.936197
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.105469
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.928385
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.123698
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.893225
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.165365
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.824867
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.152996
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.554685
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.14974
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.546872
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.171874
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.598307
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.133463
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.605467
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.15039
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.779294
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.169919
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.773436
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.195309
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.684244
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.170572
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.609372
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.180988
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.495443
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.180988
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.413412
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.203124
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.417969
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.180337
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.452474
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.204426
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.473307
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.221354
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.060546
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.477209
+      ]
+     },
+     "seconds": 31.65
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261019T1930420700.json": {
+     "calibration": "2026-10-19T19:30:42-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.053384
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.147786
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.478512
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.111978
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.520177
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.104166
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.769527
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.117837
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.820959
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.108724
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.912106
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.126954
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.936197
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.105469
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.928385
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.123698
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.893225
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.165365
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.824867
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.152996
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.554685
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.14974
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.546872
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.171874
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.598307
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.133463
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.605467
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.15039
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.779294
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.169919
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.773436
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.195309
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.684244
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.170572
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.609372
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.180988
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.495443
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.180988
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.413412
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.203124
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.417969
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.180337
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.452474
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.204426
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.473307
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.221354
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.060546
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.477209
+      ]
+     },
+     "seconds": 35.2
+    },
+    "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json": {
+     "calibration": "2026-10-20T22:47:17-07:00",
+     "backend_version": "1.3.37",
+     "processor_type": {
+      "family": "Heron",
+      "revision": "2"
+     },
+     "current": false,
+     "tvd": {
+      "n21_spectator_segmented_xy_d0": [
+       0.04427
+      ],
+      "n21_spectator_segmented_z_d0": [
+       0.124349
+      ],
+      "n21_spectator_segmented_xy_d693": [
+       0.473304
+      ],
+      "n21_spectator_segmented_z_d693": [
+       0.147134
+      ],
+      "n21_spectator_segmented_xy_d819": [
+       0.516271
+      ],
+      "n21_spectator_segmented_z_d819": [
+       0.132812
+      ],
+      "n21_spectator_segmented_xy_d1386": [
+       0.760413
+      ],
+      "n21_spectator_segmented_z_d1386": [
+       0.218749
+      ],
+      "n21_spectator_segmented_xy_d1638": [
+       0.81445
+      ],
+      "n21_spectator_segmented_z_d1638": [
+       0.216798
+      ],
+      "n21_spectator_segmented_xy_d2079": [
+       0.907549
+      ],
+      "n21_spectator_segmented_z_d2079": [
+       0.251954
+      ],
+      "n21_spectator_segmented_xy_d2457": [
+       0.929687
+      ],
+      "n21_spectator_segmented_z_d2457": [
+       0.238933
+      ],
+      "n21_spectator_segmented_xy_d2772": [
+       0.923177
+      ],
+      "n21_spectator_segmented_z_d2772": [
+       0.265626
+      ],
+      "n21_spectator_segmented_xy_d3276": [
+       0.886715
+      ],
+      "n21_spectator_segmented_z_d3276": [
+       0.321615
+      ],
+      "n21_spectator_segmented_xy_d3465": [
+       0.815102
+      ],
+      "n21_spectator_segmented_z_d3465": [
+       0.291668
+      ],
+      "n21_spectator_segmented_xy_d4095": [
+       0.54492
+      ],
+      "n21_spectator_segmented_z_d4095": [
+       0.306641
+      ],
+      "n21_spectator_segmented_xy_d4158": [
+       0.541013
+      ],
+      "n21_spectator_segmented_z_d4158": [
+       0.314452
+      ],
+      "n21_spectator_segmented_xy_d4851": [
+       0.58789
+      ],
+      "n21_spectator_segmented_z_d4851": [
+       0.304036
+      ],
+      "n21_spectator_segmented_xy_d4914": [
+       0.602211
+      ],
+      "n21_spectator_segmented_z_d4914": [
+       0.311848
+      ],
+      "n21_spectator_segmented_xy_d5544": [
+       0.75781
+      ],
+      "n21_spectator_segmented_z_d5544": [
+       0.326171
+      ],
+      "n21_spectator_segmented_xy_d5733": [
+       0.766925
+      ],
+      "n21_spectator_segmented_z_d5733": [
+       0.354165
+      ],
+      "n21_spectator_segmented_xy_d6237": [
+       0.66862
+      ],
+      "n21_spectator_segmented_z_d6237": [
+       0.369139
+      ],
+      "n21_spectator_segmented_xy_d6552": [
+       0.58984
+      ],
+      "n21_spectator_segmented_z_d6552": [
+       0.340492
+      ],
+      "n21_spectator_segmented_xy_d6930": [
+       0.470704
+      ],
+      "n21_spectator_segmented_z_d6930": [
+       0.385416
+      ],
+      "n21_spectator_segmented_xy_d7371": [
+       0.390626
+      ],
+      "n21_spectator_segmented_z_d7371": [
+       0.389322
+      ],
+      "n21_spectator_segmented_xy_d7623": [
+       0.405599
+      ],
+      "n21_spectator_segmented_z_d7623": [
+       0.412109
+      ],
+      "n21_spectator_segmented_xy_d8190": [
+       0.427734
+      ],
+      "n21_spectator_segmented_z_d8190": [
+       0.414713
+      ],
+      "n21_spectator_segmented_xy_d8316": [
+       0.449218
+      ],
+      "n21_spectator_segmented_z_d8316": [
+       0.427735
+      ],
+      "n21_spectator_segmented_xy_d0_pre1250": [
+       0.057291
+      ],
+      "n21_spectator_segmented_xy_d693_pre1250": [
+       0.46549
+      ]
+     },
+     "seconds": 66.89
     }
    }
   },
