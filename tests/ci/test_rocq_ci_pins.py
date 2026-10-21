@@ -36,7 +36,11 @@ def mutations() -> list[tuple[str, str, str]]:
         ],
         "ci/open_gororoba.pin": [("7", "x")],
         f"docs/evidence/{names[0]}/toolchain.txt": [(core_version, "0.0.0")],
-        "ci/rocq_changed.sh": [("docs/evidence/stiefel_witness/*", "docs/evidence/stiefel_witnes/*")],
+        "ci/rocq_changed.sh": [
+            ("docs/evidence/stiefel_witness/*", "docs/evidence/stiefel_witnes/*"),
+            # folding_proofs/* holds proofs/* as a substring, so only a whole-pattern match rejects this.
+            ("  proofs/* | \\", "  proof/* | \\"),
+        ],
         ".github/workflows/ci.yml": [
             ("command -v rg", "command -v grep"),
             (some_crate, "crates/elsewhere"),

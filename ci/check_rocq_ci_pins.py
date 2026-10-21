@@ -43,6 +43,15 @@ def constant(source: str, name: str) -> str:
     return match.group(1)
 
 
+def selector_patterns(selector: str) -> set[str]:
+    """The whole patterns of the case list in ci/rocq_changed.sh."""
+    try:
+        listed = selector.split('case "$path" in', 1)[1].split(")", 1)[0]
+    except IndexError:
+        return set()
+    return {pattern.strip() for pattern in listed.replace("\\\n", " ").split("|")} - {""}
+
+
 def read_pin(root: Path) -> dict[str, str]:
     fields: dict[str, str] = {}
     for line in (root / "ci/rocq_toolchain.pin").read_text(encoding="utf-8").splitlines():
@@ -114,7 +123,7 @@ def check(root: Path) -> list[str]:
         for directory in sorted(directories):
             if not any(directory == cone or directory.startswith(cone + "/") for cone in fetched):
                 errors.append(f"the ci.yml fetch does not cover {directory}, which {name} hashes")
-    selector = (root / "ci/rocq_changed.sh").read_text(encoding="utf-8")
+    selector = selector_patterns((root / "ci/rocq_changed.sh").read_text(encoding="utf-8"))
     required = [f"docs/evidence/{name}/*" for name in bundles(root)]
     required += ["proofs/*", "scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
     required += [".github/workflows/ci.yml", "docs/evidence/rocq_kaggle_replay/*", "gororoba_quantum/parallel.py"]
