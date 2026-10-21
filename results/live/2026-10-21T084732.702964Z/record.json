@@ -2,7 +2,7 @@
   "schema_version": 7,
   "schema_contract": "live-target-statistical-design-invocation-budget-v1",
   "state": "planned",
-  "started": "2026-10-21T08:18:14.438624+00:00",
+  "started": "2026-10-21T08:47:32.702964+00:00",
   "versions": {
     "numpy": "2.5.4",
     "qiskit": "2.5.2",
@@ -92,7 +92,7 @@
         "backaction_pre_idle_dt": 1250
       },
       "segmented_analyzer_closure": {
-        "sha256": "d62363aee4b071118d4c873dae9cc184a88557c7af787af1b351a607e79fad12",
+        "sha256": "4f1eb9921581c3dcaded4dd67d7c23a4417c36cc0e68cb6b9ff3327cb219a914",
         "files": {
           "gororoba_quantum/aer_identity.py": "9d2497f680457aa22e0bfc0b90b3990cb75e1ff46b0d9429e299c48a2c73f843",
           "gororoba_quantum/aer_resources.py": "2a94c1f67b4debdbb50c5c086ab27a64026581d0adbef0070f5810a965ae45b6",
@@ -123,8 +123,8 @@
           "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
           "gororoba_quantum/ibm_account.py": "950cb1b250f92b914acf448fa0088cb1a7bd03214b3aaa9c525102567effb977",
           "gororoba_quantum/jax_bridge.py": "7aa1d4b7ad3f666bdb19abfc42d920db8345a7f8793fe4972a1f9beda8237bb5",
-          "gororoba_quantum/law_encoding.py": "cf1552732f3161ca5c8170cf561d8858b5ef116340dff37c0f861a34eca99416",
-          "gororoba_quantum/live_run.py": "374b66860884b946c9c74a8e75813ffdb2d42093f17c68e828e46c37d45a1271",
+          "gororoba_quantum/law_encoding.py": "cd572a956e3fd4805722b6f46462a976228ef20bb59f50c21f3f81ad40d7fdb3",
+          "gororoba_quantum/live_run.py": "66bc665e6f12d34f6acd30c4ed31ed7d0bf1e131f79ce056d69ba775de326abb",
           "gororoba_quantum/local_compute.py": "a799c078fc16a49086ea680b48846c287e7653b1e8ae7c7def97f61ce327bb4a",
           "gororoba_quantum/maximal_experiments.py": "0d4e4c4d27dd4ac859c74b83d0ce269dece4aee670929f19b8d0391a02b5ec63",
           "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
@@ -196,19 +196,19 @@
   "shots": 1536,
   "instance_sha256_12": "e3de05b6901e",
   "seed_simulator": 20261011,
-  "experiment_digest": "5b868417b95c90311bcb293488fc83cf84b99bb0947200e155837b05fafad954",
+  "experiment_digest": "9dd082247c8f176040226ead3646524044b4069c3551550073cc314d57c063ed",
   "code_commit": {
-    "head": "ba7b7e1522a43eead4317d981eed2a42f7a39c74",
-    "sources_modified": true
+    "head": "5be11a3f6ca26c26bc686ab17e30b351683af663",
+    "sources_modified": false
   },
   "system_inventory": {
     "ibm_fez": {
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 200,
-      "calibration": "2026-10-21T00:49:22-07:00",
-      "fetched_at": "2026-10-21T08:18:17+00:00",
+      "pending_jobs": 1945,
+      "calibration": "2026-10-21T01:29:04-07:00",
+      "fetched_at": "2026-10-21T08:47:35+00:00",
       "backend_version": "1.3.37",
       "processor_type": {
         "family": "Heron",
@@ -290,9 +290,9 @@
     "ibm_fez": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 200,
-      "calibration": "2026-10-21T00:49:22-07:00",
-      "fetched_at": "2026-10-21T08:18:17+00:00",
+      "pending_jobs": 1945,
+      "calibration": "2026-10-21T01:29:04-07:00",
+      "fetched_at": "2026-10-21T08:47:35+00:00",
       "backend_version": "1.3.37",
       "processor_type": {
         "family": "Heron",
@@ -8701,7 +8701,7 @@
       "backaction_pre_idle_dt": 1250
     },
     "segmented_analyzer_closure": {
-      "sha256": "d62363aee4b071118d4c873dae9cc184a88557c7af787af1b351a607e79fad12",
+      "sha256": "4f1eb9921581c3dcaded4dd67d7c23a4417c36cc0e68cb6b9ff3327cb219a914",
       "files": {
         "gororoba_quantum/aer_identity.py": "9d2497f680457aa22e0bfc0b90b3990cb75e1ff46b0d9429e299c48a2c73f843",
         "gororoba_quantum/aer_resources.py": "2a94c1f67b4debdbb50c5c086ab27a64026581d0adbef0070f5810a965ae45b6",
@@ -8732,8 +8732,8 @@
         "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
         "gororoba_quantum/ibm_account.py": "950cb1b250f92b914acf448fa0088cb1a7bd03214b3aaa9c525102567effb977",
         "gororoba_quantum/jax_bridge.py": "7aa1d4b7ad3f666bdb19abfc42d920db8345a7f8793fe4972a1f9beda8237bb5",
-        "gororoba_quantum/law_encoding.py": "cf1552732f3161ca5c8170cf561d8858b5ef116340dff37c0f861a34eca99416",
-        "gororoba_quantum/live_run.py": "374b66860884b946c9c74a8e75813ffdb2d42093f17c68e828e46c37d45a1271",
+        "gororoba_quantum/law_encoding.py": "cd572a956e3fd4805722b6f46462a976228ef20bb59f50c21f3f81ad40d7fdb3",
+        "gororoba_quantum/live_run.py": "66bc665e6f12d34f6acd30c4ed31ed7d0bf1e131f79ce056d69ba775de326abb",
         "gororoba_quantum/local_compute.py": "a799c078fc16a49086ea680b48846c287e7653b1e8ae7c7def97f61ce327bb4a",
         "gororoba_quantum/maximal_experiments.py": "0d4e4c4d27dd4ac859c74b83d0ce269dece4aee670929f19b8d0391a02b5ec63",
         "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
@@ -8866,10 +8866,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 16384,
       "seed_simulator": 20261011,
-      "wall_seconds": 7.897817725002824,
+      "wall_seconds": 26.818767060998653,
       "experiment_metadata": [
         {
-          "time_taken": 0.075314726,
+          "time_taken": 0.178184165,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -8916,7 +8916,7 @@
           }
         },
         {
-          "time_taken": 0.063693955,
+          "time_taken": 0.141589481,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -8963,7 +8963,7 @@
           }
         },
         {
-          "time_taken": 0.078078702,
+          "time_taken": 0.171350349,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9010,7 +9010,7 @@
           }
         },
         {
-          "time_taken": 0.062884433,
+          "time_taken": 0.14983157,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9057,7 +9057,7 @@
           }
         },
         {
-          "time_taken": 0.078835045,
+          "time_taken": 0.240363396,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9104,7 +9104,7 @@
           }
         },
         {
-          "time_taken": 0.065380429,
+          "time_taken": 0.213376964,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9151,7 +9151,7 @@
           }
         },
         {
-          "time_taken": 0.077319911,
+          "time_taken": 0.235486705,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9198,7 +9198,7 @@
           }
         },
         {
-          "time_taken": 0.066079901,
+          "time_taken": 0.20248899,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9245,7 +9245,7 @@
           }
         },
         {
-          "time_taken": 0.0809222,
+          "time_taken": 0.223087926,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9292,7 +9292,7 @@
           }
         },
         {
-          "time_taken": 0.064035496,
+          "time_taken": 0.209193935,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9339,7 +9339,7 @@
           }
         },
         {
-          "time_taken": 0.076747259,
+          "time_taken": 0.235148414,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9386,7 +9386,7 @@
           }
         },
         {
-          "time_taken": 0.067191584,
+          "time_taken": 0.195453144,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9433,7 +9433,7 @@
           }
         },
         {
-          "time_taken": 0.084535939,
+          "time_taken": 0.239779635,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9480,7 +9480,7 @@
           }
         },
         {
-          "time_taken": 0.068204807,
+          "time_taken": 0.250775349,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9527,7 +9527,7 @@
           }
         },
         {
-          "time_taken": 0.078495723,
+          "time_taken": 0.302965168,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9574,7 +9574,7 @@
           }
         },
         {
-          "time_taken": 0.066476483,
+          "time_taken": 0.245017096,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9621,7 +9621,7 @@
           }
         },
         {
-          "time_taken": 0.07722018,
+          "time_taken": 0.290852331,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9668,7 +9668,7 @@
           }
         },
         {
-          "time_taken": 0.065322019,
+          "time_taken": 0.257098984,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9715,7 +9715,7 @@
           }
         },
         {
-          "time_taken": 0.075652726,
+          "time_taken": 0.285494188,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9762,7 +9762,7 @@
           }
         },
         {
-          "time_taken": 0.066921644,
+          "time_taken": 0.245475098,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9809,7 +9809,7 @@
           }
         },
         {
-          "time_taken": 0.085288591,
+          "time_taken": 0.270184273,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9856,7 +9856,7 @@
           }
         },
         {
-          "time_taken": 0.080829159,
+          "time_taken": 0.242773372,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9903,7 +9903,7 @@
           }
         },
         {
-          "time_taken": 0.091388367,
+          "time_taken": 0.277947251,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9950,7 +9950,7 @@
           }
         },
         {
-          "time_taken": 0.074712464,
+          "time_taken": 0.235184154,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -9997,7 +9997,7 @@
           }
         },
         {
-          "time_taken": 0.090099583,
+          "time_taken": 0.28615197,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10044,7 +10044,7 @@
           }
         },
         {
-          "time_taken": 0.072792149,
+          "time_taken": 0.27717374,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10091,7 +10091,7 @@
           }
         },
         {
-          "time_taken": 0.097120992,
+          "time_taken": 0.299095309,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10138,7 +10138,7 @@
           }
         },
         {
-          "time_taken": 0.075946477,
+          "time_taken": 0.253131375,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10185,7 +10185,7 @@
           }
         },
         {
-          "time_taken": 0.089842593,
+          "time_taken": 0.304486662,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10232,7 +10232,7 @@
           }
         },
         {
-          "time_taken": 0.076519858,
+          "time_taken": 0.251977642,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10279,7 +10279,7 @@
           }
         },
         {
-          "time_taken": 0.091767428,
+          "time_taken": 0.314234454,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10326,7 +10326,7 @@
           }
         },
         {
-          "time_taken": 0.075613356,
+          "time_taken": 0.25098691,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10373,7 +10373,7 @@
           }
         },
         {
-          "time_taken": 0.092015139,
+          "time_taken": 0.273831532,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10420,7 +10420,7 @@
           }
         },
         {
-          "time_taken": 0.075424095,
+          "time_taken": 0.244667016,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10467,7 +10467,7 @@
           }
         },
         {
-          "time_taken": 0.093813583,
+          "time_taken": 0.288819106,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10514,7 +10514,7 @@
           }
         },
         {
-          "time_taken": 0.072456718,
+          "time_taken": 0.252056453,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10561,7 +10561,7 @@
           }
         },
         {
-          "time_taken": 0.089068931,
+          "time_taken": 0.206338549,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10608,7 +10608,7 @@
           }
         },
         {
-          "time_taken": 0.072083177,
+          "time_taken": 0.167587261,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10655,7 +10655,7 @@
           }
         },
         {
-          "time_taken": 0.089342181,
+          "time_taken": 0.194558662,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10702,7 +10702,7 @@
           }
         },
         {
-          "time_taken": 0.073471261,
+          "time_taken": 0.180214409,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10749,7 +10749,7 @@
           }
         },
         {
-          "time_taken": 0.091920318,
+          "time_taken": 0.1980051,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10796,7 +10796,7 @@
           }
         },
         {
-          "time_taken": 0.074576213,
+          "time_taken": 0.18445609,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10843,7 +10843,7 @@
           }
         },
         {
-          "time_taken": 0.088183599,
+          "time_taken": 0.317435661,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10890,7 +10890,7 @@
           }
         },
         {
-          "time_taken": 0.072005987,
+          "time_taken": 0.29918729,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10937,7 +10937,7 @@
           }
         },
         {
-          "time_taken": 0.092461279,
+          "time_taken": 0.247157881,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -10984,7 +10984,7 @@
           }
         },
         {
-          "time_taken": 0.078372763,
+          "time_taken": 0.211776372,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11031,7 +11031,7 @@
           }
         },
         {
-          "time_taken": 0.091334757,
+          "time_taken": 0.222130065,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11078,7 +11078,7 @@
           }
         },
         {
-          "time_taken": 0.089986693,
+          "time_taken": 0.25958843,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11208,10 +11208,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 16384,
       "seed_simulator": 20261011,
-      "wall_seconds": 6.777033193000534,
+      "wall_seconds": 21.44797044700681,
       "experiment_metadata": [
         {
-          "time_taken": 0.085729812,
+          "time_taken": 0.17577846,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11258,7 +11258,7 @@
           }
         },
         {
-          "time_taken": 0.069972862,
+          "time_taken": 0.148757279,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11305,7 +11305,7 @@
           }
         },
         {
-          "time_taken": 0.087644277,
+          "time_taken": 0.18460345,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11352,7 +11352,7 @@
           }
         },
         {
-          "time_taken": 0.070107562,
+          "time_taken": 0.177671684,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11399,7 +11399,7 @@
           }
         },
         {
-          "time_taken": 0.084273008,
+          "time_taken": 0.238331382,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11446,7 +11446,7 @@
           }
         },
         {
-          "time_taken": 0.078533293,
+          "time_taken": 0.225967134,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11493,7 +11493,7 @@
           }
         },
         {
-          "time_taken": 0.083202556,
+          "time_taken": 0.233916613,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11540,7 +11540,7 @@
           }
         },
         {
-          "time_taken": 0.071706846,
+          "time_taken": 0.211579991,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11587,7 +11587,7 @@
           }
         },
         {
-          "time_taken": 0.08507429,
+          "time_taken": 0.227103197,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11634,7 +11634,7 @@
           }
         },
         {
-          "time_taken": 0.070370793,
+          "time_taken": 0.206095459,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11681,7 +11681,7 @@
           }
         },
         {
-          "time_taken": 0.088121548,
+          "time_taken": 0.242209081,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11728,7 +11728,7 @@
           }
         },
         {
-          "time_taken": 0.075264585,
+          "time_taken": 0.211272631,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11775,7 +11775,7 @@
           }
         },
         {
-          "time_taken": 0.087527757,
+          "time_taken": 0.231499127,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11822,7 +11822,7 @@
           }
         },
         {
-          "time_taken": 0.073090029,
+          "time_taken": 0.217086204,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11869,7 +11869,7 @@
           }
         },
         {
-          "time_taken": 0.091068096,
+          "time_taken": 0.241384779,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11916,7 +11916,7 @@
           }
         },
         {
-          "time_taken": 0.076025627,
+          "time_taken": 0.216583803,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -11963,7 +11963,7 @@
           }
         },
         {
-          "time_taken": 0.092991531,
+          "time_taken": 0.236848239,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12010,7 +12010,7 @@
           }
         },
         {
-          "time_taken": 0.078952185,
+          "time_taken": 0.22398949,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12057,7 +12057,7 @@
           }
         },
         {
-          "time_taken": 0.088602579,
+          "time_taken": 0.251160732,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12104,7 +12104,7 @@
           }
         },
         {
-          "time_taken": 0.075052885,
+          "time_taken": 0.205700458,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12151,7 +12151,7 @@
           }
         },
         {
-          "time_taken": 0.090640975,
+          "time_taken": 0.239575535,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12198,7 +12198,7 @@
           }
         },
         {
-          "time_taken": 0.078660824,
+          "time_taken": 0.230273634,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12245,7 +12245,7 @@
           }
         },
         {
-          "time_taken": 0.087824227,
+          "time_taken": 0.243410545,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12292,7 +12292,7 @@
           }
         },
         {
-          "time_taken": 0.076303438,
+          "time_taken": 0.222180405,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12339,7 +12339,7 @@
           }
         },
         {
-          "time_taken": 0.086732905,
+          "time_taken": 0.241724981,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12386,7 +12386,7 @@
           }
         },
         {
-          "time_taken": 0.075895206,
+          "time_taken": 0.210719819,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12433,7 +12433,7 @@
           }
         },
         {
-          "time_taken": 0.090848326,
+          "time_taken": 0.204689756,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12480,7 +12480,7 @@
           }
         },
         {
-          "time_taken": 0.074260482,
+          "time_taken": 0.160523686,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12527,7 +12527,7 @@
           }
         },
         {
-          "time_taken": 0.086392514,
+          "time_taken": 0.19795421,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12574,7 +12574,7 @@
           }
         },
         {
-          "time_taken": 0.075053015,
+          "time_taken": 0.173044924,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12621,7 +12621,7 @@
           }
         },
         {
-          "time_taken": 0.083222005,
+          "time_taken": 0.172682893,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12668,7 +12668,7 @@
           }
         },
         {
-          "time_taken": 0.076475738,
+          "time_taken": 0.248252516,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12715,7 +12715,7 @@
           }
         },
         {
-          "time_taken": 0.091559708,
+          "time_taken": 0.258679959,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12762,7 +12762,7 @@
           }
         },
         {
-          "time_taken": 0.074974824,
+          "time_taken": 0.200325425,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12809,7 +12809,7 @@
           }
         },
         {
-          "time_taken": 0.092172049,
+          "time_taken": 0.225087283,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12856,7 +12856,7 @@
           }
         },
         {
-          "time_taken": 0.071486765,
+          "time_taken": 0.178621687,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12903,7 +12903,7 @@
           }
         },
         {
-          "time_taken": 0.087523497,
+          "time_taken": 0.234722334,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12950,7 +12950,7 @@
           }
         },
         {
-          "time_taken": 0.072038746,
+          "time_taken": 0.197107459,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -12997,7 +12997,7 @@
           }
         },
         {
-          "time_taken": 0.08853394,
+          "time_taken": 0.247740634,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13044,7 +13044,7 @@
           }
         },
         {
-          "time_taken": 0.075119364,
+          "time_taken": 0.179750839,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13091,7 +13091,7 @@
           }
         },
         {
-          "time_taken": 0.089342652,
+          "time_taken": 0.22835829,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13138,7 +13138,7 @@
           }
         },
         {
-          "time_taken": 0.075316395,
+          "time_taken": 0.194698974,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13185,7 +13185,7 @@
           }
         },
         {
-          "time_taken": 0.089556682,
+          "time_taken": 0.232361959,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13232,7 +13232,7 @@
           }
         },
         {
-          "time_taken": 0.078010442,
+          "time_taken": 0.20631008,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13279,7 +13279,7 @@
           }
         },
         {
-          "time_taken": 0.087046276,
+          "time_taken": 0.238485483,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13326,7 +13326,7 @@
           }
         },
         {
-          "time_taken": 0.076221887,
+          "time_taken": 0.204112275,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13373,7 +13373,7 @@
           }
         },
         {
-          "time_taken": 0.085808853,
+          "time_taken": 0.224794542,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13420,7 +13420,7 @@
           }
         },
         {
-          "time_taken": 0.090736345,
+          "time_taken": 0.240050586,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13550,10 +13550,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 16384,
       "seed_simulator": 20261011,
-      "wall_seconds": 7.162403093003377,
+      "wall_seconds": 21.577662271003646,
       "experiment_metadata": [
         {
-          "time_taken": 0.086245993,
+          "time_taken": 0.158207,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13600,7 +13600,7 @@
           }
         },
         {
-          "time_taken": 0.072888579,
+          "time_taken": 0.131060089,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13647,7 +13647,7 @@
           }
         },
         {
-          "time_taken": 0.089068271,
+          "time_taken": 0.189166111,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13694,7 +13694,7 @@
           }
         },
         {
-          "time_taken": 0.080194207,
+          "time_taken": 0.196195418,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13741,7 +13741,7 @@
           }
         },
         {
-          "time_taken": 0.092948221,
+          "time_taken": 0.240103967,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13788,7 +13788,7 @@
           }
         },
         {
-          "time_taken": 0.076717249,
+          "time_taken": 0.211017711,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13835,7 +13835,7 @@
           }
         },
         {
-          "time_taken": 0.090634985,
+          "time_taken": 0.231040007,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13882,7 +13882,7 @@
           }
         },
         {
-          "time_taken": 0.07722813,
+          "time_taken": 0.21938329,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13929,7 +13929,7 @@
           }
         },
         {
-          "time_taken": 0.088632869,
+          "time_taken": 0.248160236,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -13976,7 +13976,7 @@
           }
         },
         {
-          "time_taken": 0.074899444,
+          "time_taken": 0.208210965,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14023,7 +14023,7 @@
           }
         },
         {
-          "time_taken": 0.083644077,
+          "time_taken": 0.243224175,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14070,7 +14070,7 @@
           }
         },
         {
-          "time_taken": 0.075279745,
+          "time_taken": 0.198417572,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14117,7 +14117,7 @@
           }
         },
         {
-          "time_taken": 0.087971498,
+          "time_taken": 0.233837153,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14164,7 +14164,7 @@
           }
         },
         {
-          "time_taken": 0.076943429,
+          "time_taken": 0.17074219,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14211,7 +14211,7 @@
           }
         },
         {
-          "time_taken": 0.088985821,
+          "time_taken": 0.186880826,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14258,7 +14258,7 @@
           }
         },
         {
-          "time_taken": 0.076182717,
+          "time_taken": 0.206617481,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14305,7 +14305,7 @@
           }
         },
         {
-          "time_taken": 0.087167966,
+          "time_taken": 0.268740193,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14352,7 +14352,7 @@
           }
         },
         {
-          "time_taken": 0.078097512,
+          "time_taken": 0.205263748,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14399,7 +14399,7 @@
           }
         },
         {
-          "time_taken": 0.085601822,
+          "time_taken": 0.207896554,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14446,7 +14446,7 @@
           }
         },
         {
-          "time_taken": 0.074415683,
+          "time_taken": 0.19290005,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14493,7 +14493,7 @@
           }
         },
         {
-          "time_taken": 0.086667154,
+          "time_taken": 0.207056202,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14540,7 +14540,7 @@
           }
         },
         {
-          "time_taken": 0.07337865,
+          "time_taken": 0.213176437,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14587,7 +14587,7 @@
           }
         },
         {
-          "time_taken": 0.087748908,
+          "time_taken": 0.223994381,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14634,7 +14634,7 @@
           }
         },
         {
-          "time_taken": 0.072772358,
+          "time_taken": 0.220052901,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14681,7 +14681,7 @@
           }
         },
         {
-          "time_taken": 0.086311434,
+          "time_taken": 0.220603994,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14728,7 +14728,7 @@
           }
         },
         {
-          "time_taken": 0.072422957,
+          "time_taken": 0.205240458,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14775,7 +14775,7 @@
           }
         },
         {
-          "time_taken": 0.086499234,
+          "time_taken": 0.225543464,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14822,7 +14822,7 @@
           }
         },
         {
-          "time_taken": 0.075061195,
+          "time_taken": 0.19274996,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14869,7 +14869,7 @@
           }
         },
         {
-          "time_taken": 0.087790357,
+          "time_taken": 0.231448128,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14916,7 +14916,7 @@
           }
         },
         {
-          "time_taken": 0.074903724,
+          "time_taken": 0.183616639,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -14963,7 +14963,7 @@
           }
         },
         {
-          "time_taken": 0.089220731,
+          "time_taken": 0.231498558,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15010,7 +15010,7 @@
           }
         },
         {
-          "time_taken": 0.082402414,
+          "time_taken": 0.209148907,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15057,7 +15057,7 @@
           }
         },
         {
-          "time_taken": 0.087350276,
+          "time_taken": 0.244327107,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15104,7 +15104,7 @@
           }
         },
         {
-          "time_taken": 0.074867424,
+          "time_taken": 0.20607954,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15151,7 +15151,7 @@
           }
         },
         {
-          "time_taken": 0.088115048,
+          "time_taken": 0.241709632,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15198,7 +15198,7 @@
           }
         },
         {
-          "time_taken": 0.076631128,
+          "time_taken": 0.200792678,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15245,7 +15245,7 @@
           }
         },
         {
-          "time_taken": 0.090960216,
+          "time_taken": 0.234676625,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15292,7 +15292,7 @@
           }
         },
         {
-          "time_taken": 0.075733526,
+          "time_taken": 0.202041561,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15339,7 +15339,7 @@
           }
         },
         {
-          "time_taken": 0.086396354,
+          "time_taken": 0.239010415,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15386,7 +15386,7 @@
           }
         },
         {
-          "time_taken": 0.076242028,
+          "time_taken": 0.213554158,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15433,7 +15433,7 @@
           }
         },
         {
-          "time_taken": 0.094109923,
+          "time_taken": 0.229439143,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15480,7 +15480,7 @@
           }
         },
         {
-          "time_taken": 0.077642621,
+          "time_taken": 0.200676688,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15527,7 +15527,7 @@
           }
         },
         {
-          "time_taken": 0.090042844,
+          "time_taken": 0.245521511,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15574,7 +15574,7 @@
           }
         },
         {
-          "time_taken": 0.076973249,
+          "time_taken": 0.201457879,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15621,7 +15621,7 @@
           }
         },
         {
-          "time_taken": 0.091113426,
+          "time_taken": 0.236007748,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15668,7 +15668,7 @@
           }
         },
         {
-          "time_taken": 0.073980392,
+          "time_taken": 0.199380256,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15715,7 +15715,7 @@
           }
         },
         {
-          "time_taken": 0.086880694,
+          "time_taken": 0.220262952,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -15762,7 +15762,7 @@
           }
         },
         {
-          "time_taken": 0.091356697,
+          "time_taken": 0.229594034,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -16402,8 +16402,8 @@
         "family": "Heron",
         "revision": "2"
       },
-      "calibration": "2026-10-21T00:49:22-07:00",
-      "noise_model_calibration": "2026-10-21T00:49:22-07:00",
+      "calibration": "2026-10-21T01:29:04-07:00",
+      "noise_model_calibration": "2026-10-21T01:29:04-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         142,
@@ -23309,10 +23309,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 1536,
       "seed_simulator": 20261011,
-      "wall_seconds": 4.215154625999276,
+      "wall_seconds": 8.44150103499851,
       "experiment_metadata": [
         {
-          "time_taken": 0.029064185,
+          "time_taken": 0.050450636,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23359,7 +23359,7 @@
           }
         },
         {
-          "time_taken": 0.024173663,
+          "time_taken": 0.042103186,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23406,7 +23406,7 @@
           }
         },
         {
-          "time_taken": 0.024839454,
+          "time_taken": 0.041282795,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23453,7 +23453,7 @@
           }
         },
         {
-          "time_taken": 0.02333835,
+          "time_taken": 0.040589943,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23500,7 +23500,7 @@
           }
         },
         {
-          "time_taken": 0.023600411,
+          "time_taken": 0.044002201,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23547,7 +23547,7 @@
           }
         },
         {
-          "time_taken": 0.022357638,
+          "time_taken": 0.04832971,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23594,7 +23594,7 @@
           }
         },
         {
-          "time_taken": 0.024529984,
+          "time_taken": 0.052558751,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23641,7 +23641,7 @@
           }
         },
         {
-          "time_taken": 0.023508561,
+          "time_taken": 0.048320721,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23688,7 +23688,7 @@
           }
         },
         {
-          "time_taken": 0.024816804,
+          "time_taken": 0.044760052,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23735,7 +23735,7 @@
           }
         },
         {
-          "time_taken": 0.023804221,
+          "time_taken": 0.043213879,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23782,7 +23782,7 @@
           }
         },
         {
-          "time_taken": 0.025127175,
+          "time_taken": 0.04802961,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23829,7 +23829,7 @@
           }
         },
         {
-          "time_taken": 0.024193403,
+          "time_taken": 0.055848128,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23876,7 +23876,7 @@
           }
         },
         {
-          "time_taken": 0.023670071,
+          "time_taken": 0.050198075,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23923,7 +23923,7 @@
           }
         },
         {
-          "time_taken": 0.024774854,
+          "time_taken": 0.057698432,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -23970,7 +23970,7 @@
           }
         },
         {
-          "time_taken": 0.023857122,
+          "time_taken": 0.04354835,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24017,7 +24017,7 @@
           }
         },
         {
-          "time_taken": 0.023931102,
+          "time_taken": 0.051594198,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24064,7 +24064,7 @@
           }
         },
         {
-          "time_taken": 0.024709024,
+          "time_taken": 0.057497412,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24111,7 +24111,7 @@
           }
         },
         {
-          "time_taken": 0.024308203,
+          "time_taken": 0.048415931,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24158,7 +24158,7 @@
           }
         },
         {
-          "time_taken": 0.025410365,
+          "time_taken": 0.044561252,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24205,7 +24205,7 @@
           }
         },
         {
-          "time_taken": 0.02285634,
+          "time_taken": 0.047184538,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24252,7 +24252,7 @@
           }
         },
         {
-          "time_taken": 0.02717513,
+          "time_taken": 0.050781106,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24299,7 +24299,7 @@
           }
         },
         {
-          "time_taken": 0.024575393,
+          "time_taken": 0.04352698,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24346,7 +24346,7 @@
           }
         },
         {
-          "time_taken": 0.025411146,
+          "time_taken": 0.04801785,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24393,7 +24393,7 @@
           }
         },
         {
-          "time_taken": 0.022611409,
+          "time_taken": 0.047243228,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24440,7 +24440,7 @@
           }
         },
         {
-          "time_taken": 0.024672344,
+          "time_taken": 0.051784479,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24487,7 +24487,7 @@
           }
         },
         {
-          "time_taken": 0.022208887,
+          "time_taken": 0.061492221,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24534,7 +24534,7 @@
           }
         },
         {
-          "time_taken": 0.023934132,
+          "time_taken": 0.048403051,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24581,7 +24581,7 @@
           }
         },
         {
-          "time_taken": 0.024010772,
+          "time_taken": 0.045600604,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24628,7 +24628,7 @@
           }
         },
         {
-          "time_taken": 0.023509051,
+          "time_taken": 0.045758745,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24675,7 +24675,7 @@
           }
         },
         {
-          "time_taken": 0.023012079,
+          "time_taken": 0.049001572,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24722,7 +24722,7 @@
           }
         },
         {
-          "time_taken": 0.025747827,
+          "time_taken": 0.050119945,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24769,7 +24769,7 @@
           }
         },
         {
-          "time_taken": 0.024474663,
+          "time_taken": 0.049847025,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24816,7 +24816,7 @@
           }
         },
         {
-          "time_taken": 0.026073288,
+          "time_taken": 0.043390069,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24863,7 +24863,7 @@
           }
         },
         {
-          "time_taken": 0.022052827,
+          "time_taken": 0.046661187,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24910,7 +24910,7 @@
           }
         },
         {
-          "time_taken": 0.023941412,
+          "time_taken": 0.044509542,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -24957,7 +24957,7 @@
           }
         },
         {
-          "time_taken": 0.022413888,
+          "time_taken": 0.050841166,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25004,7 +25004,7 @@
           }
         },
         {
-          "time_taken": 0.024640134,
+          "time_taken": 0.044604622,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25051,7 +25051,7 @@
           }
         },
         {
-          "time_taken": 0.026518688,
+          "time_taken": 0.041766816,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25098,7 +25098,7 @@
           }
         },
         {
-          "time_taken": 0.025494366,
+          "time_taken": 0.038621699,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25145,7 +25145,7 @@
           }
         },
         {
-          "time_taken": 0.024193913,
+          "time_taken": 0.042131876,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25192,7 +25192,7 @@
           }
         },
         {
-          "time_taken": 0.024266783,
+          "time_taken": 0.052688941,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25239,7 +25239,7 @@
           }
         },
         {
-          "time_taken": 0.022207687,
+          "time_taken": 0.050037804,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25286,7 +25286,7 @@
           }
         },
         {
-          "time_taken": 0.024160372,
+          "time_taken": 0.054268355,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25333,7 +25333,7 @@
           }
         },
         {
-          "time_taken": 0.022672799,
+          "time_taken": 0.044706972,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25380,7 +25380,7 @@
           }
         },
         {
-          "time_taken": 0.0232242,
+          "time_taken": 0.044150612,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25427,7 +25427,7 @@
           }
         },
         {
-          "time_taken": 0.024058602,
+          "time_taken": 0.04821141,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25474,7 +25474,7 @@
           }
         },
         {
-          "time_taken": 0.025918617,
+          "time_taken": 0.044439502,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -25521,7 +25521,7 @@
           }
         },
         {
-          "time_taken": 0.024343803,
+          "time_taken": 0.051002737,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,

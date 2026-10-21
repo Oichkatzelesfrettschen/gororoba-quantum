@@ -6,14 +6,12 @@ The selected bounded-search candidate is `candidate-000-shots-1536` at 1536 shot
 
 ## Artifact and source binding
 
-- Saved run: `results/live/2026-10-21T081814.438624Z`.
-- [record.json](record.json) SHA-256: `7efa7db8e62045987012f7bc6be7d6fa25712317a8b362e2ed66e899169a50a1`.
+- Saved run: `results/live/2026-10-21T084732.702964Z`.
+- [record.json](record.json) SHA-256: `fe73915ba794dfcf3d9f7d1652f61555718db4f75b0a9340e33023605e4bd0e3`.
 - [isa.qpy](isa.qpy) SHA-256: `988b2804ebf0ef5c1b388a8972cab776ed440224dbd7fbc756cc8cc21e040205`.
-- Experiment source digest: `5b868417b95c90311bcb293488fc83cf84b99bb0947200e155837b05fafad954`.
-- Source commit: `ba7b7e1522a43eead4317d981eed2a42f7a39c74`; sources_modified=`true`.
+- Experiment source digest: `9dd082247c8f176040226ead3646524044b4069c3551550073cc314d57c063ed`.
+- Source commit: `5be11a3f6ca26c26bc686ab17e30b351683af663`; sources_modified=`false`.
 - Simulator seed: `20261011`; the source digest binds the simulator implementation.
-
-The source flag records changes anywhere in the experiment directory, including documentation and unmanifested files. Reproduction requires verification of every declared source against the experiment digest; the broad flag alone does not establish which source bytes differ from the recorded commit. A separate source-closure audit can establish that comparison without altering the retained record.
 
 Recorded dependency versions:
 
@@ -96,7 +94,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 
 | Group | Backend | Calibration | Transpiler seed | Template layout | Executed physical layouts |
 |---|---|---|---:|---|---|
-| n21_orbit_rca | ibm_fez | 2026-10-21T00:49:22-07:00 | 20261010 | `[142, 136, 143, 144]` | `[[142, 136, 143, 144]]` |
+| n21_orbit_rca | ibm_fez | 2026-10-21T01:29:04-07:00 | 20261010 | `[142, 136, 143, 144]` | `[[142, 136, 143, 144]]` |
 
 Calibration-bound family and replica mapping:
 
@@ -774,7 +772,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --backaction-pre-idle-dt 1250 \
   --pin-layout ibm_fez:142,136,143,144 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-21T081814.438624Z \
-  --approved-record-sha256 7efa7db8e62045987012f7bc6be7d6fa25712317a8b362e2ed66e899169a50a1 \
+  --approved-record ../results/live/2026-10-21T084732.702964Z \
+  --approved-record-sha256 fe73915ba794dfcf3d9f7d1652f61555718db4f75b0a9340e33023605e4bd0e3 \
   --submit
 ```
