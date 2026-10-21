@@ -30,9 +30,10 @@ results are known.
 - **Sigma grid.** The note names 0.01, 0.05, 0.10, 0.20 and 0.50 and says
   eight levels. The replay adds 0.001, 0.30 and 1.00 as the other three and
   adds sigma = 0 as a ninth, noiseless row.
-- **Trials.** 40 messages x 400 trials per sigma. The 40 messages are a
-  seeded draw without replacement from the 84, sorted; the all-84 rates use
-  the same 400 trials per message and are retained as a second figure.
+- **Trials.** All 84 messages x 400 trials per sigma (`messages_simulated`,
+  `trials_per_message`). The headline `ser_40` reads a seeded draw of 40
+  messages without replacement from the 84, sorted (`subset_messages`);
+  `ser_84` reads every trial and is retained as a second figure.
 - **Annihilation decoder (C5).** `ihat = argmin_j ||L_{a_j} v||`, where
   `L_a` is the 16 x 16 left-multiplication matrix of `a`
   (`cd_core.left_mult_matrix`). An exact floating-point tie resolves to the

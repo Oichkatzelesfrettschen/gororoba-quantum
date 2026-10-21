@@ -27,8 +27,9 @@ Replay status (issue #314): the seeded replay under
 table. The literal first-partner encoder was fixed before computing; the
 injective perfect-matching encoder is a control added after the
 first-partner results were seen. The "Reported result" table below keeps the
-original values; every other number in this note is replayed. Replay
-command:
+original values. The replay verdict and structural cause sections quote
+`result.json`; the scope, measurement-hierarchy and later sections are not
+replayed by this bundle. Replay command:
 `PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay.py --check`.
 
 ## Replay verdict: the reported falsification is withdrawn
@@ -83,8 +84,8 @@ partner blade has exactly 4 exact annihilators among the 84 left factors.
 At sigma 0 the decoder ties 4 ways and resolves to the lowest index, which
 errs on 56 of 84 messages (0.667, both encoders). With noise the four exact
 nulls stay near zero and argmin no longer singles out the sender's
-annihilator: the all-84 rate is 0.750 at sigma 0.001 to 0.1 under both
-tested encoders. The reported 3.9 mean ties, 35 signatures and 57 distinct
+annihilator: the all-84 rate stays between 0.746 and 0.751 at sigma 0.001
+to 0.1 under both tested encoders. The reported 3.9 mean ties, 35 signatures and 57 distinct
 blades do not arise under the replayed definitions (4.0, 28 or 42, 28 or
 84).
 
