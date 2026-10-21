@@ -4,7 +4,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/check_gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/check_pins.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci tests && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci tests && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py tests",
    "name": "core-000",
    "seconds": 0.7,
    "tier": "pr"
@@ -238,7 +238,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py",
+   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py",
    "name": "core-039",
    "seconds": 51.6,
    "tier": "pr"
@@ -928,6 +928,14 @@
    "tier": "pr"
   },
   {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_replay_interpreter_scope.py",
+   "name": "core-609",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
@@ -948,6 +956,22 @@
    "cwd": "docs/evidence/four_support_rank",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-133",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay.py --check",
+   "name": "sources-389",
+   "seconds": 18.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "docs/evidence/c5_zero_divisor_code",
+   "cmd": "sha256sum -c SHA256SUMS",
+   "name": "sources-390",
    "seconds": 0.1,
    "tier": "pr"
   },
@@ -1436,6 +1460,30 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --check",
+   "name": "core-612",
+   "seconds": 18.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T170620.832658Z --check",
+   "name": "core-613",
+   "seconds": 2.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z",
+   "name": "core-614",
+   "seconds": 250.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_spectator_ramsey.py --self-check",
    "name": "core-601",
    "seconds": 25.7,
@@ -1672,26 +1720,11 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_run_gates.py && \"$PYTHON\" -B -W error ci/check_gate_inputs.py",
-   "name": "core-265",
-   "seconds": 39.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_pins.py",
-   "name": "core-454",
-   "seconds": 1.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "ci",
-   "cmd": "\"$PYTHON\" -B -W error premerge_gates.py --self-test",
-   "name": "core-388",
-   "seconds": 1.2,
-   "tier": "pr"
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests",
+   "name": "core-615",
+   "seconds": 15.1,
+   "tier": "pr",
+   "workers": "all"
   },
   {
    "suite": "core",
@@ -1723,22 +1756,6 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json",
    "name": "core-269",
    "seconds": 4.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -W error ci/check_agents_sections.py",
-   "name": "core-250",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -W error ci/check_agents_sections.py --self-test",
-   "name": "core-253",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -2235,7 +2252,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md docs/notes/open_quantum/README.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents docs/notes/open_quantum/README.md",
    "name": "core-382",
    "seconds": 0.2,
    "tier": "pr"
@@ -2267,7 +2284,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py check docs/evidence/quandela --agents AGENTS.md docs/notes/quandela/README.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py check docs/evidence/quandela --agents docs/notes/quandela/README.md",
    "name": "core-502",
    "seconds": 0.4,
    "tier": "pr"
@@ -2519,7 +2536,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents docs/notes/quantum_inspire/README.md",
    "name": "core-347",
    "seconds": 0.2,
    "tier": "pr"
@@ -2907,7 +2924,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
    "name": "core-339",
    "seconds": 133.9,
    "tier": "pr"
@@ -3182,22 +3199,6 @@
    "seconds": 229.0,
    "tier": "full",
    "runtime": "qiskit-2.5"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py",
-   "name": "core-403",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py --self-test",
-   "name": "core-404",
-   "seconds": 0.2,
-   "tier": "pr"
   },
   {
    "suite": "core",
@@ -3831,7 +3832,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py check docs/evidence/iqm --agents AGENTS.md docs/notes/iqm/README.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py check docs/evidence/iqm --agents docs/notes/iqm/README.md",
    "name": "core-590",
    "seconds": 0.5,
    "tier": "pr"
@@ -3846,18 +3847,42 @@
   },
   {
    "suite": "core",
-   "cwd": "ci",
-   "cmd": "\"$PYTHON\" -B -W error gate_ledger.py --self-test",
-   "name": "core-598",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc",
+   "name": "core-606",
+   "seconds": 7.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --self-test",
+   "name": "core-607",
    "seconds": 1.5,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/merge_gate_timings.py --check ci/gate_timings.json",
-   "name": "core-599",
-   "seconds": 0.5,
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json",
+   "name": "core-608",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
+   "name": "core-611",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py --self-test",
+   "name": "core-610",
+   "seconds": 0.2,
    "tier": "pr"
   }
  ],

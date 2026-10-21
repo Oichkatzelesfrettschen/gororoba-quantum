@@ -653,7 +653,7 @@ divides lambda(N) and is in general not a power of 2.
    entries at rows j XOR p, so a permutation matrix needs |supp(a)| = 1.
    Linear combinations of products of basis multiplications are a different
    matter: their real span is every matrix at n = 3, 4, 5
-   (gororoba_quantum/FACTORING_NOTES.md), so a linear combination of unitaries
+   (docs/design/factoring-notes.md), so a linear combination of unitaries
    can represent a multiplier there. Any nonzero exact scaled representation
    over signed XOR translations has effective normalization
    `lambda/|beta| >= T`, where T counts the distinct index displacements.

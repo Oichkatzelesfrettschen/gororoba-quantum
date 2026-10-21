@@ -4,8 +4,8 @@
 Tuna-17 series and their QX twins under results/quantum_inspire/cases/, and
 `scripts/box_kite_qx_sweep.py` runs the exhaustive family (a) on the
 qxelarator emulator; nothing has been submitted. Every submission waits for
-the owner's approval of its written case (root AGENTS.md, "Quantum
-Inspire"). Dates in this note date the measurements they cite.
+the owner's approval of its written case (root AGENTS.md, "Hardware
+services"). Dates in this note date the measurements they cite.
 
 ## 1. What each backend can establish
 
@@ -40,14 +40,14 @@ questions the census cannot settle: how much contrast survives, at which
 depth, and whether coherence and associator signs survive a stated layout.
 
 Monograph claims enter only as the census recomputes them;
-[inventory-monographs.md](inventory-monographs.md) names the census field of
+[inventory-monographs.md](../topics/box-kites/inventory-monographs.md) names the census field of
 each row, and rows marked "not retained" stay second-hand.
 
 ## 2. Method: one specification, many witnesses
 
 cd_core is the specification. The census computes every basis-product, sign
 and zero-product fact from it, then recomputes the same fact bundle through
-each package of the repository's Cayley-Dickson stack (root AGENTS.md,
+each package of the repository's Cayley-Dickson stack (docs/notes/algebra_circuit_rules.md,
 "Cayley-Dickson, quaternion and Clifford packages"; `docs/notes/packages/`)
 under that package's declared map onto cd_core, and compares digests. A
 package result counts only through its declared map; agreement among packages
@@ -76,7 +76,7 @@ is never the criterion.
   split octonions.
 - No witness: the D = 4 quaternion and Clifford packages (numpy-quaternion,
   quaternionic, pyquaternion, clifford, kingdon, galgebra) and mathdunders.
-  They carry no D = 8 or D = 16 product, and root AGENTS.md rests no octonion
+  They carry no D = 8 or D = 16 product, and docs/notes/algebra_circuit_rules.md rests no octonion
   or sedenion statement on a Clifford algebra, so no box-kite fact has a
   witness among them.
 
@@ -98,14 +98,14 @@ each package's retained basis table (`docs/evidence/algebra_packages/tables.json
 `sagemath_octonion_table.json`) under the same map and requires them to equal
 the retained element verdicts, so a retained verdict follows from a retained
 table; the wrapper's expressions are re-parsed. A package that fails to import
-is recorded with its error and rebuilt from its PKGBUILD (root AGENTS.md)
+is recorded with its error and rebuilt from its PKGBUILD (docs/notes/algebra_circuit_rules.md)
 before the record is regenerated; none is skipped. The census stops at
 D = 16 (and D = 8 for the octonion-level facts); no D = 32 fact enters this
 program.
 
 ## 3. Shared circuit vocabulary
 
-**Full Design B** (root AGENTS.md, "Zero-product witnesses"). Selector plus 4
+**Full Design B** (docs/notes/algebra_circuit_rules.md, "Zero-product witnesses"). Selector plus 4
 data qubits: `designs.lcu_witness` applies (L_{e_L} + L_{e_U})/2 to
 y = (e_L' + y_sign e_U')/sqrt2; x_sign = -1 adds a Z on the selector after its
 first H; P(selector = 0) = ||x y||^2 / 2 = `census:design_b.within_kite[]`
@@ -148,7 +148,7 @@ register k -> k^j -> k^j^i -> k under control, one CNOT per set bit of j, i
 and i^j, and the control reads <Z_c> = omega(i, j, k) after its final H. On a
 basis input the block signs are constants, so the circuit carries omega as a
 compiled Z on the control: the hardware establishes coherent return of the
-walked register (root AGENTS.md, "Signs, workspace and measurement basis")
+walked register (docs/notes/algebra_circuit_rules.md, "Signs, workspace and measurement basis")
 and reads a compiled sign. Dropping the last block leaves the register
 branch-marked and drives <Z_c> to 0 (the workspace control of
 `scripts/algebra_circuit_fixtures.py`). The census retains, per kite and per
@@ -277,7 +277,7 @@ falsifier fixed before the run, and the backends.
   assessor planes, and -1/2 on the 21 pairs (l, 8), (l, l^8) and (8, h); the
   fixed-i witness with uniform (j, k) is 1 at i = 0, -5/16 at i = 8 and 1/16
   elsewhere; the uniform baseline over all 16^3 triples is 25/256 with
-  P(c = 1) = 231/512 (root AGENTS.md).
+  P(c = 1) = 231/512 (docs/notes/algebra_circuit_rules.md).
 - Observable: associator-sign interference witness <Z_c> after the final H.
 - Backends: remote QX runs smoke representatives, the first circuit of
   each sub-family (results/quantum_inspire/cases/box_kite_de_qx/, with the
@@ -315,7 +315,7 @@ falsifier fixed before the run, and the backends.
   c0 c1 / (c0^2 + c1^2) is +1/2 or -1/2 (`coherence_selector_0`), on a strut
   one coefficient vanishes and the coherence is 0. The relative sign is a
   box-kite fact that the success probability does not show.
-- Observable: coherence reconstruction (root AGENTS.md: X or Y on the w bits
+- Observable: coherence reconstruction (docs/notes/algebra_circuit_rules.md: X or Y on the w bits
   where the two labels differ, Z on the rest, register order fixed). The labels
   differ in the bits of X = 8 ^ S, so w = popcount(X) and the full encoding
   needs 2^w settings: 4, 4, 8, 4, 8, 8, 16 for S = 1..7
@@ -396,7 +396,7 @@ emulator's raw rates rather than as an algebraic result.
 **Admitted layout (revisitable).** The exclusion set is {0, 5, 6, 7, 9}. q0,
 q6 and q9 fail on readout and pi-pulse grounds (readout batch 04:18:39Z,
 2026-10-17: q9 idle P1 0.27 in a gate-free circuit, q0 and q6 prepared in |1>
-read 0.39 and 0.14; [inventory-quantum-inspire-backends.md](inventory-quantum-inspire-backends.md)).
+read 0.39 and 0.14; [inventory-quantum-inspire-backends.md](../topics/box-kites/inventory-quantum-inspire-backends.md)).
 q5, q6 and q7 fall under a Ramsey visibility floor of 0.5 (minimum over
 neighbor sectors at 2 us, results/quantum_inspire/coupler_zz_tuna_17_analysis.json,
 runs 2026-10-16T224924Z-coupler_zz_tuna_17-batch-00..03): q5 0.043, q6 0.270,
@@ -794,7 +794,7 @@ passes), and the research-state registration of retained runs.
 | (b), (c), (g) analysis | census.json rows and `kites[].twists`, each manifest's `thresholds` | `box_kite_analysis.py` (`analyze`, `replay`) |
 | (d1)-(d3) | `designs.left_mult_gate`, the controlled-block idiom of `algebra_circuit_fixtures.hadamard_test` | `controlled_block`, `controlled_w`, `w_diagonal`, `de_logical` |
 | (d4) | the workspace control of `algebra_circuit_fixtures` | `associator_walk` |
-| (e) | the 2^w settings rule (root AGENTS.md) | `coherence_setting` (reduced); `pauli_expectation`, `de_specs` (full) |
+| (e) | the 2^w settings rule (docs/notes/algebra_circuit_rules.md) | `coherence_setting` (reduced); `pauli_expectation`, `de_specs` (full) |
 | (f) | the retained `ry_probe` result, `qi_platform.py` submit and collect | `emit` (ry), `lower_for_ry`, `ry_ladder`, `ry_series` |
 
 **QX and Ry stop rules.** In the Kaggle sweep and on remote QX one shot

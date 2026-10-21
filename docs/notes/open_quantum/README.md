@@ -215,9 +215,9 @@ So 25 Spark Credits buy 25 USD-equivalent of Public compute; the site's
 "$50" equals the same work at the Private rate, twice the Public one. Every
 job costs at least one whole credit, so a grant is at most 25 jobs.
 
-The table is the AGENTS.md facts table, rendered by
+The table is the facts table of this guide, rendered by
 `oq_platform.py facts docs/evidence/open_quantum`; gate core-382 holds the
-marked body here and in AGENTS.md equal to it:
+marked body here equal to it:
 
 <!-- open-quantum-facts:begin -->
 | backend (short code) | provider, modality | qubits (per job) | native ops | shots min / default / max | circuits per job | Public USD task + per shot | Public credits at 128 / 1024 / max shots | shots in a 1-credit job | 1024-shot jobs per 25 Spark |
@@ -267,3 +267,12 @@ completed job on a backend that tags one.
   `open_quantum` provider adapter in the change that retains the first run.
 - Published work derived from Public Compute cites the infrastructure as
   `site/citation.md` gives it.
+- CI never imports the stack: its gates read retained JSON with the standard
+  library. Unpublished methods stay off the Public tier.
+
+## Gates
+
+Gates core-380 (`capture_oq_docs.py --check`), core-381 (its `--self-test`),
+core-382 (`oq_platform.py check docs/evidence/open_quantum --agents
+docs/notes/open_quantum/README.md`) and core-383 (its `--self-test`) hold the
+captures, the facts table and the credit rule.

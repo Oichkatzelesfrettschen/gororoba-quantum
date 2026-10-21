@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import platform
+import re
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -142,13 +143,36 @@ def audit(root: Path) -> dict[str, Any]:
     }
 
 
+def adopt_recorded_interpreter(record: dict[str, Any], retained: dict[str, Any]) -> None:
+    """Carry the retained interpreter release into a replay under the same Python major.minor.
+
+    The patch release names the interpreter that wrote result.json; every
+    other field compares byte for byte, and a replay under another
+    major.minor, or against a retained value that is not a MAJOR.MINOR.PATCH
+    release, keeps its own version and differs.
+    """
+    for holder, key, kept in (
+        (record, "python_version", retained),
+        (record.get("versions"), "python", retained.get("versions")),
+    ):
+        if isinstance(holder, dict) and isinstance(kept, dict) and key in holder and isinstance(kept.get(key), str):
+            if (
+                re.fullmatch(r"\d+\.\d+\.\d+", kept[key])
+                and kept[key].split(".")[:2] == str(holder[key]).split(".")[:2]
+            ):
+                holder[key] = kept[key]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="compare recomputed bytes with the retained result")
     arguments = parser.parse_args()
     bundle = Path(__file__).resolve().parent
     root = bundle.parents[2]
-    result = json.dumps(audit(root), indent=2, sort_keys=True, allow_nan=False) + "\n"
+    record = audit(root)
+    if arguments.check:
+        adopt_recorded_interpreter(record, json.loads((bundle / "result.json").read_bytes()))
+    result = json.dumps(record, indent=2, sort_keys=True, allow_nan=False) + "\n"
     if arguments.check:
         require(result.encode() == (bundle / "result.json").read_bytes(), "probe output differs from retained bytes")
         print("Local skew Schur probe: rank/lift identities, tangent bounds, controls, and source stability pass")

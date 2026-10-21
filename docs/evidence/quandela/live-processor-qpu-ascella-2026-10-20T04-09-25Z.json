@@ -1,0 +1,113 @@
+{
+ "platform": "qpu:ascella",
+ "record": {
+  "perfs": {
+   "Clock (MHz)": 13.33,
+   "Dark counts (detection/s)": [
+    286.0,
+    206.0,
+    191.0,
+    105.0,
+    109.0,
+    303.0,
+    153.0,
+    351.0,
+    1338.0,
+    1707.0,
+    1885.0,
+    317.0
+   ],
+   "HOM (%)": 87.48,
+   "Transmission per mode (%)": {
+    "t_in": [
+     37.83,
+     0.0,
+     25.03,
+     0.0,
+     26.75,
+     0.0,
+     27.87,
+     0.0,
+     25.86,
+     0.0,
+     27.36,
+     0.0
+    ],
+    "t_out": [
+     108.51,
+     109.86,
+     105.61,
+     110.28,
+     108.85,
+     100.32,
+     95.5,
+     99.68,
+     90.72,
+     94.6,
+     77.86,
+     89.04
+    ]
+   },
+   "Transmittance (%)": 5.25,
+   "g2 (%)": 1.9
+  },
+  "specs": {
+   "architecture": ":PCVL:zip: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",
+   "available_commands": [
+    "probs",
+    "samples",
+    "sample_count",
+    "entropy"
+   ],
+   "commands": "pcvlar:zip:eJydkEsKwjAURbdyl9CktZ+x4Aqcl2iDBvKjeQW7e19/WBUcOAmPm5OTmyCDQAZrEiHnUfJ6DM4p33GcwyunUSCZm1c09BoHqBjt2GpHKL9RcdixovwNy2wHS/EGJ+r5rtiHS9raVajR4BKCxRk0RKunyvwAASFfQf4ZFGswKXly6tEm5XgzgcY4IcbT4j3NULMw90BpOVTiGlw0VpEJvk1ad3NeYfNs/1dB1BDN3+3kamyvYeBOq1ZKSF6LP7RP2d6MsA==",
+   "connected_input_modes": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10
+   ],
+   "constraints": {
+    "max_mode_count": 12,
+    "max_photon_count": 6,
+    "max_sample_count": null,
+    "min_mode_count": 1,
+    "min_photon_count": 1,
+    "support_multi_photon": false
+   },
+   "default_mitigations": "pcvlar:zip:eJxTMFAwVDBQyMksLlEwAAAS5AMe",
+   "description": "Ascella QPU",
+   "detector": "threshold",
+   "documentation": "<p><strong>qpu:ascella</strong></p>\n\n<p>QPU Ascella is one of our online quantum computers. It features 12 available modes and up to 6 photons. With Ascella, you can implement any unitary transform on 12 modes -- it is universal. A schematic of the chip is shown above.</p>\n\n<p>The detectors are not number-resolving (i.e. cannot differentiate between 1- and n-photon states).</p>\n\n<p>Depending on your algorithm, you may be interested in the n-photon coincidence rate. You can calculate it as Clock [MHz] x (Transmittance)^n.</p>\n\n<p>The QPU supports sampling commands: samples and sample_count.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">Documentation</a>. Information about using Perceval to interact with our cloud computers is available <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>. And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud page.</p>\n",
+   "known_mitigations": [
+    "PhotonRecycling",
+    "CompilationAveraging",
+    "DistinguishablePhoton",
+    "DetectorBalancing"
+   ],
+   "min_client_version": "0.10.0",
+   "parameters": {
+    "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+    "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+   },
+   "pcvl_version": "1.3.0",
+   "pre_shots_compatibility": false,
+   "processor_name": "qpu:ascella",
+   "software_versions": {
+    "exqalibur": "1.4.1",
+    "hardware-core": "3.9.3",
+    "mosaiq-arcturus": "2.1.1",
+    "pcvl-worker": "2.1.1",
+    "perceval-quandela": "1.3.0",
+    "universalchipworker": "2.1.0"
+   },
+   "type": "qpu"
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "schema": "qd-live-processor-read-v1",
+ "source": "GET /api/platforms/qpu:ascella/processor, read through qd_platform.request on the session's date",
+ "written_utc": "2026-10-20T04:09:25+00:00"
+}

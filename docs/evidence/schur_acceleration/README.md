@@ -47,7 +47,8 @@ separate obligations.
 
 `result.json` retains sparse exact matrices with their shapes, complete
 affine kernels, separating witnesses, polynomial coefficient denominators,
-and runtime versions. Sparse records encode every omitted
+and runtime versions (`--check` carries the retained Python patch release
+when major.minor agree, gate core-609). Sparse records encode every omitted
 entry as zero. A digest replaces only the parameterized example output
 and derivative matrix already reconstructed elsewhere in the checks.
 The replay verifies loaded module locations and that source hashes match

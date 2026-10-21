@@ -6,8 +6,8 @@ the banner ``rocq --version`` must print, so the compiler and Rocq versions of
 the pin, the constants OCAML, ROCQ_PACKAGES and SWITCH of the replay driver and
 those banners agree. The open_gororoba fetch in the workflow covers every
 directory a bundle's source_hashes.sha256 lists, and ci/rocq_changed.sh selects
-every bundle directory with a replay_rocq.sh. ``--self-test`` mutates a copy of
-the inputs and requires each mutation to fail the check.
+every bundle directory with a replay_rocq.sh. tests/ci/test_rocq_ci_pins.py
+mutates a copy of the inputs and requires each mutation to fail the check.
 """
 
 from __future__ import annotations
@@ -15,9 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import shutil
 import sys
-import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,6 +41,15 @@ def constant(source: str, name: str) -> str:
     if match is None:
         raise ValueError(f"scripts/rocq_kaggle_replay.py defines no {name}")
     return match.group(1)
+
+
+def selector_patterns(selector: str) -> set[str]:
+    """The whole patterns of the case list in ci/rocq_changed.sh."""
+    try:
+        listed = selector.split('case "$path" in', 1)[1].split(")", 1)[0]
+    except IndexError:
+        return set()
+    return {pattern.strip() for pattern in listed.replace("\\\n", " ").split("|")} - {""}
 
 
 def read_pin(root: Path) -> dict[str, str]:
@@ -116,7 +123,7 @@ def check(root: Path) -> list[str]:
         for directory in sorted(directories):
             if not any(directory == cone or directory.startswith(cone + "/") for cone in fetched):
                 errors.append(f"the ci.yml fetch does not cover {directory}, which {name} hashes")
-    selector = (root / "ci/rocq_changed.sh").read_text(encoding="utf-8")
+    selector = selector_patterns((root / "ci/rocq_changed.sh").read_text(encoding="utf-8"))
     required = [f"docs/evidence/{name}/*" for name in bundles(root)]
     required += ["proofs/*", "scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
     required += [".github/workflows/ci.yml", "docs/evidence/rocq_kaggle_replay/*", "gororoba_quantum/parallel.py"]
@@ -133,61 +140,9 @@ def check(root: Path) -> list[str]:
     return errors
 
 
-def self_test() -> None:
-    if errors := check(ROOT):
-        raise SystemExit("the repository fails its own check:\n" + "\n".join(errors))
-    names = bundles(ROOT)
-    files = list(FIXED_FILES)
-    for name in names:
-        files += [f"docs/evidence/{name}/{leaf}" for leaf in ("toolchain.txt", "replay_rocq.sh")]
-        if (ROOT / f"docs/evidence/{name}/source_hashes.sha256").exists():
-            files.append(f"docs/evidence/{name}/source_hashes.sha256")
-    workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    some_crate = next(line.strip() for line in workflow.splitlines() if line.strip().startswith("crates/"))
-    pin = read_pin(ROOT)
-    core_package = next(package for package in pin["packages"].split() if package.startswith("rocq-core."))
-    core_version = core_package.split(".", 1)[1]
-    mutations = {
-        "ci/rocq_toolchain.pin": [
-            (pin["compiler"], "ocaml-base-compiler.0.0.0"),
-            (core_package, "rocq-core.0.0.0"),
-            (f"switch={pin['switch']}", f"switch={pin['switch']}-altered"),
-            (f"opam_repository={pin['opam_repository']}", "opam_repository=z" + pin["opam_repository"][1:]),
-        ],
-        "ci/open_gororoba.pin": [("7", "x")],
-        f"docs/evidence/{names[0]}/toolchain.txt": [(core_version, "0.0.0")],
-        "ci/rocq_changed.sh": [("docs/evidence/stiefel_witness/*", "docs/evidence/stiefel_witnes/*")],
-        ".github/workflows/ci.yml": [
-            ("command -v rg", "command -v grep"),
-            (some_crate, "crates/elsewhere"),
-            ("needs.changes.outputs.rocq == 'true'", "true"),
-        ],
-        "scripts/rocq_kaggle_replay.py": [(f'"{pin["compiler"]}"', '"ocaml-base-compiler.0.0.0"')],
-        "ci/gates.json": [("the ci.yml job rocq-replay on proof paths", "a manual step on proof paths")],
-    }
-    for target, edits in mutations.items():
-        for old, new in edits:
-            with tempfile.TemporaryDirectory(prefix="rocq-pins-") as scratch:
-                copy = Path(scratch)
-                for rel in files:
-                    (copy / rel).parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copyfile(ROOT / rel, copy / rel)
-                text = (copy / target).read_text(encoding="utf-8")
-                if old not in text:
-                    raise SystemExit(f"self-test mutation {old!r} is absent from {target}")
-                (copy / target).write_text(text.replace(old, new, 1), encoding="utf-8")
-                if not check(copy):
-                    raise SystemExit(f"mutation {old!r} -> {new!r} in {target} passed the check")
-    print(f"rocq ci pins self-test: {sum(len(v) for v in mutations.values())} mutations rejected")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--self-test", action="store_true")
-    args = parser.parse_args()
-    if args.self_test:
-        self_test()
-        return 0
+    parser.parse_args()
     errors = check(ROOT)
     for error in errors:
         print(error, file=sys.stderr)

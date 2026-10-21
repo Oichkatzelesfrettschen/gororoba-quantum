@@ -1,13 +1,13 @@
 # gororoba-quantum
 
 Quantum circuits whose structure comes from the open_gororoba Cayley-Dickson
-algebra kernel, targeting IBM Quantum Heron backends. Left multiplication by a
+algebra kernel, targeting IBM Quantum Heron r2 backends. Left multiplication by a
 basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
-observables.
+observables. [docs/README.md](docs/README.md) maps every document by area and task.
 
 The [source index](docs/INDEX.md) separates hosted papers from ignored local copies.
-The [source library](docs/README.md) retains licensed primary PDFs, per-paper notes,
+The [source library](docs/sources/README.md) retains licensed primary PDFs, per-paper notes,
 download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md). The
 [coordinated research roadmap](docs/RESEARCH_ROADMAP.md) records the cumulative
 objectives, evidence boundaries, ownership, and ordered delivery gates.
@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (94 established, 35 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (96 established, 37 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -182,12 +182,22 @@ acquisition of every provider:
 | [2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-03](results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-03) | Quantum Inspire | Walsh exemplar Tuna-17 series | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14](results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14) | Quandela Cloud | Belenos payload-class series on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16](results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16) | Quandela Cloud | Belenos payload-class series on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.02 credits |
+| [2026-10-18T201601.788510Z](results/live/2026-10-18T201601.788510Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 2 s |
+| [2026-10-18T201618.987131Z](results/live/2026-10-18T201618.987131Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 2 s |
+| [2026-10-18T213733.601097Z](results/live/2026-10-18T213733.601097Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 5 s |
+| [2026-10-18T213828.038774Z](results/live/2026-10-18T213828.038774Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | ERROR | 5 s |
+| [2026-10-18T214519.655411Z](results/live/2026-10-18T214519.655411Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-18T220218.089776Z](results/live/2026-10-18T220218.089776Z) | IBM Quantum | state-prep-control | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-19T151959.226467Z](results/live/2026-10-19T151959.226467Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 14 | DONE | 18 s |
+| [2026-10-19T170620.832658Z](results/live/2026-10-19T170620.832658Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 12 | DONE | 9 s |
+| [2026-10-19T231043.083602Z](results/live/2026-10-19T231043.083602Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 6 | DONE | 5 s |
+| [2026-10-20T031212.175942Z](results/live/2026-10-20T031212.175942Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 14 | DONE | 15 s |
 
-The IBM service inventory observed at 2026-10-18T09:20:42.042591+00:00 holds 28 physical jobs with 382 settled seconds; the account then reported 382 of 600 s consumed in the rolling window ending 2026-10-18T09:20:41.985Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-20T22:49:36.693055+00:00 holds 38 physical jobs with 449 settled seconds; the account then reported 449 of 600 s consumed in the rolling window ending 2026-10-20T22:49:36.642Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-18T18:45:31+00:00 lists 292 jobs with 6076416 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 31 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 31 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents
@@ -256,9 +266,9 @@ The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 
   the derivations, all-dimensional restricted construction, and global proof obligations.
 - `gororoba_quantum/compile_evidence.py` -- reproducible multi-seed FakeFez
   compilation with pass-level synthesis, routing, layout, and topology capture.
-- `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
+- `docs/design/factoring-notes.md` -- what Cayley-Dickson structure can and
   cannot contribute to Shor's algorithm, against the RSA-2048 resource floor.
-- `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
+- `docs/design/hybrid-shor.md` -- host/QPU boundary, coefficient
   derivations, bounded hardware frontier, evidence levels, falsifiers, and the
   roadmap beyond `N = 15`.
 - `gororoba_quantum/MODULAR_SYNTHESIS.md` -- the N=21 impossibility

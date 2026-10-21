@@ -10,17 +10,17 @@
         "kind": "dynamic",
         "usage": {
           "job_status": "ERROR",
-          "usage_status": "pending",
-          "usage_source": null,
+          "usage_status": "final",
+          "usage_source": "job.usage(partial=False)",
           "submitted_pub_shots": 100000,
-          "qpu_charge_time_seconds": null,
+          "qpu_charge_time_seconds": "5",
           "pub_shots_per_qpu_second": null,
-          "throughput_unavailable_reason": "usage calculation still pending 120 s after the job ended; recollect to update it",
+          "throughput_unavailable_reason": "job status ERROR did not complete the workload",
           "raw_usage_metadata": {
             "qpu_charge_time_seconds": 5,
             "value": 0.080355,
             "unit": "resource_units",
-            "status": "pending",
+            "status": "complete",
             "details": [
               {
                 "value": 0.080355,
@@ -49,16 +49,14 @@
       "withheld": "missing measured members ['spc_x_history_q0', 'spc_x_history_q1', 'spc_x_history_q10', 'spc_x_history_q100', 'spc_x_history_q101', 'spc_x_history_q102', 'spc_x_history_q103', 'spc_x_history_q104', 'spc_x_history_q105', 'spc_x_history_q106', 'spc_x_history_q107', 'spc_x_history_q108', 'spc_x_history_q109', 'spc_x_history_q11', 'spc_x_history_q110', 'spc_x_history_q111', 'spc_x_history_q112', 'spc_x_history_q114', 'spc_x_history_q116', 'spc_x_history_q117', 'spc_x_history_q118', 'spc_x_history_q119', 'spc_x_history_q12', 'spc_x_history_q120', 'spc_x_history_q122', 'spc_x_history_q123', 'spc_x_history_q124', 'spc_x_history_q125', 'spc_x_history_q126', 'spc_x_history_q127', 'spc_x_history_q128', 'spc_x_history_q129', 'spc_x_history_q13', 'spc_x_history_q130', 'spc_x_history_q132', 'spc_x_history_q133', 'spc_x_history_q134', 'spc_x_history_q135', 'spc_x_history_q136', 'spc_x_history_q137', 'spc_x_history_q138', 'spc_x_history_q139', 'spc_x_history_q14', 'spc_x_history_q140', 'spc_x_history_q141', 'spc_x_history_q142', 'spc_x_history_q143', 'spc_x_history_q144', 'spc_x_history_q145', 'spc_x_history_q147', 'spc_x_history_q148', 'spc_x_history_q149', 'spc_x_history_q15', 'spc_x_history_q150', 'spc_x_history_q151', 'spc_x_history_q152', 'spc_x_history_q153', 'spc_x_history_q154', 'spc_x_history_q155', 'spc_x_history_q16', 'spc_x_history_q17', 'spc_x_history_q18', 'spc_x_history_q19', 'spc_x_history_q2', 'spc_x_history_q21', 'spc_x_history_q22', 'spc_x_history_q23', 'spc_x_history_q24', 'spc_x_history_q25', 'spc_x_history_q26', 'spc_x_history_q27', 'spc_x_history_q28', 'spc_x_history_q29', 'spc_x_history_q3', 'spc_x_history_q30', 'spc_x_history_q31', 'spc_x_history_q32', 'spc_x_history_q33', 'spc_x_history_q34', 'spc_x_history_q35', 'spc_x_history_q36', 'spc_x_history_q37', 'spc_x_history_q38', 'spc_x_history_q39', 'spc_x_history_q4', 'spc_x_history_q40', 'spc_x_history_q41', 'spc_x_history_q42', 'spc_x_history_q43', 'spc_x_history_q44', 'spc_x_history_q45', 'spc_x_history_q46', 'spc_x_history_q47', 'spc_x_history_q48', 'spc_x_history_q49', 'spc_x_history_q5', 'spc_x_history_q50', 'spc_x_history_q51', 'spc_x_history_q52', 'spc_x_history_q53', 'spc_x_history_q54', 'spc_x_history_q55', 'spc_x_history_q56', 'spc_x_history_q57', 'spc_x_history_q58', 'spc_x_history_q59', 'spc_x_history_q6', 'spc_x_history_q60', 'spc_x_history_q61', 'spc_x_history_q62', 'spc_x_history_q63', 'spc_x_history_q64', 'spc_x_history_q65', 'spc_x_history_q66', 'spc_x_history_q67', 'spc_x_history_q68', 'spc_x_history_q69', 'spc_x_history_q7', 'spc_x_history_q70', 'spc_x_history_q71', 'spc_x_history_q72', 'spc_x_history_q73', 'spc_x_history_q74', 'spc_x_history_q75', 'spc_x_history_q77', 'spc_x_history_q78', 'spc_x_history_q79', 'spc_x_history_q8', 'spc_x_history_q80', 'spc_x_history_q81', 'spc_x_history_q82', 'spc_x_history_q83', 'spc_x_history_q84', 'spc_x_history_q85', 'spc_x_history_q87', 'spc_x_history_q88', 'spc_x_history_q89', 'spc_x_history_q9', 'spc_x_history_q90', 'spc_x_history_q91', 'spc_x_history_q92', 'spc_x_history_q93', 'spc_x_history_q94', 'spc_x_history_q95', 'spc_x_history_q96', 'spc_x_history_q97', 'spc_x_history_q98', 'spc_x_history_q99']"
     },
     "invocation_usage": {
-      "known_final_charge_seconds": "0",
-      "total_charge_seconds": null,
-      "charge_complete": false,
+      "known_final_charge_seconds": "5",
+      "total_charge_seconds": "5",
+      "charge_complete": true,
       "workload_complete": false,
       "predicted_charge_seconds": 4.5212,
       "charge_prediction_residual_seconds": null,
       "charge_prediction_residual_withheld": "the complete planned workload lacks final charge or successful completion",
-      "jobs_without_final_charge": [
-        "dbajohs24mrc7385hcfg"
-      ]
+      "jobs_without_final_charge": []
     }
   }
 ]

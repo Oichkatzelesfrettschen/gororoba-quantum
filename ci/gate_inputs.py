@@ -66,13 +66,32 @@ def module_index(root: Path) -> dict[str, set[Path]]:
     return modules
 
 
+def references_of(tree: ast.Module) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """The module names a source imports and the ``.py`` string literals it names, in walk order."""
+    names: list[str] = []
+    literals: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            names.extend(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            names.extend([node.module or "", *(alias.name for alias in node.names)])
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and node.value.endswith(".py"):
+            literals.append(node.value)
+    return tuple(names), tuple(literals)
+
+
 def dependencies(
-    root: Path, gate: dict[str, Any], modules: dict[str, set[Path]], references: dict[Path, ast.Module]
+    root: Path,
+    gate: dict[str, Any],
+    modules: dict[str, set[Path]],
+    references: dict[Path, tuple[tuple[str, ...], tuple[str, ...]]],
 ) -> set[str]:
     """Follow all local imports, including function-local imports and source literals.
 
     Bare module names can resolve through sys.path mutations. Include every
     matching repository module rather than guessing which mutation ran first.
+    ``references`` caches each file's extracted names across the gates of one
+    selection, so a source is parsed and walked once however many gates import it.
     """
     pending = []
     for token in shlex.split(gate["cmd"]):
@@ -90,25 +109,19 @@ def dependencies(
         if not path.is_file():
             continue
         if path not in references:
-            references[path] = ast.parse(path.read_text(encoding="utf-8"), filename=relative)
-        tree = references[path]
-        for node in ast.walk(tree):
-            names: list[str] = []
-            if isinstance(node, ast.Import):
-                names = [alias.name for alias in node.names]
-            elif isinstance(node, ast.ImportFrom):
-                names = [node.module or "", *(alias.name for alias in node.names)]
-            elif isinstance(node, ast.Constant) and isinstance(node.value, str) and node.value.endswith(".py"):
-                # Source manifests hash files without importing them.
-                literal = Path(node.value)
-                pending.extend(modules.get(literal.stem, ()))
-                if not literal.is_absolute():
-                    for parent in (root, path.parent, root / "gororoba_quantum", root / "scripts"):
-                        candidate = (parent / literal).resolve()
-                        if candidate.is_relative_to(root) and candidate.is_file():
-                            pending.append(candidate)
-            for name in names:
-                pending.extend(modules.get(name.rsplit(".", 1)[-1], ()))
+            references[path] = references_of(ast.parse(path.read_text(encoding="utf-8"), filename=relative))
+        names, literals = references[path]
+        for value in literals:
+            # Source manifests hash files without importing them.
+            literal = Path(value)
+            pending.extend(modules.get(literal.stem, ()))
+            if not literal.is_absolute():
+                for parent in (root, path.parent, root / "gororoba_quantum", root / "scripts"):
+                    candidate = (parent / literal).resolve()
+                    if candidate.is_relative_to(root) and candidate.is_file():
+                        pending.append(candidate)
+        for name in names:
+            pending.extend(modules.get(name.rsplit(".", 1)[-1], ()))
     return found
 
 
@@ -130,7 +143,7 @@ def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -
     for path in changed:
         if path.endswith(".py"):
             modules.setdefault(Path(path).stem, set()).add(root / path)
-    references: dict[Path, ast.Module] = {}
+    references: dict[Path, tuple[tuple[str, ...], tuple[str, ...]]] = {}
     selected = set()
     for gate in full:
         patterns = manifest[gate["name"]]

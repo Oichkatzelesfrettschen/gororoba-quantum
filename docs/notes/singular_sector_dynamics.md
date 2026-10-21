@@ -8,7 +8,7 @@ repository can build from `L_a`: the Hermitian dilation's frequencies, the
 exactness of a product-formula step, and the frozen response of amplitude
 amplification on Design B's block encoding. Together they answer the
 measurement-foundations review recorded in
-[qpu_vacuum_cd_review_reconciliation.md](qpu_vacuum_cd_review_reconciliation.md):
+[qpu_vacuum_cd_review_reconciliation.md](topics/qpu_vacuum_cd_review_reconciliation.md):
 the algebra decomposes into computable sectors, and those sectors predict which
 hardware response carries new information.
 
@@ -60,7 +60,7 @@ both `(e_a e_c) e_b` and `e_a(e_c e_b)` equal `s`. So the four indices of
 `span(i, j)` always lie in `S-`. Expanding both associators through the
 basis signs gives `k in S+` exactly when `omega(i, j, k) != omega(j, i, k)`,
 where `omega` is the associator sign of the
-[defect census](cd_associator_defect_census.md). Census Theorem 3 gives
+[defect census](topics/cd_associator_defect_census.md). Census Theorem 3 gives
 `omega = -(-1)^l_W(a XOR c)` on a quasi-octonion plane `W` and `omega = -1` on
 an octonion plane. So `k` lies in `S+` exactly when the plane
 `W = span(i, j, k)` is quasi-octonion and `l_W(i XOR j) = 1`. A quasi-octonion
@@ -109,9 +109,9 @@ largest two-term nullity is `D/2 - 4`; the retained census records 4, 12, 28,
 [BDI II](math-0702075.md) Proposition 8.2 (known); the upper bound for every
 two-term element is this recursion, and its relation to BDI II Theorem 8.1 is
 unchecked. At D = 16 the count 63 is Levratti's Remark 5.4
-([note](levratti-2026-fano-css.md)), and the Gram identity
+([note](papers/levratti-2026-fano-css.md)), and the Gram identity
 `L_a^T L_a = 2I - t {L_i, L_j}` with the 63/42 split is already gated in
-[octonion_structure_checks.md](octonion_structure_checks.md); its annihilator
+[octonion_structure_checks.md](topics/octonion_structure_checks.md); its annihilator
 of `e1 + e10`, `span{e4 - e15, e5 + e14, e6 - e13, e7 + e12}`, is this note's
 dark sector. Label: new proof, derived from census Theorem 3 and the doubling
 formula; a comparison with de Marrais's higher-dimensional counts remains
@@ -140,7 +140,7 @@ whole two-term stratum census.
 ## Hermitian dilation and its frequencies
 
 Imaginary `a` has `L_a^T = -L_a`, so the dilation used in the review and in
-[Kang and Su](2510.06316.md),
+[Kang and Su](papers/2510.06316.md),
 
 ```
 H_a = |0><1| (x) L_a + |1><0| (x) L_a^T = (iY) (x) L_a,    H_a^2 = I (x) L_a^T L_a,
@@ -202,8 +202,8 @@ Design B's one-ancilla LCU `U` block-encodes `B = L_a/2`, with singular values
 `sin(theta_sigma) = sigma`, so the sector angles 0, `pi/4` and `pi/2` leave
 the probabilities at 0, 1/2 and 1 for every `k`. Each sector restricts `B` to
 a multiple of an isometry, which is the hypothesis of
-[BCCKS](1312.1414.md) Lemma 3.6; the general singular-value form is
-[QSVT](1806.01838.md). The ideal walk has no depth dynamics.
+[BCCKS](papers/1312.1414.md) Lemma 3.6; the general singular-value form is
+[QSVT](papers/1806.01838.md). The ideal walk has no depth dynamics.
 
 A PREP rotation `beta = pi/4 + eps` encodes `cos^2(beta) L_i + t sin^2(beta) L_j`.
 Its dark singular value is `|cos(2 beta)|`, so dark leakage is
@@ -213,7 +213,7 @@ laws, through `k = 3`, on all 84 corpus elements (label: new proof or
 formalization).
 
 The reflection `Z` on the single ancilla is a virtual frame change on IBM
-processors ([McKay et al.](1612.00858.md)). The echo arm `U U^dagger U`, built
+processors ([McKay et al.](papers/1612.00858.md)). The echo arm `U U^dagger U`, built
 with the same barriers and without the two `Z` gates, compiles to the same
 non-virtual gates and the same scheduled duration as the amplified arm; the
 record checks both. It returns the round-0 probability whenever the compiled
@@ -291,7 +291,7 @@ hardware result.
 - The dark sector here is an algebraic kernel of one operator. It carries no
   electromagnetic coupling and supports no dark-matter interpretation; a
   dark-photon claim needs a calibrated sensor response such as
-  [Kang et al.](2503.18315.md).
+  [Kang et al.](papers/2503.18315.md).
 
 ## Population flow and the operator boundary
 

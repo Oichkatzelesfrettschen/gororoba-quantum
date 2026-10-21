@@ -3,7 +3,7 @@
 A Hadamard test of W_ij = L_(e_i e_j)^dagger L_(e_i) L_(e_j), controlled on one
 qubit and applied to the basis state |k> of a 4-qubit data register, reads
 P(c = 1) = (1 - omega(i, j, k)) / 2 (scripts/algebra_circuit_fixtures.py,
-AGENTS.md "Signs, workspace and measurement basis"). Averaged over all
+docs/notes/algebra_circuit_rules.md "Signs, workspace and measurement basis"). Averaged over all
 16^3 = 4096 basis triples the ideal frequency is 231/512. Under noise each
 triple reads P(c = 1) = 1/2 - V_ijk omega(i, j, k) / 2, so a uniform sample
 estimates 1/2 - V (1/2 - 231/512) when the visibility V is common; bright

@@ -867,7 +867,7 @@ the couplers equaled Q1's throughout.
     10000-sample openings on 29dc6ef8 failed and each of the two
     1500-sample openings passed, in both job forms, interleaved in time
     with the failures. The rule was read off these same jobs, so the split
-    is descriptive (docs/notes/quandela/belenos-first-load-hypothesis-2026-10-18.md).
+    is descriptive (docs/archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md).
     Open: a matched 1500 and 10000 opening pair at one hour, persistence
     through consecutive large entries, the threshold, and whether opening
     on another mesh prevents the failure.
@@ -902,11 +902,14 @@ equations used here. Five findings set the plan:
 
 Design rules taken from it, in order:
 
-1. Gate a QPU job on calibration state: plan records HOM and g2 and checks
-   the live couplers. A two-photon case waits until HOM is back above 90 %,
-   the settled state of the cited episode; a one-photon case runs on the
-   coupler check alone, because the identical-mesh replay showed the
-   bright block's leak unchanged across a fall of HOM from 92.6 % to 57.6 %.
+1. Gate a QPU job on calibration state: plan refuses a platform whose Explorer
+   row is not `available`, records HOM and g2, and checks the live couplers of
+   mesh cases and of cases seeded from a retained run on `qpu:belenos`. plan
+   warns on stderr when a block with two photons meets HOM at or below 90 %.
+   Such a block should wait until HOM is back above 90 %, the settled state of
+   the cited episode; plan warns and does not hold it. A one-photon block runs
+   without the HOM hold, because the identical-mesh replay showed the bright
+   block's leak unchanged across a fall of HOM from 92.6 % to 57.6 %.
 2. Run every production configuration as an ensemble of equivalent compiles
    (distinct `compilation_seed` values), report the mean and the
    between-seed spread, and select seeds on one half of the shots while

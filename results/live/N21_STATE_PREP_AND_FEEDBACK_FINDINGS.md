@@ -82,7 +82,8 @@ the ratio over 1, with standard errors from each cell's count histogram
 | 50 us | 0.0598 +- 0.0097 | 0.0594 +- 0.0098 | +0.0004 | 0.03 |
 | 250 us | 0.0623 +- 0.0143 | 0.0734 +- 0.0150 | -0.0111 | -0.54 |
 
-The x_history excess equals the prep0 excess at every delay, so the
+The x_history excess agrees with the prep0 excess within one joint
+standard error at every delay (|z| at most 0.54), so the
 5 to 7 percent variance excess is common to both histories: correlated
 readout or a common-mode event independent of the preceding shot's end
 state. The independent preparation channel of

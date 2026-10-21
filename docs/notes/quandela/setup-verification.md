@@ -1,0 +1,127 @@
+# Quandela software: installation, configuration and verification
+
+This page lists the software the repository uses to reach Quandela Cloud, how each piece is configured, and the checks that confirmed it on the build host on 2026-10-19 (Pacific). The install recipes and the full pin table are in [README.md](README.md), "Installation"; this page does not repeat them. It records what was measured and by which command.
+
+Specifications are in [platform-specifications.md](platform-specifications.md). Calibration is in [calibration.md](calibration.md).
+
+## Interpreters
+
+- `python3` on the build host is `/usr/local/bin/python3`, a link to `/usr/bin/python3.14`, version 3.14.8. `/usr/bin/python3` is also `/usr/bin/python3.14`, version 3.14.8.
+- The repository CI pins Python 3.14.7 ([ci/AGENTS.md](../../../ci/AGENTS.md), "Layout and gates"). The host is one patch version ahead of CI.
+- `PYTHON` is unset in the interactive shell. `ci/run_gates.py` sets it to `sys.executable` when the caller leaves it unset.
+- `QD_PYTHON` is unset. The MCP registrations launch `/usr/bin/python3` directly.
+
+## Installed software
+
+| Component | Installed | Source and pin | Check |
+| --- | --- | --- | --- |
+| Perceval (`perceval-quandela`) | 1.3.1 | `python-perceval-quandela` 1.3.1-1, built from tag `v1.3.1` | `python3 -B -c "import perceval as pcvl; print(pcvl.__version__)"` prints 1.3.1; `/usr/bin/python3 -I` prints the same |
+| exqalibur | 1.4.2 | `python-exqalibur` 1.4.2-1, PyPI cp314 wheel, sha256 `d1cec30be1aa59a17722299c3e065912f00b5bac036e3bdce18012dee4d5a4f7` | `importlib.metadata.version("exqalibur")` under `/usr/bin/python3 -I` prints 1.4.2 |
+| scmver | 1.10 | `python-scmver` 1.10-1, sha256 `786b4e6baee35c7439f97de7ab92385d6290273ba47ec41b1a09d91ce910a539` | metadata under `/usr/bin/python3 -I` |
+| mcp | 1.29.0 | `python-mcp` 1.29.0-1 | metadata under `/usr/bin/python3 -I` |
+| protobuf runtime | 7.36.1 | `python-protobuf` (pkgver 36.1, pkgrel 1.1) | `google.protobuf.__version__` |
+| multipledispatch, latexcodec, drawsvg | 1.0.0, 3.0.1, 2.4.2 | pacman packages 1.0.0-4, 3.0.1-2, 2.4.2-1 | `pacman -Q` |
+| pytest-responses | 0.6.0 | `python-pytest-responses` 0.6.0-1 (checkdepend of Perceval) | `pacman -Q` |
+| numpy, scipy, sympy | 2.5.4, 1.18.1, 1.14.0 | pacman packages | `pacman -Q` |
+
+The PKGBUILDs live in `~/Github/PKGBUILDs`. Their `pkgver` and `sha256sums` match the README's pin table. Build and install times on 2026-10-17, UTC: exqalibur built 17:08 and installed 17:08; Perceval built 17:20 and installed 17:22. The exqalibur wheel's metadata pins protobuf 7.34.1, and the system runtime is 7.36.1; the README records that this pair works and the local SLOS run is the proof.
+
+## Configuration
+
+| Item | Value | How it was checked |
+| --- | --- | --- |
+| Token file | `~/.config/quandela/cloud-token`, mode 600 | `stat` on the file and its directory |
+| Token directory | `~/.config/quandela`, mode 700, owner the build user | `stat` |
+| `QUANDELA_TOKEN_FILE` | the token file above; set in both MCP registrations; unset in the interactive shell | environment check and registration check |
+| `PCVL_CLOUD_TOKEN` | unset | environment check |
+| Perceval persistent config | `~/.local/share/perceval-quandela/config.json` is absent, so Perceval holds no plaintext token | `test -e` |
+| `QD_PYTHON` | unset; the registrations use `/usr/bin/python3` | registration check |
+
+The token file's contents were not read or printed by any check on this page. The token reached the MCP server and the verification script through `QUANDELA_TOKEN_FILE` only.
+
+### MCP registrations
+
+`quandela` is registered in two places, with the same command:
+
+- **Claude Code, user scope** (`~/.claude.json`): command `/usr/bin/python3`, arguments `-I` and the path to `scripts/qd_mcp_server.py` in the primary checkout, environment `QUANDELA_TOKEN_FILE`.
+- **Codex** (`~/.codex/config.toml`): the same command and arguments, an `env` table with `QUANDELA_TOKEN_FILE`, and `enabled_tools` listing the eight tools below.
+
+The primary checkout is `$REPO`, the first entry of `git worktree list` and the checkout that tracks `main`. A worktree has its own path, so a registration must name the primary checkout.
+
+The Claude Code registration, as the CLI accepts it (`claude mcp add --help`; not executed, because the existing registration works):
+
+```sh
+claude mcp add --scope user -e QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token" \
+    quandela -- /usr/bin/python3 -I "$REPO/scripts/qd_mcp_server.py"
+```
+
+The Codex configuration has one `[mcp_servers.quandela]` table, an `[mcp_servers.quandela.env]` table, and one `[mcp_servers.quandela.tools.<name>]` table per tool with an `approval_mode`.
+
+### Approval policy
+
+| Tool | Effect | Claude Code (user settings) | Codex |
+| --- | --- | --- | --- |
+| `qd_platforms` | read | allow | approve |
+| `qd_platform` | read | allow | approve |
+| `qd_availability` | read | allow | approve |
+| `qd_usage` | read | allow | approve |
+| `qd_job_status` | read | allow | approve |
+| `qd_job_result` | read | allow | approve |
+| `qd_simulate_local` | local simulation, no credits | allow | approve |
+| `qd_cancel_job` | cancels a job | ask | prompt |
+
+Codex's default for any other tool is `prompt`. The table matches the README's tool table and was read from `~/.claude/settings.json` and `~/.codex/config.toml`.
+
+### Project permissions
+
+The token is read by the MCP server and the scripts, each in its own process, through the path `QUANDELA_TOKEN_FILE` names. No agent permission rule needs to read it. The token directory's protection is an open item below.
+
+## Verification record
+
+The checks ran on 2026-10-19 (Pacific). Checks 9 to 11 ran against the primary checkout at `bfcfda2`; the others ran against the build host's installed software and the live services.
+
+| # | Check | Command or call | Result |
+| --- | --- | --- | --- |
+| 1 | Perceval, repository interpreter | `python3 -B -c "import perceval"` | 1.3.1 |
+| 2 | Perceval, system interpreter, isolated | `/usr/bin/python3 -I -c "import perceval"` | 1.3.1 |
+| 3 | Quickstart step 2, local HOM | `pcvl.Processor("SLOS", pcvl.BS())` with input `[1, 1]` | `\|0,2>` 0.5, `\|2,0>` 0.5 |
+| 4 | Quickstart step 3, constructor (GET only) | `RemoteComputer(QuandelaCommunicationLayer("qpu:belenos", token=...))` | constraints: 24 modes, 12 photons |
+| 5 | Quickstart step 4, shot estimate (client side) | `estimate_required_shots`, 10000 samples, two-photon filter | 640066 shots on 2026-10-19; the estimate is not retained, and a case records its own |
+| 6 | Local unitary through MCP | `qd_simulate_local`, 50:50 beam splitter, input `[1, 1]` | `\|2,0>` 0.5, `\|0,2>` 0.5; Perceval 1.3.1 |
+| 7 | MCP reads | `qd_platforms`, `qd_platform` on both QPUs (with and without bulk), `qd_availability`, `qd_usage` | all returned; the Belenos bulk read returned no architecture, twice |
+| 8 | Ascella architecture identity | processor record read through `qd_platform.request`, compared with the snapshot | identical: 3670 characters, same SHA-256 prefix |
+| 9 | CLI help | `python3 -B scripts/qd_platform.py --help` | lists `snapshot`, `check`, `facts`, `plan`, `submit`, `recover`, `collect`, `runs` |
+| 10 | CLI under `-I` | `python3 -I scripts/qd_platform.py --help` | fails: `ModuleNotFoundError: No module named 'oq_platform'` |
+| 11 | Offline Quandela gates | `ci/run_gates.py --gates core-500,core-501,core-502,core-503,core-504,core-505,core-506,core-507,core-508,core-509,core-510,core-511,core-512,core-540,core-542,core-543,core-544,core-545,core-546,core-547,core-563` | 21 of 21 pass |
+| 12 | Pacman pins against the README table | `pacman -Q` and the PKGBUILD `pkgver` and `sha256sums` | match |
+| 13 | Token permissions | `stat` | 600 on the file, 700 on the directory |
+| 14 | Perceval plaintext config absent | `test -e` | absent |
+| 15 | MCP registrations | read `~/.claude.json` and `~/.codex/config.toml` (keys and values other than the token) | match this page |
+| 16 | Approval policy | read `~/.claude/settings.json` and `~/.codex/config.toml` | match the table above |
+
+Check 10 is expected behavior, not a fault. `-I` keeps the script's directory off `sys.path`, and `qd_platform.py` imports `oq_platform` from `scripts/`. The CLI runs under plain `$PYTHON`, which is how the gates and the runner invoke it. The MCP server runs under `-I` and places its own directory on `sys.path`, so it imports `oq_platform`; check 7 exercised that path through the registered server.
+
+Check 5's estimate depends on the processor figures, which changed between reads ([platform-specifications.md](platform-specifications.md)). The earlier estimate was not retained, so this record does not show the size of that change or isolate its cause.
+
+### Not run
+
+- The PKGBUILD `check()` of `python-perceval-quandela` (836 tests). The README records its result at build time; it was not run on this date.
+- The Codex `quandela` server. Its configuration was read; no Codex session started it.
+- A real job: no case was approved, so `qd_job_status` and `qd_job_result` were not called on a job. No job was submitted, and no QRNG or notebook session was opened.
+- The snapshot refresh ran on 2026-10-20 at 08:51 UTC from the user's shell, not by an agent. The branch's snapshot logic reproduced the committed catalogue offline from the same responses (see [calibration.md](calibration.md), open item 2).
+- The checks in the table above predate the `plan` HOM warning, the `PlatformError` on a missing architecture, and the architecture carry in `snapshot`. For those changes, `qd_platform.py --self-test`, `ruff format --check`, `ruff check` and `mypy` pass under Python 3.14.7. The core-502 and core-503 gates and the pr-tier run happen on the PR head before merge.
+- The tier-full gates (core-513, core-515, core-534, core-537 and the others marked `full`).
+- The `claude mcp add` command above. It is shown from the CLI's help text and was not executed.
+
+## Open items
+
+1. **Token-directory deny, not yet in place.** The user-level settings file (`permissions.deny`) needs these entries, so that agent sessions cannot read or write the token directory with the file tools:
+
+   ```json
+   "Read(~/.config/quandela/**)",
+   "Edit(~/.config/quandela/**)",
+   "Write(~/.config/quandela/**)"
+   ```
+
+2. **Codex server not exercised.** The configuration is verified; a live launch is not.
+3. **Snapshot refresh.** Done on 2026-10-20 at 08:51 UTC, with the Belenos chip carried from 2026-10-17. See [calibration.md](calibration.md), open item 2.

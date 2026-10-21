@@ -18,10 +18,17 @@ QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token" \
     "$PYTHON" scripts/qd_platform.py snapshot --out docs/evidence/quandela
 "$PYTHON" scripts/qd_platform.py facts docs/evidence/quandela
 "$PYTHON" scripts/qd_platform.py check docs/evidence/quandela \
-    --agents AGENTS.md docs/notes/quandela/README.md
+    --agents docs/notes/quandela/README.md
 ```
 
-A changed table fails `check` until AGENTS.md and the README carry the new
+When the service omits a chip architecture from a processor record, `snapshot`
+keeps the copy in the `--out` directory's `catalogue.json` and names the
+platform in `architecture_carried`. A snapshot written to an empty directory
+keeps no architecture. The mesh tooling then reads the last observed couplers,
+not a read of today's chip.
+[calibration.md](calibration.md) gives the current state of the field.
+
+A changed table fails `check` until the README carries the new
 facts table.
 
 ## 2. Simulate locally (free)
@@ -80,8 +87,10 @@ print(qpu.estimate_required_shots(computation, nsamples=10_000))
 transmittance and filter locally. On 2026-10-17 it answered 682042 shots for
 10000 two-photon coincidences on `qpu:belenos`, which at 1e-06 credits per
 shot is 0.68 credits; the per-job price the account's offer page shows adds
-to it. A case quotes the estimate of its own experiment from a fresh
-`qd_platform` read.
+to it. A 2026-10-19 call answered 640066 shots, after the processor figures had
+moved; that estimate is not retained, and this page does not isolate the cause
+([setup-verification.md](setup-verification.md)). A case quotes the estimate of
+its own experiment from a fresh `qd_platform` read.
 
 ## 5. Send a job (after an approved case)
 

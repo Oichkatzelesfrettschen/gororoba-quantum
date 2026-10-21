@@ -57,7 +57,7 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(94 established, 35 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
+(96 established, 37 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **cd-moving-pair-walsh-proof** (open, mathematical theorem). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
@@ -118,7 +118,7 @@ supplies neither extra quota nor a reason to duplicate data, and the retained
 remainder is a resource observation rather than a target to spend. Pulse-level,
 continuous-record and resonator protocols lie outside the cloud gate set since
 the 3 February 2025 pulse removal ([web-source
-note](notes/measurement_foundations_web_sources.md)).
+note](notes/papers/measurement_foundations_web_sources.md)).
 
 ## Ordered topology and proof work
 

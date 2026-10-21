@@ -49,7 +49,10 @@ inventory observation and the probe, which equals the two completed jobs'
 3 s each plus the four failed charges. The usage period's start moved
 from 2026-09-20T09:20Z to 2026-09-21T05:13Z between the two readings, and
 `reconcile_qpu_inventory.window_charge` over the inventory's jobs reads
-382 s in either period, so no job left the window.
+382 s in either period, so no job left the window. A later collection
+read all four settled, `final` in collect.json, which is the service's
+`complete` in the inventory, at the same 2, 2, 5 and 5 s; the refreshed
+inventory records them and the reconciliation binds each to its run.
 
 `scripts/observe_qpu_job_inventory.py` records DONE, ERROR and CANCELLED
 jobs and refuses while any job is unfinished or its usage status differs

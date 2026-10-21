@@ -301,8 +301,7 @@ jobs:
           export PYTHON=python3
           "$PYTHON" ci/runner_specs.py
           "$PYTHON" -B -W error -c 'import qiskit_aer, qiskit_ibm_runtime, numpy, scipy, flint'
-          "$PYTHON" -B -W error ci/check_gate_inputs.py
-          "$PYTHON" -B -W error ci/check_run_gates.py
+          "$PYTHON" -B -W error -m pytest -n auto tests/ci/test_gate_inputs.py tests/ci/test_run_gates.py
           "$PYTHON" -B -W error scripts/check_n21_conjugation_target.py
 
   external-ground-truth:

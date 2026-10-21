@@ -395,7 +395,7 @@ class HeronLattice:
         """Flag rz, cz, sx-or-x runs on one qubit line of a coupler above cz_error_threshold.
 
         This is a pattern match with an explicit threshold, not a characterized
-        Heron mechanism: no source in docs/ establishes an error for the pattern.
+        Heron r2 mechanism: no source in docs/ establishes an error for the pattern.
         Each qubit's line is its operations in circuit order; a barrier is
         skipped and a delay ends the run, since it separates the gates in time.
         """
@@ -1064,7 +1064,7 @@ def bent_hidden_shift_circuit(
     n must be even. Evaluates f(x) = x0*x1 ^ x2*x3 ^ ... and shifted g(x) = f(x ^ s).
     Circuit sequence H^n -> O_g -> H^n -> O_f -> H^n -> Measure deterministically
     measures the hidden shift string s with probability 1.0 in ideal execution.
-    The ideal circuit is constructed from {H, CZ, Z}, compiling to native Heron ISA
+    The ideal circuit is constructed from {H, CZ, Z}, compiling to native Heron r2 ISA
     instructions {cz, rz, sx, x} after transpilation.
     """
 

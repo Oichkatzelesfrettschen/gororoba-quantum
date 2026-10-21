@@ -38,8 +38,8 @@ Subcommands:
   them. With --agents it renders
   facts_table and requires each FILE's open-quantum-facts markers to enclose
   exactly that table, so a refreshed catalogue, estimate or price list that
-  changes a limit, a rate or the credit rule fails until AGENTS.md and the
-  Open Quantum README change with it. Status, accepting_jobs and queue depth
+  changes a limit, a rate or the credit rule fails until the Open
+  Quantum README changes with it. Status, accepting_jobs and queue depth
   change between reads and stay out of the table; a fixed shot column a
   backend's bounds exclude renders as a dash.
 - facts DIR prints the table.
@@ -376,7 +376,7 @@ def check(directory: Path, agents: list[Path] | None = None) -> None:
 def self_test() -> None:
     root = Path(__file__).resolve().parent.parent
     source = root / "docs" / "evidence" / "open_quantum"
-    agents = root / "AGENTS.md"
+    agents = root / "docs" / "notes" / "open_quantum" / "README.md"
     check(source, [agents])
 
     def rewrite(path: Path, change: Callable[[Any], None]) -> None:
@@ -441,7 +441,7 @@ def self_test() -> None:
         with tempfile.TemporaryDirectory() as scratch:
             directory = Path(scratch) / "open_quantum"
             shutil.copytree(source, directory)
-            copy = Path(scratch) / "AGENTS.md"
+            copy = Path(scratch) / agents.name
             shutil.copy(agents, copy)
             edit(directory, copy)
             try:

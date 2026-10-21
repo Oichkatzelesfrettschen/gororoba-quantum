@@ -21,6 +21,9 @@ change; the captures below record what they said when read.
 | `offer/` | the portal and webide strings that define offers and credits, with the bundle each sits in (`--offer`) |
 | `pypi/` | release metadata and file sha256 of perceval-quandela, exqalibur, perceval-interop and scmver (`--pypi`) |
 | `../../evidence/quandela/catalogue.json` | the account snapshot: Explorer platforms, processor records, job limits, token usage (`scripts/qd_platform.py snapshot`) |
+| `platform-specifications.md` | each QPU and simulator: modes, photons, inputs, commands, performance figures at the snapshot and live, the chip architecture, the contradictions in the record |
+| `calibration.md` | each QPU's calibration state, the Belenos history from the QPU run records, the gating rules and their enforcement, open items |
+| `setup-verification.md` | installed versions, token and MCP configuration, the approval policy, the verification record and what was not run |
 
 ## Installation
 
@@ -239,7 +242,7 @@ approval as a job, and it is stopped as soon as its work ends.
 ## Platforms
 
 `qd_platform.py facts docs/evidence/quandela` renders this table from the
-snapshot; gate core-502 holds the marked body here and in AGENTS.md equal to
+snapshot; gate core-502 holds the marked body here equal to
 it:
 
 <!-- quandela-facts:begin -->
@@ -274,9 +277,13 @@ the Belenos documentation states that some detectors are quasi
 number-resolving.
 
 Status, performance figures, availability statistics and maintenance live
-in `catalogue.json` and change between reads. At the snapshot,
-`qpu:belenos` reported HOM 94.2 %, a 4.94 MHz clock and a weekly
-maintenance window, and `qpu:ascella` read `calibration`. The Belenos
+in `catalogue.json` and change between reads. At the 2026-10-17
+snapshot, in commit `bfcfda2`, `qpu:belenos` reported HOM 94.2 %, a 4.94 MHz
+clock and a weekly maintenance window, and `qpu:ascella` reported `available`.
+The catalogue retrieved 2026-10-20 08:51 UTC reads `qpu:belenos` as
+`calibration`, with its chip architecture carried from 2026-10-17. The two live processor reads of 2026-10-20 04:09 UTC are retained
+under `docs/evidence/quandela/`, and [platform-specifications.md](platform-specifications.md)
+and [calibration.md](calibration.md) cite them and hold the Belenos history. The Belenos
 documentation gives the n-photon coincidence rate as
 `Clock [MHz] x (Transmittance x Brightness)^n`, which sets how long a
 sampling job on n photons runs against the 300 s limit; a case computes it
@@ -358,6 +365,17 @@ and `perceval.serialization.deserialize` evaluates parameter expressions.
 
 [strategy.md](strategy.md) is the living guide to cost, platform behavior,
 native circuits, analysis and open conjectures on Belenos, with the run log.
+Every run updates it in the change that retains the run.
+
+## Dark-subspace certificate
+
+[bdsc.md](bdsc.md) specifies the certificate of a four-dimensional
+low-response eigenspace aligned with the kernel of L_x, x = (e1 + e10)/sqrt2:
+the exact target, the 24-mode measurement, the 160-setting preparation bank,
+the confidence construction, the synthetic controls and the qpu:belenos
+qualification record, which stops at native compilation (M2).
+[bdsc_sources.md](bdsc_sources.md) maps each literature source onto the part
+of the certificate it supports.
 
 ## Photonic box-kite family
 
@@ -432,3 +450,94 @@ unitary error, crosstalk or dark counts, never the source. Among two-click
 samples the label pair carries 0.4975 of an edge block and 0.0008 of a
 strut block at indistinguishability 1, 0.4696 and 0.0104 at 0.942, and
 0.1667 and 0.1431 at 0.
+
+## Mesh control
+
+qpu:belenos is one fixed mesh: the processor record's
+`specs.architecture` holds 552 calibrated Rx couplers and 574 symbolic
+phases (276 MZIs and 22 edge phases), and every compiled circuit carries that
+topology with numbers in place of the symbols. The service re-transpiles
+every circuit, parameterized or numeric, with exqalibur's CircuitOptimizer
+from random starting phases, constraining only the input columns that carry
+photons; `compilation_seed` selects the start. `scripts/qd_belenos_mesh.py`
+decodes architectures and compiled meshes with a standard-library protobuf
+reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
+the architecture circuit whose iterations bind all 574 phases and the input
+mode, so one credit buys every unitary that fits the 300 s per-job limit,
+32 iterations of 1500 samples in 221 s on qpu:belenos (job-00 the
+error-class diagnostic, job-02 the 84/84 box-kite edges, job-03 to job-06
+the 64 seeded random settings of the characterization campaign, job-07
+the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
+case as one circuit at seed 1, job-09 Q1's case iterated at seeds 0 to 21,
+0 and 1, job-10 to job-12 the form-versus-dwell series D1 to D4 with
+per-iteration sample budgets, job-13 Q1's case as one circuit at seed 20, job-14 to job-16 the payload-class series: a one-entry
+iterator, a single computation and a two-entry iterator at seed 20 and 10000 samples per entry,
+`"iterator": true` naming the one-entry form, job-16 extended by 11 blocks of seeds 46667
+and 20 that load another mesh before each 29dc6ef8 entry). A new exploratory compilation_seed comes
+from the ANU QRNG draws that `scripts/anu_qrng.py` retains under
+`docs/evidence/anu_qrng/`. A case names its compilation_seed per
+iteration or, for one circuit, in its manifest; the seed selects the
+served mesh.
+`qd_box_kite_analysis.py` scans every error class (exact heater and coupler
+dephasing, heater gain, thermal crosstalk, a demultiplexer misroute with
+noise) over its magnitude on the mesh each iteration returned and names a
+class only when its pooled deviance and shot-noise TVD pass an absolute fit
+test, otherwise "no class fits"; `--static OUT RUN...` fits one shared
+heater-offset vector across the runs of one calibration session and declares
+static offsets only when they beat the fitted dephasing ensemble on held-out
+runs, which takes about 64 random-target settings. The receipt's `t_out` and dark
+rates contradict the detected light (modes 12 to 23 read 194 to 400 %), so
+`--efficiency OUT RUN...` refits a session with relative per-mode efficiencies
+fitted jointly with every class and with the offsets, each run held out.
+Off-cone one-click samples come and go on modes 0, 1 and 5 with an origin
+the receipt's dark rates do not describe, so `scripts/qd_belenos_cone.py`
+reads in_block over the samples inside the source's light cone of each
+served mesh and times each
+acquisition as samples / (physical_perf x clock);
+`docs/evidence/quandela/belenos_light_cone.json` holds that reading of every
+Q1-circuit run.
+`plan` decodes the live architecture and
+refuses a mesh case whose couplers or symbols changed, so a recalibration
+means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
+root-cause record of the qpu:belenos bright-block leakage, and
+docs/notes/quandela/strategy.md sections 6 to 8 its verdicts, the
+transpiler model and the 84/84 mapping.
+
+## Gates
+
+CI never imports Perceval: its gates read retained JSON and Markdown with the
+standard library. Every retained run enters docs/state/research_state.json
+under the `quandela` provider in the change that retains it.
+
+Gates core-500 (`capture_qd_docs.py --check`), core-501 (its
+`--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
+--agents docs/notes/quandela/README.md`), core-503 (its
+`--self-test`, the runner's stubbed-service contract included), core-504
+(`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
+`--self-test`), core-506 (`cd_two_blade_blocks.py --check
+docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
+`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
+retained run but the qpu:belenos mesh runs, which core-537 replays on the
+full tier), core-509 (its `--self-test`), core-510
+(`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
+`--check-rca` replay of the leakage record), core-512 (its
+`--self-test`), core-515 (full tier, `--self-test-rule`: the decision
+rule on synthetic in-family and out-of-family truths), core-513 (full tier, `--self-test-static`: static offsets
+are declared on a static truth and on no dephasing, out-of-family or
+simulator data) and core-514 (full tier, `--check-static` of the retained
+static records within a BLAS-path tolerance), core-534 (full tier,
+`--self-test-efficiency`: an efficiency-only truth reads ideal without
+offsets, efficiencies plus offsets are declared and recovered), core-535
+(full tier, `--check-efficiency` of the session record) and core-536
+(`--check-followup`, the preregistered job-02 and repeat readout) and
+core-538 (`--check-pair`, the one-circuit form test job-08 and the
+32-iteration seed ensemble job-07), core-544 (`--self-test-bridge`, every
+preregistered bridge branch on synthetic iterations) and core-540
+(`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
+self-test and the offline check of every retained draw), core-542
+(`--self-test-dwell`), core-543 (`--check-dwell`, the D1 to D4 readout),
+core-545 (`qd_belenos_cone.py --self-test`, the series readout rules
+included), core-546 (its `--check` of
+the light-cone reading), core-547 (its `--check-readout` of job-13, the
+seeded single job) and core-563 (its `--check-readout-series` of the
+payload-class series, job-14 and the extended job-16).

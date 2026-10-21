@@ -73,7 +73,7 @@ commutative ring. Three substitutions are mathematically live.
   sedenion zero divisors is a direct counting question, still orthogonal to
   the real/rational census in the repository.
 - **C and dual numbers.** Coefficient domain C gives the biquaternions at D = 4
-  and is the complex-linear extension the AGENTS.md rules already require to
+  and is the complex-linear extension the docs/notes/algebra_circuit_rules.md rules already require to
   state (the complexified sedenion has `(e_0 + i e_1)(e_0 - i e_1) = 0`).
   Dual-number coefficients give dual quaternions; both reuse the D = 4 table.
 
