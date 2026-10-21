@@ -191,6 +191,19 @@ class PlatformError(RuntimeError):
 class RefusedError(PlatformError):
     """The service answered with an HTTP error status, so the request took no effect it reported."""
 
+    def __init__(self, message: str, code: int | None = None) -> None:
+        super().__init__(message)
+        self.code = code
+
+
+# Statuses a read may outlive: the service's own timeouts, throttling and gateway or upstream failures.
+TRANSIENT_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
+
+
+def transient(error: PlatformError) -> bool:
+    """A failed read worth repeating: a transient HTTP status, or no answer at all (network or timeout)."""
+    return error.code in TRANSIENT_STATUSES if isinstance(error, RefusedError) else True
+
 
 def now() -> str:
     return datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds")
@@ -240,7 +253,7 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         detail = error.read()[:500].decode("utf-8", errors="replace")
         error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
-        raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip()) from None
+        raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
     except (urllib.error.URLError, TimeoutError) as error:
         raise PlatformError(f"{method} {route}: {error}") from None
     if raw:
@@ -1271,8 +1284,17 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         raise PlatformError("cases.json differs from the submission receipt")
     job = submission["job_id"]
     deadline = time.monotonic() + timeout
+    status: dict[str, Any] = {}
     while True:
-        status = request("GET", job_route(job, "status"))
+        # A status read that fails transiently leaves the job unaffected, so the wait continues to the deadline.
+        try:
+            status = request("GET", job_route(job, "status"))
+        except PlatformError as error:
+            if not transient(error) or time.monotonic() > deadline:
+                raise
+            print(f"job {job}: status read failed, retrying: {str(error)[:160]}", file=sys.stderr)
+            time.sleep(poll)
+            continue
         if status.get("status") in TERMINAL:
             break
         if time.monotonic() > deadline:
@@ -1693,6 +1715,15 @@ def runner_self_test() -> int:
     charge_self_test()
     payload_version_self_test()
     seed_self_test()
+    for error, want in (
+        (RefusedError("x", 502), True),
+        (RefusedError("x", 408), True),
+        (RefusedError("x", 404), False),
+        (RefusedError("x", 401), False),
+        (PlatformError("x: timed out"), True),
+    ):
+        if transient(error) != want:
+            raise SystemExit(f"self-test: transient() read {error.code if isinstance(error, RefusedError) else None}")
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
     modes = ["0"] * 24
