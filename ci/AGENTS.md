@@ -39,8 +39,8 @@ a thread pool sized to the runner's CPUs and keeps going past failures, so a
 red shard lists every failing gate. Shards are assigned longest-first by
 occupied CPU-slot seconds: the measured wall seconds of
 [ci/gate_timings.json](gate_timings.json) (`ci/merge_gate_timings.py`
-folds shard `--timings` records into it, gate core-599 holds it to the
-manifest) times each gate's allocated slots, and the manifest estimate for
+folds shard `--timings` records into it, tests/ci/test_gate_timings.py holds
+it to the manifest) times each gate's allocated slots, and the manifest estimate for
 an unmeasured gate.
 The stable `--shard-cpus` profile defaults to the recorded four-CPU runner;
 actual gate concurrency follows each runner's detected allocation. Every
@@ -75,8 +75,9 @@ named in [ci/open_gororoba.pin](open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
 `scripts/materialize_gororoba_csv.py` rewrites the git-ignored `data/csv`
 files from the registry records, whose sha256 pins `verify.py` rechecks. A
-pin bump is a reviewed commit. A new module, evidence replay or contract
-joins the gate list in ci/gates.json in the same change.
+pin bump is a reviewed commit. A new contract lands as a test function
+under tests/ (Behavioral suite below); a new evidence replay joins the gate
+list in ci/gates.json in the same change.
 The lint and type gates (core-000, core-001, core-002, core-039) cover
 gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
 is linted and type-checked without a list edit; a checked file elsewhere in
@@ -123,7 +124,7 @@ must be installed at their pins, and `ibm_runtime_options_inventory.py
 --check` (core-533) must find the probe versions its inventory records.
 Without it that check replays the retained inventory (canonical form,
 backend schema, note blocks) and names the differing versions
-(`ci/pins.py`, gate core-454).
+(`ci/pins.py`, tests/ci/test_pins.py).
 Before Python starts, CI and Kaggle reserve 4096 optional static TLS bytes with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, required by the combined
 Qiskit Rust and Aer OpenMP extensions. Local shells use the same startup setting.
@@ -236,9 +237,20 @@ bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.3.0 on OCaml
 5.5.1 with Stdlib 9.2.0) on a pull request that touches `proofs/`, a replay bundle, the replay
 driver, a pin or the workflow (`ci/rocq_changed.sh` holds the path list), and
 adds the stiefel_witness bundle on pushes to main and the nightly schedule.
-Gates core-403 and core-404 hold the pin, the toolchain.txt banners, the path
-list and the open_gororoba fetch in agreement. The manual procedure remains
-the local replay.
+tests/ci/test_rocq_ci_pins.py holds the pin, the toolchain.txt banners, the
+path list and the open_gororoba fetch in agreement and rejects each mutation
+of them. The manual procedure remains the local replay.
+
+**Behavioral suite.** Gate core-615 runs `pytest -n auto --dist loadgroup`
+over tests/ in one process pool, so each worker imports the repository modules
+once; issue #291 carries the migration plan and its falsifier, a planted
+mutant per moved contract. A test exercises a contract on a small fixed input
+and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
+only the pinned xdist plugin loads, and a run writes nothing inside the
+checkout. tests/conftest.py sizes the pool by `parallel.workers()` and runs
+each test process in one slot. A test module imports a ci/ module by bare
+name; a moved `--self-test` body leaves the module's CLI. The suite starts git
+and child interpreters, so the gate ledger never skips it.
 
 **Gate cost.**
 - Measure a gate's cost in CPU seconds. The runner records user and system
@@ -281,7 +293,7 @@ the local replay.
   one day on main; it is the only net for reads the tracer cannot see (the
   wall clock, C extensions opening files, stat through a dir_fd), so a check
   against an expiry or a rolling window relies on it.
-  Gate core-598 plants every read kind and every escape.
+  tests/ci/test_gate_ledger.py plants every read kind and every escape.
 - Check with an explicit raise, never `assert`. `python -O` strips every
   assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
   check holds in every interpreter mode and each gate runs its command once.

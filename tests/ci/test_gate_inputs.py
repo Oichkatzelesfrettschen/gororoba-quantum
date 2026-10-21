@@ -260,7 +260,7 @@ class SelectionTests(unittest.TestCase):
             self.assertEqual(run_gates.assign(gates, 2, capacity=4), shards)
 
     def test_expensive_archive_replays_have_input_scopes(self) -> None:
-        root = Path(__file__).resolve().parent.parent
+        root = Path(__file__).resolve().parents[2]
         gates = json.loads((root / "ci/gates.json").read_text())["gates"]
         names = {
             "core-063",
@@ -287,7 +287,7 @@ class SelectionTests(unittest.TestCase):
         self.assertFalse(names & gate_inputs.affected_full(root, gates, ["docs/unrelated-ci-audit.md"]))
 
     def test_quandela_static_scopes_follow_named_fixtures(self) -> None:
-        root = Path(__file__).resolve().parent.parent
+        root = Path(__file__).resolve().parents[2]
         gates = json.loads((root / "ci/gates.json").read_text())["gates"]
         names = {"core-513", "core-514", "core-515"}
         fixture = "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/raw/result.json"
@@ -375,7 +375,7 @@ class SelectionTests(unittest.TestCase):
         import subprocess
         import sys
 
-        root = Path(__file__).resolve().parent.parent
+        root = Path(__file__).resolve().parents[2]
         program = """
 import builtins
 import io
@@ -429,7 +429,7 @@ with patch("builtins.open", guard(builtins.open)), patch("io.open", guard(io.ope
     def test_repository_source_manifest_closure(self) -> None:
         import ast
 
-        root = Path(__file__).resolve().parent.parent
+        root = Path(__file__).resolve().parents[2]
         gates = json.loads((root / "ci/gates.json").read_text())["gates"]
         expected = {gate["name"] for gate in gates if gate["tier"] == "full"}
         self.assertEqual(gate_inputs.affected_full(root, gates, ["requirements.txt"]), expected)
@@ -444,7 +444,7 @@ with patch("builtins.open", guard(builtins.open)), patch("io.open", guard(io.ope
         )
         sources = {"gororoba_quantum/" + name for name in ast.literal_eval(declaration.value)}
         modules = gate_inputs.module_index(root)
-        references: dict[Path, ast.Module] = {}
+        references: dict[Path, tuple[tuple[str, ...], tuple[str, ...]]] = {}
         for gate in gates:
             if gate["name"] in {
                 "core-074",
@@ -475,7 +475,3 @@ with patch("builtins.open", guard(builtins.open)), patch("io.open", guard(io.ope
                     run_gates.environment_for(None)["GLIBC_TUNABLES"],
                     f"glibc.malloc.arena_max=2:glibc.rtld.optional_static_tls={expected}",
                 )
-
-
-if __name__ == "__main__":
-    unittest.main()

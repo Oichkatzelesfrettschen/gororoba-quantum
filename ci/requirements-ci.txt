@@ -2,5 +2,8 @@
 mypy==2.4.0
 ruff==0.17.1
 matplotlib==3.11.2
+# The behavioral suite under tests/ and its process pool.
+pytest==9.1.1
+pytest-xdist==3.8.0
 # Record the actual BLAS/OpenMP runtimes and native thread allocation.
 threadpoolctl==3.7.0

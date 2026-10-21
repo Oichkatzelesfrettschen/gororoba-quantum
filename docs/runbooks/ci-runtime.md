@@ -137,8 +137,7 @@ git show "$commit:ci/gates.json" > /tmp/ci-manifest.json
 
 git diff --no-renames --name-only -z origin/main HEAD > /tmp/ci-changed.bin
 "$PYTHON" ci/run_gates.py --changed-files /tmp/ci-changed.bin --list
-"$PYTHON" ci/check_gate_inputs.py
-"$PYTHON" -O ci/check_gate_inputs.py
+"$PYTHON" -B -W error -m pytest -n auto tests/ci/test_gate_inputs.py
 ```
 
 The remaining optimization frontier is measured per gate: split long,

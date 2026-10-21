@@ -4,7 +4,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/check_gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/check_pins.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci tests && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci tests && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py tests",
    "name": "core-000",
    "seconds": 0.7,
    "tier": "pr"
@@ -238,7 +238,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py",
+   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py",
    "name": "core-039",
    "seconds": 51.6,
    "tier": "pr"
@@ -1695,26 +1695,11 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_run_gates.py && \"$PYTHON\" -B -W error ci/check_gate_inputs.py",
-   "name": "core-265",
-   "seconds": 39.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_pins.py",
-   "name": "core-454",
-   "seconds": 1.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "ci",
-   "cmd": "\"$PYTHON\" -B -W error premerge_gates.py --self-test",
-   "name": "core-388",
-   "seconds": 1.2,
-   "tier": "pr"
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests",
+   "name": "core-615",
+   "seconds": 15.1,
+   "tier": "pr",
+   "workers": "all"
   },
   {
    "suite": "core",
@@ -1746,22 +1731,6 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json",
    "name": "core-269",
    "seconds": 4.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -W error ci/check_agents_sections.py",
-   "name": "core-250",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -W error ci/check_agents_sections.py --self-test",
-   "name": "core-253",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -3208,22 +3177,6 @@
   },
   {
    "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py",
-   "name": "core-403",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py --self-test",
-   "name": "core-404",
-   "seconds": 0.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --self-test",
    "name": "core-480",
@@ -3865,22 +3818,6 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py --self-test",
    "name": "core-591",
    "seconds": 2.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "ci",
-   "cmd": "\"$PYTHON\" -B -W error gate_ledger.py --self-test",
-   "name": "core-598",
-   "seconds": 1.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/merge_gate_timings.py --check ci/gate_timings.json",
-   "name": "core-599",
-   "seconds": 0.5,
    "tier": "pr"
   },
   {
