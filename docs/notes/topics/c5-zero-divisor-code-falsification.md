@@ -26,7 +26,7 @@ the decoded label differs from the sent label).
 Replay status (issue #314): the seeded replay under
 `docs/evidence/c5_zero_divisor_code/` builds the code from `cd_core`'s sign
 table. Its codebook is the 84 standard zero-divisor pairs of Reggiani's
-Table 1 (`docs/notes/2411.18881.md`), which the conjecture's "84
+Table 1 (`docs/notes/papers/2411.18881.md`), which the conjecture's "84
 zero-divisor pairs" names; two codebooks that re-pair the 84 distinct left
 factors stay as alternatives. The "Reported result" table below keeps the
 original values. The replay verdict and structural cause sections quote

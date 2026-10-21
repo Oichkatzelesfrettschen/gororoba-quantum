@@ -1,7 +1,7 @@
 # C5 zero-divisor code replay
 
 The replay reconstructs the experiment that
-[the C5 note](../../notes/c5-zero-divisor-code-falsification.md) reports, from
+[the C5 note](../../notes/topics/c5-zero-divisor-code-falsification.md) reports, from
 the sedenion sign table `gororoba_quantum/cd_core.py` alone, with fixed seeds.
 The original implementation was never committed.
 
@@ -10,7 +10,7 @@ The original implementation was never committed.
 - **table1, the note's code.** The note's messages are "the 84 zero-divisor
   pairs of the sedenion census", message `i` selecting the pair
   `(a_i, b_i)`. These are the 84 standard zero divisors of Reggiani's
-  Table 1 ([source note](../../notes/2411.18881.md)):
+  Table 1 ([source note](../../notes/papers/2411.18881.md)):
   `(e_i + e_j, e_k +- e_l)` with `1 <= i <= 6`, `9 <= j <= 15`,
   `i < k <= 7`, `9 <= l <= 15`, every one a row of
   `cd_core.sedenion_zero_divisor_corpus()`. `table1_rows()` selects them and

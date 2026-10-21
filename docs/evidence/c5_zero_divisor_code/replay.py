@@ -1,7 +1,7 @@
 """Replay the C5 zero-divisor code against a random spherical code.
 
 Message i is the i-th of the 84 standard zero-divisor pairs (a_i, b_i) of
-Reggiani's Table 1 (docs/notes/2411.18881.md): a_i = e_i + e_j,
+Reggiani's Table 1 (docs/notes/papers/2411.18881.md): a_i = e_i + e_j,
 b_i = e_k +- e_l with 1 <= i <= 6, 9 <= j <= 15, i < k <= 7, 9 <= l <= 15,
 selected from cd_core's corpus in sorted order. The transmitter sends b_i and
 the receiver decodes by the annihilation norm ||L_{a_j} v|| over the 84 rows.
