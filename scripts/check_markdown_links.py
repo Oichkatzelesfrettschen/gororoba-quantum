@@ -78,16 +78,22 @@ EXCLUDED_PATTERNS = (re.compile(r"^docs/notes/ibm_quantum/(?:" + "|".join(IBM_TR
 FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 INLINE_CODE = re.compile(r"(`+)(?:(?!\1).)+?\1")
 INLINE_LINK = re.compile(r"!?\[(?:[^\[\]]|\[[^\]]*\])*\]\(\s*(<[^>]*>|[^\s()]*(?:\([^\s()]*\)[^\s()]*)*)")
-REF_DEF = re.compile(r"^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)")
+REF_DEF = re.compile(r"^ {0,3}\[(?!\^)[^\]]+\]:\s*(<[^>]*>|\S+)")
 HTML_ATTR = re.compile(r"""\b(?:href|src)\s*=\s*["']([^"']+)["']""")
 ID_ATTR = re.compile(r"""\b(?:id|name)\s*=\s*["']([^"']+)["']""")
 ATX = re.compile(r"^ {0,3}(#{1,6})[ \t]+(.*?)(?:[ \t]+#+)?[ \t]*$")
 SETEXT = re.compile(r"^ {0,3}(=+|-+)[ \t]*$")
+HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 
 
 def is_excluded(path: str) -> bool:
     return path.startswith(EXCLUDED_PREFIXES) or any(p.match(path) for p in EXCLUDED_PATTERNS)
+
+
+def strip_comments(text: str) -> str:
+    """Blank HTML comments, keeping their newlines, since GitHub renders neither links nor headings inside them."""
+    return HTML_COMMENT.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), text)
 
 
 def strip_code(lines: list[str], inline: bool = True) -> list[str]:
@@ -127,8 +133,8 @@ def slugify(text: str) -> str:
 
 def anchors_of(text: str) -> set[str]:
     """Return heading slugs and explicit id/name attributes of one Markdown document."""
-    raw_lines = text.split("\n")
-    lines = strip_code(raw_lines, inline=False)
+    lines = strip_code(text.split("\n"), inline=False)
+    lines = strip_comments("\n".join(lines)).split("\n")
     seen: Counter[str] = Counter()
     found: set[str] = set()
 
@@ -154,8 +160,8 @@ def anchors_of(text: str) -> set[str]:
 def link_targets(text: str) -> list[tuple[int, str]]:
     """Inline links match over the whole text, so a label that wraps lines is read; a blank line ends a label."""
     found: list[tuple[int, str]] = []
-    lines = strip_code(text.split("\n"))
-    joined = "\n".join(lines)
+    joined = strip_comments("\n".join(strip_code(text.split("\n"))))
+    lines = joined.split("\n")
     for match in INLINE_LINK.finditer(joined):
         if "\n\n" not in match.group(0):
             found.append((joined.count("\n", 0, match.start()) + 1, match.group(1)))
@@ -218,7 +224,7 @@ def check(root: Path, tracked: set[str], files: list[str]) -> list[str]:
                 problems.append(f"{source}:{number}: broken link target: {target}")
                 continue
             if fragment and resolved in tracked_n and resolved.endswith(".md"):
-                if fragment.lower() not in {a.lower() for a in anchors(resolved)}:
+                if fragment not in anchors(resolved):
                     problems.append(f"{source}:{number}: broken anchor: {target}")
     return problems
 
@@ -249,7 +255,7 @@ def self_test() -> int:
         (root / "docs/notes").mkdir(parents=True)
         (root / "docs/notes/target.md").write_text(
             "# Title\n\n## Repeated\n\n## Repeated\n\n## A `code` Heading: 1.5 (x_y)\n\nSetext\n------\n"
-            '<a id="named"></a>\n\n```\n# not a heading\n```\n',
+            '<a id="named"></a>\n\n```\n# not a heading\n```\n<!--\n# Ghost\n-->\n',
             encoding="utf-8",
         )
         good = (
@@ -258,12 +264,14 @@ def self_test() -> int:
             "[g](https://example.invalid/x#y) [h](#local) [i](../literature/notes/target.md)\n"
             "[j](notes/) `[inline](missing.md)`\n\n```\n[fenced](missing.md)\n```\n\n## Local\n"
             "[ref]: notes/target.md#title\n"
+            "Text.[^1]\n\n[^1]: Supporting details\n<!-- [old](missing.md) -->\n"
         )
         (root / "docs/good.md").write_text(good, encoding="utf-8")
         (root / "literature").symlink_to("docs")
         bad = (
             "[x](notes/missing.md)\n[y](notes/target.md#no-such-heading)\n[z](#nothing-here)\n[w](../../outside.md)\n"
             "A [label that\nwraps](notes/wrapped-missing.md) across lines.\n"
+            "[case](notes/target.md#Title) [ghost](notes/target.md#ghost)\n"
         )
         (root / "docs/bad.md").write_text(bad, encoding="utf-8")
         tracked = {"docs/notes/target.md", "docs/good.md", "docs/bad.md"}
@@ -271,11 +279,19 @@ def self_test() -> int:
             print("self-test: false positives:\n" + "\n".join(problems))
             return 1
         found = check(root, tracked, ["docs/bad.md"])
-        wanted = ("notes/missing.md", "no-such-heading", "nothing-here", "outside.md", "wrapped-missing.md")
+        wanted = (
+            "notes/missing.md",
+            "no-such-heading",
+            "nothing-here",
+            "outside.md",
+            "wrapped-missing.md",
+            "#Title",
+            "#ghost",
+        )
         if len(found) != len(wanted) or any(not any(w in line for line in found) for w in wanted):
             print("self-test: planted defects not all reported:\n" + "\n".join(found))
             return 1
-    print("self-test passed: 5 planted defects reported, 0 false positives")
+    print("self-test passed: 7 planted defects reported, 0 false positives")
     return 0
 
 
