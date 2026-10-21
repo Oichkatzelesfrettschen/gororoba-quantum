@@ -4,6 +4,8 @@ This page is the single entry to the repository's documents. Rules live in the a
 provider and platform notes, claims in the research notes, and retained bytes under `evidence/` and `../results/`.
 `scripts/check_markdown_links.py` keeps every relative link and anchor below resolving.
 
+Placement, naming, linking and immutability rules for every new or moved document: [AGENTS.md, "Documents"](../AGENTS.md#documents).
+
 ## Areas
 
 | Area | Owns | Entry |
