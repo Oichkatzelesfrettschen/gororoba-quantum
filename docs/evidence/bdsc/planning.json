@@ -71,6 +71,22 @@
   "frozen_allocation": "two-block",
   "split": "each block's alpha divides evenly between Clopper-Pearson propagation and matrix Bernstein; the smaller radius is reported, and the union bound covers that choice"
  },
+ "consistency_hoeffding": {
+  "alpha": 0.01,
+  "margin": 0.05,
+  "rule": "n >= 8 log(12 / alpha) / m^2: six probabilities under a union bound, four per residual",
+  "scope": "the n at which the residual half-width equals the margin, a floor with no power: a compatible reading also needs the estimate inside the remaining band; qualification_case.json's power table sets n",
+  "trials_per_preparation": 22689
+ },
+ "five_space_witness": {
+  "alpha_one_sided": 0.025,
+  "bound": "lambda_5(F) <= lambda_max(S F S) <= Tr(S F) = 5 r_5, S = P + |q><q| for a unit q in Q",
+  "bright_reference_lower": 0.9,
+  "lambda_5_upper_at_zero_events": 0.089601153312,
+  "scope": "conditional on genuine Bernoulli trials of one effect and an independently measured bright reference; excludes the reference acquisition, preparation calibration and qualification; zero events on qpu:belenos cannot be promised, and approximate conditioning adds (1 + delta) and the bias bound",
+  "threshold": 0.09,
+  "zero_event_trials": 204
+ },
  "ideal_effect_expected_counts": [
   {
    "a_U": 0.029371424725,

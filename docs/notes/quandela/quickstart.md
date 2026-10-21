@@ -112,5 +112,10 @@ case's credit ceiling divided by the per-shot price. The token allows one
 running and one queued job, and a job ends at 300 s. A simulator run on
 `sim:belenos` or `sim:ascella` returns `computed_circuit` and
 `computed_input`, which replay on the matching QPU without a second
-compilation (`guide/user-guide/04-compilation.md`). The run then retains
+compilation (`guide/user-guide/04-compilation.md`). Measured runs qualify
+that promise: an architecture-form body sent back was re-transpiled with all
+574 phases changed, and an iterated body returned different meshes on the
+QPU than on the simulator, while a one-circuit body returned the same
+compiled circuit on both ([strategy.md](strategy.md#2-platform-facts-that-shape-a-case),
+sections 2 and 4). The run then retains
 what the README's last section lists under `results/quandela/runs/`.

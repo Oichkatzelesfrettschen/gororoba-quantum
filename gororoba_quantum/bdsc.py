@@ -43,21 +43,46 @@ b_s (preparation and implementation error) and a conditioning deviation
 delta, the bound (1 - delta) tau I <= D <= (1 + delta) tau I on the
 acceptance effect, under which the conditional probability p_c and the
 effect probability p_F = Tr(G_A rho)/tau obey |p_F - p_c| <= delta p_c.
-Both enter as extra weights on the same |D_s| row sums.
+Both enter as extra weights on the same |D_s| row sums. G_A <= D bounds the
+reconstructed effect F = G_A/tau only by 0 <= F <= (1 + delta) I, so the
+a priori caps on a_U and l_U are 1 + delta and 4 (1 + delta); the
+certificate inequalities use F >= 0 alone and hold unchanged.
 
 Disposition. "inadmissible" when a record check or a declared premise
-fails; "certified" when min(a_U, l_U) < gamma_L and the angle bound is at
+fails; "inconsistent" when an estimated block eigenvalue lies farther than
+its radius outside [0, 1 + delta], so the confidence event contradicts the
+effect range; "certified" when min(a_U, l_U) < gamma_L and the angle bound is at
 most ANGLE_LIMIT_DEG; "alternative_structure" when the complement's
 brightest direction has a positive certified response c_L (the lower bound
-on lambda_max(C)) and either the upper bound on lambda_min(C) is at most
-DARK_RATIO c_L (a certified fifth low-response direction) or the lower bound
-on lambda_max(A) is at least TARGET_RATIO c_L (a certified bright direction
-inside the target space); otherwise "not_certified". Both criteria are
+on lambda_max(C)) and either the upper bound gamma_U on lambda_min(C) is at
+most DARK_RATIO c_L (a certified low-response direction inside the target
+complement Q) or the lower bound on lambda_max(A) is at least TARGET_RATIO
+c_L (a certified bright direction inside the target space); otherwise
+"not_certified". A low complement direction alone leaves lambda_5(F)
+unbounded below the bright level: A = 0.09 I_4, C = diag(0.09, 1, ..., 1)
+and a single cross entry 0.09 coupling k_1 to that direction give a valid
+effect with spectrum {0, 0.09^3, 0.18, 1^11}. Positivity bounds the cross
+block by |u^T B v|^2 <= (u^T A u)(v^T C v), so lambda_5(F) <= a_U + gamma_U
+is the global fifth-eigenvalue bound such a record supports. Both criteria are
 ratios, so a scale factor common to every response, such as the
 transmittance under an emitted-photon denominator, changes no disposition.
 gamma_L = 0 alone identifies nothing, since it can mean insufficient
-precision; the fifth-direction claim rests on the upper bound gamma_U, which
+precision; the complement-direction claim rests on the upper bound gamma_U, which
 holds on the same confidence event.
+
+Census. The disposition is a compatibility summary; spectral_census reports
+the scientific findings independently on the same event. Interlacing and
+the positivity bound give mu_j <= lambda_(4+j)(F) <= a + mu_j for the
+eigenvalues mu_j of C, so each of lambda_5..lambda_16 gets an interval, with
+U_5 = min(L, a_* + mu_1U) and L_6 = mu_2L. With c = lambda_max(C) in
+[c_L, c_U] and low meaning at most LOW_RATIO c: complement_low (mu_1U <=
+0.1 c_L), at_least_five_low (U_5 <= 0.1 c_L), exactly_five_low (that and
+L_6 > 0.1 c_U), target_bright (a_L >= 0.1 c_U) and
+target_bright_lower_reference (a_L >= 0.1 c_L, the weaker reading the
+alternative_structure branch uses) each read supported, refuted or
+inconclusive, and unavailable without c_L > 0. target_alignment reads
+supported exactly when the disposition is certified. A certified alignment
+and a supported fifth low eigenvalue coexist on diag(0^4, 0.05, 1^11).
 
 The "cal" share of an allocation covers the calibration that supports a
 record's declared preparation bias bound and acceptance delta; analyze
@@ -84,6 +109,11 @@ MIDDLE_LABELS = (0, 1, 2, 3, 8, 9, 10, 11)
 ANGLE_LIMIT_DEG = 10.0
 DARK_RATIO = 0.1
 TARGET_RATIO = 0.1
+# "Low" in every spectral finding means lambda <= LOW_RATIO lambda_max(C), an engineering definition fixed before
+# acquisition; a finite threshold is never an exact null.
+LOW_RATIO = 0.1
+FINDINGS_SCHEMA = "bdsc-spectral-findings-v1"
+CONSISTENCY_MARGIN = 0.05
 ALPHA_ALLOCATIONS = {
     "two-block": {"A": 0.025, "C": 0.025, "cal": 0.0},
     "with-calibration": {"A": 0.02, "C": 0.02, "cal": 0.01},
@@ -327,18 +357,93 @@ def angle_bound_deg(upper: float, floor: float) -> float | None:
     return math.degrees(math.asin(math.sqrt(max(upper, 0.0) / floor)))
 
 
-def certificate(a: BlockBound, c: BlockBound) -> dict[str, Any]:
+def exact_bound(block: np.ndarray) -> BlockBound:
+    """A zero-radius bound on a known block, for the algebraic layer of the spectral census."""
+    tr = float(np.real(np.trace(block)))
+    return BlockBound(np.asarray(block), 0.0, 0.0, 0.0, 0.0, tr, tr)
+
+
+def _finding(supported: bool, refuted: bool, available: bool = True) -> str:
+    if not available:
+        return "unavailable"
+    return "supported" if supported else "refuted" if refuted else "inconclusive"
+
+
+def spectral_census(a: BlockBound, c: BlockBound, effect_upper: float = 1.0) -> dict[str, Any]:
+    """Intervals on lambda_5..lambda_16 of F and the independent spectral findings, on one confidence event.
+
+    With a = lambda_max(A) and mu_1 <= ... <= mu_12 the eigenvalues of C, mu_j <= lambda_(4+j)(F) <= a + mu_j:
+    the lower bound is Cauchy interlacing with the 12-dimensional compression, the upper bound is min-max on span K
+    plus the first j eigenvectors of C, where |u^dagger B^dagger v|^2 <= (u^dagger A u)(v^dagger C v) bounds the
+    cross term by 2 sqrt(a mu_j) |u| |v| <= (a + mu_j)(|u|^2 + |v|^2) - a |u|^2 - mu_j |v|^2. Weyl's inequality
+    moves every eigenvalue of a block by at most its operator-norm radius, so all twelve intervals hold on the event
+    that bounds ||C^ - C|| and ||A^ - A||, with no further multiplicity charge. 0 <= F <= effect_upper I clamps
+    each bound; an estimate farther than its radius outside [0, effect_upper] contradicts that range, and the
+    census then reads inconsistent and issues no finding.
+    """
     eig_a = np.linalg.eigvalsh(a.estimate)
     eig_c = np.linalg.eigvalsh(c.estimate)
-    a_upper = min(1.0, float(eig_a[-1]) + a.radius)
+    top = effect_upper
+    consistent = bool(
+        eig_a[0] + a.radius >= 0
+        and eig_a[-1] - a.radius <= top
+        and eig_c[0] + c.radius >= 0
+        and eig_c[-1] - c.radius <= top
+        and a.trace_upper >= 0
+        and a.trace_lower <= KERNEL_DIM * top
+    )
+    a_upper = min(top, float(eig_a[-1]) + a.radius)
+    a_lower = max(0.0, float(eig_a[-1]) - a.radius)
+    a_star = min(a_upper, a.trace_upper, top)
+    mu_lower = [max(0.0, float(m) - c.radius) for m in eig_c]
+    mu_upper = [min(top, float(m) + c.radius) for m in eig_c]
+    upper = [min(top, a_star + m) for m in mu_upper]
+    c_lower, c_upper = mu_lower[-1], mu_upper[-1]
+    u5, l6, u6 = upper[0], mu_lower[1], upper[1]
+    ratio = consistent and c_lower > 0
+    low_lo, low_hi = LOW_RATIO * c_lower, LOW_RATIO * c_upper
+    at_least_five = _finding(u5 <= low_lo, mu_lower[0] > low_hi, ratio)
+    findings = {
+        "complement_low": _finding(mu_upper[0] <= low_lo, mu_lower[0] > low_hi, ratio),
+        "at_least_five_low": at_least_five,
+        "exactly_five_low": _finding(u5 <= low_lo and l6 > low_hi, at_least_five == "refuted" or u6 <= low_lo, ratio),
+        "target_bright": _finding(a_lower >= low_hi, a_upper < low_lo, ratio),
+        "target_bright_lower_reference": _finding(a_lower >= low_lo, a_upper < low_lo, ratio),
+    }
+    return {
+        "schema": FINDINGS_SCHEMA,
+        "effect_upper": top,
+        "low_ratio": LOW_RATIO,
+        "consistent": consistent,
+        "a_star": a_star,
+        "c_L": c_lower,
+        "c_U": c_upper,
+        "mu_L": mu_lower,
+        "mu_U": mu_upper,
+        "lambda_5_to_16": [[lo, hi] for lo, hi in zip(mu_lower, upper, strict=True)],
+        "U_5": u5,
+        "L_6": l6,
+        "U_6": u6,
+        "findings": findings,
+    }
+
+
+def certificate(a: BlockBound, c: BlockBound, effect_upper: float = 1.0) -> dict[str, Any]:
+    """Certificate from the block bounds of an effect F with 0 <= F <= effect_upper I."""
+    eig_a = np.linalg.eigvalsh(a.estimate)
+    eig_c = np.linalg.eigvalsh(c.estimate)
+    census = spectral_census(a, c, effect_upper)
+    a_upper = min(effect_upper, float(eig_a[-1]) + a.radius)
     a_lower = float(eig_a[-1]) - a.radius
-    l_upper = min(float(KERNEL_DIM), a.trace_upper)
+    l_upper = min(KERNEL_DIM * effect_upper, a.trace_upper)
     gamma_lower = max(0.0, float(eig_c[0]) - c.radius)
     gamma_upper = float(eig_c[0]) + c.radius
     bound = min(a_upper, l_upper)
     angle = angle_bound_deg(bound, gamma_lower)
     bright_lower = float(eig_c[-1]) - c.radius
-    if angle is not None and angle <= ANGLE_LIMIT_DEG:
+    if not census["consistent"]:
+        disposition = "inconsistent"
+    elif angle is not None and angle <= ANGLE_LIMIT_DEG:
         disposition = "certified"
     elif bright_lower > 0 and (gamma_upper <= DARK_RATIO * bright_lower or a_lower >= TARGET_RATIO * bright_lower):
         disposition = "alternative_structure"
@@ -367,6 +472,11 @@ def certificate(a: BlockBound, c: BlockBound) -> dict[str, Any]:
     out: dict[str, Any] = {key: float(value) for key, value in fields.items()}
     out["theta_max_bound_deg"] = angle
     out["disposition"] = disposition
+    census["findings"] = {
+        "target_alignment": _finding(disposition == "certified", False, census["consistent"]),
+        **census["findings"],
+    }
+    out["census"] = census
     return out
 
 
@@ -390,7 +500,7 @@ def analyze(
         selected = np.array([counts[s.name][0] for s in rows], dtype=float)
         eligible = np.array([counts[s.name][1] for s in rows], dtype=float)
         out[block] = block_bound(selected, eligible, d, alpha[block], np.full(len(rows), bias), conditioning)
-    return certificate(out["A"], out["C"])
+    return certificate(out["A"], out["C"], 1.0 + conditioning)
 
 
 def sample_counts(effect: np.ndarray, n: int, seed: int, real_only: bool = False) -> dict[str, tuple[int, int]]:
@@ -445,6 +555,24 @@ def acceptance(unitary: np.ndarray, selected: Sequence[int], efficiency: Sequenc
     g = u.conj().T @ np.diag(eta * mask) @ u
     d = u.conj().T @ np.diag(eta) @ u
     return {"G": g, "D": d}
+
+
+def thinned_acceptance(transfer: np.ndarray, efficiency: Sequence[float] | np.ndarray) -> np.ndarray:
+    """Acceptance effect after retaining each mode-m event with q_m = eta_* / eta_m, eta_* = min_m eta_m.
+
+    A detected mode-m event has probability eta_m |(T psi)_m|^2 through the possibly lossy transfer T, so the
+    retained acceptance is eta_* T^dagger T: scalar only when T^dagger T = tau I on the inputs. Terminal balancing
+    equalizes detector efficiencies and leaves internal mode-dependent loss in place.
+    """
+    eta = np.asarray(efficiency, dtype=float)
+    keep = eta.min() / eta
+    return np.asarray(transfer.conj().T @ np.diag(eta * keep) @ transfer)
+
+
+def thin_histogram(counts: np.ndarray, keep: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    """N'_m ~ Binomial(N_m, q_m): equal in law to keeping each genuine event independently, so no event order is
+    needed. Counts converted from a probability estimate stay converted after thinning."""
+    return np.asarray(rng.binomial(np.asarray(counts, dtype=np.int64), keep))
 
 
 def scalar_deviation(d: np.ndarray) -> tuple[float, float]:
@@ -571,24 +699,138 @@ def pilot_settings() -> list[dict[str, Any]]:
     return out
 
 
-def pilot_readout(counts: dict[str, tuple[int, int]], alpha: float) -> list[dict[str, Any]]:
-    """r0, C_q, Re d_q, Im d_q and the identity p(+) + p(-) - p(0) - p(pi/2) with Bonferroni CP bounds."""
-    lo_hi: dict[str, tuple[float, float, float]] = {}
+def residual_interval(plus: Sequence[float], minus: Sequence[float]) -> tuple[float, float]:
+    """Interval on p_a + p_b - p_c - p_d from simultaneous bounds given as flat tuples
+    plus = (lower_a, upper_a, lower_b, upper_b) and minus = (lower_c, upper_c, lower_d, upper_d)."""
+    return plus[0] + plus[2] - minus[1] - minus[3], plus[1] + plus[3] - minus[0] - minus[2]
+
+
+def equivalence(interval: tuple[float, float], margin: float) -> str:
+    """compatible: the interval lies inside [-margin, margin]; violated: it misses that band; else inconclusive.
+    An interval that merely contains zero establishes nothing."""
+    lo, hi = interval
+    if -margin <= lo and hi <= margin:
+        return "compatible"
+    if lo > margin or hi < -margin:
+        return "violated"
+    return "inconclusive"
+
+
+CONSISTENCY_LABELS = ("f", "g", "+", "-", "+i", "-i")
+
+
+def consistency_states(f: np.ndarray, g: np.ndarray) -> dict[str, np.ndarray]:
+    """f, g, (f +- g)/sqrt2 and (f +- i g)/sqrt2 for orthonormal f, g."""
+    r = 1 / math.sqrt(2)
+    return {"f": f, "g": g, "+": r * (f + g), "-": r * (f - g), "+i": r * (f + 1j * g), "-i": r * (f - 1j * g)}
+
+
+def consistency_readout(
+    counts: dict[str, tuple[int, int]], alpha: float, margin: float = CONSISTENCY_MARGIN
+) -> dict[str, Any]:
+    """Delta_R = p_+ + p_- - p_f - p_g and Delta_I = p_+i + p_-i - p_f - p_g, zero for every fixed linear effect.
+
+    Clopper-Pearson at alpha/6 per probability makes both residual intervals simultaneous at 1 - alpha; each is
+    judged against the preregistered margin, never against zero alone.
+    """
+    require(sorted(counts) == sorted(CONSISTENCY_LABELS), "a consistency bank holds exactly f, g, +-, +-i")
+    names = list(CONSISTENCY_LABELS)
+    k = np.array([counts[x][0] for x in names], dtype=float)
+    n = np.array([counts[x][1] for x in names], dtype=float)
+    lo, hi = clopper_pearson(k, n, alpha / len(names))
+    b = {x: (float(lo[i]), float(hi[i])) for i, x in enumerate(names)}
+    p = {x: float(k[i] / n[i]) for i, x in enumerate(names)}
+    out: dict[str, Any] = {}
+    for key, (a1, a2) in (("R", ("+", "-")), ("I", ("+i", "-i"))):
+        interval = residual_interval((*b[a1], *b[a2]), (*b["f"], *b["g"]))
+        out[f"delta_{key}"] = p[a1] + p[a2] - p["f"] - p["g"]
+        out[f"delta_{key}_interval"] = list(interval)
+        out[f"delta_{key}_status"] = equivalence(interval, margin)
+        out[f"delta_{key}_excludes_zero"] = interval[0] > 0 or interval[1] < 0
+    out["margin"] = margin
+    return out
+
+
+Contrast = tuple[str, float, tuple[tuple[int, float], ...]]
+
+
+def contrast_readout(
+    selected: np.ndarray,
+    eligible: np.ndarray,
+    contrasts: Sequence[Contrast],
+    alpha: float,
+    admitted: np.ndarray | None = None,
+) -> dict[str, np.ndarray]:
+    """Intervals and statuses of prespecified linear contrasts sum_j c_j p_j on one simultaneous event.
+
+    Clopper-Pearson at alpha / P on each of the P observations makes every interval [L_j, U_j] hold at once with
+    probability 1 - alpha, and each contrast inherits it: Delta_L = sum_(c_j > 0) c_j L_j + sum_(c_j < 0) c_j U_j and
+    Delta_U the mirror image, so no contrast spends its own error. Each contrast is (family, margin, terms) and reads
+    compatible, violated or inconclusive against its margin. selected and eligible carry the observations on their
+    last axis; a leading replicate axis evaluates many synthetic records with the same arithmetic, term by term in
+    the declared order, as one record. admitted marks the observations whose observation contract supports
+    Bernoulli trials; a contrast with any term outside it reads not_admitted, and the alpha / P split still counts
+    every observation, so admission never re-allocates error.
+    """
+    k = np.asarray(selected, dtype=float)
+    n = np.asarray(eligible, dtype=float)
+    lo, hi = clopper_pearson(k, n, alpha / k.shape[-1])
+    # Every contrast is a padded row of (index, coefficient) terms, evaluated for all contrasts at once; the terms
+    # are added in their declared order, and a padding coefficient of 0 adds an exact zero.
+    width = max(len(terms) for _, _, terms in contrasts)
+    index = np.zeros((len(contrasts), width), dtype=int)
+    coefficient = np.zeros((len(contrasts), width))
+    for row, (_, _, terms) in enumerate(contrasts):
+        for column, (j, c) in enumerate(terms):
+            index[row, column], coefficient[row, column] = j, c
+    margin = np.array([m for _, m, _ in contrasts])
+    lo_terms, hi_terms = lo[..., index], hi[..., index]
+    positive = coefficient > 0
+    low_terms = np.where(positive, coefficient * lo_terms, coefficient * hi_terms)
+    high_terms = np.where(positive, coefficient * hi_terms, coefficient * lo_terms)
+    lower, upper = low_terms[..., 0], high_terms[..., 0]
+    for column in range(1, width):
+        lower = lower + low_terms[..., column]
+        upper = upper + high_terms[..., column]
+    inside = (lower >= -margin) & (upper <= margin)
+    outside = (lower > margin) | (upper < -margin)
+    status = np.where(inside, "compatible", np.where(outside, "violated", "inconclusive")).astype(object)
+    if admitted is not None:
+        touched = np.asarray(admitted, dtype=bool)[index] | (coefficient == 0)
+        status[..., ~touched.all(axis=1)] = "not_admitted"
+    return {"lower": lower, "upper": upper, "status": status}
+
+
+def hoeffding_consistency_trials(margin: float, alpha: float) -> int:
+    """Per-preparation n at which a Hoeffding radius sqrt(log(12/alpha)/(2n)) on six probabilities under a union
+    bound makes a four-probability residual's half-width equal the margin: n >= 8 log(12/alpha) / margin^2. A
+    compatible reading needs |estimate| + half-width <= margin, so this n is a floor with no power; the case's
+    power table sets the trials."""
+    return math.ceil(8 * math.log(12 / alpha) / margin**2)
+
+
+def pilot_readout(
+    counts: dict[str, tuple[int, int]], alpha: float, margin: float = CONSISTENCY_MARGIN
+) -> list[dict[str, Any]]:
+    """r0, C_q, Re d_q, Im d_q and the sum rules p(+) + p(-) = p(0) + p(pi/2) = p(+i) + p(-i), judged against margin
+    on Bonferroni Clopper-Pearson bounds simultaneous over every pilot setting."""
+    bounds: dict[str, tuple[float, float, float]] = {}
     total = len(counts)
     for name, (k, n) in counts.items():
         lo, hi = clopper_pearson(np.array([k]), np.array([n]), alpha / total)
-        lo_hi[name] = (k / n, float(lo[0]), float(hi[0]))
+        bounds[name] = (k / n, float(lo[0]), float(hi[0]))
     out = []
     for i, j in PILOT_PAIRS:
         base = f"pilot-k{i + 1:02d}-f{j + 1:02d}-"
 
         def at(label: str, base: str = base) -> tuple[float, float, float]:
-            return lo_hi[base + label]
+            return bounds[base + label]
 
         p0, pq, pp, pm = at("0"), at("pi/2"), at("+pi/4"), at("-pi/4")
         pi_plus, pi_minus = at("pi/4+i"), at("pi/4-i")
-        identity = pp[0] + pm[0] - p0[0] - pq[0]
-        spread = sum(max(v[2] - v[0], v[0] - v[1]) for v in (p0, pq, pp, pm))
+        reference = (p0[1], p0[2], pq[1], pq[2])
+        real = residual_interval((pp[1], pp[2], pm[1], pm[2]), reference)
+        imag = residual_interval((pi_plus[1], pi_plus[2], pi_minus[1], pi_minus[2]), reference)
         out.append(
             {
                 "pair": [i, j],
@@ -596,9 +838,13 @@ def pilot_readout(counts: dict[str, tuple[int, int]], alpha: float) -> list[dict
                 "C_q": pq[0],
                 "re_d_q": (pp[0] - pm[0]) / 2,
                 "im_d_q": (pi_minus[0] - pi_plus[0]) / 2,
-                "identity_residual": identity,
-                "identity_radius": spread,
-                "identity_holds": abs(identity) <= spread,
+                "delta_R": pp[0] + pm[0] - p0[0] - pq[0],
+                "delta_R_interval": list(real),
+                "delta_R_status": equivalence(real, margin),
+                "delta_I": pi_plus[0] + pi_minus[0] - p0[0] - pq[0],
+                "delta_I_interval": list(imag),
+                "delta_I_status": equivalence(imag, margin),
+                "margin": margin,
             }
         )
     return out
@@ -606,6 +852,56 @@ def pilot_readout(counts: dict[str, tuple[int, int]], alpha: float) -> list[dict
 
 def pilot_probabilities(effect: np.ndarray) -> dict[str, float]:
     return {s["name"]: float(np.real(np.conj(s["state"]) @ effect @ s["state"])) for s in pilot_settings()}
+
+
+# --- five-space witness --------------------------------------------------------------------
+
+
+def candidate_directions() -> dict[str, np.ndarray]:
+    """q_R = (e1 - e2)/sqrt2, the extra null of E_R, and q_I = (e1 + i e2)/sqrt2, the extra null of E_I."""
+    r = 1 / math.sqrt(2)
+    q_r = np.zeros(DIM, dtype=complex)
+    q_r[1], q_r[2] = r, -r
+    q_i = np.zeros(DIM, dtype=complex)
+    q_i[1], q_i[2] = r, 1j * r
+    return {"q_R": q_r, "q_I": q_i}
+
+
+def five_space_states(q: np.ndarray) -> list[np.ndarray]:
+    """k_1..k_4 and a unit q in the complement Q: the range of the rank-5 projector S = P + |q><q|."""
+    k = kernel_frame()
+    require(abs(np.linalg.norm(q) - 1) < 1e-12, "q is not a unit vector")
+    require(float(np.linalg.norm(k.T @ q)) < 1e-12, "q is not in the target complement")
+    return [k[:, j].astype(complex) for j in range(KERNEL_DIM)] + [np.asarray(q, dtype=complex)]
+
+
+def five_space_trace(effect: np.ndarray, q: np.ndarray) -> float:
+    """Tr(S F), the upper bound on lambda_5(F) that a uniform five-state ensemble measures as 5 r_5."""
+    return float(sum(np.real(np.conj(v) @ effect @ v) for v in five_space_states(q)))
+
+
+def five_space_witness(
+    selected: int, eligible: int, alpha: float, bias: float = 0.0, conditioning: float = 0.0
+) -> dict[str, Any]:
+    """lambda_5(F) <= lambda_max(S F S) <= Tr(S F) = 5 r_5, at one-sided failure alpha.
+
+    r_5 is the selected probability of the uniform ensemble over the five states, each trial drawing its state
+    independently. Under an acceptance bound delta the effect probability is at most (1 + delta) p_c, and the
+    preparation bias bound adds; the bound caps at the effect range 1 + delta. A large witness excludes nothing:
+    only this candidate's evidence fails.
+    """
+    require(type(selected) is int and type(eligible) is int and 0 <= selected <= eligible and eligible > 0, "counts")
+    require(0 < alpha < 1 and bias >= 0 and conditioning >= 0, "alpha, bias and delta")
+    from scipy.stats import beta
+
+    upper = 1.0 if selected == eligible else float(beta.ppf(1 - alpha, selected + 1, eligible - selected))
+    r_upper = (1 + conditioning) * upper + bias
+    return {"r_5_upper": r_upper, "lambda_5_upper": min(1 + conditioning, 5 * r_upper)}
+
+
+def zero_event_five_space_trials(threshold: float, alpha: float) -> int:
+    """Smallest N at which zero selected events of N give 5 (1 - alpha^(1/N)) <= threshold."""
+    return math.ceil(math.log(alpha) / math.log(1 - threshold / 5))
 
 
 # --- control effects -----------------------------------------------------------------------
@@ -649,6 +945,28 @@ def attenuated(tau: float) -> np.ndarray:
 
 def background(beta: float) -> np.ndarray:
     return beta * np.eye(DIM, dtype=complex) + (1 - beta) * ideal_effect()
+
+
+def frame_effect(a: np.ndarray, c: np.ndarray, cross: np.ndarray | None = None) -> np.ndarray:
+    """The effect with blocks A on K, C on Q and cross block B = V_Q^T F V_K, in the sedenion basis."""
+    b = np.zeros((COMPLEMENT_DIM, KERNEL_DIM), dtype=complex) if cross is None else cross
+    frame = np.block([[a, b.conj().T], [b, c]])
+    v = full_frame()
+    return np.asarray(v @ frame @ v.T, dtype=complex)
+
+
+def diagonal_effect(low: Sequence[float], rest: float, kernel: Sequence[float] = (0.0,) * KERNEL_DIM) -> np.ndarray:
+    """diag(kernel, low, rest^(12 - len(low))) in the frozen frame."""
+    c = list(low) + [rest] * (COMPLEMENT_DIM - len(low))
+    return frame_effect(np.diag(np.asarray(kernel, dtype=complex)), np.diag(np.asarray(c, dtype=complex)))
+
+
+def coupled_complement_effect() -> np.ndarray:
+    """A = 0.09 I_4, C = diag(0.09, 1^11) and B_11 = 0.09: spectrum {0, 0.09^3, 0.18, 1^11}, lambda_5 = a + mu_1."""
+    cross = np.zeros((COMPLEMENT_DIM, KERNEL_DIM), dtype=complex)
+    cross[0, 0] = 0.09
+    c = np.diag(np.array([0.09] + [1.0] * (COMPLEMENT_DIM - 1), dtype=complex))
+    return frame_effect(0.09 * np.eye(KERNEL_DIM, dtype=complex), c, cross)
 
 
 def is_effect(effect: np.ndarray, tolerance: float = 1e-12) -> bool:

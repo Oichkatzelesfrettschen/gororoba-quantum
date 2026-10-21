@@ -72,9 +72,54 @@ Consequences for Belenos on 2026-10-19:
 - Once the status reads `available` again, every mesh or seeded case reaches `live_mesh` or `live_architecture`. With `specs.architecture` absent, both raise `PlatformError` naming the platform. The change is written and not yet run against a live record.
 - Under the documented HOM rule, the live 88.5 % is below 90, so `plan` warns on a two-photon case. The warning is the only check: `plan` does not hold the case.
 
+## Record fields Perceval reads
+
+Perceval 1.3.1 builds `PlatformSpecs` from the processor record's `specs`
+(`RPCBasedCommunicationLayer.fetch_data`), takes `type` from the record's
+top level and `perfs` beside it, and reads the fields below. The live
+columns are the reads of 2026-10-21 near 03:50 UTC through the MCP server
+(qpu:belenos with `include_bulk`).
+
+| Field | Consumer in Perceval 1.3.1 | Behavior when absent | qpu:belenos | sim:belenos | qpu:ascella |
+|---|---|---|---|---|---|
+| `commands` | `RemoteComputer.__init__` freezes the command signatures; `RPCBasedCommunicationLayer.send` builds a v2 body only when present | `CommandFactory` signatures without `compilation_seed`, and a version-1 body | absent | present | present |
+| `available_commands` | `PlatformSpecs.commands` fallback, `PayloadUpdater._downgrade_to_v1` | no command resolves | present | present | present |
+| `default_mitigations` | `RemoteComputer.estimate_required_shots` | read as `[]` | absent | DetectorBalancing | `[]` |
+| `known_mitigations` | `RemoteComputer._use_mitigations_remotely` | read as `[]`: every requested mitigation runs locally | absent | 4 names | 4 names |
+| `architecture` | `RemoteComputer._get_imperfections`, `estimate_required_shots` | the experiment's own detectors stand in | absent | present | present |
+| `type` (in specs) | overwritten from the record's top-level `type` | none | absent (top level `qpu`) | present | present |
+| `constraints` | `RemoteComputer` constraint check | no check | present | present | present |
+| `parameters` | `RemoteComputer.parameters` | none | present | present | present |
+| `pcvl_version`, `software_versions` | `qd_platform.payload_version_basis` matches them against a frozen record | commands stay absent | 1.3.0 | 1.3.0 | 1.3.0 |
+| `detector`, `connected_input_modes` | `PlatformSpecs._make_architecture` from `specific_circuit` | no architecture is built | present | present | present |
+
+A version-1 body keeps a `mitigations` key, and `PayloadUpdater._update_to_v2`
+rebuilds the version-2 payload through `PayloadGenerator.from_computation`
+without it, so an explicit empty list returns as "server default"; the
+`qd_platform.py --self-test` round trip shows the key lost. Whether the
+service's worker upgrades through that path is inferred from
+perceval-quandela 1.3.0 carrying it; a sim:belenos job sent as version 1
+with `mitigations = []`, whose result metadata names the processing applied,
+would decide it. The missing field also breaks the request before any body
+exists: `RemoteComputer` builds its command signatures once, at
+construction, and the `CommandFactory` fallback's `sample_count` takes no
+`compilation_seed`, so `validate_single` rejects every seeded iteration.
+The frozen 2026-10-17 qpu:belenos record (`docs/evidence/bdsc/inputs/receipt.json`)
+carries the server's serialized command set at the same `pcvl_version` and
+`software_versions` as every live record since, byte-identical to the
+sim:belenos one, and all 17 retained qpu:belenos job bodies of 2026-10-17
+and 2026-10-18 are version 2. `qd_platform.payload_version_basis` therefore
+installs that command set before `RemoteComputer` is built, and again just
+before `send`, only when both version fields match; `plan` records the
+basis, a validation failure reads as a `PlatformError`, and a policy case
+refuses any body that comes out version 1. On the live record of
+2026-10-20 the empty-mitigation template case then builds a version-2 body
+with `mitigations = []`, and the provider-default case one without the
+key.
+
 ## Open items
 
-1. **Missing Belenos fields.** The live records of 2026-10-20 04:09 UTC and 08:51 UTC lack `specs.architecture`, `commands`, `default_mitigations`, `known_mitigations` and `specs.type`; `available_commands` is present. The 17:31 UTC record of 2026-10-17 was `running` and carried all four, so the status does not explain the omission. The cause is not identified. Test: re-read the record after the status returns to `available` and note the time. If the fields return, the omission was transient.
+1. **Missing Belenos fields.** The live records of 2026-10-20 04:09 UTC and 08:51 UTC lack `specs.architecture`, `commands`, `default_mitigations`, `known_mitigations` and `specs.type`; `available_commands` is present. The 17:31 UTC record of 2026-10-17 was `running` and carried all five, so the status does not explain the omission. An `include_bulk` read through the MCP server on 2026-10-21 near 03:50 UTC (`running`, then `calibration`) still lacks all five while `documentation` arrives, so the default read's bulk filter does not cause it; the qpu:belenos software versions equal the 2026-10-17 ones, and qpu:ascella and sim:belenos carry all five in the same hour. The omission is on the provider side and has persisted across three days and both observed statuses; its cause is a question for Quandela (`docs/evidence/bdsc/provider_contract.json`, `processor_record_completeness`). Perceval 1.3.1 tolerates each absence and changes behavior on two: `PlatformSpecs.known_mitigations` reads `[]`, so `RemoteComputer._use_mitigations_remotely` treats any explicitly requested mitigation as unknown and corrects it locally; `default_mitigations` reads `[]`, so `estimate_required_shots` assumes no server default. `commands` falls back to `CommandFactory` built from `available_commands`, whose signatures lack `compilation_seed`, and `type` comes from the record's top level. A request with `mitigations = None` therefore runs under a server default the record no longer declares (DetectorBalancing on 2026-10-17 and on sim:belenos, none on qpu:ascella), and only an explicit empty list fixes the processing from the request. A non-mesh `unitary` case needs no architecture; a mesh or seeded case stays refused until the field returns.
 2. **Snapshot refreshed, Belenos chip carried.** The catalogue was refreshed on 2026-10-20 at 08:51 UTC, and `qpu:belenos` reads `calibration` in it. Its live record had no architecture, so `snapshot()` in [`scripts/qd_platform.py`](../../../scripts/qd_platform.py) carries the 2026-10-17 copy: `architecture_carried` names `qpu:belenos`, and `architecture_observed_utc` stamps it 2026-10-17T17:53:31+00:00, so the carried couplers are not presented as a read of today's chip. The refresh ran from the primary checkout, whose code predates the carry. The branch's snapshot logic, given the same responses, wrote the committed file. The facts table is unchanged, so core-502 passes.
 3. **HOM rule is a warning.** `plan` warns on a two-photon case whose HOM is absent or at or below 90 %; it does not hold the case. Whether it should hold one is a decision for the user.
 4. **Failure mode in `plan`.** `architecture_blob` raises `PlatformError` on a missing `specs.architecture`, in place of the earlier `KeyError`. The self-test covers the helper; no live record has exercised the path.

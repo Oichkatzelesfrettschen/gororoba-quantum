@@ -270,7 +270,11 @@ state onto those modes (`guide/user-guide/04-compilation.md`). The
 `sim:belenos` and `sim:ascella` simulators mirror their QPUs' chips and
 input modes, so a circuit compiled there replays on the QPU from the
 result's `computed_circuit` and `computed_input` without a second
-compilation.
+compilation, according to the guide. The measured behavior is narrower: the
+service re-transpiled an architecture-form body, and an iterated body
+returned different meshes on the QPU than on the simulator
+([strategy.md](strategy.md#4-circuits-from-first-principles), sections 2
+and 4).
 `sim:slos`, `sim:sampling` and `sim:gpu:small` take any interferometer and
 accept multi-photon inputs. The detector column reads `threshold`, while
 the Belenos documentation states that some detectors are quasi

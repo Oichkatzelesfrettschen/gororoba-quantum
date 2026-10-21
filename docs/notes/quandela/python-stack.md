@@ -235,7 +235,7 @@ repo's mesh iterations use `circuit_params`, `input_state`, `max_samples`,
 | Class | Behavior (verified) | Repo use |
 |---|---|---|
 | `CompilationAveraging(repetitions, starting_seed)` | splits `max_samples` and `max_shots` evenly over `repetitions` sub-computations, forces command `probs`, sets `compilation_seed = starting_seed + i` (random start in 0..1,000,000 if none), averages the resulting distributions | none; the repo names the seed per iteration instead |
-| `PhotonRecycling` | recycles unused photons into extra samples (docs) | none |
+| `PhotonRecycling` | applies only to a unitary experiment with a fixed photon count n >= 3; relaxes the photon filter to n - 2, forces command `probs`, and reconstructs n-photon statistics from events with one or two photons lost, so its output is a corrected probability estimate, not counts (`perceval/runtime/error_mitigation/photon_recycling.py`) | none; a one-photon case disables it, and the six independent one-photon blocks of `box_kite_photonic_packed` would be read as one 6-photon experiment |
 | `DetectorBalancing` | divides out detector loss per state; assumes no dark counts | none |
 | `DistinguishablePhotonMitigation(order)` | corrects distinguishable-photon contributions up to `order` | none |
 
