@@ -30,6 +30,28 @@ ignore = ["UP040"]
 "results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/verify_viewer.py" = ["S101"]
 "docs/notes/packages/manual/checks/algebra_interplay.py" = ["S101"]
 
+# The behavioral suite under tests/ (gate core-615). Plugin autoload is off,
+# so a host's installed plugins never enter a run and xdist, the one pinned
+# plugin, loads by name. Each test process writes nothing inside the
+# checkout: the cache plugin is off and the gate runs under -B, so the gate
+# ledger can trace it; importlib mode imports test modules without placing
+# their directories on sys.path.
+[tool.pytest.ini_options]
+minversion = "9.1"
+testpaths = ["tests"]
+addopts = [
+    "--disable-plugin-autoload",
+    "-p",
+    "xdist.plugin",
+    "-p",
+    "no:cacheprovider",
+    "--import-mode=importlib",
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+]
+filterwarnings = ["error"]
+
 [tool.mypy]
 python_version = "3.14"
 mypy_path = "gororoba_quantum"

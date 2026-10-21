@@ -45,7 +45,8 @@ conflict.
 
 Usage: "$PYTHON" ci/premerge_gates.py REF [--base origin/main] [--max-seconds 5] [--no-fetch] [--replay-python PATH]
                                      [--cache DIR | --no-cache]
-       "$PYTHON" ci/premerge_gates.py --self-test
+
+tests/ci/test_premerge_gates.py holds the merge, conflict, strict-runtime and cache contracts.
 """
 
 from __future__ import annotations
@@ -54,7 +55,6 @@ import argparse
 import contextlib
 import fcntl
 import hashlib
-import io
 import json
 import os
 import re
@@ -65,10 +65,9 @@ import tempfile
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
-from unittest import mock
 
 import pins
-from host_identity import KEY_PREFIXES, KEY_VARIABLES, identity
+from host_identity import identity
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MAX_SECONDS = 5.0
@@ -337,160 +336,9 @@ def base_gates(
     return base, None
 
 
-def self_test() -> None:
-    """A clean merge where one branch adds a record gate and the other changes its input must fail."""
-    with tempfile.TemporaryDirectory(prefix="premerge-contract-") as temporary:
-        repo = Path(temporary) / "repo"
-        (repo / "ci").mkdir(parents=True)
-        git(repo, "init", "-q", "-b", "main")
-
-        def commit(files: dict[str, str], message: str) -> None:
-            for name, text in files.items():
-                (repo / name).parent.mkdir(parents=True, exist_ok=True)
-                (repo / name).write_text(text)
-            git(repo, "add", "-A")
-            git(repo, *MERGE_IDENTITY, "commit", "-q", "-m", message)
-
-        def gates(*extra: dict[str, Any]) -> str:
-            listed = [{"name": "always", "cwd": ".", "cmd": "true", "seconds": 0.1, "tier": "pr"}, *extra]
-            return json.dumps({"gates": listed})
-
-        record_gate = {"name": "record", "cwd": ".", "cmd": 'test "$(cat input)" = "$(cat record)"', "seconds": 0.1}
-        host_gate = {"name": "host", "cwd": ".", "cmd": "false", "seconds": 0.1}
-        runner_files = (
-            "ci/run_gates.py",
-            "ci/gate_inputs.py",
-            "ci/gate_ledger.py",
-            "ci/host_identity.py",
-            "ci/read_trace/sitecustomize.py",
-            "ci/pins.py",
-            "ci/requirements-replay.txt",
-            "gororoba_quantum/parallel.py",
-        )
-        runner_sources = {name: (ROOT / name).read_text(encoding="utf-8") for name in runner_files}
-        commit({"ci/gates.json": gates(host_gate), **runner_sources, "input": "v1\n"}, "base")
-        git(repo, "branch", "adds-record")
-        git(repo, "branch", "consistent")
-        git(repo, "switch", "-q", "adds-record")
-        commit({"ci/gates.json": gates(host_gate, record_gate), "record": "v1\n"}, "record and its gate")
-        git(repo, "switch", "-q", "consistent")
-        commit({"other": "x\n"}, "unrelated file")
-        git(repo, "switch", "-q", "main")
-        commit({"input": "v2\n"}, "regenerated input")
-        worktrees = Path(temporary) / "worktrees"
-        for ref, expected, marker in (
-            ("adds-record", 1, "=== record fails on the merge"),
-            ("consistent", 0, "0 introduced failures"),
-        ):
-            output = io.StringIO()
-            with contextlib.redirect_stdout(output):
-                status = premerge(repo, ref, "main", DEFAULT_MAX_SECONDS, worktrees)
-            text = output.getvalue()
-            if status != expected or marker not in text or "(host or main): host" not in text:
-                raise RuntimeError(f"premerge {ref} returned {status}, expected {expected}:\n{text}")
-            if git(repo, "worktree", "list", "--porcelain").count("worktree ") != 1 or worktrees.exists():
-                raise RuntimeError(f"premerge {ref} left a worktree or its directory behind")
-        git(repo, "switch", "-q", "-c", "conflicting", "main~1")
-        commit({"input": "v3\n"}, "conflicting input")
-        git(repo, "switch", "-q", "main")
-        with contextlib.redirect_stdout(io.StringIO()):
-            status = premerge(repo, "conflicting", "main", DEFAULT_MAX_SECONDS, worktrees)
-        if status != 2 or worktrees.exists():
-            raise RuntimeError(f"a conflicting merge returned {status}, expected 2, or left its directory")
-        # Under PINS_REQUIRED an unnamed historical runtime stops the run
-        # rather than failing its gates in both trees as shared failures.
-        strict = {key: value for key, value in os.environ.items() if key not in pins.REPLAY_VARIABLES}
-        with mock.patch.dict(os.environ, {**strict, pins.PINS_REQUIRED: "1"}, clear=True):
-            try:
-                with contextlib.redirect_stdout(io.StringIO()):
-                    premerge(repo, "consistent", "main", DEFAULT_MAX_SECONDS, worktrees)
-            except SystemExit as error:
-                if "historical runtimes cannot run" not in str(error) or worktrees.exists():
-                    raise RuntimeError(f"a strict run without a replay interpreter stopped with {error}") from error
-            else:
-                raise RuntimeError("a strict run without a replay interpreter compared its gates")
-        cache_self_test(repo, worktrees, Path(temporary) / "cache")
-    print(
-        "premerge: a clean merge that breaks a record gate fails, a consistent merge passes, a conflict stops, "
-        "a strict run without a replay interpreter stops, and the base cache stores passes only, hits on its "
-        "key, misses on a changed key or a foreign entry, and reruns a base failure"
-    )
-
-
-def cache_self_test(repo: Path, worktrees: Path, cache: Path) -> None:
-    """The first run stores the base passes; later runs over the key reuse them and still classify failures."""
-    import run_gates
-
-    # Every variable the runner sets for its gates changes their results,
-    # so each one must fall under the key.
-    supplied = run_gates.environment_for(None)
-    unkeyed = sorted(
-        name
-        for name in supplied
-        if not (name.startswith(KEY_PREFIXES) or name in KEY_VARIABLES) and name not in os.environ
-    )
-    if unkeyed:
-        raise RuntimeError(f"run_gates sets variables the cache key omits: {unkeyed}")
-
-    def run(ref: str, max_seconds: float = DEFAULT_MAX_SECONDS) -> tuple[int, str]:
-        output = io.StringIO()
-        with contextlib.redirect_stdout(output):
-            status = premerge(repo, ref, "main", max_seconds, worktrees, cache=cache)
-        return status, output.getvalue()
-
-    status, text = run("consistent")
-    entries = sorted(cache.glob("*.json"))
-    if status != 0 or "base cache miss" not in text or len(entries) != 1:
-        raise RuntimeError(f"the first cached run returned {status} with entries {entries}:\n{text}")
-    if json.loads(entries[0].read_text())["passed"] != ["always"]:
-        raise RuntimeError(f"the cache entry stores more than the base passes: {entries[0].read_text()}")
-    # A hit skips the base run, so the host gate's base failure comes from
-    # the --gates rerun; without it the shared failure reads as introduced.
-    for ref, expected, marker, rerun in (
-        ("consistent", 0, "0 introduced failures", "host"),
-        ("adds-record", 1, "=== record fails on the merge", "host, record"),
-    ):
-        status, text = run(ref)
-        hit = "base cache hit" in text and f"merge failures on the base: {rerun}\n" in text
-        if status != expected or marker not in text or not hit or "(host or main): host" not in text:
-            raise RuntimeError(f"a cached run of {ref} returned {status}, expected {expected}:\n{text}")
-    status, text = run("consistent", DEFAULT_MAX_SECONDS / 2)
-    if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 2:
-        raise RuntimeError(f"a changed --max-seconds reused another key's entry:\n{text}")
-    # A base runner without --gates reruns every gate. Its results replace
-    # only the requested failures, so a cached pass whose rerun happens to
-    # fail still marks the merge failure introduced.
-    real_results = results
-
-    def legacy(
-        root: Path, max_seconds: float, replay: dict[str, str] | None = None, gates: list[str] | None = None
-    ) -> dict[str, tuple[int, str]]:
-        found = real_results(root, max_seconds, replay)
-        if root.name.startswith("merge-") or gates is not None:
-            found["always"] = (1, "planted failure")
-        return found
-
-    with mock.patch(f"{__name__}.results", legacy):
-        status, text = run("consistent")
-    if status != 1 or "=== always fails on the merge" not in text:
-        raise RuntimeError(f"a legacy base rerun overwrote a cached pass:\n{text}")
-    with mock.patch.dict(os.environ, {"GOROROBA_AER_DEVICE": "premerge-key-probe"}):
-        status, text = run("consistent")
-    if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 3:
-        raise RuntimeError(f"a changed gate variable reused another key's entry:\n{text}")
-    if "premerge-key-probe" in "".join(path.read_text() for path in cache.glob("*.json")):
-        raise RuntimeError("a cache entry stores an environment value in plain text")
-    foreign_entries: list[Any] = [{"schema": CACHE_SCHEMA, "key": "foreign", "passed": ["always", "host"]}, [], None]
-    for foreign in foreign_entries:
-        entries[0].write_text(json.dumps(foreign))
-        status, text = run("consistent")
-        if status != 0 or "base cache miss" not in text or "(host or main): host" not in text:
-            raise RuntimeError(f"the entry {foreign!r} was trusted:\n{text}")
-
-
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
-    parser.add_argument("ref", nargs="?", help="branch, tag or commit to merge into BASE")
+    parser.add_argument("ref", help="branch, tag or commit to merge into BASE")
     parser.add_argument("--base", default="origin/main")
     parser.add_argument("--max-seconds", type=float, default=DEFAULT_MAX_SECONDS)
     parser.add_argument("--no-fetch", action="store_true", help="use the local refs as they stand")
@@ -500,22 +348,11 @@ def main(argv: list[str] | None = None) -> int:
         "--cache", type=Path, help="base result cache, default $XDG_CACHE_HOME/gororoba-quantum/premerge"
     )
     caching.add_argument("--no-cache", action="store_true", help="run the base on every invocation")
-    parser.add_argument("--self-test", action="store_true")
     parser.add_argument(
         "--replay-python",
         help="interpreter for historical-runtime gates; it must hold every pin of ci/requirements-replay.txt",
     )
     arguments = parser.parse_args(argv)
-    if arguments.self_test:
-        # The contracts build synthetic trees without historical-runtime
-        # gates, so the shard's own replay environment cannot decide them;
-        # the strict-runtime case sets PINS_REQUIRED itself.
-        hermetic = {key: value for key, value in os.environ.items() if key != pins.PINS_REQUIRED}
-        with mock.patch.dict(os.environ, hermetic, clear=True):
-            self_test()
-        return 0
-    if arguments.ref is None:
-        parser.error("REF is required unless --self-test")
     if not arguments.no_fetch:
         git(ROOT, "fetch", "--quiet", "origin")
     worktrees = arguments.worktrees or Path.home() / "worktrees" / repository_name(ROOT) / "premerge"
