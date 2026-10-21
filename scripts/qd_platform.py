@@ -530,9 +530,12 @@ def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quandela/runs"
-CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1")
+CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1", "qd-bdsc-cases-v1")
 CIRCUIT_SCHEMA = "qd-circuit-v1"
-CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1")
+NUMERIC_CIRCUIT_SCHEMA = "qd-numeric-circuit-v1"
+CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1", NUMERIC_CIRCUIT_SCHEMA)
+# A case's processing policy: None leaves the server's default mitigations, an empty list disables them.
+MITIGATION_POLICIES = (None, [])
 STATE_SCHEMA = "qd-submission-state-v1"
 SUBMISSION_SCHEMA = "qd-submission-v1"
 COLLECTION_SCHEMA = "qd-collection-v1"
@@ -580,7 +583,14 @@ def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
     expected = numpy.eye(circuit["modes"], dtype=complex)
     phases: list[tuple[int, Any]] = []
     for component in circuit["components"]:
-        matrix = numpy.array([[real(x) for x in row] for row in component["unitary"]], dtype=complex)
+        if "numeric" in component:
+            # A numeric component holds complex entries [re, im]; it must be unitary to 1e-12 before Perceval sees it.
+            matrix = numpy.array([[complex(re, im) for re, im in row] for row in component["numeric"]], dtype=complex)
+            defect = float(numpy.max(numpy.abs(matrix.conj().T @ matrix - numpy.eye(len(matrix)))))
+            if defect > 1e-12:
+                raise PlatformError(f"a numeric component at {component['at']} deviates from unitary by {defect:.2e}")
+        else:
+            matrix = numpy.array([[real(x) for x in row] for row in component["unitary"]], dtype=complex)
         at, width = component["at"], len(matrix)
         expected[at : at + width, at : at + width] = matrix
         if manifest.get("gate_form", "unitary") == "native":
@@ -840,6 +850,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     Perceval reads the platform's processor record with the token to do so.
     """
     from perceval import ExecutionFactory, QuandelaCommunicationLayer, RemoteComputer
+    from perceval.utils.constants import KEY_MITIGATIONS
 
     found = versions()
     if found.get("perceval-quandela") != RUNNER_PERCEVAL:
@@ -848,6 +859,10 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
 
     layer = QuandelaCommunicationLayer(platform, token=token())
     computer = RemoteComputer(layer)
+    policy = manifest.get("mitigations")
+    if policy not in MITIGATION_POLICIES:
+        raise PlatformError(f"{manifest['job']}: mitigations {policy!r} is neither null nor an empty list")
+    computer.mitigations = None if policy is None else []
     form = iteration_form(manifest)
     mesh = manifest.get("gate_form") == "mesh"
     built, settings = mesh_experiment(manifest, circuit) if mesh else (experiment(manifest, circuit), [])
@@ -917,6 +932,9 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     layer._rpc_handler.create_job = record
     layer.send(computer.prepare_payload(computation))
     body: dict[str, Any] = {**captured["body"], "max_duration": manifest["max_duration"]}
+    # Perceval writes the mitigations key only for a non-null list, so the body shows which policy it carries.
+    if "mitigations" in manifest and (KEY_MITIGATIONS in json.dumps(body)) != (policy is not None):
+        raise PlatformError(f"{manifest['job']}: the job body does not carry the mitigation policy {policy!r}")
     if token() in json.dumps(body):
         raise PlatformError("the job body carries the token")
     return {"body": body, "estimated_shots": estimate, "versions": found}
