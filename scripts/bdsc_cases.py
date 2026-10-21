@@ -1,32 +1,32 @@
-"""Belenos six-state qualification case: one runnable Quandela case per observation, and its readout.
+"""Belenos six-state qualification case: one runnable Quandela job per template, policy and epoch, and its readout.
 
-docs/evidence/bdsc/qualification_case.json fixes the observations (pair,
-completion, processing policy, epoch, six-state label), the trial count and
-the shot budget; this script turns each observation into a case directory
-that scripts/qd_platform.py plans and submits:
+docs/evidence/bdsc/qualification_case.json fixes the observations, the 8 jobs
+of 12 iterations, the trials and the shot budget; this script turns each job
+into a case directory that scripts/qd_platform.py plans and submits:
 
-- circuit.json (qd-numeric-circuit-v1): one 24-mode numeric unitary, the
-  Householder or Givens completion W of the chip column U24 psi, with
-  W e_r = U24 psi on the source mode r and complex entries [re, im];
-- cases.json (qd-bdsc-cases-v1): command sample_count, min_detected_photons
-  1, max_samples the frozen trials, max_shots twice that, the policy's
-  mitigations (null for provider defaults, [] to disable them), the selected
-  output modes, the eligibility rule and the ideal selected probability.
+- circuit.json (qd-template-circuit-v1): the job's fixed 24-mode template
+  from bdsc_certificate.template_ops, outward-ladder or reverse-ladder, with
+  the photon on source mode 6;
+- cases.json (qd-bdsc-cases-v1): gate_form template, command sample_count,
+  min_detected_photons 1, 12 iterations whose settings bind one state's 47
+  parameters and carry its chip column, the policy's mitigations (null for
+  provider defaults, [] to disable them), max_samples and max_shots summed
+  over the iterations, the selected output modes and the eligibility rule.
 
-Without --draw the cases carry no compilation_seed and no acquisition rank
-and read draft: they plan, and they do not submit. With --draw (an
-scripts/anu_qrng.py record) value i seeds observation i and value
-settings + i ranks it within its epoch.
+Without --draw the cases carry no compilation seeds, keep the observation
+order and read draft: they plan and do not submit. With --draw (an
+scripts/anu_qrng.py record of at least 192 values) value i seeds observation i
+and value 96 + i orders it within its job.
 
 The readout counts one trial per detection pattern with exactly one click:
 selected when that click is on a selected output, eligible either way.
-Patterns with zero or several clicks are recorded and excluded.
+Patterns with zero or several clicks are tallied and excluded.
 
 Usage:
   "$PYTHON" scripts/bdsc_cases.py --write DIR [--draw FILE]
   "$PYTHON" scripts/bdsc_cases.py --check DIR [--draw FILE]
-  "$PYTHON" scripts/bdsc_cases.py --local DIR     # Perceval SLOS reproduces every ideal probability
-  "$PYTHON" scripts/bdsc_cases.py --readout DIR RUN_DIR...
+  "$PYTHON" scripts/bdsc_cases.py --local DIR
+  "$PYTHON" scripts/bdsc_cases.py --readout RUN_DIR...
 """
 
 from __future__ import annotations
@@ -51,17 +51,17 @@ import bdsc  # noqa: E402
 
 CASE = ROOT / "docs/evidence/bdsc/qualification_case.json"
 TARGET = ROOT / "docs/evidence/bdsc/target.json"
+CONTRACT = ROOT / "docs/evidence/bdsc/provider_contract.json"
 FAMILY = "bdsc_qualification"
 CASES_SCHEMA = "qd-bdsc-cases-v1"
-CIRCUIT_SCHEMA = "qd-numeric-circuit-v1"
+CIRCUIT_SCHEMA = "qd-template-circuit-v1"
 PLATFORMS = ["sim:belenos", "qpu:belenos"]
 MAX_DURATION = 300
+TEMPLATE_TAGS = {"outward-ladder": "out", "reverse-ladder": "rev"}
+POLICY_TAGS = {"provider-defaults": "def", "empty-mitigation": "none"}
 PAIR_TAGS = {"target-complement": "tc", "middle-middle": "mm"}
-COMPLETION_TAGS = {"householder": "h", "givens": "g"}
-POLICY_TAGS = {"provider-defaults": "d", "empty-mitigation": "n"}
 LABEL_TAGS = {"f": "f", "g": "g", "+": "p", "-": "m", "+i": "pi", "-i": "mi"}
 ELIGIBILITY = "exactly one click among the 24 outputs; selected when that click is on a selected output"
-COMPLETIONS = {"householder": cert.householder_completion, "givens": cert.givens_completion}
 
 
 def require(condition: bool, message: str) -> None:
@@ -73,100 +73,108 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def job_name(observation: dict[str, Any]) -> str:
-    return "-".join(
-        (
-            PAIR_TAGS[observation["pair"]],
-            COMPLETION_TAGS[observation["preparation"]],
-            POLICY_TAGS[observation["processing"]],
-            f"e{observation['epoch']}",
-            LABEL_TAGS[observation["label"]],
-        )
-    )
+def job_name(job: dict[str, Any]) -> str:
+    return f"{TEMPLATE_TAGS[job['template']]}-{POLICY_TAGS[job['processing']]}-e{job['epoch']}"
+
+
+def setting_name(observation: dict[str, Any]) -> str:
+    return f"{PAIR_TAGS[observation['pair']]}-{LABEL_TAGS[observation['label']]}"
 
 
 def load_draw(path: Path | None, settings: int) -> list[int] | None:
-    """The first 2 x settings values of an anu_qrng record, which must be checked and long enough."""
+    """The first 2 x settings values of an anu_qrng record whose raw bytes match their digest and parse."""
     if path is None:
         return None
     record = json.loads(path.read_text(encoding="utf-8"))
-    values = record["values"]
     raw = record["raw"].encode("utf-8")
     require(sha256_bytes(raw) == record["raw_sha256"], f"{path}: raw bytes differ from their sha256")
-    require(values == json.loads(raw)["data"], f"{path}: parsed values differ from the raw response")
-    require(len(values) >= 2 * settings, f"{path}: {len(values)} values, the case needs {2 * settings}")
-    return [int(v) for v in values[: 2 * settings]]
+    require(record["values"] == json.loads(raw)["data"], f"{path}: parsed values differ from the raw response")
+    require(len(record["values"]) >= 2 * settings, f"{path}: {len(record['values'])} values, need {2 * settings}")
+    return [int(v) for v in record["values"][: 2 * settings]]
 
 
-def circuit_document(observation: dict[str, Any], case: dict[str, Any], target: dict[str, Any]) -> dict[str, Any]:
+def columns(case: dict[str, Any], target: dict[str, Any]) -> dict[tuple[str, str], np.ndarray]:
+    """The chip column U24 psi of every bank state, keyed by (pair, label)."""
     u = cert.numeric_unitary([[(Fraction(a), Fraction(b)) for a, b in row] for row in target["U24"]])
-    bank = next(b for b in case["banks"] if b["pair"] == observation["pair"])
-    row = next(r for r in bank["settings"] if r["label"] == observation["label"])
-    psi = np.array([complex(re, im) for re, im in row["state_e_basis"]])
-    column = cert.chip_column(u, psi)
-    source = target["source_mode"]
-    w = COMPLETIONS[observation["preparation"]](column, source)
-    require(np.allclose(w[:, source], column, atol=1e-12), f"{job_name(observation)}: completion misses the column")
-    input_state = [0] * cert.MODES
-    input_state[source] = 1
-    return {
-        "schema": CIRCUIT_SCHEMA,
-        "modes": cert.MODES,
-        "input_state": input_state,
-        "components": [{"at": 0, "numeric": [[[float(z.real), float(z.imag)] for z in line] for line in w]}],
-    }
+    out = {}
+    for bank in case["banks"]:
+        for row in bank["settings"]:
+            psi = np.array([complex(re, im) for re, im in row["state_e_basis"]])
+            out[(bank["pair"], row["label"])] = cert.chip_column(u, psi)
+    return out
 
 
 def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
-    """{job: {"cases.json": bytes, "circuit.json": bytes}} for every observation of the frozen case."""
+    """{job: {"cases.json": bytes, "circuit.json": bytes}} for every job of the frozen case."""
     case_bytes = CASE.read_bytes()
     case = json.loads(case_bytes)
     target = json.loads(TARGET.read_text(encoding="utf-8"))
     observations = case["observations"]
     values = load_draw(draw, len(observations))
-    trials = case["acquisition"]["trials_per_setting"]
-    max_shots = case["resources"]["max_shots_per_setting"]
+    source = target["source_mode"]
+    trials = case["resources"]["eligible_trials_per_setting"]
+    max_shots = case["resources"]["max_shots_per_iteration"]
     ideal = {(b["pair"], r["label"]): r["ideal_selected"]["E0"] for b in case["banks"] for r in b["settings"]}
-    ranks: dict[int, int] = {}
-    if values is not None:
-        for epoch in sorted({o["epoch"] for o in observations}):
-            members = [i for i, o in enumerate(observations) if o["epoch"] == epoch]
-            order = sorted(members, key=lambda i: (values[len(observations) + i], i))
-            ranks.update({i: rank for rank, i in enumerate(order)})
+    chip = columns(case, target)
     out: dict[str, dict[str, bytes]] = {}
-    for i, observation in enumerate(observations):
-        name = job_name(observation)
-        circuit_bytes = (json.dumps(circuit_document(observation, case, target), indent=1) + "\n").encode()
+    for job in case["jobs"]:
+        ops = cert.template_ops(job["template"], source)
+        input_state = [0] * cert.MODES
+        input_state[source] = 1
+        circuit = {
+            "schema": CIRCUIT_SCHEMA,
+            "template": job["template"],
+            "modes": cert.MODES,
+            "input_state": input_state,
+            "parameters": sum(1 for _, _, k in ops if k is not None),
+            "ops": [list(op) for op in ops],
+        }
+        circuit_bytes = (json.dumps(circuit, indent=1) + "\n").encode()
+        members = list(job["iterations"])
+        if values is not None:
+            members.sort(key=lambda i: (values[len(observations) + i], i))
+        settings = []
+        for i in members:
+            o = observations[i]
+            column = chip[(o["pair"], o["label"])]
+            params = cert.template_params(job["template"], column, source)
+            setting: dict[str, Any] = {
+                "name": setting_name(o),
+                "observation_index": i,
+                "circuit_params": {f"x{k}": float(v) for k, v in enumerate(params)},
+                "column": [[float(z.real), float(z.imag)] for z in column],
+                "ideal_selected_E0": ideal[(o["pair"], o["label"])],
+            }
+            if values is not None:
+                setting["compilation_seed"] = values[i]
+            settings.append(setting)
+        name = job_name(job)
         manifest: dict[str, Any] = {
             "schema": CASES_SCHEMA,
             "family": FAMILY,
             "job": name,
             "platforms": PLATFORMS,
             "command": "sample_count",
-            "gate_form": "numeric",
+            "gate_form": "template",
             "min_detected_photons": 1,
-            "max_samples": trials,
-            "max_shots": max_shots,
+            "iterations": len(settings),
+            "max_samples": trials * len(settings),
+            "max_shots": max_shots * len(settings),
             "max_duration": MAX_DURATION,
-            "mitigations": None if observation["processing"] == "provider-defaults" else [],
-            "observation": observation,
-            "observation_index": i,
+            "mitigations": None if job["processing"] == "provider-defaults" else [],
+            "job_spec": job,
+            "settings": settings,
             "selected_modes": target["selected_modes"],
-            "source_mode": target["source_mode"],
             "eligibility": ELIGIBILITY,
-            "ideal_selected_E0": ideal[(observation["pair"], observation["label"])],
             "qualification_case_sha256": sha256_bytes(case_bytes),
             "target_sha256": target["target_sha256"],
             "circuit": {"file": "circuit.json", "sha256": sha256_bytes(circuit_bytes)},
             "draft": values is None,
         }
-        if values is not None:
-            manifest["compilation_seed"] = values[i]
-            manifest["acquisition_rank"] = ranks[i]
-            manifest["draw"] = {"file": str(draw), "seed_index": i, "rank_index": len(observations) + i}
-        cases_bytes = (json.dumps(manifest, indent=1) + "\n").encode()
-        out[name] = {"cases.json": cases_bytes, "circuit.json": circuit_bytes}
-    require(len(out) == len(observations), "two observations share a job name")
+        if values is not None and draw is not None:
+            manifest["draw"] = {"file": draw.name, "seed_offset": 0, "order_offset": len(observations)}
+        out[name] = {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
+    require(len(out) == len(case["jobs"]), "two jobs share a name")
     return out
 
 
@@ -175,49 +183,53 @@ def write(directory: Path, draw: Path | None) -> None:
         (directory / name).mkdir(parents=True, exist_ok=True)
         for file, content in files.items():
             (directory / name / file).write_bytes(content)
-    print(f"bdsc cases: wrote {len(list(directory.iterdir()))} case directories under {directory}")
+    print(f"bdsc cases: wrote {len(list(directory.iterdir()))} job directories under {directory}")
 
 
 def check(directory: Path, draw: Path | None) -> None:
+    """A rebuild matches: circuits exactly, manifests exactly apart from float parameters and columns, which come
+    from a BLAS product and compare within cert.CHECK_TOLERANCE."""
     fresh = documents(draw)
     present = sorted(p.name for p in directory.iterdir() if p.is_dir())
-    require(present == sorted(fresh), f"case directories differ: {sorted(set(present) ^ set(fresh))[:6]}")
+    require(present == sorted(fresh), f"job directories differ: {sorted(set(present) ^ set(fresh))}")
     for name, files in fresh.items():
-        # Completion entries are floats from a BLAS product, so circuits compare within cert.CHECK_TOLERANCE, and
-        # each manifest compares exactly apart from its circuit digest, which must match its own circuit's bytes.
         retained_circuit = (directory / name / "circuit.json").read_bytes()
-        cert.close(json.loads(files["circuit.json"]), json.loads(retained_circuit), f"{name}/circuit.json")
-        manifest = json.loads((directory / name / "cases.json").read_bytes())
-        expected = json.loads(files["cases.json"])
-        require(manifest["circuit"]["sha256"] == sha256_bytes(retained_circuit), f"{name}: circuit digest")
-        manifest["circuit"]["sha256"] = expected["circuit"]["sha256"]
-        require(manifest == expected, f"{name}/cases.json differs from a fresh build")
-    print(f"bdsc cases: {len(fresh)} case directories match the frozen case")
+        require(retained_circuit == files["circuit.json"], f"{name}/circuit.json differs from a fresh build")
+        cert.close(json.loads(files["cases.json"]), json.loads((directory / name / "cases.json").read_bytes()), name)
+    print(f"bdsc cases: {len(fresh)} job directories match the frozen case")
 
 
-def _local_item(case_dir: Path) -> tuple[str, float, float]:
-    """(job, ideal selected probability, Perceval SLOS selected probability) for one case directory."""
+def _local_item(case_dir: Path) -> tuple[str, int, float]:
+    """(job, iterations, worst deviation of Perceval SLOS from the ideal selected probability over them)."""
     import perceval as pcvl
     import qd_platform
 
     manifest, circuit, _ = qd_platform.load_case(case_dir)
-    built = qd_platform.experiment(manifest, circuit)
-    processor = pcvl.Processor("SLOS", built)
-    probs = processor.probs()["results"]
+    built, settings = qd_platform.template_experiment(manifest, circuit)
     selected = set(manifest["selected_modes"])
-    p = sum(float(v) for state, v in probs.items() if state.n == 1 and any(state[m] for m in selected))
-    return manifest["job"], float(manifest["ideal_selected_E0"]), p
+    parameters = {p.name: p for p in built.get_circuit_parameters().values()}
+    worst = 0.0
+    for setting in settings:
+        for key, value in setting["circuit_params"].items():
+            parameters[key].set_value(value)
+        probs = pcvl.Processor("SLOS", built).probs()["results"]
+        p = sum(float(v) for state, v in probs.items() if state.n == 1 and any(state[m] for m in selected))
+        worst = max(worst, abs(p - float(setting["ideal_selected_E0"])))
+        for parameter in parameters.values():
+            parameter.reset()
+    return manifest["job"], len(settings), worst
 
 
 def local(directory: Path) -> None:
-    """Perceval SLOS on each built experiment reproduces the case's ideal selected probability to 1e-9."""
+    """Perceval SLOS on every iteration of every runner-built job reproduces the ideal selected probability."""
     import parallel
 
     dirs = sorted(p for p in directory.iterdir() if p.is_dir())
-    rows = parallel.ordered_map(_local_item, dirs)
-    worst = max(abs(a - b) for _, a, b in rows)
+    # Each item simulates a whole job's iterations, so one item already repays a worker.
+    rows = parallel.ordered_map(_local_item, dirs, min_items=1)
+    worst = max(w for _, _, w in rows)
     require(worst <= 1e-9, f"SLOS deviates from the ideal selected probability by {worst:.3e}")
-    print(f"bdsc cases: Perceval SLOS reproduces {len(rows)} ideal selected probabilities within {worst:.1e}")
+    print(f"bdsc cases: Perceval SLOS reproduces {sum(n for _, n, _ in rows)} ideal probabilities within {worst:.1e}")
 
 
 def tally(counts: dict[str, int], selected_modes: list[int]) -> dict[str, int]:
@@ -236,34 +248,35 @@ def tally(counts: dict[str, int], selected_modes: list[int]) -> dict[str, int]:
     return out
 
 
-def readout(directory: Path, runs: list[Path]) -> dict[str, Any]:
+def readout(runs: list[Path]) -> dict[str, Any]:
     """Every contrast of the frozen case from collected runs, each policy admitted only by its contract."""
     case = json.loads(CASE.read_text(encoding="utf-8"))
     observations = case["observations"]
     contrasts = cert.case_contrasts(observations)
-    by_job: dict[str, dict[str, int]] = {}
+    tallies: dict[int, dict[str, int]] = {}
     for run in runs:
         manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
         result = json.loads((run / "results.json").read_text(encoding="utf-8"))
         require(result.get("status") == "completed", f"{run}: status {result.get('status')}")
-        by_job[manifest["job"]] = tally(result["counts"], manifest["selected_modes"])
-    names = [job_name(o) for o in observations]
-    missing = [n for n in names if n not in by_job]
-    require(not missing, f"no collected run for {missing[:6]}")
-    k = np.array([by_job[n]["selected"] for n in names])
-    n = np.array([by_job[n]["eligible"] for n in names])
-    trials = case["acquisition"]["trials_per_setting"]
-    require(bool(np.all(n == trials)), "an observation's eligible trials differ from the frozen n")
-    contract = json.loads((ROOT / "docs/evidence/bdsc/provider_contract.json").read_text(encoding="utf-8"))
-    supported = {c["capability"]: c["status"] for c in contract["capabilities"]}
-    admitted_policies = {"empty-mitigation"} if supported.get("uncorrected_observations") == "supported" else set()
+        require(not manifest.get("draft", True), f"{run}: a draft case carries no frozen seeds or order")
+        per_iteration = result["iterations"]
+        require(len(per_iteration) == len(manifest["settings"]), f"{run}: iteration count differs")
+        for setting, iteration in zip(manifest["settings"], per_iteration, strict=True):
+            tallies[setting["observation_index"]] = tally(iteration["counts"], manifest["selected_modes"])
+    missing = [i for i in range(len(observations)) if i not in tallies]
+    require(not missing, f"no collected iteration for observations {missing[:6]}")
+    k = np.array([tallies[i]["selected"] for i in range(len(observations))])
+    n = np.array([tallies[i]["eligible"] for i in range(len(observations))])
+    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    status = {c["capability"]: c["status"] for c in contract["capabilities"]}
+    admitted_policies = {"empty-mitigation"} if status.get("uncorrected_observations") == "supported" else set()
     admitted = np.array([o["processing"] in admitted_policies for o in observations])
     result = bdsc.contrast_readout(k, n, contrasts, cert.CASE_ALPHA, admitted)
     return {
         "admitted_policies": sorted(admitted_policies),
-        "tallies": by_job,
+        "tallies": [tallies[i] for i in range(len(observations))],
         "contrasts": [
-            {"family": c[0], "terms": [[names[j], w] for j, w in c[2]], "interval": [lo, hi], "status": st}
+            {"family": c[0], "terms": [[j, w] for j, w in c[2]], "interval": [lo, hi], "status": st}
             for c, lo, hi, st in zip(contrasts, result["lower"], result["upper"], result["status"], strict=True)
         ],
     }
@@ -285,7 +298,7 @@ def main() -> int:
     elif args.local:
         local(args.local)
     else:
-        print(json.dumps(readout(args.readout[0], args.readout[1:]), indent=1))
+        print(json.dumps(readout(args.readout), indent=1))
     return 0
 
 

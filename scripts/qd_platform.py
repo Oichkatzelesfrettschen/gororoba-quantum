@@ -532,8 +532,8 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quandela/runs"
 CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1", "qd-bdsc-cases-v1")
 CIRCUIT_SCHEMA = "qd-circuit-v1"
-NUMERIC_CIRCUIT_SCHEMA = "qd-numeric-circuit-v1"
-CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1", NUMERIC_CIRCUIT_SCHEMA)
+TEMPLATE_CIRCUIT_SCHEMA = "qd-template-circuit-v1"
+CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1", TEMPLATE_CIRCUIT_SCHEMA)
 # A case's processing policy: None leaves the server's default mitigations, an empty list disables them.
 MITIGATION_POLICIES: tuple[None, list[str]] = (None, [])
 STATE_SCHEMA = "qd-submission-state-v1"
@@ -583,14 +583,7 @@ def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
     expected = numpy.eye(circuit["modes"], dtype=complex)
     phases: list[tuple[int, Any]] = []
     for component in circuit["components"]:
-        if "numeric" in component:
-            # A numeric component holds complex entries [re, im]; it must be unitary to 1e-12 before Perceval sees it.
-            matrix = numpy.array([[complex(re, im) for re, im in row] for row in component["numeric"]], dtype=complex)
-            defect = float(numpy.max(numpy.abs(matrix.conj().T @ matrix - numpy.eye(len(matrix)))))
-            if defect > 1e-12:
-                raise PlatformError(f"a numeric component at {component['at']} deviates from unitary by {defect:.2e}")
-        else:
-            matrix = numpy.array([[real(x) for x in row] for row in component["unitary"]], dtype=complex)
+        matrix = numpy.array([[real(x) for x in row] for row in component["unitary"]], dtype=complex)
         at, width = component["at"], len(matrix)
         expected[at : at + width, at : at + width] = matrix
         if manifest.get("gate_form", "unitary") == "native":
@@ -633,6 +626,49 @@ def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
     built.with_input(pcvl.BasicState(circuit["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
     return built
+
+
+def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[Any, list[dict[str, Any]]]:
+    """A fixed circuit of BS.Rx and PS components with one Perceval parameter per free angle, and its settings.
+
+    circuit["ops"] lists ["BS", m, k] on modes (m, m + 1) with angle parameter xk (k null for a fixed pi), and
+    ["PS", m, k] on mode m. Every setting binds its circuit_params, and Perceval's unitary must carry the source
+    photon to the setting's column within 1e-9 before anything is sent.
+    """
+    import numpy
+    import perceval as pcvl
+
+    modes = circuit["modes"]
+    chip = pcvl.Circuit(modes)
+    parameters: dict[str, Any] = {}
+    for kind, m, k in circuit["ops"]:
+        if kind == "BS":
+            angle = math.pi if k is None else parameters.setdefault(f"x{k}", pcvl.P(f"x{k}"))
+            chip.add(m, pcvl.BS.Rx(theta=angle))
+        elif kind == "PS":
+            chip.add(m, pcvl.PS(parameters.setdefault(f"x{k}", pcvl.P(f"x{k}"))))
+        else:
+            raise PlatformError(f"unknown template op {kind!r}")
+    if len(parameters) != circuit["parameters"]:
+        raise PlatformError(f"the template binds {len(parameters)} parameters, not {circuit['parameters']}")
+    source = circuit["input_state"].index(1)
+    settings = manifest["settings"]
+    for setting in settings:
+        values = setting["circuit_params"]
+        if sorted(values) != sorted(parameters):
+            raise PlatformError(f"{setting['name']}: circuit_params do not name the template's parameters")
+        for name, parameter in parameters.items():
+            parameter.set_value(values[name])
+        column = numpy.array([complex(re, im) for re, im in setting["column"]])
+        deviation = float(numpy.max(numpy.abs(numpy.array(chip.compute_unitary())[:, source] - column)))
+        if deviation > 1e-9:
+            raise PlatformError(f"{setting['name']}: the template misses its column by {deviation:.2e}")
+        for parameter in parameters.values():
+            parameter.reset()
+    built = pcvl.Experiment(chip)
+    built.with_input(pcvl.BasicState(circuit["input_state"]))
+    built.min_detected_photons_filter(manifest["min_detected_photons"])
+    return built, settings
 
 
 def mesh_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[Any, list[dict[str, Any]]]:
@@ -740,6 +776,17 @@ def iteration_form(manifest: dict[str, Any]) -> str:
         raise PlatformError(f"{owner}: a one-entry iterator names its setting")
     if manifest.get("gate_form") == "mesh":
         return "mesh"
+    if manifest.get("gate_form") == "template":
+        template_settings = manifest.get("settings")
+        if not isinstance(template_settings, list) or len(template_settings) != steps:
+            raise PlatformError(f"{owner}: {steps} template iterations need {steps} settings")
+        for setting in template_settings:
+            if not isinstance(setting.get("circuit_params"), dict) or "column" not in setting:
+                raise PlatformError(
+                    f"{owner}/{setting.get('name')}: a template setting binds circuit_params and column"
+                )
+            seed_value(setting.get("compilation_seed", 0), f"{owner}/{setting.get('name')}")
+        return "template"
     settings = manifest.get("settings")
     if settings is None:
         return "phase"
@@ -884,7 +931,13 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     computer.mitigations = None if policy is None else []
     form = iteration_form(manifest)
     mesh = manifest.get("gate_form") == "mesh"
-    built, settings = mesh_experiment(manifest, circuit) if mesh else (experiment(manifest, circuit), [])
+    template = form == "template"
+    if mesh:
+        built, settings = mesh_experiment(manifest, circuit)
+    elif template:
+        built, settings = template_experiment(manifest, circuit)
+    else:
+        built, settings = experiment(manifest, circuit), []
     if form == "seeded":
         settings = manifest["settings"]
     steps = manifest.get("iterations", 1)
@@ -902,7 +955,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     seed = job_seed(manifest, settings)
     if seed is not None:
         base.add_params(compilation_seed=seed)
-    params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if form == "phase" else None)
+    params = settings[0]["circuit_params"] if mesh or template else ({"phi": 0.0} if form == "phase" else None)
     if len({samples for samples, _ in budgets}) == 1:
         estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
         estimate = None if estimate is None else estimate * steps
@@ -916,6 +969,15 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
                 factory.add_iteration(
                     circuit_params=settings[k]["circuit_params"],
                     input_state=pcvl.BasicState(settings[k]["input_state"]),
+                    max_samples=per_samples,
+                    max_shots=per_shots,
+                    compilation_seed=settings[k].get("compilation_seed", 0),
+                )
+                continue
+            if template:
+                # A template iteration binds its state's angles and phases on the job's fixed circuit.
+                factory.add_iteration(
+                    circuit_params=settings[k]["circuit_params"],
                     max_samples=per_samples,
                     max_shots=per_shots,
                     compilation_seed=settings[k].get("compilation_seed", 0),
