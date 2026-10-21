@@ -193,7 +193,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_measured_ripple.py",
    "name": "core-030",
    "seconds": 32.8,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -249,7 +249,7 @@
    "cmd": "\"$PYTHON\" designs.py",
    "name": "core-040",
    "seconds": 42.6,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -353,7 +353,7 @@
    "cmd": "\"$PYTHON\" -W error schur_acceleration.py >/dev/null",
    "name": "core-053",
    "seconds": 122.2,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -361,7 +361,7 @@
    "cmd": "\"$PYTHON\" -W error nullity_twelve_locus.py >/dev/null",
    "name": "core-055",
    "seconds": 28.4,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -369,7 +369,7 @@
    "cmd": "\"$PYTHON\" -W error nullity_twelve_curves.py >/dev/null",
    "name": "core-057",
    "seconds": 39.5,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -377,7 +377,7 @@
    "cmd": "\"$PYTHON\" -W error kernel_limit_contracts.py >/dev/null",
    "name": "core-059",
    "seconds": 59.2,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -441,7 +441,7 @@
    "cmd": "\"$PYTHON\" order_finding.py",
    "name": "core-070",
    "seconds": 48.4,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -667,7 +667,7 @@
    "cmd": "\"$PYTHON\" qpe_diagnostics.py",
    "name": "core-092",
    "seconds": 35.8,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -717,7 +717,7 @@
    "cmd": "\"$PYTHON\" pub_shot_runtime_contracts.py",
    "name": "core-098",
    "seconds": 47.7,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -725,7 +725,7 @@
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" pub_shot_runtime_contracts.py",
    "name": "core-099",
    "seconds": 90.0,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1029,7 +1029,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/dimension32_skew_schur/replay.py --check",
    "name": "sources-143",
    "seconds": 63.4,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "sources",
@@ -1125,7 +1125,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/nullity_twelve_locus/replay.py --check",
    "name": "sources-160",
    "seconds": 115.3,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "sources",
@@ -1141,7 +1141,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/kernel_limits/replay.py --check",
    "name": "sources-163",
    "seconds": 119.9,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "sources",
@@ -1157,7 +1157,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-166",
    "seconds": 122.8,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "sources",
@@ -1229,7 +1229,7 @@
    "cmd": "\"$PYTHON\" -W error kernel_determinant_contracts.py >/dev/null",
    "name": "core-177",
    "seconds": 34.5,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1245,7 +1245,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/kernel_determinant/replay.py --check",
    "name": "sources-181",
    "seconds": 16.6,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "sources",
@@ -1261,7 +1261,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/projective_kernel_limits/replay.py --check",
    "name": "sources-184",
    "seconds": 15.6,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "sources",
@@ -1300,7 +1300,7 @@
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/real_frontier_graphs/replay.py --check",
    "seconds": 18.5,
-   "tier": "pr",
+   "tier": "full",
    "name": "sources-192"
   },
   {
@@ -1324,7 +1324,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/reconcile_qpu_inventory.py --check",
    "seconds": 7.8,
-   "tier": "pr",
+   "tier": "full",
    "name": "core-196"
   },
   {
@@ -1610,7 +1610,7 @@
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" -W error maximal_contracts.py",
    "name": "core-223",
    "seconds": 45.8,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1666,7 +1666,7 @@
    "cmd": "\"$PYTHON\" -W error ../scripts/singular_sector_dynamics.py --check-fake-backend ../docs/evidence/singular_sector_dynamics/fakefez_amplification.json",
    "name": "core-242",
    "seconds": 107.3,
-   "tier": "pr",
+   "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
@@ -1828,7 +1828,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --self-test",
    "name": "core-271",
    "seconds": 34.0,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1909,7 +1909,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/associator_cubic_normal_form.py --check",
    "name": "core-278",
    "seconds": 66.2,
-   "tier": "pr",
+   "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
@@ -1960,7 +1960,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check-dynamic",
    "name": "core-409",
    "seconds": 41.5,
-   "tier": "pr",
+   "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
@@ -1977,7 +1977,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_run.py self-test",
    "name": "core-280",
    "seconds": 8.4,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1985,7 +1985,7 @@
    "cmd": "\"$PYTHON\" -B -W error ../scripts/design_c_cubic_noise.py --check ../docs/evidence/design_c_cubic_noise/result.json --pairs \"1,16;9,18\"",
    "name": "core-282",
    "seconds": 30.6,
-   "tier": "pr",
+   "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
@@ -2099,7 +2099,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/conditional_ramsey_power.py --check docs/evidence/conditional_ramsey_power/result.json --run results/kaggle/2026-10-16T055350Z-gororoba-conditional-ramsey-power --scenarios split,stark_600 --trials 400 --plugin-trials 32",
    "name": "core-301",
    "seconds": 99.6,
-   "tier": "pr",
+   "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
@@ -2124,7 +2124,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/signed_kernel_noise.py --check docs/evidence/signed_kernel_noise/result.json --run results/kaggle/2026-10-16T071913Z-gororoba-signed-kernel-noise --t=-0.05,0,0.05",
    "name": "core-304",
    "seconds": 38.1,
-   "tier": "pr",
+   "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
@@ -2319,7 +2319,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check $(for d in results/quandela/runs/*/; do case \"$d\" in *-qpu_belenos-belenos_mesh-*) ;; *) printf \"%s \" \"$d\" ;; esac; done)",
    "name": "core-508",
    "seconds": 80.0,
-   "tier": "pr",
+   "tier": "full",
    "workers": "all"
   },
   {
@@ -2828,7 +2828,7 @@
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/linear_conjugation_challenger.py --check results/hw_estimate/n21_linear_conjugation_challenger.json",
    "name": "core-336",
    "seconds": 46.6,
-   "tier": "pr",
+   "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
@@ -2895,7 +2895,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_a.json results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a/output/output/repo/results/kaggle_out/ghost_error_scale_a.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/output/output/repo/results/kaggle_out/ghost_error_scale_b.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1/output/output/repo/results/kaggle_out/ghost-error-scale-b1.json results/kaggle/2026-10-17T024812Z-gororoba-ghost-error-scale-b2/output/output/repo/results/kaggle_out/ghost-error-scale-b2.json results/kaggle/2026-10-17T024815Z-gororoba-ghost-error-scale-b3/output/output/repo/results/kaggle_out/ghost-error-scale-b3.json results/kaggle/2026-10-17T025046Z-gororoba-ghost-error-scale-b4/output/output/repo/results/kaggle_out/ghost-error-scale-b4.json results/kaggle/2026-10-17T025050Z-gororoba-ghost-error-scale-b5/output/output/repo/results/kaggle_out/ghost-error-scale-b5.json && cmp docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
    "name": "core-349",
    "seconds": 81.9,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -2911,7 +2911,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
    "name": "core-339",
    "seconds": 133.9,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3120,7 +3120,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --self-test",
    "name": "core-550",
    "seconds": 33.5,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3279,7 +3279,7 @@
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --window-bracket",
    "name": "core-446",
    "seconds": 11.0,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3303,7 +3303,7 @@
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --init-herald",
    "name": "core-445",
    "seconds": 24.0,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3319,7 +3319,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
    "name": "core-489",
    "seconds": 53.4,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3359,7 +3359,7 @@
    "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --prep-excitation",
    "name": "core-525",
    "seconds": 38.9,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3426,7 +3426,7 @@
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse",
    "name": "core-549",
    "seconds": 34.8,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3454,7 +3454,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json",
    "name": "core-494",
    "seconds": 21.4,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3502,7 +3502,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/check_n21_conjugation_target.py",
    "name": "core-conjugation-target",
    "seconds": 34.8,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3570,7 +3570,7 @@
    "cmd": "\"$PYTHON\" -B -W error runtime_contracts.py --case approval_calibration_values",
    "name": "core-521",
    "seconds": 26.7,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3602,7 +3602,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null",
    "name": "core-363",
    "seconds": 26.8,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3618,7 +3618,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --check-converter",
    "name": "core-444",
    "seconds": 40.0,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3707,7 +3707,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --check docs/evidence/rank_locus_rotation_composite/result.json && \"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --check docs/evidence/rank_locus_rotation_composite/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --self-test",
    "name": "core-585",
    "seconds": 10.0,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",

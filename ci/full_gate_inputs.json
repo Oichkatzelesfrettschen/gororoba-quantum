@@ -265,6 +265,181 @@
       "results/live/2026-10-18T213828.038774Z/**",
       "results/live/2026-10-18T214519.655411Z/**",
       "results/live/2026-10-18T220218.089776Z/**"
+    ],
+    "core-339": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/ghost_error_scale/**",
+      "docs/evidence/ghost_runs/**",
+      "results/live/**"
+    ],
+    "core-053": [],
+    "sources-166": [
+      "docs/evidence/complex_skew/**",
+      "docs/notes/complex_skew_rank_geometry.md"
+    ],
+    "core-445": [],
+    "sources-160": [
+      "docs/evidence/nullity_twelve_locus/**",
+      "docs/notes/nullity_twelve_local_geometry.md"
+    ],
+    "core-242": [
+      "docs/evidence/singular_sector_dynamics/**"
+    ],
+    "core-444": [
+      "docs/evidence/calibration/**",
+      "results/live/**"
+    ],
+    "core-099": [],
+    "core-301": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/conditional_ramsey_power/**",
+      "results/kaggle/2026-10-16T055350Z-gororoba-conditional-ramsey-power/**"
+    ],
+    "core-098": [],
+    "core-549": [],
+    "core-278": [
+      "docs/evidence/ccz-reduction/**",
+      "docs/evidence/heron_platform/**"
+    ],
+    "core-059": [],
+    "core-363": [
+      "docs/evidence/calibration/**",
+      "results/live/2026-10-11T152922.787095Z/**",
+      "results/live/2026-10-12T055624.091217Z/**"
+    ],
+    "core-271": [
+      "docs/RESEARCH_ROADMAP.md",
+      "docs/evidence/**",
+      "docs/notes/**",
+      "docs/state/research_state.json",
+      "gororoba_quantum/CLAIM_BOUNDARIES.md",
+      "gororoba_quantum/DESIGN_NOTES.md",
+      "gororoba_quantum/MODULAR_SYNTHESIS.md",
+      "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md",
+      "proofs/FoldAverageDescent.v",
+      "proofs/StiefelWitnessInvertible.v",
+      "proofs/TargetFlipN21.v",
+      "proofs/TerminalChannelSeparation.v",
+      "proofs/TerminalChannelSeparationReal.v",
+      "results/hw_estimate/cayley_dickson_claim_boundaries.json",
+      "results/hw_estimate/n21_linear_conjugation_challenger.json",
+      "results/hw_estimate/n21_target_flip_proof/check.txt",
+      "results/hw_estimate/n21_target_flip_proof_verification.json",
+      "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/**",
+      "results/live/**",
+      "results/quandela/cases/belenos_mesh/job-13/cases.json",
+      "results/quandela/cases/belenos_mesh/job-14/cases.json",
+      "results/quandela/cases/belenos_mesh/job-16/cases.json",
+      "results/quandela/runs/**",
+      "results/quandela/sessions/**",
+      "results/quantum_inspire/**",
+      "results/ripple/measured-rank-sector.json",
+      "results/ripple/measured-ripple.json"
+    ],
+    "core-055": [],
+    "core-349": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/ghost_error_scale/**",
+      "results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a/**",
+      "results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/**",
+      "results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1/**",
+      "results/kaggle/2026-10-17T024812Z-gororoba-ghost-error-scale-b2/**",
+      "results/kaggle/2026-10-17T024815Z-gororoba-ghost-error-scale-b3/**",
+      "results/kaggle/2026-10-17T025046Z-gororoba-ghost-error-scale-b4/**",
+      "results/kaggle/2026-10-17T025050Z-gororoba-ghost-error-scale-b5/**",
+      "results/live/2026-10-11T152922.787095Z/**",
+      "results/live/2026-10-12T055624.091217Z/**",
+      "results/live/2026-10-13T020454.599853Z/**",
+      "results/live/2026-10-13T022433.333775Z/**",
+      "results/live/2026-10-13T080216.451663Z/**",
+      "results/live/2026-10-13T083417.634585Z/**",
+      "results/live/2026-10-13T201757.782152Z/**"
+    ],
+    "sources-163": [
+      "docs/evidence/kernel_limits/**",
+      "docs/notes/annihilator_kernel_limits.md"
+    ],
+    "core-489": [
+      "docs/evidence/atlas_coherent_families/**",
+      "docs/evidence/lsq_conditioning/**"
+    ],
+    "core-070": [],
+    "core-508": [
+      "results/quandela/runs/**"
+    ],
+    "core-409": [
+      "docs/evidence/walk-control-scaffolding/**",
+      "results/live/**"
+    ],
+    "core-446": [],
+    "sources-143": [
+      "docs/evidence/dimension32_skew_schur/**",
+      "docs/notes/dimension32_skew_schur_charts.md"
+    ],
+    "core-494": [
+      "docs/evidence/wheel_zero_divisors/**"
+    ],
+    "core-550": [
+      "results/quantum_inspire/cases/**"
+    ],
+    "sources-192": [
+      "docs/evidence/real_frontier_graphs/**",
+      "docs/notes/real_circle_frontier_graphs.md"
+    ],
+    "core-057": [],
+    "sources-181": [
+      "docs/evidence/kernel_determinant/**",
+      "docs/notes/annihilator_determinant_line.md"
+    ],
+    "core-280": [
+      "docs/evidence/algebra_packages/**",
+      "docs/evidence/calibration/**",
+      "docs/notes/kaggle/**",
+      "docs/notes/packages/**",
+      "docs/notes/qiskit-ecosystem-install-plan.md",
+      "docs/notes/qiskit-ecosystem.md",
+      "docs/notes/quantum-tools/**",
+      "kaggle_kernel/*",
+      "results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config/**"
+    ],
+    "core-177": [],
+    "core-030": [
+      "gororoba_quantum/visualizations/measured_cayley_dickson_ripples.html",
+      "results/live/2026-10-12T062505.208379Z/**",
+      "results/live/2026-10-12T062505.552988Z/**"
+    ],
+    "core-196": [
+      "results/live/**"
+    ],
+    "sources-184": [
+      "docs/evidence/projective_kernel_limits/**",
+      "docs/notes/projective_kernel_frontiers.md"
+    ],
+    "core-585": [
+      "docs/evidence/rank_locus_rotation_composite/**"
+    ],
+    "core-521": [],
+    "core-525": [],
+    "core-223": [],
+    "core-040": [],
+    "core-336": [
+      "results/hw_estimate/n21_linear_conjugation_challenger.json"
+    ],
+    "core-conjugation-target": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/linear_conjugation/**"
+    ],
+    "core-282": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/design_c_cubic_noise/**"
+    ],
+    "core-092": [
+      "results/hw_estimate/n21_linear_conjugation_challenger.json"
+    ],
+    "core-304": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/signed_kernel_noise/**",
+      "results/kaggle/2026-10-16T071913Z-gororoba-signed-kernel-noise/**"
     ]
   }
 }

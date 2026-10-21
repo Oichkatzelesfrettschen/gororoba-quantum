@@ -11,12 +11,17 @@ The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only.
 
-**CI is disabled.** The GitHub Actions workflow `ci.yml` is disabled on the
-repository pending a redesign. The gate suites run on the PR head before merge,
-never per commit or push, and the Codex review loop of
-[Reviews and merges](../AGENTS.md#reviews-and-merges) is the merge gate. The
-gate machinery described below stays in the tree as the redesign's starting
-point and runs only when invoked by hand.
+**CI runs nightly.** The GitHub Actions workflow `ci.yml` runs on its nightly
+schedule and on manual dispatch only: every gate of both tiers on main with
+`--ledger-audit`. A pull request's gates run by hand on the PR head before
+merge, never per commit or push: the pr tier and every full gate whose
+imports or declared inputs the branch changes,
+`git diff --no-renames --name-only -z origin/main HEAD > CHANGED` then
+`"$PYTHON" ci/run_gates.py --changed-files CHANGED`. The Codex review loop of
+[Reviews and merges](../AGENTS.md#reviews-and-merges) is the merge gate. A pr
+gate over 30 s of measured wall moves to the full tier with its non-imported
+inputs declared in ci/full_gate_inputs.json, so a merge runs it when its own
+inputs change and the nightly run covers the reads the tracer cannot see.
 
 **Code style.** Every Python file a change touches passes, before each push:
 - `ruff format --target-version py313` (formatting: 120-column lines from

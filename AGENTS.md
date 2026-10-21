@@ -12,9 +12,10 @@ lint and type-check configuration only. [ci/AGENTS.md](ci/AGENTS.md) holds the
 gate machinery: runner and shards, the gate ledger and premerge cache, the
 Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 
-**CI is disabled.** The GitHub Actions workflow `ci.yml` is disabled on the
-repository pending a redesign. The gate suites run on the PR head before merge,
-never per commit or push, and the Codex review loop of
+**CI runs nightly.** The GitHub Actions workflow `ci.yml` runs every gate on
+main each night and on manual dispatch. A pull request's gates (the pr tier
+and its affected full gates, [ci/AGENTS.md](ci/AGENTS.md)) run by hand on the PR
+head before merge, never per commit or push, and the Codex review loop of
 [Reviews and merges](#reviews-and-merges) is the merge gate.
 
 **Code style.** Every Python file a change touches passes, before each push,
