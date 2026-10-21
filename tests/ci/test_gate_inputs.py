@@ -354,6 +354,18 @@ class SelectionTests(unittest.TestCase):
                 example = os.path.normpath(Path(by_name[name]["cwd"]) / script)
                 self.assertIn(example, gate_inputs.dependencies(root, by_name[name], modules, references), name)
             examples[name] = example
+            # A file or directory the command names outside Python (cmp, a
+            # shell glob, an argument) is a read the tracer never records.
+            command = by_name[name]["cmd"]
+            for token in command.replace("&&", " ").replace("|", " ").replace(">", " ").split():
+                for part in token.strip("\"'").split(","):
+                    path = os.path.normpath(Path(by_name[name]["cwd"]) / part.split("=", 1)[-1])
+                    if path.startswith(("/", "..")) or path == "." or not (root / path).exists():
+                        continue
+                    probe = path if (root / path).is_file() else path + "/probe.json"
+                    sources = gate_inputs.dependencies(root, by_name[name], modules, references)
+                    covered = path in sources or any(gate_inputs.matches(probe, p) for p in declared[name])
+                    self.assertTrue(covered, f"{name} reads {path} outside its declared inputs")
         self.assertLessEqual(set(SLOW_FULL_GATES), gate_inputs.affected_full(root, gates, sorted(examples.values())))
         self.assertFalse(set(SLOW_FULL_GATES) & gate_inputs.affected_full(root, gates, ["docs/unrelated-audit.md"]))
 
