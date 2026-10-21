@@ -96,6 +96,9 @@ def check_run(run: Path) -> None:
     manifest = json.loads((run / MANIFEST).read_text())
     if manifest.get("schema") != SCHEMA or not manifest.get("files"):
         raise RuntimeError(f"{run / MANIFEST}: not a {SCHEMA} manifest")
+    present = sorted(name for name in FILES if (run / name).exists())
+    if sorted(manifest["files"]) != present:
+        raise RuntimeError(f"{run / MANIFEST} lists {sorted(manifest['files'])}, the run holds {present}")
     for name, original in manifest["files"].items():
         text, change = FILES[name]
         value = json.loads((run / name).read_text())
