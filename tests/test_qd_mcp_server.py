@@ -56,3 +56,4 @@ def test_record_without_specs_reports_absent() -> None:
 def test_null_architecture_reads_empty() -> None:
     out = qd_mcp_server.with_bulk_presence({"specs": {"architecture": None, "documentation": ""}}, False)
     check(out["bulk_fields"] == {"architecture": "empty", "documentation": "empty"}, f"{out['bulk_fields']}")
+    check(out["specs"] == {"architecture": None, "documentation": ""}, "an empty bulk value was replaced by a marker")

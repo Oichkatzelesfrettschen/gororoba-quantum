@@ -132,7 +132,7 @@ def with_bulk_presence(record: dict[str, Any], include_bulk: bool) -> dict[str, 
     }
     if not include_bulk and isinstance(specs, dict):
         out["specs"] = {
-            key: {"stripped": True, "chars": len(json.dumps(value))} if key in BULK_SPECS else value
+            key: {"stripped": True, "chars": len(json.dumps(value))} if key in BULK_SPECS and value else value
             for key, value in specs.items()
         }
     return out
