@@ -18,7 +18,7 @@ QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token" \
     "$PYTHON" scripts/qd_platform.py snapshot --out docs/evidence/quandela
 "$PYTHON" scripts/qd_platform.py facts docs/evidence/quandela
 "$PYTHON" scripts/qd_platform.py check docs/evidence/quandela \
-    --agents AGENTS.md docs/notes/quandela/README.md
+    --agents docs/notes/quandela/README.md
 ```
 
 When the service omits a chip architecture from a processor record, `snapshot`
@@ -28,7 +28,7 @@ keeps no architecture. The mesh tooling then reads the last observed couplers,
 not a read of today's chip.
 [calibration.md](calibration.md) gives the current state of the field.
 
-A changed table fails `check` until AGENTS.md and the README carry the new
+A changed table fails `check` until the README carries the new
 facts table.
 
 ## 2. Simulate locally (free)

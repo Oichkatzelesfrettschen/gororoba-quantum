@@ -1,13 +1,13 @@
 # gororoba-quantum
 
 Quantum circuits whose structure comes from the open_gororoba Cayley-Dickson
-algebra kernel, targeting IBM Quantum Heron backends. Left multiplication by a
+algebra kernel, targeting IBM Quantum Heron r2 backends. Left multiplication by a
 basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
-observables.
+observables. [docs/README.md](docs/README.md) maps every document by area and task.
 
 The [source index](docs/INDEX.md) separates hosted papers from ignored local copies.
-The [source library](docs/README.md) retains licensed primary PDFs, per-paper notes,
+The [source library](docs/sources/README.md) retains licensed primary PDFs, per-paper notes,
 download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md). The
 [coordinated research roadmap](docs/RESEARCH_ROADMAP.md) records the cumulative
 objectives, evidence boundaries, ownership, and ordered delivery gates.
@@ -266,9 +266,9 @@ The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31
   the derivations, all-dimensional restricted construction, and global proof obligations.
 - `gororoba_quantum/compile_evidence.py` -- reproducible multi-seed FakeFez
   compilation with pass-level synthesis, routing, layout, and topology capture.
-- `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
+- `docs/design/factoring-notes.md` -- what Cayley-Dickson structure can and
   cannot contribute to Shor's algorithm, against the RSA-2048 resource floor.
-- `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
+- `docs/design/hybrid-shor.md` -- host/QPU boundary, coefficient
   derivations, bounded hardware frontier, evidence levels, falsifiers, and the
   roadmap beyond `N = 15`.
 - `gororoba_quantum/MODULAR_SYNTHESIS.md` -- the N=21 impossibility

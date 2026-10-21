@@ -1,297 +1,154 @@
-# Sources and research notes
+# Documentation map
 
-[INDEX.md](INDEX.md) distinguishes hosted papers from ignored local reading copies
-and links every PDF source to its note and hosting evidence.
+This page is the single entry to the repository's documents. Rules live in the agent guides, measured facts in the
+provider and platform notes, claims in the research notes, and retained bytes under `evidence/` and `../results/`.
+`scripts/check_markdown_links.py` keeps every relative link and anchor below resolving.
 
-One note per paper under notes/. Each note:
-- carries the citation, the URL that served the PDF, and its sha256;
-- tags every statement as from-paper or inference;
-- rates relevance to (a) calibration-aware compilation on IBM hardware,
-  (b) Cayley-Dickson structure, and (c) factoring resource estimates.
+Placement, naming, linking and immutability rules for every new or moved document: [AGENTS.md, "Documents"](../AGENTS.md#documents).
 
-The canonical source library lives under `docs/`: paper descriptions in
-`notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
-`evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
-byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 26 licensed PDFs and two aliases;
-101 external sources retain citations and optional ignored local reading copies.
-Five licensed original software archives retain upstream notices under
-`source_archives/`; the verifier checks their inspected members and licenses.
-[PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
-repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
+## Areas
 
-The `literature -> docs` compatibility link preserves historical paths used
-in source comments, verification manifests, and retained parallel-experiment checksum
-paths. Both names identify the same retained files. New browser links use `docs/`, since
-GitHub displays a directory symlink as a link blob. The two implementation-audit
-ledgers and the two mathematical guides named by their manifests retain their original
-bytes. Per-paper notes retain the scope and dates of their original readings;
-older references to an ignored/local cache describe that acquisition history.
-The registry records the retained copies and their fresh hash checks.
+| Area | Owns | Entry |
+|---|---|---|
+| Rules | agent doctrine, gate machinery, provider tables | [AGENTS.md](../AGENTS.md), [ci/AGENTS.md](../ci/AGENTS.md) |
+| Sources and papers | PDFs, licenses, one note per source, verifier | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md) |
+| Algebra and proofs | Cayley-Dickson conventions, rank strata, Rocq certificates | [algebra_circuit_rules.md](notes/algebra_circuit_rules.md) |
+| Circuit and QPU design | circuit designs, claim boundaries, QPU budgets | [DESIGN_NOTES.md](../gororoba_quantum/DESIGN_NOTES.md) |
+| IBM Heron r2 | Targets, transpilation, dynamic circuits, submission | [ibm_quantum/README.md](notes/ibm_quantum/README.md) |
+| Quantum Inspire | Tuna devices, QX and Ry emulators | [quantum_inspire/README.md](notes/quantum_inspire/README.md) |
+| Open Quantum | brokered IonQ, Rigetti, IQM and AQT backends | [open_quantum/README.md](notes/open_quantum/README.md) |
+| Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
+| IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
+| Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
+| Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
+| CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
+| State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
+| Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
 
-Most Nature articles are paywalled. The retained arXiv preprints remain distinct
-from the versions of record, including the two explicitly named PDF aliases.
-Two open-access Nature-family versions of record (s41586-026-10423-9 and
-s41567-026-03466-2) carry article-level CC BY 4.0 grants and are retained.
-HTML-only sources and their reading scopes appear in the registry and notes.
-Explicit CC BY 4.0 or CC0 permission supports the published PDFs. ArXiv-only
-hosting grants, personal-copy permissions, and sources without an established
-rehosting grant receive external records and ignored local copies under
-`local_source_cache/`. The registry retains first-party evidence URLs and hashes.
-Downloaded documents retain their authors' notices and licenses; repository
-licensing does not relabel third-party papers. The source verifier checks local
-copies when present and permits a fresh checkout without those optional files.
+## Start here by task
 
-The [coordinated research roadmap](RESEARCH_ROADMAP.md) consolidates the
-cumulative objectives, verified results, ownership, ordering, and remaining
-proof and hardware gates.
+| Task | Read in order |
+|---|---|
+| IBM hardware run | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [qpu-submission.md](notes/ibm_quantum/qpu-submission.md), [QPU_EXECUTION_ROADMAP.md](../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) |
+| Quantum Inspire run | [README](notes/quantum_inspire/README.md), [usage.md](notes/quantum_inspire/usage.md), [tuna-17-run-design.md](notes/quantum_inspire/tuna-17-run-design.md) |
+| Open Quantum run | [README](notes/open_quantum/README.md), `scripts/oq_platform.py` estimate |
+| Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) |
+| IQM run | [README](notes/iqm/README.md), [os-4.7-emerald.md](notes/iqm/os-4.7-emerald.md) |
+| Simulation and Kaggle | [README](notes/kaggle/README.md), [substrates.md](notes/kaggle/substrates.md), [gpu-runbook.md](notes/kaggle/gpu-runbook.md) |
+| Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
+| Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
+| CI and gates | [ci/AGENTS.md](../ci/AGENTS.md), [ci-runtime.md](runbooks/ci-runtime.md) |
+| State and records | [RESEARCH_STATE.md](state/RESEARCH_STATE.md), [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md), [AGENTS.md](../AGENTS.md) "Records" |
 
-The [rank-stratum research decomposition](notes/koebisu_rank_stratum_research.md)
-connects Koebisu's Question 4, exact rank predicates, local kernel reductions,
-attachment geometry, and bounded hardware measurements. The
-[folding and Rocq audit](notes/open_gororoba_folding_proofs.md) identifies which
-dimensional reductions preserve the algebraic information and which formal
-statements the sister repository actually proves. The
-[model-discrimination decision](notes/model_discrimination_optimizer.md)
-sets the hardware priority before broad atlas expenditure.
+## Files by area
 
-The [reality-ripple measurement design](notes/reality_ripple_measurement_design.md)
-joins the Cayley-Dickson sources to the planned atlas, walk, rank-sector, and
-joint-error views. The [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
-qualifies the correction, ripple and rank cases against one audited runtime
-source closure; reviewed
-merge, fresh live bindings and independent family execution admission remain
-gates. The completed folded-QPE archive supplies the measured evidence.
-The [de Marrais source note](notes/math-0403113.md) records
-the bounded box-kite reading and the local PDF identity. A
-[version-bound open_gororoba evidence contract](sources/open_gororoba/README.md)
-retains the sister repository's algebraic corrections with its provenance
-and license text.
+### Rules
 
-The [formal-evidence dependency plan](notes/formal_evidence_dependencies.md)
-connects faithful fold repairs, checked arithmetic, prospective count
-certificates, tomography and adaptive stopping to explicit assumptions.
-Its [Rocq replay bundle](evidence/formal_certificates/README.md) retains
-the new scalar obstruction and rational/real terminal-channel certificates.
-The [migration validation](VALIDATION.json) preserves the earlier 50-source
-snapshot; the Howard note adds the 51st source and records its separate audit.
+| File | Contents |
+|---|---|
+| [gororoba_quantum/AGENTS.md](../gororoba_quantum/AGENTS.md) | module guide for the circuit and runner code |
+| [scripts/AGENTS.md](../scripts/AGENTS.md) | guide for the platform, replay and census scripts |
+| [kaggle_kernel/AGENTS.md](../kaggle_kernel/AGENTS.md) | Kaggle kernel program and its bundle rules |
 
-| note | paper | (a) | (b) | (c) |
-|---|---|---|---|---|
-| s41567-023-02340-9 | Glick et al., Covariant quantum kernels for data with group structure, Nat. Phys. 20, 479 (2024); preprint arXiv:2105.03406 | medium | low | low |
-| [s41586-026-10423-9](notes/s41586-026-10423-9.md) | Matsumoto et al., Two-qubit logic and teleportation with mobile spin qubits in silicon, Nature 653, 391 (2026) | low | none | none |
-| [s41567-026-03466-2](notes/s41567-026-03466-2.md) | Wu et al., Simultaneous high-fidelity single-qubit gates in a spin qubit array, Nat. Phys. (2026) | low | none | none |
-| [2102.01682](notes/2102.01682.md) | Corcoles et al., Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits, PRL 127, 100501 (2021) | high | none | low |
-| 2411.05760 | Deshpande et al., Dynamic parameterized quantum circuits | low | none | none |
-| s42254-024-00770-9 | Abbas et al., Challenges and opportunities in quantum optimization, Nat. Rev. Phys. 6, 718 (2024); preprint arXiv:2312.02279 | high | none | low |
-| 2501.09702 | Yu et al., Quantum-centric algorithm for sample-based Krylov diagonalization (ibm_fez) | medium | none | none |
-| 2507.08088 | Cobos et al., Real-time dynamics in a (2+1)-D gauge theory (ibm_kingston, ibm_marrakesh) | high | none | low |
-| 2505.22629 | Chen et al., Disambiguating Pauli noise in quantum computers, PRX Quantum 7, 033045 (2026) | high | none | low |
-| 2509.18259 | Pokharel et al., Order from chaos with adaptive circuits on quantum hardware (ibm_fez) | medium | none | low |
-| 2505.15917 | Gidney, How to factor 2048 bit RSA integers with less than a million noisy qubits | none | none | high |
-| 1207.4230 | Kirshtein, Multiplication groups and inner mapping groups of Cayley-Dickson loops (2012) | none | high | none |
-| 0905.2987 | Biss, Christensen, Dugger, Isaksen, Eigentheory of Cayley-Dickson algebras (2009) | none | high | none |
-| math-0511691 | Biss, Dugger, Isaksen, Large annihilators in Cayley-Dickson algebras (2005) | none | high | none |
-| math-0702075 | Biss, Christensen, Dugger, Isaksen, Large annihilators in Cayley-Dickson algebras II (2007) | none | high | none |
-| math-0512517 | Moreno, Constructing zero divisors in the higher dimensional Cayley-Dickson algebras (2005) | none | high | none |
-| 2411.18881 | Reggiani, The geometry of sedenion zero divisors (2024) | none | high | none |
-| 2512.13002 | Koebisu, Determinant factorization for left multiplication in the sedenions (v2, 2026) | none | high | none |
-| 1602.02843 | Bales, Periodicity of the Cayley-Dickson twists (2016) | none | high | none |
-| 1602.02317 | Bales, An alternate Cayley-Dickson product (2016) | none | medium | none |
-| math-9802116 | Albuquerque and Majid, Quasialgebra structure of the octonions (1998) | none | high | none |
-| 0811.3208 | Roetteler, Quantum algorithms for highly non-linear Boolean functions (2008) | none | medium | none |
-| 0911.4724 | Roetteler, Hidden shift for quadratics and functions of large Gowers norm (2009) | none | medium | none |
-| 1103.3017 | Gavinsky, Roetteler, Roland, Quantum algorithm for the Boolean hidden shift problem (2011) | none | medium | none |
-| quant-ph-0703195 | Decker and Wocjan, Hidden quadratic and cubic polynomial function graphs (2007) | none | low | none |
-| 1107.2189 | Decker, Ivanyos, Santha, Wocjan, Hidden symmetry subgroup problems (2011) | none | low | none |
-| 2202.08688 | Kaufman and Minzer, Improved optimal testing results from global hypercontractivity (2022) | none | medium | none |
-| elkies-2013-m256 | Elkies, Math 256x course notes on error-correcting codes (2013) | none | medium | none |
-| pmc-4957665-nonlinearity-measures | Boyar, Find, Peralta, On various nonlinearity measures for Boolean functions | none | medium | none |
-| quant-ph-9511007 | Griffiths and Niu, Semiclassical Fourier transform for quantum computation (1996) | medium | none | high |
-| 1111.4147 | Martin-Lopez et al., Shor's algorithm with qubit recycling (2012) | medium | none | high |
-| 2102.05321 | Niu and Todri-Sanial, Multi-programming for NISQ quantum computing (QuMC) | high | none | none |
-| [das-2019-multiprogramming](notes/das-2019-multiprogramming.md) | Das et al., A Case for Multi-Programming Quantum Computers (MICRO 2019) | high | none | low |
-| [2112.07091](notes/2112.07091.md) | Ohkura, Satoh, Van Meter, Simultaneous execution of quantum circuits (palloq) | high | none | low |
-| [2109.01714](notes/2109.01714.md) | Resch et al., Accelerating Variational Quantum Algorithms Using Circuit Concurrency (CQCS) | high | none | low |
-| [2112.00387](notes/2112.00387.md) | Niu and Todri-Sanial, How Parallel Circuit Execution Can Be Useful for NISQ Computing? (QuCP) | high | none | low |
-| [1204.6308](notes/1204.6308.md) | Gambetta et al., Characterization of addressability by simultaneous randomized benchmarking (2012) | high | none | low |
-| [1810.08240](notes/1810.08240.md) | Howard et al., Time-uniform confidence sequences (2021 journal; inspected v9, 2022) | high | none | low |
-| [1810.05651](notes/1810.05651.md) | Rudinger et al., Probing Context-Dependent Errors in Quantum Processors (2019) | high | none | low |
-| [1908.09855](notes/1908.09855.md) | Sarovar et al., Detecting crosstalk errors in quantum information processors (2020) | high | none | low |
-| [1907.13608](notes/1907.13608.md) | Proctor et al., Detecting and tracking drift in quantum information processors (2020) | high | none | low |
-| [1504.07999](notes/1504.07999.md) | Bremner, Montanaro, Shepherd, Average-case complexity versus approximate simulation of commuting quantum computations (2016) | low | medium | low |
-| 1904.00633 | Kissinger and Meijer-van de Griend, CNOT circuit extraction for topologically-constrained quantum memories (2019) | medium | none | medium |
-| 1806.01838 | Gilyen, Su, Low, Wiebe, Quantum singular value transformation and beyond (2018) | low | low | none |
-| 1811.08580 | Freedman, Shokrian-Zini, Wang, Quantum computing with octonions (2018) | none | medium | none |
-| levratti-2026-fano-css | Levratti, Fano duality, projective orthogonality and the CSS bridge (author-hosted, 2026) | none | high | none |
-| levratti-2026-active-stabilizers | Levratti, Active stabilizers in Reed-Muller CSS codes from Cayley-Dickson zero-divisors (author-hosted manuscript, 2026) | none | low | none |
-| [2102.01682](notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
-| [2608.08232](notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
-| [2608.26893](notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
-| [2608.28176](notes/2608.28176.md) | Zhilina, Orthogonality graphs Part I (2021 journal; 2026 arXiv posting) | none | high | none |
-| [2608.28163](notes/2608.28163.md) | Zhilina, Orthogonality graphs Part II (2021 journal; 2026 arXiv posting) | none | high | none |
-| [2103.03008](notes/2103.03008.md) | Rudinger et al., Quantum-instrument GST (2021 preprint, 2022 journal) | high | none | none |
-| [2602.03938](notes/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
-| [Coste](notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |
-| [Hatcher](notes/hatcher-algebraic-topology.md) | Algebraic Topology, Chapter 0, attachment and quotient hypotheses | none | method | none |
-| [Carlstrom](notes/wheels-carlstrom.md) | Wheels: total division by zero, the wheel of fractions and its axioms (2001 report; MSCS 2004) | none | method | none |
-| [1903.02492](notes/1903.02492.md) | Rol et al., Net Zero bipolar flux-pulse CZ gate (2019) | high | medium | low |
-| [2008.07411](notes/2008.07411.md) | Negirneac et al., Sudden Net Zero CZ gate (PRL 126, 220502, 2021) | high | medium | low |
-| [2102.13071](notes/2102.13071.md) | Marques et al., logical-qubit operations on a Surface-7 transmon processor (Nat. Phys. 18, 80, 2022) | medium | low | low |
-| [1708.07677](notes/1708.07677.md) | Fu et al., QuMA experimental control microarchitecture (2017) | medium | none | none |
-| [1808.02449](notes/1808.02449.md) | Fu et al., eQASM executable QISA with explicit timing (HPCA 2019) | medium | none | none |
-| [2310.01120](notes/2310.01120.md) | van der Schoot et al., quantum metrics on Quantum Inspire Starmon-5 (2023) | high | none | medium |
-| [1809.01043](notes/1809.01043.md) | Klimov et al., T1 fluctuations from two-level-system spectral diffusion (PRL 121, 090502, 2018) | medium | medium | none |
-| [1901.05352](notes/1901.05352.md) | Schloer et al., low-frequency burst noise from single fluctuators in a transmon (PRL 123, 190502, 2019) | medium | medium | none |
-| [1903.01043](notes/1903.01043.md) | Sung et al., non-Gaussian noise spectroscopy with a flux qubit sensor (Nat. Commun. 10, 3715, 2019) | low | medium | none |
-| [2006.14044](notes/2006.14044.md) | Bravyi et al., tensor-product and CTMP readout-error mitigation (PRA 103, 042605, 2021) | medium | high | low |
-| [2108.12518](notes/2108.12518.md) | Nation et al., matrix-free measurement mitigation (M3; PRX Quantum 2, 040326, 2021) | medium | high | low |
-| [1801.07904](notes/1801.07904.md) | Heinsoo et al., rapid multiplexed readout and its crosstalk (PR Applied 10, 034040, 2018) | medium | medium | low |
-| [2002.01471](notes/2002.01471.md) | Geller, rigorous justification of transition-matrix measurement correction (QST 5, 03LT01, 2020) | low | high | low |
-| [1606.05721](notes/1606.05721.md) | Sank et al., measurement-induced state transitions (PRL 117, 190503, 2016) | low | low | low |
-| [2403.09514](notes/2403.09514.md) | Baeumer et al., Quantum Fourier transform using dynamic circuits, PRL 133, 150602 (2024) | high | none | medium |
-| [2403.06852](notes/2403.06852.md) | Seif et al., Suppressing correlated noise via context-aware compiling, ISCA 2024 | high | none | low |
-| [1101.4707](notes/1101.4707.md) | Bylander et al., Noise spectroscopy through dynamical decoupling with a superconducting flux qubit, Nat. Phys. 7, 565 (2011) | medium | none | none |
-| [1612.00858](notes/1612.00858.md) | McKay et al., Efficient Z gates for quantum computing, PRA 96, 022330 (2017) | high | none | low |
-| [1207.1655](notes/1207.1655.md) | Granade et al., Robust online Hamiltonian learning, NJP 14, 103013 (2012) | medium | none | none |
-| [1504.06597](notes/1504.06597.md) | Sheldon et al., Characterizing errors on qubit operations via iterative randomized benchmarking, PRA 93, 012301 (2016) | medium | none | none |
-| [1502.02677](notes/1502.02677.md) | Kimmel, Low and Yoder, Robust calibration via robust phase estimation, PRA 92, 062315 (2015); erratum PRA 104, 069901 (2021) | medium | none | none |
-| [1301.7007](notes/1301.7007.md) | Smolin, Smith and Vargo, Oversimplifying quantum factoring, Nature 499, 163 (2013) | low | none | high |
-| [0907.3740](notes/0907.3740.md) | Maurer and Pontil, Empirical Bernstein bounds and sample variance penalization, COLT 2009 | medium | none | none |
-| [2010.09686](notes/2010.09686.md) | Waudby-Smith and Ramdas, Estimating means of bounded random variables by betting, JRSSB 86, 1 (2024) | medium | none | none |
-| [hoeffding-1963](notes/hoeffding-1963.md) | Hoeffding, Probability inequalities for sums of bounded random variables, JASA 58, 13 (1963) | high | none | none |
+### Sources and papers
 
-The [parallel-experiment synthesis](notes/quantum_experiment_parallelism.md)
-connects these sources to fixed and varied companions, patch/time blocking,
-joint-shot inference, billed usage, and IQP claim boundaries. The
-[design and execution documentation note](notes/quantum_experiment_design_sources.md)
-records NIST, Qiskit and IBM sources with capture hashes. The two retained parallel-experiment
-PDFs have [replayable checksums](parallel_experiment_pdfs.sha256); direct,
-version-pinned retrieval links and reading scopes live in each paper note.
-The remaining parallel-experiment papers retain direct URLs, hashes, and
-reading notes as external sources. The Das notice expressly requires permission
-for server redistribution; an arXiv-only grant also differs from permission to
-rehost a PDF. The source registry records each individual decision.
+| File | Contents |
+|---|---|
+| [notes/papers/](notes/papers/) | one note per registered source, named by arXiv-style id or author-year |
+| [aflow-a_cf4-225-a.md](notes/papers/aflow-a_cf4-225-a.md) | AFLOW crystallographic prototype A_cF4_225_a |
+| [elkies-2013-m256.md](notes/papers/elkies-2013-m256.md) | Elkies 2013 course page on error-correcting codes |
+| [pmc-4957665-nonlinearity-measures.md](notes/papers/pmc-4957665-nonlinearity-measures.md) | nonlinearity measures for Boolean functions |
 
-Every note from the prior-work review labels each overlapping repository
-claim as known theorem reproduced, new proof or formalization, new
-implementation or measurement, or candidate new result.
-[prior_work_synthesis.md](notes/prior_work_synthesis.md) owns current status
-and experiment priority. The notes/handbacks/ directory preserves the
-delegates' original findings and disclosures with explicit current-status
-links. Its [A] labels identify the original scratch checks; later retained
-gates carry their own evidence links.
+### Algebra and proofs
 
-The per-paper notes own current citations, hypotheses, theorem locators, and
-typographical corrections: [BDI 2005](notes/math-0511691.md),
-[BCDI 2007](notes/math-0702075.md), [BCDI 2009](notes/0905.2987.md), and
-[Reggiani 2024](notes/2411.18881.md). The
-[shared sparse census](notes/cayley_dickson_sparse_census.md) owns count
-conventions and routes the dimension-32 count to its canonical exact JSON.
+| File | Contents |
+|---|---|
+| [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
+| [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
+| [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
+| [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
+| [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
+| [koebisu_rank_stratum_research.md](notes/koebisu_rank_stratum_research.md) | dimension-32 rank question |
+| [principal_skew_atlas.md](notes/principal_skew_atlas.md) | principal skew charts; chain continues in the four_support and schur notes |
+| [formal_evidence_dependencies.md](notes/formal_evidence_dependencies.md) | formal evidence: algebra, measured counts, prospective checks |
+| [open_gororoba_survey.md](notes/open_gororoba_survey.md) | survey of the sister repository |
+| [topics/](notes/topics/) | unpinned research notes by subject; [notes/](notes/) holds the notes retained records name |
 
-Two notes survey the sister repository rather than a paper:
+### Circuit and QPU design
 
-- notes/open_gororoba_survey.md maps open_gororoba at fe668020: its Rocq
-  corpus graded proven, tested, or asserted; its dimension ladder from 16
-  through 4096; its butterfly, Walsh, and zero-divisor chunking structure; and
-  the candidate connections to factoring, with category errors named.
-- notes/open_gororoba_survey_deep_notes.md holds the evidence trail behind every
-  number: read-only commands, Rocq axiom scans, the GF(2) form of the sign
-  recursion and its circuit, closed forms for the defect and edge counts, and
-  replay scripts.
+| File | Contents |
+|---|---|
+| [design/et-rows.md](design/et-rows.md) | ET-row device experiment |
+| [design/hybrid-shor.md](design/hybrid-shor.md) | hybrid Shor architecture for IBM Heron r2 |
+| [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
+| [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
+| [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
+| [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
+| [coherence-case-submission-review.md](../plans/reviews/coherence-case-submission-review.md) | coherence-window case, submission-path review |
+| [qpu_run_economy.md](notes/qpu_run_economy.md) | information per billed second |
 
-gororoba_quantum/FACTORING_NOTES.md re-checks the sign recursion and the
-defect count independently.
+### IBM Heron r2
 
-The first eight quantum and factoring papers in the table contain no Cayley-Dickson,
-octonion, sedenion, zero-divisor, or nonassociative content. The
-[annihilator source ledger](notes/cayley_dickson_annihilator_sources.md) and
-[rank-topology source ledger](notes/cayley_dickson_rank_topology_sources.md)
-remain historical implementation-audit snapshots. Their source retrievals,
-theorem applications, and local derivations retain the provenance of the
-corresponding implementation. Current per-paper notes consolidate overlapping
-paper facts; the snapshots retain their original bytes because execution
-manifests bind their hashes.
+| File | Contents |
+|---|---|
+| [ibm_heron_platform.md](notes/ibm_heron_platform.md) | measured Targets and current documentation |
+| [hardware-controls.md](notes/ibm_quantum/hardware-controls.md) | every control reachable through qiskit-ibm-runtime |
+| [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
+| [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
 
-| Snapshot | Source revision | SHA-256 | Manifest binding |
-| --- | --- | --- | --- |
-| Annihilator ledger | `bd5d6b2e97165d560df588084098056fce5a2fd1` | `02f4cf4fb7dee46e5fd87052cf5d4c0a81087c848948bad17af246b764f080d5` | [topology verification](../results/hw_estimate/cayley_dickson_topology_verification.json), `source_sha256` |
-| Rank-topology ledger | `f4eda251822b380d695564fcf39a7a9e528f994e` | `bd478146132ddade390396b5b330f3a08091b2ebae83d9bacab1d23644756a30` | [rank verification](../results/hw_estimate/rank_topology_verification.json), `documentation_sha256` |
+### Providers
 
-[FACTORING_NOTES.md](../gororoba_quantum/FACTORING_NOTES.md) carries the factoring
-analysis.
+| File | Contents |
+|---|---|
+| [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
+| [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
+| [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
+| [iqm/python-stack.md](notes/iqm/python-stack.md) | Python stack for IQM Resonance |
 
+### Simulation
 
-The [proof and experiment dependency synthesis](notes/research_proof_experiment_dependencies.md)
-connects curve realization, exact matrix certificates, circuit/instrument
-semantics, tomography, stopping and full-workload allocation to primary sources.
-The [field-model opportunity map](notes/vacuum_field_run_opportunities.md)
-separates physical device-noise sensing, encoded field simulation, and calibrated
-force/radiation measurements. Its [finite CPU reference](evidence/vacuum_models/README.md)
-retains cutoff, coherence, synthesis and SPAM-identifiability checks; future
-hardware cases retain their independent admission gates.
+| File | Contents |
+|---|---|
+| [build_host/custatevec.md](notes/build_host/custatevec.md) | cuStateVec in the host Aer build |
+| [build_host/python-stack.md](notes/build_host/python-stack.md) | build-host Python stack |
+| [jax-bridge-structure-report.md](notes/kaggle/jax-bridge-structure-report.md) | JAX bridge sweep, export once per structure |
+| [simulation-cost-levers.md](runbooks/simulation-cost-levers.md) | planner, ghost replay and package costs |
 
-| Additional source group | Notes and application |
-| --- | --- |
-| Curve realization | [Basu--Roy](notes/1803.00505.md), [Greenberg](notes/greenberg-henselian-lifting.md), expanded [BCDI II](notes/math-0702075.md) and [Coste](notes/coste-semialgebraic-geometry.md); real-arc and lifting hypotheses |
-| Formal interfaces | [SQIR/VOQC](notes/sqir-voqc-proof-interfaces.md), [MathComp/CoqEAL](notes/mathcomp-coqeal-matrix-certificates.md), [CoqInterval](notes/coqinterval-certified-enclosures.md); checked semantics, rank witnesses and numerical enclosures |
-| Identification and resource design | [GST](notes/2009.07301.md), expanded [QILGST](notes/2103.03008.md), [optimal design](notes/quant-ph-0411093.md), [SHOALS](notes/2201.13438.md), [shadows](notes/2002.08953.md); gauge, measurement choice and complete costs |
-| Device noise | [Schoelkopf](notes/cond-mat-0210247.md), [Clerk](notes/0810.4729.md), [Jin](notes/1412.2772.md); spectral convention, residual populations and calibrated inference |
-| Encoded field models | [Digital optics](notes/1909.04408.md), [Gaussian coherence](notes/1610.03272.md), [lattice Casimir](notes/2105.02032.md), [Gaussian simulation](notes/quant-ph-0109047.md), [collision models](notes/2106.11974.md); encoding, model bias and classical baselines |
-| Physical interpretation and execution | [Physical DCE](notes/1105.4714.md), [real-material Casimir](notes/0902.4022.md), [circuit QED](notes/2005.12667.md), [IBM policy](notes/ibm_fractional_execution_sources.md); apparatus, observable and runtime boundaries |
-| Vacuum, dark sector and negative energy | [ALPS II](notes/2512.14110.md), [Dark SRF](notes/2510.02427.md), [dielectric haloscope](notes/2503.23354.md), [qubit haloscope](notes/2503.18315.md), [atom interferometry](notes/2511.09750.md), [LZ](notes/2609.02823.md), [DES Y6](notes/2601.14559.md), [worldline DCE](notes/2604.13237.md), [magnetic-fluid Casimir](notes/2601.00483.md), [quantum inequalities](notes/gr-qc-9607003.md), [QET theory](notes/1002.0200.md) and [hardware](notes/2301.02666.md), [journal and IBM pages](notes/casimir-dark-sector-web-sources.md); exclusions, nuisances and energy accounting before any new-physics reading |
-| Cayley-Dickson associator structure | [defect census](notes/cd_associator_defect_census.md), [Wilmot](notes/2505.11747.md), [Kirshtein](notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
-| External algebra packages | [package index](notes/packages/README.md): measured relation of eight hypercomplex packages to cd_core, independence, licenses and correct use |
-| Octonion structure checks | [associator codes, box-kite frustration and walk sectors](notes/octonion_structure_checks.md): RM(1,3) and E8 from the associator slices, shared-sign and shared-phase frustration minima 4 and 3, exact walk sector weights by Ramanujan sums, and the doubling-convention bridge |
-| Sedenion hardware witnesses | [review of an external proposal](notes/sedenion_hardware_witness_review.md): the encoding Designs A to D measure, exact corrections (the annihilator of e1 + e10, the degree-4 sign, the post-selected zero-divisor observable), the measured Design C verdicts and the zero-divisor test's price |
-| Review reconciliation | [QPU, Cayley-Dickson and vacuum review claims](notes/qpu_vacuum_cd_review_reconciliation.md); each claim with its status and settling artifact |
-| Singular sectors and dilation | [sector split, census link and dynamics](notes/singular_sector_dynamics.md): dark, bright and anticommuting sectors of every two-term element, the Hermitian dilation's frequencies, product-formula exactness, the frozen Design B walk and its echo-matched control; [LCU](notes/1202.5822.md), [oblivious amplification](notes/1312.1414.md), [Hamiltonian block encoding](notes/2510.06316.md), [QSVT](notes/1806.01838.md) |
-| Measurement foundations | [coherence decay](notes/0909.4585.md), [trajectories](notes/1305.7270.md), [efficient tomography](notes/1101.4366.md), [pulse removal, tomography API and early superconducting tomography](notes/measurement_foundations_web_sources.md); which laboratory reconstructions transfer to the cloud gate set |
-| Hypercomplex theory and operational encodings | [normed division algebras](notes/math-0105155.md), [single-photon hypercomplex test](notes/1602.01624.md) with [Adler's critique](notes/1604.04950.md) and [the reply](notes/1607.01648.md), [superconducting](notes/2210.10255.md) and [trapped-ion](notes/2305.03766.md) non-Abelian anyons, [Crossref records](notes/hypercomplex_quantum_crossref_records.md), [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md); encoding an algebra in complex quantum mechanics against testing a hypercomplex theory |
-| Dark-subspace certificate | [source map](notes/quandela/bdsc_sources.md): [eigentheory](notes/0905.2987.md), [detector tomography](notes/0807.2444.md), [GST](notes/2009.07301.md), [optical dilation](notes/1712.01413.md), [interferometer design](notes/1603.08788.md), [matrix Bernstein](notes/1004.4389.md), [subspace verification](notes/2410.12551.md); target spectrum, Kraus dilation, confidence radii and the preparation premise |
+### Packages and tools
 
-## Historical action items and current status
+| File | Contents |
+|---|---|
+| [quantum-tools/README.md](notes/quantum-tools/README.md) | usage manuals of the quantum and numerics tools |
+| [qiskit-aer-cuda/README.md](../packaging/qiskit-aer-cuda/README.md) | native Aer CUDA package |
+| [rollback/README.md](../packaging/qiskit-aer-cuda/rollback/README.md) | verified Aer CPU rollback package |
 
-The list below records the source review's original proposals. The
-[execution roadmap](../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) owns live
-completion status. The folded mechanism ladder completes in two retained jobs;
-native static mitigation and coherent/dynamic option separation exist in the
-runner. Dynamic DD/twirling compatibility, N21 admission, initialization-delay
-qualification, and fresh hardware approval retain their documented gates.
-The [decision note](notes/model_discrimination_optimizer.md) supersedes any
-historical ordering that places a broad atlas before model discrimination.
+### CI and gates
 
-The notes were written against the dense design B: 224 CZ, P_zd = 0.319. The
-structural compile in gororoba_quantum/select_lcu.py supersedes it at 42 to 46
-CZ, so the shot and gamma budgets the notes derive from 224 CZ overstate the
-cost.
+| File | Contents |
+|---|---|
+| [ci-runtime.md](runbooks/ci-runtime.md) | timing denominators, bottlenecks and replay selection |
+| [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
 
-In place in `live_run.py`:
-- Live layout scoring from calibration: ESP over gate and readout errors on
-  every candidate (2509.18259 d1, s42254 d1).
-- Per-run calibration record: backend medians, exclusions, timestamps, chosen
-  layouts, and scheduled durations in results/live/ (s41567 d1, 2507.08088 d5,
-  2509.18259 d2).
-- Backend selection across the three reachable devices from live state
-  (s42254 d4).
-- Historical comparison through target_history at execution time (2501.09702
-  d1).
+### State and records
 
-Open, by task:
-- Mirror-circuit ODR, one calibration per witness, at 16,384 or more shots
-  (2507.08088 d1-d2).
-- Twirling and dynamical decoupling through the client-side Sampler options,
-  XpXm or XY4, DD on and off (2507.08088 d4, s41567 d2, s42254 d2).
-- Dephased and depolarized null models, plus the uniform-random null
-  (2509.18259 d3, 2501.09702 d2).
-- A coherence factor exp(-t/T2) in the layout score (2509.18259 d1).
-- At least three disjoint layouts per witness, with shot, instance, and layout
-  variance separated (2507.08088 d3, 2509.18259 d4).
-- Dynamic-circuit capability and feed-forward latency on each backend
-  (2411.05760 d4), the precondition for the semiclassical-QFT test in
-  FACTORING_NOTES.md.
-- PEC: count distinct CZ layers and compute gamma before committing shots. The
-  paper's learning settings take 740 to 1340 s at about 1 ms per shot, more
-  than the 600 s monthly budget (2505.22629 d1-d5).
-- Reproduce Gidney Table 5 at n = 2048 from the Zenodo code, and keep the Eq.
-  22 deviation bound as a unit test (2505.15917 d2-d3; not run).
+| File | Contents |
+|---|---|
+| [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md) | QPU and simulation run census |
+| [RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md) | objectives and gates; sections generated from the registry |
+| [research_state.json](state/research_state.json) | claim registry behind the rendered state |
+
+### Archive
+
+| File | Contents |
+|---|---|
+| [archive/handoffs/](archive/handoffs/handoff-notes.md) | program handoff notes, 2026-10-15 chat notes, box-kite generator and Belenos handoffs |
+| [boolean_functions_and_hidden_shift.md](archive/handbacks/boolean_functions_and_hidden_shift.md) | handback: Boolean functions and hidden shift |
+| [levratti_manuscripts.md](archive/handbacks/levratti_manuscripts.md) | handback: Levratti manuscripts |
+| [quantum_systems_and_synthesis.md](archive/handbacks/quantum_systems_and_synthesis.md) | handback: quantum systems and synthesis |
+| [sedenion_geometry_and_twists.md](archive/handbacks/sedenion_geometry_and_twists.md) | handback: sedenion geometry and twists |
+| [repository_reconciliation_2026-10-17.md](notes/handbacks/repository_reconciliation_2026-10-17.md) | repository reconciliation, 17 October 2026 |
+| [belenos-first-load-hypothesis-2026-10-18.md](archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md) | Belenos first-load hypothesis |
+| [box-kite-case-generator.md](archive/handoffs/box-kite-case-generator.md) | box-kite case generator handoff |
+| [handoff-notes-2026-10-15.md](archive/handoffs/handoff-notes-2026-10-15.md) | chat-session decisions and falsification results |
+| [handoff-notes.md](archive/handoffs/handoff-notes.md) | program handoff sections |
+| [archive/reviews/README.md](archive/reviews/README.md) | review and audit reports; [docs audit](archive/reviews/docs-audit.md) |

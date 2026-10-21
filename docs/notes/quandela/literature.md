@@ -784,8 +784,8 @@ and compiler publications.
   +- 0.0009 (A) and 0.9956 +- 0.0016 (B); 2 pi power 39 mW (A) and 63 mW (B); loss under 3 dB (2.5 dB);
   Nelder-Mead on the amplitude infidelity of a single unitary raised 0.9936 to
   0.9997 (repeat measurements of one unitary agree to about 0.9998, the
-  reproducibility limit). Monte Carlo with phase noise uniform on epsilon_max x
-  [-pi, pi]: epsilon_max = 0.034 reproduces the measured Fa = 0.9978 +- 0.0008,
+  reproducibility limit). Monte Carlo with phase noise uniform on epsilon_max x [-pi, pi]:
+  epsilon_max = 0.034 reproduces the measured Fa = 0.9978 +- 0.0008,
   with true Frobenius fidelity F = 0.9921 +- 0.0029; the paper concludes the
   calibration errors are below +-0.1 rad. Amplitude fidelity is biased: E[Fa]
   ~ pi/4 for unrelated Haar unitaries as N grows, and F = 1 - (tau_ampl^2 +

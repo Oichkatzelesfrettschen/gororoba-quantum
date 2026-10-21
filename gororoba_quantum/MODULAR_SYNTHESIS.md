@@ -259,7 +259,7 @@ coupling map.
 The family stays linear by design. An arbitrary permutation B would reduce
 to choosing a relabeling of f's cycle structure, which is a choice made from
 the order itself, the compiled-answer construction of Smolin, Smith and Vargo
-([1301.7007](../docs/notes/1301.7007.md)). A linear B keeps the work
+([1301.7007](../docs/notes/papers/1301.7007.md)). A linear B keeps the work
 register a linear re-encoding of the residue bits, and both the search and
 the synthesis read the complete truth table, exactly as the unencoded
 compiler does. The replay gates and the retained records are listed in
@@ -324,7 +324,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --out results/hw_estimate/n21_affine_residual_challenger.json
 ```
 
-The fresh Rocq replay command is in AGENTS.md. The open set consists of
+The fresh Rocq replay command is in ci/AGENTS.md. The open set consists of
 fresh live Target compilation, degraded-edge filtering, a noisy primary lower
 bound above the exact uniform decoder null, an identity-null upper bound below
 the primary, and dynamic-duration accounting that includes classical latency.

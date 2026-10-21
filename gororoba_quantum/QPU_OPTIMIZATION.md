@@ -399,7 +399,7 @@ fabricate precision.
 An endpoint whose plan carries an `EmpiricalBernsteinDesign` (live_run
 `--empirical-bernstein`, N21 families under `--model-method exact`) also
 reads the empirical-Bernstein radius of Maurer and Pontil
-([arXiv:0907.3740](../docs/notes/0907.3740.md), Theorem 4). For the `n`
+([arXiv:0907.3740](../docs/notes/papers/0907.3740.md), Theorem 4). For the `n`
 scores of one PUB, range `R` and sample variance `V_n` (denominator
 `n - 1`), the one-sided radius at tail `d` is
 `sqrt(2 V_n ln(2 / d) / n) + 7 R ln(2 / d) / (3 (n - 1))`; the two-sided
@@ -491,7 +491,7 @@ The planner reads `backend.configuration().default_rep_delay` in seconds,
 validates the backend's repetition-delay support and range, and binds the
 value to `sampler.options.execution.rep_delay`. The serialized backend
 configuration uses microseconds; mixing those two interfaces changes the
-cost by a factor of a million. [Numerical environment validation](NUMPY_VALIDATION.md#execution-time-units)
+cost by a factor of a million. [Numerical environment validation](../docs/design/numpy-validation.md#execution-time-units)
 records the SDK source and tested option paths.
 
 `--max-execution-seconds` caps each job. The sum of every backend/kind job's
@@ -673,7 +673,7 @@ within-shot dependence.
 
 ## Verification and sources
 
-The [repository gates](../AGENTS.md#layout-and-gates) run the exact labeled
+The [repository gates](../ci/AGENTS.md#layout-and-gates) run the exact labeled
 QPE checks, standalone optimizer checks, and fake-backend planning
 contracts. The planning checks cover the shared initial mapping,
 per-phase calibrated delay sites, complete static/dynamic job accounting, shot-tier

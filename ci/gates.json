@@ -962,6 +962,22 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay.py --check",
+   "name": "sources-389",
+   "seconds": 18.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "docs/evidence/c5_zero_divisor_code",
+   "cmd": "sha256sum -c SHA256SUMS",
+   "name": "sources-390",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_geometry/replay.py --check",
    "name": "sources-134",
    "seconds": 16.6,
@@ -2218,7 +2234,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md docs/notes/open_quantum/README.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents docs/notes/open_quantum/README.md",
    "name": "core-382",
    "seconds": 0.2,
    "tier": "pr"
@@ -2250,7 +2266,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py check docs/evidence/quandela --agents AGENTS.md docs/notes/quandela/README.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py check docs/evidence/quandela --agents docs/notes/quandela/README.md",
    "name": "core-502",
    "seconds": 0.4,
    "tier": "pr"
@@ -2502,7 +2518,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents docs/notes/quantum_inspire/README.md",
    "name": "core-347",
    "seconds": 0.2,
    "tier": "pr"
@@ -3814,7 +3830,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py check docs/evidence/iqm --agents AGENTS.md docs/notes/iqm/README.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_platform.py check docs/evidence/iqm --agents docs/notes/iqm/README.md",
    "name": "core-590",
    "seconds": 0.5,
    "tier": "pr"
@@ -3865,6 +3881,22 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json",
    "name": "core-608",
    "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
+   "name": "core-611",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py --self-test",
+   "name": "core-610",
+   "seconds": 0.2,
    "tier": "pr"
   }
  ],

@@ -164,7 +164,7 @@ core-450 rechecks the record. The timings and the two-GPU metadata are in
   runs unbatched. Its plain-GPU comparison row is
   `gpu_statevector_unbatched`.
 - Seeded GPU counts differ from CPU counts, so a CI gate re-derives a GPU
-  record from its retained counts and never resamples (root AGENTS.md,
+  record from its retained counts and never resamples (docs/notes/kaggle/README.md,
   "Simulation on Kaggle").
 
 ## CUDA 13 build

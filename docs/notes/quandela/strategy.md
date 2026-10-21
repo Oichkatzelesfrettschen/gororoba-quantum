@@ -867,7 +867,7 @@ the couplers equaled Q1's throughout.
     10000-sample openings on 29dc6ef8 failed and each of the two
     1500-sample openings passed, in both job forms, interleaved in time
     with the failures. The rule was read off these same jobs, so the split
-    is descriptive (docs/notes/quandela/belenos-first-load-hypothesis-2026-10-18.md).
+    is descriptive (docs/archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md).
     Open: a matched 1500 and 10000 opening pair at one hour, persistence
     through consecutive large entries, the threshold, and whether opening
     on another mesh prevents the failure.

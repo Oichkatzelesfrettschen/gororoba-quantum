@@ -30,11 +30,11 @@ The timings are in `docs/evidence/aer_gpu_configuration/README.md` and
    density matrix runs 8.5 s on the 4 CPUs against 3.0 s on a T4 at 10
    qubits and 1955 s against 111 s at 14; a dynamic density matrix 69.6 s
    against 24.3 s at 6. Statevector trajectories of the 7-qubit N=21
-   feed-forward circuits run faster on the CPUs (root AGENTS.md,
+   feed-forward circuits run faster on the CPUs (docs/notes/kaggle/README.md,
    "Simulation on Kaggle"). A GPU push needs a GPU question.
 2. **Optimize the classical code first.** Batch replicate estimators with
    numpy under the bit-equality rules (below,
-   `docs/notes/build_host/vectorized-fits.md`) and map CPU-bound loops
+   `docs/runbooks/vectorized-fits.md`) and map CPU-bound loops
    through `parallel.ordered_map`. A GPU hour spent on a pure-Python loop
    buys the loop, not the GPU.
 3. **Rehearse the exact entry locally in the kernel's environment.**
@@ -123,7 +123,7 @@ machine numpy found X86_V3 and X86_V4 (AVX-512). On the CPU preflight
 machine it found X86_V3 only. `gpu_env.json` and the probe record carry
 both readings.
 
-**Order of work**, from `docs/notes/build_host/vectorized-fits.md`:
+**Order of work**, from `docs/runbooks/vectorized-fits.md`:
 1. Batch replicate estimators with numpy, keeping the scalar version as
    the reference.
 2. Map blocks through `parallel.ordered_map`.

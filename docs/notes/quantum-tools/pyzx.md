@@ -200,14 +200,14 @@ CPU, single-threaded Python. No GPU path.
   example the extraction has more two-qubit gates and Hadamards than the
   input (printed above); the graph form wins on T-count, not on depth.
 - Extracted two-qubit gates have no connectivity constraint; transpile the
-  result to the Heron coupling map again.
+  result to the Heron r2 coupling map again.
 - `extract_circuit` mutates its graph; pass `g.copy()`.
 - A circuit built from `Circuit.from_qasm` on a 156-qubit register keeps all
   156 wires; compact the register first.
 - `compare_tensors` allocates 2^n x 2^n tensors; it is a small-circuit check.
 - ZX simplification preserves a unitary up to a global scalar; Hadamard-test
   controlled blocks must carry their relative phase explicitly
-  (root AGENTS.md, "Signs, workspace and measurement basis").
+  (docs/notes/algebra_circuit_rules.md, "Signs, workspace and measurement basis").
 
 ## LICENSE
 

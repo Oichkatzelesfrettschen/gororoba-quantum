@@ -22,7 +22,7 @@ cupy.asarray(a) @ cupy.asarray(a)
 The Arch package list shows python-pytorch-opt-cuda, python-cupy, python-jax,
 python-jaxlib, python-optax and python-numba-cuda; the repository's own
 requirements mention torch only for python-octonion and python-cayley-dickson
-(root AGENTS.md, "Python stack on the build host").
+(docs/notes/build_host/python-stack.md, "Python stack on the build host").
 
 ## CAPABILITIES IN THIS REPOSITORY
 
