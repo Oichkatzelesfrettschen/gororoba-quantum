@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 819,
+ "groups": 820,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",

@@ -1134,6 +1134,20 @@
       "run": "results/live/2026-10-20T031212.175942Z",
       "family": "n21-orbit-rca",
       "question": "Does qubit 143's Ramsey visibility decay monotonically over 0 to 20 us with the control grounded?"
+    },
+    {
+      "id": "marrakesh-n21-q47-segmented-baseline",
+      "provider": "ibm",
+      "run": "results/live/2026-10-21T043156.858484Z",
+      "family": "n21-orbit-rca",
+      "question": "Does the segmented coprime sweep read two frequency lines, herald backaction or Z swap memory on ibm_marrakesh qubit 47, a qubit with no recorded beat?"
+    },
+    {
+      "id": "fez-n21-q143-segmented-sweep",
+      "provider": "ibm",
+      "run": "results/live/2026-10-21T064222.721454Z",
+      "family": "n21-orbit-rca",
+      "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
     }
   ],
   "claims": [
@@ -2595,7 +2609,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "1bc32e964509da47d19cdb8ae956bf382dfcfa11f4ee83f1e06d9e42c0873944"
+          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
         }
       ],
       "documents": [
@@ -2865,7 +2879,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
+          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2904,7 +2918,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
+          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2978,7 +2992,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
+          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
         },
         {
           "path": "results/live/2026-10-11T152922.787095Z/collect.json",
@@ -3024,7 +3038,7 @@
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
+          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
         }
       ],
       "documents": [
@@ -3418,7 +3432,7 @@
     },
     {
       "id": "hw-ghost-calibration-replay",
-      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs. Five 2026-10-18 Kingston runs and one further Kingston snapshot, added by an incremental merge, widen the calibration spread to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), and the exact-law n21 members and the 149-member control runs reproduce their recorded replays within 0.0027 TV. A second merge adds ten 2026-10-18 to 2026-10-20 runs and six snapshots: the four init-control runs whose every job ended in ERROR are skipped, and the six that returned shots reproduce their recorded replays within 0.0056 TV, their predicted distance moving by at most 0.008 TV across calibrations.",
+      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs. Five 2026-10-18 Kingston runs and one further Kingston snapshot, added by an incremental merge, widen the calibration spread to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), and the exact-law n21 members and the 149-member control runs reproduce their recorded replays within 0.0027 TV. A second merge adds ten 2026-10-18 to 2026-10-20 runs and six snapshots: the four init-control runs whose every job ended in ERROR are skipped, and the six that returned shots reproduce their recorded replays within 0.0056 TV, their predicted distance moving by at most 0.008 TV across calibrations. A third merge adds the two 2026-10-21 segmented sweeps and two snapshots: both reproduce their recorded replays within 0.011 TV, and their distances to hardware (0.509 and 0.451 TV) stay near the one-line model's limit, which no readout factor closes (part_f).",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -3426,15 +3440,15 @@
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
-          "sha256": "377bfb3dbf6ed1a01693086f564258d133bedb6aa3ff26051df59efd5b899393"
+          "sha256": "7718ec59672ec6681cbb9c58d06aaf36ec1c45449c49e0b89e2e1b46291da168"
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "3087936e352997862ff24ad7314f3dc2d8172638b197ab25c83f5644f9c824ec"
+          "sha256": "e91742aafef2659491267a9967a837748777e1903e600b776ab7376da8db5869"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "1bc32e964509da47d19cdb8ae956bf382dfcfa11f4ee83f1e06d9e42c0873944"
+          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -3473,7 +3487,9 @@
         "fez-n21-orbit-window-sweep",
         "fez-n21-orbit-overlap-split",
         "fez-n21-spectator-ground-control",
-        "fez-n21-spectator-ramsey-sweep"
+        "fez-n21-spectator-ramsey-sweep",
+        "marrakesh-n21-q47-segmented-baseline",
+        "fez-n21-q143-segmented-sweep"
       ],
       "assumptions": [],
       "depends_on": [],
@@ -6407,6 +6423,75 @@
       "acquisitions": [
         "fez-n21-spectator-ground-control",
         "fez-n21-spectator-ramsey-sweep"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-q143-segmented-lines",
+      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
+          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
+        },
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
+          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
+        },
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
+          "sha256": "4d4ddf6182415af3cafad341521545be9b4bb80b2650e5f412cd2343a1c9560d"
+        }
+      ],
+      "documents": [
+        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
+      ],
+      "gates": {
+        "core-617": "replay",
+        "core-619": "replay"
+      },
+      "acquisitions": [
+        "fez-n21-q143-segmented-sweep"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-n21-spectator-143-beat"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-q47-segmented-baseline",
+      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
+          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
+        },
+        {
+          "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",
+          "sha256": "f21326d0e9e7e94bad5ebc658f14468179c04d6e22db8f774f08be185c4550a7"
+        }
+      ],
+      "documents": [
+        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
+      ],
+      "gates": {
+        "core-620": "replay"
+      },
+      "acquisitions": [
+        "marrakesh-n21-q47-segmented-baseline"
       ],
       "assumptions": [],
       "depends_on": [],

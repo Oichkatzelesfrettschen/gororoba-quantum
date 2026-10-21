@@ -167,7 +167,7 @@
     "mean_delta": -0.003391,
     "standard_error": 0.000382
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.062727,
     0.069272
@@ -205,7 +205,7 @@
     "mean_delta": 0.002276,
     "standard_error": 0.000595
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.037655,
     0.048395
@@ -242,7 +242,7 @@
     "mean_delta": -0.013551,
     "standard_error": 0.005982
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.056397,
     0.070801
@@ -279,7 +279,7 @@
     "mean_delta": -0.011963,
     "standard_error": 0.002474
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.059692,
     0.073517
@@ -317,10 +317,10 @@
     "mean_delta": -0.000881,
     "standard_error": 0.00091
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.025863,
-    0.030772
+    0.030995
    ],
    "self_check": {
     "pairs": 24,
@@ -817,10 +817,10 @@
     "mean_delta": -0.005672,
     "standard_error": 0.001989
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.127733,
-    0.133405
+    0.134683
    ],
    "self_check": {
     "pairs": 14,
@@ -854,10 +854,10 @@
     "mean_delta": -0.001129,
     "standard_error": 0.002282
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.146545,
-    0.154327
+    0.154907
    ],
    "self_check": {
     "pairs": 12,
@@ -891,7 +891,7 @@
     "mean_delta": 0.003153,
     "standard_error": 0.000436
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.082458,
     0.086771
@@ -928,7 +928,7 @@
     "mean_delta": 0.002662,
     "standard_error": 0.000409
    },
-   "distinct_states": 8,
+   "distinct_states": 9,
    "state_mean_tvd_range": [
     0.32276,
     0.326067
@@ -950,13 +950,87 @@
    "executed_after_current": true
   },
   {
+   "run": "results/live/2026-10-21T043156.858484Z",
+   "backend": "ibm_marrakesh",
+   "members": 48,
+   "shots": {
+    "1536": 48
+   },
+   "execution_mean_tvd": [
+    0.509042
+   ],
+   "current_minus_execution": {
+    "replicas": 48,
+    "pubs": 48,
+    "mean_delta": -0.036985,
+    "standard_error": 0.008964
+   },
+   "distinct_states": 2,
+   "state_mean_tvd_range": [
+    0.472057,
+    0.509042
+   ],
+   "self_check": {
+    "pairs": 48,
+    "mean_abs_ghost_minus_recorded_tvd": 0.008898,
+    "max_abs_ghost_minus_recorded_tvd": 0.033208,
+    "mean_abs_ghost_minus_resampled_tvd": 0.009223,
+    "mean_ghost_minus_recorded_tvd": -0.000412,
+    "sd": 0.01137
+   },
+   "calibration_change": {
+    "qubits": 4,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json",
+    "cz_error_change": null,
+    "readout_error_change": 0.012664795
+   },
+   "executed_after_current": true
+  },
+  {
+   "run": "results/live/2026-10-21T064222.721454Z",
+   "backend": "ibm_fez",
+   "members": 48,
+   "shots": {
+    "1536": 48
+   },
+   "execution_mean_tvd": [
+    0.451306
+   ],
+   "current_minus_execution": {
+    "replicas": 48,
+    "pubs": 48,
+    "mean_delta": -0.040135,
+    "standard_error": 0.013294
+   },
+   "distinct_states": 9,
+   "state_mean_tvd_range": [
+    0.379745,
+    0.451306
+   ],
+   "self_check": {
+    "pairs": 48,
+    "mean_abs_ghost_minus_recorded_tvd": 0.011339,
+    "max_abs_ghost_minus_recorded_tvd": 0.035156,
+    "mean_abs_ghost_minus_resampled_tvd": 0.010634,
+    "mean_ghost_minus_recorded_tvd": 0.00027,
+    "sd": 0.014095
+   },
+   "calibration_change": {
+    "qubits": 4,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_fez/20261020T2247170700.json",
+    "cz_error_change": null,
+    "readout_error_change": 0.001922607
+   },
+   "executed_after_current": true
+  },
+  {
    "run": "results/live/kingston-wide-control-result",
    "skipped": "the run keeps no record.json, isa.qpy, collect.json"
   }
  ],
  "correlations": {
   "runs": 14,
-  "executed_after_current": 11,
+  "executed_after_current": 13,
   "cz_runs": 13,
   "cz_error_higher_now": 9,
   "cz_error_change_vs_distance_change": -0.2976,
