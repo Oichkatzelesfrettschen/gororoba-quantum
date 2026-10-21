@@ -256,20 +256,25 @@ pre-idle moves no quadrature, so the herald readout leaves qubit 143's
 Ramsey unperturbed, where qubit 47 shows backaction under the same design.
 
 Switching time. Shots run column-wise over the 48 PUBs, so consecutive
-shots of one PUB lie 9.656 ms apart (the job's single 14.83 s execution
-chunk over 1536 shots). Each shot's six reads label its line by the
-log-likelihood ratio under the static fit's two lines, informative at the
-half-cycle delays 1386, 1638, 4095, 4158 and 6930 dt (df t near an odd
-half cycle) and empty at the whole-cycle ones. The labels split into two
-clusters (the positive fraction 0.534 matches a = 0.529) and correlate
-across shots: mean autocorrelation 0.552, 0.392, 0.281 and 0.198 at lags of
-1 to 4 columns, a two-state telegraph with tau = 28.3 ms (moving-block
-bootstrap, 64-column blocks, 2.5 to 97.5 percent 20.9 to 32.9 ms) and mean
-dwell 60 and 54 ms in the two lines. The raw reads of the whole-cycle
-delays, where a drift common to both lines would show, stay within 0.090 of
-zero at lag 1 (standard error 0.026). scripts/n21_q143_line_switching.py
-writes line-switching.json beside the run (gate core-617,
-`hw-n21-q143-segmented-lines`). The correlation across 9.7 ms also means
+shots of one PUB lie one column apart: 8.934 ms by the metered
+circuits_execution_time (13.72 s over 1536 shots), 9.656 ms by the single
+execution chunk's wall span, whose overhead bounds the period above. Each
+shot's six reads label its line by the log-likelihood ratio under the
+static fit's two lines, informative at the half-cycle delays 1386, 1638,
+4095, 4158 and 6930 dt (df t near an odd half cycle) and empty at the
+whole-cycle ones. The labels split into two clusters (the positive
+fraction 0.534 matches a = 0.529) and correlate across shots: mean
+autocorrelation 0.552, 0.392, 0.281 and 0.198 at lags of 1 to 4 columns, a
+two-state telegraph with tau = 26.2 ms at the metered period (moving-block
+bootstrap, 64-column blocks, 2.5 to 97.5 percent 19.3 to 30.5 ms; 28.3 ms
+at the wall period) and mean dwell 56 and 50 ms in the two lines. A drift
+common to both lines would correlate the raw reads where the lines agree:
+at the four whole-cycle delays up to 30.5 us the raw lag-1 correlation
+stays within 0.034 (standard error 0.026), and at 8316 dt (33 us) the raw
+0.090 equals that arm's own label correlation 0.089, the lines' residual
+separation there. scripts/n21_q143_line_switching.py writes
+line-switching.json beside the run (gate core-617,
+`hw-n21-q143-segmented-lines`). The correlation across 8.9 ms also means
 the per-shot Wald statistics above treat correlated shots as independent:
 the non-rejections and the model and alias margins survive that, while a
 rejection near its threshold would not.

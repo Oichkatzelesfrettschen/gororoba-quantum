@@ -21,8 +21,11 @@ Tests and their readings:
 
 The time comes from the mean label autocorrelation of the half-cycle arms at
 lags 1 to 4 columns, ln r(k) = ln R - k T / tau, R the squared label
-reliability; a moving-block bootstrap over columns (BLOCK columns, REPLICATES
-draws, batched across draws) gives its interval. Same-arm lags are exact
+reliability and T the metered column period (circuits_execution_time per
+shot; the chunk's wall span bounds T above), and a mean correlation that is
+not positive at every lag leaves the fit not evaluable; a moving-block
+bootstrap over columns (BLOCK columns, REPLICATES draws, batched across
+draws) gives its interval over the draws it fits. Same-arm lags are exact
 multiples of the column period whatever the PUB order within a column.
 
 RUN_DIR ANALYSIS writes RUN_DIR/line-switching.json; --check requires equal
@@ -57,16 +60,21 @@ REPLICATES = 400
 SEED = 20261021
 
 
-def column_period_ms(run: Path, pubs: int) -> float:
-    """The job's single execution chunk, every PUB in it, divided by the shots per PUB."""
+def column_periods_ms(run: Path, pubs: int) -> tuple[float, float]:
+    """(metered, wall) column period: circuits_execution_time and the single chunk's span, per shot.
+
+    The metered time counts shots x (rep_delay + circuit duration); the
+    chunk span adds the chunk's own overhead, so it bounds the period above.
+    """
     (job,) = [path for path in (run / "raw").iterdir() if path.is_dir()]
     metadata = json.loads((job / "result_metadata.json").read_text())
     chunks = metadata["executor"]["chunk_timing"]
     if len(chunks) != 1 or sorted(int(part["idx_item"]) for part in chunks[0]["parts"]) != list(range(pubs)):
         raise RuntimeError(f"{run}: the job ran in {len(chunks)} chunks, not one holding all {pubs} PUBs")
     shots = len(json.loads((job / "pub_00.json").read_text())["registers"]["g0_r0_s1_read"]["bitstrings"])
+    metered = json.loads((job / "job_metrics.json").read_text())["circuits_execution_time_ns"] * 1e-6 / shots
     span = datetime.fromisoformat(chunks[0]["stop"]) - datetime.fromisoformat(chunks[0]["start"])
-    return span.total_seconds() * 1e3 / shots
+    return metered, span.total_seconds() * 1e3 / shots
 
 
 def arm_series(run: Path, fit: dict[str, float]) -> dict[int, dict[str, Any]]:
@@ -122,14 +130,22 @@ def batched_autocorrelation(series: np.ndarray, index: np.ndarray, lag: int) -> 
 
 
 def switching_fit(series: np.ndarray, index: np.ndarray, period_ms: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Per draw: tau in ms, R, and the mean autocorrelation over rows at FIT_LAGS, from ln r = ln R - k T / tau."""
+    """Per draw: tau in ms, R, and the mean autocorrelation over rows at FIT_LAGS, from ln r = ln R - k T / tau.
+
+    A draw whose mean correlation is not positive at every fit lag carries
+    no decay to fit, and its tau and R are NaN.
+    """
     mean = np.stack([batched_autocorrelation(series, index, lag).mean(axis=1) for lag in FIT_LAGS], axis=1)
     lags = np.array(FIT_LAGS, dtype=float)
     centered = lags - lags.mean()
-    logs = np.log(mean)
+    positive = np.all(mean > 0, axis=1, keepdims=True)
+    logs = np.log(np.where(positive, mean, 1.0))
     slope = (logs - logs.mean(axis=1, keepdims=True)) @ centered / (centered @ centered)
     intercept = logs.mean(axis=1) - slope * lags.mean()
-    return -period_ms / slope, np.exp(intercept), mean
+    fitted = positive[:, 0] & (slope < 0)
+    with np.errstate(divide="ignore"):
+        tau = np.where(fitted, -period_ms / np.where(slope < 0, slope, -1.0), np.nan)
+    return tau, np.where(fitted, np.exp(intercept), np.nan), mean
 
 
 def block_index(shots: int, replicates: int, rng: np.random.Generator) -> np.ndarray:
@@ -148,7 +164,7 @@ def report(run: Path, analysis: Path) -> dict[str, Any]:
     fit = json.loads(analysis.read_text())["fits"]["static"]["parameters"]
     arms = arm_series(run, fit)
     pubs = len(rca._group(run)["members"])
-    period = column_period_ms(run, pubs)
+    period, wall = column_periods_ms(run, pubs)
     shots = len(next(iter(arms.values()))["label"])
     full = np.arange(shots)[None, :]
     per_arm = {}
@@ -169,11 +185,24 @@ def report(run: Path, analysis: Path) -> dict[str, Any]:
     labels = np.stack([arms[d]["label"] for d in half])
     tau, reliability, mean = switching_fit(labels, full, period)
     draws = switching_fit(labels, block_index(shots, REPLICATES, np.random.default_rng(SEED)), period)[0]
+    finite = draws[np.isfinite(draws)]
     weight = fit["a"]
+    if not math.isfinite(tau[0]):
+        return {
+            "schema_version": SCHEMA,
+            "analysis": analysis.name,
+            "status": "not_evaluable",
+            "reason": "the mean label correlation is not positive at every fit lag: switching faster than a column",
+            "column_period_ms": period,
+            "arms": per_arm,
+        }
     return {
         "schema_version": SCHEMA,
         "analysis": analysis.name,
+        "status": "fitted",
         "column_period_ms": period,
+        "chunk_wall_period_ms": wall,
+        "tau_ms_at_chunk_wall_period": float(tau[0]) * wall / period,
         "shots": shots,
         "half_cycle_delays_dt": half,
         "whole_cycle_delays_dt": whole,
@@ -185,10 +214,17 @@ def report(run: Path, analysis: Path) -> dict[str, Any]:
             "block_columns": BLOCK,
             "replicates": REPLICATES,
             "seed": SEED,
-            "tau_ms_quantiles": {q: float(np.quantile(draws, float(q))) for q in ("0.025", "0.5", "0.975")},
+            "unfitted_draws": int(draws.size - finite.size),
+            "tau_ms_quantiles": {q: float(np.quantile(finite, float(q))) for q in ("0.025", "0.5", "0.975")},
         },
         "dwell_ms": {"line_1": float(tau[0]) / (1 - weight), "line_2": float(tau[0]) / weight},
-        "whole_cycle_raw_lag1_max_abs": max(abs(per_arm[str(d)]["raw_x_autocorrelation"]["1"]) for d in whole),
+        "whole_cycle_lag1": {
+            str(d): {
+                "raw_x": per_arm[str(d)]["raw_x_autocorrelation"]["1"],
+                "label": per_arm[str(d)]["label_autocorrelation"]["1"],
+            }
+            for d in whole
+        },
         "drift_null_standard_error": 1 / math.sqrt(shots),
     }
 

@@ -467,16 +467,18 @@
   "replicates": 400,
   "seed": 20261021,
   "tau_ms_quantiles": {
-   "0.025": 20.8681,
-   "0.5": 27.0938,
-   "0.975": 32.927
-  }
+   "0.025": 19.3085,
+   "0.5": 25.0688,
+   "0.975": 30.4661
+  },
+  "unfitted_draws": 0
  },
- "column_period_ms": 9.65607,
+ "chunk_wall_period_ms": 9.65607,
+ "column_period_ms": 8.93439,
  "drift_null_standard_error": 0.0255155,
  "dwell_ms": {
-  "line_1": 60.1415,
-  "line_2": 53.611
+  "line_1": 55.6467,
+  "line_2": 49.6042
  },
  "half_cycle_delays_dt": [
   1386,
@@ -494,7 +496,9 @@
  },
  "schema_version": "n21-q143-line-switching-v1",
  "shots": 1536,
- "tau_ms": 28.3444,
+ "status": "fitted",
+ "tau_ms": 26.226,
+ "tau_ms_at_chunk_wall_period": 28.3444,
  "whole_cycle_delays_dt": [
   0,
   2772,
@@ -502,5 +506,26 @@
   8190,
   8316
  ],
- "whole_cycle_raw_lag1_max_abs": 0.0900706
+ "whole_cycle_lag1": {
+  "0": {
+   "label": null,
+   "raw_x": -0.00783479
+  },
+  "2772": {
+   "label": -0.0271342,
+   "raw_x": -0.0335003
+  },
+  "5544": {
+   "label": 0.000467994,
+   "raw_x": 0.00503985
+  },
+  "8190": {
+   "label": 0.0500564,
+   "raw_x": 0.00521858
+  },
+  "8316": {
+   "label": 0.0893342,
+   "raw_x": 0.0900706
+  }
+ }
 }

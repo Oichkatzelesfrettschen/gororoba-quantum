@@ -56,3 +56,12 @@ def test_independent_labels_carry_no_lag_correlation() -> None:
         r = switching.batched_autocorrelation(series, np.arange(20000)[None, :], lag)[0, 0]
         if abs(r) > 4.0 / np.sqrt(20000):
             raise AssertionError(f"lag {lag}: r = {r:.4f}")
+
+
+def test_nonpositive_correlation_leaves_the_fit_unevaluated() -> None:
+    # Labels alternating every column correlate at -1 at lag 1: no decay to fit, and no log of it.
+    rng = np.random.default_rng(23)
+    series = labels(np.arange(1536) % 2 == 0, rng)[None, :]
+    tau, reliability, mean = switching.switching_fit(series, np.arange(1536)[None, :], 9.656)
+    if mean[0, 0] >= 0 or np.isfinite(tau[0]) or np.isfinite(reliability[0]):
+        raise AssertionError(f"tau {tau[0]} from correlations {mean[0]}")

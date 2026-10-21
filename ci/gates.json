@@ -1476,7 +1476,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z,results/live/2026-10-21T064222.721454Z",
    "name": "core-614",
    "seconds": 250.0,
    "tier": "full"
