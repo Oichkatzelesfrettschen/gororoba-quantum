@@ -84,7 +84,8 @@ branch-resolved law (`member_law` `exact_multinomial`), since a 100000-shot
 dynamic PUB costs about an hour per snapshot under Aer. The Kingston
 states column counts the new snapshot, and with those 19 runs the
 report's correlations read -0.52 for CZ and +0.28 for readout, CZ error
-higher now on 11 of 19 (the second merge below updates them). The readings below describe the 14 kernel runs under the
+higher now on 11 of 19, CZ-free runs included in the CZ figure (the second
+merge below updates them and excludes those runs). The readings below describe the 14 kernel runs under the
 2026-10-16 snapshot set; the new Kingston snapshot widens their state
 ranges to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), beyond
 the 0.001 to 0.032 the first reading states.
@@ -98,8 +99,9 @@ each with `no job of the run returned shots`. The six that returned shots reprod
 their recorded replays within 0.0056 TV (mean |ghost - recorded|, 0.0005 on
 the two 148-member 20 us control runs), and every retained calibration of
 their backend moves their predicted distance by at most 0.008 TV. With 25
-ghosted runs the report's correlations read -0.26 for CZ and +0.29 for
-readout, CZ error higher now on 15 of 25.
+ghosted runs the report's readout correlation reads +0.29. The CZ
+correlation counts only the 16 runs whose ghosted circuits play CZ (a
+CZ-free run records no CZ change): -0.15, CZ error higher now on 12 of 16.
 
 The recovered Kingston wide-control acquisition keeps its submitted circuits
 and raw counts but no planning record, so its members cannot be rebuilt and

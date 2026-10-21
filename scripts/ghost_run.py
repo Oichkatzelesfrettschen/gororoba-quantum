@@ -599,9 +599,14 @@ def calibration_change(run: dict[str, Any], current: str) -> dict[str, Any]:
     """Current minus execution mean CZ and readout error on the qubits the run's ghosted members used.
 
     A run whose members ran under several snapshots takes the one most of
-    them ran under as its execution calibration.
+    them ran under as its execution calibration. A run whose ghosted
+    circuits play no CZ records no CZ change, since no coupler error enters
+    its simulated distance.
     """
     record = json.loads((ROOT / run["run"] / "record.json").read_text(encoding="utf-8"))
+    isas = {c.name: c for c in qpy.load(io.BytesIO((ROOT / run["run"] / "isa.qpy").read_bytes()))}
+    replicas = member_replicas(record, isas)
+    plays_cz = any("cz" in circuit.count_ops() for name in run["member_shots"] for circuit in replicas[name][1])
     qubits = {
         q
         for group in record["groups"]
@@ -617,7 +622,7 @@ def calibration_change(run: dict[str, Any], current: str) -> dict[str, Any]:
     return {
         "qubits": len(qubits),
         "execution_snapshot": execution,
-        "cz_error_change": round(cz_now - cz_before, 9),
+        "cz_error_change": round(cz_now - cz_before, 9) if plays_cz else None,
         "readout_error_change": round(readout_now - readout_before, 9),
     }
 
@@ -654,17 +659,25 @@ def report(path: Path) -> dict[str, Any]:
         )
     changed = [r for r in rows if r.get("calibration_change") and r.get("current_minus_execution")]
     distance = [r["current_minus_execution"]["mean_delta"] for r in changed]
+    with_cz = [r for r in changed if r["calibration_change"]["cz_error_change"] is not None]
     correlations = {
         "runs": len(changed),
-        "cz_error_higher_now": sum(r["calibration_change"]["cz_error_change"] > 0 for r in changed),
+        "cz_runs": len(with_cz),
+        "cz_error_higher_now": sum(r["calibration_change"]["cz_error_change"] > 0 for r in with_cz),
         "cz_error_change_vs_distance_change": round(
-            float(np.corrcoef([r["calibration_change"]["cz_error_change"] for r in changed], distance)[0, 1]), 4
+            float(
+                np.corrcoef(
+                    [r["calibration_change"]["cz_error_change"] for r in with_cz],
+                    [r["current_minus_execution"]["mean_delta"] for r in with_cz],
+                )[0, 1]
+            ),
+            4,
         ),
         "readout_error_change_vs_distance_change": round(
             float(np.corrcoef([r["calibration_change"]["readout_error_change"] for r in changed], distance)[0, 1]), 4
         ),
     }
-    return {"schema": "ghost-run-report-v4", "source": path.as_posix(), "runs": rows, "correlations": correlations}
+    return {"schema": "ghost-run-report-v5", "source": path.as_posix(), "runs": rows, "correlations": correlations}
 
 
 def audited_runs() -> list[str]:

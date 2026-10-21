@@ -110,7 +110,17 @@
       "results/live/2026-10-18T083403.945334Z/**",
       "results/live/2026-10-18T083404.226285Z/**",
       "results/live/2026-10-18T083404.414317Z/**",
-      "results/live/2026-10-18T090603.530638Z/**"
+      "results/live/2026-10-18T090603.530638Z/**",
+      "results/live/2026-10-18T201601.788510Z/**",
+      "results/live/2026-10-18T201618.987131Z/**",
+      "results/live/2026-10-18T213733.601097Z/**",
+      "results/live/2026-10-18T213828.038774Z/**",
+      "results/live/2026-10-18T214519.655411Z/**",
+      "results/live/2026-10-18T220218.089776Z/**",
+      "results/live/2026-10-19T151959.226467Z/**",
+      "results/live/2026-10-19T170620.832658Z/**",
+      "results/live/2026-10-19T231043.083602Z/**",
+      "results/live/2026-10-20T031212.175942Z/**"
     ],
     "core-597": [
       "docs/evidence/ghost_runs/**",

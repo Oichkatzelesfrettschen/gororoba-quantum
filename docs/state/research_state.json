@@ -3430,7 +3430,7 @@
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "90ca6753008a26d193a28295ef31133e30779acd0eeeae11303066ec110dabbe"
+          "sha256": "6ef8e2b02f7f82fcc5beb9a6af267ad1f2be60db0090824e0a1335258f3b9304"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
