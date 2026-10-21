@@ -975,7 +975,18 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     if seed is not None:
         base.add_params(compilation_seed=seed)
     params = settings[0]["circuit_params"] if mesh or template else ({"phi": 0.0} if form == "phase" else None)
-    if len({samples for samples, _ in budgets}) == 1:
+    if template:
+        # Each template setting routes the photon to its own column, so each is estimated with its own parameters
+        # and must fit its own iteration's shot budget.
+        parts = [
+            computer.estimate_required_shots(base, nsamples=per_samples, param_values=setting["circuit_params"])
+            for setting in settings
+        ]
+        over = [s["name"] for s, part in zip(settings, parts, strict=True) if part is not None and part > per_shots]
+        if over:
+            raise PlatformError(f"{manifest['job']}: Perceval estimates more than {per_shots} shots for {over}")
+        estimate = None if any(part is None for part in parts) else sum(parts)
+    elif len({samples for samples, _ in budgets}) == 1:
         estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
         estimate = None if estimate is None else estimate * steps
     else:

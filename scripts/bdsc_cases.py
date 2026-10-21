@@ -62,6 +62,8 @@ POLICY_TAGS = {"provider-defaults": "def", "empty-mitigation": "none"}
 PAIR_TAGS = {"target-complement": "tc", "middle-middle": "mm"}
 LABEL_TAGS = {"f": "f", "g": "g", "+": "p", "-": "m", "+i": "pi", "-i": "mi"}
 ELIGIBILITY = "exactly one click among the 24 outputs; selected when that click is on a selected output"
+# The largest share of an iteration's samples the one-click rule may exclude before the iteration is refused.
+ELIGIBLE_LOSS = 0.01
 
 
 def require(condition: bool, message: str) -> None:
@@ -82,15 +84,17 @@ def setting_name(observation: dict[str, Any]) -> str:
 
 
 def load_draw(path: Path | None, settings: int) -> list[int] | None:
-    """The first 2 x settings values of an anu_qrng record whose raw bytes match their digest and parse."""
+    """The first 2 x settings values of a keyed ANU Quantum Numbers uint16 record that anu_qrng.admit accepts."""
     if path is None:
         return None
+    import anu_qrng
+
     record = json.loads(path.read_text(encoding="utf-8"))
-    raw = record["raw"].encode("utf-8")
-    require(sha256_bytes(raw) == record["raw_sha256"], f"{path}: raw bytes differ from their sha256")
-    require(record["values"] == json.loads(raw)["data"], f"{path}: parsed values differ from the raw response")
+    anu_qrng.admit(record)
+    require(str(record.get("source", "")).startswith(anu_qrng.ENDPOINTS["aqn"]), f"{path}: not the keyed AQN service")
+    require(record["type"] == "uint16", f"{path}: type {record['type']!r}, the case draws uint16")
     require(len(record["values"]) >= 2 * settings, f"{path}: {len(record['values'])} values, need {2 * settings}")
-    return [int(v) for v in record["values"][: 2 * settings]]
+    return list(record["values"][: 2 * settings])
 
 
 def columns(case: dict[str, Any], target: dict[str, Any]) -> dict[tuple[str, str], np.ndarray]:
@@ -102,6 +106,12 @@ def columns(case: dict[str, Any], target: dict[str, Any]) -> dict[tuple[str, str
             psi = np.array([complex(re, im) for re, im in row["state_e_basis"]])
             out[(bank["pair"], row["label"])] = cert.chip_column(u, psi)
     return out
+
+
+def _job_params(item: tuple[str, list[tuple[int, np.ndarray]], int]) -> dict[int, np.ndarray]:
+    """The template parameters of one job's states, keyed by observation index."""
+    template, members, source = item
+    return {i: cert.template_params(template, column, source) for i, column in members}
 
 
 def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
@@ -116,8 +126,20 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
     max_shots = case["resources"]["max_shots_per_iteration"]
     ideal = {(b["pair"], r["label"]): r["ideal_selected"]["E0"] for b in case["banks"] for r in b["settings"]}
     chip = columns(case, target)
+    import parallel
+
+    # Each job's 12 template parameterizations are independent of every other job's, so they run as one pool item.
+    items = [
+        (
+            job["template"],
+            [(i, chip[(observations[i]["pair"], observations[i]["label"])]) for i in job["iterations"]],
+            source,
+        )
+        for job in case["jobs"]
+    ]
+    solved = parallel.ordered_map(_job_params, items, min_items=1)
     out: dict[str, dict[str, bytes]] = {}
-    for job in case["jobs"]:
+    for job, params_by_index in zip(case["jobs"], solved, strict=True):
         ops = cert.template_ops(job["template"], source)
         input_state = [0] * cert.MODES
         input_state[source] = 1
@@ -137,7 +159,7 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
         for i in members:
             o = observations[i]
             column = chip[(o["pair"], o["label"])]
-            params = cert.template_params(job["template"], column, source)
+            params = params_by_index[i]
             setting: dict[str, Any] = {
                 "name": setting_name(o),
                 "observation_index": i,
@@ -248,12 +270,13 @@ def tally(counts: dict[str, int], selected_modes: list[int]) -> dict[str, int]:
     return out
 
 
-def readout(runs: list[Path]) -> dict[str, Any]:
+def readout(runs: list[Path], contract: dict[str, Any] | None = None) -> dict[str, Any]:
     """Every contrast of the frozen case from collected runs, each policy admitted only by its contract."""
     case_bytes = CASE.read_bytes()
     case = json.loads(case_bytes)
     observations = case["observations"]
     contrasts = cert.case_contrasts(observations)
+    trials = case["resources"]["eligible_trials_per_setting"]
     tallies: dict[int, dict[str, int]] = {}
     for run in runs:
         manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
@@ -264,6 +287,7 @@ def readout(runs: list[Path]) -> dict[str, Any]:
         require(result.get("partial") is False, f"{run}: a partial result")
         require(not manifest.get("draft", True), f"{run}: a draft case carries no frozen seeds or order")
         require(manifest["qualification_case_sha256"] == sha256_bytes(case_bytes), f"{run}: built from another case")
+        require(manifest["target_sha256"] == case["target_sha256"], f"{run}: built for another target")
         per_iteration = result["iterations"]
         require(len(per_iteration) == len(manifest["settings"]), f"{run}: iteration count differs")
         for setting, iteration in zip(manifest["settings"], per_iteration, strict=True):
@@ -273,14 +297,22 @@ def readout(runs: list[Path]) -> dict[str, Any]:
             require(ran.get("compilation_seed") == setting["compilation_seed"], f"{run}/{setting['name']}: seed")
             index = setting["observation_index"]
             require(index not in tallies, f"{run}/{setting['name']}: observation {index} collected twice")
-            tallies[index] = tally(iteration["counts"], manifest["selected_modes"])
+            counted = tally(iteration["counts"], manifest["selected_modes"])
+            # Fixed n: an iteration that stopped on its shot limit short of the frozen samples is a stop condition,
+            # and one-click eligibility may drop at most ELIGIBLE_LOSS of them (dark counts, multi-photon events).
+            samples = iteration.get("samples")
+            require(samples == trials, f"{run}/{setting['name']}: {samples} samples, the case froze {trials}")
+            require(counted["eligible"] >= (1 - ELIGIBLE_LOSS) * trials, f"{run}/{setting['name']}: eligible short")
+            tallies[index] = counted
     missing = [i for i in range(len(observations)) if i not in tallies]
     require(not missing, f"no collected iteration for observations {missing[:6]}")
     k = np.array([tallies[i]["selected"] for i in range(len(observations))])
     n = np.array([tallies[i]["eligible"] for i in range(len(observations))])
-    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    contract = json.loads(CONTRACT.read_text(encoding="utf-8")) if contract is None else contract
     status = {c["capability"]: c["status"] for c in contract["capabilities"]}
-    admitted_policies = {"empty-mitigation"} if status.get("uncorrected_observations") == "supported" else set()
+    # Binomial intervals need the whole observation contract: uncorrected events and their count provenance.
+    contract_holds = all(status.get(c) == "supported" for c in ("uncorrected_observations", "count_provenance"))
+    admitted_policies = {"empty-mitigation"} if contract_holds else set()
     admitted = np.array([o["processing"] in admitted_policies for o in observations])
     result = bdsc.contrast_readout(k, n, contrasts, cert.CASE_ALPHA, admitted)
     return {
@@ -293,6 +325,93 @@ def readout(runs: list[Path]) -> dict[str, Any]:
     }
 
 
+def synthetic_draw(directory: Path, settings: int) -> Path:
+    """A well-formed AQN uint16 record of 2 x settings seeded values, for the offline self-test only."""
+    import anu_qrng
+
+    values = [int(v) for v in np.random.default_rng(11).integers(0, 65536, size=2 * settings)]
+    raw = json.dumps({"success": True, "type": "uint16", "length": str(len(values)), "data": values})
+    record = anu_qrng.record_from(f"{anu_qrng.ENDPOINTS['aqn']}?length={len(values)}&type=uint16", "self-test", raw)
+    path = directory / "draw.json"
+    path.write_text(json.dumps(record), encoding="utf-8")
+    return path
+
+
+def self_test() -> int:
+    """Build seeded jobs, write each as a collected run with ideal E0 counts in collect's shape, and read them out:
+    an unsupported contract reads every contrast not_admitted, a supported one reads every contrast compatible, and
+    a draft, a short iteration, a swapped seed and a duplicated run are refused."""
+    import copy
+    import tempfile
+
+    case = json.loads(CASE.read_text(encoding="utf-8"))
+    trials = case["resources"]["eligible_trials_per_setting"]
+    selected_mode, other_mode = 4, 0
+    with tempfile.TemporaryDirectory() as scratch:
+        root = Path(scratch)
+        draw = synthetic_draw(root, len(case["observations"]))
+        runs = []
+        for name, files in documents(draw).items():
+            run = root / name
+            run.mkdir()
+            for file, content in files.items():
+                (run / file).write_bytes(content)
+            manifest = json.loads(files["cases.json"])
+            iterations = []
+            for setting in manifest["settings"]:
+                k = round(setting["ideal_selected_E0"] * trials)
+                one = ["0"] * cert.MODES
+                one[selected_mode if selected_mode in manifest["selected_modes"] else other_mode] = "1"
+                miss = ["0"] * cert.MODES
+                miss[next(m for m in range(cert.MODES) if m not in manifest["selected_modes"])] = "1"
+                counts = {",".join(one): k, ",".join(miss): trials - k}
+                ran = {key: setting.get(key) for key in ("circuit_params", "compilation_seed")}
+                iterations.append({"iteration": ran, "counts": counts, "samples": trials})
+            result = {"status": {"status": "completed"}, "partial": False, "iterations": iterations}
+            (run / "results.json").write_text(json.dumps(result), encoding="utf-8")
+            runs.append(run)
+        closed = readout(runs)
+        require({c["status"] for c in closed["contrasts"]} == {"not_admitted"}, "self-test: unsupported contract")
+        contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+        for capability in contract["capabilities"]:
+            if capability["capability"] in ("uncorrected_observations", "count_provenance"):
+                capability["status"] = "supported"
+        opened = readout(runs, contract)
+        statuses = {(c["family"], c["status"]) for c in opened["contrasts"]}
+        empty = [
+            c
+            for c, o in zip(opened["contrasts"], cert.case_contrasts(case["observations"]), strict=True)
+            if all(case["observations"][j]["processing"] == "empty-mitigation" for j, _ in o[2])
+        ]
+        require(all(c["status"] == "compatible" for c in empty), f"self-test: ideal counts read {statuses}")
+        refusals = 0
+        for mutate in ("draft", "short", "seed", "duplicate"):
+            target = runs[0]
+            saved = {f: (target / f).read_bytes() for f in ("cases.json", "results.json")}
+            manifest = json.loads(saved["cases.json"])
+            result = json.loads(saved["results.json"])
+            batch = list(runs)
+            if mutate == "draft":
+                manifest["draft"] = True
+            elif mutate == "short":
+                result["iterations"][0]["samples"] = trials - 1
+            elif mutate == "seed":
+                result["iterations"][0]["iteration"]["compilation_seed"] += 1
+            else:
+                batch = [*runs, copy.copy(target)]
+            (target / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
+            (target / "results.json").write_text(json.dumps(result), encoding="utf-8")
+            try:
+                readout(batch, contract)
+            except ValueError:
+                refusals += 1
+            for f, content in saved.items():
+                (target / f).write_bytes(content)
+        require(refusals == 4, f"self-test: {4 - refusals} malformed run sets were read out")
+    print(f"bdsc cases self-test: {len(runs)} synthetic jobs read out; 4 malformed run sets refused")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     group = parser.add_mutually_exclusive_group(required=True)
@@ -300,8 +419,11 @@ def main() -> int:
     group.add_argument("--check", type=Path)
     group.add_argument("--local", type=Path)
     group.add_argument("--readout", type=Path, nargs="+")
+    group.add_argument("--self-test", action="store_true")
     parser.add_argument("--draw", type=Path)
     args = parser.parse_args()
+    if args.self_test:
+        return self_test()
     if args.write:
         write(args.write, args.draw)
     elif args.check:
