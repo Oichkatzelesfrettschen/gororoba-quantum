@@ -1,0 +1,795 @@
+{
+  "counts": {
+    "first_partner": {
+      "correct_annihilator_in_every_signature": true,
+      "distinct_annihilators": 84,
+      "distinct_annihilators_per_message_histogram": {
+        "4": 84
+      },
+      "distinct_blades": 28,
+      "distinct_signatures": 28,
+      "mean_ties": 4.0,
+      "mean_ties_excluding_sender": 3.0,
+      "messages": 84,
+      "score_classes": {
+        "class_size_histogram": {
+          "2": 42
+        },
+        "gram_classes": 42
+      },
+      "tie_counts_histogram": {
+        "4": 84
+      }
+    },
+    "matching": {
+      "correct_annihilator_in_every_signature": true,
+      "distinct_annihilators": 84,
+      "distinct_annihilators_per_message_histogram": {
+        "4": 84
+      },
+      "distinct_blades": 84,
+      "distinct_signatures": 42,
+      "mean_ties": 4.0,
+      "mean_ties_excluding_sender": 3.0,
+      "messages": 84,
+      "score_classes": {
+        "class_size_histogram": {
+          "2": 42
+        },
+        "gram_classes": 42
+      },
+      "tie_counts_histogram": {
+        "4": 84
+      }
+    },
+    "table1": {
+      "correct_annihilator_in_every_signature": true,
+      "distinct_annihilators": 34,
+      "distinct_annihilators_per_message_histogram": {
+        "1": 17,
+        "2": 67
+      },
+      "distinct_blades": 57,
+      "distinct_signatures": 35,
+      "mean_ties": 4.940476,
+      "mean_ties_excluding_sender": 3.940476,
+      "messages": 84,
+      "score_classes": {
+        "class_size_histogram": {
+          "1": 8,
+          "2": 12,
+          "3": 4,
+          "4": 10
+        },
+        "gram_classes": 34
+      },
+      "tie_counts_histogram": {
+        "2": 5,
+        "3": 8,
+        "4": 15,
+        "5": 23,
+        "6": 25,
+        "7": 8
+      }
+    }
+  },
+  "messages_simulated": 84,
+  "numpy": "2.5",
+  "python": "3.14",
+  "seed": 314,
+  "subset_messages": 40,
+  "symbol_error_rates": [
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        },
+        "c5": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        },
+        "profile": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 0,
+          "errors_84": 0,
+          "ser_40": 0.0,
+          "ser_40_draw_sd": 0.0,
+          "ser_84": 0.0
+        },
+        "c5": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        },
+        "profile": {
+          "errors_40": 9600,
+          "errors_84": 16800,
+          "ser_40": 0.6,
+          "ser_40_draw_sd": 0.057561,
+          "ser_84": 0.5
+        }
+      },
+      "random_mf": {
+        "errors_40": 0,
+        "errors_84": 0,
+        "ser_40": 0.0,
+        "ser_40_draw_sd": 0.0,
+        "ser_84": 0.0
+      },
+      "sigma": 0.0,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 6000,
+          "errors_84": 10800,
+          "ser_40": 0.375,
+          "ser_40_draw_sd": 0.053765,
+          "ser_84": 0.321429
+        },
+        "c5": {
+          "errors_40": 12800,
+          "errors_84": 26800,
+          "ser_40": 0.8,
+          "ser_40_draw_sd": 0.046253,
+          "ser_84": 0.797619
+        },
+        "profile": {
+          "errors_40": 10000,
+          "errors_84": 19600,
+          "ser_40": 0.625,
+          "ser_40_draw_sd": 0.056756,
+          "ser_84": 0.583333
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        },
+        "c5": {
+          "errors_40": 12204,
+          "errors_84": 25229,
+          "ser_40": 0.76275,
+          "ser_40_draw_sd": 0.026676,
+          "ser_84": 0.750863
+        },
+        "profile": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 0,
+          "errors_84": 0,
+          "ser_40": 0.0,
+          "ser_40_draw_sd": 0.0,
+          "ser_84": 0.0
+        },
+        "c5": {
+          "errors_40": 12187,
+          "errors_84": 25212,
+          "ser_40": 0.761687,
+          "ser_40_draw_sd": 0.026597,
+          "ser_84": 0.750357
+        },
+        "profile": {
+          "errors_40": 9600,
+          "errors_84": 16800,
+          "ser_40": 0.6,
+          "ser_40_draw_sd": 0.057561,
+          "ser_84": 0.5
+        }
+      },
+      "random_mf": {
+        "errors_40": 0,
+        "errors_84": 0,
+        "ser_40": 0.0,
+        "ser_40_draw_sd": 0.0,
+        "ser_84": 0.0
+      },
+      "sigma": 0.001,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 6000,
+          "errors_84": 10800,
+          "ser_40": 0.375,
+          "ser_40_draw_sd": 0.053765,
+          "ser_84": 0.321429
+        },
+        "c5": {
+          "errors_40": 11998,
+          "errors_84": 25029,
+          "ser_40": 0.749875,
+          "ser_40_draw_sd": 0.039176,
+          "ser_84": 0.744911
+        },
+        "profile": {
+          "errors_40": 10000,
+          "errors_84": 19600,
+          "ser_40": 0.625,
+          "ser_40_draw_sd": 0.056756,
+          "ser_84": 0.583333
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        },
+        "c5": {
+          "errors_40": 12155,
+          "errors_84": 25199,
+          "ser_40": 0.759687,
+          "ser_40_draw_sd": 0.026881,
+          "ser_84": 0.74997
+        },
+        "profile": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 0,
+          "errors_84": 0,
+          "ser_40": 0.0,
+          "ser_40_draw_sd": 0.0,
+          "ser_84": 0.0
+        },
+        "c5": {
+          "errors_40": 12188,
+          "errors_84": 25228,
+          "ser_40": 0.76175,
+          "ser_40_draw_sd": 0.026816,
+          "ser_84": 0.750833
+        },
+        "profile": {
+          "errors_40": 9600,
+          "errors_84": 16800,
+          "ser_40": 0.6,
+          "ser_40_draw_sd": 0.057561,
+          "ser_84": 0.5
+        }
+      },
+      "random_mf": {
+        "errors_40": 0,
+        "errors_84": 0,
+        "ser_40": 0.0,
+        "ser_40_draw_sd": 0.0,
+        "ser_84": 0.0
+      },
+      "sigma": 0.01,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 6000,
+          "errors_84": 10800,
+          "ser_40": 0.375,
+          "ser_40_draw_sd": 0.053765,
+          "ser_84": 0.321429
+        },
+        "c5": {
+          "errors_40": 11980,
+          "errors_84": 24973,
+          "ser_40": 0.74875,
+          "ser_40_draw_sd": 0.039306,
+          "ser_84": 0.743244
+        },
+        "profile": {
+          "errors_40": 10000,
+          "errors_84": 19600,
+          "ser_40": 0.625,
+          "ser_40_draw_sd": 0.056756,
+          "ser_84": 0.583333
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        },
+        "c5": {
+          "errors_40": 12077,
+          "errors_84": 25069,
+          "ser_40": 0.754812,
+          "ser_40_draw_sd": 0.026849,
+          "ser_84": 0.746101
+        },
+        "profile": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 0,
+          "errors_84": 0,
+          "ser_40": 0.0,
+          "ser_40_draw_sd": 0.0,
+          "ser_84": 0.0
+        },
+        "c5": {
+          "errors_40": 12130,
+          "errors_84": 25098,
+          "ser_40": 0.758125,
+          "ser_40_draw_sd": 0.026809,
+          "ser_84": 0.746964
+        },
+        "profile": {
+          "errors_40": 9600,
+          "errors_84": 16800,
+          "ser_40": 0.6,
+          "ser_40_draw_sd": 0.057561,
+          "ser_84": 0.5
+        }
+      },
+      "random_mf": {
+        "errors_40": 0,
+        "errors_84": 0,
+        "ser_40": 0.0,
+        "ser_40_draw_sd": 0.0,
+        "ser_84": 0.0
+      },
+      "sigma": 0.05,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 6000,
+          "errors_84": 10800,
+          "ser_40": 0.375,
+          "ser_40_draw_sd": 0.053765,
+          "ser_84": 0.321429
+        },
+        "c5": {
+          "errors_40": 11997,
+          "errors_84": 25035,
+          "ser_40": 0.749812,
+          "ser_40_draw_sd": 0.039161,
+          "ser_84": 0.745089
+        },
+        "profile": {
+          "errors_40": 10000,
+          "errors_84": 19600,
+          "ser_40": 0.625,
+          "ser_40_draw_sd": 0.056756,
+          "ser_84": 0.583333
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 12000,
+          "errors_84": 22400,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054269,
+          "ser_84": 0.666667
+        },
+        "c5": {
+          "errors_40": 12185,
+          "errors_84": 25175,
+          "ser_40": 0.761563,
+          "ser_40_draw_sd": 0.026858,
+          "ser_84": 0.749256
+        },
+        "profile": {
+          "errors_40": 12000,
+          "errors_84": 22401,
+          "ser_40": 0.75,
+          "ser_40_draw_sd": 0.054264,
+          "ser_84": 0.666696
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 0,
+          "errors_84": 0,
+          "ser_40": 0.0,
+          "ser_40_draw_sd": 0.0,
+          "ser_84": 0.0
+        },
+        "c5": {
+          "errors_40": 12217,
+          "errors_84": 25165,
+          "ser_40": 0.763563,
+          "ser_40_draw_sd": 0.026792,
+          "ser_84": 0.748958
+        },
+        "profile": {
+          "errors_40": 9601,
+          "errors_84": 16803,
+          "ser_40": 0.600063,
+          "ser_40_draw_sd": 0.057551,
+          "ser_84": 0.500089
+        }
+      },
+      "random_mf": {
+        "errors_40": 0,
+        "errors_84": 1,
+        "ser_40": 0.0,
+        "ser_40_draw_sd": 3.1e-05,
+        "ser_84": 3e-05
+      },
+      "sigma": 0.1,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 6000,
+          "errors_84": 10800,
+          "ser_40": 0.375,
+          "ser_40_draw_sd": 0.053765,
+          "ser_84": 0.321429
+        },
+        "c5": {
+          "errors_40": 12028,
+          "errors_84": 25013,
+          "ser_40": 0.75175,
+          "ser_40_draw_sd": 0.039211,
+          "ser_84": 0.744435
+        },
+        "profile": {
+          "errors_40": 10014,
+          "errors_84": 19641,
+          "ser_40": 0.625875,
+          "ser_40_draw_sd": 0.056591,
+          "ser_84": 0.584554
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 12205,
+          "errors_84": 22976,
+          "ser_40": 0.762813,
+          "ser_40_draw_sd": 0.051486,
+          "ser_84": 0.68381
+        },
+        "c5": {
+          "errors_40": 12810,
+          "errors_84": 26553,
+          "ser_40": 0.800625,
+          "ser_40_draw_sd": 0.022422,
+          "ser_84": 0.790268
+        },
+        "profile": {
+          "errors_40": 12549,
+          "errors_84": 23939,
+          "ser_40": 0.784312,
+          "ser_40_draw_sd": 0.046831,
+          "ser_84": 0.71247
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 1102,
+          "errors_84": 2355,
+          "ser_40": 0.068875,
+          "ser_40_draw_sd": 0.001526,
+          "ser_84": 0.070089
+        },
+        "c5": {
+          "errors_40": 12777,
+          "errors_84": 26554,
+          "ser_40": 0.798562,
+          "ser_40_draw_sd": 0.022589,
+          "ser_84": 0.790298
+        },
+        "profile": {
+          "errors_40": 10586,
+          "errors_84": 19382,
+          "ser_40": 0.661625,
+          "ser_40_draw_sd": 0.048739,
+          "ser_84": 0.576845
+        }
+      },
+      "random_mf": {
+        "errors_40": 667,
+        "errors_84": 1460,
+        "ser_40": 0.041688,
+        "ser_40_draw_sd": 0.001853,
+        "ser_84": 0.043452
+      },
+      "sigma": 0.2,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 6555,
+          "errors_84": 12119,
+          "ser_40": 0.409687,
+          "ser_40_draw_sd": 0.050672,
+          "ser_84": 0.360685
+        },
+        "c5": {
+          "errors_40": 12596,
+          "errors_84": 26462,
+          "ser_40": 0.78725,
+          "ser_40_draw_sd": 0.032338,
+          "ser_84": 0.78756
+        },
+        "profile": {
+          "errors_40": 12900,
+          "errors_84": 26033,
+          "ser_40": 0.80625,
+          "ser_40_draw_sd": 0.036796,
+          "ser_84": 0.774792
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 13102,
+          "errors_84": 25455,
+          "ser_40": 0.818875,
+          "ser_40_draw_sd": 0.039535,
+          "ser_84": 0.757589
+        },
+        "c5": {
+          "errors_40": 14148,
+          "errors_84": 29541,
+          "ser_40": 0.88425,
+          "ser_40_draw_sd": 0.012914,
+          "ser_84": 0.879196
+        },
+        "profile": {
+          "errors_40": 13894,
+          "errors_84": 27709,
+          "ser_40": 0.868375,
+          "ser_40_draw_sd": 0.028587,
+          "ser_84": 0.824673
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 5977,
+          "errors_84": 12429,
+          "ser_40": 0.373563,
+          "ser_40_draw_sd": 0.002809,
+          "ser_84": 0.369911
+        },
+        "c5": {
+          "errors_40": 14137,
+          "errors_84": 29581,
+          "ser_40": 0.883563,
+          "ser_40_draw_sd": 0.012826,
+          "ser_84": 0.880387
+        },
+        "profile": {
+          "errors_40": 12898,
+          "errors_84": 25449,
+          "ser_40": 0.806125,
+          "ser_40_draw_sd": 0.02799,
+          "ser_84": 0.757411
+        }
+      },
+      "random_mf": {
+        "errors_40": 4744,
+        "errors_84": 10072,
+        "ser_40": 0.2965,
+        "ser_40_draw_sd": 0.004648,
+        "ser_84": 0.299762
+      },
+      "sigma": 0.3,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 9252,
+          "errors_84": 18249,
+          "ser_40": 0.57825,
+          "ser_40_draw_sd": 0.036399,
+          "ser_84": 0.543125
+        },
+        "c5": {
+          "errors_40": 14060,
+          "errors_84": 29461,
+          "ser_40": 0.87875,
+          "ser_40_draw_sd": 0.018188,
+          "ser_84": 0.876815
+        },
+        "profile": {
+          "errors_40": 14976,
+          "errors_84": 30662,
+          "ser_40": 0.936,
+          "ser_40_draw_sd": 0.021828,
+          "ser_84": 0.91256
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 14465,
+          "errors_84": 29260,
+          "ser_40": 0.904062,
+          "ser_40_draw_sd": 0.021191,
+          "ser_84": 0.870833
+        },
+        "c5": {
+          "errors_40": 15237,
+          "errors_84": 31914,
+          "ser_40": 0.952313,
+          "ser_40_draw_sd": 0.005385,
+          "ser_84": 0.949821
+        },
+        "profile": {
+          "errors_40": 15166,
+          "errors_84": 31249,
+          "ser_40": 0.947875,
+          "ser_40_draw_sd": 0.011475,
+          "ser_84": 0.93003
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 11915,
+          "errors_84": 24973,
+          "ser_40": 0.744687,
+          "ser_40_draw_sd": 0.002671,
+          "ser_84": 0.743244
+        },
+        "c5": {
+          "errors_40": 15203,
+          "errors_84": 31876,
+          "ser_40": 0.950187,
+          "ser_40_draw_sd": 0.005653,
+          "ser_84": 0.94869
+        },
+        "profile": {
+          "errors_40": 14871,
+          "errors_84": 30659,
+          "ser_40": 0.929438,
+          "ser_40_draw_sd": 0.010215,
+          "ser_84": 0.91247
+        }
+      },
+      "random_mf": {
+        "errors_40": 11283,
+        "errors_84": 23747,
+        "ser_40": 0.705187,
+        "ser_40_draw_sd": 0.004111,
+        "ser_84": 0.706756
+      },
+      "sigma": 0.5,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 12974,
+          "errors_84": 26703,
+          "ser_40": 0.810875,
+          "ser_40_draw_sd": 0.016585,
+          "ser_84": 0.794732
+        },
+        "c5": {
+          "errors_40": 15194,
+          "errors_84": 31933,
+          "ser_40": 0.949625,
+          "ser_40_draw_sd": 0.00726,
+          "ser_84": 0.950387
+        },
+        "profile": {
+          "errors_40": 15661,
+          "errors_84": 32516,
+          "ser_40": 0.978812,
+          "ser_40_draw_sd": 0.012583,
+          "ser_84": 0.967738
+        }
+      }
+    },
+    {
+      "first_partner": {
+        "algebraic_mf": {
+          "errors_40": 15458,
+          "errors_84": 31988,
+          "ser_40": 0.966125,
+          "ser_40_draw_sd": 0.008041,
+          "ser_84": 0.952024
+        },
+        "c5": {
+          "errors_40": 15698,
+          "errors_84": 32896,
+          "ser_40": 0.981125,
+          "ser_40_draw_sd": 0.002368,
+          "ser_84": 0.979048
+        },
+        "profile": {
+          "errors_40": 15713,
+          "errors_84": 32780,
+          "ser_40": 0.982062,
+          "ser_40_draw_sd": 0.004066,
+          "ser_84": 0.975595
+        }
+      },
+      "matching": {
+        "algebraic_mf": {
+          "errors_40": 14866,
+          "errors_84": 31212,
+          "ser_40": 0.929125,
+          "ser_40_draw_sd": 0.001306,
+          "ser_84": 0.928929
+        },
+        "c5": {
+          "errors_40": 15700,
+          "errors_84": 32895,
+          "ser_40": 0.98125,
+          "ser_40_draw_sd": 0.00238,
+          "ser_84": 0.979018
+        },
+        "profile": {
+          "errors_40": 15676,
+          "errors_84": 32710,
+          "ser_40": 0.97975,
+          "ser_40_draw_sd": 0.00319,
+          "ser_84": 0.973512
+        }
+      },
+      "random_mf": {
+        "errors_40": 14767,
+        "errors_84": 30930,
+        "ser_40": 0.922937,
+        "ser_40_draw_sd": 0.002221,
+        "ser_84": 0.920536
+      },
+      "sigma": 1.0,
+      "table1": {
+        "algebraic_mf": {
+          "errors_40": 15039,
+          "errors_84": 31393,
+          "ser_40": 0.939937,
+          "ser_40_draw_sd": 0.005412,
+          "ser_84": 0.934315
+        },
+        "c5": {
+          "errors_40": 15660,
+          "errors_84": 32888,
+          "ser_40": 0.97875,
+          "ser_40_draw_sd": 0.003171,
+          "ser_84": 0.97881
+        },
+        "profile": {
+          "errors_40": 15858,
+          "errors_84": 33053,
+          "ser_40": 0.991125,
+          "ser_40_draw_sd": 0.009102,
+          "ser_84": 0.98372
+        }
+      }
+    }
+  ],
+  "trials_per_message": 400
+}
