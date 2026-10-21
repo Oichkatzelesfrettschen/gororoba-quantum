@@ -30,7 +30,10 @@ explains is.
 Members wider than MAX_QUBITS active qubits are skipped with that reason: a
 density matrix beyond 14 qubits leaves a 15 GiB T4 (docs/notes/kaggle/
 substrates.md). Runs whose record predates the fused-PUB submission plan are
-skipped with the record's reason.
+skipped with the record's reason, and a run whose collections hold no
+measured member (every job ended in ERROR or CANCELLED, or none is
+collected) is skipped because no member has a hardware distribution to
+compare.
 
 A dynamic member (mid-circuit measurement, reset or feed-forward) at
 EXACT_MIN_SHOTS or more shots, which Aer's density-matrix method evolves
@@ -93,6 +96,7 @@ import math
 import sys
 import time
 from collections.abc import Callable
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -321,6 +325,8 @@ def prepare(run_name: str, index: dict[str, Any]) -> dict[str, Any]:
     except SystemExit as reason:
         return {"skipped": str(reason)}
     measured, executed, recorded = measured_members(run)
+    if not measured:
+        return {"skipped": "no job of the run returned shots"}
     starts = {w["start"]: w["snapshot"] for job in index["jobs"] if job["run"] == run_name for w in job["windows"]}
     backends = {b for b, _ in replicas.values()}
     require(len(backends) == 1, f"{run_name}: members span backends {sorted(backends)}")
@@ -590,13 +596,27 @@ def error_means(relative: str, qubits: set[int]) -> tuple[float, float]:
     return float(np.mean(cz)), float(np.mean(readout))
 
 
+def plays_cz(circuit: QuantumCircuit) -> bool:
+    """Whether the circuit applies a CZ, inside a control-flow block included."""
+    return any(
+        instruction.operation.name == "cz"
+        or any(block is not None and plays_cz(block) for block in getattr(instruction.operation, "blocks", ()))
+        for instruction in circuit.data
+    )
+
+
 def calibration_change(run: dict[str, Any], current: str) -> dict[str, Any]:
     """Current minus execution mean CZ and readout error on the qubits the run's ghosted members used.
 
     A run whose members ran under several snapshots takes the one most of
-    them ran under as its execution calibration.
+    them ran under as its execution calibration. A run whose ghosted
+    circuits play no CZ records no CZ change, since no coupler error enters
+    its simulated distance.
     """
     record = json.loads((ROOT / run["run"] / "record.json").read_text(encoding="utf-8"))
+    isas = {c.name: c for c in qpy.load(io.BytesIO((ROOT / run["run"] / "isa.qpy").read_bytes()))}
+    replicas = member_replicas(record, isas)
+    with_cz = any(plays_cz(circuit) for name in run["member_shots"] for circuit in replicas[name][1])
     qubits = {
         q
         for group in record["groups"]
@@ -612,7 +632,7 @@ def calibration_change(run: dict[str, Any], current: str) -> dict[str, Any]:
     return {
         "qubits": len(qubits),
         "execution_snapshot": execution,
-        "cz_error_change": round(cz_now - cz_before, 9),
+        "cz_error_change": round(cz_now - cz_before, 9) if with_cz else None,
         "readout_error_change": round(readout_now - readout_before, 9),
     }
 
@@ -631,6 +651,7 @@ def report(path: Path) -> dict[str, Any]:
             by_content.setdefault(content_key(relative), []).append(relative)
         means = {key: summary[sorted(group)[0]]["mean_tvd"] for key, group in sorted(by_content.items())}
         current = [relative for relative, entry in summary.items() if entry["current"]]
+        change = calibration_change(run, current[0]) if current else None
         rows.append(
             {
                 "run": run["run"],
@@ -644,22 +665,42 @@ def report(path: Path) -> dict[str, Any]:
                 "distinct_states": len(means),
                 "state_mean_tvd_range": [min(means.values()), max(means.values())],
                 "self_check": run["self_check"],
-                "calibration_change": calibration_change(run, current[0]) if current else None,
+                "calibration_change": change,
+                "executed_after_current": bool(
+                    change
+                    and datetime.fromisoformat(summary[change["execution_snapshot"]]["calibration"])
+                    > datetime.fromisoformat(summary[current[0]]["calibration"])
+                ),
             }
         )
-    changed = [r for r in rows if r.get("calibration_change") and r.get("current_minus_execution")]
+    # "Now" statistics compare a later calibration with the execution one, so
+    # a run executed under a snapshot newer than the current one stays out.
+    changed = [
+        r
+        for r in rows
+        if r.get("calibration_change") and r.get("current_minus_execution") and not r["executed_after_current"]
+    ]
     distance = [r["current_minus_execution"]["mean_delta"] for r in changed]
+    with_cz = [r for r in changed if r["calibration_change"]["cz_error_change"] is not None]
     correlations = {
         "runs": len(changed),
-        "cz_error_higher_now": sum(r["calibration_change"]["cz_error_change"] > 0 for r in changed),
+        "executed_after_current": sum(bool(r.get("executed_after_current")) for r in rows),
+        "cz_runs": len(with_cz),
+        "cz_error_higher_now": sum(r["calibration_change"]["cz_error_change"] > 0 for r in with_cz),
         "cz_error_change_vs_distance_change": round(
-            float(np.corrcoef([r["calibration_change"]["cz_error_change"] for r in changed], distance)[0, 1]), 4
+            float(
+                np.corrcoef(
+                    [r["calibration_change"]["cz_error_change"] for r in with_cz],
+                    [r["current_minus_execution"]["mean_delta"] for r in with_cz],
+                )[0, 1]
+            ),
+            4,
         ),
         "readout_error_change_vs_distance_change": round(
             float(np.corrcoef([r["calibration_change"]["readout_error_change"] for r in changed], distance)[0, 1]), 4
         ),
     }
-    return {"schema": "ghost-run-report-v4", "source": path.as_posix(), "runs": rows, "correlations": correlations}
+    return {"schema": "ghost-run-report-v5", "source": path.as_posix(), "runs": rows, "correlations": correlations}
 
 
 def audited_runs() -> list[str]:

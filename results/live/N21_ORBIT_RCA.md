@@ -186,8 +186,9 @@ Record 2026-10-19T151959.226467Z, job dbb3auvi0auc7392sfs0, ibm_fez under
 the 2026-10-19T07:44:14-07:00 calibration, 14 PUBs of 16384 shots with the
 initialization herald, 18 s charged; analysis in
 [between-arm.json](2026-10-19T151959.226467Z/between-arm.json). The family
-is admissible and both heralds admit (contract shift upper limits 0.0132
-orbit, 0.0112 spectator). The placement reuses the four qubits of 083417
+is admissible and both heralds admit (contract shift upper limits 0.0142
+orbit, 0.0123 spectator, at the herald alpha the analyzer splits from the
+family's). The placement reuses the four qubits of 083417
 with other roles: control 144, work bit 1 on 142, work bit 4 on 143, work
 bit 16 on 136, against control 142, 136, 143, 144 there, so neither run
 predicts the other.
@@ -206,8 +207,10 @@ Each magnitude carries a standard error near 0.008. Contracts at alpha 0.01:
   one, so added window length costs no resolved coherence on this
   assignment, and neither a growing loss nor a one-time step appears.
 - extra_readout_contrast fails through the herald margin alone: the
-  magnitude lies 0.006 +- 0.008 below its T2 bound before the 0.013 margin.
-- window_echo_restoration passes with an upper limit of +0.0002.
+  magnitude lies 0.006 +- 0.008 below its T2 bound before the 0.014 margin.
+- window_echo_restoration fails through the herald margin: the echo arm
+  reads 0.005 below nominal, and with the 0.014 margin its upper limit is
+  -0.0008, so restoration of the nominal magnitude is not shown.
 - spectator_window_dephasing fails: qubit 143 reads visibility 0.587
   across the measured control and 0.591 across the reset-only reference.
 - window_delay_phase_slope fails (statistic 40.4 against 6.63): the two
@@ -251,10 +254,12 @@ biases against an overlap loss. Contracts at alpha 0.0125:
 
 The barrier-free delay arm reproduces 083417's loss (0.094 here, 0.081
 there) on today's calibration, and the bracketed arms on the same roles
-lose nothing to the added 415 dt. A work CZ(136, 143) that the dependency
-order leaves free to run during the control's measure-and-reset span costs
-the orbit about 59 percent of its contrast magnitude; the role assignment
-does not. The run establishes the overlap cost on this calibration; that the
+lose nothing to the added 415 dt. Removing the window barriers, which lets
+work-qubit gates overlap the control's measure-and-reset span, costs the
+orbit about 59 percent of its contrast magnitude; the role assignment does
+not. The run attributes the loss to no single overlapping gate, since the
+unbracketed arm is resynthesized; the work CZ(136, 143), which the
+dependency order leaves free to run inside the span, is the candidate. The run establishes the overlap cost on this calibration; that the
 same overlap produced 083417's loss is the inference its identical program
 supports.
 

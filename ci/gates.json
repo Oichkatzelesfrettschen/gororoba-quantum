@@ -1460,6 +1460,30 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --check",
+   "name": "core-612",
+   "seconds": 18.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T170620.832658Z --check",
+   "name": "core-613",
+   "seconds": 2.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z",
+   "name": "core-614",
+   "seconds": 250.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_spectator_ramsey.py --self-check",
    "name": "core-601",
    "seconds": 25.7,
@@ -2906,7 +2930,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
    "name": "core-339",
    "seconds": 133.9,
    "tier": "pr"

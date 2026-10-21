@@ -23,12 +23,13 @@ Every retained snapshot of a run's backend covers every member of the run.
 The report reads three of them:
 
 - **execution**: per member, the snapshot in force at its PUB start. Every
-  one of the 2335 executed members maps to a snapshot carrying exactly the
+  one of the 3275 executed members maps to a snapshot carrying exactly the
   calibration identity its collection recorded (gate core-286).
 - **current**: the backend's calibration when the snapshots were exported.
 - **all states**: every retained snapshot, grouped by noise content. The
-  14 calibration identities hold 12 distinct noise models, because two
-  Kingston updates changed no gate, readout or coherence value.
+  20 calibration identities the ghost covers (11 Kingston, 9 Fez) hold 16
+  distinct noise models, 8 per backend, because some updates changed no
+  gate, readout or coherence value.
 
 ## Result
 
@@ -46,25 +47,31 @@ The table gives, for each run:
 
 | Run | Backend | Members (shots) | Execution TVD | Current minus execution | States, range | Self-check: pairs, recorded / resampled |
 | --- | --- | --- | ---: | --- | --- | --- |
-| 2026-10-11T152922 | Kingston | 9 (9x4096) | 0.102 | -0.0017 (0.0013, 6 PUBs) | 7, 0.094-0.103 | 29: 0.0027 / 0.0038 |
-| 2026-10-12T055624 | Kingston | 16 (16x8192) | 0.138 | -0.0181 (0.0015, 16 PUBs) | 7, 0.088-0.142 | 16: 0.0052 / 0.0036 |
-| 2026-10-13T020454 | Kingston | 4 (4x8192) | 0.186 | -0.0316 (0.0013, 4 PUBs) | 7, 0.140-0.186 | 0 |
-| 2026-10-13T022433 | Kingston | 4 (4x8192) | 0.210 | -0.0316 (0.0013, 4 PUBs) | 7, 0.165-0.210 | 0 |
-| 2026-10-13T025444 | Fez | 929 (856x1024, 73x4096) | 0.069 | -0.0034 (0.0004, 146 PUBs) | 5, 0.066-0.069 | 0 |
-| 2026-10-13T032011 | Fez | 176 (120x1024, 56x4096) | 0.041 | +0.0023 (0.0006, 36 PUBs) | 5, 0.039-0.048 | 0 |
-| 2026-10-13T080216 | Fez | 2 (2x4096) | 0.070 | -0.0136 (0.0060, 2 PUBs) | 5, 0.056-0.071 | 2: 0.0101 / 0.0068 |
-| 2026-10-13T083417 | Fez | 8 (8x4096) | 0.072 | -0.0120 (0.0025, 8 PUBs) | 5, 0.060-0.074 | 8: 0.0081 / 0.0079 |
-| 2026-10-13T201757 | Fez | 46 (40x1024, 6x4096) | 0.027 | -0.0009 (0.0009, 46 PUBs) | 5, 0.026-0.027 | 24: 0.0096 / 0.0081 |
-| 2026-10-15T030748 | Kingston | 15 (15x2048) | 0.203 | -0.0091 (0.0024, 15 PUBs) | 7, 0.194-0.205 | 15: 0.0063 / 0.0112 |
-| 2026-10-15T030903 | Kingston | 176 (120x1024, 56x4096) | 0.072 | -0.0015 (0.0003, 36 PUBs) | 7, 0.070-0.085 | 0 |
-| 2026-10-15T031229 | Kingston | 929 (856x1024, 73x4096) | 0.083, 0.093 | -0.0018 (0.0004, 146 PUBs) | 7, 0.082-0.086 | 0 |
-| 2026-10-15T070847 | Kingston | 7 (7x1024) | 0.435 | -0.0042 (0.0024, 7 PUBs) | 7, 0.424-0.445 | 7: 0.0186 / 0.0091 |
-| 2026-10-15T070853 | Kingston | 14 (14x2048) | 0.098 | -0.0029 (0.0012, 14 PUBs) | 7, 0.093-0.098 | 105: 0.0084 / 0.0091 |
-| 2026-10-18T083402 | Kingston | 149 (149x32768) | 0.003 | +0.0018 (none, 1 PUB) | 7, 0.003-0.008 | 149: 0.0005 / 0.0004 |
-| 2026-10-18T083403 | Kingston | 149 (149x16384) | 0.002 | +0.0022 (none, 1 PUB) | 7, 0.002-0.008 | 149: 0.0007 / 0.0006 |
-| 2026-10-18T083404.226285 | Kingston | 149 (149x32768) | 0.003 | +0.0028 (none, 1 PUB) | 7, 0.003-0.009 | 149: 0.0005 / 0.0005 |
-| 2026-10-18T083404.414317 | Kingston | 149 (149x16384) | 0.002 | +0.0024 (none, 1 PUB) | 7, 0.002-0.008 | 149: 0.0007 / 0.0006 |
-| 2026-10-18T090603 | Kingston | 2 (2x100000) | 0.025 | -0.0025 (0.0008, 2 PUBs) | 7, 0.018-0.026 | 2: 0.0027 / 0.0020 |
+| 2026-10-11T152922 | Kingston | 9 (9x4096) | 0.102 | -0.0017 (0.0013, 6 PUBs) | 8, 0.094-0.103 | 29: 0.0027 / 0.0038 |
+| 2026-10-12T055624 | Kingston | 16 (16x8192) | 0.138 | -0.0181 (0.0015, 16 PUBs) | 8, 0.088-0.142 | 16: 0.0052 / 0.0036 |
+| 2026-10-13T020454 | Kingston | 4 (4x8192) | 0.186 | -0.0316 (0.0013, 4 PUBs) | 8, 0.140-0.186 | 0 |
+| 2026-10-13T022433 | Kingston | 4 (4x8192) | 0.210 | -0.0316 (0.0013, 4 PUBs) | 8, 0.165-0.210 | 0 |
+| 2026-10-13T025444 | Fez | 929 (856x1024, 73x4096) | 0.069 | -0.0034 (0.0004, 146 PUBs) | 8, 0.063-0.069 | 0 |
+| 2026-10-13T032011 | Fez | 176 (120x1024, 56x4096) | 0.041 | +0.0023 (0.0006, 36 PUBs) | 8, 0.038-0.048 | 0 |
+| 2026-10-13T080216 | Fez | 2 (2x4096) | 0.070 | -0.0136 (0.0060, 2 PUBs) | 8, 0.056-0.071 | 2: 0.0101 / 0.0068 |
+| 2026-10-13T083417 | Fez | 8 (8x4096) | 0.072 | -0.0120 (0.0025, 8 PUBs) | 8, 0.060-0.074 | 8: 0.0081 / 0.0079 |
+| 2026-10-13T201757 | Fez | 46 (40x1024, 6x4096) | 0.027 | -0.0009 (0.0009, 46 PUBs) | 8, 0.026-0.031 | 24: 0.0096 / 0.0081 |
+| 2026-10-15T030748 | Kingston | 15 (15x2048) | 0.203 | -0.0091 (0.0024, 15 PUBs) | 8, 0.194-0.205 | 15: 0.0063 / 0.0112 |
+| 2026-10-15T030903 | Kingston | 176 (120x1024, 56x4096) | 0.072 | -0.0015 (0.0003, 36 PUBs) | 8, 0.070-0.085 | 0 |
+| 2026-10-15T031229 | Kingston | 929 (856x1024, 73x4096) | 0.083, 0.093 | -0.0018 (0.0004, 146 PUBs) | 8, 0.082-0.086 | 0 |
+| 2026-10-15T070847 | Kingston | 7 (7x1024) | 0.435 | -0.0042 (0.0024, 7 PUBs) | 8, 0.424-0.445 | 7: 0.0186 / 0.0091 |
+| 2026-10-15T070853 | Kingston | 14 (14x2048) | 0.098 | -0.0029 (0.0012, 14 PUBs) | 8, 0.093-0.098 | 105: 0.0084 / 0.0091 |
+| 2026-10-18T083402 | Kingston | 149 (149x32768) | 0.003 | +0.0018 (none, 1 PUB) | 8, 0.003-0.008 | 149: 0.0005 / 0.0004 |
+| 2026-10-18T083403 | Kingston | 149 (149x16384) | 0.002 | +0.0022 (none, 1 PUB) | 8, 0.002-0.008 | 149: 0.0007 / 0.0006 |
+| 2026-10-18T083404.226285 | Kingston | 149 (149x32768) | 0.003 | +0.0028 (none, 1 PUB) | 8, 0.003-0.009 | 149: 0.0005 / 0.0005 |
+| 2026-10-18T083404.414317 | Kingston | 149 (149x16384) | 0.002 | +0.0024 (none, 1 PUB) | 8, 0.002-0.008 | 149: 0.0007 / 0.0006 |
+| 2026-10-18T090603 | Kingston | 2 (2x100000) | 0.025 | -0.0025 (0.0008, 2 PUBs) | 8, 0.018-0.026 | 2: 0.0027 / 0.0020 |
+| 2026-10-18T214519 | Kingston | 148 (148x32768) | 0.006 | -0.0002 (none, 1 PUB) | 8, 0.006-0.009 | 148: 0.0005 / 0.0005 |
+| 2026-10-18T220218 | Kingston | 148 (148x32768) | 0.006 | -0.0001 (none, 1 PUB) | 8, 0.006-0.009 | 148: 0.0005 / 0.0005 |
+| 2026-10-19T151959 | Fez | 14 (14x16384) | 0.133 | -0.0057 (0.0020, 14 PUBs) | 8, 0.128-0.133 | 14: 0.0034 / 0.0043 |
+| 2026-10-19T170620 | Fez | 12 (12x8192) | 0.148 | -0.0011 (0.0023, 12 PUBs) | 8, 0.147-0.154 | 12: 0.0056 / 0.0085 |
+| 2026-10-19T231043 | Fez | 6 (6x8192) | 0.084 | +0.0032 (0.0004, 6 PUBs) | 8, 0.082-0.087 | 6: 0.0035 / 0.0026 |
+| 2026-10-20T031212 | Fez | 14 (14x12288) | 0.323 | +0.0027 (0.0004, 14 PUBs) | 8, 0.323-0.326 | 14: 0.0039 / 0.0044 |
 
 The five 2026-10-18 Kingston runs and the Kingston snapshot of
 2026-10-18T01:38:20-07:00 entered through `ghost_calibrations.py --add` and
@@ -75,12 +82,31 @@ Kingston runs under the new one. Every entry the kernel wrote keeps its
 bytes (core-293). The two n21 members draw from their exact
 branch-resolved law (`member_law` `exact_multinomial`), since a 100000-shot
 dynamic PUB costs about an hour per snapshot under Aer. The Kingston
-states column counts the new snapshot, and with 19 runs the report's
-correlations read -0.52 for CZ and +0.28 for readout, CZ error higher now
-on 11 of 19. The readings below describe the 14 kernel runs under the
+states column counts the new snapshot, and with those 19 runs the
+report's correlations read -0.52 for CZ and +0.28 for readout, CZ error
+higher now on 11 of 19, including runs executed after the current
+snapshots and CZ-free runs (the second merge below excludes both). The readings below describe the 14 kernel runs under the
 2026-10-16 snapshot set; the new Kingston snapshot widens their state
 ranges to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), beyond
 the 0.001 to 0.032 the first reading states.
+
+A second merge added the ten runs of 2026-10-18 to 2026-10-20 with two
+Kingston snapshots (2026-10-18T12:19:44 and 14:27:34-07:00) and four Fez
+snapshots (2026-10-19T07:44:14, 09:47:37, 15:07:33 and 19:30:42-07:00). The
+four Kingston init-control runs that requested a 0 us repetition delay, or
+100000 shots at 20 us, ended with every job in ERROR, so `prepare()` skips
+each with `no job of the run returned shots`. The six that returned shots reproduce
+their recorded replays within 0.0056 TV (mean |ghost - recorded|, 0.0005 on
+the two 148-member 20 us control runs), and every retained calibration of
+their backend moves their predicted distance by at most 0.008 TV.
+
+The current snapshots (2026-10-15) predate the execution of the eleven runs
+of 2026-10-18 to 2026-10-20, so their "current minus execution" column
+compares an older calibration with the one they ran under, and the report
+keeps them out of its correlations (`executed_after_current`). The
+correlations therefore cover the 14 kernel runs: readout +0.32, and CZ
+-0.30 over the 13 whose ghosted circuits play CZ (a CZ-free run, here
+2026-10-15T070847, records no CZ change), CZ error higher now on 9 of 13.
 
 The recovered Kingston wide-control acquisition keeps its submitted circuits
 and raw counts but no planning record, so its members cannot be rebuilt and
@@ -114,9 +140,10 @@ under two calibrations, hence two execution means.
   2 standard error mark is a normal approximation; 2026-10-13T080216 rests
   on 2 PUBs, so its -2.3 is the weakest of the ten.
 - **Whether a noisier model fits better is not settled.** On the qubits
-  each run used, today's mean CZ error is higher on 10 of 14 runs, and its
-  change correlates with the distance change at -0.31. The readout change
-  correlates at +0.32, the opposite sign (report.json `correlations` and
+  each run used, today's mean CZ error is higher on 9 of the 13 runs whose
+  circuits play CZ, and its change correlates with the distance change at
+  -0.30. The readout change correlates at +0.32 over the 14, the opposite
+  sign (report.json `correlations` and
   each run's `calibration_change`, taken on the qubits of the ghosted
   members, against the snapshot most of them ran under). Fourteen runs cannot separate
   these. A sweep that scales the model's gate and readout errors by a

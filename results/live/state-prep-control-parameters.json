@@ -54,7 +54,7 @@
    "2026-10-18T201601.788510Z": [
     {
      "backend": "ibm_kingston",
-     "billed_seconds": null,
+     "billed_seconds": "2",
      "class": "exact",
      "error_class": "RuntimeJobMaxTimeoutError",
      "error_code": 1305,
@@ -82,22 +82,17 @@
        }
       ]
      },
-     "provisional_usage": {
-      "qpu_charge_time_seconds": 2,
-      "resource_units": 0.028368,
-      "scope": "collect.json's raw_usage_metadata at collection, provisional until the service finalizes it",
-      "usage_status": "pending"
-     },
+     "provisional_usage": null,
      "rep_delay_seconds": 0.0,
      "result_unavailable": "RuntimeJobMaxTimeoutError: 'Error code 1305; Job %!v(MISSING) ran longer than %!v(MISSING). Contact support.'",
      "submitted_pub_shots": 100000,
-     "usage_status": "pending"
+     "usage_status": "final"
     }
    ],
    "2026-10-18T201618.987131Z": [
     {
      "backend": "ibm_kingston",
-     "billed_seconds": null,
+     "billed_seconds": "2",
      "class": "exact",
      "error_class": "RuntimeJobMaxTimeoutError",
      "error_code": 1305,
@@ -125,22 +120,17 @@
        }
       ]
      },
-     "provisional_usage": {
-      "qpu_charge_time_seconds": 2,
-      "resource_units": 0.028368,
-      "scope": "collect.json's raw_usage_metadata at collection, provisional until the service finalizes it",
-      "usage_status": "pending"
-     },
+     "provisional_usage": null,
      "rep_delay_seconds": 0.0,
      "result_unavailable": "RuntimeJobMaxTimeoutError: 'Error code 1305; Job %!v(MISSING) ran longer than %!v(MISSING). Contact support.'",
      "submitted_pub_shots": 100000,
-     "usage_status": "pending"
+     "usage_status": "final"
     }
    ],
    "2026-10-18T213733.601097Z": [
     {
      "backend": "ibm_kingston",
-     "billed_seconds": null,
+     "billed_seconds": "5",
      "class": "exact",
      "error_class": "RuntimeJobMaxTimeoutError",
      "error_code": 1305,
@@ -168,22 +158,17 @@
        }
       ]
      },
-     "provisional_usage": {
-      "qpu_charge_time_seconds": 5,
-      "resource_units": 0.080355,
-      "scope": "collect.json's raw_usage_metadata at collection, provisional until the service finalizes it",
-      "usage_status": "pending"
-     },
+     "provisional_usage": null,
      "rep_delay_seconds": 2e-05,
      "result_unavailable": "RuntimeJobMaxTimeoutError: 'Error code 1305; Job %!v(MISSING) ran longer than %!v(MISSING). Contact support.'",
      "submitted_pub_shots": 100000,
-     "usage_status": "pending"
+     "usage_status": "final"
     }
    ],
    "2026-10-18T213828.038774Z": [
     {
      "backend": "ibm_kingston",
-     "billed_seconds": null,
+     "billed_seconds": "5",
      "class": "exact",
      "error_class": "RuntimeJobMaxTimeoutError",
      "error_code": 1305,
@@ -211,16 +196,11 @@
        }
       ]
      },
-     "provisional_usage": {
-      "qpu_charge_time_seconds": 5,
-      "resource_units": 0.080302,
-      "scope": "collect.json's raw_usage_metadata at collection, provisional until the service finalizes it",
-      "usage_status": "pending"
-     },
+     "provisional_usage": null,
      "rep_delay_seconds": 2e-05,
      "result_unavailable": "RuntimeJobMaxTimeoutError: 'Error code 1305; Job %!v(MISSING) ran longer than %!v(MISSING). Contact support.'",
      "submitted_pub_shots": 100000,
-     "usage_status": "pending"
+     "usage_status": "final"
     }
    ]
   },
@@ -72295,13 +72275,13 @@
   "results/live/2026-10-18T090603.530638Z/raw/dba8r7k24mrc738527d0/pub_01.json": "64d148b7122b5ea7c0c1722e27a6ed17b44b542e463f9586835730d6d095d1f5",
   "results/live/2026-10-18T090603.530638Z/raw/dba8r7k24mrc738527d0/result_metadata.json": "7a7613caebebeb778271e37e64e6a913b29d57c86cee1ff2c2c9b981d53c24d1",
   "results/live/2026-10-18T090603.530638Z/record.json": "72152351ea0879ebe7b96720373b105593e43949edb5722ba381061afeaa4f57",
-  "results/live/2026-10-18T201601.788510Z/collect.json": "b0fdfd90d0b414ab0ae291c535c27fdcceccb1786cc0eaae3d8297b0951bf2bc",
+  "results/live/2026-10-18T201601.788510Z/collect.json": "92ec578ded4c52f572fb286a43623d6c03b805eec0de3026f205a8c9e79d1c94",
   "results/live/2026-10-18T201601.788510Z/record.json": "90b4422595478e450a9aa7dd54bb05f5bff5eed048626bf12728f2d7f4efdce4",
-  "results/live/2026-10-18T201618.987131Z/collect.json": "7900988770cd0ed9c14e9cde760b8062ecc92591b330f25f5931664c3ec1e4b9",
+  "results/live/2026-10-18T201618.987131Z/collect.json": "a58a45eeb312a20ac476e73a6ffbc41a2532a649966b89776a885f5c127d6a51",
   "results/live/2026-10-18T201618.987131Z/record.json": "ce50a6438a153e5aeda8e9f52d61b8d6a7bb9cf08f40c47a19006e30aa26e30d",
-  "results/live/2026-10-18T213733.601097Z/collect.json": "670836842cd40156356643aefa65b5f7e5bae715291e2b4f962752ebed037e7d",
+  "results/live/2026-10-18T213733.601097Z/collect.json": "852764354b51f7bcc12845c8293d9e070f801d2defa75d9b027e978e441a18de",
   "results/live/2026-10-18T213733.601097Z/record.json": "ced3522806c64598effa1a46d55f74928c0253eda7168b4f5086af7ba1eba049",
-  "results/live/2026-10-18T213828.038774Z/collect.json": "4ed16c407f6b49bb07e5d2964490316bc5b96dbaa709972c54b9451c9c39e995",
+  "results/live/2026-10-18T213828.038774Z/collect.json": "8cdb72869116b8148dbc4b0902678c5aa0c4eda4c2a050c414c7d429e0a08d42",
   "results/live/2026-10-18T213828.038774Z/record.json": "ffc194c5b8c0ca0c5bb95fc3494ee22180abb1c17497e017d974eec39560ee89",
   "results/live/2026-10-18T214519.655411Z/collect.json": "929db85b683bf22359561a5f9da44e1358b2ce3a2e054d7e719617134dc90a86",
   "results/live/2026-10-18T214519.655411Z/execution-properties.json": "8eaa37a1d5eb95a940eb6cf4db96930b8687cfeae1a6016e6fd004887b0c0255",

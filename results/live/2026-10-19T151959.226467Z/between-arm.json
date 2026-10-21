@@ -34,7 +34,7 @@
     "per_contract_alpha": 0.01,
     "split": "Bonferroni"
   },
-  "analyzer_sha256": "4ae6245fa18c6750d195eaf54c4a34e1913cff8d1179151bf17aed58fed9f45f",
+  "analyzer_sha256": "d04ce0fddd35f2c314d9e73290a97846421d8e2e6cd1c879a43f9538fb933783",
   "calibration": {
     "n21_orbit_extra_readout_feedback": {
       "calibration": "2026-10-19T07:44:14-07:00",
@@ -109,14 +109,14 @@
       "contrast_magnitude": 0.14222161910705083,
       "dt_seconds": 4e-09,
       "feedback_factor": 0.9803177695772666,
-      "herald_margin": 0.013230667781471524,
+      "herald_margin": 0.014202503239671958,
       "no_feedback_factor": 0.9803177695772666,
       "one_sided_quantile": 2.3263478740408408,
       "reference_contrast_magnitude": 0.1513672121109481,
       "reference_signed_contrast_difference": -0.0977783203125,
       "signed_contrast_difference": -0.04827880859375,
       "standard_error": 0.0077047844368153704,
-      "statistic": -0.019397016438154332,
+      "statistic": -0.020368851896354765,
       "status": "fail",
       "t2_us": {
         "feedback": {
@@ -128,10 +128,10 @@
           "142": 237.4489904529227
         }
       },
-      "upper_confidence_limit": -0.0014730075436259378
+      "upper_confidence_limit": -0.002444843001826371
     },
     "spectator_window_dephasing": {
-      "herald_margin": 0.003395028924500678,
+      "herald_margin": 0.003838223186253939,
       "measured_visibility": 0.5871351082873566,
       "measured_x_expectation": 0.586181640625,
       "measured_y_expectation": -0.033447265625,
@@ -183,7 +183,7 @@
     },
     "window_delay_ramp": {
       "contrast_magnitude": 0.15155147286246548,
-      "herald_margin": 0.013230667781471524,
+      "herald_margin": 0.014202503239671958,
       "one_sided_quantile": 2.3263478740408408,
       "reference_contrast_magnitude": 0.14376484804593376,
       "standard_error": 0.007905000549245872,
@@ -195,26 +195,26 @@
       "bound": 0.1513672121109481,
       "contrast_magnitude": 0.14656915118858083,
       "feedback_factor": 1.0,
-      "herald_margin": 0.013230667781471524,
+      "herald_margin": 0.014202503239671958,
       "no_feedback_factor": 1.0,
       "one_sided_quantile": 2.3263478740408408,
       "reference_contrast_magnitude": 0.1513672121109481,
       "reference_signed_contrast_difference": -0.0977783203125,
       "signed_contrast_difference": -0.16827392578125,
       "standard_error": 0.007832405802531747,
-      "statistic": -0.01802872870383881,
-      "status": "pass",
-      "upper_confidence_limit": 0.00019217188350606138
+      "statistic": -0.019000564162039244,
+      "status": "fail",
+      "upper_confidence_limit": -0.0007796635746943718
     }
   },
   "dt_seconds": 4e-09,
   "dt_source": "record family_configuration.dt_seconds",
   "herald": {
     "admissible": true,
-    "alpha": 0.05,
+    "alpha": 0.01,
     "bits": {
       "0": {
-        "excitation_spread_upper_limit": 0.002304601569650681,
+        "excitation_spread_upper_limit": 0.0024619314328651145,
         "excited_fraction": {
           "n21_orbit_extra_readout_feedback": 0.00103759765625,
           "n21_orbit_extra_readout_no_feedback": 0.00146484375,
@@ -231,12 +231,12 @@
         "readout_contrast": 0.994140625,
         "role": "control",
         "spread": 0.0008544921875,
-        "spread_lower_limit": -0.0005823222606224795,
+        "spread_lower_limit": -0.0007387302691696407,
         "status": "pass",
         "threshold": 0.0017574814668659768
       },
       "1": {
-        "excitation_spread_upper_limit": 0.005157066129859022,
+        "excitation_spread_upper_limit": 0.005496207524792063,
         "excited_fraction": {
           "n21_orbit_extra_readout_feedback": 0.00628662109375,
           "n21_orbit_extra_readout_no_feedback": 0.0062255859375,
@@ -253,12 +253,12 @@
         "readout_contrast": 0.986328125,
         "role": "work_1",
         "spread": 0.00201416015625,
-        "spread_lower_limit": -0.001058730732164928,
+        "spread_lower_limit": -0.0013932354283391181,
         "status": "pass",
         "threshold": 0.0017436702176175213
       },
       "2": {
-        "excitation_spread_upper_limit": 0.0033718763813475813,
+        "excitation_spread_upper_limit": 0.003583877830658796,
         "excited_fraction": {
           "n21_orbit_extra_readout_feedback": 0.0020751953125,
           "n21_orbit_extra_readout_no_feedback": 0.00189208984375,
@@ -275,12 +275,12 @@
         "readout_contrast": 0.9853515625,
         "role": "work_4",
         "spread": 0.00140380859375,
-        "spread_lower_limit": -0.0005152091582934933,
+        "spread_lower_limit": -0.0007241051176245634,
         "status": "pass",
         "threshold": 0.0017419438114614643
       },
       "3": {
-        "excitation_spread_upper_limit": 0.004975656765543752,
+        "excitation_spread_upper_limit": 0.005408590213752015,
         "excited_fraction": {
           "n21_orbit_extra_readout_feedback": 0.00921630859375,
           "n21_orbit_extra_readout_no_feedback": 0.00933837890625,
@@ -297,16 +297,16 @@
         "readout_contrast": 0.9775390625,
         "role": "work_16",
         "spread": 0.0009765625,
-        "spread_lower_limit": -0.0029110122393902456,
+        "spread_lower_limit": -0.0033342215964766433,
         "status": "pass",
         "threshold": 0.0017281325622130086
       }
     },
     "comparisons": 360,
-    "contract_shift_upper_limit": 0.013230667781471524,
+    "contract_shift_upper_limit": 0.014202503239671958,
     "evaluable": true,
     "excitation_spread_bound": 0.0017678399038023186,
-    "one_sided_quantile": 3.635188198352059,
+    "one_sided_quantile": 4.030934372846465,
     "present": true,
     "shots": 16384
   },
@@ -516,10 +516,10 @@
   },
   "spectator_herald": {
     "admissible": true,
-    "alpha": 0.05,
+    "alpha": 0.01,
     "bits": {
       "0": {
-        "excitation_spread_upper_limit": 0.001358487809088434,
+        "excitation_spread_upper_limit": 0.001512631597941184,
         "excited_fraction": {
           "n21_spectator_measured_x": 0.00103759765625,
           "n21_spectator_measured_y": 0.0008544921875,
@@ -530,12 +530,12 @@
         "readout_contrast": 0.994140625,
         "role": "control",
         "spread": 0.00030517578125,
-        "spread_lower_limit": -0.000740250853794189,
+        "spread_lower_limit": -0.0008934914563841297,
         "status": "pass",
         "threshold": 0.0017574814668659768
       },
       "1": {
-        "excitation_spread_upper_limit": 0.004674744087362127,
+        "excitation_spread_upper_limit": 0.005033485712857024,
         "excited_fraction": {
           "n21_spectator_measured_x": 0.006103515625,
           "n21_spectator_measured_y": 0.0057373046875,
@@ -546,12 +546,12 @@
         "readout_contrast": 0.986328125,
         "role": "work_1",
         "spread": 0.002197265625,
-        "spread_lower_limit": -0.00021683669687007443,
+        "spread_lower_limit": -0.000570673651703909,
         "status": "pass",
         "threshold": 0.0017436702176175213
       },
       "2": {
-        "excitation_spread_upper_limit": 0.001697514462250339,
+        "excitation_spread_upper_limit": 0.0019191115931269695,
         "excited_fraction": {
           "n21_spectator_measured_x": 0.0018310546875,
           "n21_spectator_measured_y": 0.00189208984375,
@@ -562,12 +562,12 @@
         "readout_contrast": 0.9853515625,
         "role": "work_4",
         "spread": 0.00018310546875,
-        "spread_lower_limit": -0.0013064822882719982,
+        "spread_lower_limit": -0.0015248333674268031,
         "status": "pass",
         "threshold": 0.0017419438114614643
       },
       "3": {
-        "excitation_spread_upper_limit": 0.0058179836977092555,
+        "excitation_spread_upper_limit": 0.00631391952925636,
         "excited_fraction": {
           "n21_spectator_measured_x": 0.00946044921875,
           "n21_spectator_measured_y": 0.00830078125,
@@ -578,16 +578,16 @@
         "readout_contrast": 0.9775390625,
         "role": "work_16",
         "spread": 0.00238037109375,
-        "spread_lower_limit": -0.0009271452163536224,
+        "spread_lower_limit": -0.0014119418641843373,
         "status": "pass",
         "threshold": 0.0017281325622130086
       }
     },
     "comparisons": 48,
-    "contract_shift_upper_limit": 0.011211358012729091,
+    "contract_shift_upper_limit": 0.012262405576753026,
     "evaluable": true,
     "excitation_spread_bound": 0.0017678399038023186,
-    "one_sided_quantile": 3.078088072842161,
+    "one_sided_quantile": 3.5292960888347347,
     "present": true,
     "shots": 16384
   }
