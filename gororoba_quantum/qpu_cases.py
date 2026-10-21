@@ -337,6 +337,36 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             design.get("ground_control_split") is True, "ramsey_windows is recorded only with ground_control_split"
         )
         arguments.extend(["--ramsey-windows", ",".join(str(value) for value in windows)])
+    if "segmented_sweep" in design:
+        from diagnostic_experiments import n21_segmented_config
+
+        sweep = design["segmented_sweep"]
+        try:
+            checked = n21_segmented_config(sweep)
+        except ValueError as error:
+            raise ValueError(f"segmented_sweep: {error}") from error
+        _require(checked == sweep, "segmented_sweep is recorded in canonical order")
+        _require(
+            design.get("ground_control_split") is True and "ramsey_windows" not in design,
+            "segmented_sweep is recorded only with ground_control_split and without ramsey_windows",
+        )
+        arguments.extend(
+            [
+                "--segmented-delays-dt",
+                ",".join(str(value) for value in sweep["delays_dt"]),
+                "--segments",
+                str(sweep["segments"]),
+            ]
+        )
+        if sweep["backaction_delays_dt"]:
+            arguments.extend(
+                [
+                    "--backaction-delays-dt",
+                    ",".join(str(value) for value in sweep["backaction_delays_dt"]),
+                    "--backaction-pre-idle-dt",
+                    str(sweep["backaction_pre_idle_dt"]),
+                ]
+            )
     if "pin_layout" in design:
         pin = design["pin_layout"]
         _require(
@@ -1889,6 +1919,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             if family == "n21-orbit-rca"
             and record.get("family_configuration", {}).get("ground_control_split")
             and not record.get("family_configuration", {}).get("ramsey_windows")
+            and not record.get("family_configuration", {}).get("segmented_sweep")
             else []
         ),
         *(
@@ -1900,6 +1931,18 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("ramsey_windows")
+            else []
+        ),
+        *(
+            [
+                "--segmented-delays-dt is the segmented ground sweep: qubit 2 read in several segments per shot "
+                "with the control in |0>, each segment a herald, a preparation, an idle, a basis change and a "
+                "readout, a reset of qubit 2 opening every segment after the first; X and Y alternate within each "
+                "shot of an xy arm and a z arm reads Z after an X preparation; scripts/n21_q143_segmented_sweep.py "
+                "holds the preregistered analysis whose closure the policy binds.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("segmented_sweep")
             else []
         ),
         *(

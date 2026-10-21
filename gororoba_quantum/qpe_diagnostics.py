@@ -498,6 +498,131 @@ def n21_spectator_law(kind: str, quadrature: str) -> tuple[Fraction, ...]:
     return tuple(control[label & 1] * qubit_two[label >> 1] for label in range(4))
 
 
+# The segmented ground sweep reads qubit 2 several times per shot with the
+# control left in |0>. Each segment is herald, preparation, idle, basis
+# change and readout; a reset of qubit 2 opens every segment after the
+# first, so its herald measures the post-reset state immediately before the
+# preparation, as the first segment's herald does. Segment s writes its
+# herald into register s<s>_herald (every qubit in segment 1, qubit 2 after
+# that) and its readout into s<s>_read, so each segment stays separable in
+# the raw bitstrings. kind "xy" alternates X and Y readouts after a |+>
+# preparation, segment 1 reading X, so both quadratures of a delay share
+# every shot; kind "z" prepares |1> with an X and reads Z. pre_idle_dt idles
+# qubit 2 between its herald and its preparation (the herald-backaction
+# control).
+N21_SEGMENTED_PREFIX = "n21_spectator_segmented_"
+N21_SEGMENTED_KINDS = ("xy", "z")
+# Segment 1 holds 5 clbits and each further segment 2, so the dense
+# per-member law over 3 + 2 K clbits stays at most 2^15 entries.
+N21_SEGMENTED_MAX = 6
+
+
+def n21_segmented_name(kind: str, delay_dt: int, pre_idle_dt: int = 0) -> str:
+    """Member name of a segmented sweep arm: kind, idle in dt and, for a backaction control, its pre-idle."""
+    if kind not in N21_SEGMENTED_KINDS or type(delay_dt) is not int or delay_dt < 0:
+        raise ValueError(f"a segmented arm needs a kind in {N21_SEGMENTED_KINDS} and a delay >= 0, not {kind!r}")
+    if type(pre_idle_dt) is not int or pre_idle_dt < 0:
+        raise ValueError(f"pre_idle_dt must be a non-negative integer, not {pre_idle_dt!r}")
+    return f"{N21_SEGMENTED_PREFIX}{kind}_d{delay_dt}" + (f"_pre{pre_idle_dt}" if pre_idle_dt else "")
+
+
+def n21_segmented_key(name: str) -> tuple[str, int, int] | None:
+    """(kind, delay_dt, pre_idle_dt) of a segmented sweep member name, or None for any other member."""
+    if not name.startswith(N21_SEGMENTED_PREFIX):
+        return None
+    fields = name.removeprefix(N21_SEGMENTED_PREFIX).split("_")
+    if len(fields) not in (2, 3) or fields[0] not in N21_SEGMENTED_KINDS or not fields[1].startswith("d"):
+        return None
+    delay = fields[1][1:]
+    pre = fields[2][3:] if len(fields) == 3 and fields[2].startswith("pre") else ("0" if len(fields) == 2 else "")
+    if not delay.isdigit() or not pre.isdigit() or (len(fields) == 3 and int(pre) < 1):
+        return None
+    return fields[0], int(delay), int(pre)
+
+
+def n21_segment_bases(kind: str, segments: int) -> tuple[str, ...]:
+    """The readout basis of each segment: x and y alternating from x, or z throughout."""
+    return tuple(("x", "y")[s % 2] for s in range(segments)) if kind == "xy" else ("z",) * segments
+
+
+def n21_segmented_ramsey(kind: str, delay_dt: int, segments: int, pre_idle_dt: int = 0) -> QuantumCircuit:
+    """Segmented ground Ramsey arm of logical qubit 2 on the orbit's four logical qubits.
+
+    The control never leaves |0>; qubit 2's resets make the circuit
+    dynamic, and no if_else enters it, so the per-job broadcast budget of
+    the dynamic-circuit guide stays unused. A delay of 0 dt plays no delay
+    instruction; any other delay is at least the Target's min_length.
+    Barriers over every qubit bracket each idle, so the scheduler places
+    the idle between the preparation and the basis change.
+    """
+    if kind not in N21_SEGMENTED_KINDS:
+        raise ValueError(f"unknown segmented kind {kind!r}")
+    if type(segments) is not int or not 2 <= segments <= N21_SEGMENTED_MAX or (kind == "xy" and segments % 2):
+        raise ValueError(f"segments must be an integer in [2, {N21_SEGMENTED_MAX}], even for xy, not {segments!r}")
+    if type(delay_dt) is not int or delay_dt < 0 or delay_dt == 1:
+        raise ValueError(f"delay_dt must be 0 or an integer >= 2 (min_length), not {delay_dt!r}")
+    if type(pre_idle_dt) is not int or pre_idle_dt < 0 or pre_idle_dt == 1:
+        raise ValueError(f"pre_idle_dt must be 0 or an integer >= 2 (min_length), not {pre_idle_dt!r}")
+    control = QuantumRegister(1, "ctrl")
+    work = QuantumRegister(len(N21_ORBIT_BITS), "w")
+    circuit = QuantumCircuit(control, work)
+    spectator = N21_SPECTATOR_QUBIT
+    for index, basis in enumerate(n21_segment_bases(kind, segments)):
+        herald = ClassicalRegister(circuit.num_qubits if index == 0 else 1, f"s{index + 1}_{HERALD_REGISTER}")
+        read = ClassicalRegister(1, f"s{index + 1}_read")
+        circuit.add_register(herald)
+        circuit.add_register(read)
+        if index:
+            circuit.reset(spectator)
+            circuit.barrier()
+            circuit.measure(spectator, herald[0])
+        else:
+            for qubit in range(circuit.num_qubits):
+                circuit.measure(qubit, herald[qubit])
+        circuit.barrier()
+        if pre_idle_dt:
+            circuit.delay(pre_idle_dt, spectator, unit="dt")
+            circuit.barrier()
+        if basis == "z":
+            circuit.x(spectator)
+        else:
+            circuit.h(spectator)
+        circuit.barrier()
+        if delay_dt:
+            circuit.delay(delay_dt, spectator, unit="dt")
+            circuit.barrier()
+        if basis == "y":
+            circuit.sdg(spectator)
+        if basis != "z":
+            circuit.h(spectator)
+        circuit.measure(spectator, read[0])
+        circuit.barrier()
+    circuit.name = n21_segmented_name(kind, delay_dt, pre_idle_dt)
+    return circuit
+
+
+def n21_segmented_law(kind: str, segments: int) -> np.ndarray:
+    """Ideal law over every clbit: heralds read 0, X reads 0, Y reads 0 or 1 equally, Z after X reads 1."""
+    bases = n21_segment_bases(kind, segments)
+    width = 3 + 2 * segments
+    law = np.zeros(1 << width)
+    reads = n21_segment_read_clbits(segments)
+    for outcome in range(1 << segments):
+        probability = 1.0
+        index = 0
+        for s, basis in enumerate(bases):
+            bit = (outcome >> s) & 1
+            probability *= {"x": 1.0 - bit, "y": 0.5, "z": float(bit)}[basis]
+            index |= bit << reads[s]
+        law[index] += probability
+    return law
+
+
+def n21_segment_read_clbits(segments: int) -> tuple[int, ...]:
+    """Clbit index of each segment's readout: 4 after the 4-bit first herald, then (herald, read) pairs."""
+    return (4, *(4 + 2 * s for s in range(1, segments)))
+
+
 def _orbit_branch(
     vector: tuple[GaussianInteger, ...], power: int, sign_phase: GaussianInteger
 ) -> tuple[GaussianInteger, ...]:
