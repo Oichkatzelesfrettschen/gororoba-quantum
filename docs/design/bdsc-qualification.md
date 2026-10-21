@@ -7,8 +7,12 @@ chain that its confidence analysis attaches to, and an acceptance effect
 proportional to the identity or bounded away from it. M2 to M4 of the
 qualification table stay blocked until each contract is supported. This
 document states each contract, the qualification measurement that tests
-it, and the claim each outcome supports. No acquisition is authorized by
-it; each run below waits for its own written case.
+it, and the claim each outcome supports. `provider_contract.json` records
+each capability's status and the question it puts to Quandela,
+`qualification_case.json` the first executable case, and
+[bdsc-qualification-case.md](../runbooks/bdsc-qualification-case.md) the
+order in which that case runs. No acquisition is authorized by any of
+them; each run waits for its own written case.
 
 ## Platform precondition
 
@@ -36,6 +40,19 @@ qpu:belenos the served mesh follows the body and the compilation seed
 sections 2 and 9). Agreement with the requested column distributions is
 request-to-distribution testing, not tomography of one effect.
 
+Let J embed the 16 logical inputs in the 24 chip modes and let a known
+preparation unitary V_s satisfy V_s |r> = J psi_s. The intended transformation
+is T_s = U V_s. A complete returned transformation T~_s de-embeds to
+
+    F~_s = J^dagger V_s T~_s^dagger Q_A T~_s V_s^dagger J,
+
+which equals J^dagger U^dagger Q_A U J for every s when T~_s = U V_s. The
+comparison needs full complex transformations and the calibrated detector
+effects; occupied-column intensities are not enough. De-embedding a declared
+matrix still says nothing about the physical preparation, which needs its
+own bound: unknown preparation and unknown measurement are not identifiable
+from the same observations by assigning either its ideal coordinates.
+
 Equal phases are sufficient for a common effect and not necessary. A served
 transformation W_s U V_s with W_s^dagger Q_A W_s = Q_A gives the same
 p_s, so the object to preserve or bound is the induced effect
@@ -52,13 +69,23 @@ Three routes satisfy the contract:
 3. a declared label-independent randomized implementation whose average
    effect is the object under test.
 
+A common implementation differs from a common distribution. For any
+requested p_s a service can prepare sqrt(p_s) |A> + sqrt(1 - p_s) |D> from
+the occupied source input and reproduce every scalar probability without a
+fixed measurement on independently prepared states, so response agreement
+alone resolves neither M2 nor M4. Qualification needs evidence of the
+physical factorization, an effect-preserving implementation, or a justified
+label-independent average.
+
 Basis-state injection into a fixed unitary is insufficient on its own:
 basis probabilities fix the diagonal of F, and the bank's real and
 imaginary pairs carry the off-diagonals. The questions for Quandela are
 whether a requested full transformation can be preserved, whether a native
 architecture configuration can run without state-specific optimization, and
 whether coherent inputs can be injected independently of the readout. No
-`no_transpile` parameter is documented, and none is assumed.
+`no_transpile` parameter is documented, and none is assumed; the
+abstract `Experiment` representation and local SLOS execution establish
+none of these capabilities.
 
 ## Contract B: acquisition and processing
 
@@ -116,6 +143,21 @@ detector. It needs uncorrected event-level records and calibrated efficiency
 ratios, and applied to balanced or resampled data it restores nothing. It
 is a requirement to put to the provider, not a capability of the account.
 
+A genuine raw histogram suffices: independently thinning each of N_m iid
+detected events with probability q_m gives N'_m | N_m ~ Binomial(N_m, q_m)
+(`bdsc.thin_histogram`), so timestamps serve drift and correlation analysis
+rather than thinning. The input must be uncorrected counts with a supported
+sampling law; thinning balanced or probability-resampled counts recovers no
+provenance. Through a lossy transfer T into the detectors,
+r_m = eta_m |(T psi)_m|^2 and the thinned acceptance is eta_* T^dagger T
+(`bdsc.thinned_acceptance`), scalar only when T^dagger T = tau I on the
+declared inputs or bounded near it. Thinning equalizes terminal
+efficiencies and leaves internal mode-dependent loss; the self-test shows a
+graded internal loss surviving it. With estimated efficiencies, q_m is
+frozen before confirmatory analysis and the uncertainty of q_m eta_m
+propagates. Dark counts, multi-photon threshold ambiguity and detector
+correlations need terms the loss-only identity lacks.
+
 ## Qualification measurements
 
 The pilot of `docs/evidence/bdsc/pilot.json` (three target and complement
@@ -147,6 +189,81 @@ the certificate.
    This compares declared transformations; physical error needs empirical
    calibration. A provider that promises only the occupied-column
    distribution places the result in request-to-distribution testing.
+
+## First qualification case
+
+`qualification_case.json` holds the case; it tests operational consistency
+and makes no dark-subspace claim.
+
+- **Banks.** For trusted orthonormal f, g the six states f, g,
+  (f +- g)/sqrt2 and (f +- i g)/sqrt2 satisfy, for every fixed linear
+  effect, Delta_R = p_+ + p_- - p_f - p_g = 0 and
+  Delta_I = p_+i + p_-i - p_f - p_g = 0. Two pairs: (k_1, f_9) from the
+  pilot, and (f_2, f_3) = (e1, e2), whose individual responses separate the
+  real and imaginary extra-null alternatives E_R and E_I.
+- **Variants.** Two preparation descriptions with the same chip column and
+  different completions on the unused columns (Householder and Givens,
+  each checked unitary and at a Frobenius distance above 0.1 on the unused
+  columns), crossed with two processing policies: provider defaults
+  (`mitigations = None`) and an explicit empty list. One pair gives
+  6 x 2 x 2 = 24 settings, the case 48, plus a second epoch that repeats the
+  f and g references of every cell: 64 settings.
+- **Decision.** Each residual's interval comes from Clopper-Pearson bounds
+  at alpha / (8 x 6) per probability, simultaneous over the eight cells at
+  alpha = 0.01. It reads compatible inside [-0.05, 0.05], violated when it
+  misses that band, and inconclusive otherwise; an interval that merely
+  contains zero establishes nothing. Means are compared within a processing
+  policy, never across, since mitigation changes estimates by design.
+- **Trials and cost.** 22080 eligible trials per setting put E0's expected
+  intervals inside the margin. At the strategy.md billing rule, one job per
+  setting and max_shots = 2 x 22080, the case costs 66.83 credits; whether
+  that many shots yield 22080 eligible trials on an unmitigated route, and
+  how long they take, is unknown, so the written case restates the shot
+  budget and job count from the provider's answer.
+- **Scope of an outcome.** A difference between preparation descriptions
+  implicates preparation, compilation or both; between epochs,
+  stationarity; between policies, processing rather than hardware drift; a
+  violated sum rule rejects the combined linear-effect, preparation and
+  conditioning model without naming its cause. A mesh hash that varies is
+  not a proven varying effect, and identical hashes are not a proven
+  stationary one. Passing every rule remains necessary and not sufficient.
+
+Before binomial inference the returned object needs its observation
+contract: aggregated genuine events or a reconstruction from probabilities,
+physical order of samples, the rejected and no-click categories, what shot,
+sample and eligible trial mean, the correction calibration, and detector
+saturation, dead time or batching that makes trials dependent. Each policy
+is a separate immutable execution configuration bound to its serialized
+request and the server's effective response. Repeated batches test
+dispersion and drift but cannot prove provenance, since a synthetic
+multinomial generator passes a binomial dispersion test. Block-correlated,
+corrected or resampled data need a likelihood or concentration bound built
+for that object, and resampling an estimated distribution never raises the
+nominal n.
+
+## Conjecture ledger
+
+Each conjecture names the observable that tests it and what a result can and
+cannot establish. A software conversion test, a numerical returned-mesh
+comparison and a physical subspace certificate are different evidence
+levels and never share one "verified" label.
+
+| Conjecture | Observable test | Falsification or limit |
+|---|---|---|
+| One common effect describes the preparation bank | six-state sum rules and held-out responses | a validated violation rejects the combined model; passing does not prove physical factorization |
+| Equivalent preparation descriptions are operationally equivalent | matched states, different completions, randomized order | a difference beyond the frozen margin rejects the equivalence |
+| An empty mitigation list exposes the needed observation level | payload, returned metadata, provider acquisition statement | unacknowledged or irrecoverably processed outputs leave M3 unsupported |
+| Terminal detector imbalance explains acceptance variation | calibrated efficiencies and held-out thinning predictions | residual coherent or state-dependent acceptance rejects the terminal-only model |
+| The intended four-space stays aligned | the a_U / gamma_L certificate | an inconclusive bound is not a falsification; misalignment needs its own evidence |
+| A fifth globally low eigenvalue exists | U_5 <= 0.1 c_L, or a confirmed five-space witness | a low complement Rayleigh quotient alone is insufficient |
+| Exactly five eigenvalues lie below the threshold | U_5 and L_6 | overlapping intervals leave the count unresolved |
+| Complex controls are necessary for the error family | real bank against phase-sensitive controls | agreement on real inputs cannot exclude E_I |
+| A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
+
+Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
+exploits target structure for efficiency once the trusted objects and the
+error model are stated; it supplies no provider contract for this detector
+measurement.
 
 ## Approval boundary
 

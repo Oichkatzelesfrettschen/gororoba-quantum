@@ -84,15 +84,88 @@ A record is certified when min(a_U, l_U) < gamma_L and the angle bound is
 at most 10 degrees. Otherwise it reads alternative structure when the
 complement's certified brightest response c_L is positive and either
 gamma_U <= 0.1 c_L (a low-response direction inside the complement Q) or
-a_L >= 0.1 c_L (a bright direction inside K). Every other record reads not
-certified. A low complement direction does not by itself make a fifth low
+a_L >= 0.1 c_L (a bright direction inside K, relative to the certified lower
+reference c_L rather than to lambda_max(C) itself). Every other record
+reads not certified, and one whose block estimate lies farther than its
+radius outside [0, 1 + delta] reads inconsistent and carries no finding. A low complement direction does not by itself make a fifth low
 eigenvalue of F: A = 0.09 I_4, C = diag(0.09, 1, ..., 1) and one cross
 entry 0.09 between k_1 and that direction form a valid effect with spectrum
 {0, 0.09^3, 0.18, 1^11}. Positivity gives |u^T B v|^2 <= (u^T A u)(v^T C v)
 on the cross block B, so lambda_5(F) <= a_U + gamma_U is the global bound
 such a record supports, tight on that example. The
 ratios make a common scale, such as transmittance under an emitted-photon
-denominator, change no disposition.
+denominator, change no exact disposition; at a fixed trial count the
+confidence radii are not homogeneous, so the same scale can change what a
+finite acquisition certifies.
+
+### Spectral claims
+
+The disposition is a compatibility summary. The census
+(`bdsc.spectral_census`, schema `bdsc-spectral-findings-v1`) reports each
+claim on the same confidence event, so a certified alignment never hides a
+fifth low eigenvalue. With a = lambda_max(A) and mu_1 <= ... <= mu_12 the
+eigenvalues of C,
+
+    mu_j <= lambda_(4+j)(F) <= a + mu_j,   j = 1..12.
+
+The lower bound is interlacing with the 12-dimensional compression. The
+upper bound is min-max on span K plus the first j eigenvectors of C, where
+positivity bounds the cross term by 2 sqrt(a mu_j) |u| |v|. The fifth
+eigenvalue is the j = 1 case, lambda_5 <= a + mu_1, attained by the coupled
+example. Weyl's inequality moves each eigenvalue of a block by at most the
+block's operator-norm radius, so with a_* = min(a_U, l_U, L),
+mu_jL = max(0, lambda_j(C^) - eps_C) and mu_jU = min(L, lambda_j(C^) + eps_C),
+every lambda_(4+j) lies in [mu_jL, min(L, a_* + mu_jU)] on the one event
+that bounds both blocks. U_5 = min(L, a_* + mu_1U) and L_6 = mu_2L. L is 1
+for a binary effect and 1 + delta under approximate conditioning. Reporting
+several of these consequences adds no multiplicity charge; adaptively
+selected data or separately fitted models need their own.
+
+Low means at most 0.1 lambda_max(C), an engineering definition fixed before
+acquisition (`LOW_RATIO`); a finite threshold never establishes an exact
+null. With c_L <= lambda_max(C) <= c_U, each finding reads supported,
+refuted or inconclusive, and unavailable unless c_L > 0 and the census is
+consistent:
+
+| Finding | Supported when | Refuted when |
+|---|---|---|
+| target_alignment | the disposition is certified | never: an inconclusive bound is not misalignment evidence |
+| complement_low | mu_1U <= 0.1 c_L | mu_1L > 0.1 c_U |
+| at_least_five_low | U_5 <= 0.1 c_L | mu_1L > 0.1 c_U |
+| exactly_five_low | U_5 <= 0.1 c_L and L_6 > 0.1 c_U | at_least_five_low refuted, or U_6 <= 0.1 c_L |
+| target_bright | a_L >= 0.1 c_U | a_U < 0.1 c_L |
+| target_bright_lower_reference | a_L >= 0.1 c_L | a_U < 0.1 c_L |
+
+complement_low alone leaves lambda_5 above the threshold possible: the
+coupled example has mu_1 = 0.09 and lambda_5 = 0.18. diag(0^4, 0.05, 1^11)
+has the frozen kernel as its exact kernel and lambda_5 = 0.05, so
+target_alignment and at_least_five_low both hold. `controls.json` carries
+these fixtures twice: exact blocks at zero radius (`exact_census`, with
+five and six designed low eigenvalues, a common scale and the range
+L = 1.2) and sampled controls at the trial count that resolves them.
+
+### Five-space witness
+
+A targeted fifth-eigenvalue claim costs less than the full complement. For
+a unit q in Q, S = P + |q><q| has rank five and
+
+    lambda_5(F) <= lambda_max(S F S) <= Tr(S F) = 5 r_5,
+
+where r_5 is the selected probability of a uniform ensemble over k_1..k_4
+and q, each trial drawing its state independently. The witness measures
+the whole five-space, not q's response alone. `bdsc.five_space_witness`
+returns 5 times the one-sided Clopper-Pearson upper bound, scaled by
+1 + delta and shifted by the bias bound under approximate conditioning.
+Against a bright reference b_L = 0.9 and threshold 0.1 b_L = 0.09, zero
+events in N = 204 trials at one-sided alpha 0.025 give lambda_5 <= 0.0896012
+(`planning.json`, `five_space_witness`); that excludes the reference
+acquisition, preparation calibration and qualification, and zero events on
+qpu:belenos cannot be promised. q_R = (e1 - e2)/sqrt2 and
+q_I = (e1 + i e2)/sqrt2 are the extra nulls of E_R and E_I, preregistered
+adversarial directions; a direction found in exploratory data is frozen and
+confirmed on fresh data, or its selection is covered by the simultaneous
+confidence region. A failed witness excludes only that candidate, and an
+exactly-five claim still needs L_6 or a floor outside the five-space.
 
 ## Preparation bank and estimator
 
@@ -124,12 +197,27 @@ Clopper-Pearson, Bonferroni and matrix Bernstein bounds, not on them.
 
 | Control | Disposition |
 |---|---|
-| E0; exact kernel with complement spectrum 0.3..0.9; rotation 5 degrees; background 0.002; F = 0.0606 E0 at 10^6 trials | certified |
+| E0; exact kernel with complement spectrum 0.3..0.9; rotation 5 degrees; background 0.002; F = 0.0606 E0 at 10^6 trials; diag(0^4, 0.05, 1^11), five and six designed low eigenvalues at 10^6 trials | certified |
 | E_R, E_I (complex bank); rotation 30 degrees | alternative structure |
+| the coupled example at 10^6 trials; diag(0^4, 0.05, 1^11) at 10^5 trials | not certified |
 | E_I on the 88-setting bank with real_effect asserted | certified, uncovered: the false certificate the complex bank prevents |
 | F = 0.0606 E0 at 10^5 trials; background 0.05; acceptance imbalance 0.8; preparation error 0.02 | not certified |
+| block estimates outside [0, 1 + delta] by more than their radius | inconsistent |
 | missing, duplicated or miscounted rows; changed mask; optional stopping; unbound target or bank digest; any unsupported premise | inadmissible |
 
+The census findings sit beside each disposition, and every sampled control
+with a known effect, apart from the forced real-bank control, keeps all
+twelve true eigenvalues lambda_5..lambda_16 inside its intervals. Counts
+that put a C eigenvalue near -1 read inconsistent with every finding
+unavailable. E0 refutes a fifth low eigenvalue; E_R and E_I
+support exactly five at 10^5 trials; diag(0^4, 0.05, 1^11) certifies the
+alignment and supports exactly five at 10^6 trials and leaves both
+inconclusive at 10^5, where eps_C near 0.05 does not resolve 0.05 against
+0.1 c_L; six designed low eigenvalues refute exactly five; the coupled
+example stays inconclusive at 10^6, since its mu_1 = 0.09 sits within eps_C
+of the threshold. The self-test checks the twelve interval inequalities on
+128 Haar-random effects (1536 indexed pairs) and Tr(S F) >= lambda_5 for
+both candidate directions.
 ## Planning
 
 - At expected counts, E0 first certifies at 5000 trials per setting
@@ -144,6 +232,11 @@ Clopper-Pearson, Bonferroni and matrix Bernstein bounds, not on them.
   acceptance deviation delta of 0.014 per setting. Both are conditional on
   the ideal E0 spectrum, the outcome law and the normalization; a measured
   complement spectrum or calibration uncertainty moves them.
+- The six-state consistency case of
+  [bdsc-qualification.md](../../design/bdsc-qualification.md) needs 22080
+  trials per setting at margin 0.05 and alpha 0.01 over eight cells
+  (exact Clopper-Pearson at E0's expected counts); the conservative
+  Hoeffding bound 8 log(12 / alpha) / m^2 reads 22689 at one cell.
 - The zero-event trace route (n_min = 1086 at gamma_L = 0.45) needs zero
   selected events. Modes 0, 1 and 5, where Belenos's unmodeled off-cone
   clicks appear, are outside the selected set, so they do not refute the
@@ -173,7 +266,9 @@ and `calibration` at 08:51 UTC) lack `specs.architecture`, so `qd_platform.py
 plan` refuses a mesh-sensitive case before any of these milestones
 ([calibration.md](calibration.md)). The three provider contracts that M2 to
 M4 need, and the qualification measurements that test them, are in
-[bdsc-qualification.md](../../design/bdsc-qualification.md).
+[bdsc-qualification.md](../../design/bdsc-qualification.md);
+`provider_contract.json` records each capability's status and question, and
+`qualification_case.json` the first case.
 
 In Perceval, uniform NoiseModel transmittance cancels exactly under
 `min_detected_photons` 1, and per-mode LC loss reproduces
