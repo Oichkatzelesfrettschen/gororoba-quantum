@@ -115,19 +115,20 @@ WITNESS_BRIGHT_LOWER = 0.9
 WITNESS_ALPHA = 0.025
 CASE_ALPHA = 0.01
 CASE_EPOCHS = (1, 2)
-CASE_MARGINS = {"sum_rule": 0.05, "completion": 0.05, "epoch": 0.05}
-CASE_POWER_TARGET = 0.9
+CASE_MARGINS = {"sum_rule": 0.02, "completion": 0.02, "epoch": 0.02}
+CASE_POWER_TARGET = 0.95
 CASE_POWER_REPLICATES = 2000
 CASE_POWER_SEED = 20261021
-CASE_REFERENCE_TRIALS = 22_080
-# One single-computation job: 13 to 15 s of overhead whatever its samples, and acquisition near 4 x 10^4
-# one-photon samples per second (strategy.md section 1, jobs aa4218f1, a5f0a8a4, c2eea262, c1eb1cbb).
-SINGLE_JOB_OVERHEAD_SECONDS = 15.0
-SAMPLES_PER_SECOND = 4e4
+CASE_REFERENCE_TRIALS = 45_000
+CASE_TRIAL_GRID = tuple(range(100_000, 400_001, 25_000))
+# An iterated job runs SECONDS_PER_ITERATION plus SECONDS_PER_SAMPLE per sample for each iteration (strategy.md
+# section 1: c1eb1cbb, 9 iterations and 166000 samples in 61 s; 46b810ae, 24 iterations and 240000 samples in
+# 149 s) and bills 1 credit plus 1e-6 per shot of its largest iteration's max_shots. A job fills at most
+# CASE_JOB_FILL of the per-job limit, leaving the rest for a slower acquisition rate.
+CASE_JOB_FILL = 0.6
 QRNG_VALUES = 192
-CASE_TRIAL_GRID = tuple(range(25_000, 60_001, 2_500))
 CASE_PAIRS = {"target-complement": ("K", 0, "Q", 8), "middle-middle": ("Q", 1, "Q", 2)}
-PREPARATION_DESCRIPTIONS = ("householder", "givens")
+PREPARATION_DESCRIPTIONS = ("outward-ladder", "reverse-ladder")
 PROCESSING_POLICIES: dict[str, list[str] | None] = {"provider-defaults": None, "empty-mitigation": []}
 HANDOFF_SNAPSHOT = {"transmittance_percent": 6.06, "hom_percent": 88.5, "g2_percent": 0.9, "dark_mode5_per_s": 412.7}
 
@@ -1210,36 +1211,92 @@ def provider_contract_record(target: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def householder_completion(column: np.ndarray, source: int) -> np.ndarray:
-    """A unitary with column[source] = column: a Householder reflection with a phase on the source column."""
-    m = len(column)
-    e = np.zeros(m, dtype=complex)
-    e[source] = 1
-    phase = column[source] / abs(column[source]) if abs(column[source]) > 1e-12 else 1.0
-    w = e * phase - column
-    if np.linalg.norm(w) < 1e-12:
-        return np.asarray(np.eye(m) * phase, dtype=complex)
-    w = w / np.linalg.norm(w)
-    return np.asarray((np.eye(m) - 2 * np.outer(w, w.conj())) @ (np.eye(m) * phase), dtype=complex)
+# A template is a fixed 24-mode circuit of beam splitters on adjacent modes and phase shifters whose parameters each
+# iteration of a job binds: ("BS", m, k) acts on modes (m, m + 1) with angle params[k], ("BS", m, None) with angle pi,
+# and ("PS", m, k) multiplies mode m by exp(i params[k]). BS(theta) is [[cos(theta/2), i sin(theta/2)],
+# [i sin(theta/2), cos(theta/2)]], Perceval's BS.Rx convention, which the case builder checks against Perceval.
+TemplateOp = tuple[str, int, int | None]
 
 
-def givens_completion(column: np.ndarray, source: int) -> np.ndarray:
-    """A unitary with column[source] = column, built as a chain of 2 x 2 rotations into the source mode."""
-    m = len(column)
-    order = [source] + [k for k in range(m) if k != source]
-    u = np.eye(m, dtype=complex)
-    v = column.astype(complex).copy()
-    for k in reversed(order[1:]):
-        a, b = v[source], v[k]
-        r = math.hypot(abs(a), abs(b))
-        if r < 1e-15:
-            continue
-        g = np.eye(m, dtype=complex)
-        c_, s_ = a / r, b / r
-        g[source, source], g[source, k], g[k, source], g[k, k] = c_.conjugate(), s_.conjugate(), -s_, c_
-        v = g @ v
-        u = u @ g.conj().T
-    return np.asarray(u @ np.diag([v[source] if i == source else 1.0 for i in range(m)]), dtype=complex)
+def template_ops(name: str, source: int) -> list[TemplateOp]:
+    """outward-ladder splits the photon from the source to its left and right neighbours in turn; reverse-ladder
+    swaps two unused inputs, transfers the photon to mode 0 through fixed full splitters and then ladders it
+    rightward across every mode."""
+    ops: list[TemplateOp] = []
+    count = 0
+
+    def bs(m: int, fixed: bool = False) -> None:
+        nonlocal count
+        ops.append(("BS", m, None if fixed else count))
+        count += 0 if fixed else 1
+
+    if name == "outward-ladder":
+        if source > 0:
+            bs(source - 1)
+        for m in range(source - 1, 0, -1):
+            bs(m - 1)
+        for m in range(source, MODES - 1):
+            bs(m)
+    elif name == "reverse-ladder":
+        # A fixed full splitter on two unused inputs comes first: it moves no photon, and it keeps the template's
+        # action on the unused columns distinct from outward-ladder even where both ladders reduce to transfers.
+        bs(0 if source > 1 else MODES - 2, fixed=True)
+        for m in range(source, 0, -1):
+            bs(m - 1, fixed=True)
+        for m in range(MODES - 1):
+            bs(m)
+    else:
+        raise ValueError(f"unknown template {name}")
+    for m in range(MODES):
+        ops.append(("PS", m, count))
+        count += 1
+    return ops
+
+
+def template_unitary(ops: list[TemplateOp], params: np.ndarray) -> np.ndarray:
+    u = np.eye(MODES, dtype=complex)
+    for kind, m, k in ops:
+        g = np.eye(MODES, dtype=complex)
+        if kind == "BS":
+            t = math.pi if k is None else float(params[k])
+            c, sn = math.cos(t / 2), math.sin(t / 2)
+            g[m, m], g[m, m + 1], g[m + 1, m], g[m + 1, m + 1] = c, 1j * sn, 1j * sn, c
+        else:
+            g[m, m] = complex(math.cos(float(params[k])), math.sin(float(params[k])))
+        u = g @ u
+    return u
+
+
+def template_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
+    """Angles that put |column_m|^2 on every mode m, then phases that give each mode the column's argument.
+
+    A ladder splitter whose carrier holds weight W keeps cos^2(theta/2) = |c_m|^2 / W on mode m and passes the rest
+    on; the left split of outward-ladder sends sin^2(theta/2) = sum_(m < source) |c_m|^2 to the left ladder.
+    """
+    weight = np.abs(column) ** 2
+    ops = template_ops(name, source)
+    params = np.zeros(sum(1 for _, _, k in ops if k is not None))
+
+    def angle(keep: float, carried: float) -> float:
+        return 0.0 if carried <= 1e-15 else 2 * math.acos(math.sqrt(min(1.0, max(0.0, keep / carried))))
+
+    slots = iter(k for kind, _, k in ops if kind == "BS" and k is not None)
+    if name == "outward-ladder":
+        left = float(weight[:source].sum())
+        if source > 0:
+            params[next(slots)] = 2 * math.asin(math.sqrt(min(1.0, left)))
+        for m in range(source - 1, 0, -1):
+            params[next(slots)] = angle(float(weight[m]), float(weight[: m + 1].sum()))
+        for m in range(source, MODES - 1):
+            params[next(slots)] = angle(float(weight[m]), float(weight[m:].sum()))
+    else:
+        for m in range(MODES - 1):
+            params[next(slots)] = angle(float(weight[m]), float(weight[m:].sum()))
+    reached = template_unitary(ops, params)[:, source]
+    for kind, m, k in ops:
+        if kind == "PS" and k is not None and abs(column[m]) > 1e-12:
+            params[k] = float(np.angle(column[m]) - np.angle(reached[m]))
+    return params
 
 
 CaseItem = tuple[str, np.ndarray, int]
@@ -1252,22 +1309,22 @@ def _case_bank(item: CaseItem) -> dict[str, Any]:
     frames = {"K": bdsc.kernel_frame(), "Q": bdsc.complement_frame()}
     fb, fi, gb, gi = CASE_PAIRS[pair]
     f, g = frames[fb][:, fi].astype(complex), frames[gb][:, gi].astype(complex)
-    completions = {"householder": householder_completion, "givens": givens_completion}
     rows: list[dict[str, Any]] = []
     for label, psi in bdsc.consistency_states(f, g).items():
         column = chip_column(u, psi)
         body = {}
-        for name, complete in completions.items():
-            w = complete(column, source)
-            require(np.allclose(w.conj().T @ w, np.eye(MODES), atol=1e-12), f"{name} completion is not unitary")
-            require(np.allclose(w[:, source], column, atol=1e-12), f"{name} completion misses the column")
+        for name in PREPARATION_DESCRIPTIONS:
+            w = template_unitary(template_ops(name, source), template_params(name, column, source))
+            require(np.allclose(w[:, source], column, atol=1e-12), f"{name} template misses the column")
             body[name] = np.delete(w, source, axis=1)
         rows.append(
             {
                 "label": label,
                 "state_e_basis": complex_list(psi),
                 "chip_column": complex_list(column),
-                "unused_column_distance": round(float(np.linalg.norm(body["householder"] - body["givens"])), 9),
+                "unused_column_distance": round(
+                    float(np.linalg.norm(body[PREPARATION_DESCRIPTIONS[0]] - body[PREPARATION_DESCRIPTIONS[1]])), 9
+                ),
                 "ideal_selected": {
                     name: round(float(np.real(np.conj(psi) @ effect @ psi)), 12)
                     for name, effect in (
@@ -1283,6 +1340,22 @@ def _case_bank(item: CaseItem) -> dict[str, Any]:
         require(abs(p["+"] + p["-"] - p["f"] - p["g"]) < 1e-12, f"{pair} {name}: real sum rule")
         require(abs(p["+i"] + p["-i"] - p["f"] - p["g"]) < 1e-12, f"{pair} {name}: imaginary sum rule")
     return {"pair": pair, "f_g": [f"{fb}{fi + 1}", f"{gb}{gi + 1}"], "settings": rows}
+
+
+def case_jobs(observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One job per (template, policy, epoch): a job fixes its circuit and its mitigation list, and its iterations
+    bind each observation's template parameters, so the 12 states of both pairs share it."""
+    out = []
+    for d in PREPARATION_DESCRIPTIONS:
+        for policy in PROCESSING_POLICIES:
+            for epoch in CASE_EPOCHS:
+                members = [
+                    j
+                    for j, o in enumerate(observations)
+                    if (o["preparation"], o["processing"], o["epoch"]) == (d, policy, epoch)
+                ]
+                out.append({"template": d, "processing": policy, "epoch": epoch, "iterations": members})
+    return out
 
 
 def case_observations() -> list[dict[str, Any]]:
@@ -1319,8 +1392,8 @@ def case_contrasts(observations: list[dict[str, Any]]) -> list[bdsc.Contrast]:
         for policy in PROCESSING_POLICIES:
             for epoch in CASE_EPOCHS:
                 for label in bdsc.CONSISTENCY_LABELS:
-                    h = index[(pair, "householder", policy, epoch, label)]
-                    g = index[(pair, "givens", policy, epoch, label)]
+                    h = index[(pair, PREPARATION_DESCRIPTIONS[0], policy, epoch, label)]
+                    g = index[(pair, PREPARATION_DESCRIPTIONS[1], policy, epoch, label)]
                     out.append(("completion", CASE_MARGINS["completion"], ((h, 1.0), (g, -1.0))))
         for d in PREPARATION_DESCRIPTIONS:
             for policy in PROCESSING_POLICIES:
@@ -1364,9 +1437,14 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
     trials = chosen[0]
     settings = len(observations)
     max_shots = SHOT_HEADROOM * trials
-    credits = settings * (CREDITS_PER_JOB + CREDITS_PER_SHOT * max_shots)
-    seconds_per_job = SINGLE_JOB_OVERHEAD_SECONDS + max_shots / SAMPLES_PER_SECOND
-    seconds_historical = settings * seconds_per_job
+    jobs = case_jobs(observations)
+    iterations = max(len(job["iterations"]) for job in jobs)
+    seconds_per_job = iterations * (SECONDS_PER_ITERATION + SECONDS_PER_SAMPLE * trials)
+    require(
+        seconds_per_job <= CASE_JOB_FILL * JOB_SECONDS, f"a job of {iterations} iterations needs {seconds_per_job} s"
+    )
+    credits = len(jobs) * (CREDITS_PER_JOB + CREDITS_PER_SHOT * max_shots)
+    credits_one_job_per_setting = settings * (CREDITS_PER_JOB + CREDITS_PER_SHOT * max_shots)
     families = {f: sum(c[0] == f for c in contrasts) for f in CASE_MARGINS}
     return {
         "schema": SCHEMA,
@@ -1396,8 +1474,11 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
         },
         "banks": banks,
         "preparation_descriptions": {
-            "householder": "I - 2 w w^dagger with w along phase e_r - column, times the source phase",
-            "givens": "a chain of 2 x 2 rotations of the source mode against every other mode",
+            "outward-ladder": "adjacent splitters fan the photon from the source mode to its left and right "
+            "neighbours in turn, then one phase per mode; 47 parameters",
+            "reverse-ladder": "a fixed full splitter on two unused inputs, fixed full splitters that carry the "
+            "photon to mode 0, adjacent splitters that ladder it rightward across every mode, then one phase per "
+            "mode; 47 parameters",
         },
         "observations": observations,
         "power": {
@@ -1426,22 +1507,25 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             ],
             "stopping": bdsc.STOPPING,
         },
+        "jobs": jobs,
         "resources": {
             "settings": settings,
-            "jobs_ceiling": settings,
+            "jobs": len(jobs),
+            "iterations_per_job": iterations,
             "eligible_trials_per_setting": trials,
             "eligible_trials_total": settings * trials,
-            "max_shots_per_setting": max_shots,
+            "max_shots_per_iteration": max_shots,
             "max_shots_total": settings * max_shots,
-            "credits_historical_one_job_per_setting": round(credits, 6),
-            "seconds_historical_estimate": round(seconds_historical, 3),
-            "seconds_ceiling": settings * JOB_SECONDS,
-            "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots (strategy.md section 1a)",
-            "seconds_per_job_estimate": seconds_per_job,
-            "timing_rule": f"estimate: one single-computation job per setting at {SINGLE_JOB_OVERHEAD_SECONDS} s of "
-            f"overhead (the top of the 13 to 15 s single jobs of strategy.md section 1) plus max_shots at "
-            f"{SAMPLES_PER_SECOND:g} one-photon samples per second; ceiling: the {JOB_SECONDS} s per-job limit. The "
-            "written case restates both from the live plan output",
+            "credits": round(credits, 6),
+            "credits_if_one_job_per_setting": round(credits_one_job_per_setting, 6),
+            "seconds_per_job_estimate": round(seconds_per_job, 3),
+            "seconds_estimate": round(len(jobs) * seconds_per_job, 3),
+            "seconds_ceiling": len(jobs) * JOB_SECONDS,
+            "billing_rule": "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots, measured "
+            "on every retained qpu:belenos job (docs/runbooks/quandela-credit-optimization.md)",
+            "timing_rule": f"{SECONDS_PER_ITERATION} s plus {SECONDS_PER_SAMPLE} s per sample for each iteration, "
+            f"each job within {CASE_JOB_FILL} of the {JOB_SECONDS} s per-job limit; the written case restates "
+            "both from the live plan output",
         },
         "qrng": {
             "service": "ANU Quantum Numbers (aqn, keyed), scripts/anu_qrng.py draw",
@@ -1717,8 +1801,8 @@ def self_test() -> int:
     require(excess["delta_R_status"] == "violated", "self-test: a 0.1 sum-rule violation is not caught")
     near = bdsc.consistency_readout({x: (50, 100) for x in states}, 0.01)
     require(near["delta_R_status"] == "inconclusive", "self-test: an interval around zero alone established a rule")
-    # Case contrasts: on (e1, e2) the Householder cells answer I/2 + X/4 in epoch 1 and I/2 + Y/4 in epoch 2, the
-    # Givens cells I/2 throughout. Every sum rule holds and f, g never move, so only the completion and epoch
+    # Case contrasts: on (e1, e2) the outward-ladder cells answer I/2 + X/4 in epoch 1 and I/2 + Y/4 in epoch 2, the
+    # reverse-ladder cells I/2 throughout. Every sum rule holds and f, g never move, so only the completion and epoch
     # families see the coherent difference; the batched readout matches the single record row by row.
     observations = case_observations()
     contrasts = case_contrasts(observations)
@@ -1729,7 +1813,7 @@ def self_test() -> int:
     probabilities = []
     for o in observations:
         p = 0.5
-        if o["pair"] == "middle-middle" and o["preparation"] == "householder":
+        if o["pair"] == "middle-middle" and o["preparation"] == PREPARATION_DESCRIPTIONS[0]:
             p += coherent[o["epoch"]].get(o["label"], 0.0)
         probabilities.append(p)
     k = np.array([round(p * n_exact) for p in probabilities])
@@ -1754,6 +1838,21 @@ def self_test() -> int:
             and np.array_equal(single["status"], batched["status"][row]),
             "self-test: the batched contrast readout differs from the single record",
         )
+    # Templates: both ladders reach any column from any source mode, with unitaries that differ off the source.
+    for source in (0, 6, 23):
+        for trial in range(4):
+            z = rng.normal(size=MODES) + 1j * rng.normal(size=MODES)
+            if trial == 0:
+                z[: MODES // 2] = 0
+            column = z / np.linalg.norm(z)
+            reached = {}
+            for name in PREPARATION_DESCRIPTIONS:
+                w = template_unitary(template_ops(name, source), template_params(name, column, source))
+                require(np.allclose(w.conj().T @ w, np.eye(MODES), atol=1e-12), f"self-test: {name} not unitary")
+                require(np.allclose(w[:, source], column, atol=1e-12), f"self-test: {name} misses the column")
+                reached[name] = w
+            first, second = reached.values()
+            require(not np.allclose(first, second), "self-test: the two templates coincide")
     # Thinning equalizes terminal efficiencies and leaves internal loss: D = eta_* T^dagger T.
     lossless = numeric_unitary(u)[:, : bdsc.DIM]
     eta_t = np.linspace(0.6, 0.95, MODES)

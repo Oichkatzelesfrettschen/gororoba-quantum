@@ -18,34 +18,37 @@ No step here is authorized until its written case is approved
    `uncorrected_observations`, `count_provenance` and
    `preparation_control`. A capability still `unresolved` is either answered
    first or named in the written case as the question this run tests.
-3. A case builder emits one run directory per setting under
+3. A case builder emits one run directory per job, 8 in all, under
    `results/quandela/runs/`, with the processing policy written into the job
    body (`mitigations` absent for provider defaults, an empty list for the
    empty policy) and the completion's description recorded beside the chip
    column. `scripts/qd_platform.py` sets no mitigation policy per case, so
    this builder is the first implementation step.
 4. A fresh `qd_platform.py snapshot` and a `plan` that passes for
-   qpu:belenos, including `specs.architecture`.
+   qpu:belenos. The cases submit parameterized templates, which `plan`
+   checks without `specs.architecture`; it reads the architecture only for
+   mesh and seeded cases.
 
 ## Order
 
 1. Run `qd_platform.py plan` on every run directory and read from it the
    live price per shot, the per-job duration limit and Perceval's shot
    estimate.
-2. Write the case: the 96 settings, 45000 eligible trials and
-   max_shots = 90000 per setting (8640000 shots in all), the three contrast
-   families with their 0.05 margins at alpha 0.01, the power of 0.939 under
-   E0, the two epochs, the credit and seconds ceilings restated from step 1
-   (104.64 credits and 1656 s estimated at 17.25 s per single job, 28800 s
-   capped), the QRNG read with its own fields from `qrng` in the case
-   record (the keyed ANU Quantum Numbers service, one request of 192 uint16
-   values, about 2 s, no credits, one of the 100 monthly requests, and why
-   a pseudorandom stream does not serve), the stop conditions below, and
-   the interpretation of each outcome from the design. Wait for approval;
-   the QRNG read is part of what it approves.
-3. Draw the acquisition order of the 48 settings of each epoch and the
-   compilation seed of each with `scripts/anu_qrng.py draw`, and freeze both
-   in the run directories before the first submission.
+2. Write the case: the 96 settings in 8 jobs of 12 iterations, 300000
+   eligible trials and max_shots = 600000 per iteration (57600000 shots in
+   all), the three contrast families with their 0.02 margins at alpha
+   0.01, the power of 0.9845 under E0, the two epochs, the credit and
+   seconds ceilings restated from step 1 (12.8 credits and about 1354 s
+   estimated, 2400 s capped), the QRNG read with its own fields from
+   `qrng` in the case record (the keyed ANU Quantum Numbers service, one
+   request of 192 uint16 values, about 2 s, no credits, one of the 100
+   monthly requests, and why a pseudorandom stream does not serve), the
+   stop conditions below, and the interpretation of each outcome from the
+   design. Wait for approval; the QRNG read is part of what it approves.
+3. Draw one ANU QRNG record of 192 uint16 values with
+   `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng --length 192 --type uint16 --source aqn`;
+   it fixes each iteration's compilation seed and each job's iteration
+   order, frozen before the first submission.
 4. Run epoch 1 in the frozen order. After each job, `collect` and confirm
    that the returned processing matches the requested policy and that the
    server version and calibration identity are recorded.
