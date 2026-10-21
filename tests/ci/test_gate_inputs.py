@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -12,6 +13,53 @@ from unittest.mock import patch
 
 import gate_inputs
 import run_gates
+
+SLOW_FULL_GATES = (
+    "core-339",
+    "core-053",
+    "sources-166",
+    "core-445",
+    "sources-160",
+    "core-242",
+    "core-444",
+    "core-099",
+    "core-301",
+    "core-098",
+    "core-549",
+    "core-278",
+    "core-059",
+    "core-363",
+    "core-271",
+    "core-055",
+    "core-349",
+    "sources-163",
+    "core-489",
+    "core-070",
+    "core-508",
+    "core-409",
+    "core-446",
+    "sources-143",
+    "core-494",
+    "core-550",
+    "sources-192",
+    "core-057",
+    "sources-181",
+    "core-280",
+    "core-177",
+    "core-030",
+    "core-196",
+    "sources-184",
+    "core-585",
+    "core-521",
+    "core-525",
+    "core-223",
+    "core-040",
+    "core-336",
+    "core-conjugation-target",
+    "core-282",
+    "core-092",
+    "core-304",
+)
 
 
 class SelectionTests(unittest.TestCase):
@@ -285,6 +333,41 @@ class SelectionTests(unittest.TestCase):
         ]
         self.assertLessEqual(names, gate_inputs.affected_full(root, gates, changed))
         self.assertFalse(names & gate_inputs.affected_full(root, gates, ["docs/unrelated-ci-audit.md"]))
+
+    def test_slow_pr_gates_select_on_their_own_inputs(self) -> None:
+        # Gates measured over 30 s left the pr tier; each still runs on a
+        # change to a declared input or to the script its command runs.
+        root = Path(__file__).resolve().parents[2]
+        gates = json.loads((root / "ci/gates.json").read_text())["gates"]
+        declared = json.loads((root / "ci/full_gate_inputs.json").read_text())["gates"]
+        by_name = {gate["name"]: gate for gate in gates}
+        modules = gate_inputs.module_index(root)
+        references: dict[Path, tuple[tuple[str, ...], tuple[str, ...]]] = {}
+        examples = {}
+        for name in SLOW_FULL_GATES:
+            self.assertEqual(by_name[name]["tier"], "full", name)
+            if declared[name]:
+                example = declared[name][0].replace("**", "probe.json").replace("*", "probe")
+                self.assertTrue(gate_inputs.matches(example, declared[name][0]), name)
+            else:
+                script = next(token for token in by_name[name]["cmd"].split() if token.endswith(".py"))
+                example = os.path.normpath(Path(by_name[name]["cwd"]) / script)
+                self.assertIn(example, gate_inputs.dependencies(root, by_name[name], modules, references), name)
+            examples[name] = example
+            # A file or directory the command names outside Python (cmp, a
+            # shell glob, an argument) is a read the tracer never records.
+            command = by_name[name]["cmd"]
+            for token in command.replace("&&", " ").replace("|", " ").replace(">", " ").split():
+                for part in token.strip("\"'").split(","):
+                    path = os.path.normpath(Path(by_name[name]["cwd"]) / part.split("=", 1)[-1])
+                    if path.startswith(("/", "..")) or path == "." or not (root / path).exists():
+                        continue
+                    probe = path if (root / path).is_file() else path + "/probe.json"
+                    sources = gate_inputs.dependencies(root, by_name[name], modules, references)
+                    covered = path in sources or any(gate_inputs.matches(probe, p) for p in declared[name])
+                    self.assertTrue(covered, f"{name} reads {path} outside its declared inputs")
+        self.assertLessEqual(set(SLOW_FULL_GATES), gate_inputs.affected_full(root, gates, sorted(examples.values())))
+        self.assertFalse(set(SLOW_FULL_GATES) & gate_inputs.affected_full(root, gates, ["docs/unrelated-audit.md"]))
 
     def test_quandela_static_scopes_follow_named_fixtures(self) -> None:
         root = Path(__file__).resolve().parents[2]
