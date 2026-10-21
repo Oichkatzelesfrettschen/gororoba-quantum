@@ -1381,6 +1381,9 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
         for entry in inner["results_list"]:
             if not isinstance(entry, dict) or not isinstance(entry.get("results"), str):
                 raise PlatformError(f"job {job}: an iteration result carries no serialized counts")
+            # A job that ended without completing can answer an iteration with the worker's error text.
+            if not complete and not entry["results"].startswith(":PCVL:"):
+                return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
             part = parse_counts(entry["results"])
             for state, n in part.items():
                 merged[state] = merged.get(state, 0) + n
@@ -1936,6 +1939,22 @@ def runner_self_test() -> int:
             ),
         }
     ).encode()
+    worker_error = json.dumps(
+        {
+            "job_id": "job-w",
+            "results": json.dumps({"results_list": [{"results": "RuntimeError: no input ports", "iteration": {}}]}),
+            "shots": 0,
+        }
+    ).encode()
+    summary = result_summary(worker_error, "job-w", {"shots": 0}, complete=False)
+    if summary != {"shots": 0, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}:
+        raise AssertionError(f"an errored iteration without counts parsed as {summary}")
+    try:
+        result_summary(worker_error, "job-w", {"shots": 0})
+    except PlatformError:
+        pass
+    else:
+        raise AssertionError("a completed job whose iteration carries an error text was accepted")
     errored = json.dumps({"job_id": "job-e", "duration": 55, "results": None, "shots": None}).encode()
     summary = result_summary(errored, "job-e", {"shots": None}, complete=False)
     if summary != {"shots": None, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}:
