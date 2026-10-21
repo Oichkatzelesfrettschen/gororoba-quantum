@@ -23,7 +23,7 @@ Subcommands:
   sum of its rows; with --agents it renders the structural backend table
   (facts_table) from catalogue.json and requires FILE to carry it verbatim
   between the quantum-inspire-facts markers, so a refreshed catalogue that
-  changes a limit fails until AGENTS.md changes with it. Status, queue and
+  changes a limit fails until docs/notes/quantum_inspire/README.md changes with it. Status, queue and
   heartbeat change minute to minute and stay out of the table.
 - submit CASE_DIR --backend-type-id N --approval TEXT (network, spends quota)
   creates one project, one algorithm, commit and file per circuit, one batch
@@ -43,7 +43,7 @@ Subcommands:
   are preserved; a conflicting recollection is rejected before publication.
 
 Usage: "$QI_PYTHON" scripts/qi_platform.py (snapshot --out DIR | submit CASE_DIR ... | collect CASE_DIR)
-       "$PYTHON" scripts/qi_platform.py (check DIR [--agents AGENTS.md] | facts DIR)
+       "$PYTHON" scripts/qi_platform.py (check DIR [--agents docs/notes/quantum_inspire/README.md] | facts DIR)
 """
 
 from __future__ import annotations
