@@ -1,6 +1,6 @@
 # Docs audit and restructure options
 
-This audit inventories every tracked Markdown file outside results/ (2,706 files), maps what binds each file's path or bytes, and proposes a docs layout with one map. The companion `docs-move-plan.json` lists every proposed move with its bindings and reference-edit count. Nothing in the tree moves in this step.
+This audit inventories every tracked Markdown file outside results/ (2,706 files), maps what binds each file's path or bytes, and proposes a docs layout with one map. The companion [docs-move-plan.json](docs-move-plan.json) lists every proposed move with its bindings and reference-edit count. Nothing in the tree moves in this step.
 
 ## 1. Method and legend
 

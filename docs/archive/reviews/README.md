@@ -15,3 +15,5 @@ repository-relative; a branch name stands for its worktree.
 | [open-issue-triage.md](open-issue-triage.md) | open issues checked against the named files |
 | [quantum-inspire-branch-pair-map.md](quantum-inspire-branch-pair-map.md) | the two Quantum Inspire branches and their merge order |
 | [open-gororoba-anf-degree-issue-draft.md](open-gororoba-anf-degree-issue-draft.md) | draft upstream issue for open_gororoba (ANF degree closed forms); not filed |
+| [docs-audit.md](docs-audit.md) | documentation inventory, bindings and restructure options |
+| [docs-move-plan.json](docs-move-plan.json) | per-file move plan with bindings and reference-edit counts, companion of docs-audit.md |

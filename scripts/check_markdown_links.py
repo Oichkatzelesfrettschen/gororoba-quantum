@@ -152,10 +152,14 @@ def anchors_of(text: str) -> set[str]:
 
 
 def link_targets(text: str) -> list[tuple[int, str]]:
+    """Inline links match over the whole text, so a label that wraps lines is read; a blank line ends a label."""
     found: list[tuple[int, str]] = []
-    for number, line in enumerate(strip_code(text.split("\n")), start=1):
-        for match in INLINE_LINK.finditer(line):
-            found.append((number, match.group(1)))
+    lines = strip_code(text.split("\n"))
+    joined = "\n".join(lines)
+    for match in INLINE_LINK.finditer(joined):
+        if "\n\n" not in match.group(0):
+            found.append((joined.count("\n", 0, match.start()) + 1, match.group(1)))
+    for number, line in enumerate(lines, start=1):
         ref = REF_DEF.match(line)
         if ref:
             found.append((number, ref.group(1)))
@@ -257,18 +261,21 @@ def self_test() -> int:
         )
         (root / "docs/good.md").write_text(good, encoding="utf-8")
         (root / "literature").symlink_to("docs")
-        bad = "[x](notes/missing.md)\n[y](notes/target.md#no-such-heading)\n[z](#nothing-here)\n[w](../../outside.md)\n"
+        bad = (
+            "[x](notes/missing.md)\n[y](notes/target.md#no-such-heading)\n[z](#nothing-here)\n[w](../../outside.md)\n"
+            "A [label that\nwraps](notes/wrapped-missing.md) across lines.\n"
+        )
         (root / "docs/bad.md").write_text(bad, encoding="utf-8")
         tracked = {"docs/notes/target.md", "docs/good.md", "docs/bad.md"}
         if problems := check(root, tracked, ["docs/good.md"]):
             print("self-test: false positives:\n" + "\n".join(problems))
             return 1
         found = check(root, tracked, ["docs/bad.md"])
-        wanted = ("missing.md", "no-such-heading", "nothing-here", "outside.md")
+        wanted = ("notes/missing.md", "no-such-heading", "nothing-here", "outside.md", "wrapped-missing.md")
         if len(found) != len(wanted) or any(not any(w in line for line in found) for w in wanted):
             print("self-test: planted defects not all reported:\n" + "\n".join(found))
             return 1
-    print("self-test passed: 4 planted defects reported, 0 false positives")
+    print("self-test passed: 5 planted defects reported, 0 false positives")
     return 0
 
 
