@@ -124,10 +124,11 @@ plant favors the line mixture over tls by 6065 and a tls plant tls by 6981.
 
 ## Cost and quota
 
-- Dry run 2026-10-20T054051.819098Z (session scratchpad, code commit 061debf,
-  record.json sha256 91cd2f04e11e45fe548d0b8e6036501f92ee38817b98dca17edb3ca47ceb2ca0,
-  analyzer closure bf736ada400e...): planner estimate 15.5 s (Target durations, 2.3 s
-  job overhead); with INIT/FINI added the execution rule gives 13.7 s and
+- Dry run 2026-10-21T025706.848746Z (code commit 0ce8d59, experiment source
+  digest 212b66dffd52..., record.json sha256
+  37671686b78ee7981af9b159973716e72c040cfc592e30d7f28306b5c1441015, analyzer
+  closure 5998e98c268e...; ibm_fez calibration 2026-10-21T02:31:53Z, 156
+  pending): planner estimate 15.5 s (Target durations, 2.3 s job overhead); with INIT/FINI added the execution rule gives 13.7 s and
   the retained charge offset 16.3 s; the rule above 16.7 s.
 - Ceiling `--max-execution-seconds 30`, cap 30 s: 1.8 times the expected
   charge, so neither a slower shot loop nor queue-side overhead reaches
@@ -165,9 +166,12 @@ approval-consumed.json beside its record.json); `--approved-record-sha256`
 is that record.json's digest. The approving dry run lands under
 results/live/ from this command without `--submit` and the two approval
 flags, after the branch's final commit, so the experiment digest and the
-analyzer closure match; the scratchpad dry run above, at commit 061debf
-with the same sources, also serves as RECORD_DIR by its absolute path. `--max-pending 250` admits ibm_fez's queue (140
-pending at the dry run).
+analyzer closure match. The record stays out of git: each of the 48 PUBs
+writes its ideal law densely over 2^15 outcomes, so record.json reaches 84 MB
+and the written case 16 MB, against about 300 KB for earlier dry runs; the
+dry run above is kept outside the checkout under
+`${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/dry-runs/`. `--max-pending 250`
+admits ibm_fez's queue (156 pending at the dry run).
 
 ## Failure modes
 
