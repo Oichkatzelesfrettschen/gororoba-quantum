@@ -34,7 +34,8 @@ No step here is authorized until its written case is approved
 1. Run `qd_platform.py plan` on every run directory and read from it the
    live price per shot, the per-job duration limit and Perceval's shot
    estimate.
-2. Write the case: the 96 settings in 8 jobs of 12 iterations, 300000
+2. Write the case: the 96 settings in 8 jobs of 12 iterations (one per
+   pair, policy and epoch on the union circuit), 300000
    eligible trials and max_shots = 600000 per iteration (57600000 shots in
    all), the three contrast families with their 0.02 margins at alpha
    0.01, the power of 0.9845 under E0, the two epochs, the credit and
@@ -48,10 +49,18 @@ No step here is authorized until its written case is approved
 3. Draw one ANU QRNG record of 192 uint16 values with
    `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng --length 192 --type uint16 --source aqn`;
    it fixes each iteration's compilation seed and each job's iteration
-   order, frozen before the first submission.
+   order. Rebuild the run directories with `scripts/bdsc_cases.py --write
+   DIR --draw RECORD`, which writes the record's repository path, its
+   sha256 and every setting's seed and order index into each manifest and
+   refuses a record another case already names; pass `--check DIR --draw
+   RECORD`, and commit the record and the manifests before the first
+   submission.
 4. Run epoch 1 in the frozen order. After each job, `collect` and confirm
-   that the returned processing matches the requested policy and that the
-   server version and calibration identity are recorded.
+   that the retained job body carries the requested policy, that the
+   result is an integer BSCount, and that the server version and
+   calibration identity are recorded. A returned iteration names no applied
+   mitigation, so what the default policy received is a provider-contract
+   answer, never read from the result.
 5. Run epoch 2, all six states of every cell again, separated in time
    from epoch 1 by at least one platform calibration cycle
    ([calibration.md](../notes/quandela/calibration.md)).
@@ -64,8 +73,8 @@ No step here is authorized until its written case is approved
 ## Stop conditions
 
 Execution stops, and the remaining settings stay unsent, when
-`qd_platform.py plan` refuses the platform, a returned result's processing
-differs from the requested policy, a job fails or returns fewer eligible
+`qd_platform.py plan` refuses the platform, a retained job body differs
+from the requested policy or a result is not an integer BSCount, a job fails or returns fewer eligible
 trials than the frozen n, the per-run server version or calibration
 identity cannot be recorded, or spent credits or seconds reach the approved
 ceiling. No setting is added or repeated after viewing
