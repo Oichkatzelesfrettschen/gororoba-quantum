@@ -118,7 +118,25 @@ from their exact branch-resolved law at every grid point (`member_law`
 `exact_multinomial`) and fit c = 2.0, r = 0.5 (mean distance 0.0075 against
 0.0251 at (1, 1), paired change -0.0177 with standard error 0.0053 over 2
 PUBs) beside an idle budget c_idle of 1.80; two PUBs bound the bootstrap
-little. core-339 reads the four parts.
+little.
+
+`part_e.json` holds the ten runs of 2026-10-18 to 2026-10-20, swept on the
+build host's CPU. The four Kingston init-control runs whose every job ended
+in ERROR are skipped with `no job of the run returned shots`. The two
+148-member 20 us control runs apply no CZ, so c is unidentified; both fit
+r = 1.0 at a mean distance of 0.006 against a resample floor of 0.0005. The
+two Fez spectator runs (2026-10-19T231043 and 2026-10-20T031212) are CZ-free
+as well and fit r = 1.0; the Ramsey sweep stays at 0.323 against a floor of
+0.006, a gap no rescaling of the snapshot's gate and readout errors closes
+(`hw-n21-spectator-143-beat`). The two Fez n21 orbit-window runs fit at the
+top of the CZ grid, c = 12 with r = 1.0 (bootstrap at the grid top in 0.90
+and 0.96 of draws), lowering the mean distance from 0.133 to 0.081
+(paired change -0.052, standard error 0.013, 14 PUBs) and from 0.148 to
+0.105 (-0.043, 0.018, 12 PUBs). c = 12 is a lower bound for both, far
+beyond their idle budgets c_idle of 2.14 and 1.84 (`idle_budget.json`,
+which now covers the six new runs that returned shots), and the distance
+still sits seven to eight times above the resample floor. core-339 reads
+the five parts.
 
 ## Prediction for sweep part a
 

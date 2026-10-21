@@ -1,6 +1,6 @@
 {
  "schema": "ghost-idle-budget-v1",
- "ghost_runs_sha256": "0a3622f6c484692392b13caf4ef6a0eccbeca65992062d42c499451f022dfecf",
+ "ghost_runs_sha256": "377bfb3dbf6ed1a01693086f564258d133bedb6aa3ff26051df59efd5b899393",
  "runs": [
   {
    "run": "results/live/2026-10-11T152922.787095Z",
@@ -325,6 +325,108 @@
    "broadcasts": 1,
    "resets": 2,
    "measure_captures": 4
+  },
+  {
+   "run": "results/live/2026-10-18T214519.655411Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_kingston/20261018T1427340700.json": "407fe1f8934b655c0b97fbbc6ee6bb08281d54f6807a728b77e2f70a3dc5ebfa"
+   },
+   "isa_qpy_sha256": "b5bf2a7aa5ce5549ca71ee599f45a33733b65dc08953dd340e676000c3413e2f",
+   "raw_pubs_sha256": "fff445236e0e7b8f7d86a994952d0e40538514044e06cdca603951fa51cd6909",
+   "pubs": 1,
+   "cz": 0,
+   "e_cz": 0.0,
+   "idle_us": 58.608,
+   "e_idle": 0.248527,
+   "c_idle": null,
+   "broadcasts": 0,
+   "resets": 0,
+   "measure_captures": 148
+  },
+  {
+   "run": "results/live/2026-10-18T220218.089776Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_kingston/20261018T1427340700.json": "407fe1f8934b655c0b97fbbc6ee6bb08281d54f6807a728b77e2f70a3dc5ebfa"
+   },
+   "isa_qpy_sha256": "6b14adc51f9236831c905ebd888fc57b275f982e4f960966cce452cc967b422e",
+   "raw_pubs_sha256": "4124f6a6959e60139eae4cabba7b9bef3353bbf7933a3c0ec150a6d002221f25",
+   "pubs": 1,
+   "cz": 0,
+   "e_cz": 0.0,
+   "idle_us": 0.0,
+   "e_idle": 0.0,
+   "c_idle": null,
+   "broadcasts": 0,
+   "resets": 0,
+   "measure_captures": 148
+  },
+  {
+   "run": "results/live/2026-10-19T151959.226467Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_fez/20261019T0744140700.json": "f783c6354bd7447b785a80625a20dc79d0e755c6a402c41db0cea16ef5419bfb"
+   },
+   "isa_qpy_sha256": "86adfcc8512960652069a1c2b12c6794ee3e33a4b5f0039ecbddf53ff49b0cd4",
+   "raw_pubs_sha256": "a2a25244cac5f6b4439a98289ea691b0b9df6b8b5be673e433b0be7e22ce2c5f",
+   "pubs": 14,
+   "cz": 440,
+   "e_cz": 0.891782,
+   "idle_us": 304.472,
+   "e_idle": 1.013101,
+   "c_idle": 2.136,
+   "broadcasts": 5,
+   "resets": 14,
+   "measure_captures": 84
+  },
+  {
+   "run": "results/live/2026-10-19T170620.832658Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_fez/20261019T0947370700.json": "a9679591b467940f59d4c17c0d8d9594fae8aa5918be058f9de986c569dbf5f0"
+   },
+   "isa_qpy_sha256": "3dab923b6306cf8bc50eff8e8be549e9427a050abcbbae25a6d24edc21da8e10",
+   "raw_pubs_sha256": "cc6336401c38e7363a636abe5bd805bc93fce1689bcb5776fd56b6bffc37faef",
+   "pubs": 12,
+   "cz": 262,
+   "e_cz": 0.732438,
+   "idle_us": 193.928,
+   "e_idle": 0.618189,
+   "c_idle": 1.844,
+   "broadcasts": 3,
+   "resets": 12,
+   "measure_captures": 66
+  },
+  {
+   "run": "results/live/2026-10-19T231043.083602Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_fez/20261019T1507330700.json": "eb519257bfeeda85d6aaa1baef759f4cee5343479ae681a90b212d9d6ce2e163"
+   },
+   "isa_qpy_sha256": "77fd5a9f4a0f58a4f05c43f57e0a1b38f4e0bcd0ee78c17d23b1686fb954e899",
+   "raw_pubs_sha256": "7217d16c0e1f5d6f1f44bb89ecbd3344954d1751e76815653db2799cba78fdcc",
+   "pubs": 6,
+   "cz": 0,
+   "e_cz": 0.0,
+   "idle_us": 29.984,
+   "e_idle": 0.099866,
+   "c_idle": null,
+   "broadcasts": 0,
+   "resets": 6,
+   "measure_captures": 30
+  },
+  {
+   "run": "results/live/2026-10-20T031212.175942Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_fez/20261019T1930420700.json": "c23e5b3f7de4a66a5bbd5e2cec49bc4ff221d94a5201b4ee73cf7543ddfa19c4"
+   },
+   "isa_qpy_sha256": "ed6094da6a282b2d5fc64ca678f63c107c565f1acc6eeddd701ac9b251c999dc",
+   "raw_pubs_sha256": "ada53053117231afa2e5832743eb0886325cd647505ae0abb7324773f569ae76",
+   "pubs": 14,
+   "cz": 0,
+   "e_cz": 0.0,
+   "idle_us": 179.376,
+   "e_idle": 0.685775,
+   "c_idle": null,
+   "broadcasts": 0,
+   "resets": 14,
+   "measure_captures": 70
   }
  ]
 }

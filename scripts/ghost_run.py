@@ -30,7 +30,9 @@ explains is.
 Members wider than MAX_QUBITS active qubits are skipped with that reason: a
 density matrix beyond 14 qubits leaves a 15 GiB T4 (docs/notes/kaggle/
 substrates.md). Runs whose record predates the fused-PUB submission plan are
-skipped with the record's reason.
+skipped with the record's reason, and a run whose every job ended without a
+result (an ERROR or CANCELLED job bills its charge and returns no shots)
+is skipped because no member has a hardware distribution to compare.
 
 A dynamic member (mid-circuit measurement, reset or feed-forward) at
 EXACT_MIN_SHOTS or more shots, which Aer's density-matrix method evolves
@@ -321,6 +323,8 @@ def prepare(run_name: str, index: dict[str, Any]) -> dict[str, Any]:
     except SystemExit as reason:
         return {"skipped": str(reason)}
     measured, executed, recorded = measured_members(run)
+    if not measured:
+        return {"skipped": "no job of the run returned shots"}
     starts = {w["start"]: w["snapshot"] for job in index["jobs"] if job["run"] == run_name for w in job["windows"]}
     backends = {b for b, _ in replicas.values()}
     require(len(backends) == 1, f"{run_name}: members span backends {sorted(backends)}")

@@ -2865,7 +2865,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
+          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2904,7 +2904,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
+          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2978,7 +2978,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
+          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
         },
         {
           "path": "results/live/2026-10-11T152922.787095Z/collect.json",
@@ -3024,7 +3024,7 @@
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
+          "sha256": "f85fc0a97d2d8c27c7e773c374476da9154dda55bf380627d8cdbbb9041cd877"
         }
       ],
       "documents": [
@@ -3418,7 +3418,7 @@
     },
     {
       "id": "hw-ghost-calibration-replay",
-      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs. Five 2026-10-18 Kingston runs and one further Kingston snapshot, added by an incremental merge, widen the calibration spread to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), and the exact-law n21 members and the 149-member control runs reproduce their recorded replays within 0.0027 TV.",
+      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs. Five 2026-10-18 Kingston runs and one further Kingston snapshot, added by an incremental merge, widen the calibration spread to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), and the exact-law n21 members and the 149-member control runs reproduce their recorded replays within 0.0027 TV. A second merge adds ten 2026-10-18 to 2026-10-20 runs and six snapshots: the four init-control runs whose every job ended in ERROR are skipped, and the six that returned shots reproduce their recorded replays within 0.0056 TV, their predicted distance moving by at most 0.008 TV across calibrations.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -3426,11 +3426,11 @@
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
-          "sha256": "0a3622f6c484692392b13caf4ef6a0eccbeca65992062d42c499451f022dfecf"
+          "sha256": "377bfb3dbf6ed1a01693086f564258d133bedb6aa3ff26051df59efd5b899393"
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "413bde5009ee9aec10a19f38076af680269b8342785aee010e7f5e0bd5c30cdd"
+          "sha256": "90ca6753008a26d193a28295ef31133e30779acd0eeeae11303066ec110dabbe"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
@@ -3467,7 +3467,13 @@
         "kingston-init-control-xhistory-250us",
         "kingston-init-control-xhistory-50us",
         "kingston-init-control-prep0-250us",
-        "kingston-n21-feedback-encoded-50us"
+        "kingston-n21-feedback-encoded-50us",
+        "kingston-init-control-xhistory-20us",
+        "kingston-init-control-prep0-20us",
+        "fez-n21-orbit-window-sweep",
+        "fez-n21-orbit-overlap-split",
+        "fez-n21-spectator-ground-control",
+        "fez-n21-spectator-ramsey-sweep"
       ],
       "assumptions": [],
       "depends_on": [],
