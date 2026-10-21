@@ -126,7 +126,10 @@ def with_bulk_presence(record: dict[str, Any], include_bulk: bool) -> dict[str, 
     specs = record.get("specs")
     sent = specs if isinstance(specs, dict) else {}
     out = dict(record)
-    out["bulk_fields"] = {name: "present" if name in sent else "absent" for name in BULK_SPECS}
+    # "empty" matches qd_platform.chip_architecture, which treats a null or empty value as no architecture.
+    out["bulk_fields"] = {
+        name: "absent" if name not in sent else "present" if sent[name] else "empty" for name in BULK_SPECS
+    }
     if not include_bulk and isinstance(specs, dict):
         out["specs"] = {
             key: {"stripped": True, "chars": len(json.dumps(value))} if key in BULK_SPECS else value
@@ -140,9 +143,9 @@ def with_bulk_presence(record: dict[str, Any], include_bulk: bool) -> dict[str, 
 async def qd_platform(name: PlatformName, include_bulk: bool = False) -> dict[str, Any]:
     """Processor record of one platform: constraints, input modes, commands, perfs, mitigations, versions.
 
-    bulk_fields reports "present" or "absent" for each of the serialized chip architecture and the HTML
-    documentation, as the server sent them. include_bulk keeps their values; otherwise a present field is
-    replaced by {"stripped": true, "chars": N} and an absent one stays absent.
+    bulk_fields reports "present", "empty" (sent as null or empty) or "absent" for the serialized
+    chip architecture and the HTML documentation, as the server sent them. include_bulk keeps their
+    values; otherwise a present field is replaced by {"stripped": true, "chars": N}.
     """
     record: dict[str, Any] = await threaded(lambda: get(platform_route(name)))
     return with_bulk_presence(record, include_bulk)

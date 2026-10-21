@@ -51,3 +51,8 @@ def test_include_bulk_keeps_values_and_reports_presence() -> None:
 def test_record_without_specs_reports_absent() -> None:
     out = qd_mcp_server.with_bulk_presence({"name": "x"}, include_bulk=False)
     check(out == {"name": "x", "bulk_fields": {"architecture": "absent", "documentation": "absent"}}, f"{out}")
+
+
+def test_null_architecture_reads_empty() -> None:
+    out = qd_mcp_server.with_bulk_presence({"specs": {"architecture": None, "documentation": ""}}, False)
+    check(out["bulk_fields"] == {"architecture": "empty", "documentation": "empty"}, f"{out['bulk_fields']}")
