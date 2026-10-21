@@ -30,7 +30,7 @@ The IBM service inventory observed at 2026-10-20T22:49:36.693055+00:00 holds 38 
 
 The Quantum Inspire ledger retrieved at 2026-10-18T18:45:31+00:00 lists 292 jobs with 6076416 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 31 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 35 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -199,6 +199,10 @@ circuit and charges the account ledger's change.
 | [2026-10-19T170620.832658Z](../../results/live/2026-10-19T170620.832658Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 12 | DONE | 9 s | hw-ghost-calibration-replay, hw-n21-orbit-window-overlap |
 | [2026-10-19T231043.083602Z](../../results/live/2026-10-19T231043.083602Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 6 | DONE | 5 s | hw-ghost-calibration-replay, hw-n21-spectator-143-beat |
 | [2026-10-20T031212.175942Z](../../results/live/2026-10-20T031212.175942Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 14 | DONE | 15 s | hw-ghost-calibration-replay, hw-n21-spectator-143-beat |
+| [2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00](../../results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00) | Quandela Cloud | Belenos usability test | qpu:belenos | 1 | 1 | canceled | 0.0 credits | qd-belenos-running-status-holds-jobs |
+| [2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1](../../results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1) | Quandela Cloud | BDSC qualification pipeline on sim:belenos | sim:belenos | 1 | 12 | completed | 1.0 credits | qd-bdsc-qualification-pipeline-runs-on-sim-belenos |
+| [2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1](../../results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1) | Quandela Cloud | BDSC qualification pipeline on sim:belenos | sim:belenos | 1 | 12 | error | 1.0 credits | qd-bdsc-qualification-pipeline-runs-on-sim-belenos |
+| [2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1](../../results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1) | Quandela Cloud | BDSC qualification pipeline on sim:belenos | sim:belenos | 1 | 12 | completed | 1.0 credits | qd-bdsc-qualification-pipeline-runs-on-sim-belenos |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -362,6 +366,10 @@ circuit and charges the account ledger's change.
 - **fez-n21-orbit-overlap-split** (2026-10-19T170620.832658Z): Does a work CZ overlapping the control's measure-and-reset span cause the window loss on the pinned 083417 roles?
 - **fez-n21-spectator-ground-control** (2026-10-19T231043.083602Z): How much of qubit 143's window dephasing depends on the control's state?
 - **fez-n21-spectator-ramsey-sweep** (2026-10-20T031212.175942Z): Does qubit 143's Ramsey visibility decay monotonically over 0 to 20 us with the control grounded?
+- **qd-qpu-belenos-bdsc-queue-test** (2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00, job 90712931-1b5a-4c14-bdd0-95e01ac02292, 0 samples, 0 shots): does qpu:belenos accept and start a one-computation job while its Explorer row and processor record read running?
+- **qd-sim-belenos-bdsc-tc-none-e1** (2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1, job 19f18f8c-8ac7-424a-aea2-511a7d3d65bb, 3600000 samples, 3600004 shots): does the 12-iteration ladder-union job under the empty mitigation list run end to end and echo every iteration's parameters and seed?
+- **qd-sim-belenos-bdsc-tc-def-e1-timeout** (2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1, job 03dd195b-b429-4ef1-be96-98005617343c, 0 samples, 0 shots): does the same job under provider-default mitigation (DetectorBalancing) run end to end?
+- **qd-sim-belenos-bdsc-tc-def-e1-rerun** (2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1, job cac942bd-dee7-4b29-aea6-2e1435f7c76e, 3600000 samples, 3600003 shots): does a rerun of the provider-default job complete after the first ended in Worker timeout?
 
 ## Established claims
 
@@ -862,6 +870,10 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-311.
   Acquisitions: fez-ripple-atlas, kingston-ripple-atlas.
   Depends on: hw-walk-scaffold-floor.
+- **qd-bdsc-qualification-pipeline-runs-on-sim-belenos** (exploratory reanalysis, implementation). The frozen BDSC qualification job tc-*-e1 (12 iterations of the 77-parameter ladder-union circuit, 300000 samples each, QRNG seeds) ran end to end on sim:belenos under both policies: the empty-list job 19f18f8c in 148 s and the provider-default rerun cac942bd in 153 s, 1 credit each. Every iteration returned its 300000 samples with its circuit_params bit-exact and its compilation_seed echoed; f read 0 and g read 1 under both templates, the eight superposition states read 0.4989 to 0.5017 against 0.5, and the one-click rule excluded at most 21 samples per iteration. The first provider-default job 03dd195b stopped at iteration 4 (55 s of compute, progress 0.2567, progress message probs) and ended in Worker timeout after about 30 minutes without charge; the identical rerun completed.
+  Boundary: Simulator runs only; sim:belenos applies a fixed noise model and its default DetectorBalancing returns counts drawn from a corrected distribution, so neither policy here tests the QPU's observation contract, and the readout admits qpu:belenos runs only. One timeout in two provider-default runs establishes no rate; Perceval computes the same noisy distribution in 0.1 s locally, so the stall is placed in the service worker by inference.
+  Evidence: [results.json](../../results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1/results.json), [results.json](../../results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json), [results.json](../../results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json), [bdsc-qualification-case.md](../runbooks/bdsc-qualification-case.md).
+  Acquisitions: qd-sim-belenos-bdsc-tc-none-e1, qd-sim-belenos-bdsc-tc-def-e1-timeout, qd-sim-belenos-bdsc-tc-def-e1-rerun.
 - **hw-wide-control** (exploratory reanalysis, hardware). In the recovered wide control, all 154 spectators read zero in 27 of 512 shots, and the carpet's forbidden outcome 10 appears 2 to 117 times per 512 shots across 29 replicas, with at least one violating replica in 403 shots.
   Boundary: Retrospective: the original approval, local archive and execution calibration are unavailable; marginal intervals assume iid shots and attribute no crosstalk.
   Evidence: [analysis.json](../../results/live/kingston-wide-control-result/analysis.json), [README.md](../../results/live/kingston-wide-control-result/README.md).
@@ -1053,6 +1065,10 @@ circuit and charges the account ledger's change.
   Evidence: [state-prep-control-parameters.json](../../results/live/state-prep-control-parameters.json), [collect.json](../../results/live/2026-10-18T214519.655411Z/collect.json), [collect.json](../../results/live/2026-10-18T220218.089776Z/collect.json), [N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md](../../results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md).
   Gates: replayed by core-564.
   Acquisitions: kingston-init-control-xhistory-20us, kingston-init-control-prep0-20us, kingston-init-control-prep0-50us, kingston-init-control-prep0-250us, kingston-init-control-xhistory-50us, kingston-init-control-xhistory-250us.
+- **qd-belenos-running-status-holds-jobs** (exploratory reanalysis, hardware). While qpu:belenos read running on its Explorer row and processor record, then calibration, a one-computation job (90712931, box_kite_photonic_single job-00, 10000 samples) entered the token's queue and stayed waiting with no start time for 26 minutes; it was canceled with 0 shots and no charge (qpu:belenos usage 17.2255 before and after). The public platform list read available throughout, so only the Explorer status predicts whether a job starts.
+  Boundary: One job in one window; whether running ever admits a job, and how long such a window lasts, is not measured.
+  Evidence: [results.json](../../results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00/results.json), [calibration.md](../notes/quandela/calibration.md).
+  Acquisitions: qd-qpu-belenos-bdsc-queue-test.
 
 ## Open claims
 

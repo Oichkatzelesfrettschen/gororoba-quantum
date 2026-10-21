@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (96 established, 37 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (96 established, 39 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -192,12 +192,16 @@ acquisition of every provider:
 | [2026-10-19T170620.832658Z](results/live/2026-10-19T170620.832658Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 12 | DONE | 9 s |
 | [2026-10-19T231043.083602Z](results/live/2026-10-19T231043.083602Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 6 | DONE | 5 s |
 | [2026-10-20T031212.175942Z](results/live/2026-10-20T031212.175942Z) | IBM Quantum | n21-orbit-rca | ibm_fez | 1 | 14 | DONE | 15 s |
+| [2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00](results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00) | Quandela Cloud | Belenos usability test | qpu:belenos | 1 | 1 | canceled | 0.0 credits |
+| [2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1](results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1) | Quandela Cloud | BDSC qualification pipeline on sim:belenos | sim:belenos | 1 | 12 | completed | 1.0 credits |
+| [2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1](results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1) | Quandela Cloud | BDSC qualification pipeline on sim:belenos | sim:belenos | 1 | 12 | error | 1.0 credits |
+| [2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1](results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1) | Quandela Cloud | BDSC qualification pipeline on sim:belenos | sim:belenos | 1 | 12 | completed | 1.0 credits |
 
 The IBM service inventory observed at 2026-10-20T22:49:36.693055+00:00 holds 38 physical jobs with 449 settled seconds; the account then reported 449 of 600 s consumed in the rolling window ending 2026-10-20T22:49:36.642Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-18T18:45:31+00:00 lists 292 jobs with 6076416 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 31 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 35 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents

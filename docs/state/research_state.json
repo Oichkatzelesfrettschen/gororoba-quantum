@@ -1134,6 +1134,34 @@
       "run": "results/live/2026-10-20T031212.175942Z",
       "family": "n21-orbit-rca",
       "question": "Does qubit 143's Ramsey visibility decay monotonically over 0 to 20 us with the control grounded?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-queue-test",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00",
+      "family": "Belenos usability test",
+      "question": "does qpu:belenos accept and start a one-computation job while its Explorer row and processor record read running?"
+    },
+    {
+      "id": "qd-sim-belenos-bdsc-tc-none-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1",
+      "family": "BDSC qualification pipeline on sim:belenos",
+      "question": "does the 12-iteration ladder-union job under the empty mitigation list run end to end and echo every iteration's parameters and seed?"
+    },
+    {
+      "id": "qd-sim-belenos-bdsc-tc-def-e1-timeout",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1",
+      "family": "BDSC qualification pipeline on sim:belenos",
+      "question": "does the same job under provider-default mitigation (DetectorBalancing) run end to end?"
+    },
+    {
+      "id": "qd-sim-belenos-bdsc-tc-def-e1-rerun",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1",
+      "family": "BDSC qualification pipeline on sim:belenos",
+      "question": "does a rerun of the provider-default job complete after the first ended in Worker timeout?"
     }
   ],
   "claims": [
@@ -6407,6 +6435,66 @@
       "acquisitions": [
         "fez-n21-spectator-ground-control",
         "fez-n21-spectator-ramsey-sweep"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-bdsc-qualification-pipeline-runs-on-sim-belenos",
+      "statement": "The frozen BDSC qualification job tc-*-e1 (12 iterations of the 77-parameter ladder-union circuit, 300000 samples each, QRNG seeds) ran end to end on sim:belenos under both policies: the empty-list job 19f18f8c in 148 s and the provider-default rerun cac942bd in 153 s, 1 credit each. Every iteration returned its 300000 samples with its circuit_params bit-exact and its compilation_seed echoed; f read 0 and g read 1 under both templates, the eight superposition states read 0.4989 to 0.5017 against 0.5, and the one-click rule excluded at most 21 samples per iteration. The first provider-default job 03dd195b stopped at iteration 4 (55 s of compute, progress 0.2567, progress message probs) and ended in Worker timeout after about 30 minutes without charge; the identical rerun completed.",
+      "domain": "implementation",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Simulator runs only; sim:belenos applies a fixed noise model and its default DetectorBalancing returns counts drawn from a corrected distribution, so neither policy here tests the QPU's observation contract, and the readout admits qpu:belenos runs only. One timeout in two provider-default runs establishes no rate; Perceval computes the same noisy distribution in 0.1 s locally, so the stall is placed in the service worker by inference.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1/results.json",
+          "sha256": "437e015e5527eb4082f8695ccff10f732b555c629ba9feec8b071f77cc273245"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json",
+          "sha256": "9b6544e6398fc78625d36fd5ddfdb8708786597395b2b4cfc621986e98f7863e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json",
+          "sha256": "cfef7b6c53682e7c700a5cac6d341587ad09a4f2353321970afeb04b0343ef7e"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-belenos-bdsc-tc-none-e1",
+        "qd-sim-belenos-bdsc-tc-def-e1-timeout",
+        "qd-sim-belenos-bdsc-tc-def-e1-rerun"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-running-status-holds-jobs",
+      "statement": "While qpu:belenos read running on its Explorer row and processor record, then calibration, a one-computation job (90712931, box_kite_photonic_single job-00, 10000 samples) entered the token's queue and stayed waiting with no start time for 26 minutes; it was canceled with 0 shots and no charge (qpu:belenos usage 17.2255 before and after). The public platform list read available throughout, so only the Explorer status predicts whether a job starts.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job in one window; whether running ever admits a job, and how long such a window lasts, is not measured.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00/results.json",
+          "sha256": "18870bd8acdc0b92d4a00de110e0be45c24e6a9aa0853a3ed318f96ce05b4883"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/calibration.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-queue-test"
       ],
       "assumptions": [],
       "depends_on": [],
