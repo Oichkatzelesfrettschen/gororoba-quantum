@@ -3871,7 +3871,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
-   "name": "core-609",
+   "name": "core-611",
    "seconds": 1.0,
    "tier": "pr"
   },
