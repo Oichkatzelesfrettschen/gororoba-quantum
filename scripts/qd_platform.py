@@ -530,9 +530,12 @@ def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quandela/runs"
-CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1")
+CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1", "qd-bdsc-cases-v1")
 CIRCUIT_SCHEMA = "qd-circuit-v1"
-CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1")
+TEMPLATE_CIRCUIT_SCHEMA = "qd-template-circuit-v1"
+CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1", TEMPLATE_CIRCUIT_SCHEMA)
+# A case's processing policy: None leaves the server's default mitigations, an empty list disables them.
+MITIGATION_POLICIES: tuple[None, list[str]] = (None, [])
 STATE_SCHEMA = "qd-submission-state-v1"
 SUBMISSION_SCHEMA = "qd-submission-v1"
 COLLECTION_SCHEMA = "qd-collection-v1"
@@ -623,6 +626,49 @@ def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
     built.with_input(pcvl.BasicState(circuit["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
     return built
+
+
+def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[Any, list[dict[str, Any]]]:
+    """A fixed circuit of BS.Rx and PS components with one Perceval parameter per free angle, and its settings.
+
+    circuit["ops"] lists ["BS", m, k] on modes (m, m + 1) with angle parameter xk (k null for a fixed pi), and
+    ["PS", m, k] on mode m. Every setting binds its circuit_params, and Perceval's unitary must carry the source
+    photon to the setting's column within 1e-9 before anything is sent.
+    """
+    import numpy
+    import perceval as pcvl
+
+    modes = circuit["modes"]
+    chip = pcvl.Circuit(modes)
+    parameters: dict[str, Any] = {}
+    for kind, m, k in circuit["ops"]:
+        if kind == "BS":
+            angle = math.pi if k is None else parameters.setdefault(f"x{k}", pcvl.P(f"x{k}"))
+            chip.add(m, pcvl.BS.Rx(theta=angle))
+        elif kind == "PS":
+            chip.add(m, pcvl.PS(parameters.setdefault(f"x{k}", pcvl.P(f"x{k}"))))
+        else:
+            raise PlatformError(f"unknown template op {kind!r}")
+    if len(parameters) != circuit["parameters"]:
+        raise PlatformError(f"the template binds {len(parameters)} parameters, not {circuit['parameters']}")
+    source = circuit["input_state"].index(1)
+    settings = manifest["settings"]
+    for setting in settings:
+        values = setting["circuit_params"]
+        if sorted(values) != sorted(parameters):
+            raise PlatformError(f"{setting['name']}: circuit_params do not name the template's parameters")
+        for name, parameter in parameters.items():
+            parameter.set_value(values[name])
+        column = numpy.array([complex(re, im) for re, im in setting["column"]])
+        deviation = float(numpy.max(numpy.abs(numpy.array(chip.compute_unitary())[:, source] - column)))
+        if deviation > 1e-9:
+            raise PlatformError(f"{setting['name']}: the template misses its column by {deviation:.2e}")
+        for parameter in parameters.values():
+            parameter.reset()
+    built = pcvl.Experiment(chip)
+    built.with_input(pcvl.BasicState(circuit["input_state"]))
+    built.min_detected_photons_filter(manifest["min_detected_photons"])
+    return built, settings
 
 
 def mesh_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[Any, list[dict[str, Any]]]:
@@ -730,6 +776,17 @@ def iteration_form(manifest: dict[str, Any]) -> str:
         raise PlatformError(f"{owner}: a one-entry iterator names its setting")
     if manifest.get("gate_form") == "mesh":
         return "mesh"
+    if manifest.get("gate_form") == "template":
+        template_settings = manifest.get("settings")
+        if not isinstance(template_settings, list) or len(template_settings) != steps:
+            raise PlatformError(f"{owner}: {steps} template iterations need {steps} settings")
+        for setting in template_settings:
+            if not isinstance(setting.get("circuit_params"), dict) or "column" not in setting:
+                raise PlatformError(
+                    f"{owner}/{setting.get('name')}: a template setting binds circuit_params and column"
+                )
+            seed_value(setting.get("compilation_seed", 0), f"{owner}/{setting.get('name')}")
+        return "template"
     settings = manifest.get("settings")
     if settings is None:
         return "phase"
@@ -831,6 +888,42 @@ def explorer_row(platform: str) -> dict[str, Any]:
     return platform_row(rows[0])
 
 
+# Frozen processor records whose server command sets stand in for a live record that omits specs.commands.
+RETAINED_RECORDS = (ROOT / "docs/evidence/bdsc/inputs/receipt.json",)
+
+
+def retained_commands(platform: str, specs: Any) -> tuple[Any, str] | None:
+    """The serialized commands of a frozen record of this platform at the live record's software versions."""
+    for path in RETAINED_RECORDS:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        frozen = record.get("processors", {}).get(platform, {}).get("specs", {})
+        same_worker = all(frozen.get(key) == specs.get(key) for key in ("pcvl_version", "software_versions"))
+        if same_worker and isinstance(frozen.get("commands"), str):
+            return frozen["commands"], f"{path.relative_to(ROOT)} retrieved {record.get('retrieved_utc')}"
+    return None
+
+
+def payload_version_basis(specs: Any, platform: str) -> str:
+    """Install the server command set when the live record omits specs.commands, from a frozen record of the same
+    worker; returns "declared", "restored from <record>" or "absent".
+
+    RemoteComputer builds its command signatures once, at construction, from specs.commands, and without them from
+    CommandFactory, whose sample_count lacks compilation_seed; RPCBasedCommunicationLayer.send builds a version-2
+    body only when specs.commands is present, and PayloadUpdater's upgrade of a version-1 body drops an explicit
+    mitigation list. A frozen record with equal pcvl_version and software_versions names the same worker, so its
+    serialized commands are the live server's; without one the commands stay absent.
+    """
+    if "commands" in specs:
+        return "declared"
+    found = retained_commands(platform, specs)
+    if found is None:
+        return "absent"
+    from perceval.serialization import deserialize
+
+    specs["commands"] = deserialize(found[0])
+    return f"restored from {found[1]}"
+
+
 def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], platform: str) -> dict[str, Any]:
     """Perceval's job body for the case and its live shot estimate, built without sending anything.
 
@@ -840,6 +933,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     Perceval reads the platform's processor record with the token to do so.
     """
     from perceval import ExecutionFactory, QuandelaCommunicationLayer, RemoteComputer
+    from perceval.utils.constants import KEY_MITIGATIONS
 
     found = versions()
     if found.get("perceval-quandela") != RUNNER_PERCEVAL:
@@ -847,10 +941,22 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     import perceval as pcvl
 
     layer = QuandelaCommunicationLayer(platform, token=token())
+    # The command set must be in place before RemoteComputer reads it.
+    basis = payload_version_basis(layer._specs, platform)
     computer = RemoteComputer(layer)
+    policy = manifest.get("mitigations")
+    if policy not in MITIGATION_POLICIES:
+        raise PlatformError(f"{manifest['job']}: mitigations {policy!r} is neither null nor an empty list")
+    computer.mitigations = None if policy is None else []
     form = iteration_form(manifest)
     mesh = manifest.get("gate_form") == "mesh"
-    built, settings = mesh_experiment(manifest, circuit) if mesh else (experiment(manifest, circuit), [])
+    template = form == "template"
+    if mesh:
+        built, settings = mesh_experiment(manifest, circuit)
+    elif template:
+        built, settings = template_experiment(manifest, circuit)
+    else:
+        built, settings = experiment(manifest, circuit), []
     if form == "seeded":
         settings = manifest["settings"]
     steps = manifest.get("iterations", 1)
@@ -868,8 +974,19 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     seed = job_seed(manifest, settings)
     if seed is not None:
         base.add_params(compilation_seed=seed)
-    params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if form == "phase" else None)
-    if len({samples for samples, _ in budgets}) == 1:
+    params = settings[0]["circuit_params"] if mesh or template else ({"phi": 0.0} if form == "phase" else None)
+    if template:
+        # Each template setting routes the photon to its own column, so each is estimated with its own parameters
+        # and must fit its own iteration's shot budget.
+        parts = [
+            computer.estimate_required_shots(base, nsamples=per_samples, param_values=setting["circuit_params"])
+            for setting in settings
+        ]
+        over = [s["name"] for s, part in zip(settings, parts, strict=True) if part is not None and part > per_shots]
+        if over:
+            raise PlatformError(f"{manifest['job']}: Perceval estimates more than {per_shots} shots for {over}")
+        estimate = None if any(part is None for part in parts) else sum(parts)
+    elif len({samples for samples, _ in budgets}) == 1:
         estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
         estimate = None if estimate is None else estimate * steps
     else:
@@ -882,6 +999,15 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
                 factory.add_iteration(
                     circuit_params=settings[k]["circuit_params"],
                     input_state=pcvl.BasicState(settings[k]["input_state"]),
+                    max_samples=per_samples,
+                    max_shots=per_shots,
+                    compilation_seed=settings[k].get("compilation_seed", 0),
+                )
+                continue
+            if template:
+                # A template iteration binds its state's angles and phases on the job's fixed circuit.
+                factory.add_iteration(
+                    circuit_params=settings[k]["circuit_params"],
                     max_samples=per_samples,
                     max_shots=per_shots,
                     compilation_seed=settings[k].get("compilation_seed", 0),
@@ -907,7 +1033,10 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     computation.job_name = f"{manifest['family']}/{manifest['job']}"
     if len(computation.job_name) > JOB_NAME_LIMIT:
         raise PlatformError(f"job name {computation.job_name!r} exceeds the service's {JOB_NAME_LIMIT} characters")
-    computer.validate_single(computation)
+    try:
+        computer.validate_single(computation)
+    except (TypeError, ValueError) as error:
+        raise PlatformError(f"{manifest['job']}: Perceval rejects the computation on {platform}: {error}") from None
     captured: dict[str, Any] = {}
 
     def record(cloud_data: dict[str, Any]) -> str:
@@ -915,11 +1044,24 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
         return "recorded"
 
     layer._rpc_handler.create_job = record
-    layer.send(computer.prepare_payload(computation))
+    prepared = computer.prepare_payload(computation)
+    # send reads the cached specs without refetching, so the basis set here is the one the body is built under.
+    # A refetch since construction replaces the specs, so the command set goes back in before send reads it.
+    payload_version_basis(layer._specs, platform)
+    layer.send(prepared)
     body: dict[str, Any] = {**captured["body"], "max_duration": manifest["max_duration"]}
+    # RPCBasedCommunicationLayer.send downgrades the body to payload version 1 when the processor record lacks
+    # specs.commands; a version-1 worker predates the mitigations key, so a policy case refuses that body.
+    if "mitigations" in manifest and "computation" not in body.get("payload", {}):
+        raise PlatformError(
+            f"{manifest['job']}: Perceval built a version-1 body because the {platform} record lacks specs.commands"
+        )
+    # Perceval writes the mitigations key only for a non-null list, so the body shows which policy it carries.
+    if "mitigations" in manifest and (KEY_MITIGATIONS in json.dumps(body)) != (policy is not None):
+        raise PlatformError(f"{manifest['job']}: the job body does not carry the mitigation policy {policy!r}")
     if token() in json.dumps(body):
         raise PlatformError("the job body carries the token")
-    return {"body": body, "estimated_shots": estimate, "versions": found}
+    return {"body": body, "estimated_shots": estimate, "versions": found, "payload_version_basis": basis}
 
 
 def plan(
@@ -949,7 +1091,9 @@ def plan(
         raise PlatformError(f"max_duration {manifest['max_duration']} exceeds the platform's {row['max_duration']}")
     if expected_seconds > manifest["max_duration"]:
         raise PlatformError(f"expected {expected_seconds} s exceed the case's max_duration {manifest['max_duration']}")
-    ceiling = row["price_per_shot"] * manifest["max_shots"] + per_job_credits
+    # A job bills its largest iteration's max_shots (docs/runbooks/quandela-credit-optimization.md).
+    billed_shots = max(shots for _, shots in iteration_budgets(manifest))
+    ceiling = row["price_per_shot"] * billed_shots + per_job_credits
     if ceiling > max_credits:
         raise PlatformError(
             f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
@@ -986,11 +1130,12 @@ def plan(
         "max_shots": manifest["max_shots"],
         "estimated_shots": estimate,
         "credit_ceiling": ceiling,
-        "estimated_credits": row["price_per_shot"] * estimate + per_job_credits,
+        "estimated_credits": row["price_per_shot"] * min(billed_shots, estimate) + per_job_credits,
         "max_credits": max_credits,
         "body": built["body"],
         "body_sha256": sha256_bytes(json.dumps(built["body"], sort_keys=True).encode()),
         "versions": built["versions"],
+        "payload_version_basis": built["payload_version_basis"],
     }
 
 
@@ -1021,6 +1166,8 @@ def submit(
     """Send one approved case as one job while holding the token's submit lock beside the token file."""
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
+    if load_case(case_dir)[0].get("draft"):
+        raise PlatformError(f"{case_dir} is a draft without frozen seeds and order; rebuild it from its draw")
     lock = Path(os.environ.get(TOKEN_ENV, "")).with_name("submit.lock")
     with open(lock, "a", encoding="utf-8") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
@@ -1486,9 +1633,41 @@ def seed_self_test() -> None:
         raise SystemExit(f"self-test: iteration_form accepted settings {bad_settings}")
 
 
+def payload_version_self_test() -> None:
+    """A record of the frozen worker without commands gets the frozen command set, whose sample_count takes
+    compilation_seed; another worker keeps none; a version-1 round trip loses an empty mitigation list."""
+    import perceval as pcvl
+    from perceval.runtime.payload_generator import PayloadGenerator
+    from perceval.runtime.payload_updater import PayloadUpdater
+    from perceval.runtime.platform_specs import PlatformSpecs
+    from perceval.utils.constants import KEY_MITIGATIONS
+
+    frozen = json.loads(RETAINED_RECORDS[0].read_text(encoding="utf-8"))["processors"]["qpu:belenos"]["specs"]
+    same = {key: frozen[key] for key in ("pcvl_version", "software_versions", "available_commands")}
+    specs = PlatformSpecs(dict(same))
+    if not payload_version_basis(specs, "qpu:belenos").startswith("restored from"):
+        raise PlatformError("self-test: the frozen worker's command set was not restored")
+    sample_count = next(c for c in specs.commands if c.name == "sample_count")
+    built = pcvl.Experiment(pcvl.BS())
+    built.with_input(pcvl.BasicState([1, 0]))
+    built.min_detected_photons_filter(1)
+    computation = pcvl.ExecutionFactory(pcvl.SimulatedComputer("SLOS"), built).build_computation("sample_count")
+    computation.command = sample_count
+    computation.add_params(max_samples=100, max_shots=200, compilation_seed=7)
+    other = PlatformSpecs({**same, "software_versions": {**same["software_versions"], "pcvl-worker": "0.0.0"}})
+    if payload_version_basis(other, "qpu:belenos") != "absent" or "commands" in other:
+        raise PlatformError("self-test: another worker's record received the frozen command set")
+    v1 = PayloadUpdater.update_payload(
+        PayloadGenerator.from_computation(computation, [], None, None), other, target_payload_version=1
+    )
+    if KEY_MITIGATIONS in PayloadUpdater.update_payload(v1, pcvl.SimulatedComputer("SLOS"), target_payload_version=2):
+        raise PlatformError("self-test: a version-1 round trip kept the mitigation list")
+
+
 def runner_self_test() -> int:
     """Offline rules of plan, submit, collect and run_facts against a stubbed service; returns the rejections."""
     charge_self_test()
+    payload_version_self_test()
     seed_self_test()
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
@@ -1538,7 +1717,12 @@ def runner_self_test() -> int:
         raise AssertionError(f"unexpected {method} {route}")
 
     def fake_payload(*_: Any) -> dict[str, Any]:
-        return {"body": body, "estimated_shots": service["estimate"], "versions": {"perceval-quandela": "1.3.1"}}
+        return {
+            "body": body,
+            "estimated_shots": service["estimate"],
+            "versions": {"perceval-quandela": "1.3.1"},
+            "payload_version_basis": "declared",
+        }
 
     rejected = 0
 
