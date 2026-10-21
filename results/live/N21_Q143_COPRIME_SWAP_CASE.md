@@ -1,7 +1,8 @@
 # Case: segmented coprime swap sweep of ibm_fez qubit 143
 
-Status: written against a submit-free dry run; awaiting approval. Nothing
-in this document submits.
+Status: approved. The run executed on ibm_marrakesh qubit 47 in place of
+ibm_fez qubit 143 (section Execution), so the q143 question below stays
+open. Nothing in this document submits.
 
 ## Question
 
@@ -99,8 +100,11 @@ the submission refuse with approval_required.
 - Selection: a shot whose segment-1 herald reads any neighbor (142, 136,
   144) excited is dropped; a segment whose 143 herald reads 1 is
   marginalized out of its shot's pattern.
+- Schedule admission: every segment's pre-idle, Ramsey idle and pulse count
+  in the returned scheduler table equal the member's design.
 - Family alpha 0.05 over six tests (0.00833 each): herald_admission
-  (per-bit excitation spread, segment-1 bits and each later 143 herald),
+  (per-bit spread of the excitation a herald reading 0 lets through,
+  segment-1 bits and each later 143 herald),
   segment_exchangeability (first X and Y read against the later ones, per
   shot), herald_backaction (controls against the same delay), alias
   resolution, model decision, z_memory.
@@ -172,6 +176,43 @@ and the written case 16 MB, against about 300 KB for earlier dry runs; the
 dry run above is kept outside the checkout under
 `${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/dry-runs/`. `--max-pending 250`
 admits ibm_fez's queue (156 pending at the dry run).
+
+## Execution
+
+ibm_fez held 1,480 to 1,730 pending jobs from 03:48Z on 2026-10-21, above
+the case's `--max-pending 250`. The approval was carried to ibm_marrakesh,
+which shares the Heron r2 156-qubit numbering: star 142,136,143,144 and
+137,148,147,146 met calibration exclusions there, and the dry run
+2026-10-21T042551.694368Z (record.json sha256
+9bc5c743165853b7fa861ff726c63dbc8b8c1c03161a17e8776c4e0f243054c8) pinned
+`ibm_marrakesh:57,46,47,48`, spectator 47. Run 2026-10-21T043156.858484Z,
+job dbc40u8c77vs7385ee0g, ran 04:33:35Z to 04:34:03Z and billed 18 s.
+
+Marrakesh qubit 47 is another physical qubit: the run is a segmented
+Ramsey and Z baseline of qubit 47 and says nothing about the two lines of
+fez 143. The alias lattice and prior residues come from 143, so on 47
+the alias cell and model decision read a weak second line through priors
+built for another qubit.
+
+The bound analyzer could not read any returned run: it validated the herald
+prefix with rca.herald_program, which refuses every later-segment herald;
+it counted one measure play per readout, while the Heron r2 table plays
+four or more per measure and reset; it indexed the four orbit herald roles
+with reset-herald keys; and it fixed the spectator at 143. The amended
+analyzer reads the barrier stages of the returned table, the spectator
+from the run, and every herald through its undetected excitation, and
+writes `segmented-sweep-<closure digest>.json` beside the record as an
+amended analysis. On run 2026-10-21T043156.858484Z all 48 members admit
+their schedule (pre-idle 1250 dt on both controls, every idle as
+designed) and the heralds admit; Z members leave about twice the reset
+excitation of xy members (segment 6: 0.019 against 0.010), which the
+design predicts and the herald drops. Amended verdicts on qubit 47:
+exchangeable segments (51.5 against 72.1), herald backaction (16.3
+against 13.7), z_memory (284 against 42), and a line mixture over tls
+(239) with a 0.048 second line at alias cell -2 (df -0.735 MHz), T1 81
+us and T2* 52 us. Record.json is 84 MB (issue #328), so the run, its raw
+files and the amended analysis are kept with the dry runs outside the
+checkout until sparse ideal laws make the record committable.
 
 ## Failure modes
 

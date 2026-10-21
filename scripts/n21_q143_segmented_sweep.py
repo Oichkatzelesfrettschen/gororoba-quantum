@@ -1,9 +1,10 @@
 """Preregistered analysis of the segmented coprime sweep of ibm_fez qubit 143.
 
 The sweep (qpe_diagnostics.n21_segmented_ramsey, live_run --segmented-*)
-reads qubit 143 in K segments per shot with control 142 in |0>. Each
+reads a spectator qubit, 143 in the design, in K segments per shot with its
+control in |0>; the analysis reads the spectator from the run. Each
 segment is a herald, a preparation, an idle of delay_dt, a basis change and
-a readout; a reset of 143 opens every segment after the first. An "xy"
+a readout; a reset of the spectator opens every segment after the first. An "xy"
 member alternates X and Y readouts after a |+> preparation (segment 1 X),
 so both quadratures of a delay share every shot; a "z" member reads Z after
 an X preparation. Members with a pre-idle between herald and preparation
@@ -43,8 +44,14 @@ Tests share the family alpha equally (TESTS). Decisions read likelihood
 ratios against log(1 / test alpha), an evidential threshold: a model or
 alias whose NLL exceeds the best by more than log(1 / alpha) is excluded.
 
+Admission reads the returned scheduler table: every segment's pre-idle,
+Ramsey idle and pulse count must equal the member's design, and the dead
+gaps between idles enter the model as scheduled.
+
 --design OUT writes the design trade table; RUN_DIR writes
-RUN_DIR/segmented-sweep.json and --check requires equal bytes. The planted
+RUN_DIR/segmented-sweep.json and --check requires equal bytes. An analyzer
+whose closure differs from the one the record binds writes its amended
+analysis beside it as segmented-sweep-<closure digest>.json. The planted
 truths live in tests/scripts/test_n21_q143_segmented_sweep.py.
 """
 
@@ -61,7 +68,7 @@ from typing import Any
 import numpy as np
 from scipy.linalg import expm
 from scipy.optimize import minimize
-from scipy.stats import chi2
+from scipy.stats import chi2, norm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
@@ -73,7 +80,6 @@ import parallel  # noqa: E402
 
 SCHEMA = "n21-q143-segmented-sweep-v1"
 RETAINED = "segmented-sweep.json"
-SPECTATOR = 143
 DT_US = 0.004
 F0_MHZ = 1.0 / (836 * DT_US)
 BAND_MHZ = 2.0
@@ -569,33 +575,122 @@ def register_of(circuit: Any, suffix: str) -> Any:
     return found[0]
 
 
-def member_schedule(plays: list[tuple[int, int, str, int]], spectator: int, segments: int) -> dict[str, Any]:
-    """Idle starts and lengths of the spectator from the returned schedule.
+def spectator_stages(payload: dict[str, Any], qubit: int) -> list[tuple[int, list[tuple[int, int, str]]]]:
+    """The qubit's scheduled stages: each barrier's time with the drive plays up to the next barrier.
 
-    The spectator plays, per segment, [reset,] herald measure, preparation
-    pulse, idle, basis-change pulse (none for Z) and readout; its idle is
-    the gap between the preparation pulse's end and the next pulse.
+    Every play row of the returned scheduler table carries its instruction's
+    label (measure_Q, reset_Q, sx_Q); a measure or reset plays several
+    contiguous rows, and a measure's acquisition runs past its last drive
+    play to the next barrier. INIT and FINI rows bracket the program and are
+    dropped. An absent or malformed table raises ValueError.
     """
-    own = sorted(play for play in plays if play[3] == spectator)
-    measures = [k for k, play in enumerate(own) if play[2] == "measure"]
-    # measure plays alternate herald, readout per segment.
-    if len(measures) != 2 * segments:
-        raise ValueError(f"the spectator plays {len(measures)} readouts, not {2 * segments}")
-    idles = []
+    try:
+        timing = payload["metadata"]["compilation"]["scheduler_timing"]["timing"]
+    except (KeyError, TypeError) as error:
+        raise ValueError(f"scheduler timing is unavailable: {error}") from error
+    stages: list[tuple[int, list[tuple[int, int, str]]]] = []
+    for line in timing.splitlines():
+        row = line.split(",")
+        if len(row) < 6:
+            raise ValueError("scheduler timing table is malformed")
+        if row[2] != f"Qubit {qubit}" or row[1].startswith(("INIT", "FINI")):
+            continue
+        start = int(row[3])
+        if row[5] == "barrier":
+            if not stages or stages[-1][1] or stages[-1][0] != start:
+                stages.append((start, []))
+        elif row[5] == "play":
+            if not stages:
+                stages.append((start, []))
+            stages[-1][1].append((start, int(row[4]), row[1].split("_")[0]))
+    return stages
+
+
+def schedule_items(stages: list[tuple[int, list[tuple[int, int, str]]]]) -> list[tuple[str, int, int]]:
+    """(label, start, end) per scheduled instruction, and ("idle", start, end) per stage without plays.
+
+    Rows of one measure or reset within a stage merge into one instruction;
+    adjacent idle stages merge into one idle.
+    """
+    items: list[tuple[str, int, int]] = []
+    for k, (start, plays) in enumerate(stages):
+        if not plays:
+            if k + 1 < len(stages):
+                if items and items[-1][0] == "idle" and items[-1][2] == start:
+                    items[-1] = ("idle", items[-1][1], stages[k + 1][0])
+                else:
+                    items.append(("idle", start, stages[k + 1][0]))
+            continue
+        first = len(items)
+        for play_start, length, label in plays:
+            if len(items) > first and items[-1][0] == label and label in ("measure", "reset"):
+                items[-1] = (label, items[-1][1], play_start + length)
+            else:
+                items.append((label, play_start, play_start + length))
+    return items
+
+
+def member_schedule(stages: list[tuple[int, list[tuple[int, int, str]]]], segments: int) -> dict[str, Any]:
+    """Per segment the spectator's scheduled pre-idle, Ramsey idle and pulse count, with the dead gaps.
+
+    A segment plays [reset,] herald measure, [pre-idle,] preparation pulse,
+    [idle,] basis-change pulse (none for Z) and readout measure. The Ramsey
+    idle starts at the item after the preparation, and a gap runs from one
+    idle's end to the next idle's start.
+    """
+    items = schedule_items(stages)
+    position = 0
+
+    def take(*labels: str) -> tuple[str, int, int] | None:
+        nonlocal position
+        if position < len(items) and items[position][0] in labels:
+            position += 1
+            return items[position - 1]
+        return None
+
+    def take_pulse() -> tuple[str, int, int] | None:
+        nonlocal position
+        if position < len(items) and items[position][0] not in ("measure", "reset", "idle"):
+            position += 1
+            return items[position - 1]
+        return None
+
+    found = []
     for s in range(segments):
-        herald, read = measures[2 * s], measures[2 * s + 1]
-        pulses = [play for play in own[herald + 1 : read] if play[2] != "measure"]
-        if not pulses:
+        if s and take("reset") is None:
+            raise ValueError(f"segment {s + 1} opens without a reset")
+        if take("measure") is None:
+            raise ValueError(f"segment {s + 1} plays no herald readout")
+        pre = take("idle")
+        prep = take_pulse()
+        if prep is None:
             raise ValueError(f"segment {s + 1} plays no preparation")
-        prep_end = pulses[0][0] + pulses[0][1]
-        after = pulses[1][0] if len(pulses) > 1 else own[read][0]
-        idles.append((prep_end, after - prep_end, len(pulses)))
-    gaps = [idles[s + 1][0] - (idles[s][0] + idles[s][1]) for s in range(segments - 1)]
-    return {"idle_dt": [idle[1] for idle in idles], "pulses": [idle[2] for idle in idles], "gaps_dt": gaps}
+        idle_start = items[position][1] if position < len(items) else prep[2]
+        idle = take("idle")
+        pulses = 1
+        while take_pulse() is not None:
+            pulses += 1
+        if take("measure") is None:
+            raise ValueError(f"segment {s + 1} plays no readout")
+        found.append((pre[2] - pre[1] if pre else 0, idle_start, idle[2] - idle[1] if idle else 0, pulses))
+    # The spectator idles after its last readout until the other qubits finish.
+    take("idle")
+    if position != len(items):
+        raise ValueError(f"the spectator plays {len(items) - position} instructions past segment {segments}")
+    return {
+        "pre_dt": [entry[0] for entry in found],
+        "idle_dt": [entry[2] for entry in found],
+        "pulses": [entry[3] for entry in found],
+        "gaps_dt": [found[s + 1][1] - (found[s][1] + found[s][2]) for s in range(segments - 1)],
+    }
 
 
 def run_points(run: Path) -> tuple[list[Point], dict[str, Any], dict[int, dict[str, Any]]]:
-    """Points from the raw shots, the schedule admissibility and per-segment herald bit counts."""
+    """Points from the raw shots, the schedule admissibility and per-segment herald bit counts.
+
+    The spectator is the qubit every member reads its segments on, the
+    record's pinned layout placing it.
+    """
     from qpe_diagnostics import n21_segment_bases, n21_segmented_key
 
     members = [member["name"] for member in rca._group(run)["members"]]
@@ -603,6 +698,7 @@ def run_points(run: Path) -> tuple[list[Point], dict[str, Any], dict[int, dict[s
     schedules: dict[str, Any] = {}
     bit_counts: dict[int, dict[str, Any]] = {}
     differing: dict[str, Any] = {}
+    spectator: int | None = None
     for name, circuit, payload in zip(members, rca._circuits(run), rca.raw_pubs(run), strict=True):
         key = n21_segmented_key(name)
         if key is None:
@@ -618,54 +714,175 @@ def run_points(run: Path) -> tuple[list[Point], dict[str, Any], dict[int, dict[s
         reads = [register_of(circuit, f"s{s + 1}_read") for s in range(segments)]
         heralds = [register_of(circuit, f"s{s + 1}_herald") for s in range(segments)]
         spectators = {writer[circuit.find_bit(register[0]).index] for register in reads}
-        if spectators != {SPECTATOR}:
-            raise RuntimeError(f"{name} reads qubits {sorted(spectators)}, not {SPECTATOR}")
+        if len(spectators) != 1 or (spectator is not None and spectators != {spectator}):
+            raise RuntimeError(f"{name} reads qubits {sorted(spectators)}, the run's spectator is {spectator}")
+        (spectator,) = spectators
         first = heralds[0]
         first_qubits = [writer[circuit.find_bit(bit).index] for bit in first]
+        own_bit = first.size - 1 - first_qubits.index(spectator)
         strings = {r.name: payload["registers"][r.name]["bitstrings"] for r in (*reads, *heralds)}
         shots = len(strings[reads[0].name])
         patterns = []
         for shot in range(shots):
             initial = strings[first.name][shot]
             neighbors = any(
-                initial[first.size - 1 - k] == "1" for k, qubit in enumerate(first_qubits) if qubit != SPECTATOR
+                initial[first.size - 1 - k] == "1" for k, qubit in enumerate(first_qubits) if qubit != spectator
             )
             if neighbors:
                 continue
             pattern = []
             for s in range(segments):
                 herald = strings[heralds[s].name][shot]
-                spectator_bit = herald[first.size - 1 - first_qubits.index(SPECTATOR)] if s == 0 else herald[0]
+                spectator_bit = herald[own_bit] if s == 0 else herald[0]
                 pattern.append(-1 if spectator_bit == "1" else int(strings[reads[s].name][shot][0]))
             patterns.append(tuple(pattern))
         # Herald bit counts: bit k of segment 1 per qubit among shots whose
-        # other segment-1 bits read 0; segment s > 1, qubit 143's reset herald.
+        # other segment-1 bits read 0; key first.size + s - 1, the spectator's
+        # reset herald of segment s + 1.
         for k, qubit in enumerate(first_qubits):
             others = [
                 value
                 for value in strings[first.name]
                 if all(value[first.size - 1 - j] == "0" for j in range(first.size) if j != k)
             ]
-            entry = bit_counts.setdefault(k, {"qubit": qubit, "members": {}})
+            entry = bit_counts.setdefault(k, {"qubit": qubit, "segment": 1, "members": {}})
             entry["members"][name] = (sum(value[first.size - 1 - k] == "1" for value in others), len(others))
         for s in range(1, segments):
             values = strings[heralds[s].name]
-            entry = bit_counts.setdefault(first.size + s - 1, {"qubit": SPECTATOR, "members": {}})
+            entry = bit_counts.setdefault(first.size + s - 1, {"qubit": spectator, "segment": s + 1, "members": {}})
             entry["members"][name] = (sum(value == "1" for value in values), len(values))
         try:
-            _program, prefix = rca.herald_program(circuit)
-            plays = rca._plays(payload)
-            schedule = member_schedule(plays, SPECTATOR, segments)
+            schedule = member_schedule(spectator_stages(payload, spectator), segments)
         except ValueError as error:
             differing[name] = {"reason": str(error)}
             continue
         schedules[name] = schedule
         expected_pulses = [1 if basis == "z" else 2 for basis in bases]
-        if schedule["idle_dt"] != [delay] * segments or schedule["pulses"] != expected_pulses:
-            differing[name] = {"expected_idle_dt": delay, "expected_pulses": expected_pulses, "found": schedule}
+        if (
+            schedule["idle_dt"] != [delay] * segments
+            or schedule["pre_dt"] != [pre] * segments
+            or schedule["pulses"] != expected_pulses
+        ):
+            differing[name] = {
+                "expected_idle_dt": delay,
+                "expected_pre_dt": pre,
+                "expected_pulses": expected_pulses,
+                "found": schedule,
+            }
         patterns_array, counts = tally(patterns)
         points.append(Point(name, kind, delay, pre, bases, tuple(schedule["gaps_dt"]), patterns_array, counts))
-    return points, {"admissible": not differing, "differing": differing, "schedules": schedules}, bit_counts
+    admitted = {"admissible": not differing, "spectator": spectator, "differing": differing, "schedules": schedules}
+    return points, admitted, bit_counts
+
+
+def herald_bound(shots: int, bits: int, alpha: float) -> float:
+    """Largest member spread B of the undetected excitation on every herald bit that the admission accepts.
+
+    An undetected excitation u, one its herald bit reads as 0, mixes u of
+    another law into the segments it precedes, moving each segment's readout
+    probability by at most u. A segment follows bits herald bits (the segment-1
+    register, or the neighbors' segment-1 bits with the spectator's reset
+    herald), so a spread B on each moves a member difference of readout
+    probabilities by at most bits x B. The binomial standard error of one
+    readout probability is at most 1 / (2 sqrt(shots)), and the one-sided
+    level-alpha test detects with power rca.MAGNITUDE_POWER the deficit
+    (z_(1 - alpha) + z_power) / (2 sqrt(shots)); B holds the shift at
+    rca.HERALD_MDE_FRACTION of that deficit.
+    """
+    deficit = float(norm.ppf(1 - alpha) + norm.ppf(rca.MAGNITUDE_POWER)) / (2 * math.sqrt(shots))
+    return rca.HERALD_MDE_FRACTION * deficit / bits
+
+
+def herald_evaluation(
+    counts: dict[int, dict[str, Any]], calibrations: dict[str, dict[str, Any]], alpha: float
+) -> dict[str, Any]:
+    """Whether the heralds refute a member spread of the undetected excitation at most herald_bound on any bit.
+
+    Each herald qubit reads through the assignment channel (prob_meas1_prep0,
+    prob_meas0_prep1) of the members' calibration, and a difference of two
+    members' rates is their excitation difference times the readout
+    contrast r = 1 - p01 - p10 when the members share that channel; a
+    differing or unretained channel leaves the heralds not evaluable. A
+    shot or segment whose herald reads 1 leaves the data, so an excitation
+    eps enters it undetected as eps p01, and a member spread of eps moves
+    the data by p01 times that spread. The excitation itself differs by
+    design: a reset leaves an excitation that grows with the population
+    before it, which a Z member holds near 1. Every ordered member pair on
+    every bit gets the Agresti-Caffo interval of p_i - p_j (Agresti and
+    Caffo, The American Statistician 54, 280 (2000)) at one-sided level
+    alpha / K over the K comparisons, and the run is admissible unless a
+    lower limit exceeds the bound times r / p01.
+    """
+    shots = min(n for entry in counts.values() for _excited, n in entry["members"].values())
+    if shots == 0:
+        empty = sorted({name for entry in counts.values() for name, (_e, n) in entry["members"].items() if n == 0})
+        return {"evaluable": False, "admissible": False, "reason": f"members {empty} keep no herald shot"}
+    contrasts: dict[int, float] = {}
+    undetected: dict[int, float] = {}
+    differing: dict[str, Any] = {}
+    for entry in counts.values():
+        qubit = entry["qubit"]
+        values = {name: calibrations[name]["values"].get(str(qubit), {}) for name in entry["members"]}
+        channels = {name: (item.get("prob_meas1_prep0"), item.get("prob_meas0_prep1")) for name, item in values.items()}
+        if len(set(channels.values())) > 1 or None in next(iter(channels.values())):
+            differing[str(qubit)] = {
+                name: {"channel": list(channel), "source": calibrations[name]["source"]}
+                for name, channel in channels.items()
+            }
+            continue
+        ((p10, p01),) = set(channels.values())
+        contrasts[qubit] = 1 - float(p10) - float(p01)
+        undetected[qubit] = float(p01)
+    if differing:
+        return {
+            "evaluable": False,
+            "admissible": False,
+            "reason": "the members read a herald qubit through differing or unretained assignment channels",
+            "differing_channels": differing,
+        }
+    first_size = sum(1 for entry in counts.values() if entry["segment"] == 1)
+    bound = herald_bound(shots, first_size, alpha)
+    pairs = sum(len(entry["members"]) * (len(entry["members"]) - 1) for entry in counts.values())
+    quantile = float(norm.ppf(1 - alpha / max(1, pairs)))
+    bits: dict[str, Any] = {}
+    refuted = False
+    for k, entry in sorted(counts.items()):
+        contrast = contrasts[entry["qubit"]]
+        p01 = undetected[entry["qubit"]]
+        threshold = bound * contrast / p01 if p01 else math.inf
+        adjusted = [((excited + 1) / (n + 2), n + 2) for excited, n in entry["members"].values()]
+        lower, upper = -math.inf, 0.0
+        for i, (p_first, n_first) in enumerate(adjusted):
+            for j, (p_second, n_second) in enumerate(adjusted):
+                if i == j:
+                    continue
+                error = math.sqrt(p_first * (1 - p_first) / n_first + p_second * (1 - p_second) / n_second)
+                lower = max(lower, p_first - p_second - quantile * error)
+                upper = max(upper, p_first - p_second + quantile * error)
+        fails = lower > threshold
+        refuted |= fails
+        rates = [excited / n for excited, n in entry["members"].values()]
+        bits[str(k)] = {
+            "qubit": entry["qubit"],
+            "segment": entry["segment"],
+            "spread": max(rates) - min(rates),
+            "readout_contrast": contrast,
+            "prob_meas0_prep1": p01,
+            "threshold": threshold,
+            "spread_lower_limit": lower,
+            "excitation_spread_upper_limit": upper / contrast,
+            "undetected_spread_upper_limit": upper * p01 / contrast,
+            "status": "fail" if fails else "pass",
+        }
+    return {
+        "evaluable": True,
+        "admissible": not refuted,
+        "shots": shots,
+        "excitation_spread_bound": bound,
+        "comparisons": pairs,
+        "one_sided_quantile": quantile,
+        "bits": bits,
+    }
 
 
 def closure_mismatch(design: dict[str, Any], own: dict[str, Any]) -> str | None:
@@ -706,21 +923,22 @@ def report(run: Path) -> dict[str, Any]:
     from qpu_planning import segmented_analyzer_closure
 
     own = segmented_analyzer_closure()
-    if (mismatch := closure_mismatch(design, own)) is not None:
-        raise RuntimeError(f"{run}: {mismatch}")
+    mismatch = closure_mismatch(design, own)
     family_alpha = float(design["alpha"])
     alpha = family_alpha / len(TESTS)
     points, admitted, bit_counts = run_points(run)
     output: dict[str, Any] = {
         "schema_version": SCHEMA,
         "analyzer_closure": own,
+        "preregistered": mismatch is None,
+        "amendment": mismatch,
         "alpha": {"family_alpha": family_alpha, "tests": list(TESTS), "per_test_alpha": alpha},
         "admissibility": admitted,
         "kept": {p.name: {"shots": float(p.counts.sum()), "patterns": len(p.counts)} for p in points},
     }
-    herald = rca.herald_evaluation(bit_counts, rca.execution_calibration(run), alpha)
+    herald = herald_evaluation(bit_counts, rca.execution_calibration(run), alpha)
     output["herald_admission"] = herald
-    if not admitted["admissible"] or not herald.get("admissible"):
+    if not admitted["admissible"] or not herald["admissible"]:
         output["status"] = "not_admissible"
         return output
     return output | analyze(points, family_alpha)
@@ -840,12 +1058,11 @@ def asimov(model: str, params: list[float], points: list[Point]) -> list[Point]:
 class ExpectedLLR:
     """Alternative's minimum NLL minus the truth's NLL on the truth's expected counts; pool-picklable."""
 
-    def __call__(self, item: tuple[str, list[float], str, list[list[float]], int | None, list[Point]]) -> float:
-        truth_model, truth, alternative, starts, cell, points = item
+    def __call__(self, item: tuple[str, list[float], str, list[float], int | None, list[Point]]) -> float:
+        truth_model, truth, alternative, start, cell, points = item
         expected = asimov(truth_model, truth, points)
         own = negative_log_likelihood(np.array(truth), truth_model, expected)
-        best = min(Fit()((alternative, start, expected, cell))[0] for start in starts)
-        return max(best - own, 0.0)
+        return Fit()((alternative, start, expected, cell))[0] - own
 
 
 # The retained static fit (beat-model.json) at alias cell 0, with T1 of 143
@@ -855,7 +1072,9 @@ TRUTH_STATIC = [1.0, 134.2, -0.0294, 0.0020, 0.0080, 112.0, 0.6438, 0.02488, -0.
 
 def design_rows(segments: int, shots: int, pairs: str = "all") -> dict[str, Any]:
     points = design_points(segments, shots)
-    items: list[tuple[str, list[float], str, list[list[float]], int | None, list[Point]]] = []
+    # One pool item per (comparison, optimizer start); a comparison's
+    # expected LLR is its starts' least excess NLL, floored at 0.
+    items: list[tuple[str, list[float], str, list[float], int | None, list[Point]]] = []
     labels: list[str] = []
     truths = CELLS if pairs == "all" else (0,)
     for truth_cell in truths:
@@ -863,22 +1082,24 @@ def design_rows(segments: int, shots: int, pairs: str = "all") -> dict[str, Any]
         for other in CELLS:
             if other != truth_cell:
                 start = TRUTH_STATIC[:8] + [cell_center(other)]
-                items.append(("static", truth, "static", [start], other, points))
+                items.append(("static", truth, "static", start, other, points))
                 labels.append(f"alias:{truth_cell}:{other}")
     for p0 in (0.0, 0.5, 1.0):
         tls_truth = extend("tls", TRUTH_STATIC)
         tls_truth[-1] = p0
-        items.append(("tls", tls_truth, "static", [TRUTH_STATIC], 0, points))
+        items.append(("tls", tls_truth, "static", TRUTH_STATIC, 0, points))
         labels.append(f"tls_truth_p0:{p0}")
-    items.append(
-        ("static", TRUTH_STATIC, "tls", [extend("tls", TRUTH_STATIC)[:-1] + [p0] for p0 in (0.0, 0.5, 1.0)], 0, points)
-    )
-    labels.append("static_truth_vs_tls")
+    for p0 in (0.0, 0.5, 1.0):
+        items.append(("static", TRUTH_STATIC, "tls", extend("tls", TRUTH_STATIC)[:-1] + [p0], 0, points))
+        labels.append("static_truth_vs_tls")
     for gamma in (0.01, 0.03, 0.1):
-        items.append(("telegraph", [*TRUTH_STATIC, gamma], "static", [TRUTH_STATIC], 0, points))
+        items.append(("telegraph", [*TRUTH_STATIC, gamma], "static", TRUTH_STATIC, 0, points))
         labels.append(f"telegraph_truth:{gamma}")
     found = parallel.ordered_map(ExpectedLLR(), items, min_items=2)
-    values = dict(zip(labels, found, strict=True))
+    excess: dict[str, float] = {}
+    for label, value in zip(labels, found, strict=True):
+        excess[label] = min(excess.get(label, value), value)
+    values = {label: max(value, 0.0) for label, value in excess.items()}
     alias = {key: value for key, value in values.items() if key.startswith("alias:")}
     worst = min(alias, key=lambda key: alias[key])
     cost = design_cost(points, shots)
@@ -918,6 +1139,17 @@ def sample(model: str, params: list[float], points: list[Point], rng: np.random.
     return drawn
 
 
+def retained_name(analysis: dict[str, Any]) -> str:
+    """RETAINED for the analyzer the record binds; an amended analyzer's output carries its closure digest.
+
+    An amended analysis is a second reading of the same raw files beside the
+    preregistered one, named by the analyzer that wrote it.
+    """
+    if analysis["preregistered"]:
+        return RETAINED
+    return f"segmented-sweep-{analysis['analyzer_closure']['sha256'][:12]}.json"
+
+
 def serialize(value: dict[str, Any]) -> str:
     return json.dumps(beat.rounded(value), indent=1, sort_keys=True) + "\n"
 
@@ -940,8 +1172,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.run is None:
         parser.error("name a run directory or --design")
-    text = serialize(report(args.run))
-    target = args.run / RETAINED
+    analysis = report(args.run)
+    text = serialize(analysis)
+    target = args.run / retained_name(analysis)
     if args.check:
         if target.read_text() != text:
             raise RuntimeError(f"{target} differs from a fresh analysis")
