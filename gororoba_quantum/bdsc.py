@@ -43,20 +43,29 @@ b_s (preparation and implementation error) and a conditioning deviation
 delta, the bound (1 - delta) tau I <= D <= (1 + delta) tau I on the
 acceptance effect, under which the conditional probability p_c and the
 effect probability p_F = Tr(G_A rho)/tau obey |p_F - p_c| <= delta p_c.
-Both enter as extra weights on the same |D_s| row sums.
+Both enter as extra weights on the same |D_s| row sums. G_A <= D bounds the
+reconstructed effect F = G_A/tau only by 0 <= F <= (1 + delta) I, so the
+a priori caps on a_U and l_U are 1 + delta and 4 (1 + delta); the
+certificate inequalities use F >= 0 alone and hold unchanged.
 
 Disposition. "inadmissible" when a record check or a declared premise
 fails; "certified" when min(a_U, l_U) < gamma_L and the angle bound is at
 most ANGLE_LIMIT_DEG; "alternative_structure" when the complement's
 brightest direction has a positive certified response c_L (the lower bound
-on lambda_max(C)) and either the upper bound on lambda_min(C) is at most
-DARK_RATIO c_L (a certified fifth low-response direction) or the lower bound
-on lambda_max(A) is at least TARGET_RATIO c_L (a certified bright direction
-inside the target space); otherwise "not_certified". Both criteria are
+on lambda_max(C)) and either the upper bound gamma_U on lambda_min(C) is at
+most DARK_RATIO c_L (a certified low-response direction inside the target
+complement Q) or the lower bound on lambda_max(A) is at least TARGET_RATIO
+c_L (a certified bright direction inside the target space); otherwise
+"not_certified". A low complement direction alone leaves lambda_5(F)
+unbounded below the bright level: A = 0.09 I_4, C = diag(0.09, 1, ..., 1)
+and a single cross entry 0.09 coupling k_1 to that direction give a valid
+effect with spectrum {0, 0.09^3, 0.18, 1^11}. Positivity bounds the cross
+block by |u^T B v|^2 <= (u^T A u)(v^T C v), so lambda_5(F) <= a_U + gamma_U
+is the global fifth-eigenvalue bound such a record supports. Both criteria are
 ratios, so a scale factor common to every response, such as the
 transmittance under an emitted-photon denominator, changes no disposition.
 gamma_L = 0 alone identifies nothing, since it can mean insufficient
-precision; the fifth-direction claim rests on the upper bound gamma_U, which
+precision; the complement-direction claim rests on the upper bound gamma_U, which
 holds on the same confidence event.
 
 The "cal" share of an allocation covers the calibration that supports a
@@ -327,12 +336,13 @@ def angle_bound_deg(upper: float, floor: float) -> float | None:
     return math.degrees(math.asin(math.sqrt(max(upper, 0.0) / floor)))
 
 
-def certificate(a: BlockBound, c: BlockBound) -> dict[str, Any]:
+def certificate(a: BlockBound, c: BlockBound, effect_upper: float = 1.0) -> dict[str, Any]:
+    """Certificate from the block bounds of an effect F with 0 <= F <= effect_upper I."""
     eig_a = np.linalg.eigvalsh(a.estimate)
     eig_c = np.linalg.eigvalsh(c.estimate)
-    a_upper = min(1.0, float(eig_a[-1]) + a.radius)
+    a_upper = min(effect_upper, float(eig_a[-1]) + a.radius)
     a_lower = float(eig_a[-1]) - a.radius
-    l_upper = min(float(KERNEL_DIM), a.trace_upper)
+    l_upper = min(KERNEL_DIM * effect_upper, a.trace_upper)
     gamma_lower = max(0.0, float(eig_c[0]) - c.radius)
     gamma_upper = float(eig_c[0]) + c.radius
     bound = min(a_upper, l_upper)
@@ -390,7 +400,7 @@ def analyze(
         selected = np.array([counts[s.name][0] for s in rows], dtype=float)
         eligible = np.array([counts[s.name][1] for s in rows], dtype=float)
         out[block] = block_bound(selected, eligible, d, alpha[block], np.full(len(rows), bias), conditioning)
-    return certificate(out["A"], out["C"])
+    return certificate(out["A"], out["C"], 1.0 + conditioning)
 
 
 def sample_counts(effect: np.ndarray, n: int, seed: int, real_only: bool = False) -> dict[str, tuple[int, int]]:
