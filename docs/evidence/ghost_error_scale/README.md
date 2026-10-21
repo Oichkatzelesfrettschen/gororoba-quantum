@@ -18,7 +18,8 @@ upper estimate).
 ## Fitted factor against the idle budget
 
 The fitted c and its bootstrap quantiles come from sweep parts b and c
-(Kaggle CPU kernels, 2000 bootstrap draws over PUBs); broadcasts and
+(Kaggle CPU kernels) and part e (the build host's CPU), 2000 bootstrap
+draws over PUBs; broadcasts and
 resets are counts over the run's replayed PUBs.
 
 | Run | Backend | PUBs | Broadcasts | Resets | c_idle | Fitted c (16/50/84) | Fitted r |
@@ -34,6 +35,8 @@ resets are counts over the run's replayed PUBs.
 | 2026-10-13T022433 | kingston | 4 | 4 | 4 | 2.32 | 5.0 / 6.0 / 6.0 | 0.5 |
 | 2026-10-13T080216 | fez | 2 | 1 | 2 | 1.84 | 5.0 / 5.0 / 6.0 | 1.0 |
 | 2026-10-13T083417 | fez | 8 | 4 | 8 | 1.79 | 5.0 / 6.0 / 6.0 | 3.0 |
+| 2026-10-19T151959 | fez | 14 | 5 | 14 | 2.14 | 12.0 / 12.0 / 12.0 (grid top) | 1.0 |
+| 2026-10-19T170620 | fez | 12 | 3 | 12 | 1.84 | 12.0 / 12.0 / 12.0 (grid top) | 1.0 |
 
 Run 2026-10-15T070847 carries no CZ, so its c is unidentified; its idle
 budget is 2.8e-4, since its waits are explicit delays the replay already
@@ -100,9 +103,9 @@ computation run twice, not two independent samples. Gate core-389
 missing shards, a differing header and a reserialized part to fail.
 The `bundle` digests in each run's `submission.json` record the files each
 kernel carried. Gate core-339 is the recomputation gate: it runs
-`ghost_error_scale.py --check` on the three parts, which rebuilds every
+`ghost_error_scale.py --check` on the five parts, which rebuilds every
 audited run's members, shots, snapshots and diagnostics from the archived
-inputs and reruns 2026-10-13T080216 on the CPU.
+inputs and reruns 2026-10-13T080216 and 2026-10-18T090603 on the CPU.
 `scripts/ghost_event_scale.py` reads each dynamic run's fitted readout
 factor from these parts.
 
@@ -127,8 +130,10 @@ in ERROR are skipped with `no job of the run returned shots`. The two
 r = 1.0 at a mean distance of 0.006 against a resample floor of 0.0005. The
 two Fez spectator runs (2026-10-19T231043 and 2026-10-20T031212) are CZ-free
 as well and fit r = 1.0; the Ramsey sweep stays at 0.323 against a floor of
-0.006, a gap no rescaling of the snapshot's gate and readout errors closes
-(`hw-n21-spectator-143-beat`). The two Fez n21 orbit-window runs fit at the
+0.006, and the ground control 2026-10-19T231043 at 0.084 against 0.0048.
+Their members apply no CZ, so only the readout factor varies, and it closes
+neither gap; the sweep holds single-qubit errors, T1 and T2 at their
+reported values (`hw-n21-spectator-143-beat`). The two Fez n21 orbit-window runs fit at the
 top of the CZ grid, c = 12 with r = 1.0 (bootstrap at the grid top in 0.90
 and 0.96 of draws), lowering the mean distance from 0.133 to 0.081
 (paired change -0.052, standard error 0.013, 14 PUBs) and from 0.148 to

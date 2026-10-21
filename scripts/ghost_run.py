@@ -30,9 +30,10 @@ explains is.
 Members wider than MAX_QUBITS active qubits are skipped with that reason: a
 density matrix beyond 14 qubits leaves a 15 GiB T4 (docs/notes/kaggle/
 substrates.md). Runs whose record predates the fused-PUB submission plan are
-skipped with the record's reason, and a run whose every job ended without a
-result (an ERROR or CANCELLED job bills its charge and returns no shots)
-is skipped because no member has a hardware distribution to compare.
+skipped with the record's reason, and a run whose collections hold no
+measured member (every job ended in ERROR or CANCELLED, or none is
+collected) is skipped because no member has a hardware distribution to
+compare.
 
 A dynamic member (mid-circuit measurement, reset or feed-forward) at
 EXACT_MIN_SHOTS or more shots, which Aer's density-matrix method evolves

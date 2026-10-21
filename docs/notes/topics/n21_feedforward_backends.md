@@ -203,7 +203,7 @@ measurement. Quota rows are what the page states; sources are cited per row.
 | Service | FF support | Qubits, connectivity | Free quota | Data terms | Eligibility | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | Open Quantum, IQM Garnet / Emerald (Online, `accepting_jobs` false at the 2026-10-17 read) | `dynamic_circuits` feature, `cc_prx`, `measure_ff` ([catalogue](../../evidence/open_quantum/catalogue.json)); QASM lowering unverified | 20 / 54, square lattice, 99.51 / 99.5 percent median CZ ([Garnet page](../open_quantum/site/providers_iqm_garnet.md)) | 25 Spark credits at signup and 25 every 90 days, claimed by hand ([free-credits page](../open_quantum/site/free-credits.md)) | Public tier: circuits and results public, retained by Quantum Rings ([README](../open_quantum/README.md)) | Account exists | Verified catalogue; FF path unverified |
-| IBM Open Plan, ibm_kingston | `if_else`, tested by the family | 156, heavy-hex | 10 min per 28 days; a one-time 180 min over 12 months for users who log 20 min in any 12 months, opt-in ([IBM blog 2026-03-16](https://www.ibm.com/quantum/blog/open-plan-updates)); the job inventory records 382 s, so 818 s more must accrue before the offer opens | IBM data terms not reviewed | Non-trial Open Plan account | Same machine, larger budget; the 10 min per 28 days is the 600 s rolling window `AGENTS.md` records. Measured null at 713 CZ on 2026-10-18 |
+| IBM Open Plan, ibm_kingston | `if_else`, tested by the family | 156, heavy-hex | 10 min per 28 days; a one-time 180 min over 12 months for users who log 20 min in any 12 months, opt-in ([IBM blog 2026-03-16](https://www.ibm.com/quantum/blog/open-plan-updates)); the job inventory records 449 s, so 751 s more must accrue before the offer opens | IBM data terms not reviewed | Non-trial Open Plan account | Same machine, larger budget; the 10 min per 28 days is the 600 s rolling window `AGENTS.md` records. Measured null at 713 CZ on 2026-10-18 |
 | Amazon Braket, IQM Garnet / Emerald | `measure_ff`, `cc_prx`, experimental, verbatim only; MCM bits not returned; repeated control after an active reset excluded ([developer guide](https://docs.aws.amazon.com/braket/latest/developerguide/braket-experimental-capabilities.html)) | 20 / 54, 2 / 4 groups | None for QPUs; $0.30 per task + $0.00145 (Garnet) / $0.00160 (Emerald) per shot ([pricing](https://aws.amazon.com/braket/pricing/)) | AWS terms, not reviewed | Any AWS account | Excludes this circuit (reset then control); paid |
 | IQM Resonance Starter | Not documented for Resonance; the IQM Qiskit guide says availability depends on the instrument | Crystal 54, Crystal 20, Star 24 beta ([IQM](https://www.iqm.tech/products/iqm-resonance)) | Up to 30 credits per month, availability-dependent; pay-as-you-go from $0.30 per QPU second; credit-to-second conversion unstated (inferred 1 s, unverified) | Unstated on the page | Unstated | FF on Resonance unverified |
 | EuroHPC quantum pilot call (Euro-Q-Exa, Lucy, Piast-Q, VLQ) | Not mentioned; VLQ is IQM-built per the [Open Quantum IQM page](../open_quantum/site/providers_iqm.md), FF unverified | Not stated | Free; rolling cut-offs on 1 Nov and 1 Dec 2026 ([EuroHPC](https://www.eurohpc-ju.europa.eu/eurohpc-ju-opens-access-its-quantum-computers-2026-06-25_en)) | Not mentioned | Research, public sector or industry in Europe | Unverified FF; eligibility depends on the owner's location |
@@ -237,13 +237,13 @@ expected contrast, confidentiality.
    n <= about 170 routed CZ. Confidentiality: public. Needs no new sign-up.
 2. IBM Open Plan with the 180-minute offer (the same machine, not a substitute),
    once the account has logged the 1,200 s the offer requires; the job
-   inventory (`results/live/qpu-job-inventory.json`) records 382 s, so the
+   inventory (`results/live/qpu-job-inventory.json`) records 449 s, so the
    offer is unavailable today.
    Expressivity is proven; the contrast is measured and consistent with zero at
    100,000 shots per arm against a predicted 0.034, so more Heron r2 shots of
    the same circuit answer nothing new until the missing channel is identified.
    The 180-minute allowance (10,800 s) is eighteen times the 600 s window.
-   Confidentiality: IBM data terms not reviewed, so unknown. Cost: 818 s of
+   Confidentiality: IBM data terms not reviewed, so unknown. Cost: 751 s of
    further runtime, then the owner's opt-in.
 Amazon Braket IQM Garnet is unranked: its guide excludes repeated control
 of a qubit after an active reset, which this circuit needs. Were a variant
@@ -275,7 +275,7 @@ count is at most about 110 to 170 in the equal-f scenario, run the experiment
 on Open Quantum Garnet in two Spark-funded jobs of 13,586 shots, one per arm,
 after a one-circuit probe confirms the `cc_prx` lowering, feedback-key reuse
 and the returned bits. Above that, the Spark balance cannot meet the contract,
-and the options are paid Public credits or, once 818 s more of IBM runtime
+and the options are paid Public credits or, once 751 s more of IBM runtime
 has accrued, the IBM 180-minute offer. Confidence that Garnet meets the
 contract on the
 Spark balance: low, set by the unrouted CZ count, by IQM's unknown f (the

@@ -23,12 +23,13 @@ Every retained snapshot of a run's backend covers every member of the run.
 The report reads three of them:
 
 - **execution**: per member, the snapshot in force at its PUB start. Every
-  one of the 2335 executed members maps to a snapshot carrying exactly the
+  one of the 3275 executed members maps to a snapshot carrying exactly the
   calibration identity its collection recorded (gate core-286).
 - **current**: the backend's calibration when the snapshots were exported.
 - **all states**: every retained snapshot, grouped by noise content. The
-  14 calibration identities hold 12 distinct noise models, because two
-  Kingston updates changed no gate, readout or coherence value.
+  20 calibration identities the ghost covers (11 Kingston, 9 Fez) hold 16
+  distinct noise models, 8 per backend, because some updates changed no
+  gate, readout or coherence value.
 
 ## Result
 
@@ -81,9 +82,9 @@ Kingston runs under the new one. Every entry the kernel wrote keeps its
 bytes (core-293). The two n21 members draw from their exact
 branch-resolved law (`member_law` `exact_multinomial`), since a 100000-shot
 dynamic PUB costs about an hour per snapshot under Aer. The Kingston
-states column counts the new snapshot, and with 19 runs the report's
-correlations read -0.52 for CZ and +0.28 for readout, CZ error higher now
-on 11 of 19. The readings below describe the 14 kernel runs under the
+states column counts the new snapshot, and with those 19 runs the
+report's correlations read -0.52 for CZ and +0.28 for readout, CZ error
+higher now on 11 of 19 (the second merge below updates them). The readings below describe the 14 kernel runs under the
 2026-10-16 snapshot set; the new Kingston snapshot widens their state
 ranges to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), beyond
 the 0.001 to 0.032 the first reading states.
