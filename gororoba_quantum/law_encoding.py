@@ -25,17 +25,24 @@ import json
 from collections.abc import Sequence
 from typing import Any
 
+import numpy as np
+
 DENSE_LIMIT = 4096
 
 
 def _dependent_bits(values: Sequence[float], width: int) -> list[int]:
-    """The outcome bits whose flip changes some entry of values."""
-    found = []
-    for bit in range(width):
-        step = 1 << bit
-        if any(values[x] != values[x | step] for x in range(len(values)) if not x & step):
-            found.append(bit)
-    return found
+    """The outcome bits whose flip changes some entry of values.
+
+    Viewing the vector as (2^(width - 1 - b), 2, 2^b) puts outcome x with bit
+    b clear at [.., 0, ..] and x | 2^b at [.., 1, ..], so one array comparison
+    per bit replaces 2^(width - 1) scalar ones.
+    """
+    array = np.asarray(values, dtype=float)
+    return [
+        bit
+        for bit in range(width)
+        if not np.array_equal(array.reshape(-1, 2, 1 << bit)[:, 0, :], array.reshape(-1, 2, 1 << bit)[:, 1, :])
+    ]
 
 
 def encode(values: Sequence[float]) -> list[float] | dict[str, Any]:
