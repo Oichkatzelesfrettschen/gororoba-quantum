@@ -39,7 +39,7 @@ replicates with numpy before it is pooled, and a gate proves the batched path
 returns the scalar reference's bits: it keeps the scalar arithmetic order,
 repeats `sum()`'s Neumaier compensation and sends every replicate-dependent
 `exp` and `** 2` through `math.exp` and `math.pow`
-([vectorized-fits.md](docs/notes/build_host/vectorized-fits.md)). Mock outcomes
+([vectorized-fits.md](docs/runbooks/vectorized-fits.md)). Mock outcomes
 (`--native-dry-run` timing) never enter scientific analysis or measured
 visualizations. Local shells, CI and Kaggle start Python with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, which the combined Qiskit
@@ -52,8 +52,8 @@ experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 ## Source library and research replay
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
-replays. `literature -> docs` preserves recorded paths; new Markdown links use
-`docs/`. Immutable source ledgers retain their recorded bytes. The
+replays, and [docs/README.md](docs/README.md) is the map of every document.
+`literature -> docs` preserves recorded paths; new Markdown links use `docs/`. Immutable source ledgers retain their recorded bytes. The
 `sources` suite in ci/gates.json covers the source registry, the evidence
 replays and their checksum ledgers.
 
@@ -62,6 +62,34 @@ Changes to proof replay inputs also follow the pinned Rocq replay in
 `docs/evidence/folding_proofs/README.md`. Imported paper parser diagnostics
 remain source limitations in the registry; checksum admission preserves the
 original bytes and differs from a fresh mathematical proof check.
+
+## Documents
+
+[docs/README.md](docs/README.md) is the map and decides where a document
+lives; read it before writing one.
+
+- Extend before adding. A fact has one home; a second area that needs it gets
+  a link, and a deduplication merges the fact up to the nearest home every
+  reader reaches, never into sibling copies.
+- Place by kind: a source note in `docs/notes/papers/` with its
+  `docs/SOURCES.json` record; a research note in `docs/notes/topics/`; a
+  provider guide in `docs/notes/<provider>/`; a design or plan in
+  `docs/design/`; operator commands in `docs/runbooks/`; a replay and its
+  retained output in `docs/evidence/<name>/`; generated registries in
+  `docs/state/`; handoffs, session logs and review reports in
+  `docs/archive/`. Session-local scratch stays in the ignored `docs/local/`.
+- A new document gets its map row or an inbound link in the same change;
+  `scripts/check_markdown_links.py` fails on a broken link or anchor.
+- Names state target and mechanism in lowercase with hyphens; a date or
+  phase label appears only under `docs/archive/`.
+- Retained bytes are immutable: a file a ledger, record or digest binds keeps
+  its path and bytes, and a correction lands in a new document that the old
+  one's map row links.
+- A move runs through `git mv` and updates every reference, ledger and gate
+  in the same change.
+- An AGENTS.md holds rules a session cannot derive from the tree, kept short;
+  reference tables, procedures and measurements live in the docs they
+  describe, with a pointer.
 
 ## Mandatory source and hardware grounding
 

@@ -135,7 +135,7 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 - **`fano_plane_incidence_matrix()`**: Returns the $7 \times 7$ binary incidence matrix of the projective
   Fano plane $\text{PG}(2, 2)$ (associative triples of imaginary octonions $\{e_1, \dots, e_7\}$); the three
   weight-4 Steane $Z$ checks in `steane_z_syndrome_patch` are the complements of three of these lines
-  (`docs/notes/levratti-2026-fano-css.md` Theorem 3.1).
+  (`docs/notes/papers/levratti-2026-fano-css.md` Theorem 3.1).
 - **`steane_z_syndrome_patch(error_qubit, mid_circuit_measure, dd_sequence, idle_delay_dt)`** (10 qubits): Measures the
   three Steane $Z$ parity checks with $CX$ from data qubits onto ancillas 7..9. Unnested `if_test` blocks
   apply $X$ corrections. `idle_delay_dt > 0` inserts an idle on the data qubits after the parity checks, filled by
@@ -169,7 +169,7 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 - **`hoeffding_model_discrimination(counts_p, counts_q, alpha=0.01, *, alphabet_size)`**: Computes empirical Total
   Variation distance $D_{\text{TV}}(P, Q) = \frac{1}{2} \sum_x |P(x) - Q(x)| \in [0, 1]$ and Jensen-Shannon divergence
   $D_{\text{JS}}(P \parallel Q)$. For single binary projections or parity observables, Hoeffding's inequality
-  (`docs/notes/hoeffding-1963.md`) provides a two-sided confidence radius $r_{\text{obs}} = \sqrt{\frac{\ln(2/\alpha)}{2N_{\text{eff}}}}$.
+  (`docs/notes/papers/hoeffding-1963.md`) provides a two-sided confidence radius $r_{\text{obs}} = \sqrt{\frac{\ln(2/\alpha)}{2N_{\text{eff}}}}$.
   To bound the plug-in total-variation distance across all $K$ outcome bins simultaneously without falsely reporting
   distinguishable models due to multinomial sampling variation, the module computes the Bretagnolle-Huber-Carol
   finite-sample bound (van der Vaart & Wellner 1996, Proposition A.6.6). `alphabet_size` is required and must give
@@ -193,21 +193,21 @@ repository source notes, registered preprints, and verified platform artifacts:
 
 1. **Spatial Multiprogramming & Crosstalk Suppression:**
    - **Sarovar et al. (2020)**, *Detecting crosstalk errors in quantum information processors*,
-     [arXiv:1908.09855](https://arxiv.org/abs/1908.09855) (`docs/notes/1908.09855.md`, `docs/pdf/1908.09855v3.pdf`):
+     [arXiv:1908.09855](https://arxiv.org/abs/1908.09855) (`docs/notes/papers/1908.09855.md`, `docs/pdf/1908.09855v3.pdf`):
      Establishes protocols for detecting crosstalk under concurrent drives; the $\text{dist}_G \ge 2$ guard band
      is enforced as a placement policy to separate concurrent execution subgraphs.
    - **Niu & Todri-Sanial (2021, 2023)**, *Enabling Multi-programming Mechanism for Quantum Computing in the NISQ Era*,
      [arXiv:2102.05321](https://arxiv.org/abs/2102.05321) (Quantum 7, 925, 2023; `docs/notes/2102.05321.md`, `docs/pdf/2102.05321v3.pdf`)
      and *How Parallel Circuit Execution Can Be Useful for NISQ Computing?*, [arXiv:2112.00387](https://arxiv.org/abs/2112.00387)
-     (`docs/notes/2112.00387.md`, `docs/local_source_cache/2112.00387v1.pdf`): Provides the algorithmic basis for
+     (`docs/notes/papers/2112.00387.md`, `docs/local_source_cache/2112.00387v1.pdf`): Provides the algorithmic basis for
      multi-programming partitioning, heavy-hex subgraph isolation, and independent classical register multiplexing.
    - **Gambetta et al. (2012)**, *Characterization of addressability by simultaneous randomized benchmarking*,
-     [arXiv:1204.6308](https://arxiv.org/abs/1204.6308) (`docs/notes/1204.6308.md`, `docs/local_source_cache/1204.6308v2.pdf`):
+     [arXiv:1204.6308](https://arxiv.org/abs/1204.6308) (`docs/notes/papers/1204.6308.md`, `docs/local_source_cache/1204.6308v2.pdf`):
      Foundational framework for measuring addressability under simultaneous microwave and coupler drives.
 
 2. **Non-Associative Cayley-Dickson Algebra & Zero-Divisor Loci:**
    - **Freedman, Shokrian-Zini, & Wang (2019)**, *Quantum Computing with Octonions*,
-     [arXiv:1811.08580](https://arxiv.org/abs/1811.08580) (`docs/notes/1811.08580.md`, `docs/local_source_cache/1811.08580v5.pdf`):
+     [arXiv:1811.08580](https://arxiv.org/abs/1811.08580) (`docs/notes/papers/1811.08580.md`, `docs/local_source_cache/1811.08580v5.pdf`):
      Formulates Hilbert space representations and non-associative gate structures on multi-qubit systems.
    - **Biss, Christensen, Dugger, & Isaksen (2009)**, *Eigentheory of Cayley-Dickson algebras*,
      [arXiv:0905.2987](https://arxiv.org/abs/0905.2987) (`docs/notes/0905.2987.md`, `docs/local_source_cache/0905.2987v1.pdf`):
@@ -215,9 +215,9 @@ repository source notes, registered preprints, and verified platform artifacts:
      codified in `gororoba_quantum/cd_core.py`.
 
 3. **Fano-Plane Projective Geometry & Stabilizer Codes:**
-   - **Levratti (2026)**, *Fano Duality, Projective Orthogonality, and the CSS Bridge* (`docs/notes/levratti-2026-fano-css.md`,
+   - **Levratti (2026)**, *Fano Duality, Projective Orthogonality, and the CSS Bridge* (`docs/notes/papers/levratti-2026-fano-css.md`,
      `docs/pdf/levratti-2026-fano-css.pdf`) and *Active Stabilizers in Reed-Muller CSS Codes from Cayley-Dickson Zero-Divisors*
-     (`docs/notes/levratti-2026-active-stabilizers.md`, `docs/pdf/levratti-2026-active-stabilizers.pdf`): Author-hosted
+     (`docs/notes/papers/levratti-2026-active-stabilizers.md`, `docs/pdf/levratti-2026-active-stabilizers.pdf`): Author-hosted
      manuscripts mapping the 7 points and 7 lines of the projective Fano plane $\text{PG}(2, 2)$ to octonionic triads
      and the Fano line incidence matrix whose line complements yield the Steane $[[7, 1, 3]]$ $Z$ stabilizers (`fano_plane_incidence_matrix`, `steane_z_syndrome_patch`).
    - **Corcoles et al. (2021)**, *Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits*,
@@ -225,24 +225,24 @@ repository source notes, registered preprints, and verified platform artifacts:
      `docs/pdf/2102.01682.pdf`): Demonstrates physical dynamic circuits and feed-forward on superconducting transmons,
      balancing mid-circuit measurement against coherent routing.
    - **Rudinger et al. (2022)**, *Characterizing mid-circuit measurements on a superconducting qubit using gate set tomography*,
-     [arXiv:2103.03008](https://arxiv.org/abs/2103.03008) (2021; Phys. Rev. Applied 17, 014014, 2022; `docs/notes/2103.03008.md`,
+     [arXiv:2103.03008](https://arxiv.org/abs/2103.03008) (2021; Phys. Rev. Applied 17, 014014, 2022; `docs/notes/papers/2103.03008.md`,
      `docs/local_source_cache/2103.03008v1.pdf`): Quantum-instrument tomography characterizing mid-circuit measurement operations.
 
 4. **Boolean Bent Hidden Shift Algorithms:**
    - **Roetteler (2008, 2009)**, *Quantum algorithms for highly non-linear Boolean functions*, [arXiv:0811.3208](https://arxiv.org/abs/0811.3208)
-     (Proc. SODA 2010, pp. 448-457; `docs/notes/0811.3208.md`, `docs/local_source_cache/0811.3208v2.pdf`) and *Quantum algorithms
+     (Proc. SODA 2010, pp. 448-457; `docs/notes/papers/0811.3208.md`, `docs/local_source_cache/0811.3208v2.pdf`) and *Quantum algorithms
      to solve the hidden shift problem for quadratics and for functions of large Gowers norm*, [arXiv:0911.4724](https://arxiv.org/abs/0911.4724)
-     (`docs/notes/0911.4724.md`, `docs/local_source_cache/0911.4724v1.pdf`): Derives the exact quantum algorithm using dual bent
+     (`docs/notes/papers/0911.4724.md`, `docs/local_source_cache/0911.4724v1.pdf`): Derives the exact quantum algorithm using dual bent
      oracles $O_g$ and $O_{\tilde{f}}$ separated by Hadamard transforms to solve the hidden shift problem with $O(1)$ queries
      and deterministic $P=1.0$ recovery.
    - **Gavinsky, Roetteler, & Roland (2011)**, *Quantum algorithm for the Boolean hidden shift problem*,
-     [arXiv:1103.3017](https://arxiv.org/abs/1103.3017) (`docs/notes/1103.3017.md`, `docs/local_source_cache/1103.3017v1.pdf`):
+     [arXiv:1103.3017](https://arxiv.org/abs/1103.3017) (`docs/notes/papers/1103.3017.md`, `docs/local_source_cache/1103.3017v1.pdf`):
      Establishes the $O(n / \sqrt{\gamma_f})$ quantum query algorithm based on minimum Boolean influence $\gamma_f$,
      showing $O(n)$ query complexity for bent functions and $O(1)$ with dual oracle access.
 
 5. **Statistical Discrimination & Concentration Bounds:**
    - **Hoeffding (1963)**, *Probability inequalities for sums of bounded random variables*, J. Amer. Statist. Assoc. 58, 13-30
-     [DOI:10.1080/01621459.1963.10500830](https://doi.org/10.1080/01621459.1963.10500830) (`docs/notes/hoeffding-1963.md`):
+     [DOI:10.1080/01621459.1963.10500830](https://doi.org/10.1080/01621459.1963.10500830) (`docs/notes/papers/hoeffding-1963.md`):
      Establishes the non-parametric exponential concentration bound for bounded random variables in $[0, 1]$.
    - **Bretagnolle-Huber-Carol Bound**: The finite-sample multinomial total variation inequality
      $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$ (van der Vaart & Wellner 1996,

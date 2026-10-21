@@ -113,7 +113,7 @@ provide necessary conditions; curve selection alone does not turn those
 conditions into membership in `closure(E)`. An exact path or a quantified
 real-algebraic closure certificate would establish that premise. The new
 [Basu-Roy source](1803.00505.md) adds bounds and an explicit algebraic path
-representation, while [Greenberg's theorem](greenberg-henselian-lifting.md)
+representation, while [Greenberg's theorem](papers/greenberg-henselian-lifting.md)
 specifies a different route from sufficiently accurate polynomial solutions
 to exact solutions under its local-ring hypotheses. These sources add
 proof dependencies and do not establish tangent-cone equality for the

@@ -21,8 +21,8 @@ CC BY sources are retained under `docs/pdf/`.
 | Source | Repository copy | What the certificate takes | What the source does not supply |
 |---|---|---|---|
 | Biss, Christensen, Dugger, Isaksen, Eigentheory of Cayley-Dickson algebras, Forum Mathematicum 21 (2009), 833-851, DOI 10.1515/FORUM.2009.041 | [note](../0905.2987.md), arXiv 0905.2987v1, cache `0905.2987v1.pdf` | The spectrum and eigenspaces of E0 | Any measurement, optics or statistics |
-| de Marrais, The 42 Assessors and the Box-Kites They Fly (2000) | [note](../math-0011260.md), arXiv math/0011260v1, cache | The combinatorial setting of the zero-divisor diagonals | The physical certification theorem |
-| de Marrais, Flying Higher Than a Box-Kite (2002) | [note](../math-0207003.md), arXiv math/0207003v2, cache | The same patterns beyond the sedenions | The same |
+| de Marrais, The 42 Assessors and the Box-Kites They Fly (2000) | [note](../papers/math-0011260.md), arXiv math/0011260v1, cache | The combinatorial setting of the zero-divisor diagonals | The physical certification theorem |
+| de Marrais, Flying Higher Than a Box-Kite (2002) | [note](../papers/math-0207003.md), arXiv math/0207003v2, cache | The same patterns beyond the sedenions | The same |
 | de Marrais, Box-Kites III (2004) | [note](../math-0403113.md), arXiv math/0403113v1, cache | Zero-divisor-suppressing structures | The same |
 
 Biss et al. use the doubling (a, b)(c, d) = (ac - d* b, da + b c*) of
@@ -45,9 +45,9 @@ none of their combinatorial results as a premise.
 
 | Source | Repository copy | What the certificate takes |
 |---|---|---|
-| Tischler, Rockstuhl, Slowik, Quantum Optical Realization of Arbitrary Linear Transformations Allowing for Loss and Gain, Physical Review X 8 (2018), 021017 | [note](../1712.01413.md), arXiv 1712.01413v2, cache | The dilation of the 12 x 16 Kraus compression into a passive 24-mode unitary |
-| Clements, Humphreys, Metcalf, Kolthammer, Walmsley, Optimal design for universal multiport interferometers, Optica 3 (2016), 1460-1465 | [note](../1603.08788.md), arXiv 1603.08788v2, cache | The mesh on which qpu:belenos realizes any unitary; balanced loss as a scalar |
-| Tropp, User-friendly tail bounds for sums of random matrices, Foundations of Computational Mathematics 12 (2012), 389-434 | [note](../1004.4389.md), arXiv 1004.4389v7, cache | Matrix Bernstein, Theorem 1.4: `bdsc.bernstein_radius` |
+| Tischler, Rockstuhl, Slowik, Quantum Optical Realization of Arbitrary Linear Transformations Allowing for Loss and Gain, Physical Review X 8 (2018), 021017 | [note](../papers/1712.01413.md), arXiv 1712.01413v2, cache | The dilation of the 12 x 16 Kraus compression into a passive 24-mode unitary |
+| Clements, Humphreys, Metcalf, Kolthammer, Walmsley, Optimal design for universal multiport interferometers, Optica 3 (2016), 1460-1465 | [note](../papers/1603.08788.md), arXiv 1603.08788v2, cache | The mesh on which qpu:belenos realizes any unitary; balanced loss as a scalar |
+| Tropp, User-friendly tail bounds for sums of random matrices, Foundations of Computational Mathematics 12 (2012), 389-434 | [note](../papers/1004.4389.md), arXiv 1004.4389v7, cache | Matrix Bernstein, Theorem 1.4: `bdsc.bernstein_radius` |
 | Davis and Kahan, The rotation of eigenvectors by a perturbation. III, SIAM Journal on Numerical Analysis 7 (1970), 1-46, DOI 10.1137/0707001 | citation only; SIAM hosts the paper behind a subscription and no repository copy exists | The standard perturbation theory of spectral subspaces, for comparison |
 
 Tischler's ancilla rule predicts U24's size. The selected compression T of U24
@@ -72,9 +72,9 @@ role the gap plays in Davis-Kahan.
 
 | Source | Repository copy | What the certificate takes |
 |---|---|---|
-| Lundeen et al., Tomography of quantum detectors, Nature Physics 5 (2009), 27-30, DOI 10.1038/nphys1133 | [note](../0807.2444.md), arXiv 0807.2444v1 ("Measuring measurement"), cache | Detector tomography: known probe states reconstruct an unknown effect |
-| Nielsen, Gamble, Rudinger, Scholten, Young, Blume-Kohout, Gate Set Tomography, Quantum 5 (2021), 557, DOI 10.22331/q-2021-10-05-557 | [note](../2009.07301.md), `docs/pdf/2009.07301.pdf` (CC BY 4.0) | Why a known preparation frame is a premise and what removing it costs |
-| Chen, Zeng, Zhao, Ma, Zhou, Quantum Subspace Verification for Error Correction Codes, PRX Quantum 6 (2025), 040353, DOI 10.1103/fyw6-lq1l | [note](../2410.12551.md), `docs/pdf/2410.12551v1.pdf` (CC BY 4.0) | Subspace verification from spectral gaps and Bernoulli counts |
+| Lundeen et al., Tomography of quantum detectors, Nature Physics 5 (2009), 27-30, DOI 10.1038/nphys1133 | [note](../papers/0807.2444.md), arXiv 0807.2444v1 ("Measuring measurement"), cache | Detector tomography: known probe states reconstruct an unknown effect |
+| Nielsen, Gamble, Rudinger, Scholten, Young, Blume-Kohout, Gate Set Tomography, Quantum 5 (2021), 557, DOI 10.22331/q-2021-10-05-557 | [note](../papers/2009.07301.md), `docs/pdf/2009.07301.pdf` (CC BY 4.0) | Why a known preparation frame is a premise and what removing it costs |
+| Chen, Zeng, Zhao, Ma, Zhou, Quantum Subspace Verification for Error Correction Codes, PRX Quantum 6 (2025), 040353, DOI 10.1103/fyw6-lq1l | [note](../papers/2410.12551.md), `docs/pdf/2410.12551v1.pdf` (CC BY 4.0) | Subspace verification from spectral gaps and Bernoulli counts |
 
 The certificate is detector tomography of one outcome restricted to two
 blocks. The 160-setting bank is a tomographically complete probe set for A

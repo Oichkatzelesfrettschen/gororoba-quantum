@@ -1253,6 +1253,15 @@ class SourceArchiveChecks(unittest.TestCase):
             self.assertEqual(verify_source_archives(self.root, self.registry), 1)
         self.assertEqual(list(self.source.parent.iterdir()), [self.source])
 
+    def test_owning_note_may_live_under_papers(self) -> None:
+        self.note = self.root / "docs/notes/papers/research-source.md"
+        self.note.parent.mkdir()
+        self.entry["note"] = self.note.relative_to(self.root).as_posix()
+        self.write_note()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["note"] = "docs/notes/papers/sub/research-source.md"
+        self.reject("archive owning note path")
+
     def test_uninspected_symlink_is_preserved_without_following_it(self) -> None:
         member = tarfile.TarInfo(f"{self.prefix}/uninspected-link")
         member.type = tarfile.SYMTYPE

@@ -32,7 +32,7 @@ The [rank source ledger](cayley_dickson_rank_topology_sources.md) records
 the mathematical hypotheses and known transcription caveats. The
 [annihilator source ledger](cayley_dickson_annihilator_sources.md) separates
 element bases from partner bundles. The
-[block-encoding note](1806.01838.md) separates input normalization from LCU
+[block-encoding note](papers/1806.01838.md) separates input normalization from LCU
 normalization. These distinctions remain necessary when combining papers.
 
 The direct inspection for this note covers Koebisu's Sections 3--5, 7, 9,

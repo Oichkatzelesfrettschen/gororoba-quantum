@@ -29,7 +29,7 @@ against exact enumeration:
   number 128.
 
 check_lifting certifies the doubling identity behind the all-dimension
-proofs in docs/notes/cd_associator_defect_census.md: for lower indices
+proofs in docs/notes/topics/cd_associator_defect_census.md: for lower indices
 a, b, c < d and top bits u, v, w,
 s_2d(a + u d, b + v d) = s_d(a, b) (-1)^(v kappa(a, b) + u [b != 0] + u v)
 and omega_2d = omega_d(a, b, c) (-1)^(A u + B v + C w), where kappa(x, y) = 1
