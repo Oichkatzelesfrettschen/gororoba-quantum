@@ -18,12 +18,18 @@ No step here is authorized until its written case is approved
    `uncorrected_observations`, `count_provenance` and
    `preparation_control`. A capability still `unresolved` is either answered
    first or named in the written case as the question this run tests.
-3. A case builder emits one run directory per setting under
-   `results/quandela/runs/`, with the processing policy written into the job
-   body (`mitigations` absent for provider defaults, an empty list for the
-   empty policy) and the completion's description recorded beside the chip
-   column. `scripts/qd_platform.py` sets no mitigation policy per case, so
-   this builder is the first implementation step.
+3. `"$PYTHON" scripts/bdsc_cases.py --write results/quandela/cases/bdsc_qualification`
+   builds one case directory per observation: a numeric 24-mode unitary
+   (`qd-numeric-circuit-v1`) and a manifest whose `mitigations` is null for
+   provider defaults or `[]` to disable them. `--check` rebuilds and
+   compares, and `--local` requires Perceval SLOS on each runner-built
+   experiment to reproduce the case's ideal selected probability.
+   `qd_platform.py` refuses a policy case whose body lacks the policy, and
+   refuses the version-1 body Perceval 1.3.1 builds when the processor
+   record lacks `specs.commands`, as every qpu:belenos record since
+   2026-10-20 does ([calibration.md](../notes/quandela/calibration.md)
+   open item 1). Without `--draw` the cases are drafts that plan and do
+   not submit.
 4. A fresh `qd_platform.py snapshot` and a `plan` that passes for
    qpu:belenos, including `specs.architecture`.
 
@@ -43,9 +49,10 @@ No step here is authorized until its written case is approved
    a pseudorandom stream does not serve), the stop conditions below, and
    the interpretation of each outcome from the design. Wait for approval;
    the QRNG read is part of what it approves.
-3. Draw the acquisition order of the 48 settings of each epoch and the
-   compilation seed of each with `scripts/anu_qrng.py draw`, and freeze both
-   in the run directories before the first submission.
+3. Draw one ANU QRNG record of 192 uint16 values with
+   `scripts/anu_qrng.py draw`, rebuild with `scripts/bdsc_cases.py --write
+   DIR --draw FILE`, which seeds each observation and ranks it within its
+   epoch, and freeze the cases before the first submission.
 4. Run epoch 1 in the frozen order. After each job, `collect` and confirm
    that the returned processing matches the requested policy and that the
    server version and calibration identity are recorded.

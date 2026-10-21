@@ -535,7 +535,7 @@ CIRCUIT_SCHEMA = "qd-circuit-v1"
 NUMERIC_CIRCUIT_SCHEMA = "qd-numeric-circuit-v1"
 CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1", NUMERIC_CIRCUIT_SCHEMA)
 # A case's processing policy: None leaves the server's default mitigations, an empty list disables them.
-MITIGATION_POLICIES = (None, [])
+MITIGATION_POLICIES: tuple[None, list[str]] = (None, [])
 STATE_SCHEMA = "qd-submission-state-v1"
 SUBMISSION_SCHEMA = "qd-submission-v1"
 COLLECTION_SCHEMA = "qd-collection-v1"
@@ -932,6 +932,12 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     layer._rpc_handler.create_job = record
     layer.send(computer.prepare_payload(computation))
     body: dict[str, Any] = {**captured["body"], "max_duration": manifest["max_duration"]}
+    # RPCBasedCommunicationLayer.send downgrades the body to payload version 1 when the processor record lacks
+    # specs.commands; a version-1 worker predates the mitigations key, so a policy case refuses that body.
+    if "mitigations" in manifest and "computation" not in body.get("payload", {}):
+        raise PlatformError(
+            f"{manifest['job']}: Perceval built a version-1 body because the {platform} record lacks specs.commands"
+        )
     # Perceval writes the mitigations key only for a non-null list, so the body shows which policy it carries.
     if "mitigations" in manifest and (KEY_MITIGATIONS in json.dumps(body)) != (policy is not None):
         raise PlatformError(f"{manifest['job']}: the job body does not carry the mitigation policy {policy!r}")
