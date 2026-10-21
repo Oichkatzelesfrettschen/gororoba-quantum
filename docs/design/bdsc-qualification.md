@@ -206,27 +206,36 @@ and makes no dark-subspace claim.
   pilot, and (f_2, f_3) = (e1, e2), whose individual responses separate the
   real and imaginary extra-null alternatives E_R and E_I.
 - **Variants.** Two preparation descriptions with the same chip column and
-  different completions on the unused columns (Householder and Givens,
-  each checked unitary and at a Frobenius distance above 0.1 on the unused
-  columns), crossed with two processing policies: provider defaults
-  (`mitigations = None`) and an explicit empty list. Both epochs acquire
-  all six states of every cell: 2 pairs x 2 descriptions x 2 policies x
-  2 epochs x 6 states = 96 settings. Repeating only f and g would see
-  diagonal changes alone: I/2 + X/4 and I/2 + Y/4 agree on f and g and
-  differ on + and +i.
+  different actions on the unused columns, each a fixed 24-mode template
+  whose 47 parameters an iteration binds: outward-ladder fans the photon
+  from source mode 6 through adjacent splitters to its left and right
+  neighbours, reverse-ladder swaps two unused inputs, carries the photon to
+  mode 0 through fixed full splitters and ladders it rightward across every
+  mode; both end in one phase per mode, use Perceval's BS.Rx convention,
+  reach every bank column to 1e-12, and stay at least 2.0 apart in
+  Frobenius norm on the unused columns. They cross two processing policies:
+  provider defaults (`mitigations = None`) and an explicit empty list. Both
+  epochs acquire all six states of every cell: 2 pairs x 2 descriptions x
+  2 policies x 2 epochs x 6 states = 96 settings. Repeating only f and g
+  would see diagonal changes alone: I/2 + X/4 and I/2 + Y/4 agree on f and
+  g and differ on + and +i.
+- **Jobs.** A job fixes one circuit and one mitigation list, so the case
+  runs one job per template, policy and epoch: 8 jobs of 12 iterations, one
+  iteration per state of both pairs, each iteration with its own
+  compilation seed.
 - **Decision.** Clopper-Pearson at alpha / 96 per observation, alpha = 0.01,
   gives one simultaneous event, and every prespecified contrast
   sum_j c_j p_j inherits it through
   Delta_L = sum_(c_j > 0) c_j L_j + sum_(c_j < 0) c_j U_j
   (`bdsc.contrast_readout`). Three families: 32 within-cell sum rules
-  (Delta_R and Delta_I per cell and epoch), 48 cross-completion differences
-  p_(s,H) - p_(s,G) at one policy and epoch, and 48 cross-epoch differences
-  at one completion and policy, each with a declared margin of 0.05. A
-  contrast reads compatible inside its margin, violated when its interval
-  misses the band, and inconclusive otherwise. Within-cell linearity alone
-  proves nothing across cells: I/2 and I/2 + X/4 both obey every sum rule
-  and differ on +. No contrast compares the two policies, since mitigation
-  changes estimates by design; an observation enters the event only when its
+  (Delta_R and Delta_I per cell and epoch), 48 cross-template differences
+  at one policy and epoch, and 48 cross-epoch differences at one template
+  and policy, each with a declared margin of 0.02. A contrast reads
+  compatible inside its margin, violated when its interval misses the band,
+  and inconclusive otherwise. Within-cell linearity alone proves nothing
+  across cells: I/2 and I/2 + X/4 both obey every sum rule and differ on
+  +. No contrast compares the two policies, since mitigation changes
+  estimates by design; an observation enters the event only when its
   policy's observation contract supports Bernoulli trials, the alpha split
   counts every observation regardless, and a contrast that touches an
   unadmitted observation reads not admitted.
@@ -237,28 +246,27 @@ and makes no dark-subspace claim.
   pooled into one stationary reconstruction.
 - **Power.** False certification of any family is bounded by alpha; the
   probability of passing an acceptable implementation is a separate
-  number. Under E0 itself, one effect across completions, policies and
+  number. Under E0 itself, one effect across templates, policies and
   epochs, and independent Bernoulli trials, 2000 seeded replicates per
-  trial count give the probability that all 128 contrasts read compatible:
-  0 at 22080 (expected counts at the margin), 0.70 at 40000, 0.939 at
-  45000. The case fixes
-  45000, the first grid point at or above the 0.9 target. Drift,
-  preparation error or a corrected sampling law lower this power.
-- **Resources.** 45000 eligible trials per setting are 4320000 in all;
-  max_shots = 2 x 45000 per setting makes the submitted ceiling 8640000
-  shots. At the strategy.md billing rule and one job per setting that is
-  104.64 credits. One single-computation job per setting takes 13 to 15 s
-  of overhead whatever its samples, plus acquisition near 4 x 10^4
-  one-photon samples per second (strategy.md section 1): 17.25 s per job
-  at 15 s and 90000 shots, 1656 s for 96 jobs; the 300 s per-job limit
-  caps them at 28800 s. One ANU QRNG request of 192 uint16 values (about
-  2 s, no credits, one of the free tier's 100 monthly requests) fixes the
-  96 compilation seeds and both epochs' acquisition order. The written
-  case restates credits and seconds from the live `qd_platform.py plan`
-  output, which reads the platform's duration limit and price, before
-  approval; whether 90000 shots yield 45000 eligible trials on an
-  unmitigated route is a provider question.
-- **Scope of an outcome.** A violated completion contrast implicates
+  trial count give the probability that all 128 contrasts read compatible
+  at margin 0.02: 0 at 45000 and 175000, 0.683 at 250000, 0.912 at 275000,
+  0.9845 at 300000. The case fixes 300000, the first grid point at or
+  above the 0.95 target. Drift, preparation error or a corrected sampling
+  law lower this power.
+- **Resources.** 300000 eligible trials per setting are 28800000 in all;
+  max_shots = 2 x 300000 per iteration. A job bills 1 credit plus 1e-6 per
+  shot of its largest iteration's max_shots, so each job costs 1.6 credits
+  and the case 12.8; one job per setting would cost 153.6 for the same
+  trials ([quandela-credit-optimization.md](../runbooks/quandela-credit-optimization.md)).
+  An iteration takes 6.3 s plus 26 us per sample, so a 12-iteration job
+  takes about 169 s, 0.56 of the 300 s limit, and the case about 1354 s
+  against a 2400 s ceiling. One ANU QRNG request of 192 uint16 values
+  (about 2 s, no credits, one of the free tier's 100 monthly requests)
+  fixes the 96 compilation seeds and each job's iteration order. The
+  written case restates credits and seconds from the live
+  `qd_platform.py plan` output before approval; whether 600000 shots yield
+  300000 eligible trials on an unmitigated route is a provider question.
+- **Scope of an outcome.** A violated cross-template contrast implicates
   preparation, compilation or both; a violated epoch contrast,
   reproducibility across the calibration change; a violated sum rule, the
   combined linear-effect, preparation and conditioning model without

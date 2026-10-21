@@ -20,7 +20,7 @@
    "epoch"
   ],
   "stopping": "fixed-n",
-  "trials_per_setting": 45000
+  "trials_per_setting": 300000
  },
  "authorization": "none: the case waits for its written-case approval; a pass supports proposing the 160-setting run, never running it",
  "banks": [
@@ -375,7 +375,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.0
+     "unused_column_distance": 4.472135955
     },
     {
      "chip_column": [
@@ -548,7 +548,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.0
+     "unused_column_distance": 3.741657387
     },
     {
      "chip_column": [
@@ -721,7 +721,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.0
+     "unused_column_distance": 3.741657387
     },
     {
      "chip_column": [
@@ -894,7 +894,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.0
+     "unused_column_distance": 3.741657387
     },
     {
      "chip_column": [
@@ -1067,7 +1067,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.0
+     "unused_column_distance": 3.741657387
     }
    ]
   },
@@ -1249,7 +1249,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.0
+     "unused_column_distance": 4.472135955
     },
     {
      "chip_column": [
@@ -1422,7 +1422,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.0
+     "unused_column_distance": 4.472135955
     },
     {
      "chip_column": [
@@ -1595,7 +1595,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.054444564
+     "unused_column_distance": 4.472135955
     },
     {
      "chip_column": [
@@ -1768,7 +1768,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.054444564
+     "unused_column_distance": 4.472135955
     },
     {
      "chip_column": [
@@ -1941,7 +1941,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.054444564
+     "unused_column_distance": 4.472135955
     },
     {
      "chip_column": [
@@ -2114,7 +2114,7 @@
        0.0
       ]
      ],
-     "unused_column_distance": 2.054444564
+     "unused_column_distance": 4.472135955
     }
    ]
   }
@@ -2131,9 +2131,9 @@
   "epochs": "epoch 2 follows at least one platform calibration cycle, so the epoch family tests reproducibility across a calibration change; within-epoch stability rests on the randomized order alone, and the epochs are never pooled into one stationary reconstruction",
   "findings_schema": "bdsc-spectral-findings-v1",
   "margins": {
-   "completion": 0.05,
-   "epoch": 0.05,
-   "sum_rule": 0.05
+   "completion": 0.02,
+   "epoch": 0.02,
+   "sum_rule": 0.02
   },
   "outcomes": [
    "compatible",
@@ -2162,758 +2162,904 @@
    "implicates": "what each output represents, read from metadata, not means"
   }
  ],
+ "jobs": [
+  {
+   "epoch": 1,
+   "iterations": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53
+   ],
+   "processing": "provider-defaults",
+   "template": "outward-ladder"
+  },
+  {
+   "epoch": 2,
+   "iterations": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59
+   ],
+   "processing": "provider-defaults",
+   "template": "outward-ladder"
+  },
+  {
+   "epoch": 1,
+   "iterations": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65
+   ],
+   "processing": "empty-mitigation",
+   "template": "outward-ladder"
+  },
+  {
+   "epoch": 2,
+   "iterations": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71
+   ],
+   "processing": "empty-mitigation",
+   "template": "outward-ladder"
+  },
+  {
+   "epoch": 1,
+   "iterations": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77
+   ],
+   "processing": "provider-defaults",
+   "template": "reverse-ladder"
+  },
+  {
+   "epoch": 2,
+   "iterations": [
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83
+   ],
+   "processing": "provider-defaults",
+   "template": "reverse-ladder"
+  },
+  {
+   "epoch": 1,
+   "iterations": [
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89
+   ],
+   "processing": "empty-mitigation",
+   "template": "reverse-ladder"
+  },
+  {
+   "epoch": 2,
+   "iterations": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95
+   ],
+   "processing": "empty-mitigation",
+   "template": "reverse-ladder"
+  }
+ ],
  "observations": [
   {
    "epoch": 1,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "target-complement",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "householder",
+   "preparation": "outward-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "provider-defaults"
   },
   {
    "epoch": 1,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 1,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "f",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "g",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "+i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   },
   {
    "epoch": 2,
    "label": "-i",
    "pair": "middle-middle",
-   "preparation": "givens",
+   "preparation": "reverse-ladder",
    "processing": "empty-mitigation"
   }
  ],
  "power": {
-  "chosen_trials": 45000,
+  "chosen_trials": 300000,
   "decision": "every contrast of every family reads compatible",
   "model": "the acceptable implementation: E0 itself, one effect across completions, policies and epochs, independent fixed-n Bernoulli trials at every observation",
   "replicates": 2000,
   "rows": [
    {
     "power": 0.0,
-    "trials_per_setting": 22080
-   },
-   {
-    "power": 0.0,
-    "trials_per_setting": 25000
-   },
-   {
-    "power": 0.0,
-    "trials_per_setting": 27500
-   },
-   {
-    "power": 0.0005,
-    "trials_per_setting": 30000
-   },
-   {
-    "power": 0.021,
-    "trials_per_setting": 32500
-   },
-   {
-    "power": 0.1675,
-    "trials_per_setting": 35000
-   },
-   {
-    "power": 0.414,
-    "trials_per_setting": 37500
-   },
-   {
-    "power": 0.6995,
-    "trials_per_setting": 40000
-   },
-   {
-    "power": 0.849,
-    "trials_per_setting": 42500
-   },
-   {
-    "power": 0.939,
     "trials_per_setting": 45000
    },
    {
-    "power": 0.968,
-    "trials_per_setting": 47500
+    "power": 0.0,
+    "trials_per_setting": 100000
    },
    {
-    "power": 0.9915,
-    "trials_per_setting": 50000
+    "power": 0.0,
+    "trials_per_setting": 125000
    },
    {
-    "power": 0.997,
-    "trials_per_setting": 52500
+    "power": 0.0,
+    "trials_per_setting": 150000
    },
    {
-    "power": 0.9985,
-    "trials_per_setting": 55000
+    "power": 0.0,
+    "trials_per_setting": 175000
+   },
+   {
+    "power": 0.018,
+    "trials_per_setting": 200000
+   },
+   {
+    "power": 0.2805,
+    "trials_per_setting": 225000
+   },
+   {
+    "power": 0.683,
+    "trials_per_setting": 250000
+   },
+   {
+    "power": 0.912,
+    "trials_per_setting": 275000
+   },
+   {
+    "power": 0.9845,
+    "trials_per_setting": 300000
+   },
+   {
+    "power": 0.992,
+    "trials_per_setting": 325000
    },
    {
     "power": 1.0,
-    "trials_per_setting": 57500
+    "trials_per_setting": 350000
    },
    {
     "power": 1.0,
-    "trials_per_setting": 60000
+    "trials_per_setting": 375000
+   },
+   {
+    "power": 1.0,
+    "trials_per_setting": 400000
    }
   ],
   "scope": "power under this model only; drift, preparation error or a corrected sampling law lower it",
   "seed": 20261021,
-  "target": 0.9
+  "target": 0.95
  },
  "preparation_descriptions": {
-  "givens": "a chain of 2 x 2 rotations of the source mode against every other mode",
-  "householder": "I - 2 w w^dagger with w along phase e_r - column, times the source phase"
+  "outward-ladder": "adjacent splitters fan the photon from the source mode to its left and right neighbours in turn, then one phase per mode; 47 parameters",
+  "reverse-ladder": "a fixed full splitter on two unused inputs, fixed full splitters that carry the photon to mode 0, adjacent splitters that ladder it rightward across every mode, then one phase per mode; 47 parameters"
  },
  "qrng": {
   "credits": 0,
@@ -2929,18 +3075,20 @@
  "question": "do the returned observations behave as one fixed linear effect on independently prepared states, at a declared observation level, across preparation descriptions and across a calibration change",
  "record": "qualification_case",
  "resources": {
-  "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots (strategy.md section 1a)",
-  "credits_historical_one_job_per_setting": 104.64,
-  "eligible_trials_per_setting": 45000,
-  "eligible_trials_total": 4320000,
-  "jobs_ceiling": 96,
-  "max_shots_per_setting": 90000,
-  "max_shots_total": 8640000,
-  "seconds_ceiling": 28800,
-  "seconds_historical_estimate": 1656.0,
-  "seconds_per_job_estimate": 17.25,
+  "billing_rule": "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots, measured on every retained qpu:belenos job (docs/runbooks/quandela-credit-optimization.md)",
+  "credits": 12.8,
+  "credits_if_one_job_per_setting": 153.6,
+  "eligible_trials_per_setting": 300000,
+  "eligible_trials_total": 28800000,
+  "iterations_per_job": 12,
+  "jobs": 8,
+  "max_shots_per_iteration": 600000,
+  "max_shots_total": 57600000,
+  "seconds_ceiling": 2400,
+  "seconds_estimate": 1353.6,
+  "seconds_per_job_estimate": 169.2,
   "settings": 96,
-  "timing_rule": "estimate: one single-computation job per setting at 15.0 s of overhead (the top of the 13 to 15 s single jobs of strategy.md section 1) plus max_shots at 40000 one-photon samples per second; ceiling: the 300 s per-job limit. The written case restates both from the live plan output"
+  "timing_rule": "6.3 s plus 2.6e-05 s per sample for each iteration, each job within 0.6 of the 300 s per-job limit; the written case restates both from the live plan output"
  },
  "schema": "bdsc-records-v1",
  "stop_conditions": [
