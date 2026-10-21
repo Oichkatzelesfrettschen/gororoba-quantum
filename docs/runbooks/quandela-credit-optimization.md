@@ -99,8 +99,10 @@ six states.
 | one job per setting, margin 0.02 | 96 | 300000 | 153.6 | | 0.9845 |
 | 8 jobs of 12 iterations, margin 0.02 | 8 | 300000 | 12.8 | 1354 | 0.9845 |
 
-The eight jobs are the minimum, one per template, policy and epoch, since
-each fixes a circuit and a mitigation list. Each 12-iteration job takes
+Each job fixes a circuit and a mitigation list, so the two policies need
+separate jobs; the two templates do not, because both are parameter
+settings of one union circuit. The eight jobs are one per pair, policy and
+epoch, which keeps every cross-template comparison inside one job. Each 12-iteration job takes
 about 169 s, and the tighter margin costs 1.2 credits more than the same
 jobs at 45000 trials.
 

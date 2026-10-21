@@ -219,10 +219,15 @@ and makes no dark-subspace claim.
   2 policies x 2 epochs x 6 states = 96 settings. Repeating only f and g
   would see diagonal changes alone: I/2 + X/4 and I/2 + Y/4 agree on f and
   g and differ on + and +i.
-- **Jobs.** A job fixes one circuit and one mitigation list, so the case
-  runs one job per template, policy and epoch: 8 jobs of 12 iterations, one
-  iteration per state of both pairs, each iteration with its own
-  compilation seed.
+- **Jobs.** A job fixes one circuit and one mitigation list. Both
+  templates are parameter settings of one union circuit (the reverse-ladder
+  splitters with its fixed ones free, the outward-ladder splitters, one
+  phase per mode; the other block's splitters at 0 reproduce each
+  template's unitary to 1e-12), so the case runs one job per pair, policy
+  and epoch: 8 jobs of 12 iterations, the six states under both templates,
+  each iteration with its own compilation seed and a QRNG-drawn order.
+  Every sum-rule and completion contrast compares iterations of one job,
+  and drift between jobs reaches only the epoch family.
 - **Decision.** Clopper-Pearson at alpha / 96 per observation, alpha = 0.01,
   gives one simultaneous event, and every prespecified contrast
   sum_j c_j p_j inherits it through
@@ -271,7 +276,9 @@ and makes no dark-subspace claim.
   reproducibility across the calibration change; a violated sum rule, the
   combined linear-effect, preparation and conditioning model without
   naming its cause. Policies are compared by what each output represents,
-  read from metadata, not by means. A mesh hash that varies is not a proven
+  never by means; a returned iteration names no applied mitigation (its
+  fields are the perf, noise, shot-count and computed experiment, circuit
+  and input fields), so that answer comes from the provider contract. A mesh hash that varies is not a proven
   varying effect, and identical hashes are not a proven stationary one.
   Passing every family remains necessary and not sufficient.
 
@@ -299,7 +306,7 @@ levels and never share one "verified" label.
 |---|---|---|
 | One common effect describes the preparation bank | six-state sum rules and held-out responses | a validated violation rejects the combined model; passing does not prove physical factorization |
 | Equivalent preparation descriptions are operationally equivalent | matched states, different completions, randomized order | a difference beyond the frozen margin rejects the equivalence |
-| An empty mitigation list exposes the needed observation level | payload, returned metadata, provider acquisition statement | unacknowledged or irrecoverably processed outputs leave M3 unsupported |
+| An empty mitigation list exposes the needed observation level | payload, retained job body, provider acquisition statement | unacknowledged or irrecoverably processed outputs leave M3 unsupported |
 | Terminal detector imbalance explains acceptance variation | calibrated efficiencies and held-out thinning predictions | residual coherent or state-dependent acceptance rejects the terminal-only model |
 | The intended four-space stays aligned | the a_U / gamma_L certificate | an inconclusive bound is not a falsification; misalignment needs its own evidence |
 | A fifth globally low eigenvalue exists | U_5 <= 0.1 c_L, or a confirmed five-space witness | a low complement Rayleigh quotient alone is insufficient |

@@ -2141,13 +2141,13 @@
    "inconclusive",
    "not_admitted"
   ],
-  "policies": "no contrast compares provider defaults with the empty list: correction may change the mean; the live qpu:belenos record declares no default mitigation, so the default policy's processing is read from each result's metadata, not from the record",
+  "policies": "no contrast compares provider defaults with the empty list: correction may change the mean; the live qpu:belenos record declares no default mitigation, and a returned iteration names none either (its fields are the perf, noise, shot-count and computed experiment, circuit and input fields), so the processing a policy received is established by the provider contract, while the readout checks that each retained job body carries the requested policy and that every result is an integer BSCount",
   "scope": "passing every family is necessary and not sufficient: a service that prepares sqrt(p_s)|A> + sqrt(1 - p_s)|D> for each requested p_s passes them without a fixed measurement"
  },
  "interpretation": [
   {
    "family": "completion",
-   "implicates": "preparation, compilation or both"
+   "implicates": "preparation, compilation or both; both templates share each job in randomized order, so drift between jobs cannot produce it"
   },
   {
    "family": "epoch",
@@ -2159,11 +2159,12 @@
   },
   {
    "family": "policies",
-   "implicates": "what each output represents, read from metadata, not means"
+   "implicates": "what each output represents, from the provider contract, since a result names no applied mitigation; never from means"
   }
  ],
  "jobs": [
   {
+   "circuit": "ladder-union",
    "epoch": 1,
    "iterations": [
     0,
@@ -2172,17 +2173,18 @@
     3,
     4,
     5,
-    48,
-    49,
-    50,
-    51,
-    52,
-    53
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
    ],
-   "processing": "provider-defaults",
-   "template": "outward-ladder"
+   "pair": "target-complement",
+   "processing": "provider-defaults"
   },
   {
+   "circuit": "ladder-union",
    "epoch": 2,
    "iterations": [
     6,
@@ -2191,17 +2193,18 @@
     9,
     10,
     11,
-    54,
-    55,
-    56,
-    57,
-    58,
-    59
+    30,
+    31,
+    32,
+    33,
+    34,
+    35
    ],
-   "processing": "provider-defaults",
-   "template": "outward-ladder"
+   "pair": "target-complement",
+   "processing": "provider-defaults"
   },
   {
+   "circuit": "ladder-union",
    "epoch": 1,
    "iterations": [
     12,
@@ -2210,17 +2213,18 @@
     15,
     16,
     17,
-    60,
-    61,
-    62,
-    63,
-    64,
-    65
+    36,
+    37,
+    38,
+    39,
+    40,
+    41
    ],
-   "processing": "empty-mitigation",
-   "template": "outward-ladder"
+   "pair": "target-complement",
+   "processing": "empty-mitigation"
   },
   {
+   "circuit": "ladder-union",
    "epoch": 2,
    "iterations": [
     18,
@@ -2229,25 +2233,26 @@
     21,
     22,
     23,
-    66,
-    67,
-    68,
-    69,
-    70,
-    71
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
    ],
-   "processing": "empty-mitigation",
-   "template": "outward-ladder"
+   "pair": "target-complement",
+   "processing": "empty-mitigation"
   },
   {
+   "circuit": "ladder-union",
    "epoch": 1,
    "iterations": [
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
     72,
     73,
     74,
@@ -2255,18 +2260,19 @@
     76,
     77
    ],
-   "processing": "provider-defaults",
-   "template": "reverse-ladder"
+   "pair": "middle-middle",
+   "processing": "provider-defaults"
   },
   {
+   "circuit": "ladder-union",
    "epoch": 2,
    "iterations": [
-    30,
-    31,
-    32,
-    33,
-    34,
-    35,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
     78,
     79,
     80,
@@ -2274,18 +2280,19 @@
     82,
     83
    ],
-   "processing": "provider-defaults",
-   "template": "reverse-ladder"
+   "pair": "middle-middle",
+   "processing": "provider-defaults"
   },
   {
+   "circuit": "ladder-union",
    "epoch": 1,
    "iterations": [
-    36,
-    37,
-    38,
-    39,
-    40,
-    41,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
     84,
     85,
     86,
@@ -2293,18 +2300,19 @@
     88,
     89
    ],
-   "processing": "empty-mitigation",
-   "template": "reverse-ladder"
+   "pair": "middle-middle",
+   "processing": "empty-mitigation"
   },
   {
+   "circuit": "ladder-union",
    "epoch": 2,
    "iterations": [
-    42,
-    43,
-    44,
-    45,
-    46,
-    47,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
     90,
     91,
     92,
@@ -2312,8 +2320,8 @@
     94,
     95
    ],
-   "processing": "empty-mitigation",
-   "template": "reverse-ladder"
+   "pair": "middle-middle",
+   "processing": "empty-mitigation"
   }
  ],
  "observations": [
@@ -3058,17 +3066,19 @@
   "target": 0.95
  },
  "preparation_descriptions": {
+  "ladder-union": "the job circuit: the reverse-ladder splitters with its fixed ones free, the outward-ladder splitters, then one phase per mode; each template's iteration sets the other block's splitters to 0 and reproduces that template's unitary to 1e-12",
   "outward-ladder": "adjacent splitters fan the photon from the source mode to its left and right neighbours in turn, then one phase per mode; 47 parameters",
   "reverse-ladder": "a fixed full splitter on two unused inputs, fixed full splitters that carry the photon to mode 0, adjacent splitters that ladder it rightward across every mode, then one phase per mode; 47 parameters"
  },
  "qrng": {
+  "binding": "the draw record's repository path and sha256 and each setting's seed and order indices enter every run manifest, built and checked by scripts/bdsc_cases.py --draw before the first submission; a draw that another case's manifests already name is refused, so no value seeds two cases",
   "credits": 0,
   "expected_seconds": 2,
   "quota": "1 of the free tier's 100 requests per calendar month",
   "requests": 1,
   "service": "ANU Quantum Numbers (aqn, keyed), scripts/anu_qrng.py draw",
   "type": "uint16",
-  "use": "the first settings values seed each setting's compilation_seed in observation order; the next settings values sort each epoch's acquisition order",
+  "use": "the first settings values seed each setting's compilation_seed in observation order; the next settings values sort each job's iteration order",
   "values": 192,
   "why_not_simulated": "the seed rule of strategy.md section 1 takes compilation seeds from a retained quantum draw so that neither the operator nor a pseudorandom stream fixes which meshes the case meets"
  },
@@ -3093,7 +3103,7 @@
  "schema": "bdsc-records-v1",
  "stop_conditions": [
   "scripts/qd_platform.py plan refuses the platform",
-  "a returned result's processing differs from the requested policy",
+  "a retained job body differs from the requested policy, or a result is not an integer BSCount",
   "a job fails or returns fewer eligible trials than the frozen n",
   "the per-run server version or calibration identity cannot be recorded",
   "spent credits or seconds reach the approved ceiling"

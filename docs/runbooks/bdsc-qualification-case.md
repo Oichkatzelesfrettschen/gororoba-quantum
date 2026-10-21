@@ -18,21 +18,12 @@ No step here is authorized until its written case is approved
    `uncorrected_observations`, `count_provenance` and
    `preparation_control`. A capability still `unresolved` is either answered
    first or named in the written case as the question this run tests.
-3. `"$PYTHON" scripts/bdsc_cases.py --write results/quandela/cases/bdsc_qualification`
-   builds one case directory per job, 8 in all: a parameterized 24-mode
-   template (`qd-template-circuit-v1`, outward-ladder or reverse-ladder)
-   and a manifest with 12 iterations, each binding one state's 47
-   parameters, and a `mitigations` list that is null for provider defaults
-   or `[]` to disable them. `--check` rebuilds and compares, and `--local`
-   requires Perceval, on the runner-built experiment with each iteration's
-   parameters bound, to reproduce every state's chip column and ideal
-   selected probability. `qd_platform.py` refuses a policy case whose body
-   lacks the policy and refuses a version-1 body; when a record declares
-   `pcvl_version` 1.3 or later but lacks `specs.commands`, as every
-   qpu:belenos record since 2026-10-20 does, it restores the commands and
-   records the basis ([calibration.md](../notes/quandela/calibration.md),
-   "Record fields Perceval reads"). Without `--draw` the cases are drafts
-   that plan and do not submit.
+3. A case builder emits one run directory per job, 8 in all, under
+   `results/quandela/runs/`, with the processing policy written into the job
+   body (`mitigations` absent for provider defaults, an empty list for the
+   empty policy) and the completion's description recorded beside the chip
+   column. `scripts/qd_platform.py` sets no mitigation policy per case, so
+   this builder is the first implementation step.
 4. A fresh `qd_platform.py snapshot` and a `plan` that passes for
    qpu:belenos. The cases submit parameterized templates, which `plan`
    checks without `specs.architecture`; it reads the architecture only for
@@ -43,7 +34,8 @@ No step here is authorized until its written case is approved
 1. Run `qd_platform.py plan` on every run directory and read from it the
    live price per shot, the per-job duration limit and Perceval's shot
    estimate.
-2. Write the case: the 96 settings in 8 jobs of 12 iterations, 300000
+2. Write the case: the 96 settings in 8 jobs of 12 iterations (one per
+   pair, policy and epoch on the union circuit), 300000
    eligible trials and max_shots = 600000 per iteration (57600000 shots in
    all), the three contrast families with their 0.02 margins at alpha
    0.01, the power of 0.9845 under E0, the two epochs, the credit and
@@ -55,13 +47,20 @@ No step here is authorized until its written case is approved
    stop conditions below, and the interpretation of each outcome from the
    design. Wait for approval; the QRNG read is part of what it approves.
 3. Draw one ANU QRNG record of 192 uint16 values with
-   `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng --length 192 --type uint16 --source aqn`,
-   rebuild with `scripts/bdsc_cases.py --write DIR --draw FILE`, which
-   seeds each iteration and orders each job's iterations, and freeze the
-   cases before the first submission.
+   `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng --length 192 --type uint16 --source aqn`;
+   it fixes each iteration's compilation seed and each job's iteration
+   order. Rebuild the run directories with `scripts/bdsc_cases.py --write
+   DIR --draw RECORD`, which writes the record's repository path, its
+   sha256 and every setting's seed and order index into each manifest and
+   refuses a record another case already names; pass `--check DIR --draw
+   RECORD`, and commit the record and the manifests before the first
+   submission.
 4. Run epoch 1 in the frozen order. After each job, `collect` and confirm
-   that the returned processing matches the requested policy and that the
-   server version and calibration identity are recorded.
+   that the retained job body carries the requested policy, that the
+   result is an integer BSCount, and that the server version and
+   calibration identity are recorded. A returned iteration names no applied
+   mitigation, so what the default policy received is a provider-contract
+   answer, never read from the result.
 5. Run epoch 2, all six states of every cell again, separated in time
    from epoch 1 by at least one platform calibration cycle
    ([calibration.md](../notes/quandela/calibration.md)).
@@ -74,8 +73,8 @@ No step here is authorized until its written case is approved
 ## Stop conditions
 
 Execution stops, and the remaining settings stay unsent, when
-`qd_platform.py plan` refuses the platform, a returned result's processing
-differs from the requested policy, a job fails or returns fewer eligible
+`qd_platform.py plan` refuses the platform, a retained job body differs
+from the requested policy or a result is not an integer BSCount, a job fails or returns fewer eligible
 trials than the frozen n, the per-run server version or calibration
 identity cannot be recorded, or spent credits or seconds reach the approved
 ceiling. No setting is added or repeated after viewing

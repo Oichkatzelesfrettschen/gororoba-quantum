@@ -1300,6 +1300,36 @@ def template_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
     return params
 
 
+# Both templates share one job circuit, so a job can interleave their iterations: the reverse-ladder splitters, its
+# fixed ones free, then the outward-ladder splitters, then one phase per mode. A splitter at angle 0 is the identity,
+# so a template's own angles with 0 on the other template's splitters give that template's unitary exactly.
+UNION_CIRCUIT = "ladder-union"
+
+
+def union_ops(source: int) -> list[TemplateOp]:
+    modes = [
+        m for name in reversed(PREPARATION_DESCRIPTIONS) for kind, m, _ in template_ops(name, source) if kind == "BS"
+    ]
+    ops: list[TemplateOp] = [("BS", m, k) for k, m in enumerate(modes)]
+    return ops + [("PS", m, len(modes) + m) for m in range(MODES)]
+
+
+def union_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
+    """The union circuit's parameters that realize template name on column: its splitter angles (pi for a fixed
+    splitter) in its own block, 0 on the other block, and its phases."""
+    own = template_ops(name, source)
+    params = template_params(name, column, source)
+    out = np.zeros(len(union_ops(source)))
+    offset = 0
+    for other in reversed(PREPARATION_DESCRIPTIONS):
+        block = [k for kind, _, k in template_ops(other, source) if kind == "BS"]
+        if other == name:
+            out[offset : offset + len(block)] = [math.pi if k is None else params[k] for k in block]
+        offset += len(block)
+    out[offset:] = [params[k] for kind, _, k in own if kind == "PS"]
+    return out
+
+
 CaseItem = tuple[str, np.ndarray, int]
 
 
@@ -1317,6 +1347,8 @@ def _case_bank(item: CaseItem) -> dict[str, Any]:
         for name in PREPARATION_DESCRIPTIONS:
             w = template_unitary(template_ops(name, source), template_params(name, column, source))
             require(np.allclose(w[:, source], column, rtol=0, atol=1e-12), f"{name} template misses the column")
+            union = template_unitary(union_ops(source), union_params(name, column, source))
+            require(np.allclose(union, w, rtol=0, atol=1e-12), f"the union circuit misses the {name} unitary")
             body[name] = np.delete(w, source, axis=1)
         rows.append(
             {
@@ -1344,18 +1376,27 @@ def _case_bank(item: CaseItem) -> dict[str, Any]:
 
 
 def case_jobs(observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """One job per (template, policy, epoch): a job fixes its circuit and its mitigation list, and its iterations
-    bind each observation's template parameters, so the 12 states of both pairs share it."""
+    """One job per (pair, policy, epoch) on the union circuit: a job fixes its circuit and its mitigation list, and
+    its 12 iterations are the six states under both templates. Every sum-rule and completion contrast then compares
+    iterations of one job in its randomized order, so drift between jobs reaches only the epoch family."""
     out = []
-    for d in PREPARATION_DESCRIPTIONS:
+    for pair in CASE_PAIRS:
         for policy in PROCESSING_POLICIES:
             for epoch in CASE_EPOCHS:
                 members = [
                     j
                     for j, o in enumerate(observations)
-                    if (o["preparation"], o["processing"], o["epoch"]) == (d, policy, epoch)
+                    if (o["pair"], o["processing"], o["epoch"]) == (pair, policy, epoch)
                 ]
-                out.append({"template": d, "processing": policy, "epoch": epoch, "iterations": members})
+                out.append(
+                    {
+                        "pair": pair,
+                        "circuit": UNION_CIRCUIT,
+                        "processing": policy,
+                        "epoch": epoch,
+                        "iterations": members,
+                    }
+                )
     return out
 
 
@@ -1465,8 +1506,10 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             "Bernoulli trials; the alpha split counts every observation, so admission never re-allocates error, and "
             "a contrast touching an unadmitted observation reads not_admitted",
             "policies": "no contrast compares provider defaults with the empty list: correction may change the mean; "
-            "the live qpu:belenos record declares no default mitigation, so the default policy's processing is read "
-            "from each result's metadata, not from the record",
+            "the live qpu:belenos record declares no default mitigation, and a returned iteration names none either "
+            "(its fields are the perf, noise, shot-count and computed experiment, circuit and input fields), so the "
+            "processing a policy received is established by the provider contract, while the readout checks that "
+            "each retained job body carries the requested policy and that every result is an integer BSCount",
             "epochs": "epoch 2 follows at least one platform calibration cycle, so the epoch family tests "
             "reproducibility across a calibration change; within-epoch stability rests on the randomized order alone, "
             "and the epochs are never pooled into one stationary reconstruction",
@@ -1480,6 +1523,9 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             "reverse-ladder": "a fixed full splitter on two unused inputs, fixed full splitters that carry the "
             "photon to mode 0, adjacent splitters that ladder it rightward across every mode, then one phase per "
             "mode; 47 parameters",
+            UNION_CIRCUIT: "the job circuit: the reverse-ladder splitters with its fixed ones free, the "
+            "outward-ladder splitters, then one phase per mode; each template's iteration sets the other block's "
+            "splitters to 0 and reproduces that template's unitary to 1e-12",
         },
         "observations": observations,
         "power": {
@@ -1534,7 +1580,10 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             "values": QRNG_VALUES,
             "type": "uint16",
             "use": "the first settings values seed each setting's compilation_seed in observation order; the next "
-            "settings values sort each epoch's acquisition order",
+            "settings values sort each job's iteration order",
+            "binding": "the draw record's repository path and sha256 and each setting's seed and order indices enter "
+            "every run manifest, built and checked by scripts/bdsc_cases.py --draw before the first submission; a "
+            "draw that another case's manifests already name is refused, so no value seeds two cases",
             "expected_seconds": 2,
             "credits": 0,
             "quota": "1 of the free tier's 100 requests per calendar month",
@@ -1543,19 +1592,27 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
         },
         "stop_conditions": [
             "scripts/qd_platform.py plan refuses the platform",
-            "a returned result's processing differs from the requested policy",
+            "a retained job body differs from the requested policy, or a result is not an integer BSCount",
             "a job fails or returns fewer eligible trials than the frozen n",
             "the per-run server version or calibration identity cannot be recorded",
             "spent credits or seconds reach the approved ceiling",
         ],
         "interpretation": [
-            {"family": "completion", "implicates": "preparation, compilation or both"},
+            {
+                "family": "completion",
+                "implicates": "preparation, compilation or both; both templates share each job in randomized order, "
+                "so drift between jobs cannot produce it",
+            },
             {"family": "epoch", "implicates": "reproducibility across the calibration change"},
             {
                 "family": "sum_rule",
                 "implicates": "the combined linear-effect, preparation and conditioning model, without a unique cause",
             },
-            {"family": "policies", "implicates": "what each output represents, read from metadata, not means"},
+            {
+                "family": "policies",
+                "implicates": "what each output represents, from the provider contract, since a result names no "
+                "applied mitigation; never from means",
+            },
         ],
         "authorization": "none: the case waits for its written-case approval; a pass supports proposing the "
         "160-setting run, never running it",
@@ -1856,6 +1913,13 @@ def self_test() -> int:
                 reached[name] = w
             first, second = reached.values()
             require(not np.allclose(first, second), "self-test: the two templates coincide")
+            for name, w in reached.items():
+                union = template_unitary(union_ops(source), union_params(name, column, source))
+                require(np.allclose(union, w, rtol=0, atol=1e-12), f"self-test: the union circuit misses {name}")
+    # Packing: every sum-rule and completion contrast stays inside one job; only the epoch family spans jobs.
+    job_of = {j: n for n, job in enumerate(case_jobs(observations)) for j in job["iterations"]}
+    for family, _, terms in contrasts:
+        require((len({job_of[j] for j, _ in terms}) == 1) == (family != "epoch"), f"self-test: {family} packing")
     # Thinning equalizes terminal efficiencies and leaves internal loss: D = eta_* T^dagger T.
     lossless = numeric_unitary(u)[:, : bdsc.DIM]
     eta_t = np.linspace(0.6, 0.95, MODES)
