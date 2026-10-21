@@ -250,19 +250,30 @@ def tally(counts: dict[str, int], selected_modes: list[int]) -> dict[str, int]:
 
 def readout(runs: list[Path]) -> dict[str, Any]:
     """Every contrast of the frozen case from collected runs, each policy admitted only by its contract."""
-    case = json.loads(CASE.read_text(encoding="utf-8"))
+    case_bytes = CASE.read_bytes()
+    case = json.loads(case_bytes)
     observations = case["observations"]
     contrasts = cert.case_contrasts(observations)
     tallies: dict[int, dict[str, int]] = {}
     for run in runs:
         manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
         result = json.loads((run / "results.json").read_text(encoding="utf-8"))
-        require(result.get("status") == "completed", f"{run}: status {result.get('status')}")
+        # collect retains the scrubbed status record, whose own status field names the job's end state.
+        state = result.get("status", {})
+        require(isinstance(state, dict) and state.get("status") == "completed", f"{run}: the job did not complete")
+        require(result.get("partial") is False, f"{run}: a partial result")
         require(not manifest.get("draft", True), f"{run}: a draft case carries no frozen seeds or order")
+        require(manifest["qualification_case_sha256"] == sha256_bytes(case_bytes), f"{run}: built from another case")
         per_iteration = result["iterations"]
         require(len(per_iteration) == len(manifest["settings"]), f"{run}: iteration count differs")
         for setting, iteration in zip(manifest["settings"], per_iteration, strict=True):
-            tallies[setting["observation_index"]] = tally(iteration["counts"], manifest["selected_modes"])
+            # Each returned iteration names the parameters and seed it ran with, so attribution is checked.
+            ran = iteration["iteration"]
+            require(ran.get("circuit_params") == setting["circuit_params"], f"{run}/{setting['name']}: parameters")
+            require(ran.get("compilation_seed") == setting["compilation_seed"], f"{run}/{setting['name']}: seed")
+            index = setting["observation_index"]
+            require(index not in tallies, f"{run}/{setting['name']}: observation {index} collected twice")
+            tallies[index] = tally(iteration["counts"], manifest["selected_modes"])
     missing = [i for i in range(len(observations)) if i not in tallies]
     require(not missing, f"no collected iteration for observations {missing[:6]}")
     k = np.array([tallies[i]["selected"] for i in range(len(observations))])

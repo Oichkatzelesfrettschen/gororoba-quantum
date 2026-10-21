@@ -888,23 +888,40 @@ def explorer_row(platform: str) -> dict[str, Any]:
     return platform_row(rows[0])
 
 
-def payload_version_basis(specs: Any) -> str:
-    """Restore specs.commands from available_commands when the record declares a server Perceval of 1.3 or later.
+# Frozen processor records whose server command sets stand in for a live record that omits specs.commands.
+RETAINED_RECORDS = (ROOT / "docs/evidence/bdsc/inputs/receipt.json",)
 
-    RPCBasedCommunicationLayer.send builds a version-2 body only when the record carries specs.commands and
-    otherwise downgrades it for a worker that predates payload version 2. Version 2 starts at Perceval 1.3
-    (PayloadUpdater.update_payload), so a record declaring pcvl_version 1.3 or later names a worker that reads it
-    whatever the commands field says; without that declaration the commands stay absent and the body version 1.
-    Returns "declared", "restored" or "absent".
+
+def retained_commands(platform: str, specs: Any) -> tuple[Any, str] | None:
+    """The serialized commands of a frozen record of this platform at the live record's software versions."""
+    for path in RETAINED_RECORDS:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        frozen = record.get("processors", {}).get(platform, {}).get("specs", {})
+        same_worker = all(frozen.get(key) == specs.get(key) for key in ("pcvl_version", "software_versions"))
+        if same_worker and isinstance(frozen.get("commands"), str):
+            return frozen["commands"], f"{path.relative_to(ROOT)} retrieved {record.get('retrieved_utc')}"
+    return None
+
+
+def payload_version_basis(specs: Any, platform: str) -> str:
+    """Install the server command set when the live record omits specs.commands, from a frozen record of the same
+    worker; returns "declared", "restored from <record>" or "absent".
+
+    RemoteComputer builds its command signatures once, at construction, from specs.commands, and without them from
+    CommandFactory, whose sample_count lacks compilation_seed; RPCBasedCommunicationLayer.send builds a version-2
+    body only when specs.commands is present, and PayloadUpdater's upgrade of a version-1 body drops an explicit
+    mitigation list. A frozen record with equal pcvl_version and software_versions names the same worker, so its
+    serialized commands are the live server's; without one the commands stay absent.
     """
     if "commands" in specs:
         return "declared"
-    version = str(specs.get("pcvl_version") or "")
-    parts = version.split(".")
-    if len(parts) < 2 or not all(part.isdigit() for part in parts[:2]) or (int(parts[0]), int(parts[1])) < (1, 3):
+    found = retained_commands(platform, specs)
+    if found is None:
         return "absent"
-    specs["commands"] = list(specs.commands)
-    return "restored"
+    from perceval.serialization import deserialize
+
+    specs["commands"] = deserialize(found[0])
+    return f"restored from {found[1]}"
 
 
 def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], platform: str) -> dict[str, Any]:
@@ -924,6 +941,8 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     import perceval as pcvl
 
     layer = QuandelaCommunicationLayer(platform, token=token())
+    # The command set must be in place before RemoteComputer reads it.
+    basis = payload_version_basis(layer._specs, platform)
     computer = RemoteComputer(layer)
     policy = manifest.get("mitigations")
     if policy not in MITIGATION_POLICIES:
@@ -1003,7 +1022,10 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     computation.job_name = f"{manifest['family']}/{manifest['job']}"
     if len(computation.job_name) > JOB_NAME_LIMIT:
         raise PlatformError(f"job name {computation.job_name!r} exceeds the service's {JOB_NAME_LIMIT} characters")
-    computer.validate_single(computation)
+    try:
+        computer.validate_single(computation)
+    except (TypeError, ValueError) as error:
+        raise PlatformError(f"{manifest['job']}: Perceval rejects the computation on {platform}: {error}") from None
     captured: dict[str, Any] = {}
 
     def record(cloud_data: dict[str, Any]) -> str:
@@ -1013,7 +1035,8 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     layer._rpc_handler.create_job = record
     prepared = computer.prepare_payload(computation)
     # send reads the cached specs without refetching, so the basis set here is the one the body is built under.
-    basis = payload_version_basis(layer._specs)
+    # A refetch since construction replaces the specs, so the command set goes back in before send reads it.
+    payload_version_basis(layer._specs, platform)
     layer.send(prepared)
     body: dict[str, Any] = {**captured["body"], "max_duration": manifest["max_duration"]}
     # RPCBasedCommunicationLayer.send downgrades the body to payload version 1 when the processor record lacks
@@ -1057,7 +1080,9 @@ def plan(
         raise PlatformError(f"max_duration {manifest['max_duration']} exceeds the platform's {row['max_duration']}")
     if expected_seconds > manifest["max_duration"]:
         raise PlatformError(f"expected {expected_seconds} s exceed the case's max_duration {manifest['max_duration']}")
-    ceiling = row["price_per_shot"] * manifest["max_shots"] + per_job_credits
+    # A job bills its largest iteration's max_shots (docs/runbooks/quandela-credit-optimization.md).
+    billed_shots = max(shots for _, shots in iteration_budgets(manifest))
+    ceiling = row["price_per_shot"] * billed_shots + per_job_credits
     if ceiling > max_credits:
         raise PlatformError(
             f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
@@ -1094,7 +1119,7 @@ def plan(
         "max_shots": manifest["max_shots"],
         "estimated_shots": estimate,
         "credit_ceiling": ceiling,
-        "estimated_credits": row["price_per_shot"] * estimate + per_job_credits,
+        "estimated_credits": row["price_per_shot"] * min(billed_shots, estimate) + per_job_credits,
         "max_credits": max_credits,
         "body": built["body"],
         "body_sha256": sha256_bytes(json.dumps(built["body"], sort_keys=True).encode()),
@@ -1130,6 +1155,8 @@ def submit(
     """Send one approved case as one job while holding the token's submit lock beside the token file."""
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
+    if load_case(case_dir)[0].get("draft"):
+        raise PlatformError(f"{case_dir} is a draft without frozen seeds and order; rebuild it from its draw")
     lock = Path(os.environ.get(TOKEN_ENV, "")).with_name("submit.lock")
     with open(lock, "a", encoding="utf-8") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
@@ -1596,31 +1623,31 @@ def seed_self_test() -> None:
 
 
 def payload_version_self_test() -> None:
-    """A 1.3 record without commands gets them back and builds a version-2 body; a 1.2 record keeps version 1."""
+    """A record of the frozen worker without commands gets the frozen command set, whose sample_count takes
+    compilation_seed; another worker keeps none; a version-1 round trip loses an empty mitigation list."""
     import perceval as pcvl
     from perceval.runtime.payload_generator import PayloadGenerator
     from perceval.runtime.payload_updater import PayloadUpdater
     from perceval.runtime.platform_specs import PlatformSpecs
-    from perceval.utils.constants import KEY_COMPUTATION, KEY_MITIGATIONS
+    from perceval.utils.constants import KEY_MITIGATIONS
 
+    frozen = json.loads(RETAINED_RECORDS[0].read_text(encoding="utf-8"))["processors"]["qpu:belenos"]["specs"]
+    same = {key: frozen[key] for key in ("pcvl_version", "software_versions", "available_commands")}
+    specs = PlatformSpecs(dict(same))
+    if not payload_version_basis(specs, "qpu:belenos").startswith("restored from"):
+        raise PlatformError("self-test: the frozen worker's command set was not restored")
+    sample_count = next(c for c in specs.commands if c.name == "sample_count")
     built = pcvl.Experiment(pcvl.BS())
     built.with_input(pcvl.BasicState([1, 0]))
     built.min_detected_photons_filter(1)
     computation = pcvl.ExecutionFactory(pcvl.SimulatedComputer("SLOS"), built).build_computation("sample_count")
-    computation.add_params(max_samples=100, max_shots=200)
-    for version, expected in (("1.3.0", "restored"), ("1.2.4", "absent"), (None, "absent")):
-        specs = PlatformSpecs({"available_commands": ["probs", "sample_count"], "pcvl_version": version})
-        basis = payload_version_basis(specs)
-        if basis != expected:
-            raise PlatformError(f"self-test: pcvl_version {version} reads {basis}, expected {expected}")
-        body = PayloadGenerator.from_computation(computation, [], None, None)
-        if "commands" not in specs:
-            body = PayloadUpdater.update_payload(body, specs, target_payload_version=1)
-        if (KEY_COMPUTATION in body) != (expected == "restored"):
-            raise PlatformError(f"self-test: pcvl_version {version} built the wrong payload version")
-    # A version-1 body round-tripped by PayloadUpdater loses an explicit empty mitigation list.
+    computation.command = sample_count
+    computation.add_params(max_samples=100, max_shots=200, compilation_seed=7)
+    other = PlatformSpecs({**same, "software_versions": {**same["software_versions"], "pcvl-worker": "0.0.0"}})
+    if payload_version_basis(other, "qpu:belenos") != "absent" or "commands" in other:
+        raise PlatformError("self-test: another worker's record received the frozen command set")
     v1 = PayloadUpdater.update_payload(
-        PayloadGenerator.from_computation(computation, [], None, None), specs, target_payload_version=1
+        PayloadGenerator.from_computation(computation, [], None, None), other, target_payload_version=1
     )
     if KEY_MITIGATIONS in PayloadUpdater.update_payload(v1, pcvl.SimulatedComputer("SLOS"), target_payload_version=2):
         raise PlatformError("self-test: a version-1 round trip kept the mitigation list")

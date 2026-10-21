@@ -110,10 +110,15 @@ jobs at 45000 trials.
   processor record carries `specs.commands` (`RPCBasedCommunicationLayer.send`).
   Without it the body is version 1, and the round trip back to version 2
   drops an explicit empty mitigation list, so the job runs under the
-  server's default. `qd_platform.payload_version_basis` decides the version
-  from the record's `pcvl_version` and records the basis in the plan
-  ([calibration.md](../notes/quandela/calibration.md), "Record fields
-  Perceval reads").
+  server's default; without it Perceval's fallback `sample_count` also
+  rejects `compilation_seed`. `qd_platform.payload_version_basis` installs
+  the server command set of a frozen record of the same worker
+  (`pcvl_version` and `software_versions` equal) and records the basis in
+  the plan ([calibration.md](../notes/quandela/calibration.md), "Record
+  fields Perceval reads").
+- **Credit ceiling in plan.** `plan` charges the price per shot on the
+  largest iteration's `max_shots`, as the service bills, so a written
+  case's `--max-credits` and `--per-job-credits` follow the rule above.
 - **Mitigation default.** `mitigations = None` applies whatever default the
   server holds: DetectorBalancing on sim:belenos, none on qpu:ascella, and
   undeclared on qpu:belenos since its record lost `default_mitigations`.
