@@ -841,6 +841,25 @@ def explorer_row(platform: str) -> dict[str, Any]:
     return platform_row(rows[0])
 
 
+def payload_version_basis(specs: Any) -> str:
+    """Restore specs.commands from available_commands when the record declares a server Perceval of 1.3 or later.
+
+    RPCBasedCommunicationLayer.send builds a version-2 body only when the record carries specs.commands and
+    otherwise downgrades it for a worker that predates payload version 2. Version 2 starts at Perceval 1.3
+    (PayloadUpdater.update_payload), so a record declaring pcvl_version 1.3 or later names a worker that reads it
+    whatever the commands field says; without that declaration the commands stay absent and the body version 1.
+    Returns "declared", "restored" or "absent".
+    """
+    if "commands" in specs:
+        return "declared"
+    version = str(specs.get("pcvl_version") or "")
+    parts = version.split(".")
+    if len(parts) < 2 or not all(part.isdigit() for part in parts[:2]) or (int(parts[0]), int(parts[1])) < (1, 3):
+        return "absent"
+    specs["commands"] = list(specs.commands)
+    return "restored"
+
+
 def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], platform: str) -> dict[str, Any]:
     """Perceval's job body for the case and its live shot estimate, built without sending anything.
 
@@ -930,7 +949,10 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
         return "recorded"
 
     layer._rpc_handler.create_job = record
-    layer.send(computer.prepare_payload(computation))
+    prepared = computer.prepare_payload(computation)
+    # send reads the cached specs without refetching, so the basis set here is the one the body is built under.
+    basis = payload_version_basis(layer._specs)
+    layer.send(prepared)
     body: dict[str, Any] = {**captured["body"], "max_duration": manifest["max_duration"]}
     # RPCBasedCommunicationLayer.send downgrades the body to payload version 1 when the processor record lacks
     # specs.commands; a version-1 worker predates the mitigations key, so a policy case refuses that body.
@@ -943,7 +965,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
         raise PlatformError(f"{manifest['job']}: the job body does not carry the mitigation policy {policy!r}")
     if token() in json.dumps(body):
         raise PlatformError("the job body carries the token")
-    return {"body": body, "estimated_shots": estimate, "versions": found}
+    return {"body": body, "estimated_shots": estimate, "versions": found, "payload_version_basis": basis}
 
 
 def plan(
@@ -1015,6 +1037,7 @@ def plan(
         "body": built["body"],
         "body_sha256": sha256_bytes(json.dumps(built["body"], sort_keys=True).encode()),
         "versions": built["versions"],
+        "payload_version_basis": built["payload_version_basis"],
     }
 
 
@@ -1510,9 +1533,41 @@ def seed_self_test() -> None:
         raise SystemExit(f"self-test: iteration_form accepted settings {bad_settings}")
 
 
+def payload_version_self_test() -> None:
+    """A 1.3 record without commands gets them back and builds a version-2 body; a 1.2 record keeps version 1."""
+    import perceval as pcvl
+    from perceval.runtime.payload_generator import PayloadGenerator
+    from perceval.runtime.payload_updater import PayloadUpdater
+    from perceval.runtime.platform_specs import PlatformSpecs
+    from perceval.utils.constants import KEY_COMPUTATION, KEY_MITIGATIONS
+
+    built = pcvl.Experiment(pcvl.BS())
+    built.with_input(pcvl.BasicState([1, 0]))
+    built.min_detected_photons_filter(1)
+    computation = pcvl.ExecutionFactory(pcvl.SimulatedComputer("SLOS"), built).build_computation("sample_count")
+    computation.add_params(max_samples=100, max_shots=200)
+    for version, expected in (("1.3.0", "restored"), ("1.2.4", "absent"), (None, "absent")):
+        specs = PlatformSpecs({"available_commands": ["probs", "sample_count"], "pcvl_version": version})
+        basis = payload_version_basis(specs)
+        if basis != expected:
+            raise PlatformError(f"self-test: pcvl_version {version} reads {basis}, expected {expected}")
+        body = PayloadGenerator.from_computation(computation, [], None, None)
+        if "commands" not in specs:
+            body = PayloadUpdater.update_payload(body, specs, target_payload_version=1)
+        if (KEY_COMPUTATION in body) != (expected == "restored"):
+            raise PlatformError(f"self-test: pcvl_version {version} built the wrong payload version")
+    # A version-1 body round-tripped by PayloadUpdater loses an explicit empty mitigation list.
+    v1 = PayloadUpdater.update_payload(
+        PayloadGenerator.from_computation(computation, [], None, None), specs, target_payload_version=1
+    )
+    if KEY_MITIGATIONS in PayloadUpdater.update_payload(v1, pcvl.SimulatedComputer("SLOS"), target_payload_version=2):
+        raise PlatformError("self-test: a version-1 round trip kept the mitigation list")
+
+
 def runner_self_test() -> int:
     """Offline rules of plan, submit, collect and run_facts against a stubbed service; returns the rejections."""
     charge_self_test()
+    payload_version_self_test()
     seed_self_test()
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
@@ -1562,7 +1617,12 @@ def runner_self_test() -> int:
         raise AssertionError(f"unexpected {method} {route}")
 
     def fake_payload(*_: Any) -> dict[str, Any]:
-        return {"body": body, "estimated_shots": service["estimate"], "versions": {"perceval-quandela": "1.3.1"}}
+        return {
+            "body": body,
+            "estimated_shots": service["estimate"],
+            "versions": {"perceval-quandela": "1.3.1"},
+            "payload_version_basis": "declared",
+        }
 
     rejected = 0
 
