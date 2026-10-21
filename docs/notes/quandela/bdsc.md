@@ -233,10 +233,12 @@ both candidate directions.
   the ideal E0 spectrum, the outcome law and the normalization; a measured
   complement spectrum or calibration uncertainty moves them.
 - The six-state consistency case of
-  [bdsc-qualification.md](../../design/bdsc-qualification.md) needs 22080
-  trials per setting at margin 0.05 and alpha 0.01 over eight cells
-  (exact Clopper-Pearson at E0's expected counts); the conservative
-  Hoeffding bound 8 log(12 / alpha) / m^2 reads 22689 at one cell.
+  [bdsc-qualification.md](../../design/bdsc-qualification.md) fixes 45000
+  trials per setting over 96 settings, where E0 passes all 128 contrasts
+  with probability 0.939 (target 0.9); expected counts that barely fit the
+  margin are not a success probability, and at the earlier 22080 that
+  probability is 0. The Hoeffding bound 8 log(12 / alpha) / m^2 reads
+  22689 for one six-state bank.
 - The zero-event trace route (n_min = 1086 at gamma_L = 0.45) needs zero
   selected events. Modes 0, 1 and 5, where Belenos's unmodeled off-cone
   clicks appear, are outside the selected set, so they do not refute the

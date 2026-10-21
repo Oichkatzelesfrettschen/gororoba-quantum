@@ -114,7 +114,13 @@ MONTHLY_CREDITS = 200
 WITNESS_BRIGHT_LOWER = 0.9
 WITNESS_ALPHA = 0.025
 CASE_ALPHA = 0.01
-CASE_EPOCH_REFERENCES = ("f", "g")
+CASE_EPOCHS = (1, 2)
+CASE_MARGINS = {"sum_rule": 0.05, "completion": 0.05, "epoch": 0.05}
+CASE_POWER_TARGET = 0.9
+CASE_POWER_REPLICATES = 2000
+CASE_POWER_SEED = 20261021
+CASE_REFERENCE_TRIALS = 22_080
+CASE_TRIAL_GRID = tuple(range(25_000, 60_001, 2_500))
 CASE_PAIRS = {"target-complement": ("K", 0, "Q", 8), "middle-middle": ("Q", 1, "Q", 2)}
 PREPARATION_DESCRIPTIONS = ("householder", "givens")
 PROCESSING_POLICIES: dict[str, list[str] | None] = {"provider-defaults": None, "empty-mitigation": []}
@@ -1262,21 +1268,62 @@ def _case_bank(item: CaseItem) -> dict[str, Any]:
     return {"pair": pair, "f_g": [f"{fb}{fi + 1}", f"{gb}{gi + 1}"], "settings": rows}
 
 
-def _case_trials(margin: float, alpha: float, probabilities: list[float]) -> int:
-    """Smallest n at which the Clopper-Pearson residual intervals at the expected counts lie inside the margin."""
+def case_observations() -> list[dict[str, Any]]:
+    """Every acquired setting, ordered pair, completion, policy, epoch, label: both epochs repeat all six states, so
+    the epoch comparison reaches the off-diagonal response that f and g alone cannot see."""
+    return [
+        {"pair": pair, "preparation": d, "processing": policy, "epoch": epoch, "label": label}
+        for pair in CASE_PAIRS
+        for d in PREPARATION_DESCRIPTIONS
+        for policy in PROCESSING_POLICIES
+        for epoch in CASE_EPOCHS
+        for label in bdsc.CONSISTENCY_LABELS
+    ]
 
-    def inside(n: int) -> bool:
-        counts = dict(zip(bdsc.CONSISTENCY_LABELS, [(int(round(p * n)), n) for p in probabilities], strict=True))
-        readout = bdsc.consistency_readout(counts, alpha, margin)
-        return readout["delta_R_status"] == readout["delta_I_status"] == "compatible"
 
-    low, high = 1, 1
-    while not inside(high):
-        low, high = high, high * 2
-    while high - low > 1:
-        mid = (low + high) // 2
-        low, high = (low, mid) if inside(mid) else (mid, high)
-    return high
+def case_contrasts(observations: list[dict[str, Any]]) -> list[bdsc.Contrast]:
+    """Within-cell sum rules, cross-completion differences at one policy and epoch, and cross-epoch differences at
+    one completion and policy. No contrast compares processing policies, whose means may differ by design."""
+    index = {tuple(o.values()): j for j, o in enumerate(observations)}
+    out: list[bdsc.Contrast] = []
+    for pair in CASE_PAIRS:
+        for d in PREPARATION_DESCRIPTIONS:
+            for policy in PROCESSING_POLICIES:
+                for epoch in CASE_EPOCHS:
+
+                    def at(label: str, pair: str = pair, d: str = d, policy: str = policy, epoch: int = epoch) -> int:
+                        return index[(pair, d, policy, epoch, label)]
+
+                    for plus, minus in (("+", "-"), ("+i", "-i")):
+                        terms = ((at(plus), 1.0), (at(minus), 1.0), (at("f"), -1.0), (at("g"), -1.0))
+                        out.append(("sum_rule", CASE_MARGINS["sum_rule"], terms))
+        for policy in PROCESSING_POLICIES:
+            for epoch in CASE_EPOCHS:
+                for label in bdsc.CONSISTENCY_LABELS:
+                    h = index[(pair, "householder", policy, epoch, label)]
+                    g = index[(pair, "givens", policy, epoch, label)]
+                    out.append(("completion", CASE_MARGINS["completion"], ((h, 1.0), (g, -1.0))))
+        for d in PREPARATION_DESCRIPTIONS:
+            for policy in PROCESSING_POLICIES:
+                for label in bdsc.CONSISTENCY_LABELS:
+                    late, early = (index[(pair, d, policy, e, label)] for e in (2, 1))
+                    out.append(("epoch", CASE_MARGINS["epoch"], ((late, 1.0), (early, -1.0))))
+    return out
+
+
+PowerItem = tuple[int, tuple[float, ...], tuple[bdsc.Contrast, ...]]
+
+
+def _case_power(item: PowerItem) -> int:
+    """Replicates of CASE_POWER_REPLICATES ideal records at n trials whose every contrast reads compatible.
+
+    The record draws from its own generator seeded by (CASE_POWER_SEED, n), so the pool and the serial loop agree.
+    """
+    n, probabilities, contrasts = item
+    rng = np.random.default_rng([CASE_POWER_SEED, n])
+    k = rng.binomial(n, np.broadcast_to(probabilities, (CASE_POWER_REPLICATES, len(probabilities))))
+    status = bdsc.contrast_readout(k, np.full(k.shape, n), contrasts, CASE_ALPHA)["status"]
+    return int(np.sum(np.all(status == "compatible", axis=1)))
 
 
 def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
@@ -1285,41 +1332,44 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
     for bank in banks:
         for row in bank["settings"]:
             require(row["unused_column_distance"] > 0.1, f"{bank['pair']} {row['label']}: the completions coincide")
-    cells = [
-        {"pair": pair, "preparation": d, "processing": policy, "mitigations": PROCESSING_POLICIES[policy]}
-        for pair in CASE_PAIRS
-        for d in PREPARATION_DESCRIPTIONS
-        for policy in PROCESSING_POLICIES
-    ]
-    cell_count = len(cells)
-    alpha_cell = CASE_ALPHA / cell_count
-    trials = max(
-        _case_trials(
-            bdsc.CONSISTENCY_MARGIN,
-            alpha_cell,
-            [row["ideal_selected"]["E0"] for row in bank["settings"]],
-        )
-        for bank in banks
-    )
-    first_epoch = cell_count * len(bdsc.CONSISTENCY_LABELS)
-    second_epoch = cell_count * len(CASE_EPOCH_REFERENCES)
-    settings = first_epoch + second_epoch
-    shots = settings * trials
-    ceiling = settings * (CREDITS_PER_JOB + CREDITS_PER_SHOT * SHOT_HEADROOM * trials)
+    ideal = {(b["pair"], r["label"]): r["ideal_selected"]["E0"] for b in banks for r in b["settings"]}
+    observations = case_observations()
+    contrasts = case_contrasts(observations)
+    probabilities = tuple(ideal[(o["pair"], o["label"])] for o in observations)
+    grid = (CASE_REFERENCE_TRIALS, *CASE_TRIAL_GRID)
+    # Each item is a whole replicate batch of Clopper-Pearson quantiles, so one item already repays a worker.
+    passes = parallel.ordered_map(_case_power, [(n, probabilities, tuple(contrasts)) for n in grid], min_items=1)
+    power = {n: hits / CASE_POWER_REPLICATES for n, hits in zip(grid, passes, strict=True)}
+    chosen = [n for n in CASE_TRIAL_GRID if power[n] >= CASE_POWER_TARGET]
+    require(bool(chosen), "no trial count on the grid reaches the power target")
+    trials = chosen[0]
+    settings = len(observations)
+    max_shots = SHOT_HEADROOM * trials
+    credits = settings * (CREDITS_PER_JOB + CREDITS_PER_SHOT * max_shots)
+    seconds_historical = settings * (SECONDS_PER_ITERATION + SECONDS_PER_SAMPLE * max_shots)
+    families = {f: sum(c[0] == f for c in contrasts) for f in CASE_MARGINS}
     return {
         "schema": SCHEMA,
         "record": "qualification_case",
         "target_sha256": target["target_sha256"],
         "question": "do the returned observations behave as one fixed linear effect on independently prepared "
-        "states, at a declared observation level, across preparation descriptions, processing policies and time",
+        "states, at a declared observation level, across preparation descriptions and across a calibration change",
         "claims": {
-            "low_ratio": bdsc.LOW_RATIO,
             "findings_schema": bdsc.FINDINGS_SCHEMA,
-            "consistency_margin": bdsc.CONSISTENCY_MARGIN,
             "alpha": CASE_ALPHA,
-            "alpha_per_cell": alpha_cell,
-            "outcomes": ["compatible", "violated", "inconclusive"],
-            "scope": "passing the sum rules is necessary and not sufficient: a service that prepares "
+            "confidence_event": "Clopper-Pearson at alpha / P on each of the P observations; every contrast "
+            "interval follows from the same event, so false certification of any contrast family is bounded by alpha",
+            "margins": CASE_MARGINS,
+            "contrast_families": families,
+            "outcomes": ["compatible", "violated", "inconclusive", "not_admitted"],
+            "admission": "an observation enters the event only when its policy's observation contract supports "
+            "Bernoulli trials; the alpha split counts every observation, so admission never re-allocates error, and "
+            "a contrast touching an unadmitted observation reads not_admitted",
+            "policies": "no contrast compares provider defaults with the empty list: correction may change the mean",
+            "epochs": "epoch 2 follows at least one platform calibration cycle, so the epoch family tests "
+            "reproducibility across a calibration change; within-epoch stability rests on the randomized order alone, "
+            "and the epochs are never pooled into one stationary reconstruction",
+            "scope": "passing every family is necessary and not sufficient: a service that prepares "
             "sqrt(p_s)|A> + sqrt(1 - p_s)|D> for each requested p_s passes them without a fixed measurement",
         },
         "banks": banks,
@@ -1327,18 +1377,23 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             "householder": "I - 2 w w^dagger with w along phase e_r - column, times the source phase",
             "givens": "a chain of 2 x 2 rotations of the source mode against every other mode",
         },
-        "cells": cells,
+        "observations": observations,
+        "power": {
+            "model": "the acceptable implementation: E0 itself, one effect across completions, policies and epochs, "
+            "independent fixed-n Bernoulli trials at every observation",
+            "decision": "every contrast of every family reads compatible",
+            "target": CASE_POWER_TARGET,
+            "replicates": CASE_POWER_REPLICATES,
+            "seed": CASE_POWER_SEED,
+            "rows": [{"trials_per_setting": n, "power": power[n]} for n in grid],
+            "chosen_trials": trials,
+            "scope": "power under this model only; drift, preparation error or a corrected sampling law lower it",
+        },
         "acquisition": {
             "trials_per_setting": trials,
-            "trials_rule": "smallest n whose Clopper-Pearson residual intervals at E0's expected counts lie inside "
-            "the margin, Bonferroni over every cell",
             "epochs": [
-                {"epoch": 1, "settings": first_epoch, "content": "every cell's six states in one randomized order"},
-                {
-                    "epoch": 2,
-                    "settings": second_epoch,
-                    "content": "the f and g references of every cell, separated in time from epoch 1",
-                },
+                {"epoch": e, "settings": settings // len(CASE_EPOCHS), "content": "all six states of every cell"}
+                for e in CASE_EPOCHS
             ],
             "randomized_and_retained": [
                 "preparation label",
@@ -1349,27 +1404,36 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
             ],
             "stopping": bdsc.STOPPING,
         },
-        "cost": {
+        "resources": {
             "settings": settings,
-            "shots": shots,
-            "credit_ceiling_one_job_per_setting": round(ceiling, 6),
-            "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots = 2 x samples (strategy.md section 1a)",
-            "timing": "unknown: the historical rates belong to processed-output jobs under default mitigation",
+            "jobs_ceiling": settings,
+            "eligible_trials_per_setting": trials,
+            "eligible_trials_total": settings * trials,
+            "max_shots_per_setting": max_shots,
+            "max_shots_total": settings * max_shots,
+            "credits_historical_one_job_per_setting": round(credits, 6),
+            "seconds_historical_estimate": round(seconds_historical, 3),
+            "seconds_ceiling": settings * JOB_SECONDS,
+            "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots (strategy.md section 1a)",
+            "timing_rule": f"estimate: {SECONDS_PER_ITERATION} s per setting plus {SECONDS_PER_SAMPLE} s per "
+            f"sample at max_shots, historical processed-output rates; ceiling: one job per setting at the "
+            f"{JOB_SECONDS} s per-job limit. The written case restates both from the live plan output",
         },
         "stop_conditions": [
             "scripts/qd_platform.py plan refuses the platform",
             "a returned result's processing differs from the requested policy",
             "a job fails or returns fewer eligible trials than the frozen n",
             "the per-run server version or calibration identity cannot be recorded",
+            "spent credits or seconds reach the approved ceiling",
         ],
         "interpretation": [
-            {"difference": "between preparation descriptions", "implicates": "preparation, compilation or both"},
-            {"difference": "between epochs", "implicates": "stationarity"},
-            {"difference": "between processing policies", "implicates": "a processing effect, not hardware drift"},
+            {"family": "completion", "implicates": "preparation, compilation or both"},
+            {"family": "epoch", "implicates": "reproducibility across the calibration change"},
             {
-                "difference": "a violated sum rule",
+                "family": "sum_rule",
                 "implicates": "the combined linear-effect, preparation and conditioning model, without a unique cause",
             },
+            {"family": "policies", "implicates": "what each output represents, read from metadata, not means"},
         ],
         "authorization": "none: the case waits for its written-case approval; a pass supports proposing the "
         "160-setting run, never running it",
@@ -1480,6 +1544,8 @@ def _theorem_item(item: tuple[str, int]) -> tuple[bool, bool, float]:
 
 
 CENSUS_EFFECTS = 128
+# The five-space and sum-rule checks run on the first WITNESS_SEEDS census effects.
+WITNESS_SEEDS = 8
 
 
 def _general_effect(seed: int) -> np.ndarray:
@@ -1491,14 +1557,29 @@ def _general_effect(seed: int) -> np.ndarray:
     return np.asarray(q @ np.diag(rng.uniform(0.0, 1.0, size=bdsc.DIM)) @ q.conj().T)
 
 
-def _census_item(seed: int) -> int:
-    """Violations of mu_j <= lambda_(4+j)(F) <= a + mu_j over j = 1..12 on one random effect."""
+def _census_item(seed: int) -> tuple[int, int, int]:
+    """Violations on one random effect, built and diagonalized once: mu_j <= lambda_(4+j)(F) <= a + mu_j over
+    j = 1..12; and, for seed < WITNESS_SEEDS, lambda_5(F) <= Tr(S F) for both candidate directions and the real and
+    imaginary sum rules on (e1, e2)."""
     effect = _general_effect(seed)
     a_block, c_block = bdsc.blocks(effect)
     a = float(np.linalg.eigvalsh(a_block)[-1])
     mu = np.linalg.eigvalsh(c_block)
-    lam = np.linalg.eigvalsh(effect)[bdsc.KERNEL_DIM :]
-    return int(np.sum((lam < mu - 1e-12) | (lam > a + mu + 1e-12)))
+    spectrum = np.linalg.eigvalsh(effect)
+    lam = spectrum[bdsc.KERNEL_DIM :]
+    census = int(np.sum((lam < mu - 1e-12) | (lam > a + mu + 1e-12)))
+    if seed >= WITNESS_SEEDS:
+        return census, 0, 0
+    witness = sum(
+        int(spectrum[4] > bdsc.five_space_trace(effect, q) + 1e-12) for q in bdsc.candidate_directions().values()
+    )
+    frame = bdsc.complement_frame().astype(complex)
+    states = bdsc.consistency_states(frame[:, 1], frame[:, 2])
+    pr = {x: float(np.real(np.conj(v) @ effect @ v)) for x, v in states.items()}
+    rules = int(abs(pr["+"] + pr["-"] - pr["f"] - pr["g"]) >= 1e-12) + int(
+        abs(pr["+i"] + pr["-i"] - pr["f"] - pr["g"]) >= 1e-12
+    )
+    return census, witness, rules
 
 
 def self_test() -> int:
@@ -1576,29 +1657,21 @@ def self_test() -> int:
     require(tightest > 0.99, f"self-test: the angle bound is never approached (ratio {tightest})")
     # Low-eigenvalue census: interlacing and the positivity bound on 12 indexed pairs per random effect.
     violations = parallel.ordered_map(_census_item, list(range(CENSUS_EFFECTS)))
-    require(sum(violations) == 0, f"self-test: the census inequalities fail {sum(violations)} times")
+    for index, label in enumerate(("census inequalities", "five-space bounds", "sum rules")):
+        failures = sum(v[index] for v in violations)
+        require(failures == 0, f"self-test: the {label} fail {failures} times")
     coupled = bdsc.coupled_complement_effect()
     require(bdsc.is_effect(coupled), "self-test: the coupled census example is not an effect")
     require(abs(np.linalg.eigvalsh(coupled)[4] - 0.18) < 1e-12, "self-test: the coupled example misses a + mu_1")
     a_block, c_block = bdsc.blocks(bdsc.diagonal_effect([0.05], 1.15))
     clipped = bdsc.spectral_census(bdsc.exact_bound(a_block), bdsc.exact_bound(c_block), 1.0)
     require(not clipped["consistent"], "self-test: an effect above its declared range reads consistent")
-    # Five-space witness: Tr(S F) bounds lambda_5 and vanishes on the matching extra null.
+    # Five-space witness: Tr(S F) vanishes on the matching extra null (the bound itself runs in _census_item).
     for name, direction in bdsc.candidate_directions().items():
         er = bdsc.extra_real_null() if name == "q_R" else bdsc.extra_imag_null()
         require(abs(bdsc.five_space_trace(er, direction)) < 1e-12, f"self-test: {name} is not the extra null")
-        for seed in range(8):
-            g = _general_effect(seed)
-            require(
-                np.linalg.eigvalsh(g)[4] <= bdsc.five_space_trace(g, direction) + 1e-12, "self-test: lambda_5 > Tr(SF)"
-            )
-    # Consistency sum rules hold for every fixed linear effect; a 0.1 excess on one state reads violated.
-    states = bdsc.consistency_states(bdsc.complement_frame()[:, 1].astype(complex), bdsc.complement_frame()[:, 2])
-    for seed in range(8):
-        g = _general_effect(seed)
-        pr = {x: float(np.real(np.conj(v) @ g @ v)) for x, v in states.items()}
-        require(abs(pr["+"] + pr["-"] - pr["f"] - pr["g"]) < 1e-12, "self-test: real sum rule")
-        require(abs(pr["+i"] + pr["-i"] - pr["f"] - pr["g"]) < 1e-12, "self-test: imaginary sum rule")
+    # A 0.1 excess on one consistency state reads violated; an interval around zero alone establishes nothing.
+    states = bdsc.CONSISTENCY_LABELS
     n_big = 10**7
     linear = bdsc.consistency_readout({x: (int(round(0.5 * n_big)), n_big) for x in states}, 0.01)
     require(linear["delta_R_status"] == linear["delta_I_status"] == "compatible", "self-test: consistency margin")
@@ -1607,6 +1680,36 @@ def self_test() -> int:
     require(excess["delta_R_status"] == "violated", "self-test: a 0.1 sum-rule violation is not caught")
     near = bdsc.consistency_readout({x: (50, 100) for x in states}, 0.01)
     require(near["delta_R_status"] == "inconclusive", "self-test: an interval around zero alone established a rule")
+    # Case contrasts: on (e1, e2) the Householder cells answer I/2 + X/4 in epoch 1 and I/2 + Y/4 in epoch 2, the
+    # Givens cells I/2 throughout. Every sum rule holds and f, g never move, so only the completion and epoch
+    # families see the coherent difference; the batched readout matches the single record row by row.
+    observations = case_observations()
+    contrasts = case_contrasts(observations)
+    coherent = {1: {"+": 0.25, "-": -0.25}, 2: {"+i": 0.25, "-i": -0.25}}
+    n_exact = 10**7
+    probabilities = []
+    for o in observations:
+        p = 0.5
+        if o["pair"] == "middle-middle" and o["preparation"] == "householder":
+            p += coherent[o["epoch"]].get(o["label"], 0.0)
+        probabilities.append(p)
+    k = np.array([round(p * n_exact) for p in probabilities])
+    status = bdsc.contrast_readout(k, np.full(k.shape, n_exact), contrasts, CASE_ALPHA)["status"]
+    by_family = {f: {str(x) for x, c in zip(status, contrasts, strict=True) if c[0] == f} for f in CASE_MARGINS}
+    require(by_family["sum_rule"] == {"compatible"}, f"self-test: the sum rules read {by_family['sum_rule']}")
+    require("violated" in by_family["completion"], "self-test: the completion family misses F_G")
+    require("violated" in by_family["epoch"], "self-test: the epoch family misses the X to Y change")
+    rng = np.random.default_rng(7)
+    batch = rng.binomial(30_000, np.broadcast_to(probabilities, (4, len(probabilities))))
+    batched = bdsc.contrast_readout(batch, np.full(batch.shape, 30_000), contrasts, CASE_ALPHA)
+    for row in range(len(batch)):
+        single = bdsc.contrast_readout(batch[row], np.full(batch.shape[1], 30_000), contrasts, CASE_ALPHA)
+        require(
+            np.array_equal(single["lower"], batched["lower"][row])
+            and np.array_equal(single["upper"], batched["upper"][row])
+            and np.array_equal(single["status"], batched["status"][row]),
+            "self-test: the batched contrast readout differs from the single record",
+        )
     # Thinning equalizes terminal efficiencies and leaves internal loss: D = eta_* T^dagger T.
     lossless = numeric_unitary(u)[:, : bdsc.DIM]
     eta_t = np.linspace(0.6, 0.95, MODES)

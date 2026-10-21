@@ -29,33 +29,40 @@ No step here is authorized until its written case is approved
 
 ## Order
 
-1. Write the case: the eight cells, 22080 eligible trials per setting, the
-   margin 0.05 at alpha 0.01, the two epochs, the 66.83-credit ceiling at
-   one job per setting and max_shots = 2 x 22080, the ANU QRNG draw that
-   fixes the order and seeds, the stop conditions below, and the
-   interpretation of each outcome from the design. Wait for approval; the
-   QRNG read is part of what it approves.
-2. Draw the acquisition order of the 48 epoch-1 settings and the
+1. Run `qd_platform.py plan` on every run directory and read from it the
+   live price per shot, the per-job duration limit and Perceval's shot
+   estimate.
+2. Write the case: the 96 settings, 45000 eligible trials and
+   max_shots = 90000 per setting (8640000 shots in all), the three contrast
+   families with their 0.05 margins at alpha 0.01, the power of 0.939 under
+   E0, the two epochs, the credit and seconds ceilings restated from step 1
+   (104.64 credits and 829 s estimated, 28800 s capped, at the historical
+   rates), the ANU QRNG draw that fixes the order and seeds, the stop
+   conditions below, and the interpretation of each outcome from the
+   design. Wait for approval; the QRNG read is part of what it approves.
+3. Draw the acquisition order of the 48 settings of each epoch and the
    compilation seed of each with `scripts/anu_qrng.py draw`, and freeze both
    in the run directories before the first submission.
-3. Run epoch 1 in the frozen order. After each job, `collect` and confirm
+4. Run epoch 1 in the frozen order. After each job, `collect` and confirm
    that the returned processing matches the requested policy and that the
    server version and calibration identity are recorded.
-4. Run epoch 2, the f and g references of every cell, separated in time
+5. Run epoch 2, all six states of every cell again, separated in time
    from epoch 1 by at least one platform calibration cycle
    ([calibration.md](../notes/quandela/calibration.md)).
-5. Read each cell through `bdsc.consistency_readout` at
-   `alpha_per_cell`, only when the observation contract of the design holds
-   for that policy; a result converted from probabilities gets the
-   likelihood of its own object, never the binomial interval.
+6. Read every contrast through `bdsc.contrast_readout` on the one
+   simultaneous event, with each policy's observations admitted only when
+   the observation contract of the design holds for it; a result converted
+   from probabilities gets the likelihood of its own object, never the
+   binomial interval.
 
 ## Stop conditions
 
 Execution stops, and the remaining settings stay unsent, when
 `qd_platform.py plan` refuses the platform, a returned result's processing
 differs from the requested policy, a job fails or returns fewer eligible
-trials than the frozen n, or the per-run server version or calibration
-identity cannot be recorded. No setting is added or repeated after viewing
+trials than the frozen n, the per-run server version or calibration
+identity cannot be recorded, or spent credits or seconds reach the approved
+ceiling. No setting is added or repeated after viewing
 outcomes; the stopping rule is fixed n.
 
 ## Records

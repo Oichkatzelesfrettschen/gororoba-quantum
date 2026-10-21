@@ -205,28 +205,57 @@ and makes no dark-subspace claim.
   different completions on the unused columns (Householder and Givens,
   each checked unitary and at a Frobenius distance above 0.1 on the unused
   columns), crossed with two processing policies: provider defaults
-  (`mitigations = None`) and an explicit empty list. One pair gives
-  6 x 2 x 2 = 24 settings, the case 48, plus a second epoch that repeats the
-  f and g references of every cell: 64 settings.
-- **Decision.** Each residual's interval comes from Clopper-Pearson bounds
-  at alpha / (8 x 6) per probability, simultaneous over the eight cells at
-  alpha = 0.01. It reads compatible inside [-0.05, 0.05], violated when it
-  misses that band, and inconclusive otherwise; an interval that merely
-  contains zero establishes nothing. Means are compared within a processing
-  policy, never across, since mitigation changes estimates by design.
-- **Trials and cost.** 22080 eligible trials per setting put E0's expected
-  intervals inside the margin. At the strategy.md billing rule, one job per
-  setting and max_shots = 2 x 22080, the case costs 66.83 credits; whether
-  that many shots yield 22080 eligible trials on an unmitigated route, and
-  how long they take, is unknown, so the written case restates the shot
-  budget and job count from the provider's answer.
-- **Scope of an outcome.** A difference between preparation descriptions
-  implicates preparation, compilation or both; between epochs,
-  stationarity; between policies, processing rather than hardware drift; a
-  violated sum rule rejects the combined linear-effect, preparation and
-  conditioning model without naming its cause. A mesh hash that varies is
-  not a proven varying effect, and identical hashes are not a proven
-  stationary one. Passing every rule remains necessary and not sufficient.
+  (`mitigations = None`) and an explicit empty list. Both epochs acquire
+  all six states of every cell: 2 pairs x 2 descriptions x 2 policies x
+  2 epochs x 6 states = 96 settings. Repeating only f and g would see
+  diagonal changes alone: I/2 + X/4 and I/2 + Y/4 agree on f and g and
+  differ on + and +i.
+- **Decision.** Clopper-Pearson at alpha / 96 per observation, alpha = 0.01,
+  gives one simultaneous event, and every prespecified contrast
+  sum_j c_j p_j inherits it through
+  Delta_L = sum_(c_j > 0) c_j L_j + sum_(c_j < 0) c_j U_j
+  (`bdsc.contrast_readout`). Three families: 32 within-cell sum rules
+  (Delta_R and Delta_I per cell and epoch), 48 cross-completion differences
+  p_(s,H) - p_(s,G) at one policy and epoch, and 48 cross-epoch differences
+  at one completion and policy, each with a declared margin of 0.05. A
+  contrast reads compatible inside its margin, violated when its interval
+  misses the band, and inconclusive otherwise. Within-cell linearity alone
+  proves nothing across cells: I/2 and I/2 + X/4 both obey every sum rule
+  and differ on +. No contrast compares the two policies, since mitigation
+  changes estimates by design; an observation enters the event only when its
+  policy's observation contract supports Bernoulli trials, the alpha split
+  counts every observation regardless, and a contrast that touches an
+  unadmitted observation reads not admitted.
+- **Epochs.** Epoch 2 follows at least one platform calibration cycle, so
+  its family tests reproducibility across a calibration change, an
+  intervention that may legitimately move the effect; within-epoch
+  stability rests on the randomized order alone, and the epochs are never
+  pooled into one stationary reconstruction.
+- **Power.** False certification of any family is bounded by alpha; the
+  probability of passing an acceptable implementation is a separate
+  number. Under E0 itself, one effect across completions, policies and
+  epochs, and independent Bernoulli trials, 2000 seeded replicates per
+  trial count give the probability that all 128 contrasts read compatible:
+  0 at the earlier 22080, 0.70 at 40000, 0.939 at 45000. The case fixes
+  45000, the first grid point at or above the 0.9 target. Drift,
+  preparation error or a corrected sampling law lower this power.
+- **Resources.** 45000 eligible trials per setting are 4320000 in all;
+  max_shots = 2 x 45000 per setting makes the submitted ceiling 8640000
+  shots. At the strategy.md billing rule and one job per setting that is
+  104.64 credits. The historical processed-output rates estimate 829 s of
+  QPU time; the 300 s per-job limit caps 96 jobs at 28800 s. The written
+  case restates credits and seconds from the live `qd_platform.py plan`
+  output, which reads the platform's duration limit and price, before
+  approval; whether 90000 shots yield 45000 eligible trials on an
+  unmitigated route is a provider question.
+- **Scope of an outcome.** A violated completion contrast implicates
+  preparation, compilation or both; a violated epoch contrast,
+  reproducibility across the calibration change; a violated sum rule, the
+  combined linear-effect, preparation and conditioning model without
+  naming its cause. Policies are compared by what each output represents,
+  read from metadata, not by means. A mesh hash that varies is not a proven
+  varying effect, and identical hashes are not a proven stationary one.
+  Passing every family remains necessary and not sufficient.
 
 Before binomial inference the returned object needs its observation
 contract: aggregated genuine events or a reconstruction from probabilities,

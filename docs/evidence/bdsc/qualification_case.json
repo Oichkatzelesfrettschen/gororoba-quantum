@@ -2,14 +2,14 @@
  "acquisition": {
   "epochs": [
    {
-    "content": "every cell's six states in one randomized order",
+    "content": "all six states of every cell",
     "epoch": 1,
     "settings": 48
    },
    {
-    "content": "the f and g references of every cell, separated in time from epoch 1",
+    "content": "all six states of every cell",
     "epoch": 2,
-    "settings": 16
+    "settings": 48
    }
   ],
   "randomized_and_retained": [
@@ -20,8 +20,7 @@
    "epoch"
   ],
   "stopping": "fixed-n",
-  "trials_per_setting": 22080,
-  "trials_rule": "smallest n whose Clopper-Pearson residual intervals at E0's expected counts lie inside the margin, Bonferroni over every cell"
+  "trials_per_setting": 45000
  },
  "authorization": "none: the case waits for its written-case approval; a pass supports proposing the 160-setting run, never running it",
  "banks": [
@@ -2120,106 +2119,824 @@
    ]
   }
  ],
- "cells": [
-  {
-   "mitigations": null,
-   "pair": "target-complement",
-   "preparation": "householder",
-   "processing": "provider-defaults"
-  },
-  {
-   "mitigations": [],
-   "pair": "target-complement",
-   "preparation": "householder",
-   "processing": "empty-mitigation"
-  },
-  {
-   "mitigations": null,
-   "pair": "target-complement",
-   "preparation": "givens",
-   "processing": "provider-defaults"
-  },
-  {
-   "mitigations": [],
-   "pair": "target-complement",
-   "preparation": "givens",
-   "processing": "empty-mitigation"
-  },
-  {
-   "mitigations": null,
-   "pair": "middle-middle",
-   "preparation": "householder",
-   "processing": "provider-defaults"
-  },
-  {
-   "mitigations": [],
-   "pair": "middle-middle",
-   "preparation": "householder",
-   "processing": "empty-mitigation"
-  },
-  {
-   "mitigations": null,
-   "pair": "middle-middle",
-   "preparation": "givens",
-   "processing": "provider-defaults"
-  },
-  {
-   "mitigations": [],
-   "pair": "middle-middle",
-   "preparation": "givens",
-   "processing": "empty-mitigation"
-  }
- ],
  "claims": {
+  "admission": "an observation enters the event only when its policy's observation contract supports Bernoulli trials; the alpha split counts every observation, so admission never re-allocates error, and a contrast touching an unadmitted observation reads not_admitted",
   "alpha": 0.01,
-  "alpha_per_cell": 0.00125,
-  "consistency_margin": 0.05,
+  "confidence_event": "Clopper-Pearson at alpha / P on each of the P observations; every contrast interval follows from the same event, so false certification of any contrast family is bounded by alpha",
+  "contrast_families": {
+   "completion": 48,
+   "epoch": 48,
+   "sum_rule": 32
+  },
+  "epochs": "epoch 2 follows at least one platform calibration cycle, so the epoch family tests reproducibility across a calibration change; within-epoch stability rests on the randomized order alone, and the epochs are never pooled into one stationary reconstruction",
   "findings_schema": "bdsc-spectral-findings-v1",
-  "low_ratio": 0.1,
+  "margins": {
+   "completion": 0.05,
+   "epoch": 0.05,
+   "sum_rule": 0.05
+  },
   "outcomes": [
    "compatible",
    "violated",
-   "inconclusive"
+   "inconclusive",
+   "not_admitted"
   ],
-  "scope": "passing the sum rules is necessary and not sufficient: a service that prepares sqrt(p_s)|A> + sqrt(1 - p_s)|D> for each requested p_s passes them without a fixed measurement"
- },
- "cost": {
-  "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots = 2 x samples (strategy.md section 1a)",
-  "credit_ceiling_one_job_per_setting": 66.82624,
-  "settings": 64,
-  "shots": 1413120,
-  "timing": "unknown: the historical rates belong to processed-output jobs under default mitigation"
+  "policies": "no contrast compares provider defaults with the empty list: correction may change the mean",
+  "scope": "passing every family is necessary and not sufficient: a service that prepares sqrt(p_s)|A> + sqrt(1 - p_s)|D> for each requested p_s passes them without a fixed measurement"
  },
  "interpretation": [
   {
-   "difference": "between preparation descriptions",
+   "family": "completion",
    "implicates": "preparation, compilation or both"
   },
   {
-   "difference": "between epochs",
-   "implicates": "stationarity"
+   "family": "epoch",
+   "implicates": "reproducibility across the calibration change"
   },
   {
-   "difference": "between processing policies",
-   "implicates": "a processing effect, not hardware drift"
-  },
-  {
-   "difference": "a violated sum rule",
+   "family": "sum_rule",
    "implicates": "the combined linear-effect, preparation and conditioning model, without a unique cause"
+  },
+  {
+   "family": "policies",
+   "implicates": "what each output represents, read from metadata, not means"
   }
  ],
+ "observations": [
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "householder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "givens",
+   "processing": "empty-mitigation"
+  }
+ ],
+ "power": {
+  "chosen_trials": 45000,
+  "decision": "every contrast of every family reads compatible",
+  "model": "the acceptable implementation: E0 itself, one effect across completions, policies and epochs, independent fixed-n Bernoulli trials at every observation",
+  "replicates": 2000,
+  "rows": [
+   {
+    "power": 0.0,
+    "trials_per_setting": 22080
+   },
+   {
+    "power": 0.0,
+    "trials_per_setting": 25000
+   },
+   {
+    "power": 0.0,
+    "trials_per_setting": 27500
+   },
+   {
+    "power": 0.0005,
+    "trials_per_setting": 30000
+   },
+   {
+    "power": 0.021,
+    "trials_per_setting": 32500
+   },
+   {
+    "power": 0.1675,
+    "trials_per_setting": 35000
+   },
+   {
+    "power": 0.414,
+    "trials_per_setting": 37500
+   },
+   {
+    "power": 0.6995,
+    "trials_per_setting": 40000
+   },
+   {
+    "power": 0.849,
+    "trials_per_setting": 42500
+   },
+   {
+    "power": 0.939,
+    "trials_per_setting": 45000
+   },
+   {
+    "power": 0.968,
+    "trials_per_setting": 47500
+   },
+   {
+    "power": 0.9915,
+    "trials_per_setting": 50000
+   },
+   {
+    "power": 0.997,
+    "trials_per_setting": 52500
+   },
+   {
+    "power": 0.9985,
+    "trials_per_setting": 55000
+   },
+   {
+    "power": 1.0,
+    "trials_per_setting": 57500
+   },
+   {
+    "power": 1.0,
+    "trials_per_setting": 60000
+   }
+  ],
+  "scope": "power under this model only; drift, preparation error or a corrected sampling law lower it",
+  "seed": 20261021,
+  "target": 0.9
+ },
  "preparation_descriptions": {
   "givens": "a chain of 2 x 2 rotations of the source mode against every other mode",
   "householder": "I - 2 w w^dagger with w along phase e_r - column, times the source phase"
  },
- "question": "do the returned observations behave as one fixed linear effect on independently prepared states, at a declared observation level, across preparation descriptions, processing policies and time",
+ "question": "do the returned observations behave as one fixed linear effect on independently prepared states, at a declared observation level, across preparation descriptions and across a calibration change",
  "record": "qualification_case",
+ "resources": {
+  "billing_rule": "1 credit per job plus 1e-6 per shot at max_shots (strategy.md section 1a)",
+  "credits_historical_one_job_per_setting": 104.64,
+  "eligible_trials_per_setting": 45000,
+  "eligible_trials_total": 4320000,
+  "jobs_ceiling": 96,
+  "max_shots_per_setting": 90000,
+  "max_shots_total": 8640000,
+  "seconds_ceiling": 28800,
+  "seconds_historical_estimate": 829.44,
+  "settings": 96,
+  "timing_rule": "estimate: 6.3 s per setting plus 2.6e-05 s per sample at max_shots, historical processed-output rates; ceiling: one job per setting at the 300 s per-job limit. The written case restates both from the live plan output"
+ },
  "schema": "bdsc-records-v1",
  "stop_conditions": [
   "scripts/qd_platform.py plan refuses the platform",
   "a returned result's processing differs from the requested policy",
   "a job fails or returns fewer eligible trials than the frozen n",
-  "the per-run server version or calibration identity cannot be recorded"
+  "the per-run server version or calibration identity cannot be recorded",
+  "spent credits or seconds reach the approved ceiling"
  ],
  "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794"
 }

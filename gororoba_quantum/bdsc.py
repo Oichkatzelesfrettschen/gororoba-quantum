@@ -751,6 +751,40 @@ def consistency_readout(
     return out
 
 
+Contrast = tuple[str, float, tuple[tuple[int, float], ...]]
+
+
+def contrast_readout(
+    selected: np.ndarray, eligible: np.ndarray, contrasts: Sequence[Contrast], alpha: float
+) -> dict[str, np.ndarray]:
+    """Intervals and statuses of prespecified linear contrasts sum_j c_j p_j on one simultaneous event.
+
+    Clopper-Pearson at alpha / P on each of the P observations makes every interval [L_j, U_j] hold at once with
+    probability 1 - alpha, and each contrast inherits it: Delta_L = sum_(c_j > 0) c_j L_j + sum_(c_j < 0) c_j U_j and
+    Delta_U the mirror image, so no contrast spends its own error. Each contrast is (family, margin, terms) and reads
+    compatible, violated or inconclusive against its margin. selected and eligible carry the observations on their
+    last axis; a leading replicate axis evaluates many synthetic records with the same arithmetic, term by term in
+    the declared order, as one record.
+    """
+    k = np.asarray(selected, dtype=float)
+    n = np.asarray(eligible, dtype=float)
+    lo, hi = clopper_pearson(k, n, alpha / k.shape[-1])
+    lower = np.empty((*k.shape[:-1], len(contrasts)))
+    upper = np.empty_like(lower)
+    status = np.empty(lower.shape, dtype=object)
+    for index, (_, margin, terms) in enumerate(contrasts):
+        low = np.zeros(k.shape[:-1])
+        high = np.zeros(k.shape[:-1])
+        for j, c in terms:
+            low = low + (c * lo[..., j] if c > 0 else c * hi[..., j])
+            high = high + (c * hi[..., j] if c > 0 else c * lo[..., j])
+        lower[..., index], upper[..., index] = low, high
+        inside = (low >= -margin) & (high <= margin)
+        outside = (low > margin) | (high < -margin)
+        status[..., index] = np.where(inside, "compatible", np.where(outside, "violated", "inconclusive"))
+    return {"lower": lower, "upper": upper, "status": status}
+
+
 def hoeffding_consistency_trials(margin: float, alpha: float) -> int:
     """Per-preparation n at which a Hoeffding radius sqrt(log(12/alpha)/(2n)) on six probabilities under a union
     bound puts a four-probability residual within margin: n >= 8 log(12/alpha) / margin^2."""
