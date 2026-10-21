@@ -928,6 +928,14 @@
    "tier": "pr"
   },
   {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_replay_interpreter_scope.py",
+   "name": "core-609",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",

@@ -43,7 +43,8 @@ the unrestricted stage formulas without power-of-two allocation.
 
 The replay hashes source and proof-note bytes before and after execution,
 checks the loaded paths, and rejects digest and path mutations. Changed
-sources, proof notes, or runtime versions require reviewed evidence
-regeneration. The checksum manifest binds this README, the replay, the
+sources, proof notes, SymPy versions or Python major.minor require reviewed
+evidence regeneration; `--check` carries the retained Python patch release
+when major.minor agree (gate core-609). The checksum manifest binds this README, the replay, the
 result, and the new module and proof note. Execution uses exact local CPU
 arithmetic and makes zero QPU submissions.

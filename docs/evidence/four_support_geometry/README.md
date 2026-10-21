@@ -20,8 +20,9 @@ GOROROBA_WORKERS=4 PYTHONDONTWRITEBYTECODE=1 \
 `GOROROBA_WORKERS=1` produces identical output through the serial path.
 The replay writes stdout and compares source and proof-note hashes before
 and after execution within the process; `result.json` retains computed
-results only, so a changed computed value or recorded runtime requires
-explicit reviewed regeneration. `result.json` uses zero-based
+results only, so a changed computed value, SymPy version or Python
+major.minor requires explicit reviewed regeneration; `--check` carries the
+retained Python patch release when major.minor agree (gate core-609). `result.json` uses zero-based
 positions in its `strata` list for closure target identifiers.
 
 Finite enumeration checks coverage labels and incidence combinatorics.
