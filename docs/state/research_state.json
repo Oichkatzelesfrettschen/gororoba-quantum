@@ -1081,7 +1081,7 @@
         }
       ],
       "documents": [
-        "docs/notes/cd_associator_defect_census.md"
+        "docs/notes/topics/cd_associator_defect_census.md"
       ],
       "gates": {
         "core-212": "replay",
@@ -1105,7 +1105,7 @@
       "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
       "evidence": [],
       "documents": [
-        "docs/notes/cd_associator_defect_census.md"
+        "docs/notes/topics/cd_associator_defect_census.md"
       ],
       "gates": {},
       "acquisitions": [],
@@ -1893,7 +1893,7 @@
       "boundary": "Ideal semantics only.",
       "evidence": [],
       "documents": [
-        "AGENTS.md"
+        "docs/notes/algebra_circuit_rules.md"
       ],
       "gates": {
         "core-251": "replay"
@@ -2920,7 +2920,7 @@
         }
       ],
       "documents": [
-        "docs/notes/cross_experiment_scope.md"
+        "docs/notes/topics/cross_experiment_scope.md"
       ],
       "gates": {
         "core-276": "replay"
@@ -6153,11 +6153,11 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/cases/zz_map_tuna_17/plan.json",
-          "sha256": "5984166c73f3309c1eea39b967c0d71c971d6a6cf724594573efd8af64d13d40"
+          "sha256": "b588c2d7c623841b5801fb7715779cefa88d3ee29f59cc9d7b856a761d174a25"
         },
         {
           "path": "results/quantum_inspire/cases/zz_map_qx/plan.json",
-          "sha256": "9eaa4f57f40df05d787f3541a0ee6697d9b24f36b9345db87bb98b1711a9f7f8"
+          "sha256": "def33988404c7ae00a56c8e38b937cb599937b326148f57c9588ecad351cf8a4"
         }
       ],
       "documents": [

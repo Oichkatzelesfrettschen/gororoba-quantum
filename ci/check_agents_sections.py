@@ -1,30 +1,32 @@
-"""Check that the replicated AGENTS.md sections bind every directory that carries them.
+"""Check that every directory carrying an AGENTS.md loads it through a fixed CLAUDE.md.
 
-The root AGENTS.md owns each section in SECTIONS, delimited by
-`<!-- NAME:begin -->` and `<!-- NAME:end -->`, and every nested AGENTS.md
-listed for it repeats it byte for byte: the algebra circuit design rules in
-gororoba_quantum/ and scripts/, the Heron execution facts in
-gororoba_quantum/. The root and each nested directory carry a CLAUDE.md whose
-entire content is the loader line `@AGENTS.md` followed by one LF, so an agent
-started in any of them reads the same rules. The loader format is fixed bytes: a CLAUDE.md
+The root and each nested directory carry a CLAUDE.md whose entire content is
+the loader line `@AGENTS.md` followed by one LF, so an agent started in any of
+them reads the same rules. The loader format is fixed bytes: a CLAUDE.md
 that adds prose, comments, fences or a different line ending fails, which
-leaves no Markdown construct able to hide the import.
+leaves no Markdown construct able to hide the import. The algebra and Heron
+rule texts live once in docs/notes/algebra_circuit_rules.md and
+docs/notes/ibm_heron_platform.md, so no replicated section remains to compare.
 
 Usage: "$PYTHON" ci/check_agents_sections.py [--self-test]   (from the repository root)
 """
 
 from __future__ import annotations
 
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SECTIONS = {
-    "algebra-circuit-rules": ("gororoba_quantum", "scripts"),
-    "heron-execution-facts": ("gororoba_quantum",),
-}
 LOADER = b"@AGENTS.md\n"
-NESTED = ("gororoba_quantum", "scripts")
+
+
+def nested_directories() -> tuple[str, ...]:
+    """Every directory below the root whose AGENTS.md git tracks, so a new guide needs its loader."""
+    listed = subprocess.run(
+        ["git", "ls-files", "--", "*/AGENTS.md"], cwd=ROOT, check=True, capture_output=True, text=True
+    ).stdout.split()
+    return tuple(sorted(str(Path(name).parent) for name in listed))
 
 
 def read(path: Path) -> bytes:
@@ -33,20 +35,6 @@ def read(path: Path) -> bytes:
         return path.read_bytes()
     except FileNotFoundError:
         raise SystemExit(f"{path.relative_to(ROOT)}: missing") from None
-
-
-def section(path: Path, name: str) -> bytes:
-    data = read(path)
-    begin, end_marker = f"<!-- {name}:begin -->".encode(), f"<!-- {name}:end -->".encode()
-    if data.count(begin) != 1 or data.count(end_marker) != 1:
-        raise SystemExit(f"{path.relative_to(ROOT)}: needs exactly one {name} section")
-    start, end = data.index(begin), data.index(end_marker) + len(end_marker)
-    if start > end:
-        raise SystemExit(f"{path.relative_to(ROOT)}: section markers out of order")
-    body = data[start:end]
-    if not body.isascii():
-        raise SystemExit(f"{path.relative_to(ROOT)}: section carries non-ASCII text")
-    return body
 
 
 def is_loader(data: bytes) -> bool:
@@ -84,18 +72,12 @@ def main(argv: list[str]) -> int:
         return 0
     if argv:
         raise SystemExit("usage: check_agents_sections.py [--self-test]")
-    sizes = []
-    for name, directories in SECTIONS.items():
-        reference = section(ROOT / "AGENTS.md", name)
-        for directory in directories:
-            if section(ROOT / directory / "AGENTS.md", name) != reference:
-                raise SystemExit(f"{directory}/AGENTS.md: {name} differs from the root AGENTS.md")
-        sizes.append(f"{name} in root and {', '.join(directories)} ({len(reference)} bytes)")
-    for directory in ("", *NESTED):
+    nested = nested_directories()
+    for directory in ("", *nested):
         loader = ROOT / directory / "CLAUDE.md"
         if not is_loader(read(loader)):
             raise SystemExit(f"{loader.relative_to(ROOT)}: must contain exactly the line @AGENTS.md and one LF")
-    print("identical sections: " + "; ".join(sizes))
+    print(f"loaders: {len(('', *nested))} CLAUDE.md files hold exactly @AGENTS.md")
     return 0
 
 

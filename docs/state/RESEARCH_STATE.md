@@ -348,7 +348,7 @@ circuit and charges the account ledger's change.
 - **cd-associator-census** (mathematical theorem, algebra). The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).
   Boundary: The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); real basis triples.
-  Evidence: [census.json](../evidence/cd_associator_defect_census/census.json), [cd_associator_defect_census.md](../notes/cd_associator_defect_census.md).
+  Evidence: [census.json](../evidence/cd_associator_defect_census/census.json), [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
   Gates: replayed by core-212, sources-215.
 - **singular-sector-split** (mathematical theorem, algebra). (L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.
   Boundary: Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.
@@ -498,7 +498,7 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-040.
 - **algebra-circuit-fixtures** (circuit-conformance check, implementation). The designs.py builders pass the zero-product, Hadamard-basis and workspace fixtures: the dark witness (e1 + e10)(e4 - e15) gives P(s = 0) = 0, its bright control 1, and the four-label negative regression (e1 + e10)(e2 - e13) gives 1/2.
   Boundary: Ideal semantics only.
-  Evidence: [AGENTS.md](../../AGENTS.md).
+  Evidence: [algebra_circuit_rules.md](../notes/algebra_circuit_rules.md).
   Gates: replayed by core-251.
 - **heron-dd-circuit-infrastructure** (circuit-conformance check, implementation). dd_window (none, Hahn, CPMG-2, XY4) refocuses a static detuning in ideal simulation, the routed Steane CPMG-2 patch keeps its seven windows and final frame, and the Bell probe's x and y quadratures read (1 + V cos theta)/2 and (1 + V sin theta)/2.
   Boundary: Tested circuit and statistics infrastructure, not a demonstrated hardware mitigation.
@@ -892,7 +892,7 @@ circuit and charges the account ledger's change.
   Supersedes: hw-first-bit-disagreement.
 - **hw-corner-fault-predates-discovery** (exploratory reanalysis, hardware). On 2026-10-11 the pilot's hybrid Shor replica 0 read its qubit-0 output bit as 1 with probability 0.618 against 0.448-0.491 on five replicas with the same ideal law, which the corner flips measured on 2026-10-15 predict as 0.622: the qubit-0 readout fault persisted at least four days through recalibrations that never reported it.
   Boundary: Inference from one bit of one replica under an assumed ideal marginal of 1/2; the factorable yield is insensitive to that bit.
-  Evidence: [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [collect.json](../../results/live/2026-10-15T070847.644554Z/collect.json), [cross_experiment_scope.md](../notes/cross_experiment_scope.md).
+  Evidence: [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [collect.json](../../results/live/2026-10-15T070847.644554Z/collect.json), [cross_experiment_scope.md](../notes/topics/cross_experiment_scope.md).
   Gates: replayed by core-276.
   Acquisitions: kingston-mod15-pilot, kingston-corner-baseline.
   Depends on: hw-corner-readout-fault.
@@ -1019,7 +1019,7 @@ circuit and charges the account ledger's change.
 - **cd-moving-pair-walsh-proof** (mathematical theorem, algebra). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.
   Boundary: Exhaustively checked from 32 to 4096; a proof is outstanding.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
-  Evidence: [cd_associator_defect_census.md](../notes/cd_associator_defect_census.md).
+  Evidence: [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
   Depends on: cd-associator-census.
 - **a5-stiefel-universal** (mathematical theorem, algebra). Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5).
   Boundary: The 32 exact points support it and prove nothing beyond themselves.

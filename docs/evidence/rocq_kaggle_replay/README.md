@@ -14,7 +14,7 @@ and Rocq 9.2.0 with opam from source, required `rocq --version` to equal
 | `docs/evidence/c881_exhaustive/replay_rocq.sh` | 33 | compile, kernel, assumptions and source identities pass |
 | `docs/evidence/stiefel_witness/replay_rocq.sh` | 541 | compile, kernel, assumptions and source identities pass |
 | `docs/evidence/folding_proofs/replay_rocq.sh` | 57 | six sources compile without warning, seven closed assumption queries, no axioms; complete stdout equaled the folding log retained with that run |
-| TargetFlipN21 (AGENTS.md procedure) | 43 | no `Warning:` line in the complete compile output under `-w +all`; no axioms, no assumed positivity |
+| TargetFlipN21 (ci/AGENTS.md procedure) | 43 | no `Warning:` line in the complete compile output under `-w +all`; no axioms, no assumed positivity |
 
 The toolchain build took 324 s for OCaml and 543 s for Rocq. The first three
 replay scripts compare their fresh output with the retained

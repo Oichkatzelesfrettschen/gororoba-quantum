@@ -330,7 +330,8 @@ isa = transpile_to_IQM(circuit, backend, seed_transpiler=7)
 scripts/iqm_mcp_server.py` with `IQM_TOKENS_FILE`. It runs on the system
 Python (mcp 1.29) and imports nothing from the client stack. Claude allows
 and Codex approves the read tools; `iqm_cancel_job` asks every time.
-`iqm_platform.py check` holds the tool set and annotations.
+`iqm_platform.py check` holds the tool set and annotations. The server
+submits nothing and books no timeslot.
 
 | tool | reads |
 |---|---|
@@ -354,3 +355,27 @@ Quandela run: what it measures, why a noise simulation cannot answer it, the
 QC, shots, circuits, the expected billed seconds and credits, and the
 calibration set it was planned against. The MCP server submits nothing. A
 simulation of 14 qubits or fewer still runs on Kaggle or the build host.
+
+## Gates and snapshot state
+
+CI never imports the stack: its gates read retained JSON with the standard
+library.
+
+**IQM OS 4.7.** The update feed announced the major release for Emerald on
+2026-10-19 and for Garnet and Sirius on 2026-10-21, with downtime from 02:00
+to about 15:00 UTC. The client pins already match it (iqm-client 36.0.0,
+final RZ gates kept by default, Pulla folded into IQMClient,
+`submit_circuit_job`). The retained snapshot (2026-10-19T15:58Z) holds
+Emerald and emerald:mock at station control 50.0.0 and Garnet, Sirius and
+their mocks at 49.0.3, under IQM Server 3.0.1; Emerald gained `measure_012`
+and the job route `sweep_results_streaming` with an unchanged ISA
+([os-4.7-emerald.md](os-4.7-emerald.md)), and iqm-client
+36.0.0 transpiles for all three QPUs. The all-49.0.3 baseline is
+[hardware-pre-4.7.md](hardware-pre-4.7.md); a snapshot after
+the second window records Garnet and Sirius.
+
+Gates core-588 (`capture_iqm_docs.py --check`), core-589 (its
+`--self-test`), core-590 (`iqm_platform.py check docs/evidence/iqm --agents
+docs/notes/iqm/README.md`, which also holds the MCP tool set) and
+core-591 (its `--self-test`, the two-phase refresh on a stubbed transport
+included).

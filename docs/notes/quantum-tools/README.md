@@ -4,8 +4,8 @@ One manual per package, in manpage order: NAME, SYNOPSIS, capabilities in
 this repository, API entry points (listed by introspection on the build
 host), examples that were run there with their printed output, Qiskit
 interop, CPU and GPU, traps, license. The root AGENTS.md owns the rules these
-manuals apply: the QPU and Kaggle routing in "QPU time and calibration", the
-timing and dynamic-circuit facts in "Heron execution facts", and the pins
+manuals apply: the QPU and Kaggle routing in "QPU time and calibration"; docs/notes/ibm_heron_platform.md holds the
+timing and dynamic-circuit facts in "Execution facts"; and the pins
 in `requirements.txt` and `scripts/kaggle_run.py` (`KERNEL_PINS`,
 `PIN_GROUPS`).
 

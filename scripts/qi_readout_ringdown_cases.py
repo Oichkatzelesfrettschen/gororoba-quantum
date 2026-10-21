@@ -133,7 +133,7 @@ fit_h2, h2_errors and both conjuncts of detects. The normal draws of a target
 come first, in order, from one generator seeded by the string
 NULL_SEED/series/target, then blocks of NULL_BLOCK replicates map through
 parallel.ordered_map, each block one fit_h2_batch call that returns
-fit_h2's bits for every replicate (docs/notes/build_host/vectorized-fits.md).
+fit_h2's bits for every replicate (docs/runbooks/vectorized-fits.md).
 OUT
 records the empirical 0.999 quantile with a binomial order-statistic
 interval, the null rate of the full rule at DETECT_DELTA_CHI2, the sha256 of

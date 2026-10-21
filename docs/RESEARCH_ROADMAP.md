@@ -118,7 +118,7 @@ supplies neither extra quota nor a reason to duplicate data, and the retained
 remainder is a resource observation rather than a target to spend. Pulse-level,
 continuous-record and resonator protocols lie outside the cloud gate set since
 the 3 February 2025 pulse removal ([web-source
-note](notes/measurement_foundations_web_sources.md)).
+note](notes/papers/measurement_foundations_web_sources.md)).
 
 ## Ordered topology and proof work
 

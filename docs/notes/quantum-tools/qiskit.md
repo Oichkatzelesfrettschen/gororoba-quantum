@@ -34,13 +34,13 @@ isa = transpile(circuit, backend_v2, initial_layout=[...], optimization_level=1,
 - Dynamic circuits: `QuantumCircuit.if_test`, `while_loop`, `switch`, `store`,
   `Reset`, mid-circuit `measure`. The snapshot Target lists `if_else` under
   `omitted_operations`, so `transpile` against it rejects control flow
-  (example in [qiskit-ibm-runtime.md](qiskit-ibm-runtime.md)); Heron limits are in the root
-  AGENTS.md "Heron execution facts".
+  (example in [qiskit-ibm-runtime.md](qiskit-ibm-runtime.md)); Heron r2 limits are in
+  docs/notes/ibm_heron_platform.md "Execution facts".
 - QASM exchange with the other tools: QASM 2 for unitary circuits into
   [quimb.md](quimb.md) and [pyzx.md](pyzx.md); QASM 3 into stim's output and
   `qasm3.loads` ([qiskit-qasm3-import.md](qiskit-qasm3-import.md)).
 - Little-endian ordering: qubit 0 is the least significant bit of a counts key
-  and of `Statevector.data`'s index (root AGENTS.md, "Encoding and
+  and of `Statevector.data`'s index (docs/notes/algebra_circuit_rules.md, "Encoding and
   representation").
 
 ## API ENTRY POINTS
@@ -168,7 +168,7 @@ Simulation on the GPU belongs to [qiskit-aer.md](qiskit-aer.md).
 - The snapshot Target reports `granularity` 1 and `min_length` 1 and omits
   `measure_2`, `reset_2`, `measure_reset`, `xslow` and control flow
   (`omitted_operations`); it is a noise-modeling input, and the live Target is
-  the timing authority (root AGENTS.md).
+  the timing authority (docs/notes/ibm_heron_platform.md).
 - `Statevector` and `Operator` memory is 2^n and 4^n complex numbers; do not use
   `Operator` above about 12 qubits.
 - `optimization_level` 3 reduced the CCZ's `cz` count from 12 to 10 in the

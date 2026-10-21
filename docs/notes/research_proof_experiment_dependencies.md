@@ -21,7 +21,7 @@ of dimensions seventeen and fifteen, meeting in dimension thirteen. An outer
 quadratic constraint and a family of actual curves have different proof roles.
 [Coste](coste-semialgebraic-geometry.md) and [Basu--Roy](1803.00505.md) require
 actual closure membership before curve selection; a quadratic-compatible
-vector alone supplies insufficient input. [Greenberg](greenberg-henselian-lifting.md)
+vector alone supplies insufficient input. [Greenberg](papers/greenberg-henselian-lifting.md)
 requires a Henselian discrete valuation ring and ideal-dependent approximation
 precision. Its lifting theorem cannot turn arbitrary order-two data into an
 exact solution. A real tangent direction may require ramification
@@ -48,13 +48,13 @@ larger questions.
 
 | Candidate theorem / artifact | Relevant source | Required bridge and falsifier |
 | --- | --- | --- |
-| Exact rank at a rational/algebraic point | [MathComp / CoqEAL](mathcomp-coqeal-matrix-certificates.md) | Lower witness `M*A*N=I_r` and upper factorization `A=B*C`; use correct field and dimensions. `kermx` is a left kernel, whereas repository annihilator vectors use the right/column convention |
+| Exact rank at a rational/algebraic point | [MathComp / CoqEAL](papers/mathcomp-coqeal-matrix-certificates.md) | Lower witness `M*A*N=I_r` and upper factorization `A=B*C`; use correct field and dimensions. `kermx` is a left kernel, whereas repository annihilator vectors use the right/column convention |
 | [Selected-center cone and curve certificate](nullity_twelve_local_geometry.md) | Same matrix libraries; curve-selection sources above | Prove determinant/pivot domain, cleared denominator signs and exact polynomial identities; finite evaluations cannot replace all-real coefficient equality |
-| Ideal controlled circuit and arithmetic | [SQIR / VOQC](sqir-voqc-proof-interfaces.md) | Bit/basis order, ancilla cleanup, exact relative phase, parser/translation and output decoder; up-to-global-phase optimizer equivalence needs a controlled-context bridge |
-| Dynamic program with retained outcomes | SQIR density semantics; [QILGST](2103.03008.md) | Outcome-indexed instrument maps or explicit classical registers; unconditional branch-summed equality can hide a wrong joint record |
-| Numeric interval decision from retained counts | [CoqInterval](coqinterval-certified-enclosures.md) | Rational inputs, enclosure/domain proofs, source-bound count certificate; a correct interval evaluator alone supplies no coverage theorem |
-| Fixed or sequential confidence decision | [Howard et al.](1810.08240.md) | Sampling model, estimand, filtration, family/tail allocation and stopping rule; an observed count theorem is conditional on these statistical assumptions |
-| Faithful reduced field model | [Finite CPU evidence](../evidence/vacuum_models/README.md), [Gaussian](quant-ph-0109047.md), [collision](2106.11974.md) sources | Isometry, invariant subspace, observable/channel pullback, cutoff and synthesis errors; preserve the declared information, including joint records when used |
+| Ideal controlled circuit and arithmetic | [SQIR / VOQC](papers/sqir-voqc-proof-interfaces.md) | Bit/basis order, ancilla cleanup, exact relative phase, parser/translation and output decoder; up-to-global-phase optimizer equivalence needs a controlled-context bridge |
+| Dynamic program with retained outcomes | SQIR density semantics; [QILGST](papers/2103.03008.md) | Outcome-indexed instrument maps or explicit classical registers; unconditional branch-summed equality can hide a wrong joint record |
+| Numeric interval decision from retained counts | [CoqInterval](papers/coqinterval-certified-enclosures.md) | Rational inputs, enclosure/domain proofs, source-bound count certificate; a correct interval evaluator alone supplies no coverage theorem |
+| Fixed or sequential confidence decision | [Howard et al.](papers/1810.08240.md) | Sampling model, estimand, filtration, family/tail allocation and stopping rule; an observed count theorem is conditional on these statistical assumptions |
+| Faithful reduced field model | [Finite CPU evidence](../evidence/vacuum_models/README.md), [Gaussian](papers/quant-ph-0109047.md), [collision](2106.11974.md) sources | Isometry, invariant subspace, observable/channel pullback, cutoff and synthesis errors; preserve the declared information, including joint records when used |
 
 The retained upstream archives are original licensed source snapshots. Their
 named declarations were inspected; joint build compatibility with the pinned
@@ -69,23 +69,23 @@ assumptions; a proof assistant cannot infer them from a finite shot file.
 
 ## Tomography, stopping and allocation
 
-[GST](2009.07301.md) exposes gate-set gauge freedom and SPAM ambiguity.
-[Instrument GST](2103.03008.md) retains outcome-conditioned operations; its
+[GST](papers/2009.07301.md) exposes gate-set gauge freedom and SPAM ambiguity.
+[Instrument GST](papers/2103.03008.md) retains outcome-conditioned operations; its
 reported reconstruction was trace-preserving but lacked a CP constraint.
 The relevant target determines which state, process, gate-set or instrument
 parameters need identification. Two known-label correction witnesses provide
 bounded endpoint evidence rather than complete instrument tomography.
 
-[Optimal-design theory](quant-ph-0411093.md) gives local, model-dependent
+[Optimal-design theory](papers/quant-ph-0411093.md) gives local, model-dependent
 Fisher criteria and continuous shot fractions. A Cramer--Rao lower bound on
 estimator error cannot certify a finite-shot upper error guarantee.
-[SHOALS](2201.13438.md) separates sampling, switching and communication costs.
+[SHOALS](papers/2201.13438.md) separates sampling, switching and communication costs.
 The repository must add integer shots, job activation, grouped schedules,
 matched controls and uncertainty, then compare with uniform and exhaustive
 small-case allocation references. A heuristic receives its measured scope;
 source theory supplies no global optimum for a different billing problem.
 
-[Classical shadows](2002.08953.md) can estimate many specified observables;
+[Classical shadows](papers/2002.08953.md) can estimate many specified observables;
 its snapshot budget and measurement ensemble remain part of the theorem.
 For a few known low-weight observables, grouped direct measurement may cost
 less. Full n-qubit Pauli state tomography uses 3^n local settings for 4^n-1

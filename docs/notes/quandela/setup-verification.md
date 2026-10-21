@@ -7,7 +7,7 @@ Specifications are in [platform-specifications.md](platform-specifications.md). 
 ## Interpreters
 
 - `python3` on the build host is `/usr/local/bin/python3`, a link to `/usr/bin/python3.14`, version 3.14.8. `/usr/bin/python3` is also `/usr/bin/python3.14`, version 3.14.8.
-- The repository CI pins Python 3.14.7 ([AGENTS.md](../../../AGENTS.md), "Layout and gates"). The host is one patch version ahead of CI.
+- The repository CI pins Python 3.14.7 ([ci/AGENTS.md](../../../ci/AGENTS.md), "Layout and gates"). The host is one patch version ahead of CI.
 - `PYTHON` is unset in the interactive shell. `ci/run_gates.py` sets it to `sys.executable` when the caller leaves it unset.
 - `QD_PYTHON` is unset. The MCP registrations launch `/usr/bin/python3` directly.
 

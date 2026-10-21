@@ -1,7 +1,7 @@
 # Kaggle guides
 
 Kaggle kernels run every simulation of 14 qubits or fewer (root AGENTS.md,
-"QPU time and calibration"). These guides play the role
+"QPU time and calibration"; the section below holds the machine, GPU and CI-replay rules). These guides play the role
 `docs/notes/ibm_quantum/` plays for IBM hardware:
 
 | Guide | Content |
@@ -55,3 +55,125 @@ the guides follow what a kernel measured:
 
 `kaggle_kernel/AGENTS.md` is the instruction file that travels inside each
 kernel, and `kaggle_kernel/kernel_main.py` is the program every kernel runs.
+
+## Simulation on Kaggle: CPU, GPU and CI replay
+
+`"$PYTHON" scripts/kaggle_run.py push ENTRY --slug SLUG -- ARGS` runs a
+repository script on a private Kaggle kernel, and `status` and `collect`
+retain its output under results/kaggle/. The kernel's own guide is
+`kaggle_kernel/AGENTS.md`. The measurements behind the choices below are in
+`docs/notes/kaggle/substrates.md`
+(`results/kaggle/2026-10-16T204620Z-gororoba-aer-gpu-probe`).
+
+- **Machine.**
+  - CPU, the default: every noisy simulation whose widest density matrix
+    stays below 11 qubits, and every small dynamic circuit.
+  - GPU (`--machine NvidiaTeslaT4`, two T4s): density matrices of 11 to 14
+    qubits and statevectors up to 29 qubits per T4.
+  - Measured on the 7-qubit N=21 order-finding circuits: statevector
+    trajectories took 2.8 and 36 ms per shot on the CPU against 21.7 and
+    54.6 ms on a T4.
+  - A dynamic circuit's density matrix evolves per shot, about 160 times
+    slower than trajectories of the same channel.
+- **A GPU push.** It carries `--timeout SECONDS` sized to the work, and
+  kaggle_run.py refuses an accelerator push without one. Read `kaggle quota`
+  before and after; the weekly 30 h resets at 00:00 UTC on Saturday. Two GPU
+  sessions run at once, and a version is never repushed while it runs. For
+  example:
+
+  ```sh
+  "$PYTHON" scripts/kaggle_run.py push --slug NAME --machine NvidiaTeslaT4 \
+      --timeout 3600 --include SNAPSHOT.json scripts/ENTRY.py -- ARGS
+  ```
+
+- **Inside the entry.**
+  1. The kernel installs qiskit-aer-gpu-cu11 0.17.2 and sets
+     `GOROROBA_AER_DEVICE=GPU`, and `calibration_snapshot.aer_device()`
+     reads it.
+  2. `calibration_snapshot.noise_simulator(snapshot, device,
+     method="density_matrix" | "statevector")` builds live_run's noise
+     channels.
+  3. `snapshot_laws.restrict_circuit(isa)` with `restrict(snapshot, qubits)`
+     keeps the circuit and the noise model at the active width.
+  4. `set_options(max_parallel_threads=parallel.workers())` uses every host
+     CPU.
+- **cuStateVec.** `noise_simulator(..., custatevec=True)` sets Aer's
+  `cuStateVec_enable` on a GPU statevector or density-matrix run, and
+  `GOROROBA_AER_CUSTATEVEC=1` sets it for every GPU call that leaves
+  `custatevec` unset (`calibration_snapshot.aer_custatevec`). qiskit-aer-gpu-cu11 0.17.2
+  links libcustatevec.so.1 and libcutensornet.so.2, which `cuquantum-cu11`
+  24.8.0 and `cutensor-cu11` 2.2.0 (`KERNEL_PINS` entries) supply. Aer
+  0.17.2 reports `cuStateVec_enable` False when `batched_shots_gpu` is also
+  set.
+  `scripts/aer_gpu_probe.py --workloads n21 --configurations
+  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
+  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
+  cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
+  the plain GPU executor at 7 and 10 qubits and statevector trajectories
+  1.19 to 1.29 times slower, and Aer spread per-shot and batched runs over both
+  GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
+  `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
+  the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
+- **Batched GPU shots.** On a GPU `noise_simulator` enables Aer's
+  `batched_shots_gpu` by default for circuits of at most
+  `BATCHED_SHOTS_MAX_QUBITS` (10) active qubits, and `batched_shots=False`
+  opts out. `SnapshotSimulator.run` runs any circuit with control flow
+  unbatched: the batched executor rejects `jump`, and with if_else lowered
+  to bfunc-conditioned gates it evaluates the condition before the readout
+  channel. Shot branching is never enabled, since Aer 0.17.2's shot
+  branching drops a mid-circuit measurement's readout channel
+  (`docs/evidence/aer_gpu_configuration/README.md`).
+- **Cache blocking.** `SnapshotSimulator.run` blocks a GPU batch whose
+  widest active state exceeds one GPU's memory, Aer's own trigger, with
+  `calibration_snapshot.blocking_qubits_for`'s chunk (27 statevector, 13
+  density-matrix qubits on a T4) and `max_parallel_shots=1`, so every run
+  that fits one GPU keeps its executor and counts. On the T4 x2 a 15-qubit
+  density matrix ran in 4.2 s and a 30-qubit statevector in 7.2 s across
+  both GPUs, where Aer's automatic choice filled host memory until the OOM
+  killer ended it. if_else aborts under blocking, so a blocked batch runs in
+  `lower_conditionals` form and raises ValueError where none exists; Aer's
+  CPU chunk executor misplaces conditions, so blocking stays on the GPU
+  (gates core-451 and core-452, `docs/notes/kaggle/substrates.md`).
+- **CI replay.**
+  - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
+    record from its retained counts and never resamples on CI.
+  - An entry whose output a CI gate recompiles is pushed with `--ci-env`,
+    on a CPU or a GPU machine. The kernel then builds CI's Python 3.14.7
+    with `ci/install_pins.sh` and runs the entry under CPU Aer, because the
+    image's Python 3.13 and numpy 2.1.3 change compiled depths and
+    durations.
+  - Replays hold routed CZ, layout and classical stages exact, and depth
+    and duration within a relative 0.002 across BLAS builds.
+- **Pinned GPU environment.** `push --gpu-env` on `NvidiaTeslaT4` runs the
+  entry in a venv on the image's Python 3.13, the newest Python the cu11
+  wheel ships, holding requirements.txt and ci/requirements-ci.txt with
+  `GPU_ENV_AER_PINS` in qiskit-aer's place (`ci/install_pins.sh` with
+  `AER_PINS`).
+  - Before the entry, `kernel_main.gpu_interpreter` requires every pin at its
+    version, the selected GPU Aer distribution as the only owner of
+    `qiskit_aer/__init__.py`, both T4s in nvidia-smi, and seeded Bell runs
+    on the GPU that report device GPU, the cuStateVec one with
+    `cuStateVec_enable` true.
+  - A miss lists its reasons under `failures` in gpu_env.json, and the kernel
+    exits 4 without running the entry.
+  - `aer_gpu_probe.py --require-gpu` then stops at the first row that leaves
+    the GPU.
+  - `--gpu-env-with torch` adds `GPU_ENV_GROUPS["torch"]`, torch 2.14.1 at
+    the host's version, to the same resolve and to the pins the preflight
+    requires; `ghost_branching_benchmark.py --require-gpu NAME --gpus N`
+    then exits 3 unless torch lists both T4s and a complex128 matmul on
+    each matches numpy.
+  - `--gpu-aer cu13` replaces the cu11 wheels with `GPU_AER_PINS["cu13"]`:
+    the CUDA 13 wheel `docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh`
+    builds, which the push attaches from its `kaggle_run.py artifact`
+    dataset (`AER_GPU_WHEELS`) and the kernel installs only when its sha256
+    matches (`docs/notes/kaggle/custatevec.md`, "CUDA 13 build"). On the
+    T4 x2 it ran every probe row with cuStateVec on; its GPU density-matrix
+    rows draw the cu11 wheel's seeded counts, while seeded statevector
+    trajectories differ by build (gate core-442).
+  - Only Python itself differs from CI's 3.14.7.
+  - On a CPU machine the same push stops at the preflight, which proves the
+    error path at no GPU cost.
+- **Sessions.** Five CPU and two GPU batch sessions run per account. A GPU
+  machine's four host CPUs run CPU work, `--ci-env` included, when the CPU
+  pool is full, at the price of GPU quota.

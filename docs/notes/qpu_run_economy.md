@@ -38,7 +38,7 @@ the bound each contribute; none of them changes the circuit.
    (`--model-method exact`). Gate core-487 holds it to Aer's density-matrix
    simulation within 1.2e-15 on the cleaned noise model. float64 suffices:
    an x87 80-bit run of the same law moved it by at most 4.4e-16
-   (docs/notes/numerics_best_practice.md).
+   (docs/notes/topics/numerics_best_practice.md).
 
 3. **Read the tighter bound per PUB.** For a directional endpoint planned
    on an exact law, `--empirical-bernstein` splits each PUB's tail between
@@ -144,7 +144,7 @@ the bound each contribute; none of them changes the circuit.
     batch (gate core-548): a 146-qubit ibm_kingston dry run takes 45 s of
     wall time. A submit therefore lands inside the calibration window its
     approval was written against
-    ([simulation-cost-levers.md](build_host/simulation-cost-levers.md)).
+    ([simulation-cost-levers.md](../runbooks/simulation-cost-levers.md)).
 
 ## The run as executed on ibm_kingston, 2026-10-18
 
@@ -226,7 +226,7 @@ properties, the dry-run Sampler), numpy (the exact law in
 with one BLAS thread per worker. python-flint, the p-adic and wheel
 arithmetic, and the hypercomplex packages validate least-squares
 conditioning and the Cayley-Dickson algebra (numerics_best_practice.md,
-AGENTS.md); order finding for N = 21 has no Cayley-Dickson content, so
+docs/notes/algebra_circuit_rules.md); order finding for N = 21 has no Cayley-Dickson content, so
 none of them enters its law. The Quantum Inspire QX emulator checks the
 deferred-measurement form of the same circuits (gate core-499) and runs no
 part of the IBM plan.

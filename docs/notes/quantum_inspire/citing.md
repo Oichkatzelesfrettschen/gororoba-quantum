@@ -171,8 +171,8 @@ Fact sheet references [6] and [7] (Esposti et al., Appl. Phys. Lett. 120,
 [8] were not checked against a registration record and carry no entry here.
 
 Two 2026 QuTech-affiliated spin-qubit papers are retained with notes,
-[s41586-026-10423-9.md](../s41586-026-10423-9.md) (Matsumoto et al., Nature
-653, 391-397) and [s41567-026-03466-2.md](../s41567-026-03466-2.md) (Wu,
+[s41586-026-10423-9.md](../papers/s41586-026-10423-9.md) (Matsumoto et al., Nature
+653, 391-397) and [s41567-026-03466-2.md](../papers/s41567-026-03466-2.md) (Wu,
 Camenzind et al., Nature Physics), whose BibTeX the notes carry; the Tuna-17
 cases that translate them are in [experiments.md](experiments.md). No
 Quantum Inspire page cites them and neither describes a QI

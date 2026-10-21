@@ -771,7 +771,10 @@ def verify_source_archives(root: Path, registry: dict[str, Any]) -> int:
         require(entry.get("copy_status") == "unchanged", "archive copy status")
         prefix = source_archive_prefix(entry)
         relative_note = require_text(entry.get("note"), "archive owning note")
-        require(re.fullmatch(r"docs/notes/[A-Za-z0-9_.-]+\.md", relative_note) is not None, "archive owning note path")
+        require(
+            re.fullmatch(r"docs/notes/(?:papers/)?[A-Za-z0-9_.-]+\.md", relative_note) is not None,
+            "archive owning note path",
+        )
         note = root / relative_note
         require(
             note.is_file() and not note.is_symlink() and note.resolve() == root.resolve() / relative_note,
