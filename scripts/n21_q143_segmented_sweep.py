@@ -603,8 +603,10 @@ def spectator_stages(payload: dict[str, Any], qubit: int) -> list[tuple[int, lis
     Every play row of the returned scheduler table carries its instruction's
     label (measure_Q, reset_Q, sx_Q); a measure or reset plays several
     contiguous rows, and a measure's acquisition runs past its last drive
-    play to the next barrier. INIT and FINI rows bracket the program and are
-    dropped. An absent or malformed table raises ValueError.
+    play to the next barrier. INIT and FINI rows bracket the program: an
+    INIT row discards the stages before it, a barrier among them included,
+    and the first FINI row ends the program. An absent or malformed table
+    raises ValueError.
     """
     try:
         timing = payload["metadata"]["compilation"]["scheduler_timing"]["timing"]
@@ -615,8 +617,13 @@ def spectator_stages(payload: dict[str, Any], qubit: int) -> list[tuple[int, lis
         row = line.split(",")
         if len(row) < 6:
             raise ValueError("scheduler timing table is malformed")
-        if row[2] != f"Qubit {qubit}" or row[1].startswith(("INIT", "FINI")):
+        if row[2] != f"Qubit {qubit}":
             continue
+        if row[1].startswith("INIT"):
+            stages = []
+            continue
+        if row[1].startswith("FINI"):
+            break
         start = int(row[3])
         if row[5] == "barrier":
             if not stages or stages[-1][1] or stages[-1][0] != start:

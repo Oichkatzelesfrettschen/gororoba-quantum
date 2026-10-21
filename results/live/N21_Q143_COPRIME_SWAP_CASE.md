@@ -1,8 +1,8 @@
 # Case: segmented coprime swap sweep of ibm_fez qubit 143
 
-Status: approved. The run executed on ibm_marrakesh qubit 47 in place of
-ibm_fez qubit 143 (section Execution), so the q143 question below stays
-open. Nothing in this document submits.
+Status: approved and executed. ibm_marrakesh qubit 47 ran first as a
+baseline and ibm_fez qubit 143 ran the question (section Execution).
+Nothing in this document submits.
 
 ## Question
 
@@ -215,6 +215,47 @@ against 13.7, a Wald test of each pair's per-shot X and Y means), z_memory (284 
 us and T2* 52 us. Record.json is 84 MB (issue #328), so the run, its raw
 files and the amended analysis are kept with the dry runs outside the
 checkout until sparse ideal laws make the record committable.
+
+### ibm_fez qubit 143
+
+ibm_fez fell to 2 pending at 06:36Z; the dry run
+2026-10-21T063625.403699Z (record.json sha256
+b5cfb7d199dea7f8dcedb99b0ee48b17a1147c1818ee561d9a2d77ac6c6b6b32) pinned
+`ibm_fez:142,136,143,144` from main at c062df1. Run
+2026-10-21T064222.721454Z, job dbc5u19gv2cc73e9l340, ran 06:43:18Z to
+06:43:41Z and billed 16 s.
+
+The preregistered segmented-sweep.json refuses every member: the ibm_fez
+table opens with a barrier before INIT, which the bound stage reader kept
+as an 842 dt idle ahead of the segment-1 herald. The amended reader starts
+the program at INIT and ends it at FINI, and its analysis
+(segmented-sweep-<closure digest>.json) admits all 48 members (1508 to
+1528 kept shots each, dead gaps 1264 dt as designed) and every herald.
+
+| Test | qubit 143 (fez) | qubit 47 (marrakesh) |
+|---|---|---|
+| segment_exchangeability | exchangeable, 42.2 against 72.1 | exchangeable, 51.5 |
+| herald_backaction | none, 3.5 against 13.7 | backaction, 47.9 |
+| z_memory | none, 18.3 against 42.3 | memory, 284 |
+| model_decision | line mixture, tls worse by 10060 | line mixture, by 239 |
+| second-line weight 1 - a | 0.471 | 0.048 |
+| alias | cell 0 resolved, next cell worse by 5342 | cell -2 |
+| df | -90.2 kHz | -735 kHz |
+| switching rate (telegraph) | 0 per us | 0 per us |
+| T1, T2* (fit) | 152 us, 138 us | 81 us, 52 us |
+
+Answers. (1) df = -90.2 kHz in alias cell 0, the residue the retained
+836 dt sweep left modulo 299.04 kHz, now unaliased. (2) The two lines of
+qubit 143 are a classical mixture fixed within each shot: the segments of
+a shot correlate as one line, an exchange-coupled TLS is worse by 10060 in
+NLL, and the Z arms carry no swap memory; the fitted switching rate is 0,
+so the line holds over a shot, 30 to 230 us across the delays. The weights 0.529 / 0.471
+differ from the retained sweep's 0.644 / 0.356. A line pair near equal
+weight, fixed over a shot and split by tens of kHz, is the signature of
+charge-parity splitting; this run measures the mixture and its stability
+and leaves the mechanism to a parity-resolved readout. (3) The 1250 dt
+pre-idle moves no quadrature, so the herald readout leaves qubit 143's
+Ramsey unperturbed, where qubit 47 shows backaction under the same design.
 
 ## Failure modes
 
