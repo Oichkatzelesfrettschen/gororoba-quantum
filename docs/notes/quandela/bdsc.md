@@ -48,7 +48,8 @@ selected output A_j, each middle vector to (A + D)/sqrt2 and an ancilla to
 selected compression equals E0, exactly over Q(sqrt2) and again in sympy.
 In Perceval the circuit is PERM_in, twelve BS.H on wire pairs (2j, 2j + 1)
 and PERM_out with no phase shifter, because each output pair's 2 x 2 block
-is BS.H itself.
+is BS.H itself. That describes the requested unitary; the served Belenos
+mesh is the full compiled chip (M2 below).
 
 The selected outputs are the twelve modes with the lowest receipt dark rate
 in the qpu:belenos catalogue retrieved 2026-10-17 (12, 13, 16, 18, 19, 20, 21, 22, 23,
@@ -71,15 +72,25 @@ a_U < gamma_L give:
   eigenvectors.
 
 The cross block never enters, and Tr A bounds lambda_max(A) as well. The
-self-test checks all three inequalities on 1024 effects. 1023 of them have
+inequalities use F >= 0 alone. Under an acceptance bound
+(1 - delta) tau I <= D <= (1 + delta) tau I the reconstructed effect
+F = G_A / tau satisfies only F <= (1 + delta) I, so the a priori caps on a_U
+and l_U are 1 + delta and 4 (1 + delta); the ratio a_U / gamma_L is
+unchanged by a common scale. The self-test checks all three inequalities on 1024 effects. 1023 of them have
 a < gamma, and a near-tight family reaches sin^2 theta / (a / gamma) =
 0.997.
 
 A record is certified when min(a_U, l_U) < gamma_L and the angle bound is
 at most 10 degrees. Otherwise it reads alternative structure when the
 complement's certified brightest response c_L is positive and either
-gamma_U <= 0.1 c_L (a fifth low-response direction) or a_L >= 0.1 c_L (a
-bright direction inside K). Every other record reads not certified. The
+gamma_U <= 0.1 c_L (a low-response direction inside the complement Q) or
+a_L >= 0.1 c_L (a bright direction inside K). Every other record reads not
+certified. A low complement direction does not by itself make a fifth low
+eigenvalue of F: A = 0.09 I_4, C = diag(0.09, 1, ..., 1) and one cross
+entry 0.09 between k_1 and that direction form a valid effect with spectrum
+{0, 0.09^3, 0.18, 1^11}. Positivity gives |u^T B v|^2 <= (u^T A u)(v^T C v)
+on the cross block B, so lambda_5(F) <= a_U + gamma_U is the global bound
+such a record supports, tight on that example. The
 ratios make a common scale, such as transmittance under an emitted-photon
 denominator, change no disposition.
 
@@ -107,7 +118,9 @@ reproduces them to six digits, and gate core-606 holds them.
 `controls.json` runs every control through `bdsc.evaluate` at 10^5 trials
 per setting. Each expected disposition is met, and the true a and gamma lie
 inside the bounds wherever a certificate is issued (64/64 coverage at 10^4
-trials for E0 and for a 1 % background).
+trials for E0 and for a 1 % background). The coverage runs are regression
+evidence for the implementation; the 0.95 joint confidence rests on the
+Clopper-Pearson, Bonferroni and matrix Bernstein bounds, not on them.
 
 | Control | Disposition |
 |---|---|
@@ -120,20 +133,29 @@ trials for E0 and for a 1 % background).
 ## Planning
 
 - At expected counts, E0 first certifies at 5000 trials per setting
-  (8.7 degrees) under either alpha allocation.
+  (l_U = 0.0062733, gamma_L = 0.2767577, 8.659 degrees) under either alpha
+  allocation. This is a deterministic evaluation at the ideal expected
+  counts, not a probability that a 5000-trial run certifies.
 - A background beta I raises a directly. beta = 0.002 needs 10^5 trials,
   0.005 needs 10^6, and 0.02 never certifies at the planning tiers.
 - Systematics propagate as worst-case shifts through the |D_s| row sums,
   which amplify a per-setting bias about thirtyfold. At 10^5 trials the
   certificate tolerates a preparation bias bound of 0.0026 or an
-  acceptance deviation delta of 0.014 per setting.
+  acceptance deviation delta of 0.014 per setting. Both are conditional on
+  the ideal E0 spectrum, the outcome law and the normalization; a measured
+  complement spectrum or calibration uncertainty moves them.
 - The zero-event trace route (n_min = 1086 at gamma_L = 0.45) needs zero
-  selected events. Belenos's off-cone clicks on modes 0, 1 and 5 make a
-  zero-event record unplannable.
+  selected events. Modes 0, 1 and 5, where Belenos's unmodeled off-cone
+  clicks appear, are outside the selected set, so they do not refute the
+  route; they show that the background and acquisition model is
+  unqualified, and a zero-event outcome cannot be promised. No plan rests on
+  this branch.
 - Historical qpu:belenos rates (6.3 s per iteration plus 26 us per sample,
   32 iterations per job, 1 credit per job plus 1e-6 per billed shot) put
   the 160-setting bank at 5 jobs and about 6 credits for 10^5 trials, and
-  18 jobs and 54 credits for 10^6.
+  18 jobs and 54 credits for 10^6. These rates belong to processed-output
+  jobs under default mitigation; raw acquisition, disabled mitigation or
+  added calibration needs a new plan.
 
 ## Qualification on qpu:belenos
 
@@ -141,10 +163,17 @@ trials for E0 and for a 1 % background).
 |---|---|---|
 | M0 algebra | passed | `target.json`, `packages/packages.json` |
 | M1 optical target | passed | U24 exact; Perceval native circuit and SLOS shares within 1e-9 on 184 settings |
-| M2 native compilation | blocked | the service re-transpiles every circuit and keeps only the occupied column (jobs 1d7160c1, e5b74123; strategy.md sections 4 and 7), so no fixed measurement stage exists apart from the preparation |
-| M3 acquisition | blocked | DetectorBalancing is the default mitigation; Perceval 1.3.1's probs_to_sample_count reads a zero-count frequency of 0.305 against the binomial 0.368 (z = -18.3) and a mean of 1.079 against 1.000 at p = 1e-4, n = 10^4 over 20000 seeded draws; the receipt t_out taken as efficiencies gives an acceptance deviation of 0.97; off-cone clicks have no model |
+| M2 native compilation | blocked | the tested routes preserve neither the requested full transformation nor a preparation-independent measurement stage: on sim:belenos the parameterized and numeric architecture forms (jobs 1d7160c1, e5b74123) came back with all 574 phases changed and only the occupied column kept, and on qpu:belenos the served mesh follows the body and the compilation seed (belenos_mesh job-02, job-07; strategy.md sections 2, 4 and 9). Whether another access mode preserves a requested transformation is a provider question ([qualification design](../../design/bdsc-qualification.md)) |
+| M3 acquisition | blocked | DetectorBalancing is the default mitigation and assumes loss without dark counts and independent detectors; Perceval 1.3.1's probs_to_sample_count perturbs each probability by a normal draw, clips, renormalizes and rounds, so at n p = 1 its zero-count frequency sits near Phi(-1/2) = 0.3085: the local conversion record reads 0.305 against the binomial 0.368 (z = -18.3) and a mean of 1.079 against 1.000 at p = 1e-4, n = 10^4 over 20000 seeded draws. The record is a local 1.3.1 study and the frozen receipt names server Perceval 1.3.0. An explicit empty mitigation list is the documented request for no remote mitigation ([error_mitigation](perceval/reference/runtime/error_mitigation/index.md)), unverified on this account; the receipt t_out taken as efficiencies gives an acceptance deviation of 0.97; off-cone clicks have no model |
 | M4 fixed effect | blocked | the compiled mesh, and with it the error channel, follows the target column, which follows the preparation label |
 | M5 to M9 | not started | the pilot of `pilot.json` waits for an approved case |
+
+The latest retained qpu:belenos reads (2026-10-20, `running` at 04:09 UTC
+and `calibration` at 08:51 UTC) lack `specs.architecture`, so `qd_platform.py
+plan` refuses a mesh-sensitive case before any of these milestones
+([calibration.md](calibration.md)). The three provider contracts that M2 to
+M4 need, and the qualification measurements that test them, are in
+[bdsc-qualification.md](../../design/bdsc-qualification.md).
 
 In Perceval, uniform NoiseModel transmittance cancels exactly under
 `min_detected_photons` 1, and per-mode LC loss reproduces

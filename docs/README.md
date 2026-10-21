@@ -82,6 +82,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | [design/hybrid-shor.md](design/hybrid-shor.md) | hybrid Shor architecture for IBM Heron r2 |
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
+| [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
 | [coherence-case-submission-review.md](../plans/reviews/coherence-case-submission-review.md) | coherence-window case, submission-path review |
