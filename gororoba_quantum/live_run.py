@@ -62,6 +62,7 @@ from qiskit_ibm_runtime.executor_sampler import Sampler
 
 import correction_collection
 import ibm_account
+import law_encoding
 import local_compute
 import packing
 import parallel
@@ -2466,8 +2467,41 @@ def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) ->
 
 
 def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
-    """dist with each classical bit's readout channel inverted, unclipped (readout_inverse)."""
-    return np.asarray(readout_inverse(isa, props, symmetric) @ dist)
+    """dist with each classical bit's readout channel inverted, unclipped (readout_factors).
+
+    Up to law_encoding.DENSE_LIMIT outcomes the dense readout_inverse
+    multiplies dist; a wider register applies each clbit's 2x2 inverse along
+    its own axis of dist, the same product without the 4^n matrix (8.6 GB of
+    float64 at 15 clbits).
+    """
+    factors = readout_factors(isa, props, symmetric)
+    values = np.asarray(dist, dtype=float)
+    if values.size <= law_encoding.DENSE_LIMIT:
+        return np.asarray(readout_inverse(isa, props, symmetric) @ dist)
+    width = len(factors)
+    tensor = values.reshape((2,) * width)
+    for clbit, factor in enumerate(factors):
+        # Clbit 0 is the least significant index bit, the last C-order axis.
+        axis = width - 1 - clbit
+        tensor = np.moveaxis(np.tensordot(factor, tensor, axes=([1], [axis])), 0, axis)
+    return tensor.reshape(-1)
+
+
+def readout_factors(isa: QuantumCircuit, props: Any, symmetric: bool = False) -> list[np.ndarray]:
+    """Per clbit, in clbit order, the inverse of its readout channel (readout_inverse)."""
+    writer: dict[int, int] = {}
+    for inst in isa.data:
+        if inst.operation.name == "measure":
+            writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
+    factors = []
+    for clbit in range(isa.num_clbits):
+        # A clbit no measurement writes holds its initial 0 and passes
+        # through the identity channel.
+        e10, e01 = readout_flips(props, writer[clbit]) if clbit in writer else (0.0, 0.0)
+        if symmetric:
+            e10 = e01 = (e10 + e01) / 2.0
+        factors.append(np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
+    return factors
 
 
 def readout_inverse(isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
@@ -2488,18 +2522,9 @@ def readout_inverse(isa: QuantumCircuit, props: Any, symmetric: bool = False) ->
     twirling randomizes the measured bit and reverses it classically, so a
     twirled job's effective channel is the symmetric average.
     """
-    writer: dict[int, int] = {}
-    for inst in isa.data:
-        if inst.operation.name == "measure":
-            writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
     inverse: np.ndarray = np.ones((1, 1))
-    for clbit in reversed(range(isa.num_clbits)):
-        # A clbit no measurement writes holds its initial 0 and passes
-        # through the identity channel.
-        e10, e01 = readout_flips(props, writer[clbit]) if clbit in writer else (0.0, 0.0)
-        if symmetric:
-            e10 = e01 = (e10 + e01) / 2.0
-        inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
+    for factor in reversed(readout_factors(isa, props, symmetric)):
+        inverse = np.kron(inverse, factor)
     return inverse
 
 
@@ -2537,11 +2562,13 @@ def corrected_summary(
     covariances: dict[str, list[np.ndarray]] = {}
     for e in runs:
         own = props[e.name] if isinstance(props, dict) else props
-        inverses = [readout_inverse(rep, own, symmetric) for rep in e.replicas]
         raw = [np.asarray(d, dtype=float) for d in dists[e.name]]
-        corrected[e.name] = [np.asarray(m @ d) for m, d in zip(inverses, raw, strict=True)]
         if propagate:
+            inverses = [readout_inverse(rep, own, symmetric) for rep in e.replicas]
+            corrected[e.name] = [np.asarray(m @ d) for m, d in zip(inverses, raw, strict=True)]
             covariances[e.name] = [corrected_covariance(d, m) for m, d in zip(inverses, raw, strict=True)]
+        else:
+            corrected[e.name] = [readout_corrected(d, rep, own, symmetric) for rep, d in zip(e.replicas, raw, strict=True)]
     return _pooled_summaries(group, runs, corrected, covariances if propagate else None)[0]
 
 
@@ -2793,7 +2820,7 @@ def _member_fields(entry: Entry) -> dict[str, Any]:
         "feed_forward": _has_feed_forward(entry.base),
         "replica_prefixes": entry.prefixes,
         "replica_qubits": entry.replica_qubits,
-        "ideal": [round(float(p), 12) for p in entry.ideal],
+        "ideal": law_encoding.encode([round(float(p), 12) for p in entry.ideal]),
     }
 
 
@@ -2858,7 +2885,7 @@ def _choice_record(
             "replicas": [
                 {
                     **_replica_fields(rep, target),
-                    "noisy": [round(float(p), 6) for p in dist],
+                    "noisy": law_encoding.encode([round(float(p), 6) for p in dist]),
                     "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
                 }
                 for rep, dist in zip(entry.replicas, noisy[entry.name], strict=True)
@@ -3375,7 +3402,7 @@ def approved_family_design(
                 ("family_configuration", configuration, approved.get("family_configuration")),
                 (
                     "observable_contracts",
-                    [dataclasses.asdict(c) for c in contracts],
+                    qpu_planning.observable_contract_records(contracts),
                     approved.get("observable_contracts"),
                 ),
                 ("shot tiers", tiers, approved["optimization"].get("shot_tiers")),
@@ -5423,7 +5450,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                 Entry(
                     name=member_name,
                     base=replicas[0],
-                    ideal=np.asarray(member["ideal"]),
+                    ideal=np.asarray(law_encoding.dense(member["ideal"])),
                     packed=packed,
                     replicas=replicas,
                     prefixes=prefixes,

@@ -54,6 +54,7 @@ from qiskit import QuantumCircuit, qpy  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import dynamic_density  # noqa: E402
+import law_encoding  # noqa: E402
 import n21_exact_planning  # noqa: E402
 import parallel  # noqa: E402
 import snapshot_laws  # noqa: E402
@@ -173,7 +174,10 @@ def endpoint(record_path: Path) -> tuple[dict[str, str], tuple[ObservableContrac
     contracts = tuple(
         ObservableContract(
             **{key: value for key, value in contract.items() if key != "terms"},
-            terms=tuple(ObservableTerm(t["member"], tuple(t["values"]), t["sign"]) for t in contract["terms"]),
+            terms=tuple(
+                ObservableTerm(t["member"], tuple(law_encoding.dense(t["values"])), t["sign"])
+                for t in contract["terms"]
+            ),
         )
         for contract in retained["observable_contracts"]
     )
