@@ -3,7 +3,7 @@
     "first_partner": {
       "correct_annihilator_in_every_signature": true,
       "distinct_annihilators": 84,
-      "distinct_annihilators_per_blade_histogram": {
+      "distinct_annihilators_per_message_histogram": {
         "4": 84
       },
       "distinct_blades": 28,
@@ -24,7 +24,7 @@
     "matching": {
       "correct_annihilator_in_every_signature": true,
       "distinct_annihilators": 84,
-      "distinct_annihilators_per_blade_histogram": {
+      "distinct_annihilators_per_message_histogram": {
         "4": 84
       },
       "distinct_blades": 84,
@@ -45,7 +45,7 @@
     "table1": {
       "correct_annihilator_in_every_signature": true,
       "distinct_annihilators": 34,
-      "distinct_annihilators_per_blade_histogram": {
+      "distinct_annihilators_per_message_histogram": {
         "1": 17,
         "2": 67
       },

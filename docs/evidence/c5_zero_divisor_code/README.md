@@ -96,9 +96,10 @@ annihilators, each its own Gram class. In exact arithmetic the messages
 that share an annihilator score every received vector alike, so the
 annihilation decoder can return at most 34 distinct messages and errs on
 at least 50 of 84 (1 - 34/84 = 0.595) at every sigma; the retained run's
-duplicate scores are bitwise equal. Each table1 blade is annihilated by 1
-(17 blades) or 2 (67 blades) of the 34 distinct annihilators, 2 to 7 of the
-84 rows (`distinct_annihilators_per_blade_histogram`). In the re-paired
+duplicate scores are bitwise equal. The blade a table1 message sends is
+annihilated by 1 (17 messages) or 2 (67 messages) of the 34 distinct annihilators, 2 to 7 of
+the 84 rows (`distinct_annihilators_per_message_histogram`, over message
+rows; over the 57 distinct blades, 17 and 40). In the re-paired
 codebooks every blade has exactly 4 annihilators and the 84 left factors
 fall into 42 Gram pairs.
 
@@ -147,5 +148,7 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/
 (cd docs/evidence/c5_zero_divisor_code && sha256sum -c SHA256SUMS)
 ```
 
-`result.json` retains major.minor interpreter and numpy versions; a changed
-source, seed or runtime needs an explicit reviewed regeneration.
+`result.json` retains the Python and numpy major.minor releases as its
+runtime identity, so a patch release of either replays under `--check`; a
+changed source, seed or major.minor runtime needs an explicit reviewed
+regeneration.

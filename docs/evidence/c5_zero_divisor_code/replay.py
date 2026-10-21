@@ -153,7 +153,7 @@ def deterministic_counts(annihilators: list[Support], blades: list[Support]) -> 
         "tie_counts_histogram": {str(n): ties.count(n) for n in sorted(set(ties))},
         "mean_ties": round(sum(ties) / len(ties), 6),
         "mean_ties_excluding_sender": round(sum(ties) / len(ties) - 1, 6),
-        "distinct_annihilators_per_blade_histogram": {str(n): distinct.count(n) for n in sorted(set(distinct))},
+        "distinct_annihilators_per_message_histogram": {str(n): distinct.count(n) for n in sorted(set(distinct))},
         "distinct_signatures": len(set(signatures)),
         "distinct_blades": len(set(blades)),
         "correct_annihilator_in_every_signature": all(i in s for i, s in enumerate(signatures)),
