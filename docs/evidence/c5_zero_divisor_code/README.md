@@ -3,30 +3,40 @@
 The replay reconstructs the experiment that
 [the C5 note](../../notes/c5-zero-divisor-code-falsification.md) reports, from
 the sedenion sign table `gororoba_quantum/cd_core.py` alone, with fixed seeds.
-The original implementation was never committed. The definitions below were
-fixed before any count or error rate was computed; where the note leaves a
-choice open, the most literal reading is taken and is not revised after the
-results are known.
+The original implementation was never committed.
 
-## Definitions fixed before computing
+## Codebooks
 
-- **The 84-pair set.** `cd_core.sedenion_zero_divisor_corpus()` lists the 336
-  ordered signed pairs `(e_i + t e_j)(e_k + s e_l) = 0` with disjoint index
-  sets. The left factors are 84 distinct signed two-support vectors
-  `a = e_i + t e_j` (42 index pairs x 2 signs), each with exactly 4 partners.
-  The product vanishes in both orders, so the 84 vectors are the vertices of
-  a 4-regular graph with 168 edges. The code has 84 messages, one per left
-  factor `a_i`, ordered by `(i, j, t)` with `t = -1` before `t = +1`.
-- **Pair and codeword.** Message `i` selects `(a_i, b_i)` where `b_i` is the
-  partner of `a_i` that sorts first by `(k, l, s)` in the corpus, again with
-  `s = -1` before `s = +1`. The transmitter sends the signed blade `b_i`
-  scaled to unit norm, `x_i = b_i / sqrt(2)`. The note does not say how an
-  edge picks its blade; the first partner is the literal choice that needs no
-  further parameter.
+- **table1, the note's code.** The note's messages are "the 84 zero-divisor
+  pairs of the sedenion census", message `i` selecting the pair
+  `(a_i, b_i)`. These are the 84 standard zero divisors of Reggiani's
+  Table 1 ([source note](../../notes/2411.18881.md)):
+  `(e_i + e_j, e_k +- e_l)` with `1 <= i <= 6`, `9 <= j <= 15`,
+  `i < k <= 7`, `9 <= l <= 15`, every one a row of
+  `cd_core.sedenion_zero_divisor_corpus()`. `table1_rows()` selects them and
+  sorts them by `(i, j, t, k, l, s)`, which fixes the message index and so
+  the lowest-index tie rule. The note recorded no order; the kernel file
+  `reggiani_standard_zero_divisor_pairs.csv` of open_gororoba lists the same
+  84 rows in this order. The 84 pairs hold 34 distinct annihilators `a_i`
+  and 57 distinct blades `b_i`. #314's falsifier names the note's counts
+  and C5 rate; identifying the note's code with Table 1 is the replay's
+  reading, and the counts it reproduces support it.
+- **first_partner and matching, re-paired codebooks.** An earlier revision
+  of this replay read the 84 messages as the 84 distinct left factors
+  `a = e_i + t e_j` of the corpus, ordered by `(i, j, t)` with `t = -1`
+  before `t = +1`, each with exactly 4 partners. `first_partner` sends the
+  partner that sorts first by `(k, l, s)`; `matching` sends the mate in the
+  first perfect matching of the annihilation graph (depth-first in sorted
+  order, `perfect_matching`), giving 84 distinct blades. Neither is the
+  note's code; both stay as alternative codebooks, and they draw nothing
+  from the generator, so their rows are unchanged by table1.
+- **Codeword.** The transmitter sends the signed blade `b_i` scaled to unit
+  norm, `x_i = b_i / sqrt(2)`.
 - **Noise.** The receiver sees `v = x_i + sigma n` with `n` standard normal in
   16 dimensions. The replay evaluates `b_i + sqrt(2) sigma n`, which is
   `sqrt(2) v`, so every decoder compares the same quantities and the
-  noiseless case stays in integer arithmetic.
+  noiseless case holds only the coefficients 0 and +-1, which floating
+  point multiplies and adds exactly.
 - **Sigma grid.** The note names 0.01, 0.05, 0.10, 0.20 and 0.50 and says
   eight levels. The replay adds 0.001, 0.30 and 1.00 as the other three and
   adds sigma = 0 as a ninth, noiseless row.
@@ -36,12 +46,12 @@ results are known.
   `ser_84` reads every trial and is retained as a second figure.
 - **Annihilation decoder (C5).** `ihat = argmin_j ||L_{a_j} v||`, where
   `L_a` is the 16 x 16 left-multiplication matrix of `a`
-  (`cd_core.left_mult_matrix`). An exact floating-point tie resolves to the
-  lowest `j`. The 84 left factors fall into 42 pairs sharing the Gram matrix
-  `L_a^T L_a` (`result.json`, `score_twins`), and
-  `||L_a v||^2 = v^T L_a^T L_a v`, so the two factors of a pair score every
-  received vector alike: their scores tie exactly or differ by rounding at
-  every sigma, and the decoder cannot separate them.
+  (`cd_core.left_mult_matrix`), over the codebook's 84 annihilators. An
+  exact floating-point tie resolves to the lowest `j`. Since
+  `||L_a v||^2 = v^T L_a^T L_a v`, annihilators sharing the Gram matrix
+  `L_a^T L_a` score every received vector alike at every sigma, and the
+  decoder cannot separate their messages (`score_classes` in each
+  codebook's `counts`).
 - **Algebraic + matched filter.** `ihat = argmax_j <v, x_j>` over the 84
   codewords `x_j`; identical codewords tie exactly and resolve to the lowest
   `j`.
@@ -55,9 +65,11 @@ results are known.
 - **Symbol error rate.** The fraction of trials whose decoded label differs
   from the sent label.
 - **Tie.** For message `i`, the number of `j` among the 84 with
-  `a_j * b_i = 0` exactly (integer arithmetic through `cd_core.cd_multiply`).
-  "Mean ties" is the mean over the 84 messages (the note's "3.9 per
-  codeword" counts the correct annihilator among them).
+  `a_j * b_i = 0` exactly (`cd_core.cd_multiply` on coefficients 0 and +-1,
+  exact in floating point),
+  the sender included. `mean_ties` is the mean over the 84 messages and
+  `mean_ties_excluding_sender` the same less one, the reading that matches
+  the note's "3.9 per codeword".
 - **Signature.** The set `{j : a_j * b_i = 0}` of message `i`; the count is
   the number of distinct sets over the 84 messages.
 - **Distinct blade.** The number of distinct `b_i` over the 84 messages.
@@ -68,59 +80,64 @@ results are known.
   `parallel.ordered_map` decodes the sigma rows in grid order, so the result
   does not depend on the worker count.
 
-## Control added after the first-partner results
-
-The first-partner rule sends only 28 distinct blades, which hold every
-decoder at 1 - 28/84 = 0.667 over all 84 messages, so it cannot separate
-the decoder from collisions in the code book. After those results were
-seen, the `matching` encoder was added: each left factor sends its mate in
-the first perfect matching of the annihilation graph (depth-first in sorted
-order, `perfect_matching`), giving 84 distinct blades, each still
-annihilated by exactly 4 left factors. Both encoders see the same seeded
-noise. It is a post-hoc control and enters no preregistered verdict.
-
 ## Result
 
 Counts under the definitions above (`result.json`, `counts`):
 
-| quantity | note | first_partner | matching |
-|---|---|---|---|
-| mean annihilator ties per codeword | 3.9 | 4.0 | 4.0 |
-| distinct annihilator-set signatures | 35 | 28 | 42 |
-| distinct transmitted blades | 57 | 28 | 84 |
+| quantity | note | table1 | first_partner | matching |
+|---|---|---|---|---|
+| mean annihilator ties, sender excluded | 3.9 | 3.94 | 3.0 | 3.0 |
+| distinct annihilator-set signatures | 35 | 35 | 28 | 42 |
+| distinct transmitted blades | 57 | 57 | 28 | 84 |
+| distinct annihilators (Gram classes) | -- | 34 (34) | 84 (42) | 84 (42) |
 
-The blade `b_i` is itself one of the 84 vertices, and every vertex has exactly
-4 partners, so every tie count is 4 for any rule that picks `b_i` among the
-partners of `a_i`; a mean of 3.9 cannot arise in that family. Picking the
-second or last partner gives 28 distinct blades and the third gives 32, so
-the note's 57 is reached by none of the tested rules.
+table1 reproduces all three of the note's counts. Its 84 messages share 34
+annihilators, each its own Gram class. In exact arithmetic the messages
+that share an annihilator score every received vector alike, so the
+annihilation decoder can return at most 34 distinct messages and errs on
+at least 50 of 84 (1 - 34/84 = 0.595) at every sigma; the retained run's
+duplicate scores are bitwise equal. Each table1 blade is annihilated by 1
+(17 blades) or 2 (67 blades) of the 34 distinct annihilators, 2 to 7 of the
+84 rows (`distinct_annihilators_per_blade_histogram`). In the re-paired
+codebooks every blade has exactly 4 annihilators and the 84 left factors
+fall into 42 Gram pairs.
 
-Symbol error rate over the 40-message subset (`ser_40`; `ser_84` over all 84
-messages is in `result.json`). MF is the matched filter over the encoder's
-own codewords, profile the 84-component annihilation-profile decoder:
+table1 symbol error rates, over the 40-message subset (`ser_40`) and all 84
+messages (`ser_84`). MF is the matched filter over the codebook's own
+codewords, profile the 84-component annihilation-profile decoder:
 
-| sigma | random MF | first_partner C5 | first_partner MF | first_partner profile | matching C5 | matching MF | matching profile |
+| sigma | random MF | C5 (40) | MF (40) | profile (40) | C5 (84) | MF (84) | profile (84) |
 |---|---|---|---|---|---|---|---|
-| 0 | 0.000 | 0.750 | 0.750 | 0.750 | 0.750 | 0.000 | 0.600 |
-| 0.001 | 0.000 | 0.763 | 0.750 | 0.750 | 0.762 | 0.000 | 0.600 |
-| 0.01 | 0.000 | 0.760 | 0.750 | 0.750 | 0.762 | 0.000 | 0.600 |
-| 0.05 | 0.000 | 0.755 | 0.750 | 0.750 | 0.758 | 0.000 | 0.600 |
-| 0.1 | 0.000 | 0.762 | 0.750 | 0.750 | 0.764 | 0.000 | 0.600 |
-| 0.2 | 0.042 | 0.801 | 0.763 | 0.784 | 0.799 | 0.069 | 0.662 |
-| 0.3 | 0.296 | 0.884 | 0.819 | 0.868 | 0.884 | 0.374 | 0.806 |
-| 0.5 | 0.705 | 0.952 | 0.904 | 0.948 | 0.950 | 0.745 | 0.929 |
-| 1 | 0.923 | 0.981 | 0.966 | 0.982 | 0.981 | 0.929 | 0.980 |
+| 0 | 0.000 | 0.800 | 0.375 | 0.625 | 0.798 | 0.321 | 0.583 |
+| 0.001 | 0.000 | 0.750 | 0.375 | 0.625 | 0.745 | 0.321 | 0.583 |
+| 0.01 | 0.000 | 0.749 | 0.375 | 0.625 | 0.743 | 0.321 | 0.583 |
+| 0.05 | 0.000 | 0.750 | 0.375 | 0.625 | 0.745 | 0.321 | 0.583 |
+| 0.1 | 0.000 | 0.752 | 0.375 | 0.626 | 0.744 | 0.321 | 0.585 |
+| 0.2 | 0.042 | 0.787 | 0.410 | 0.806 | 0.788 | 0.361 | 0.775 |
+| 0.3 | 0.296 | 0.879 | 0.578 | 0.936 | 0.877 | 0.543 | 0.913 |
+| 0.5 | 0.705 | 0.950 | 0.811 | 0.979 | 0.950 | 0.795 | 0.968 |
+| 1 | 0.923 | 0.979 | 0.940 | 0.991 | 0.979 | 0.934 | 0.984 |
 
-Over all 84 messages (`ser_84`), first_partner holds every decoder at
-0.667 at sigma 0 (28 distinct blades) and the C5 decoder at 0.750 from
-sigma 0.001 to 0.1; the subset reads 0.750 at sigma 0 because 30 of its 40
-messages share a blade with a lower-index message. Under matching the
-matched filter resolves all 84 blades without error at low noise while the
-annihilation decoder errs at 0.751 over all 84 at sigma 0.01: each blade
-has 4 exact annihilators and argmin no longer singles out the sender's. The
-profile decoder errs at 0.500 over all 84 (0.600 on the subset), since 42
-signatures cover 84 messages. The note's matched-filter floor (0.275) and
-profile rate (0.575) reproduce under neither encoder.
+The matched filter's floor is the blade collisions: 27 of the 84 messages
+send a blade a lower-index message also sends, 1 - 57/84 = 0.321 over all
+84. The replay's subset holds 15 of them (0.375); the note's 0.275 is a
+draw holding 11. The profile decoder errs on 49 of 84 messages at sigma 0
+(0.583); the replay's subset holds 25 (0.625) and the note's 0.575 a draw
+holding 23. Both figures depend on the unrecorded 40-message draw, and the
+note's values lie within what table1 allows. The re-paired codebooks
+cannot give the matched-filter figure: first_partner's 28 blades leave at
+least 12 colliding messages in any 40 (0.300), and matching's matched
+filter errs on none.
+
+`ser_40_draw_sd` is the spread of `ser_40` over 40-message draws without
+replacement from the retained trials, the finite-population standard
+deviation of the mean of the per-message rates; table1's C5 reads 0.039 at
+sigma 0.01.
+
+The re-paired codebooks (`first_partner`, `matching` rows) show the same
+decoder failure with distinct annihilators: under matching the matched
+filter decodes all 84 blades without error at low noise while C5 errs at
+0.751 over all 84 at sigma 0.01.
 
 ## Replay
 
