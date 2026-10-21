@@ -3422,7 +3422,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Calibration identity explains little of the mismatch; whether the model underestimates noise is not settled (today's CZ error is higher on 10 of 14 runs but readout changes correlate with the opposite sign), and an error-scale sweep per run is the test.",
+      "boundary": "Calibration identity explains little of the mismatch; whether the model underestimates noise is not settled (today's CZ error is higher on 9 of the 13 kernel runs that play CZ, while readout changes correlate with the opposite sign), and an error-scale sweep per run is the test.",
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
