@@ -39,6 +39,7 @@ import argparse
 import hashlib
 import json
 import sys
+import tempfile
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -70,8 +71,8 @@ POLICY_TAGS = {"provider-defaults": "def", "empty-mitigation": "none"}
 PAIR_TAGS = {"target-complement": "tc", "middle-middle": "mm"}
 LABEL_TAGS = {"f": "f", "g": "g", "+": "p", "-": "m", "+i": "pi", "-i": "mi"}
 ELIGIBILITY = "exactly one click among the 24 outputs; selected when that click is on a selected output"
-# The largest share of an iteration's samples the one-click rule may exclude before the iteration is refused.
-ELIGIBLE_LOSS = 0.01
+# The service echoes each iteration's parameters; a float that round-trips through its JSON stays within this.
+PARAM_ECHO_TOLERANCE = 1e-12
 
 
 def require(condition: bool, message: str) -> None:
@@ -105,11 +106,16 @@ def load_draw(path: Path | None, settings: int) -> list[int] | None:
     return list(record["values"][: 2 * settings])
 
 
+def body_digest(body_bytes: bytes) -> str:
+    """The sha256 plan records for a job body: its compact, key-sorted JSON."""
+    return sha256_bytes(json.dumps(json.loads(body_bytes), sort_keys=True).encode())
+
+
 def draw_binding(path: Path) -> dict[str, Any]:
-    """The record's repository path (its name for a record outside the tree) and the sha256 of its bytes."""
+    """The record's repository path and the sha256 of its bytes; the readout finds the record by that path."""
     resolved = path.resolve()
-    name = str(resolved.relative_to(ROOT)) if resolved.is_relative_to(ROOT) else resolved.name
-    return {"record": name, "sha256": sha256_bytes(path.read_bytes())}
+    require(resolved.is_relative_to(ROOT), f"{path}: a QRNG record outside the repository cannot be retained")
+    return {"record": str(resolved.relative_to(ROOT)), "sha256": sha256_bytes(path.read_bytes())}
 
 
 def draw_claims(binding: dict[str, Any], roots: tuple[Path, ...] = MANIFEST_ROOTS) -> list[str]:
@@ -313,9 +319,8 @@ def tally(counts: dict[str, int], selected_modes: list[int]) -> dict[str, int]:
     return out
 
 
-def readout(runs: list[Path], contract: dict[str, Any] | None = None, records: Path = ROOT) -> dict[str, Any]:
-    """Every contrast of the frozen case from collected qpu:belenos runs, each policy admitted only by its contract;
-    records is the directory the manifests' QRNG record path is relative to."""
+def readout(runs: list[Path], contract: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Every contrast of the frozen case from collected qpu:belenos runs, each policy admitted only by its contract."""
     case_bytes = CASE.read_bytes()
     case = json.loads(case_bytes)
     observations = case["observations"]
@@ -340,7 +345,8 @@ def readout(runs: list[Path], contract: dict[str, Any] | None = None, records: P
             submission.get("cases_sha256") == sha256_bytes(manifest_bytes),
             f"{run}: cases.json changed since submission",
         )
-        require(submission.get("body_sha256") == sha256_bytes(body_bytes), f"{run}: job-body.json is not the sent body")
+        # plan digests the compact sorted body and submit writes it indented, so the digest re-dumps the parsed file.
+        require(submission.get("body_sha256") == body_digest(body_bytes), f"{run}: job-body.json is not the sent body")
         require(result.get("job_id") == submission.get("job_id"), f"{run}: the result answers another job")
         # A returned iteration names no applied mitigation, so the sent body is the only record of the policy:
         # Perceval writes the mitigations key exactly when the policy is a list.
@@ -353,7 +359,7 @@ def readout(runs: list[Path], contract: dict[str, Any] | None = None, records: P
         binding = manifest.get("draw")
         require(isinstance(binding, dict), f"{run}: the manifest names no bound QRNG record")
         if binding["sha256"] not in draws:
-            record_path = records / binding["record"]
+            record_path = ROOT / binding["record"]
             require(sha256_bytes(record_path.read_bytes()) == binding["sha256"], f"{run}: the QRNG record changed")
             draws[binding["sha256"]] = load_draw(record_path, len(observations)) or []
         require(len(draws) == 1, f"{run}: the runs draw from more than one QRNG record")
@@ -364,24 +370,34 @@ def readout(runs: list[Path], contract: dict[str, Any] | None = None, records: P
         require(not manifest.get("draft", True), f"{run}: a draft case carries no frozen seeds or order")
         require(manifest["qualification_case_sha256"] == sha256_bytes(case_bytes), f"{run}: built from another case")
         require(manifest["target_sha256"] == case["target_sha256"], f"{run}: built for another target")
+        values = draws[binding["sha256"]]
+        members = [s["observation_index"] for s in manifest["settings"]]
+        drawn = sorted(members, key=lambda i: (values[len(observations) + i], i))
+        require(members == drawn, f"{run}: the iterations are not in the drawn order")
         per_iteration = result["iterations"]
         require(len(per_iteration) == len(manifest["settings"]), f"{run}: iteration count differs")
         for setting, iteration in zip(manifest["settings"], per_iteration, strict=True):
             # Each returned iteration names the parameters and seed it ran with, so attribution is checked.
             ran = iteration["iteration"]
-            require(ran.get("circuit_params") == setting["circuit_params"], f"{run}/{setting['name']}: parameters")
+            echoed = ran.get("circuit_params") or {}
+            require(
+                echoed.keys() == setting["circuit_params"].keys()
+                and all(abs(echoed[x] - v) <= PARAM_ECHO_TOLERANCE for x, v in setting["circuit_params"].items()),
+                f"{run}/{setting['name']}: parameters",
+            )
             require(ran.get("compilation_seed") == setting["compilation_seed"], f"{run}/{setting['name']}: seed")
             index = setting["observation_index"]
-            values = draws[binding["sha256"]]
             require(setting["draw_indices"] == {"seed": index, "order": len(observations) + index}, f"{run}: indices")
             require(setting["compilation_seed"] == values[index], f"{run}/{setting['name']}: seed not drawn")
             require(index not in tallies, f"{run}/{setting['name']}: observation {index} collected twice")
             counted = tally(iteration["counts"], manifest["selected_modes"])
             # Fixed n: an iteration that stopped on its shot limit short of the frozen samples is a stop condition,
-            # and one-click eligibility may drop at most ELIGIBLE_LOSS of them (dark counts, multi-photon events).
+            # and one-click eligibility may drop at most cert.ELIGIBLE_LOSS of them (dark counts, multi-photon events).
             samples = iteration.get("samples")
             require(samples == trials, f"{run}/{setting['name']}: {samples} samples, the case froze {trials}")
-            require(counted["eligible"] >= (1 - ELIGIBLE_LOSS) * trials, f"{run}/{setting['name']}: eligible short")
+            require(
+                counted["eligible"] >= (1 - cert.ELIGIBLE_LOSS) * trials, f"{run}/{setting['name']}: eligible short"
+            )
             tallies[index] = counted
     missing = [i for i in range(len(observations)) if i not in tallies]
     require(not missing, f"no collected iteration for observations {missing[:6]}")
@@ -418,12 +434,17 @@ def synthetic_draw(directory: Path, settings: int) -> Path:
 
 def synthetic_body(policy: list[str] | None) -> bytes:
     """A job body in the shape Perceval writes: the mitigations key appears exactly when the policy is a list."""
+    import qd_platform
     from perceval.utils.constants import KEY_MITIGATIONS
 
     payload: dict[str, Any] = {"command": "sample_count"}
     if policy is not None:
         payload[KEY_MITIGATIONS] = policy
-    return (json.dumps({"payload": payload}) + "\n").encode()
+    with tempfile.TemporaryDirectory() as scratch:
+        # submit writes the body through write_json, so the readout sees the same indented bytes.
+        path = Path(scratch) / "job-body.json"
+        qd_platform.write_json(path, {"payload": payload})
+        return path.read_bytes()
 
 
 def self_test() -> int:
@@ -431,12 +452,14 @@ def self_test() -> int:
     an unsupported contract reads every contrast not_admitted, a supported one reads every contrast compatible, and
     a draft, a short iteration, a swapped seed and a duplicated run are refused."""
     import copy
-    import tempfile
 
     case = json.loads(CASE.read_text(encoding="utf-8"))
     trials = case["resources"]["eligible_trials_per_setting"]
     selected_mode, other_mode = 4, 0
-    with tempfile.TemporaryDirectory() as scratch:
+    # The QRNG record must sit inside the repository, so the synthetic one goes under the ignored docs/local.
+    scratch_root = ROOT / "docs/local"
+    scratch_root.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=scratch_root) as scratch:
         root = Path(scratch)
         draw = synthetic_draw(root, len(case["observations"]))
         runs = []
@@ -464,17 +487,17 @@ def self_test() -> int:
                 "platform": QUALIFYING_PLATFORM,
                 "job_id": name,
                 "cases_sha256": sha256_bytes(files["cases.json"]),
-                "body_sha256": sha256_bytes(body),
+                "body_sha256": body_digest(body),
             }
             (run / "submission.json").write_text(json.dumps(submission), encoding="utf-8")
             runs.append(run)
-        closed = readout(runs, records=root)
+        closed = readout(runs)
         require({c["status"] for c in closed["contrasts"]} == {"not_admitted"}, "self-test: unsupported contract")
         contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
         for capability in contract["capabilities"]:
             if capability["capability"] in ("uncorrected_observations", "count_provenance"):
                 capability["status"] = "supported"
-        opened = readout(runs, contract, root)
+        opened = readout(runs, contract)
         statuses = {(c["family"], c["status"]) for c in opened["contrasts"]}
         empty = [
             c
@@ -491,6 +514,7 @@ def self_test() -> int:
             "duplicate": "collected twice",
             "simulator": "the case qualifies",
             "policy": "does not carry",
+            "order": "drawn order",
         }
         for mutate, expected in mutations.items():
             target = runs[0]
@@ -509,19 +533,22 @@ def self_test() -> int:
                 result["iterations"][0]["iteration"]["compilation_seed"] += 1
             elif mutate == "duplicate":
                 batch = [*runs, copy.copy(target)]
+            elif mutate == "order":
+                manifest["settings"].reverse()
+                result["iterations"].reverse()
             elif mutate == "simulator":
                 submission["platform"] = "sim:belenos"
             else:
                 # A body that carries the other policy, sent and digested as such, still differs from the manifest.
                 swapped = synthetic_body(None if manifest["mitigations"] is not None else [])
                 (target / "job-body.json").write_bytes(swapped)
-                submission["body_sha256"] = sha256_bytes(swapped)
+                submission["body_sha256"] = body_digest(swapped)
             (target / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
             (target / "results.json").write_text(json.dumps(result), encoding="utf-8")
             submission["cases_sha256"] = sha256_bytes((target / "cases.json").read_bytes())
             (target / "submission.json").write_text(json.dumps(submission), encoding="utf-8")
             try:
-                readout(batch, contract, root)
+                readout(batch, contract)
             except ValueError as refusal:
                 require(expected in str(refusal), f"self-test: {mutate} refused for another reason: {refusal}")
                 refusals += 1

@@ -18,12 +18,11 @@ No step here is authorized until its written case is approved
    `uncorrected_observations`, `count_provenance` and
    `preparation_control`. A capability still `unresolved` is either answered
    first or named in the written case as the question this run tests.
-3. A case builder emits one run directory per job, 8 in all, under
-   `results/quandela/runs/`, with the processing policy written into the job
-   body (`mitigations` absent for provider defaults, an empty list for the
-   empty policy) and the completion's description recorded beside the chip
-   column. `scripts/qd_platform.py` sets no mitigation policy per case, so
-   this builder is the first implementation step.
+3. `scripts/bdsc_cases.py --check results/quandela/cases/bdsc_qualification`
+   passes: the 8 case directories, one per pair, policy and epoch, carry
+   each job's processing policy (`mitigations` null for provider defaults,
+   an empty list for the empty policy), which `qd_platform.py` writes into
+   the job body, and each setting's template beside its chip column.
 4. A fresh `qd_platform.py snapshot` and a `plan` that passes for
    qpu:belenos. The cases submit parameterized templates, which `plan`
    checks without `specs.architecture`; it reads the architecture only for
@@ -74,10 +73,11 @@ No step here is authorized until its written case is approved
 
 Execution stops, and the remaining settings stay unsent, when
 `qd_platform.py plan` refuses the platform, a retained job body differs
-from the requested policy or a result is not an integer BSCount, a job fails or returns fewer eligible
-trials than the frozen n, the per-run server version or calibration
-identity cannot be recorded, or spent credits or seconds reach the approved
-ceiling. No setting is added or repeated after viewing
+from the requested policy or a result is not an integer BSCount, a job
+fails, an iteration returns fewer samples than the frozen n or the
+one-click eligibility rule excludes more than 1 % of its samples, the
+per-run server version or calibration identity cannot be recorded, or spent
+credits or seconds reach the approved ceiling. No setting is added or repeated after viewing
 outcomes; the stopping rule is fixed n.
 
 ## Records

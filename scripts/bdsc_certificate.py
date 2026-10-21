@@ -127,6 +127,9 @@ CASE_TRIAL_GRID = tuple(range(100_000, 400_001, 25_000))
 # CASE_JOB_FILL of the per-job limit, leaving the rest for a slower acquisition rate.
 CASE_JOB_FILL = 0.6
 QRNG_VALUES = 192
+# The largest share of an iteration's frozen samples the one-click eligibility rule may exclude (dark counts,
+# multi-photon events) before the iteration is a stop condition; each contrast reads the eligible count as its n.
+ELIGIBLE_LOSS = 0.01
 CASE_PAIRS = {"target-complement": ("K", 0, "Q", 8), "middle-middle": ("Q", 1, "Q", 2)}
 PREPARATION_DESCRIPTIONS = ("outward-ladder", "reverse-ladder")
 PROCESSING_POLICIES: dict[str, list[str] | None] = {"provider-defaults": None, "empty-mitigation": []}
@@ -1531,7 +1534,9 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
         "power": {
             "model": "the acceptable implementation: E0 itself, one effect across completions, policies and epochs, "
             "independent fixed-n Bernoulli trials at every observation",
-            "decision": "every contrast of every family reads compatible",
+            "decision": "every contrast of every family reads compatible; while only the empty list is admitted, the "
+            "provider-default contrasts read not_admitted and the decision covers the admitted subset, whose pass "
+            "probability is at least the power stated here",
             "target": CASE_POWER_TARGET,
             "replicates": CASE_POWER_REPLICATES,
             "seed": CASE_POWER_SEED,
@@ -1593,7 +1598,8 @@ def qualification_case_record(target: dict[str, Any]) -> dict[str, Any]:
         "stop_conditions": [
             "scripts/qd_platform.py plan refuses the platform",
             "a retained job body differs from the requested policy, or a result is not an integer BSCount",
-            "a job fails or returns fewer eligible trials than the frozen n",
+            f"a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule "
+            f"excludes more than {ELIGIBLE_LOSS} of an iteration's samples",
             "the per-run server version or calibration identity cannot be recorded",
             "spent credits or seconds reach the approved ceiling",
         ],

@@ -3000,7 +3000,7 @@
  ],
  "power": {
   "chosen_trials": 300000,
-  "decision": "every contrast of every family reads compatible",
+  "decision": "every contrast of every family reads compatible; while only the empty list is admitted, the provider-default contrasts read not_admitted and the decision covers the admitted subset, whose pass probability is at least the power stated here",
   "model": "the acceptable implementation: E0 itself, one effect across completions, policies and epochs, independent fixed-n Bernoulli trials at every observation",
   "replicates": 2000,
   "rows": [
@@ -3104,7 +3104,7 @@
  "stop_conditions": [
   "scripts/qd_platform.py plan refuses the platform",
   "a retained job body differs from the requested policy, or a result is not an integer BSCount",
-  "a job fails or returns fewer eligible trials than the frozen n",
+  "a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule excludes more than 0.01 of an iteration's samples",
   "the per-run server version or calibration identity cannot be recorded",
   "spent credits or seconds reach the approved ceiling"
  ],

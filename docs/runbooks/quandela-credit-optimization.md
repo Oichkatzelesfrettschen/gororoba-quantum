@@ -95,16 +95,17 @@ six states.
 
 | Plan | Jobs | Trials per setting | Credits | Seconds | Power (all 128 contrasts) |
 |---|---|---|---|---|---|
-| one job per setting, margin 0.05 | 96 | 45000 | 104.64 | 1656 | 0.939 |
+| one job per setting, margin 0.05 (superseded plan, power not in the frozen record) | 96 | 45000 | 104.64 | 1656 | |
 | one job per setting, margin 0.02 | 96 | 300000 | 153.6 | | 0.9845 |
 | 8 jobs of 12 iterations, margin 0.02 | 8 | 300000 | 12.8 | 1354 | 0.9845 |
 
 Each job fixes a circuit and a mitigation list, so the two policies need
 separate jobs; the two templates do not, because both are parameter
 settings of one union circuit. The eight jobs are one per pair, policy and
-epoch, which keeps every cross-template comparison inside one job. Each 12-iteration job takes
-about 169 s, and the tighter margin costs 1.2 credits more than the same
-jobs at 45000 trials.
+epoch, which keeps every cross-template comparison inside one job. Each
+12-iteration job takes about 169 s. The same 8 jobs at 45000 trials would
+cost 8 (1 + 1e-6 x 90000) = 8.72 credits, so the tighter margin costs 4.08
+credits more.
 
 ## Pitfalls that change what a job does
 

@@ -44,8 +44,8 @@ Subcommands:
   --per-job-credits P (network, read-only) runs every check submit makes and
   prints the result: the circuit matches its cases.json sha256, the platform
   is one the case admits, is available and allows the case's max_duration,
-  S stays within max_duration, P plus max_shots times the live price per
-  shot stays within C, the processor's perfs (HOM and g2 among them) are
+  S stays within max_duration, P plus the largest iteration's max_shots times
+  the live price per shot stays within C, the processor's perfs (HOM and g2 among them) are
   recorded, and a two-photon case on a QPU whose HOM visibility is absent or
   not above 90 % draws a warning on stderr,
   the token has no running or queued job, and Perceval's
@@ -1071,8 +1071,8 @@ def plan(
 
     expected_seconds and per_job_credits are the written case's values: the
     offer's per-job price is visible only in the portal, so the case states
-    it, and per-job credits plus max_shots times the live price per shot must
-    stay within max_credits.
+    it, and per-job credits plus the largest iteration's max_shots times the live
+    price per shot must stay within max_credits.
     """
     for name, value in (
         ("--max-credits", max_credits),
@@ -1096,7 +1096,7 @@ def plan(
     ceiling = row["price_per_shot"] * billed_shots + per_job_credits
     if ceiling > max_credits:
         raise PlatformError(
-            f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
+            f"{billed_shots} billed shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
         )
     processor = get(platform_route(platform))
     if processor.get("status") != "available":
@@ -1472,7 +1472,7 @@ def run_facts(directory: Path) -> dict[str, Any]:
         # A box-kite case counts its blocks and a mesh case its phase settings.
         "circuits": len(manifest["blocks"] if "blocks" in manifest else manifest["settings"]),
         "statuses": {status: 1},
-        "charge": charged(submission, collected, shots),
+        "charge": charged(submission, collected, shots, manifest),
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
 
@@ -1488,21 +1488,27 @@ def usage_total(report: Any) -> float | None:
     return total
 
 
-def charged(submission: dict[str, Any], collected: dict[str, Any], shots: int) -> float:
+def charged(
+    submission: dict[str, Any], collected: dict[str, Any], shots: int, manifest: dict[str, Any] | None = None
+) -> float:
     """The credits a run consumed: the usage report after collection minus the one before submission.
 
     Jobs run one at a time on the token, so the difference is this job's
-    per-job price plus its shots. The usage report counts the calendar month,
-    so a job submitted and collected in different months, a negative
-    difference or a receipt without both reports falls back to the recorded
-    per-job price plus shots times the price per shot.
+    charge. The usage report counts the calendar month, so a job submitted and
+    collected in different months, a negative difference or a receipt without
+    both reports falls back to the billing rule: the recorded per-job price plus
+    the price per shot times the shots used by a one-computation job, or times
+    the largest iteration's max_shots of an iterated one.
     """
     before, after = usage_total(submission.get("usage_before")), usage_total(collected.get("usage_after"))
     same_month = str(submission.get("submitted_utc", ""))[:7] == str(collected.get("collected_utc", ""))[:7]
     if before is not None and after is not None and same_month and after >= before:
         return round(after - before, 6)
     price = submission["platform_at_plan"]["price_per_shot"]
-    return round(float(submission.get("per_job_credits", 0)) + shots * price, 6)
+    billed = shots
+    if manifest is not None and iteration_form(manifest) != "single":
+        billed = max(budget for _, budget in iteration_budgets(manifest))
+    return round(float(submission.get("per_job_credits", 0)) + billed * price, 6)
 
 
 def run_directories(runs: Path = RUNS) -> list[Path]:
@@ -1534,6 +1540,11 @@ def charge_self_test() -> None:
         got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000)
         if got != want:
             raise SystemExit(f"self-test: charged() read {got} for a collection at {collected_utc}, not {want}")
+    # An iterated job across a month boundary bills its largest iteration's max_shots, not the shots it used.
+    iterated = {"job": "self-test", "gate_form": "mesh", "iterations": 12, "max_samples": 3600000, "max_shots": 7200000}
+    got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 3600000, iterated)
+    if got != 1.6:
+        raise SystemExit(f"self-test: charged() read {got} for an iterated job across a reset, not 1.6")
 
 
 def seed_self_test() -> None:
