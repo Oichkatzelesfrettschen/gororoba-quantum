@@ -5771,7 +5771,9 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 "executed": {n: executed[n] for n in required if n in executed},
                 "packing_schedule": packing_schedule(entries, executed, timing),
                 "measured": {
-                    n: [[round(float(p), 6) for p in dist] for dist in measured[n]] for n in required if n in measured
+                    n: [law_encoding.encode([round(float(p), 6) for p in dist]) for dist in measured[n]]
+                    for n in required
+                    if n in measured
                 },
             }
             if correction_family:

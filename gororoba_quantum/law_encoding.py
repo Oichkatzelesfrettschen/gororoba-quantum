@@ -1,8 +1,8 @@
 """Lossless record encoding of vectors over a register's classical outcomes.
 
 A record stores a member's ideal law, each replica's noisy law and each
-observable term's score values as one number per outcome, index = the
-outcome's bits little-endian. A vector of at most DENSE_LIMIT entries stays a
+observable term's score values, and collect.json each replica's measured
+law, as one number per outcome, index = the outcome's bits little-endian. A vector of at most DENSE_LIMIT entries stays a
 JSON list, so every record over at most 12 classical bits keeps its dense
 bytes. A longer vector is stored as the shorter of two exact forms:
 
