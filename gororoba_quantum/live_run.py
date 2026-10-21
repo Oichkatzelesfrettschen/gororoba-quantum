@@ -2568,7 +2568,9 @@ def corrected_summary(
             corrected[e.name] = [np.asarray(m @ d) for m, d in zip(inverses, raw, strict=True)]
             covariances[e.name] = [corrected_covariance(d, m) for m, d in zip(inverses, raw, strict=True)]
         else:
-            corrected[e.name] = [readout_corrected(d, rep, own, symmetric) for rep, d in zip(e.replicas, raw, strict=True)]
+            corrected[e.name] = [
+                readout_corrected(d, rep, own, symmetric) for rep, d in zip(e.replicas, raw, strict=True)
+            ]
     return _pooled_summaries(group, runs, corrected, covariances if propagate else None)[0]
 
 

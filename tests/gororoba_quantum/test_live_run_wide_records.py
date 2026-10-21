@@ -10,10 +10,11 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
+import pytest
+
 import diagnostic_experiments
 import law_encoding
 import live_run
-import pytest
 import qpu_planning
 import qpu_planning_contracts as contracts_fixture
 
@@ -59,9 +60,7 @@ def test_wide_laws_take_their_support(planned: tuple[Any, dict[str, Any]]) -> No
 
 def test_score_values_take_a_bit_table(planned: tuple[Any, dict[str, Any]]) -> None:
     _choice, configuration = planned
-    contracts = diagnostic_experiments.family_contracts(
-        "n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration
-    )
+    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration)
     records = qpu_planning.observable_contract_records(contracts)
     for contract, stored in zip(contracts, records, strict=True):
         for term, kept in zip(contract.terms, stored["terms"], strict=True):

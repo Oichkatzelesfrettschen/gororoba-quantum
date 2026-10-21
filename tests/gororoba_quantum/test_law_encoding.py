@@ -74,9 +74,10 @@ class Flips:
 
 @pytest.mark.parametrize("symmetric", [False, True])
 def test_axis_readout_inverse_is_the_dense_product(symmetric: bool, monkeypatch: pytest.MonkeyPatch) -> None:
-    import live_run
     import numpy as np
     from qiskit import QuantumCircuit
+
+    import live_run
 
     width = 6
     circuit = QuantumCircuit(width + 1, width + 1)

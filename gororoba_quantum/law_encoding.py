@@ -62,9 +62,9 @@ def encode(values: Sequence[float]) -> list[float] | dict[str, Any]:
 
 
 def dense(stored: Any) -> list[float]:
-    """The per-outcome list a record field stores, from a list or either encoded form."""
-    if isinstance(stored, list):
-        return stored
+    """The per-outcome list a record field stores, from a list, an in-memory tuple or either encoded form."""
+    if isinstance(stored, list | tuple):
+        return list(stored) if isinstance(stored, tuple) else stored
     if not isinstance(stored, dict) or not isinstance(stored.get("length"), int):
         raise ValueError(f"an outcome vector is neither a list nor an encoded form: {type(stored).__name__}")
     length = stored["length"]
