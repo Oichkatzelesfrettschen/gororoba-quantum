@@ -22,8 +22,11 @@ calculation. `result.json` retains the interpreter and SymPy versions,
 eight sector identities, positive rank witnesses,
 complete rational kernel comparisons, pivot transitions, path specialization,
 spectral coefficient specialization, and negative controls. The normal and
-optimized replays must match the retained JSON exactly. A changed source or
-runtime requires an explicit reviewed regeneration of the evidence.
+optimized replays must match the retained JSON exactly, except that
+`--check` carries the retained Python patch release into the recomputed
+record when major.minor agree (gate core-609). A changed source, SymPy
+version or Python major.minor requires an explicit reviewed regeneration of
+the evidence.
 
 `GOROROBA_WORKERS=1` runs serially. Parallel work uses the repository's
 order-preserving spawned pool and produces the same JSON. The computation

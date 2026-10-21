@@ -19,8 +19,9 @@ GOROROBA_WORKERS=4 PYTHONDONTWRITEBYTECODE=1 \
 
 `GOROROBA_WORKERS=1` produces identical output through the serial path.
 The replay writes stdout and verifies source/proof-note hashes before
-and after calculation. A changed dependency, proof note, or recorded
-runtime requires explicit reviewed regeneration.
+and after calculation. A changed dependency, proof note, or Python
+major.minor requires explicit reviewed regeneration; `--check` carries the
+retained Python patch release when major.minor agree (gate core-609).
 
 The result retains independent basis-action checks at three doubling
 transitions, complete frame identities, 24 exact rational API cases,
