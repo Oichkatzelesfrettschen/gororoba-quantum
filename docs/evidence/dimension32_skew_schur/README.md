@@ -23,7 +23,9 @@ verifies imported module locations and compares source and proof-note
 hashes before and after evaluation within the process; the hashes stay out
 of `result.json`. `result.json` binds Python and SymPy versions, input coordinates, exact output matrices, and
 negative controls. `SHA256SUMS` binds the retained replay and result bytes.
-Regeneration requires an explicit reviewed source or dependency change.
+Regeneration requires an explicit reviewed source or dependency change;
+`--check` carries the retained Python patch release when major.minor agree
+(gate core-609).
 
 The finite denominator includes all 30 coordinate perturbations
 `e_1+e_10+e_i/7`, with `i` different from 0 and 16, and derivative maps on

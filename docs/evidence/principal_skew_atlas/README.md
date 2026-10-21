@@ -21,7 +21,9 @@ GOROROBA_WORKERS=4 PYTHONDONTWRITEBYTECODE=1 \
 
 `GOROROBA_WORKERS=1` exercises the serial path. The replay verifies import
 locations and compares source and proof-note hashes before and after each
-calculation. `result.json` records the Python and SymPy versions, exact
+calculation. `result.json` records the Python and SymPy versions (`--check`
+carries the retained Python patch release when major.minor agree, gate
+core-609), exact
 input coordinates, selected pivots, elimination steps, pivot determinants,
 output hashes, and mutation controls. Each output hash binds the exact
 Schur matrix, elimination lift, Gram metric, and full kernel; the replay
