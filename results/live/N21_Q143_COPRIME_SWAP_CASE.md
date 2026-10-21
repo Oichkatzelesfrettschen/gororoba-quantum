@@ -92,9 +92,10 @@ overstates its row; the telegraph columns of the uniform design (49 at
 
 ## Analysis rules (preregistered)
 
-scripts/n21_q143_segmented_sweep.py, whose scripts/ closure (with
-n21_q143_beat_model.py, n21_orbit_rca.py, n21_spectator_ramsey.py) the
-policy binds as `segmented_analyzer_closure`; a changed closure file makes
+scripts/n21_q143_segmented_sweep.py, whose import closure over scripts/
+(with n21_q143_beat_model.py, n21_orbit_rca.py, n21_spectator_ramsey.py)
+and gororoba_quantum/ (qpe_diagnostics.py and what it imports) the policy
+binds as `segmented_analyzer_closure`; a changed closure file makes
 the submission refuse with approval_required.
 
 - Selection: a shot whose segment-1 herald reads any neighbor (142, 136,
@@ -106,7 +107,8 @@ the submission refuse with approval_required.
   (per-bit spread of the excitation a herald reading 0 lets through,
   segment-1 bits and each later 143 herald),
   segment_exchangeability (first X and Y read against the later ones, per
-  shot), herald_backaction (controls against the same delay), alias
+  shot), herald_backaction (controls against the same delay, per-shot X
+  and Y means with their covariance), alias
   resolution, model decision, z_memory.
 - Primary data: every X and Y segment and segment 1 of each Z arm. If
   exchangeability fails, the primary data fall back to the first X and
@@ -207,8 +209,8 @@ their schedule (pre-idle 1250 dt on both controls, every idle as
 designed) and the heralds admit; Z members leave about twice the reset
 excitation of xy members (segment 6: 0.019 against 0.010), which the
 design predicts and the herald drops. Amended verdicts on qubit 47:
-exchangeable segments (51.5 against 72.1), herald backaction (16.3
-against 13.7), z_memory (284 against 42), and a line mixture over tls
+exchangeable segments (51.5 against 72.1), herald backaction (47.9
+against 13.7, a Wald test of each pair's per-shot X and Y means), z_memory (284 against 42), and a line mixture over tls
 (239) with a 0.048 second line at alias cell -2 (df -0.735 MHz), T1 81
 us and T2* 52 us. Record.json is 84 MB (issue #328), so the run, its raw
 files and the amended analysis are kept with the dry runs outside the

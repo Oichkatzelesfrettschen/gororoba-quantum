@@ -116,6 +116,30 @@ def test_herald_backaction_is_detected() -> None:
         raise AssertionError(f"backaction read {clean}, {moved}")
 
 
+def test_backaction_null_holds_its_level() -> None:
+    # The static plant's line, fixed within a shot, correlates its X and Y
+    # segments; without backaction the test rejects at about its level.
+    rng = np.random.default_rng(29)
+    points = sweep.design_points(6, 2048)
+    paired = [p for p in points if p.pre_dt or (p.kind == "xy" and p.delay_dt in sweep.BACKACTION_DELAYS)]
+    draws = [sweep.sample("static", TRUTH_STATIC, paired, rng) for _ in range(200)]
+    rejected = sum(sweep.backaction(drawn, 0.05)["status"] == "backaction" for drawn in draws)
+    if rejected > 20:
+        raise AssertionError(f"the backaction null rejects {rejected} of 200 draws at level 0.05")
+
+
+def test_backaction_without_reads_is_not_evaluable() -> None:
+    points = sweep.design_points(6, 64)
+    refused = []
+    for point in points:
+        patterns = np.zeros((1, len(point.bases)), dtype=np.int64)
+        if point.pre_dt:
+            patterns[:, [k for k, basis in enumerate(point.bases) if basis == "y"]] = -1
+        refused.append(point.with_counts(patterns, np.array([64.0])))
+    if sweep.backaction(refused, TEST_ALPHA)["status"] != "not_evaluable":
+        raise AssertionError("a control without a Y read was evaluated")
+
+
 def correlation_plants() -> tuple[list[sweep.Point], list[sweep.Point]]:
     """The static and tls plants, drawn in that order from one generator."""
     rng = np.random.default_rng(20261021)

@@ -2704,7 +2704,8 @@ def _verify_segmented_sweep(snapshot: live_run.Snapshot) -> None:
     change and readout, with a reset opening every segment after the first;
     the control plays its segment-1 herald alone; no ISA holds a
     classically conditioned block. The policy binds the configuration and
-    the closure of scripts/n21_q143_segmented_sweep.py while a plan without
+    the closure of scripts/n21_q143_segmented_sweep.py over scripts/ and
+    gororoba_quantum/ while a plan without
     the sweep keeps its settings; record_groups, family_contracts and the
     written command rebuild it, and live_run refuses malformed flags.
     """
@@ -2728,9 +2729,16 @@ def _verify_segmented_sweep(snapshot: live_run.Snapshot) -> None:
             "n21_spectator_ramsey.py",
         )
     }
+    modules = Path(qpu_planning.__file__).resolve().parent
+    # The analyzer decodes members through qpe_diagnostics after collection.
+    expected_files["gororoba_quantum/qpe_diagnostics.py"] = hashlib.sha256(
+        (modules / "qpe_diagnostics.py").read_bytes()
+    ).hexdigest()
+    bound = settings.get("segmented_analyzer_closure", {}).get("files", {})
     _require(
         settings.get("segmented_sweep") == SEGMENTED_SWEEP
-        and settings.get("segmented_analyzer_closure", {}).get("files") == expected_files
+        and {name: bound.get(name) for name in expected_files} == expected_files
+        and all(name.startswith(("scripts/", "gororoba_quantum/")) for name in bound)
         and "ramsey_analyzer_closure" not in settings,
         f"the policy binds {settings.get('segmented_sweep')} with closure {settings.get('segmented_analyzer_closure')}",
     )

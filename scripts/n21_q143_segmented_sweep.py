@@ -449,15 +449,20 @@ def shot_statistic(point: Point, positions: list[int], references: list[list[int
     return np.array(rows, dtype=float).reshape(-1, len(positions)), np.array(weights, dtype=float)
 
 
+def mean_and_covariance(rows: np.ndarray, weights: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Weighted mean of shot rows and the covariance of that mean."""
+    total = weights.sum()
+    mean = weights @ rows / total
+    centered = rows - mean
+    return mean, (centered * weights[:, None]).T @ centered / (total - 1.0) / total
+
+
 def mean_test(rows: np.ndarray, weights: np.ndarray) -> tuple[float, int]:
     """Wald chi-square of a zero mean vector from weighted shot rows; (statistic, degrees of freedom)."""
     size = rows.shape[1]
-    total = weights.sum()
-    if total < size + 2:
+    if weights.sum() < size + 2:
         return 0.0, 0
-    mean = weights @ rows / total
-    centered = rows - mean
-    covariance = (centered * weights[:, None]).T @ centered / (total - 1.0) / total
+    mean, covariance = mean_and_covariance(rows, weights)
     if np.linalg.matrix_rank(covariance) < size:
         return (0.0, 0) if np.allclose(mean, 0.0) else (math.inf, size)
     return float(mean @ np.linalg.solve(covariance, mean)), size
@@ -489,8 +494,26 @@ def z_memory(points: list[Point], alpha: float) -> dict[str, Any]:
     return verdict("no_memory", "memory", statistic, freedom, alpha)
 
 
+def shot_means(point: Point, bases: list[str]) -> tuple[np.ndarray, np.ndarray]:
+    """Per shot that keeps a read of every basis, the mean of its kept reads in each; rows of shots."""
+    positions = [[k for k, b in enumerate(point.bases) if b == basis] for basis in bases]
+    rows = []
+    weights = []
+    for pattern, count in zip(point.patterns, point.counts, strict=True):
+        kept = [[int(pattern[k]) for k in where if pattern[k] >= 0] for where in positions]
+        if all(kept):
+            rows.append([sum(values) / len(values) for values in kept])
+            weights.append(count)
+    return np.array(rows, dtype=float).reshape(-1, len(bases)), np.array(weights, dtype=float)
+
+
 def backaction(points: list[Point], alpha: float) -> dict[str, Any]:
-    """Each pre-idle control against the delay member of its delay: X and Y read rates over every segment."""
+    """Each pre-idle control against the delay member of its delay: Wald test of the per-shot X and Y means.
+
+    The shot is the unit: a frequency line fixed within a shot correlates
+    its X and Y segments, so the test reads the full covariance of the two
+    quadrature means of each member, and the members' shots are independent.
+    """
     by_delay = {(p.kind, p.delay_dt): p for p in points if not p.pre_dt}
     statistic, freedom, pairs = 0.0, 0, []
     for control in (p for p in points if p.pre_dt):
@@ -498,26 +521,25 @@ def backaction(points: list[Point], alpha: float) -> dict[str, Any]:
         if reference is None:
             raise RuntimeError(f"{control.name} has no delay member at {control.delay_dt} dt")
         pairs.append([control.name, reference.name])
-        for basis in sorted(set(control.bases)):
-            rates_found = []
-            for point in (control, reference):
-                reads = [
-                    (int(pattern[k]), count)
-                    for pattern, count in zip(point.patterns, point.counts, strict=True)
-                    for k, b in enumerate(point.bases)
-                    if b == basis and pattern[k] >= 0
-                ]
-                ones = sum(count for value, count in reads if value == 1)
-                total = sum(count for _value, count in reads)
-                # Segments of one shot share its line, so the shot count
-                # (not the read count) bounds the variance conservatively.
-                shots = float(point.counts.sum())
-                rates_found.append((ones / total, shots))
-            (p1, n1), (p2, n2) = rates_found
-            pooled = (p1 * n1 + p2 * n2) / (n1 + n2)
-            variance = pooled * (1.0 - pooled) * (1.0 / n1 + 1.0 / n2)
-            statistic += (p1 - p2) ** 2 / variance if variance > 0 else 0.0
-            freedom += 1
+        bases = sorted(set(control.bases))
+        summaries = []
+        for point in (control, reference):
+            rows, weights = shot_means(point, bases)
+            if weights.sum() < len(bases) + 2:
+                return {
+                    "status": "not_evaluable",
+                    "reason": f"{point.name} keeps {weights.sum():.0f} shots with a read of every basis",
+                    "pairs": pairs,
+                }
+            summaries.append(mean_and_covariance(rows, weights))
+        (m1, c1), (m2, c2) = summaries
+        difference = m1 - m2
+        covariance = c1 + c2
+        if np.linalg.matrix_rank(covariance) < len(bases):
+            statistic += 0.0 if np.allclose(difference, 0.0) else math.inf
+        else:
+            statistic += float(difference @ np.linalg.solve(covariance, difference))
+        freedom += len(bases)
     return verdict("no_backaction", "backaction", statistic, freedom, alpha) | {"pairs": pairs}
 
 

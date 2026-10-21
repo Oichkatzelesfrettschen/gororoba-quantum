@@ -78,10 +78,14 @@ RAMSEY_ANALYZER = SCRIPTS_DIR / "n21_spectator_ramsey.py"
 # The segmented ground sweep's preregistered analysis, bound the same way
 # under its own design key.
 SEGMENTED_ANALYZER = SCRIPTS_DIR / "n21_q143_segmented_sweep.py"
+# The segmented analyzer decodes every member through gororoba_quantum/
+# modules after collection, so its closure follows imports into both
+# directories and an amended module reads as an amended analysis.
+MODULES_DIR = Path(__file__).resolve().parent
 
 
-def scripts_closure(entry: Path) -> list[Path]:
-    """entry and every scripts/ module its imports reach, at any nesting, sorted by name."""
+def scripts_closure(entry: Path, directories: tuple[Path, ...] = (SCRIPTS_DIR,)) -> list[Path]:
+    """entry and every module of directories its imports reach, at any nesting, sorted by name."""
     seen: dict[str, Path] = {}
     pending = [entry]
     while pending:
@@ -98,9 +102,10 @@ def scripts_closure(entry: Path) -> list[Path]:
                 else []
             )
             for name in names:
-                candidate = SCRIPTS_DIR / f"{name.split('.')[0]}.py"
-                if candidate.is_file():
-                    pending.append(candidate)
+                for directory in directories:
+                    candidate = directory / f"{name.split('.')[0]}.py"
+                    if candidate.is_file():
+                        pending.append(candidate)
     return [seen[name] for name in sorted(seen)]
 
 
@@ -110,13 +115,16 @@ def ramsey_analyzer_closure() -> dict[str, Any]:
 
 
 def segmented_analyzer_closure() -> dict[str, Any]:
-    """analyzer_closure of the segmented ground sweep's analysis."""
-    return analyzer_closure(SEGMENTED_ANALYZER)
+    """analyzer_closure of the segmented ground sweep's analysis over scripts/ and gororoba_quantum/."""
+    return analyzer_closure(SEGMENTED_ANALYZER, (SCRIPTS_DIR, MODULES_DIR))
 
 
-def analyzer_closure(entry: Path) -> dict[str, Any]:
-    """Per-file sha256 of entry's scripts/ closure and the sha256 of that map's canonical JSON."""
-    files = {f"scripts/{path.name}": hashlib.sha256(path.read_bytes()).hexdigest() for path in scripts_closure(entry)}
+def analyzer_closure(entry: Path, directories: tuple[Path, ...] = (SCRIPTS_DIR,)) -> dict[str, Any]:
+    """Per-file sha256 of entry's closure over directories and the sha256 of that map's canonical JSON."""
+    files = {
+        f"{path.parent.name}/{path.name}": hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in scripts_closure(entry, directories)
+    }
     digest = hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()
     return {"sha256": digest, "files": files}
 
