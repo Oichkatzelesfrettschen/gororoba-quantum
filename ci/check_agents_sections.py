@@ -13,12 +13,20 @@ Usage: "$PYTHON" ci/check_agents_sections.py [--self-test]   (from the repositor
 
 from __future__ import annotations
 
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LOADER = b"@AGENTS.md\n"
-NESTED = ("gororoba_quantum", "scripts", "ci")
+
+
+def nested_directories() -> tuple[str, ...]:
+    """Every directory below the root whose AGENTS.md git tracks, so a new guide needs its loader."""
+    listed = subprocess.run(
+        ["git", "ls-files", "--", "*/AGENTS.md"], cwd=ROOT, check=True, capture_output=True, text=True
+    ).stdout.split()
+    return tuple(sorted(str(Path(name).parent) for name in listed))
 
 
 def read(path: Path) -> bytes:
@@ -64,11 +72,12 @@ def main(argv: list[str]) -> int:
         return 0
     if argv:
         raise SystemExit("usage: check_agents_sections.py [--self-test]")
-    for directory in ("", *NESTED):
+    nested = nested_directories()
+    for directory in ("", *nested):
         loader = ROOT / directory / "CLAUDE.md"
         if not is_loader(read(loader)):
             raise SystemExit(f"{loader.relative_to(ROOT)}: must contain exactly the line @AGENTS.md and one LF")
-    print(f"loaders: {len(('', *NESTED))} CLAUDE.md files hold exactly @AGENTS.md")
+    print(f"loaders: {len(('', *nested))} CLAUDE.md files hold exactly @AGENTS.md")
     return 0
 
 
