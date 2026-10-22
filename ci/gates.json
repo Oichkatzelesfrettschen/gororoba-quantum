@@ -3892,6 +3892,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_pauli.py --check docs/evidence/bdsc/pauli/pauli_form.json",
+   "name": "core-625",
+   "seconds": 1.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
    "name": "core-611",
    "seconds": 1.0,
