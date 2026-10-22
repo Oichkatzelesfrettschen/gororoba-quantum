@@ -238,9 +238,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("run", type=Path)
     parser.add_argument("analysis", type=Path, help="the run's segmented-sweep analysis whose static fit labels lines")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--out", type=Path, help=f"write here instead of RUN/{RETAINED}")
     args = parser.parse_args(argv)
     text = serialize(report(args.run, args.analysis))
-    target = args.run / RETAINED
+    target = args.out if args.out is not None else args.run / RETAINED
     if args.check:
         if target.read_text() != text:
             raise RuntimeError(f"{target} differs from a fresh analysis")

@@ -350,26 +350,142 @@ def pattern_probabilities(model: str, values: dict[str, float], point: Point) ->
 # Fitting ------------------------------------------------------------------
 
 
+PHI = COMMON.index("phi")
+A_INDEX = 6
+DF_INDEX = 8
+# Relative curvature step of the preconditioner: a fraction of each bounded
+# coordinate's range, or of one turn for phi.
+CURVATURE_STEP = 1e-4
+POLISH_TOLERANCE = 1e-3
+POLISH_ROUNDS = 20
+PROFILE_A = (0.55, 0.7, 0.85, 0.95)
+PROFILE_KEEP = 3
+# Switching-rate starts of the TLS fit (per microsecond), from a frozen
+# line to switching faster than the shortest idle; the TLS likelihood holds
+# separate basins in this rate.
+TLS_GAMMA_STARTS = (0.0, 0.002, 0.02, 0.2, 2.0)
+
+
+def clip_to(values: Any, limits: list[tuple[float | None, float | None]]) -> np.ndarray:
+    return np.array(
+        [
+            min(max(float(value), low if low is not None else -math.inf), high if high is not None else math.inf)
+            for value, (low, high) in zip(values, limits, strict=True)
+        ]
+    )
+
+
+def preconditioner(
+    model: str, x: np.ndarray, points: list[Point], limits: list[tuple[float | None, float | None]]
+) -> np.ndarray:
+    """1 / sqrt(|d2 NLL / dx_k2|) per coordinate at x, by central differences.
+
+    Decay times in microseconds, readout errors near 0.01 and line
+    frequencies probed over tens of microseconds differ in curvature by many
+    orders of magnitude; unscaled L-BFGS-B with difference gradients leaves
+    the soft coordinates at their start values.
+    """
+    center = negative_log_likelihood(x, model, points)
+    scale = np.empty(len(x))
+    for k, (low, high) in enumerate(limits):
+        step = CURVATURE_STEP * ((high - low) if low is not None and high is not None else 2.0 * math.pi)
+        shift = np.zeros(len(x))
+        shift[k] = step
+        up = negative_log_likelihood(clip_to(x + shift, limits), model, points)
+        down = negative_log_likelihood(clip_to(x - shift, limits), model, points)
+        curvature = abs(up - 2.0 * center + down) / step**2
+        scale[k] = 1.0 / math.sqrt(curvature) if curvature > 0.0 else step * 1e3
+    return scale
+
+
+def scaled_negative_log_likelihood(
+    z: np.ndarray, origin: np.ndarray, scale: np.ndarray, model: str, points: list[Point]
+) -> float:
+    return negative_log_likelihood(origin + scale * z, model, points)
+
+
 class Fit:
-    """Bounded L-BFGS-B fit of one model from one start; pool-picklable."""
+    """Preconditioned bounded L-BFGS-B fit of one model from one start; pool-picklable.
+
+    Each round rescales every coordinate by the preconditioner at the
+    current point and descends; rounds repeat until one improves the NLL by
+    under POLISH_TOLERANCE. phi returns wrapped into [-pi, pi).
+    """
 
     def __call__(self, item: tuple[str, list[float], list[Point], int | None]) -> tuple[float, list[float]]:
         model, start, points, cell = item
         limits = bounds(model, cell)
-        clipped = [
-            min(max(value, low if low is not None else -math.inf), high if high is not None else math.inf)
-            for value, (low, high) in zip(start, limits, strict=True)
-        ]
-        result = minimize(
-            negative_log_likelihood,
-            np.array(clipped, dtype=float),
-            args=(model, points),
-            method="L-BFGS-B",
-            bounds=limits,
-            options={"maxiter": 2000, "ftol": 1e-12, "gtol": 1e-8},
-        )
-        best, params = float(result.fun), np.asarray(result.x)
-        return best, [float(x) for x in params]
+        x = clip_to(start, limits)
+        best = negative_log_likelihood(x, model, points)
+        for _ in range(POLISH_ROUNDS):
+            scale = preconditioner(model, x, points, limits)
+            scaled = [
+                (
+                    (low - x[k]) / scale[k] if low is not None else None,
+                    (high - x[k]) / scale[k] if high is not None else None,
+                )
+                for k, (low, high) in enumerate(limits)
+            ]
+            result = minimize(
+                scaled_negative_log_likelihood,
+                np.zeros(len(x)),
+                args=(x.copy(), scale, model, points),
+                method="L-BFGS-B",
+                bounds=scaled,
+                options={"maxiter": 2000, "ftol": 1e-12, "gtol": 1e-8},
+            )
+            candidate = clip_to(x + scale * result.x, limits)
+            value = negative_log_likelihood(candidate, model, points)
+            if value >= best:
+                break
+            improvement, best, x = best - value, value, candidate
+            if improvement < POLISH_TOLERANCE:
+                break
+        x[PHI] = (x[PHI] + math.pi) % (2.0 * math.pi) - math.pi
+        return best, [float(v) for v in x]
+
+
+def profile_starts(model: str, params: list[float], points: list[Point], cell: int) -> list[list[float]]:
+    """The PROFILE_KEEP best (df, a) lattice points of a cell at a fitted point's other parameters.
+
+    Two lines a few kHz apart and one dominant line are separate NLL basins
+    inside one alias cell, so a descent from the cell center lands in either.
+    The df lattice spaces the cell at a quarter period of the longest idle,
+    and each df bin keeps its best line weight from PROFILE_A.
+    """
+    low, high = bounds(model, cell)[DF_INDEX]
+    if low is None or high is None:
+        raise ValueError(f"{model} has no bounded df in cell {cell}")
+    bins = math.ceil((high - low) * 4.0 * max(point.idle_us for point in points))
+    rows = []
+    for k in range(bins):
+        best: tuple[float, list[float]] | None = None
+        for weight in PROFILE_A:
+            trial = list(params)
+            trial[DF_INDEX] = low + (k + 0.5) * (high - low) / bins
+            trial[A_INDEX] = weight
+            value = negative_log_likelihood(np.array(trial), model, points)
+            if best is None or value < best[0]:
+                best = (value, trial)
+        if best is not None:
+            rows.append(best)
+    rows.sort(key=lambda row: row[0])
+    return [trial for _value, trial in rows[:PROFILE_KEEP]]
+
+
+class ProfiledFit:
+    """Fit from a start, then Fit from the cell's best profile points at its endpoint; the least NLL."""
+
+    def __call__(self, item: tuple[str, list[float], list[Point], int | None]) -> tuple[float, list[float]]:
+        model, _start, points, cell = item
+        found = Fit()(item)
+        if cell is None:
+            return found
+        for trial in profile_starts(model, found[1], points, cell):
+            candidate = Fit()((model, trial, points, cell))
+            if candidate[0] < found[0]:
+                found = candidate
+        return found
 
 
 def cell_center(cell: int) -> float:
@@ -396,8 +512,15 @@ def f1_starts() -> list[float]:
 
 
 def cell_fits(points: list[Point], model: str = "static") -> dict[int, tuple[float, list[float]]]:
-    """Per df alias cell, the best fit with df inside the cell over every f1 cell start."""
-    items = [
+    """Per df alias cell, the best fit with df inside the cell over every f1 cell start and the profile points.
+
+    The profile lattice of a cell sits at its own fitted point and at the
+    globally best cell's point with df moved into the cell: amplitude,
+    decay, readout errors and f1 do not depend on the df alias, and a cell
+    whose own descent collapsed would otherwise keep a lattice at the
+    collapsed point and an NLL that overstates the alias margin.
+    """
+    items: list[tuple[str, list[float], list[Point], int | None]] = [
         (model, extend(model, static_start(f1, cell_center(cell))), points, cell)
         for cell in CELLS
         for f1 in f1_starts()
@@ -406,6 +529,18 @@ def cell_fits(points: list[Point], model: str = "static") -> dict[int, tuple[flo
     best: dict[int, tuple[float, list[float]]] = {}
     for (_model, _start, _points, cell), result in zip(items, found, strict=True):
         if cell is not None and (cell not in best or result[0] < best[cell][0]):
+            best[cell] = result
+    leader = best[min(best, key=lambda cell: best[cell][0])][1]
+    profiled: list[tuple[str, list[float], list[Point], int | None]] = [
+        (model, trial, points, cell)
+        for cell in CELLS
+        for seed in (best[cell][1], leader[:DF_INDEX] + [cell_center(cell)] + leader[DF_INDEX + 1 :])
+        for trial in profile_starts(model, seed, points, cell)
+    ]
+    for (_model, _start, _points, cell), result in zip(
+        profiled, parallel.ordered_map(Fit(), profiled, min_items=2), strict=True
+    ):
+        if cell is not None and result[0] < best[cell][0]:
             best[cell] = result
     return best
 
@@ -421,8 +556,9 @@ def model_fits(points: list[Point], static_cells: dict[int, tuple[float, list[fl
     for gamma in (0.002, 0.03, 0.3):
         start = [*static[1], gamma]
         items.append(("telegraph", start, points, cell))
-    for p0 in (0.0, 0.5, 0.95):
-        items.append(("tls", [*static[1], 0.02, p0], points, cell))
+    for gamma_tls in TLS_GAMMA_STARTS:
+        for p0 in (0.0, 0.5, 0.95):
+            items.append(("tls", [*static[1], gamma_tls, p0], points, cell))
     found = parallel.ordered_map(Fit(), items, min_items=2)
     fits: dict[str, tuple[float, list[float]]] = {"static": static}
     for (model, _start, _points, _cell), result in zip(items, found, strict=True):
@@ -1115,7 +1251,7 @@ class ExpectedLLR:
         truth_model, truth, alternative, start, cell, points = item
         expected = asimov(truth_model, truth, points)
         own = negative_log_likelihood(np.array(truth), truth_model, expected)
-        return Fit()((alternative, start, expected, cell))[0] - own
+        return ProfiledFit()((alternative, start, expected, cell))[0] - own
 
 
 # The retained static fit (beat-model.json) at alias cell 0, with T1 of 143
@@ -1222,9 +1358,18 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         help="with --check, a retained amended analysis whose every field but the analyzer identity must regenerate",
     )
+    parser.add_argument("--out", type=Path, help="write the analysis here instead of beside the run's raw files")
     parser.add_argument("--design", type=Path, help="write the design trade table here")
     parser.add_argument("--design-check", type=Path, help="require this retained design table to regenerate")
+    parser.add_argument(
+        "--design-row", type=int, help="with --out, write row K of the design table alone (one replay gate per row)"
+    )
     args = parser.parse_args(argv)
+    if args.design_row is not None:
+        if args.out is None:
+            parser.error("--design-row writes to --out")
+        args.out.write_text(serialize(design_rows(*DESIGN_TABLE[args.design_row])))
+        return 0
     if args.design is not None or args.design_check is not None:
         rows = [design_rows(k, s, pairs) for k, s, pairs in DESIGN_TABLE]
         table = serialize({"schema_version": SCHEMA + "-design", "rows": rows})
@@ -1238,7 +1383,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("name a run directory or --design")
     analysis = report(args.run)
     text = serialize(analysis)
-    target = args.run / retained_name(analysis)
+    target = args.out if args.out is not None else args.run / retained_name(analysis)
     if args.check and args.against is not None:
         retained = json.loads(args.against.read_text())
         fresh = json.loads(text)
