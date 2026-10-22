@@ -110,7 +110,7 @@
    "seed-common": "seeds shift the superposition states together: study seed selection on development data and validate a frozen selection on fresh data",
    "seed-interaction": "seed effects differ between states: a seed selection cannot transfer across states, so study the per-state compilation before any seed choice",
    "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate preparation, filtering and processing; more seeds are not the remedy",
-   "inconclusive": "no component resolved and one test inconclusive: more compilations or trials before a branch",
+   "inconclusive": "no component resolved and one test inconclusive, or a resolved common seed offset beside an inconclusive interaction test: more compilations or trials before a branch",
    "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined certification case becomes a candidate once a common ensemble effect is supported"
   },
   "margin": 0.02

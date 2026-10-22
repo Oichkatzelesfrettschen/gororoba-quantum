@@ -208,8 +208,8 @@ def case_record() -> dict[str, Any]:
                 "states, so study the per-state compilation before any seed choice",
                 "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate "
                 "preparation, filtering and processing; more seeds are not the remedy",
-                "inconclusive": "no component resolved and one test inconclusive: more compilations or trials "
-                "before a branch",
+                "inconclusive": "no component resolved and one test inconclusive, or a resolved common seed offset "
+                "beside an inconclusive interaction test: more compilations or trials before a branch",
                 "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined "
                 "certification case becomes a candidate once a common ensemble effect is supported",
             },
@@ -537,9 +537,14 @@ def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
     elif readings["block_change"] == "resolved":
         branch = "stationarity"
     elif readings["seed"] == "resolved":
-        # Seed dispersion that the common offset does not carry, in the superpositions or in f and g, is state-specific.
-        common_only = readings["seed_common"] == "resolved" and readings["seed_interaction"] != "resolved"
-        branch = "seed-common" if common_only else "seed-interaction"
+        # Seed dispersion that the common offset does not carry, in the superpositions or in f and g, is state-specific;
+        # a common offset reads as transferable only once the interaction test is consistent with none.
+        if readings["seed_interaction"] == "resolved" or readings["seed_common"] != "resolved":
+            branch = "seed-interaction"
+        elif readings["seed_interaction"] == "consistent":
+            branch = "seed-common"
+        else:
+            branch = "inconclusive"
     elif beyond:
         branch = "common-effect"
     elif "inconclusive" in (readings["block_change"], readings["seed"], readings["residual_seed"]):
@@ -564,8 +569,12 @@ def utc(text: str) -> float:
     return datetime.datetime.fromisoformat(text.replace("Z", "+00:00")).timestamp()
 
 
-def readout(runs: list[Path]) -> dict[str, Any]:
-    """The analysis of collected qpu:belenos runs of every diagnostic job, after the integrity checks."""
+def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
+    """The analysis of collected qpu:belenos runs of every diagnostic job, after the integrity checks.
+
+    validate runs qd_platform.run_facts on each run, binding cases.json, circuit.json, job-body.json and the receipt to
+    one another and results.json to raw/result.json; the self-test's synthetic runs carry no receipt or raw result.
+    """
     import qd_platform
 
     record_sha = sha256_bytes(CASE.read_bytes())
@@ -576,6 +585,8 @@ def readout(runs: list[Path]) -> dict[str, Any]:
     windows: dict[str, tuple[float, float]] = {}
     maintenance: set[tuple[float, float]] = set()
     for run in runs:
+        if validate:
+            qd_platform.run_facts(run)
         manifest_bytes = (run / "cases.json").read_bytes()
         manifest = json.loads(manifest_bytes)
         result = json.loads((run / "results.json").read_text(encoding="utf-8"))
@@ -774,7 +785,7 @@ def self_test() -> int:
         manifests = {k: json.loads(v["cases.json"]) for k, v in documents(draw).items() if isinstance(v, dict)}
         for n, (name, model, expected) in enumerate(cases):
             (root / str(n)).mkdir()
-            got = readout(synthetic_runs(root / str(n), manifests, model))["branch"]
+            got = readout(validate=False, runs=synthetic_runs(root / str(n), manifests, model))["branch"]
             require(got == expected, f"self-test: {name} read {got}, expected {expected}")
 
         def recompile(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
@@ -782,7 +793,9 @@ def self_test() -> int:
                 result["iterations"][0]["result_fields"]["computed_circuit"] += " recompiled"
 
         (root / "recompiled").mkdir()
-        got = readout(synthetic_runs(root / "recompiled", manifests, response(), recompile))["branch"]
+        got = readout(validate=False, runs=synthetic_runs(root / "recompiled", manifests, response(), recompile))[
+            "branch"
+        ]
         require(got == "recompiled", f"self-test: a changed returned circuit read {got}")
 
         def undrawn(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
@@ -831,7 +844,7 @@ def self_test() -> int:
             (root / name).mkdir()
             runs = synthetic_runs(root / name, manifests, response(), edit)
             try:
-                readout(runs)
+                readout(runs, validate=False)
             except ValueError:
                 continue
             raise ValueError(f"self-test: {name} was admitted")

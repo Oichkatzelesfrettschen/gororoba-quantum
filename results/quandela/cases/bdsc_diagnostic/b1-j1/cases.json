@@ -4477,7 +4477,7 @@
   7
  ],
  "eligibility": "exactly one click among the 24 outputs; selected when that click is on a selected output",
- "diagnostic_case_sha256": "b58896ee1b1d101c3543baa10fb0076a950e37aac87cbe2dc3dd8c420e21345d",
+ "diagnostic_case_sha256": "385718dae9db5360eaac0f06aeb6536b311f0a8282e25aa873ddd5a42dbd001c",
  "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794",
  "circuit": {
   "file": "circuit.json",

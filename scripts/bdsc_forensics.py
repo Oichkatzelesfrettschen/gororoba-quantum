@@ -339,10 +339,17 @@ def phase_difference(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def unitary_distance(a: np.ndarray, b: np.ndarray) -> float:
-    """Operator-norm distance after the global phase that best aligns b with a."""
-    overlap = np.trace(b.conj().T @ a)
-    phase = overlap / abs(overlap) if abs(overlap) > 0 else 1.0
-    return float(np.linalg.norm(a - phase * b, 2))
+    """min over phi of ||a - e^{i phi} b||_2 for unitaries a and b.
+
+    With eigenphases theta_k of W = b^dagger a, ||a - e^{i phi} b||_2 = max_k |e^{i theta_k} - e^{i phi}|; the best
+    phi is the center of the shortest arc of width w holding every theta_k, which gives the chord 2 sin(w / 4).
+    """
+    w = b.conj().T @ a
+    require(np.allclose(w @ w.conj().T, np.eye(len(w)), atol=1e-9), "unitary_distance needs unitary operators")
+    theta = np.sort(np.mod(np.angle(np.linalg.eigvals(w)), 2 * math.pi))
+    gaps = np.diff(np.append(theta, theta[0] + 2 * math.pi))
+    width = 2 * math.pi - float(np.max(gaps))
+    return 2 * math.sin(width / 4)
 
 
 def repeats(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -442,19 +449,26 @@ def deviance(p: np.ndarray, k: np.ndarray, n: np.ndarray) -> float:
     return float(2 * np.sum(a + b))
 
 
-def _fit(item: tuple[str, np.ndarray, np.ndarray, np.ndarray]) -> np.ndarray:
-    """Best-deviance parameters of one model over deterministic multi-start L-BFGS-B."""
-    model, vectors, k, n = item
-    function, size = MODELS[model]
+def fit_starts(model: str) -> list[np.ndarray]:
+    """The FIT_STARTS start vectors of a model, drawn in order from a generator seeded with FIT_SEED."""
     rng = np.random.default_rng(FIT_SEED)
-    best: tuple[float, np.ndarray] | None = None
-    for _ in range(FIT_STARTS):
-        start = rng.normal(0, 1.5, size)
-        found = minimize(lambda x: deviance(function(x, vectors), k, n), start, method="L-BFGS-B")
-        if best is None or found.fun < best[0]:
-            best = (float(found.fun), found.x)
-    require(best is not None, "no fit start")
-    return best[1]  # type: ignore[index]
+    return [rng.normal(0, 1.5, MODELS[model][1]) for _ in range(FIT_STARTS)]
+
+
+def _fit_start(item: tuple[str, np.ndarray, np.ndarray, np.ndarray, np.ndarray]) -> tuple[float, np.ndarray]:
+    """Deviance and parameters of one L-BFGS-B start of one model."""
+    model, vectors, k, n, start = item
+    function = MODELS[model][0]
+    found = minimize(lambda x: deviance(function(x, vectors), k, n), start, method="L-BFGS-B")
+    return float(found.fun), found.x
+
+
+def best_fits(items: list[tuple[str, np.ndarray, np.ndarray, np.ndarray]]) -> list[np.ndarray]:
+    """Best-deviance parameters per item over its starts; the first start wins a tie, as in a serial scan."""
+    starts = [(*item, start) for item in items for start in fit_starts(item[0])]
+    solved = parallel.ordered_map(_fit_start, starts, 1)
+    chunks = [solved[i * FIT_STARTS : (i + 1) * FIT_STARTS] for i in range(len(items))]
+    return [min(enumerate(chunk), key=lambda pair: (pair[1][0], pair[0]))[1][1] for chunk in chunks]
 
 
 def models(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -492,7 +506,7 @@ def models(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         vectors, k, n = data(train_job, train, f, g)
         for model in MODELS:
             items.append((model, vectors, k, n))
-    fitted = parallel.ordered_map(_fit, items, 1)
+    fitted = best_fits(items)
     out = []
     for index, (train_job, test_job, train, test, f, g) in enumerate(designs):
         tv, tk, tn = data(test_job, test, f, g)
@@ -545,6 +559,7 @@ def determinism(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     qpu = {(r["job"], r["setting"]): r for r in rows}
     out = []
     for path in sorted(RUNS.glob(SIM_GLOB)):
+        qd_platform.run_facts(path)
         result = json.loads((path / "results.json").read_text(encoding="utf-8"))
         if result.get("status", {}).get("status") != "completed" or "iterations" not in result:
             continue

@@ -4811,7 +4811,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.6124799251,
-   "unitary_distance_op": 1.9989120857,
+   "unitary_distance_op": 1.9834555855,
    "source_column_fidelity": [
     0.9999993512,
     0.9999994315
@@ -4857,7 +4857,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.5867116748,
-   "unitary_distance_op": 1.9959403325,
+   "unitary_distance_op": 1.9800445525,
    "source_column_fidelity": [
     0.9999992075,
     0.9999994162
@@ -4903,7 +4903,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.6268225466,
-   "unitary_distance_op": 1.9981228441,
+   "unitary_distance_op": 1.982579587,
    "source_column_fidelity": [
     0.0289546831,
     0.0212136639
@@ -4949,7 +4949,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.5112596852,
-   "unitary_distance_op": 1.9996359359,
+   "unitary_distance_op": 1.9800264742,
    "source_column_fidelity": [
     0.0357010355,
     0.8670192066
@@ -4995,7 +4995,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.521499526,
-   "unitary_distance_op": 1.9929546834,
+   "unitary_distance_op": 1.9730512992,
    "source_column_fidelity": [
     0.7153426701,
     0.0023764288
@@ -5041,7 +5041,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.6129598325,
-   "unitary_distance_op": 1.9978546867,
+   "unitary_distance_op": 1.9810106531,
    "source_column_fidelity": [
     0.5147187614,
     0.3569211276
@@ -5087,7 +5087,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.5778946675,
-   "unitary_distance_op": 1.9998757736,
+   "unitary_distance_op": 1.9875379605,
    "source_column_fidelity": [
     0.9999993984,
     0.9999994235
@@ -5133,7 +5133,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.6111903572,
-   "unitary_distance_op": 1.9999084624,
+   "unitary_distance_op": 1.9829253695,
    "source_column_fidelity": [
     0.9999992979,
     0.999999252
@@ -5179,7 +5179,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.4312983876,
-   "unitary_distance_op": 1.9964918047,
+   "unitary_distance_op": 1.9870102369,
    "source_column_fidelity": [
     0.8193033228,
     0.7065133442
@@ -5225,7 +5225,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.4993681475,
-   "unitary_distance_op": 1.9940353485,
+   "unitary_distance_op": 1.9791763723,
    "source_column_fidelity": [
     0.8474175696,
     0.9997623757
@@ -5271,7 +5271,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.6528426016,
-   "unitary_distance_op": 1.9962666359,
+   "unitary_distance_op": 1.9885102343,
    "source_column_fidelity": [
     0.9997276868,
     0.3348316588
@@ -5317,7 +5317,7 @@
    "same_beam_splitter_model": true,
    "phase_shifters_changed": 574,
    "phase_shift_median_rad": 1.5191742249,
-   "unitary_distance_op": 1.9945554091,
+   "unitary_distance_op": 1.9701724805,
    "source_column_fidelity": [
     0.785141087,
     0.5733849929
