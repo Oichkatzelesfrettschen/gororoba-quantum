@@ -9853,6 +9853,7 @@
   "scripts/hypercomplex_photonic_cases.py": [
    "__future__",
    "argparse",
+   "bdsc_certificate",
    "copy",
    "hashlib",
    "hypercomplex_cases",
@@ -9863,6 +9864,7 @@
    "parallel",
    "pathlib",
    "qd_belenos_mesh",
+   "qd_platform",
    "typing"
   ],
   "scripts/ibm_runtime_options_inventory.py": [
@@ -10528,6 +10530,7 @@
    "__future__",
    "argparse",
    "copy",
+   "fnmatch",
    "fractions",
    "hashlib",
    "json",
@@ -10621,30 +10624,27 @@
    "bdsc",
    "bdsc_pauli",
    "collections",
+   "datetime",
    "experiment_optimizer",
+   "fcntl",
    "functools",
    "hashlib",
    "itertools",
    "json",
    "math",
    "numpy",
+   "os",
    "parallel",
    "pathlib",
    "qi_platform",
    "qi_zero_divisor_cases",
    "qiskit",
    "scipy",
+   "shutil",
    "sys",
+   "tempfile",
+   "time",
    "typing"
-  ],
-  "scripts/qi_complete_toolchain_check.py": [
-   "__future__",
-   "argparse",
-   "json",
-   "pathlib",
-   "qi_stack",
-   "qi_toolchain_check",
-   "tempfile"
   ],
   "scripts/qi_coupler_zz_map.py": [
    "__future__",
@@ -10785,6 +10785,18 @@
    "json",
    "pathlib",
    "sys",
+   "typing"
+  ],
+  "scripts/qi_series_watch.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "json",
+   "pathlib",
+   "qi_bdsc_pauli_cases",
+   "qi_platform",
+   "sys",
+   "time",
    "typing"
   ],
   "scripts/qi_shot_record_line.py": [

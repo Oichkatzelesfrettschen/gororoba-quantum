@@ -171,6 +171,90 @@ def test_retained_successor_replay_rejects_a_changed_budget(tmp_path: Path) -> N
         check_files(tmp_path, files)
 
 
+def test_frozen_campaign_replay_accepts_equivalent_phase_branch(tmp_path: Path) -> None:
+    import copy
+
+    from hypercomplex_cases import write_files
+    from hypercomplex_photonic_cases import campaign_cases, check_campaign_files
+
+    frozen = campaign_cases("ascella")
+    write_files(tmp_path, frozen)
+    regenerated = copy.deepcopy(frozen)
+    name = "order-repeat-block-0/cases.json"
+    manifest = json.loads(regenerated[name])
+    manifest["settings"][0]["circuit_params"]["x0"] += 2 * np.pi
+    regenerated[name] = json.dumps(manifest)
+    check_campaign_files(tmp_path, regenerated)
+    manifest["max_shots"] += 1
+    regenerated[name] = json.dumps(manifest)
+    with pytest.raises(ValueError, match="metadata"):
+        check_campaign_files(tmp_path, regenerated)
+
+
+def test_frozen_successor_identity_rejects_one_byte_change(tmp_path: Path) -> None:
+    import shutil
+
+    from hypercomplex_photonic_cases import check_frozen_identity
+
+    root = Path(__file__).resolve().parents[2] / "results/hypercomplex/photonic-successors"
+    shutil.copytree(root, tmp_path, dirs_exist_ok=True)
+    check_frozen_identity(tmp_path)
+    manifest = tmp_path / "belenos/wave-repeat-block-0/cases.json"
+    manifest.write_bytes(manifest.read_bytes() + b" ")
+    with pytest.raises(ValueError, match="identity"):
+        check_frozen_identity(tmp_path)
+
+
+@pytest.mark.parametrize("mutation", ["inventory", "missing", "extra"])
+def test_frozen_successor_identity_binds_inventory_and_file_set(tmp_path: Path, mutation: str) -> None:
+    import shutil
+
+    from hypercomplex_photonic_cases import check_frozen_identity
+
+    root = Path(__file__).resolve().parents[2] / "results/hypercomplex/photonic-successors"
+    shutil.copytree(root, tmp_path, dirs_exist_ok=True)
+    if mutation == "inventory":
+        inventory = tmp_path / "frozen-file-sha256.json"
+        inventory.write_bytes(inventory.read_bytes() + b" ")
+    elif mutation == "missing":
+        (tmp_path / "ascella-readiness/cases.json").unlink()
+    else:
+        (tmp_path / "extra.json").write_text("{}")
+    with pytest.raises(ValueError, match="identity"):
+        check_frozen_identity(tmp_path)
+
+
+def test_frozen_campaign_replay_checks_full_operator(tmp_path: Path) -> None:
+    from hypercomplex_cases import write_files
+    from hypercomplex_photonic_cases import campaign_cases, check_campaign_files
+
+    files = campaign_cases("ascella")
+    write_files(tmp_path, files)
+    path = tmp_path / "order-repeat-block-0/cases.json"
+    manifest = json.loads(path.read_text())
+    manifest["settings"][0]["circuit_params"]["x0"] += 0.1
+    path.write_text(json.dumps(manifest))
+    import qd_platform
+
+    with pytest.raises(qd_platform.PlatformError, match="operator|column"):
+        check_campaign_files(tmp_path, files)
+
+
+def test_frozen_campaign_replay_checks_unprepared_operator_columns(tmp_path: Path) -> None:
+    import qd_platform
+    from hypercomplex_cases import write_files
+    from hypercomplex_photonic_cases import campaign_cases, check_campaign_files
+
+    files = campaign_cases("ascella")
+    write_files(tmp_path, files)
+    path = tmp_path / "order-repeat-block-0/cases.json"
+    manifest = json.loads(path.read_text())
+    manifest["settings"][0]["operator"]["real"][1][1] += 0.1
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(qd_platform.PlatformError, match="full operator"):
+        check_campaign_files(tmp_path, files)
+
+
 def test_ascella_frontier_covers_all_connected_ports_pairs_and_quadratures() -> None:
     from hypercomplex_photonic_cases import characterization_frontier
 

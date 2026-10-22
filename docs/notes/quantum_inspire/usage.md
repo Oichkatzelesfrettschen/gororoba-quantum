@@ -96,10 +96,35 @@ forecast.
   relay jobs to external computing providers, decline to execute or store an
   algorithm, and interrupt the service at any time (terms, item 6).
 
-## Conditions that bind every submission
+## What the provider requires
 
-From the general conditions of use (6 Feb 2025,
-<https://www.quantum-inspire.com/terms-and-conditions/>):
+Every rule below is quoted from a live page read on 2026-10-22 and from the
+capture retained on 2026-10-16 (`scripts/capture_qi_docs.py --check` verifies
+the captures; [knowledge-base.md](knowledge-base.md) lists them). The live
+General Conditions of Use still carry the date 6 Feb 2025.
+
+| Rule | Quote | Live page | Retained capture |
+|---|---|---|---|
+| Queue, hardware only | "You are not allowed to have more than 3 jobs in the queue for a hardware backend, in order to provide equal access opportunities for everybody. (Attempts of) abuse will lead to removal of your account." | <https://www.quantum-inspire.com/faq/> | [site/faq.md:84](site/faq.md) |
+| Shared resources, per-backend limits | "Each backend imposes a limit on the number of qubits that can be executed upon or simulated. The number of shots for each execution request is also limited. In addition, a limit on the amount of time an execution may run will be enforced by aborting running executions that exceed this limit." | <https://www.quantum-inspire.com/terms-and-conditions/> | [site/terms-and-conditions.md:39](site/terms-and-conditions.md) |
+| Processor time | "To take precautions to avoid unnecessary loss of processor hours, e.g. by using the syntax checking tools provided by QI." (item 9) | same | [site/terms-and-conditions.md:61](site/terms-and-conditions.md) |
+| Non-commercial use, suspension | "Non-adherence or violation of these terms and conditions may lead to immediate suspension or revocation of the account(s) associated with the violation." "Please note that QI is solely intended for non-commercial use." | same | [site/terms-and-conditions.md:35](site/terms-and-conditions.md) |
+| Operator rights | "To assign priority to particular jobs without regard to the order of the queue; b. To assign computing or storage resources to the uploaded jobs; c. To relay certain jobs to external providers ..." and to decline or suspend a job that "would exceed the available computer time" (item 6) | same | [site/terms-and-conditions.md:55](site/terms-and-conditions.md) |
+| Submission by script | "Code has to be written on the website or submitted via the API (either by using an SDK or by initiating requests to the API directly)." | same | [site/terms-and-conditions.md:39](site/terms-and-conditions.md) |
+| QX emulator size and time | "On our commodity server you cabn simulate up to 26 qubits." "Depending on the type of user account job durations could be maximized to 30 minutes compute time." | <https://www.quantum-inspire.com/backends/qx-simulator/> | [site/backends_qx-simulator.md:21](site/backends_qx-simulator.md), [:27](site/backends_qx-simulator.md) |
+| Tuning | "Each backend comes with an extensice automated tuning program that takes from a few seconds to 30 minutes long. When your job is scheduled while tuning is ongoing, this will add to your waiting time." | FAQ | [site/faq.md:89](site/faq.md) |
+
+The API catalogue adds the structural numbers of the table above (QX: 3600 s
+per job, 5 jobs per batch, 5 batches queued; this account's QX record holds
+10 qubits, below the page's 26).
+
+No provider page sets an interval between submissions, a rate limit or a cap
+on emulator use: the FAQ, the general conditions and the QX page were read in
+full for one on 2026-10-22 and hold none. The pause of `qi_platform.py` is
+therefore a repository rule, and tuning needs no idle time from the account:
+the platform runs it on its own schedule and a job that meets it waits.
+
+From the same conditions:
 
 - Every algorithm, datum or code uploaded, stored or executed is open to use
   by QuTech for its own or public activities and may be disseminated to third
@@ -134,8 +159,9 @@ From the general conditions of use (6 Feb 2025,
   collects the previous batch, passes its sanity checks and pauses before
   submitting the next. `submit` enforces the pause account-wide: it refuses a
   hardware batch while any account job on a hardware backend type is
-  unfinished or finished less than `HARDWARE_PAUSE_SECONDS` (120 s) ago, so
-  concurrent sessions alternate and the platform can calibrate between batches.
+  unfinished or finished less than `HARDWARE_PAUSE_SECONDS` ago, so
+  concurrent sessions sharing the account alternate. The pause is 30 s by
+  default and follows the escalation below; the provider sets none.
 - The case directory acquires an exclusive `submission-state.json` before
   the client creates any remote resource. It checkpoints the batch and job
   IDs and the enqueue intent; either this state or `submission.json` blocks
@@ -168,3 +194,23 @@ From the general conditions of use (6 Feb 2025,
   ignored, so it does not rewrite a prior result or break its evidence hash.
 - A simulation of 14 qubits or fewer runs on Kaggle (root AGENTS.md); a
   Quantum Inspire hardware run answers a question about the device.
+
+
+## Pause escalation
+
+`HARDWARE_PAUSE_LADDER` = (30, 60, 90, 120) s in `scripts/qi_platform.py`;
+`QI_HARDWARE_PAUSE_SECONDS` selects a step, unset selects 30 s, and any other
+value is refused. A series starts at 30 s. A system issue moves it one step up
+for the rest of that series and the next: a submission the API refuses or
+answers with a server error, a job that fails or returns fewer shots than
+requested, or a platform message about load or fair use; a series whose own
+preregistered stop ends it on such an issue resumes, as a new series, at the
+next step. The step that ran
+is recorded in each batch's `series-gate.json` (`pause_seconds`) for the
+series that write one, and the case states it. The `bdsc_pauli_tuna_17`
+batch-00 and batch-01 receipts predate the field: both were submitted under
+the fixed 120 s pause that preceded the ladder, and the 129 s between
+batch-00's last finish and batch-01's creation in their `results.json`
+records matches it; batches 02 to 08 record 30 s. Case budgets take the top
+step, 120 s, as their wall-time ceiling, so a series run at any step stays
+inside its approved budget and its manifests do not depend on the step.

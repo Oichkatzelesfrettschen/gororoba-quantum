@@ -170,8 +170,28 @@ async def qd_platform(name: PlatformName, include_bulk: bool = False) -> dict[st
 @server.tool(annotations=READ)
 @reported
 async def qd_availability() -> dict[str, Any]:
-    """The token's job limits and occupancy: running, queued and Quantum Toolbox jobs."""
-    return await threaded(availability)
+    """Token job limits/occupancy, plus a dashboard link for platform-wide pending jobs.
+
+    Token occupancy is not the platform queue depth or a queue position. The
+    dashboard's waiting_jobs requires a browser session; offer its link when
+    the caller needs that count. Opening the link requires the client's action.
+    """
+    occupancy = await threaded(availability)
+    return {
+        **occupancy,
+        "platform_queue": {
+            "count": None,
+            "status": "requires-dashboard-session",
+            "dashboard_url": "https://cloud.quandela.com/webide/",
+            "action": "Offer to open the dashboard and read the platform card's pending jobs after sign-in.",
+            "source": "GET /api/platform-permissions/users/{user_id}?count_jobs=true; waiting_jobs",
+            "boundary": (
+                "The job token cannot read this dashboard interface. Token occupancy and cumulative job usage "
+                "do not determine platform queue depth or queue position. The dashboard count's user/global "
+                "scope requires authenticated verification."
+            ),
+        },
+    }
 
 
 @server.tool(annotations=READ)

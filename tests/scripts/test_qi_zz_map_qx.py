@@ -34,14 +34,22 @@ def test_qx_builder_checks_selected_catalogue_capacity(tmp_path: Path) -> None:
 
 
 def test_toolchain_successor_preserves_original_rows_and_covers_current_cases() -> None:
-    from qi_complete_toolchain_check import RECORD, case_files
+    from qi_toolchain_check import RECORD, case_files
 
     successor = json.loads(RECORD.read_text())
+    current = case_files()
     new_rows = {row["case"]: row for row in successor["circuits"]}
-    for name in ("toolchain_check.json", "toolchain-rejected-request-proposals.json"):
+    for name in (
+        "toolchain_check.json",
+        "toolchain-rejected-request-proposals.json",
+        "toolchain-complete-retained-cases.json",
+    ):
         predecessor = json.loads((ROOT / "docs/evidence/quantum_inspire" / name).read_text())
-        old_rows = {row["case"]: row for row in predecessor["circuits"]}
+        # Rebuilt case paths require new rows; unchanged circuit bytes preserve their compiler evidence.
+        old_rows = {
+            row["case"]: row for row in predecessor["circuits"] if current.get(row["case"], ("",))[0] == row["sha256"]
+        }
         if any(new_rows.get(path) != row for path, row in old_rows.items()):
             raise RuntimeError(f"the toolchain successor changed compilation evidence from {name}")
-    if set(new_rows) != set(case_files()):
+    if set(new_rows) != set(current):
         raise RuntimeError("the toolchain successor omitted retained case circuits")

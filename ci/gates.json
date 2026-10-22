@@ -2348,7 +2348,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check $(for d in results/quandela/runs/*/; do case \"$d\" in *-qpu_belenos-belenos_mesh-*) ;; *) printf \"%s \" \"$d\" ;; esac; done)",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check --runs-under results/quandela/runs --exclude '*-qpu_belenos-belenos_mesh-*'",
    "name": "core-508",
    "seconds": 80.0,
    "tier": "full",
@@ -2683,7 +2683,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_complete_toolchain_check.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_toolchain_check.py --check",
    "name": "core-368",
    "seconds": 0.1,
    "tier": "pr",
@@ -3792,7 +3792,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-pause-ladder --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json",
    "name": "core-594",
    "seconds": 4.0,
    "tier": "pr"
@@ -3808,7 +3808,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-rejected-request-recovery --source-plan results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery/plan.json --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-pause-ladder --source-plan results/quantum_inspire/cases/zz-map-tuna17-pause-ladder/plan.json --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
    "name": "core-596",
    "seconds": 4.0,
    "tier": "pr"
@@ -3939,6 +3939,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --self-test",
    "name": "core-627",
    "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08 --out results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json --replay && \"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13 --out results/quantum_inspire/bdsc_pauli_qx_analysis.json --replay",
+   "name": "core-634",
+   "seconds": 4.0,
    "tier": "pr"
   },
   {

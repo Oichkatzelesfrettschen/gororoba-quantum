@@ -112,7 +112,24 @@ app.serve()
                 platform = await call("qd_platform", {"name": "qpu:ascella", "include_bulk": True})
                 if platform["specs"]["architecture"] != "synthetic-chip":
                     raise AssertionError("include_bulk lost the architecture")
-                await call("qd_availability", {})
+                occupancy = await call("qd_availability", {})
+                if any(
+                    occupancy[key] != 0
+                    for key in (
+                        "max_concurrent_jobs",
+                        "max_jobs_in_queue",
+                        "max_running_qt_jobs",
+                        "num_concurrent_jobs",
+                        "num_jobs_in_queue",
+                        "num_running_qt_jobs",
+                    )
+                ):
+                    raise AssertionError("queue guidance changed the token counters")
+                queue = occupancy["platform_queue"]
+                if queue["count"] is not None or queue["status"] != "requires-dashboard-session":
+                    raise AssertionError("the global queue must remain unknown rather than inherit token occupancy")
+                if queue["dashboard_url"] != "https://cloud.quandela.com/webide/":
+                    raise AssertionError("the queue response must offer the authenticated dashboard")
                 usage = await call("qd_usage", {})
                 if usage != {"usage": [{"nb_jobs": 2}]}:
                     raise AssertionError(f"usage changed counters or exposed account identifiers: {usage}")

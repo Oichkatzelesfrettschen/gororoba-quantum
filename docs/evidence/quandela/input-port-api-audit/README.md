@@ -60,7 +60,10 @@ The audit required zero package installations. Automated endpoint fuzzing stays
 outside the audit because documented GET routes include priced QRNG and session
 mutation, and job/booking/token operations change remote state.
 
-Eight MCP tools expose eight unique Cloud operations plus local simulation:
+Eight MCP tools expose eight unique remote operations plus local simulation.
+Five operations appear in the Cloud OpenAPI capture; its paths omit all three
+platform reads below. The 56 documented entries therefore describe a bounded
+schema inventory rather than the complete service API:
 
 | Tool | Cloud operation |
 |---|---|
@@ -72,6 +75,57 @@ Eight MCP tools expose eight unique Cloud operations plus local simulation:
 | `qd_job_result` | GET `/api/jobs/{id}/result` |
 | `qd_cancel_job` | POST `/api/jobs/{id}/cancel` |
 | `qd_simulate_local` | host Perceval; provider access excluded |
+
+## Dashboard queue and accounting boundaries
+
+The platform manual says platform cards display pending jobs
+([source](../../../notes/quandela/guide/user-guide/02-understanding-platforms.md)).
+The reviewed WebIDE bundle traces `PlatformStatusList` through
+`getObjectPermission(USER, user.id, {count_jobs:true})` to
+`GET /api/platform-permissions/users/{user_id}?count_jobs=true` and renders
+`waiting_jobs`. The route requires a dashboard session and the signed-in user's
+identity. Its user-scoped path alone establishes neither a global count nor a
+user-filtered count; authenticated response semantics remain unverified.
+The job token received HTTP 401 from `/api/platforms`,
+`/api/platform-permissions/explorer-tokens`, `/api/jobs/page?status=waiting`
+and `/api/platforms/lock-commands` during the read-only audit.
+
+A fresh headless Firefox probe with Selenium and geckodriver opened
+`https://cloud.quandela.com/webide/` on 22 October. After the application
+rendered, the page displayed `Session Expired`, `Your Session Has Ended` and
+`GO TO LOGIN`. The probe used an isolated temporary browser profile and read
+the page; it supplied neither passwords nor copied browser credentials.
+Authenticated dashboard telemetry remains unobserved. `qd_availability`
+therefore preserves the token's six counters and adds `platform_queue` with
+`count=null`, `status=requires-dashboard-session`, the dashboard link and an
+offer to open it. The MCP response neither launches a browser nor treats an
+unknown count as zero. The stdio regression verifies the link and boundary
+beside unchanged token counters.
+
+At 20:44 UTC, the token reported zero running and one queued job, and job
+`4058ce4e-7892-4da4-9e86-7f78f5fa9777` reported `waiting` with zero shots.
+Recursive platform responses exposed neither a queue count nor queue position.
+Explorer and processor reads reported Belenos `calibration`; the public list
+reported `available`. The platform identifiers matched in memory. Those
+observations establish a same-platform status disagreement, with cache or
+synchronization causality unresolved. The runner's refusal to submit while
+either token counter is occupied is a local conservative admission rule,
+rather than a measurement of Ascella's scheduler occupancy.
+
+The usage report totals 56 recorded jobs: Ascella 5, Belenos simulator 17 and
+Belenos QPU 34. The QPU total includes the waiting job. The two completed
+diagnostic jobs `c8d90a80-4330-4e7a-875e-938c561ca71c` and
+`ef06045d-de41-47dc-ad42-e8fc8e318448` each added 164 execution seconds and
+1.08 free credits consumed. Their totals progress from 53 to 54 to 55 jobs,
+and QPU consumption from 30.30742 to 31.38742 to 32.46742 credits.
+The waiting job increased the count to 56 while execution seconds and debit
+stayed at 2921 and 32.46742. The second completed diagnostic, rather than an
+unidentified additional acquisition, explains the second 1.08-credit debit.
+These token-scoped cumulative counters establish neither account balance nor
+platform queue depth. The documented shot rate likewise leaves job, slot,
+notebook and QRNG pricing dependent on the account offer.
+
+## Transport and source replay
 
 The MCP 1.29 startup repair completes the SDK Settings forward references
 instead of suppressing warnings. The server enables low-level JSON Schema

@@ -1,0 +1,3512 @@
+{
+ "schema": "qi-bdsc-pauli-analysis-v3",
+ "claim_kind": "preregistered emulator control",
+ "manifest_sha256": "a54e0aedfeb0288235e9d94ae932d1dd791b609081b6196fe4f362ccfbc9e821",
+ "bootstrap": {
+  "draws": 4000,
+  "seed": 20261022,
+  "alpha": 0.05,
+  "prior": "Jeffreys"
+ },
+ "tensor_model_rejected_on_qubits": [],
+ "cells": [
+  {
+   "kind": "witness",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 0,
+   "batch": "batch-00",
+   "source_batch": "batch-01",
+   "file": "twin-witness-01.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009334736212261503,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b3",
+   "group": "bright",
+   "patch": 1,
+   "batch": "batch-00",
+   "source_batch": "batch-01",
+   "file": "twin-witness-01.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0095396414115008
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e0",
+   "group": "middle",
+   "patch": 2,
+   "batch": "batch-01",
+   "source_batch": "batch-01",
+   "file": "twin-witness-02.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.005859375,
+   "parity_variance": 1.0004541707376648,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.005859375,
+   "ideal_score": 0.5,
+   "score_mean": 0.5,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.49500501767746014,
+    0.5049949823225398
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 0.5,
+   "score_tensor_model_ci95_jeffreys": [
+    0.4989575670615151,
+    0.5010150120252589
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b1",
+   "group": "bright",
+   "patch": 0,
+   "batch": "batch-01",
+   "source_batch": "batch-01",
+   "file": "twin-witness-02.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0096753986588491
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k3",
+   "group": "kernel",
+   "patch": 1,
+   "batch": "batch-01",
+   "source_batch": "batch-01",
+   "file": "twin-witness-03.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009699763989996665,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e7",
+   "group": "sector",
+   "patch": 2,
+   "batch": "batch-01",
+   "source_batch": "batch-01",
+   "file": "twin-witness-03.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.0048828125,
+   "parity_variance": 1.000464666279922,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.0048828125,
+   "ideal_score": 0.5,
+   "score_mean": 0.50244140625,
+   "score_variance": 0.2501161665699805,
+   "score_ci95_empirical_bernstein": [
+    0.46473055873001556,
+    0.5401522537699844
+   ],
+   "kernel_count": 1019,
+   "kernel_fraction": 0.49755859375,
+   "kernel_ci95_wilson": [
+    0.47592895523062206,
+    0.5191973738738948
+   ],
+   "score_tensor_model_mitigated": 0.50244140625,
+   "score_tensor_model_ci95_jeffreys": [
+    0.4812940368562607,
+    0.5238185353828125
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k3",
+   "group": "kernel",
+   "patch": 0,
+   "batch": "batch-02",
+   "source_batch": "batch-02",
+   "file": "twin-witness-04.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009499957111793633,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e0",
+   "group": "middle",
+   "patch": 1,
+   "batch": "batch-02",
+   "source_batch": "batch-02",
+   "file": "twin-witness-04.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.015625,
+   "parity_variance": 1.0002442598925256,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.015625,
+   "ideal_score": 0.5,
+   "score_mean": 0.5,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.49500501767746014,
+    0.5049949823225398
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 0.5,
+   "score_tensor_model_ci95_jeffreys": [
+    0.49897113500575113,
+    0.501018028958083
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b1",
+   "group": "bright",
+   "patch": 2,
+   "batch": "batch-02",
+   "source_batch": "batch-02",
+   "file": "twin-witness-05.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0095811787571876
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b3",
+   "group": "bright",
+   "patch": 0,
+   "batch": "batch-02",
+   "source_batch": "batch-02",
+   "file": "twin-witness-05.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0096509050481546
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e7",
+   "group": "sector",
+   "patch": 1,
+   "batch": "batch-03",
+   "source_batch": "batch-02",
+   "file": "twin-witness-06.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.017578125,
+   "parity_variance": 1.0001793783585735,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.017578125,
+   "ideal_score": 0.5,
+   "score_mean": 0.5087890625,
+   "score_variance": 0.2500448445896434,
+   "score_ci95_empirical_bernstein": [
+    0.4710828798657217,
+    0.5464952451342783
+   ],
+   "kernel_count": 1006,
+   "kernel_fraction": 0.4912109375,
+   "kernel_ci95_wilson": [
+    0.4695962620665665,
+    0.5128585227096942
+   ],
+   "score_tensor_model_mitigated": 0.5087890625,
+   "score_tensor_model_ci95_jeffreys": [
+    0.48692065311802435,
+    0.5307348163300663
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 2,
+   "batch": "batch-03",
+   "source_batch": "batch-02",
+   "file": "twin-witness-06.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009563258002642565,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e0",
+   "group": "middle",
+   "patch": 0,
+   "batch": "batch-03",
+   "source_batch": "batch-03",
+   "file": "twin-witness-07.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.037109375,
+   "parity_variance": 0.9991107413287739,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.037109375,
+   "ideal_score": 0.5,
+   "score_mean": 0.5,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.49500501767746014,
+    0.5049949823225398
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 0.5,
+   "score_tensor_model_ci95_jeffreys": [
+    0.4990110925979274,
+    0.5010743196556928
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 1,
+   "batch": "batch-03",
+   "source_batch": "batch-03",
+   "file": "twin-witness-07.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.00974826677030948,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b3",
+   "group": "bright",
+   "patch": 2,
+   "batch": "batch-04",
+   "source_batch": "batch-03",
+   "file": "twin-witness-08.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0095790409327163
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e7",
+   "group": "sector",
+   "patch": 0,
+   "batch": "batch-04",
+   "source_batch": "batch-03",
+   "file": "twin-witness-08.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.0244140625,
+   "parity_variance": 0.9998921821568149,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.0244140625,
+   "ideal_score": 0.5,
+   "score_mean": 0.48779296875,
+   "score_variance": 0.24997304553920371,
+   "score_ci95_empirical_bernstein": [
+    0.4500914828767139,
+    0.5254944546232861
+   ],
+   "kernel_count": 1049,
+   "kernel_fraction": 0.51220703125,
+   "kernel_ci95_wilson": [
+    0.49055614695527366,
+    0.533812207522142
+   ],
+   "score_tensor_model_mitigated": 0.48779296875,
+   "score_tensor_model_ci95_jeffreys": [
+    0.46590419174602044,
+    0.5102657074404069
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b1",
+   "group": "bright",
+   "patch": 1,
+   "batch": "batch-04",
+   "source_batch": "batch-03",
+   "file": "twin-witness-09.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0094640882987163
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k3",
+   "group": "kernel",
+   "patch": 2,
+   "batch": "batch-04",
+   "source_batch": "batch-03",
+   "file": "twin-witness-09.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009532705893156848,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k2",
+   "group": "kernel",
+   "patch": 0,
+   "batch": "batch-05",
+   "source_batch": "batch-06",
+   "file": "twin-witness-10.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009773504313692958,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b4",
+   "group": "bright",
+   "patch": 1,
+   "batch": "batch-05",
+   "source_batch": "batch-06",
+   "file": "twin-witness-10.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0096898226961293
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e12",
+   "group": "sector",
+   "patch": 2,
+   "batch": "batch-05",
+   "source_batch": "batch-06",
+   "file": "twin-witness-11.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.0224609375,
+   "parity_variance": 0.999983779616512,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.0224609375,
+   "ideal_score": 0.5,
+   "score_mean": 0.48876953125,
+   "score_variance": 0.249995944904128,
+   "score_ci95_empirical_bernstein": [
+    0.45106654733318113,
+    0.5264725151668189
+   ],
+   "kernel_count": 1047,
+   "kernel_fraction": 0.51123046875,
+   "kernel_ci95_wilson": [
+    0.4895804240114402,
+    0.5328384621077821
+   ],
+   "score_tensor_model_mitigated": 0.48876953125,
+   "score_tensor_model_ci95_jeffreys": [
+    0.46652825538402615,
+    0.5108740694932834
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b2",
+   "group": "bright",
+   "patch": 0,
+   "batch": "batch-05",
+   "source_batch": "batch-06",
+   "file": "twin-witness-11.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0096247571758954
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k4",
+   "group": "kernel",
+   "patch": 1,
+   "batch": "batch-06",
+   "source_batch": "batch-06",
+   "file": "twin-witness-12.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.00973821375015668,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e10",
+   "group": "middle",
+   "patch": 2,
+   "batch": "batch-06",
+   "source_batch": "batch-06",
+   "file": "twin-witness-12.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.0068359375,
+   "parity_variance": 1.0004417669149976,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.0068359375,
+   "ideal_score": 0.5,
+   "score_mean": 0.5,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.49500501767746014,
+    0.5049949823225398
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 0.5,
+   "score_tensor_model_ci95_jeffreys": [
+    0.4989629606138882,
+    0.5010522851963096
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k4",
+   "group": "kernel",
+   "patch": 0,
+   "batch": "batch-06",
+   "source_batch": "batch-07",
+   "file": "twin-witness-13.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009579058124379257,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e12",
+   "group": "sector",
+   "patch": 1,
+   "batch": "batch-06",
+   "source_batch": "batch-07",
+   "file": "twin-witness-13.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.0029296875,
+   "parity_variance": 1.0004799325232048,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.0029296875,
+   "ideal_score": 0.5,
+   "score_mean": 0.50146484375,
+   "score_variance": 0.2501199831308012,
+   "score_ci95_empirical_bernstein": [
+    0.4637537466227736,
+    0.5391759408772264
+   ],
+   "kernel_count": 1021,
+   "kernel_fraction": 0.49853515625,
+   "kernel_ci95_wilson": [
+    0.4769035246595249,
+    0.5201722728031851
+   ],
+   "score_tensor_model_mitigated": 0.50146484375,
+   "score_tensor_model_ci95_jeffreys": [
+    0.47995592954643806,
+    0.5237637370332284
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b2",
+   "group": "bright",
+   "patch": 2,
+   "batch": "batch-07",
+   "source_batch": "batch-07",
+   "file": "twin-witness-14.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0094236391077167
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b4",
+   "group": "bright",
+   "patch": 0,
+   "batch": "batch-07",
+   "source_batch": "batch-07",
+   "file": "twin-witness-14.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0095117127323021
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e10",
+   "group": "middle",
+   "patch": 1,
+   "batch": "batch-07",
+   "source_batch": "batch-07",
+   "file": "twin-witness-15.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.00390625,
+   "parity_variance": 1.0004732535417684,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.00390625,
+   "ideal_score": 0.5,
+   "score_mean": 0.5,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.49500501767746014,
+    0.5049949823225398
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 0.5,
+   "score_tensor_model_ci95_jeffreys": [
+    0.4989556930285246,
+    0.5010401709265118
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k2",
+   "group": "kernel",
+   "patch": 2,
+   "batch": "batch-07",
+   "source_batch": "batch-07",
+   "file": "twin-witness-15.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009901427423984727,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e12",
+   "group": "sector",
+   "patch": 0,
+   "batch": "batch-08",
+   "source_batch": "batch-08",
+   "file": "twin-witness-16.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.0068359375,
+   "parity_variance": 1.0004417669149976,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.0068359375,
+   "ideal_score": 0.5,
+   "score_mean": 0.50341796875,
+   "score_variance": 0.2501104417287494,
+   "score_ci95_empirical_bernstein": [
+    0.46570749564444924,
+    0.5411284418555508
+   ],
+   "kernel_count": 1017,
+   "kernel_fraction": 0.49658203125,
+   "kernel_ci95_wilson": [
+    0.47495446817916853,
+    0.518222392567155
+   ],
+   "score_tensor_model_mitigated": 0.50341796875,
+   "score_tensor_model_ci95_jeffreys": [
+    0.482002133384765,
+    0.5255587766373777
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k2",
+   "group": "kernel",
+   "patch": 1,
+   "batch": "batch-08",
+   "source_batch": "batch-08",
+   "file": "twin-witness-16.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009465389432562915,
+    0.0
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b4",
+   "group": "bright",
+   "patch": 2,
+   "batch": "batch-08",
+   "source_batch": "batch-08",
+   "file": "twin-witness-17.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0094974535143157
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "e10",
+   "group": "middle",
+   "patch": 0,
+   "batch": "batch-08",
+   "source_batch": "batch-08",
+   "file": "twin-witness-17.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.0380859375,
+   "parity_variance": 0.9990372725329751,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.0380859375,
+   "ideal_score": 0.5,
+   "score_mean": 0.5,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.49500501767746014,
+    0.5049949823225398
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 0.5,
+   "score_tensor_model_ci95_jeffreys": [
+    0.498942675503454,
+    0.5010064953463632
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "b2",
+   "group": "bright",
+   "patch": 1,
+   "batch": "batch-09",
+   "source_batch": "batch-08",
+   "file": "twin-witness-18.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_score": 1.0,
+   "score_mean": 1.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.9950050176774602,
+    1.0
+   ],
+   "kernel_count": 0,
+   "kernel_fraction": 0.0,
+   "kernel_ci95_wilson": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "score_tensor_model_mitigated": 1.0,
+   "score_tensor_model_ci95_jeffreys": [
+    1.0,
+    1.0094765640302885
+   ]
+  },
+  {
+   "kind": "witness",
+   "state": "k4",
+   "group": "kernel",
+   "patch": 2,
+   "batch": "batch-09",
+   "source_batch": "batch-08",
+   "file": "twin-witness-18.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_score": 0.0,
+   "score_mean": 0.0,
+   "score_variance": 0.0,
+   "score_ci95_empirical_bernstein": [
+    0.0,
+    0.004994982322539841
+   ],
+   "kernel_count": 2048,
+   "kernel_fraction": 1.0,
+   "kernel_ci95_wilson": [
+    0.9981277993949387,
+    1.0
+   ],
+   "score_tensor_model_mitigated": 0.0,
+   "score_tensor_model_ci95_jeffreys": [
+    -0.009819077009381961,
+    0.0
+   ]
+  },
+  {
+   "kind": "quadrature",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 0,
+   "batch": "batch-09",
+   "source_batch": "batch-04",
+   "file": "twin-quadrature-01.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.0068359375,
+   "parity_variance": 1.0004417669149976,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.0068359375,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": 1.0,
+    "sin_coefficient": -1.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 1,
+   "batch": "batch-09",
+   "source_batch": "batch-04",
+   "file": "twin-quadrature-01.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.0234375,
+   "parity_variance": 0.9999389350268686,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.0234375,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": 1.0,
+    "sin_coefficient": -1.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 2,
+   "batch": "batch-10",
+   "source_batch": "batch-04",
+   "file": "twin-quadrature-02.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.009765625,
+   "parity_variance": 1.0003931057645334,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.009765625,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": 1.0,
+    "sin_coefficient": -1.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "b1",
+   "group": "bright",
+   "patch": 0,
+   "batch": "batch-10",
+   "source_batch": "batch-05",
+   "file": "twin-quadrature-02.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.0009765625,
+   "parity_variance": 1.0004875656448462,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.0009765625,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": -1.0,
+    "sin_coefficient": 1.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "b1",
+   "group": "bright",
+   "patch": 1,
+   "batch": "batch-10",
+   "source_batch": "batch-05",
+   "file": "twin-quadrature-03.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.029296875,
+   "parity_variance": 0.9996297936003908,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.029296875,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": -1.0,
+    "sin_coefficient": 1.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "b1",
+   "group": "bright",
+   "patch": 2,
+   "batch": "batch-10",
+   "source_batch": "batch-05",
+   "file": "twin-quadrature-03.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -0.0263671875,
+   "parity_variance": 0.9997929515754763,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -0.0263671875,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": -1.0,
+    "sin_coefficient": 1.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "e7",
+   "group": "sector",
+   "patch": 0,
+   "batch": "batch-11",
+   "source_batch": "batch-04",
+   "file": "twin-quadrature-04.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.052734375,
+   "parity_variance": 0.9977062469467514,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.052734375,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": 0.0,
+    "sin_coefficient": 0.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "e7",
+   "group": "sector",
+   "patch": 1,
+   "batch": "batch-11",
+   "source_batch": "batch-04",
+   "file": "twin-quadrature-04.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.001953125,
+   "parity_variance": 1.0004847032242306,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.001953125,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": 0.0,
+    "sin_coefficient": 0.0
+   }
+  },
+  {
+   "kind": "quadrature",
+   "state": "e7",
+   "group": "sector",
+   "patch": 2,
+   "batch": "batch-11",
+   "source_batch": "batch-04",
+   "file": "twin-quadrature-05.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 0.0087890625,
+   "parity_variance": 1.000411234428432,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 0.0087890625,
+   "ideal_parity": 0.0,
+   "quadrature": {
+    "cos_coefficient": 0.0,
+    "sin_coefficient": 0.0
+   }
+  },
+  {
+   "kind": "cosine",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 0,
+   "batch": "batch-12",
+   "source_batch": "batch-04",
+   "file": "twin-cosine-01.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_parity": 1.0,
+   "quadrature": {
+    "cos_coefficient": 1.0,
+    "sin_coefficient": -1.0
+   }
+  },
+  {
+   "kind": "cosine",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 1,
+   "batch": "batch-12",
+   "source_batch": "batch-04",
+   "file": "twin-cosine-01.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_parity": 1.0,
+   "quadrature": {
+    "cos_coefficient": 1.0,
+    "sin_coefficient": -1.0
+   }
+  },
+  {
+   "kind": "cosine",
+   "state": "k1",
+   "group": "kernel",
+   "patch": 2,
+   "batch": "batch-12",
+   "source_batch": "batch-04",
+   "file": "twin-cosine-02.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": 1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": 1.0,
+   "ideal_parity": 1.0,
+   "quadrature": {
+    "cos_coefficient": 1.0,
+    "sin_coefficient": -1.0
+   }
+  },
+  {
+   "kind": "cosine",
+   "state": "b1",
+   "group": "bright",
+   "patch": 0,
+   "batch": "batch-12",
+   "source_batch": "batch-05",
+   "file": "twin-cosine-02.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_parity": -1.0,
+   "quadrature": {
+    "cos_coefficient": -1.0,
+    "sin_coefficient": 1.0
+   }
+  },
+  {
+   "kind": "cosine",
+   "state": "b1",
+   "group": "bright",
+   "patch": 1,
+   "batch": "batch-13",
+   "source_batch": "batch-05",
+   "file": "twin-cosine-03.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_parity": -1.0,
+   "quadrature": {
+    "cos_coefficient": -1.0,
+    "sin_coefficient": 1.0
+   }
+  },
+  {
+   "kind": "cosine",
+   "state": "b1",
+   "group": "bright",
+   "patch": 2,
+   "batch": "batch-13",
+   "source_batch": "batch-05",
+   "file": "twin-cosine-03.cq",
+   "shots": 2048,
+   "shots_requested": 2048,
+   "parity_mean": -1.0,
+   "parity_variance": 0.0,
+   "tensor_model_rejected_by_context": [],
+   "parity_tensor_model_mitigated": -1.0,
+   "ideal_parity": -1.0,
+   "quadrature": {
+    "cos_coefficient": -1.0,
+    "sin_coefficient": 1.0
+   }
+  }
+ ],
+ "references": {
+  "instances": [
+   {
+    "batch": "batch-00",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   },
+   {
+    "batch": "batch-00",
+    "reference": "readout-1.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 1.0,
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0
+    },
+    "prepared": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1,
+     "5": 1,
+     "6": 1,
+     "7": 1
+    },
+    "e01": {},
+    "e10": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    }
+   },
+   {
+    "batch": "batch-01",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   },
+   {
+    "batch": "batch-02",
+    "reference": "readout-1.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 1.0,
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0
+    },
+    "prepared": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1,
+     "5": 1,
+     "6": 1,
+     "7": 1
+    },
+    "e01": {},
+    "e10": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    }
+   },
+   {
+    "batch": "batch-03",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   },
+   {
+    "batch": "batch-04",
+    "reference": "readout-1.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 1.0,
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0
+    },
+    "prepared": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1,
+     "5": 1,
+     "6": 1,
+     "7": 1
+    },
+    "e01": {},
+    "e10": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    }
+   },
+   {
+    "batch": "batch-05",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   },
+   {
+    "batch": "batch-06",
+    "reference": "readout-1.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 1.0,
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0
+    },
+    "prepared": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1,
+     "5": 1,
+     "6": 1,
+     "7": 1
+    },
+    "e01": {},
+    "e10": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    }
+   },
+   {
+    "batch": "batch-07",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   },
+   {
+    "batch": "batch-08",
+    "reference": "readout-1.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 1.0,
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0
+    },
+    "prepared": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1,
+     "5": 1,
+     "6": 1,
+     "7": 1
+    },
+    "e01": {},
+    "e10": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    }
+   },
+   {
+    "batch": "batch-09",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   },
+   {
+    "batch": "batch-10",
+    "reference": "readout-1.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 1.0,
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0
+    },
+    "prepared": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1,
+     "5": 1,
+     "6": 1,
+     "7": 1
+    },
+    "e01": {},
+    "e10": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    }
+   },
+   {
+    "batch": "batch-11",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   },
+   {
+    "batch": "batch-12",
+    "reference": "readout-1.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 1.0,
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0
+    },
+    "prepared": {
+     "0": 1,
+     "1": 1,
+     "2": 1,
+     "3": 1,
+     "4": 1,
+     "5": 1,
+     "6": 1,
+     "7": 1
+    },
+    "e01": {},
+    "e10": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    }
+   },
+   {
+    "batch": "batch-13",
+    "reference": "readout-0.cq",
+    "shots": 2048,
+    "p_read_1": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "prepared": {
+     "0": 0,
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 0,
+     "5": 0,
+     "6": 0,
+     "7": 0
+    },
+    "e01": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0,
+     "6": 0.0,
+     "7": 0.0
+    },
+    "e10": {}
+   }
+  ],
+  "stop_condition_batch_00": [],
+  "bracket_drift": {
+   "threshold": 0.02,
+   "max_abs_delta": 0.0,
+   "flagged": [],
+   "pairs": [
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-00",
+     "to": "batch-01",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-01",
+     "to": "batch-03",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-03",
+     "to": "batch-05",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-05",
+     "to": "batch-07",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-07",
+     "to": "batch-09",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-09",
+     "to": "batch-11",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-0.cq",
+     "from": "batch-11",
+     "to": "batch-13",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-00",
+     "to": "batch-02",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-02",
+     "to": "batch-04",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-04",
+     "to": "batch-06",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-06",
+     "to": "batch-08",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-08",
+     "to": "batch-10",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 0,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 1,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 2,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 3,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 4,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 5,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 6,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    },
+    {
+     "reference": "readout-1.cq",
+     "from": "batch-10",
+     "to": "batch-12",
+     "qubit": 7,
+     "rate_from": 0.0,
+     "rate_to": 0.0,
+     "delta": 0.0,
+     "flag": false
+    }
+   ]
+  },
+  "neighbor_context": []
+ },
+ "stop_condition_readout": [],
+ "contraction": {
+  "patch-0": {
+   "pairs_kernel_plus_bright_minus_one": [
+    {
+     "pair": 1,
+     "batch": "batch-01",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 3,
+     "batch": "batch-02",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 2,
+     "batch": "batch-06",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 4,
+     "batch": "batch-07",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    }
+   ],
+   "pairs_chi2": {
+    "chi2": 0.0,
+    "dof": 4,
+    "threshold": 16.251171152210592,
+    "flag": false
+   },
+   "pooled_kernel_plus_bright_minus_one": {
+    "residual": 0.0,
+    "se": 0.0,
+    "z": 0.0,
+    "flag": false
+   },
+   "middle_sector_minus_half": [
+    {
+     "state": "e0",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "state": "e10",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "state": "e12",
+     "residual": 0.00341796875,
+     "se": 0.011050983627051753,
+     "z": 0.30929090706759704,
+     "flag": false
+    },
+    {
+     "state": "e7",
+     "residual": -0.01220703125,
+     "se": 0.011047947824921573,
+     "z": -1.1049139119270466,
+     "flag": false
+    }
+   ],
+   "rejects_model": false,
+   "exploratory_flags": 0
+  },
+  "patch-1": {
+   "pairs_kernel_plus_bright_minus_one": [
+    {
+     "pair": 3,
+     "batch": "batch-01",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 1,
+     "batch": "batch-03",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 4,
+     "batch": "batch-06",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 2,
+     "batch": "batch-08",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    }
+   ],
+   "pairs_chi2": {
+    "chi2": 0.0,
+    "dof": 4,
+    "threshold": 16.251171152210592,
+    "flag": false
+   },
+   "pooled_kernel_plus_bright_minus_one": {
+    "residual": 0.0,
+    "se": 0.0,
+    "z": 0.0,
+    "flag": false
+   },
+   "middle_sector_minus_half": [
+    {
+     "state": "e0",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "state": "e10",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "state": "e12",
+     "residual": 0.00146484375,
+     "se": 0.01105119441567682,
+     "z": 0.13255071758777734,
+     "flag": false
+    },
+    {
+     "state": "e7",
+     "residual": 0.0087890625,
+     "se": 0.011049534346400613,
+     "z": 0.7954237911268214,
+     "flag": false
+    }
+   ],
+   "rejects_model": false,
+   "exploratory_flags": 0
+  },
+  "patch-2": {
+   "pairs_kernel_plus_bright_minus_one": [
+    {
+     "pair": 1,
+     "batch": "batch-02",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 3,
+     "batch": "batch-03",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 2,
+     "batch": "batch-07",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "pair": 4,
+     "batch": "batch-08",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    }
+   ],
+   "pairs_chi2": {
+    "chi2": 0.0,
+    "dof": 4,
+    "threshold": 16.251171152210592,
+    "flag": false
+   },
+   "pooled_kernel_plus_bright_minus_one": {
+    "residual": 0.0,
+    "se": 0.0,
+    "z": 0.0,
+    "flag": false
+   },
+   "middle_sector_minus_half": [
+    {
+     "state": "e0",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "state": "e10",
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    {
+     "state": "e12",
+     "residual": -0.01123046875,
+     "se": 0.011048453849870521,
+     "z": -1.0164742417900956,
+     "flag": false
+    },
+    {
+     "state": "e7",
+     "residual": 0.00244140625,
+     "se": 0.011051110100709262,
+     "z": 0.22091954814958456,
+     "flag": false
+    }
+   ],
+   "rejects_model": false,
+   "exploratory_flags": 0
+  },
+  "pooled_equal_patch_weights": {
+   "estimand": "equal-weight mean over the patches of the per-patch pooled kernel + bright - 1",
+   "variance_includes": "covariance of the patches' per-shot scores within each circuit",
+   "se_marginal_only": 0.0,
+   "residual": 0.0,
+   "se": 0.0,
+   "z": 0.0,
+   "flag": false
+  }
+ },
+ "quadrature": {
+  "patch-0": {
+   "sin_phi_times_v": 0.00390625,
+   "cos_phi_times_v": 1.0,
+   "v": 1.0000076293654276,
+   "amplitude_chi2": Infinity,
+   "visibility_supported": true,
+   "phi_rad": 0.0039062301319669718,
+   "phi_se": 0.0156283913133749,
+   "phi_z_against_zero": 0.24994447948228612,
+   "phase_flag": false,
+   "phi_tensor_model_mitigated_rad": 0.0039062301319669718,
+   "nulls": {
+    "x_basis_half_sum": {
+     "residual": -0.0029296875,
+     "se": 0.015628629783701338,
+     "z": -0.1874564527118871,
+     "flag": false
+    },
+    "y_basis_half_sum": {
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    "e7_parity": {
+     "residual": 0.052734375,
+     "se": 0.02207172973266863,
+     "z": 2.389227108102326,
+     "flag": false
+    }
+   },
+   "witness_cos_minus_matched_cos": {
+    "residual": 0.0,
+    "se": 0.0,
+    "z": 0.0,
+    "flag": false
+   },
+   "exploratory_flags": 0
+  },
+  "patch-1": {
+   "sin_phi_times_v": 0.0029296875,
+   "cos_phi_times_v": 1.0,
+   "v": 1.0000042915252152,
+   "amplitude_chi2": Infinity,
+   "visibility_supported": true,
+   "phi_rad": 0.0029296791181399936,
+   "phi_se": 0.015623181160533049,
+   "phi_z_against_zero": 0.18752129211308688,
+   "phase_flag": false,
+   "phi_tensor_model_mitigated_rad": 0.0029296791181399936,
+   "nulls": {
+    "x_basis_half_sum": {
+     "residual": 0.0263671875,
+     "se": 0.015623315255372569,
+     "z": 1.6876819720406533,
+     "flag": false
+    },
+    "y_basis_half_sum": {
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    "e7_parity": {
+     "residual": 0.001953125,
+     "se": 0.022102441527944515,
+     "z": 0.08836693437377173,
+     "flag": false
+    }
+   },
+   "witness_cos_minus_matched_cos": {
+    "residual": 0.0,
+    "se": 0.0,
+    "z": 0.0,
+    "flag": false
+   },
+   "exploratory_flags": 0
+  },
+  "patch-2": {
+   "sin_phi_times_v": -0.01806640625,
+   "cos_phi_times_v": 1.0,
+   "v": 1.0001631842028529,
+   "amplitude_chi2": Infinity,
+   "visibility_supported": true,
+   "phi_rad": -0.018064441039747733,
+   "phi_se": 0.015620628274073246,
+   "phi_z_against_zero": -1.1564477896020784,
+   "phase_flag": false,
+   "phi_tensor_model_mitigated_rad": -0.018064441039747733,
+   "nulls": {
+    "x_basis_half_sum": {
+     "residual": -0.00830078125,
+     "se": 0.015625726769582203,
+     "z": -0.5312252909835018,
+     "flag": false
+    },
+    "y_basis_half_sum": {
+     "residual": 0.0,
+     "se": 0.0,
+     "z": 0.0,
+     "flag": false
+    },
+    "e7_parity": {
+     "residual": 0.0087890625,
+     "se": 0.022101629986513615,
+     "z": 0.39766580588685424,
+     "flag": false
+    }
+   },
+   "witness_cos_minus_matched_cos": {
+    "residual": 0.0,
+    "se": 0.0,
+    "z": 0.0,
+    "flag": false
+   },
+   "exploratory_flags": 0
+  }
+ },
+ "primary_endpoints": {
+  "family": "The primary family is the pair chi-square of each patch and the branch phase of each patch: 6 tests at p = 0.0027 (|z| >= 3.0 for the phase), family-wise error at most 0.016 by Bonferroni. Single pair residuals, the per-patch and equal-weight pooled means, middle and sector residuals, the nulls and the neighbor-context shifts are exploratory and carry no claim.",
+  "tests": [
+   {
+    "test": "pair chi-square, patch-0",
+    "chi2": 0.0,
+    "dof": 4,
+    "threshold": 16.251171152210592,
+    "flag": false
+   },
+   {
+    "test": "pair chi-square, patch-1",
+    "chi2": 0.0,
+    "dof": 4,
+    "threshold": 16.251171152210592,
+    "flag": false
+   },
+   {
+    "test": "pair chi-square, patch-2",
+    "chi2": 0.0,
+    "dof": 4,
+    "threshold": 16.251171152210592,
+    "flag": false
+   },
+   {
+    "test": "branch phase, patch-0",
+    "z": 0.24994447948228612,
+    "flag": false
+   },
+   {
+    "test": "branch phase, patch-1",
+    "z": 0.18752129211308688,
+    "flag": false
+   },
+   {
+    "test": "branch phase, patch-2",
+    "z": -1.1564477896020784,
+    "flag": false
+   }
+  ],
+  "rejects_model": false
+ },
+ "control_verdict": {
+  "pass": true,
+  "misses": []
+ }
+}
