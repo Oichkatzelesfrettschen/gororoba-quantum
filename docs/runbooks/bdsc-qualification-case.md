@@ -204,6 +204,12 @@ runs inside one job.
    support), `stationarity`, `seed-common` or `seed-interaction`,
    `common-effect`, `inconclusive` and `ensemble-candidate`. It also reports,
    with no branch reading them:
+   - `support_conditioned`: every test, reading and calibration shift rerun on
+     selected / on-support, the fraction with clicks outside the target
+     support removed. Unselected mode 5 holds 0.45 to 3.4 % of an iteration's
+     eligible samples in the retained jobs and dilutes each raw fraction by an
+     instance-specific factor; this rerun shows which readings that dilution
+     carries;
    - `perf_ratio`: r-hat = perf_g / (perf_f + perf_g) of each group and each
      superposition's deviation from it. physical_perf moves with the sample
      budget and DetectorBalancing rescales it

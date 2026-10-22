@@ -45,7 +45,10 @@ one-click samples outside the target support as a leak.
 Without --draw the case directories read draft and carry no seeds or order.
 With --draw (an scripts/anu_qrng.py record of at least 100 uint16 values) the
 first four values, which must be distinct, seed slots 0 to 3, and value 4 + i
-orders instance i within its job. --check without --draw reads the record the
+orders block-1 instance i within its job; a block-2 instance takes the order
+value of its block-1 match (same template, seed slot and state), so every
+matched pair runs at the same position and a within-job position trend cancels
+in each block change. --check without --draw reads the record the
 committed manifests name, so the gate holds before and after the draw.
 
 Usage:
@@ -96,6 +99,8 @@ CLASSES = {"superposition": SUPERPOSITIONS, "f": ("f",), "g": ("g",)}
 # An instance whose one-click samples fall outside the target support (modes with column weight above
 # bdsc_forensics.SUPPORT_FLOOR) by more than this share is a leak outlier.
 LEAK_SHARE = 0.20
+# The self-test's stray mode: unselected and outside every target-complement support, as mode 5 is on qpu:belenos.
+STRAY_MODE = 5
 SLOTS = 4
 BLOCKS = (1, 2)
 TRIALS = 40000
@@ -169,6 +174,20 @@ def matched_pairs() -> list[tuple[int, int]]:
     return [(first[k], second[k]) for k in sorted(first)]
 
 
+def order_index(index: int) -> int:
+    """The instance whose drawn order value positions this one: itself in block 1, its block-1 match in block 2.
+
+    A block-2 instance repeats the block-1 request of the same template, seed slot and state, and both members of
+    a matched pair sit in jobs holding the same groups, so a shared order value puts them at the same position.
+    """
+    items = instances()
+    item = items[index]
+    if item["block"] == BLOCKS[0]:
+        return index
+    first = {(i["template"], i["slot"], i["label"]): i["index"] for i in items if i["block"] == BLOCKS[0]}
+    return first[(item["template"], item["slot"], item["label"])]
+
+
 def instance_name(item: dict[str, Any]) -> str:
     tag = bdsc_cases.TEMPLATE_TAGS[item["template"]]
     return f"{tag}-s{item['slot']}-{bdsc_cases.LABEL_TAGS[item['label']]}"
@@ -232,8 +251,9 @@ def case_record() -> dict[str, Any]:
             "values": DRAW_VALUES,
             "requests": 1,
             "credits": 0,
-            "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders instance i "
-            "within its job",
+            "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders block-1 "
+            "instance i within its job, and a block-2 instance takes the order value of its block-1 match so matched "
+            "pairs share a position",
         },
         "analysis": {
             "observation": "one-click conditioned selected fraction of returned counts; every standard error is a "
@@ -261,6 +281,9 @@ def case_record() -> dict[str, Any]:
             "aliasing": "per block, seed slot and state, whether the outward and reverse returned circuits are "
             "hash-equal; per block, template and seed, how many distinct hashes the four superpositions returned; "
             "effective_compilations summarizes both. Reported, no branch reads it",
+            "support_conditioned": "every test, reading and calibration shift rerun on selected clicks on the target "
+            "support / one-click samples on the support, removing instance-specific dilution by unselected "
+            "off-support modes (mode 5 holds 0.45 to 3.4 % of an iteration in the retained jobs); no branch reads it",
             "position": "per job, the Spearman correlation of the superposition deviation p(state) - r-hat with "
             "position in the job (the drawn order). Reported, no branch reads it",
             "leak": f"every instance whose one-click samples fall outside the target support (modes with column "
@@ -384,7 +407,7 @@ def documents(draw: Path | None) -> dict[str, bytes | dict[str, bytes]]:
     for job in sorted({i["job"] for i in items}):
         members = [i for i in items if i["job"] == job]
         if drawn is not None:
-            members.sort(key=lambda i: (drawn[1][i["index"]], i["index"]))
+            members.sort(key=lambda i: (drawn[1][order_index(i["index"])], order_index(i["index"])))
         settings = []
         for item in members:
             column = chip[(PAIR, item["label"])]
@@ -400,7 +423,7 @@ def documents(draw: Path | None) -> dict[str, bytes | dict[str, bytes]]:
             }
             if drawn is not None:
                 setting["compilation_seed"] = drawn[0][item["slot"]]
-                setting["draw_indices"] = {"seed": item["slot"], "order": SLOTS + item["index"]}
+                setting["draw_indices"] = {"seed": item["slot"], "order": SLOTS + order_index(item["index"])}
             settings.append(setting)
         manifest: dict[str, Any] = {
             "schema": bdsc_cases.CASES_SCHEMA,
@@ -840,10 +863,13 @@ def admit_run(
     cert.close(frozen[job], manifest, f"{run}: manifest against the frozen rebuild")
     seeds, order = draws[binding["sha256"]]
     members = [s["instance_index"] for s in manifest["settings"]]
-    require(members == sorted(members, key=lambda i: (order[i], i)), f"{run}: the iterations are not in drawn order")
+    require(
+        members == sorted(members, key=lambda i: (order[order_index(i)], order_index(i))),
+        f"{run}: the iterations are not in drawn order",
+    )
     for setting in manifest["settings"]:
         require(setting["compilation_seed"] == seeds[setting["slot"]], f"{run}/{setting['name']}: seed not drawn")
-        indices = {"seed": setting["slot"], "order": SLOTS + setting["instance_index"]}
+        indices = {"seed": setting["slot"], "order": SLOTS + order_index(setting["instance_index"])}
         require(setting["draw_indices"] == indices, f"{run}/{setting['name']}: draw indices")
     return manifest, result, submission
 
@@ -893,7 +919,37 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
         not any(opens < span[1] and closes > span[0] for opens, closes in maintenance),
         "a scheduled maintenance window overlaps the acquisition",
     )
-    return analyse(observed)
+    return with_support_conditioned(observed)
+
+
+def with_support_conditioned(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
+    """The analysis of the raw one-click fractions, plus the same tests on selected / on-support (no branch reads it).
+
+    Unselected off-support modes (mode 5 holds 0.45 to 3.4 % of an iteration's eligible samples in the retained
+    target-complement jobs) dilute each raw fraction by an instance-specific factor; the conditioned rerun shows
+    which test readings that dilution carries.
+    """
+    read = analyse(observed)
+    empty = sorted(index for index, item in observed.items() if item["on_support"] == 0)
+    if empty:
+        # A support with no clicks has no conditioned fraction; the raw analysis, which reads such an instance as a
+        # leak, stands alone.
+        read["support_conditioned"] = {"withheld": f"instances {empty} have no one-click samples on their support"}
+        return read
+    conditioned = {
+        index: {**item, "selected": item["selected_on_support"], "eligible": item["on_support"], "outside_share": 0.0}
+        for index, item in observed.items()
+    }
+    again = analyse(conditioned)
+    read["support_conditioned"] = {
+        "fraction": "selected clicks on the target support / one-click samples on the target support",
+        "tests": again["tests"],
+        "readings": again["readings"],
+        "calibration_shift": again["calibration_shift"],
+        "residuals_beyond_margin": again["residuals_beyond_margin"],
+        "branch_if_read": again["branch"],
+    }
+    return read
 
 
 def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, dict[str, Any]]:
@@ -926,10 +982,14 @@ def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, 
         require(isinstance(perf, (int, float)) and not isinstance(perf, bool) and perf > 0, f"{owner}: physical_perf")
         per_mode, _, _ = forensics.one_click(iteration["counts"], cert.MODES)
         weight = np.abs(forensics.column(setting)) ** 2
-        on_support = sum(per_mode[m] for m in range(cert.MODES) if weight[m] > forensics.SUPPORT_FLOOR)
+        support = [m for m in range(cert.MODES) if weight[m] > forensics.SUPPORT_FLOOR]
+        on_support = sum(per_mode[m] for m in support)
+        selected_modes = set(manifest["selected_modes"])
         out[setting["instance_index"]] = {
             "selected": counted["selected"],
             "eligible": counted["eligible"],
+            "selected_on_support": sum(per_mode[m] for m in support if m in selected_modes),
+            "on_support": on_support,
             "circuit_sha256": hashlib.sha256(circuit.encode()).hexdigest(),
             "perf": float(perf),
             "outside_share": 1 - on_support / counted["eligible"],
@@ -985,11 +1045,17 @@ def run_matched_check(b1j2: Path, b2j1: Path, validate: bool = True) -> int:
 
 
 def synthetic_runs(
-    root: Path, manifests: dict[str, dict[str, Any]], response: Any, edit: Any = None, perf: Any = None
+    root: Path,
+    manifests: dict[str, dict[str, Any]],
+    response: Any,
+    edit: Any = None,
+    perf: Any = None,
+    stray: Any = None,
 ) -> list[Path]:
     """Collected run directories whose one-click counts draw from response(setting); edit may alter any record.
 
-    perf(setting) is the iteration's physical_perf, 0.078 when absent.
+    perf(setting) is the iteration's physical_perf, 0.078 when absent. stray(setting) is the share of samples sent
+    to STRAY_MODE, a mode outside every selection and support, before response splits the rest.
     """
     import qd_platform
 
@@ -1004,12 +1070,16 @@ def synthetic_runs(
         other = next(m for m in range(cert.MODES) if m not in manifest["selected_modes"])
         iterations = []
         for setting in manifest["settings"]:
-            hits = int(rng.binomial(TRIALS, response(setting)))
-            hit, miss = ["0"] * cert.MODES, ["0"] * cert.MODES
-            hit[selected], miss[other] = "1", "1"
+            strays = int(rng.binomial(TRIALS, stray(setting))) if stray is not None else 0
+            hits = int(rng.binomial(TRIALS - strays, response(setting)))
+            hit, miss, off = ["0"] * cert.MODES, ["0"] * cert.MODES, ["0"] * cert.MODES
+            hit[selected], miss[other], off[STRAY_MODE] = "1", "1", "1"
+            counts = {",".join(hit): hits, ",".join(miss): TRIALS - strays - hits}
+            if strays:
+                counts[",".join(off)] = strays
             iterations.append(
                 {
-                    "counts": {",".join(hit): hits, ",".join(miss): TRIALS - hits},
+                    "counts": counts,
                     "iteration": {
                         "circuit_params": setting["circuit_params"],
                         "compilation_seed": setting["compilation_seed"],
@@ -1160,6 +1230,18 @@ def self_test() -> int:
         root = Path(scratch)
         draw = bdsc_cases.synthetic_draw(root, DRAW_VALUES // 2)
         manifests = {k: json.loads(v["cases.json"]) for k, v in documents(draw).items() if isinstance(v, dict)}
+        # Every block-2 instance sits at the position of its block-1 match, so position cancels in each block change.
+        position = {
+            s["instance_index"]: k for manifest in manifests.values() for k, s in enumerate(manifest["settings"])
+        }
+        for item in instances():
+            if item["block"] != BLOCKS[0]:
+                match = order_index(item["index"])
+                require(
+                    position[item["index"]] == position[match],
+                    f"self-test: {instance_name(item)} sits at {position[item['index']]}, its match at "
+                    f"{position[match]}",
+                )
         for n, (name, model, perf_model, expected, holds) in enumerate(cases):
             (root / str(n)).mkdir()
             read = readout(validate=False, runs=synthetic_runs(root / str(n), manifests, model, perf=perf_model))
@@ -1183,6 +1265,18 @@ def self_test() -> int:
                 )
                 require(all(v["n"] == 16 for v in read["position"].values()), "self-test: position report")
 
+        # An instance-specific stray share (0.5 to 3.5 %, as mode 5 shows) moves raw readings under a null response;
+        # the support-conditioned rerun removes it.
+        def diluting(setting: dict[str, Any]) -> float:
+            return 0.005 + 0.03 * ((7 * setting["slot"] + LABELS.index(label(setting))) % 5) / 4
+
+        (root / "stray").mkdir()
+        read = readout(validate=False, runs=synthetic_runs(root / "stray", manifests, response(), stray=diluting))
+        raw_resolved = [k for k, v in read["readings"].items() if v == "resolved"]
+        kept = [k for k, v in read["support_conditioned"]["readings"].items() if v == "resolved"]
+        require(bool(raw_resolved), "self-test: an instance-specific stray share resolved no raw test")
+        require(not kept, f"self-test: the support-conditioned rerun still resolved {kept}")
+
         def leaking(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
             if job == "b1-j1":
                 counts = result["iterations"][3]["counts"]
@@ -1197,6 +1291,18 @@ def self_test() -> int:
         read = readout(validate=False, runs=synthetic_runs(root / "leak", manifests, response(), leaking))
         require(read["branch"] == "leak", f"self-test: a leaking instance read {read['branch']}")
         require(len(read["leak_outliers"]) == 1, "self-test: the leak was not isolated to one instance")
+
+        def emptied(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job == "b1-j1":
+                moved = ["0"] * cert.MODES
+                moved[1] = "1"
+                result["iterations"][3]["counts"] = {",".join(moved): TRIALS}
+
+        # Every sample off the support: the raw readout reads the leak and withholds the conditioned rerun.
+        (root / "empty-support").mkdir()
+        read = readout(validate=False, runs=synthetic_runs(root / "empty-support", manifests, response(), emptied))
+        require(read["branch"] == "leak", f"self-test: an all-off-support instance read {read['branch']}")
+        require("withheld" in read["support_conditioned"], "self-test: an empty support was not withheld")
 
         def recompile(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
             if job.startswith("b2"):
