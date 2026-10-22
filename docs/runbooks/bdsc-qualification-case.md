@@ -122,3 +122,74 @@ list (`tc-none-e2`) and the middle-middle pair under both policies
 (`mm-def-e2`, `mm-none-e2`) -- stay unsent until that evidence exists, and
 then run under Step 5 as written. Every returned result is retained whatever
 it shows, and the stop conditions above still govern.
+
+## Amendment of 2026-10-22: a crossed diagnostic replaces the confirmation plan
+
+The [forensic reconstruction](../notes/quandela/bdsc-acceptance-diagnostics.md#forensic-reconstruction-of-the-retained-belenos-runs)
+of the five retained jobs shows three things. Superposition settings that
+request one output intensity spread far beyond counting noise. The returned
+circuits leave the relative phase of the occupied column free. A matched
+compilation seed with matched parameters reproduces the returned circuit.
+The [design](../design/bdsc-qualification.md#confirmation-design-and-its-falsified-premise)
+therefore suspends the confirmation case, and this amendment orders the
+diagnostic case that identifies the response components first.
+
+- The three held second-epoch jobs stay unsent: target-complement with an
+  empty mitigation list (`tc-none-e2`) and middle-middle under both policies
+  (`mm-def-e2`, `mm-none-e2`). Their role as confirmation evidence lapses
+  with the suspended design. A later amendment, written after the diagnostic
+  readout, decides whether they run. A comparison across a recalibration
+  still needs retained evidence that a calibration falls between the two
+  executions.
+- No separate default-policy repeat of `tc-def-e1` is planned. The
+  diagnostic's second block repeats its first block's requests at matched
+  seeds under the empty mitigation list. That reproduces the returned
+  circuits while the compiler's component model holds, and it keeps provider
+  processing out of the comparison.
+- Three labels stay separate. An engineering repeat repeats a request. A
+  repeated reference under documented conditions also matches the returned
+  circuit and the beam-splitter digest. A comparison across a calibration
+  intervention needs retained evidence of the calibration between the two
+  executions.
+
+### Order of the diagnostic case
+
+[case.json](../evidence/bdsc/diagnostic/case.json) holds the case, built by
+`scripts/bdsc_diagnostic.py`. It covers the six target-complement states
+under both templates, each compiled with four seeds, in two time blocks: 96
+instances of 10000 eligible trials under an explicit empty mitigation list,
+in four jobs of 24 iterations. Each template-and-seed group of six states
+runs inside one job.
+
+1. `"$PYTHON" scripts/bdsc_diagnostic.py --check` passes. `qd_platform.py
+   plan` passes on each of the four directories under
+   `results/quandela/cases/bdsc_diagnostic/` for qpu:belenos with
+   `--max-credits 1.02 --expected-seconds 157.44 --per-job-credits 1.0
+   --admit-status running`.
+2. The written case restates the plan output: 1.02 credits per job and 4.08
+   in all, about 157 s per job and 630 s in all, and Perceval's shot estimate
+   within the 20000 max_shots per iteration. It also covers one ANU Quantum
+   Numbers request of 100 uint16 values (about 2 s, no credits), the stop
+   conditions of the case record and the branch each readout selects. Wait
+   for approval.
+3. Draw with
+   `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng --length 100 --type uint16 --source aqn`.
+   Rebuild with `scripts/bdsc_diagnostic.py --write --draw RECORD`, pass
+   `--check --draw RECORD`, and commit the record and the manifests before
+   the first submission.
+4. Block 1: submit and collect `b1-j1`, then `b1-j2`; the readout refuses
+   a block whose second job started before its first ended. After each
+   collection, confirm the empty policy in the retained body, an integer
+   BSCount, 10000 samples per iteration and a returned compiled circuit per
+   iteration.
+5. Block 2 (`b2-j1`, then `b2-j2`) starts at least one hour after block 1's
+   last execution ends. No scheduled maintenance window may overlap the
+   span from block 1's first execution to block 2's last, a window already
+   open when block 1 starts included; the window on the latest receipt is
+   2026-10-22 07:30 to 11:00 UTC.
+6. `"$PYTHON" scripts/bdsc_diagnostic.py --readout RUN_DIR...` reads the four
+   runs. The runs enter `docs/state/research_state.json` with their claim,
+   and the readout's branch names the next amendment.
+
+No certification decision is available from this case or from the
+retained runs.

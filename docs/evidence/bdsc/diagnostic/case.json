@@ -1,0 +1,128 @@
+{
+ "schema": "bdsc-diagnostic-case-v1",
+ "record": "diagnostic_case",
+ "question": "which of counting noise, a matched request's change between blocks, compilation seed, template and state-by-seed interaction carry the per-setting response scatter of the target-complement bank",
+ "authorization": "none: the case waits for its written-case approval, which also covers its QRNG read",
+ "qualification_case_sha256": "5d308a9b17b86007a1a371f1b4e47089451a5802a4820ba19a28782ecf0c5681",
+ "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794",
+ "design": {
+  "pair": "target-complement",
+  "states": [
+   "f",
+   "g",
+   "+",
+   "-",
+   "+i",
+   "-i"
+  ],
+  "templates": [
+   "outward-ladder",
+   "reverse-ladder"
+  ],
+  "seed_slots": 4,
+  "blocks": [
+   1,
+   2
+  ],
+  "instances": 96,
+  "processing": "empty-mitigation",
+  "mitigations": [],
+  "eligible_trials_per_instance": 10000,
+  "max_shots_per_iteration": 20000,
+  "block_gap_hours": 1,
+  "role": "diagnostic, not a confirmation design: four seeds do not determine the tails of a seed distribution, and the result decides whether further compilation replication is warranted"
+ },
+ "jobs": [
+  {
+   "job": "b1-j1",
+   "block": 1,
+   "groups": [
+    "out-s0",
+    "out-s1",
+    "rev-s2",
+    "rev-s3"
+   ],
+   "iterations": 24
+  },
+  {
+   "job": "b1-j2",
+   "block": 1,
+   "groups": [
+    "out-s2",
+    "out-s3",
+    "rev-s0",
+    "rev-s1"
+   ],
+   "iterations": 24
+  },
+  {
+   "job": "b2-j1",
+   "block": 2,
+   "groups": [
+    "out-s2",
+    "out-s3",
+    "rev-s0",
+    "rev-s1"
+   ],
+   "iterations": 24
+  },
+  {
+   "job": "b2-j2",
+   "block": 2,
+   "groups": [
+    "out-s0",
+    "out-s1",
+    "rev-s2",
+    "rev-s3"
+   ],
+   "iterations": 24
+  }
+ ],
+ "resources": {
+  "billing_rule": "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots",
+  "credits": 4.08,
+  "eligible_trials_total": 960000,
+  "max_shots_total": 1920000,
+  "seconds_per_job_estimate": 157.44,
+  "seconds_estimate": 629.76,
+  "timing_rule": "6.3 s plus 2.6e-05 s per sample for each iteration against the 300 s per-job limit; the written case restates credits and seconds from the live qd_platform.py plan output"
+ },
+ "qrng": {
+  "service": "ANU Quantum Numbers (aqn, keyed), scripts/anu_qrng.py draw",
+  "type": "uint16",
+  "values": 100,
+  "requests": 1,
+  "credits": 0,
+  "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders instance i within its job"
+ },
+ "analysis": {
+  "observation": "one-click conditioned selected fraction of returned counts; every standard error is a reference value under independent Bernoulli trials, which the provider contract has not established",
+  "residuals": "Delta_R and Delta_I per block, template and seed, each from one job",
+  "block_change": "p(block 2) - p(block 1) per instance whose pair returned one circuit; chi-square of change over reference error",
+  "seed_dispersion": "pooled chi-square of the four seeds about their inverse-variance mean per block, template and state, and per block, template and residual family",
+  "seed_split": "per block and template, a weighted two-way fit of the four superposition states by state and seed: the drop in chi-square from the state-only to the additive fit tests a common seed offset (3 df each), and the additive fit's residual chi-square tests state-by-seed interaction (9 df each)",
+  "template_effect": "seed-mean outward minus reverse per block and state; reported, no branch reads it",
+  "tests": "resolved at p < 0.01, consistent at p >= 0.05, inconclusive between",
+  "residual_margin": "a residual exceeds the margin when |Delta| minus its simultaneous normal quantile at 0.01 over all 32 residuals times its reference error exceeds the margin",
+  "branches": {
+   "recompiled": "a matched pair returned different circuits: the blocks compare requests, the compiler's model changed, and the case reruns before any branch is read",
+   "stationarity": "matched requests change between blocks: address stationarity and provider calibration before any fixed-effect confirmation",
+   "seed-common": "seeds shift the superposition states together: study seed selection on development data and validate a frozen selection on fresh data",
+   "seed-interaction": "seed effects differ between states: a seed selection cannot transfer across states, so study the per-state compilation before any seed choice",
+   "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate preparation, filtering and processing; more seeds are not the remedy",
+   "inconclusive": "no component resolved and one test inconclusive, or a resolved common seed offset beside an inconclusive interaction test: more compilations or trials before a branch",
+   "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined certification case becomes a candidate once a common ensemble effect is supported"
+  },
+  "margin": 0.02
+ },
+ "stop_conditions": [
+  "scripts/qd_platform.py plan refuses the platform",
+  "a retained job body differs from the empty mitigation list, or a result is not an integer BSCount",
+  "a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule excludes more than 0.01 of an iteration's samples",
+  "an iteration returns no compiled circuit",
+  "block 2 starts before block 1's readout integrity passes or before the block gap elapses",
+  "a job of a block executes before the job that precedes it in the block, or a manifest differs from the frozen rebuild for its draw",
+  "a scheduled maintenance window overlaps the span from block 1's first execution to block 2's last; the pair then waits and reruns both blocks on one side of the window",
+  "spent credits or seconds reach the approved ceiling"
+ ]
+}
