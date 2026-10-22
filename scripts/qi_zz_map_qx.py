@@ -99,15 +99,15 @@ def transform(task: tuple[str, dict[str, Any]]) -> tuple[dict[str, Any], str]:
     return row, code
 
 
-def build(source_plan: Path = TUNA_CASES / "plan.json") -> dict[str, str]:
+def build(source_plan: Path = TUNA_CASES / "plan.json", *, catalogue: Path = CATALOGUE) -> dict[str, str]:
     source_plan = source_plan.resolve()
     source = json.loads(source_plan.read_bytes())
     require(source["schema"] == "qi-zz-map-plan-v1", "unrecognized Tuna plan")
     require(source["status"] == "proposed_not_submitted", "source is not the unsubmitted proposal")
     require(source["cost"]["total_jobs"] == 416 and len(source["batches"]) == 139, "Tuna budget changed")
     require(HARDWARE_BATCH_CIRCUITS == 3, "hardware batch policy changed")
-    catalogue = json.loads(CATALOGUE.read_bytes())
-    backend = next(b for b in catalogue["backend_types"] if b["identifier"] == "QXsinglenodesimulator")
+    catalogue_data = json.loads(catalogue.read_bytes())
+    backend = next(b for b in catalogue_data["backend_types"] if b["identifier"] == "QXsinglenodesimulator")
     require(backend["nqubits"] >= 8 and backend["max_number_of_shots"] >= SHOTS, "QX capacity changed")
     require(backend["max_jobs_per_batch_job"] >= 3, "QX batch limit changed")
     require(
@@ -121,7 +121,7 @@ def build(source_plan: Path = TUNA_CASES / "plan.json") -> dict[str, str]:
         )
     identities = {
         "source_tuna_plan_sha256": digest(source_plan.read_bytes()),
-        "catalogue_sha256": digest(CATALOGUE.read_bytes()),
+        "catalogue_sha256": digest(catalogue.read_bytes()),
         "qx_builder_sha256": digest(Path(__file__).read_bytes()),
     }
     rendered = ordered_map(transform, [(str(source_plan.parent), row) for row in source["circuits"]])
@@ -392,6 +392,7 @@ def main() -> int:
     mode.add_argument("--self-test", action="store_true")
     mode.add_argument("--analyze", type=Path, metavar="RUNS_ROOT")
     parser.add_argument("--source-plan", type=Path, default=TUNA_CASES / "plan.json")
+    parser.add_argument("--catalogue", type=Path, default=CATALOGUE)
     parser.add_argument("--plan", type=Path, default=DEFAULT_OUT / "plan.json")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
@@ -405,7 +406,7 @@ def main() -> int:
         with args.out.open("x", encoding="utf-8") as handle:
             handle.write(text)
         return 0
-    files = build(args.source_plan)
+    files = build(args.source_plan, catalogue=args.catalogue)
     directory = args.write or args.check
     existing = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     if args.check:

@@ -3812,7 +3812,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-catalogue-bound --source-plan results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
    "name": "core-596",
    "seconds": 4.0,
    "tier": "pr"

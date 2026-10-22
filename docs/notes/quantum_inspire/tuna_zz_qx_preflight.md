@@ -14,6 +14,16 @@ belongs to that earlier case and does not validate these new payloads.
 The subsequently retained zero-divisor QX twins likewise exercise their
 own circuits and are not substitutes for this case's conformance criteria.
 
+The original [QX proposal](../../../results/quantum_inspire/cases/zz_map_qx/plan.json)
+retains its recorded bytes. The active unsubmitted
+[catalogue-bound successor](../../../results/quantum_inspire/cases/zz-map-qx-catalogue-bound/plan.json)
+binds the [Tuna submission-source successor](../../../results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json)
+and the immutable [proposal catalogue](../../evidence/quantum_inspire/catalogue-submission-deadline-proposal.json).
+All 416 compact cQASM payloads match the original QX proposal byte for byte;
+source identities and dependent manifest hashes change. A refreshed live
+catalogue's queue/status capture does not silently redefine offline replay.
+Submission still requires a fresh provider preflight and separate approval.
+
 `scripts/qi_zz_map_qx.py` transforms the reviewed Tuna circuits into 416 QX
 twins. Each packing uses only its active pair endpoints, relabeled in sorted
 physical-qubit order onto 2–8 qubits, within the QX limit of 10 in the
@@ -78,9 +88,12 @@ specific failed circuit criteria and does not submit anything.
 ## Reproduce and inspect
 
 ```bash
-python scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx
-python scripts/qi_zz_map_qx.py --self-test
-python -O scripts/qi_zz_map_qx.py --self-test
+export PYTHON="${PYTHON:-python3}"
+"$PYTHON" scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-catalogue-bound \
+  --source-plan results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json \
+  --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
+"$PYTHON" scripts/qi_zz_map_qx.py --self-test
+"$PYTHON" -O scripts/qi_zz_map_qx.py --self-test
 ```
 
 The self-test checks sparse-wire relabeling, preservation of global waits
@@ -93,8 +106,8 @@ separate `RUNS_ROOT/batch-NNN/` directory with its manifest, circuit files,
 receipt, service results and raw shots, then run:
 
 ```bash
-python scripts/qi_zz_map_qx.py --analyze RUNS_ROOT \
-  --plan results/quantum_inspire/cases/zz_map_qx/plan.json \
+"$PYTHON" scripts/qi_zz_map_qx.py --analyze RUNS_ROOT \
+  --plan results/quantum_inspire/cases/zz-map-qx-catalogue-bound/plan.json \
   --out NEW_REPORT.json
 ```
 

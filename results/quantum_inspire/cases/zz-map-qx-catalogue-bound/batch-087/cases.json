@@ -1,0 +1,229 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-readout-01.cq",
+   "kind": "readout",
+   "nqubits": 6,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      2
+     ],
+     "prepared": [
+      0,
+      1
+     ],
+     "tuna_edge": [
+      3,
+      5
+     ]
+    },
+    {
+     "edge": [
+      1,
+      3
+     ],
+     "prepared": [
+      0,
+      1
+     ],
+     "tuna_edge": [
+      4,
+      7
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "prepared": [
+      0,
+      1
+     ],
+     "tuna_edge": [
+      12,
+      14
+     ]
+    }
+   ],
+   "prepared_pair": [
+    0,
+    1
+   ],
+   "sha256": "6a8cc01fcbfc6e3733c4ac40d1fa7141d10ca1b1c7f40774b6df4e980d397342",
+   "source_tuna_circuit": {
+    "path": "batch-087/pack-05-readout-01.cq",
+    "sha256": "a96be950b5d3e96d249ba79aab8324898d28b68c4e936673361e981153111e0e"
+   },
+   "tuna_to_qx": {
+    "12": 4,
+    "14": 5,
+    "3": 0,
+    "4": 1,
+    "5": 2,
+    "7": 3
+   }
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-readout-10.cq",
+   "kind": "readout",
+   "nqubits": 6,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      2
+     ],
+     "prepared": [
+      1,
+      0
+     ],
+     "tuna_edge": [
+      3,
+      5
+     ]
+    },
+    {
+     "edge": [
+      1,
+      3
+     ],
+     "prepared": [
+      1,
+      0
+     ],
+     "tuna_edge": [
+      4,
+      7
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "prepared": [
+      1,
+      0
+     ],
+     "tuna_edge": [
+      12,
+      14
+     ]
+    }
+   ],
+   "prepared_pair": [
+    1,
+    0
+   ],
+   "sha256": "ba485ddd6807cf0f2c13fc88530ffcf9c38a575bbe869b8c0a49719c8f863da6",
+   "source_tuna_circuit": {
+    "path": "batch-087/pack-05-readout-10.cq",
+    "sha256": "1f96576fae297dee083c263c668becb2bdda4959ee4b381227842b5ac73d7492"
+   },
+   "tuna_to_qx": {
+    "12": 4,
+    "14": 5,
+    "3": 0,
+    "4": 1,
+    "5": 2,
+    "7": 3
+   }
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-readout-11.cq",
+   "kind": "readout",
+   "nqubits": 6,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      2
+     ],
+     "prepared": [
+      1,
+      1
+     ],
+     "tuna_edge": [
+      3,
+      5
+     ]
+    },
+    {
+     "edge": [
+      1,
+      3
+     ],
+     "prepared": [
+      1,
+      1
+     ],
+     "tuna_edge": [
+      4,
+      7
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "prepared": [
+      1,
+      1
+     ],
+     "tuna_edge": [
+      12,
+      14
+     ]
+    }
+   ],
+   "prepared_pair": [
+    1,
+    1
+   ],
+   "sha256": "e06db09cb3f9bb792d8ac58a6600622ae7015333e869ac445153165f6fc7e7b1",
+   "source_tuna_circuit": {
+    "path": "batch-087/pack-05-readout-11.cq",
+    "sha256": "8a17115ae77e277db2f04dd3925bd0c57e19b4765e2b9a18610d29a4c202eae3"
+   },
+   "tuna_to_qx": {
+    "12": 4,
+    "14": 5,
+    "3": 0,
+    "4": 1,
+    "5": 2,
+    "7": 3
+   }
+  }
+ ],
+ "nqubits": 6,
+ "register_width_convention": "nqubits is the batch maximum; each circuit records its exact nqubits",
+ "schema": "qi-zz-map-qx-cases-v1",
+ "shots": 1024,
+ "source_digests": {
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "qx_builder_sha256": "a7df8ba02117c09411de9ade797830ea80122d3604313b604e278a94a5baabc9",
+  "source_tuna_plan_sha256": "6541b48a732eecb91252e19ce293d2ae7b4a77cb5bd8897c231c964a3b807099"
+ },
+ "status": "proposed_not_submitted"
+}

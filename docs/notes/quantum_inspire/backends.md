@@ -155,7 +155,13 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   check reproduces. Compilation rewrites `barrier q` as one barrier per
   qubit in the same order, which the exporter aligns as a run
   (`scripts/qi_toolchain_check.py`,
-  [toolchain_check.json](../../evidence/quantum_inspire/toolchain_check.json)).
+  [original toolchain record](../../evidence/quantum_inspire/toolchain_check.json)).
+  The [source-bound proposal toolchain successor](../../evidence/quantum_inspire/toolchain-source-bound-proposals.json)
+  retains every original circuit result and adds all retained submission-source
+  and compact-QX proposal successors. Gate `core-368` checks the complete current
+  case set against that successor and regenerates it under the pinned local QI
+  interpreter. The original record keeps its bytes; compilation proves source
+  and default-pass conformance, while provider scheduling remains separate.
 - **Compiler** (API): SWAP2CZDecomposer then CZDecomposer; the configuration
   lists no mapping and no routing pass, so a circuit keeps every two-qubit
   gate on a coupled pair itself.
