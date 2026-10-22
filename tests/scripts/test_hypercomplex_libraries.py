@@ -14,6 +14,7 @@ from hypercomplex_libraries import (
     execution_declarations,
     inventory,
     main,
+    markdown,
 )
 
 
@@ -153,3 +154,35 @@ def test_inventory_rejects_count_field_membership_changes(change: str) -> None:
         record["coverage_counts"]["extra"] = 0
     with pytest.raises(ValueError, match="inventory coverage count fields differ"):
         check_inventory_denominator(record, ROOT)
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "scripts/hypercomplex_libraries.py",
+        "docs/state/hypercomplex-libraries/solver-role-grounding.json",
+        "docs/notes/iqm/python-stack-versions.json",
+    ],
+)
+def test_check_rejects_missing_declared_source_hash(
+    source: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    record["sources_sha256"].pop(source)
+    (tmp_path / "libraries.json").write_text(json.dumps(record))
+    (tmp_path / "libraries.md").write_text(markdown(record))
+    monkeypatch.setattr(sys, "argv", ["hypercomplex_libraries.py", "--out", str(tmp_path), "--check"])
+    with pytest.raises(ValueError, match="inventory declared source coverage differs"):
+        main()
+
+
+def test_check_rejects_extra_source_hash(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import hashlib
+
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    record["sources_sha256"]["AGENTS.md"] = hashlib.sha256((ROOT / "AGENTS.md").read_bytes()).hexdigest()
+    (tmp_path / "libraries.json").write_text(json.dumps(record))
+    (tmp_path / "libraries.md").write_text(markdown(record))
+    monkeypatch.setattr(sys, "argv", ["hypercomplex_libraries.py", "--out", str(tmp_path), "--check"])
+    with pytest.raises(ValueError, match="inventory declared source coverage differs"):
+        main()

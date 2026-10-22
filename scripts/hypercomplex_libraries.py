@@ -559,7 +559,10 @@ def main() -> int:
         record = json.loads((arguments.out / "libraries.json").read_text())
         check_inventory_denominator(record, ROOT)
         check_execution_coverage(record, ROOT)
-        declarations = declared_libraries()["declarations"]
+        declared = declared_libraries()
+        declarations = declared["declarations"]
+        if set(record["sources_sha256"]) != set(declared["sources"]):
+            raise ValueError("inventory declared source coverage differs")
         rows = {row["distribution"]: row for row in record["libraries"]}
         for name, pins in declarations.items():
             if name not in rows or any(
