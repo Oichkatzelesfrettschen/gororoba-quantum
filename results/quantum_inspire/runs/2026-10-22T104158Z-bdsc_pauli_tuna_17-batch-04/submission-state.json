@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-22T11:16:54+00:00",
+ "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "8706e890692b7ba8c9e0c3867b8dfd6a43e8f48d9fdd255ba04bdae238c96366",
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "quadrature-k1.cq",
+   "job": 1567147,
+   "sha256": "af9af6441d7f126681ed6bbbcda02b1b94eb52121657582ea488d030ad4146f2"
+  },
+  {
+   "file": "cosine-k1.cq",
+   "job": 1567148,
+   "sha256": "03422dd892a79225705cb3a9e1791f657088bd858f86d1e22f03b0c8d8a31629"
+  },
+  {
+   "file": "quadrature-e7.cq",
+   "job": 1567149,
+   "sha256": "d1c5b7a0351cfc5e5c40828a09cca14ce5efe5a6066a9b5df1f0be155904fbb7"
+  }
+ ],
+ "project": 781356,
+ "batch_job": 882222,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-22T11:16:56+00:00",
+  "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "8706e890692b7ba8c9e0c3867b8dfd6a43e8f48d9fdd255ba04bdae238c96366",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 882222,
+  "project": 781356,
+  "shots": 32768,
+  "jobs": [
+   {
+    "file": "quadrature-k1.cq",
+    "job": 1567147,
+    "sha256": "af9af6441d7f126681ed6bbbcda02b1b94eb52121657582ea488d030ad4146f2"
+   },
+   {
+    "file": "cosine-k1.cq",
+    "job": 1567148,
+    "sha256": "03422dd892a79225705cb3a9e1791f657088bd858f86d1e22f03b0c8d8a31629"
+   },
+   {
+    "file": "quadrature-e7.cq",
+    "job": 1567149,
+    "sha256": "d1c5b7a0351cfc5e5c40828a09cca14ce5efe5a6066a9b5df1f0be155904fbb7"
+   }
+  ],
+  "submitted_utc": "2026-10-22T11:16:57+00:00"
+ },
+ "confirmed_utc": "2026-10-22T11:16:57+00:00"
+}

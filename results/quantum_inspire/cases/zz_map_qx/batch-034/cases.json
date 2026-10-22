@@ -249,9 +249,9 @@
  "schema": "qi-zz-map-qx-cases-v1",
  "shots": 1024,
  "source_digests": {
-  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "catalogue_sha256": "b2edfaee97516a43091450ffbe65ff708b0ee086918a05997287bae1a5deca74",
   "qx_builder_sha256": "3b12db9131033a3663f37920b159e62b940c2e87ef9db10663893216cf67ff8d",
-  "source_tuna_plan_sha256": "b588c2d7c623841b5801fb7715779cefa88d3ee29f59cc9d7b856a761d174a25"
+  "source_tuna_plan_sha256": "a8fedf01784dcb32995a4c143d7bfa64e85d6953ef0a7468cc55866c286ecefd"
  },
  "status": "proposed_not_submitted"
 }

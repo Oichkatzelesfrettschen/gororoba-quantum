@@ -56,7 +56,8 @@ against the coupling graph.
 --select-placement prints the ranking without writing. --write DIR writes DIR/bdsc_pauli_tuna_17/
 and DIR/bdsc_pauli_qx/ (batch-NN/ cases and a series cases.json); --check DIR regenerates both and
 compares bytes and file sets. --analyze RUN_DIR... [--out FILE] writes the preregistered analysis
-of the raw shots of every batch of one series. --references RUN_DIR... reports the assignment
+of the raw shots of every batch of one series; --replay compares FILE with the recomputation
+instead of writing it. --references RUN_DIR... reports the assignment
 references, the batch-00 stop test, the bracket drift and the neighbor-conditioned assignment of the
 batches loaded so far, and exits 1 when a stop fired. --submit-next SERIES_DIR copies the next batch
 of a case series into its run directory and submits it through qi_platform.submit only after every
@@ -68,7 +69,7 @@ unresolved-phase, drift, breach and context synthetic series through the analysi
 refusals offline.
 
 Usage: "$PYTHON" scripts/qi_bdsc_pauli_cases.py
-       (--select-placement | --write DIR | --check DIR | --analyze RUN_DIR... [--out FILE]
+       (--select-placement | --write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] [--replay]
         | --references RUN_DIR... | --submit-next SERIES_DIR [--approval QUOTE] [--control FILE]
           [--runs DIR] [--dry] | --self-test)
 """
@@ -1303,6 +1304,37 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     return analyze_series(*load_series(run_dirs))
 
 
+# A retained analysis keeps the bytes its writer's interpreter produced, because series-gate.json binds
+# the control analysis by sha256; numpy builds of one version differ across interpreters in the last
+# bits of a float, so a replay accepts equal structure, equal non-float values and floats within REPLAY_RTOL.
+REPLAY_RTOL = 1e-12
+
+
+def replay_mismatch(retained: Any, recomputed: Any, where: str) -> str | None:
+    """The first path at which recomputed departs from retained beyond float rounding, or None."""
+    if isinstance(retained, float) and isinstance(recomputed, float):
+        return None if math.isclose(retained, recomputed, rel_tol=REPLAY_RTOL, abs_tol=REPLAY_RTOL) else where
+    if type(retained) is not type(recomputed):
+        return where
+    if isinstance(retained, dict):
+        if list(retained) != list(recomputed):
+            return where
+        for key in retained:
+            found = replay_mismatch(retained[key], recomputed[key], f"{where}.{key}")
+            if found:
+                return found
+        return None
+    if isinstance(retained, list):
+        if len(retained) != len(recomputed):
+            return where
+        for index, (left, right) in enumerate(zip(retained, recomputed, strict=True)):
+            found = replay_mismatch(left, right, f"{where}[{index}]")
+            if found:
+                return found
+        return None
+    return None if retained == recomputed else where
+
+
 def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]], batch_of: dict[str, str]) -> dict:
     claim = claim_kind(cases)
     width = cases["nqubits"]
@@ -2494,6 +2526,7 @@ def main() -> int:
         "--submit-next", type=Path, metavar="SERIES_DIR", help="gate and submit the next batch of a case series"
     )
     parser.add_argument("--out", type=Path, help="with --analyze: the analysis file (default RUN_DIR/analysis.json)")
+    parser.add_argument("--replay", action="store_true", help="with --analyze: compare OUT with the recomputation")
     parser.add_argument("--runs", type=Path, default=ROOT / "results/quantum_inspire/runs", help="with --submit-next")
     parser.add_argument("--approval", help="with --submit-next: the owner's approval, quoted")
     parser.add_argument("--control", type=Path, help="with --submit-next on Tuna-17: the QX twin's analysis")
@@ -2528,7 +2561,18 @@ def main() -> int:
         if len(args.analyze) > 1 and args.out is None:
             parser.error("--analyze over several batches needs --out")
         text = json.dumps(analyze(args.analyze), indent=1) + "\n"
-        (args.out or args.analyze[0] / "analysis.json").write_text(text, encoding="utf-8")
+        out = args.out or args.analyze[0] / "analysis.json"
+        if args.replay:
+            retained = out.read_text(encoding="utf-8")
+            if retained == text:
+                print(f"{out} replays byte for byte")
+                return 0
+            mismatch = replay_mismatch(json.loads(retained), json.loads(text), "$")
+            if mismatch:
+                raise SystemExit(f"{out} differs from the recomputation of {len(args.analyze)} batches at {mismatch}")
+            print(f"{out} replays within {REPLAY_RTOL:g} relative float rounding")
+            return 0
+        out.write_text(text, encoding="utf-8")
         print(text, end="")
         return 0
     series = build()

@@ -3948,6 +3948,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08 --out results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json --replay && \"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13 --out results/quantum_inspire/bdsc_pauli_qx_analysis.json --replay",
+   "name": "core-632",
+   "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
    "name": "core-611",
    "seconds": 1.0,

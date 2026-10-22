@@ -146,7 +146,7 @@
  "schema": "qi-zz-map-cases-v1",
  "shots": 8192,
  "source_digests": {
-  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "catalogue_sha256": "b2edfaee97516a43091450ffbe65ff708b0ee086918a05997287bae1a5deca74",
   "conditional_ramsey_note_sha256": "ddac02db9715550afcd22d19d312dc668d2558adb42ff7476c4c75b7940cb087",
   "conditional_ramsey_source_sha256": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
   "proposal_builder_sha256": "606ebb73d1e601881d348e08a20223097dca2c26fe2e2a37f7d0feb7d5e5488c",
