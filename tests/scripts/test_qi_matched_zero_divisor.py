@@ -21,6 +21,8 @@ def test_toolchain_receipt_rejects_mutations(mutation: str) -> None:
     elif mutation == "dependency":
         record["producer_sources_sha256"]["scripts/qi_toolchain_check.py"] = "0" * 64
     elif mutation == "admission":
+        if "scripts/qi_platform.py" not in record["producer_sources_sha256"]:
+            raise AssertionError("the compiler receipt must bind the backend batch-admission source")
         record["producer_sources_sha256"]["scripts/qi_platform.py"] = "0" * 64
     elif mutation == "angle":
         record["circuits"][0]["maximum_angle_serialization_error"] = 0.01
