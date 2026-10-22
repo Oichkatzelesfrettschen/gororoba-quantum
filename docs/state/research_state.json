@@ -6536,7 +6536,7 @@
     },
     {
       "id": "qd-belenos-running-status-holds-jobs",
-      "statement": "While qpu:belenos read running on its Explorer row and processor record, then calibration, a one-computation job (90712931, box_kite_photonic_single job-00, 10000 samples) entered the token's queue and stayed waiting with no start time for 26 minutes; it was canceled with 0 shots and no charge (qpu:belenos usage 17.2255 before and after). The public platform list read available throughout, so only the Explorer status predicts whether a job starts.",
+      "statement": "While qpu:belenos read running on its Explorer row and processor record, then calibration, a one-computation job (90712931, box_kite_photonic_single job-00, 10000 samples) entered the token's queue and stayed waiting with no start time for 26 minutes; it was canceled with 0 shots and no charge (qpu:belenos usage 17.2255 before and after). The run retains no read of the public platform list in that interval, so the observation concerns the Explorer and processor status only.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",

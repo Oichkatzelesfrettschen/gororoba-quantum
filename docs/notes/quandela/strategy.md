@@ -1059,7 +1059,7 @@ Not yet used:
 | 2026-10-18 19:05 | 3d95587b | qpu:belenos | belenos_mesh job-14, Q1's circuit as a one-entry iterator at seed 20 | 1.01 | served 29dc6ef8; one results_list entry, 10000 samples; tvd_cone_from_ideal 0.823; 14 s; preregistered: fail, follower job-16 |
 | 2026-10-18 19:35 | 46b810ae | qpu:belenos | belenos_mesh job-16, pair at seed 20 plus 11 blocks of seeds 46667 and 20, 10000 samples each | 1.02 | 24 entries in 149 s; pair fail (0.819, 0.814); 14a96ca6 11/11 pass; post-load 29dc6ef8 11/11 pass; preregistered: recovers after a mesh load |
 | 2026-10-21 06:21 | 90712931 | qpu:belenos | box_kite_photonic_single job-00, queue test under status running | 0 | waited 26 min with no start time; canceled, 0 shots: only the Explorer status predicts a start |
-| 2026-10-21 06:47 | 03dd195b | sim:belenos | bdsc_qualification tc-def-e1, provider-default policy | 1.00 | error at iteration 4 after 55 s; no counts retained |
+| 2026-10-21 06:47 | 03dd195b | sim:belenos | bdsc_qualification tc-def-e1, provider-default policy | 0 | error at iteration 4 after 55 s; no counts retained |
 | 2026-10-21 06:44 | 19f18f8c | sim:belenos | bdsc_qualification tc-none-e1, empty mitigation list | 1.00 | 148 s; 12 iterations at 300000 samples, parameters bit-exact, seeds echoed; superpositions 0.4989 to 0.5017 |
 | 2026-10-21 07:18 | cac942bd | sim:belenos | bdsc_qualification tc-def-e1 rerun | 1.00 | 153 s; same pipeline result under the default policy |
 | 2026-10-21 16:21 | 2524f061 | qpu:belenos | bdsc_qualification tc-def-e1, epoch 1 | 1.60 | 90 s; the target-complement pair under the default policy, the baseline the tc-def-e2 repeat compares against |

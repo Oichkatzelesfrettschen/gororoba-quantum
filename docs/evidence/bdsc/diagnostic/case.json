@@ -120,7 +120,7 @@
   "a retained job body differs from the empty mitigation list, or a result is not an integer BSCount",
   "a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule excludes more than 0.01 of an iteration's samples",
   "an iteration returns no compiled circuit",
-  "block 2 starts before block 1's readout integrity passes or before the block gap elapses",
+  "block 2 starts before both block-1 runs are collected and their readout integrity passes, or before the block gap elapses",
   "a job of a block executes before the job that precedes it in the block, or a manifest differs from the frozen rebuild for its draw",
   "a scheduled maintenance window overlaps the span from block 1's first execution to block 2's last; the pair then waits and reruns both blocks on one side of the window",
   "spent credits or seconds reach the approved ceiling"
