@@ -177,13 +177,15 @@ runs inside one job.
    Rebuild with `scripts/bdsc_diagnostic.py --write --draw RECORD`, pass
    `--check --draw RECORD`, and commit the record and the manifests before
    the first submission.
-4. Block 1: submit and collect `b1-j1`, then `b1-j2`. After each
+4. Block 1: submit and collect `b1-j1`, then `b1-j2`; the readout refuses
+   a block whose second job started before its first ended. After each
    collection, confirm the empty policy in the retained body, an integer
    BSCount, 10000 samples per iteration and a returned compiled circuit per
    iteration.
 5. Block 2 (`b2-j1`, then `b2-j2`) starts at least one hour after block 1's
-   last execution ends. It runs on the same side of the next scheduled
-   maintenance window as block 1; the window on the latest receipt is
+   last execution ends. No scheduled maintenance window may overlap the
+   span from block 1's first execution to block 2's last, a window already
+   open when block 1 starts included; the window on the latest receipt is
    2026-10-22 07:30 to 11:00 UTC.
 6. `"$PYTHON" scripts/bdsc_diagnostic.py --readout RUN_DIR...` reads the four
    runs. The runs enter `docs/state/research_state.json` with their claim,

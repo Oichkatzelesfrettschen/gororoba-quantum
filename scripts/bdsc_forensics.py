@@ -146,6 +146,8 @@ def load_runs() -> list[dict[str, Any]]:
     capability = {None: "processor_record_completeness", (): "uncorrected_observations"}
     runs = []
     for path in sorted(RUNS.glob(RUN_GLOB)):
+        # run_facts binds cases.json, circuit.json and job-body.json to the receipt and results.json to raw/result.json.
+        qd_platform.run_facts(path)
         manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
         result = json.loads((path / "results.json").read_text(encoding="utf-8"))
         submission = json.loads((path / "submission.json").read_text(encoding="utf-8"))

@@ -52,12 +52,17 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import bdsc_cases  # noqa: E402
 import bdsc_certificate as cert  # noqa: E402
 
+import parallel  # noqa: E402
+
 CASE = ROOT / "docs/evidence/bdsc/diagnostic/case.json"
 CASES_DIR = ROOT / "results/quandela/cases/bdsc_diagnostic"
 FAMILY = "bdsc_diagnostic"
 PAIR = "target-complement"
 POLICY: list[str] = []
 LABELS = ("f", "g", "+", "-", "+i", "-i")
+# The superposition states share one ideal response, so a common seed offset across them is identifiable apart from
+# state-specific seed effects; the basis states f and g enter the per-state seed dispersion only.
+SUPERPOSITIONS = ("+", "-", "+i", "-i")
 SLOTS = 4
 BLOCKS = (1, 2)
 TRIALS = 10000
@@ -185,6 +190,9 @@ def case_record() -> dict[str, Any]:
             "change over reference error",
             "seed_dispersion": "pooled chi-square of the four seeds about their inverse-variance mean per block, "
             "template and state, and per block, template and residual family",
+            "seed_split": "per block and template, a weighted two-way fit of the four superposition states by state "
+            "and seed: the drop in chi-square from the state-only to the additive fit tests a common seed offset "
+            "(3 df each), and the additive fit's residual chi-square tests state-by-seed interaction (9 df each)",
             "template_effect": "seed-mean outward minus reverse per block and state; reported, no branch reads it",
             "tests": f"resolved at p < {ALPHA}, consistent at p >= {CONSISTENT_P}, inconclusive between",
             "residual_margin": "a residual exceeds the margin when |Delta| minus its simultaneous normal quantile "
@@ -194,8 +202,10 @@ def case_record() -> dict[str, Any]:
                 "compiler's model changed, and the case reruns before any branch is read",
                 "stationarity": "matched requests change between blocks: address stationarity and provider "
                 "calibration before any fixed-effect confirmation",
-                "seed": "seeds give reproducible differences: study seed selection on development data and "
-                "validate a frozen selection on fresh data",
+                "seed-common": "seeds shift the superposition states together: study seed selection on "
+                "development data and validate a frozen selection on fresh data",
+                "seed-interaction": "seed effects differ between states: a seed selection cannot transfer across "
+                "states, so study the per-state compilation before any seed choice",
                 "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate "
                 "preparation, filtering and processing; more seeds are not the remedy",
                 "inconclusive": "no component resolved and one test inconclusive: more compilations or trials "
@@ -212,8 +222,10 @@ def case_record() -> dict[str, Any]:
             "excludes more than 0.01 of an iteration's samples",
             "an iteration returns no compiled circuit",
             "block 2 starts before block 1's readout integrity passes or before the block gap elapses",
-            "a scheduled maintenance window opens between block 1's first execution and block 2's last; the pair "
-            "then waits and reruns both blocks on one side of the window",
+            "a job of a block executes before the job that precedes it in the block, or a manifest differs from "
+            "the frozen rebuild for its draw",
+            "a scheduled maintenance window overlaps the span from block 1's first execution to block 2's last; "
+            "the pair then waits and reruns both blocks on one side of the window",
             "spent credits or seconds reach the approved ceiling",
         ],
     }
@@ -256,6 +268,11 @@ def draw_claims(binding: dict[str, Any]) -> list[str]:
     return claims
 
 
+def _params(item: tuple[str, Any, int]) -> Any:
+    template, column, source = item
+    return cert.union_params(template, column, source, modes=cert.MODES)
+
+
 def documents(draw: Path | None) -> dict[str, bytes | dict[str, bytes]]:
     """{"case.json": bytes, job: {"cases.json": bytes, "circuit.json": bytes}} for the record and every job."""
     record_bytes = (json.dumps(case_record(), indent=1) + "\n").encode()
@@ -270,11 +287,9 @@ def documents(draw: Path | None) -> dict[str, bytes | dict[str, bytes]]:
         binding = bdsc_cases.draw_binding(draw)
         claims = draw_claims(binding)
         require(not claims, f"{draw}: another case already draws from this record: {claims[:3]}")
-    params = {
-        (template, label): cert.union_params(template, chip[(PAIR, label)], source, modes=cert.MODES)
-        for template in cert.PREPARATION_DESCRIPTIONS
-        for label in LABELS
-    }
+    keys = [(template, label) for template in cert.PREPARATION_DESCRIPTIONS for label in LABELS]
+    solved = parallel.ordered_map(_params, [(t, chip[(PAIR, label)], source) for t, label in keys], min_items=1)
+    params = dict(zip(keys, solved, strict=True))
     ops = cert.union_ops(source, modes=cert.MODES)
     input_state = [0] * cert.MODES
     input_state[source] = 1
@@ -395,6 +410,38 @@ def dispersion(groups: list[list[tuple[float, float]]]) -> tuple[float, int]:
     return statistic, df
 
 
+def weighted_residual(design: np.ndarray, y: np.ndarray, w: np.ndarray) -> float:
+    """Residual chi-square sum w (y - design beta)^2 of the weighted least-squares fit."""
+    root = np.sqrt(w)
+    beta, *_ = np.linalg.lstsq(design * root[:, None], y * root, rcond=None)
+    return float(np.sum(w * (y - design @ beta) ** 2))
+
+
+def seed_split(groups: list[dict[tuple[str, int], tuple[float, float]]]) -> tuple[float, int, float, int]:
+    """(common-seed statistic, df, interaction statistic, df) pooled over groups keyed by (state, seed slot).
+
+    Each group is fitted by weighted least squares with weights 1/se^2, first by state alone and then by state plus
+    seed; the chi-square drop is the common-seed statistic and the additive fit's residual chi-square the interaction.
+    """
+    common = interaction = 0.0
+    common_df = interaction_df = 0
+    for group in groups:
+        states = sorted({state for state, _ in group})
+        slots = sorted({slot for _, slot in group})
+        cells = sorted(group)
+        y = np.array([group[c][0] for c in cells])
+        w = np.array([1 / group[c][1] ** 2 for c in cells])
+        state_cols = np.array([[float(c[0] == state) for state in states] for c in cells])
+        slot_cols = np.array([[float(c[1] == slot) for slot in slots[1:]] for c in cells])
+        state_only = weighted_residual(state_cols, y, w)
+        additive = weighted_residual(np.hstack([state_cols, slot_cols]), y, w)
+        common += state_only - additive
+        interaction += additive
+        common_df += len(slots) - 1
+        interaction_df += (len(states) - 1) * (len(slots) - 1)
+    return common, common_df, interaction, interaction_df
+
+
 def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
     """Residuals, block changes, seed dispersion, template effect, their tests and the preregistered branch.
 
@@ -452,6 +499,11 @@ def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
         for t in templates
         for family in ("delta_R", "delta_I")
     ]
+    split_groups = [
+        {(label, s): (p(b, t, s, label), se(b, t, s, label)) for label in SUPERPOSITIONS for s in range(SLOTS)}
+        for b in BLOCKS
+        for t in templates
+    ]
     template_effect: list[dict[str, Any]] = []
     for b in BLOCKS:
         for label in LABELS:
@@ -466,6 +518,9 @@ def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
     for name, groups in (("seed", seed_groups), ("residual_seed", residual_groups)):
         statistic, df = dispersion(groups)
         tests[name] = {"statistic": statistic, "df": df}
+    common, common_df, interaction, interaction_df = seed_split(split_groups)
+    tests["seed_common"] = {"statistic": common, "df": common_df}
+    tests["seed_interaction"] = {"statistic": interaction, "df": interaction_df}
     tests["template"] = {
         "statistic": sum((x["effect"] / x["se"]) ** 2 for x in template_effect),
         "df": len(template_effect),
@@ -482,7 +537,9 @@ def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
     elif readings["block_change"] == "resolved":
         branch = "stationarity"
     elif readings["seed"] == "resolved":
-        branch = "seed"
+        # Seed dispersion that the common offset does not carry, in the superpositions or in f and g, is state-specific.
+        common_only = readings["seed_common"] == "resolved" and readings["seed_interaction"] != "resolved"
+        branch = "seed-common" if common_only else "seed-interaction"
     elif beyond:
         branch = "common-effect"
     elif "inconclusive" in (readings["block_change"], readings["seed"], readings["residual_seed"]):
@@ -515,7 +572,8 @@ def readout(runs: list[Path]) -> dict[str, Any]:
     target_sha = json.loads(bdsc_cases.TARGET.read_text(encoding="utf-8"))["target_sha256"]
     observed: dict[int, dict[str, Any]] = {}
     draws: dict[str, tuple[list[int], list[int]]] = {}
-    windows: dict[int, list[tuple[float, float]]] = {block: [] for block in BLOCKS}
+    frozen: dict[str, dict[str, Any]] = {}
+    windows: dict[str, tuple[float, float]] = {}
     maintenance: set[tuple[float, float]] = set()
     for run in runs:
         manifest_bytes = (run / "cases.json").read_bytes()
@@ -545,7 +603,13 @@ def readout(runs: list[Path]) -> dict[str, Any]:
             require(drawn is not None, f"{run}: unreadable QRNG record")
             if drawn is not None:
                 draws[binding["sha256"]] = drawn
+            rebuilt = documents(record)
+            frozen = {job: json.loads(files["cases.json"]) for job, files in rebuilt.items() if isinstance(files, dict)}
         require(len(draws) == 1, f"{run}: the runs draw from more than one QRNG record")
+        job = manifest.get("job")
+        require(job in frozen, f"{run}: job {job!r} is not a job of the case")
+        require(job not in windows, f"{run}: job {job} collected twice")
+        cert.close(frozen[job], manifest, f"{run}: manifest against the frozen rebuild")
         seeds, order = draws[binding["sha256"]]
         members = [s["instance_index"] for s in manifest["settings"]]
         require(
@@ -556,21 +620,26 @@ def readout(runs: list[Path]) -> dict[str, Any]:
             indices = {"seed": setting["slot"], "order": SLOTS + setting["instance_index"]}
             require(setting["draw_indices"] == indices, f"{run}/{setting['name']}: draw indices")
         start = utc(result["data"]["start_time"])
-        windows[int(manifest["job_spec"]["block"])].append((start, start + float(result["data"]["duration"])))
+        windows[job] = (start, start + float(result["data"]["duration"]))
         window = submission.get("platform_at_plan", {}).get("maintenance")
         if isinstance(window, dict):
             maintenance.add((utc(window["start_time"]), utc(window["end_time"])))
         for index, item in observations(manifest, result).items():
             require(index not in observed, f"{run}: instance {index} collected twice")
             observed[index] = item
-    require(all(windows.values()), "the readout needs both blocks")
-    first_end = max(end for _, end in windows[1])
-    second_start = min(start for start, _ in windows[2])
+    require(sorted(windows) == sorted(frozen), f"the readout needs every job; it holds {sorted(windows)}")
+    for block in BLOCKS:
+        require(
+            windows[f"b{block}-j1"][1] <= windows[f"b{block}-j2"][0],
+            f"block {block}: job 2 started before job 1 ended, so job position aliases the seed assignment",
+        )
+    first_end = max(end for job, (_, end) in windows.items() if job.startswith("b1"))
+    second_start = min(start for job, (start, _) in windows.items() if job.startswith("b2"))
     require(second_start >= first_end + 3600 * BLOCK_GAP_HOURS, "block 2 started within the block gap")
-    span = (min(start for start, _ in windows[1]), max(end for _, end in windows[2]))
+    span = (min(start for start, _ in windows.values()), max(end for _, end in windows.values()))
     require(
-        not any(span[0] < opens < span[1] for opens, _ in maintenance),
-        "a scheduled maintenance window opened between the blocks",
+        not any(opens < span[1] and closes > span[0] for opens, closes in maintenance),
+        "a scheduled maintenance window overlaps the acquisition",
     )
     return analyse(observed)
 
@@ -687,8 +756,12 @@ def self_test() -> int:
 
     cases = [
         ("counting only", response(), "ensemble-candidate"),
-        ("seed shifts", response(seed=[0.008, -0.008, 0.006, -0.006]), "seed"),
-        ("seed shifts cancelling in each residual", response(seed=[0.02, -0.02, 0.01, -0.01], odd=True), "seed"),
+        ("common seed shifts", response(seed=[0.008, -0.008, 0.006, -0.006]), "seed-common"),
+        (
+            "state-specific seed shifts cancelling in each residual",
+            response(seed=[0.02, -0.02, 0.01, -0.01], odd=True),
+            "seed-interaction",
+        ),
         ("block drift", response(drift=0.012), "stationarity"),
         ("common residual", response(common=-0.03), "common-effect"),
     ]
@@ -728,11 +801,32 @@ def self_test() -> int:
             span = {"start_time": "2026-01-01T01:00:00Z", "end_time": "2026-01-01T01:30:00Z"}
             submission["platform_at_plan"]["maintenance"] = span
 
+        def straddle(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            span = {"start_time": "2025-12-31T23:00:00Z", "end_time": "2026-01-01T00:30:00Z"}
+            submission["platform_at_plan"]["maintenance"] = span
+
+        def reversed_block(
+            job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]
+        ) -> None:
+            moved = {"b1-j1": "T00:06:40", "b1-j2": "T00:00:00"}
+            if job in moved:
+                result["data"]["start_time"] = f"2026-01-01{moved[job]}+00:00"
+
+        def substituted(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job == "b1-j1":
+                first = manifest["settings"][0]
+                other = next(x for x in manifest["settings"] if x["circuit_params"] != first["circuit_params"])
+                first["circuit_params"] = dict(other["circuit_params"])
+                result["iterations"][0]["iteration"]["circuit_params"] = first["circuit_params"]
+
         for name, edit in (
             ("an undrawn seed", undrawn),
             ("a simulator run", served),
             ("a short block gap", early),
             ("a maintenance window between blocks", window),
+            ("a maintenance window open when block 1 started", straddle),
+            ("job 2 of block 1 before its job 1", reversed_block),
+            ("a manifest whose setting carries another state's parameters", substituted),
         ):
             (root / name).mkdir()
             runs = synthetic_runs(root / name, manifests, response(), edit)
@@ -742,7 +836,7 @@ def self_test() -> int:
                 continue
             raise ValueError(f"self-test: {name} was admitted")
     print(
-        f"bdsc diagnostic self-test: {len(cases) + 1} synthetic run sets read their branches; 4 malformed sets refused"
+        f"bdsc diagnostic self-test: {len(cases) + 1} synthetic run sets read their branches; 7 malformed sets refused"
     )
     return 0
 

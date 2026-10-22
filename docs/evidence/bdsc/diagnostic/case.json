@@ -100,13 +100,15 @@
   "residuals": "Delta_R and Delta_I per block, template and seed, each from one job",
   "block_change": "p(block 2) - p(block 1) per instance whose pair returned one circuit; chi-square of change over reference error",
   "seed_dispersion": "pooled chi-square of the four seeds about their inverse-variance mean per block, template and state, and per block, template and residual family",
+  "seed_split": "per block and template, a weighted two-way fit of the four superposition states by state and seed: the drop in chi-square from the state-only to the additive fit tests a common seed offset (3 df each), and the additive fit's residual chi-square tests state-by-seed interaction (9 df each)",
   "template_effect": "seed-mean outward minus reverse per block and state; reported, no branch reads it",
   "tests": "resolved at p < 0.01, consistent at p >= 0.05, inconclusive between",
   "residual_margin": "a residual exceeds the margin when |Delta| minus its simultaneous normal quantile at 0.01 over all 32 residuals times its reference error exceeds the margin",
   "branches": {
    "recompiled": "a matched pair returned different circuits: the blocks compare requests, the compiler's model changed, and the case reruns before any branch is read",
    "stationarity": "matched requests change between blocks: address stationarity and provider calibration before any fixed-effect confirmation",
-   "seed": "seeds give reproducible differences: study seed selection on development data and validate a frozen selection on fresh data",
+   "seed-common": "seeds shift the superposition states together: study seed selection on development data and validate a frozen selection on fresh data",
+   "seed-interaction": "seed effects differ between states: a seed selection cannot transfer across states, so study the per-state compilation before any seed choice",
    "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate preparation, filtering and processing; more seeds are not the remedy",
    "inconclusive": "no component resolved and one test inconclusive: more compilations or trials before a branch",
    "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined certification case becomes a candidate once a common ensemble effect is supported"
@@ -119,7 +121,8 @@
   "a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule excludes more than 0.01 of an iteration's samples",
   "an iteration returns no compiled circuit",
   "block 2 starts before block 1's readout integrity passes or before the block gap elapses",
-  "a scheduled maintenance window opens between block 1's first execution and block 2's last; the pair then waits and reruns both blocks on one side of the window",
+  "a job of a block executes before the job that precedes it in the block, or a manifest differs from the frozen rebuild for its draw",
+  "a scheduled maintenance window overlaps the span from block 1's first execution to block 2's last; the pair then waits and reruns both blocks on one side of the window",
   "spent credits or seconds reach the approved ceiling"
  ]
 }
