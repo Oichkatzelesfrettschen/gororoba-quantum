@@ -99,6 +99,8 @@ CLASSES = {"superposition": SUPERPOSITIONS, "f": ("f",), "g": ("g",)}
 # An instance whose one-click samples fall outside the target support (modes with column weight above
 # bdsc_forensics.SUPPORT_FLOOR) by more than this share is a leak outlier.
 LEAK_SHARE = 0.20
+# The self-test's stray mode: unselected and outside every target-complement support, as mode 5 is on qpu:belenos.
+STRAY_MODE = 5
 SLOTS = 4
 BLOCKS = (1, 2)
 TRIALS = 40000
@@ -279,6 +281,9 @@ def case_record() -> dict[str, Any]:
             "aliasing": "per block, seed slot and state, whether the outward and reverse returned circuits are "
             "hash-equal; per block, template and seed, how many distinct hashes the four superpositions returned; "
             "effective_compilations summarizes both. Reported, no branch reads it",
+            "support_conditioned": "every test, reading and calibration shift rerun on selected clicks on the target "
+            "support / one-click samples on the support, removing instance-specific dilution by unselected "
+            "off-support modes (mode 5 holds 0.45 to 3.4 % of an iteration in the retained jobs); no branch reads it",
             "position": "per job, the Spearman correlation of the superposition deviation p(state) - r-hat with "
             "position in the job (the drawn order). Reported, no branch reads it",
             "leak": f"every instance whose one-click samples fall outside the target support (modes with column "
@@ -914,7 +919,31 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
         not any(opens < span[1] and closes > span[0] for opens, closes in maintenance),
         "a scheduled maintenance window overlaps the acquisition",
     )
-    return analyse(observed)
+    return with_support_conditioned(observed)
+
+
+def with_support_conditioned(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
+    """The analysis of the raw one-click fractions, plus the same tests on selected / on-support (no branch reads it).
+
+    Unselected off-support modes (mode 5 holds 0.45 to 3.4 % of an iteration's eligible samples in the retained
+    target-complement jobs) dilute each raw fraction by an instance-specific factor; the conditioned rerun shows
+    which test readings that dilution carries.
+    """
+    read = analyse(observed)
+    conditioned = {
+        index: {**item, "selected": item["selected_on_support"], "eligible": item["on_support"], "outside_share": 0.0}
+        for index, item in observed.items()
+    }
+    again = analyse(conditioned)
+    read["support_conditioned"] = {
+        "fraction": "selected clicks on the target support / one-click samples on the target support",
+        "tests": again["tests"],
+        "readings": again["readings"],
+        "calibration_shift": again["calibration_shift"],
+        "residuals_beyond_margin": again["residuals_beyond_margin"],
+        "branch_if_read": again["branch"],
+    }
+    return read
 
 
 def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, dict[str, Any]]:
@@ -947,10 +976,14 @@ def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, 
         require(isinstance(perf, (int, float)) and not isinstance(perf, bool) and perf > 0, f"{owner}: physical_perf")
         per_mode, _, _ = forensics.one_click(iteration["counts"], cert.MODES)
         weight = np.abs(forensics.column(setting)) ** 2
-        on_support = sum(per_mode[m] for m in range(cert.MODES) if weight[m] > forensics.SUPPORT_FLOOR)
+        support = [m for m in range(cert.MODES) if weight[m] > forensics.SUPPORT_FLOOR]
+        on_support = sum(per_mode[m] for m in support)
+        selected_modes = set(manifest["selected_modes"])
         out[setting["instance_index"]] = {
             "selected": counted["selected"],
             "eligible": counted["eligible"],
+            "selected_on_support": sum(per_mode[m] for m in support if m in selected_modes),
+            "on_support": on_support,
             "circuit_sha256": hashlib.sha256(circuit.encode()).hexdigest(),
             "perf": float(perf),
             "outside_share": 1 - on_support / counted["eligible"],
@@ -1006,11 +1039,17 @@ def run_matched_check(b1j2: Path, b2j1: Path, validate: bool = True) -> int:
 
 
 def synthetic_runs(
-    root: Path, manifests: dict[str, dict[str, Any]], response: Any, edit: Any = None, perf: Any = None
+    root: Path,
+    manifests: dict[str, dict[str, Any]],
+    response: Any,
+    edit: Any = None,
+    perf: Any = None,
+    stray: Any = None,
 ) -> list[Path]:
     """Collected run directories whose one-click counts draw from response(setting); edit may alter any record.
 
-    perf(setting) is the iteration's physical_perf, 0.078 when absent.
+    perf(setting) is the iteration's physical_perf, 0.078 when absent. stray(setting) is the share of samples sent
+    to STRAY_MODE, a mode outside every selection and support, before response splits the rest.
     """
     import qd_platform
 
@@ -1025,12 +1064,16 @@ def synthetic_runs(
         other = next(m for m in range(cert.MODES) if m not in manifest["selected_modes"])
         iterations = []
         for setting in manifest["settings"]:
-            hits = int(rng.binomial(TRIALS, response(setting)))
-            hit, miss = ["0"] * cert.MODES, ["0"] * cert.MODES
-            hit[selected], miss[other] = "1", "1"
+            strays = int(rng.binomial(TRIALS, stray(setting))) if stray is not None else 0
+            hits = int(rng.binomial(TRIALS - strays, response(setting)))
+            hit, miss, off = ["0"] * cert.MODES, ["0"] * cert.MODES, ["0"] * cert.MODES
+            hit[selected], miss[other], off[STRAY_MODE] = "1", "1", "1"
+            counts = {",".join(hit): hits, ",".join(miss): TRIALS - strays - hits}
+            if strays:
+                counts[",".join(off)] = strays
             iterations.append(
                 {
-                    "counts": {",".join(hit): hits, ",".join(miss): TRIALS - hits},
+                    "counts": counts,
                     "iteration": {
                         "circuit_params": setting["circuit_params"],
                         "compilation_seed": setting["compilation_seed"],
@@ -1215,6 +1258,18 @@ def self_test() -> int:
                     "self-test: effective compilations",
                 )
                 require(all(v["n"] == 16 for v in read["position"].values()), "self-test: position report")
+
+        # An instance-specific stray share (0.5 to 3.5 %, as mode 5 shows) moves raw readings under a null response;
+        # the support-conditioned rerun removes it.
+        def diluting(setting: dict[str, Any]) -> float:
+            return 0.005 + 0.03 * ((7 * setting["slot"] + LABELS.index(label(setting))) % 5) / 4
+
+        (root / "stray").mkdir()
+        read = readout(validate=False, runs=synthetic_runs(root / "stray", manifests, response(), stray=diluting))
+        raw_resolved = [k for k, v in read["readings"].items() if v == "resolved"]
+        kept = [k for k, v in read["support_conditioned"]["readings"].items() if v == "resolved"]
+        require(bool(raw_resolved), "self-test: an instance-specific stray share resolved no raw test")
+        require(not kept, f"self-test: the support-conditioned rerun still resolved {kept}")
 
         def leaking(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
             if job == "b1-j1":
