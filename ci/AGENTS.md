@@ -119,10 +119,23 @@ recompile retained historical evidence under an interpreter holding every pin
 of `ci/requirements-replay.txt`: `ci/run_gates.py --replay-python PATH` (also
 accepted by `ci/premerge_gates.py`), else `REPLAY_PYTHON`, verified against
 those pins in a `-I` subprocess. With neither, the running interpreter serves
-when it holds every pin, as the build host's Arch stack does, and the runner
-prints the choice before the first gate; an unresolved runtime's gates exit
-127 with the differing versions. CI installs that isolated environment only
-for shards whose plan requires it and passes it as `REPLAY_PYTHON`.
+when it holds every pin, then the host environment below. Current-runtime
+gates take an explicit `$PYTHON` as named, else the running interpreter when
+it holds every pin of requirements.txt and ci/requirements-ci.txt, else the
+host environment. The runner prints each choice before the first gate, and a
+selection with an unresolved runtime runs no gate and exits 2 naming the
+differing versions; premerge refuses the same way, since such gates fail on
+both trees and read as shared failures that hide a gate the branch breaks.
+CI installs the replay environment only for shards whose plan requires it
+and passes it as `REPLAY_PYTHON`.
+
+**Host environments.** A system interpreter drifts from the pins as the host
+upgrades packages, so local runs use `sh ci/build_host_envs.sh`, which builds
+`ci-py3.14.7` (requirements.txt and ci/requirements-ci.txt) and
+`replay-py3.14.7` (ci/requirements-replay.txt) under
+`${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/` on the Python of ci.yml's
+setup-python step, through ci/install_pins.sh as CI does. `pins.HOST_ENVS`
+names them, and a rerun repairs a venv whose packages drifted.
 `GOROROBA_PINS_REQUIRED=1`, set workflow-wide in ci.yml, turns every version
 fallback into a failure: the replay interpreter must be named, ruff and mypy
 must be installed at their pins, and `ibm_runtime_options_inventory.py

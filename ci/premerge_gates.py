@@ -17,14 +17,15 @@ failures and are listed without failing the run, so a lint or type gate
 whose local toolchain differs from CI's does not mask the comparison. A
 textual conflict stops the run with the conflicted paths.
 
-Historical-runtime gates run under the interpreter pins.resolve_replay
-chooses from --replay-python, REPLAY_PYTHON or the running interpreter,
-verified per tree against that tree's ci/requirements-replay.txt; each
-runner receives it as REPLAY_PYTHON in its own environment, so a base whose
-runner predates --replay-python runs those gates too. An explicit
-interpreter that fails the merge's pins stops the run, and under
-GOROROBA_PINS_REQUIRED=1 so does any runtime either tree cannot resolve,
-since its gates would fail in both trees and read as shared failures.
+Current-runtime gates run under the interpreter pins.resolve_current
+chooses ($PYTHON, the running interpreter or the host environment), and
+historical-runtime gates under the one pins.resolve_replay chooses from
+--replay-python, REPLAY_PYTHON, the running interpreter or the host
+environment, verified per tree against that tree's
+ci/requirements-replay.txt; each runner receives it as REPLAY_PYTHON in its
+own environment, so a base whose runner predates --replay-python runs those
+gates too. A runtime either tree cannot resolve stops the run, since its
+gates would fail in both trees and read as shared failures.
 
 The base's passing gates are cached under --cache (default
 ${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/premerge) by a key over the base
@@ -54,6 +55,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import fcntl
+import functools
 import hashlib
 import json
 import os
@@ -104,12 +106,21 @@ def worktree(repo: Path, path: Path, commit: str) -> Iterator[Path]:
         git(repo, "worktree", "prune", check=False)
 
 
+@functools.cache
 def interpreter() -> str:
-    """$PYTHON as an absolute path, since every gate runs with its cwd inside a scratch worktree."""
-    named = os.environ.get("PYTHON", sys.executable)
-    found = shutil.which(named)
+    """The current-runtime interpreter pins.resolve_current chooses, as an absolute path.
+
+    Every gate runs with its cwd inside a scratch worktree, so the path is
+    absolute; a host whose running interpreter and host environment both
+    differ from the pins stops here with the build command.
+    """
+    chosen, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
+    print(f"premerge: current runtime: {reason}", flush=True)
+    if chosen is None:
+        raise SystemExit(f"premerge: the current runtime cannot run: {reason}")
+    found = shutil.which(chosen)
     if found is None:
-        raise SystemExit(f"PYTHON={named} names no executable")
+        raise SystemExit(f"PYTHON={chosen} names no executable")
     return os.path.abspath(found)
 
 
@@ -219,10 +230,13 @@ def compare(base: dict[str, tuple[int, str]], merged: dict[str, tuple[int, str]]
 def replay_interpreters(explicit: str | None, root: Path, label: str) -> tuple[dict[str, str], list[str]]:
     """The historical-runtime interpreter variables ROOT's runner receives, verified against ROOT's pins.
 
-    The second element names each runtime left without an interpreter when
-    one was demanded, by an explicit interpreter or by PINS_REQUIRED, so a
-    caller refuses rather than compare gates neither tree ran.
+    The second element names each runtime left without an interpreter that
+    ROOT's gates use, or that an explicit interpreter or PINS_REQUIRED
+    demanded, so a caller refuses rather than compare gates neither tree
+    ran: such gates fail in both trees and would read as shared failures,
+    hiding a gate the tree itself breaks.
     """
+    used = {gate.get("runtime") for gate in json.loads((root / "ci/gates.json").read_text())["gates"]}
     found: dict[str, str] = {}
     refused: list[str] = []
     for runtime, (variable, _path) in pins.REPLAY_RUNTIMES.items():
@@ -230,7 +244,7 @@ def replay_interpreters(explicit: str | None, root: Path, label: str) -> tuple[d
         print(f"premerge: {label} historical runtime {runtime}: {reason}", flush=True)
         if chosen is not None:
             found[variable] = os.path.abspath(shutil.which(chosen) or chosen)
-        elif explicit or pins.pins_required(os.environ):
+        elif runtime in used or explicit or pins.pins_required(os.environ):
             refused.append(f"{runtime}: {reason}")
     return found, refused
 

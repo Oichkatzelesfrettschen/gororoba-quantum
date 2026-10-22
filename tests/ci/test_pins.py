@@ -79,6 +79,66 @@ def test_replay_resolution() -> None:
             raise AssertionError(f"a tree's own pins were not applied: {chosen} ({reason})")
 
 
+def test_host_environment_fallback() -> None:
+    # A drifted running interpreter falls back to the runtime's host
+    # environment when that holds every pin; neither names the build command.
+    python = sys.executable
+    differing = ["qiskit 2.5.2 (pin 2.6.0)"]
+    with TemporaryDirectory(prefix="ci-pins-cache-") as temporary:
+        cache = {"XDG_CACHE_HOME": temporary}
+        current_host = pins.host_env("current", cache)
+        replay_host = pins.host_env("qiskit-2.5", cache)
+        if current_host.parent.parent.name != f"ci-py{pins.PYTHON_VERSION}":
+            raise AssertionError(f"the current runtime's host environment is {current_host}")
+
+        def resolve(probe: dict[str, list[str]], environment: dict[str, str]) -> dict[str, tuple[str | None, str]]:
+            with patch.object(pins, "mismatches", lambda candidate, _pins: list(probe.get(candidate, differing))):
+                return {
+                    "current": pins.resolve_current(environment, python),
+                    "replay": pins.resolve_replay("qiskit-2.5", None, environment, python),
+                }
+
+        absent = resolve({}, cache)
+        for runtime, (chosen, reason) in absent.items():
+            if chosen is not None or pins.BUILD_COMMAND not in reason:
+                raise AssertionError(f"{runtime} without a host environment chose {chosen} ({reason})")
+        for host in (current_host, replay_host):
+            host.parent.mkdir(parents=True)
+            host.write_text("")
+        built = resolve({str(current_host): [], str(replay_host): []}, cache)
+        if built["current"][0] != str(current_host) or built["replay"][0] != str(replay_host):
+            raise AssertionError(f"a host environment holding every pin was not chosen: {built}")
+        drifted = resolve({}, cache)
+        if any(chosen is not None for chosen, _reason in drifted.values()):
+            raise AssertionError(f"a host environment that differs from its pins was chosen: {drifted}")
+        running = resolve({python: []}, cache)
+        if running["current"][0] != python or running["replay"][0] != python:
+            raise AssertionError(f"a running interpreter holding every pin lost to the host environment: {running}")
+        strict = resolve({str(current_host): [], str(replay_host): []}, {**cache, **STRICT})
+        if any(chosen is not None for chosen, _reason in strict.values()):
+            raise AssertionError(f"{pins.PINS_REQUIRED}=1 took a host environment: {strict}")
+        named = resolve({}, {**cache, "PYTHON": "/named/python"})["current"]
+        if named[0] != "/named/python" or "runs as named" not in named[1]:
+            raise AssertionError(f"an explicit PYTHON was replaced: {named}")
+        refused = resolve({}, {**cache, **STRICT, "PYTHON": "/named/python"})["current"]
+        if refused[0] is not None:
+            raise AssertionError(f"{pins.PINS_REQUIRED}=1 ran a PYTHON that differs from its pins: {refused}")
+    with TemporaryDirectory(prefix="ci-pins-tree-") as temporary:
+        chosen, reason = pins.resolve_current({}, python, Path(temporary))
+        if chosen != python or "pins no current runtime" not in reason:
+            raise AssertionError(f"a tree without pin files verified {chosen} ({reason})")
+
+
+def test_host_environment_python_version() -> None:
+    # The host environments sit on the Python CI's setup-python installs.
+    workflow = (pins.ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    script = (pins.ROOT / "ci/build_host_envs.sh").read_text(encoding="utf-8")
+    if f'python-version: "{pins.PYTHON_VERSION}"' not in workflow:
+        raise AssertionError(f"ci.yml installs no Python {pins.PYTHON_VERSION}")
+    if f"python_version={pins.PYTHON_VERSION}\n" not in script:
+        raise AssertionError(f"ci/build_host_envs.sh builds on another Python than {pins.PYTHON_VERSION}")
+
+
 def test_pinned_tool() -> None:
     uv, python = "/usr/bin/uv", "/usr/bin/python3"
     argv, notice = pinned_tool.command("ruff", ["check", "ci"], "0.17.1", "0.17.1", {}, uv, python)

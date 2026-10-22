@@ -12,6 +12,13 @@ must be installed at its pin, and a record check that needs the recorded
 package versions must find them. CI sets it, so a hosted run never takes a
 fallback; a local run without it substitutes a verified equivalent and says
 which one.
+
+A local run's equivalent is the running interpreter when it holds every pin,
+else the host environment ci/build_host_envs.sh builds for that pin set under
+${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/ (HOST_ENVS), the same venv and
+installer CI's jobs build. A run that finds neither refuses and names the
+build command, since gates run under a drifted interpreter fail on version
+differences rather than on the change under test.
 """
 
 from __future__ import annotations
@@ -26,6 +33,13 @@ PINS_REQUIRED = "GOROROBA_PINS_REQUIRED"
 # Each historical runtime: the variable naming its interpreter and the pins it holds.
 REPLAY_RUNTIMES = {"qiskit-2.5": ("REPLAY_PYTHON", ROOT / "ci" / "requirements-replay.txt")}
 REPLAY_VARIABLES = frozenset(variable for variable, _path in REPLAY_RUNTIMES.values())
+# The pin files of the current runtime, which every gate without a runtime field runs under.
+CURRENT_PINS = (ROOT / "requirements.txt", ROOT / "ci" / "requirements-ci.txt")
+# The setup-python version of .github/workflows/ci.yml, which each host environment is built on.
+PYTHON_VERSION = "3.14.7"
+# Each runtime's host environment directory under the cache; "current" is the default runtime.
+HOST_ENVS = {"current": f"ci-py{PYTHON_VERSION}", "qiskit-2.5": f"replay-py{PYTHON_VERSION}"}
+BUILD_COMMAND = "sh ci/build_host_envs.sh"
 
 _PROBE = """
 import json, sys
@@ -108,9 +122,62 @@ def resolve_replay(
     if pins_required(environment):
         return None, f"historical runtime {runtime} requires {variable} under {PINS_REQUIRED}=1"
     missing = mismatches(current, pins)
-    if missing:
-        return None, (
-            f"historical runtime {runtime} requires {variable}; the running interpreter differs "
-            f"from {path.name}: {', '.join(missing)}"
-        )
-    return current, f"the running interpreter {current} holds every pin of {path.name}"
+    if not missing:
+        return current, f"the running interpreter {current} holds every pin of {path.name}"
+    host = host_env(runtime, environment)
+    if host.is_file() and not mismatches(str(host), pins):
+        return str(host), f"the host environment {host} holds every pin of {path.name}"
+    return None, (
+        f"historical runtime {runtime} requires {variable}; the running interpreter differs "
+        f"from {path.name}: {', '.join(missing)}; {BUILD_COMMAND} builds {host}"
+    )
+
+
+def host_env(runtime: str, environment: Mapping[str, str]) -> Path:
+    """The interpreter of a runtime's host environment, ``current`` for the default runtime."""
+    cache = environment.get("XDG_CACHE_HOME") or str(Path.home() / ".cache")
+    return Path(cache) / "gororoba-quantum" / HOST_ENVS[runtime] / "bin" / "python3"
+
+
+def current_pins(root: Path = ROOT) -> dict[str, str]:
+    """The current runtime's pins from root's requirements.txt and ci/requirements-ci.txt, later files winning."""
+    merged: dict[str, str] = {}
+    for default_path in CURRENT_PINS:
+        path = root / default_path.relative_to(ROOT)
+        if path.is_file():
+            merged.update(read_pins(path))
+    return merged
+
+
+def resolve_current(environment: Mapping[str, str], current: str, root: Path = ROOT) -> tuple[str | None, str]:
+    """The interpreter for current-runtime gates and a one-line account of the choice.
+
+    An explicit $PYTHON is the caller's choice: it runs whatever it holds,
+    with the differing pins named, unless PINS_REQUIRED demands every pin.
+    Without one, the running interpreter serves when it holds every pin, then
+    the host environment; None means no interpreter holds them. A tree
+    without pin files verifies nothing.
+    """
+    pins = current_pins(root)
+    files = " and ".join(path.name for path in CURRENT_PINS)
+    named = environment.get("PYTHON")
+    if not pins:
+        return named or current, f"{named or current}: the tree pins no current runtime"
+    if named:
+        missing = mismatches(named, pins)
+        if not missing:
+            return named, f"PYTHON={named} holds every pin of {files}"
+        if pins_required(environment):
+            return None, f"PYTHON={named} differs from {files} under {PINS_REQUIRED}=1: {', '.join(missing)}"
+        return named, f"PYTHON={named} differs from {files} and runs as named: {', '.join(missing)}"
+    missing = mismatches(current, pins)
+    if not missing:
+        return current, f"the running interpreter {current} holds every pin of {files}"
+    if pins_required(environment):
+        return None, f"the running interpreter differs from {files} under {PINS_REQUIRED}=1: {', '.join(missing)}"
+    host = host_env("current", environment)
+    if host.is_file() and not mismatches(str(host), pins):
+        return str(host), f"the host environment {host} holds every pin of {files}"
+    return None, (
+        f"the running interpreter {current} differs from {files}: {', '.join(missing)}; {BUILD_COMMAND} builds {host}"
+    )

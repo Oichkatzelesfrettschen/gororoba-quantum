@@ -25,13 +25,19 @@ gate, which replays its retained record where the toolchain is absent.
 GOROROBA_QI_REQUIRED=1, so each must take its live path or fail; the
 qi-stack job of .github/workflows/ci.yml runs that selection.
 
-A gate's ``runtime`` names a historical producer environment; its command
-runs under that runtime's interpreter (pins.REPLAY_RUNTIMES). The
-interpreter comes from ``--replay-python PATH``, else REPLAY_PYTHON, and
-must hold every pin of ci/requirements-replay.txt. With neither, the running
-interpreter serves when it holds every pin, as the build host's does, unless
-GOROROBA_PINS_REQUIRED=1, which CI sets. One line before the first gate
-names the choice; an unresolved runtime's gates exit 127 with that reason.
+A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
+chooses: an explicit $PYTHON as named, else the running interpreter when it
+holds every pin of requirements.txt and ci/requirements-ci.txt, else the
+host environment ci/build_host_envs.sh builds. A gate's ``runtime`` names a
+historical producer environment; its command runs under that runtime's
+interpreter (pins.REPLAY_RUNTIMES). The interpreter comes from
+``--replay-python PATH``, else REPLAY_PYTHON, and must hold every pin of
+ci/requirements-replay.txt. With neither, the running interpreter serves
+when it holds every pin, then the runtime's host environment, unless
+GOROROBA_PINS_REQUIRED=1, which CI sets. One line per runtime before the
+first gate names the choice, and a selection with an unresolved runtime
+runs no gate and exits 2 with that reason, since its gates would fail on
+the interpreter rather than on the tree.
 """
 
 from __future__ import annotations
@@ -449,15 +455,23 @@ def main(argv: list[str] | None = None) -> int:
         for gate in selected:
             print(f"{gate['name']}\t{gate['cwd']}\t{gate['cmd']}")
         return 0
+    primary, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
+    print(f"current runtime: {reason}", flush=True)
+    if primary is None:
+        return 2
     environment = environment_for(arguments.device, arguments.requires)
+    environment["PYTHON"] = primary
+    unresolved = []
     for runtime in sorted({gate["runtime"] for gate in selected if gate.get("runtime")}):
-        interpreter, reason = pins.resolve_replay(runtime, arguments.replay_python, environment, environment["PYTHON"])
+        interpreter, reason = pins.resolve_replay(runtime, arguments.replay_python, environment, primary)
         print(f"historical runtime {runtime}: {reason}", flush=True)
         variable = REPLAY_INTERPRETERS[runtime]
         if interpreter is None:
-            environment.pop(variable, None)
+            unresolved.append(runtime)
         else:
             environment[variable] = interpreter
+    if unresolved:
+        return 2
     failures = []
     skipped = []
     audit_misses = []
