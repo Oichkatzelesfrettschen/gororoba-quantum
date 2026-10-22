@@ -32,9 +32,12 @@ state meets every patch once and every middle and sector state meets every patch
 counts group x patch x ordered neighbor groups and raises on any unequal count; build() writes the
 counts to cases.json.
 
-Series. Eight batches of at most three circuits: batch-00 holds readout-0, readout-1 and the first
+Series. Nine batches of at most three circuits: batch-00 holds readout-0, readout-1 and the first
 checkerboard reference before any witness; six witness batches follow, each with one reference, and
-the quadrature batch sits between two of them. Readout-1 flips only the patch qubits, so idle
+two quadrature batches sit between them. Each quadrature batch holds one of k1 and b1 read with q3 in X
+(quadrature) and in Y (cosine), the same state on every patch, so the sine and cosine amplitudes of the
+branch phase share their visibility, neighbor activity and calibration window; the e7 null and a
+reference fill the third slots. Readout-1 flips only the patch qubits, so idle
 spectators stay in |0> as in the witnesses. The coupling graph of the patch qubits is bipartite and
 the two checkerboard references flip one part each, so with readout-0 and readout-1 every coupled
 pair meets all four joint preparations. A witness is corrected with the nearest readout-0 and
@@ -55,12 +58,19 @@ and DIR/bdsc_pauli_qx/ (batch-NN/ cases and a series cases.json); --check DIR re
 compares bytes and file sets. --analyze RUN_DIR... [--out FILE] writes the preregistered analysis
 of the raw shots of every batch of one series. --references RUN_DIR... reports the assignment
 references, the batch-00 stop test, the bracket drift and the neighbor-conditioned assignment of the
-batches loaded so far. --self-test runs ideal, depolarized, readout-biased, coherent-error,
-branch-phase, drift and context synthetic series through the analysis.
+batches loaded so far, and exits 1 when a stop fired. --submit-next SERIES_DIR copies the next batch
+of a case series into its run directory and submits it through qi_platform.submit only after every
+preregistered stop of the batches before it is clear, every one is collected with full shot lists,
+the QX twin's control verdict passes (Tuna-17), and the live backend's topology, gate set and compiler
+configuration match the digests in the cases; --dry prints the receipt and sends nothing.
+--self-test runs ideal, depolarized, readout-biased, coherent-error, branch-phase, matched-visibility,
+unresolved-phase, drift, breach and context synthetic series through the analysis and the gate's
+refusals offline.
 
 Usage: "$PYTHON" scripts/qi_bdsc_pauli_cases.py
        (--select-placement | --write DIR | --check DIR | --analyze RUN_DIR... [--out FILE]
-        | --references RUN_DIR... | --self-test)
+        | --references RUN_DIR... | --submit-next SERIES_DIR [--approval QUOTE] [--control FILE]
+          [--runs DIR] [--dry] | --self-test)
 """
 
 from __future__ import annotations
@@ -117,7 +127,21 @@ JOB_FIXED_SECONDS = 2.6
 JOB_SECONDS_PER_SHOT = 0.00053
 BOOTSTRAP_DRAWS = 4000
 BOOTSTRAP_SEED = 20261022
+# Jeffreys prior weight per outcome: a Dirichlet(counts + 1/2) draw keeps an unobserved outcome's
+# probability positive, so a cell or reference with every shot in one outcome still has an interval.
+JEFFREYS = 0.5
 SINGULAR_DET = 1e-6
+# Chi-square with 2 degrees of freedom at the two-sided 3-sigma tail (p = 0.0027): the (S, C) amplitude
+# must reject zero at this level before the branch phase is defined.
+VISIBILITY_CHI2 = -2 * math.log(0.0027)
+# Primary endpoints: the chi-square of each patch's kernel + bright - 1 pair residuals and the branch phase
+# of each patch, six tests at the two-sided 3-sigma tail p = 0.0027, family-wise error at most
+# 6 x 0.0027 = 0.016 by Bonferroni; every other statistic is exploratory. The chi-square sums the pairs'
+# squared z values, so residuals of opposite sign, which a coherent error produces and the pooled mean
+# cancels, still add.
+PRIMARY_TESTS = 6
+PRIMARY_P = 0.0027
+CONTRACT_FIELDS = ("topology", "gateset", "default_compiler_config")
 # Patch (q3, q1, q0, q2) of physical qubits; the three patches use all twelve qubits outside
 # excluded_qubits(), with q3 (isolated once q5 and q6 are excluded) as a q2 qubit.
 PLACEMENT = ((1, 4, 2, 3), (8, 11, 14, 13), (12, 15, 16, 10))
@@ -140,35 +164,50 @@ READOUT_ONE = "readout-1.cq"
 CHECKER_P = "checkerboard-p.cq"
 CHECKER_Q = "checkerboard-q.cq"
 PREREGISTERED = {
-    "estimators": "Per state and patch: the raw score mean with an empirical-Bernstein 95% interval "
-    "(Maurer-Pontil Theorem 4, range 1, unbiased sample variance, two-sided) and the kernel-outcome "
-    "fraction (z2 = -1 and t = +1) with a Wilson 95% interval. The readout-corrected score applies the "
-    "inverse tensor product of the four single-qubit assignment matrices of the witness batch's nearest "
-    "readout-0 and readout-1 (the earlier batch on a tie, the pairing in readout_pairing) and carries a "
-    f"95% percentile interval of a seeded parametric bootstrap of {BOOTSTRAP_DRAWS} draws that redraws the "
-    "witness outcome counts (multinomial) and every assignment rate from the reference counts (binomial), "
-    "reported beside the raw interval.",
+    "estimators": "Per state and patch the primary estimand is the raw score: its mean with an "
+    "empirical-Bernstein 95% interval (Maurer-Pontil Theorem 4, range 1, unbiased sample variance, two-sided) "
+    "and the kernel-outcome fraction (z2 = -1 and t = +1) with a Wilson 95% interval. The tensor-model "
+    "mitigated score applies the inverse tensor product of the four single-qubit assignment matrices of the "
+    "witness batch's nearest readout-0 and readout-1 (the earlier batch on a tie, the pairing in "
+    "readout_pairing); it is an estimate under the model that each qubit's assignment is independent of the "
+    "other qubits' states, and its 95% interval is conditional on that model. The interval is the percentile "
+    f"interval of {BOOTSTRAP_DRAWS} seeded draws from the Jeffreys posterior: Dirichlet(counts + 1/2) over the "
+    "16 witness outcomes and over the 16 joint outcomes of the patch qubits in each reference, so every rate "
+    "keeps the covariance of the calibration shots and an outcome never observed keeps a positive weight. A "
+    "cell whose patch holds a qubit with a neighbor-context flag in the references rejects that model, and "
+    "its mitigated score is withheld.",
     "contraction": "A depolarizing contraction V of the (q3, q1, q0) parity gives kernel and bright states "
     "(1 - V)/2 and (1 + V)/2, so kernel + bright - 1 is consistent with zero for each partner pair "
     "(k_i, b_i) of a batch and pooled over the four pairs of a patch, and middle and sector states read "
-    "1/2. A violation at |z| >= 3 names a multi-qubit error outside the contraction, such as an "
-    "entangling coherent error or leakage. The law is blind to a phase between the two GHZ branches "
-    "(kernel and bright scores move by (1 -+ cos phi) V/2 and still sum to one), to single-qubit coherent "
-    "errors and to readout bias; the quadrature batch reads the branch phase, and readout bias is read "
-    "from the corrected score. Each z divides the raw residual by the square root of the summed sample "
-    "variances over shots.",
-    "quadrature": "Circuits that read q3 in the X basis give <X3 X1 Y0> = -s sin(phi) V for a GHZ pair "
-    "(|a> + s e^{i phi}|~a>)/sqrt2 with a3 = 0, a0 = 1, while the Y-basis parity of the witnesses gives "
-    "<Y3 X1 Y0> = s cos(phi) V. With S = (m_b1 - m_k1)/2 from the quadrature circuits and C = (m_k1 - m_b1)/2 "
-    "from the witnesses of the same patch, phi = atan2(S, C), V = hypot(S, C); (m_k1 + m_b1)/2 of both "
-    "bases and the e7 parity are null statistics.",
+    "1/2. A chi-square of a patch's four pair residuals (sum of z^2, 4 dof) beyond its p = 0.0027 quantile "
+    "rejects the stationary contraction-plus-readout model on that patch; "
+    "an entangling coherent error, leakage, drift within the series and context-dependent readout each "
+    "produce one, and the test does not tell them apart. The law is blind to a phase between the two GHZ "
+    "branches (kernel and bright scores move by (1 -+ cos phi) V/2 and still sum to one), to single-qubit "
+    "coherent errors and to readout bias. Each z divides the raw residual by the square root of the summed "
+    "sample variances over shots.",
+    "quadrature": "A GHZ pair (|a> + s e^{i phi}|~a>)/sqrt2 with a3 = 0, a0 = 1 gives <X3 X1 Y0> = -s sin(phi) V "
+    "with q3 read in X and <Y3 X1 Y0> = s cos(phi) V with q3 read in Y. The quadrature batches hold, for k1 and "
+    "for b1, one X-basis and one Y-basis circuit in the same batch with the same state on every patch, so the "
+    "sine and cosine amplitudes S = (m_b1x - m_k1x)/2 and C = (m_k1y - m_b1y)/2 carry the same visibility, "
+    "neighbor activity and calibration window. phi = atan2(S, C) and V = hypot(S, C); the phase is reported "
+    f"only when S^2/var(S) + C^2/var(C) >= {VISIBILITY_CHI2:.2f} (2-dof chi-square at p = 0.0027), and is "
+    "otherwise withheld as unidentified. This is a repository-derived fixed-quadrature estimator from two "
+    "fixed bases, not the phase scan of GHZ parity-oscillation or multiple-quantum-coherence practice. "
+    "(m_k1 + m_b1)/2 of both bases and the e7 parity are null statistics, and the cosine amplitude of the "
+    "witness circuits minus the matched C measures how far neighbor context moves the visibility.",
     "pooling": "Patches are analyzed separately; the pooled value is the equal-weight mean over the "
     "three patches of the per-patch pooled kernel + bright - 1.",
+    "multiplicity": f"The primary family is the pair chi-square of each patch and the branch phase of each "
+    f"patch: {PRIMARY_TESTS} tests at p = {PRIMARY_P} (|z| >= {Z_FLAG} for the phase), family-wise error at "
+    "most 0.016 by Bonferroni. Single pair residuals, the per-patch and equal-weight pooled means, middle "
+    "and sector residuals, the nulls and the neighbor-context shifts are exploratory and carry no claim.",
     "stop_conditions": f"Batch 0's readout-0 or readout-1 shows a patch qubit with P(1|0) or P(0|1) above "
     f"{READOUT_STOP}: stop and redraw the placement. Two successive readout-0 circuits move a patch qubit's "
     f"P(1|0), or two successive readout-1 circuits move its P(0|1), by more than {DRIFT_STOP}: stop. "
-    "A job fails or returns fewer shots than requested. The account-wide pause or the three-circuit "
-    "limit would be broken.",
+    "A job fails or returns fewer shots than requested. The QX control misses its ideal. The account-wide "
+    "pause or the three-circuit limit would be broken. --submit-next enforces every stop before it sends "
+    "a batch, and a stopped analysis emits operational diagnostics only.",
 }
 
 
@@ -681,8 +720,9 @@ class CheckCircuit:
                     raise ValueError(f"{state} on patch {patch_id}: emitted ideal score {value}")
             else:
                 value = float(parity @ probs)
-                if abs(value) > 1e-9:
-                    raise ValueError(f"{state} on patch {patch_id}: emitted ideal quadrature parity {value}")
+                want = quadrature_expectation(state)["cos_coefficient"] if kind == "cosine" else 0.0
+                if abs(value - want) > 1e-9:
+                    raise ValueError(f"{state} on patch {patch_id}: emitted ideal {kind} parity {value}, not {want}")
             rows.append(round(value, 12))
         return {"values": rows}
 
@@ -698,20 +738,29 @@ def quadrature_file(state: str) -> str:
     return f"quadrature-{state}.cq"
 
 
+def cosine_file(state: str) -> str:
+    return f"cosine-{state}.cq"
+
+
 def tuna_schedule() -> list[list[tuple[str, str]]]:
-    """(kind, file) of each circuit of each batch, in submission order."""
+    """(kind, file) of each circuit of each batch, in submission order.
+
+    The X-basis and Y-basis circuits of one state share a batch, so the sine and cosine amplitudes of the
+    branch phase average the same two calibration windows.
+    """
     w = [("witness", witness_file(c)) for c in range(2 * len(WITNESS_PLAN))]
     ro0, ro1 = ("readout", READOUT_ZERO), ("readout", READOUT_ONE)
-    quad = [("quadrature", quadrature_file(s)) for s in QUADRATURE_STATES]
+    k1, b1, e7 = QUADRATURE_STATES
     return [
         [ro0, ro1, ("readout", CHECKER_P)],
         [w[0], w[1], ("readout", CHECKER_Q)],
         [w[2], w[3], ro0],
         [w[4], w[5], ro1],
-        quad,
-        [w[6], w[7], ro0],
-        [w[8], w[9], ro1],
-        [w[10], w[11], ro0],
+        [("quadrature", quadrature_file(k1)), ("cosine", cosine_file(k1)), ("quadrature", quadrature_file(e7))],
+        [("quadrature", quadrature_file(b1)), ("cosine", cosine_file(b1)), ro0],
+        [w[6], w[7], ro1],
+        [w[8], w[9], ro0],
+        [w[10], w[11], ro1],
     ]
 
 
@@ -737,23 +786,39 @@ def nearest_references(schedule: list[list[tuple[str, str]]]) -> dict[str, dict[
     return out
 
 
-def series_cost(schedule: list[list[tuple[str, str]]], shots: int) -> dict[str, Any]:
+def series_cost(schedule: list[list[tuple[str, str]]], shots: int, hardware: bool) -> dict[str, Any]:
+    """Execution by the Tuna-17 timing fit; qi_platform.submit applies the account pause to hardware only."""
     jobs = sum(len(batch) for batch in schedule)
     per_job = JOB_FIXED_SECONDS + JOB_SECONDS_PER_SHOT * shots
     execution = jobs * per_job
+    pause = HARDWARE_PAUSE_SECONDS if hardware else 0
     return {
         "jobs": jobs,
         "batches": len(schedule),
         "shots": shots,
         "seconds_per_job": round(per_job, 3),
         "execution_seconds": round(execution, 1),
-        "pause_seconds": HARDWARE_PAUSE_SECONDS,
-        "wall_seconds": round(execution + HARDWARE_PAUSE_SECONDS * (len(schedule) - 1), 1),
+        "pause_seconds": pause,
+        "wall_seconds": round(execution + pause * (len(schedule) - 1), 1),
         "fit": f"{JOB_FIXED_SECONDS} s + {JOB_SECONDS_PER_SHOT * 1000} ms per shot per job",
+        "queue": "excluded: each batch also waits behind other users' batches",
     }
 
 
 # --- build --------------------------------------------------------------------------------------
+
+
+def backend_contract(backend: dict[str, Any]) -> dict[str, str]:
+    """sha256 of the canonical JSON of each CONTRACT_FIELDS value of a backend type record.
+
+    The placement, the emitted gate names and compile_stage "none" assume the topology, gate set and
+    default compiler configuration of the record the cases were built from; --submit-next compares these
+    digests with the live record before it sends a batch.
+    """
+    return {
+        field: hashlib.sha256(json.dumps(backend[field], sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        for field in CONTRACT_FIELDS
+    }
 
 
 def witness_specs() -> list[dict[str, Any]]:
@@ -775,11 +840,20 @@ def witness_specs() -> list[dict[str, Any]]:
                 "instances": [(p, PLACEMENT[p], state) for p in range(PATCHES)],
             }
         )
+    for state in QUADRATURE_STATES[:2]:
+        out.append(
+            {
+                "file": cosine_file(state),
+                "kind": "cosine",
+                "instances": [(p, PLACEMENT[p], state) for p in range(PATCHES)],
+            }
+        )
     return out
 
 
 def rotation_of(kind: str) -> list[tuple[str, tuple[int, ...]]]:
-    return READOUT_OPS if kind == "witness" else QUADRATURE_OPS
+    """The cosine circuits read the witness basis; only the quadrature circuits read q3 in X."""
+    return QUADRATURE_OPS if kind == "quadrature" else READOUT_OPS
 
 
 def batch_of_file(schedule: list[list[tuple[str, str]]]) -> dict[str, str]:
@@ -793,7 +867,7 @@ def twin_slot_qubits(slot: int) -> tuple[int, int, int, int]:
 def twin_specs(tuna: list[dict[str, Any]], source_batch: dict[str, str]) -> list[dict[str, Any]]:
     """Two patch instances per circuit, in the order of the Tuna circuits, with kinds kept apart."""
     out: list[dict[str, Any]] = []
-    for kind in ("witness", "quadrature"):
+    for kind in ("witness", "quadrature", "cosine"):
         flat = [(p, state, spec["file"]) for spec in tuna if spec["kind"] == kind for p, _, state in spec["instances"]]
         for n, start in enumerate(range(0, len(flat), 2), start=1):
             chunk = flat[start : start + 2]
@@ -911,7 +985,8 @@ def build() -> dict[str, dict[str, str]]:
         "references": references,
         "readout_pairing": nearest_references(schedule),
         "schedule": [[f for _, f in batch] for batch in schedule],
-        "cost": series_cost(schedule, SHOTS),
+        "cost": series_cost(schedule, SHOTS, True),
+        "backend_contract": backend_contract(backend),
         "preregistered": PREREGISTERED,
     }
     files = write_series(
@@ -964,7 +1039,8 @@ def build() -> dict[str, dict[str, str]]:
         "references": twin_refs,
         "readout_pairing": nearest_references(twin_schedule_rows),
         "schedule": [[f for _, f in batch] for batch in twin_schedule_rows],
-        "cost": series_cost(twin_schedule_rows, QX_SHOTS),
+        "cost": series_cost(twin_schedule_rows, QX_SHOTS, False),
+        "backend_contract": backend_contract(qx_backend),
     }
     twin_files = write_series(
         twin_shared,
@@ -1030,11 +1106,22 @@ def write_series(
 # --- analysis -----------------------------------------------------------------------------------
 
 
-def shot_bits(shots: list[str], width: int) -> np.ndarray:
-    """(n, width) uint8 matrix of the shot strings, column c holding character c."""
+def shot_bits(shots: list[str], width: int, source: str = "") -> np.ndarray:
+    """(n, width) uint8 matrix of the shot strings, column c holding character c.
+
+    Each character is one qubit's measured bit; the conversion subtracts ord("0"), so a character other
+    than the binary digits 0 and 1 is refused rather than read as a large integer.
+    """
     if any(len(s) != width for s in shots):
-        raise SystemExit(f"a shot string differs from the declared width {width}")
-    return np.frombuffer("".join(shots).encode("ascii"), dtype=np.uint8).reshape(len(shots), width) - 48
+        raise SystemExit(f"{source}: a shot string differs from the declared width {width}")
+    try:
+        data = "".join(shots).encode("ascii")
+    except UnicodeEncodeError:
+        raise SystemExit(f"{source}: a shot string holds a character other than the binary digits 0 and 1") from None
+    bits = np.frombuffer(data, dtype=np.uint8).reshape(len(shots), width) - 48
+    if bits.size and int(bits.max()) > 1:
+        raise SystemExit(f"{source}: a shot string holds a character other than the binary digits 0 and 1")
+    return bits
 
 
 def unassign(freq: list[float], rates: list[tuple[float, float]]) -> list[float]:
@@ -1093,8 +1180,23 @@ def expectation_batch(weights: np.ndarray, p: np.ndarray) -> np.ndarray:
     return acc
 
 
+CODE_BIT = np.array([[c >> (3 - i) & 1 for i in range(4)] for c in range(16)], dtype=float)
+
+
+def joint_rates(p0: np.ndarray, p1: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(e01, e10) with column i the rate of bit 3 - i, from joint outcome probabilities (..., 16) of the
+    patch qubits in readout-0 and readout-1: e01 is P(read 1 | 0) and e10 is P(read 0 | 1) of each bit."""
+    return p0 @ CODE_BIT, p1 @ (1.0 - CODE_BIT)
+
+
 class BootstrapCell:
-    """Percentile interval of one cell's corrected score; a module-level callable for parallel.ordered_map."""
+    """Jeffreys-posterior percentile interval of one cell's tensor-model mitigated score.
+
+    Each draw takes Dirichlet(counts + JEFFREYS) over the 16 witness outcomes and over the 16 joint
+    outcomes of the patch qubits in readout-0 and in readout-1, so the four assignment rates of one draw
+    keep the covariance of the calibration shots they share. A module-level callable for
+    parallel.ordered_map.
+    """
 
     def __init__(self, weights: np.ndarray, draws: int, vary_reference: bool = True) -> None:
         self.weights = weights
@@ -1102,24 +1204,37 @@ class BootstrapCell:
         self.vary_reference = vary_reference
 
     def replicates(self, task: tuple[Any, ...]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        counts, n, refs, index = task
+        counts, ref0, ref1, index = task
         rng = np.random.default_rng(np.random.SeedSequence([BOOTSTRAP_SEED, index]))
-        counts_arr = np.asarray(counts, dtype=np.int64)
-        freq = rng.multinomial(n, counts_arr / n, size=self.draws) / n
-        e01 = np.empty((self.draws, 4))
-        e10 = np.empty((self.draws, 4))
-        for i, (ones0, n0, zeros1, n1) in enumerate(refs):
-            draw01 = rng.binomial(n0, ones0 / n0, size=self.draws) / n0
-            draw10 = rng.binomial(n1, zeros1 / n1, size=self.draws) / n1
-            e01[:, i] = draw01 if self.vary_reference else ones0 / n0
-            e10[:, i] = draw10 if self.vary_reference else zeros1 / n1
+        freq = rng.dirichlet(np.asarray(counts, dtype=float) + JEFFREYS, size=self.draws)
+        r0, r1 = np.asarray(ref0, dtype=float), np.asarray(ref1, dtype=float)
+        if self.vary_reference:
+            p0 = rng.dirichlet(r0 + JEFFREYS, size=self.draws)
+            p1 = rng.dirichlet(r1 + JEFFREYS, size=self.draws)
+        else:
+            p0 = np.tile(r0 / r0.sum(), (self.draws, 1))
+            p1 = np.tile(r1 / r1.sum(), (self.draws, 1))
+        e01, e10 = joint_rates(p0, p1)
         return freq, e01, e10
 
     def __call__(self, task: tuple[Any, ...]) -> list[float]:
+        """The equal-tailed posterior interval widened to hold the plug-in estimate.
+
+        A cell or reference with every shot in one outcome has its plug-in value on the boundary, where the
+        equal-tailed Jeffreys interval excludes it; the hull follows the boundary rule of Brown, Cai and
+        DasGupta (2001, Stat. Sci. 16, 101), which sets the Jeffreys bound to the observed value there.
+        """
+        counts, ref0, ref1, _ = task
         freq, e01, e10 = self.replicates(task)
         scores = expectation_batch(self.weights, unassign_batch(freq, e01, e10))
         low, high = np.percentile(scores, [100 * ALPHA / 2, 100 * (1 - ALPHA / 2)])
-        return [float(low), float(high)]
+        r0, r1 = np.asarray(ref0, dtype=float), np.asarray(ref1, dtype=float)
+        a, c = joint_rates(r0 / r0.sum(), r1 / r1.sum())
+        n = sum(counts)
+        point = corrected_expectation(
+            [x / n for x in counts], list(zip(a.tolist(), c.tolist(), strict=True)), self.weights
+        )
+        return [min(float(low), point), max(float(high), point)]
 
 
 def eb_interval(scores: np.ndarray) -> list[float]:
@@ -1187,6 +1302,25 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
     claim = claim_kind(cases)
     width = cases["nqubits"]
     require_full_shots(cases, raw)
+    # The stops come first: a fired stop invalidates every inference, so the record then holds the references
+    # and the shot counts only, and no inversion of a possibly singular assignment matrix is attempted.
+    references = reference_report(cases, raw)
+    stopped = bool(references["stop_condition_batch_00"]) or bool(references["bracket_drift"]["flagged"])
+    if stopped:
+        return {
+            "schema": "qi-bdsc-pauli-analysis-v3",
+            "claim_kind": STOPPED_CLAIM,
+            "manifest_sha256": manifest_digest(cases),
+            "references": references,
+            "stop_condition_readout": references["stop_condition_batch_00"],
+            "operational": [
+                {"batch": batch, "file": file, "shots": len(shots)} for (batch, file), shots in sorted(raw.items())
+            ],
+            "cells": None,
+            "contraction": None,
+            "quadrature": None,
+        }
+    context_qubits = sorted({e["qubit"] for e in references["neighbor_context"] if e["e01_flag"] or e["e10_flag"]})
     g, parity = score_vector(), parity_vector()
     bank_ideal = {row["name"]: row["ideal_score"] for row in cases["bank"]}
     group = {row["name"]: row["group"] for row in cases["bank"]}
@@ -1194,8 +1328,14 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
 
     def bits_of(key: tuple[str, str]) -> np.ndarray:
         if key not in bits_cache:
-            bits_cache[key] = shot_bits(raw[key], width)
+            bits_cache[key] = shot_bits(raw[key], width, "/".join(key))
         return bits_cache[key]
+
+    def joint_counts(bits: np.ndarray, qubits: tuple[int, ...]) -> np.ndarray:
+        codes = np.zeros(len(bits), dtype=np.int64)
+        for q in qubits:
+            codes = codes << 1 | bits[:, width - 1 - q].astype(np.int64)
+        return np.bincount(codes, minlength=16)
 
     cells: list[dict[str, Any]] = []
     shot_scores: dict[tuple[str, int], np.ndarray] = {}
@@ -1214,15 +1354,16 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
         bits = bits_of((batch, file))
         for row in witness["patches"]:
             q3, q1, q0, q2 = row["qubits"]
-            columns = [width - 1 - q for q in (q3, q2, q1, q0)]
-            b3, bz, b1, b0 = (bits[:, c].astype(int) for c in columns)
-            codes = b3 << 3 | bz << 2 | b1 << 1 | b0
-            counts = np.bincount(codes, minlength=16)
-            n = len(codes)
+            order = (q3, q2, q1, q0)
+            counts = joint_counts(bits, order)
+            b3, bz, b1, b0 = (bits[:, width - 1 - q].astype(int) for q in order)
+            n = len(bits)
             freq = (counts / n).tolist()
-            counts_ref = [reference_counts(ref0, ref1, q, width) for q in (q3, q2, q1, q0)]
-            rates = [(c[0] / c[1], c[2] / c[3]) for c in counts_ref]
+            ref0_counts, ref1_counts = joint_counts(ref0, order), joint_counts(ref1, order)
+            e01, e10 = joint_rates(ref0_counts / ref0_counts.sum(), ref1_counts / ref1_counts.sum())
+            rates = [(float(a), float(b)) for a, b in zip(e01, e10, strict=True)]
             t = (1 - 2 * b3) * (1 - 2 * b1) * (1 - 2 * b0)
+            flagged = sorted(set(order) & set(context_qubits))
             cell: dict[str, Any] = {
                 "kind": witness["kind"],
                 "state": row["state"],
@@ -1235,10 +1376,11 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
                 "shots_requested": cases["shots"],
                 "parity_mean": float(t.mean()),
                 "parity_variance": float(t.var(ddof=1)),
-                "parity_readout_corrected": corrected_expectation(freq, rates, parity),
+                "tensor_model_rejected_by_context": flagged,
+                "parity_tensor_model_mitigated": None if flagged else corrected_expectation(freq, rates, parity),
             }
             if witness["kind"] == "witness":
-                scores = g[codes]
+                scores = g[b3 << 3 | bz << 2 | b1 << 1 | b0]
                 shot_scores[(file, row["patch"])] = scores
                 kernel = int(np.count_nonzero((bz == 1) & (t == 1)))
                 cell |= {
@@ -1249,32 +1391,76 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
                     "kernel_count": kernel,
                     "kernel_fraction": kernel / n,
                     "kernel_ci95_wilson": wilson(kernel, n),
-                    "score_readout_corrected": corrected_expectation(freq, rates, g),
+                    "score_tensor_model_mitigated": None if flagged else corrected_expectation(freq, rates, g),
+                    "score_tensor_model_ci95_jeffreys": None,
                 }
-                tasks.append((tuple(int(c) for c in counts), n, tuple(counts_ref), len(tasks)))
-                task_cell.append(len(cells))
+                if not flagged:
+                    tasks.append(
+                        (
+                            tuple(int(c) for c in counts),
+                            tuple(int(c) for c in ref0_counts),
+                            tuple(int(c) for c in ref1_counts),
+                            len(tasks),
+                        )
+                    )
+                    task_cell.append(len(cells))
             else:
                 cell |= {"ideal_parity": row["ideal_parity"], "quadrature": row["quadrature"]}
             cells.append(cell)
     intervals = parallel.ordered_map(BootstrapCell(g, BOOTSTRAP_DRAWS), tasks, min_items=8)
     for index, interval in zip(task_cell, intervals, strict=True):
-        cells[index]["score_readout_corrected_ci95_bootstrap"] = interval
-    references = reference_report(cases, raw)
-    # A fired preregistered stop invalidates every inference from the series; the cells and references stay as
-    # diagnostics, and the contraction law and quadrature phase are withheld.
-    stopped = bool(references["stop_condition_batch_00"]) or bool(references["bracket_drift"]["flagged"])
-    if stopped:
-        claim = STOPPED_CLAIM
-    return {
-        "schema": "qi-bdsc-pauli-analysis-v2",
+        cells[index]["score_tensor_model_ci95_jeffreys"] = interval
+    patches = sorted({c["patch"] for c in cells})
+    contraction_out = contraction(cells, patches, shot_scores)
+    quadrature_out = quadrature(cells, patches)
+    primary = [
+        {"test": f"pair chi-square, {name}", **row["pairs_chi2"]}
+        for name, row in contraction_out.items()
+        if name.startswith("patch") and row["pairs_chi2"] is not None
+    ] + [
+        {"test": f"branch phase, {name}", "z": row["phi_z_against_zero"], "flag": row["phase_flag"]}
+        for name, row in quadrature_out.items()
+    ]
+    out: dict[str, Any] = {
+        "schema": "qi-bdsc-pauli-analysis-v3",
         "claim_kind": claim,
-        "bootstrap": {"draws": BOOTSTRAP_DRAWS, "seed": BOOTSTRAP_SEED, "alpha": ALPHA},
+        "manifest_sha256": manifest_digest(cases),
+        "bootstrap": {"draws": BOOTSTRAP_DRAWS, "seed": BOOTSTRAP_SEED, "alpha": ALPHA, "prior": "Jeffreys"},
+        "tensor_model_rejected_on_qubits": context_qubits,
         "cells": cells,
         "references": references,
         "stop_condition_readout": references["stop_condition_batch_00"],
-        "contraction": None if stopped else contraction(cells, sorted({c["patch"] for c in cells}), shot_scores),
-        "quadrature": None if stopped else quadrature(cells, sorted({c["patch"] for c in cells})),
+        "contraction": contraction_out,
+        "quadrature": quadrature_out,
+        "primary_endpoints": {
+            "family": PREREGISTERED["multiplicity"],
+            "tests": primary,
+            "rejects_model": any(t["flag"] for t in primary),
+        },
     }
+    if claim == "emulator control" or cases.get("twin_of"):
+        out["control_verdict"] = control_verdict(cells, quadrature_out)
+    return out
+
+
+def control_verdict(cells: list[dict[str, Any]], quadrature_out: dict[str, Any]) -> dict[str, Any]:
+    """Pass when every witness cell's empirical-Bernstein interval holds its ideal score, every quadrature
+    and cosine cell's parity lies within Z_FLAG standard errors of its ideal (exactly on it at zero
+    variance), and every patch reads its branch phase within Z_FLAG standard errors of zero."""
+    misses = []
+    for c in cells:
+        if c["kind"] == "witness":
+            low, high = c["score_ci95_empirical_bernstein"]
+            if not low - 1e-12 <= c["ideal_score"] <= high + 1e-12:
+                misses.append(f"{c['file']} patch {c['patch']} {c['state']} score {c['score_mean']}")
+        else:
+            se = math.sqrt(c["parity_variance"] / c["shots"])
+            if abs(c["parity_mean"] - c["ideal_parity"]) > Z_FLAG * se + 1e-12:
+                misses.append(f"{c['file']} patch {c['patch']} {c['state']} parity {c['parity_mean']}")
+    for name, row in quadrature_out.items():
+        if row["phase_flag"] or row["phi_rad"] is None:
+            misses.append(f"{name} phase {row['phi_rad']}")
+    return {"pass": not misses, "misses": misses}
 
 
 def reference_report(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]]) -> dict[str, Any]:
@@ -1283,7 +1469,7 @@ def reference_report(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]
     qubits = cases["patch_qubits"]
     x_sets = cases["references"]
     instances = sorted((batch, file) for (batch, file) in raw if file in x_sets)
-    bits = {key: shot_bits(raw[key], width) for key in instances}
+    bits = {key: shot_bits(raw[key], width, "/".join(key)) for key in instances}
     rows: list[dict[str, Any]] = []
     for batch, file in instances:
         flipped = set(x_sets[file])
@@ -1436,11 +1622,20 @@ def contraction(
                     cell = by[(pair["batch"], state)]
                     key = (cell["file"], p)
                     patch_weights[key] = patch_weights.get(key, 0.0) + 1 / len(pairs) / len(patches)
+        pairs_chi2 = None
+        if pairs:
+            from scipy.stats import chi2 as chi2_law
+
+            total = sum(r["z"] ** 2 if r["z"] is not None else (math.inf if r["residual"] else 0.0) for r in pairs)
+            threshold = float(chi2_law.isf(PRIMARY_P, len(pairs)))
+            pairs_chi2 = {"chi2": total, "dof": len(pairs), "threshold": threshold, "flag": total >= threshold}
         out[f"patch-{p}"] = {
             "pairs_kernel_plus_bright_minus_one": pairs,
+            "pairs_chi2": pairs_chi2,
             "pooled_kernel_plus_bright_minus_one": pooled,
             "middle_sector_minus_half": singles,
-            "violation": any(r["flag"] for r in [*pairs, *singles, *([pooled] if pooled else [])]),
+            "rejects_model": bool(pairs_chi2 and pairs_chi2["flag"]),
+            "exploratory_flags": sum(bool(r["flag"]) for r in [*pairs, *singles, *([pooled] if pooled else [])]),
         }
     if len(pooled_patch) == len(patches):
         residual = sum(r["residual"] for r in pooled_patch) / len(patches)
@@ -1456,7 +1651,14 @@ def contraction(
 
 
 def quadrature(cells: list[dict[str, Any]], patches: list[int]) -> dict[str, Any]:
-    """Branch phase of each patch from the quadrature circuits and the Y-basis witnesses of k1 and b1."""
+    """Branch phase of each patch from the matched X-basis (quadrature) and Y-basis (cosine) circuits of k1 and b1.
+
+    S and C come from circuits that prepare the same state on every patch in the same batch, so they share
+    one visibility. The phase is defined only when the (S, C) amplitude rejects zero (VISIBILITY_CHI2); its
+    standard error is the delta-method value, accurate once the amplitude is many standard errors from zero.
+    The witnesses' own cosine amplitude, measured with other states on the neighboring patches, is compared
+    with C as an exploratory check of how far neighbor context moves the visibility.
+    """
     out: dict[str, Any] = {}
     for p in patches:
 
@@ -1465,7 +1667,8 @@ def quadrature(cells: list[dict[str, Any]], patches: list[int]) -> dict[str, Any
             return hits[0] if len(hits) == 1 else None
 
         kx, bx, ex = find("quadrature", "k1"), find("quadrature", "b1"), find("quadrature", "e7")
-        ky, by = find("witness", "k1"), find("witness", "b1")
+        ky, by = find("cosine", "k1"), find("cosine", "b1")
+        kw, bw = find("witness", "k1"), find("witness", "b1")
         if kx is None or bx is None or ex is None or ky is None or by is None:
             continue
 
@@ -1473,38 +1676,205 @@ def quadrature(cells: list[dict[str, Any]], patches: list[int]) -> dict[str, Any
             return c["parity_variance"] / c["shots"]
 
         sin_sign = (kx["quadrature"]["sin_coefficient"], bx["quadrature"]["sin_coefficient"])
+        cos_sign = (ky["quadrature"]["cos_coefficient"], by["quadrature"]["cos_coefficient"])
         require(sin_sign == (-1.0, 1.0), f"quadrature coefficients of k1, b1 are {sin_sign}")
+        require(cos_sign == (1.0, -1.0), f"cosine coefficients of k1, b1 are {cos_sign}")
         s_amp = (bx["parity_mean"] - kx["parity_mean"]) / 2
         c_amp = (ky["parity_mean"] - by["parity_mean"]) / 2
         var_s = (var(kx) + var(bx)) / 4
         var_c = (var(ky) + var(by)) / 4
-        norm = s_amp * s_amp + c_amp * c_amp
-        phi = math.atan2(s_amp, c_amp)
-        var_phi = (c_amp * c_amp * var_s + s_amp * s_amp * var_c) / (norm * norm) if norm > 0 else math.inf
-        s_corr = (bx["parity_readout_corrected"] - kx["parity_readout_corrected"]) / 2
-        c_corr = (ky["parity_readout_corrected"] - by["parity_readout_corrected"]) / 2
-        phase = (
-            statistic(phi, var_phi)
-            if math.isfinite(var_phi)
-            else {"residual": phi, "se": None, "z": None, "flag": True}
+        chi2 = (s_amp * s_amp / var_s if var_s > 0 else (math.inf if s_amp else 0.0)) + (
+            c_amp * c_amp / var_c if var_c > 0 else (math.inf if c_amp else 0.0)
         )
+        supported = chi2 >= VISIBILITY_CHI2
+        norm = s_amp * s_amp + c_amp * c_amp
+        phi: float | None = None
+        phase: dict[str, Any] = {"se": None, "z": None, "flag": False}
+        mitigated: float | None = None
+        if supported:
+            phi = math.atan2(s_amp, c_amp)
+            phase = statistic(phi, (c_amp * c_amp * var_s + s_amp * s_amp * var_c) / (norm * norm))
+            parts = [c["parity_tensor_model_mitigated"] for c in (kx, bx, ky, by)]
+            if all(v is not None for v in parts):
+                mitigated = math.atan2((parts[1] - parts[0]) / 2, (parts[2] - parts[3]) / 2)
         nulls = {
             "x_basis_half_sum": statistic((kx["parity_mean"] + bx["parity_mean"]) / 2, (var(kx) + var(bx)) / 4),
             "y_basis_half_sum": statistic((ky["parity_mean"] + by["parity_mean"]) / 2, (var(ky) + var(by)) / 4),
             "e7_parity": statistic(ex["parity_mean"], var(ex)),
         }
+        context = None
+        if kw is not None and bw is not None:
+            c_wit = (kw["parity_mean"] - bw["parity_mean"]) / 2
+            context = statistic(c_wit - c_amp, (var(kw) + var(bw)) / 4 + var_c)
         out[f"patch-{p}"] = {
             "sin_phi_times_v": s_amp,
             "cos_phi_times_v": c_amp,
             "v": math.hypot(s_amp, c_amp),
+            "amplitude_chi2": chi2,
+            "visibility_supported": supported,
             "phi_rad": phi,
             "phi_se": phase["se"],
             "phi_z_against_zero": phase["z"],
-            "phi_readout_corrected_rad": math.atan2(s_corr, c_corr),
+            "phase_flag": bool(phase["flag"]),
+            "phi_tensor_model_mitigated_rad": mitigated,
             "nulls": nulls,
-            "violation": bool(phase["flag"]) or any(n["flag"] for n in nulls.values()),
+            "witness_cos_minus_matched_cos": context,
+            "exploratory_flags": sum(bool(n["flag"]) for n in nulls.values()) + int(bool(context and context["flag"])),
         }
     return out
+
+
+# --- series gate ----------------------------------------------------------------------------------
+
+
+def manifest_digest(cases: dict[str, Any]) -> str:
+    """sha256 of the canonical JSON of a manifest's shared fields: the identity of one series design."""
+    shared = {k: v for k, v in cases.items() if k not in {"batch", "circuits", "schema", "control", "simulator"}}
+    return hashlib.sha256(json.dumps(shared, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def series_runs(series_dir: Path, runs: Path) -> tuple[str | None, dict[str, Path]]:
+    """The UTC stamp every run directory of the series shares, and the run directory of each submitted batch."""
+    found: dict[str, Path] = {}
+    stamps = set()
+    for path in sorted(runs.glob(f"*-{series_dir.name}-batch-*")):
+        stamp, _, batch = path.name.partition(f"-{series_dir.name}-")
+        if batch in found:
+            raise SystemExit(f"{batch} of {series_dir.name} has two run directories")
+        found[batch] = path
+        stamps.add(stamp)
+    if len(stamps) > 1:
+        raise SystemExit(f"run directories of {series_dir.name} carry several stamps {sorted(stamps)}")
+    return (stamps.pop() if stamps else None), found
+
+
+def gate_predecessor(case_batch: Path, run_dir: Path) -> dict[str, Any]:
+    """A submitted batch passes when its retained case bytes equal the series' and every job completed
+    with its raw shot list; returns the digests the receipt binds."""
+    for row in json.loads((case_batch / "cases.json").read_text(encoding="utf-8"))["circuits"]:
+        if file_sha256(run_dir / row["file"]) != row["sha256"]:
+            raise SystemExit(f"{run_dir}/{row['file']} differs from the series case")
+    if file_sha256(run_dir / "cases.json") != file_sha256(case_batch / "cases.json"):
+        raise SystemExit(f"{run_dir}/cases.json differs from {case_batch}/cases.json")
+    results_path = run_dir / "results.json"
+    if not results_path.exists():
+        raise SystemExit(f"{run_dir} is not collected; run qi_platform.py collect first")
+    results = json.loads(results_path.read_text(encoding="utf-8"))
+    raw = {}
+    for row in results["jobs"]:
+        if row["job"]["status"] != "completed":
+            raise SystemExit(
+                f"{run_dir}/{row['file']} job {row['job']['id']} is {row['job']['status']}: the series stops"
+            )
+        raw[row["file"]] = file_sha256(run_dir / "raw" / f"{row['file']}.json")
+    return {"run_dir": run_dir.name, "results_sha256": file_sha256(results_path), "raw_sha256": raw}
+
+
+def submit_next(
+    series_dir: Path, runs: Path, approval: str, control: Path | None, dry: bool = False
+) -> tuple[Path, dict[str, Any]]:
+    """Copy the next batch of a series into its run directory and submit it, after every preregistered stop.
+
+    Every earlier batch must be submitted, collected with all jobs completed and full shot lists, and
+    byte-equal to the series case; the batch-00 assignment stop and the bracket-drift stop are evaluated
+    over the collected references; a Tuna-17 series needs the QX control analysis of its twin with a
+    passing verdict before its first batch; and the live backend's topology, gate set and default compiler
+    configuration must match the digests the cases were built against. The run directory's
+    series-gate.json binds the predecessors' result and raw digests.
+    """
+    import datetime
+
+    import qi_platform
+
+    names = [row["batch"] for row in json.loads((series_dir / "cases.json").read_text(encoding="utf-8"))["batches"]]
+    first = json.loads((series_dir / names[0] / "cases.json").read_text(encoding="utf-8"))
+    stamp, done = series_runs(series_dir, runs)
+    pending = [name for name in names if name not in done]
+    if not pending:
+        raise SystemExit(f"every batch of {series_dir.name} is submitted")
+    following = names[names.index(pending[0]) :]
+    if any(name in done for name in following):
+        raise SystemExit(f"{series_dir.name}: a later batch was submitted before {pending[0]}")
+    batch = pending[0]
+    predecessors = [
+        {"batch": name, **gate_predecessor(series_dir / name, done[name])} for name in names if name in done
+    ]
+    stops: dict[str, Any] = {"batches_checked": [p["batch"] for p in predecessors]}
+    if predecessors:
+        cases, raw, _ = load_series([done[p["batch"]] for p in predecessors])
+        require_full_shots(cases, raw)
+        report = reference_report(cases, raw)
+        if report["stop_condition_batch_00"] or report["bracket_drift"]["flagged"]:
+            raise SystemExit(
+                f"a preregistered stop fired: batch-00 {report['stop_condition_batch_00']}, "
+                f"drift {report['bracket_drift']['flagged']}; the series stops"
+            )
+        stops |= {
+            "stop_condition_batch_00": [],
+            "bracket_drift_flagged": [],
+            "max_drift": report["bracket_drift"]["max_abs_delta"],
+        }
+    control_record = None
+    if "twin_of" not in first:
+        twin_first = series_dir.parent / TWIN_SERIES / "batch-00" / "cases.json"
+        want = manifest_digest(json.loads(twin_first.read_text(encoding="utf-8")))
+        if control is None:
+            raise SystemExit("a Tuna-17 batch needs --control, the analysis of the collected QX twin")
+        analysis = json.loads(control.read_text(encoding="utf-8"))
+        # The remote twin exercises the platform's upload, raw-data and bit-order path; a local qxelarator run
+        # (claim kind "emulator control") does not.
+        if analysis.get("manifest_sha256") != want or analysis.get("claim_kind") != "preregistered emulator control":
+            raise SystemExit(f"{control} is not the analysis of the remote {TWIN_SERIES} run")
+        try:
+            control_name = control.resolve().relative_to(ROOT).as_posix()
+        except ValueError:
+            raise SystemExit(f"{control} lies outside the repository; retain the twin's analysis first") from None
+        if not analysis.get("control_verdict", {}).get("pass"):
+            raise SystemExit(f"the QX control missed its ideal: {analysis.get('control_verdict')}")
+        control_record = {"file": control_name, "sha256": file_sha256(control), "manifest_sha256": want}
+    client = qi_platform.Client()
+    live = client.get(f"/backend_types/{first['backend_type_id']}")
+    if backend_contract(live) != first["backend_contract"]:
+        raise SystemExit(
+            f"{live['name']}: the live topology, gate set or compiler configuration differs from the cases"
+        )
+    stamp = stamp or datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H%M%SZ")
+    run_dir = runs / f"{stamp}-{series_dir.name}-{batch}"
+    receipt = {
+        "schema": "qi-bdsc-pauli-gate-v1",
+        "series": series_dir.name,
+        "batch": batch,
+        "cases_sha256": file_sha256(series_dir / batch / "cases.json"),
+        "predecessors": predecessors,
+        "stops": stops,
+        "control": control_record,
+        "backend_contract": "live record matches",
+    }
+    if dry:
+        return run_dir, receipt
+    import shutil
+    import time
+
+    if live["is_hardware"]:
+        # hardware_pause_left refuses while any hardware job of the account is unfinished.
+        while (left := qi_platform.hardware_pause_left(client)) > 0:
+            time.sleep(left + 1)
+    shutil.copytree(series_dir / batch, run_dir)
+    (run_dir / "series-gate.json").write_text(json.dumps(receipt, indent=1) + "\n", encoding="utf-8")
+    try:
+        record = qi_platform.submit(run_dir, first["backend_type_id"], approval)
+    except SystemExit:
+        # A refusal before the checkpoint leaves nothing on the service; the copy goes so the next call
+        # does not read an unsent batch as submitted.
+        if not (run_dir / "submission-state.json").exists():
+            shutil.rmtree(run_dir)
+        raise
+    print(f"{run_dir.name}: batch {record['batch_job']}, jobs {[row['job'] for row in record['jobs']]}")
+    return run_dir, receipt
 
 
 # --- self-test ------------------------------------------------------------------------------------
@@ -1616,6 +1986,97 @@ def verify_quadrature_derivation() -> str:
     return f"max |Statevector - closed form| {worst:.1e}"
 
 
+def series_gate_self_test(
+    files: dict[str, str], twin: dict[str, str], synthetic: Callable[..., Any], ideal: Callable[[str, str], np.ndarray]
+) -> None:
+    """--submit-next refuses each preregistered stop and an out-of-order or uncollected series, offline.
+
+    qi_platform.Client is replaced by the retained catalogue record, and every call uses dry=True, so the
+    test sends nothing and writes only under a temporary directory.
+    """
+    import shutil
+    import tempfile
+
+    import qi_platform
+
+    backend = catalogue_check()[0]
+
+    class Catalogue:
+        def get(self, path: str, **_: Any) -> dict[str, Any]:
+            return backend
+
+    def write(root: Path, tree: dict[str, str]) -> None:
+        for relative, text in tree.items():
+            (root / relative).parent.mkdir(parents=True, exist_ok=True)
+            (root / relative).write_text(text, encoding="utf-8")
+
+    def refused(call: Callable[[], Any], words: str) -> None:
+        try:
+            call()
+        except SystemExit as exc:
+            if words not in str(exc):
+                raise AssertionError(f"the gate refused for another reason: {exc}") from exc
+        else:
+            raise AssertionError(f"the gate passed where it must refuse ({words})")
+
+    saved, saved_root = qi_platform.Client, ROOT
+    qi_platform.Client = Catalogue  # type: ignore[misc,assignment]
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            # The receipt names the control relative to the repository root; the test's root is the temporary one.
+            globals()["ROOT"] = root
+            series, twin_dir, runs = root / "cases" / SERIES, root / "cases" / TWIN_SERIES, root / "runs"
+            write(series, files)
+            write(twin_dir, twin)
+            runs.mkdir()
+            twin_shots = json.loads(twin["batch-00/cases.json"])["shots"]
+            control = root / "control.json"
+            control.write_text(json.dumps(analyze_series(*synthetic(twin, ideal, (0.0, 0.0), 21, twin_shots))))
+            refused(lambda: submit_next(series, runs, "", None, True), "needs --control")
+            local = root / "local.json"
+            local.write_text(json.dumps({**json.loads(control.read_text()), "claim_kind": "emulator control"}))
+            refused(lambda: submit_next(series, runs, "", local, True), "remote")
+            submit_next(series, runs, "", control, True)
+
+            def collect(batch: str, flips: dict[tuple[str, str], dict[int, tuple[float, float]]], status: str) -> Path:
+                run_dir = runs / f"2026-10-22T000000Z-{SERIES}-{batch}"
+                shutil.copytree(series / batch, run_dir)
+                _, raw, _ = synthetic(files, ideal, (0.02, 0.04), 22, SHOTS, ref_flips=flips)
+                (run_dir / "raw").mkdir()
+                jobs = []
+                for n, row in enumerate(json.loads((run_dir / "cases.json").read_text())["circuits"]):
+                    (run_dir / "raw" / f"{row['file']}.json").write_text(json.dumps(raw[(batch, row["file"])]))
+                    jobs.append({"file": row["file"], "job": {"id": n, "status": status if n == 0 else "completed"}})
+                (run_dir / "results.json").write_text(json.dumps({"jobs": jobs}))
+                return run_dir
+
+            done = collect("batch-00", {}, "completed")
+            receipt_dir, _ = submit_next(series, runs, "", control, True)
+            if receipt_dir.name != f"2026-10-22T000000Z-{SERIES}-batch-01":
+                raise AssertionError(f"the gate chose {receipt_dir.name}")
+            shutil.rmtree(done)
+            collect("batch-00", {("batch-00", READOUT_ONE): {13: (0.02, 0.2)}}, "completed")
+            refused(lambda: submit_next(series, runs, "", control, True), "preregistered stop fired")
+            shutil.rmtree(done)
+            collect("batch-00", {}, "failed")
+            refused(lambda: submit_next(series, runs, "", control, True), "the series stops")
+            shutil.rmtree(done)
+            collect("batch-01", {}, "completed")
+            refused(lambda: submit_next(series, runs, "", control, True), "later batch was submitted")
+            shutil.rmtree(runs / f"2026-10-22T000000Z-{SERIES}-batch-01")
+            failing = json.loads(control.read_text())
+            failing["control_verdict"] = {"pass": False, "misses": ["synthetic"]}
+            control.write_text(json.dumps(failing))
+            refused(lambda: submit_next(series, runs, "", control, True), "missed its ideal")
+            backend = {**backend, "gateset": [*backend["gateset"], "extra"]}
+            control.write_text(json.dumps({**failing, "control_verdict": {"pass": True}}))
+            refused(lambda: submit_next(series, runs, "", control, True), "compiler configuration differs")
+    finally:
+        qi_platform.Client = saved  # type: ignore[misc]
+        globals()["ROOT"] = saved_root
+
+
 def self_test() -> None:
     all_files = build()
     files = all_files[SERIES]
@@ -1694,20 +2155,21 @@ def self_test() -> None:
 
     def coverage(analysis: dict[str, Any], want: Callable[[str], float]) -> float:
         hits = [
-            c["score_readout_corrected_ci95_bootstrap"][0]
-            <= want(c["state"])
-            <= c["score_readout_corrected_ci95_bootstrap"][1]
+            c["score_tensor_model_ci95_jeffreys"][0] <= want(c["state"]) <= c["score_tensor_model_ci95_jeffreys"][1]
             for c in analysis["cells"]
             if c["kind"] == "witness"
         ]
         return sum(hits) / len(hits)
 
     def quiet(analysis: dict[str, Any]) -> bool:
-        return not any(p["violation"] for name, p in analysis["contraction"].items() if name.startswith("patch"))
+        return not any(p["rejects_model"] for name, p in analysis["contraction"].items() if name.startswith("patch"))
+
+    def phase_quiet(analysis: dict[str, Any]) -> bool:
+        return not any(p["phase_flag"] or p["exploratory_flags"] for p in analysis["quadrature"].values())
 
     clean = run(ideal_distribution, (0.0, 0.0), 1)
     witness_cells = [c for c in clean["cells"] if c["kind"] == "witness"]
-    if len(witness_cells) != 36 or len(clean["cells"]) != 45:
+    if len(witness_cells) != 36 or len(clean["cells"]) != 51:
         raise AssertionError(f"{len(witness_cells)} witness cells and {len(clean['cells'])} cells")
     for cell in witness_cells:
         low, high = cell["score_ci95_empirical_bernstein"]
@@ -1715,10 +2177,10 @@ def self_test() -> None:
             raise AssertionError(f"{cell['state']}: ideal shots read {cell['score_mean']}")
         if (
             abs(cell["score_mean"] - ideal[cell["state"]]) > 0.02
-            or abs(cell["score_readout_corrected"] - ideal[cell["state"]]) > 0.02
+            or abs(cell["score_tensor_model_mitigated"] - ideal[cell["state"]]) > 0.02
         ):
             raise AssertionError(f"{cell['state']}: ideal shots read {cell['score_mean']}")
-    if not quiet(clean) or any(p["violation"] for p in clean["quadrature"].values()):
+    if not quiet(clean) or not phase_quiet(clean) or clean["primary_endpoints"]["rejects_model"]:
         raise AssertionError("ideal shots violate the contraction law or the quadrature nulls")
     if any(abs(p["phi_rad"]) > 4 * p["phi_se"] for p in clean["quadrature"].values()) or len(clean["quadrature"]) != 3:
         raise AssertionError("ideal shots do not read phi = 0")
@@ -1757,8 +2219,10 @@ def self_test() -> None:
     for cell in cell_map(biased).values():
         want = (1 - lam) * ideal[cell["state"]] + lam * 0.5
         shifts.append(abs(cell["score_mean"] - want))
-        if abs(cell["score_readout_corrected"] - want) > 0.02:
-            raise AssertionError(f"{cell['state']}: corrected score {cell['score_readout_corrected']}, expected {want}")
+        if abs(cell["score_tensor_model_mitigated"] - want) > 0.02:
+            raise AssertionError(
+                f"{cell['state']}: mitigated score {cell['score_tensor_model_mitigated']}, expected {want}"
+            )
     if max(shifts) < 0.02:
         raise AssertionError("the assignment error did not move any raw score")
     if coverage(biased, lambda s: (1 - lam) * ideal[s] + lam * 0.5) < 0.8:
@@ -1774,7 +2238,7 @@ def self_test() -> None:
         return outcome_distribution(unitary @ state_vector(entries[name]), basis)
 
     rotated = run(coherent, (0.0, 0.0), 4)
-    if not all(p["violation"] for name, p in rotated["contraction"].items() if name.startswith("patch")):
+    if not all(p["rejects_model"] for name, p in rotated["contraction"].items() if name.startswith("patch")):
         raise AssertionError("a coherent error escaped the contraction law on some patch")
     first = rotated["contraction"]["patch-0"]["pairs_kernel_plus_bright_minus_one"]
     if max(abs(row["residual"]) for row in first) < 0.1:
@@ -1814,7 +2278,17 @@ def self_test() -> None:
     if np.max(np.abs(np.array(unassign(freq, rates)) - solved)) > 1e-12:
         raise AssertionError("unassign differs from the linear solve")
     boot = BootstrapCell(score_vector(), 64)
-    task = (tuple(int(x) for x in rng.multinomial(2000, freq)), 2000, tuple((120, 2000, 90, 2000) for _ in range(4)), 5)
+    ref0_p: np.ndarray = np.ones(1)
+    ref1_p: np.ndarray = np.ones(1)
+    for _ in range(4):
+        ref0_p = np.kron(ref0_p, [0.94, 0.06])
+        ref1_p = np.kron(ref1_p, [0.045, 0.955])
+    task = (
+        tuple(int(x) for x in rng.multinomial(2000, freq)),
+        tuple(int(x) for x in rng.multinomial(2000, ref0_p)),
+        tuple(int(x) for x in rng.multinomial(2000, ref1_p)),
+        5,
+    )
     f_b, a_b, c_b = boot.replicates(task)
     batched = expectation_batch(score_vector(), unassign_batch(f_b, a_b, c_b))
     scalar = [
@@ -1823,21 +2297,19 @@ def self_test() -> None:
     ]
     if [float(x).hex() for x in batched] != [float(x).hex() for x in scalar]:
         raise AssertionError("the batched bootstrap differs from the scalar reference in its bits")
-    wide = run(depolarized, (0.03, 0.08), 7, ref_shots=256, shots=4096)
-    narrow = run(depolarized, (0.03, 0.08), 7, ref_shots=32768, shots=4096)
+    # Short references widen the interval: one witness cell against references of 256 and of 32768 shots.
+    witness_counts = tuple(int(x) for x in rng.multinomial(4096, freq))
 
-    def mean_width(analysis: dict[str, Any]) -> float:
-        return float(
-            np.mean(
-                [
-                    c["score_readout_corrected_ci95_bootstrap"][1] - c["score_readout_corrected_ci95_bootstrap"][0]
-                    for c in analysis["cells"]
-                    if c["kind"] == "witness"
-                ]
-            )
+    def ref_counts(shots: int, p: np.ndarray) -> tuple[int, ...]:
+        return tuple(int(x) for x in np.round(p * shots).astype(int))
+
+    def width(shots: int) -> float:
+        low, high = BootstrapCell(score_vector(), 2000)(
+            (witness_counts, ref_counts(shots, ref0_p), ref_counts(shots, ref1_p), 3)
         )
+        return high - low
 
-    if mean_width(wide) < 1.15 * mean_width(narrow):
+    if width(256) < 1.15 * width(32768):
         raise AssertionError("short readout references do not widen the corrected-score interval")
 
     # References: drift, a batch-00 breach, no-drift control and a neighbor-conditioned shift of q13 given q11.
@@ -1878,10 +2350,68 @@ def self_test() -> None:
 
     # The QX twin analyzed noiselessly reads the same cells.
     twin_run = run(ideal_distribution, (0.0, 0.0), 12, series=twin)
-    if len(twin_run["cells"]) != 45 or twin_run["claim_kind"] != "preregistered emulator control":
+    if len(twin_run["cells"]) != 51 or twin_run["claim_kind"] != "preregistered emulator control":
         raise AssertionError("the twin analysis lost cells")
-    if not quiet(twin_run) or any(p["violation"] for p in twin_run["quadrature"].values()):
+    if not quiet(twin_run) or not phase_quiet(twin_run):
         raise AssertionError("the noiseless twin violates the contraction law or the nulls")
+    if not twin_run["control_verdict"]["pass"]:
+        raise AssertionError(f"the noiseless twin misses its control verdict: {twin_run['control_verdict']}")
+    off = run(depolarized, (0.0, 0.0), 12, series=twin)
+    if off["control_verdict"]["pass"]:
+        raise AssertionError("a depolarized twin passed the control verdict")
+
+    # The tensor model is withheld on every cell whose patch holds a context-flagged qubit (q13 sits on patch 1).
+    withheld = {
+        c["patch"] for c in contextual["cells"] if c["kind"] == "witness" and c["score_tensor_model_mitigated"] is None
+    }
+    if withheld != {1} or contextual["tensor_model_rejected_on_qubits"] != [13]:
+        raise AssertionError(f"context withholding on patches {sorted(withheld)}")
+    if any(c["score_tensor_model_mitigated"] is None for c in steady["cells"] if c["kind"] == "witness"):
+        raise AssertionError("steady references withheld a mitigated score")
+
+    # A stop fired by an assignment matrix too poor to invert returns the stop, not an inversion error.
+    ruined = run(ideal_distribution, (0.02, 0.04), 9, ref_flips={("batch-00", READOUT_ONE): {13: (0.02, 0.6)}})
+    if ruined["claim_kind"] != STOPPED_CLAIM or ruined["cells"] is not None:
+        raise AssertionError("a singular batch-00 reference escaped the stop")
+
+    # Visibility differing between the witnesses and the matched quadrature circuits: the matched phase
+    # stays unbiased and the context comparison flags the witnesses' cosine amplitude.
+    def unmatched(name: str, kind: str = "witness") -> np.ndarray:
+        basis = QUADRATURE_BASIS if kind == "quadrature" else WITNESS_BASIS
+        mix = 0.85 if kind == "witness" else 0.7
+        return mix * outcome_distribution(branch_phase_state(name, 0.1), basis) + (1 - mix) * uniform
+
+    matched = run(unmatched, (0.0, 0.0), 15, shots=32768)
+    for name, row in matched["quadrature"].items():
+        if abs(row["phi_rad"] - 0.1) > 4 * row["phi_se"]:
+            raise AssertionError(f"{name}: matched phase {row['phi_rad']} biased against 0.1")
+        if not row["witness_cos_minus_matched_cos"]["flag"]:
+            raise AssertionError(f"{name}: a 0.15 visibility difference escaped the context comparison")
+
+    # An unresolved amplitude withholds the phase: zero visibility on every circuit of the phase pair.
+    def flat(name: str, kind: str = "witness") -> np.ndarray:
+        return uniform if name in {"k1", "b1"} and kind != "witness" else ideal_distribution(name, kind)
+
+    blind = run(flat, (0.0, 0.0), 16)
+    if any(row["visibility_supported"] or row["phi_rad"] is not None for row in blind["quadrature"].values()):
+        raise AssertionError("a phase was reported at unresolved visibility")
+
+    # Boundary-aware intervals: every shot in one outcome with perfect references keeps a positive width.
+    point = BootstrapCell(score_vector(), 400)(((1000, *[0] * 15), (1000, *[0] * 15), (*[0] * 15, 1000), 0))
+    if not point[1] > point[0]:
+        raise AssertionError(f"an all-one-outcome cell has the zero-width interval {point}")
+
+    # Shot strings holding anything but the binary outcome digits 0 and 1 are refused with their source.
+    for malformed in (["xxxx"], ["01-1"], ["0\u00e91"]):
+        try:
+            shot_bits(malformed, 4, "batch-09/witness-99.cq")
+        except SystemExit as exc:
+            if "batch-09/witness-99.cq" not in str(exc):
+                raise AssertionError(f"shot parse error lacks its source: {exc}") from exc
+        else:
+            raise AssertionError(f"shot strings {malformed} parsed")
+
+    series_gate_self_test(files, twin, synthetic_series, ideal_distribution)
 
     # Pooled variance with the joint per-shot scores: independent reconstruction from the combined series.
     g_vec = score_vector()
@@ -1938,8 +2468,9 @@ def self_test() -> None:
         f"qi bdsc pauli: {len(files)} Tuna files and {len(twin)} QX twin files; native X90 and mY90 verified "
         f"(U P U^dagger = Z, spec R_n forms, pauli_form.json probabilities); balance tables "
         f"{len(tables['state_patch_cells'])} state-patch cells; quadrature {derivation}; "
-        f"36 witness and 9 quadrature cells pass the ideal, depolarized, readout-biased, coherent, branch-phase, "
-        f"drift, breach, context and twin series; {cost['jobs']} jobs, {cost['execution_seconds']} s, "
+        f"36 witness and 15 quadrature and cosine cells pass the ideal, depolarized, readout-biased, coherent, "
+        f"branch-phase, matched-visibility, unresolved-phase, drift, breach, context and twin series; the series "
+        f"gate refuses every stop offline; {cost['jobs']} jobs, {cost['execution_seconds']} s, "
         f"{cost['wall_seconds']} s wall"
     )
 
@@ -1953,7 +2484,14 @@ def main() -> int:
     mode.add_argument("--select-placement", action="store_true", help="rank the placements PLACEMENT is chosen from")
     mode.add_argument("--analyze", type=Path, nargs="+", metavar="RUN_DIR", help="the batches of one series")
     mode.add_argument("--references", type=Path, nargs="+", metavar="RUN_DIR", help="the batches loaded so far")
+    mode.add_argument(
+        "--submit-next", type=Path, metavar="SERIES_DIR", help="gate and submit the next batch of a case series"
+    )
     parser.add_argument("--out", type=Path, help="with --analyze: the analysis file (default RUN_DIR/analysis.json)")
+    parser.add_argument("--runs", type=Path, default=ROOT / "results/quantum_inspire/runs", help="with --submit-next")
+    parser.add_argument("--approval", help="with --submit-next: the owner's approval, quoted")
+    parser.add_argument("--control", type=Path, help="with --submit-next on Tuna-17: the QX twin's analysis")
+    parser.add_argument("--dry", action="store_true", help="with --submit-next: print the receipt, send nothing")
     args = parser.parse_args()
     if args.self_test:
         self_test()
@@ -1969,7 +2507,16 @@ def main() -> int:
         return 0 if first else 1
     if args.references:
         cases, raw, _ = load_series(args.references)
-        print(json.dumps(reference_report(cases, raw), indent=1))
+        require_full_shots(cases, raw)
+        report = reference_report(cases, raw)
+        print(json.dumps(report, indent=1))
+        return 1 if report["stop_condition_batch_00"] or report["bracket_drift"]["flagged"] else 0
+    if args.submit_next:
+        if not args.dry and not (args.approval or "").strip():
+            parser.error("--submit-next needs --approval")
+        run_dir, receipt = submit_next(args.submit_next, args.runs, args.approval or "", args.control, args.dry)
+        if args.dry:
+            print(json.dumps({"run_dir": run_dir.name, **receipt}, indent=1))
         return 0
     if args.analyze:
         if len(args.analyze) > 1 and args.out is None:
