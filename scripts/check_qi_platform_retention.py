@@ -618,6 +618,69 @@ class RetentionChecks(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "finite"):
                     platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=deadline)
 
+    def test_unauthorized_project_expiry_retains_proven_rejection_and_attempt(self) -> None:
+        client = FakeClient(self.case_dir)
+        transport = platform.Client.__new__(platform.Client)
+        transport.expires = 10000
+        transport.session = Mock()
+        transport.session.request.return_value.status_code = 401
+        clock = [1.0]
+
+        def refresh() -> None:
+            clock[0] = 11.0
+
+        with (
+            patch.object(platform, "Client", return_value=client),
+            patch.object(platform.time, "time", return_value=100.0),
+            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
+            patch.object(transport, "refresh", side_effect=refresh),
+            patch.object(client, "post", side_effect=transport.post),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+        self.assertEqual(transport.session.request.call_count, 1)
+        state = json.loads((self.case_dir / "submission-state.json").read_text())
+        self.assertEqual(state["phase"], "resource-request-rejected")
+        self.assertEqual(state["resource_requests_dispatched"], 1)
+        self.assertEqual(state["resource_requests_applied"], 0)
+        self.assertEqual(state["rejected_request"], {"method": "POST", "path": "/projects", "status_code": 401})
+        self.assertFalse(platform.pre_dispatch_refused(self.case_dir, state["cases_sha256"]))
+        self.assertTrue(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+        self.assert_retry_blocked()
+        with self.assertRaisesRegex(platform.PlatformError, "401.*separately approved"):
+            self.reconcile(client)
+
+    def test_rejection_after_project_creation_keeps_partial_resource_boundary(self) -> None:
+        for rejected_path in ("/batch_jobs", "/algorithms", "/jobs"):
+            with self.subTest(rejected_path=rejected_path):
+                client = FakeClient(self.case_dir)
+                original_post = client.post
+
+                def post(
+                    path: str,
+                    body: dict[str, Any],
+                    *,
+                    execution_deadline: float | None = None,
+                    rejected_path: str = rejected_path,
+                    original_post: Any = original_post,
+                ) -> Any:
+                    if path == rejected_path:
+                        raise platform.RequestRejectedBeforeRetry("POST", path)
+                    return original_post(path, body, execution_deadline=execution_deadline)
+
+                with patch.object(client, "post", side_effect=post):
+                    with self.assertRaises(platform.RequestRejectedBeforeRetry):
+                        self.submit(client)
+                state_path = self.case_dir / "submission-state.json"
+                state = json.loads(state_path.read_text())
+                self.assertEqual(state["phase"], "creating")
+                self.assertIn("project", state)
+                if rejected_path != "/batch_jobs":
+                    self.assertIn("batch_job", state)
+                self.assertFalse(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+                self.assert_retry_blocked()
+                state_path.unlink()
+
     def test_refresh_expiry_blocks_initial_dispatch_and_unauthorized_retry(self) -> None:
         for retry in (False, True):
             with self.subTest(retry=retry):
@@ -639,7 +702,7 @@ class RetentionChecks(unittest.TestCase):
                     patch.object(platform.time, "monotonic", side_effect=current_time),
                     patch.object(client, "refresh", side_effect=refresh),
                 ):
-                    with self.assertRaisesRegex(TimeoutError, "request initiation"):
+                    with self.assertRaisesRegex(TimeoutError, "deadline"):
                         client.post("/projects", {}, execution_deadline=10.0)
                 self.assertEqual(session.request.call_count, int(retry))
 

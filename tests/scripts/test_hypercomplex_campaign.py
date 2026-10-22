@@ -295,3 +295,52 @@ def test_pre_dispatch_checkpoint_is_a_refusal_and_uncertain_checkpoint_is_an_acq
     (first / "preflight-refusal.json").unlink()
     if qi_platform.run_directories(tmp_path) != [first]:
         raise RuntimeError("uncertain creation must retain its reconciliation boundary")
+
+
+def test_unauthorized_first_request_remains_an_attempted_refusal(tmp_path, monkeypatch) -> None:
+    import qi_platform
+
+    write_files(tmp_path, qi_cases(16))
+    approved = campaign_plan(tmp_path)["plan_sha256"]
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: 0)
+
+    def rejected(batch, backend, approval, *, expected_cases_sha256, execution_deadline):
+        qi_platform._write_json(
+            batch / "submission-state.json",
+            {
+                "schema": qi_platform.SUBMISSION_STATE_SCHEMA,
+                "phase": "resource-request-rejected",
+                "resource_request_attempted": True,
+                "resource_requests_dispatched": 1,
+                "resource_requests_applied": 0,
+                "rejected_request": {"method": "POST", "path": "/projects", "status_code": 401},
+                "cases_sha256": expected_cases_sha256,
+                "jobs": [],
+            },
+            exclusive=True,
+        )
+        raise qi_platform.RequestRejectedBeforeRetry("POST", "/projects")
+
+    monkeypatch.setattr(qi_platform, "submit", rejected)
+    with pytest.raises(qi_platform.RequestRejectedBeforeRetry, match="401"):
+        execute(tmp_path, "fixture approval", approved, 60)
+    first = sorted(tmp_path.glob("*/cases.json"))[0].parent
+    if (first / "preflight-refusal.json").exists():
+        raise RuntimeError("a received 401 must retain the attempted request rather than a zero-dispatch refusal")
+    if qi_platform.run_directories(tmp_path):
+        raise RuntimeError("a known unapplied first request must stay outside acquired jobs")
+    state_path = first / "submission-state.json"
+    state = json.loads(state_path.read_text())
+    for mutation in (
+        {"phase": "pre-dispatch-refused", "resource_requests_dispatched": 0},
+        {"resource_requests_dispatched": True},
+        {"resource_requests_applied": False},
+        {"resource_request_attempted": False},
+        {"rejected_request": {"method": "POST", "path": "/projects", "status_code": 401.0}},
+        {"rejected_request": {"method": "POST", "path": "/projects", "status_code": 500}},
+        {"project": 1},
+    ):
+        state_path.write_text(json.dumps({**state, **mutation}))
+        if qi_platform.creation_refused(first, state["cases_sha256"]):
+            raise RuntimeError("invalid or uncertain attempted-request evidence must keep the reconciliation boundary")

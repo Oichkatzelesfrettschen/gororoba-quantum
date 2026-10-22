@@ -180,7 +180,7 @@ def run_directories(runs: Path = RUNS) -> list[Path]:
                     if artifacts and not pre_dispatch_refused(path, batches[name]):
                         raise ValueError("campaign preflight refusal conflicts with acquisition artifacts")
                     continue
-                if pre_dispatch_refused(path, batches[name]):
+                if creation_refused(path, batches[name]):
                     continue
                 retained.append(path)
             return retained
@@ -214,6 +214,15 @@ class PlatformError(RuntimeError):
 
 class RequestNotDispatched(TimeoutError):
     """The initial logical resource request was refused before transport dispatch."""
+
+
+class RequestRejectedBeforeRetry(TimeoutError):
+    """One dispatched request received HTTP 401; its replacement was refused locally."""
+
+    def __init__(self, method: str, path: str) -> None:
+        super().__init__("execution deadline expired before retry of the HTTP 401 rejected request")
+        self.method = method
+        self.path = path
 
 
 class Client:
@@ -283,7 +292,10 @@ class Client:
         response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
         if response.status_code == 401:
             self.refresh()
-            _check_execution_deadline(execution_deadline)
+            try:
+                _check_execution_deadline(execution_deadline)
+            except TimeoutError as error:
+                raise RequestRejectedBeforeRetry(method, path) from error
             response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
         if response.status_code >= 400:
             raise PlatformError(f"{method} {path}: {response.status_code} {response.text[:500]}")
@@ -677,6 +689,36 @@ def pre_dispatch_refused(case_dir: Path, cases_sha256: str) -> bool:
         and state.get("phase") == "pre-dispatch-refused"
         and type(state.get("resource_requests_dispatched")) is int
         and state["resource_requests_dispatched"] == 0
+        and not any(
+            name in state for name in ("resource_request_attempted", "resource_requests_applied", "rejected_request")
+        )
+        and state.get("cases_sha256") == cases_sha256
+        and state.get("jobs") == []
+        and "project" not in state
+        and "batch_job" not in state
+        and not any((case_dir / name).exists() for name in ("submission.json", "results.json", "raw"))
+    )
+
+
+def creation_refused(case_dir: Path, cases_sha256: str) -> bool:
+    """Accept zero-dispatch proof or one received 401 rejection, keeping the distinction."""
+    if pre_dispatch_refused(case_dir, cases_sha256):
+        return True
+    state_path = case_dir / "submission-state.json"
+    if not state_path.exists():
+        return False
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    return (
+        isinstance(state, dict)
+        and state.get("schema") == SUBMISSION_STATE_SCHEMA
+        and state.get("phase") == "resource-request-rejected"
+        and state.get("resource_request_attempted") is True
+        and type(state.get("resource_requests_dispatched")) is int
+        and state["resource_requests_dispatched"] == 1
+        and type(state.get("resource_requests_applied")) is int
+        and state["resource_requests_applied"] == 0
+        and state.get("rejected_request") == {"method": "POST", "path": "/projects", "status_code": 401}
+        and type(state["rejected_request"]["status_code"]) is int
         and state.get("cases_sha256") == cases_sha256
         and state.get("jobs") == []
         and "project" not in state
@@ -824,6 +866,18 @@ def _submit(
         state.update(phase="pre-dispatch-refused", resource_requests_dispatched=0)
         _write_json(state_path, state)
         raise
+    except RequestRejectedBeforeRetry as error:
+        if error.method == "POST" and error.path == "/projects":
+            # RFC 9110 section 15.5.2: a received 401 means the request was not applied.
+            state.update(
+                phase="resource-request-rejected",
+                resource_request_attempted=True,
+                resource_requests_dispatched=1,
+                resource_requests_applied=0,
+                rejected_request={"method": error.method, "path": error.path, "status_code": 401},
+            )
+            _write_json(state_path, state)
+        raise
     state["project"] = project["id"]
     _write_json(state_path, state)
     batch = client.post("/batch_jobs", {"backend_type_id": backend_type_id})
@@ -904,6 +958,11 @@ def reconcile(case_dir: Path) -> None:
         raise PlatformError(
             "durable checkpoint proves zero resource requests dispatched; "
             "preserve it and prepare a separately approved case"
+        )
+    if creation_refused(case_dir, state["cases_sha256"]):
+        raise PlatformError(
+            "the first resource request received HTTP 401 and was not applied; "
+            "preserve its attempted-request receipt and prepare a separately approved case"
         )
     batch_id = state.get("batch_job")
     if batch_id is None:
