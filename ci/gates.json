@@ -3912,6 +3912,14 @@
    "name": "core-630",
    "seconds": 10.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate.json",
+   "name": "core-631",
+   "seconds": 1.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

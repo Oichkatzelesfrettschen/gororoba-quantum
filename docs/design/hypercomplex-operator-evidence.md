@@ -19,6 +19,8 @@ The programme tests finite algebra and faithful circuit encodings before spendin
 
 The [source-bound certificate](../evidence/hypercomplex-operators/README.md) records the executable subset. Soler-type field-choice results require their hypotheses; they do not classify every finite operational theory. Kramers symmetry concerns an antiunitary commuting with a Hamiltonian, while quaternionic linear dynamics commute with their quaternionic structure at the unitary level. The distinction matters when multiplication by the chosen complex imaginary unit changes sign under an antiunitary.
 
+The [eight-generator sedenion envelope](../evidence/sedenion-clifford-envelope/README.md) supplies a complementary positive result: `L_e1` through `L_e8` satisfy `Cl(0,8)` and their 256 words span `M16(R)`. The full fifteen-generator failure does not exclude this subset. The operator result supports finite encoding controls while retaining the coefficient algebra limitations.
+
 ## Literature corrections
 
 The [source index](../INDEX.md#hypercomplex-operator-audit-sources) binds eight exact versions and their reading scopes. Furey's 2018 EPJC article is **1806.00612**, not 1702.04336. DOI 10.1038/s41598-021-01814-1 names **N. Masi**, rather than Gresnigt. The sister Rust repository repairs those canonical bibliography records and generated mirrors.
@@ -39,7 +41,7 @@ The left-i Fourier transform has two conjugate complex channels. The right-j tra
 
 ## Library admission and device routing
 
-The [distribution inventory](../evidence/hypercomplex-operators/libraries.md) explains each declared distribution and considered scientific alternative; its JSON preserves pins, host observations and import locations. The [existing algebra package rules](../notes/algebra_circuit_rules.md) retain every convention map. A package joins algebra evidence only after every basis product matches `cd_core` under its declared signed map. A wrapper shares its engine's independence boundary. Split-signature packages provide negative controls.
+The [distribution inventory](../state/hypercomplex-libraries/libraries.md) explains each declared distribution and considered scientific alternative; its JSON preserves pins, host observations and import locations. The [existing algebra package rules](../notes/algebra_circuit_rules.md) retain every convention map. A package joins algebra evidence only after every basis product matches `cd_core` under its declared signed map. A wrapper shares its engine's independence boundary. Split-signature packages provide negative controls.
 
 Use NumPy/SciPy/SymPy for array, propagation and exact certificates; use qualified hypercomplex libraries for independent arithmetic witnesses. Use Qiskit for native compilation and operator comparison, Perceval for complete photonic mesh checks, and the isolated Quantum Inspire stack for cQASM parsing and local QX semantics. Use mitigation packages for sensitivity analyses with explicit calibration assumptions. Infrastructure dependencies support SDKs and supply no independent mathematical witness.
 

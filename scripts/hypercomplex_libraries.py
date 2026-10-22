@@ -19,6 +19,9 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 ROLES = {
     "hypercomplex": "Independent recursive CD products; Fraction-based exact witnesses.",
     "hypercomplex-engine": "Fast basis signs and higher-dimensional finite checks.",
@@ -102,6 +105,13 @@ ROLES = {
     "ruff": "Pinned lint and format gate.",
     "mypy": "Pinned static type gate.",
     "threadpoolctl": "Inspect and bound native BLAS/OpenMP threads.",
+    "qbraid": "Documented multi-provider SDK alternative; current cases use the repository's guarded clients.",
+    "coheriq": "Documented ecosystem alternative outside the maintained IBM execution workflow.",
+    "benchpress": "Documented compiler benchmark alternative; qualification needs the same full-operator oracle.",
+    "mapomatic": "Layout-search candidate; admit only against fresh targets and measured layout controls.",
+    "qiskit-dynamics": "Continuous-system simulation alternative; the retained note records its archive status.",
+    "gmpy2": "Exact integer/rational arithmetic and accelerated symbolic coefficient support.",
+    "mpmath": "Arbitrary-precision numerical controls; convergence and precision need explicit error budgets.",
 }
 INDEPENDENT = {
     "hypercomplex",
@@ -143,9 +153,72 @@ def normalized(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name).lower()
 
 
+def _file_imports(filename: str) -> tuple[str, list[str]]:
+    roots: set[str] = set()
+    for node in ast.walk(ast.parse((ROOT / filename).read_text())):
+        if isinstance(node, ast.Import):
+            roots.update(alias.name.split(".")[0] for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            roots.add(node.module.split(".")[0])
+    return filename, sorted(roots)
+
+
 def inventory() -> dict[str, Any]:
     declarations: dict[str, dict[str, str]] = {name: {} for name in ROLES}
     sources: dict[str, str] = {}
+    documentary_roles: dict[str, str] = {}
+    mentions: dict[str, list[str]] = {}
+    for path in sorted((ROOT / "docs/notes").glob("*/pypi/*.json")):
+        record = json.loads(path.read_text())
+        if not isinstance(record, dict) or not isinstance(record.get("name"), str):
+            continue
+        name = normalized(record["name"])
+        relative = path.relative_to(ROOT).as_posix()
+        sources[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+        declarations.setdefault(name, {})
+        mentions.setdefault(name, []).append(relative)
+        documentary_roles[name] = str(record.get("summary", "Provider SDK support dependency"))
+    for relative in ("docs/notes/qiskit-ecosystem.md", "docs/notes/packages/candidates.md"):
+        path = ROOT / relative
+        sources[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+        active_table = relative.endswith("candidates.md")
+        for line_number, line in enumerate(path.read_text().splitlines(), 1):
+            if line.startswith("## Table A"):
+                active_table = True
+            if line.startswith("## Host import health"):
+                active_table = False
+            if not active_table:
+                continue
+            cells = [cell.strip() for cell in line.split("|")[1:-1]]
+            if not cells:
+                continue
+            ranked = relative.endswith("candidates.md")
+            if ranked and (not cells[0].isdigit() or len(cells) < 4):
+                continue
+            if not ranked and len(cells) not in (5, 9):
+                continue
+            first = cells[1] if ranked else cells[0]
+            if ranked and first.startswith("PyPI "):
+                first = first.removeprefix("PyPI ")
+            if ranked and first.startswith("surreal-number packages"):
+                first = "surreal"
+            candidates = (
+                [first] + re.findall(r",\s*([a-z][A-Za-z0-9_.-]+)\s+(?=\d)", first) if ranked else first.split(",")
+            )
+            for candidate in candidates:
+                match = re.match(r"^`?([A-Za-z][A-Za-z0-9_.-]*)(?:`?\s|`?$)", candidate.strip())
+                if not match:
+                    continue
+                name = normalized(match[1])
+                if name in {"package", "mcp-server"}:
+                    continue
+                name = {"python-hypercomplex": "hypercomplex"}.get(name, name)
+                declarations.setdefault(name, {})
+                mentions.setdefault(name, []).append(f"{relative}:{line_number}")
+                if ranked:
+                    documentary_roles[name] = f"Documented algebra candidate: {cells[2]}. Decision: {cells[-1]}"
+                elif len(cells) == 9:
+                    documentary_roles[name] = f"Documented ecosystem candidate: {cells[-1]}"
     for path in sorted(ROOT.rglob("*requirements*.txt")):
         relative = path.relative_to(ROOT).as_posix()
         if path.is_file() and not any(part.startswith(".") for part in path.relative_to(ROOT).parts):
@@ -165,32 +238,22 @@ def inventory() -> dict[str, Any]:
     local_modules = {Path(name).stem for name in tracked if name}
     imports: dict[str, set[str]] = {}
     unresolved: set[str] = set()
-    for filename in tracked:
-        if not filename or not filename.startswith(("gororoba_quantum/", "scripts/", "ci/", "kaggle_kernel/")):
-            continue
-        tree = ast.parse((ROOT / filename).read_text())
-        for node in ast.walk(tree):
-            roots = (
-                [alias.name.split(".")[0] for alias in node.names]
-                if isinstance(node, ast.Import)
-                else (
-                    [node.module.split(".")[0]]
-                    if isinstance(node, ast.ImportFrom) and node.module and not node.level
-                    else []
-                )
-            )
-            for root in roots:
-                if root in sys.stdlib_module_names or root in local_modules:
-                    continue
-                distributions = package_map.get(root, [])
-                if not distributions and root in ISOLATED_IMPORTS:
-                    distributions = [ISOLATED_IMPORTS[root]]
-                if not distributions:
-                    unresolved.add(root)
-                for distribution in distributions:
-                    name = normalized(distribution)
-                    declarations.setdefault(name, {})
-                    imports.setdefault(name, set()).add(filename)
+    runtime_files = [
+        name for name in tracked if name.startswith(("gororoba_quantum/", "scripts/", "ci/", "kaggle_kernel/"))
+    ]
+    for filename, roots in ordered_map(_file_imports, runtime_files):
+        for root in roots:
+            if root in sys.stdlib_module_names or root in local_modules:
+                continue
+            distributions = package_map.get(root, [])
+            if not distributions and root in ISOLATED_IMPORTS:
+                distributions = [ISOLATED_IMPORTS[root]]
+            if not distributions:
+                unresolved.add(root)
+            for distribution in distributions:
+                name = normalized(distribution)
+                declarations.setdefault(name, {})
+                imports.setdefault(name, set()).add(filename)
     rows = []
     for name, pins in sorted(declarations.items()):
         try:
@@ -205,7 +268,8 @@ def inventory() -> dict[str, Any]:
                 "distribution": name,
                 "declared_versions": pins,
                 "observed_host_version": observed,
-                "role": ROLES.get(name, f"SDK/environment infrastructure: {summary}"),
+                "role": ROLES.get(name, documentary_roles.get(name, f"SDK/environment infrastructure: {summary}")),
+                "documentation_mentions": sorted(set(mentions.get(name, []))),
                 "independent_algebra_witness": name in INDEPENDENT,
                 "hardware_execution": name in EXECUTION,
                 "imported_by": sorted(imports.get(name, set())),
@@ -219,7 +283,8 @@ def inventory() -> dict[str, Any]:
         "unresolved_import_roots": sorted(unresolved),
         "coverage": (
             "all requirements locks, retained IQM distributions, maintained scientific roles "
-            "and tracked runtime imports"
+            "and tracked runtime imports; every named package-table entry in the maintained ecosystem "
+            "and algebra-candidate notes, plus retained provider PyPI records"
         ),
     }
 
