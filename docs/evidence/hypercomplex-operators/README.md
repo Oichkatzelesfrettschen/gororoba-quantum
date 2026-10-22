@@ -1,6 +1,6 @@
 # Hypercomplex operator evidence
 
-`certificate.json` binds source hashes, exact derivation/stabilizer/Clifford checks, the even five-mode reference and seventeen matrix-propagated probability frames. `probability-evolution.html` displays those local simulation frames. The bundle contains mathematical computation rather than provider acquisitions.
+`certificate.json` binds source hashes, exact derivation/stabilizer/Clifford checks, the even five-mode reference and seventeen matrix-propagated probability frames. `probability-evolution.html` displays those local simulation frames. The certificates and probability explorer contain mathematical computations. The separately retained measured figure below renders the completed provider acquisitions.
 
 The successor [runtime annotation certificate](certificate-runtime-annotations.json) binds the type-only algebra import in the dynamics module. The import permits the campaign diagnostics to run in the isolated Quantum Inspire environment without loading SymPy. Exact observations agree with the original certificate; floating propagation agrees within the admitted replay tolerance. The original certificate and explorer retain their bytes.
 
@@ -17,4 +17,15 @@ Exact fields compare exactly. Floating probability and representative residual f
 
 The retained [library table](libraries.md) records 275 distributions. The expanded [current inventory](../../state/hypercomplex-libraries/libraries.md) also covers maintained ecosystem/candidate tables and provider PyPI records. `libraries.json` preserves environment-specific pins, observed host versions and import locations. Host observations are snapshots and can differ from the pinned CI or provider environments.
 
-The [design](../../design/hypercomplex-operator-evidence.md) states falsifiers and interpretation boundaries. The [runbook](../../runbooks/hypercomplex-operator-cases.md) states provider cases, pacing and approvals. Hardware acquisitions will supply separate raw records and measured renderings after approval.
+The [design](../../design/hypercomplex-operator-evidence.md) states falsifiers and interpretation boundaries. The [runbook](../../runbooks/hypercomplex-operator-cases.md) states provider cases, pacing and approvals. The approved Tuna-17 order pilot now supplies [raw acquisition records](../../../results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json) and the [measured probability figure](tuna-order-measured-probabilities.png). The [producer](tuna-order-measured-probabilities.py) verifies all eight bound batch analyses before rendering; the [metadata](tuna-order-measured-probabilities.json) binds the summary, producer, figure and Matplotlib version.
+
+The figure compares raw measured frequencies with ideal native complex-encoding predictions. Fixed chronological order and one acquisition per setting confound preparation, circuit effects, readout and drift. The observations establish neither representative equivalence nor fundamental quaternionic physics. Confidence-interval coverage remains unestablished.
+
+Replay the retained measured figure from the repository root:
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+"$PYTHON" -B -W error docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.py --check
+```
+
+The producer accepts repository-relative `--summary` and `--output` paths and refuses to replace differing retained bytes. A new rendering environment therefore requires a separately named successor.

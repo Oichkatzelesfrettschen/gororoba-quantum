@@ -81,6 +81,10 @@ identity or global right-j quaternion representative. Every science job contains
 | pi/4 | pi/4 | identity | 0.25 | 0.2669067383 |
 | pi/4 | pi/4 | right-j | 0.25 | 0.2703857422 |
 
+The [measured probability figure](../evidence/hypercomplex-operators/tuna-order-measured-probabilities.png)
+compares the raw frequencies with native predictions; its
+[retained producer and replay](../evidence/hypercomplex-operators/README.md) bind the source and rendering.
+
 Every contemporaneous output readout contrast exceeds the preregistered 0.2 acquisition guard;
 the observed contrasts range from 0.7619018555 to 0.92578125. The guard establishes acquisition
 quality only. The fixed chronological order and one acquisition per science setting leave
