@@ -1458,9 +1458,8 @@ def quadrature(cells: list[dict[str, Any]], patches: list[int]) -> dict[str, Any
 
         kx, bx, ex = find("quadrature", "k1"), find("quadrature", "b1"), find("quadrature", "e7")
         ky, by = find("witness", "k1"), find("witness", "b1")
-        if None in (kx, bx, ex, ky, by):
+        if kx is None or bx is None or ex is None or ky is None or by is None:
             continue
-        assert kx and bx and ex and ky and by  # noqa: S101 - narrows the Optional types for mypy
 
         def var(c: dict[str, Any]) -> float:
             return c["parity_variance"] / c["shots"]
