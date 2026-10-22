@@ -353,6 +353,15 @@ QC, shots, circuits, the expected billed seconds and credits, and the
 calibration set it was planned against. The MCP server submits nothing. A
 simulation of 14 qubits or fewer still runs on Kaggle or the build host.
 
+`scripts/iqm_jobs.py` is the submission path: `build` and `check` write and
+regenerate a case, `submit` posts one job of it to `/api/v1/jobs/{qc}/circuit`
+only for the approved cases.json digest, an online and healthy QC and a
+credit ceiling, after an exclusive `submission-state.json`, and `collect`
+keeps the job record and the measurements and counts artifacts byte for byte.
+`--dry` runs every refusal and sends nothing. The first case is the
+[Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
+later cases from measured billing.
+
 ## Gates and snapshot state
 
 CI never imports the stack: its gates read retained JSON with the standard

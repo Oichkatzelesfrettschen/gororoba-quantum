@@ -9880,6 +9880,21 @@
    "sys",
    "typing"
   ],
+  "scripts/iqm_jobs.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "iqm_platform",
+   "json",
+   "math",
+   "os",
+   "pathlib",
+   "shutil",
+   "sys",
+   "tempfile",
+   "time",
+   "typing"
+  ],
   "scripts/iqm_mcp_server.py": [
    "__future__",
    "anyio",

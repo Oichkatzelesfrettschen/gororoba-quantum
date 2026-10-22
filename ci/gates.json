@@ -3864,6 +3864,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/timing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py --self-test",
+   "name": "core-635",
+   "seconds": 0.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd",
    "name": "core-606",
    "seconds": 7.7,
