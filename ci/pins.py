@@ -119,12 +119,17 @@ def mismatches(python: str, pins: Mapping[str, str], patches: list[Path] | None 
     ]
     for patch in patches or []:
         with patch.open("rb") as stream:
-            applied = subprocess.run(
-                ["patch", "-R", "--dry-run", "-s", "-f", "-p1", "-d", probe["purelib"]],
-                stdin=stream,
-                capture_output=True,
-                check=False,
-            )
+            try:
+                applied = subprocess.run(
+                    ["patch", "-R", "--dry-run", "-s", "-f", "-p1", "-d", probe["purelib"]],
+                    stdin=stream,
+                    capture_output=True,
+                    check=False,
+                    timeout=120,
+                )
+            except (OSError, subprocess.TimeoutExpired) as error:
+                missing.append(f"{patch.name} could not be checked: {error}")
+                continue
         if applied.returncode != 0:
             missing.append(f"{patch.name} not applied")
     return missing

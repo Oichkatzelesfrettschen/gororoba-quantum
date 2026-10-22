@@ -96,6 +96,18 @@ def test_installer_state_enters_the_comparison() -> None:
         found = pins.environment_mismatches(sys.executable, {}, tree)
         if found != ["pip-package-that-is-absent absent (pin 2.0)", "absent.patch not applied"]:
             raise AssertionError(f"the installer state of a tree reads {found}")
+        # A host without the patch binary reports the patch unverified rather than raising.
+        run = pins.subprocess.run
+
+        def without_patch(argv: list[str], **options: Any) -> Any:
+            if argv[0] == "patch":
+                raise FileNotFoundError(2, "No such file or directory", "patch")
+            return run(argv, **options)
+
+        with patch.object(pins.subprocess, "run", without_patch):
+            found = pins.environment_mismatches(sys.executable, {}, tree)
+        if found[1:] != ["absent.patch could not be checked: [Errno 2] No such file or directory: 'patch'"]:
+            raise AssertionError(f"the installer state without the patch binary reads {found}")
 
 
 def test_host_environment_fallback() -> None:
