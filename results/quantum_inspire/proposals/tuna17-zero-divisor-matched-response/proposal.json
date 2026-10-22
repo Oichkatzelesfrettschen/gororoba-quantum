@@ -11,7 +11,7 @@
  "budget_basis": "retained 2.6 seconds fixed overhead plus 0.53 ms per shot; refresh before approval",
  "provider_execution_authorized": false,
  "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
- "source_sha256": "e391b5ed8eb3c3e7a360854e1ce4488914ff89ae0b362283ec41feb5e92420fb",
+ "source_sha256": "4f0a0fb26752a56b33a4e9f71c142f1617eaf5a4e6e1a5b369b7eaad4580b6e6",
  "regions": [
   {
    "qubits": [

@@ -9,7 +9,9 @@ import numpy as np
 import pytest
 
 
-@pytest.mark.parametrize("mutation", ["source", "dependency", "angle", "operands", "duplicate", "compiled"])
+@pytest.mark.parametrize(
+    "mutation", ["source", "dependency", "admission", "angle", "operands", "duplicate", "compiled"]
+)
 def test_toolchain_receipt_rejects_mutations(mutation: str) -> None:
     from qi_matched_zero_divisor import PROPOSAL, TOOLCHAIN_RECORD, validate_toolchain_record
 
@@ -18,6 +20,8 @@ def test_toolchain_receipt_rejects_mutations(mutation: str) -> None:
         record["source_sha256"] = "0" * 64
     elif mutation == "dependency":
         record["producer_sources_sha256"]["scripts/qi_toolchain_check.py"] = "0" * 64
+    elif mutation == "admission":
+        record["producer_sources_sha256"]["scripts/qi_platform.py"] = "0" * 64
     elif mutation == "angle":
         record["circuits"][0]["maximum_angle_serialization_error"] = 0.01
     elif mutation == "operands":

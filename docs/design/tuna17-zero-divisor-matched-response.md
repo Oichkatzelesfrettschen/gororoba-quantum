@@ -62,10 +62,12 @@ export QI_PYTHON
 ```
 
 The first command uses the pinned Qiskit replay runtime. The second checks the
-[source-closed compiler receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-source-closure.json)
+[admission-closed compiler receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-admission-closure.json)
 against the producer and its compiler/admission/adapter/pool sources, catalogue, locked toolchain
 and all nine circuit hashes. The [first receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain.json)
-retains its original bytes and top-level-only source binding. With `QI_PYTHON`
+retains its original bytes and top-level-only source binding. The
+[intermediate receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-source-closure.json)
+preserves the compiler closure before the backend batch-admission source was included. With `QI_PYTHON`
 set, the second command also repeats local parsing and compilation through the repository's
 `qi_stack` adapter and compares every receipt field. Gate `core-633` requires that live path
 in the Quantum Inspire CI stack; the ordinary stack checks the retained receipt explicitly.
