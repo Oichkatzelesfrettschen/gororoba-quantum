@@ -89,3 +89,22 @@ compiled circuit, without which a difference between the two preparation
 descriptions cannot be split into preparation and compilation. The cell
 readouts and their disposition land under `docs/evidence/bdsc/` with the
 run digests they read.
+
+## Amendment of 2026-10-22: tc-def-e2 as an engineering run
+
+Step 5 is amended for one job. tc-def-e2 is submitted before a completed
+platform calibration cycle since epoch 1 is documented, as an engineering
+validation of the live path at the reviewed collector revision: the
+freshly built body carries the requested policy, and the result, its
+iterations and any partial failure are retained and read correctly. qpu:belenos
+read `running` at plan time, and its published figures had moved from epoch
+1's (HOM 80.4 % against 87.3 to 87.8 %, transmittance 5.25 % against 6.05 to
+6.13 %, g2 0.9 % against 1.0 %). That movement shows a changed characterization,
+and it does not establish a calibration cycle, so tc-def-e2 keeps its case
+identifier while its epoch contrasts carry no claim of reproducibility across
+a calibration change until a calibration boundary between its acquisition and
+epoch 1 is documented. The job's manifest, seeds, policy, iteration order and
+1.6-credit ceiling stay those of the approved case. tc-none-e2, mm-def-e2 and
+mm-none-e2 stay unsent until the calibration boundary is documented, and
+their submission then follows Step 5 unamended. Every returned result is
+retained whatever it shows, and the stop conditions above still govern.
