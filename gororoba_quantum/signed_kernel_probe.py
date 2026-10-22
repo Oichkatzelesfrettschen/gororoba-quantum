@@ -52,7 +52,7 @@ from qiskit.circuit import Parameter
 from qiskit.circuit.library import DiagonalGate, MCPhaseGate, StatePreparation
 from qiskit.quantum_info import Operator, Statevector
 
-from cd_core import cd_multiply, cd_sign
+from cd_core import cd_multiply_exact, cd_sign
 from select_lcu import sparse_pair_prep
 
 DIM = 16
@@ -83,9 +83,9 @@ def _vector(support: dict[int, int]) -> list[int]:
 
 
 def _left(m: int, vector: list[int]) -> list[int]:
-    """L_e_m applied to an integer vector; cd_multiply sums +-1 multiples of integers exactly."""
-    product = cd_multiply(DIM, [float(i == m) for i in range(DIM)], [float(value) for value in vector])
-    if not all(value.is_integer() for value in product):
+    """Apply the exact signed basis permutation to integer coordinates."""
+    product = cd_multiply_exact(DIM, [int(i == m) for i in range(DIM)], vector)
+    if not all(value.denominator == 1 for value in product):
         raise ValueError("a signed permutation of an integer vector left the integers")
     return [int(value) for value in product]
 

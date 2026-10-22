@@ -1,6 +1,11 @@
 # Moreno's Stiefel elements: exact nullity in A_5 and A_6
 
-`nullity.json` is written by `scripts/moreno_stiefel_nullity.py --out` and
+The active [exact-contract record](nullity-exact-contracts.json) succeeds
+[nullity.json](nullity.json) after the producer switched its multiplication cross-check
+to exact rational arithmetic. Every scientific field retains its predecessor's value;
+the producer hash records the changed implementation.
+
+`nullity-exact-contracts.json` is written by `scripts/moreno_stiefel_nullity.py --out` and
 re-derived by `--check` (gate core-267). A Stiefel element of A_(n+1) is
 v = (a, b) with a and b pure in A_n, a orthogonal to b and |a| = |b|
 (math/0512517, Section 5), stored in cd_core's doubling convention.
@@ -19,4 +24,4 @@ with the connectedness of V_2(R^31) they give generic invertibility of the
 normalized A_6 Stiefel family (`docs/notes/math-0512517.md`). Each A_5 and A_6 entry
 records its seed, the sha256 of its skew-symmetric matrix and of the exact
 pair, the squared norm and the size of the cleared denominator. The script
-checks its L_v construction against `cd_core.cd_multiply` before measuring.
+checks its L_v construction against `cd_core.cd_multiply_exact` before measuring.

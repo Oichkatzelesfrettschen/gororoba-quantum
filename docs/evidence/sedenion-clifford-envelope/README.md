@@ -2,11 +2,14 @@
 
 The standard `cd_core` sedenion basis supplies eight real 16 by 16 left operators, `L_e1` through `L_e8`, satisfying `L_ea^2=-I` and `L_ea L_eb + L_eb L_ea=0` for distinct indices in this subset. Their 256 ordered Clifford words have exact integer Hilbert-Schmidt Gram matrix `16 I256`. The words are linearly independent and span `M16(R)`, establishing this concrete `Cl(0,8)` representation.
 
-The original [certificate](certificate.json) retains its source identity. The active [batched-product certificate](certificate-batched-products.json) binds exact integer array evaluation of the squares and anticommutators and preserves every scientific field. Replay from the repository root:
+The original [certificate](certificate.json) and [batched-product certificate](certificate-batched-products.json)
+retain their source identities. The active [exact-contract certificate](certificate-cd-core-exact-contracts.json)
+succeeds the batched certificate after `cd_core` gained validated inputs and exact rational APIs.
+Every scientific field retains its predecessor's value. Replay from the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-batched-products.json
+"$PYTHON" gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-cd-core-exact-contracts.json
 ```
 
 All arithmetic uses signed permutation matrices and bounded `int64` sums. Every word remains a signed permutation; each Gram entry has absolute bound 16. The replay compares the entire Gram matrix against `16 I256`. Ordered word construction preserves factor order and maps independent masks through `parallel.ordered_map`.

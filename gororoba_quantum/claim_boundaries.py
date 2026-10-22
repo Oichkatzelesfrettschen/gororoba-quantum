@@ -20,7 +20,7 @@ from qiskit.quantum_info import Statevector
 import parallel
 import predict
 from boolean_anf import anf_coefficients, anf_degree_from_coefficients, evaluate_anf, partial_anf_coefficients
-from cd_core import basis, cd_multiply
+from cd_core import cd_multiply_exact
 from designs import design_c_associator_spectrum, design_d_phase_sweep
 
 SPECTRUM_DIMENSIONS = (8, 16, 32, 64)
@@ -128,22 +128,24 @@ def _spectrum_check(dimension: int) -> dict[str, object]:
 
 
 def _representation_check() -> dict[str, object]:
-    octonion_first, octonion_second, octonion_probe = (basis(8, index) for index in (1, 2, 4))
-    product_then_action = cd_multiply(8, cd_multiply(8, octonion_first, octonion_second), octonion_probe)
-    composed_actions = cd_multiply(8, octonion_first, cd_multiply(8, octonion_second, octonion_probe))
-    _require(product_then_action == basis(8, 7), "octonion left-associated witness changed")
-    _require(composed_actions == basis(8, 7, -1), "octonion right-associated witness changed")
+    octonion_first, octonion_second, octonion_probe = (
+        tuple(int(coordinate == index) for coordinate in range(8)) for index in (1, 2, 4)
+    )
+    product_then_action = cd_multiply_exact(8, cd_multiply_exact(8, octonion_first, octonion_second), octonion_probe)
+    composed_actions = cd_multiply_exact(8, octonion_first, cd_multiply_exact(8, octonion_second, octonion_probe))
+    _require(product_then_action == (0, 0, 0, 0, 0, 0, 0, 1), "octonion left-associated witness changed")
+    _require(composed_actions == (0, 0, 0, 0, 0, 0, 0, -1), "octonion right-associated witness changed")
 
-    sedenion_element = [first + second for first, second in zip(basis(16, 1), basis(16, 10), strict=True)]
-    sedenion_probe = [first - second for first, second in zip(basis(16, 4), basis(16, 15), strict=True)]
-    product = cd_multiply(16, sedenion_element, sedenion_probe)
-    square = cd_multiply(16, sedenion_element, sedenion_element)
-    square_action = cd_multiply(16, square, sedenion_probe)
-    action_squared = cd_multiply(16, sedenion_element, product)
-    _require(product == [0.0] * 16, "sedenion annihilator witness changed")
-    _require(square == basis(16, 0, -2), "sedenion square witness changed")
-    _require(action_squared == [0.0] * 16, "repeated annihilator action changed")
-    _require(square_action == [-2 * value for value in sedenion_probe], "Jordan square defect changed")
+    sedenion_element = tuple(int(index in (1, 10)) for index in range(16))
+    sedenion_probe = tuple(int(index == 4) - int(index == 15) for index in range(16))
+    product = cd_multiply_exact(16, sedenion_element, sedenion_probe)
+    square = cd_multiply_exact(16, sedenion_element, sedenion_element)
+    square_action = cd_multiply_exact(16, square, sedenion_probe)
+    action_squared = cd_multiply_exact(16, sedenion_element, product)
+    _require(not any(product), "sedenion annihilator witness changed")
+    _require(square == (-2,) + (0,) * 15, "sedenion square witness changed")
+    _require(not any(action_squared), "repeated annihilator action changed")
+    _require(square_action == tuple(-2 * value for value in sedenion_probe), "Jordan square defect changed")
     _require(square_action != action_squared, "left multiplication unexpectedly preserves the witness square")
     return {
         "octonion_product_action": {"basis_index": 7, "coefficient": 1},

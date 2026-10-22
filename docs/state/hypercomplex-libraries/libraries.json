@@ -2438,6 +2438,7 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
+    "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
@@ -4179,6 +4180,7 @@
     "scripts/n21_orbit_rca.py",
     "scripts/n21_qx_conformance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/replay_et_pilot.py",
@@ -5300,7 +5302,8 @@
    "imported_by": [
     "scripts/box_kite_qx_sweep.py",
     "scripts/n21_qx_conformance.py",
-    "scripts/qi_mcp_server.py"
+    "scripts/qi_mcp_server.py",
+    "scripts/qx_local_series.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -5594,6 +5597,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/patch_window_analysis.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_zz_map_analysis.py",
@@ -6946,8 +6950,12 @@
   ],
   "gororoba_quantum/cd_core.py": [
    "__future__",
+   "collections",
    "fractions",
-   "itertools"
+   "itertools",
+   "operator",
+   "parallel",
+   "typing"
   ],
   "gororoba_quantum/check_et_campaign.py": [
    "dataclasses",
@@ -8848,6 +8856,7 @@
    "argparse",
    "bdsc_cases",
    "bdsc_certificate",
+   "bdsc_forensics",
    "copy",
    "datetime",
    "hashlib",
@@ -10515,6 +10524,28 @@
    "numpy",
    "pathlib"
   ],
+  "scripts/qi_bdsc_pauli_cases.py": [
+   "__future__",
+   "argparse",
+   "bdsc",
+   "bdsc_pauli",
+   "collections",
+   "experiment_optimizer",
+   "functools",
+   "hashlib",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_platform",
+   "qi_zero_divisor_cases",
+   "qiskit",
+   "scipy",
+   "sys",
+   "typing"
+  ],
   "scripts/qi_coupler_zz_map.py": [
    "__future__",
    "argparse",
@@ -10815,6 +10846,16 @@
    "sys",
    "tempfile",
    "typing"
+  ],
+  "scripts/qx_local_series.py": [
+   "__future__",
+   "importlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qxelarator",
+   "shutil",
+   "sys"
   ],
   "scripts/qx_reset_phase_probe.py": [
    "__future__",

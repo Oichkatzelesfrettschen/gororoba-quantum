@@ -1,0 +1,27 @@
+{
+ "schema": "sedenion-clifford-envelope-v1",
+ "evidence_kind": "exact finite integer operator certificate",
+ "coefficient_dimension": 16,
+ "generator_basis_indices": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8
+ ],
+ "square_failures": 0,
+ "anticommutator_failures": 0,
+ "word_count": 256,
+ "hilbert_schmidt_orthogonal": true,
+ "word_norm_squared": 16,
+ "image_dimension": 256,
+ "left_encoding_is_product_homomorphism": false,
+ "interpretation": "Cl(0,8) envelope M16(R); sedenion coefficients retain zero divisors and nonassociativity",
+ "sources_sha256": {
+  "gororoba_quantum/cd_core.py": "cccd78580b5931ed72ea6c364361fa3d920a1617fa1ab70460e3e11ce6ca9300",
+  "gororoba_quantum/hypercomplex_clifford_envelope.py": "ad9b6590c4f7ae1bfbcaded22e270265c88454b00ace618a38d80925bc962232"
+ }
+}

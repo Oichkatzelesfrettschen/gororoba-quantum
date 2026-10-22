@@ -1,5 +1,11 @@
 # C5 zero-divisor code replay
 
+The active [exact replay](replay-exact.py) succeeds the hash-bound [original](replay.py).
+Its deterministic products and left matrices use the rational `cd_core` APIs;
+its noisy decoding retains floating arrays. The active gate requires the complete
+output to match the original `result.json` bytes. `SHA256SUMS` preserves the
+original replay and result identities.
+
 The replay reconstructs the experiment that
 [the C5 note](../../notes/topics/c5-zero-divisor-code-falsification.md) reports, from
 the sedenion sign table `gororoba_quantum/cd_core.py` alone, with fixed seeds.
@@ -144,7 +150,7 @@ filter decodes all 84 blades without error at low noise while C5 errs at
 
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"
-PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay.py --check
+PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay-exact.py --check
 (cd docs/evidence/c5_zero_divisor_code && sha256sum -c SHA256SUMS)
 ```
 
