@@ -11,7 +11,10 @@ A_(n+1) exactly when the degree-2^(n-1) polynomial Pf(L_a + i R_b) vanishes.
 
 The Stiefel elements (|a| = |b|, a orthogonal to b) form the real points of
 the complete intersection a.a = b.b, a.b = 0, whose complexification is the
-product of two isotropic cones under z = a + ib, z' = a - ib. The set where
+product of two isotropic cones under z = a + ib, z' = a - ib. That variety is
+irreducible and has smooth real points, so its real points are Zariski dense
+in it, and a polynomial vanishes on the real Stiefel set exactly when it
+vanishes on the complex variety the identity test samples. The set where
 rank L_(a,b) <= r is closed, so every Stiefel element of A_5 is a zero divisor
 exactly when Pf(N) vanishes on a dense subset of the Stiefel set: no special
 point can refute the question, only a generic one.
@@ -61,6 +64,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from moreno_stiefel_nullity import left_matrix, rank_mod  # noqa: E402
 
+import parallel  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 
 SEED = 20261022
@@ -133,30 +137,37 @@ def pure_point(half: int, coordinates: list[int]) -> list[int]:
     return [0, *coordinates] if len(coordinates) == half - 1 else coordinates
 
 
+def identity_point(item: tuple[int, list[int]]) -> None:
+    """Skew-symmetry of L_a, R_b and Theorem 2.3 at one integer point of the pure (a, b) space."""
+    n, point = item
+    half = 1 << n
+    m = half - 1
+    a, b = pure_point(half, point[:m]), pure_point(half, point[m:])
+    la = np.array(left_block(half, a), dtype=np.int64)
+    rb = np.array(right_block(half, b), dtype=np.int64)
+    if not (np.array_equal(la.T, -la) and np.array_equal(rb.T, -rb)):
+        raise ValueError(f"A_{n}: L_a or R_b is not skew-symmetric at {point}")
+    big = np.array(left_matrix(2 * half, a + b), dtype=np.int64)
+    block_a = la @ la + rb @ rb
+    block_s = rb @ la - la @ rb
+    if not np.array_equal(big @ big, np.block([[block_a, -block_s], [block_s, block_a]])):
+        raise ValueError(f"A_{n + 1}: Theorem 2.3 fails at {point}")
+
+
 def check_identities(n: int) -> int:
     """Theorem 2.3 and skew-symmetry on every e_i and e_i + e_j of the pure (a, b) space, in exact integers."""
     half = 1 << n
     m = half - 1
-    points: list[list[int]] = []
-    for i in range(2 * m):
-        points.append([int(t == i) for t in range(2 * m)])
-        points.extend([int(t in (i, j)) for t in range(2 * m)] for j in range(i + 1, 2 * m))
     rng = random.Random(SEED)
     for _ in range(8):
         x, y = [rng.randint(-3, 3) for _ in range(half)], [rng.randint(-3, 3) for _ in range(half)]
         if not np.array_equal(np.array(right_block(half, x)) @ y, np.array(left_matrix(half, y)) @ x):
             raise ValueError(f"A_{n}: R_x y differs from L_y x")
-    for point in points:
-        a, b = pure_point(half, point[:m]), pure_point(half, point[m:])
-        la = np.array(left_block(half, a), dtype=np.int64)
-        rb = np.array(right_block(half, b), dtype=np.int64)
-        if not (np.array_equal(la.T, -la) and np.array_equal(rb.T, -rb)):
-            raise ValueError(f"A_{n}: L_a or R_b is not skew-symmetric at {point}")
-        big = np.array(left_matrix(2 * half, a + b), dtype=np.int64)
-        block_a = la @ la + rb @ rb
-        block_s = rb @ la - la @ rb
-        if not np.array_equal(big @ big, np.block([[block_a, -block_s], [block_s, block_a]])):
-            raise ValueError(f"A_{n + 1}: Theorem 2.3 fails at {point}")
+    points: list[tuple[int, list[int]]] = []
+    for i in range(2 * m):
+        points.append((n, [int(t == i) for t in range(2 * m)]))
+        points.extend((n, [int(t in (i, j)) for t in range(2 * m)]) for j in range(i + 1, 2 * m))
+    parallel.ordered_map(identity_point, points)
     return len(points)
 
 
@@ -181,7 +192,8 @@ def stiefel_mod(rng: random.Random, m: int, p: int, iota: int) -> tuple[list[int
     return a, b
 
 
-def ranks(n: int, a: list[int], b: list[int], p: int, iota: int) -> dict[str, int]:
+def ranks(item: tuple[int, list[int], list[int], int, int]) -> dict[str, int]:
+    n, a, b, p, iota = item
     half = 1 << n
     a_full, b_full = pure_point(half, a), pure_point(half, b)
     n_matrix = combine((1, left_block(half, a_full)), (iota, right_block(half, b_full)))
@@ -192,8 +204,16 @@ def ranks(n: int, a: list[int], b: list[int], p: int, iota: int) -> dict[str, in
 
 
 def identity_test(n: int, p: int, iota: int, trials: int, rng: random.Random) -> dict[str, Any]:
+    """Draws every point in the generator's order, then maps the exact ranks over the pool."""
     m = (1 << n) - 1
-    stiefel = [ranks(n, *stiefel_mod(rng, m, p, iota), p, iota) for _ in range(trials)]
+    draws = [(n, *stiefel_mod(rng, m, p, iota), p, iota) for _ in range(trials)]
+    controls = 0
+    if n == 4:
+        for _ in range(CONTROL_TRIALS):
+            draws.append((n, [rng.randrange(p) for _ in range(m)], [rng.randrange(p) for _ in range(m)], p, iota))
+        controls = CONTROL_TRIALS
+    results = parallel.ordered_map(ranks, draws)
+    stiefel, generic = results[:trials], results[trials:]
     out: dict[str, Any] = {
         "pure_coordinates": m,
         "pfaffian_degree": 1 << (n - 1),
@@ -201,11 +221,7 @@ def identity_test(n: int, p: int, iota: int, trials: int, rng: random.Random) ->
         "stiefel_points": stiefel,
         "stiefel_ranks": sorted({(r["rank_N"], r["rank_L"]) for r in stiefel}),
     }
-    if n == 4:
-        generic = []
-        for _ in range(CONTROL_TRIALS):
-            a, b = [rng.randrange(p) for _ in range(m)], [rng.randrange(p) for _ in range(m)]
-            generic.append(ranks(n, a, b, p, iota))
+    if controls:
         out["non_stiefel_controls"] = sorted({(r["rank_N"], r["rank_L"]) for r in generic})
     return out
 

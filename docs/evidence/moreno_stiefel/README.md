@@ -55,7 +55,4 @@ modulo p vanishes at one uniformly drawn point with probability at most
 generic counterexample to Moreno's question improbable at that rate and
 prove nothing: the draws are seeded pseudorandom, a modulo-p rank bounds the
 rational rank from below only, and the restriction could vanish modulo
-these two primes alone. A numerical search over 560 real Stiefel points
-finds no kernel vector of N given by a polynomial map of degree 1 or 2 in
-(a, b) beyond the multiples of a.a - b.b and a.b, so a proof through an
-explicit low-degree kernel vector does not exist at those degrees.
+these two primes alone.
