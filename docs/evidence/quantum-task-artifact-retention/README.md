@@ -17,6 +17,14 @@ photonic, hypercomplex-library, and simulation qualification files. Active log
 captures describe a bounded observation, rather than completed qualification.
 Completed qualification outputs require a new immutable capture.
 
+The [historical worktree scratch inventory](historical-worktree-scratch/inventory.json)
+covers ignored research in six task-owned, already-merged worktrees: library
+import coverage, numerical-model pytest regressions, campaign submission
+deadlines, rejected-request recovery, proposal source bindings, and quaternion
+dephasing. The inventory retains 25 source identities and 19 unique captures.
+Regenerable pytest fixture repositories receive a metadata disposition rather
+than publication of their generated Git objects and sockets.
+
 Byte-identical tracked artifacts link to their repository path and original Git
 identity. The verifier checks the checkout bytes, so a shallow offline checkout
 needs no historical Git object. A future source change must retain the prior
@@ -28,6 +36,15 @@ inventory metadata, rather than content. Third-party reading copies and the
 downloaded dashboard vendor bundle retain hashes rather than republished bytes.
 Synchronization locks receive transient dispositions. Archive members are read
 without extraction and retain individual identities.
+
+The original snapshot's tracked-byte deduplication overwrote some external-copy
+and lock classifications. The [disposition correction map](snapshot/disposition-corrections.json)
+supersedes exactly those classifications while preserving the checksum-bound
+original inventory bytes. The verifier derives the required correction domain
+from every historical row and rejects missing, additional, or incorrect entries.
+New captures preserve non-content classifications before tracked deduplication.
+The expanded plaintext sanitizer covers every declared private field; all
+retained text also passes the expanded sanitizer's idempotence check.
 
 PR #352 owns MCP/API repairs. PR #368 owns the approved Ascella plan and waiting
 evidence. PR #369 owns local simulator outputs and the full-precision cQASM

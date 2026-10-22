@@ -2,11 +2,14 @@
 
 import io
 import json
+import os
+import subprocess
+import sys
 import tarfile
 from pathlib import Path
 
 import pytest
-from quantum_artifact_retention import ROOT, capture, check, digest, sanitize
+from quantum_artifact_retention import PRIVATE_KEYS, ROOT, capture, check, digest, sanitize
 
 
 def test_sanitizer_removes_identifiers_and_local_paths() -> None:
@@ -116,3 +119,66 @@ def test_changed_path_list_preserves_original_identity(tmp_path: Path) -> None:
     row = json.loads((output / "inventory.json").read_text())["artifacts"][0]
     if row["source_sha256"] != digest(original) or row["content_changed"] is not True:
         raise AssertionError("a transformed path list lost its original identity")
+
+
+@pytest.mark.parametrize("field", sorted(PRIVATE_KEYS))
+def test_every_private_field_is_redacted_from_plaintext(field: str) -> None:
+    for value in ("private-value", '"private value"', "'private value'", "private full name"):
+        result = sanitize(f"{field}={value}\nmeasurement=7\n".encode())
+        if b"private" in result or b"measurement=7" not in result:
+            raise AssertionError("plaintext redaction leaked a private value or consumed the following line")
+
+
+def test_empty_lock_keeps_its_noncontent_disposition(tmp_path: Path) -> None:
+    source = tmp_path / "submit.lock"
+    source.touch()
+    output = tmp_path / "retained"
+    capture({"submit.lock": source}, output, ROOT)
+    row = json.loads((output / "inventory.json").read_text())["artifacts"][0]
+    if row["classification"] != "transient-noise" or "repository_path" in row:
+        raise AssertionError("tracked deduplication erased a non-content disposition")
+
+
+def test_standalone_cli_imports_without_pythonpath(tmp_path: Path) -> None:
+    source = tmp_path / "analysis.txt"
+    source.write_text("bounded result")
+    output = tmp_path / "retained"
+    environment = {key: value for key, value in os.environ.items() if key != "PYTHONPATH"}
+    environment["GOROROBA_WORKERS"] = "1"
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts/quantum_artifact_retention.py"),
+            str(output),
+            "--source",
+            f"probe={source}",
+        ],
+        env=environment,
+        check=True,
+        capture_output=True,
+    )
+    check(output)
+
+
+def test_historical_disposition_correction_is_exact_and_keeps_bound_inventory(tmp_path: Path) -> None:
+    source = tmp_path / "submit.lock"
+    source.touch()
+    output = tmp_path / "retained"
+    capture({"submit.lock": source}, output, ROOT)
+    inventory = output / "inventory.json"
+    record = json.loads(inventory.read_text())
+    row = record["artifacts"][0]
+    row.update(classification="already-retained", repository_path="docs/evidence/c881_exhaustive/C881.compile.txt")
+    data = json.dumps(record).encode()
+    inventory.write_bytes(data)
+    (output / "inventory.sha256").write_text(digest(data))
+    with pytest.raises(ValueError, match="corrections"):
+        check(output)
+    correction = output / "disposition-corrections.json"
+    correction.write_text(json.dumps({"submit.lock": "transient-noise"}))
+    check(output)
+    if inventory.read_bytes() != data:
+        raise AssertionError("correction rewrote a checksum-bound inventory")
+    correction.write_text(json.dumps({"submit.lock": "external-reading-copy"}))
+    with pytest.raises(ValueError, match="corrections"):
+        check(output)

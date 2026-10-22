@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-library-import-coverage/scripts/hypercomplex_libraries.py", line 680, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-library-import-coverage/scripts/hypercomplex_libraries.py", line 649, in main
+    check_import_coverage(record, ROOT)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-library-import-coverage/scripts/hypercomplex_libraries.py", line 292, in check_import_coverage
+    raise ValueError("inventory tracked import roots differ")
+ValueError: inventory tracked import roots differ

@@ -1,0 +1,102 @@
+{
+ "cpu_capacity": 12,
+ "gates": [
+  {
+   "estimated_seconds": 3.0,
+   "name": "core-600",
+   "resources": {
+    "max_rss_kib": 124772,
+    "system_seconds": 0.058084,
+    "user_seconds": 0.981969,
+    "workers": 2
+   },
+   "runtime": "current",
+   "seconds": 1.2173049529956188,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 3.0,
+   "name": "core-603",
+   "resources": {
+    "max_rss_kib": 123480,
+    "system_seconds": 0.06073,
+    "user_seconds": 0.971304,
+    "workers": 2
+   },
+   "runtime": "current",
+   "seconds": 1.246899792982731,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 3.0,
+   "name": "core-605",
+   "resources": {
+    "max_rss_kib": 125336,
+    "system_seconds": 0.059745,
+    "user_seconds": 0.983522,
+    "workers": 2
+   },
+   "runtime": "current",
+   "seconds": 1.2336628889897838,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 3.0,
+   "name": "core-612",
+   "resources": {
+    "max_rss_kib": 124388,
+    "system_seconds": 0.06500299999999999,
+    "user_seconds": 0.937396,
+    "workers": 2
+   },
+   "runtime": "current",
+   "seconds": 1.0919861790025607,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 3.0,
+   "name": "core-616",
+   "resources": {
+    "max_rss_kib": 178220,
+    "system_seconds": 0.076831,
+    "user_seconds": 1.21118,
+    "workers": 2
+   },
+   "runtime": "current",
+   "seconds": 1.3938902920053806,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 3.0,
+   "name": "core-619",
+   "resources": {
+    "max_rss_kib": 124904,
+    "system_seconds": 0.07049699999999999,
+    "user_seconds": 0.9690099999999999,
+    "workers": 2
+   },
+   "runtime": "current",
+   "seconds": 1.207669760013232,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 3.0,
+   "name": "core-620",
+   "resources": {
+    "max_rss_kib": 124496,
+    "system_seconds": 0.035789,
+    "user_seconds": 0.6215959999999999,
+    "workers": 2
+   },
+   "runtime": "current",
+   "seconds": 0.6913915620243642,
+   "status": 0
+  }
+ ],
+ "ledger_audit_misses": [],
+ "schema": "gororoba-gate-timings-v1",
+ "shard": "0/1",
+ "shard_cpus": 4,
+ "skipped": [],
+ "wall_seconds": 1.7846073050168343
+}

@@ -13,14 +13,16 @@ import io
 import json
 import re
 import subprocess
+import sys
 import tarfile
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-from parallel import ordered_map
-
 SCHEMA = "quantum-task-artifact-retention-v1"
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 LIMIT = 64 * 1024 * 1024
 GENERATED = frozenset(
     {
@@ -33,6 +35,7 @@ GENERATED = frozenset(
         ".mypy_cache",
         ".ruff_cache",
         ".pytest_cache",
+        "pytest-temp",
     }
 )
 PRIVATE_KEYS = frozenset(
@@ -74,9 +77,10 @@ def clean_text(text: str) -> str:
     text = re.sub(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", "[REDACTED-EMAIL]", text)
     text = re.sub(r"crn:v\d:[^\s\"<>]+", "[REDACTED-CRN]", text)
     text = re.sub(r"(?i)([?&](?:code|state|access_token|refresh_token)=)[^&\s\"<>]+", r"\1[REDACTED]", text)
+    private_fields = "|".join(re.escape(key) for key in sorted(PRIVATE_KEYS, key=len, reverse=True))
     text = re.sub(
-        r"(?i)\b(?:token|access_token|refresh_token|client_secret|account_id|user_id|token_value|password|api_key)"
-        r"[\"']?\s*[:=]\s*[\"']?[^\s,;\"']+[\"']?",
+        rf"(?i)(?<![\w-])(?:{private_fields})"
+        r"[\"']?\s*[:=]\s*(?:\"[^\"\r\n]*\"|'[^'\r\n]*'|[^,;\r\n]+)",
         "[REDACTED-CREDENTIAL-FIELD]",
         text,
     )
@@ -247,7 +251,7 @@ def capture(sources: dict[str, Path], output: Path, tracked_root: Path | None = 
     output.mkdir(parents=True)
     (output / "captures").mkdir()
     for row, content in payloads:
-        if row["git_blob_oid"] in tracked:
+        if content is not None and row["git_blob_oid"] in tracked:
             row = {
                 "source": row["source"],
                 "source_bytes": row["source_bytes"],
@@ -304,6 +308,20 @@ def _verify_row(arguments: tuple[Path, dict[str, Any]]) -> str | None:
     return relative.as_posix()
 
 
+def disposition_corrections(record: dict[str, Any]) -> dict[str, str]:
+    """Correct historical deduplication metadata without rewriting bound inventories."""
+    corrections = {}
+    for row in record["artifacts"]:
+        if row["classification"] != "already-retained":
+            continue
+        name = row["source"]
+        if external_copy(name):
+            corrections[name] = "external-reading-copy"
+        elif PurePosixPath(name).suffix == ".lock":
+            corrections[name] = "transient-noise"
+    return corrections
+
+
 def check(output: Path) -> None:
     data = (output / "inventory.json").read_bytes()
     if (output / "inventory.sha256").read_text().strip() != digest(data):
@@ -311,6 +329,10 @@ def check(output: Path) -> None:
     record = json.loads(data)
     if record.get("schema") != SCHEMA:
         raise ValueError("inventory schema differs")
+    correction_path = output / "disposition-corrections.json"
+    corrections = json.loads(correction_path.read_text()) if correction_path.exists() else {}
+    if corrections != disposition_corrections(record):
+        raise ValueError("historical disposition corrections differ")
     names = set()
     for row in record["artifacts"]:
         if row["source"] in names:
@@ -330,8 +352,17 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--source", action="append", default=[], metavar="LABEL=PATH")
     parser.add_argument("--tracked-root", type=Path, help="link byte-identical inputs to retained Git blobs")
+    parser.add_argument("--write-disposition-corrections", action="store_true")
     args = parser.parse_args()
-    if args.check:
+    if args.write_disposition_corrections:
+        if args.source or args.check or args.tracked_root:
+            parser.error("correction generation reads one historical inventory alone")
+        record = json.loads((args.directory / "inventory.json").read_text())
+        correction_path = args.directory / "disposition-corrections.json"
+        with correction_path.open("x") as stream:
+            stream.write(json.dumps(disposition_corrections(record), indent=1, sort_keys=True) + "\n")
+        check(args.directory)
+    elif args.check:
         if args.source:
             parser.error("--check reads retained evidence alone")
         check(args.directory)

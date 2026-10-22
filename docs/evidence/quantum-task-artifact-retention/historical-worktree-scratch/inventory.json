@@ -1,0 +1,270 @@
+{
+ "artifacts": [
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "8cf3ac100a3c93473b4f7fc6719f33747d12f139",
+   "retained": "captures/f7f20844d5f0a0ad10f3722e7c27acfcd9efdc64177837d346b7e8a27eb28ed7.txt",
+   "retained_bytes": 87,
+   "retained_sha256": "f7f20844d5f0a0ad10f3722e7c27acfcd9efdc64177837d346b7e8a27eb28ed7",
+   "source": "hypercomplex-library-import-coverage/hypercomplex-library-import-review/gate-ledger.json",
+   "source_bytes": 87,
+   "source_sha256": "2934b161efa02cb86e4cdda49234330e841b4e187af95ad66af9c2bd02940c55"
+  },
+  {
+   "classification": "derived-regenerable",
+   "file_count": 116,
+   "path_size_inventory_sha256": "e86931ad9cb17ac473148eef129103691ba2c7c5e4746cd37976003b87103499",
+   "reason": "Package/build/lint environment; retain pins and invocation evidence, not installed binaries or caches. The inventory digest covers relative paths and sizes, not file content.",
+   "source": "hypercomplex-library-import-coverage/hypercomplex-library-import-review/pytest-temp",
+   "source_bytes": 1745417
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "ed69487472de94692a3c1815823cb73c94dc2999",
+   "retained": "captures/6a89bfcc9f751edf93bb393ad787f837989850115bbafb21255714ac1ff34e21.txt",
+   "retained_bytes": 52,
+   "retained_sha256": "6a89bfcc9f751edf93bb393ad787f837989850115bbafb21255714ac1ff34e21",
+   "source": "hypercomplex-library-import-coverage/hypercomplex-library-import-review/stale-import-admitted.log",
+   "source_bytes": 52,
+   "source_sha256": "6a89bfcc9f751edf93bb393ad787f837989850115bbafb21255714ac1ff34e21"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "4b6006a2d9e88b814a56fc66c7fae284c9c5a96a",
+   "retained": "captures/ea8209590ce212104eac5baae475a38f7b02069b69887a7226edbc204d2028d7.txt",
+   "retained_bytes": 704,
+   "retained_sha256": "ea8209590ce212104eac5baae475a38f7b02069b69887a7226edbc204d2028d7",
+   "source": "hypercomplex-library-import-coverage/hypercomplex-library-import-review/stale-import-rejected.log",
+   "source_bytes": 704,
+   "source_sha256": "04995b92a7b6ff1a45ff99a82bc44ece86ccde13353cd7e9352f9d34152e7e61"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "357bad2a89144f99d0504c37683d1f6e9e3f7b63",
+   "retained": "captures/8a4353abf536e14c0ed931c87cb1130238616ed0fae3e206196147d12b4d7c15.txt",
+   "retained_bytes": 1772,
+   "retained_sha256": "8a4353abf536e14c0ed931c87cb1130238616ed0fae3e206196147d12b4d7c15",
+   "source": "numerical-model-pytest-regressions/numerical-model-pytest-regressions/final-ledger-match-findings.txt",
+   "source_bytes": 1772,
+   "source_sha256": "8a4353abf536e14c0ed931c87cb1130238616ed0fae3e206196147d12b4d7c15"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "3036cdad6b627f78d541fb17c3c77c8ba04be564",
+   "retained": "captures/e6d42b697281e2c41e436bab9270fbd445d4c13a9a86acf905fd21fd8c5e8774.txt",
+   "retained_bytes": 215110,
+   "retained_sha256": "e6d42b697281e2c41e436bab9270fbd445d4c13a9a86acf905fd21fd8c5e8774",
+   "source": "numerical-model-pytest-regressions/numerical-model-pytest-regressions/final-ledger-match-probe.json",
+   "source_bytes": 236022,
+   "source_sha256": "28e9bf84464afa99d7ce34bd09c91672f110dc961762600fc7144651b63a213b"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "3036cdad6b627f78d541fb17c3c77c8ba04be564",
+   "retained": "captures/e6d42b697281e2c41e436bab9270fbd445d4c13a9a86acf905fd21fd8c5e8774.txt",
+   "retained_bytes": 215110,
+   "retained_sha256": "e6d42b697281e2c41e436bab9270fbd445d4c13a9a86acf905fd21fd8c5e8774",
+   "source": "numerical-model-pytest-regressions/numerical-model-pytest-regressions/final-ledger-match-probe.log",
+   "source_bytes": 236022,
+   "source_sha256": "28e9bf84464afa99d7ce34bd09c91672f110dc961762600fc7144651b63a213b"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "2ff61c360e6c40a12e6dd6d62e0e30fcc80ad518",
+   "retained": "captures/ae9697f14f8d2019229e28dba6d4cc9397a70e68382fb0db2f456b34290489f7.txt",
+   "retained_bytes": 2087,
+   "retained_sha256": "ae9697f14f8d2019229e28dba6d4cc9397a70e68382fb0db2f456b34290489f7",
+   "source": "numerical-model-pytest-regressions/numerical-model-pytest-regressions/gate-timings.json",
+   "source_bytes": 2383,
+   "source_sha256": "cbcfd4339696b3ee06a41c7234e29d00630f9eff7b138943dd90a7801b6f9e07"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "9d1233a07fdf5ac6493f46283800d79a21017b79",
+   "retained": "captures/0cd4d57f514495de9f394cd072c9afe4399128c5283dfe6c8ed3ef8753ca6c71.txt",
+   "retained_bytes": 1502,
+   "retained_sha256": "0cd4d57f514495de9f394cd072c9afe4399128c5283dfe6c8ed3ef8753ca6c71",
+   "source": "numerical-model-pytest-regressions/numerical-model-pytest-regressions/probe-final-ledger.py",
+   "source_bytes": 1502,
+   "source_sha256": "d8e835b4c7f776dea6edc9d33cfd217c3904e2be8d41dfac860c0c403ed71eeb"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "28aa4a129406b6d4824244d89a18bd327ff7b329",
+   "retained": "captures/d367c36528c0dfcdcd9e42aab5f97c3904ee8953b8a9dc727cdd267bf4657537.txt",
+   "retained_bytes": 506350,
+   "retained_sha256": "d367c36528c0dfcdcd9e42aab5f97c3904ee8953b8a9dc727cdd267bf4657537",
+   "source": "numerical-model-pytest-regressions/numerical-model-pytest-regressions/pytest-openat.log",
+   "source_bytes": 506347,
+   "source_sha256": "ff0881c7c68f465beb358f667aa1cb651bbeae0150127beba38db564b6fd86e6"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "92cbb969f76acebb3017dc6a97385707110f70b6",
+   "retained": "captures/d36ec167282c99718cf2a3f662c8adc6d54219ccf9c77556ea0463b594d2eb80.txt",
+   "retained_bytes": 460,
+   "retained_sha256": "d36ec167282c99718cf2a3f662c8adc6d54219ccf9c77556ea0463b594d2eb80",
+   "source": "quantum-campaign-submission-deadline/quantum-campaign-submission-deadline/core615-timings.json",
+   "source_bytes": 510,
+   "source_sha256": "b1d5868aa0f1119672901fdd64e76a459f60947916e18883c416ac8da3b0a8b6"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "f56ad0e6d4f463f0257f3415bfc7b991062e031e",
+   "retained": "captures/ab124d02aace4da5623bdcbd092e11771a929e7babaa527ddd662ccf6965bb4f.txt",
+   "retained_bytes": 153,
+   "retained_sha256": "ab124d02aace4da5623bdcbd092e11771a929e7babaa527ddd662ccf6965bb4f",
+   "source": "quantum-campaign-submission-deadline/quantum-campaign-submission-deadline/core615.log",
+   "source_bytes": 153,
+   "source_sha256": "ab124d02aace4da5623bdcbd092e11771a929e7babaa527ddd662ccf6965bb4f"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "b73f38710c08b7a0181ee2b28f8cfa1c6c83cea2",
+   "retained": "captures/f78e79715b3a6786898ae8da441927f4c777c314361e6f33dba25601ff4162a1.txt",
+   "retained_bytes": 327,
+   "retained_sha256": "f78e79715b3a6786898ae8da441927f4c777c314361e6f33dba25601ff4162a1",
+   "source": "quantum-campaign-submission-deadline/quantum-campaign-submission-deadline/standalone-pytest-interrupted.json",
+   "source_bytes": 327,
+   "source_sha256": "2ab5248871d87057ebd30d2c07187fa3d61122dd46d6cf444c914887e9446e9e"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "fc0e665ec499e289d2ad32811c27ec9fe4a2b68c",
+   "retained": "captures/dc6d60e3c5d14607dfcfc770958a3c66993b5255c0a541b203ab9da4e9a23fac.txt",
+   "retained_bytes": 1267,
+   "retained_sha256": "dc6d60e3c5d14607dfcfc770958a3c66993b5255c0a541b203ab9da4e9a23fac",
+   "source": "quantum-inspire-rejected-request-recovery/qi-rejected-request-recovery/focused-gates.json",
+   "source_bytes": 1440,
+   "source_sha256": "cd450032fd5ef3f27ea9262927d59daf68c64ed2afa22d0e708a21cc84f23f44"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "ae67f8ede9d742a9ea06c05c8cb80fbfbea5a73b",
+   "retained": "captures/75fb1e72e0d50a8b0a4f451613ec0616fb3eb42263d7515c3e336f8041cb3eed.txt",
+   "retained_bytes": 281,
+   "retained_sha256": "75fb1e72e0d50a8b0a4f451613ec0616fb3eb42263d7515c3e336f8041cb3eed",
+   "source": "quantum-proposal-rejection-source-bindings/proposal-rejection-source-bindings/compiler-invariance.json",
+   "source_bytes": 281,
+   "source_sha256": "33d9462b21e2bbaa7e9686169cad2b24fa75edb557aba8a44e3c0a03bf3cf78c"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "54f323efa00315c950029c623153446808529605",
+   "retained": "captures/7281db733824a75f5eea5beb3eab8c1c74430a8c22465125c7437882a6fd0e24.txt",
+   "retained_bytes": 832,
+   "retained_sha256": "7281db733824a75f5eea5beb3eab8c1c74430a8c22465125c7437882a6fd0e24",
+   "source": "quantum-proposal-rejection-source-bindings/proposal-rejection-source-bindings/invariance.json",
+   "source_bytes": 832,
+   "source_sha256": "c31ae5b618e4320fe173bf7fcfc30b31ea401d5273a9ec2ba0775ddadba4fd22"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "11b4bfe3471c00dc01b87e0d07dfc61c51a85d62",
+   "retained": "captures/6e0d4caffcca63b5a31795d183733d939120ab16741b43053f199de24867a480.txt",
+   "retained_bytes": 456,
+   "retained_sha256": "6e0d4caffcca63b5a31795d183733d939120ab16741b43053f199de24867a480",
+   "source": "quantum-proposal-rejection-source-bindings/proposal-rejection-source-bindings/live-compiler-gate.json",
+   "source_bytes": 506,
+   "source_sha256": "2f00c3449ab209fad47e97e4650f5ddbe507ef1a374b6de04234cbdb6a14307b"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "8700d1bc4dcb243bde7e976c651a7163382d4ae3",
+   "retained": "captures/89ebdfc2527970c7e04a1cb4b93bc83f6c77ac55d06103b4c98326d8f1440dd3.txt",
+   "retained_bytes": 1020,
+   "retained_sha256": "89ebdfc2527970c7e04a1cb4b93bc83f6c77ac55d06103b4c98326d8f1440dd3",
+   "source": "quantum-proposal-rejection-source-bindings/proposal-rejection-source-bindings/replay-gates.json",
+   "source_bytes": 1152,
+   "source_sha256": "6b2dcaa70982ad3702d07a01761126768744619e5092d4b1203d3c5d5129f172"
+  },
+  {
+   "classification": "already-retained",
+   "git_blob_oid": "f666c1a5bbfd3ef2e22d9e496dade0f0212492eb",
+   "repository_commit": "1d2fc941a8ce314a2ba670668172f62e3aec3a60",
+   "repository_path": "docs/evidence/hypercomplex-operators/certificate-pooled-dephasing.json",
+   "source": "quaternion-dephasing-pool/dephasing-pooled-evidence/certificate.json",
+   "source_bytes": 4881,
+   "source_sha256": "931a14f3cbee8fc0ea8f895549311f47879022b8d09ff5ac684fa9fd6022a3fd"
+  },
+  {
+   "classification": "already-retained",
+   "git_blob_oid": "8677308398e275954a4a451027d7b16f0b2d4338",
+   "repository_commit": "1d2fc941a8ce314a2ba670668172f62e3aec3a60",
+   "repository_path": "docs/evidence/hypercomplex-operators/dephasing-diagonal-source.py.txt",
+   "source": "quaternion-dephasing-pool/dephasing-pooled-evidence/diagonal-source.py.txt",
+   "source_bytes": 3477,
+   "source_sha256": "5897bdec95b3cfc613da56dfb001b600eb03a174267fac2804ee858475d0439e"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "11ccdb56c9a5039a23577452f2b95b58702d2e36",
+   "retained": "captures/867ca5262837dac4c029ee96023a5b77b7c6e3eae4347e50d696194eb5cb799b.txt",
+   "retained_bytes": 5909,
+   "retained_sha256": "867ca5262837dac4c029ee96023a5b77b7c6e3eae4347e50d696194eb5cb799b",
+   "source": "quaternion-dephasing-pool/dephasing-pooled-evidence/probability-evolution.html",
+   "source_bytes": 5909,
+   "source_sha256": "867ca5262837dac4c029ee96023a5b77b7c6e3eae4347e50d696194eb5cb799b"
+  },
+  {
+   "classification": "already-retained",
+   "git_blob_oid": "36848eecbfdee677bb9dab0204133560471117bd",
+   "repository_commit": "1d2fc941a8ce314a2ba670668172f62e3aec3a60",
+   "repository_path": "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing.json",
+   "source": "quaternion-dephasing-pool/diagonal-dephasing-evidence/certificate.json",
+   "source_bytes": 4881,
+   "source_sha256": "582f124cff5cf0c546e9d32b120011f2b6bce004631643a9555d6efe884576f8"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "3a999c58a38c9e3ca93b12c4598995beaa14f69e",
+   "retained": "captures/e357071436b58c2c166596193d2c6e06c26efaa764645d5c1a374b5e0b97d2f0.txt",
+   "retained_bytes": 5909,
+   "retained_sha256": "e357071436b58c2c166596193d2c6e06c26efaa764645d5c1a374b5e0b97d2f0",
+   "source": "quaternion-dephasing-pool/diagonal-dephasing-evidence/probability-evolution.html",
+   "source_bytes": 5909,
+   "source_sha256": "e357071436b58c2c166596193d2c6e06c26efaa764645d5c1a374b5e0b97d2f0"
+  },
+  {
+   "classification": "already-retained",
+   "git_blob_oid": "6c3ed20d9fc7a2033733939c3a54773c48cfb4a3",
+   "repository_commit": "1d2fc941a8ce314a2ba670668172f62e3aec3a60",
+   "repository_path": "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json",
+   "source": "quaternion-dephasing-pool/formatted-diagonal-dephasing-evidence/certificate.json",
+   "source_bytes": 4881,
+   "source_sha256": "f19765c621179b3f3eee707b9ed70dadb0a3e25d4a3702bfda61ebaeabbf7f60"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "bb037b8e56cf415658dcde7e5158aac605278a19",
+   "retained": "captures/761af9037f949c19b21f30ceea6665cea4d150a0075575be322f60b9ce5e16aa.txt",
+   "retained_bytes": 5909,
+   "retained_sha256": "761af9037f949c19b21f30ceea6665cea4d150a0075575be322f60b9ce5e16aa",
+   "source": "quaternion-dephasing-pool/formatted-diagonal-dephasing-evidence/probability-evolution.html",
+   "source_bytes": 5909,
+   "source_sha256": "761af9037f949c19b21f30ceea6665cea4d150a0075575be322f60b9ce5e16aa"
+  }
+ ],
+ "boundary": "Sanitized source snapshots and dispositions; original digests identify inputs, not preserved raw bytes or completed execution.",
+ "schema": "quantum-task-artifact-retention-v1"
+}

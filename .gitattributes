@@ -19,4 +19,5 @@ docs/notes/kaggle/cli/*.md -text -whitespace
 docs/evidence/simulation-notebook-audit/reality_ripple/** -text -whitespace
 docs/evidence/simulation-notebook-audit/kaggle_sources/*.txt -text -whitespace
 # Preserve sanitizer output hashes, including captured diagnostic whitespace.
-docs/evidence/quantum-task-artifact-retention/snapshot/captures/*.txt -text -whitespace
+docs/evidence/quantum-task-artifact-retention/**/captures/*.txt -text -whitespace
+docs/evidence/quantum-task-artifact-retention/**/inventory.json -text

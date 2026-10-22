@@ -1,0 +1,7 @@
+{
+ "gates": {},
+ "schema": "gororoba-gate-ledger-v2",
+ "selected": [
+  "core-630"
+ ]
+}
