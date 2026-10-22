@@ -3876,6 +3876,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_forensics.py --check",
+   "name": "core-622",
+   "seconds": 10.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --self-test",
    "name": "core-607",
    "seconds": 1.5,
