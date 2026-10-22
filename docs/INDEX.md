@@ -393,3 +393,6 @@ algebra circuit design rules of docs/notes/algebra_circuit_rules.md.
 - [quant-ph/0307017v2](notes/papers/quant-ph-0307017.md): Quaternionic Computing
 - [1709.09246v3](notes/papers/1709.09246.md): Quantum theory in quaternionic Hilbert space: How Poincar\&#39;e symmetry reduces the theory to the standard complex one
 - [2608.20259v1](notes/papers/2608.20259.md): Operational Foundations for Quaternionic and Octonionic Quantum Models: Exact Quaternionic Channels and Error Correction, Para-Linear Operators, and Categorical Closure Boundaries Beyond Associativity
+
+- [Quaternionic foundational source review](notes/papers/quaternionic-foundational-source-review.md): verified historical citation identities, abstract-level claims and explicit body-reading obligations.
+- [Quaternionic optical bound reading](notes/papers/quaternionic-optical-bound-reading.md): exact-version Procopio/Adler exchange, reported 0.03-degree phase bound, insensitive case and scattering assumptions; successor reading scope to the three abstract notes.

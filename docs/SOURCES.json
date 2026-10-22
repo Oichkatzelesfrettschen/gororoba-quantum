@@ -1572,6 +1572,69 @@
       "note": "docs/notes/papers/brown-1972-dissertation.md",
       "url": "https://scholarsmine.mst.edu/doctoral_dissertations/2088",
       "status": "Open-access PhD dissertation record (University of Missouri--Rolla, 1972); catalog metadata inspected 2026-10-19, PDF not rehosted"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1080/00927879508825218",
+      "note": "docs/notes/papers/quaternionic-foundational-source-review.md",
+      "sha256": "bbac3fd11e53de3346ef7ff9cf646d73fe94c3e6c8bfcc4b5af3ad39cc638c7b",
+      "bytes": 2374,
+      "retrieved_at_utc": "2026-10-22T09:19:56.754315+00:00",
+      "reading_scope": "Soler 1995: bibliographic identity; deposited abstract where present, not full text",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1103/PhysRevLett.42.683",
+      "note": "docs/notes/papers/quaternionic-foundational-source-review.md",
+      "sha256": "0bcb25af10554712befda134dc1b500b0e03394cef2f06eb8e8752f155e62870",
+      "bytes": 5016,
+      "retrieved_at_utc": "2026-10-22T09:19:57.034226+00:00",
+      "reading_scope": "Peres 1979: bibliographic identity; deposited abstract where present, not full text",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1063/1.1703794",
+      "note": "docs/notes/papers/quaternionic-foundational-source-review.md",
+      "sha256": "954b2ddba400d0028c0c2c78c57d678f98d7b946c1a1c11ca5d095c52f4c487a",
+      "bytes": 4064,
+      "retrieved_at_utc": "2026-10-22T09:19:57.278206+00:00",
+      "reading_scope": "Finkelstein et al. 1962: bibliographic identity; deposited abstract where present, not full text",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1103/PhysRevA.29.2276",
+      "note": "docs/notes/papers/quaternionic-foundational-source-review.md",
+      "sha256": "7fc0e4a8a36703ed0fd8e0c3a80b8681a8158648f936f5e06f8236fef2242134",
+      "bytes": 4183,
+      "retrieved_at_utc": "2026-10-22T09:19:57.565209+00:00",
+      "reading_scope": "Kaiser et al. 1984: bibliographic identity; deposited abstract where present, not full text",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1038/s41586-021-04160-4",
+      "note": "docs/notes/papers/quaternionic-foundational-source-review.md",
+      "sha256": "e0386a70a8c252211caeb63f01ed8d1ceec5e19b6c02ce40b2be06f57e1988e0",
+      "bytes": 21404,
+      "retrieved_at_utc": "2026-10-22T09:19:57.913070+00:00",
+      "reading_scope": "Renou et al. 2021: bibliographic identity; deposited abstract where present, not full text",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1093/oso/9780195066432.001.0001",
+      "note": "docs/notes/papers/quaternionic-foundational-source-review.md",
+      "sha256": "2642ee3d8ab5eacf85e748da26c0d9f2cf183a32be3dc47f3734c0c9b7d3a84a",
+      "bytes": 2827,
+      "retrieved_at_utc": "2026-10-22T09:19:58.187256+00:00",
+      "reading_scope": "Adler 1995 book: bibliographic identity; deposited abstract where present, not full text",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.datacite.org/dois/10.5169/seals-113093",
+      "note": "docs/notes/papers/quaternionic-foundational-source-review.md",
+      "sha256": "b5d5ea35698c3bfe5817bb6dd0b4fe6109026cddf01ba172f6915b046e6ee5b7",
+      "bytes": 3000,
+      "retrieved_at_utc": "2026-10-22T09:19:58.872345+00:00",
+      "reading_scope": "Stueckelberg 1960: deposited title, author, year, publisher and DOI; body unreviewed",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
