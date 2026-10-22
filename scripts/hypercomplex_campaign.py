@@ -244,7 +244,9 @@ def execute(directory: Path, approval: str, approved_sha256: str, max_wait_secon
             if (batch / "preflight-refusal.json").exists():
                 raise ValueError("a retained preflight refusal requires a separately recorded retry")
             try:
-                qi_platform.submit(batch, 7, approval, expected_cases_sha256=intent["cases_sha256"])
+                qi_platform.submit(
+                    batch, 7, approval, expected_cases_sha256=intent["cases_sha256"], execution_deadline=deadline
+                )
             except BaseException:
                 with qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
                     if not any(

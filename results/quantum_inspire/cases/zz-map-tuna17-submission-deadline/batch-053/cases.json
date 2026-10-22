@@ -1,0 +1,100 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "batch_index": 53,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-03-readout-11.cq",
+   "kind": "readout",
+   "packing_id": "pack-03",
+   "pairs": [
+    {
+     "edge": [
+      8,
+      12
+     ],
+     "prepared": [
+      1,
+      1
+     ]
+    }
+   ],
+   "prepared_pair": [
+    1,
+    1
+   ],
+   "sha256": "190c2836d63dfb0f66573cdc5e4865989397b6a5f3b9e55cdaa5f0a17a15f01f"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 0,
+   "delay_seconds": 0.0,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-03-a_probe-n0-x-t0000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "packing_id": "pack-03",
+   "pairs": [
+    {
+     "edge": [
+      8,
+      12
+     ],
+     "neighbor": 12,
+     "neighbor_state": 0,
+     "probe": 8
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "502753b5b81eb4d1e1a80ff523ef14cb737476535eae08d93f4b542651c60f64"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 0,
+   "delay_seconds": 0.0,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-03-a_probe-n1-x-t0000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 1,
+   "packing_id": "pack-03",
+   "pairs": [
+    {
+     "edge": [
+      8,
+      12
+     ],
+     "neighbor": 12,
+     "neighbor_state": 1,
+     "probe": 8
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "be21c77a754d4203801e149664325df8f21848eb26060e83d246118bf1106415"
+  }
+ ],
+ "nqubits": 17,
+ "plan_schema": "qi-zz-map-plan-v1",
+ "schema": "qi-zz-map-cases-v1",
+ "shots": 8192,
+ "source_digests": {
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "conditional_ramsey_note_sha256": "ddac02db9715550afcd22d19d312dc668d2558adb42ff7476c4c75b7940cb087",
+  "conditional_ramsey_source_sha256": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+  "proposal_builder_sha256": "a4bf473947b199b973933b17d99e09ac59f68c5321075f02b89dce3c3a81960b",
+  "qi_platform_source_sha256": "ca39e2dfe4aa74221268c607fab8e69d50b34f79f1e092b608a5a5fab87116f6",
+  "tuna_operations_sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
+ },
+ "status": "proposed_not_submitted"
+}

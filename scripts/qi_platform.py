@@ -267,12 +267,14 @@ class Client:
         self.expires = tokens.generated_at + tokens.expires_in
         self.session.headers["Authorization"] = f"Bearer {tokens.access_token}"
 
-    def request(self, method: str, path: str, **kwargs: Any) -> Any:
+    def request(self, method: str, path: str, *, execution_deadline: float | None = None, **kwargs: Any) -> Any:
         if time.time() > self.expires - REFRESH_MARGIN:
             self.refresh()
+        _check_execution_deadline(execution_deadline)
         response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
         if response.status_code == 401:
             self.refresh()
+            _check_execution_deadline(execution_deadline)
             response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
         if response.status_code >= 400:
             raise PlatformError(f"{method} {path}: {response.status_code} {response.text[:500]}")
@@ -292,8 +294,8 @@ class Client:
                 return rows
             page += 1
 
-    def post(self, path: str, body: dict[str, Any]) -> Any:
-        return self.request("POST", path, json=body)
+    def post(self, path: str, body: dict[str, Any], *, execution_deadline: float | None = None) -> Any:
+        return self.request("POST", path, execution_deadline=execution_deadline, json=body)
 
     def patch(self, path: str) -> Any:
         return self.request("PATCH", path)
@@ -655,7 +657,12 @@ def hardware_pause_left(client: Client) -> int:
 
 
 def submit(
-    case_dir: Path, backend_type_id: int, approval: str, *, expected_cases_sha256: str | None = None
+    case_dir: Path,
+    backend_type_id: int,
+    approval: str,
+    *,
+    expected_cases_sha256: str | None = None,
+    execution_deadline: float | None = None,
 ) -> dict[str, Any]:
     """Submit one case batch while holding the account submit lock.
 
@@ -664,12 +671,32 @@ def submit(
     the checks before either batch exists on the service.
     """
     with token_lock(SUBMIT_LOCK):
-        return _submit(case_dir, backend_type_id, approval, expected_cases_sha256=expected_cases_sha256)
+        return _submit(
+            case_dir,
+            backend_type_id,
+            approval,
+            expected_cases_sha256=expected_cases_sha256,
+            execution_deadline=execution_deadline,
+        )
+
+
+def _check_execution_deadline(deadline: float | None) -> None:
+    if deadline is not None:
+        if not math.isfinite(deadline):
+            raise ValueError("execution deadline must be finite")
+        if time.monotonic() >= deadline:
+            raise TimeoutError("execution deadline expired before resource-request initiation")
 
 
 def _submit(
-    case_dir: Path, backend_type_id: int, approval: str, *, expected_cases_sha256: str | None = None
+    case_dir: Path,
+    backend_type_id: int,
+    approval: str,
+    *,
+    expected_cases_sha256: str | None = None,
+    execution_deadline: float | None = None,
 ) -> dict[str, Any]:
+    _check_execution_deadline(execution_deadline)
     if (case_dir / "preflight-refusal.json").exists():
         raise SystemExit("preflight-refusal.json exists; retain the refusal and prepare a separately approved case")
     if (case_dir / "submission.json").exists():
@@ -746,13 +773,17 @@ def _submit(
         "shots": cases["shots"],
         "jobs": [],
     }
+    _check_execution_deadline(execution_deadline)
     try:
         _write_json(state_path, state, exclusive=True)
     except FileExistsError:
         raise SystemExit(f"{state_path} exists; another submission owns this case") from None
     name = f"gororoba-{case_dir.name}"[:32]
+    _check_execution_deadline(execution_deadline)
     project = client.post(
-        "/projects", {"owner_id": client.member_id, "name": name, "description": name, "starred": False}
+        "/projects",
+        {"owner_id": client.member_id, "name": name, "description": name, "starred": False},
+        execution_deadline=execution_deadline,
     )
     state["project"] = project["id"]
     _write_json(state_path, state)
