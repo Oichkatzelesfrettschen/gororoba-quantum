@@ -1221,7 +1221,7 @@ def provider_contract_record(target: dict[str, Any]) -> dict[str, Any]:
 TemplateOp = tuple[str, int, int | None]
 
 
-def template_ops(name: str, source: int) -> list[TemplateOp]:
+def template_ops(name: str, source: int, *, modes: int) -> list[TemplateOp]:
     """outward-ladder splits the photon from the source to its left and right neighbours in turn; reverse-ladder
     swaps two unused inputs, transfers the photon to mode 0 through fixed full splitters and then ladders it
     rightward across every mode."""
@@ -1238,28 +1238,28 @@ def template_ops(name: str, source: int) -> list[TemplateOp]:
             bs(source - 1)
         for m in range(source - 1, 0, -1):
             bs(m - 1)
-        for m in range(source, MODES - 1):
+        for m in range(source, modes - 1):
             bs(m)
     elif name == "reverse-ladder":
         # A fixed full splitter on two unused inputs comes first: it moves no photon, and it keeps the template's
         # action on the unused columns distinct from outward-ladder even where both ladders reduce to transfers.
-        bs(0 if source > 1 else MODES - 2, fixed=True)
+        bs(0 if source > 1 else modes - 2, fixed=True)
         for m in range(source, 0, -1):
             bs(m - 1, fixed=True)
-        for m in range(MODES - 1):
+        for m in range(modes - 1):
             bs(m)
     else:
         raise ValueError(f"unknown template {name}")
-    for m in range(MODES):
+    for m in range(modes):
         ops.append(("PS", m, count))
         count += 1
     return ops
 
 
-def template_unitary(ops: list[TemplateOp], params: np.ndarray) -> np.ndarray:
-    u = np.eye(MODES, dtype=complex)
+def template_unitary(ops: list[TemplateOp], params: np.ndarray, *, modes: int) -> np.ndarray:
+    u = np.eye(modes, dtype=complex)
     for kind, m, k in ops:
-        g = np.eye(MODES, dtype=complex)
+        g = np.eye(modes, dtype=complex)
         if kind == "BS":
             t = math.pi if k is None else float(params[k])
             c, sn = math.cos(t / 2), math.sin(t / 2)
@@ -1270,7 +1270,7 @@ def template_unitary(ops: list[TemplateOp], params: np.ndarray) -> np.ndarray:
     return u
 
 
-def template_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
+def template_params(name: str, column: np.ndarray, source: int, *, modes: int) -> np.ndarray:
     """Angles that put |column_m|^2 on every mode m, then phases that give each mode the column's argument.
 
     A ladder splitter keeps cos^2(theta/2) of its carrier's weight on mode m and passes sin^2(theta/2) on, so
@@ -1279,7 +1279,7 @@ def template_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
     precision where acos or asin of a ratio near 1 would lose half its digits.
     """
     weight = np.abs(column) ** 2
-    ops = template_ops(name, source)
+    ops = template_ops(name, source, modes=modes)
     params = np.zeros(sum(1 for _, _, k in ops if k is not None))
 
     def angle(passed: float, kept: float) -> float:
@@ -1291,12 +1291,12 @@ def template_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
             params[next(slots)] = angle(float(weight[:source].sum()), float(weight[source:].sum()))
         for m in range(source - 1, 0, -1):
             params[next(slots)] = angle(float(weight[:m].sum()), float(weight[m]))
-        for m in range(source, MODES - 1):
+        for m in range(source, modes - 1):
             params[next(slots)] = angle(float(weight[m + 1 :].sum()), float(weight[m]))
     else:
-        for m in range(MODES - 1):
+        for m in range(modes - 1):
             params[next(slots)] = angle(float(weight[m + 1 :].sum()), float(weight[m]))
-    reached = template_unitary(ops, params)[:, source]
+    reached = template_unitary(ops, params, modes=modes)[:, source]
     for kind, m, k in ops:
         if kind == "PS" and k is not None and abs(column[m]) > 1e-12:
             params[k] = float(np.angle(column[m]) - np.angle(reached[m]))
@@ -1309,23 +1309,26 @@ def template_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
 UNION_CIRCUIT = "ladder-union"
 
 
-def union_ops(source: int) -> list[TemplateOp]:
-    modes = [
-        m for name in reversed(PREPARATION_DESCRIPTIONS) for kind, m, _ in template_ops(name, source) if kind == "BS"
+def union_ops(source: int, *, modes: int) -> list[TemplateOp]:
+    splitters = [
+        m
+        for name in reversed(PREPARATION_DESCRIPTIONS)
+        for kind, m, _ in template_ops(name, source, modes=modes)
+        if kind == "BS"
     ]
-    ops: list[TemplateOp] = [("BS", m, k) for k, m in enumerate(modes)]
-    return ops + [("PS", m, len(modes) + m) for m in range(MODES)]
+    ops: list[TemplateOp] = [("BS", m, k) for k, m in enumerate(splitters)]
+    return ops + [("PS", m, len(splitters) + m) for m in range(modes)]
 
 
-def union_params(name: str, column: np.ndarray, source: int) -> np.ndarray:
+def union_params(name: str, column: np.ndarray, source: int, *, modes: int) -> np.ndarray:
     """The union circuit's parameters that realize template name on column: its splitter angles (pi for a fixed
     splitter) in its own block, 0 on the other block, and its phases."""
-    own = template_ops(name, source)
-    params = template_params(name, column, source)
-    out = np.zeros(len(union_ops(source)))
+    own = template_ops(name, source, modes=modes)
+    params = template_params(name, column, source, modes=modes)
+    out = np.zeros(len(union_ops(source, modes=modes)))
     offset = 0
     for other in reversed(PREPARATION_DESCRIPTIONS):
-        block = [k for kind, _, k in template_ops(other, source) if kind == "BS"]
+        block = [k for kind, _, k in template_ops(other, source, modes=modes) if kind == "BS"]
         if other == name:
             out[offset : offset + len(block)] = [math.pi if k is None else params[k] for k in block]
         offset += len(block)
@@ -1348,9 +1351,13 @@ def _case_bank(item: CaseItem) -> dict[str, Any]:
         column = chip_column(u, psi)
         body = {}
         for name in PREPARATION_DESCRIPTIONS:
-            w = template_unitary(template_ops(name, source), template_params(name, column, source))
+            w = template_unitary(
+                template_ops(name, source, modes=MODES), template_params(name, column, source, modes=MODES), modes=MODES
+            )
             require(np.allclose(w[:, source], column, rtol=0, atol=1e-12), f"{name} template misses the column")
-            union = template_unitary(union_ops(source), union_params(name, column, source))
+            union = template_unitary(
+                union_ops(source, modes=MODES), union_params(name, column, source, modes=MODES), modes=MODES
+            )
             require(np.allclose(union, w, rtol=0, atol=1e-12), f"the union circuit misses the {name} unitary")
             body[name] = np.delete(w, source, axis=1)
         rows.append(
@@ -1902,26 +1909,59 @@ def self_test() -> int:
             and np.array_equal(single["status"], batched["status"][row]),
             "self-test: the batched contrast readout differs from the single record",
         )
-    # Templates: both ladders reach any column from any source mode, with unitaries that differ off the source.
-    for source in (0, 6, 23):
-        for trial in range(4):
-            z = rng.normal(size=MODES) + 1j * rng.normal(size=MODES)
-            if trial == 0:
-                z[: MODES // 2] = 0
-            column = z / np.linalg.norm(z)
-            reached = {}
-            for name in PREPARATION_DESCRIPTIONS:
-                w = template_unitary(template_ops(name, source), template_params(name, column, source))
-                require(
-                    np.allclose(w.conj().T @ w, np.eye(MODES), rtol=0, atol=1e-12), f"self-test: {name} not unitary"
-                )
-                require(np.allclose(w[:, source], column, rtol=0, atol=1e-12), f"self-test: {name} misses the column")
-                reached[name] = w
-            first, second = reached.values()
-            require(not np.allclose(first, second), "self-test: the two templates coincide")
-            for name, w in reached.items():
-                union = template_unitary(union_ops(source), union_params(name, column, source))
-                require(np.allclose(union, w, rtol=0, atol=1e-12), f"self-test: the union circuit misses {name}")
+    # Templates: both ladders reach any column from any source mode, with unitaries that differ off the source, at
+    # the Belenos width and at the 12 modes of qpu:ascella. The 12-mode draws come from their own generator, so the
+    # 24-mode draws and every later draw of rng are those of a 24-mode-only run.
+    for modes, sources, draws in ((MODES, (0, 6, 23), rng), (12, (0, 4, 11), np.random.default_rng(12))):
+        for source in sources:
+            for trial in range(4):
+                z = draws.normal(size=modes) + 1j * draws.normal(size=modes)
+                if trial == 0:
+                    z[: modes // 2] = 0
+                column = z / np.linalg.norm(z)
+                reached = {}
+                for name in PREPARATION_DESCRIPTIONS:
+                    ops = template_ops(name, source, modes=modes)
+                    w = template_unitary(ops, template_params(name, column, source, modes=modes), modes=modes)
+                    require(w.shape == (modes, modes), f"self-test: {name} at {modes} modes is {w.shape}")
+                    require(
+                        np.allclose(w.conj().T @ w, np.eye(modes), rtol=0, atol=1e-12),
+                        f"self-test: {name} at {modes} modes not unitary",
+                    )
+                    require(
+                        np.allclose(w[:, source], column, rtol=0, atol=1e-12),
+                        f"self-test: {name} at {modes} modes misses the column",
+                    )
+                    reached[name] = w
+                first, second = reached.values()
+                require(not np.allclose(first, second), f"self-test: the two templates coincide at {modes} modes")
+                for name, w in reached.items():
+                    union = template_unitary(
+                        union_ops(source, modes=modes), union_params(name, column, source, modes=modes), modes=modes
+                    )
+                    require(
+                        np.allclose(union, w, rtol=0, atol=1e-12),
+                        f"self-test: the union circuit misses {name} at {modes} modes",
+                    )
+    # The constructors keep no state: a 24-mode construction answers the same before and after a 12-mode one.
+    flat = np.full(MODES, 1 / np.sqrt(MODES), dtype=complex)
+    narrow = np.full(12, 1 / np.sqrt(12), dtype=complex)
+
+    def belenos() -> tuple[list[TemplateOp], np.ndarray]:
+        return union_ops(4, modes=MODES), union_params(PREPARATION_DESCRIPTIONS[1], flat, 4, modes=MODES)
+
+    first_ops, first_params = belenos()
+    narrow_ops = union_ops(4, modes=12)
+    union_params(PREPARATION_DESCRIPTIONS[1], narrow, 4, modes=12)
+    later_ops, later_params = belenos()
+    require(
+        first_ops == later_ops and np.array_equal(first_params, later_params) and MODES == 24,
+        "self-test: a 12-mode construction changed a later 24-mode one",
+    )
+    require(
+        sum(kind == "PS" for kind, _, _ in narrow_ops) == 12 and sum(kind == "PS" for kind, _, _ in later_ops) == 24,
+        "self-test: a union circuit's phase layer does not span its width",
+    )
     # Packing: every sum-rule and completion contrast stays inside one job; only the epoch family spans jobs.
     job_of = {j: n for n, job in enumerate(case_jobs(observations)) for j in job["iterations"]}
     for family, _, terms in contrasts:
