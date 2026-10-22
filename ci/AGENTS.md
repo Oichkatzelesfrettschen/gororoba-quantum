@@ -23,6 +23,14 @@ gate over 30 s of measured wall moves to the full tier with its non-imported
 inputs declared in ci/full_gate_inputs.json, so a merge runs it when its own
 inputs change and the nightly run covers the reads the tracer cannot see.
 
+The numerical-model gates `core-600`, `core-603`, `core-605`, `core-612`,
+`core-616`, `core-619` and `core-620` each select a distinct synthetic pytest
+regression in `tests/scripts/test_n21_model_regressions.py`. Gate `core-615`
+includes the same tests in the behavioral suite. These tests exercise model
+laws, endpoint decisions and prospective geometry using synthetic counts and
+parameters. The tests neither read historical run reports nor refit historical
+acquisitions; their research-state role is regression rather than replay.
+
 **Code style.** Every Python file a change touches passes, before each push:
 - `ruff format --target-version py313` (formatting: 120-column lines from
   pyproject.toml, with the Python 3.13 target the shared modules keep for the
