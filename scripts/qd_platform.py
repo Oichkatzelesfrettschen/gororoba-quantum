@@ -944,6 +944,10 @@ def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str)
         or [[m, p[0]] for k, m, p in live if k == "bs"] != spec["couplers"]
     ):
         raise PlatformError("the live architecture differs from the case: regenerate the mesh case after recalibration")
+    if "ops" in circuit:
+        operations = [[kind.upper(), mode, index] for index, (kind, mode, _) in enumerate(live)]
+        if operations != circuit["ops"]:
+            raise PlatformError("the live architecture operation sequence differs from the case's native template")
 
 
 def live_architecture(processor: dict[str, Any], platform: str) -> None:
@@ -1649,6 +1653,22 @@ def run_facts(directory: Path) -> dict[str, Any]:
         raise PlatformError(f"{owner}: results.json names another job or schema")
     if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
         raise PlatformError(f"{owner}: results.json carries {carried}")
+    returned = collected.get("data", {}).get("payload")
+    if (
+        manifest.get("schema") == "qd-hypercomplex-cases-v1"
+        and "logical_modes" in manifest
+        and collected.get("status", {}).get("status") == "completed"
+        and not isinstance(returned, dict)
+    ):
+        raise PlatformError(f"{owner}: completed full-output acquisition lacks its returned payload")
+    if isinstance(returned, dict):
+        echoed = dict(returned)
+        # The worker adds its version to the payload; the sent fields retain
+        # their exact JSON structures, including compilation parameters.
+        if "pcvl_version" not in body["payload"]:
+            echoed.pop("pcvl_version", None)
+        if echoed != body["payload"]:
+            raise PlatformError(f"{owner}: returned payload differs from job-body.json")
     status = collected["status"]["status"]
     if status not in TERMINAL:
         raise PlatformError(f"{owner}: job status {status} is not terminal")

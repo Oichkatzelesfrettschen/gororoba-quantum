@@ -7,6 +7,12 @@ description. The Cloud document contains 39 method/path entries, Toolbox 3
 and Account 14. All three Toolbox entries duplicate entries in the Cloud document;
 56 entries therefore describe 53 distinct origin/method/path combinations.
 
+The [instrument observation catalogue](../catalogue-instrument-observations.json)
+retains the 22 October refresh under its own path. The
+[historical catalogue](../catalogue.json) preserves the 20 October source cited
+by the platform specification and calibration notes. The refresh SHA-256 is
+`7cdf0b57ec28b9ad7d17fe6cb480a204506ecbd04f17013cb9e496308ed29df5`.
+
 The Account schema references the undefined `#/components/schemas/None`.
 The inventory preserves that source defect in `unresolved_references`.
 The strict `inventory()` interface rejects unresolved references. The audit
