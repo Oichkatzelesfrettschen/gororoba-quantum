@@ -19,8 +19,9 @@ The input extracts and infographic are conversation-supplied secondary
 artifacts. Their hashes identify the inputs used in this pass; they do not
 assert those entire original files are retained in this repository. The six
 count vectors and job lists needed for the stated arithmetic are retained in
-checks.json. Its source URLs and commit identities locate the primary repository
-records. No compressed raw-provider result is independently replayed here.
+checks.json. Its source paths and commit identities locate the primary records;
+the resolution design supplies the corresponding repository links. No compressed
+raw-provider result is independently replayed here.
 
 ## Arithmetic that can be checked directly
 
