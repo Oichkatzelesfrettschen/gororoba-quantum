@@ -249,7 +249,7 @@ def execute(directory: Path, approval: str, approved_sha256: str, max_wait_secon
                 )
             except BaseException:
                 with qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
-                    if not any(
+                    if qi_platform.pre_dispatch_refused(batch, intent["cases_sha256"]) or not any(
                         (batch / name).exists()
                         for name in ("submission-state.json", "submission.json", "results.json", "raw")
                     ):
@@ -264,7 +264,7 @@ def execute(directory: Path, approval: str, approved_sha256: str, max_wait_secon
                         else:
                             qi_platform._write_json(refusal_path, refusal, exclusive=True)
                 raise
-        qi_platform.collect(batch, poll=10, timeout=max(1, deadline - time.monotonic()))
+        qi_platform.collect(batch, poll=10, timeout=max_wait_seconds, execution_deadline=deadline)
         analysis = analyze_batch(batch)
         analysis_path = batch / "hypercomplex-analysis.json"
         text = json.dumps(analysis, indent=1) + "\n"

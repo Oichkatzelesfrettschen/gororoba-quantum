@@ -492,6 +492,123 @@ class RetentionChecks(unittest.TestCase):
                 self.assertEqual((self.case_dir / "submission-state.json").exists(), state_expected)
                 (self.case_dir / "submission-state.json").unlink(missing_ok=True)
 
+    def test_expiry_after_checkpoint_retains_proof_of_zero_resource_dispatch(self) -> None:
+        client = FakeClient(self.case_dir)
+        with (
+            patch.object(platform, "Client", return_value=client),
+            patch.object(platform.time, "monotonic", side_effect=(1.0, 2.0, 11.0)),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+        state = json.loads((self.case_dir / "submission-state.json").read_text())
+        self.assertEqual(state["phase"], "pre-dispatch-refused")
+        self.assertEqual(state["resource_requests_dispatched"], 0)
+        self.assertTrue(all(method == "GET" for method, _ in client.calls))
+        self.assert_retry_blocked()
+        with self.assertRaisesRegex(platform.PlatformError, "zero resource requests.*separately approved"):
+            self.reconcile(client)
+
+    def test_collection_deadline_blocks_terminal_result_and_ledger_dispatch(self) -> None:
+        for expired_path in ("/jobs/10", "/results/job/10", "/transactions/"):
+            with self.subTest(expired_path=expired_path):
+                client = self.collection_client()
+                self.bind_collection_receipt()
+                original_get = client.get
+                original_pages = client.pages
+                clock = [1.0]
+                dispatched: list[str] = []
+
+                def get(
+                    path: str,
+                    *,
+                    expired_path: str = expired_path,
+                    clock: list[float] = clock,
+                    dispatched: list[str] = dispatched,
+                    original_get: Any = original_get,
+                    **params: Any,
+                ) -> Any:
+                    if path == expired_path:
+                        clock[0] = 11.0
+                    platform._check_execution_deadline(params.pop("execution_deadline", None))
+                    dispatched.append(path)
+                    return original_get(path, **params)
+
+                def pages(
+                    path: str,
+                    *,
+                    expired_path: str = expired_path,
+                    clock: list[float] = clock,
+                    dispatched: list[str] = dispatched,
+                    original_pages: Any = original_pages,
+                    **params: Any,
+                ) -> Any:
+                    if path == expired_path:
+                        clock[0] = 11.0
+                    platform._check_execution_deadline(params.pop("execution_deadline", None))
+                    dispatched.append(path)
+                    return original_pages(path, **params)
+
+                with (
+                    patch.object(platform, "Client", return_value=client),
+                    patch.object(platform.time, "monotonic", side_effect=lambda clock=clock: clock[0]),
+                    patch.object(client, "get", side_effect=get),
+                    patch.object(client, "pages", side_effect=pages),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, "deadline"):
+                        platform.collect(self.case_dir, poll=0, timeout=100, execution_deadline=10.0)
+                self.assertNotIn(expired_path, dispatched)
+                self.assertFalse((self.case_dir / "results.json").exists())
+
+    def test_collection_transport_checks_each_page_after_refresh(self) -> None:
+        client = platform.Client.__new__(platform.Client)
+        client.expires = 10000
+        client.session = Mock()
+        clock = [1.0]
+        response = client.session.request.return_value
+        response.status_code = 200
+        response.content = b"fixture"
+
+        def page() -> dict[str, Any]:
+            clock[0] = 11.0
+            return {"items": [], "pages": 2}
+
+        response.json.side_effect = page
+        with (
+            patch.object(platform.time, "time", return_value=100.0),
+            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                client.pages("/transactions/", execution_deadline=10.0)
+        self.assertEqual(client.session.request.call_count, 1)
+
+    def test_initial_token_refresh_expiry_retains_local_refusal_checkpoint(self) -> None:
+        client = FakeClient(self.case_dir)
+        transport = platform.Client.__new__(platform.Client)
+        transport.expires = 0
+        transport.session = Mock()
+        clock = [1.0]
+
+        def refresh() -> None:
+            clock[0] = 11.0
+
+        with (
+            patch.object(platform, "Client", return_value=client),
+            patch.object(platform.time, "time", return_value=100.0),
+            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
+            patch.object(transport, "refresh", side_effect=refresh),
+            patch.object(client, "post", side_effect=transport.post),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+        transport.session.request.assert_not_called()
+        digest = hashlib.sha256((self.case_dir / "cases.json").read_bytes()).hexdigest()
+        self.assertTrue(platform.pre_dispatch_refused(self.case_dir, digest))
+        state_path = self.case_dir / "submission-state.json"
+        state = json.loads(state_path.read_text())
+        for change in ({"phase": "creating"}, {"resource_requests_dispatched": True}, {"project": 1}):
+            state_path.write_text(json.dumps({**state, **change}))
+            self.assertFalse(platform.pre_dispatch_refused(self.case_dir, digest))
+
     def test_submission_deadline_requires_a_finite_value(self) -> None:
         for deadline in (float("nan"), float("inf"), -float("inf")):
             with (

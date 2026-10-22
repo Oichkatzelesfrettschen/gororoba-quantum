@@ -177,8 +177,10 @@ def run_directories(runs: Path = RUNS) -> list[Path]:
                     refusal = json.loads(refusal_path.read_text(encoding="utf-8"))
                     if refusal != {"schema": "qi-campaign-refusal-v1", "phase": "preflight-refused", **binding}:
                         raise ValueError("campaign preflight refusal differs from its exact plan and case binding")
-                    if artifacts:
+                    if artifacts and not pre_dispatch_refused(path, batches[name]):
                         raise ValueError("campaign preflight refusal conflicts with acquisition artifacts")
+                    continue
+                if pre_dispatch_refused(path, batches[name]):
                     continue
                 retained.append(path)
             return retained
@@ -208,6 +210,10 @@ def retained_job_ids(runs: Path = RUNS) -> set[int]:
 
 class PlatformError(RuntimeError):
     """A refused or failed platform request; carries the status and the service's message."""
+
+
+class RequestNotDispatched(TimeoutError):
+    """The initial logical resource request was refused before transport dispatch."""
 
 
 class Client:
@@ -270,7 +276,10 @@ class Client:
     def request(self, method: str, path: str, *, execution_deadline: float | None = None, **kwargs: Any) -> Any:
         if time.time() > self.expires - REFRESH_MARGIN:
             self.refresh()
-        _check_execution_deadline(execution_deadline)
+        try:
+            _check_execution_deadline(execution_deadline)
+        except TimeoutError as error:
+            raise RequestNotDispatched(str(error)) from error
         response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
         if response.status_code == 401:
             self.refresh()
@@ -281,14 +290,14 @@ class Client:
         # The compile endpoint answers 204 with no body.
         return response.json() if response.content else None
 
-    def get(self, path: str, **params: Any) -> Any:
-        return self.request("GET", path, params=params)
+    def get(self, path: str, *, execution_deadline: float | None = None, **params: Any) -> Any:
+        return self.request("GET", path, execution_deadline=execution_deadline, params=params)
 
-    def pages(self, path: str, **params: Any) -> list[dict[str, Any]]:
+    def pages(self, path: str, *, execution_deadline: float | None = None, **params: Any) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         page = 1
         while True:
-            data = self.get(path, page=page, size=100, **params)
+            data = self.get(path, execution_deadline=execution_deadline, page=page, size=100, **params)
             rows += data["items"]
             if page >= data["pages"]:
                 return rows
@@ -656,6 +665,26 @@ def hardware_pause_left(client: Client) -> int:
     return math.ceil(left)
 
 
+def pre_dispatch_refused(case_dir: Path, cases_sha256: str) -> bool:
+    """Validate a durable local refusal, keeping ambiguous creation checkpoints blocked."""
+    state_path = case_dir / "submission-state.json"
+    if not state_path.exists():
+        return False
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    return (
+        isinstance(state, dict)
+        and state.get("schema") == SUBMISSION_STATE_SCHEMA
+        and state.get("phase") == "pre-dispatch-refused"
+        and type(state.get("resource_requests_dispatched")) is int
+        and state["resource_requests_dispatched"] == 0
+        and state.get("cases_sha256") == cases_sha256
+        and state.get("jobs") == []
+        and "project" not in state
+        and "batch_job" not in state
+        and not any((case_dir / name).exists() for name in ("submission.json", "results.json", "raw"))
+    )
+
+
 def submit(
     case_dir: Path,
     backend_type_id: int,
@@ -779,12 +808,22 @@ def _submit(
     except FileExistsError:
         raise SystemExit(f"{state_path} exists; another submission owns this case") from None
     name = f"gororoba-{case_dir.name}"[:32]
-    _check_execution_deadline(execution_deadline)
-    project = client.post(
-        "/projects",
-        {"owner_id": client.member_id, "name": name, "description": name, "starred": False},
-        execution_deadline=execution_deadline,
-    )
+    try:
+        _check_execution_deadline(execution_deadline)
+    except TimeoutError:
+        state.update(phase="pre-dispatch-refused", resource_requests_dispatched=0)
+        _write_json(state_path, state)
+        raise
+    try:
+        project = client.post(
+            "/projects",
+            {"owner_id": client.member_id, "name": name, "description": name, "starred": False},
+            execution_deadline=execution_deadline,
+        )
+    except RequestNotDispatched:
+        state.update(phase="pre-dispatch-refused", resource_requests_dispatched=0)
+        _write_json(state_path, state)
+        raise
     state["project"] = project["id"]
     _write_json(state_path, state)
     batch = client.post("/batch_jobs", {"backend_type_id": backend_type_id})
@@ -861,6 +900,11 @@ def reconcile(case_dir: Path) -> None:
     for row in cases["circuits"]:
         if hashlib.sha256((case_dir / row["file"]).read_bytes()).hexdigest() != row["sha256"]:
             raise PlatformError(f"{row['file']} differs from its cases.json sha256")
+    if pre_dispatch_refused(case_dir, state["cases_sha256"]):
+        raise PlatformError(
+            "durable checkpoint proves zero resource requests dispatched; "
+            "preserve it and prepare a separately approved case"
+        )
     batch_id = state.get("batch_job")
     if batch_id is None:
         raise PlatformError("no batch id was retained; the remote creation outcome is unknown; submit remains blocked")
@@ -898,18 +942,24 @@ def reconcile(case_dir: Path) -> None:
     print(f"batch {batch_id}: {batch['status']}; recovered submission.json through read-only reconciliation")
 
 
-def collect(case_dir: Path, poll: float, timeout: float) -> None:
+def collect(case_dir: Path, poll: float, timeout: float, *, execution_deadline: float | None = None) -> None:
+    """Initiate collection requests within the local window; server completion is unbounded."""
+    _check_execution_deadline(execution_deadline)
     record = json.loads((case_dir / "submission.json").read_text(encoding="utf-8"))
     _check_submission_manifest(case_dir, record, require_enqueued=True)
     client = Client()
     deadline = time.monotonic() + timeout
+    if execution_deadline is not None:
+        deadline = min(deadline, execution_deadline)
+    request_options = {"execution_deadline": deadline}
     while True:
-        states = {row["job"]: client.get(f"/jobs/{row['job']}") for row in record["jobs"]}
+        _check_execution_deadline(deadline)
+        states = {row["job"]: client.get(f"/jobs/{row['job']}", **request_options) for row in record["jobs"]}
         if all(job["status"] in TERMINAL for job in states.values()):
             break
         if time.monotonic() > deadline:
             raise SystemExit(f"jobs still running: { {k: v['status'] for k, v in states.items()} }")
-        time.sleep(poll)
+        time.sleep(min(poll, max(0.0, deadline - time.monotonic())))
     raw_dir = case_dir / "raw"
     raw: dict[str, list[str]] = {}
     rows = []
@@ -919,10 +969,10 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
             raise PlatformError(f"job {row['job']} differs from submission.json")
         if job["number_of_shots"] != record["shots"]:
             raise PlatformError(f"job {row['job']} shot count differs from submission.json")
-        results = client.get(f"/results/job/{row['job']}", page=1, size=100)["items"]
+        results = client.get(f"/results/job/{row['job']}", **request_options, page=1, size=100)["items"]
         logs = None
         if job["status"] != "completed":
-            logs = client.get(f"/jobs/{row['job']}/logs")
+            logs = client.get(f"/jobs/{row['job']}/logs", **request_options)
             if results:
                 raise PlatformError(f"{job['status']} job {row['job']} unexpectedly holds results")
         else:
@@ -957,7 +1007,7 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
             "change": t["change"],
             "job": t["job"],
         }
-        for t in client.pages("/transactions/")
+        for t in client.pages("/transactions/", **request_options)
         if t["job"] in job_ids
     ]
     collected = {"schema": "qi-collection-v1", "collected_utc": now(), "jobs": rows, "transactions": charged}
