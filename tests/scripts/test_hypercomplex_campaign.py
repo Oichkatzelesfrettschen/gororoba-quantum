@@ -95,3 +95,28 @@ def test_pacing_wait_cannot_replace_approved_manifest(tmp_path, monkeypatch) -> 
     monkeypatch.setattr(hypercomplex_campaign.time, "sleep", lambda seconds: first.write_text(first.read_text() + " "))
     with pytest.raises(SystemExit, match="approved manifest"):
         execute(tmp_path, "approved fixture", approved, 60)
+
+
+def test_measured_wave_requires_retained_shot_order(tmp_path, monkeypatch) -> None:
+    import hypercomplex_campaign
+
+    for index in range(17):
+        batch = tmp_path / f"time-{index:02d}"
+        batch.mkdir()
+        setting = {"coupling": 1, "representative": 0, "time": index / 8}
+        (batch / "cases.json").write_text(json.dumps({"circuits": [{}, {}, {"setting": setting}]}))
+        (batch / "hypercomplex-analysis.json").write_text(json.dumps({"time": index / 8, "raw_sha256": "a" * 64}))
+
+    def analyze(batch):
+        return json.loads((batch / "hypercomplex-analysis.json").read_text())
+
+    monkeypatch.setattr(hypercomplex_campaign, "analyze_batch", analyze)
+    if len(measured_wave(tmp_path)["frames"]) != 17:
+        raise RuntimeError("the complete retained wave must remain available")
+
+    def reordered(batch):
+        return {**analyze(batch), "raw_sha256": "b" * 64}
+
+    monkeypatch.setattr(hypercomplex_campaign, "analyze_batch", reordered)
+    with pytest.raises(ValueError, match="retained per-batch"):
+        measured_wave(tmp_path)

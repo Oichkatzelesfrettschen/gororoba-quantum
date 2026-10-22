@@ -76,3 +76,7 @@ def test_exact_algebra_certificate() -> None:
     require(certificate["draft_commutators_failed"] == 6, "the draft convention mismatch must remain detectable")
     require(certificate["clifford_image_rank"] == 64, "the image must span M8(C)")
     require(certificate["occupation_dimensions"] == [1, 3, 3, 1], "the Fock multiplicities must hold")
+    require(
+        certificate["higher_dimensional_clifford_failures"] == {"16": 84, "32": 588},
+        "pooled unordered pairs must preserve the ordered-pair failure counts",
+    )

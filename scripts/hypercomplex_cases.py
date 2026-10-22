@@ -219,7 +219,7 @@ def qi_cases(shots: int, family: str = "order") -> dict[str, str]:
     if type(shots) is not int or not 1 <= shots <= 131072:
         raise ValueError("Tuna shots must lie in [1,131072]")
     settings = order_settings() if family == "order" else wave_settings() if family == "wave" else transform_settings()
-    sciences = ordered_map(_qi_science, settings)
+    sciences = ordered_map(_qi_science, settings, min_items=1)
     files: dict[str, str] = {}
     for index, science in enumerate(sciences):
         directory = f"{family}-batch-{index:02d}"

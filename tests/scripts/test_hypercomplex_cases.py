@@ -1,6 +1,7 @@
 """Hardware cases retain native errors, budgets and existing submission boundaries."""
 
 import json
+from unittest.mock import patch
 
 import numpy as np
 import pytest
@@ -14,6 +15,7 @@ from hypercomplex_cases import (
 )
 
 from hypercomplex_operators import order_interferometer
+from parallel import ordered_map
 
 
 def test_photonic_mesh_reconstructs_the_entire_operator() -> None:
@@ -28,8 +30,14 @@ def test_photonic_mesh_reconstructs_the_entire_operator() -> None:
     np.testing.assert_allclose(np.asarray(chip.compute_unitary()), unitary, atol=1e-12)
 
 
-def test_qi_batches_bind_native_probabilities_and_calibration() -> None:
-    files = qi_cases(16384)
+def test_qi_batches_bind_native_probabilities_and_calibration(monkeypatch: pytest.MonkeyPatch) -> None:
+    with patch("hypercomplex_cases.ordered_map", wraps=ordered_map) as compilation_map:
+        files = qi_cases(16384)
+    if compilation_map.call_args.kwargs.get("min_items") != 1:
+        raise RuntimeError("native compilation must use the process pool for the eight-setting pilot")
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    if files != qi_cases(16384):
+        raise RuntimeError("pooled and serial native compilation must emit identical case bytes")
     manifests = [json.loads(text) for name, text in files.items() if name.endswith("/cases.json")]
     if len(manifests) != 8:
         raise RuntimeError("the order pilot needs eight calibrated batches")

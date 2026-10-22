@@ -8,6 +8,7 @@ operators compose associatively without making their encoding a homomorphism.
 from __future__ import annotations
 
 import math
+from functools import cache
 from itertools import combinations
 from typing import Any
 
@@ -156,28 +157,44 @@ def _clifford_word(mask: int) -> Any:
     return product.reshape(64, 1)
 
 
-def _clifford_failures(dimension: int) -> int:
-    operators = [
+@cache
+def _clifford_operators(dimension: int) -> tuple[Any, ...]:
+    """Build each dimension's exact left matrices once per process."""
+    return tuple(
         sp.Matrix(
             dimension,
             dimension,
             lambda row, column, unit=unit: cd_sign(dimension, unit, column) if row == unit ^ column else 0,
         )
         for unit in range(1, dimension)
-    ]
-    return (
-        sum(
-            first * second + second * first != sp.zeros(dimension)
-            for index, first in enumerate(operators)
-            for second in operators[index + 1 :]
-        )
-        * 2
     )
+
+
+def _clifford_pair_failure(item: tuple[int, int, int]) -> bool:
+    dimension, first_index, second_index = item
+    operators = _clifford_operators(dimension)
+    first, second = operators[first_index - 1], operators[second_index - 1]
+    return first * second + second * first != sp.zeros(dimension)
+
+
+def _canonical_anticommutator(item: tuple[Any, Any, bool]) -> bool:
+    first, second, diagonal = item
+    return first * second.conjugate().T + second.conjugate().T * first == (sp.eye(8) if diagonal else sp.zeros(8))
+
+
+def _occupation_dimension(item: tuple[Any, int]) -> int:
+    number, level = item
+    return len((number - level * sp.eye(8)).nullspace())
+
+
+def _commutator_failure(item: tuple[Any, Any]) -> bool:
+    number, generator = item
+    return _commutator(number, generator) != sp.zeros(8)
 
 
 def algebra_certificate() -> dict[str, Any]:
     """Certify the finite color/ladder convention using exact integer and rational matrices."""
-    columns = ordered_map(_derivation, list(combinations(range(1, 8), 2)))
+    columns = ordered_map(_derivation, list(combinations(range(1, 8), 2)), min_items=1)
     derivations = [column.reshape(8, 8) for column in sp.Matrix.hstack(*columns).columnspace()]
     coefficients = sp.Matrix.hstack(*(derivation[:, 7] for derivation in derivations)).nullspace()
     stabilizer = [
@@ -191,25 +208,35 @@ def algebra_certificate() -> dict[str, Any]:
     number = sum((operator.conjugate().T * operator for operator in aligned), sp.zeros(8))
     draft_number = sum((operator.conjugate().T * operator for operator in draft), sp.zeros(8))
     car = all(
-        aligned[first] * aligned[second].conjugate().T + aligned[second].conjugate().T * aligned[first]
-        == (sp.eye(8) if first == second else sp.zeros(8))
-        for first in range(3)
-        for second in range(3)
+        ordered_map(
+            _canonical_anticommutator,
+            [(aligned[first], aligned[second], first == second) for first in range(3) for second in range(3)],
+            min_items=1,
+        )
     )
+    pair_inputs = [
+        (dimension, first, second) for dimension in (16, 32) for first, second in combinations(range(1, dimension), 2)
+    ]
+    pair_failures = ordered_map(_clifford_pair_failure, pair_inputs, min_items=1)
+    higher_failures = {"16": 0, "32": 0}
+    for (dimension, _, _), failed in zip(pair_inputs, pair_failures, strict=True):
+        higher_failures[str(dimension)] += 2 * failed
     return {
         "schema": "hypercomplex-algebra-certificate-v1",
         "g2_dimension": len(derivations),
         "e7_stabilizer_dimension": len(stabilizer),
         "canonical_anticommutation": car,
-        "occupation_dimensions": [len((number - level * sp.eye(8)).nullspace()) for level in range(4)],
-        "aligned_commutators_failed": sum(_commutator(number, generator) != sp.zeros(8) for generator in stabilizer),
+        "occupation_dimensions": ordered_map(
+            _occupation_dimension, [(number, level) for level in range(4)], min_items=1
+        ),
+        "aligned_commutators_failed": sum(
+            ordered_map(_commutator_failure, [(number, generator) for generator in stabilizer], min_items=1)
+        ),
         "draft_commutators_failed": sum(
-            _commutator(draft_number, generator) != sp.zeros(8) for generator in stabilizer
+            ordered_map(_commutator_failure, [(draft_number, generator) for generator in stabilizer], min_items=1)
         ),
         "clifford_image_rank": int(sp.Matrix.hstack(*ordered_map(_clifford_word, list(range(64)))).rank()),
         "operator_homomorphism": _left(1) * _left(2) == cd_sign(8, 1, 2) * _left(3),
-        "higher_dimensional_clifford_failures": dict(
-            zip(("16", "32"), ordered_map(_clifford_failures, [16, 32]), strict=True)
-        ),
+        "higher_dimensional_clifford_failures": higher_failures,
         "evidence_kind": "exact finite algebra; no physical particle identification",
     }

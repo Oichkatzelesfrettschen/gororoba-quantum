@@ -167,7 +167,11 @@ def measured_wave(directory: Path) -> dict[str, Any]:
         manifest = json.loads(path.read_text())
         setting = manifest["circuits"][2]["setting"]
         if setting.get("coupling") == 1 and setting.get("representative") == 0 and "time" in setting:
-            frames.append(analyze_batch(path.parent))
+            retained_path = path.parent / "hypercomplex-analysis.json"
+            retained = json.loads(retained_path.read_text())
+            if analyze_batch(path.parent) != retained:
+                raise ValueError("raw acquisition differs from its retained per-batch analysis")
+            frames.append(retained)
     frames.sort(key=lambda frame: frame["time"])
     if [frame["time"] for frame in frames] != [index / 8 for index in range(17)]:
         raise ValueError("measured wave rendering requires all seventeen distinct preregistered primary times")
