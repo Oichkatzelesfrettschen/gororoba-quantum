@@ -107,3 +107,13 @@ low-response eigenspace near span K, with gamma_L in the role of the gap.
   block), the systematic weights and the disposition rule.
 - The qpu:belenos qualification record, measured against
   [strategy.md](strategy.md).
+
+## Acquisition-level root-cause analysis
+
+The [acceptance diagnostics](bdsc-acceptance-diagnostics.md) distinguish the
+fixed-effect sum rule from detection-conditioned response, compare retained
+qualification counts with receipt-weight sensitivity models, and delimit the
+Ascella incident. That note preserves the frozen experiment and identifies
+its source pin and the limited scope of the independently recomputed counts.
+It does not replace the registered algebra, provider contracts, or formal
+qualification readout with an inferred detector calibration.
