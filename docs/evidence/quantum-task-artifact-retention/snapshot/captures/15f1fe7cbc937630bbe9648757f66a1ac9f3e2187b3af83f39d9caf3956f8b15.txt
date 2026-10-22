@@ -1,0 +1,61 @@
+{
+ "files": [
+  {
+   "bytes": 725328,
+   "file": "1709.09246v3.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "992f51df4be44640c7a48269ad347d1c157f498a60654293d864f6b2bcd91397",
+   "source_url": "https://arxiv.org/pdf/1709.09246v3"
+  },
+  {
+   "bytes": 568260,
+   "file": "1806.00612v1.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "4258820f00014b03fad4359342cb826dec3729f95fcbd4265461c8fb092cf248",
+   "source_url": "https://arxiv.org/pdf/1806.00612v1"
+  },
+  {
+   "bytes": 639563,
+   "file": "2409.17948v2.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "0efc1c5ef05118d942084a132e09e4c7ea36e5da2ff135c56ea4756b094acbb0",
+   "source_url": "https://arxiv.org/pdf/2409.17948v2"
+  },
+  {
+   "bytes": 4115838,
+   "file": "2505.07923v4.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "11aa3c8f5888f742ec3f64f657eb8974551a31759d817c9567d89b5271f11957",
+   "source_url": "https://arxiv.org/pdf/2505.07923v4"
+  },
+  {
+   "bytes": 411642,
+   "file": "2604.24795v1.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "6d0e490f2a039d55a82cdecaeb209620255bb26e68b893b9344c0c5a884b894f",
+   "source_url": "https://arxiv.org/pdf/2604.24795v1"
+  },
+  {
+   "bytes": 964722,
+   "file": "2607.18450v3.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "f1e20f1014d696d6566f41540a4a9027a546aab044459a5a60d534fdd9e75d02",
+   "source_url": "https://arxiv.org/pdf/2607.18450v3"
+  },
+  {
+   "bytes": 411224,
+   "file": "2608.20259v1.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "7358ade4b192c07ff30a5107ddfd7afea47a32fe2d4ce754a6bff3681311a0dc",
+   "source_url": "https://arxiv.org/pdf/2608.20259v1"
+  },
+  {
+   "bytes": 368747,
+   "file": "quant-ph-0307017v2.pdf",
+   "registry_path": "docs/SOURCES.json",
+   "sha256": "d2e0cc6513ed682874b4bd2ea3fc4851f0e0080f3299a861f2466494e21d902c",
+   "source_url": "https://arxiv.org/pdf/quant-ph/0307017v2"
+  }
+ ],
+ "schema": "private-programme-reading-copies-v1"
+}

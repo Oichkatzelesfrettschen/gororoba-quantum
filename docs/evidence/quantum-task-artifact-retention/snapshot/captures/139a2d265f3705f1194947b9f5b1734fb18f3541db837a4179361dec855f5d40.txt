@@ -1,0 +1,10 @@
+PASS core-631     0.2s  "$PYTHON" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/seden
+PASS core-039     1.0s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+FAIL core-630     1.4s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+
+=== core-630 exit 1 in .
+"$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate.json
+hypercomplex evidence differs from its source-bound replay
+PASS core-615    83.3s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+
+3 passed, 1 failed of 4 gates in shard 0/1 on CPU

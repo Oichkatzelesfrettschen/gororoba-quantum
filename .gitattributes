@@ -18,3 +18,5 @@ docs/notes/kaggle/cli/*.md -text -whitespace
 # Preserve the verbatim bytes of the retained Reality Ripple kernel outputs.
 docs/evidence/simulation-notebook-audit/reality_ripple/** -text -whitespace
 docs/evidence/simulation-notebook-audit/kaggle_sources/*.txt -text -whitespace
+# Preserve sanitizer output hashes, including captured diagnostic whitespace.
+docs/evidence/quantum-task-artifact-retention/snapshot/captures/*.txt -text -whitespace

@@ -1,0 +1,25 @@
+{
+ "account_queued_batches": 1,
+ "api_mcp_agree": true,
+ "backend_type_id": 7,
+ "global_queued_batches": 4,
+ "jobs": [
+  {
+   "id": 1565803,
+   "status": "planned"
+  },
+  {
+   "id": 1565804,
+   "status": "planned"
+  },
+  {
+   "id": 1565805,
+   "status": "planned"
+  }
+ ],
+ "observed_utc": "2026-10-22T06:48Z",
+ "physical_status": "benchmarking",
+ "pilot_duplicated": false,
+ "pilot_source_revision": "50731f320304dac7e2cea5b18c49e3c413dce97d",
+ "queue_statistics_interpretation": "elapsed queue statistics; not execution forecasts"
+}

@@ -1,0 +1,90 @@
+{
+ "gates": {
+  "core-630": {
+   "key": "0a2cf984fe1e15c3d938bff1bd3b00735b4e0e83f70fa479151b23ca4826b4a6",
+   "reads": {
+    "dirs": [
+     "ci/read_trace",
+     "docs/evidence/hypercomplex-operators",
+     "gororoba_quantum",
+     "scripts"
+    ],
+    "files": [
+     "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json",
+     "docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.json",
+     "docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.png",
+     "docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.py",
+     "gororoba_quantum/cd_core.py",
+     "gororoba_quantum/hypercomplex_dynamics.py",
+     "gororoba_quantum/hypercomplex_operators.py",
+     "gororoba_quantum/parallel.py",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json",
+     "scripts/hypercomplex_evidence.py"
+    ],
+    "globs": [],
+    "links": [],
+    "stats": [
+     [
+      0,
+      "."
+     ],
+     [
+      0,
+      "docs"
+     ],
+     [
+      0,
+      "docs/evidence"
+     ],
+     [
+      0,
+      "docs/evidence/hypercomplex-operators"
+     ],
+     [
+      0,
+      "docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.py"
+     ],
+     [
+      0,
+      "scripts"
+     ],
+     [
+      0,
+      "scripts/hypercomplex_evidence.py"
+     ],
+     [
+      1,
+      "ci/read_trace"
+     ],
+     [
+      1,
+      "matplotlibrc"
+     ],
+     [
+      1,
+      "odr"
+     ],
+     [
+      1,
+      "scripts"
+     ]
+    ]
+   }
+  }
+ },
+ "schema": "gororoba-gate-ledger-v2",
+ "selected": [
+  "core-630",
+  "sources-120",
+  "sources-121",
+  "sources-122"
+ ]
+}

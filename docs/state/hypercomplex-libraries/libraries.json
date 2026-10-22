@@ -10992,6 +10992,18 @@
    "typing",
    "urllib"
   ],
+  "scripts/quantum_artifact_retention.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "re",
+   "subprocess",
+   "tarfile",
+   "typing"
+  ],
   "scripts/qx_local_series.py": [
    "__future__",
    "importlib",

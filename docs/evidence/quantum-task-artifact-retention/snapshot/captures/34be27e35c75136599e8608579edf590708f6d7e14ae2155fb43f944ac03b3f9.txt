@@ -1,0 +1,4 @@
+PASS core-000     2.7s  "$PYTHON" ci/pinned_tool.py ruff check ci tests && "$PYTHON" ci/pinned_tool.py ruff format --target-
+PASS core-039   228.5s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+
+2 passed, 0 failed of 2 gates in shard 0/1 on CPU

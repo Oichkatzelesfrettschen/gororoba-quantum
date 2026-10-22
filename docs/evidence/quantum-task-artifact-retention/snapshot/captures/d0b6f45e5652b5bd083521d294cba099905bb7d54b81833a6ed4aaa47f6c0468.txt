@@ -1,0 +1,152 @@
+"""Read retained artifacts only; independently reconcile all pilot jobs."""
+import collections
+import datetime
+import hashlib
+import json
+import math
+from pathlib import Path
+
+import numpy as np
+
+ROOT = Path.cwd()
+RUN = ROOT / "results/quantum_inspire/runs/tuna17-quaternion-order-noise"
+SCRATCH = ROOT / "docs/local/hypercomplex-operator-evidence"
+APPROVED = "43e0b67a8aaaa1203eacd5f0be9e4c74ac5f4f55576dc16f96591245864dc8a2"
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def time(value):
+    return datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+usage_path = ROOT / "docs/evidence/quantum_inspire/usage.json"
+usage = read(usage_path)
+ledger = {row["job"]: row for row in usage["jobs"]}
+require(len(ledger) == len(usage["jobs"]), "duplicate ledger job")
+hardware = {row["id"] for row in read(ROOT / "docs/evidence/quantum_inspire/catalogue.json")["backend_types"] if row["is_hardware"]}
+campaign, summary = read(RUN / "campaign.json"), read(RUN / "pilot-summary.json")
+plan = read(SCRATCH / "acquisition-frozen-plan.json")
+require(campaign["plan_sha256"] == plan["plan_sha256"] == summary["approved_plan_sha256"] == APPROVED, "approved plan differs")
+require(hashlib.sha256(json.dumps(plan["bindings"], sort_keys=True, separators=(",", ":")).encode()).hexdigest() == APPROVED, "approved binding digest differs")
+for relative, digest in plan["bindings"].items():
+    require(sha(RUN / relative) == digest, "frozen plan file differs: " + relative)
+report = {"schema": "independent-tuna-order-complete-audit-v1", "observed_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), "provider_reads": False, "approved_plan_sha256": APPROVED, "usage_sha256": sha(usage_path), "batches": []}
+all_ids = []
+previous_finish = None
+for batch_index in range(8):
+    name = f"order-batch-{batch_index:02d}"
+    directory = RUN / name
+    manifest = read(directory / "cases.json")
+    manifest_sha = sha(directory / "cases.json")
+    intent, receipt, state, results, analysis = [read(directory / filename) for filename in ("execution-intent.json", "submission.json", "submission-state.json", "results.json", "hypercomplex-analysis.json")]
+    require(intent["plan_sha256"] == APPROVED, "intent approval mismatch")
+    require(campaign["batches"][name] == intent["cases_sha256"] == receipt["cases_sha256"] == state["cases_sha256"] == analysis["manifest_sha256"] == manifest_sha, "manifest binding mismatch")
+    require(receipt["state"] == state["phase"] == "enqueued", "submission phase mismatch")
+    require(receipt["approval"] == state["approval"] == "Approve corrected pilot after validation", "approval text mismatch")
+    require(receipt["backend_type_id"] == state["backend_type_id"] == manifest["backend_type_id"] == 7, "backend mismatch")
+    require(manifest["shots"] == receipt["shots"] == state["shots"] == 16384, "shots mismatch")
+    require(len(manifest["circuits"]) == len(receipt["jobs"]) == len(state["jobs"]) == len(results["jobs"]) == 3, "batch size mismatch")
+    require(receipt["jobs"] == state["jobs"], "submission checkpoint mismatch")
+    require(receipt["queue_user_only"] and receipt["queue_limit_at_submit"] == 1 and receipt["queue_at_submit"]["number_of_jobs_in_queue"] == 0, "queue receipt mismatch")
+    require(sha(directory / "submission.json") == analysis["receipt_sha256"], "analysis receipt mismatch")
+    require(sha(directory / "hypercomplex-analysis.json") == summary["analysis_files_sha256"][f"{name}/hypercomplex-analysis.json"], "summary analysis mismatch")
+    started = time(state["started_utc"])
+    preceding = [row for row in ledger.values() if row["backend_type_id"] in hardware and row["batch_job"] != receipt["batch_job"] and time(row["created_on"]) < started]
+    require(all(row["status"] in {"completed", "failed", "cancelled"} and row["finished_at"] for row in preceding), "preceding hardware terminal state missing")
+    latest = max(preceding, key=lambda row: time(row["finished_at"]))
+    account_gap = (started - time(latest["finished_at"])).total_seconds()
+    require(account_gap >= 120, "account-wide pause violation")
+    adjacent_gap = None if previous_finish is None else (started - previous_finish).total_seconds()
+    if adjacent_gap is not None:
+        require(adjacent_gap >= 120, "adjacent pilot pause violation")
+    jobs, finishes, batch_seconds = [], [], 0.0
+    raw_by_name = {}
+    for circuit, submitted, collected in zip(manifest["circuits"], receipt["jobs"], results["jobs"], strict=True):
+        filename = circuit["file"]
+        job = collected["job"]
+        job_id = submitted["job"]
+        require(filename == submitted["file"] == collected["file"], "file binding mismatch")
+        require(circuit["sha256"] == submitted["sha256"] == sha(directory / filename), "circuit binding mismatch")
+        require(job["id"] == job_id and job["batch_job_id"] == receipt["batch_job"], "job identity mismatch")
+        require(job["status"] == ledger[job_id]["status"] == "completed", "job incomplete")
+        raw_path = directory / "raw" / (filename + ".json")
+        raw = read(raw_path)
+        require(len(raw) == 16384 and all(isinstance(shot, str) and len(shot) == manifest["nqubits"] and set(shot) <= {"0", "1"} for shot in raw), "raw shot count or width mismatch")
+        raw_by_name[filename] = raw
+        counts = collections.Counter(raw)
+        provider_counts = collections.Counter()
+        seconds, shots_done = 0.0, 0
+        for result in collected["results"]:
+            require(result["job_id"] == job_id and result["shots_requested"] == 16384, "provider request mismatch")
+            provider_counts.update(result["results"])
+            seconds += result["execution_time_in_seconds"]
+            shots_done += result["shots_done"]
+        require(counts == provider_counts and shots_done == 16384 and sum(provider_counts.values()) == 16384, "provider histogram differs from ordered shots")
+        row = ledger[job_id]
+        for key, expected in {"batch_job": receipt["batch_job"], "backend_type_id": 7, "number_of_shots": 16384, "shots_done": 16384, "finished_at": job["finished_at"], "created_on": job["created_on"], "queued_at": job["queued_at"], "execution_time_in_seconds": seconds}.items():
+            require(row[key] == expected, "ledger mismatch: " + key)
+        transactions = [row for row in usage["transactions"] if row["job"] == job_id]
+        debit = sum(row["change"] for row in transactions)
+        require(debit == row["charged"] == 0, "ledger debit mismatch")
+        require(0 <= seconds < 300, "execution ceiling violated")
+        finishes.append(time(job["finished_at"]))
+        batch_seconds += seconds
+        all_ids.append(job_id)
+        jobs.append({"job": job_id, "file": filename, "raw_sha256": sha(raw_path), "shots": shots_done, "seconds": seconds, "debit": debit})
+    ids = {job["job"] for job in jobs}
+    require(results["transactions"] == [row for row in usage["transactions"] if row["job"] in ids] == [], "collected transactions mismatch")
+    science = manifest["circuits"][2]
+    require(science["measurement_mapping"] == [0, 1] and science["observable_partition"] == [[0, 1], [2, 3]], "pilot observable mapping differs")
+    raw = raw_by_name[science["file"]]
+    grouped_counts = [sum(int(shot, 2) // 2 == index for shot in raw) for index in (0, 1)]
+    observed = np.asarray(grouped_counts) / 16384
+    require(grouped_counts == analysis["counts"], "grouped count mismatch")
+    np.testing.assert_allclose(observed, analysis["probabilities"], atol=0, rtol=0)
+    require(analysis["raw_sha256"] == sha(directory / "raw" / (science["file"] + ".json")), "science raw binding mismatch")
+    for reference in manifest["circuits"][:2]:
+        require(analysis["reference_raw_sha256"][reference["file"]] == sha(directory / "raw" / (reference["file"] + ".json")), "reference raw binding mismatch")
+    reference_ones = [[sum(shot[-1 - qubit] == "1" for shot in raw_by_name[reference["file"]]) / 16384 for qubit in range(2)] for reference in manifest["circuits"][:2]]
+    contrasts = np.asarray(reference_ones[1]) - np.asarray(reference_ones[0])
+    np.testing.assert_allclose(reference_ones, analysis["physical_readout_one_probabilities"], atol=0, rtol=0)
+    np.testing.assert_allclose(contrasts, analysis["readout_contrasts"], atol=0, rtol=0)
+    require(contrasts[1] >= 0.2, "output readout quality boundary failed")
+    for label in ("native", "requested"):
+        probabilities = np.asarray(science[label + "_probabilities"])
+        grouped = probabilities.reshape(2, 2).sum(axis=1)
+        np.testing.assert_allclose(grouped, analysis["grouped_predictions"][label], atol=1e-15, rtol=0)
+        np.testing.assert_allclose(observed - grouped, analysis["observed_minus_predicted"][label], atol=1e-15, rtol=0)
+        np.testing.assert_allclose(np.abs(observed - grouped).sum() / 2, analysis["total_variation_residual"][label], atol=1e-15, rtol=0)
+    setting = science["setting"]
+    dark = math.sin(setting["theta"]) ** 2 * math.sin(setting["phi"]) ** 2
+    np.testing.assert_allclose(analysis["grouped_predictions"]["requested"], [1 - dark, dark], atol=1e-14, rtol=0)
+    native = np.asarray(science["native_operator"]["real"]) + 1j * np.asarray(science["native_operator"]["imaginary"])
+    np.testing.assert_allclose(np.abs(native[:, 0]) ** 2, science["native_probabilities"], atol=1e-14, rtol=0)
+    require(not analysis["scientific_continuation_admitted"], "unexpected scientific continuation claim")
+    previous_finish = max(finishes)
+    report["batches"].append({"batch": name, "started_utc": state["started_utc"], "account_prior_latest_job": latest["job"], "account_pause_seconds": account_gap, "adjacent_pilot_pause_seconds": adjacent_gap, "finished_at": previous_finish.isoformat(), "jobs": jobs, "seconds": batch_seconds, "grouped_science_counts": grouped_counts, "grouped_predictions": analysis["grouped_predictions"], "receipt_sha256": sha(directory / "submission.json"), "results_sha256": sha(directory / "results.json")})
+require(len(all_ids) == len(set(all_ids)) == 24 and sorted(all_ids) == sorted(summary["job_ids"]), "24-job identity coverage differs")
+retained = set()
+for receipt_path in (ROOT / "results/quantum_inspire/runs").glob("**/submission.json"):
+    for job in read(receipt_path).get("jobs", []):
+        retained.add(job["job"])
+declared = set(usage.get("unretained", []))
+require(set(ledger) <= retained | declared and declared <= set(ledger), "account retained/declaration coverage mismatch")
+report.update({"completed_jobs": 24, "total_shots": 24 * 16384, "actual_seconds": sum(row["execution_time_in_seconds"] for job, row in ledger.items() if job in all_ids), "credit_debit": sum(row["charged"] for job, row in ledger.items() if job in all_ids), "minimum_account_pause_seconds": min(row["account_pause_seconds"] for row in report["batches"]), "minimum_adjacent_pause_seconds": min(row["adjacent_pilot_pause_seconds"] for row in report["batches"][1:]), "ledger_jobs": len(ledger), "ledger_retained_jobs": len(set(ledger) & retained), "declared_unretained_jobs": sorted(declared), "inference_boundary": "retained descriptive acquisition; API history beyond ledger timestamps and live past queue state remain bounded by retained receipts"})
+require(summary["total_shots"] == report["total_shots"] and summary["provider_execution_seconds"] == report["actual_seconds"] and summary["credit_debit"] == report["credit_debit"], "pilot summary totals differ")
+destination = SCRATCH / "tuna-order-all-eight-account-ledger-audit.json"
+destination.write_text(json.dumps(report, indent=1) + "\n")
+print(json.dumps({key: value for key, value in report.items() if key != "batches"}, indent=1))
+print("pause gaps", [row["adjacent_pilot_pause_seconds"] for row in report["batches"]])
+print("audit", destination.relative_to(ROOT))

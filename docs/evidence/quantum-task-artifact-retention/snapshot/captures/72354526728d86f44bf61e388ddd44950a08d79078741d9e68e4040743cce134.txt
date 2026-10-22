@@ -1,0 +1,209 @@
+{
+ "algebra": {
+  "aligned_commutators_failed": 0,
+  "canonical_anticommutation": true,
+  "clifford_image_rank": 64,
+  "draft_commutators_failed": 6,
+  "e7_stabilizer_dimension": 8,
+  "evidence_kind": "exact finite algebra; no physical particle identification",
+  "g2_dimension": 14,
+  "occupation_dimensions": [
+   1,
+   3,
+   3,
+   1
+  ],
+  "operator_homomorphism": false,
+  "schema": "hypercomplex-algebra-certificate-v1"
+ },
+ "evidence_kind": "local-simulation",
+ "frames": [
+  {
+   "probabilities": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "representative_residual": 0.0,
+   "time": 0.0
+  },
+  {
+   "probabilities": [
+    0.9654233818337599,
+    0.015280293186442976,
+    0.004021053505494409,
+    0.015275271474302736
+   ],
+   "representative_residual": 6.938893903907228e-18,
+   "time": 0.125
+  },
+  {
+   "probabilities": [
+    0.8684013580505766,
+    0.05719633059945425,
+    0.017360612091225913,
+    0.05704169925874329
+   ],
+   "representative_residual": 2.7755575615628914e-17,
+   "time": 0.25
+  },
+  {
+   "probabilities": [
+    0.7272981185230794,
+    0.11532952849211502,
+    0.04314359760046075,
+    0.11422875538434506
+   ],
+   "representative_residual": 3.3306690738754696e-16,
+   "time": 0.375
+  },
+  {
+   "probabilities": [
+    0.5674294874115912,
+    0.17612914280811232,
+    0.08454517832259018,
+    0.1718961914577066
+   ],
+   "representative_residual": 4.440892098500626e-16,
+   "time": 0.5
+  },
+  {
+   "probabilities": [
+    0.4149158831159055,
+    0.22692351823610118,
+    0.1426985057561273,
+    0.21546209289186588
+   ],
+   "representative_residual": 1.1102230246251565e-16,
+   "time": 0.625
+  },
+  {
+   "probabilities": [
+    0.2909661247595572,
+    0.2591821642031833,
+    0.21523071361232016,
+    0.23462099742493958
+   ],
+   "representative_residual": 2.7755575615628914e-16,
+   "time": 0.75
+  },
+  {
+   "probabilities": [
+    0.20816138372692977,
+    0.27002494897630047,
+    0.29605922213420155,
+    0.22575444516256835
+   ],
+   "representative_residual": 1.1102230246251565e-16,
+   "time": 0.875
+  },
+  {
+   "probabilities": [
+    0.16948671571811316,
+    0.26172964156649065,
+    0.37652075573528915,
+    0.192262886980107
+   ],
+   "representative_residual": 1.1102230246251565e-16,
+   "time": 1.0
+  },
+  {
+   "probabilities": [
+    0.16986886479516938,
+    0.23977612614036448,
+    0.44734190553053216,
+    0.143013103533934
+   ],
+   "representative_residual": 2.220446049250313e-16,
+   "time": 1.125
+  },
+  {
+   "probabilities": [
+    0.1992148096031461,
+    0.21045173160387898,
+    0.5006528723827104,
+    0.08968058641026434
+   ],
+   "representative_residual": 1.3877787807814457e-16,
+   "time": 1.25
+  },
+  {
+   "probabilities": [
+    0.24567231178766896,
+    0.17904132552850646,
+    0.5313260298194862,
+    0.04396033286433853
+   ],
+   "representative_residual": 2.220446049250313e-16,
+   "time": 1.375
+  },
+  {
+   "probabilities": [
+    0.2980902096639822,
+    0.1491779070034165,
+    0.5373282396383592,
+    0.015403643694242363
+   ],
+   "representative_residual": 2.220446049250313e-16,
+   "time": 1.5
+  },
+  {
+   "probabilities": [
+    0.3472552887305499,
+    0.1232742080415275,
+    0.5192913263347549,
+    0.01017917689316712
+   ],
+   "representative_residual": 2.220446049250313e-16,
+   "time": 1.625
+  },
+  {
+   "probabilities": [
+    0.3861125304563158,
+    0.10341631191185398,
+    0.4798598279491784,
+    0.03061132968265219
+   ],
+   "representative_residual": 2.220446049250313e-16,
+   "time": 1.75
+  },
+  {
+   "probabilities": [
+    0.4095499643336826,
+    0.09192999385610962,
+    0.4233848607580996,
+    0.07513518105210772
+   ],
+   "representative_residual": 2.7755575615628914e-16,
+   "time": 1.875
+  },
+  {
+   "probabilities": [
+    0.41431530551486073,
+    0.09109587039235997,
+    0.3561924121401029,
+    0.1383964119526762
+   ],
+   "representative_residual": 3.3306690738754696e-16,
+   "time": 2.0
+  }
+ ],
+ "phase_measured": false,
+ "provenance": "exact finite algebra and NumPy/SciPy matrix propagation; provider jobs excluded",
+ "schema": "hypercomplex-operator-evidence-v1",
+ "sources_sha256": {
+  "gororoba_quantum/cd_core.py": "5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427",
+  "gororoba_quantum/hypercomplex_dynamics.py": "1ca5926c11e9f8fe15a4450aeb360375c5ec586f1732b1495f534d2bb4ad3d77",
+  "gororoba_quantum/hypercomplex_operators.py": "94a22487bdd226e7aeccab819b997ad4fcaefaa11d366c858b5f1b15a4278b8f",
+  "scripts/hypercomplex_evidence.py": "d42604ff3570f0436fe880246837458f478552c9935c3b274f65f1aa95316b56"
+ },
+ "spinor_reference": {
+  "Nc=0;Nw=0;Y=0": 1,
+  "Nc=0;Nw=2;Y=1": 1,
+  "Nc=1;Nw=1;Y=1/6": 6,
+  "Nc=2;Nw=0;Y=-2/3": 3,
+  "Nc=2;Nw=2;Y=1/3": 3,
+  "Nc=3;Nw=1;Y=-1/2": 2
+ }
+}

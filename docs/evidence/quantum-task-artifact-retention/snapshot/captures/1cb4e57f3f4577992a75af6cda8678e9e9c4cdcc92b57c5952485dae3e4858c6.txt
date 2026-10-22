@@ -1,0 +1,250 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "kind": "readout-reference",
+   "prepared": 0,
+   "sha256": "b16cb4d514455bf24b173c96a1c69dc9f93d71a314364c81e737ef24a6e069f4"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout-reference",
+   "prepared": 1,
+   "sha256": "c2c41c1bf1c46af9af8535e5fbbb7493f25fbf2da02871baf0dcf9cf50819f3b"
+  },
+  {
+   "file": "transform-inverse-check-representative0.cq",
+   "kind": "hypercomplex-operator",
+   "measurement_mapping": [
+    0,
+    1,
+    2
+   ],
+   "native_operator": {
+    "imaginary": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "real": [
+     [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "native_probabilities": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "nqubits": 3,
+   "observable_partition": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     4,
+     5
+    ],
+    [
+     6,
+     7
+    ]
+   ],
+   "operator_error": 0.0,
+   "requested_probabilities": [
+    1.0,
+    0.0,
+    5.190525105387814e-33,
+    0.0,
+    3.7493994566546427e-33,
+    0.0,
+    1.370032088385024e-32,
+    0.0
+   ],
+   "setting": {
+    "name": "transform-inverse-check-representative0",
+    "operation": "inverse-check",
+    "representative": 0
+   },
+   "sha256": "6ce7935ea07a0160a41032d73a25bfa65de12ed619ead799a07bdef24169cd25"
+  }
+ ],
+ "evidence_kind": "complex encoding and device conformance",
+ "hardware_pause_seconds": 120,
+ "job_execution_time_limit": 300,
+ "nqubits": 3,
+ "preregistered": {
+  "mitigation": "sensitivity only",
+  "primary": "raw grouped probabilities",
+  "shot_order": "retain; test temporal dependence before IID intervals"
+ },
+ "schema": "qi-hypercomplex-cases-v1",
+ "shots": 16384
+}

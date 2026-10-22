@@ -1,0 +1,19 @@
+{
+ "account_pause_seconds_or_hold": 0,
+ "account_queue": {
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "number_of_jobs_in_queue": 0
+ },
+ "backend": {
+  "batchjobs_per_queue_limit": 5,
+  "enabled": true,
+  "max_jobs_per_batch_job": 5,
+  "max_number_of_shots": 131072,
+  "name": "Tuna-17",
+  "nqubits": 17,
+  "status": "executing"
+ },
+ "observed_at": "2026-10-22T06:12:56.651579+00:00"
+}

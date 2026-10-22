@@ -1,0 +1,99 @@
+{
+ "gates": {
+  "core-630": {
+   "key": "c4d42c79bfa2d0ac92f8db0ab508a53406091d3fd3d5c432b78d56ad7a5d0bb7",
+   "reads": {
+    "dirs": [
+     "ci/read_trace",
+     "docs/evidence/hypercomplex-operators",
+     "gororoba_quantum",
+     "scripts"
+    ],
+    "files": [
+     "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json",
+     "docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.json",
+     "docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.png",
+     "docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py",
+     "docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.json",
+     "gororoba_quantum/cd_core.py",
+     "gororoba_quantum/hypercomplex_dynamics.py",
+     "gororoba_quantum/hypercomplex_operators.py",
+     "gororoba_quantum/parallel.py",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/hypercomplex-analysis.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/submission.json",
+     "results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json",
+     "scripts/hypercomplex_evidence.py"
+    ],
+    "globs": [],
+    "links": [],
+    "stats": [
+     [
+      0,
+      "."
+     ],
+     [
+      0,
+      "docs"
+     ],
+     [
+      0,
+      "docs/evidence"
+     ],
+     [
+      0,
+      "docs/evidence/hypercomplex-operators"
+     ],
+     [
+      0,
+      "docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py"
+     ],
+     [
+      0,
+      "scripts"
+     ],
+     [
+      0,
+      "scripts/hypercomplex_evidence.py"
+     ],
+     [
+      1,
+      "ci/read_trace"
+     ],
+     [
+      1,
+      "matplotlibrc"
+     ],
+     [
+      1,
+      "odr"
+     ],
+     [
+      1,
+      "scripts"
+     ]
+    ]
+   }
+  }
+ },
+ "schema": "gororoba-gate-ledger-v2",
+ "selected": [
+  "core-630",
+  "sources-120",
+  "sources-121",
+  "sources-122"
+ ]
+}
