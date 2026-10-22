@@ -3876,6 +3876,30 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_forensics.py --check",
+   "name": "core-622",
+   "seconds": 51.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --check",
+   "name": "core-623",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --self-test",
+   "name": "core-624",
+   "seconds": 5.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --self-test",
    "name": "core-607",
    "seconds": 1.5,
@@ -3887,6 +3911,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json",
    "name": "core-608",
    "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_ascella_control.py --check",
+   "name": "core-621",
+   "seconds": 2.0,
    "tier": "pr"
   },
   {
