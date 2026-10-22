@@ -28,13 +28,16 @@ The retained submission-deadline successor is
 [`zz-map-tuna17-submission-deadline/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-submission-deadline/plan.json).
 Its recorded bytes remain immutable.
 
-The active unsubmitted source-binding successor is
+The retained deadline-recovery source-binding successor is
 [`zz-map-tuna17-deadline-recovery/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json).
-The successor binds collection deadlines and durable proof of expiry before
-initial resource dispatch. The deadline bounds logical request initiation;
-network and server latency determine completion. All 416 cQASM payloads and
-scientific settings match the retained proposals. Gate `core-594` replays the
-active successor. Each earlier proposal retains its recorded bytes.
+Its recorded bytes remain immutable.
+
+The active unsubmitted source-binding successor is
+[`zz-map-tuna17-rejected-request-recovery/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery/plan.json).
+The successor binds collection deadlines and separate receipts for zero-dispatch
+refusal and a received first-project HTTP 401 whose retry window expired.
+All 416 cQASM payloads and scientific settings match the retained proposals.
+Gate `core-594` replays the active successor. Each predecessor retains its bytes.
 
 The active successor replays against the exact
 [proposal catalogue](../../evidence/quantum_inspire/catalogue-submission-deadline-proposal.json)
@@ -385,7 +388,7 @@ From the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
+"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 "$PYTHON" scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 ```
 

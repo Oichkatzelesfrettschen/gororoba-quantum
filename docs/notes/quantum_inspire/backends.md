@@ -156,9 +156,11 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   qubit in the same order, which the exporter aligns as a run
   (`scripts/qi_toolchain_check.py`,
   [original toolchain record](../../evidence/quantum_inspire/toolchain_check.json)).
-  The [source-bound proposal toolchain successor](../../evidence/quantum_inspire/toolchain-source-bound-proposals.json)
-  retains every original circuit result and adds all retained submission-source
-  and compact-QX proposal successors. Gate `core-368` checks the complete current
+  The [source-bound proposal toolchain record](../../evidence/quantum_inspire/toolchain-source-bound-proposals.json)
+  retains its bytes. The active
+  [rejected-request proposal toolchain successor](../../evidence/quantum_inspire/toolchain-rejected-request-proposals.json)
+  preserves all 2,779 predecessor compilation rows and adds 832 exact-payload
+  submission-source and compact-QX successor circuits, for 3,611 current cases. Gate `core-368` checks the complete current
   case set against that successor and regenerates it under the pinned local QI
   interpreter. The original record keeps its bytes; compilation proves source
   and default-pass conformance, while provider scheduling remains separate.

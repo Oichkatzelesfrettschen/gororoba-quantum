@@ -1,0 +1,226 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 2000,
+   "delay_seconds": 4e-05,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-a_probe-n1-x-t2000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 1,
+   "nqubits": 6,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      2
+     ],
+     "neighbor": 2,
+     "neighbor_state": 1,
+     "probe": 0,
+     "tuna_edge": [
+      3,
+      5
+     ]
+    },
+    {
+     "edge": [
+      1,
+      3
+     ],
+     "neighbor": 3,
+     "neighbor_state": 1,
+     "probe": 1,
+     "tuna_edge": [
+      4,
+      7
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "neighbor": 5,
+     "neighbor_state": 1,
+     "probe": 4,
+     "tuna_edge": [
+      12,
+      14
+     ]
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "df51df102ba2cf263f3866a2815f1d79fa1d84805aeba96ce8a86e2495b94c6b",
+   "source_tuna_circuit": {
+    "path": "batch-098/pack-05-a_probe-n1-x-t2000.cq",
+    "sha256": "5d1c130e5a3af2e699bda14efef5cd10dde058488da1aec0e49b8c58b31dfe0b"
+   },
+   "tuna_to_qx": {
+    "12": 4,
+    "14": 5,
+    "3": 0,
+    "4": 1,
+    "5": 2,
+    "7": 3
+   }
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 2000,
+   "delay_seconds": 4e-05,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-a_probe-n0-x-t2000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "nqubits": 6,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      2
+     ],
+     "neighbor": 2,
+     "neighbor_state": 0,
+     "probe": 0,
+     "tuna_edge": [
+      3,
+      5
+     ]
+    },
+    {
+     "edge": [
+      1,
+      3
+     ],
+     "neighbor": 3,
+     "neighbor_state": 0,
+     "probe": 1,
+     "tuna_edge": [
+      4,
+      7
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "neighbor": 5,
+     "neighbor_state": 0,
+     "probe": 4,
+     "tuna_edge": [
+      12,
+      14
+     ]
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "8aaa15e4cb46863a18da7c45bda3b1ea9d2a14bfbe35ca6789a29768598026fa",
+   "source_tuna_circuit": {
+    "path": "batch-098/pack-05-a_probe-n0-x-t2000.cq",
+    "sha256": "664173bb9cd24ea660f610a06c609d043f3f38f9fa2beca744b017e1582d3cf3"
+   },
+   "tuna_to_qx": {
+    "12": 4,
+    "14": 5,
+    "3": 0,
+    "4": 1,
+    "5": 2,
+    "7": 3
+   }
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 100,
+   "delay_seconds": 2.0000000000000003e-06,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-a_probe-n0-x-t0100.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "nqubits": 6,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      2
+     ],
+     "neighbor": 2,
+     "neighbor_state": 0,
+     "probe": 0,
+     "tuna_edge": [
+      3,
+      5
+     ]
+    },
+    {
+     "edge": [
+      1,
+      3
+     ],
+     "neighbor": 3,
+     "neighbor_state": 0,
+     "probe": 1,
+     "tuna_edge": [
+      4,
+      7
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "neighbor": 5,
+     "neighbor_state": 0,
+     "probe": 4,
+     "tuna_edge": [
+      12,
+      14
+     ]
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "e220db356f765ca7c9de7af6cb9f04b047cdf106ca7711289d0413b292b56ac6",
+   "source_tuna_circuit": {
+    "path": "batch-098/pack-05-a_probe-n0-x-t0100.cq",
+    "sha256": "c9aa43022bdff837fbab371e44c909f3ee2b7f3a473a187302b13246dac6d1d9"
+   },
+   "tuna_to_qx": {
+    "12": 4,
+    "14": 5,
+    "3": 0,
+    "4": 1,
+    "5": 2,
+    "7": 3
+   }
+  }
+ ],
+ "nqubits": 6,
+ "register_width_convention": "nqubits is the batch maximum; each circuit records its exact nqubits",
+ "schema": "qi-zz-map-qx-cases-v1",
+ "shots": 1024,
+ "source_digests": {
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "qx_builder_sha256": "a7df8ba02117c09411de9ade797830ea80122d3604313b604e278a94a5baabc9",
+  "source_tuna_plan_sha256": "35fcbeac679dd6008ad138647679000e9966e5f9903d6040c1db5bc93f760d24"
+ },
+ "status": "proposed_not_submitted"
+}
