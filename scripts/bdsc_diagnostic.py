@@ -45,7 +45,10 @@ one-click samples outside the target support as a leak.
 Without --draw the case directories read draft and carry no seeds or order.
 With --draw (an scripts/anu_qrng.py record of at least 100 uint16 values) the
 first four values, which must be distinct, seed slots 0 to 3, and value 4 + i
-orders instance i within its job. --check without --draw reads the record the
+orders block-1 instance i within its job; a block-2 instance takes the order
+value of its block-1 match (same template, seed slot and state), so every
+matched pair runs at the same position and a within-job position trend cancels
+in each block change. --check without --draw reads the record the
 committed manifests name, so the gate holds before and after the draw.
 
 Usage:
@@ -169,6 +172,20 @@ def matched_pairs() -> list[tuple[int, int]]:
     return [(first[k], second[k]) for k in sorted(first)]
 
 
+def order_index(index: int) -> int:
+    """The instance whose drawn order value positions this one: itself in block 1, its block-1 match in block 2.
+
+    A block-2 instance repeats the block-1 request of the same template, seed slot and state, and both members of
+    a matched pair sit in jobs holding the same groups, so a shared order value puts them at the same position.
+    """
+    items = instances()
+    item = items[index]
+    if item["block"] == BLOCKS[0]:
+        return index
+    first = {(i["template"], i["slot"], i["label"]): i["index"] for i in items if i["block"] == BLOCKS[0]}
+    return first[(item["template"], item["slot"], item["label"])]
+
+
 def instance_name(item: dict[str, Any]) -> str:
     tag = bdsc_cases.TEMPLATE_TAGS[item["template"]]
     return f"{tag}-s{item['slot']}-{bdsc_cases.LABEL_TAGS[item['label']]}"
@@ -232,8 +249,9 @@ def case_record() -> dict[str, Any]:
             "values": DRAW_VALUES,
             "requests": 1,
             "credits": 0,
-            "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders instance i "
-            "within its job",
+            "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders block-1 "
+            "instance i within its job, and a block-2 instance takes the order value of its block-1 match so matched "
+            "pairs share a position",
         },
         "analysis": {
             "observation": "one-click conditioned selected fraction of returned counts; every standard error is a "
@@ -384,7 +402,7 @@ def documents(draw: Path | None) -> dict[str, bytes | dict[str, bytes]]:
     for job in sorted({i["job"] for i in items}):
         members = [i for i in items if i["job"] == job]
         if drawn is not None:
-            members.sort(key=lambda i: (drawn[1][i["index"]], i["index"]))
+            members.sort(key=lambda i: (drawn[1][order_index(i["index"])], order_index(i["index"])))
         settings = []
         for item in members:
             column = chip[(PAIR, item["label"])]
@@ -400,7 +418,7 @@ def documents(draw: Path | None) -> dict[str, bytes | dict[str, bytes]]:
             }
             if drawn is not None:
                 setting["compilation_seed"] = drawn[0][item["slot"]]
-                setting["draw_indices"] = {"seed": item["slot"], "order": SLOTS + item["index"]}
+                setting["draw_indices"] = {"seed": item["slot"], "order": SLOTS + order_index(item["index"])}
             settings.append(setting)
         manifest: dict[str, Any] = {
             "schema": bdsc_cases.CASES_SCHEMA,
@@ -840,10 +858,13 @@ def admit_run(
     cert.close(frozen[job], manifest, f"{run}: manifest against the frozen rebuild")
     seeds, order = draws[binding["sha256"]]
     members = [s["instance_index"] for s in manifest["settings"]]
-    require(members == sorted(members, key=lambda i: (order[i], i)), f"{run}: the iterations are not in drawn order")
+    require(
+        members == sorted(members, key=lambda i: (order[order_index(i)], order_index(i))),
+        f"{run}: the iterations are not in drawn order",
+    )
     for setting in manifest["settings"]:
         require(setting["compilation_seed"] == seeds[setting["slot"]], f"{run}/{setting['name']}: seed not drawn")
-        indices = {"seed": setting["slot"], "order": SLOTS + setting["instance_index"]}
+        indices = {"seed": setting["slot"], "order": SLOTS + order_index(setting["instance_index"])}
         require(setting["draw_indices"] == indices, f"{run}/{setting['name']}: draw indices")
     return manifest, result, submission
 
@@ -1160,6 +1181,18 @@ def self_test() -> int:
         root = Path(scratch)
         draw = bdsc_cases.synthetic_draw(root, DRAW_VALUES // 2)
         manifests = {k: json.loads(v["cases.json"]) for k, v in documents(draw).items() if isinstance(v, dict)}
+        # Every block-2 instance sits at the position of its block-1 match, so position cancels in each block change.
+        position = {
+            s["instance_index"]: k for manifest in manifests.values() for k, s in enumerate(manifest["settings"])
+        }
+        for item in instances():
+            if item["block"] != BLOCKS[0]:
+                match = order_index(item["index"])
+                require(
+                    position[item["index"]] == position[match],
+                    f"self-test: {instance_name(item)} sits at {position[item['index']]}, its match at "
+                    f"{position[match]}",
+                )
         for n, (name, model, perf_model, expected, holds) in enumerate(cases):
             (root / str(n)).mkdir()
             read = readout(validate=False, runs=synthetic_runs(root / str(n), manifests, model, perf=perf_model))

@@ -93,7 +93,7 @@
   "values": 100,
   "requests": 1,
   "credits": 0,
-  "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders instance i within its job"
+  "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders block-1 instance i within its job, and a block-2 instance takes the order value of its block-1 match so matched pairs share a position"
  },
  "analysis": {
   "observation": "one-click conditioned selected fraction of returned counts; every standard error is a reference value under independent Bernoulli trials, which the provider contract has not established",
