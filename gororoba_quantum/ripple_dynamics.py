@@ -40,7 +40,7 @@ from qiskit.quantum_info import Operator, Statevector
 import parallel
 import predict
 from boolean_anf import anf_coefficients
-from cd_core import cd_multiply, cd_sign, sedenion_zero_divisor_corpus
+from cd_core import cd_multiply_exact, cd_sign, sedenion_zero_divisor_corpus
 from designs import design_d_phase_sweep, left_mult_adjoint_gate, left_mult_gate
 from select_lcu import phase_oracle_from_truth_table
 
@@ -293,11 +293,11 @@ def exact_walk(pair: Pair) -> tuple[dict[str, Any], float]:
 
 def _signed_product_zero(row: SignedRow) -> bool:
     low, high, first_sign, partner_low, partner_high, second_sign = row
-    operand = [0.0] * 16
-    partner = [0.0] * 16
-    operand[low], operand[high] = 1.0, float(first_sign)
-    partner[partner_low], partner[partner_high] = 1.0, float(second_sign)
-    return cd_multiply(16, operand, partner) == [0.0] * 16
+    operand = [0] * 16
+    partner = [0] * 16
+    operand[low], operand[high] = 1, first_sign
+    partner[partner_low], partner[partner_high] = 1, second_sign
+    return not any(cd_multiply_exact(16, operand, partner))
 
 
 def _check_signed_row(row: SignedRow) -> None:

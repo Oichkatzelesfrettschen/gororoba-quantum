@@ -244,10 +244,13 @@ frozen planning snapshot, rather than the refreshed live catalogue. Replay
 validates historical case bytes; a submission still refreshes live constraints.
 Local hardware-independent regressions cover static templates,
 failed-result retention, budget mutation, API reference defects and mesh
-propagation. The full behavioral run reports the independently reproduced
-main-branch failure
-`test_toolchain_successor_preserves_original_rows_and_covers_current_cases`;
-that Quantum Inspire retained-row discrepancy remains outside these repairs.
+propagation. The initial full behavioral run reproduced a main-branch failure
+in `test_toolchain_successor_preserves_original_rows_and_covers_current_cases`.
+The active Quantum Inspire record omitted 60 retained cases whose original
+compilation evidence remained available. A complete retained-case successor
+restores that coverage. The offline regression checks every original and
+rejected-request predecessor row and the complete current case set. The
+predecessor compilation records keep their bytes.
 
 ## Library use and independence
 

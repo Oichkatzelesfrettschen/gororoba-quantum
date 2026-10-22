@@ -2589,6 +2589,8 @@
     "scripts/n21_replica_covariance.py",
     "scripts/n21_spectator_ramsey.py",
     "scripts/patch_window_analysis.py",
+    "scripts/photonic_compilation_audit.py",
+    "scripts/photonic_repeat_readout.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
@@ -6958,8 +6960,12 @@
   ],
   "gororoba_quantum/cd_core.py": [
    "__future__",
+   "collections",
    "fractions",
-   "itertools"
+   "itertools",
+   "operator",
+   "parallel",
+   "typing"
   ],
   "gororoba_quantum/check_et_campaign.py": [
    "dataclasses",

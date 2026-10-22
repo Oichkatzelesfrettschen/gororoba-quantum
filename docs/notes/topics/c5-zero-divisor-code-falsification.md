@@ -32,7 +32,7 @@ factors stay as alternatives. The "Reported result" table below keeps the
 original values. The replay verdict and structural cause sections quote
 `result.json`; the scope, measurement-hierarchy and later sections are not
 replayed by this bundle. Replay command:
-`PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay.py --check`.
+`PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay-exact.py --check`.
 
 ## Replay verdict: the falsification is confirmed
 

@@ -157,11 +157,15 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   (`scripts/qi_toolchain_check.py`,
   [original toolchain record](../../evidence/quantum_inspire/toolchain_check.json)).
   The [source-bound proposal toolchain record](../../evidence/quantum_inspire/toolchain-source-bound-proposals.json)
-  retains its bytes. The active
+  retains its bytes. The
   [rejected-request proposal toolchain successor](../../evidence/quantum_inspire/toolchain-rejected-request-proposals.json)
   preserves all 2,779 predecessor compilation rows and adds 832 exact-payload
-  submission-source and compact-QX successor circuits, for 3,611 current cases. Gate `core-368` checks the complete current
-  case set against that successor and regenerates it under the pinned local QI
+  submission-source and compact-QX successor circuits. The active
+  [complete retained-case successor](../../evidence/quantum_inspire/toolchain-complete-retained-cases.json)
+  also restores 60 original BDSC Pauli cases omitted from that 3,611-row record,
+  for 3,671 retained cases. Every original and rejected-request compilation row
+  is preserved in the complete successor. Gate `core-368` checks the complete
+  current case set against that successor and regenerates it under the pinned local QI
   interpreter. The original record keeps its bytes; compilation proves source
   and default-pass conformance, while provider scheduling remains separate.
 - **Compiler** (API): SWAP2CZDecomposer then CZDecomposer; the configuration
