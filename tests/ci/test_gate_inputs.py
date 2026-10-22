@@ -550,6 +550,7 @@ with patch("builtins.open", guard(builtins.open)), patch("io.open", guard(io.ope
             self.assertEqual(environment["OPENBLAS_NUM_THREADS"], "1")
             self.assertEqual(environment["GLIBC_TUNABLES"], "glibc.rtld.optional_static_tls=4096")
             self.assertEqual(environment["OPENBLAS_CORETYPE"], "Haswell")
+            self.assertEqual(environment["NPY_DISABLE_CPU_FEATURES"], "X86_V4 AVX512_ICL AVX512_SPR")
         with patch.dict("os.environ", {"OMP_NUM_THREADS": "2", "OPENBLAS_CORETYPE": "Zen"}, clear=True):
             self.assertEqual(run_gates.environment_for(None)["OMP_NUM_THREADS"], "2")
             self.assertEqual(run_gates.environment_for(None)["OPENBLAS_CORETYPE"], "Zen")

@@ -70,6 +70,10 @@ TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED"}
 OPENBLAS_CORETYPE = "Haswell"
+# numpy's dispatched loops above x86-64-v3 (AVX-512 on the runners' Intel
+# CPUs) round differently from the AVX2 loops; every runner and build host
+# supports x86-64-v3, so capping dispatch there gives all of them one path.
+NUMPY_DISABLED_FEATURES = "X86_V4 AVX512_ICL AVX512_SPR"
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # Each collector owns exactly one shell tree, so parallel gates cannot mix
 # their RUSAGE_CHILDREN counters. POSIX Python supplies the platform binding.
@@ -255,10 +259,12 @@ def environment_for(device: str | None, requires: str | None = None) -> dict[str
         "QISKIT_NUM_PROCS",
     ):
         environment.setdefault(variable, "1")
-    # OpenBLAS selects its kernels by the running CPU, and kernels differ in
-    # rounding, so a byte replay of a fitted value names one x86-64 AVX2 kernel
-    # set that every build host and CI runner executes.
+    # OpenBLAS and numpy select kernels by the running CPU, and kernels differ
+    # in rounding; one named x86-64 AVX2 kernel set for each gives every
+    # x86-64-v3 CPU one rounding path. libm and the Python build follow the
+    # host image, so records are written in the runner's (ci/runner_image.sh).
     environment.setdefault("OPENBLAS_CORETYPE", OPENBLAS_CORETYPE)
+    environment.setdefault("NPY_DISABLE_CPU_FEATURES", NUMPY_DISABLED_FEATURES)
     return environment
 
 

@@ -21,8 +21,9 @@ env:
   # Qiskit 2.6 Rust TLS plus late-loaded Aer OpenMP need reserved loader capacity.
   GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
   OPENBLAS_NUM_THREADS: "1"
-  # Kernel set of fitted-value byte replays; ci/run_gates.py sets the same.
+  # Kernel sets of fitted-value byte replays; ci/run_gates.py sets the same.
   OPENBLAS_CORETYPE: Haswell
+  NPY_DISABLE_CPU_FEATURES: X86_V4 AVX512_ICL AVX512_SPR
   OMP_NUM_THREADS: "1"
   MKL_NUM_THREADS: "1"
   BLIS_NUM_THREADS: "1"

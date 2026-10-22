@@ -108,12 +108,18 @@ The runner expands `runtime_contracts.CONTRACT_CASES` into independently sharded
 cases. CPU slots cover outer gates and inner process pools together: ordinary
 gates reserve one slot, while manifest `"workers": "all"` gates reserve the
 detected allocation. Native BLAS, OpenMP, Rayon and Qiskit subprocess defaults
-stay at one inside each slot, and `OPENBLAS_CORETYPE` defaults to Haswell, the
-kernel set every x86-64 AVX2 host and runner executes, so reruns on one host
-take one rounding path. numpy's CPU-dispatched loops and libm still round by
-CPU, so a gate that replays fitted values runs the analyzer through
-`ci/replay_check.py` at a tolerance below the analysis's reported
-uncertainties, with every discrete outcome compared exactly. `parallel.default_threads()` and `workers()`
+stay at one inside each slot. `OPENBLAS_CORETYPE` defaults to Haswell and
+`NPY_DISABLE_CPU_FEATURES` caps numpy's dispatch at x86-64-v3, the kernel sets
+every runner and build host executes, so a fitted value rounds one way on all
+of them given one libm and Python build. A record a gate byte-replays is
+written in the runner's userland through `ci/runner_image.sh` (podman), which
+supplies both, and `ci/runner_image_records.json` binds it to that image and
+its pins (`ci/runner_image_records.py add`; gate core-621 checks the ledger).
+A retained record a foreign stack wrote replays against a runner-image
+baseline (`ci/replay_check.py --baseline`), and a record whose analyzer
+refuses a changed closure replays through its
+[retained closure](../docs/evidence/analyzer_closures/README.md).
+`parallel.default_threads()` and `workers()`
 share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
 receive one slot through a child-only initializer, so nested maps and simulator
 defaults stay within the outer allocation. Timings retain wall time, user/system CPU time,
