@@ -602,76 +602,6 @@
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_qx/batch-12/twin-cosine-01.cq",
-   "sha256": "99fff8c31be02be575bbd05e2e58665633a3538a14778133dbf3917046948acd",
-   "backend": "QXsinglenodesimulator",
-   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
-   "passes": [],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "574c8c4522f95fc689bdd33abf07714498ad07768c8c6eff82386573b0ddc72a",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_qx/batch-12/twin-cosine-02.cq",
-   "sha256": "8039e6df7235ab347b9c1dd3c369aa9c372426880e8f5232034bc814d87a833c",
-   "backend": "QXsinglenodesimulator",
-   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
-   "passes": [],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "f39f201b5fce4ed98ce23465193387d0a7098d5cb43ea9446d53222afe65ae41",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_qx/batch-12/readout-1.cq",
-   "sha256": "456fc692b2493a62697f9080fa0568792c9f4fbddbbd091a7abfb68bd289c350",
-   "backend": "QXsinglenodesimulator",
-   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
-   "passes": [],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "c2c02eefb347ff84f48656a7f4ca4a401d73b8cd66558c41a334b4be491e6b43",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_qx/batch-13/twin-cosine-03.cq",
-   "sha256": "4e625aacb0493308b927da4cc891f2fe092d1f8ed164c9c822392efa2e9fd937",
-   "backend": "QXsinglenodesimulator",
-   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
-   "passes": [],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "5a763f495d7782ad35de089710b779499a2d6c0bb924fece26b60cb52af78006",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_qx/batch-13/readout-0.cq",
-   "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e",
-   "backend": "QXsinglenodesimulator",
-   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
-   "passes": [],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "d3d806c848de80581f7a2eb8a6bf133bb4ba1d7b2451826d3f244fadf08f02e2",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
    "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-00/readout-0.cq",
    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
    "backend": "tuna_17",
@@ -893,8 +823,8 @@
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-04/cosine-k1.cq",
-   "sha256": "03422dd892a79225705cb3a9e1791f657088bd858f86d1e22f03b0c8d8a31629",
+   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-04/quadrature-b1.cq",
+   "sha256": "9a114d093cd6d9c5df6b1e8f788fe3c103cc638de38efb94a1c036839aab9250",
    "backend": "tuna_17",
    "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
@@ -903,7 +833,7 @@
    ],
    "libqasm": "ok",
    "compiled": "ok",
-   "compiled_sha256": "11ab1296fd82c661997159931a05906690901d411274e03a78f321d61a377b01",
+   "compiled_sha256": "af76180f0b362cec3f59a5e564e255b19e942e7dfe19c3e81e6bade515410247",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
@@ -927,8 +857,8 @@
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-05/quadrature-b1.cq",
-   "sha256": "9a114d093cd6d9c5df6b1e8f788fe3c103cc638de38efb94a1c036839aab9250",
+   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-05/witness-07.cq",
+   "sha256": "97b5c30eaa7e29db2506f6947c78742997f6f69b16243fe54c11e01317b462b4",
    "backend": "tuna_17",
    "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
@@ -937,15 +867,15 @@
    ],
    "libqasm": "ok",
    "compiled": "ok",
-   "compiled_sha256": "af76180f0b362cec3f59a5e564e255b19e942e7dfe19c3e81e6bade515410247",
+   "compiled_sha256": "696eef353f32374a2a8ca1d61791e699f6c87f3d74254df052ca250212c24ab8",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-05/cosine-b1.cq",
-   "sha256": "6b6433021601465c022152a359a34d589b932d432b5098811771d6cd761a71fa",
+   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-05/witness-08.cq",
+   "sha256": "944b1bccbd42ae39cb4da9c46ae1d6e5cfcaf91e2ecb31c5f86013e248da934c",
    "backend": "tuna_17",
    "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
@@ -954,7 +884,7 @@
    ],
    "libqasm": "ok",
    "compiled": "ok",
-   "compiled_sha256": "b7f3b79cc53445f6a034cbd7222fd75dae45c8204b7d61cc6fe17f9c5463a40e",
+   "compiled_sha256": "992ab36cb4cbd73284e23ff7af2af52682488d4a32b9d5400f907397fc82c761",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
@@ -978,8 +908,8 @@
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-06/witness-07.cq",
-   "sha256": "97b5c30eaa7e29db2506f6947c78742997f6f69b16243fe54c11e01317b462b4",
+   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-06/witness-09.cq",
+   "sha256": "0924994c59806bd54f08ba815a21efc1b80c831435853ef5c518493f04ae1483",
    "backend": "tuna_17",
    "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
@@ -988,15 +918,15 @@
    ],
    "libqasm": "ok",
    "compiled": "ok",
-   "compiled_sha256": "696eef353f32374a2a8ca1d61791e699f6c87f3d74254df052ca250212c24ab8",
+   "compiled_sha256": "5a30037a382ee234472c8aa1cdf0787211ee01bd46f4c4b71884cf46a3d404b1",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-06/witness-08.cq",
-   "sha256": "944b1bccbd42ae39cb4da9c46ae1d6e5cfcaf91e2ecb31c5f86013e248da934c",
+   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-06/witness-10.cq",
+   "sha256": "b8c0764f68beeb81080f28a90592db178df78f2eb4ac1ac3882d35f2535344c3",
    "backend": "tuna_17",
    "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
@@ -1005,7 +935,7 @@
    ],
    "libqasm": "ok",
    "compiled": "ok",
-   "compiled_sha256": "992ab36cb4cbd73284e23ff7af2af52682488d4a32b9d5400f907397fc82c761",
+   "compiled_sha256": "2d09f8f62323ad39f7f8c0d220da1004141a4787efcab2994c335eae9244395b",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
@@ -1029,8 +959,8 @@
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-07/witness-09.cq",
-   "sha256": "0924994c59806bd54f08ba815a21efc1b80c831435853ef5c518493f04ae1483",
+   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-07/witness-11.cq",
+   "sha256": "548a601032032053866bbb7165f7bb5563af3c530f20e9f2f3668692e68f8aaf",
    "backend": "tuna_17",
    "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
@@ -1039,15 +969,15 @@
    ],
    "libqasm": "ok",
    "compiled": "ok",
-   "compiled_sha256": "5a30037a382ee234472c8aa1cdf0787211ee01bd46f4c4b71884cf46a3d404b1",
+   "compiled_sha256": "db4347c25e1c7e167ded0af557bf787d97e06debcaf33560936630b218d639e8",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
    "gate_changes": {}
   },
   {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-07/witness-10.cq",
-   "sha256": "b8c0764f68beeb81080f28a90592db178df78f2eb4ac1ac3882d35f2535344c3",
+   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-07/witness-12.cq",
+   "sha256": "5cb39cfb143195ebe5b66a56f9763c5ef25dc1967ed9ce4738a1b1ec5436f8cc",
    "backend": "tuna_17",
    "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
@@ -1056,7 +986,7 @@
    ],
    "libqasm": "ok",
    "compiled": "ok",
-   "compiled_sha256": "2d09f8f62323ad39f7f8c0d220da1004141a4787efcab2994c335eae9244395b",
+   "compiled_sha256": "e03be68437c5e7af9c9301494c1a6096792e1cdb1cf6ed5a19a0bd90a45d041b",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
@@ -1074,57 +1004,6 @@
    "libqasm": "ok",
    "compiled": "ok",
    "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-08/witness-11.cq",
-   "sha256": "548a601032032053866bbb7165f7bb5563af3c530f20e9f2f3668692e68f8aaf",
-   "backend": "tuna_17",
-   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
-   "passes": [
-    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
-    "opensquirrel.passes.decomposer.CZDecomposer"
-   ],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "db4347c25e1c7e167ded0af557bf787d97e06debcaf33560936630b218d639e8",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-08/witness-12.cq",
-   "sha256": "5cb39cfb143195ebe5b66a56f9763c5ef25dc1967ed9ce4738a1b1ec5436f8cc",
-   "backend": "tuna_17",
-   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
-   "passes": [
-    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
-    "opensquirrel.passes.decomposer.CZDecomposer"
-   ],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "e03be68437c5e7af9c9301494c1a6096792e1cdb1cf6ed5a19a0bd90a45d041b",
-   "control_sequence_preserved": true,
-   "gate_sequence_preserved": true,
-   "control_changes": {},
-   "gate_changes": {}
-  },
-  {
-   "case": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/batch-08/readout-1.cq",
-   "sha256": "f23be75aa8b709b6af29c7a3756ce6d560653c120217cb2a944c7864c8c038b6",
-   "backend": "tuna_17",
-   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
-   "passes": [
-    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
-    "opensquirrel.passes.decomposer.CZDecomposer"
-   ],
-   "libqasm": "ok",
-   "compiled": "ok",
-   "compiled_sha256": "03c319ec03350dc37c06ca00e2b30fa1bd85ae34fb1d866f2c04aec6973f5420",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},

@@ -1,0 +1,83 @@
+{
+ "schema": "qi-matched-zero-divisor-toolchain-v1",
+ "source_sha256": "4f0a0fb26752a56b33a4e9f71c142f1617eaf5a4e6e1a5b369b7eaad4580b6e6",
+ "producer_sources_sha256": {
+  "scripts/qi_matched_zero_divisor.py": "4f0a0fb26752a56b33a4e9f71c142f1617eaf5a4e6e1a5b369b7eaad4580b6e6",
+  "scripts/qi_toolchain_check.py": "8fb5d008ff24c76d2b48a813790834713bcdee6b17c8ceeba97b3554745bf28a",
+  "scripts/qi_zero_divisor_cases.py": "6c0a7c15e3f04ec0036ad42e8712629b7dd764ddbc51d4ba1ee2526156515174",
+  "scripts/qi_platform.py": "dcd6613c999e9bbb545351ece1c99f8d3ba711813e5658a839c1fb4766a9d3a2",
+  "gororoba_quantum/qi_stack.py": "47c84368b91125942a04c8515edd7023e081ce19ad9d09e223060af5eb60e1df",
+  "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92"
+ },
+ "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
+ "toolchain": {
+  "qxelarator": "0.10.0",
+  "libqasm": "1.2.1",
+  "opensquirrel": "0.9.1"
+ },
+ "circuits": [
+  {
+   "file": "batch-00/readout-0.cq",
+   "source_sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-00/readout-1.cq",
+   "source_sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "compiled_sha256": "4bf0615459a5abc811e03c4c5d41d66a3935249388c53333138dfd3140a4210f",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-00/witness.cq",
+   "source_sha256": "8fc62b6b50b5cd3ed2630cce8791b2d70f7cac131911a4233ebf80d20c45a46d",
+   "compiled_sha256": "1f2d31d88d516a86e12c40ba6f28bb63a2645abdf2451115786f978634c80b66",
+   "maximum_angle_serialization_error": 2.6794896967885506e-08,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-01/readout-0.cq",
+   "source_sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-01/readout-1.cq",
+   "source_sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "compiled_sha256": "4bf0615459a5abc811e03c4c5d41d66a3935249388c53333138dfd3140a4210f",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-01/witness.cq",
+   "source_sha256": "ff3ea089f0b1178843ddae88c7a2e822a5d272d12ddbef4953212c3224b46e4f",
+   "compiled_sha256": "ffe61a92b142bfbdfd2fee5d14dc7fd276cdefdc7529663d8fd8c2426e6fc696",
+   "maximum_angle_serialization_error": 4.641020678874952e-08,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-02/readout-0.cq",
+   "source_sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-02/readout-1.cq",
+   "source_sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "compiled_sha256": "4bf0615459a5abc811e03c4c5d41d66a3935249388c53333138dfd3140a4210f",
+   "maximum_angle_serialization_error": 0.0,
+   "operand_control_order_preserved": true
+  },
+  {
+   "file": "batch-02/witness.cq",
+   "source_sha256": "6fb6d787601b1a269cac01316d8b338b440e72cc64068ae25eb18ea683da7db0",
+   "compiled_sha256": "4bbffb5ae32ebc76592e6c117490590378ec7579a1a891e12a89e231d36a3cf5",
+   "maximum_angle_serialization_error": 4.641020678874952e-08,
+   "operand_control_order_preserved": true
+  }
+ ]
+}

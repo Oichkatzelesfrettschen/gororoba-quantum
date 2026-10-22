@@ -1,0 +1,3112 @@
+{
+ "acquisition": {
+  "epochs": [
+   {
+    "content": "all six states of every cell",
+    "epoch": 1,
+    "settings": 48
+   },
+   {
+    "content": "all six states of every cell",
+    "epoch": 2,
+    "settings": 48
+   }
+  ],
+  "randomized_and_retained": [
+   "preparation label",
+   "compilation seed",
+   "processing policy",
+   "acquisition order",
+   "epoch"
+  ],
+  "stopping": "fixed-n",
+  "trials_per_setting": 300000
+ },
+ "authorization": "none: the case waits for its written-case approval; a pass supports proposing the 160-setting run, never running it",
+ "banks": [
+  {
+   "f_g": [
+    "K1",
+    "Q9"
+   ],
+   "pair": "target-complement",
+   "settings": [
+    {
+     "chip_column": [
+      [
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.0,
+      "E_I": 0.0,
+      "E_R": 0.0
+     },
+     "label": "f",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 2.0
+    },
+    {
+     "chip_column": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 1.0,
+      "E_I": 1.0,
+      "E_R": 1.0
+     },
+     "label": "g",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       -0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 4.472135955
+    },
+    {
+     "chip_column": [
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 0.5
+     },
+     "label": "+",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 3.741657387
+    },
+    {
+     "chip_column": [
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       -0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 0.5
+     },
+     "label": "-",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 3.741657387
+    },
+    {
+     "chip_column": [
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.707106781186547
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 0.5
+     },
+     "label": "+i",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       -0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 3.741657387
+    },
+    {
+     "chip_column": [
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       -0.707106781186547
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 0.5
+     },
+     "label": "-i",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       -0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 3.741657387
+    }
+   ]
+  },
+  {
+   "f_g": [
+    "Q2",
+    "Q3"
+   ],
+   "pair": "middle-middle",
+   "settings": [
+    {
+     "chip_column": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186548,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186548,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 0.5
+     },
+     "label": "f",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 4.472135955
+    },
+    {
+     "chip_column": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186548,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186548,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 0.5
+     },
+     "label": "g",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 4.472135955
+    },
+    {
+     "chip_column": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 1.0
+     },
+     "label": "+",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 4.472135955
+    },
+    {
+     "chip_column": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       -0.5,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       -0.5,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.5,
+      "E_R": 0.0
+     },
+     "label": "-",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       -0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 4.472135955
+    },
+    {
+     "chip_column": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.0,
+       0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.0,
+       0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 0.0,
+      "E_R": 0.5
+     },
+     "label": "+i",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       0.707106781186547
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 4.472135955
+    },
+    {
+     "chip_column": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.0,
+       -0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.0,
+       -0.5
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "ideal_selected": {
+      "E0": 0.5,
+      "E_I": 1.0,
+      "E_R": 0.5
+     },
+     "label": "-i",
+     "state_e_basis": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.707106781186547,
+       0.0
+      ],
+      [
+       0.0,
+       -0.707106781186547
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0
+      ]
+     ],
+     "unused_column_distance": 4.472135955
+    }
+   ]
+  }
+ ],
+ "claims": {
+  "admission": "an observation enters the event only when its policy's observation contract supports Bernoulli trials; the alpha split counts every observation, so admission never re-allocates error, and a contrast touching an unadmitted observation reads not_admitted",
+  "alpha": 0.01,
+  "confidence_event": "Clopper-Pearson at alpha / P on each of the P observations; every contrast interval follows from the same event, so false certification of any contrast family is bounded by alpha",
+  "contrast_families": {
+   "completion": 48,
+   "epoch": 48,
+   "sum_rule": 32
+  },
+  "epochs": "epoch 2 follows at least one platform calibration cycle, so the epoch family tests reproducibility across a calibration change; within-epoch stability rests on the randomized order alone, and the epochs are never pooled into one stationary reconstruction",
+  "findings_schema": "bdsc-spectral-findings-v1",
+  "margins": {
+   "completion": 0.02,
+   "epoch": 0.02,
+   "sum_rule": 0.02
+  },
+  "outcomes": [
+   "compatible",
+   "violated",
+   "inconclusive",
+   "not_admitted"
+  ],
+  "policies": "no contrast compares provider defaults with the empty list: correction may change the mean; the live qpu:belenos record declares no default mitigation, and a returned iteration names none either (its fields are the perf, noise, shot-count and computed experiment, circuit and input fields), so the processing a policy received is established by the provider contract, while the readout checks that each retained job body carries the requested policy and that every result is an integer BSCount",
+  "scope": "passing every family is necessary and not sufficient: a service that prepares sqrt(p_s)|A> + sqrt(1 - p_s)|D> for each requested p_s passes them without a fixed measurement"
+ },
+ "interpretation": [
+  {
+   "family": "completion",
+   "implicates": "preparation, compilation or both; both templates share each job in randomized order, so drift between jobs cannot produce it"
+  },
+  {
+   "family": "epoch",
+   "implicates": "reproducibility across the calibration change"
+  },
+  {
+   "family": "sum_rule",
+   "implicates": "the combined linear-effect, preparation and conditioning model, without a unique cause"
+  },
+  {
+   "family": "policies",
+   "implicates": "what each output represents, from the provider contract, since a result names no applied mitigation; never from means"
+  }
+ ],
+ "jobs": [
+  {
+   "circuit": "ladder-union",
+   "epoch": 1,
+   "iterations": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+   ],
+   "pair": "target-complement",
+   "processing": "provider-defaults"
+  },
+  {
+   "circuit": "ladder-union",
+   "epoch": 2,
+   "iterations": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35
+   ],
+   "pair": "target-complement",
+   "processing": "provider-defaults"
+  },
+  {
+   "circuit": "ladder-union",
+   "epoch": 1,
+   "iterations": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41
+   ],
+   "pair": "target-complement",
+   "processing": "empty-mitigation"
+  },
+  {
+   "circuit": "ladder-union",
+   "epoch": 2,
+   "iterations": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
+   ],
+   "pair": "target-complement",
+   "processing": "empty-mitigation"
+  },
+  {
+   "circuit": "ladder-union",
+   "epoch": 1,
+   "iterations": [
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77
+   ],
+   "pair": "middle-middle",
+   "processing": "provider-defaults"
+  },
+  {
+   "circuit": "ladder-union",
+   "epoch": 2,
+   "iterations": [
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83
+   ],
+   "pair": "middle-middle",
+   "processing": "provider-defaults"
+  },
+  {
+   "circuit": "ladder-union",
+   "epoch": 1,
+   "iterations": [
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89
+   ],
+   "pair": "middle-middle",
+   "processing": "empty-mitigation"
+  },
+  {
+   "circuit": "ladder-union",
+   "epoch": 2,
+   "iterations": [
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95
+   ],
+   "pair": "middle-middle",
+   "processing": "empty-mitigation"
+  }
+ ],
+ "observations": [
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "target-complement",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "outward-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "provider-defaults"
+  },
+  {
+   "epoch": 1,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 1,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "f",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "g",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "+i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  },
+  {
+   "epoch": 2,
+   "label": "-i",
+   "pair": "middle-middle",
+   "preparation": "reverse-ladder",
+   "processing": "empty-mitigation"
+  }
+ ],
+ "power": {
+  "chosen_trials": 300000,
+  "decision": "every contrast of every family reads compatible; while only the empty list is admitted, the provider-default contrasts read not_admitted and the decision covers the admitted subset, whose pass probability is at least the power stated here",
+  "model": "the acceptable implementation: E0 itself, one effect across completions, policies and epochs, independent fixed-n Bernoulli trials at every observation",
+  "replicates": 2000,
+  "rows": [
+   {
+    "power": 0.0,
+    "trials_per_setting": 45000
+   },
+   {
+    "power": 0.0,
+    "trials_per_setting": 100000
+   },
+   {
+    "power": 0.0,
+    "trials_per_setting": 125000
+   },
+   {
+    "power": 0.0,
+    "trials_per_setting": 150000
+   },
+   {
+    "power": 0.0,
+    "trials_per_setting": 175000
+   },
+   {
+    "power": 0.018,
+    "trials_per_setting": 200000
+   },
+   {
+    "power": 0.2805,
+    "trials_per_setting": 225000
+   },
+   {
+    "power": 0.683,
+    "trials_per_setting": 250000
+   },
+   {
+    "power": 0.912,
+    "trials_per_setting": 275000
+   },
+   {
+    "power": 0.9845,
+    "trials_per_setting": 300000
+   },
+   {
+    "power": 0.992,
+    "trials_per_setting": 325000
+   },
+   {
+    "power": 1.0,
+    "trials_per_setting": 350000
+   },
+   {
+    "power": 1.0,
+    "trials_per_setting": 375000
+   },
+   {
+    "power": 1.0,
+    "trials_per_setting": 400000
+   }
+  ],
+  "scope": "power under this model only; drift, preparation error or a corrected sampling law lower it",
+  "seed": 20261021,
+  "target": 0.95
+ },
+ "preparation_descriptions": {
+  "ladder-union": "the job circuit: the reverse-ladder splitters with its fixed ones free, the outward-ladder splitters, then one phase per mode; each template's iteration sets the other block's splitters to 0 and reproduces that template's unitary to 1e-12",
+  "outward-ladder": "adjacent splitters fan the photon from the source mode to its left and right neighbours in turn, then one phase per mode; 47 parameters",
+  "reverse-ladder": "a fixed full splitter on two unused inputs, fixed full splitters that carry the photon to mode 0, adjacent splitters that ladder it rightward across every mode, then one phase per mode; 47 parameters"
+ },
+ "qrng": {
+  "binding": "the draw record's repository path and sha256 and each setting's seed and order indices enter every run manifest, built and checked by scripts/bdsc_cases.py --draw before the first submission; a draw that another case's manifests already name is refused, so no value seeds two cases",
+  "credits": 0,
+  "expected_seconds": 2,
+  "quota": "1 of the free tier's 100 requests per calendar month",
+  "requests": 1,
+  "service": "ANU Quantum Numbers (aqn, keyed), scripts/anu_qrng.py draw",
+  "type": "uint16",
+  "use": "the first settings values seed each setting's compilation_seed in observation order; the next settings values sort each job's iteration order",
+  "values": 192,
+  "why_not_simulated": "the seed rule of strategy.md section 1 takes compilation seeds from a retained quantum draw so that neither the operator nor a pseudorandom stream fixes which meshes the case meets"
+ },
+ "question": "do the returned observations behave as one fixed linear effect on independently prepared states, at a declared observation level, across preparation descriptions and across a calibration change",
+ "record": "qualification_case",
+ "resources": {
+  "billing_rule": "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots, measured on every retained qpu:belenos job (docs/runbooks/quandela-credit-optimization.md)",
+  "credits": 12.8,
+  "credits_if_one_job_per_setting": 153.6,
+  "eligible_trials_per_setting": 300000,
+  "eligible_trials_total": 28800000,
+  "iterations_per_job": 12,
+  "jobs": 8,
+  "max_shots_per_iteration": 600000,
+  "max_shots_total": 57600000,
+  "seconds_ceiling": 2400,
+  "seconds_estimate": 1353.6,
+  "seconds_per_job_estimate": 169.2,
+  "settings": 96,
+  "timing_rule": "6.3 s plus 2.6e-05 s per sample for each iteration, each job within 0.6 of the 300 s per-job limit; the written case restates both from the live plan output"
+ },
+ "schema": "bdsc-records-v1",
+ "stop_conditions": [
+  "scripts/qd_platform.py plan refuses the platform",
+  "a retained job body differs from the requested policy, or a result is not an integer BSCount",
+  "a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule excludes more than 0.01 of an iteration's samples",
+  "the per-run server version or calibration identity cannot be recorded",
+  "spent credits or seconds reach the approved ceiling"
+ ],
+ "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794"
+}

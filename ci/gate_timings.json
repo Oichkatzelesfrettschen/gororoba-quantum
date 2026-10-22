@@ -2141,11 +2141,6 @@
    "cpu_seconds": 45.86,
    "workers": 12
   },
-  "core-616": {
-   "wall_seconds": 474.54,
-   "cpu_seconds": 4183.91,
-   "workers": 12
-  },
   "core-atlas-channel-contract": {
    "wall_seconds": 1.1,
    "cpu_seconds": 1.04,

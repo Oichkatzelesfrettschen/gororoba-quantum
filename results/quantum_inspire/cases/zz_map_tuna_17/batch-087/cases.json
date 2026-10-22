@@ -147,11 +147,11 @@
  "schema": "qi-zz-map-cases-v1",
  "shots": 8192,
  "source_digests": {
-  "catalogue_sha256": "b2edfaee97516a43091450ffbe65ff708b0ee086918a05997287bae1a5deca74",
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
   "conditional_ramsey_note_sha256": "ddac02db9715550afcd22d19d312dc668d2558adb42ff7476c4c75b7940cb087",
   "conditional_ramsey_source_sha256": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
-  "proposal_builder_sha256": "27558568d476ccb3a5e1c9f4e664dd6fcff599cb1e6b5f9a3599d34756af1681",
-  "qi_platform_source_sha256": "c9f819c3fee906415abe6a08d0c7a0bb27e587f848588ec4f3bd08edaef8288f",
+  "proposal_builder_sha256": "a4bf473947b199b973933b17d99e09ac59f68c5321075f02b89dce3c3a81960b",
+  "qi_platform_source_sha256": "62fb71e242d8cc80be46d733cf5131bc67db18c019a296d4e949b847fc32d253",
   "tuna_operations_sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
  },
  "status": "proposed_not_submitted"

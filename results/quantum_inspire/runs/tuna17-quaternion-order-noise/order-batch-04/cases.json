@@ -1,0 +1,129 @@
+{
+ "schema": "qi-hypercomplex-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 2,
+ "shots": 16384,
+ "hardware_pause_seconds": 120,
+ "job_execution_time_limit": 300,
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+   "kind": "readout-reference",
+   "prepared": 0
+  },
+  {
+   "file": "readout-1.cq",
+   "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+   "kind": "readout-reference",
+   "prepared": 1
+  },
+  {
+   "file": "order-i1-j0-representative0.cq",
+   "kind": "hypercomplex-operator",
+   "nqubits": 2,
+   "operator_error": 0.0,
+   "requested_probabilities": [
+    0.9999999999999996,
+    0.0,
+    5.286997409534849e-34,
+    0.0
+   ],
+   "native_probabilities": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "native_operator": {
+    "real": [
+     [
+      0.7071067811865476,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.7071067811865476,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.7071067811865476,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.7071067811865476
+     ]
+    ],
+    "imaginary": [
+     [
+      0.7071067811865475,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      -0.7071067811865475,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      -0.7071067811865475
+     ]
+    ]
+   },
+   "measurement_mapping": [
+    0,
+    1
+   ],
+   "observable_partition": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ]
+   ],
+   "setting": {
+    "name": "order-i1-j0-representative0",
+    "theta": 0.7853981633974483,
+    "phi": 0.0,
+    "representative": 0
+   },
+   "sha256": "d4d4073b1c1a2a0fe94dc8034ad42ea046435ae47c385fb006b8baa28f3946ac"
+  }
+ ],
+ "evidence_kind": "complex encoding and device conformance",
+ "preregistered": {
+  "primary": "raw grouped probabilities",
+  "mitigation": "sensitivity only",
+  "shot_order": "retain; test temporal dependence before IID intervals",
+  "minimum_output_readout_contrast": 0.2
+ },
+ "compiler": {
+  "qiskit": "2.5.2",
+  "seed": 7,
+  "angle_step_radians": 0.08726646259971647,
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b"
+ }
+}

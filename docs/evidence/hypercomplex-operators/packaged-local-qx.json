@@ -1,0 +1,58 @@
+{
+  "schema": "packaged-local-qx-crosscheck-v1",
+  "observed_at": "2026-10-22T05:30:53.308458+00:00",
+  "evidence_kind": "local-simulation",
+  "distribution_version": "0.10.0",
+  "package": "qxelarator-python313",
+  "source_fixture": "docs/evidence/hypercomplex-operators/local-qx-perceval.json",
+  "shots_per_setting": 16384,
+  "results": [
+    {
+      "index": 0,
+      "shots": 16384,
+      "counts": {
+        "00": 16384
+      }
+    },
+    {
+      "index": 1,
+      "shots": 16384,
+      "counts": {
+        "01": 16384
+      }
+    },
+    {
+      "index": 2,
+      "shots": 16384,
+      "counts": {
+        "00": 8040,
+        "01": 8344
+      }
+    },
+    {
+      "index": 4,
+      "shots": 16384,
+      "counts": {
+        "00": 16384
+      }
+    },
+    {
+      "index": 6,
+      "shots": 16384,
+      "counts": {
+        "00": 8145,
+        "01": 4101,
+        "11": 4138
+      }
+    },
+    {
+      "index": 7,
+      "shots": 16384,
+      "counts": {
+        "00": 4025,
+        "01": 8300,
+        "10": 4059
+      }
+    }
+  ]
+}

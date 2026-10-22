@@ -220,9 +220,9 @@
  "schema": "qi-zz-map-qx-cases-v1",
  "shots": 1024,
  "source_digests": {
-  "catalogue_sha256": "b2edfaee97516a43091450ffbe65ff708b0ee086918a05997287bae1a5deca74",
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
   "qx_builder_sha256": "3b12db9131033a3663f37920b159e62b940c2e87ef9db10663893216cf67ff8d",
-  "source_tuna_plan_sha256": "30de8a54a4d85c40d74b11cc3cf557e26e1fcbe1ca96f634dae8ddfec34c5eae"
+  "source_tuna_plan_sha256": "b588c2d7c623841b5801fb7715779cefa88d3ee29f59cc9d7b856a761d174a25"
  },
  "status": "proposed_not_submitted"
 }

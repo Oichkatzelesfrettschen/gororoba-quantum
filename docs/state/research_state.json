@@ -1,5 +1,5 @@
 {
-  "schema": "research-state-v1",
+  "schema": "research-state-v2",
   "acquisitions": [
     {
       "id": "kingston-mod15-pilot",
@@ -1136,6 +1136,76 @@
       "question": "Does qubit 143's Ramsey visibility decay monotonically over 0 to 20 us with the control grounded?"
     },
     {
+      "id": "marrakesh-n21-q47-segmented-baseline",
+      "provider": "ibm",
+      "run": "results/live/2026-10-21T043156.858484Z",
+      "family": "n21-orbit-rca",
+      "question": "Does the segmented coprime sweep read two frequency lines, herald backaction or Z swap memory on ibm_marrakesh qubit 47, a qubit with no recorded beat?"
+    },
+    {
+      "id": "fez-n21-q143-segmented-sweep",
+      "provider": "ibm",
+      "run": "results/live/2026-10-21T064222.721454Z",
+      "family": "n21-orbit-rca",
+      "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
       "id": "qd-qpu-belenos-bdsc-queue-test",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00",
@@ -1197,20 +1267,6 @@
       "run": "results/quandela/runs/2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00",
       "family": "BDSC six-state control on qpu:ascella",
       "question": "does the same six-state linear-effect test, on a 12-mode union circuit, hold on Ascella?"
-    },
-    {
-      "id": "marrakesh-n21-q47-segmented-baseline",
-      "provider": "ibm",
-      "run": "results/live/2026-10-21T043156.858484Z",
-      "family": "n21-orbit-rca",
-      "question": "Does the segmented coprime sweep read two frequency lines, herald backaction or Z swap memory on ibm_marrakesh qubit 47, a qubit with no recorded beat?"
-    },
-    {
-      "id": "fez-n21-q143-segmented-sweep",
-      "provider": "ibm",
-      "run": "results/live/2026-10-21T064222.721454Z",
-      "family": "n21-orbit-rca",
-      "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
     },
     {
       "id": "qd-qpu-belenos-bdsc-tc-def-e2",
@@ -1383,10 +1439,77 @@
   ],
   "claims": [
     {
+      "id": "proposed-tuna17-zero-divisor-matched-response",
+      "statement": "Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.",
+      "evidence": [],
+      "documents": ["docs/design/tuna17-zero-divisor-matched-response.md"],
+      "gates": {"core-632": "replay", "core-633": "replay"},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "sedenion-determinant-membership",
+      "statement": "For every real sedenion v=(x0+u,x8+w), det L_v=(s+A+B)^4 [s^2+2s(A+B)+(A-B)^2+4 gamma^2]^2, with s=x0^2+x8^2, A=||u||^2, B=||w||^2 and gamma=<u,w>. A nonzero v is a zero divisor exactly when s=0, A=B and gamma=0.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "proof_origin": "external-source",
+      "evidence": [],
+      "acquisitions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "gates": {},
+      "boundary": "The determinant factorization is Theorem 3.7 of Koebisu version 2, a preprint; Biss-Dugger-Isaksen supplies the membership and annihilator foundation. A finite rational replay validates the implementation separately from the all-real source argument.",
+      "documents": [
+        "docs/notes/papers/2512.13002.md",
+        "docs/notes/math-0511691.md",
+        "docs/notes/algebra_circuit_rules.md"
+      ],
+      "assumptions": [
+        "Real standard sedenions under cd_core's doubling and ordered basis",
+        "u and w are imaginary octonions; v is nonzero for zero-divisor membership"
+      ],
+      "related_claims": [
+        "sedenion-determinant-exact-replay"
+      ]
+    },
+    {
+      "id": "sedenion-determinant-exact-replay",
+      "statement": "Exact left-matrix determinants match D1^4 D2^2 on 300 seeded integer vectors, 100 seeded rational vectors, e0+e9, e1+e9 and e1+e10. The controls have determinants 256, 256 and 0, and removal of 4 gamma^2 fails on e1+e9.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "evidence": [],
+      "acquisitions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "boundary": "403 rational fixtures at seed 20261011 validate the evaluator; the replay establishes facts only on those fixtures. The all-real identity comes from the separate mathematical claim.",
+      "documents": [
+        "docs/notes/algebra_circuit_rules.md"
+      ],
+      "gates": {
+        "core-044": "replay"
+      },
+      "assumptions": [
+        "int or Fraction coordinates in exactly 16 dimensions"
+      ],
+      "depends_on": [
+        "sedenion-determinant-membership"
+      ]
+    },
+    {
       "id": "cd-associator-census",
       "statement": "The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.",
       "evidence": [
@@ -1409,13 +1532,17 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written",
+      "related_claims": [
+        "cd-moving-pair-walsh-proof"
+      ]
     },
     {
       "id": "cd-moving-pair-walsh-proof",
       "statement": "The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "open",
       "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
       "evidence": [],
@@ -1431,13 +1558,14 @@
         "cd-associator-census"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
     },
     {
       "id": "singular-sector-split",
       "statement": "(L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.",
       "evidence": [],
@@ -1456,7 +1584,8 @@
         "cd-associator-census"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "hpp-fixed-degree-refutation",
@@ -1537,9 +1666,9 @@
     },
     {
       "id": "a5-stiefel-universal",
-      "statement": "Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5).",
+      "statement": "Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "open",
       "boundary": "The 32 exact points support it and prove nothing beyond themselves.",
       "evidence": [],
@@ -1555,7 +1684,8 @@
         "a5-stiefel-selected-nullity"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
     },
     {
       "id": "a6-stiefel-witness",
@@ -1586,12 +1716,13 @@
       "id": "a6-stiefel-generic-invertibility",
       "statement": "On V = V_2(R^31), the unit orthogonal pure pairs (a, b) in (Im A_5)^2, L_(a,b) is invertible on an open, dense, full-measure subset; the zero-divisor Stiefel elements form a closed measure-zero semialgebraic subset of dimension at most 58.",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Written proof, not machine-checked; the exceptional subset's exact dimension, components and geometry, and the A_5 question, remain open.",
       "evidence": [],
       "documents": [
-        "docs/notes/math-0512517.md"
+        "docs/notes/math-0512517.md",
+        "docs/notes/stiefel_generic_invertibility.md"
       ],
       "gates": {},
       "acquisitions": [],
@@ -1606,13 +1737,14 @@
         "a6-stiefel-witness-rocq"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "four-support-topology",
       "statement": "On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.",
       "evidence": [
@@ -1656,13 +1788,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "nullity-twelve-cone",
       "statement": "At the doubly-pure center e1 + e18 of dimension 32 and norm squared two, the Bouligand cone of the nullity-12 locus is A15 union B17, with a 13-dimensional intersection.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "One selected center; neighborhood branches, links, attachments and other centers remain open.",
       "evidence": [
@@ -1687,13 +1820,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "principal-skew-atlas",
       "statement": "Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element, with exact refinement and overlap identities gluing the kernel incidence across changing ranks; an all-stage proof gives 2^(n-1) - 1 domains for every n >= 2.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "A cover with gluing maps; smooth subdivisions, closure links and a finite attachment model are still needed for global invariants.",
       "evidence": [
@@ -1716,13 +1850,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "kernel-limit-slice",
       "statement": "The complete real three-coefficient affine slice has nullities 0, 8 and 12 with global cone kernel frames and actual mapping cylinders; its total incidence retracts onto S11 and the attachment image is S3*(S1 x S3); ordinary embedding extends this to every higher stage.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The named slice only; unrestricted rank loci and frontier coverage remain open.",
       "evidence": [
@@ -1746,13 +1881,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "determinant-line-trivial",
       "statement": "The top exterior power of the annihilator bundle is trivial over every full constant-rank locus at every stage; Pfaffian volume factors give determinant-one transitions and zero first integral Chern class.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Higher characteristic classes and bundle isomorphism types remain open.",
       "evidence": [
@@ -1776,13 +1912,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "dimension32-global-topology",
       "statement": "A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "open",
       "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
       "evidence": [],
@@ -1802,7 +1939,8 @@
         "nullity-twelve-cone"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
     },
     {
       "id": "sedenion-g2-bundle",
@@ -1828,7 +1966,7 @@
       "id": "rank-predicates-and-charts",
       "statement": "For D = 2^n, n >= 2, the trace/Newton polynomials E_j of B = L_x^T L_x decide the rank of L_x for every real x, and general pivot charts supply exact kernel frames, transition maps, cocycles and Gram data.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Membership formulas, not a classification of components, smooth strata or bundle isomorphism classes.",
       "evidence": [],
@@ -1847,13 +1985,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "restricted-path-topology",
       "statement": "The certified path has generic nullity 4 and exceptional nullities 8, 12 and 16, and its incidence space has homotopy type S7 v S11 v S15 v S4 v S4, with the stated integral homology, trivial torsion and vanishing positive-degree cup products.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The restricted path space only; the full pair space has further directions and attachments.",
       "evidence": [],
@@ -1873,7 +2012,8 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "local-schur-fixtures",
@@ -1905,7 +2045,7 @@
       "id": "dimension32-skew-schur-charts",
       "statement": "Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain with nonzero reduced ranks and complete kernel lifts, inverse coordinates and sphere metrics; written all-real block identities give the local incidence homeomorphism.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "A pair of exact paths with one initial tangent shows different nearby ranks, so linearization bounds rank only; nonlinear rank geometry and attachments remain open.",
       "evidence": [
@@ -1928,7 +2068,8 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "schur-acceleration-certificates",
@@ -2014,7 +2155,7 @@
       "id": "projective-kernel-frontiers",
       "statement": "Finite frame saturation recovers the leading kernel plane of every admitted polynomial path, and an all-stage quotient theorem rebuilds the full pair space from tautological sphere spaces over all real frontier graphs.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Graph-closure computation, smooth subdivisions and quotient cell maps remain open; the theorem supplies no homology table.",
       "evidence": [
@@ -2038,13 +2179,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "real-circle-frontier-graph",
       "statement": "The named cone-slice frontier graph is a smooth cylinder with a trace inverse, and labelled integral contractions certify the unit-partner evaluation map and its cohomology pullbacks.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The named slice; ambient rank domains need their own positive-domain and coverage proofs.",
       "evidence": [
@@ -2068,7 +2210,8 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "c881-exhaustive-rocq",
@@ -3411,7 +3554,7 @@
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
       ],
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "evidence": [],
       "documents": [
@@ -3424,7 +3567,8 @@
       "acquisitions": [],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "cd-associator-phase-degree",
@@ -3435,7 +3579,7 @@
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
       ],
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "evidence": [],
       "documents": [
@@ -3448,7 +3592,8 @@
       "acquisitions": [],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "evidence": [
@@ -4122,7 +4267,7 @@
       "id": "a5-nonzero-divisor-two-dimension-gap",
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "open",
       "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
       "evidence": [
@@ -4160,7 +4305,8 @@
         "nullity-twelve-cone"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
     },
     {
       "id": "qi-tuna17-zero-divisor-common-response",
@@ -6476,11 +6622,11 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/cases/zz_map_tuna_17/plan.json",
-          "sha256": "30de8a54a4d85c40d74b11cc3cf557e26e1fcbe1ca96f634dae8ddfec34c5eae"
+          "sha256": "b588c2d7c623841b5801fb7715779cefa88d3ee29f59cc9d7b856a761d174a25"
         },
         {
           "path": "results/quantum_inspire/cases/zz_map_qx/plan.json",
-          "sha256": "ea5119dfc70dafd2f0e437ddd1f60d2af86a0f8bc25c30a43d75c3d7f0efce9b"
+          "sha256": "def33988404c7ae00a56c8e38b937cb599937b326148f57c9588ecad351cf8a4"
         }
       ],
       "documents": [
@@ -6609,7 +6755,7 @@
         "results/live/N21_ORBIT_RCA.md"
       ],
       "gates": {
-        "core-612": "replay",
+        "core-612": "regression",
         "core-613": "replay"
       },
       "acquisitions": [
@@ -6647,15 +6793,212 @@
         "results/live/N21_SPECTATOR_RAMSEY_CASE.md"
       ],
       "gates": {
-        "core-600": "replay",
-        "core-603": "replay",
-        "core-605": "replay"
+        "core-600": "regression",
+        "core-603": "regression",
+        "core-605": "regression"
       },
       "acquisitions": [
         "fez-n21-spectator-ground-control",
         "fez-n21-spectator-ramsey-sweep"
       ],
       "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-q143-segmented-lines",
+      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
+          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
+        },
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
+          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
+        },
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
+          "sha256": "4d4ddf6182415af3cafad341521545be9b4bb80b2650e5f412cd2343a1c9560d"
+        }
+      ],
+      "documents": [
+        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
+      ],
+      "gates": {
+        "core-617": "replay",
+        "core-619": "regression"
+      },
+      "acquisitions": [
+        "fez-n21-q143-segmented-sweep"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-n21-spectator-143-beat"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-q47-segmented-baseline",
+      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
+          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
+        },
+        {
+          "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",
+          "sha256": "f21326d0e9e7e94bad5ebc658f14468179c04d6e22db8f774f08be185c4550a7"
+        }
+      ],
+      "documents": [
+        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
+      ],
+      "gates": {
+        "core-620": "regression"
+      },
+      "acquisitions": [
+        "marrakesh-n21-q47-segmented-baseline"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-quaternion-encoded-order-pilot",
+      "statement": "The Tuna-17 order pilot completed 24 jobs and 393216 shots. Six native-zero dark-port controls measured 0.0396118 to 0.0508423; two native-0.25 settings measured 0.2669067 and 0.2703857. The refreshed ledger records 186.801814 execution seconds and zero credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One fixed chronological acquisition per science setting leaves preparation, compiled-circuit effects, readout and time drift confounded. The observations establish neither representative equivalence, process fidelity, calibrated uncertainty coverage nor a fundamental quaternion scalar field.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json",
+          "sha256": "ab1dfe679f1577c63f587db4241d65b86ac061dafa9d6eeb00a588ac06661bad"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/hypercomplex-analysis.json",
+          "sha256": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/hypercomplex-analysis.json",
+          "sha256": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/hypercomplex-analysis.json",
+          "sha256": "864422ca90b971e2174a0f24838772a32c1c6acd93601d27df2372ab0e94eb0f"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/hypercomplex-analysis.json",
+          "sha256": "ad791fbe36bd5220cbbeb3dc8b65f39f69122fe974ac987b9d1968d6b6fef25b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/hypercomplex-analysis.json",
+          "sha256": "34dc1530c70289e9509defb51f06775c9c9d3ba27040d04d40fa2897ccf7dfa0"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/hypercomplex-analysis.json",
+          "sha256": "f374fd93f4ae949f756508ea5639a53f8c01ecd55f81d0ac654764e62ec59c0a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/hypercomplex-analysis.json",
+          "sha256": "0e76fb592e1a09c0f65857eba9c5c785dbec6e57729af27f0ae88e37c80e234d"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/hypercomplex-analysis.json",
+          "sha256": "5504e32ee3e76cd3ae8500434e5787dc00808879f3ed46b941f1423ab3082c4a"
+        }
+      ],
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md",
+        "docs/design/tuna-order-pilot-adversarial-admission.md"
+      ],
+      "gates": {
+        "core-347": "freshness",
+        "core-615": "admission"
+      },
+      "acquisitions": [
+        "qi-tuna17-quaternion-order-00",
+        "qi-tuna17-quaternion-order-01",
+        "qi-tuna17-quaternion-order-02",
+        "qi-tuna17-quaternion-order-03",
+        "qi-tuna17-quaternion-order-04",
+        "qi-tuna17-quaternion-order-05",
+        "qi-tuna17-quaternion-order-06",
+        "qi-tuna17-quaternion-order-07"
+      ],
+      "assumptions": [
+        "Provider shot order is retained as delivered; timing and stationarity are unestablished."
+      ],
+      "depends_on": [
+        "algebra-hypercomplex-operator-witnesses"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-hypercomplex-operator-witnesses",
+      "statement": "The registered finite exact calculations give derivation dimension 14, chosen-octonion stabilizer dimension 8, occupation dimensions 1/3/3/1 and complex Clifford image dimension 64. The draft ladder pairing fails six stabilizer checks, while the aligned pairing passes all implemented checks. The even five-mode reference has vanishing recorded Standard Model anomaly sums.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Finite convention-bound algebra and a representation reference establish neither a unique Standard Model derivation nor its dynamics, a fundamental scalar field, or device performance.",
+      "evidence": [
+        {
+          "path": "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json",
+          "sha256": "f19765c621179b3f3eee707b9ed70dadb0a3e25d4a3702bfda61ebaeabbf7f60"
+        }
+      ],
+      "documents": [
+        "docs/evidence/hypercomplex-operators/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-630": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-sedenion-eight-generator-clifford-envelope",
+      "statement": "The first eight canonical sedenion left-multiplication operators satisfy the recorded Cl(0,8) relations. Their 256 integer word operators have Hilbert-Schmidt Gram matrix 16 times identity and span M16(R).",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "The result concerns the named eight-generator associative operator envelope. Sedenion coefficient multiplication remains nonassociative with zero divisors; the left encoding is not a product homomorphism.",
+      "evidence": [
+        {
+          "path": "docs/evidence/sedenion-clifford-envelope/certificate-batched-products.json",
+          "sha256": "e66fc928d9b4a330fef82c15e648977551fb2656aace0a13f769ca68b601706a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/sedenion-clifford-envelope/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-631": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
@@ -6786,75 +7129,6 @@
       "superseded_by": null
     },
     {
-      "id": "hw-n21-q143-segmented-lines",
-      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
-      "domain": "hardware",
-      "evidence_class": "exploratory reanalysis",
-      "status": "exploratory",
-      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
-      "evidence": [
-        {
-          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
-        },
-        {
-          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
-          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
-        },
-        {
-          "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
-          "sha256": "4d4ddf6182415af3cafad341521545be9b4bb80b2650e5f412cd2343a1c9560d"
-        }
-      ],
-      "documents": [
-        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
-      ],
-      "gates": {
-        "core-617": "replay",
-        "core-619": "replay"
-      },
-      "acquisitions": [
-        "fez-n21-q143-segmented-sweep"
-      ],
-      "assumptions": [],
-      "depends_on": [
-        "hw-n21-spectator-143-beat"
-      ],
-      "supersedes": [],
-      "superseded_by": null
-    },
-    {
-      "id": "hw-n21-q47-segmented-baseline",
-      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
-      "domain": "hardware",
-      "evidence_class": "exploratory reanalysis",
-      "status": "exploratory",
-      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
-      "evidence": [
-        {
-          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
-        },
-        {
-          "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",
-          "sha256": "f21326d0e9e7e94bad5ebc658f14468179c04d6e22db8f774f08be185c4550a7"
-        }
-      ],
-      "documents": [
-        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
-      ],
-      "gates": {
-        "core-620": "replay"
-      },
-      "acquisitions": [
-        "marrakesh-n21-q47-segmented-baseline"
-      ],
-      "assumptions": [],
-      "depends_on": [],
-      "supersedes": [],
-      "superseded_by": null
-    },
-    {
       "id": "qd-belenos-bdsc-repeat-tc-default-shifts",
       "statement": "The repeat acquisition of the target-complement state pair under Quandela's default mitigation on qpu:belenos (job ee6fc975, case job tc-def-e2; submitted 2026-10-22 01:35 UTC under platform status running, started after a 42-minute queue wait, ran 92 s, 1.6 credits) returned all 12 settings at 300000 samples with at most 0.032 % excluded by the one-click rule, and the freshly built job body carried the requested policy, so the submission and collection path at collector revision f1dc1c0 works end to end. Against the first acquisition of the same job (2524f061, 2026-10-21) the basis states f and g moved by at most 0.0033 while the eight superposition states moved by -0.071 to +0.041, many times the binomial standard error of about 0.001, and the within-template sum-rule residuals p(+) + p(-) - p(f) - p(g) read -0.080 and -0.039 (outward ladder, real and imaginary pairs) and -0.032 and -0.081 (reverse ladder) against -0.035, +0.031, -0.042 and +0.000 in the first acquisition. Between the two acquisitions the published source figures moved from HOM 87.3 to 87.8 % to 80.4 %, transmittance 6.05 to 6.13 % to 5.25 % and g2 1.0 % to 0.9 %.",
       "domain": "hardware",
@@ -6909,7 +7183,7 @@
         "docs/runbooks/bdsc-tuna17-pauli-pilot.md"
       ],
       "gates": {
-        "core-632": "replay",
+        "core-634": "replay",
         "core-627": "admission",
         "core-626": "freshness"
       },
@@ -6956,7 +7230,7 @@
         "docs/runbooks/bdsc-tuna17-pauli-pilot.md"
       ],
       "gates": {
-        "core-632": "replay",
+        "core-634": "replay",
         "core-627": "admission",
         "core-626": "freshness"
       },

@@ -22,7 +22,7 @@ import unittest
 from pathlib import Path
 from types import ModuleType
 from typing import Any
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import qi_platform as platform
 
@@ -144,7 +144,7 @@ class FakeClient:
             return [copy.deepcopy(self.batch)]
         raise AssertionError(f"unexpected mock paginated GET {path} {params}")
 
-    def post(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
+    def post(self, path: str, body: dict[str, Any], *, execution_deadline: float | None = None) -> dict[str, Any]:
         if not (self.case_dir / "submission-state.json").is_file():
             raise AssertionError("remote creation happened without a retained submission guard")
         self.calls.append(("POST", path))
@@ -215,7 +215,7 @@ class PreflightClient:
             return []
         raise PreflightReached(path)
 
-    def post(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
+    def post(self, path: str, body: dict[str, Any], *, execution_deadline: float | None = None) -> dict[str, Any]:
         raise AssertionError("a preflight check created a remote resource")
 
 
@@ -469,6 +469,242 @@ class RetentionChecks(unittest.TestCase):
         with patch.object(platform, "Client", side_effect=AssertionError("retry reached the service")):
             with self.assertRaisesRegex(SystemExit, "exists"):
                 platform.submit(self.case_dir, 7, "fixture approval for one batch")
+
+    def test_preflight_refusal_blocks_direct_submission_before_service_access(self) -> None:
+        (self.case_dir / "preflight-refusal.json").write_text("{}")
+        with patch.object(platform, "Client", side_effect=AssertionError("refused case reached the service")):
+            with self.assertRaisesRegex(SystemExit, "preflight-refusal"):
+                platform.submit(self.case_dir, 7, "approved")
+        self.assertFalse((self.case_dir / "submission-state.json").exists())
+        self.assertFalse((self.case_dir / "submission.json").exists())
+
+    def test_submission_deadline_covers_lock_wait_provider_preflight_and_state_sync(self) -> None:
+        for times, state_expected in (((11.0,), False), ((1.0, 11.0), False), ((1.0, 2.0, 11.0), True)):
+            with self.subTest(times=times):
+                client = FakeClient(self.case_dir)
+                with (
+                    patch.object(platform, "Client", return_value=client),
+                    patch.object(platform.time, "monotonic", side_effect=times),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, "deadline"):
+                        platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+                self.assertTrue(all(method == "GET" for method, _ in client.calls))
+                self.assertEqual((self.case_dir / "submission-state.json").exists(), state_expected)
+                (self.case_dir / "submission-state.json").unlink(missing_ok=True)
+
+    def test_expiry_after_checkpoint_retains_proof_of_zero_resource_dispatch(self) -> None:
+        client = FakeClient(self.case_dir)
+        with (
+            patch.object(platform, "Client", return_value=client),
+            patch.object(platform.time, "monotonic", side_effect=(1.0, 2.0, 11.0)),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+        state = json.loads((self.case_dir / "submission-state.json").read_text())
+        self.assertEqual(state["phase"], "pre-dispatch-refused")
+        self.assertEqual(state["resource_requests_dispatched"], 0)
+        self.assertTrue(all(method == "GET" for method, _ in client.calls))
+        self.assert_retry_blocked()
+        with self.assertRaisesRegex(platform.PlatformError, "zero resource requests.*separately approved"):
+            self.reconcile(client)
+
+    def test_collection_deadline_blocks_terminal_result_and_ledger_dispatch(self) -> None:
+        for expired_path in ("/jobs/10", "/results/job/10", "/transactions/"):
+            with self.subTest(expired_path=expired_path):
+                client = self.collection_client()
+                self.bind_collection_receipt()
+                original_get = client.get
+                original_pages = client.pages
+                clock = [1.0]
+                dispatched: list[str] = []
+
+                def get(
+                    path: str,
+                    *,
+                    expired_path: str = expired_path,
+                    clock: list[float] = clock,
+                    dispatched: list[str] = dispatched,
+                    original_get: Any = original_get,
+                    **params: Any,
+                ) -> Any:
+                    if path == expired_path:
+                        clock[0] = 11.0
+                    platform._check_execution_deadline(params.pop("execution_deadline", None))
+                    dispatched.append(path)
+                    return original_get(path, **params)
+
+                def pages(
+                    path: str,
+                    *,
+                    expired_path: str = expired_path,
+                    clock: list[float] = clock,
+                    dispatched: list[str] = dispatched,
+                    original_pages: Any = original_pages,
+                    **params: Any,
+                ) -> Any:
+                    if path == expired_path:
+                        clock[0] = 11.0
+                    platform._check_execution_deadline(params.pop("execution_deadline", None))
+                    dispatched.append(path)
+                    return original_pages(path, **params)
+
+                with (
+                    patch.object(platform, "Client", return_value=client),
+                    patch.object(platform.time, "monotonic", side_effect=lambda clock=clock: clock[0]),
+                    patch.object(client, "get", side_effect=get),
+                    patch.object(client, "pages", side_effect=pages),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, "deadline"):
+                        platform.collect(self.case_dir, poll=0, timeout=100, execution_deadline=10.0)
+                self.assertNotIn(expired_path, dispatched)
+                self.assertFalse((self.case_dir / "results.json").exists())
+
+    def test_collection_transport_checks_each_page_after_refresh(self) -> None:
+        client = platform.Client.__new__(platform.Client)
+        client.expires = 10000
+        client.session = Mock()
+        clock = [1.0]
+        response = client.session.request.return_value
+        response.status_code = 200
+        response.content = b"fixture"
+
+        def page() -> dict[str, Any]:
+            clock[0] = 11.0
+            return {"items": [], "pages": 2}
+
+        response.json.side_effect = page
+        with (
+            patch.object(platform.time, "time", return_value=100.0),
+            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                client.pages("/transactions/", execution_deadline=10.0)
+        self.assertEqual(client.session.request.call_count, 1)
+
+    def test_initial_token_refresh_expiry_retains_local_refusal_checkpoint(self) -> None:
+        client = FakeClient(self.case_dir)
+        transport = platform.Client.__new__(platform.Client)
+        transport.expires = 0
+        transport.session = Mock()
+        clock = [1.0]
+
+        def refresh() -> None:
+            clock[0] = 11.0
+
+        with (
+            patch.object(platform, "Client", return_value=client),
+            patch.object(platform.time, "time", return_value=100.0),
+            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
+            patch.object(transport, "refresh", side_effect=refresh),
+            patch.object(client, "post", side_effect=transport.post),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+        transport.session.request.assert_not_called()
+        digest = hashlib.sha256((self.case_dir / "cases.json").read_bytes()).hexdigest()
+        self.assertTrue(platform.pre_dispatch_refused(self.case_dir, digest))
+        state_path = self.case_dir / "submission-state.json"
+        state = json.loads(state_path.read_text())
+        for change in ({"phase": "creating"}, {"resource_requests_dispatched": True}, {"project": 1}):
+            state_path.write_text(json.dumps({**state, **change}))
+            self.assertFalse(platform.pre_dispatch_refused(self.case_dir, digest))
+
+    def test_submission_deadline_requires_a_finite_value(self) -> None:
+        for deadline in (float("nan"), float("inf"), -float("inf")):
+            with (
+                self.subTest(deadline=deadline),
+                patch.object(platform, "Client", side_effect=AssertionError("invalid deadline reached service")),
+            ):
+                with self.assertRaisesRegex(ValueError, "finite"):
+                    platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=deadline)
+
+    def test_unauthorized_project_expiry_retains_proven_rejection_and_attempt(self) -> None:
+        client = FakeClient(self.case_dir)
+        transport = platform.Client.__new__(platform.Client)
+        transport.expires = 10000
+        transport.session = Mock()
+        transport.session.request.return_value.status_code = 401
+        clock = [1.0]
+
+        def refresh() -> None:
+            clock[0] = 11.0
+
+        with (
+            patch.object(platform, "Client", return_value=client),
+            patch.object(platform.time, "time", return_value=100.0),
+            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
+            patch.object(transport, "refresh", side_effect=refresh),
+            patch.object(client, "post", side_effect=transport.post),
+        ):
+            with self.assertRaisesRegex(TimeoutError, "deadline"):
+                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+        self.assertEqual(transport.session.request.call_count, 1)
+        state = json.loads((self.case_dir / "submission-state.json").read_text())
+        self.assertEqual(state["phase"], "resource-request-rejected")
+        self.assertEqual(state["resource_requests_dispatched"], 1)
+        self.assertEqual(state["resource_requests_applied"], 0)
+        self.assertEqual(state["rejected_request"], {"method": "POST", "path": "/projects", "status_code": 401})
+        self.assertFalse(platform.pre_dispatch_refused(self.case_dir, state["cases_sha256"]))
+        self.assertTrue(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+        self.assert_retry_blocked()
+        with self.assertRaisesRegex(platform.PlatformError, "401.*separately approved"):
+            self.reconcile(client)
+
+    def test_rejection_after_project_creation_keeps_partial_resource_boundary(self) -> None:
+        for rejected_path in ("/batch_jobs", "/algorithms", "/jobs"):
+            with self.subTest(rejected_path=rejected_path):
+                client = FakeClient(self.case_dir)
+                original_post = client.post
+
+                def post(
+                    path: str,
+                    body: dict[str, Any],
+                    *,
+                    execution_deadline: float | None = None,
+                    rejected_path: str = rejected_path,
+                    original_post: Any = original_post,
+                ) -> Any:
+                    if path == rejected_path:
+                        raise platform.RequestRejectedBeforeRetry("POST", path)
+                    return original_post(path, body, execution_deadline=execution_deadline)
+
+                with patch.object(client, "post", side_effect=post):
+                    with self.assertRaises(platform.RequestRejectedBeforeRetry):
+                        self.submit(client)
+                state_path = self.case_dir / "submission-state.json"
+                state = json.loads(state_path.read_text())
+                self.assertEqual(state["phase"], "creating")
+                self.assertIn("project", state)
+                if rejected_path != "/batch_jobs":
+                    self.assertIn("batch_job", state)
+                self.assertFalse(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+                self.assert_retry_blocked()
+                state_path.unlink()
+
+    def test_refresh_expiry_blocks_initial_dispatch_and_unauthorized_retry(self) -> None:
+        for retry in (False, True):
+            with self.subTest(retry=retry):
+                client = platform.Client.__new__(platform.Client)
+                client.expires = 10000 if retry else 0
+                session = Mock()
+                session.request.return_value.status_code = 401
+                client.session = session
+                clock = [1.0]
+
+                def refresh(clock: list[float] = clock) -> None:
+                    clock[0] = 11.0
+
+                def current_time(clock: list[float] = clock) -> float:
+                    return clock[0]
+
+                with (
+                    patch.object(platform.time, "time", return_value=100.0),
+                    patch.object(platform.time, "monotonic", side_effect=current_time),
+                    patch.object(client, "refresh", side_effect=refresh),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, "deadline"):
+                        client.post("/projects", {}, execution_deadline=10.0)
+                self.assertEqual(session.request.call_count, int(retry))
 
     def test_success_and_historical_receipts_block_repeats(self) -> None:
         client = FakeClient(self.case_dir)
@@ -1030,6 +1266,114 @@ class RetentionChecks(unittest.TestCase):
         self.assertEqual((record["schema"], record["unretained"]), ("qi-usage-v2", [40]))
         self.assertEqual([row["job"] for row in record["jobs"]], [10, 20, 30, 40])
         self.assertEqual(platform.retained_job_ids(runs / "absent"), set())
+
+    def test_marked_campaign_enumerates_bound_batches_beside_legacy_runs(self) -> None:
+        runs = self.case_dir / "runs"
+        legacy = runs / "legacy"
+        legacy.mkdir(parents=True)
+        campaign = runs / "campaign"
+        batches = {}
+        for index, name in enumerate(("batch-b", "batch-a")):
+            directory = campaign / name
+            directory.mkdir(parents=True)
+            source = b'{"circuits": []}'
+            (directory / "cases.json").write_bytes(source)
+            (directory / "submission.json").write_text(json.dumps({"jobs": [{"job": index + 1}]}))
+            batches[name] = hashlib.sha256(source).hexdigest()
+        marker = {"schema": "qi-campaign-v1", "plan_sha256": "a" * 64, "batches": batches}
+        (campaign / "campaign.json").write_text(json.dumps(marker))
+        for name, digest in batches.items():
+            (campaign / name / "execution-intent.json").write_text(
+                json.dumps({"schema": "qi-campaign-intent-v1", "plan_sha256": "a" * 64, "cases_sha256": digest})
+            )
+        expected = [campaign / "batch-a", campaign / "batch-b"]
+        self.assertEqual(platform.run_directories(campaign), expected)
+        self.assertEqual(platform.run_directories(runs), [*expected, legacy])
+        self.assertEqual(platform.retained_job_ids(runs), {1, 2})
+
+    def test_marked_campaign_refuses_omitted_extra_and_changed_batches(self) -> None:
+        campaign = self.case_dir / "campaign"
+        batch = campaign / "batch"
+        batch.mkdir(parents=True)
+        source = b"{}"
+        (batch / "cases.json").write_bytes(source)
+        marker: dict[str, Any] = {
+            "schema": "qi-campaign-v1",
+            "plan_sha256": "a" * 64,
+            "batches": {"batch": hashlib.sha256(source).hexdigest()},
+        }
+        invalid = [
+            {**marker, "schema": "unknown"},
+            {**marker, "plan_sha256": "x" * 64},
+            {**marker, "batches": {}},
+            {**marker, "batches": {"omitted": "a" * 64}},
+            {**marker, "batches": {**marker["batches"], "extra": "a" * 64}},
+            {**marker, "batches": {"../batch": "a" * 64}},
+            {**marker, "batches": {"batch": "a" * 64}},
+        ]
+        for record in invalid:
+            with self.subTest(record=record):
+                (campaign / "campaign.json").write_text(json.dumps(record))
+                with self.assertRaises(platform.PlatformError):
+                    platform.run_directories(self.case_dir)
+        (campaign / "campaign.json").write_text(json.dumps(marker))
+        (batch / "cases.json").write_text("changed")
+        with self.assertRaisesRegex(platform.PlatformError, "bound digest"):
+            platform.run_directories(campaign)
+
+    def test_campaign_journal_distinguishes_planned_intended_and_refused_batches(self) -> None:
+        campaign = self.case_dir / "campaign"
+        batch = campaign / "batch"
+        batch.mkdir(parents=True)
+        source = b"{}"
+        (batch / "cases.json").write_bytes(source)
+        binding = {"plan_sha256": "a" * 64, "cases_sha256": hashlib.sha256(source).hexdigest()}
+        (campaign / "campaign.json").write_text(
+            json.dumps(
+                {
+                    "schema": "qi-campaign-v1",
+                    "plan_sha256": binding["plan_sha256"],
+                    "batches": {"batch": binding["cases_sha256"]},
+                }
+            )
+        )
+        self.assertEqual(platform.run_directories(campaign), [])
+        intent_path = batch / "execution-intent.json"
+        intent = {"schema": "qi-campaign-intent-v1", **binding}
+        refusal_path = batch / "preflight-refusal.json"
+        refusal = {"schema": "qi-campaign-refusal-v1", "phase": "preflight-refused", **binding}
+        for artifact in ("submission.json", "submission-state.json", "results.json", "raw"):
+            path = batch / artifact
+            path.write_text("{}")
+            with self.subTest(artifact=artifact), self.assertRaisesRegex(platform.PlatformError, "intent"):
+                platform.run_directories(campaign)
+            path.unlink()
+        refusal_path.write_text(json.dumps(refusal))
+        with self.assertRaisesRegex(platform.PlatformError, "intent"):
+            platform.run_directories(campaign)
+        refusal_path.unlink()
+        for invalid in ({**intent, "cases_sha256": "0" * 64}, {**intent, "extra": True}):
+            intent_path.write_text(json.dumps(invalid))
+            with self.assertRaisesRegex(platform.PlatformError, "intent"):
+                platform.run_directories(campaign)
+        intent_path.write_text(json.dumps(intent))
+        self.assertEqual(platform.run_directories(campaign), [batch])
+        for invalid in (
+            {**refusal, "phase": "completed"},
+            {**refusal, "plan_sha256": "0" * 64},
+            {**refusal, "extra": True},
+        ):
+            refusal_path.write_text(json.dumps(invalid))
+            with self.assertRaisesRegex(platform.PlatformError, "refusal"):
+                platform.run_directories(campaign)
+        refusal_path.write_text(json.dumps(refusal))
+        self.assertEqual(platform.run_directories(campaign), [])
+        for artifact in ("submission.json", "submission-state.json", "results.json", "raw"):
+            path = batch / artifact
+            path.write_text("{}")
+            with self.subTest(artifact=artifact), self.assertRaisesRegex(platform.PlatformError, "conflicts"):
+                platform.run_directories(campaign)
+            path.unlink()
 
     def test_snapshot_check_validates_the_unretained_list(self) -> None:
         retained = Path(__file__).resolve().parents[1] / "docs/evidence/quantum_inspire"

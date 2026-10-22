@@ -95,8 +95,9 @@ def dependencies(
     """
     pending = []
     for token in shlex.split(gate["cmd"]):
-        if token.endswith(".py"):
-            pending.append((root / gate["cwd"] / token).resolve())
+        source = token.split("::", 1)[0]
+        if source.endswith(".py"):
+            pending.append((root / gate["cwd"] / source).resolve())
     found: set[str] = set()
     while pending:
         path = pending.pop()

@@ -36,6 +36,10 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from qi_platform import HARDWARE_BATCH_CIRCUITS, HARDWARE_PAUSE_LADDER  # noqa: E402
 
+# The plans bind the pause ladder's top step, the budget ceiling every lower step finishes inside, so a plan
+# never depends on the step QI_PLAN_PAUSE_SECONDS selects.
+PLAN_PAUSE_SECONDS = HARDWARE_PAUSE_LADDER[-1]
+
 from parallel import ordered_map  # noqa: E402
 
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
@@ -369,11 +373,8 @@ def build(catalogue_path: Path = CATALOGUE, shots: int | None = None) -> dict[st
             "max_jobs_per_batch": limit,
             "catalogue_max_jobs_per_batch": backend["max_jobs_per_batch_job"],
             "hardware_policy_max_jobs_per_batch": HARDWARE_BATCH_CIRCUITS,
-            # The pause ladder's first step sets the least interbatch spacing and its top step the budget
-            # ceiling, so the plan holds whichever step runs.
-            "hardware_policy_pause_seconds": HARDWARE_PAUSE_LADDER[-1],
-            "minimum_interbatch_pause_seconds": max(0, len(batches) - 1) * HARDWARE_PAUSE_LADDER[0],
-            "ceiling_interbatch_pause_seconds": max(0, len(batches) - 1) * HARDWARE_PAUSE_LADDER[-1],
+            "hardware_policy_pause_seconds": PLAN_PAUSE_SECONDS,
+            "minimum_interbatch_pause_seconds": max(0, len(batches) - 1) * PLAN_PAUSE_SECONDS,
             "pause_scope": (
                 "account-wide hardware spacing only; excludes the initial wait, execution, collection, "
                 "queueing, calibration and other sessions' jobs"
@@ -464,8 +465,7 @@ def validate_plan(plan: dict[str, Any], files: dict[str, str]) -> None:
     require(plan["cost"]["max_jobs_per_batch"] == HARDWARE_BATCH_CIRCUITS, "hardware batch policy differs")
     require(plan["cost"]["total_jobs"] == 416 and plan["cost"]["batches"] == 139, "packing cost changed")
     require(
-        plan["cost"]["minimum_interbatch_pause_seconds"] == 138 * HARDWARE_PAUSE_LADDER[0]
-        and plan["cost"]["ceiling_interbatch_pause_seconds"] == 138 * HARDWARE_PAUSE_LADDER[-1],
+        plan["cost"]["minimum_interbatch_pause_seconds"] == 138 * PLAN_PAUSE_SECONDS,
         "account-wide interbatch pause budget changed",
     )
 

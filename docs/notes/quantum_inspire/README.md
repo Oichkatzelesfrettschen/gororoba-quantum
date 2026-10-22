@@ -12,6 +12,7 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 
 | Guide | Content |
 |---|---|
+| [tuna_zz_map.md](tuna_zz_map.md) | conditional-Ramsey design, frozen proposal and submission-source-bound successor; acquisition remains deferred |
 | [setup.md](setup.md) | the Python 3.13 environment and its lock, OAuth device login, the `qi` CLI command map, REST, SDK, Qiskit, PennyLane and hybrid routes, result bit order |
 | [qx-runs.md](qx-runs.md) | what a QX result contains (the measurement register, by qubit), the root cause and its consequences, and the procedures for a local qxelarator run, a remote QX dry run and a QX run |
 | [ry-emulator.md](ry-emulator.md) | the Ry emulator: the neutral-atom model and why the API flags it hardware, geometry against the all-to-all topology, gate set and what the compiler does to each gate, qubit-0-leftmost result order, limits and cost, the measured "error interpreting cQASM script" failure, the procedure for a run, and unmeasured capabilities with probes |

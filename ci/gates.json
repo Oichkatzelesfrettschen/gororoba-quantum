@@ -962,7 +962,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay.py --check",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay-exact.py --check",
    "name": "sources-389",
    "seconds": 18.0,
    "tier": "pr"
@@ -1250,7 +1250,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "name": "sources-183",
    "seconds": 0.1,
    "tier": "pr"
@@ -1266,7 +1266,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "name": "sources-186",
    "seconds": 0.1,
    "tier": "pr"
@@ -1306,7 +1306,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "seconds": 0.1,
    "tier": "pr",
    "name": "sources-194"
@@ -1452,17 +1452,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --check",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_spectator_coherence_contract_and_missing_control",
    "name": "core-600",
-   "seconds": 1.0,
+   "seconds": 3.0,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --check",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_contrast_magnitude_removes_work_phase",
    "name": "core-612",
-   "seconds": 18.0,
+   "seconds": 3.0,
    "tier": "full"
   },
   {
@@ -1500,9 +1500,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --check",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_ramsey_quadratures_and_unidentified_decisions",
    "name": "core-603",
-   "seconds": 4.1,
+   "seconds": 3.0,
    "tier": "full"
   },
   {
@@ -1516,20 +1516,18 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_beat_model.py results/live/2026-10-20T031212.175942Z --check",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_beat_kernel_and_uncoupled_tls_analytic_limits",
    "name": "core-605",
-   "seconds": 60.0,
-   "tier": "full",
-   "workers": "all"
+   "seconds": 3.0,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-check results/live/n21-q143-segmented-design.json",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_design_geometry_and_shot_cost_scaling",
    "name": "core-616",
-   "seconds": 666.4,
-   "tier": "full",
-   "workers": "all"
+   "seconds": 3.0,
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1552,19 +1550,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "workers": "all",
    "name": "core-619",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --check --against results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
-   "seconds": 480.0,
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_alias_resolution_threshold",
+   "seconds": 3.0,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "workers": "all",
    "name": "core-620",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --check --against results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
-   "seconds": 480.0,
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_model_choice_and_missing_degrees_of_freedom",
+   "seconds": 3.0,
    "tier": "full"
   },
   {
@@ -1757,7 +1753,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity-exact-contracts.json",
    "name": "core-267",
    "seconds": 15.1,
    "tier": "pr"
@@ -1773,7 +1769,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition-determinant-contracts.json",
    "name": "core-269",
    "seconds": 4.0,
    "tier": "pr"
@@ -2092,7 +2088,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-pooled-validation.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
@@ -3796,7 +3792,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17 && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-pause-ladder --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json",
    "name": "core-594",
    "seconds": 4.0,
    "tier": "pr"
@@ -3812,7 +3808,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-pause-ladder --source-plan results/quantum_inspire/cases/zz-map-tuna17-pause-ladder/plan.json --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
    "name": "core-596",
    "seconds": 4.0,
    "tier": "pr"
@@ -3868,7 +3864,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd",
    "name": "core-606",
    "seconds": 7.7,
    "tier": "pr"
@@ -3949,7 +3945,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08 --out results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json --replay && \"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13 --out results/quantum_inspire/bdsc_pauli_qx_analysis.json --replay",
-   "name": "core-632",
+   "name": "core-634",
    "seconds": 4.0,
    "tier": "pr"
   },
@@ -3968,6 +3964,40 @@
    "name": "core-610",
    "seconds": 0.2,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check --summary results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json --output docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.png && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
+   "name": "core-630",
+   "seconds": 13.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-cd-core-exact-contracts.json",
+   "name": "core-631",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response",
+   "name": "core-632",
+   "seconds": 3.0,
+   "tier": "pr",
+   "runtime": "qiskit-2.5"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response",
+   "name": "core-633",
+   "seconds": 2.0,
+   "tier": "pr",
+   "requires": ["qi"]
   }
  ],
  "excluded": [

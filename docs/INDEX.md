@@ -1,5 +1,10 @@
 # Source index
 
+The `publication_status` ledger in [SOURCES.json](SOURCES.json) separates verified journal
+identities, arXiv-supplied journal references and unverified venues. The
+[Crossref reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records retrieval
+identities and scopes; bibliographic verification differs from a mathematical proof check.
+
 The source library separates repository-hosted papers from local reading copies.
 All source notes, retrieval URLs, original byte identities, and reading scopes remain
 public in [SOURCES.json](SOURCES.json) and the linked notes. License evidence
@@ -7,8 +12,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 26 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 101 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 30 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 114 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -382,3 +387,17 @@ The [hypercomplex and anyon Crossref note](notes/papers/hypercomplex_quantum_cro
 versions of record of the hypercomplex-theory exchange and the two non-Abelian anyon experiments.
 The [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md) retains the arithmetic behind the
 algebra circuit design rules of docs/notes/algebra_circuit_rules.md.
+
+## Hypercomplex operator audit sources
+
+- [1806.00612v1](notes/papers/1806.00612.md): $SU(3)_C\times SU(2)_L\times U(1)_Y\left( \times U(1)_X \right)$ as a symmetry of division algebraic ladder operators
+- [2409.17948v2](notes/papers/2409.17948.md): Three Generations and a Trio of Trialities
+- [2607.18450v3](notes/papers/2607.18450.md): Standard Model Symmetries and the Nested Embeddings of $\mathbb{R}\subset\mathbb{C}\subset\mathbb{H}\subset\mathbb{O}$
+- [2505.07923v4](notes/papers/2505.07923.md): A Superalgebra Within: representations of lightest standard model particles form a $\mathbb{Z}_2^5$-graded algebra
+- [2604.24795v1](notes/papers/2604.24795.md): Higgs Sector and Flavour Structure in an Algebraic Three-Generation Model with S3 Family Symmetry
+- [quant-ph/0307017v2](notes/papers/quant-ph-0307017.md): Quaternionic Computing
+- [1709.09246v3](notes/papers/1709.09246.md): Quantum theory in quaternionic Hilbert space: How Poincar\&#39;e symmetry reduces the theory to the standard complex one
+- [2608.20259v1](notes/papers/2608.20259.md): Operational Foundations for Quaternionic and Octonionic Quantum Models: Exact Quaternionic Channels and Error Correction, Para-Linear Operators, and Categorical Closure Boundaries Beyond Associativity
+
+- [Quaternionic foundational source review](notes/papers/quaternionic-foundational-source-review.md): verified historical citation identities, abstract-level claims and explicit body-reading obligations.
+- [Quaternionic optical bound reading](notes/papers/quaternionic-optical-bound-reading.md): exact-version Procopio/Adler exchange, reported 0.03-degree phase bound, insensitive case and scattering assumptions; successor reading scope to the three abstract notes.

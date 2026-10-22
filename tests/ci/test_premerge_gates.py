@@ -40,6 +40,16 @@ def hermetic(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv(pins.PINS_REQUIRED, raising=False)
 
 
+def test_disposable_defaults_use_system_temporary_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "persistent-cache"))
+    monkeypatch.setattr(premerge_gates.tempfile, "gettempdir", lambda: str(tmp_path))
+    monkeypatch.setattr(premerge_gates, "repository_name", lambda _repo: "quantum-repository")
+    if premerge_gates.default_cache() != tmp_path / "gororoba-quantum/premerge":
+        raise AssertionError("disposable cache escaped the system temporary directory")
+    if premerge_gates.default_worktrees() != tmp_path / "gororoba-quantum/premerge-worktrees/quantum-repository":
+        raise AssertionError("disposable worktrees escaped the system temporary directory")
+
+
 @pytest.fixture
 def repo(tmp_path: Path) -> Path:
     """main regenerates a record's input; adds-record adds the record and its gate; consistent touches neither."""
