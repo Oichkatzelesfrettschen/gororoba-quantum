@@ -1,0 +1,54 @@
+{
+ "schema": "qi-bdsc-pauli-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "witness-01.cq",
+    "witness-02.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "witness-03.cq",
+    "witness-04.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "witness-05.cq",
+    "witness-06.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "files": [
+    "witness-07.cq",
+    "witness-08.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "files": [
+    "witness-09.cq",
+    "witness-10.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "files": [
+    "witness-11.cq",
+    "witness-12.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}
