@@ -90,21 +90,35 @@ descriptions cannot be split into preparation and compilation. The cell
 readouts and their disposition land under `docs/evidence/bdsc/` with the
 run digests they read.
 
-## Amendment of 2026-10-22: tc-def-e2 as an engineering run
+## Amendment of 2026-10-22: one second-epoch job runs before a documented recalibration
 
-Step 5 is amended for one job. tc-def-e2 is submitted before a completed
-platform calibration cycle since epoch 1 is documented, as an engineering
-validation of the live path at the reviewed collector revision: the
-freshly built body carries the requested policy, and the result, its
-iterations and any partial failure are retained and read correctly. qpu:belenos
-read `running` at plan time, and its published figures had moved from epoch
-1's (HOM 80.4 % against 87.3 to 87.8 %, transmittance 5.25 % against 6.05 to
-6.13 %, g2 0.9 % against 1.0 %). That movement shows a changed characterization,
-and it does not establish a calibration cycle, so tc-def-e2 keeps its case
-identifier while its epoch contrasts carry no claim of reproducibility across
-a calibration change until a calibration boundary between its acquisition and
-epoch 1 is documented. The job's manifest, seeds, policy, iteration order and
-1.6-credit ceiling stay those of the approved case. tc-none-e2, mm-def-e2 and
-mm-none-e2 stay unsent until the calibration boundary is documented, and
-their submission then follows Step 5 unamended. Every returned result is
-retained whatever it shows, and the stop conditions above still govern.
+The case acquires every setting twice. The first acquisition (epoch 1) ran on
+2026-10-21 as four jobs, one per combination of state pair and processing
+policy. The second (epoch 2) repeats the same four jobs, and Step 5 requires
+it to follow a platform calibration cycle, so that the cross-epoch
+contrasts test whether the response reproduces across a recalibration. Each
+job's name encodes its state pair (`tc` for target-complement, `mm` for
+middle-middle), its processing policy (`def` for the provider's default
+mitigations, `none` for an empty mitigation list) and its epoch.
+
+This amendment sends one epoch-2 job, the target-complement pair under the
+provider's default mitigations (`tc-def-e2`), before any calibration cycle
+since epoch 1 is documented. The job validates the live submission and
+collection path at the reviewed collector revision: the freshly built job
+body carries the requested policy, and the result, its iterations and any
+partial failure are retained and read correctly. At plan time qpu:belenos
+reported status `running`, and its published source figures had moved from
+their epoch-1 values: HOM visibility 80.4 % against 87.3 to 87.8 %,
+transmittance 5.25 % against 6.05 to 6.13 %, g2 0.9 % against 1.0 %. That
+movement shows a changed device characterization and does not establish a
+recalibration. The job therefore keeps its case name, and its cross-epoch
+contrasts carry no claim of reproducibility across a recalibration until
+retained evidence places a calibration cycle between it and epoch 1. Its
+manifest, compilation seeds, policy, iteration order and 1.6-credit ceiling
+stay those of the approved case.
+
+The other three epoch-2 jobs -- target-complement with an empty mitigation
+list (`tc-none-e2`) and the middle-middle pair under both policies
+(`mm-def-e2`, `mm-none-e2`) -- stay unsent until that evidence exists, and
+then run under Step 5 as written. Every returned result is retained whatever
+it shows, and the stop conditions above still govern.
