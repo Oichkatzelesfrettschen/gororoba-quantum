@@ -930,6 +930,12 @@ def with_support_conditioned(observed: dict[int, dict[str, Any]]) -> dict[str, A
     which test readings that dilution carries.
     """
     read = analyse(observed)
+    empty = sorted(index for index, item in observed.items() if item["on_support"] == 0)
+    if empty:
+        # A support with no clicks has no conditioned fraction; the raw analysis, which reads such an instance as a
+        # leak, stands alone.
+        read["support_conditioned"] = {"withheld": f"instances {empty} have no one-click samples on their support"}
+        return read
     conditioned = {
         index: {**item, "selected": item["selected_on_support"], "eligible": item["on_support"], "outside_share": 0.0}
         for index, item in observed.items()
@@ -1285,6 +1291,18 @@ def self_test() -> int:
         read = readout(validate=False, runs=synthetic_runs(root / "leak", manifests, response(), leaking))
         require(read["branch"] == "leak", f"self-test: a leaking instance read {read['branch']}")
         require(len(read["leak_outliers"]) == 1, "self-test: the leak was not isolated to one instance")
+
+        def emptied(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job == "b1-j1":
+                moved = ["0"] * cert.MODES
+                moved[1] = "1"
+                result["iterations"][3]["counts"] = {",".join(moved): TRIALS}
+
+        # Every sample off the support: the raw readout reads the leak and withholds the conditioned rerun.
+        (root / "empty-support").mkdir()
+        read = readout(validate=False, runs=synthetic_runs(root / "empty-support", manifests, response(), emptied))
+        require(read["branch"] == "leak", f"self-test: an all-off-support instance read {read['branch']}")
+        require("withheld" in read["support_conditioned"], "self-test: an empty support was not withheld")
 
         def recompile(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
             if job.startswith("b2"):
