@@ -1751,6 +1751,10 @@ def charged(
     one_job = jobs_before is not None and jobs_after == jobs_before + 1
     if before is not None and after is not None and same_month and after >= before and one_job:
         return round(after - before, 6)
+    # A job canceled before its start time holds no execution; every retained one left the usage total unchanged.
+    status = collected.get("status") or {}
+    if status.get("status") == "canceled" and status.get("start_time") is None and not status.get("shots"):
+        return 0.0
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
     if manifest is not None and iteration_form(manifest) != "single":
@@ -1796,6 +1800,14 @@ def charge_self_test() -> None:
     got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 3600000, iterated)
     if got != 1.6:
         raise SystemExit(f"self-test: charged() read {got} for an iterated job across a reset, not 1.6")
+    # A job canceled before it started costs nothing even when another job shares its usage window; one
+    # canceled after its start keeps the billing rule.
+    for start, want in ((None, 0.0), (1792667218.0, 1.01)):
+        status = {"status": "canceled", "start_time": start, "shots": 0}
+        collected = {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status}
+        got = charged(submission, collected, 10000)
+        if got != want:
+            raise SystemExit(f"self-test: charged() read {got} for a job canceled with start {start}, not {want}")
 
 
 def seed_self_test() -> None:

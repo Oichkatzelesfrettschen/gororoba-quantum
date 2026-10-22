@@ -496,6 +496,10 @@ first collection writes `raw/result.json` before it parses the answer or reads
 the job data and usage, so a later failure leaves the scientific bytes on
 disk and a rerun completes the record. A usage report that stays unreadable
 is recorded as `usage_absent`, and the charge falls back to the billing rule.
+A job canceled before its start time is charged 0 credits: every retained
+such job (the 2026-10-21 queue test and the three canceled diagnostic block-1
+submissions of 2026-10-22) left the usage total unchanged, while the billing
+rule would read the per-job price whenever another job shares its window.
 
 `result_summary` keeps every entry of a partial iterated answer at its
 position: a counted iteration as a completed job would, an iteration answered

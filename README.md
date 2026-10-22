@@ -214,7 +214,7 @@ acquisition of every provider:
 | [order-batch-07](results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1](results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
 | [2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
-| [2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 1.08 credits |
+| [2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
 | [2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1](results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits |
 | [2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits |
 

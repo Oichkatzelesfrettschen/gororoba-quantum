@@ -6946,12 +6946,12 @@
       "superseded_by": null
     },
     {
-      "id": "qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session",
-      "statement": "The three qpu:belenos jobs of block 1 of the approved crossed BDSC diagnostic (5aec4d50 submitted 2026-10-22 11:06:58 UTC; e51b9f4f submitted 11:15:53; its resubmission 2d868daa submitted 11:17:33) each ended canceled with 0 shots, no start time and status message 'Cancel requested from perceval', and qpu:belenos usage held at 25.2255 free credits before and after every job. A concurrent agent session holding the same token, preparing an unrelated qpu:ascella submission, sent the three cancel requests through the qd_cancel_job tool of the Quandela MCP server at 11:15:22, 11:16:17 and 11:23:44 UTC to empty the token's queue; the submitting collector sent none. The block therefore returned no data.",
+      "id": "qd-belenos-bdsc-diagnostic-block1-canceled-before-start",
+      "statement": "The first three qpu:belenos submissions of block 1 of the approved crossed BDSC diagnostic (job 5aec4d50 submitted 2026-10-22 11:06:58 UTC; e51b9f4f submitted 11:15:53; e51b9f4f's resubmission 2d868daa submitted 11:17:33) each ended canceled with 0 shots, no start time and status message 'Cancel requested from perceval', and qpu:belenos usage held at 25.2255 free credits in every usage report the receipts retain. The two later submissions departed from the frozen protocol: the first job's collection at 11:15:35 already met the case's stop conditions (fewer than 40000 samples, no compiled circuit), which end the four-job sequence. None of the three runs enters the diagnostic readout; block 1 was rerun from its first job under the owner's fresh approval, 'jobs approved.', given after this record was reported.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "An operational record of three canceled jobs: no device measurement, no setting response and no statement about Belenos availability follows from them. The cancel source is read from the other session's local transcript, which the repository does not retain; the service records only that a client requested the cancel.",
+      "boundary": "An operational record: no device measurement, setting response or statement about Belenos availability follows from these runs. The service records only that a client requested each cancel; which client sent it is outside the retained evidence.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1/results.json",
