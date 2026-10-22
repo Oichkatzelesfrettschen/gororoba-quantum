@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import math
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -22,10 +23,14 @@ def sha(path: Path) -> str:
 
 
 def inventory() -> dict[str, str]:
+    visible = subprocess.check_output(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z", "--", "results/local-simulation"],
+        cwd=ROOT,
+    )
     return {
         path.relative_to(BUNDLE).as_posix(): sha(path)
-        for path in sorted(BUNDLE.rglob("*"))
-        if path.is_file() and path.name != "artifacts.json" and "__pycache__" not in path.parts
+        for path in sorted({ROOT / name.decode() for name in visible.split(b"\0") if name})
+        if path.name != "artifacts.json"
     }
 
 

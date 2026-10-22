@@ -10101,6 +10101,7 @@
    "parallel",
    "pathlib",
    "qi_stack",
+   "subprocess",
    "sys",
    "typing"
   ],
