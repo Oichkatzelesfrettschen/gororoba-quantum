@@ -225,3 +225,73 @@ def test_refusal_classification_observes_competing_creation_under_lock(tmp_path,
         execute(campaign, "approved fixture", plan["plan_sha256"], 60)
     if (first / "preflight-refusal.json").exists() or qi_platform.run_directories(runs) != [first]:
         raise RuntimeError("a competing durable creation must remain an attempted acquisition")
+
+
+def test_campaign_collection_receives_original_absolute_deadline(tmp_path, monkeypatch) -> None:
+    import hypercomplex_campaign
+    import qi_platform
+
+    write_files(tmp_path, qi_cases(16))
+    approved = campaign_plan(tmp_path)["plan_sha256"]
+    clock = [100.0]
+    monkeypatch.setattr(hypercomplex_campaign.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: 0)
+
+    def submitted(*args, **kwargs):
+        clock[0] = 161.0
+
+    def collected(*args, execution_deadline=None, **kwargs):
+        if execution_deadline != 160.0:
+            raise RuntimeError("collection lost the original absolute deadline")
+        raise TimeoutError("deadline fixture stops before provider access")
+
+    monkeypatch.setattr(qi_platform, "submit", submitted)
+    monkeypatch.setattr(qi_platform, "collect", collected)
+    with pytest.raises(TimeoutError, match="deadline fixture"):
+        execute(tmp_path, "fixture approval", approved, 60)
+
+
+def test_pre_dispatch_checkpoint_is_a_refusal_and_uncertain_checkpoint_is_an_acquisition(tmp_path, monkeypatch) -> None:
+    import qi_platform
+
+    write_files(tmp_path, qi_cases(16))
+    approved = campaign_plan(tmp_path)["plan_sha256"]
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: 0)
+
+    def refused(batch, backend, approval, *, expected_cases_sha256, execution_deadline):
+        qi_platform._write_json(
+            batch / "submission-state.json",
+            {
+                "schema": qi_platform.SUBMISSION_STATE_SCHEMA,
+                "phase": "pre-dispatch-refused",
+                "resource_requests_dispatched": 0,
+                "cases_sha256": expected_cases_sha256,
+                "jobs": [],
+            },
+            exclusive=True,
+        )
+        raise qi_platform.RequestNotDispatched("deadline fixture")
+
+    monkeypatch.setattr(qi_platform, "submit", refused)
+    with pytest.raises(qi_platform.RequestNotDispatched, match="deadline fixture"):
+        execute(tmp_path, "fixture approval", approved, 60)
+    first = sorted(tmp_path.glob("*/cases.json"))[0].parent
+    if not (first / "preflight-refusal.json").exists() or qi_platform.run_directories(tmp_path):
+        raise RuntimeError("proved pre-dispatch expiry must retain a refusal outside the acquired run set")
+    refusal_path = first / "preflight-refusal.json"
+    refusal_bytes = refusal_path.read_bytes()
+    refusal_path.unlink()
+    if qi_platform.run_directories(tmp_path):
+        raise RuntimeError("the durable checkpoint alone proves pre-dispatch refusal after interruption")
+    refusal_path.write_bytes(refusal_bytes)
+    state_path = first / "submission-state.json"
+    state = json.loads(state_path.read_text())
+    state["phase"] = "creating"
+    state_path.write_text(json.dumps(state))
+    with pytest.raises(qi_platform.PlatformError, match="conflicts"):
+        qi_platform.run_directories(tmp_path)
+    (first / "preflight-refusal.json").unlink()
+    if qi_platform.run_directories(tmp_path) != [first]:
+        raise RuntimeError("uncertain creation must retain its reconciliation boundary")
