@@ -1,0 +1,207 @@
+{
+ "schema": "hypercomplex-solver-role-grounding-v1",
+ "kind": "installed distribution metadata and source observations; capability is not execution qualification",
+ "distributions": {
+  "cvxpy": {
+   "version": "1.9.3",
+   "summary": "A domain-specific language for modeling convex optimization problems in Python.",
+   "requires_dist": [
+    "osqp>=1.0.0",
+    "clarabel>=0.5.0",
+    "scs>=3.2.4.post1",
+    "numpy>=2.0.0",
+    "scipy>=1.13.0",
+    "highspy>=1.14.0",
+    "qdldl>=0.1.7.post0",
+    "sparsediffpy<0.7.0,>=0.6.0",
+    "cylp>=0.91.5; extra == \"cbc\"",
+    "coptpy>=8.0.3; extra == \"copt\"",
+    "cvxopt; extra == \"cvxopt\"",
+    "diffcp; extra == \"diffcp\"",
+    "ecos; extra == \"ecos\"",
+    "ecos; extra == \"ecos-bb\"",
+    "ortools<9.15,>=9.7; extra == \"glop\"",
+    "cvxopt; extra == \"glpk\"",
+    "cvxopt; extra == \"glpk-mi\"",
+    "gurobipy; extra == \"gurobi\"",
+    "highspy; extra == \"highs\"",
+    "moreau>=0.4.1; extra == \"moreau\"",
+    "Mosek; extra == \"mosek\"",
+    "ortools<9.15,>=9.7; extra == \"pdlp\"",
+    "piqp; extra == \"piqp\"",
+    "proxsuite; extra == \"proxqp\"",
+    "qoco; extra == \"qoco\"",
+    "qpalm~=1.2.5; extra == \"qpalm\"",
+    "PySCIPOpt; extra == \"scip\"",
+    "scipy; extra == \"scipy\"",
+    "xpress>=9.5; extra == \"xpress\"",
+    "daqp; extra == \"daqp\"",
+    "knitro; extra == \"knitro\"",
+    "unopy; extra == \"uno\"",
+    "pytest; extra == \"testing\"",
+    "hypothesis; extra == \"testing\"",
+    "sphinx; extra == \"doc\"",
+    "sphinxcontrib.jquery; extra == \"doc\"",
+    "sphinx-inline-tabs; extra == \"doc\"",
+    "sphinx-design; extra == \"doc\"",
+    "sphinx-immaterial>=0.11.7; extra == \"doc\""
+   ]
+  },
+  "scs": {
+   "version": "3.3.1",
+   "summary": "Splitting conic solver",
+   "requires_dist": [
+    "numpy",
+    "scipy"
+   ]
+  },
+  "clarabel": {
+   "version": "0.11.1",
+   "summary": null,
+   "requires_dist": [
+    "numpy",
+    "scipy",
+    "cffi"
+   ]
+  },
+  "osqp": {
+   "version": "1.1.3",
+   "summary": "OSQP: The Operator Splitting QP Solver",
+   "requires_dist": [
+    "jinja2",
+    "numpy>=1.7",
+    "scipy>=0.13.2",
+    "setuptools",
+    "joblib",
+    "osqp-mkl; extra == \"mkl\"",
+    "pre-commit; extra == \"dev\"",
+    "pytest>=6; extra == \"dev\"",
+    "torch; extra == \"dev\"",
+    "scipy!=1.12.0; extra == \"dev\"",
+    "osqp-cu12; extra == \"cu12\""
+   ]
+  },
+  "qiskit-experiments": {
+   "version": "0.14.2",
+   "summary": "Software for developing quantum computing programs",
+   "requires_dist": [
+    "numpy>=1.17",
+    "scipy>=1.4",
+    "qiskit>=1.3",
+    "qiskit-ibm-runtime>=0.34.0",
+    "matplotlib>=3.4",
+    "uncertainties",
+    "lmfit",
+    "rustworkx",
+    "pandas>=1.1.5",
+    "packaging",
+    "cvxpy>=1.3.2; extra == \"extras\"",
+    "pyyaml>=6.0.0; extra == \"extras\"",
+    "qiskit-aer>=0.13.2; extra == \"extras\"",
+    "scikit-learn; extra == \"extras\""
+   ]
+  }
+ },
+ "files": {
+  "qiskit_experiments/library/tomography/fitters/cvxpy_lstsq.py": {
+   "distribution": "qiskit-experiments",
+   "sha256": "f632f3bb3ccbad07c01e13ff1911ac8938fc2a315f92ab04541707040b9272f7",
+   "relevant_lines": [
+    {
+     "line": 83,
+     "text": "        *semidefinite program* (SDP) and requires a SDP compatible solver"
+    },
+    {
+     "line": 84,
+     "text": "        for CVXPY. CVXPY includes an SDP compatible solver `SCS`` but it"
+    }
+   ]
+  },
+  "cvxpy/reductions/solvers/conic_solvers/clarabel_conif.py": {
+   "distribution": "cvxpy",
+   "sha256": "fce591d983967be9b17bb28a4b0eed99d7a26645089fd7af7d10d512171067ec",
+   "relevant_lines": [
+    {
+     "line": 21,
+     "text": "from cvxpy.constraints import SOC, ExpCone, PowCone3D, PowConeND, SvecPSD"
+    },
+    {
+     "line": 48,
+     "text": "        cones.append(clarabel.PSDTriangleConeT(dim))"
+    },
+    {
+     "line": 65,
+     "text": "class CLARABEL(ConicSolver):"
+    },
+    {
+     "line": 71,
+     "text": "    SUPPORTED_CONSTRAINTS = ConicSolver.SUPPORTED_CONSTRAINTS \\"
+    },
+    {
+     "line": 72,
+     "text": "        + [SOC, ExpCone, PowCone3D, SvecPSD, PowConeND]"
+    },
+    {
+     "line": 73,
+     "text": "    PSD_TRIANGLE_KIND = TriangleKind.UPPER"
+    },
+    {
+     "line": 74,
+     "text": "    PSD_SQRT2_SCALING = True"
+    }
+   ]
+  },
+  "cvxpy/reductions/solvers/conic_solvers/scs_conif.py": {
+   "distribution": "cvxpy",
+   "sha256": "14b82a8a9ee7fc3768e748af4abb360fe3409215e6af698d23a41d20ca88925b",
+   "relevant_lines": [
+    {
+     "line": 20,
+     "text": "from cvxpy.constraints import SOC, ExpCone, PowCone3D, SvecPSD"
+    },
+    {
+     "line": 47,
+     "text": "    Return \"V\" so that \"vec[indices] belongs to the SCS-standard PSD cone\""
+    },
+    {
+     "line": 82,
+     "text": "class SCS(ConicSolver):"
+    },
+    {
+     "line": 88,
+     "text": "    SUPPORTED_CONSTRAINTS = ConicSolver.SUPPORTED_CONSTRAINTS \\"
+    },
+    {
+     "line": 89,
+     "text": "        + [SOC, ExpCone, SvecPSD, PowCone3D]"
+    },
+    {
+     "line": 91,
+     "text": "    PSD_TRIANGLE_KIND = TriangleKind.LOWER"
+    },
+    {
+     "line": 92,
+     "text": "    PSD_SQRT2_SCALING = True"
+    }
+   ]
+  },
+  "cvxpy/reductions/solvers/qp_solvers/osqp_qpif.py": {
+   "distribution": "cvxpy",
+   "sha256": "1b1116167b5b380467db2c6d791ed5a5f98c0b3aebc1a919a59cad605720801c",
+   "relevant_lines": [
+    {
+     "line": 13,
+     "text": "class OSQP(QpSolver):"
+    },
+    {
+     "line": 14,
+     "text": "    \"\"\"QP interface for the OSQP solver\"\"\""
+    }
+   ]
+  }
+ },
+ "repository_sources": [
+  "docs/notes/quandela/python-stack.md:63",
+  "docs/notes/quantum-tools/qiskit-experiments.md"
+ ]
+}
