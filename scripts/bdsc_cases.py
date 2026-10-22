@@ -150,7 +150,7 @@ def columns(case: dict[str, Any], target: dict[str, Any]) -> dict[tuple[str, str
 def _job_params(item: tuple[list[tuple[int, str, np.ndarray]], int]) -> dict[int, np.ndarray]:
     """The union-circuit parameters of one job's settings, each realizing its own template, keyed by observation."""
     members, source = item
-    return {i: cert.union_params(template, column, source) for i, template, column in members}
+    return {i: cert.union_params(template, column, source, modes=cert.MODES) for i, template, column in members}
 
 
 def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
@@ -187,7 +187,7 @@ def documents(draw: Path | None) -> dict[str, dict[str, bytes]]:
     out: dict[str, dict[str, bytes]] = {}
     for job, params_by_index in zip(case["jobs"], solved, strict=True):
         require(job["circuit"] == cert.UNION_CIRCUIT, f"job circuit {job['circuit']!r}")
-        ops = cert.union_ops(source)
+        ops = cert.union_ops(source, modes=cert.MODES)
         input_state = [0] * cert.MODES
         input_state[source] = 1
         circuit = {

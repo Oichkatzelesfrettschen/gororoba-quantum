@@ -3900,6 +3900,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_ascella_control.py --check",
+   "name": "core-621",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
    "name": "core-611",
    "seconds": 1.0,

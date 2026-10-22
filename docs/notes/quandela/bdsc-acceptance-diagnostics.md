@@ -321,12 +321,15 @@ the manifest policy exactly, so an absent key, an empty list and a nonempty
 list stay distinct. This records the requested policy; the processing the
 provider applied remains a provider-contract question.
 
-`scripts/bdsc_ascella_control.py` sets `bdsc_certificate.MODES` to 12 before
-it calls the shared template constructors, so a same-process caller that
-builds 24-mode cases afterwards reads the wrong width. Passing the optical
-width explicitly through those constructors is open; its acceptance is a
-byte-identical regeneration of the retained Ascella `cases.json`, 12- and
-24-mode constructor coverage, and a same-process call-order test.
+The shared template constructors of `scripts/bdsc_certificate.py`
+(`template_ops`, `template_params`, `template_unitary`, `union_ops`,
+`union_params`) take the optical width as a required `modes` argument, and
+`bdsc_certificate.MODES` stays the 24 modes of qpu:belenos. The 12-mode
+Ascella control passes its own width, so construction no longer depends on
+call order. `bdsc_certificate.py --self-test` covers both widths and a
+24-mode construction on either side of a 12-mode one;
+`bdsc_ascella_control.py --check` rebuilds the retained Ascella case byte for
+byte and confirms the 24-mode constructions are unchanged around it.
 
 The scheduled maintenance window on the run receipts is
 2026-10-22 07:30--11:00 UTC (00:30--04:00 America/Los_Angeles).
