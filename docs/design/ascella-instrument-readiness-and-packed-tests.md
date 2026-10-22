@@ -280,6 +280,32 @@ restores that coverage. The offline regression checks every original and
 rejected-request predecessor row and the complete current case set. The
 predecessor compilation records keep their bytes.
 
+### Native-math reproducibility boundary
+
+The 22 October replay audit observed an execution-library difference beneath
+equal NumPy 2.5.4 and SciPy 1.18.1 versions. The host loaded AOCL-BLAS 5.3.0
+through BLIS on Zen 3; the CI wheels loaded OpenBLAS 0.3.31.dev and
+0.3.34.106.0 on Haswell. `threadpoolctl.threadpool_info()` recorded those
+loaded implementations after a local matrix exponential, with both interpreters
+constrained to one BLAS/OpenMP thread.
+
+For the first nonzero wave frame (time 0.125, coupling 1, representative 0),
+the host and CI operators differed by at most `1.1102230246251565e-16` in
+their real components and `2.7755575615628914e-17` in their imaginary
+components. The triangular synthesis then produced 48 differing phase
+parameters, including branch changes by pi near zero pivots. The host
+`hypercomplex_photonic_cases.py --check` passed; the CI interpreter rejected
+the frozen wave manifest. Equal distribution versions therefore establish a
+weaker condition than byte-identical numerical synthesis. The observations
+identify different native stacks, rather than isolating BLAS as the sole cause.
+
+The frozen manifests and acquisition receipts retain their approved bytes.
+Final CI qualification remains open pending the replay design choice: reproduce
+the original native stack for exact regeneration, or add a separately reviewed
+hash-pinned file inventory and independent full-operator verification. The
+second design separates immutable case identity from noncanonical synthesis;
+its numerical operator comparison must never replace the byte-identity check.
+
 ## Library use and independence
 
 The [347-distribution inventory](../state/hypercomplex-libraries/libraries.md)

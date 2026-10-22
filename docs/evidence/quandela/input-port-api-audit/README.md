@@ -81,11 +81,22 @@ nonfinite or oversized matrix entries before native arithmetic. The HTTP
 adapter bounds responses to 64 MiB and classifies oversized or unusable JSON
 acknowledgments as unanswered; a mutation can have happened despite an unusable
 acknowledgment, so callers must reconcile before retrying.
+Mutation HTTP 408 and 5xx responses likewise preserve an unknown outcome rather
+than certify a refusal. A synthetic submission regression verifies that the
+checkpoint stays `post_outcome_unknown` and a repeat invocation sends zero
+additional POSTs. Explicit 401/403/404/422/429 rejections retain their status.
 
 `tests/scripts/test_quandela_mcp_contract.py` exercises warning-free startup,
 numeric rejection, bounded HTTP reads, unknown mutation outcomes and the real
 SDK client/server stdio boundary. Synthetic transport tests disable provider
 access and establish software contracts rather than optical instrument recovery.
+`tests/scripts/test_quandela_mcp_transport.py` exercises every tool through a
+real SDK stdio client with a synthetic HTTP fixture and a fail-closed network
+guard. The fixture verifies public/authenticated route selection, account-id
+redaction, bulk inclusion, nested truncation, raw results, cancellation
+annotations and type/path rejection. Native descriptor-one output reaches
+stderr while JSON-RPC remains parseable. Two HTTP reads synchronize through
+worker-thread events, proving the event loop can serve a concurrent request.
 
 The portal route map records 59 literal `request$1` call sites in WebIDE
 bundle `index-DrG4GsjV.js`, SHA-256

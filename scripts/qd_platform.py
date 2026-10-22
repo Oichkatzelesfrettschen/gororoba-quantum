@@ -203,7 +203,7 @@ class RefusedError(PlatformError):
 
 
 class UnansweredError(PlatformError):
-    """The request reached no answer: the connection failed or timed out."""
+    """The request lacks a usable acknowledgment that establishes its outcome."""
 
 
 # Statuses a read may outlive: the service's own timeouts, throttling and gateway or upstream failures.
@@ -213,8 +213,8 @@ TRANSIENT_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
 def transient(error: PlatformError) -> bool:
     """A failed read worth repeating: a transient HTTP status, or no answer at all (network or timeout).
 
-    Any other failure (a missing token, an answer that is not JSON) recurs on
-    every attempt, so it raises at once.
+    A missing token and other local configuration failures raise at once.
+    A malformed or oversized response remains retryable for reads alone.
     """
     if isinstance(error, RefusedError):
         return error.code in TRANSIENT_STATUSES
@@ -269,6 +269,8 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         detail = error.read(500).decode("utf-8", errors="replace")
         error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
+        if method.upper() not in {"GET", "HEAD", "OPTIONS"} and (error.code == 408 or error.code >= 500):
+            raise UnansweredError(f"{method} {route}: HTTP {error.code}; remote mutation outcome is unknown") from None
         raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
     # HTTPError subclasses URLError and is caught above. urlopen wraps only
     # connection setup in URLError; a connection dropped while the answer is
