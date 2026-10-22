@@ -64,6 +64,9 @@ import parallel  # noqa: E402
 
 SCHEMA = "box-kite-follow-design-v1"
 RUNS = ROOT / "results/quantum_inspire/runs"
+# The timing fit reads the Tuna-17 runs stamped at or before this UTC stamp, the corpus design.json was fitted
+# on; a later run enters a design only through a new stamp and a new record.
+CORPUS_THROUGH = "2026-10-18T165957Z"
 ZZ_ANALYSIS = ROOT / "results/quantum_inspire/coupler_zz_tuna_17_analysis.json"
 T0_ANALYSIS = ROOT / "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json"
 PRE_T0_RUNS = (
@@ -89,6 +92,8 @@ def tuna_jobs() -> list[tuple[int, float, int, int, int]]:
     rows = []
     for results in sorted(RUNS.glob("*/results.json")):
         run = results.parent
+        if run.name[: len(CORPUS_THROUGH)] > CORPUS_THROUGH:
+            continue
         manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
         if manifest.get("backend") != cases.TUNA_IDENTIFIER:
             continue

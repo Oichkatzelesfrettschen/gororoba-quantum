@@ -1274,6 +1274,167 @@
       "run": "results/quandela/runs/2026-10-22T013357Z-qpu_belenos-bdsc_qualification-tc-def-e2",
       "family": "BDSC six-state qualification on qpu:belenos",
       "question": "repeat acquisition (epoch 2, job tc-def-e2) of the target-complement state pair under the provider's default mitigation, sent before any recalibration since the first acquisition was documented: does the live path at collector revision f1dc1c0 submit the requested policy and retain the result, and how far do the twelve settings move from the first acquisition?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 00 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 01 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 02 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 03 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 04 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 05 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 06 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 07 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 08 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 09 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 10 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 11 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 12 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 13 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 00 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 01 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 02 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 03 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 04 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 05 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 06 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 07 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 08 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
     }
   ],
   "claims": [
@@ -6453,7 +6614,7 @@
     },
     {
       "id": "qi-tuna17-effective-idle-zz-map",
-      "statement": "A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. Under the current 120-second hardware pause policy, the series requires at least 16560 seconds of interbatch pauses. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission.",
+      "statement": "A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. The hardware pause ladder puts its interbatch pauses between 4140 seconds at the 30-second first step and 16560 seconds at the 120-second ceiling. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
@@ -7001,6 +7162,97 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-twin-control",
+      "statement": "The hosted QX emulator returned the preregistered exact outcomes of all 41 BDSC Pauli readout circuits of the twin series (14 batches, 2048 shots each, completed 2026-10-22 10:35 to 10:41 UTC, 0 credits): every kernel+bright-1 pair residual and middle or sector residual is within its preregistered bound, and the matched quadrature phase is 0.0039, 0.0029 and -0.0181 rad (standard error 0.0156) on the three patches, consistent with zero. The control verdict passes with no miss, so each Tuna-17 patch's gate sequence, which the case builder requires the twin to repeat on relabeled qubits, is semantically clean before it reaches Tuna-17.",
+      "domain": "hardware",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Noiseless emulator semantics of the twin's 10-qubit circuits, which pack two relabeled patches each; the 17-qubit Tuna-17 files, their physical qubit indices and their three-patch composition are not executed by this control, and it carries no device noise, readout or calibration behavior. The retained analysis was written by the Quantum Inspire interpreter and is bound by sha256 in every Tuna-17 series-gate.json, so its replay accepts float rounding within 1e-12 relative.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/bdsc_pauli_qx_analysis.json",
+          "sha256": "e42fbbf88430ba13928a7509e0ae4437dcfe44471054deb5f6008c7c3af60151"
+        },
+        {
+          "path": "results/quantum_inspire/cases/bdsc_pauli_qx/cases.json",
+          "sha256": "684b95833f01b384e4dbbd4749bd825d1bbf56828ad501006a95a37c0ddba185"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-tuna17-pauli-pilot.md",
+        "docs/runbooks/bdsc-tuna17-pauli-pilot.md"
+      ],
+      "gates": {
+        "core-634": "replay",
+        "core-627": "admission",
+        "core-626": "freshness"
+      },
+      "acquisitions": [
+        "qi-qx-bdsc-pauli-batch-00",
+        "qi-qx-bdsc-pauli-batch-01",
+        "qi-qx-bdsc-pauli-batch-02",
+        "qi-qx-bdsc-pauli-batch-03",
+        "qi-qx-bdsc-pauli-batch-04",
+        "qi-qx-bdsc-pauli-batch-05",
+        "qi-qx-bdsc-pauli-batch-06",
+        "qi-qx-bdsc-pauli-batch-07",
+        "qi-qx-bdsc-pauli-batch-08",
+        "qi-qx-bdsc-pauli-batch-09",
+        "qi-qx-bdsc-pauli-batch-10",
+        "qi-qx-bdsc-pauli-batch-11",
+        "qi-qx-bdsc-pauli-batch-12",
+        "qi-qx-bdsc-pauli-batch-13"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-pilot-drift-stop",
+      "statement": "The preregistered Tuna-17 pilot of the BDSC target effect (27 circuits in 9 batches of 3, 32768 shots each, all completed, 540.8 s of execution, 0 credits, created 2026-10-22 10:42 UTC and finished 11:49 UTC) ended with its bracket drift stop fired: the readout-1 reference's P(0|1) on qubit 1 moved from 0.0735 in batch 06 to 0.0453 in batch 08, a change of 0.0283 against the 0.02 stop. The batch-00 assignment stop stayed clear, and the drift between consecutive references stayed at or below 0.0187 through batch 07. Under the preregistered rule a fired stop withholds every score, pair chi-square, phase and mitigated estimate, so the series makes no endpoint decision.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The registered decision is the stop itself. The backend reported calibrating at 11:32 UTC, between batches 06 and 08, which fits a recalibration as the cause of the drift but is not established by any retained probe. No witness score, branch phase or device qualification follows from these acquisitions, and nothing here bears on any Belenos measurement.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json",
+          "sha256": "66f97da8b77d5753fb0883b183c10b38c5d283bc6aae8133a79325d639ea28cc"
+        },
+        {
+          "path": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/cases.json",
+          "sha256": "04f57aaeb7654c2a9562b3b1e389a37ac2373f1a9a1c05e1e67929791dd9f2c9"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-tuna17-pauli-pilot.md",
+        "docs/runbooks/bdsc-tuna17-pauli-pilot.md"
+      ],
+      "gates": {
+        "core-634": "replay",
+        "core-627": "admission",
+        "core-626": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-bdsc-pauli-batch-00",
+        "qi-tuna17-bdsc-pauli-batch-01",
+        "qi-tuna17-bdsc-pauli-batch-02",
+        "qi-tuna17-bdsc-pauli-batch-03",
+        "qi-tuna17-bdsc-pauli-batch-04",
+        "qi-tuna17-bdsc-pauli-batch-05",
+        "qi-tuna17-bdsc-pauli-batch-06",
+        "qi-tuna17-bdsc-pauli-batch-07",
+        "qi-tuna17-bdsc-pauli-batch-08"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-qx-bdsc-pauli-twin-control"
+      ],
       "supersedes": [],
       "superseded_by": null
     }

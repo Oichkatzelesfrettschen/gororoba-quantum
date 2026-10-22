@@ -1,0 +1,88 @@
+{
+ "schema": "qi-bdsc-pauli-gate-v1",
+ "series": "bdsc_pauli_tuna_17",
+ "batch": "batch-06",
+ "cases_sha256": "e571bc7a1669ef27730caa9e9d1de2f8d189878258eba4cd93f395440b24b3bb",
+ "predecessors": [
+  {
+   "batch": "batch-00",
+   "run_dir": "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00",
+   "results_sha256": "bf6eadf61b32927bb1624ecbe21ebe438696c1549fba4af21c29e171409516ab",
+   "raw_sha256": {
+    "readout-0.cq": "71b08728b1619ff58c130bd4cb8b7ed8deea82da3cbd5519df3a1c1df3b8525b",
+    "readout-1.cq": "452f9cbf13620799245c62213b93141657a2d409df7a6fb3f513114ae4383e86",
+    "checkerboard-p.cq": "9933507c43bf52aca20960cb038eced55084434f7926059fdb1a7b9b9ed22dd3"
+   }
+  },
+  {
+   "batch": "batch-01",
+   "run_dir": "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01",
+   "results_sha256": "966d7df7458bb24940adddf781c031f257523ba08f2c50e260e5296dd52e6092",
+   "raw_sha256": {
+    "witness-01.cq": "9822304ad7d5329c55ccd8f29fe3708d8c401e0eb0380e57fd6ebe524f7dad4f",
+    "witness-02.cq": "6578392bb87b1b8f8ce89efdaded8934120ed1158f7c4f5fbce4d4b56a92b579",
+    "checkerboard-q.cq": "73a6c3a4374b47a78d977d02ddad83ebfd080f2eacb390455d8e48cc5e9c4719"
+   }
+  },
+  {
+   "batch": "batch-02",
+   "run_dir": "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02",
+   "results_sha256": "d75569d085048cd51b9b03c23d553dd0c8467de61b5630d45538691c3667c9b1",
+   "raw_sha256": {
+    "witness-03.cq": "067bf2911613977cde6aad3d14768ce00c41a28d2d4c153f4e0821ba60ac5bcb",
+    "witness-04.cq": "8d116785c475536a80489e7c4cc9fedd255b44a59cb7f4b707cb69c8b71a46b9",
+    "readout-0.cq": "7f8330bee2d21a4d4cfb831a83083c00a74dd6f1b9adfbf674c422c2d473297c"
+   }
+  },
+  {
+   "batch": "batch-03",
+   "run_dir": "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03",
+   "results_sha256": "a931c28401d11ae590184379e5ef39620bc7b05240dc77a68746c599d448f8dd",
+   "raw_sha256": {
+    "witness-05.cq": "6db0a38b20871e271ec50bfb56780e992af3a84b53566568c5373ae43988d16e",
+    "witness-06.cq": "3382c317b86bad411c332d4deae7f90af6164b16f1957ee0db7a3011622a5da4",
+    "readout-1.cq": "869e968ca305fb9db479de266dd1ad7362e2319877ed2f8492d78633aec22f6d"
+   }
+  },
+  {
+   "batch": "batch-04",
+   "run_dir": "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04",
+   "results_sha256": "a8ece5362b964f2c39c2b019f636e5d6d8b41c5c85959a3f7783f4c81a505135",
+   "raw_sha256": {
+    "quadrature-k1.cq": "8f9407923f1f97d2565efb3bf51bea36394913a827e8c608bf00d594fad8a72d",
+    "cosine-k1.cq": "f4c94762341c24ebecf9352cc6d03001fab6c2b80eff09035d6f6f074b6c5017",
+    "quadrature-e7.cq": "1eb273b845f04a830aeec27bcf699267be3984e29ab630092a6de1462c1baa89"
+   }
+  },
+  {
+   "batch": "batch-05",
+   "run_dir": "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05",
+   "results_sha256": "16b8947309f63f804b0e11a82cdac07858d9d5ff88e29a396c6a93593b5aa026",
+   "raw_sha256": {
+    "quadrature-b1.cq": "c79016412f2d9d86ac8db367fad467ae742675d129a81df321b3ed9ebe97a987",
+    "cosine-b1.cq": "d007eb8b34a7ca4591c6a5a589a877b39933df1d119ad7504a8b951f149a161b",
+    "readout-0.cq": "d943b6687135218ebc312f71bf73fafc73bf8592db05f9dc0c11bb53add7d24f"
+   }
+  }
+ ],
+ "stops": {
+  "batches_checked": [
+   "batch-00",
+   "batch-01",
+   "batch-02",
+   "batch-03",
+   "batch-04",
+   "batch-05"
+  ],
+  "stop_condition_batch_00": [],
+  "bracket_drift_flagged": [],
+  "max_drift": 0.01275634765625
+ },
+ "control": {
+  "file": "results/quantum_inspire/bdsc_pauli_qx_analysis.json",
+  "sha256": "e42fbbf88430ba13928a7509e0ae4437dcfe44471054deb5f6008c7c3af60151",
+  "manifest_sha256": "a54e0aedfeb0288235e9d94ae932d1dd791b609081b6196fe4f362ccfbc9e821"
+ },
+ "backend_contract": "live record matches",
+ "pause_seconds": 30
+}

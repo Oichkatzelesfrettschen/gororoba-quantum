@@ -1,0 +1,16 @@
+{
+ "schema": "qi-bdsc-pauli-gate-v1",
+ "series": "bdsc_pauli_tuna_17",
+ "batch": "batch-00",
+ "cases_sha256": "bda225af4e9e48a6873f44c1068aa4e3e105ddb9707ed0671b8dc16a2a41287b",
+ "predecessors": [],
+ "stops": {
+  "batches_checked": []
+ },
+ "control": {
+  "file": "results/quantum_inspire/bdsc_pauli_qx_analysis.json",
+  "sha256": "e42fbbf88430ba13928a7509e0ae4437dcfe44471054deb5f6008c7c3af60151",
+  "manifest_sha256": "a54e0aedfeb0288235e9d94ae932d1dd791b609081b6196fe4f362ccfbc9e821"
+ },
+ "backend_contract": "live record matches"
+}

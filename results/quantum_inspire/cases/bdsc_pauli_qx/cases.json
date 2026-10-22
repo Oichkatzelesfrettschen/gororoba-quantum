@@ -97,6 +97,21 @@
     "twin-quadrature-05.cq",
     "readout-0.cq"
    ]
+  },
+  {
+   "batch": "batch-12",
+   "files": [
+    "twin-cosine-01.cq",
+    "twin-cosine-02.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-13",
+   "files": [
+    "twin-cosine-03.cq",
+    "readout-0.cq"
+   ]
   }
  ]
 }

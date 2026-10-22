@@ -1,0 +1,32 @@
+{
+ "schema": "qi-bdsc-pauli-gate-v1",
+ "series": "bdsc_pauli_tuna_17",
+ "batch": "batch-01",
+ "cases_sha256": "61830afdb8a33812bbf88fa9e702e12b1f425470ae11460a4dcd6c72df128c6a",
+ "predecessors": [
+  {
+   "batch": "batch-00",
+   "run_dir": "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00",
+   "results_sha256": "bf6eadf61b32927bb1624ecbe21ebe438696c1549fba4af21c29e171409516ab",
+   "raw_sha256": {
+    "readout-0.cq": "71b08728b1619ff58c130bd4cb8b7ed8deea82da3cbd5519df3a1c1df3b8525b",
+    "readout-1.cq": "452f9cbf13620799245c62213b93141657a2d409df7a6fb3f513114ae4383e86",
+    "checkerboard-p.cq": "9933507c43bf52aca20960cb038eced55084434f7926059fdb1a7b9b9ed22dd3"
+   }
+  }
+ ],
+ "stops": {
+  "batches_checked": [
+   "batch-00"
+  ],
+  "stop_condition_batch_00": [],
+  "bracket_drift_flagged": [],
+  "max_drift": 0.0
+ },
+ "control": {
+  "file": "results/quantum_inspire/bdsc_pauli_qx_analysis.json",
+  "sha256": "e42fbbf88430ba13928a7509e0ae4437dcfe44471054deb5f6008c7c3af60151",
+  "manifest_sha256": "a54e0aedfeb0288235e9d94ae932d1dd791b609081b6196fe4f362ccfbc9e821"
+ },
+ "backend_contract": "live record matches"
+}
