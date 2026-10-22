@@ -60,7 +60,8 @@ approved ([AGENTS.md](../../AGENTS.md#hardware-services)).
 1. Write the case: what the pilot measures, why noise simulation cannot answer
    it (the device's own preparation and readout define the physical effect),
    the backend, 32768 shots, 27 jobs of 19.97 s (539.1 s of execution, 1499.1 s
-   of wall time with eight 120 s pauses, plus the shared queue), expected
+   of wall-time ceiling with eight pauses at the top 120 s step, plus the
+   shared queue), expected
    seconds and credits. Wait for the owner's approval and quote it verbatim.
 2. The platform publishes no Tuna calibration data
    ([tuna-17.md](../notes/quantum_inspire/tuna-17.md#readout-calibration-drift)).
@@ -82,7 +83,9 @@ approved ([AGENTS.md](../../AGENTS.md#hardware-services)).
    and the bracket drift stop (more than 0.02 between successive references of
    one kind) are clear, the twin's control verdict passes, and the live
    topology, gate set and compiler configuration match the cases. It waits out
-   the 120 s account pause, copies the batch to
+   the account pause (30 s by default; on a platform failure set
+   `QI_HARDWARE_PAUSE_SECONDS` to the next step of 60, 90, 120,
+   [usage.md](../notes/quantum_inspire/usage.md#pause-escalation)), copies the batch to
    `results/quantum_inspire/runs/<UTC stamp>-bdsc_pauli_tuna_17-batch-NN/` with
    one stamp for the series, writes `series-gate.json` and submits through
    `qi_platform.submit`. A refused stop ends the series; a directory holding

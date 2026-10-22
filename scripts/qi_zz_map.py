@@ -34,7 +34,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from qi_platform import HARDWARE_BATCH_CIRCUITS, HARDWARE_PAUSE_SECONDS  # noqa: E402
+from qi_platform import HARDWARE_BATCH_CIRCUITS, HARDWARE_PAUSE_LADDER  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
 
@@ -369,8 +369,9 @@ def build(catalogue_path: Path = CATALOGUE, shots: int | None = None) -> dict[st
             "max_jobs_per_batch": limit,
             "catalogue_max_jobs_per_batch": backend["max_jobs_per_batch_job"],
             "hardware_policy_max_jobs_per_batch": HARDWARE_BATCH_CIRCUITS,
-            "hardware_policy_pause_seconds": HARDWARE_PAUSE_SECONDS,
-            "minimum_interbatch_pause_seconds": max(0, len(batches) - 1) * HARDWARE_PAUSE_SECONDS,
+            # The budget ceiling: the top step of the pause ladder, so the plan holds whichever step runs.
+            "hardware_policy_pause_seconds": HARDWARE_PAUSE_LADDER[-1],
+            "minimum_interbatch_pause_seconds": max(0, len(batches) - 1) * HARDWARE_PAUSE_LADDER[-1],
             "pause_scope": (
                 "account-wide hardware spacing only; excludes the initial wait, execution, collection, "
                 "queueing, calibration and other sessions' jobs"
@@ -461,7 +462,7 @@ def validate_plan(plan: dict[str, Any], files: dict[str, str]) -> None:
     require(plan["cost"]["max_jobs_per_batch"] == HARDWARE_BATCH_CIRCUITS, "hardware batch policy differs")
     require(plan["cost"]["total_jobs"] == 416 and plan["cost"]["batches"] == 139, "packing cost changed")
     require(
-        plan["cost"]["minimum_interbatch_pause_seconds"] == 138 * HARDWARE_PAUSE_SECONDS,
+        plan["cost"]["minimum_interbatch_pause_seconds"] == 138 * HARDWARE_PAUSE_LADDER[-1],
         "account-wide interbatch pause budget changed",
     )
 

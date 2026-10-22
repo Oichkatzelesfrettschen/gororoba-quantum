@@ -113,7 +113,9 @@ together with q11).
 
 A batch holds at most three circuits (`HARDWARE_BATCH_CIRCUITS`), and
 `qi_platform.submit` sends a hardware batch only after every hardware job of the
-account finished at least 120 s earlier. The series runs nine batches and 27
+account finished at least one account pause earlier (30 s by default, a
+repository rule with the escalation of
+[usage.md](../notes/quantum_inspire/usage.md#pause-escalation)). The series runs nine batches and 27
 jobs at 32768 shots:
 
 | batch | circuits |
@@ -142,8 +144,9 @@ with its nearest readout-0 and readout-1 (the earlier batch on a tie), which
 `readout_pairing` records.
 
 The jobs take about 19.97 s each under the retained fit (2.6 s + 0.53 ms per
-shot): 27 jobs are 539.1 s of execution, and the eight 120 s pauses bring the
-wall time to 1499.1 s (25 minutes) before queue time. Each batch also waits
+shot): 27 jobs are 539.1 s of execution. The case budgets the top pause step,
+so the eight 120 s pauses bring the wall-time ceiling to 1499.1 s (25 minutes)
+before queue time; at the default 30 s step the pauses take 4 minutes. Each batch also waits
 behind other users' batches on the shared queue, which has held waits of
 9 to 56 minutes, so the wall time is set by the queue. Shot order is retained.
 

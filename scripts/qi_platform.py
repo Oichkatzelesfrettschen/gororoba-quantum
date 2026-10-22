@@ -80,10 +80,26 @@ SUBMISSION_SCHEMA = "qi-submission-v2"
 # under either reading of "job".
 HARDWARE_BATCH_CIRCUITS = 3
 HARDWARE_QUEUED_BATCHES = 1
-# Calibration and tuning run between user jobs, so the platform needs idle time
-# on the account between hardware batches. The pause counts every job of the
-# account on every hardware backend type, whichever session submitted it.
-HARDWARE_PAUSE_SECONDS = 120
+# A repository pacing rule, not a provider one: the FAQ, the general conditions
+# of use and the backend pages set no interval between submissions
+# (docs/notes/quantum_inspire/usage.md, "What the provider requires"). The pause
+# counts every job of the account on every hardware backend type, whichever
+# session submitted it. QI_HARDWARE_PAUSE_SECONDS selects a step of
+# HARDWARE_PAUSE_LADDER; a platform failure under one step moves the series to
+# the next (usage.md, "Pause escalation").
+HARDWARE_PAUSE_LADDER = (30, 60, 90, 120)
+
+
+def _hardware_pause() -> int:
+    value = os.environ.get("QI_HARDWARE_PAUSE_SECONDS", "").strip()
+    if not value:
+        return HARDWARE_PAUSE_LADDER[0]
+    if not value.isdigit() or int(value) not in HARDWARE_PAUSE_LADDER:
+        raise SystemExit(f"QI_HARDWARE_PAUSE_SECONDS={value!r} is not a step of {HARDWARE_PAUSE_LADDER}")
+    return int(value)
+
+
+HARDWARE_PAUSE_SECONDS = _hardware_pause()
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quantum_inspire/runs"
 REDACTED = ("email", "full_name", "oidc_sub")

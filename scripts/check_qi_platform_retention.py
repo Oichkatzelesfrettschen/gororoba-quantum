@@ -543,7 +543,8 @@ class RetentionChecks(unittest.TestCase):
     def test_hardware_batch_waits_for_the_account_pause(self) -> None:
         now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)
         pause = platform.HARDWARE_PAUSE_SECONDS
-        self.assertEqual(pause, 120)
+        self.assertEqual(pause, platform.HARDWARE_PAUSE_LADDER[0])
+        self.assertEqual(platform.HARDWARE_PAUSE_LADDER, (30, 60, 90, 120))
         with patch.object(platform, "utc_now", return_value=now):
             # Jobs of every hardware backend type count, whichever session submitted them.
             for type_id in (6, 7):
@@ -562,9 +563,20 @@ class RetentionChecks(unittest.TestCase):
                     for name in ("submission.json", "submission-state.json"):
                         (self.case_dir / name).unlink()
             with self.subTest(latest_of_several=True):
-                client = self.paused_client([(7, "completed", 600), (6, "completed", 30), (7, "failed", 300)], now=now)
-                with self.assertRaisesRegex(SystemExit, "wait 90 more seconds"):
+                client = self.paused_client(
+                    [(7, "completed", 20 * pause), (6, "completed", 10), (7, "failed", 10 * pause)], now=now
+                )
+                with self.assertRaisesRegex(SystemExit, f"wait {pause - 10} more seconds"):
                     self.submit(client)
+
+    def test_hardware_pause_takes_only_a_ladder_step(self) -> None:
+        for value, want in (("", 30), ("60", 60), ("90", 90), ("120", 120)):
+            with self.subTest(value=value), patch.dict(os.environ, {"QI_HARDWARE_PAUSE_SECONDS": value}):
+                self.assertEqual(platform._hardware_pause(), want)
+        for value in ("45", "0", "-30", "30s", "600"):
+            with self.subTest(value=value), patch.dict(os.environ, {"QI_HARDWARE_PAUSE_SECONDS": value}):
+                with self.assertRaisesRegex(SystemExit, "is not a step of"):
+                    platform._hardware_pause()
 
     def test_hardware_batch_refuses_while_an_account_hardware_job_is_unfinished(self) -> None:
         now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)

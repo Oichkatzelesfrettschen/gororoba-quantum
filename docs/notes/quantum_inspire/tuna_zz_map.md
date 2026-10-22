@@ -26,9 +26,10 @@ Q6 after a platform calibration: the corrected Ramsey visibility reaches
 concrete concern for this proposal, whose four joint calibration states
 already require at least two batches per matching.
 
-The current runner requires a 120 s account-wide pause after completed
-hardware jobs. This 139-batch case therefore entails at least
-`138 * 120 = 16,560 s`, or **4.6 hours of pauses alone**, before execution,
+The runner requires an account-wide pause after completed hardware jobs, a
+step of 30 to 120 s ([usage.md](usage.md#pause-escalation)). This 139-batch
+case therefore entails `138 * 30 = 4,140 s` (69 minutes) to
+`138 * 120 = 16,560 s` (**4.6 hours**) of pauses alone, before execution,
 collection, queue and calibration overhead. The existing map measured
 poor coherence on Q5/Q6/Q7 by 2 us, and no retained acquisition establishes
 that every edge can support the mandatory 20 and 40 us points here.

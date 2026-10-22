@@ -94,7 +94,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import bdsc_pauli  # noqa: E402
-from qi_platform import HARDWARE_BATCH_CIRCUITS, HARDWARE_PAUSE_SECONDS  # noqa: E402
+from qi_platform import HARDWARE_BATCH_CIRCUITS, HARDWARE_PAUSE_LADDER  # noqa: E402
 from qi_zero_divisor_cases import (  # noqa: E402
     BACKEND,
     NQUBITS,
@@ -787,11 +787,16 @@ def nearest_references(schedule: list[list[tuple[str, str]]]) -> dict[str, dict[
 
 
 def series_cost(schedule: list[list[tuple[str, str]]], shots: int, hardware: bool) -> dict[str, Any]:
-    """Execution by the Tuna-17 timing fit; qi_platform.submit applies the account pause to hardware only."""
+    """Execution by the Tuna-17 timing fit and the wall-time ceiling of the approved budget.
+
+    The ceiling takes the top step of HARDWARE_PAUSE_LADDER between hardware batches, so a series paced at
+    any lower step finishes inside it and the manifests stay the same whichever step qi_platform.submit
+    applies; the emulator takes no pause.
+    """
     jobs = sum(len(batch) for batch in schedule)
     per_job = JOB_FIXED_SECONDS + JOB_SECONDS_PER_SHOT * shots
     execution = jobs * per_job
-    pause = HARDWARE_PAUSE_SECONDS if hardware else 0
+    pause = HARDWARE_PAUSE_LADDER[-1] if hardware else 0
     return {
         "jobs": jobs,
         "batches": len(schedule),
@@ -1853,6 +1858,7 @@ def submit_next(
         "stops": stops,
         "control": control_record,
         "backend_contract": "live record matches",
+        "pause_seconds": qi_platform.HARDWARE_PAUSE_SECONDS if live["is_hardware"] else 0,
     }
     if dry:
         return run_dir, receipt

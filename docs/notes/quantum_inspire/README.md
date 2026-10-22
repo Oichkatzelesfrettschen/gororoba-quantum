@@ -161,9 +161,11 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 execution time fits 2.6 s per job plus
+the API's five batch jobs. No provider page sets an interval between
+submissions; [usage.md](usage.md#what-the-provider-requires) quotes every
+provider rule with its page and capture line. Tuna-17 execution time fits 2.6 s per job plus
 0.53 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
-and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
+and the account pause and the shared queue, not the shots, set a batch's cost; QX finished 2048
 shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
 between two reads minutes apart), delay queued jobs and charge the account
@@ -185,8 +187,9 @@ submits each hardware batch only after the previous one is collected, passes
 its sanity checks and a pause. `submit` also refuses a hardware batch while
 any job of the account on a hardware backend type (`is_hardware`, whichever
 session submitted it) is unfinished or finished less than
-`HARDWARE_PAUSE_SECONDS` = 120 s ago, so sessions that share the account
-alternate with that pause and the platform can calibrate between batches;
+`HARDWARE_PAUSE_SECONDS` ago, so sessions that share the account
+alternate. The pause is a repository rule: 30 s by default, raised to 60, 90
+and then 120 s after a platform failure ([usage.md](usage.md#pause-escalation));
 emulator batches skip the check. The case generators emit each experiment as
 a series of `batch-NN/` cases within that limit, and
 `scripts/check_qi_platform_retention.py` passes every generated batch through

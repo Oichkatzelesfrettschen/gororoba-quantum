@@ -828,8 +828,8 @@ and results/quantum_inspire/box_kite_ry_analysis.json; claims
   the bipartite map above. It uses both directions, explicit |0>/|1>
   neighbors, eight induced matchings, X/Y readout, six delays including zero,
   and joint pair calibration with propagated covariance and fixed Holm
-  criteria. Its 416 circuits occupy 139 batches. The current 120 s hardware
-  pause imposes at least 4.6 hours between batches alone, while the retained
+  criteria. Its 416 circuits occupy 139 batches. The 120 s hardware pause
+  then in force imposed at least 4.6 hours between batches alone, while the retained
   runs show calibration changes within minutes. Mandatory 20 and 40 us
   points also lack demonstrated all-qubit viability. The case is therefore
   not recommended for acquisition unchanged: first fix a shorter pilot or
