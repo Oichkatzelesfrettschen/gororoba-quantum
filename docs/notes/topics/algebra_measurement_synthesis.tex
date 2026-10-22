@@ -1,0 +1,605 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,mathtools,booktabs,longtable,array,graphicx,microtype,xcolor}
+\usepackage[hidelinks,breaklinks]{hyperref}
+\usepackage{xurl}
+\emergencystretch=2em
+\usepackage{fancyhdr}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small Algebra-derived measurement: evidence and certification}\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}\setlength{\parskip}{5pt}\setlength{\parindent}{0pt}
+\newtheorem{theorem}{Theorem}[section]\newtheorem{lemma}[theorem]{Lemma}\newtheorem{corollary}[theorem]{Corollary}\newtheorem{definition}[theorem]{Definition}\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\tr}{\operatorname{Tr}}\newcommand{\TV}{\operatorname{TV}}\newcommand{\kerop}{\operatorname{ker}}\newcommand{\rank}{\operatorname{rank}}\newcommand{\diag}{\operatorname{diag}}\newcommand{\ran}{\operatorname{ran}}\newcommand{\norm}[1]{\left\lVert#1\right\rVert}\newcommand{\ket}[1]{\lvert#1\rangle}\newcommand{\bra}[1]{\langle#1\rvert}
+\newcommand{\scope}[1]{\textbf{Evidence status.} #1}
+\title{From Sedenion Geometry to Certifiable Quantum Measurements\\\large A derivation-led reconstruction, adversarial figure audit,\\and evidence-closure program}
+\author{Technical synthesis for the gororoba-quantum project}
+\date{22 October 2026\\Source-relative research edition; not a hardware certificate}
+\begin{document}\maketitle
+\begin{abstract}
+This monograph reconstructs the mathematical and experimental program represented in the supplied discussion and retained repository artifacts. Its organizing problem is whether an algebra-derived operator survives encoding, compilation, physical application, acceptance, and processing sufficiently to support a stated subspace certificate. Exact algebra, projected geometry, numerical circuit conformance, service-output diagnostics, and physical inference are treated as different evidence classes. The reconstruction corrects lost collision mass, impossible symmetry assignments, a misleading FCC analogy, and unsupported matrix and dynamical interpretations. It derives the six-state consistency identities, their failure under input-dependent acceptance, the target/complement principal-angle certificate, and a fifth-eigenvalue bound. It also specifies a commit-pinned identity and denominator reconciliation, distinguishes structural support withdrawal from numerical sensitivity, and designs interventions that can discriminate the two retained Belenos anomalies. No new acquisition, provider submission, cancellation, or claim of new physics is authorized by this analysis. Unresolved provenance and missing controls remain explicit scientific outcomes.
+\end{abstract}
+\begingroup\small\tableofcontents\endgroup\newpage
+
+\section{Scope, prerequisites, and rules of interpretation}
+The supplied record contains two linked projects: an audit of high-dimensional geometric figures and a closure program for algebra-derived quantum measurements. They share an observation problem, but their data are not interchangeable. A mathematically generated root system is not a hardware measurement. A hardware histogram is not, by itself, an identified quantum effect. The requested comprehensive synthesis therefore preserves the distinctions that make its claims falsifiable.
+
+Prerequisites are finite-dimensional linear algebra, Hermitian spectral theory, probability on finite sets, basic quantum measurement theory, and versioned computational provenance. All vectors are columns. The dagger denotes conjugate transpose. Eigenvalues of a Hermitian matrix are ordered increasingly, counting multiplicity. A density operator satisfies $\rho\succeq0$, $\tr\rho=1$. An effect satisfies $0\preceq F\preceq I$. A two-outcome measurement has effects $F$ and $I-F$. Probabilities, TV distances, and algebra-coordinate lengths in this document are dimensionless unless a physical unit is stated.
+
+\subsection{A typed chain of scientific assertions}
+Write the intended pipeline as
+\begin{equation}
+\mathcal A \xrightarrow{\text{encoding}} E_0
+\xrightarrow{\text{requested implementation}} U_{\rm req}
+\xrightarrow{\text{compiler}} U_{\rm ret}
+\xrightarrow{\text{physical service}} \mathcal I
+\xrightarrow{\text{processing}} R.
+\end{equation}
+Here $\mathcal A$ is a declared algebraic convention, $E_0$ a target effect, $U$ a numerical circuit or optical transformation, $\mathcal I$ an instrument, and $R$ a recorded object. Equality of numerical matrices checks one arrow. It cannot certify all later arrows. Hashes establish byte identity, not physical correctness. A detector's statistical behavior must be characterized relative to its probes; detector tomography provides the relevant measurement framework \cite{lundeen}. Self-consistent gate characterization additionally faces preparation and measurement gauge freedom \cite{gst}.
+
+The evidence classes used here are exact finite calculation, theorem with stated premises, numerical replay, circuit-conformance calculation, retained hardware observation, descriptive reanalysis, and prospective intervention. ``Established'' always requires a class and a scope. A global count mixing these classes is not a measure of independent physical confirmation.
+
+\subsection{Coverage and unavailable information}
+The historical projection directory, original rendering script, and the two saved JSON analysis files were not recovered in the visible workspace. The figure audit reconstructs the stated point sets and reproduces quoted seeded values; it does not claim byte-identical historical replay. Repository evidence is scoped to the six pinned trees in Appendix~\ref{app:pins}. Other private conversations or unprovided project files are outside this edition's evidence boundary. Primary paper abstracts and bibliographic identities were checked online; this document's new proofs below are given explicitly rather than attributed to an unread paper theorem.
+
+\section{Cayley--Dickson algebra from its convention}
+\subsection{Recursive construction and basis products}
+Start with $\mathbb A_0=\mathbb R$. Define conjugation recursively by $\overline{(a,b)}=(\bar a,-b)$ and multiplication by
+\begin{equation}\label{eq:cd}
+(a,b)(c,d)=(ac-\bar d\,b,\;da+b\bar c).
+\end{equation}
+After four doublings, $\mathbb A_4$ is the real 16-dimensional sedenion algebra. The basis is $e_0=1,e_1,\ldots,e_{15}$ with repository-specific signs determined by \eqref{eq:cd}. The authoritative executable convention is \texttt{cd\_core}; external packages require a declared basis/sign map checked on all basis pairs.
+
+For basis indices represented in binary, multiplication has the form
+\begin{equation}
+e_i e_j=\sigma(i,j)e_{i\oplus j},\qquad \sigma(i,j)\in\{-1,+1\}.
+\end{equation}
+The XOR index follows the doubling; the recursive sign follows conjugation and factor order. Neither sign can be guessed from a differently oriented multiplication table.
+
+\begin{corollary}
+No pair of basis units is a zero-divisor pair.
+\end{corollary}
+\begin{proof}
+A basis product is one nonzero signed basis unit. Therefore $e_ie_j\ne0$ for every $i,j$. Zero divisors require cancellation among several basis contributions.
+\end{proof}
+A $16\times16$ image labelled ``zero-divisor adjacency'' is false if its vertices literally mean the 16 basis units and bright entries mean zero products. It might describe composite objects or another relation, but those objects and that relation must be supplied before the image has a mathematical interpretation.
+
+\subsection{Linear multiplication operators}
+For $a\in\mathbb A_4$, define $L_a y=ay$. In coordinates,
+\begin{equation}
+(L_a)_{rj}=\sum_{i=0}^{15}a_i\sigma(i,j)\,\mathbf1\{r=i\oplus j\}.
+\end{equation}
+For fixed $j$, distinct $i$ produce distinct $r$. Hence
+\begin{equation}\label{eq:sparsity}
+\operatorname{nnz}(L_a)=16\operatorname{nnz}(a).
+\end{equation}
+There are no within-column cancellations. A claimed complete sedenion left-multiplier matrix with 40 active entries cannot satisfy this formula. A mask, threshold, separately defined bilinear object, or mislabeled random matrix would be a different object requiring its own definition. ``Box-kite compression'' alone does not define such an operation.
+
+Linearity gives $L_{\alpha a+\beta b}=\alpha L_a+\beta L_b$. Associativity would be needed to infer $L_aL_b=L_{ab}$, because
+\begin{equation}
+(L_aL_b-L_{ab})c=a(bc)-(ab)c.
+\end{equation}
+The right side is the associator with the indicated sign. Sedenions are nonassociative, so this encoding is not an algebra homomorphism. It is an ordinary real linear operator representation used within standard complex quantum mechanics.
+
+\subsection{A checked zero divisor and its target effect}
+Let $a=e_1+e_{10}$ and $b=e_4-e_{15}$. The repository convention gives $ab=0$, with both factors nonzero. Rational arithmetic verifies this independently of floating-point tolerances. Put $x=a/\sqrt2$. Exact evaluation gives
+\begin{align}
+\rank L_a&=12,&\operatorname{nnz}(L_a)&=32,\\
+\operatorname{spec}(L_a^\dagger L_a)&=\{0^{(4)},2^{(8)},4^{(4)}\},\\
+E_0=\tfrac12L_x^\dagger L_x=\tfrac14L_a^\dagger L_a,
+&&\operatorname{spec}(E_0)&=\{0^{(4)},\tfrac12^{(8)},1^{(4)}\}.
+\end{align}
+Thus $E_0$ is a valid effect. An orthonormal basis of its four-dimensional kernel is
+\begin{equation}
+\frac{e_4-e_{15}}{\sqrt2},\quad
+\frac{e_5+e_{14}}{\sqrt2},\quad
+\frac{e_6-e_{13}}{\sqrt2},\quad
+\frac{e_7+e_{12}}{\sqrt2}.
+\end{equation}
+These signs are executable claims in the supplementary checks, not conventions transferable without verification to another package.
+
+\subsection{A quantum realization and the meaning of a dark outcome}
+Set $K=L_x/\sqrt2$, so $K^\dagger K=E_0$ and $\norm K\le1$. The map
+\begin{equation}
+V\ket\psi=\ket0\otimes K\ket\psi+
+\ket1\otimes\sqrt{I-K^\dagger K}\ket\psi
+\end{equation}
+is an isometry: $V^\dagger V=K^\dagger K+(I-K^\dagger K)=I$. Extending an isometry to a unitary supplies a conventional ancilla implementation. The selected branch probability is $\bra\psi E_0\ket\psi$. It is zero for a kernel state while the full output remains normalized. The computational state $\ket{0000}$ represents $e_0=1$, not the zero vector.
+
+One may compress the selected output to its rank-12 image. If $T:\mathbb C^{16}\to\mathbb C^{12}$ satisfies $T^\dagger T=E_0$, then its nonzero singular values are four ones and eight $1/\sqrt2$. A lossless extension needs eight complementary output dimensions for the rank-eight defect $I-E_0$, so this ideal construction can fit a 24-dimensional output space. That mathematical dilation does not prove a particular service compiler realizes a fixed analyser across preparations.
+
+\section{D14 projections: exact combinatorics before crystallographic analogy}
+\subsection{The source set and its second moment}
+Let $S$ be the orthogonal projector onto the 14 support coordinates $\{1,\ldots,7,9,\ldots,15\}$ of $\mathbb R^{16}$. The D14 roots are
+\begin{equation}
+\mathcal R=\{\pm e_i\pm e_j:i<j,\ i,j\text{ in the support}\}.
+\end{equation}
+There are $4\binom{14}{2}=364$ vectors, each of squared length two, and $\mathcal R=-\mathcal R$. For general D$n$, each coordinate occurs in $4(n-1)$ roots and mixed signs cancel off-diagonal second moments. Therefore
+\begin{equation}\label{eq:moment}
+\sum_{v\in\mathcal R}vv^T=52S,\qquad \sum_vv=0.
+\end{equation}
+This exact isotropy on the support explains why PCA cannot select a scientifically distinguished three-dimensional frame. Any orthonormal basis of the degenerate support eigenspace is permissible; one axis-aligned PCA output is not an independent corroborating projection method.
+
+\subsection{Coordinate projection multiplicities}
+Keep $k$ support coordinates. Roots whose two indices are discarded contribute
+$4\binom{n-k}{2}=2(n-k)(n-k-1)$ copies of the origin. A fixed kept signed axis receives $2(n-k)$ roots, because the second index and its sign are discarded. Roots with both indices kept remain distinct, giving $4\binom{k}{2}=2k(k-1)$ outer points. When all categories are present, there are $1+2k^2$ distinct points.
+
+For $n=14,k=3$, the conservation check is
+\begin{equation}
+220+6(22)+12(1)=364.
+\end{equation}
+The distinct locations are the origin, six axes at radius one, and 12 pair-sum points at radius $\sqrt2$. These counts are mathematical results, not uncertain estimates. Marker multiplicity is therefore an information-loss channel, not a statistical uncertainty channel. Sampling error would require a sampling model.
+
+Across all $\binom{16}{3}=560$ ambient coordinate triples, the number of retained support coordinates is three, two, or one. Their counts are $\binom{14}{3}=364$, $2\binom{14}{2}=182$, and $14$, respectively. The resulting distinct-point counts are 19, 9, and 3. Statements about every support triple must not be silently expanded to every ambient triple.
+
+\subsection{What survives a generic projection}
+Let $P\in\mathbb R^{16\times3}$ have orthonormal columns and project a source vector to $P^Tv$. A generic continuous random draw avoids the finite collection of coincidence conditions $P^T(v-w)=0$, so all 364 images are distinct with probability one. Nevertheless,
+\begin{equation}
+P^T(-v)=-P^Tv.
+\end{equation}
+\begin{theorem}[Inversion cannot disappear under a linear projection]
+Every linear image of a centrally symmetric set is centrally symmetric. For a spanning nonempty three-dimensional image, its full orthogonal point group contains $\{I,-I\}$.
+\end{theorem}
+\begin{proof}
+If $y=P^Tv$, then $-y=P^T(-v)$ belongs to the same image. Both $I$ and $-I$ preserve the image; they are distinct orthogonal transformations in three dimensions.
+\end{proof}
+Consequently the captions' full-group assignment $C_1$ is inconsistent for the D14 generic image. A proper-rotation subgroup may be trivial; the full orthogonal group still contains inversion, ordinarily denoted $C_i$ when no further operations survive. An analyser error is missing output, not evidence of no symmetry. The 84 blade representatives use a sign gauge and need not be centrally symmetric, so the same argument must not be applied to them without checking their definition.
+
+\subsection{The seed-invariant eigenvalue is structural}
+With all 364 roots retained, unbiased sample covariance is
+\begin{equation}
+\widehat\Sigma=\frac{52}{363}P^TSP.
+\end{equation}
+Write $S=I-NN^T$ where $N$ contains the two absent coordinate axes. Then
+$P^TSP=I_3-(N^TP)^T(N^TP)$. The subtracted matrix has rank at most two, so at least one eigenvalue is exactly one and all eigenvalues lie in $[0,1]$. The largest covariance eigenvalue is therefore exactly $52/363=0.1432506887\ldots$ for every such projection. The other eigenvalues depend on overlap with the two absent axes. If the projection lies entirely inside the 14-dimensional support, all three are equal. Apparent random-seed anisotropy here partly reflects leakage into absent coordinates.
+
+The quoted seeds reproduce minimum covariance eigenvalues approximately $0.1210971$, $0.0613456$, and $0.0957297$, and nearest distinct distances $0.0510882$, $0.0334166$, and $0.0276834$. These values are numerical replay results. They are covariance eigenvalues, not the eigenvalues of mechanical inertia $J=\tr(\Sigma)I-\Sigma$. The term ``inertia'' must name its normalization and tensor.
+
+\subsection{FCC resemblance and its limit}
+The 12 outer locations are a cuboctahedron, geometrically congruent to an FCC nearest-neighbour shell after scaling. That is a valid local-shape comparison. In FCC, however, 12 nearest neighbours occur at radius $a/\sqrt2$ and six axial next neighbours at radius $a$. The illustrated 19-point set puts six axial points inside the 12-point shell. Its shell ordering is reversed. Calling the complete 19-point construction ``the analytic FCC coordination shells'' overstates the correspondence. No lattice constant, material composition, temperature, or measured atomic positions have been supplied. AFLOW and Pearson labels describe a prototype analogy, not identification of a physical copper sample.
+
+\subsection{Collision mass in the distance spectrum}
+Let projected distinct locations be $y_1,\ldots,y_q$ with multiplicities $m_i$. The unordered source-pair measure is
+\begin{equation}\label{eq:pairs}
+\mu=\frac{1}{\binom{364}{2}}
+\left[\sum_i\binom{m_i}{2}\delta_0+
+\sum_{i<j}m_im_j\delta_{\norm{y_i-y_j}}\right].
+\end{equation}
+The first term cannot be discarded when comparing all source pairs. Direct integer calculation gives
+\begin{center}\begin{tabular}{rrrrrrrrr}\toprule
+Squared distance&0&1&2&3&4&5&6&8\\\midrule
+Pair count&25476&29568&8472&528&1464&528&24&6\\\bottomrule
+\end{tabular}\end{center}
+The total is $\binom{364}{2}=66066$. The omitted zero-distance mass is about $38.56\%$. Distance one accounts for $29568/66066\simeq44.76\%$ of all source pairs. The old $72.85\%$ figure equals $29568/40590$ and is conditional on different projected locations. Both quantities can be useful if their different denominators are labelled.
+
+A finite random projection also has a finite atomic distance measure. A smooth-looking histogram is not literally a continuous spectrum, and binning cannot prove the absence of narrow structure. Plot an empirical CDF, annotate bin widths, and compare normalized measures on the same pair population.
+
+\section{Blade graphs, basis figures, and unsupported visual claims}
+The retained blade construction has 84 representatives $(e_i+s e_j)/\sqrt2$, with first displayed coefficient positive and $s=\pm1$. It is not the complete 168-element antipodal signed set. Its zero-product graph has seven connected components of 12 vertices and 168 total edges in the checked convention. One selected component on coordinates $(9,10,12)$ projects to an origin of multiplicity six and six axial points at radius $1/\sqrt2$. All signed coordinate permutations preserve that seven-point set, yielding the full octahedral group of order 48. This is exact projected geometry. It does not establish an intrinsic three-dimensional octahedral physical object in the source algebra.
+
+The 16 basis vectors projected to three axes give four locations: an origin with multiplicity 13 and three positive unit axes. The unlabelled location set has $C_{3v}$ symmetry: a threefold permutation axis and three reflection planes. Source labels can restrict allowable permutations. Moreover, the original basis set has its own 16-coordinate permutation symmetry. Saying the observed symmetry is ``not a property of the 16D set'' is too categorical; the precise assertion concerns the subgroup visible through the chosen projection and which labels must be preserved.
+
+The Gaussian-pair composition-norm plot tests a mathematical ratio
+\begin{equation}
+r(a,b)=\frac{\norm{ab}}{\norm a\norm b},\quad a,b\ne0.
+\end{equation}
+For composition algebras this ratio is one; sedenions permit deviations, including zero. Gaussian synthetic draws do not constitute hardware data. A dimensionless normalized ratio is clearer than arbitrary products of unnormalized norms.
+
+The supplied ``dynamics'', ``intensity'', and ``fractal scaling'' figures lack a specified evolution equation, initial distribution, time units, integrator, error analysis, observable map, and scaling estimator. Negative amplitudes can be meaningful, but ordinary optical intensity is nonnegative. A saturating coordinate map can place points near a cube without producing a fractal. A defensible dynamical claim needs, at minimum, a declared map $z_{t+1}=\Phi(z_t;\eta)$ or ODE $\dot z=f(z)$, convergence checks, and a stated physical interpretation. A fractal claim additionally needs an estimator such as $N(\epsilon)\sim\epsilon^{-D}$ over a justified range, controls against finite-sample and saturation artifacts, and uncertainty on $D$. None can be recovered from a static rendering alone.
+
+\section{Probability objects and reporting discipline}
+For a common, explicitly ordered output alphabet, define requested, returned numerical, and observed laws $p_{\rm req},p_{\rm ret},\hat p_{\rm obs}$. For normalized distributions,
+\begin{equation}
+\TV(p,q)=\tfrac12\sum_{k=1}^m|p_k-q_k|
+=\max_{A\subseteq\{1,\ldots,m\}}|p(A)-q(A)|.
+\end{equation}
+Missing modes must be distinguished from zero-count modes; eligibility, vacuum, multiphoton, timeout, and corrected outcomes must have explicit treatment before normalization.
+
+The two axes are
+\begin{equation}
+d_{\rm model}=\TV(p_{\rm ret},p_{\rm req}),\qquad
+d_{\rm observation}=\TV(\hat p_{\rm obs},p_{\rm ret}).
+\end{equation}
+They diagnose different arrows. Their average is not a fidelity. Triangle and reverse-triangle inequalities provide the valid relation
+\begin{equation}
+|d_{\rm observation}-d_{\rm model}|
+\le\TV(\hat p_{\rm obs},p_{\rm req})
+\le d_{\rm observation}+d_{\rm model}.
+\end{equation}
+A small returned/requested discrepancy and a nearly unit observed/requested discrepancy are compatible: the returned matrix may be correct while the associated observed law is very wrong. This still does not identify whether physical application or record association failed.
+
+\begin{proposition}[Coarse graining contracts TV]
+For any stochastic map $M$, $\TV(Mp,Mq)\le\TV(p,q)$.
+\end{proposition}
+\begin{proof}
+Using nonnegative entries and column sums one,
+$\sum_y|\sum_xM_{yx}(p_x-q_x)|\le\sum_{yx}M_{yx}|p_x-q_x|=\sum_x|p_x-q_x|$.
+Divide by two.
+\end{proof}
+Projection-induced collisions and discarded output labels can therefore conceal distinctions. Conditioning, by contrast, changes the denominator and is not a fixed stochastic map on normalized retained probabilities; it need not contract TV. This is a precise connection between the figure audit and measurement qualification, not a claim that algebraic projections and physical losses have the same mechanism.
+
+\section{One linear effect and the six-state identities}
+For orthonormal $f,g$, define $\ket{\pm}=(\ket f\pm\ket g)/\sqrt2$ and $\ket{\pm i}=(\ket f\pm i\ket g)/\sqrt2$. With $\rho_s=\ket s\bra s$,
+\begin{equation}\label{eq:sixrho}
+\rho_++\rho_-=\rho_f+\rho_g=\rho_{+i}+\rho_{-i}.
+\end{equation}
+Every off-diagonal term cancels in each pair. For a fixed effect $F$, taking $\tr(F\cdot)$ yields
+\begin{equation}\label{eq:six}
+p_++p_-=p_f+p_g=p_{+i}+p_{-i}.
+\end{equation}
+The derivation requires the stated preparation relation and one common linear probability functional. A common trace-preserving preparation channel $\Lambda$ preserves \eqref{eq:sixrho} by linearity, equivalently replacing $F$ by $\Lambda^*(F)$. Thus violation rejects a conjunction of assumptions; it does not uniquely identify phase error, faulty preparation, or the measurement itself.
+
+Put $F_{fg}=\bra fF\ket g=u+iv$, with $F_{ff}=a$ and $F_{gg}=b$. Direct expansion gives
+\begin{align}
+p_\pm&=(a+b)/2\pm u,\\
+p_{+i}&=(a+b)/2-v,&p_{-i}&=(a+b)/2+v.
+\end{align}
+In this explicit phase convention, $d_X=(p_+-p_-)/2=\operatorname{Re}F_{fg}$ and $d_Y=(p_{+i}-p_{-i})/2=-\operatorname{Im}F_{fg}$. The minus sign is not optional. The even components $m_Z,m_X,m_Y$ should coincide. A common displacement of all four superposition probabilities changes even components and does not, by itself, isolate coherent phase rotation.
+
+\subsection{Input-dependent acceptance breaks the conditional identity}
+Let $D$ be the acceptance effect and $G$ the selected accepted effect, with $0\preceq G\preceq D\preceq I$. Define
+\begin{equation}
+t_s=\tr(D\rho_s),\quad q_s=\tr(G\rho_s),\quad p_s=q_s/t_s\quad(t_s>0).
+\end{equation}
+The unconditional quantities $q_s,t_s$ are linear; their ratio is generally not. For
+\begin{equation}
+D=\diag(0.06,0.04),\qquad G=\diag(0,0.04),
+\end{equation}
+one obtains $(p_f,p_g,p_+,p_-,p_{+i},p_{-i})=(0,1,0.4,0.4,0.4,0.4)$. The conditional pair sums are $1$ and $0.8$ despite perfect states and fixed effects. This exact counterexample falsifies the inference ``six-state deficit implies phase error''.
+
+If $t_s$ are independently admitted probabilities on a common attempt population, then
+\begin{align}
+t_+p_++t_-p_-&=t_fp_f+t_gp_g,\\
+t_++t_-&=t_f+t_g,
+\end{align}
+with analogous imaginary-quadrature relations. Joint uncertainty must account for shared estimates; multiplying point estimates is not a confidence construction.
+
+Equal basis acceptance does not suffice. Let $D=dI+\epsilon X$ with $0<|\epsilon|<\min(d,1-d)$. Its diagonal entries are both $d$, yet $t_+=d+\epsilon$ and $t_-=d-\epsilon$. Coherent inputs expose the off-diagonal filter component invisible to basis probes.
+
+When $D$ is invertible on its support, define
+\begin{equation}
+\widetilde F=D^{-1/2}GD^{-1/2},\qquad
+\widetilde\rho_s=\frac{D^{1/2}\rho_sD^{1/2}}{t_s}.
+\end{equation}
+Then $p_s=\tr(\widetilde F\widetilde\rho_s)$. This is a legitimate effect on filtered states. It does not establish the intended effect on the original preparation frame, because $\rho_s\mapsto\widetilde\rho_s$ includes state-dependent normalization. If $D$ has a kernel, restrict inverse square roots to its support and explicitly lose information about never-accepted inputs.
+
+\section{Phase, gauge, compilation, and identifiability}
+\subsection{What an intensity measurement can see}
+An output diagonal phase $\diag(e^{i\theta_k})$ leaves all direct output probabilities $|(U\psi)_k|^2$ unchanged. To see a relative phase, recombine paths. In a declared two-path experiment, an amplitude $\alpha+\beta e^{i\phi}$ yields
+\begin{equation}
+p(\phi)=|\alpha|^2+|\beta|^2+
+2\operatorname{Re}(\bar\alpha\beta)\cos\phi
+-2\operatorname{Im}(\bar\alpha\beta)\sin\phi
+=A+B\cos\phi+C\sin\phi.
+\end{equation}
+Several quadratures identify $B,C$ only under that model and a stable denominator. Amplitude imbalance, incoherent admixture, preparation error, drift, and filtering remain competing mechanisms. Fit on development quadratures and test held-out ones. A changed Hong--Ou--Mandel summary concerns a different two-photon interference observable and is not directly a single-photon circuit phase estimate.
+
+\subsection{Gauge freedom and independently compiled experiments}
+In a linear representation, circuit probabilities can be written $p=\langle E|G_k\cdots G_1|\rho\rangle$. Under an invertible coordinate change $M$,
+\begin{equation}
+|\rho\rangle\mapsto M|\rho\rangle,\quad
+\langle E|\mapsto\langle E|M^{-1},\quad
+G\mapsto MGM^{-1},
+\end{equation}
+all such probabilities remain unchanged. Physical constraints restrict admissible representatives, but observations alone do not generally identify every internal coordinate convention. This is the practical relevance of GST gauge analysis \cite{gst}; it is not an argument that every physical error is arbitrary.
+
+Likewise, compiling a fresh complete transformation for each state may realize a family $F_s$ rather than one analyser $F$ acting on known states. Perfect requested output columns do not prove that a common physical measurement existed. Preparation/analyser separation needs an implementational contract or a supported self-consistent model.
+
+\subsection{Randomized implementations and their kernels}
+Suppose a seed $r$ is drawn with weights $\pi_r$ independently of input label and realizes $F_r$. Then
+\begin{equation}
+\bar F=\sum_r\pi_rF_r,\qquad \bar p_s=\tr(\bar F\rho_s)
+\end{equation}
+is an effect. With seed-dependent acceptance $t_{s,r}$, pooled conditional probabilities instead weight seed contributions by $\pi_rt_{s,r}/\sum_u\pi_ut_{s,u}$, which can depend on $s$. Label-independent requested randomization does not automatically yield label-independent effective averaging.
+
+\begin{theorem}[Kernel of a positive ensemble]
+For positive weights $\pi_r>0$ and positive semidefinite $F_r$,
+$\kerop\bar F=\bigcap_r\kerop F_r$.
+\end{theorem}
+\begin{proof}
+If $v$ lies in every kernel, the conclusion follows by summation. Conversely $0=v^\dagger\bar Fv=\sum_r\pi_r\norm{F_r^{1/2}v}^2$ forces every nonnegative summand to vanish, so $F_rv=0$ for each $r$.
+\end{proof}
+This connection matters: randomization can average biases but can also destroy an exact common dark direction when individual kernels move. A certificate for an ensemble is not a certificate for every realization. For a contrast $\Delta=c^Tp_r$, seed variation is $\operatorname{Var}(\Delta)=c^T\Sigma_{\rm seed}c$. Dispersion among different state labels is not an estimate of repeated-seed variance for one state. Cross state, seed, block, and compilation identities in the design.
+
+\section{The observation chain and the denominator census}
+\subsection{Trial definitions precede likelihoods}
+The relevant chain is attempt, physical detection, filter, correction, conversion, returned record. Distinguish source attempts, heralds, accepted detections, provider-estimated probabilities, regenerated samples, and estimator-eligible outcomes. More returned samples from one estimated law do not create more independent physical trials. An absent requested policy field is not necessarily an explicitly empty policy, and requested policy is not evidence of effective processing.
+
+For genuine independent Bernoulli trials $Y_j$ on a declared population, $K=\sum_{j=1}^nY_j$ has binomial likelihood. Correlations change its variance to
+\begin{equation}
+\operatorname{Var}(\bar Y)=\frac1{n^2}\sum_{j,k}\operatorname{Cov}(Y_j,Y_k).
+\end{equation}
+Under a stationary correlation model this is often expressed through an effective sample size $n/[1+2\sum_{h=1}^{n-1}(1-h/n)\rho_h]$. This expression is a model-dependent variance summary, not a license to infer raw provenance from a smooth histogram. Time-series drift analysis has an established role in processor characterization \cite{drift}; an unordered aggregate histogram cannot recover within-job switching times.
+
+\subsection{Identity, versions, and a derived view}
+The reconciliation key for physical acquisition is $(\text{provider},\text{provider job ID})$, not a directory. Observation versions add commit, setting, index, output labels, and artifact hashes. Separate identities for acquisition definitions, claims, analyses, and physical jobs prevent a reused job from masquerading as independent replication.
+
+The six-pin view contains 479 unique provider job identities: 40 IBM, 55 Quandela, and 384 Quantum Inspire. These include emulator, control, and unsuccessful jobs; 479 is not a count of independent hardware confirmations. Reconciled classifications include multi-location execution, versioned observation, claim conflict, multi-analysis acquisition, v1-to-v2 migration, cross-branch coverage, and unresolved gap. The authoritative registry remains in place. The snapshot is a deterministic view.
+
+Every claim-schema field and every acquisition-definition field must participate in cross-pin comparison. Comparing only prose and status can conceal changed evidence roots, domains, withdrawal provenance, scientific questions, or run identities. List declarations are normalized as unordered metadata; retained raw observation arrays are not reordered as scientific data. Audit-subset admission follows transitive claim dependencies and acquisition conflicts, rather than merely checking a claim's own prose.
+
+The main-tree unbound IBM directory count is 199, rather than the briefing's 198: 172 planning-only records (163 planned, nine approval-required), 14 pre-dispatch infeasible records, and 13 unresolved legacy records. Every directory has a path-level classification. No outcome rate is computed over them. Twenty-four supposedly unretained Quantum Inspire jobs resolve to retained identities on another branch: a coverage discrepancy, not missing physical measurements.
+
+
+\subsection{A numerical census with explicit coverage}
+The following values are sums over agreed available observations after job-identity deduplication. A fraction in the last column counts covered jobs, not success probability. No numerator/denominator rate is inferred across rows.
+\begin{center}\small
+\begin{tabular}{llrr}\toprule
+Provider & Object & Available sum & Jobs covered\\\midrule
+IBM & submitted ceiling & 2,516,928 & 40/40\\
+IBM & provider-reported shots & unavailable & 0/40\\
+IBM & returned samples & 2,116,928 & 36/40\\
+Quandela & submitted ceiling & 82,233,296 & 55/55\\
+Quandela & provider-reported shots & 28,878,065 & 35/55\\
+Quandela & returned samples & 28,968,040 & 45/55\\
+Quantum Inspire & submitted ceiling & 7,442,432 & 384/384\\
+Quantum Inspire & provider-reported shots & 7,438,336 & 380/384\\
+Quantum Inspire & returned samples & 7,438,336 & 380/384\\\bottomrule
+\end{tabular}
+\end{center}
+The apparent similarity of some totals does not prove equivalent provenance. In particular, returned samples and provider-reported shot use cover different subsets for Quandela. These partial sums cannot be divided to estimate a universal acceptance efficiency. Planned observations number 642 IBM PUB/circuit observations, 610 Quandela iterations, and 384 Quantum Inspire job observations; those units are different.
+
+The pinned main established matrix contains 16 exact finite results, 16 externally/repository proved statements with proof origin retained, four kernel-checked statements, seven ideal circuit-conformance results, six simulation results, eight emulator controls, and 43 named-acquisition hardware inferences. These are classifications of registry records, not independent replication counts. Cross-pin conflicts remain unresolved rather than being hidden by a single headline. After dependency-aware filtering, 94 main replay candidates enter the external-auditor packet. The packet has not itself been externally audited.
+
+\subsection{Census semantics and dependency closure}
+For each provider, the view records planned observations, submitted ceilings, provider-reported shot use, returned samples, estimator-specific eligible outcomes where retained, exclusion categories where available, and cluster identities. Unavailable is null, never zero. Partial available sums are labelled partial; they are not provider-wide totals. A per-iteration ceiling is not a completed-job denominator. IBM requested PUB shots are not relabelled completed shots. No universal rate is produced while eligibility and processing remain estimator-specific.
+
+The dependency report includes 260 source-relative established hardware claim versions. For each it distinguishes physical acquisitions, controls, analytical artifacts, replay gates, mandatory assumptions, and unavailable replication axes. Counts of jobs do not establish counts of independent sessions, calibrations, devices, compilations, or preparations. A missing identity cannot honestly be replaced by either one or zero.
+
+Structural withdrawal asks whether a declared support path survives deletion of a root. Numerical leave-one-out asks for a re-estimated endpoint after deleting an independent cluster. They are different operations. A broken support path makes a claim unsupported in that view, not necessarily false. A small numerical deletion effect does not restore a missing premise. Claim-specific leave-one-out remains unavailable where no frozen deletion and re-estimation contract exists.
+
+As a descriptive example, the raw shared-shot Tuna visibility is $0.02020263671875$. Deleting each of its three compiled-job clusters yields $0.0465087890625$, $-0.008056640625$, and $0.02215576171875$. The paired scores from one job are removed together. These unbalanced deletions show sensitivity; they do not re-adjudicate a calibrated preregistered endpoint.
+
+\section{Two Belenos cases, two different unresolved mechanisms}
+\subsection{Opening-budget and load-history anomaly}
+The mesh prefix \texttt{29dc6ef8} case retains wrong-output distributions at TV about $0.814$--$0.823$ from requested. The 1,500-versus-10,000 opening split is descriptive. Both single and iterated payload forms appear among passing and failing cases. Similar wrong histograms occur within episodes, but no universal failing histogram is established. A later mesh load demonstrates recovery in those observations, not automatic prevention. The stated 135-served-mesh search has no adequate complete-mesh match within that candidate set; its full per-mesh replay remains an explicit retention requirement.
+
+A budget-only deterministic mechanism, a service-state mechanism, elapsed acquisition duration, load count, and time-dependent drift can agree on the retained cases. Budget and elapsed time are distinct variables. A new design must counterbalance matched small and large openings, hold source mode and processing fixed, record actual queue/execution timing, and separate recovery, prevention, and same-mesh continuation. Early-versus-late analysis requires actual ordered events. Aggregate counts cannot support that comparison.
+
+\subsection{Repeatable transform-setting mismatch}
+For job \texttt{e99c049c-b9c1-4663-bbd0-e57e59bb6993}, the setting
+\path{transform-forward-imaginary-superposition-representative0}
+occurs at indices 6, 14, and 22. Count-level reconciliation at the photonic pin gives:
+\begin{center}\begin{tabular}{rrrr}\toprule
+Index&TV to own request&TV to predecessor request&TV observed/returned\\\midrule
+6&0.996336&0.030777&0.996336\\
+14&0.997313&0.034040&0.997313\\
+22&0.996946&0.033193&0.996946\\\bottomrule\end{tabular}\end{center}
+Returned/requested TV is about $4.31585\times10^{-5}$, while repeat-to-repeat distances are about $0.006$--$0.010$. Resemblance and repeatability are established at the retained count level. Predecessor causation is not. This is not a full raw-provider-response replay.
+
+\begin{proposition}[Fixed-order observational nonidentifiability]
+If one target is observed only after one predecessor, a history-dependent model and a target-specific model can produce the same joint retained observations.
+\end{proposition}
+\begin{proof}
+Let the observed target law be $q$. A target-specific model assigns $q$ to that target for every predecessor. A history model assigns $q$ to the observed target/predecessor pair and arbitrary laws to unobserved pairs. Both models agree on every retained condition. Additional repetitions of the same pair cannot distinguish them.
+\end{proof}
+Queue, cache, stale-control, and attribution mechanisms are hypotheses, not synonyms for predecessor resemblance. Even a successful predecessor intervention cannot alone separate stale applied controls from incorrect record association; that requires provider-side execution and identity evidence.
+
+\subsection{A written first acquisition candidate, not a submission}
+Hold target logical parameters, input, seed, processing policy, and returned compilation identity fixed. Use four predecessors whose predicted distributions are distinguishable (the retained candidate's minimum pairwise TV is 0.75), plus one static target-only invocation. The paired target remains at the same iteration slot. Counterbalance predecessor order in two blocks, retain every full distribution, and stop if target compilation or effective processing changes.
+
+A target-only invocation does not reset unknown provider history. It also changes payload form relative to a paired invocation. These are explicit residual confounds, so its result must not be called a clean service-reset intervention.
+
+Under an admitted IID model with $m$ output modes, for any subset $A$, Hoeffding gives
+$\Pr(|\hat p(A)-p(A)|>\epsilon)\le2e^{-2n\epsilon^2}$. Applying the one-sided bounds over all subsets (complements cover the other side) and $L$ laws yields
+\begin{equation}\label{eq:eps}
+\Pr\!\left(\max_{\ell\le L}\TV(\hat p_\ell,p_\ell)>\epsilon\right)
+\le L2^m e^{-2n\epsilon^2}.
+\end{equation}
+Thus $\epsilon=\sqrt{(m\log2+\log(L/\alpha))/(2n)}$. For the candidate planning values $m=24,L=18,n=40000,\alpha=0.05$, $\epsilon\simeq0.0167786$ and a two-law TV comparison has radius $2\epsilon\simeq0.0335571$.
+
+This is a conservative simultaneous precision calculation, not a complete power analysis. To detect true target-history separation $\delta$ above relevance threshold $\tau$, a sufficient separation condition is $\delta>\tau+4\epsilon$ for the lower-bound decision to fire on the confidence event. To establish invariance at scale $\tau$ using an upper bound, the empirical difference plus $2\epsilon$ must fall below $\tau$. Invariance needs an equivalence rule; failure to reject difference is insufficient. With $\tau=0.1$, the candidate must still price its actual schedule and qualify effective $n$, processing, compilation retention, and controls before admission.
+
+\subsection{Complete-mesh and mixture searches}
+Search three declared families separately: complete previous meshes, alternative inputs on the same mesh, and constrained partial/mixed models. For a finite candidate list $q_j$, report $\min_j\TV(\hat p,q_j)$ and each relevant absolute distance, with selection-aware uncertainty and temporal provenance. The nearest candidate is not automatically a match.
+
+A mixture $q=\sum_{j=1}^Kw_jq_j$, $w_j\ge0$, $\sum_jw_j=1$, searches a convex hull and can fit more than any one vertex. Freeze $K$, candidates, and admissible weights on development data, then test held-out observations. A broad unconstrained mixture can explain nearly anything and discriminate nothing. Failure of all declared complete-mesh candidates rejects that finite family in scope, not every internal service configuration.
+
+\section{A rigorous target/complement certificate}
+\subsection{Assumptions and block structure}
+Let $P$ project onto the intended rank-four kernel $\mathcal K\subset\mathbb C^{16}$ and $Q=I-P$. For one admitted physical effect $F$, write
+\begin{equation}
+F=\begin{pmatrix}A&B^\dagger\\B&C\end{pmatrix}
+\quad\text{on }\mathcal K\oplus\mathcal K^\perp.
+\end{equation}
+The target statement requires a fixed effect, or a precisely declared valid ensemble effect, known preparation relations, qualified acceptance and processing, a supported likelihood, and controlled drift. A small response on four named inputs alone does not establish these premises or exclude an additional dark direction.
+
+\begin{theorem}[Separated low subspace and principal angle]\label{thm:angle}
+Suppose $F\succeq0$, $\lambda_{\max}(A)\le a$, $\lambda_{\min}(C)\ge\gamma> a\ge0$. Let $S$ project onto the four lowest eigenvectors of $F$. Then
+\begin{equation}
+\lambda_4(F)\le a<\gamma\le\lambda_5(F),\qquad
+\norm{(I-S)P}^2\le\frac a\gamma.
+\end{equation}
+Consequently the largest principal angle between $\ran P$ and $\ran S$ obeys
+$\theta_{\max}\le\arcsin\sqrt{a/\gamma}$.
+\end{theorem}
+\begin{proof}
+Courant--Fischer applied to the four-dimensional trial space $\mathcal K$ gives \[\lambda_4(F)\le\max_{u\in\mathcal K,\norm u=1}u^\dagger Fu\le a\]. Its dual form applied to the twelve-dimensional space $\mathcal K^\perp$ gives \[\lambda_5(F)\ge\min_{v\in\mathcal K^\perp,\norm v=1}v^\dagger Fv\ge\gamma\]. The strict gap makes $S$ a uniquely specified spectral subspace. Positivity and the spectral decomposition give $F\succeq\gamma(I-S)$. For each unit $u\in\mathcal K$,
+$a\ge u^\dagger Fu\ge\gamma\norm{(I-S)u}^2$.
+Take the supremum. For equal-dimensional subspaces the singular values of $(I-S)P$ on $\ran P$ are the sines of principal angles, proving the conclusion.
+\end{proof}
+The off-diagonal block is not assumed zero. Positivity controls it implicitly. If $C\succ0$, the Schur complement gives $B^\dagger C^{-1}B\preceq A$, another view of the constrained coupling.
+
+For simultaneous confidence bounds $a_U,\gamma_L$, the 10-degree program target requires
+\begin{equation}
+\gamma_L>0,\qquad \frac{a_U}{\gamma_L}\le\sin^2(10^\circ)
+=0.0301536896\ldots,
+\end{equation}
+with joint coverage at least 95 percent under the admitted statistical premises. Two separate nominal 95-percent intervals do not automatically provide 95-percent joint coverage. Allocate a joint error budget or use a simultaneous construction. Passing this certificate is neither full-effect tomography nor evidence of nonstandard quantum mechanics.
+
+\subsection{What a fifth-low-eigenvalue statement needs}
+\begin{theorem}[A fifth-eigenvalue upper bound]\label{thm:fifth}
+For the same positive block matrix, let $a=\lambda_{\max}(A)$ and $c=\lambda_{\min}(C)$. Then $\lambda_5(F)\le a+c$.
+\end{theorem}
+\begin{proof}
+Choose a unit eigenvector $v$ of $C$ with eigenvalue $c$ and the five-dimensional trial space $W=\mathcal K\oplus\operatorname{span}\{v\}$. Positivity gives the Cauchy--Schwarz inequality $|u^\dagger Fv|^2\le(u^\dagger Fu)(v^\dagger Fv)\le a\norm u^2 c$ for $u\in\mathcal K$. For $w=u+tv$,
+\begin{align*}
+w^\dagger Fw&\le a\norm u^2+2|t|\sqrt{ac}\norm u+c|t|^2\\
+&=(\sqrt a\norm u+\sqrt c|t|)^2
+\le(a+c)(\norm u^2+|t|^2).
+\end{align*}
+Courant--Fischer over $W$ proves $\lambda_5(F)\le a+c$.
+\end{proof}
+A small complementary Rayleigh quotient gives an upper bound on $c$, but the fifth-eigenvalue conclusion additionally needs the target block bound $a$ and their simultaneous uncertainty. It is not enough to find one dark-looking complementary input while leaving the original four-dimensional block uncontrolled.
+
+\subsection{Complex preparations and finite reconstruction}
+For a Hermitian $d\times d$ block, there are $d^2$ real parameters. Basis preparations determine diagonal entries. For $j<k$, the states $(e_j+e_k)/\sqrt2$ and $(e_j+i e_k)/\sqrt2$ determine real and imaginary off-diagonal entries through the expansions above. This minimal bank has $d+2\binom d2=d^2$ settings. For the four- and twelve-dimensional blocks, the total is $4^2+12^2=160$. Complementary negative-phase preparations add consistency and drift checks, rather than new algebraic degrees of freedom.
+
+Restricting to real states cannot determine imaginary antisymmetric components of a general complex Hermitian effect. A real-effect restriction must be independently justified. Reconstructing a Hermitian matrix from noisy point estimates is not itself a confidence bound. One conservative route bounds every admitted probability simultaneously, propagates interval errors to an operator-norm bound, then uses Weyl's inequality to enclose extreme eigenvalues. Tighter matrix concentration is possible only with its sampling premises and constants declared. Neither approach repairs unqualified physical trial provenance.
+
+
+\subsection{An explicit conservative confidence construction}
+This construction is intentionally simple enough to audit. Assume that all $N=160$ minimal-bank settings return genuine independent Bernoulli trials, with $n_s$ qualified trials at setting $s$. They need not have identical probabilities. For total error budget $\alpha$, define
+\begin{equation}
+\epsilon_s=\sqrt{\frac{\log(2N/\alpha)}{2n_s}}.
+\end{equation}
+Hoeffding and the union bound give $|\hat p_s-p_s|\le\epsilon_s$ for all settings simultaneously with probability at least $1-\alpha$. Independence across settings is not needed for this union step, although each individual bound still needs its admitted within-setting model. Let $\epsilon=\max_s\epsilon_s$. For the minimal reconstruction, diagonal errors are at most $\epsilon$. Each real or imaginary off-diagonal reconstruction subtracts half of two diagonal estimates from one superposition estimate, so its error is at most $2\epsilon$. A complex off-diagonal entry therefore has magnitude error at most $2\sqrt2\epsilon$.
+
+For a Hermitian block of dimension $d$, its error matrix $H$ consequently obeys
+\begin{equation}
+\norm H_2\le\norm H_\infty
+\le\delta_d:=\epsilon+2\sqrt2(d-1)\epsilon.
+\end{equation}
+The first inequality follows from $\norm H_2\le\sqrt{\norm H_1\norm H_\infty}$ and Hermiticity, which makes the absolute column and row norms equal. Weyl's variational eigenvalue bound gives the simultaneous valid choices
+\begin{equation}
+a_U=\lambda_{\max}(\widehat A)+\delta_4,\qquad
+\gamma_L=\lambda_{\min}(\widehat C)-\delta_{12}.
+\end{equation}
+Physical effect constraints may cap a valid upper bound at one or a lower bound at zero. Ad hoc PSD projection of a point estimate does not automatically preserve these particular error bounds. Missing, regenerated, or correlated trials cannot simply be inserted into $n_s$.
+
+This proves a complete, conservative route from admitted counts to the angle theorem. It also exposes cost. For equal $n$, a desired per-probability error $\epsilon$ needs
+\begin{equation}
+n\ge\frac{\log(320/\alpha)}{2\epsilon^2},\qquad n_{\rm total}=160n.
+\end{equation}
+The twelve-dimensional block's row-sum factor is $1+22\sqrt2\simeq32.11$, so a naive elementwise method can be expensive. Matrix-aware or contrast-specific designs may improve efficiency, but must prove their own simultaneous coverage. This is a mathematical reason to qualify the observation model before spending on precision.
+
+\section{Decision discipline, stopped series, and finite closure}
+The retained Tuna Pauli series is complete and stopped on its preregistered reference-drift rule. The count-level change $0.0282593$ exceeds the frozen $0.02$ threshold. The intended inference remains withheld even if another score moves favourably. The order pilot is descriptive; it supplies no automatic continuation admission. The nine-job Tuna successor remains an unsubmitted proposal with its own endpoint, covariance, pauses, time ceiling, and admission requirements. No rule is imported from the stopped series or pilot. Raw scores are reported first; assignment inversion is a labelled sensitivity unless a separately admitted protocol explicitly defines another primary endpoint.
+
+For the BDSC diagnostic, the retained source contains two completed jobs with 24 iterations each and three canceled submissions with no retained iterations. These form 48 decoded observations plus a separate protocol-event record. They must not be joined with later acquisitions as one uninterrupted sequence. The requested second block is not present in the pinned evidence and was not collected here; existing frozen approvals keep their original scope. No new approval is inferred from this audit.
+
+The historical 117 IBM seconds are a dated usage observation, not a live balance refresh, and remain allocated zero by this work. A future case states provider, backend, why simulation cannot answer it, discriminating observable, competing models, power or precision model, shot/time/credit ceilings, drift and completeness stops, and exactly what result ends the case. Cancellation authority names the specific job. An account-wide queue is not authority over another worker's submissions.
+
+Each case receives exactly one terminal outcome from: established in scope; alternative supported; route unavailable; inconclusive within budget; protocol inadmissible. Open cases retain a documented next decision rather than a premature terminal label. Scientific closure may be an unavailable certification route with preserved diagnostic observations. Inconclusive does not mean the algebraic kernel was falsified; route unavailable does not erase a service anomaly.
+
+
+\section{Parameter map and falsifiable alternatives}
+Every proposed intervention can be represented by controlled variables $z$, nuisance state $h$, and observed law $p(y\mid z,h)$. Identifiability concerns whether competing models induce different laws on the controlled design, not merely whether a fitted model is flexible. The following map makes previously implicit variables explicit.
+\begin{longtable}{p{.20\textwidth}p{.34\textwidth}p{.37\textwidth}}
+\toprule
+Question & Controlled or recorded variables & Distinguishing observation and residual limit\\\midrule
+\endhead
+Predecessor dependence & Target logical/compiled identity; immediate predecessor; slot; block; source; policy & Target differences track changed predecessors under counterbalancing. Cannot alone separate stale controls from result attribution.\\
+Opening budget & Budget; first entry; prior loads; payload form; actual times; mesh & Matched budget reversal rejects a deterministic budget-only rule. Recovery and prevention remain separate interventions.\\
+Acceptance filtering & Full attempts/detections; coherent probe; correction path & Weighted unconditional identities pass while conditional identities fail. Requires independently qualified acceptance.\\
+Phase mechanism & Defined recombination phase; analyser identity; intensities & Held-out quadratures agree with a specified phase model and competing amplitude/filter models fail. Unlocated phase language is insufficient.\\
+Compilation ensemble & Same state across seeds; seed weights; returned matrices; block & A label-independent admitted ensemble predicts held-out scientific contrasts. Different-state scatter alone is not its variance.\\
+Dark-space certificate & Complex bank; target/complement bounds; drift; likelihood & Simultaneous $a_U/\gamma_L\le\sin^2 10^\circ$ with admitted premises. Low named-input response alone is insufficient.\\
+Additional low direction & Complementary Rayleigh probe plus target-block upper bound & A simultaneous fifth-eigenvalue upper bound crosses the frozen low threshold. A single dark count does not suffice.\\
+\bottomrule
+\end{longtable}
+A proposed hidden-state description $h_{t+1}=T(h_t,z_t)$ and $Y_t\sim p(\cdot\mid h_t,z_t)$ is a model family, not evidence that a physical dynamical fixed point exists. Compare constrained mechanisms on held-out sequences. A model with an arbitrary state for every observation has no useful falsifying prediction. Randomizing order can break a designed confounding, but unrecorded execution reordering or changed compilation can reintroduce it. Retain the actual execution contract.
+
+\section{A unified framework: preservation obligations across observation maps}
+The following synthesis is a proposed organizational framework, not a priority claim or a new physical law. Its purpose is to make the program's next decision explicit.
+
+For each arrow in the pipeline, declare an object type, a map, and an invariant to preserve. Algebra-to-operator encoding preserves bilinearity in the second argument and a specified kernel, while not preserving multiplication composition. Projection preserves central inversion and pushforward mass, while losing source identity. A compiler contract preserves a requested numerical effect within tolerance. A qualified physical implementation preserves the preparation/readout relationship needed for one effect. A recording map preserves output labels, denominator semantics, and acquisition identity. A statistical analysis preserves its declared trial model and error budget.
+
+A claim is reviewable when its evidence graph supplies a path of justified preservation obligations from prediction to endpoint. An unresolved arrow remains a named premise. This viewpoint explains why visually attractive agreement can fail certification: a downstream statistic may be insensitive to precisely the missing invariant. It also explains why a negative result can be productive: an intervention can close one path while preserving valid earlier mathematics and later service observations.
+
+Three useful derived connections follow.
+
+First, information loss and conditioning must be distinguished. Linear coarse graining contracts distinguishability, whereas state-dependent normalization changes the model class. The first calls for conserved mass and labels; the second calls for acceptance qualification.
+
+Second, averaging and kernel certification interact nontrivially. A legitimate positive ensemble's exact kernel is the intersection of individual kernels. Randomization can improve average calibration while making an exact common kernel smaller. Measure the target scientific contrast across seeds rather than treating randomization as an automatic cure.
+
+Third, identity closure and causal identifiability are independent. Perfect hashes and job IDs can establish that the same wrong response recurs. Only a discriminating intervention can determine whether changing a predecessor changes that response. Conversely, a well-randomized intervention with an unqualified result-association chain still cannot identify the physical instrument. Both closures are needed.
+
+\section{Infographics that expose decisions rather than decorate results}
+The revised figure suite should label data origin, source pin, output alphabet, denominator, normalization, and inference boundary. Eight existing audit panels provide a starting point: projection mass; coordinate/random controls; exact algebra operators; raw Tuna replicas; exploratory IBM switching; requested/compiled/observed Belenos distances; diagnostic observations with canceled events; and composition-norm/package checks.
+
+Additional run-data figures can be constructed without invented physical measurements:
+\begin{enumerate}
+\item A provider denominator waterfall with separate planned, submitted, reported, returned, and eligible columns. Unknown transitions remain visibly unknown rather than closing a fictitious flow.
+\item A cross-pin identity matrix whose cells link one provider job to all retained locations and observation fingerprints. It displays coverage, not replication strength.
+\item A dependency heatmap separating physical roots, analytical roots, and assumption gaps. Mark withdrawal-sensitive claims independently of numerical deletion shifts.
+\item A two-axis conformance plot of $d_{\rm model}$ versus $d_{\rm observation}$, with job-cluster symbols and threshold definitions. Avoid a scalar averaged ``fidelity''.
+\item A predecessor-by-target intervention matrix showing planned and observed cells, with compilation fingerprints and execution order. Empty counterfactual cells communicate nonidentifiability.
+\item A six-state even/odd contrast panel with acceptance-weighted and conditional versions side by side, and a covariance-aware simultaneous band where qualified.
+\item A target/complement spectral interval plot showing $a_U$, $\gamma_L$, the gap, and the implied angle bound. Render ``inadmissible'' when premises fail instead of displaying a spurious precise angle.
+\item A protocol timeline that keeps cancellation, approved submission, execution, calibration, and analysis events separate. Only true event timestamps support temporal interpretation.
+\end{enumerate}
+Use NumPy/SciPy for declared numerical calculations, SymPy/FLINT for exact algebra checks, pandas for tabular joins, NetworkX for declared support graphs, Matplotlib for static export, and Plotly for inspectable point labels. Pymatgen/spglib can cross-check applicable crystallographic symmetries, ASE can supply explicitly synthetic prototypes, and PyVista can help interactive geometry. More packages do not create independent evidence: agree conventions first, compare independent implementations where useful, and record actual import/version status. The six retained package multiplication tables were checked against the repository convention; that is not the same as freshly executing all six native packages.
+
+\section{Reproducibility, unresolved work, and publication boundaries}
+The supplement contains this source, a compiled PDF, executable mathematical checks, source pins, a checked mathematical result file, and the prior figure-audit bundle where available. The repository PR holds the derived registry view, denominator census, dependency report, replay scripts, acquisition-decision preflight, tests, and reporting corrections. No provider SDK is imported by the closure replay.
+
+The mathematical supplement verifies the D14 moment and pair counts, exact zero product and spectrum, six-state identities and filter counterexample, and exact rational examples of both spectral bounds. Such examples test arithmetic and implementation; the theorems rely on their proofs, not finite simulations. Repository replay tests also mutate identity, support, denominators, and admission fields to check that failures cannot silently inflate evidence.
+
+Remaining obligations are substantive: retain the full 135-candidate replay, qualify effective processing and physical trial denominators, identify missing calibration/preparation clusters, specify claim-specific numerical deletions, complete the frozen diagnostic block through the authorized provider path, admit or close the independent Tuna successor, and obtain approval for a priced discriminating predecessor case. The draft PR cannot be represented as a completed physical certificate or a completed full native-runtime validation. The unavailable Qiskit runtime limits the full gate suite in this environment.
+
+The strongest scientific statement supported by this edition is a structured one: exact sedenion encoding and projected-geometry calculations are reproducible; several original figure interpretations are false or overbroad; two distinct Belenos discrepancies remain retained and causally unresolved; a stopped Tuna series remains stopped; and the path to a four-dimensional physical dark-subspace certificate has explicit mathematical sufficient conditions whose experimental premises still require qualification.
+
+\appendix
+\section{Pinned repository evidence}\label{app:pins}
+Repository: \url{https://github.com/Oichkatzelesfrettschen/gororoba-quantum}. The view is a union over these source-relative trees, not a declaration that one supersedes every other:
+\begin{description}
+\item[Main] \texttt{4e56b8097e8227c757cff80df30e6a7ccb285fb7}.
+\item[Tuna Pauli] \texttt{bba9586549c9e17900229dd74705936cdcd64bbf}.
+\item[Belenos diagnostic / PR 350] \texttt{404754d92e2467b4bf3667b29fc8115a63686bd6}.
+\item[Photonic conformance] \texttt{bc797e7d562faf751e3eb1af0bb2f6d084ad4f86}.
+\item[Tuna supplemental head] \texttt{2f9168052148f1dce851dabbffbe41bc277ba025}.
+\item[Photonic supplemental head] \texttt{27e31f46554b99086cc8b0f235e7ce9d27967f0d}.
+\end{description}
+Canonical paths are \path{docs/design/ascella-instrument-readiness-and-packed-tests.md}, \path{results/hypercomplex/belenos-repeat-readout.json}, \path{docs/archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md}, and \path{docs/notes/algebra_circuit_rules.md}. Exact joined provenance, per-artifact hashes, and unresolved entries belong to the generated snapshot rather than being manually duplicated as an alternative registry.
+
+\section{A compact adversarial checklist for each claim}
+For a theorem, identify the domain, hypotheses, convention, and proof. For an exact calculation, identify source bytes and arithmetic. For a simulation, identify model, seed, convergence, and what was not simulated. For a hardware observation, identify provider job, setting, compilation, physical denominator, processing, and cluster. For an inference, additionally identify the estimand, likelihood, selection, covariance, and stopping rule. For a proposed intervention, identify competing mechanisms and the observation that changes the decision. For a figure, identify which of these objects its marks encode.
+
+These checks do not guarantee truth. They make error localizable. The project should prefer an explicit unresolved arrow to an apparently unified story that silently crosses mathematical, software, and physical levels.
+
+\section{Companion figure atlas}
+The panels below are the retained computational audit exports. Their original source pins and data tables are in the companion figure-audit bundle. They are supporting illustrations, not additional acquisitions.
+\IfFileExists{figures/01_projection_mass.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/01_projection_mass.png}
+\caption{Exact D14 pushforward mass. Coordinate lengths and pair measures are dimensionless mathematical data, not hardware observations. The complete source-pair view retains collisions at zero distance.}\end{figure}
+}{}
+\IfFileExists{figures/02_projection_controls.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/02_projection_controls.png}
+\caption{Coordinate-triple census and random-direction controls. Seed variation is computational projection sensitivity. Inversion survives every linear image; the fixed covariance eigenvalue follows from the codimension-two support.}\end{figure}
+}{}\clearpage
+
+\IfFileExists{figures/03_algebra_operators.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/03_algebra_operators.png}
+\caption{Exact blade graph and left-multiplication operator. Vertices are defined composite blade representatives, not basis units. The 32-entry matrix obeys the exact sparsity rule.}\end{figure}
+}{}
+\IfFileExists{figures/04_tuna17_hardware.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/04_tuna17_hardware.png}
+\caption{Retained Tuna-17 raw selector-zero observations by replica and state class. Raw counts remain primary. These acquisitions do not override a stopped later series or constitute the four-dimensional subspace certificate.}\end{figure}
+}{}\clearpage
+
+\IfFileExists{figures/05_fez_switching.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/05_fez_switching.png}
+\caption{Exploratory IBM within-run response pattern. Its timing and fitted description are not a preregistered mechanism or a new dynamical law. Interpret only within the retained acquisition and estimator.}\end{figure}
+}{}
+\IfFileExists{figures/06_belenos_conformance.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/06_belenos_conformance.png}
+\caption{Retained requested, returned-model, and observed-law comparisons from the compilation audit. The two TV axes refer to different implementation arrows and must not be averaged as one fidelity.}\end{figure}
+}{}\clearpage
+
+\IfFileExists{figures/07_belenos_diagnostic.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/07_belenos_diagnostic.png}
+\caption{Raw-decoded retained diagnostic observations. Two completed jobs contribute 48 iterations. Three canceled submissions remain separate protocol events and supply no fabricated observations.}\end{figure}
+}{}
+\IfFileExists{figures/08_norm_and_packages.png}{\begin{figure}[!ht]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{figures/08_norm_and_packages.png}
+\caption{Synthetic dimensionless norm-composition ratios and convention checks against six retained native-package tables. This is mathematical computational evidence; the packages were not all freshly imported and no hardware data underlie the norm ratios.}\end{figure}
+}{}\clearpage
+
+\clearpage
+\begin{thebibliography}{9}
+\bibitem{lundeen} J. S. Lundeen et al., ``Measuring measurement,'' arXiv:0807.2444 (2008); published as ``Tomography of quantum detectors,'' Nature Physics 5, 27--30 (2009). \url{https://arxiv.org/abs/0807.2444}; \url{https://doi.org/10.1038/nphys1133}. Consulted for detector-tomography framing; the present experiment is not a reproduction of that paper.
+\bibitem{gst} E. Nielsen et al., ``Gate Set Tomography,'' Quantum 5, 557 (2021), arXiv:2009.07301v2. \url{https://arxiv.org/abs/2009.07301}; \url{https://doi.org/10.22331/q-2021-10-05-557}. Consulted for self-consistency and gauge framing, not as a certification of this service.
+\bibitem{drift} T. Proctor et al., ``Detecting and tracking drift in quantum information processors,'' Nature Communications 11, 5396 (2020), arXiv:1907.13608v3. \url{https://arxiv.org/abs/1907.13608}; \url{https://doi.org/10.1038/s41467-020-19074-4}. Consulted for time-dependent characterization framing.
+\bibitem{repo} Oichkatzelesfrettschen, \emph{gororoba-quantum}, pinned sources in Appendix~\ref{app:pins}; derived evidence-closure view and draft PR 359. \url{https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/359}. Provider data and historical proposals retain their original scopes.
+\end{thebibliography}
+\end{document}

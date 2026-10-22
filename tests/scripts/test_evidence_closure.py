@@ -88,7 +88,7 @@ def test_legacy_and_ambiguous_dispatch_stay_unresolved() -> None:
         raise AssertionError("A dispatch attempt without a job identity was counted as completed")
 
 
-@pytest.mark.parametrize("changed", ["evidence", "gates", "proof_origin"])
+@pytest.mark.parametrize("changed", ["evidence", "gates", "proof_origin", "domain", "related_claims", "withdrawn_text"])
 def test_changed_support_is_not_an_auditor_nonconflict(changed: str) -> None:
     first = snapshot("main", "run")
     claim = {
@@ -111,8 +111,10 @@ def test_changed_support_is_not_an_auditor_nonconflict(changed: str) -> None:
         second["claims"][0]["evidence"].append({"path": "two.json", "sha256": "b" * 64})
     elif changed == "gates":
         second["claims"][0]["gates"] = {"gate-two": "bytes"}
-    else:
+    elif changed == "proof_origin":
         second["claims"][0]["proof_origin"] = "repository-proof"
+    else:
+        second["claims"][0][changed] = ["changed"] if changed == "related_claims" else "changed"
     view = closure.reconcile([first, second])
     if not view["unresolved"] or view["claims"][0]["classification"] != "claim conflict":
         raise AssertionError("An evidence/gate/proof-origin change escaped support reconciliation")
@@ -262,3 +264,33 @@ def test_withdrawal_includes_analytical_and_control_roots() -> None:
         raise AssertionError("Dependency withdrawal was promoted to numerical re-estimation")
     if not any(root.startswith("analysis:control.json:") for root in report["inherited_support_roots"]):
         raise AssertionError("A shared analysis root was lost through transitive support")
+
+
+@pytest.mark.parametrize("kind", ["dependency", "acquisition"])
+def test_auditor_rejects_transitive_support_conflicts(kind: str) -> None:
+    first = snapshot("main", "run")
+    root = {
+        "id": "root",
+        "statement": "root",
+        "acquisitions": ["a"],
+        "depends_on": [],
+        "evidence": ["retained"],
+        "gates": {"check": "replay"},
+    }
+    child = {**root, "id": "child", "depends_on": ["root"], "acquisitions": []}
+    grandchild = {**child, "id": "grandchild", "depends_on": ["child"]}
+    first["claims"] = [root, child, grandchild]
+    first["acquisitions"] = [{"id": "a", "provider": "quandela", "question": "original"}]
+    second = copy.deepcopy(first)
+    second["source"]["name"] = "other"
+    if kind == "dependency":
+        second["claims"][0]["statement"] = "different"
+    else:
+        second["acquisitions"][0]["question"] = "different"
+    view = closure.reconcile([first, second])
+    if closure.auditor_subset(view)["claims"]:
+        raise AssertionError("Conflicted transitive/acquisition support entered the auditor packet")
+    if any(not entry["support_conflicts"] for entry in view["claims"]):
+        raise AssertionError("Conflict provenance was not propagated to every supported claim")
+    if not view["unresolved"]:
+        raise AssertionError("Support conflict was not published")

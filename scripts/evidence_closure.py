@@ -542,44 +542,30 @@ def consensus(observations: list[dict[str, Any]], field: str) -> dict[str, Any]:
     }
 
 
+def normalize_record(value: Any) -> Any:
+    """Registry lists are unordered declarations; preserve every schema field."""
+    if isinstance(value, dict):
+        return {key: normalize_record(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return sorted((normalize_record(item) for item in value), key=canonical)
+    return value
+
+
 def reconcile(snapshots: list[dict[str, Any]]) -> dict[str, Any]:
     jobs: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     claim_versions: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    acquisition_versions: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for snap in snapshots:
         for row in snap["observations"]:
             jobs[row["provider"], row["job_id"]].append({**row, "source": snap["source"], "schema": snap["schema"]})
+        for acquisition in snap.get("acquisitions", []):
+            acquisition_versions[acquisition["id"]].append({"source": snap["source"], "acquisition": acquisition})
         for claim in snap["claims"]:
             claim_versions[claim["id"]].append({"source": snap["source"], "claim": claim})
     claims: list[dict[str, Any]] = []
     conflicts = []
     for identity, variants in sorted(claim_versions.items()):
-        semantic_fields = (
-            "statement",
-            "status",
-            "evidence_class",
-            "boundary",
-            "acquisitions",
-            "depends_on",
-            "assumptions",
-            "evidence",
-            "gates",
-            "documents",
-            "proof_origin",
-            "kernel_receipt",
-            "supersedes",
-            "superseded_by",
-        )
-        semantics = {
-            canonical(
-                {
-                    k: sorted(v["claim"][k], key=canonical)
-                    if isinstance(v["claim"].get(k), list)
-                    else v["claim"].get(k)
-                    for k in semantic_fields
-                }
-            )
-            for v in variants
-        }
+        semantics = {canonical(normalize_record(v["claim"])) for v in variants}
         classification = "claim conflict" if len(semantics) > 1 else "same declared semantics"
         if len(semantics) > 1:
             conflicts.append(
@@ -592,6 +578,44 @@ def reconcile(snapshots: list[dict[str, Any]]) -> dict[str, Any]:
                 }
             )
         claims.append({"id": identity, "classification": classification, "variants": variants})
+    acquisitions = []
+    for identity, variants in sorted(acquisition_versions.items()):
+        semantics = {canonical(normalize_record(v["acquisition"])) for v in variants}
+        classification = "acquisition conflict" if len(semantics) > 1 else "same declared semantics"
+        acquisitions.append({"id": identity, "classification": classification, "variants": variants})
+        if len(semantics) > 1:
+            conflicts.append({"acquisition": identity, "reason": "Pinned acquisition definitions disagree."})
+    by_claim = {entry["id"]: entry for entry in claims}
+    conflicted_acquisitions = {
+        entry["id"] for entry in acquisitions if entry["classification"] == "acquisition conflict"
+    }
+
+    def support_conflicts(identity: str) -> list[str]:
+        found: set[str] = set()
+        visited: set[str] = set()
+        pending = [(identity, frozenset[str]())]
+        while pending:
+            current, path = pending.pop()
+            if current in path:
+                found.add(f"dependency cycle: {current}")
+                continue
+            if current in visited:
+                continue
+            visited.add(current)
+            if current not in by_claim:
+                found.add(f"missing dependency: {current}")
+                continue
+            entry = by_claim[current]
+            if entry["classification"] == "claim conflict":
+                found.add(f"claim: {current}")
+            for variant in entry["variants"]:
+                claim = variant["claim"]
+                found.update(f"acquisition: {a}" for a in claim.get("acquisitions", []) if a in conflicted_acquisitions)
+                pending.extend((parent, path | {current}) for parent in claim.get("depends_on", []))
+        return sorted(found)
+
+    for entry in claims:
+        entry["support_conflicts"] = support_conflicts(entry["id"])
     identities = []
     unresolved = list(conflicts)
     for (provider, identity), observations in sorted(jobs.items()):
@@ -656,6 +680,7 @@ def reconcile(snapshots: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "identities": identities,
         "claims": claims,
+        "acquisitions": acquisitions,
         "unresolved": unresolved,
         "declared_unretained_resolutions": coverage_resolutions,
     }
@@ -1003,15 +1028,32 @@ def render(result: dict[str, Any]) -> str:
 
 def auditor_subset(view: dict[str, Any]) -> dict[str, Any]:
     chosen = []
-    for entry in view["claims"]:
+    by_id = {entry["id"]: entry for entry in view["claims"]}
+    acquisition_conflicts = {
+        entry["id"] for entry in view.get("acquisitions", []) if entry["classification"] == "acquisition conflict"
+    }
+
+    def support_clear(identity: str, visiting: frozenset[str] = frozenset()) -> bool:
+        if identity in visiting or identity not in by_id:
+            return False
+        entry = by_id[identity]
         if entry["classification"] != "same declared semantics":
+            return False
+        claim = entry["variants"][0]["claim"]
+        if acquisition_conflicts.intersection(claim.get("acquisitions", [])):
+            return False
+        return all(support_clear(parent, visiting | {identity}) for parent in claim.get("depends_on", []))
+
+    for entry in view["claims"]:
+        if not support_clear(entry["id"]):
             continue
         version = next((v for v in entry["variants"] if v["source"]["name"] == "main"), None)
         if version and version["claim"]["evidence"] and "replay" in version["claim"]["gates"].values():
             chosen.append(version)
     return {
         "scope": (
-            "Nonconflicting main claims with explicit retained evidence and a declared "
+            "Main claims without declared claim/dependency/acquisition conflicts, "
+            "with explicit retained evidence and a declared "
             "replay gate; metadata selection only, external audit not performed."
         ),
         "claims": chosen,

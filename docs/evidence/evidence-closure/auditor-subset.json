@@ -433,56 +433,6 @@
       "claim": {
         "acquisitions": [],
         "assumptions": [],
-        "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshots) with each channel injected alone and uniformly (the conditional phase also one edge at a time) at seed-7 compiles; mixed edge-phase vectors are untested, the reference's slope comes from the model rather than a visibility calibration, and its X-quadrature arms and their share of the shot budget are unsized, the residual after the conditional share is unidentified, since extra depolarizing moves the pair the same way; the matched null holds on Kingston only (the incoherent baseline is 1.3 to 1.5 standard errors at 40,000 shots on Fez and Marrakesh), mixtures cancel, leakage and crosstalk are outside it, and no hardware run of the pair exists.",
-        "depends_on": [
-          "singular-sector-split"
-        ],
-        "documents": [
-          "docs/evidence/echo_dilation_noise/README.md",
-          "docs/notes/singular_sector_dynamics.md"
-        ],
-        "domain": "implementation",
-        "evidence": [
-          {
-            "path": "docs/evidence/echo_dilation_noise/result.json",
-            "sha256": "22ff95398e68e05dd8fc8d2973250362a91cebaa4a9964b4ac702ca9f2df7c50"
-          },
-          {
-            "path": "docs/evidence/echo_dilation_noise/arms.qpy",
-            "sha256": "9da4bdc34cbe308d9bc801725792c30ab1fea0fc34a0352611ca1a722ffcab75"
-          },
-          {
-            "path": "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json",
-            "sha256": "b244e7b16f771b3d0ee4e2263d8c63b337476c0445a323c90981ee0ac6c5d684"
-          },
-          {
-            "path": "docs/evidence/calibration/history/ibm_kingston/20261015T2035330700.json",
-            "sha256": "1b96aa950e86733f287b80d4a88bd737276a4f4e136f5cfc1ea180c9f69f1865"
-          },
-          {
-            "path": "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json",
-            "sha256": "6c8c75217326e2dbb03b74d7b5d5df47496176790e4a285b58a048c71bbc166c"
-          }
-        ],
-        "evidence_class": "numerical or stochastic simulation",
-        "gates": {
-          "core-313": "replay"
-        },
-        "id": "echo-pair-coherent-sign",
-        "statement": "Under the retained ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-15, the echo-matched pair U Z U^dagger Z U and U U^dagger U on the dark input of e1+e10, compiled once at 141 CZ with a symbolic ancilla reflection so both arms share every non-virtual gate, moves amplified - echo by 1e-3 or more positively only for a PREP angle error (+0.012 to +0.019 at 0.03 rad), and every shift of 1e-3 or more from SX over-rotation, CZ local phase and CZ conditional phase, at both signs, is negative (-0.009 to -0.012 for a 0.01 rad conditional phase, -0.024 to -0.029 for a 0.01 rad local phase), so it separates no physical rotation error from a CZ phase. The edges' conditional phases act jointly: the four single-edge shifts sum to 0.24 to 0.33 of the uniform shift, so a per-edge 2m-CZ Y-basis reference, which cancels local phase and SX over-rotation to 8.3e-4 rad, must, under the uniform-phase model, bound every edge to the joint tolerance of 0.0049 to 0.0058 rad, 340 to 501 Y-basis shots per edge and target state at m = 24 for a 40,000-shot pair.",
-        "status": "established",
-        "superseded_by": null,
-        "supersedes": []
-      },
-      "source": {
-        "commit": "4e56b8097e8227c757cff80df30e6a7ccb285fb7",
-        "name": "main"
-      }
-    },
-    {
-      "claim": {
-        "acquisitions": [],
-        "assumptions": [],
         "boundary": "Count identities carry no topology-transfer map; information needs the full average and detail coordinates.",
         "depends_on": [],
         "documents": [
@@ -1363,39 +1313,6 @@
         "id": "n21-linear-encoding-surrogate",
         "statement": "Over all 83,328 cosets B S_5 of GL(5,2), conjugating every N=21, a=2 order-finding multiplier by one uncontrolled linear B gives a ten-round phase-controlled CX surrogate 9 s(4) + s(2) whose unique minimum is 1,896 at columns (1, 2, 5, 13, 25), against 2,556 at B = I; 2,750 cosets beat B = I, and s(B^-1 f_16 B) = s(B^-1 f_4 B) on every one of 1,000 sampled cosets as 16 = 4^-1 mod 21 predicts.",
         "status": "established",
-        "superseded_by": null,
-        "supersedes": []
-      },
-      "source": {
-        "commit": "4e56b8097e8227c757cff80df30e6a7ccb285fb7",
-        "name": "main"
-      }
-    },
-    {
-      "claim": {
-        "acquisitions": [],
-        "assumptions": [],
-        "boundary": "Tests implementation fidelity, not the census theorem, which is proved. Under the Kingston noise model the factorized witness compiles to about 434 CZ with V+ = 0.370 and V- = 0.346, so a single visibility misses the census by 0.005 and single-pair references move it by +-0.02; the hardware visibility and shot cost stay unmeasured.",
-        "depends_on": [
-          "cd-associator-census"
-        ],
-        "documents": [
-          "docs/evidence/census_frequency_design/README.md"
-        ],
-        "domain": "algebra",
-        "evidence": [
-          {
-            "path": "docs/evidence/census_frequency_design/result.json",
-            "sha256": "cc2d90a1c19932494193907717f6a20dbe210fe02dd04804ca019b1e79ff3359"
-          }
-        ],
-        "evidence_class": "proposed experiment",
-        "gates": {
-          "core-288": "replay"
-        },
-        "id": "proposed-census-frequency",
-        "statement": "Read a per-triple associator witness on the 3360 sedenion triples with i and j nonzero and unequal: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 gives their dark fraction f = 1848/3360, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-; the other 736 triples are bright exactly, so the census is f x 3360/4096 = 231/512, a test of how faithfully hardware carries the sign function.",
-        "status": "proposed",
         "superseded_by": null,
         "supersedes": []
       },
@@ -4186,5 +4103,5 @@
     "Re-run the named replay, not merely a checksum gate.",
     "Verify source-relative evidence hashes and all physical support dependencies."
   ],
-  "scope": "Nonconflicting main claims with explicit retained evidence and a declared replay gate; metadata selection only, external audit not performed."
+  "scope": "Main claims without declared claim/dependency/acquisition conflicts, with explicit retained evidence and a declared replay gate; metadata selection only, external audit not performed."
 }
