@@ -1,0 +1,14 @@
+{
+ "files": {
+  "iqm.json": "d8286e2ec0a0d30941454a3a95da18d39e7b861cb3118da938d2a54033451e1f",
+  "open-quantum/catalogue.json": "2384ced077d39c13fe5e919b11f573f94863d691273815a13e12f4398927e990",
+  "open-quantum/estimates.json": "e122ca682c4e37fe08657e6d43905b3e623d3a3482f6a430af1b1ee37ba0790c",
+  "open-quantum/pricing-sources.json": "979daab442adbc2414ebfaeb1ac3d424e34015beb33ac28d60ceede856c37327",
+  "open-quantum/pricing.json": "3233d2b282273ab0982f20351985b4a58499cc06ca3f8d0edbe85192800f5459",
+  "quandela.json": "0b741b6acc3db7d9f84cc9a19d136db3f95585717f67e9a4925116a02e26300d"
+ },
+ "request_started_utc": "2026-10-22T20:53:53.983284+00:00",
+ "retrieved_utc": "2026-10-22T20:54:28.608675+00:00",
+ "schema": "provider-api-audit-v1",
+ "scope": "read-only provider observations and circuit-free estimates; no upload, job or booking"
+}
