@@ -1439,6 +1439,116 @@ class RetentionChecks(unittest.TestCase):
         self.assertNotIn("raw_data", results[0])
         self.assertTrue(all(method == "GET" for method, _ in client.calls))
 
+    def test_mcp_backend_uses_account_queue_and_reports_distinct_live_statuses(self) -> None:
+        module = mcp_with_stubs()
+        client = Mock()
+        client.get.side_effect = [
+            {"id": 7, "identifier": "tuna_17", "enabled": True, "status": "offline"},
+            {"number_of_jobs_in_queue": 0},
+            {"id": 7, "identifier": "tuna_17", "enabled": True, "status": "idle"},
+            {"number_of_jobs_in_queue": 12},
+        ]
+        client.pages.return_value = [
+            {"id": 7, "backend_type_id": 7, "status": "calibrating", "last_heartbeat": "2026-10-22T16:43:34Z"},
+            {"id": 6, "backend_type_id": 6, "status": "offline"},
+        ]
+        with patch.object(module, "client", return_value=client):
+            account = module.qi_backend(7)
+            self.assertIn("queue_user_only", account)
+            global_queue = module.qi_backend(7, user_only=False)
+        self.assertEqual(account["status"], "offline")
+        self.assertTrue(account["enabled"])
+        self.assertEqual(account["queue"]["number_of_jobs_in_queue"], 0)
+        self.assertIs(account["queue_user_only"], True)
+        self.assertEqual(account["backend_instances"], [client.pages.return_value[0]])
+        self.assertEqual(global_queue["status"], "idle")
+        self.assertEqual(global_queue["queue"]["number_of_jobs_in_queue"], 12)
+        self.assertIs(global_queue["queue_user_only"], False)
+        for record in (account, global_queue):
+            started = datetime.datetime.fromisoformat(record["request_started_utc"])
+            finished = datetime.datetime.fromisoformat(record["retrieved_utc"])
+            self.assertEqual(started.utcoffset(), datetime.timedelta(0))
+            self.assertEqual(finished.utcoffset(), datetime.timedelta(0))
+            self.assertLessEqual(started, finished)
+        self.assertEqual(
+            client.get.call_args_list,
+            [
+                unittest.mock.call("/backend_types/7"),
+                unittest.mock.call("/backend_types/7/queue", user_only=True),
+                unittest.mock.call("/backend_types/7"),
+                unittest.mock.call("/backend_types/7/queue", user_only=False),
+            ],
+        )
+
+    def test_mcp_backend_catalogue_exposes_queue_scope_and_freshness(self) -> None:
+        module = mcp_with_stubs()
+        client = Mock()
+        backend: dict[str, Any] = {key: None for key in module.LIMIT_FIELDS}
+        backend.update(id=7, identifier="tuna_17", status="offline", enabled=True)
+        client.pages.return_value = [backend]
+        client.get.side_effect = [{"number_of_jobs_in_queue": 0}, {"number_of_jobs_in_queue": 12}]
+        with patch.object(module, "client", return_value=client):
+            account = module.qi_backends()[0]
+            self.assertIn("queue_user_only", account)
+            global_queue = module.qi_backends(user_only=False)[0]
+        self.assertIs(account["queue_user_only"], True)
+        self.assertEqual(account["queue"]["number_of_jobs_in_queue"], 0)
+        self.assertIs(global_queue["queue_user_only"], False)
+        self.assertEqual(global_queue["queue"]["number_of_jobs_in_queue"], 12)
+        self.assertEqual(account["status"], "offline")
+        self.assertIn("request_started_utc", account)
+        self.assertIn("retrieved_utc", account)
+        self.assertEqual(
+            client.get.call_args_list,
+            [
+                unittest.mock.call("/backend_types/7/queue", user_only=True),
+                unittest.mock.call("/backend_types/7/queue", user_only=False),
+            ],
+        )
+
+    def test_mcp_hardware_status_reads_again_without_rewriting_backend_state(self) -> None:
+        module = mcp_with_stubs()
+        client = Mock()
+        client.pages.side_effect = [
+            [{"id": 7, "backend_type_id": 7, "status": "offline", "last_heartbeat": "2026-10-22T16:43:34Z"}],
+            [{"id": 7, "backend_type_id": 7, "status": "idle", "last_heartbeat": "2026-10-22T16:44:34Z"}],
+        ]
+        with patch.object(module, "client", return_value=client):
+            first = module.qi_hardware_status()[0]
+            second = module.qi_hardware_status()[0]
+        self.assertEqual(first["status"], "offline")
+        self.assertEqual(second["status"], "idle")
+        self.assertEqual(second["last_heartbeat"], "2026-10-22T16:44:34Z")
+        self.assertIn("request_started_utc", first)
+        self.assertIn("retrieved_utc", second)
+        self.assertEqual(
+            client.pages.call_args_list, [unittest.mock.call("/backends"), unittest.mock.call("/backends")]
+        )
+
+    def test_mcp_observation_intervals_preserve_subsecond_completion(self) -> None:
+        started = datetime.datetime(2026, 10, 22, 17, 3, 1, 123456, tzinfo=datetime.UTC)
+        finished = datetime.datetime(2026, 10, 22, 17, 3, 1, 823456, tzinfo=datetime.UTC)
+        parse = datetime.datetime.fromisoformat
+        for name in ("qi_backend", "qi_backends", "qi_hardware_status"):
+            with (
+                self.subTest(tool=name),
+                patch.object(platform.datetime, "datetime", wraps=datetime.datetime) as clock,
+            ):
+                clock.now.side_effect = [started, finished]
+                module = mcp_with_stubs()
+                client = Mock()
+                backend: dict[str, Any] = {key: None for key in module.LIMIT_FIELDS}
+                backend.update(id=7, backend_type_id=7, status="offline")
+                client.pages.return_value = [backend]
+                client.get.side_effect = lambda path, observed_backend=backend, **params: (
+                    {"number_of_jobs_in_queue": 0} if path.endswith("/queue") else observed_backend
+                )
+                with patch.object(module, "client", return_value=client):
+                    result = getattr(module, name)(7) if name == "qi_backend" else getattr(module, name)()
+                record = result if name == "qi_backend" else result[0]
+                self.assertEqual(parse(record["request_started_utc"]), started)
+                self.assertEqual(parse(record["retrieved_utc"]), finished)
+
 
 class TokenRefreshChecks(unittest.TestCase):
     """Client.refresh against a stand-in SDK whose authorization server rotates refresh tokens.
