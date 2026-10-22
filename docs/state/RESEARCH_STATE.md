@@ -1209,6 +1209,10 @@ circuit and charges the account ledger's change.
 - **proposed-signed-kernel-probe** (proposed experiment, implementation). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order.
   Boundary: Priced against direct counting before any hardware case; no universal speedup follows.
   Depends on: algebra-circuit-fixtures.
+- **proposed-tuna17-zero-divisor-matched-response** (proposed experiment, hardware). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
+  Boundary: Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.
+  Evidence: [tuna17-zero-divisor-matched-response.md](../design/tuna17-zero-divisor-matched-response.md).
+  Gates: replayed by core-632, core-633.
 - **proposed-conditional-ramsey-hamiltonian** (proposed experiment, hardware). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model.
   Boundary: Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding. The ibm_kingston pair cases (68, 67) and (67, 66) are retired without a run (docs/state/QPU_RUN_CENSUS.md). The Tuna-17 coupler map (qi-tuna17-coupler-zz-map) runs the conditional-arm fit for J and omega on another device; no run collects the Bell odd and even coherence rates or the nu_odd + nu_even falsifier.
   Depends on: hw-coherence-window.

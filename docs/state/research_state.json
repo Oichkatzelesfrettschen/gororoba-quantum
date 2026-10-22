@@ -1278,6 +1278,22 @@
   ],
   "claims": [
     {
+      "id": "proposed-tuna17-zero-divisor-matched-response",
+      "statement": "Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.",
+      "evidence": [],
+      "documents": ["docs/design/tuna17-zero-divisor-matched-response.md"],
+      "gates": {"core-632": "replay", "core-633": "replay"},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "sedenion-determinant-membership",
       "statement": "For every real sedenion v=(x0+u,x8+w), det L_v=(s+A+B)^4 [s^2+2s(A+B)+(A-B)^2+4 gamma^2]^2, with s=x0^2+x8^2, A=||u||^2, B=||w||^2 and gamma=<u,w>. A nonzero v is a zero divisor exactly when s=0, A=B and gamma=0.",
       "domain": "algebra",

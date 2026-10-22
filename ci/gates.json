@@ -3972,6 +3972,24 @@
    "name": "core-631",
    "seconds": 1.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response",
+   "name": "core-632",
+   "seconds": 3.0,
+   "tier": "pr",
+   "runtime": "qiskit-2.5"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response",
+   "name": "core-633",
+   "seconds": 2.0,
+   "tier": "pr",
+   "requires": ["qi"]
   }
  ],
  "excluded": [

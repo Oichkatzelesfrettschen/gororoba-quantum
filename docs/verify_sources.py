@@ -788,6 +788,114 @@ def verify_source_archives(root: Path, registry: dict[str, Any]) -> int:
     return len(registered)
 
 
+def verify_web_sources(root: Path, registry: dict[str, Any]) -> tuple[int, int]:
+    """Validate retrieval receipts and note-only descriptions, without fetching bytes."""
+    entries = registry.get("web_sources")
+    if not isinstance(entries, list):
+        raise ValueError("web_sources must be a list")
+    receipt_fields = {"sha256", "bytes", "retrieved_at_utc", "reading_scope", "retention"}
+    allowed = {"note", "url", "status", "page_url"} | receipt_fields
+    receipts = descriptions = 0
+    for entry in entries:
+        require(isinstance(entry, dict) and set(entry) <= allowed, "web source has unknown fields or shape")
+        note = entry.get("note")
+        require(isinstance(note, str) and note.startswith("docs/") and note.endswith(".md"), "web source note path")
+        path = root / note
+        require(
+            ".." not in PurePosixPath(note).parts
+            and path.is_file()
+            and not path.is_symlink()
+            and path.resolve().is_relative_to(root.resolve()),
+            f"web source owning note: {note}",
+        )
+        for field in ("url", "page_url"):
+            if field in entry:
+                value = entry[field]
+                require(isinstance(value, str), f"web source {field} must be a URL")
+                parsed = urlsplit(value)
+                require(
+                    parsed.scheme in {"http", "https"}
+                    and bool(parsed.hostname)
+                    and parsed.username is None
+                    and parsed.password is None,
+                    f"web source {field} must be an HTTP URL",
+                )
+        if receipt_fields & set(entry):
+            require(receipt_fields | {"note", "url"} <= set(entry), "web source receipt fields are incomplete")
+            require(
+                isinstance(entry["sha256"], str) and bool(re.fullmatch(r"[0-9a-f]{64}", entry["sha256"])),
+                "web source receipt digest",
+            )
+            require(type(entry["bytes"]) is int and entry["bytes"] > 0, "web source receipt byte count")
+            stamp = entry["retrieved_at_utc"]
+            require(isinstance(stamp, str) and "T" in stamp, "web source retrieval timestamp")
+            try:
+                parsed_stamp = datetime.fromisoformat(stamp)
+            except ValueError as error:
+                raise ValueError("web source retrieval timestamp") from error
+            require(parsed_stamp.utcoffset() == timedelta(0), "web source retrieval timestamp must be UTC")
+            require(
+                isinstance(entry["reading_scope"], str) and bool(entry["reading_scope"].strip()),
+                "web source reading scope",
+            )
+            require(
+                isinstance(entry["retention"], str)
+                and entry["retention"]
+                in {
+                    "external_reference; mutable response hash identifies inspected bytes",
+                    "external_reference; original notebook read without executing its cells",
+                    "external_reference; sha256 identifies the release artifact",
+                    "retrieval_receipt; response bytes are unretained",
+                },
+                "web source receipt retention status",
+            )
+            receipts += 1
+        else:
+            require(
+                isinstance(entry.get("status"), str) and bool(entry["status"].strip()), "descriptive web source status"
+            )
+            descriptions += 1
+    statuses = registry.get("publication_status", {})
+    require(isinstance(statuses, dict), "publication_status must map source notes to status records")
+    urls = {entry["url"] for entry in entries if "sha256" in entry}
+    for note, status in statuses.items():
+        require(
+            isinstance(note, str)
+            and note.startswith("docs/")
+            and ".." not in PurePosixPath(note).parts
+            and (root / note).is_file()
+            and (root / note).resolve().is_relative_to(root.resolve()),
+            "publication_status owning note",
+        )
+        require(isinstance(status, dict), "publication_status record shape")
+        kind = status.get("status")
+        if kind == "journal-venue-unverified":
+            require(set(status) == {"status"}, "unverified publication_status carries no journal identity")
+            continue
+        require(
+            isinstance(kind, str) and kind in {"journal-identity-verified", "arxiv-journal-reference"},
+            "publication_status value",
+        )
+        required = {"status", "venue", "receipt_url"} | ({"doi"} if kind == "journal-identity-verified" else set())
+        require(set(status) == required, "publication_status fields")
+        require(isinstance(status["venue"], str) and bool(status["venue"].strip()), "publication_status venue")
+        require(
+            isinstance(status["receipt_url"], str) and status["receipt_url"] in urls,
+            "publication_status needs a registered retrieval receipt",
+        )
+        url = urlsplit(status["receipt_url"])
+        if kind == "journal-identity-verified":
+            doi = status["doi"]
+            require(isinstance(doi, str) and bool(re.fullmatch(r"10\.[0-9]{4,9}/\S+", doi)), "publication_status DOI")
+            require(
+                url.hostname == "api.crossref.org" and unquote(url.path).casefold() == f"/works/{doi}".casefold(),
+                "publication_status DOI differs from its Crossref receipt",
+            )
+        else:
+            require(url.hostname == "arxiv.org" and url.path.startswith("/abs/"), "arXiv journal-reference receipt")
+    return receipts, descriptions
+
+
 def verify() -> None:
     root = Path(__file__).resolve().parents[1]
     library = root / "docs"
@@ -824,6 +932,7 @@ def verify() -> None:
     external_count = verify_external_sources(root, registry, published_digests)
     capture_count, manual_audit_count = verify_capture_inventory(root, registry)
     archive_count = verify_source_archives(root, registry)
+    web_receipts, web_descriptions = verify_web_sources(root, registry)
     alias_paths: set[str] = set()
     for entry in registry["aliases"] + [registry["historical_path_alias"]]:
         alias = root / entry["path"]
@@ -857,6 +966,7 @@ def verify() -> None:
         f"Verified {len(registered_paths)} published PDFs, {external_count} external-only PDFs, "
         f"{capture_count} rights captures ({manual_audit_count} external manual-audit records without captures), "
         f"{archive_count} source archives, "
+        f"{web_receipts} web retrieval receipts (response bytes unretained), {web_descriptions} web descriptions, "
         f"{len(alias_paths)} PDF aliases, "
         f"historical identities, and {link_count} local links"
     )

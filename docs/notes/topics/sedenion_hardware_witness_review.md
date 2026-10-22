@@ -1,5 +1,13 @@
 # Sedenion hardware witnesses: review of an external proposal
 
+Historical cutoff: the submit-free dry run of 2026-10-14. The execution
+statements below describe that cutoff. Later measured witnesses are owned by
+the [Kingston findings](../../../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md)
+and [Tuna-17 experiment account](../quantum_inspire/experiments.md#zero-divisor-witness-on-tuna-17-preregistered).
+The [research registry](../../state/RESEARCH_STATE.md) binds their acquisitions
+and raw-analysis digests under the zero-divisor floor, contraction and secondary
+common-response claims.
+
 An external proposal argued that a gate-model device can "realize" sedenionic
 quantum states, against the conjecture that no experiment can. A qubit
 register encodes sedenion arithmetic, not sedenion amplitudes: the device
@@ -88,10 +96,12 @@ about 17 s at 4096 shots and about 10 s at 2048.
 A dark-to-bright ratio not significantly below 1, or a fringe phase away
 from zero, refutes the zero-divisor witness on that device; a ratio near the
 model's 0.09 with the fringe intact shows the zero-divisor interference the
-sedenion product predicts, through the encoding above. No zero-divisor
-circuit in this repository has run on hardware: the written static case
-(results/live/2026-10-11T203535.690679Z) awaits approval, and a fresh dry run
-and case precede any submission.
+sedenion product predicts, through the encoding above. At the 2026-10-14
+cutoff, the repository held a submit-free plan and the static case
+(results/live/2026-10-11T203535.690679Z) awaited approval. Later Kingston and
+Tuna-17 acquisitions executed selected zero-divisor witnesses. Their findings
+record contrast, interval methods, calibration, layout and drift limits;
+the acquisitions identify no unique physical noise mechanism.
 
 ## Provenance
 

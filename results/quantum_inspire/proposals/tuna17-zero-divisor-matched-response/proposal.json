@@ -1,0 +1,92 @@
+{
+ "schema": "qi-matched-zero-divisor-proposal-v1",
+ "backend": "tuna_17",
+ "jobs": 9,
+ "shots_per_job": 16384,
+ "total_shots": 147456,
+ "expected_device_seconds": 101.55168,
+ "minimum_pause_per_interbatch_seconds": 120,
+ "minimum_total_interbatch_pause_seconds": 240,
+ "expected_metered_credits": 0,
+ "budget_basis": "retained 2.6 seconds fixed overhead plus 0.53 ms per shot; refresh before approval",
+ "provider_execution_authorized": false,
+ "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
+ "source_sha256": "3693fcb2cce4affcdd88127169a20e3745915aa9249b11c6f53303396bbea2f9",
+ "regions": [
+  {
+   "qubits": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 8,
+    "d1": 2,
+    "d2": 12,
+    "d3": 1,
+    "selector": 4
+   },
+   "case_shapes_equal": true,
+   "ideal_probabilities": {
+    "dark": 0.0,
+    "bright": 1.0,
+    "fixture": 0.5
+   },
+   "cz": 81,
+   "t": 28
+  },
+  {
+   "qubits": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 14,
+    "d1": 11,
+    "d2": 16,
+    "d3": 10,
+    "selector": 13
+   },
+   "case_shapes_equal": true,
+   "ideal_probabilities": {
+    "dark": 0.0,
+    "bright": 1.0,
+    "fixture": 0.5
+   },
+   "cz": 105,
+   "t": 28
+  }
+ ],
+ "batches": [
+  "batch-00",
+  "batch-01",
+  "batch-02"
+ ],
+ "primary_contrast": {
+  "order": [
+   "D_R1_b0",
+   "B_R2_b0",
+   "B_R1_b1",
+   "F_R2_b1",
+   "F_R1_b2",
+   "D_R2_b2"
+  ],
+  "weights": [
+   0,
+   0,
+   -1,
+   1,
+   1,
+   -1
+  ],
+  "rejection": "abs(z)>=3",
+  "null": "batch offsets plus one fixed region offset and a common affine response"
+ },
+ "fixture": "(e4 - i e15)/sqrt2; same-support complex-linear quadrature control",
+ "timing_boundary": "identical emitted gate sequence and locations per region; provider physical scheduling remains a separate admission check"
+}
