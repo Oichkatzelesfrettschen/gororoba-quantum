@@ -122,3 +122,18 @@ and the Kaggle noise-snapshot rule.
   per instance, while the historical-job and campaign accounting bind the
   default instance. Gate core-587 holds the account selection and the
   instance refusal.
+- Retaining a collected run. A run directory joins the tree with every
+  register that enumerates retained jobs, in one change: the instance's job
+  inventory (`scripts/observe_qpu_job_inventory.py`, a service read), the
+  retention audit (`scripts/reconcile_qpu_inventory.py`, which writes each
+  instance's audit and creates the file exclusively), the submitted-circuit
+  comparison
+  (`scripts/compare_submitted_circuits.py --write`, a service read of each
+  job's submitted program, under the replay interpreter of gate core-281
+  because QPY digests follow the Qiskit version), and the registry
+  (`scripts/research_state.py --write`, with the claim that cites the run).
+  Run-family registers (the ghost, scaffolding-exposure and local-member CZ
+  records) follow the gates that read the run. Gate core-281 fails while an
+  audited job is missing from the comparison, naming it, and the
+  `research_state.py --check` gate while a retained run is missing from the
+  registry.

@@ -150,7 +150,13 @@ def check() -> int:
     require(data.get("schema") == SCHEMA, "unexpected schema")
     rows = data["jobs"]
     audited = {job["job_id"]: job for job in audit_jobs()}
-    require({(r["job_id"], r["run"]) for r in rows} == {(j, a["run"]) for j, a in audited.items()}, "jobs differ")
+    compared = {(r["job_id"], r["run"]) for r in rows}
+    retained = {(j, a["run"]) for j, a in audited.items()}
+    require(
+        compared == retained,
+        f"jobs differ from the audit: uncompared {sorted(retained - compared)}, "
+        f"unaudited {sorted(compared - retained)}; run --write",
+    )
     require(len(rows) == len(audited), "a job appears twice")
     for row in rows:
         # The file and PUB order come from the audited job's record, not from
