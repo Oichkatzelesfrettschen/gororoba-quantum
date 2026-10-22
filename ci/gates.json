@@ -1769,7 +1769,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition-exact-contracts.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition-determinant-contracts.json",
    "name": "core-269",
    "seconds": 4.0,
    "tier": "pr"

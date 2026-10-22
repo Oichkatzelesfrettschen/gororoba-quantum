@@ -8,6 +8,76 @@ digest of the binding rules; this note is the full text.
 (gate core-251) runs the zero-product, Hadamard-basis and
 workspace fixtures on the circuit builders of `designs.py`.
 
+## Algebra arithmetic contract
+
+`cd_core` evaluates the real Cayley-Dickson algebra with ordered basis
+`e_0, ..., e_(D-1)`, `e_0=1`, and the doubling
+`(a,b)(c,d)=(ac-conj(d)b, da+b conj(c))`. Conjugation fixes coordinate zero
+and negates every imaginary coordinate, recursively
+`conj(a,b)=(conj(a),-b)`. Both halves use the same ordered basis.
+The level-zero algebra has dimension one and ordinary real multiplication.
+
+Every dimension is a positive power of two. Every basis index lies in
+`0..D-1`; integer-index objects are normalized through `operator.index`.
+Every coefficient vector has exactly `D` entries. `fano_completion` accepts
+two distinct imaginary octonion indices in `1..7`, and
+`left_mult_matrix_check` accepts all octonion basis indices in `0..7`.
+Invalid dimensions, indices, lengths and exact scalar types raise `ValueError`.
+
+`cd_multiply` and `left_mult_matrix` provide numerical binary64 evaluation.
+The numerical product's scale-sensitive forward-error bound is documented in
+`cd_core.cd_multiply`; overflow, underflow and nonfinite arithmetic lie outside
+that bound. A computed numerical zero alone supplies no exact zero-product
+certificate. `cd_multiply_exact`, `left_mult_matrix_exact` and
+`left_mult_determinant_exact` accept only `int` and `Fraction` coordinates,
+reject Boolean and floating coordinates, and return `Fraction` values.
+A decimal spelling may be parsed into `Fraction` when that spelling defines
+the intended rational; measured inputs retain their measurement uncertainty.
+
+The left-action matrix has column `q` equal to `v e_q`. The core exposes
+left action; separate research modules define and check any right-action
+construction. Algebra vectors have unrestricted norm; circuit statevectors
+carry the normalization and success scaling of their encoding.
+
+The [sign recurrence and derivation](left_mult_sign_rank.md) and
+[phase-degree inductions](cd_phase_degree.md) carry the all-stage written
+arguments. The independent `verify.py` comparison checks 320 orientation
+cells in the pinned dimension-8/16 tables and 336 ordered signed zero-product
+rows. Those rows cover disjoint signed two-support imaginary factors.
+The [sparse count ledger](topics/cayley_dickson_sparse_census.md) distinguishes
+84 first operands, 84 table pairs, 168 first-relative-sign-positive rows and
+336 ordered signed rows.
+
+The [associator census](topics/cd_associator_defect_census.md) counts 168
+nonassociating triples among 210 ordered distinct imaginary octonion triples,
+or among 512 all-basis triples when scalar and repeated indices are included.
+The sedenion all-basis count is 1848 among 4096 ordered triples. Every reported
+count names its denominator.
+
+## Sedenion determinant and membership
+
+Write `v=(x_0+u,x_8+w)`, with imaginary octonions `u,w`, and set
+`s=x_0^2+x_8^2`, `A=||u||^2`, `B=||w||^2`, `gamma=<u,w>`.
+Then `D1=s+A+B`, `D2=s^2+2s(A+B)+(A-B)^2+4 gamma^2`, and
+`det L_v=D1^4 D2^2`. The factorization comes from
+[Koebisu's version-2 preprint](papers/2512.13002.md); the real nonzero
+membership and annihilator results have the
+[Biss-Dugger-Isaksen foundation](math-0511691.md). Nonzero membership requires
+all three conditions `s=0`, `A=B` and `gamma=0`.
+
+`rank_polynomials.evaluate_sedenion_determinant` evaluates those factors
+and an exact left-matrix determinant on precisely 16 rational coordinates.
+Gate `core-044` compares both determinants on 300 seeded integer and 100
+seeded rational vectors plus the two determinant-256 controls `e0+e9` and
+`e1+e9` and the zero divisor `e1+e10`. Removing `4 gamma^2` fails the
+orthogonality control `e1+e9`. The replay is a bounded implementation check;
+the written source arguments supply the all-real identity.
+
+The [research registry](../state/RESEARCH_STATE.md) records publication
+provenance, repository-written proofs, exact finite certificates, Rocq proofs
+and open questions separately. Sparse dimension-32 rank counts describe their
+coefficient family; a global continuous-locus classification remains open.
+
 **Encoding and representation.**
 - The map `a -> L_a` is a linear encoding, not an algebra homomorphism.
   Associative matrix composition represents a non-associative product through

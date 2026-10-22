@@ -38,6 +38,8 @@ for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
 with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
+The [determinant-contract successor](../results/live/rank-sector-endpoint-decomposition-determinant-contracts.json)
+also binds the extended `rank_polynomials.py`; its scientific fields remain identical.
 
 | Task | Read in order |
 |---|---|

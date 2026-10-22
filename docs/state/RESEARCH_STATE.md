@@ -10,7 +10,7 @@ conclusions stand.
 
 | Class | Establishes | Does not establish |
 | --- | --- | --- |
-| mathematical theorem | the statement under its listed assumptions, by the written proof in its documents | machine checking; a separate machine-checked claim carries that |
+| mathematical claim | a statement under its assumptions and named proof origin, or an explicit open question | machine checking; a separate machine-checked claim carries that |
 | exact finite certificate | exact facts about the enumerated or witnessed objects, re-derived by its gates | any object outside the certificate |
 | machine-checked proof | the statement as kernel-checked by Rocq from the retained source | a fresh kernel check: the receipt records an earlier compiler run and CI verifies its bytes |
 | numerical or stochastic simulation | model predictions at the stated seeds, precision and noise model | hardware behavior |
@@ -423,13 +423,28 @@ circuit and charges the account ledger's change.
 
 ## Established claims
 
-- **cd-associator-census** (mathematical theorem, algebra). The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).
+- **sedenion-determinant-membership** (mathematical claim, algebra). For every real sedenion v=(x0+u,x8+w), det L_v=(s+A+B)^4 [s^2+2s(A+B)+(A-B)^2+4 gamma^2]^2, with s=x0^2+x8^2, A=||u||^2, B=||w||^2 and gamma=<u,w>. A nonzero v is a zero divisor exactly when s=0, A=B and gamma=0.
+  Boundary: The determinant factorization is Theorem 3.7 of Koebisu version 2, a preprint; Biss-Dugger-Isaksen supplies the membership and annihilator foundation. A finite rational replay validates the implementation separately from the all-real source argument.
+  Proof origin: external-source.
+  Assumptions: Real standard sedenions under cd_core's doubling and ordered basis; u and w are imaginary octonions; v is nonzero for zero-divisor membership.
+  Evidence: [2512.13002.md](../notes/papers/2512.13002.md), [math-0511691.md](../notes/math-0511691.md), [algebra_circuit_rules.md](../notes/algebra_circuit_rules.md).
+  Related claims: sedenion-determinant-exact-replay.
+- **sedenion-determinant-exact-replay** (exact finite certificate, algebra). Exact left-matrix determinants match D1^4 D2^2 on 300 seeded integer vectors, 100 seeded rational vectors, e0+e9, e1+e9 and e1+e10. The controls have determinants 256, 256 and 0, and removal of 4 gamma^2 fails on e1+e9.
+  Boundary: 403 rational fixtures at seed 20261011 validate the evaluator; the replay establishes facts only on those fixtures. The all-real identity comes from the separate mathematical claim.
+  Assumptions: int or Fraction coordinates in exactly 16 dimensions.
+  Evidence: [algebra_circuit_rules.md](../notes/algebra_circuit_rules.md).
+  Gates: replayed by core-044.
+  Depends on: sedenion-determinant-membership.
+- **cd-associator-census** (mathematical claim, algebra). The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).
   Boundary: The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); real basis triples.
   Evidence: [census.json](../evidence/cd_associator_defect_census/census.json), [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
   Gates: replayed by core-212, sources-215.
-- **singular-sector-split** (mathematical theorem, algebra). (L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.
+  Related claims: cd-moving-pair-walsh-proof.
+- **singular-sector-split** (mathematical claim, algebra). (L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.
   Boundary: Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); two-term elements e_i + s e_j.
   Evidence: [singular_sector_dynamics.md](../notes/singular_sector_dynamics.md).
   Gates: replayed by core-240.
@@ -450,22 +465,25 @@ circuit and charges the account ledger's change.
   Boundary: One witness; the 24 Cayley-transform and 7 other integer elements are further full-rank points of the same family.
   Evidence: [nullity.json](../evidence/moreno_stiefel/nullity.json), [README.md](../evidence/moreno_stiefel/README.md).
   Gates: replayed by core-267.
-- **a6-stiefel-generic-invertibility** (mathematical theorem, algebra). On V = V_2(R^31), the unit orthogonal pure pairs (a, b) in (Im A_5)^2, L_(a,b) is invertible on an open, dense, full-measure subset; the zero-divisor Stiefel elements form a closed measure-zero semialgebraic subset of dimension at most 58.
+- **a6-stiefel-generic-invertibility** (mathematical claim, algebra). On V = V_2(R^31), the unit orthogonal pure pairs (a, b) in (Im A_5)^2, L_(a,b) is invertible on an open, dense, full-measure subset; the zero-divisor Stiefel elements form a closed measure-zero semialgebraic subset of dimension at most 58.
   Boundary: Written proof, not machine-checked; the exceptional subset's exact dimension, components and geometry, and the A_5 question, remain open.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); V_2(R^31) is a connected real-analytic manifold of dimension 59; a real-analytic function not identically zero on a connected real-analytic manifold vanishes on a closed set with empty interior and measure zero (arXiv:1512.07276); det L_(a,b) is a polynomial in the coordinates and is nonzero at the normalized integer witness.
-  Evidence: [math-0512517.md](../notes/math-0512517.md).
+  Evidence: [math-0512517.md](../notes/math-0512517.md), [stiefel_generic_invertibility.md](../notes/stiefel_generic_invertibility.md).
   Depends on: a6-stiefel-witness, a6-stiefel-witness-rocq.
 - **signed-kernel-certificate** (exact finite certificate, algebra). L_(e1+e10) annihilates (e4 - e15)/sqrt2 exactly, and with B(t) = (L_e1 + L_e10 + t L_e2)/(2 + |t|) the dark success is t^2/(2+|t|)^2 and the dilation overlap t/(2+|t|); the block encoding's selector-00 block equals B(t), and the signed readout flips sign under |t| and changes under a one-branch selector.
   Boundary: Exact and statevector facts plus a priced FakeFez compile; no hardware visibility.
   Evidence: [result.json](../evidence/signed_kernel_probe/result.json), [signed_kernel_probe.md](../notes/signed_kernel_probe.md).
   Gates: replayed by core-273.
-- **cd-sign-row-degree** (mathematical theorem, algebra). For every n >= 2 and m != 0, the sign row f_m(x) = [cd_sign(2^n, m, x) = -1] of L_{e_m} has algebraic degree exactly n - 1, so octonion left multiplications are Clifford and every sedenion and higher one carries a sign of degree 3 or more.
+- **cd-sign-row-degree** (mathematical claim, algebra). For every n >= 2 and m != 0, the sign row f_m(x) = [cd_sign(2^n, m, x) = -1] of L_{e_m} has algebraic degree exactly n - 1, so octonion left multiplications are Clifford and every sedenion and higher one carries a sign of degree 3 or more.
   Boundary: Written induction from the cd_sign recursion (R), the commutator lemma and the two-point lemma; scripts/cd_phase_degree.py checks every identity it uses and the statement on every row through n = 8, and no proof assistant has checked it.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md.
   Evidence: [cd_phase_degree.md](../notes/cd_phase_degree.md), [left_mult_sign_rank.md](../notes/left_mult_sign_rank.md).
   Gates: replayed by core-320.
-- **cd-associator-phase-degree** (mathematical theorem, algebra). For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).
+- **cd-associator-phase-degree** (mathematical claim, algebra). For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).
   Boundary: Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and no proof assistant has checked it. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md.
   Evidence: [cd_phase_degree.md](../notes/cd_phase_degree.md), [left_mult_sign_rank.md](../notes/left_mult_sign_rank.md).
   Gates: replayed by core-320.
@@ -484,28 +502,33 @@ circuit and charges the account ledger's change.
   Assumptions: The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations..
   Evidence: [certificate-batched-products.json](../evidence/sedenion-clifford-envelope/certificate-batched-products.json), [README.md](../evidence/sedenion-clifford-envelope/README.md), [hypercomplex-operator-evidence.md](../design/hypercomplex-operator-evidence.md).
   Gates: replayed by core-631.
-- **four-support-topology** (mathematical theorem, geometry). On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.
+- **four-support-topology** (mathematical claim, geometry). On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.
   Boundary: The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); operand on the zero-padded support {1, 10, 18, 25}.
   Evidence: [result.json](../evidence/four_support_rank/result.json), [result.json](../evidence/four_support_geometry/result.json), [result.json](../evidence/four_support_doubling/result.json), [result.json](../evidence/four_support_homology/result.json), [four_support_rank_loci.md](../notes/four_support_rank_loci.md), [four_support_incidence_geometry.md](../notes/four_support_incidence_geometry.md), [four_support_doubling.md](../notes/four_support_doubling.md), [four_support_cellular_homology.md](../notes/four_support_cellular_homology.md).
   Gates: replayed by sources-131, sources-134, sources-137, sources-140; bytes verified by sources-133, sources-136, sources-139, sources-142.
-- **nullity-twelve-cone** (mathematical theorem, geometry). At the doubly-pure center e1 + e18 of dimension 32 and norm squared two, the Bouligand cone of the nullity-12 locus is A15 union B17, with a 13-dimensional intersection.
+- **nullity-twelve-cone** (mathematical claim, geometry). At the doubly-pure center e1 + e18 of dimension 32 and norm squared two, the Bouligand cone of the nullity-12 locus is A15 union B17, with a 13-dimensional intersection.
   Boundary: One selected center; neighborhood branches, links, attachments and other centers remain open.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); dimension 32, center e1 + e18.
   Evidence: [result.json](../evidence/nullity_twelve_locus/result.json), [nullity_twelve_local_geometry.md](../notes/nullity_twelve_local_geometry.md).
   Gates: replayed by core-055, core-057, sources-160; bytes verified by sources-162.
-- **principal-skew-atlas** (mathematical theorem, geometry). Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element, with exact refinement and overlap identities gluing the kernel incidence across changing ranks; an all-stage proof gives 2^(n-1) - 1 domains for every n >= 2.
+- **principal-skew-atlas** (mathematical claim, geometry). Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element, with exact refinement and overlap identities gluing the kernel incidence across changing ranks; an all-stage proof gives 2^(n-1) - 1 domains for every n >= 2.
   Boundary: A cover with gluing maps; smooth subdivisions, closure links and a finite attachment model are still needed for global invariants.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); doubly-pure coefficients.
   Evidence: [result.json](../evidence/principal_skew_atlas/result.json), [principal_skew_atlas.md](../notes/principal_skew_atlas.md).
   Gates: replayed by sources-146; bytes verified by sources-148.
-- **kernel-limit-slice** (mathematical theorem, geometry). The complete real three-coefficient affine slice has nullities 0, 8 and 12 with global cone kernel frames and actual mapping cylinders; its total incidence retracts onto S11 and the attachment image is S3*(S1 x S3); ordinary embedding extends this to every higher stage.
+- **kernel-limit-slice** (mathematical claim, geometry). The complete real three-coefficient affine slice has nullities 0, 8 and 12 with global cone kernel frames and actual mapping cylinders; its total incidence retracts onto S11 and the attachment image is S3*(S1 x S3); ordinary embedding extends this to every higher stage.
   Boundary: The named slice only; unrestricted rank loci and frontier coverage remain open.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the named three-coefficient affine slice.
   Evidence: [result.json](../evidence/kernel_limits/result.json), [annihilator_kernel_limits.md](../notes/annihilator_kernel_limits.md).
   Gates: replayed by core-059, sources-163; bytes verified by sources-165.
-- **determinant-line-trivial** (mathematical theorem, geometry). The top exterior power of the annihilator bundle is trivial over every full constant-rank locus at every stage; Pfaffian volume factors give determinant-one transitions and zero first integral Chern class.
+- **determinant-line-trivial** (mathematical claim, geometry). The top exterior power of the annihilator bundle is trivial over every full constant-rank locus at every stage; Pfaffian volume factors give determinant-one transitions and zero first integral Chern class.
   Boundary: Higher characteristic classes and bundle isomorphism types remain open.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); full constant-rank loci.
   Evidence: [result.json](../evidence/kernel_determinant/result.json), [annihilator_determinant_line.md](../notes/annihilator_determinant_line.md).
   Gates: replayed by core-177, sources-181; bytes verified by sources-183.
@@ -513,13 +536,15 @@ circuit and charges the account ledger's change.
   Boundary: A reproduced published structure, not a new theorem; metric and curvature statements need the source's additional hypotheses.
   Evidence: [CLAIM_BOUNDARIES.md](../../gororoba_quantum/CLAIM_BOUNDARIES.md).
   Gates: replayed by core-042.
-- **rank-predicates-and-charts** (mathematical theorem, geometry). For D = 2^n, n >= 2, the trace/Newton polynomials E_j of B = L_x^T L_x decide the rank of L_x for every real x, and general pivot charts supply exact kernel frames, transition maps, cocycles and Gram data.
+- **rank-predicates-and-charts** (mathematical claim, geometry). For D = 2^n, n >= 2, the trace/Newton polynomials E_j of B = L_x^T L_x decide the rank of L_x for every real x, and general pivot charts supply exact kernel frames, transition maps, cocycles and Gram data.
   Boundary: Membership formulas, not a classification of components, smooth strata or bundle isomorphism classes.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the cited fourfold-multiplicity theorem, which makes each E_j a nonnegative elementary symmetric function of the reduced spectrum; the evaluator accepts integer and rational coordinates.
   Evidence: [RANK_STRATUM_TOPOLOGY.md](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md).
   Gates: replayed by core-044, core-045.
-- **restricted-path-topology** (mathematical theorem, geometry). The certified path has generic nullity 4 and exceptional nullities 8, 12 and 16, and its incidence space has homotopy type S7 v S11 v S15 v S4 v S4, with the stated integral homology, trivial torsion and vanishing positive-degree cup products.
+- **restricted-path-topology** (mathematical claim, geometry). The certified path has generic nullity 4 and exceptional nullities 8, 12 and 16, and its incidence space has homotopy type S7 v S11 v S15 v S4 v S4, with the stated integral homology, trivial torsion and vanishing positive-degree cup products.
   Boundary: The restricted path space only; the full pair space has further directions and attachments.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the certified one-parameter path.
   Evidence: [RANK_STRATUM_TOPOLOGY.md](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md).
   Gates: replayed by core-046, core-047, core-048, core-049.
@@ -527,8 +552,9 @@ circuit and charges the account ledger's change.
   Boundary: Only the maximal bound matches a known stratum dimension; a germ atlas and lower-stratum regularity remain open.
   Evidence: [result.json](../evidence/local_schur/result.json), [README.md](../evidence/local_schur/README.md).
   Gates: replayed by sources-127; bytes verified by sources-175.
-- **dimension32-skew-schur-charts** (mathematical theorem, geometry). Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain with nonzero reduced ranks and complete kernel lifts, inverse coordinates and sphere metrics; written all-real block identities give the local incidence homeomorphism.
+- **dimension32-skew-schur-charts** (mathematical claim, geometry). Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain with nonzero reduced ranks and complete kernel lifts, inverse coordinates and sphere metrics; written all-real block identities give the local incidence homeomorphism.
   Boundary: A pair of exact paths with one initial tangent shows different nearby ranks, so linearization bounds rank only; nonlinear rank geometry and attachments remain open.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); dimension 32, doubly-pure coefficients, admitted pivot domains.
   Evidence: [result.json](../evidence/dimension32_skew_schur/result.json), [dimension32_skew_schur_charts.md](../notes/dimension32_skew_schur_charts.md).
   Gates: replayed by sources-143; bytes verified by sources-145.
@@ -544,13 +570,15 @@ circuit and charges the account ledger's change.
   Boundary: The residual's real branches and normal links are unsolved, so no neighborhood classification follows.
   Evidence: [result.json](../evidence/complex_skew/result.json), [complex_skew_rank_geometry.md](../notes/complex_skew_rank_geometry.md).
   Gates: replayed by core-063, sources-166; bytes verified by sources-168.
-- **projective-kernel-frontiers** (mathematical theorem, geometry). Finite frame saturation recovers the leading kernel plane of every admitted polynomial path, and an all-stage quotient theorem rebuilds the full pair space from tautological sphere spaces over all real frontier graphs.
+- **projective-kernel-frontiers** (mathematical claim, geometry). Finite frame saturation recovers the leading kernel plane of every admitted polynomial path, and an all-stage quotient theorem rebuilds the full pair space from tautological sphere spaces over all real frontier graphs.
   Boundary: Graph-closure computation, smooth subdivisions and quotient cell maps remain open; the theorem supplies no homology table.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); admitted polynomial paths.
   Evidence: [result.json](../evidence/projective_kernel_limits/result.json), [projective_kernel_frontiers.md](../notes/projective_kernel_frontiers.md).
   Gates: replayed by core-179, sources-184; bytes verified by sources-186.
-- **real-circle-frontier-graph** (mathematical theorem, geometry). The named cone-slice frontier graph is a smooth cylinder with a trace inverse, and labelled integral contractions certify the unit-partner evaluation map and its cohomology pullbacks.
+- **real-circle-frontier-graph** (mathematical claim, geometry). The named cone-slice frontier graph is a smooth cylinder with a trace inverse, and labelled integral contractions certify the unit-partner evaluation map and its cohomology pullbacks.
   Boundary: The named slice; ambient rank domains need their own positive-domain and coverage proofs.
+  Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the named cone slice.
   Evidence: [result.json](../evidence/real_frontier_graphs/result.json), [real_circle_frontier_graphs.md](../notes/real_circle_frontier_graphs.md).
   Gates: replayed by core-190, sources-192; bytes verified by sources-194.
@@ -1176,23 +1204,27 @@ circuit and charges the account ledger's change.
 
 ## Open claims
 
-- **cd-moving-pair-walsh-proof** (mathematical theorem, algebra). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.
+- **cd-moving-pair-walsh-proof** (mathematical claim, algebra). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.
   Boundary: Exhaustively checked from 32 to 4096; a proof is outstanding.
+  Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
   Depends on: cd-associator-census.
-- **a5-stiefel-universal** (mathematical theorem, algebra). Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5).
+- **a5-stiefel-universal** (mathematical claim, algebra). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.
   Boundary: The 32 exact points support it and prove nothing beyond themselves.
+  Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [math-0512517.md](../notes/math-0512517.md).
   Depends on: a5-stiefel-selected-nullity.
-- **dimension32-global-topology** (mathematical theorem, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
+- **dimension32-global-topology** (mathematical claim, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
   Boundary: Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.
+  Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md).
   Depends on: four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
-- **a5-nonzero-divisor-two-dimension-gap** (mathematical theorem, geometry). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.
+- **a5-nonzero-divisor-two-dimension-gap** (mathematical claim, geometry). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.
   Boundary: The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.
+  Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [result.json](../evidence/rank_locus_second_order/result.json), [result.json](../evidence/rank_locus_rotation_composite/result.json), [audit.json](../evidence/rank_locus_rotation_composite/audit.json), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md), [README.md](../evidence/rank_locus_local_dimension/README.md), [README.md](../evidence/rank_locus_second_order/README.md), [README.md](../evidence/rank_locus_rotation_composite/README.md).
   Gates: replayed by core-553, core-585, core-586; replay failure paths checked by core-554.
