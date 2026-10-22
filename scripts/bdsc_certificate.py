@@ -1774,6 +1774,34 @@ def _census_item(seed: int) -> tuple[int, int, int]:
     return census, witness, rules
 
 
+def _template_case(item: tuple[int, int, np.ndarray]) -> None:
+    """Both templates reach the column from the source as differing unitaries, each matched by the union circuit."""
+    modes, source, column = item
+    reached = {}
+    for name in PREPARATION_DESCRIPTIONS:
+        ops = template_ops(name, source, modes=modes)
+        w = template_unitary(ops, template_params(name, column, source, modes=modes), modes=modes)
+        require(w.shape == (modes, modes), f"self-test: {name} at {modes} modes is {w.shape}")
+        require(
+            np.allclose(w.conj().T @ w, np.eye(modes), rtol=0, atol=1e-12),
+            f"self-test: {name} at {modes} modes not unitary",
+        )
+        require(
+            np.allclose(w[:, source], column, rtol=0, atol=1e-12),
+            f"self-test: {name} at {modes} modes misses the column",
+        )
+        reached[name] = w
+    first, second = reached.values()
+    require(not np.allclose(first, second), f"self-test: the two templates coincide at {modes} modes")
+    for name, w in reached.items():
+        union = template_unitary(
+            union_ops(source, modes=modes), union_params(name, column, source, modes=modes), modes=modes
+        )
+        require(
+            np.allclose(union, w, rtol=0, atol=1e-12), f"self-test: the union circuit misses {name} at {modes} modes"
+        )
+
+
 def self_test() -> int:
     catalogue = load_catalogue()
     target = target_record(catalogue)
@@ -1912,37 +1940,16 @@ def self_test() -> int:
     # Templates: both ladders reach any column from any source mode, with unitaries that differ off the source, at
     # the Belenos width and at the 12 modes of qpu:ascella. The 12-mode draws come from their own generator, so the
     # 24-mode draws and every later draw of rng are those of a 24-mode-only run.
+    # Every column is drawn first, in generator order, so the pooled cases see the draws of a serial run.
+    template_items: list[tuple[int, int, np.ndarray]] = []
     for modes, sources, draws in ((MODES, (0, 6, 23), rng), (12, (0, 4, 11), np.random.default_rng(12))):
         for source in sources:
             for trial in range(4):
                 z = draws.normal(size=modes) + 1j * draws.normal(size=modes)
                 if trial == 0:
                     z[: modes // 2] = 0
-                column = z / np.linalg.norm(z)
-                reached = {}
-                for name in PREPARATION_DESCRIPTIONS:
-                    ops = template_ops(name, source, modes=modes)
-                    w = template_unitary(ops, template_params(name, column, source, modes=modes), modes=modes)
-                    require(w.shape == (modes, modes), f"self-test: {name} at {modes} modes is {w.shape}")
-                    require(
-                        np.allclose(w.conj().T @ w, np.eye(modes), rtol=0, atol=1e-12),
-                        f"self-test: {name} at {modes} modes not unitary",
-                    )
-                    require(
-                        np.allclose(w[:, source], column, rtol=0, atol=1e-12),
-                        f"self-test: {name} at {modes} modes misses the column",
-                    )
-                    reached[name] = w
-                first, second = reached.values()
-                require(not np.allclose(first, second), f"self-test: the two templates coincide at {modes} modes")
-                for name, w in reached.items():
-                    union = template_unitary(
-                        union_ops(source, modes=modes), union_params(name, column, source, modes=modes), modes=modes
-                    )
-                    require(
-                        np.allclose(union, w, rtol=0, atol=1e-12),
-                        f"self-test: the union circuit misses {name} at {modes} modes",
-                    )
+                template_items.append((modes, source, z / np.linalg.norm(z)))
+    parallel.ordered_map(_template_case, template_items, min_items=1)
     # The constructors keep no state: a 24-mode construction answers the same before and after a 12-mode one.
     flat = np.full(MODES, 1 / np.sqrt(MODES), dtype=complex)
     narrow = np.full(12, 1 / np.sqrt(12), dtype=complex)
