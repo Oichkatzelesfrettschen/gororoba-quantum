@@ -51,7 +51,9 @@ gaps between idles enter the model as scheduled.
 --design OUT writes the design trade table; RUN_DIR writes
 RUN_DIR/segmented-sweep.json and --check requires equal bytes. An analyzer
 whose closure differs from the one the record binds writes its amended
-analysis beside it as segmented-sweep-<closure digest>.json. The planted
+analysis beside it as segmented-sweep-<closure digest>.json; --check
+--against FILE requires a fresh analysis to equal FILE in every field but
+the analyzer identity (IDENTITY). The planted
 truths live in tests/scripts/test_n21_q143_segmented_sweep.py.
 """
 
@@ -603,8 +605,10 @@ def spectator_stages(payload: dict[str, Any], qubit: int) -> list[tuple[int, lis
     Every play row of the returned scheduler table carries its instruction's
     label (measure_Q, reset_Q, sx_Q); a measure or reset plays several
     contiguous rows, and a measure's acquisition runs past its last drive
-    play to the next barrier. INIT and FINI rows bracket the program and are
-    dropped. An absent or malformed table raises ValueError.
+    play to the next barrier. INIT and FINI rows bracket the program: an
+    INIT row discards the stages before it, a barrier among them included,
+    and the first FINI row ends the program. An absent or malformed table
+    raises ValueError.
     """
     try:
         timing = payload["metadata"]["compilation"]["scheduler_timing"]["timing"]
@@ -615,8 +619,13 @@ def spectator_stages(payload: dict[str, Any], qubit: int) -> list[tuple[int, lis
         row = line.split(",")
         if len(row) < 6:
             raise ValueError("scheduler timing table is malformed")
-        if row[2] != f"Qubit {qubit}" or row[1].startswith(("INIT", "FINI")):
+        if row[2] != f"Qubit {qubit}":
             continue
+        if row[1].startswith("INIT"):
+            stages = []
+            continue
+        if row[1].startswith("FINI"):
+            break
         start = int(row[3])
         if row[5] == "barrier":
             if not stages or stages[-1][1] or stages[-1][0] != start:
@@ -707,6 +716,52 @@ def member_schedule(stages: list[tuple[int, list[tuple[int, int, str]]]], segmen
     }
 
 
+def member_shots(circuit: Any, payload: dict[str, Any]) -> dict[str, Any]:
+    """One member's registers and, per shot in shot order, its segment pattern or None.
+
+    A pattern holds per segment 0, 1, or -1 for a segment the spectator's
+    herald refused; a shot whose segment-1 herald reads any neighbor excited
+    is None. The spectator is the qubit every segment read is written from.
+    """
+    segments = sum(1 for register in circuit.cregs if register.name.endswith("_read"))
+    writer = {
+        circuit.find_bit(i.clbits[0]).index: circuit.find_bit(i.qubits[0]).index
+        for i in circuit.data
+        if i.operation.name == "measure"
+    }
+    reads = [register_of(circuit, f"s{s + 1}_read") for s in range(segments)]
+    heralds = [register_of(circuit, f"s{s + 1}_herald") for s in range(segments)]
+    spectators = {writer[circuit.find_bit(register[0]).index] for register in reads}
+    if len(spectators) != 1:
+        raise RuntimeError(f"{circuit.name} reads qubits {sorted(spectators)}")
+    (spectator,) = spectators
+    first = heralds[0]
+    first_qubits = [writer[circuit.find_bit(bit).index] for bit in first]
+    own_bit = first.size - 1 - first_qubits.index(spectator)
+    strings = {r.name: payload["registers"][r.name]["bitstrings"] for r in (*reads, *heralds)}
+    patterns: list[tuple[int, ...] | None] = []
+    for shot in range(len(strings[reads[0].name])):
+        initial = strings[first.name][shot]
+        if any(initial[first.size - 1 - k] == "1" for k, qubit in enumerate(first_qubits) if qubit != spectator):
+            patterns.append(None)
+            continue
+        pattern = []
+        for s in range(segments):
+            herald = strings[heralds[s].name][shot]
+            spectator_bit = herald[own_bit] if s == 0 else herald[0]
+            pattern.append(-1 if spectator_bit == "1" else int(strings[reads[s].name][shot][0]))
+        patterns.append(tuple(pattern))
+    return {
+        "segments": segments,
+        "spectator": spectator,
+        "first": first,
+        "first_qubits": first_qubits,
+        "heralds": heralds,
+        "strings": strings,
+        "patterns": patterns,
+    }
+
+
 def run_points(run: Path) -> tuple[list[Point], dict[str, Any], dict[int, dict[str, Any]]]:
     """Points from the raw shots, the schedule admissibility and per-segment herald bit counts.
 
@@ -726,38 +781,14 @@ def run_points(run: Path) -> tuple[list[Point], dict[str, Any], dict[int, dict[s
         if key is None:
             raise RuntimeError(f"{run}: member {name} is not a segmented sweep arm")
         kind, delay, pre = key
-        segments = sum(1 for register in circuit.cregs if register.name.endswith("_read"))
+        shot = member_shots(circuit, payload)
+        segments, strings, first = shot["segments"], shot["strings"], shot["first"]
+        first_qubits, heralds = shot["first_qubits"], shot["heralds"]
         bases = n21_segment_bases(kind, segments)
-        writer = {
-            circuit.find_bit(i.clbits[0]).index: circuit.find_bit(i.qubits[0]).index
-            for i in circuit.data
-            if i.operation.name == "measure"
-        }
-        reads = [register_of(circuit, f"s{s + 1}_read") for s in range(segments)]
-        heralds = [register_of(circuit, f"s{s + 1}_herald") for s in range(segments)]
-        spectators = {writer[circuit.find_bit(register[0]).index] for register in reads}
-        if len(spectators) != 1 or (spectator is not None and spectators != {spectator}):
-            raise RuntimeError(f"{name} reads qubits {sorted(spectators)}, the run's spectator is {spectator}")
-        (spectator,) = spectators
-        first = heralds[0]
-        first_qubits = [writer[circuit.find_bit(bit).index] for bit in first]
-        own_bit = first.size - 1 - first_qubits.index(spectator)
-        strings = {r.name: payload["registers"][r.name]["bitstrings"] for r in (*reads, *heralds)}
-        shots = len(strings[reads[0].name])
-        patterns = []
-        for shot in range(shots):
-            initial = strings[first.name][shot]
-            neighbors = any(
-                initial[first.size - 1 - k] == "1" for k, qubit in enumerate(first_qubits) if qubit != spectator
-            )
-            if neighbors:
-                continue
-            pattern = []
-            for s in range(segments):
-                herald = strings[heralds[s].name][shot]
-                spectator_bit = herald[own_bit] if s == 0 else herald[0]
-                pattern.append(-1 if spectator_bit == "1" else int(strings[reads[s].name][shot][0]))
-            patterns.append(tuple(pattern))
+        if spectator is not None and shot["spectator"] != spectator:
+            raise RuntimeError(f"{name} reads qubit {shot['spectator']}, the run's spectator is {spectator}")
+        spectator = shot["spectator"]
+        patterns = [pattern for pattern in shot["patterns"] if pattern is not None]
         # Herald bit counts: bit k of segment 1 per qubit among shots whose
         # other segment-1 bits read 0; key first.size + s - 1, the spectator's
         # reset herald of segment s + 1.
@@ -1161,6 +1192,12 @@ def sample(model: str, params: list[float], points: list[Point], rng: np.random.
     return drawn
 
 
+# The fields naming the analyzer that wrote a report rather than its result;
+# --against compares an amended analysis without them, so a closure change
+# elsewhere in gororoba_quantum leaves its replay standing.
+IDENTITY = ("analyzer_closure", "preregistered", "amendment")
+
+
 def retained_name(analysis: dict[str, Any]) -> str:
     """RETAINED for the analyzer the record binds; an amended analyzer's output carries its closure digest.
 
@@ -1180,6 +1217,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run", nargs="?", type=Path)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--against",
+        type=Path,
+        help="with --check, a retained amended analysis whose every field but the analyzer identity must regenerate",
+    )
     parser.add_argument("--design", type=Path, help="write the design trade table here")
     parser.add_argument("--design-check", type=Path, help="require this retained design table to regenerate")
     args = parser.parse_args(argv)
@@ -1197,6 +1239,14 @@ def main(argv: list[str] | None = None) -> int:
     analysis = report(args.run)
     text = serialize(analysis)
     target = args.run / retained_name(analysis)
+    if args.check and args.against is not None:
+        retained = json.loads(args.against.read_text())
+        fresh = json.loads(text)
+        if {k: v for k, v in retained.items() if k not in IDENTITY} != {
+            k: v for k, v in fresh.items() if k not in IDENTITY
+        }:
+            raise RuntimeError(f"{args.against} differs from a fresh analysis outside the analyzer identity")
+        return 0
     if args.check:
         if target.read_text() != text:
             raise RuntimeError(f"{target} differs from a fresh analysis")

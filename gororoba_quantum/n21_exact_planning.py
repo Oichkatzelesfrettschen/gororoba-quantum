@@ -46,6 +46,7 @@ import numpy as np
 from qiskit import qpy
 
 import dynamic_density
+import law_encoding
 import parallel
 from experiment_optimizer import CovarianceBound, ObservableContract
 
@@ -413,7 +414,7 @@ def covariance_falsifier(
                 member, _, index = label.rpartition("/r")
                 replicas = components[(pub_name, member)]
                 term = terms[member]
-                values = np.asarray(term["values"], dtype=float)
+                values = np.asarray(law_encoding.dense(term["values"]), dtype=float)
                 outcomes = replica_outcomes(registers, replicas[int(index)])
                 if outcomes.size == 0 or int(outcomes.max()) >= values.size:
                     raise ValueError(f"{label}: outcomes fall outside the {values.size} scored labels")

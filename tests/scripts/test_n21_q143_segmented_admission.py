@@ -1,6 +1,7 @@
-"""Admission of a returned segmented sweep in scripts/n21_q143_segmented_sweep.py: the stage reader parses a
-returned Heron r2 scheduler table, a misplaced pre-idle, idle or pulse leaves its member differing, and the
-herald evaluation reads every segment's reset herald through the undetected excitation it leaves.
+"""Admission of a returned segmented sweep in scripts/n21_q143_segmented_sweep.py: the stage reader parses the
+returned Heron r2 scheduler tables of ibm_marrakesh and ibm_fez, a misplaced pre-idle, idle or pulse leaves
+its member differing, and the herald evaluation reads every segment's reset herald through the undetected
+excitation it leaves.
 """
 
 from __future__ import annotations
@@ -26,12 +27,18 @@ def schedule(member: str, timing: str | None = None) -> dict[str, Any]:
     return sweep.member_schedule(stages, SEGMENTS)
 
 
+# ibm_fez opens the table with a barrier before INIT; ibm_marrakesh does not.
+FEZ = json.loads((Path(__file__).parent / "data" / "n21_segmented_heron_timing_fez.json").read_text())
+
+
+@pytest.mark.parametrize("table", [TIMING, FEZ], ids=["marrakesh", "fez"])
 @pytest.mark.parametrize(
     ("member", "pre", "idle", "pulses"),
     [("xy_d0", 0, 0, 2), ("z_d693", 0, 693, 1), ("xy_d693_pre1250", 1250, 693, 2)],
 )
-def test_returned_table_reads_the_design(member: str, pre: int, idle: int, pulses: int) -> None:
-    found = schedule(member)
+def test_returned_table_reads_the_design(table: dict[str, Any], member: str, pre: int, idle: int, pulses: int) -> None:
+    stages = sweep.spectator_stages(payload(table["timing"][member]), table["spectator"])
+    found = sweep.member_schedule(stages, SEGMENTS)
     if found["pre_dt"] != [pre] * SEGMENTS or found["idle_dt"] != [idle] * SEGMENTS:
         raise AssertionError(found)
     if found["pulses"] != [pulses] * SEGMENTS or len(found["gaps_dt"]) != SEGMENTS - 1:
