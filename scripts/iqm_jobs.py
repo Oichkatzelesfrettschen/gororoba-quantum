@@ -10,8 +10,9 @@ billed seconds; the measurements artifact holds every shot's bits per circuit an
 
 Subcommands:
 
-- build DIR writes the timing-pilot case: cases.json and one circuit JSON per circuit file;
-  check DIR regenerates it and compares bytes and file sets.
+- build DIR writes the case named by DIR's last component (timing-pilot or reset-billing-pilot):
+  cases.json and one circuit JSON per circuit file; check DIR regenerates it and compares bytes and
+  file sets.
 - submit CASE_DIR JOB --qc QC --approval QUOTE --approved-cases-sha256 HEX --max-credits C
   (network) copies the case into results/iqm/runs/STAMP-QC-CASE-JOB/, refuses unless cases.json
   carries the approved digest, the quantum computer is online and healthy, and the job's expected
@@ -73,6 +74,17 @@ PILOT_JOBS = (
     ("j3-20x200-passive", 20, 200, None),
     ("j4-1x4000-active1", 1, 4000, 1),
 )
+# Reset and billing pilot. The garnet:mock runtime estimates of the timing pilot fit a fixed
+# JOB_SECONDS per job plus each shot's schedule, with no cost per extra circuit, and active reset
+# shortening a shot from its passive reset_wait to ACTIVE_SHOT_SECONDS. Each job reads X and a bare
+# measure on QB1, so the bare measure carries the initialization error each reset leaves.
+RESET_PILOT = "reset-billing-pilot"
+JOB_SECONDS = 1.6
+ACTIVE_SHOT_SECONDS = 0.0000087
+RESET_JOBS = (
+    ("p-2x2000-passive", 2000, None, SHOT_SECONDS),
+    ("a-2x2000-active1", 2000, 1, ACTIVE_SHOT_SECONDS),
+)
 
 
 def dump(value: Any) -> str:
@@ -93,8 +105,21 @@ def x_circuit(name: str) -> dict[str, Any]:
     }
 
 
-def build() -> dict[str, str]:
-    """Relative path -> text of the timing-pilot case."""
+def zero_circuit(name: str) -> dict[str, Any]:
+    return {"name": name, "instructions": [{"name": "measure", "locus": [PILOT_QUBIT], "args": {"key": "m"}}]}
+
+
+def job_row(job: str, files: dict[str, str], names: list[str], shots: int, active: int | None, seconds: float) -> dict:
+    return {
+        "job": job,
+        "circuits": [{"file": rel, "sha256": sha256(files[rel].encode())} for rel in names],
+        "shots": shots,
+        "options": {"heralding_mode": "none", "active_reset_cycles": active},
+        "expected_seconds": round(seconds, 3),
+    }
+
+
+def build_timing() -> dict[str, str]:
     files: dict[str, str] = {}
     jobs = []
     for job, circuits, shots, active in PILOT_JOBS:
@@ -103,15 +128,7 @@ def build() -> dict[str, str]:
             rel = f"circuits/{job}-{n:02d}.json"
             files[rel] = dump(x_circuit(f"{job}-{n:02d}"))
             names.append(rel)
-        jobs.append(
-            {
-                "job": job,
-                "circuits": [{"file": rel, "sha256": sha256(files[rel].encode())} for rel in names],
-                "shots": shots,
-                "options": {"heralding_mode": "none", "active_reset_cycles": active},
-                "expected_seconds": round(circuits * shots * SHOT_SECONDS, 3),
-            }
-        )
+        jobs.append(job_row(job, files, names, shots, active, circuits * shots * SHOT_SECONDS))
     files["cases.json"] = dump(
         {
             "schema": CASE_SCHEMA,
@@ -125,15 +142,57 @@ def build() -> dict[str, str]:
     return files
 
 
+def build_reset() -> dict[str, str]:
+    files: dict[str, str] = {}
+    jobs = []
+    for job, shots, active, shot_seconds in RESET_JOBS:
+        names = []
+        for kind, make in (("x", x_circuit), ("zero", zero_circuit)):
+            rel = f"circuits/{job}-{kind}.json"
+            files[rel] = dump(make(f"{job}-{kind}"))
+            names.append(rel)
+        jobs.append(job_row(job, files, names, shots, active, JOB_SECONDS + len(names) * shots * shot_seconds))
+    files["cases.json"] = dump(
+        {
+            "schema": CASE_SCHEMA,
+            "case": RESET_PILOT,
+            "question": (
+                "Does Garnet bill ceil(its compiler estimate), does that estimate follow a fixed job cost plus each "
+                "shot's schedule, does active reset run and keep initialization, and does the calibration-built "
+                "simulator predict QB1?"
+            ),
+            "ideal": {"x": {"p1": 1.0}, "zero": {"p1": 0.0}},
+            "estimate_model": {
+                "job_seconds": JOB_SECONDS,
+                "passive_shot_seconds": SHOT_SECONDS,
+                "active_shot_seconds": ACTIVE_SHOT_SECONDS,
+                "source": "garnet:mock execution_runtime_estimate_seconds of the timing pilot",
+            },
+            "jobs": jobs,
+        }
+    )
+    return files
+
+
+CASES = {PILOT: build_timing, RESET_PILOT: build_reset}
+
+
+def build(name: str = PILOT) -> dict[str, str]:
+    """Relative path -> text of the named case."""
+    if name not in CASES:
+        raise PlatformError(f"no case named {name}; the cases are {sorted(CASES)}")
+    return CASES[name]()
+
+
 def write_case(directory: Path) -> None:
-    for rel, text in build().items():
+    for rel, text in build(directory.name).items():
         path = directory / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
 
 
 def check_case(directory: Path) -> None:
-    files = build()
+    files = build(directory.name)
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     if present != set(files):
         raise PlatformError(f"{directory}: files differ from the build: {sorted(present ^ set(files))}")
@@ -372,7 +431,7 @@ def self_test() -> str:
 
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
-        case, runs = root / "case", root / "runs"
+        case, runs = root / PILOT, root / "runs"
         write_case(case)
         check_case(case)
         (case / "circuits/j1-1x1000-passive-00.json").write_text("{}\n")

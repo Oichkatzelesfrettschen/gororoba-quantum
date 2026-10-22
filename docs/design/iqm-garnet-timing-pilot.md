@@ -74,3 +74,34 @@ HEX=$(sha256sum "$CASE/cases.json" | cut -d' ' -f1)
 run directory, writes `submission-state.json` before it posts, and records
 the quoted approval; `collect` keeps the job record and the measurements and
 counts artifacts byte for byte under `raw/`.
+
+## Mock results and the reset and billing pilot
+
+The four timing-pilot jobs ran on garnet:mock on 2026-10-22 at 0.00 credits
+(credit delta 0.00 on each). The mock's measurement data are random bits
+(P(1) 0.48 to 0.51 for an X), so it answers format and estimate questions
+only. Its `execution_runtime_estimate_seconds` were 2.007 (j1), 3.227 (j2),
+3.227 (j3) and 1.635 (j4): a fixed 1.60 s per job plus 0.407 ms per shot,
+which is the mock calibration's 400 us `reset_wait`, 1.2 us readout and 5 us
+end delay; twenty circuits cost the same as one at equal total shots, and
+`active_reset_cycles` 1 shortens a shot to about 9 us.
+
+The hardware question narrows to `results/iqm/cases/reset-billing-pilot`:
+two jobs, each an X and a bare measure on QB1 at 2000 shots, one with passive
+reset and one with active reset. It tests four claims:
+
+- H1: Garnet bills ceil(its execution runtime estimate); falsified by any
+  other billed value.
+- H2: the estimate is 1.60 s plus each shot's schedule (Garnet's 298 us
+  `reset_wait`, 2 us end delay and readout); falsified by a departure above
+  0.05 s.
+- H3: active reset runs on Garnet and keeps initialization; falsified by a
+  refusal, or by the bare measure reading P(1) above the passive job's by
+  more than three standard errors.
+- H4: `scripts/iqm_sim.py`, built from the retained calibration, predicts
+  QB1: X reads P(1) 0.982 and the bare measure 0.003; falsified by a value
+  outside three standard errors.
+
+The garnet:mock run of both jobs estimated 3.227 s and 1.635 s, as the
+model predicts, at 0.00 credits. On Garnet the ceilings are 1.50 and 1.00
+credits.
