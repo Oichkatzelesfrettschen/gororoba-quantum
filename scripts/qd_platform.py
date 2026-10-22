@@ -198,13 +198,23 @@ class RefusedError(PlatformError):
         self.code = code
 
 
+class UnansweredError(PlatformError):
+    """The request reached no answer: the connection failed or timed out."""
+
+
 # Statuses a read may outlive: the service's own timeouts, throttling and gateway or upstream failures.
 TRANSIENT_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
 
 
 def transient(error: PlatformError) -> bool:
-    """A failed read worth repeating: a transient HTTP status, or no answer at all (network or timeout)."""
-    return error.code in TRANSIENT_STATUSES if isinstance(error, RefusedError) else True
+    """A failed read worth repeating: a transient HTTP status, or no answer at all (network or timeout).
+
+    Any other failure (a missing token, an answer that is not JSON) recurs on
+    every attempt, so it raises at once.
+    """
+    if isinstance(error, RefusedError):
+        return error.code in TRANSIENT_STATUSES
+    return isinstance(error, UnansweredError)
 
 
 def now() -> str:
@@ -257,7 +267,7 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
         raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
     except (urllib.error.URLError, TimeoutError) as error:
-        raise PlatformError(f"{method} {route}: {error}") from None
+        raise UnansweredError(f"{method} {route}: {error}") from None
     if raw:
         return answer
     try:
@@ -1836,7 +1846,8 @@ def runner_self_test() -> int:
         (RefusedError("x", 408), True),
         (RefusedError("x", 404), False),
         (RefusedError("x", 401), False),
-        (PlatformError("x: timed out"), True),
+        (UnansweredError("x: timed out"), True),
+        (PlatformError("x: answer is not JSON"), False),
     ):
         if transient(error) != want:
             raise SystemExit(f"self-test: transient() read {error.code if isinstance(error, RefusedError) else None}")
@@ -2043,7 +2054,7 @@ def runner_self_test() -> int:
             service["fail"] = {
                 "/status": [RefusedError("GET status: HTTP 503", 503)],
                 "/result": [RefusedError("GET result: HTTP 502", 502)],
-                "/data": [PlatformError("GET data: timed out")],
+                "/data": [UnansweredError("GET data: timed out")],
                 "/api/tokens/usage/report": [RefusedError("GET usage: HTTP 429", 429)],
             }
             if collect(flaky, 0.0, 1.0)["counts"] != collected["counts"] or service["posts"] != posts:
@@ -2071,13 +2082,17 @@ def runner_self_test() -> int:
             if (unparsed / "raw/result.json").read_bytes() != service["result"].encode():
                 raise AssertionError("a result that failed to parse was not retained")
             service["result"] = result
-            # Past the deadline a transient failure raises instead of waiting.
             # Two transient failures in a row are outlived inside the deadline; past it the first one raises.
             repeated = submitted("repeated")
             service["fail"] = {
                 "/result": [RefusedError("GET result: HTTP 503", 503), RefusedError("GET result: HTTP 503", 503)]
             }
             collect(repeated, 0.0, 1.0)
+            # A failure that recurs on every attempt raises at once, inside the deadline.
+            garbled = submitted("garbled")
+            service["fail"] = {"/data": [PlatformError("GET data: answer is not JSON")]}
+            refuse("an answer that is not JSON", lambda: collect(garbled, 0.0, 1.0), "not JSON")
+            # Past the deadline a transient failure raises instead of waiting.
             late_read = submitted("late-read")
             service["fail"] = {"/result": [RefusedError("GET result: HTTP 503", 503)]}
             refuse("a transient read past the deadline", lambda: collect(late_read, 0.0, -1.0), "HTTP 503")
