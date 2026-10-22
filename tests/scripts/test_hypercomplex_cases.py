@@ -68,10 +68,16 @@ def test_transform_controls_expose_phase_and_identity_boundary() -> None:
         raise RuntimeError("phase-sensitive input controls must distinguish Fourier output laws")
 
 
-def test_photonic_runner_checks_unprepared_columns() -> None:
+def test_photonic_runner_checks_unprepared_columns(monkeypatch: pytest.MonkeyPatch) -> None:
     import qd_platform
 
-    files = qd_cases(transform_settings(), "transform")
+    with patch("hypercomplex_cases.ordered_map", wraps=ordered_map) as compilation_map:
+        files = qd_cases(transform_settings(), "transform")
+    if compilation_map.call_args.kwargs.get("min_items") != 1:
+        raise RuntimeError("photonic setting compilation must use the process pool for small campaigns")
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    if files != qd_cases(transform_settings(), "transform"):
+        raise RuntimeError("pooled and serial photonic compilation must emit identical case bytes")
     manifest, circuit = json.loads(files["cases.json"]), json.loads(files["circuit.json"])
     qd_platform.template_experiment(manifest, circuit)
     manifest["settings"][0]["operator"]["real"][0][1] += 0.1

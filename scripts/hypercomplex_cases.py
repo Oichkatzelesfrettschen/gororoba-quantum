@@ -288,24 +288,27 @@ def transform_settings() -> list[dict[str, Any]]:
     ]
 
 
+def _qd_setting(setting: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    matrix = setting_operator(setting)
+    circuit, parameters = photonic_template(matrix)
+    return circuit, {
+        "name": setting["name"],
+        "circuit_params": parameters,
+        "column": [[float(value.real), float(value.imag)] for value in matrix[:, 0]],
+        "operator": encoded(matrix),
+        "setting": setting,
+        "compilation_seed": 0,
+    }
+
+
 def qd_cases(settings: list[dict[str, Any]], label: str) -> dict[str, str]:
-    matrices = ordered_map(setting_operator, settings)
-    circuit, _ = photonic_template(matrices[0])
+    compiled = ordered_map(_qd_setting, settings, min_items=1)
+    circuit = compiled[0][0]
     iterations = []
-    for setting, matrix in zip(settings, matrices, strict=True):
-        candidate, parameters = photonic_template(matrix)
+    for candidate, iteration in compiled:
         if candidate != circuit:
             raise ValueError("photonic iterations need the same fixed mesh")
-        iterations.append(
-            {
-                "name": setting["name"],
-                "circuit_params": parameters,
-                "column": [[float(value.real), float(value.imag)] for value in matrix[:, 0]],
-                "operator": encoded(matrix),
-                "setting": setting,
-                "compilation_seed": 0,
-            }
-        )
+        iterations.append(iteration)
     text = json.dumps(circuit, indent=1) + "\n"
     manifest = {
         "schema": "qd-hypercomplex-cases-v1",

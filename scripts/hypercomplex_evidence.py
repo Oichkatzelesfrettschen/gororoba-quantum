@@ -73,7 +73,7 @@ def certificate() -> dict[str, Any]:
         "algebra": algebra_certificate(),
         "spinor_reference": sectors,
         "spinor_anomaly_sums": {name: str(value) for name, value in anomalies.items()},
-        "frames": ordered_map(_frame, list(range(17))),
+        "frames": ordered_map(_frame, list(range(17)), min_items=1),
         "phase_measured": False,
     }
 

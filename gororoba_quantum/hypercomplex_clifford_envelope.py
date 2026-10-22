@@ -43,6 +43,11 @@ def _word(mask: int) -> NDArray[np.int64]:
 def certificate() -> dict[str, Any]:
     operators = _generators()
     identity = np.eye(16, dtype=np.int64)
+    stacked = np.asarray(operators, dtype=np.int64)
+    squares = stacked @ stacked
+    products = stacked[:, None] @ stacked[None, :]
+    anticommutators = products + products.swapaxes(0, 1)
+    pair_failures = np.any(anticommutators != 0, axis=(-2, -1))
     words = np.asarray(ordered_map(_word, list(range(256))), dtype=np.int64)
     # Every word is a signed permutation, so Gram entries have absolute bound 16.
     orthogonal = bool(np.array_equal(words @ words.T, 16 * np.eye(256, dtype=np.int64)))
@@ -53,12 +58,8 @@ def certificate() -> dict[str, Any]:
         "evidence_kind": "exact finite integer operator certificate",
         "coefficient_dimension": 16,
         "generator_basis_indices": list(range(1, 9)),
-        "square_failures": sum(not np.array_equal(operator @ operator, -identity) for operator in operators),
-        "anticommutator_failures": sum(
-            bool(np.any(first @ second + second @ first))
-            for index, first in enumerate(operators)
-            for second in operators[index + 1 :]
-        ),
+        "square_failures": int(np.count_nonzero(np.any(squares != -identity, axis=(-2, -1)))),
+        "anticommutator_failures": int(np.count_nonzero(np.triu(pair_failures, k=1))),
         "word_count": len(words),
         "hilbert_schmidt_orthogonal": orthogonal,
         "word_norm_squared": 16,
