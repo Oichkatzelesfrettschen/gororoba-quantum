@@ -7,6 +7,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+import hypercomplex_dynamics as dynamics
+import parallel
 from hypercomplex_dynamics import dephase_evolve, shot_diagnostics
 from hypercomplex_operators import periodic_generator
 
@@ -45,3 +47,28 @@ def test_ordered_shots_expose_non_iid_structure() -> None:
     diagnostic = shot_diagnostics([0] * 128 + [1] * 128)
     if diagnostic["lag_one_correlation"] < 0.9 or diagnostic["block_mean_range"] != 1:
         raise RuntimeError("a contiguous drift step must remain visible")
+
+
+def test_dephasing_dispatches_site_terms_and_preserves_closed_form(monkeypatch) -> None:
+    dispatched = []
+
+    def dispatch(function, items, *, min_items):
+        dispatched.append((len(items), min_items))
+        results = parallel.ordered_map(function, items, min_items=min_items)
+        if any(result.ndim != 1 or result.size != 36 for result in results):
+            raise RuntimeError("paired-site workers must retain only the vectorized dissipator diagonal")
+        return results
+
+    monkeypatch.setattr(dynamics, "ordered_map", dispatch, raising=False)
+    monkeypatch.setenv("GOROROBA_WORKERS", "2")
+    density = np.full((6, 6), 1 / 6, dtype=np.complex128)
+    generator = np.zeros_like(density)
+    evolved = dephase_evolve(density, generator, 0.75, 0.4)
+    expected = np.full((6, 6), np.exp(-0.3) / 6, dtype=complex)
+    expected[:2, :2] = expected[2:4, 2:4] = expected[4:6, 4:6] = 1 / 6
+    np.testing.assert_allclose(evolved, expected, atol=1e-14, rtol=0)
+    if dispatched != [(3, 1)]:
+        raise RuntimeError("independent paired-site dissipators must use the ordered pool")
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    serial = dephase_evolve(density, generator, 0.75, 0.4)
+    np.testing.assert_array_equal(evolved, serial)

@@ -4,13 +4,13 @@
 
 The successor [runtime annotation certificate](certificate-runtime-annotations.json) binds the type-only algebra import in the dynamics module. The import permits the campaign diagnostics to run in the isolated Quantum Inspire environment without loading SymPy. Exact observations agree with the original certificate; floating propagation agrees within the admitted replay tolerance. The original certificate and explorer retain their bytes.
 
-The [parallel runtime certificate](certificate-parallel-runtime.json) additionally binds process-pooled exact pair, derivation, ladder and occupation checks. The active [pooled propagation certificate](certificate-pooled-propagation.json) also binds explicit frame pooling. Both successors preserve the exact-field and floating-tolerance rules. The predecessor certificates retain their source identities.
+The [parallel runtime certificate](certificate-parallel-runtime.json) additionally binds process-pooled exact pair, derivation, ladder and occupation checks. The [pooled propagation certificate](certificate-pooled-propagation.json) also binds explicit frame pooling. The [dense pooled dephasing certificate](certificate-pooled-dephasing.json) and its [historical source text](dephasing-dense-source.py.txt) retain the implementation that review rejected for its growing collection of dense worker results. The [diagonal dephasing certificate](certificate-diagonal-dephasing.json) and [source text](dephasing-diagonal-source.py.txt) bind the compact-vector correction. The active [formatted diagonal dephasing certificate](certificate-diagonal-dephasing-formatted.json) binds the same correction after pinned formatting. Workers return only length-`size^2` vectors; accumulation follows site order. All scientific certificate fields remain identical; source identities change. All successors preserve the exact-field and floating-tolerance rules.
 
 Replay from the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-pooled-propagation.json
+"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json
 ```
 
 Exact fields compare exactly. Floating probability and representative residual fields use absolute tolerance 1e-12. Source changes require a separately retained certificate; the writer refuses to replace different certificate bytes.
