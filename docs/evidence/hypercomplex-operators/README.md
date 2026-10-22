@@ -6,11 +6,16 @@ The successor [runtime annotation certificate](certificate-runtime-annotations.j
 
 The [parallel runtime certificate](certificate-parallel-runtime.json) additionally binds process-pooled exact pair, derivation, ladder and occupation checks. The [pooled propagation certificate](certificate-pooled-propagation.json) also binds explicit frame pooling. The [dense pooled dephasing certificate](certificate-pooled-dephasing.json) and its [historical source text](dephasing-dense-source.py.txt) retain the implementation that review rejected for its growing collection of dense worker results. The [diagonal dephasing certificate](certificate-diagonal-dephasing.json) and [source text](dephasing-diagonal-source.py.txt) bind the compact-vector correction. The active [formatted diagonal dephasing certificate](certificate-diagonal-dephasing-formatted.json) binds the same correction after pinned formatting. Workers return only length-`size^2` vectors; accumulation follows site order. All scientific certificate fields remain identical; source identities change. All successors preserve the exact-field and floating-tolerance rules.
 
+The active [exact-contract certificate](certificate-cd-core-exact-contracts.json) succeeds
+the formatted diagonal certificate after `cd_core` gained validated inputs and exact
+rational certificate APIs. Its exact scientific fields retain the predecessor's
+values; floating probabilities and residuals agree within absolute tolerance 1e-12.
+
 Replay from the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json
+"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json
 ```
 
 Exact fields compare exactly. Floating probability and representative residual fields use absolute tolerance 1e-12. Source changes require a separately retained certificate; the writer refuses to replace different certificate bytes.

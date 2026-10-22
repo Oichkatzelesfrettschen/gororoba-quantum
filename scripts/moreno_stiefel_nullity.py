@@ -17,11 +17,11 @@ Nullity is certified exactly. The integer matrix D L_v (D clears the
 denominators of v) has rank at least its rank modulo the prime P, so full rank
 modulo P proves nullity 0 over Q. A positive nullity k is certified by rank
 2^(n+1) - k modulo P together with k exact rational kernel vectors with
-L_v x = 0. L_v is checked against cd_core.cd_multiply on small integer vectors.
+L_v x = 0. L_v is checked against cd_core.cd_multiply_exact on small integer vectors.
 
 Usage:
-    "$PYTHON" scripts/moreno_stiefel_nullity.py --out docs/evidence/moreno_stiefel/nullity.json
-    "$PYTHON" scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity.json
+    "$PYTHON" scripts/moreno_stiefel_nullity.py --out docs/evidence/moreno_stiefel/nullity-exact-contracts.json
+    "$PYTHON" scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity-exact-contracts.json
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from cd_core import cd_multiply, cd_sign  # noqa: E402
+from cd_core import cd_multiply_exact, cd_sign  # noqa: E402
 
 PRIME = (1 << 61) - 1
 SECOND_PRIME = 1_000_000_007
@@ -219,9 +219,7 @@ def check_left_matrix() -> int:
             x = [rng.randint(-3, 3) for _ in range(dim)]
             matrix = left_matrix(dim, v)
             product = [sum(row[j] * x[j] for j in range(dim)) for row in matrix]
-            if product != [
-                int(value) for value in cd_multiply(dim, [float(value) for value in v], [float(value) for value in x])
-            ]:
+            if tuple(product) != cd_multiply_exact(dim, v, x):
                 raise ValueError(f"L_v differs from cd_core.cd_multiply at dimension {dim}")
             checked += 1
     return checked

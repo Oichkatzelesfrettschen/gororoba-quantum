@@ -20,7 +20,7 @@ pair (cd_core.sedenion_zero_divisors) has a degree-4 SELECT of similar
 size, so (1, 10) keeps the comparison with the Kingston run.
 
 Before any circuit is written, certify() computes each case's product with
-cd_core.cd_multiply and with the retained D = 16 tables of the packages
+cd_core.cd_multiply_exact and with the retained D = 16 tables of the packages
 identical to cd_core (docs/evidence/algebra_packages/tables.json), requires
 the dark pair in cd_core.sedenion_zero_divisor_corpus, and requires SELECT to
 equal cd_sign(16, m, q)|m XOR q> on all 32 basis inputs.
@@ -93,7 +93,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from qi_platform import HARDWARE_BATCH_CIRCUITS  # noqa: E402
 
 import parallel  # noqa: E402
-from cd_core import _lmat, cd_multiply, cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
+from cd_core import _lmat, cd_multiply_exact, cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
 from select_lcu import anf_coefficients, joint_select_signs, sparse_pair_prep  # noqa: E402
 
 PACKAGE_TABLES = ROOT / "docs/evidence/algebra_packages/tables.json"
@@ -254,10 +254,10 @@ def analysis_claim_kind(cases: dict[str, Any]) -> str:
     raise SystemExit("witness analysis has an unknown or inconsistent recorded backend/twin identity")
 
 
-def vector(terms: dict[int, int]) -> list[float]:
-    out = [0.0] * 16
+def vector(terms: dict[int, int]) -> list[int]:
+    out = [0] * 16
     for index, coefficient in terms.items():
-        out[index] = float(coefficient)
+        out[index] = coefficient
     return out
 
 
@@ -273,7 +273,7 @@ def table_product(table: dict[str, list[list[int]]], x: dict[int, int], y: dict[
 def certify() -> dict[str, Any]:
     """Every case's product from cd_core, the retained package tables, and the SELECT action.
 
-    The products (e1 + e10) b come from cd_core.cd_multiply and from each
+    The products (e1 + e10) b come from cd_core.cd_multiply_exact and from each
     retained D = 16 table of the packages identical to cd_core; all must
     agree term for term. The dark pair must be a row of
     cd_core.sedenion_zero_divisor_corpus. The routed circuits implement
@@ -288,7 +288,7 @@ def certify() -> dict[str, Any]:
     rows: dict[str, Any] = {}
     for name, ((k, el), phase, ideal) in CASES.items():
         b = {k: 1, el: 1 if phase == 0.0 else -1}
-        reference = {r: round(c) for r, c in enumerate(cd_multiply(16, vector(a), vector(b))) if c}
+        reference = {r: int(c) for r, c in enumerate(cd_multiply_exact(16, vector(a), vector(b))) if c}
         for package in IDENTICAL_PACKAGES:
             if table_product(packages[package]["tables"]["16"], a, b) != reference:
                 raise SystemExit(f"{package} disagrees with cd_core on {name}")

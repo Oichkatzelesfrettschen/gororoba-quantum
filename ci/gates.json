@@ -962,7 +962,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay.py --check",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay-exact.py --check",
    "name": "sources-389",
    "seconds": 18.0,
    "tier": "pr"
@@ -1250,7 +1250,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "name": "sources-183",
    "seconds": 0.1,
    "tier": "pr"
@@ -1266,7 +1266,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "name": "sources-186",
    "seconds": 0.1,
    "tier": "pr"
@@ -1306,7 +1306,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "seconds": 0.1,
    "tier": "pr",
    "name": "sources-194"
@@ -1753,7 +1753,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity-exact-contracts.json",
    "name": "core-267",
    "seconds": 15.1,
    "tier": "pr"
@@ -1769,7 +1769,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition-exact-contracts.json",
    "name": "core-269",
    "seconds": 4.0,
    "tier": "pr"
@@ -3960,7 +3960,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check --summary results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json --output docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.png && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check --summary results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json --output docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.png && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
    "name": "core-630",
    "seconds": 13.0,
    "tier": "pr"
@@ -3968,7 +3968,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-batched-products.json",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-cd-core-exact-contracts.json",
    "name": "core-631",
    "seconds": 1.0,
    "tier": "pr"
