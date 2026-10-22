@@ -34,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from mcp.server.mcpserver import MCPServer  # noqa: E402
 from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 from mcp.types import ToolAnnotations  # noqa: E402
-from qi_platform import Client, PlatformError, declared_qubits, ledger, now, submit  # noqa: E402
+from qi_platform import Client, PlatformError, declared_qubits, ledger, submit, utc_now  # noqa: E402
 
 LOCAL_MAX_QUBITS = 24
 LOCAL_MAX_SHOTS = 100_000
@@ -90,13 +90,13 @@ def client() -> Client:
 @reported
 def qi_backends(user_only: bool = True) -> list[dict[str, Any]]:
     """Fresh backend types and scoped queues; user_only selects account (default) or global queue counts."""
-    started = now()
+    started = utc_now().isoformat()
     connection = client()
     rows = []
     for backend_type in connection.pages("/backend_types/"):
         row = {key: backend_type[key] for key in LIMIT_FIELDS}
         row["queue"] = connection.get(f"/backend_types/{backend_type['id']}/queue", user_only=user_only)
-        row.update(queue_user_only=user_only, request_started_utc=started, retrieved_utc=now())
+        row.update(queue_user_only=user_only, request_started_utc=started, retrieved_utc=utc_now().isoformat())
         rows.append(row)
     return rows
 
@@ -105,14 +105,14 @@ def qi_backends(user_only: bool = True) -> list[dict[str, Any]]:
 @reported
 def qi_backend(backend_type_id: int, user_only: bool = True) -> dict[str, Any]:
     """Fresh backend type, physical instances and scoped queue; the provider enable flag is separate from status."""
-    started = now()
+    started = utc_now().isoformat()
     connection = client()
     backend_type: dict[str, Any] = dict(connection.get(f"/backend_types/{backend_type_id}"))
     backend_type["queue"] = connection.get(f"/backend_types/{backend_type_id}/queue", user_only=user_only)
     backend_type["backend_instances"] = [
         row for row in connection.pages("/backends") if row["backend_type_id"] == backend_type_id
     ]
-    backend_type.update(queue_user_only=user_only, request_started_utc=started, retrieved_utc=now())
+    backend_type.update(queue_user_only=user_only, request_started_utc=started, retrieved_utc=utc_now().isoformat())
     return backend_type
 
 
@@ -120,9 +120,9 @@ def qi_backend(backend_type_id: int, user_only: bool = True) -> dict[str, Any]:
 @reported
 def qi_hardware_status() -> list[dict[str, Any]]:
     """Fresh backend-instance statuses and heartbeats, with the interval of the API reads."""
-    started = now()
+    started = utc_now().isoformat()
     rows: list[dict[str, Any]] = client().pages("/backends")
-    finished = now()
+    finished = utc_now().isoformat()
     return [dict(row, request_started_utc=started, retrieved_utc=finished) for row in rows]
 
 

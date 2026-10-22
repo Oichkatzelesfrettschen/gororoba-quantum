@@ -1525,6 +1525,30 @@ class RetentionChecks(unittest.TestCase):
             client.pages.call_args_list, [unittest.mock.call("/backends"), unittest.mock.call("/backends")]
         )
 
+    def test_mcp_observation_intervals_preserve_subsecond_completion(self) -> None:
+        started = datetime.datetime(2026, 10, 22, 17, 3, 1, 123456, tzinfo=datetime.UTC)
+        finished = datetime.datetime(2026, 10, 22, 17, 3, 1, 823456, tzinfo=datetime.UTC)
+        parse = datetime.datetime.fromisoformat
+        for name in ("qi_backend", "qi_backends", "qi_hardware_status"):
+            with (
+                self.subTest(tool=name),
+                patch.object(platform.datetime, "datetime", wraps=datetime.datetime) as clock,
+            ):
+                clock.now.side_effect = [started, finished]
+                module = mcp_with_stubs()
+                client = Mock()
+                backend: dict[str, Any] = {key: None for key in module.LIMIT_FIELDS}
+                backend.update(id=7, backend_type_id=7, status="offline")
+                client.pages.return_value = [backend]
+                client.get.side_effect = lambda path, observed_backend=backend, **params: (
+                    {"number_of_jobs_in_queue": 0} if path.endswith("/queue") else observed_backend
+                )
+                with patch.object(module, "client", return_value=client):
+                    result = getattr(module, name)(7) if name == "qi_backend" else getattr(module, name)()
+                record = result if name == "qi_backend" else result[0]
+                self.assertEqual(parse(record["request_started_utc"]), started)
+                self.assertEqual(parse(record["retrieved_utc"]), finished)
+
 
 class TokenRefreshChecks(unittest.TestCase):
     """Client.refresh against a stand-in SDK whose authorization server rotates refresh tokens.

@@ -44,8 +44,8 @@ The recovery and retention rules are in [usage.md](usage.md).
 ## Status and queue interpretation
 
 The status tools issue fresh API GET requests on every call; the cached object is the authenticated
-HTTP client, rather than a cached catalogue. `request_started_utc` and `retrieved_utc` bound each
-observation. The backend-type, queue and physical-instance reads are sequential observations,
+HTTP client, rather than a cached catalogue. `request_started_utc` and `retrieved_utc` retain
+subsecond UTC precision and bound the API reads. The backend-type, queue and physical-instance reads are sequential observations,
 not an atomic snapshot. A transition between those reads can produce different statuses.
 
 `enabled` is the provider's enable flag; the API does not define it as account entitlement.
@@ -108,9 +108,10 @@ These checks require neither the MCP SDK nor credentials. They do not rerun
 the original SDK transport smoke test.
 
 The status/queue repair also ran a fresh mcp 2.3.0 stdio session against direct API reads.
-At 2026-10-22T16:50:19Z through 16:50:23Z, direct reads before and after the MCP call and
-the MCP backend-type response all reported Tuna-17 `offline`. The physical instance also
-reported `offline`, with heartbeat 16:50:15.229017Z. The account queue contained zero batches.
+The repeat smoke completed at 2026-10-22T17:07:33.830453Z. Direct reads before and after the MCP
+call and the MCP backend-type response all reported Tuna-17 `offline`. The MCP API-read interval
+was 17:07:29.500269Z through 17:07:33.516416Z. The physical instance also reported `offline`,
+with heartbeat 17:07:28.759868Z. The account queue contained zero batches.
 The session discovered all eleven tools and a boolean `user_only` input with default `true`.
 The observation establishes transport/schema conformance at that time, rather than a persistent
 availability claim. The SDK-free regressions also exercise changed statuses between calls,
