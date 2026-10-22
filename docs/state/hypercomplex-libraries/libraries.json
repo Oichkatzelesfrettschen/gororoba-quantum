@@ -3767,12 +3767,15 @@
    "distribution": "qiskit-addon-mpf",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: skip: Trotter error reduction, pulls cvxpy (not installed)",
+   "role": "Optional multiproduct-formula Trotter-error reduction using CVXPY. The 2026-10-16 ecosystem audit declined the workflow; host CVXPY availability does not establish its admission. Qualify circuit approximations, solver residuals and error budgets before use.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:118",
     "docs/notes/qiskit-ecosystem.md:201"
    ],
-   "role_sources": [],
+   "role_sources": [
+    "docs/notes/qiskit-ecosystem.md:201",
+    "docs/state/hypercomplex-libraries/solver-role-grounding.json"
+   ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -5699,7 +5702,7 @@
   "scripts/kaggle_run.py": "04e69833aefcd34311c033747cf73e9bf207bf56684a877f16d0f966ae634114",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
-  "scripts/hypercomplex_libraries.py": "3c869e7da67771c8ecd000f4c74bf350adb5778b0c1f1dd5602aae8131987cd7",
+  "scripts/hypercomplex_libraries.py": "0ab28b088a010a37db65616e3af0113293426305d14ef227ee35755977514fd1",
   "docs/notes/quandela/python-stack.md": "2f4be7a75a82b1c94a11e6bd45b7ff9d415c10c9a02953a9768100c03fac856e",
   "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"

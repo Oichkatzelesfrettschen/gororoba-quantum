@@ -115,6 +115,11 @@ ROLES = {
 }
 ROLES.update(
     {
+        "qiskit-addon-mpf": (
+            "Optional multiproduct-formula Trotter-error reduction using CVXPY. The 2026-10-16 ecosystem "
+            "audit declined the workflow; host CVXPY availability does not establish its admission. "
+            "Qualify circuit approximations, solver residuals and error budgets before use."
+        ),
         "cuquantum-cu11": (
             "CUDA 11 cuQuantum dependency bundle for the isolated Aer GPU wheel; "
             "shared simulator engine infrastructure."
@@ -450,6 +455,8 @@ def inventory() -> dict[str, Any]:
                 "role_sources": (
                     [ROLE_GROUNDING, "docs/notes/quandela/python-stack.md:63"]
                     if name in {"cvxpy", "scs", "clarabel", "osqp"}
+                    else ["docs/notes/qiskit-ecosystem.md:201", ROLE_GROUNDING]
+                    if name == "qiskit-addon-mpf"
                     else ["scripts/kaggle_run.py", "docs/notes/qiskit-ecosystem.md"]
                     if name in execution_pins and ("cu13" in name or name.startswith("nvidia-"))
                     else []

@@ -97,3 +97,18 @@ def test_check_rejects_omitted_requirement_library(tmp_path: Path, monkeypatch: 
     monkeypatch.setattr(sys, "argv", ["hypercomplex_libraries.py", "--out", str(tmp_path), "--check"])
     with pytest.raises(ValueError, match="inventory declared library coverage differs: cryptography"):
         main()
+
+
+def test_multiproduct_workflow_admission_differs_from_cvxpy_installation() -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    rows = {row["distribution"]: row for row in record["libraries"]}
+    addon = rows["qiskit-addon-mpf"]
+    for text in ("multiproduct-formula", "CVXPY", "2026-10-16", "admission", "solver residuals"):
+        if text not in addon["role"]:
+            raise RuntimeError(f"multiproduct workflow needs explicit scope: {text}")
+    if "not installed" in addon["role"]:
+        raise RuntimeError("a historical dependency observation became a current installation claim")
+    if "docs/notes/qiskit-ecosystem.md:201" not in addon["role_sources"]:
+        raise RuntimeError("the dated optional-workflow decision lost its source")
+    if rows["cvxpy"]["observed_host_version"] != "1.9.3":
+        raise RuntimeError("the retained host CVXPY observation changed")

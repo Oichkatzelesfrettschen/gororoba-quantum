@@ -244,7 +244,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | qiskit-addon-aqc-tensor | separate/unobserved | Documented ecosystem candidate: skip: approximate quantum compilation with tensor networks; quimb and cotengra already cover contraction |
 | qiskit-addon-cutting | separate/unobserved | Documented ecosystem candidate: skip: circuits stay within 14 qubits, so wire cutting has no use |
 | qiskit-addon-dice-solver | separate/unobserved | Documented ecosystem candidate: skip: chemistry HPC solvers |
-| qiskit-addon-mpf | separate/unobserved | Documented ecosystem candidate: skip: Trotter error reduction, pulls cvxpy (not installed) |
+| qiskit-addon-mpf | separate/unobserved | Optional multiproduct-formula Trotter-error reduction using CVXPY. The 2026-10-16 ecosystem audit declined the workflow; host CVXPY availability does not establish its admission. Qualify circuit approximations, solver residuals and error budgets before use. |
 | qiskit-addon-obp | separate/unobserved | Documented ecosystem candidate: skip: operator backpropagation targets observable estimation of Trotter circuits |
 | qiskit-addon-opt-mapper | separate/unobserved | Documented ecosystem candidate: skip: optimization modeling |
 | qiskit-addon-pna | separate/unobserved | Documented ecosystem candidate: skip: global-noise-channel mitigation of observables |
