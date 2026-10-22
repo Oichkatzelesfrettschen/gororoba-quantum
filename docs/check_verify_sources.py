@@ -56,6 +56,63 @@ def license_documents_fixture() -> dict[str, Any]:
     }
 
 
+class WebSourceChecks(unittest.TestCase):
+    def test_receipts_and_descriptive_entries(self) -> None:
+        import verify_sources
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "docs").mkdir()
+            (root / "docs/note.md").write_text("Source note\n")
+            receipt: dict[str, Any] = {
+                "note": "docs/note.md",
+                "url": "https://api.crossref.org/works/10.1/example",
+                "sha256": "a" * 64,
+                "bytes": 30,
+                "retrieved_at_utc": "2026-10-22T12:01:58Z",
+                "reading_scope": "Bibliographic identity",
+                "retention": "retrieval_receipt; response bytes are unretained",
+            }
+            registry = {"web_sources": [receipt, {"note": "docs/note.md", "status": "URLs reside in the note"}]}
+            self.assertEqual(verify_sources.verify_web_sources(root, registry), (1, 1))
+            for field, value in (
+                ("sha256", "bad"),
+                ("bytes", True),
+                ("bytes", -1),
+                ("retrieved_at_utc", "2026-10-22"),
+                ("retrieved_at_utc", "2026-10-22T12:00:00-07:00"),
+                ("url", "file:///etc/passwd"),
+                ("note", "../outside.md"),
+                ("note", "/etc/passwd"),
+                ("reading_scope", ""),
+                ("retention", "verified response bytes"),
+            ):
+                with self.subTest(field=field, value=value):
+                    mutant = dict(receipt, **{field: value})
+                    with self.assertRaises(ValueError):
+                        verify_sources.verify_web_sources(root, {"web_sources": [mutant]})
+            for field in ("sha256", "bytes", "retrieved_at_utc", "reading_scope", "url", "retention"):
+                mutant = dict(receipt)
+                del mutant[field]
+                with self.subTest(missing=field), self.assertRaises(ValueError):
+                    verify_sources.verify_web_sources(root, {"web_sources": [mutant]})
+
+            for status in (
+                {"status": "peer-reviewed"},
+                {
+                    "status": "journal-identity-verified",
+                    "doi": "10.1/example",
+                    "venue": "Journal",
+                    "receipt_url": "https://example.org/missing",
+                },
+                {"status": "journal-venue-unverified", "doi": "10.1/example"},
+            ):
+                with self.subTest(status=status), self.assertRaises(ValueError):
+                    verify_sources.verify_web_sources(
+                        root, {"web_sources": [receipt], "publication_status": {"docs/note.md": status}}
+                    )
+
+
 class ExternalSourceChecks(unittest.TestCase):
     def setUp(self) -> None:
         temporary = tempfile.TemporaryDirectory(prefix="external-source-check-")

@@ -165,9 +165,12 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   also restores 60 original BDSC Pauli cases omitted from that 3,611-row record,
   for 3,671 retained cases. Every original and rejected-request compilation row
   is preserved in the complete successor. Gate `core-368` checks the complete
-  current case set against that successor and regenerates it under the pinned local QI
+  current case set through `scripts/qi_complete_toolchain_check.py` and regenerates
+  the successor under the pinned local QI
   interpreter. The original record keeps its bytes; compilation proves source
   and default-pass conformance, while provider scheduling remains separate.
+  The complete checker keeps `qi_toolchain_check.py` unchanged because the
+  matched-proposal receipt binds that compiler dependency's exact bytes.
 - **Compiler** (API): SWAP2CZDecomposer then CZDecomposer; the configuration
   lists no mapping and no routing pass, so a circuit keeps every two-qubit
   gate on a coupled pair itself.

@@ -257,14 +257,14 @@ target identity, order and a static target control, preserve all returned
 meshes and outputs, and retain the same empty processing policy. The approved
 five-job ceiling is consumed; that intervention remains an unsubmitted design.
 
-Gate `core-633` replays the descriptive readout and returned-mesh audit.
+Gate `core-651` replays the descriptive readout and returned-mesh audit.
 The [pooled readout producer](../../scripts/photonic_repeat_readout_pooled.py)
 and [compiled-mesh producer](../../scripts/photonic_compilation_audit_pooled.py)
 validate independent acquisition directories through
 `parallel.ordered_map`. Their successor records preserve every scientific
 observation and comparison from the serial records. The original producers
 and their hash-bound outputs remain immutable historical evidence.
-Gate `core-632` replays the frozen successor cases, finite frontier and API
+Gate `core-650` replays the frozen successor cases, finite frontier and API
 contracts.
 The successor replay reads
 `results/hypercomplex/photonic-successors/native-target-catalogue.json`, a

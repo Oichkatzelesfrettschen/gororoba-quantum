@@ -57,9 +57,10 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(100 established, 48 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
+(100 established, 48 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
+- **proposed-tuna17-zero-divisor-matched-response** (proposed, proposed experiment). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
 - **cd-moving-pair-walsh-proof** (open, mathematical claim). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
 - **a5-stiefel-universal** (open, mathematical claim). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open. Depends on a5-stiefel-selected-nullity.
 - **dimension32-global-topology** (open, mathematical claim). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants. Depends on four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
