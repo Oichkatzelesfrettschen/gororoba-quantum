@@ -51,6 +51,19 @@ Sanitized launcher snapshots describe the recorded execution environment;
 their process-specific environment sources are historical rather than portable
 replay entry points.
 
+The [qualification summary parser recovery](qualification-summary-parser-recovery/inventory.json)
+retains the corrected follow-on launchers and their recovery receipt. The
+original parsers accepted summaries without skips and rejected or ignored the
+successful summary containing 145 skips. The correction accepts the optional
+skip count. Python 3.14's `sys.remote_exec` launched replacement helpers from
+the original helper's loaded environment. Linux's same-user tracing restriction
+required scoped existing sudo authority; the operation left the tracing policy
+unchanged and wrote a receipt containing process IDs and script/log paths,
+rather than environment contents. The recovered launch observations show the
+simulation qualification starting and retention qualification waiting for an
+explicit clean-head request; those observations are bounded active-process
+snapshots rather than completed qualification receipts.
+
 Byte-identical tracked artifacts link to their repository path and original Git
 identity. The verifier checks the checkout bytes, so a shallow offline checkout
 needs no historical Git object. A future source change must retain the prior
