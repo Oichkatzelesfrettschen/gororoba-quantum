@@ -81,6 +81,12 @@ class Watch:
             else f"{row['file']} {row['job']['status']}"
             for row in results["jobs"]
         )
+        failed = [
+            f"{row['file']} {row['job']['status']}" for row in results["jobs"] if row["job"]["status"] != "completed"
+        ]
+        if failed:
+            # collect writes no raw file for a job that did not complete, and any such job stops the series.
+            return f"{batch} collected: {runs}; idle gap {gap}; stops FIRED: {', '.join(failed)}"
         cases, raw, _ = qi_bdsc_pauli_cases.load_series(done)
         report = qi_bdsc_pauli_cases.reference_report(cases, raw)
         worst = worst_rates(report)
@@ -138,7 +144,8 @@ def main() -> int:
     while True:
         try:
             watch.poll()
-        except (OSError, ValueError, KeyError, qi_platform.PlatformError) as error:
+        # load_series reports a malformed or partly written shot file through SystemExit.
+        except (OSError, ValueError, KeyError, SystemExit, qi_platform.PlatformError) as error:
             say(f"read failed: {error!r}")
         time.sleep(args.interval)
 

@@ -1814,6 +1814,27 @@ def gate_predecessor(case_batch: Path, run_dir: Path) -> dict[str, Any]:
 def submit_next(
     series_dir: Path, runs: Path, approval: str, control: Path | None, dry: bool = False
 ) -> tuple[Path, dict[str, Any]]:
+    """submit_series_batch under an exclusive flock on the series case directory, so two overlapping calls
+    never choose, stage or submit the same batch; a dry call takes no lock."""
+    if dry:
+        return submit_series_batch(series_dir, runs, approval, control, True)
+    import fcntl
+    import os
+
+    fd = os.open(series_dir, os.O_RDONLY)
+    try:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise SystemExit(f"another --submit-next holds {series_dir.name}") from None
+        return submit_series_batch(series_dir, runs, approval, control, False)
+    finally:
+        os.close(fd)
+
+
+def submit_series_batch(
+    series_dir: Path, runs: Path, approval: str, control: Path | None, dry: bool = False
+) -> tuple[Path, dict[str, Any]]:
     """Copy the next batch of a series into its run directory and submit it, after every preregistered stop.
 
     Every earlier batch must be submitted, collected with all jobs completed and full shot lists, and
@@ -1844,6 +1865,8 @@ def submit_next(
     if predecessors:
         cases, raw, _ = load_series([done[p["batch"]] for p in predecessors])
         require_full_shots(cases, raw)
+        for key, shots in raw.items():
+            shot_bits(shots, cases["nqubits"], "/".join(key))
         report = reference_report(cases, raw)
         if report["stop_condition_batch_00"] or report["bracket_drift"]["flagged"]:
             raise SystemExit(
@@ -1879,6 +1902,18 @@ def submit_next(
         raise SystemExit(
             f"{live['name']}: the live topology, gate set or compiler configuration differs from the cases"
         )
+    pause = qi_platform.HARDWARE_PAUSE_SECONDS if live["is_hardware"] else 0
+    # An escalated pause step holds for the rest of the series (usage.md, "Pause escalation").
+    recorded = [
+        json.loads(gate.read_text(encoding="utf-8")).get("pause_seconds", 0)
+        for gate in (done[p["batch"]] / "series-gate.json" for p in predecessors)
+        if gate.exists()
+    ]
+    if recorded and pause < max(recorded):
+        raise SystemExit(
+            f"an earlier batch of {series_dir.name} ran at a {max(recorded)} s pause; "
+            f"set QI_HARDWARE_PAUSE_SECONDS to at least that step"
+        )
     stamp = stamp or datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = runs / f"{stamp}-{series_dir.name}-{batch}"
     receipt = {
@@ -1890,7 +1925,7 @@ def submit_next(
         "stops": stops,
         "control": control_record,
         "backend_contract": "live record matches",
-        "pause_seconds": qi_platform.HARDWARE_PAUSE_SECONDS if live["is_hardware"] else 0,
+        "pause_seconds": pause,
     }
     if dry:
         return run_dir, receipt
@@ -2095,6 +2130,27 @@ def series_gate_self_test(
             receipt_dir, _ = submit_next(series, runs, "", control, True)
             if receipt_dir.name != f"2026-10-22T000000Z-{SERIES}-batch-01":
                 raise AssertionError(f"the gate chose {receipt_dir.name}")
+            # An escalated step recorded by a predecessor holds; a lower step is refused.
+            (done / "series-gate.json").write_text(json.dumps({"pause_seconds": HARDWARE_PAUSE_LADDER[-1]}))
+            refused(lambda: submit_next(series, runs, "", control, True), "set QI_HARDWARE_PAUSE_SECONDS")
+            (done / "series-gate.json").unlink()
+            # A predecessor witness shot outside the binary digits is refused, not only a reference shot.
+            witness_dir = collect("batch-01", {}, "completed")
+            witness_raw = witness_dir / "raw" / f"{witness_file(0)}.json"
+            shots = json.loads(witness_raw.read_text())
+            witness_raw.write_text(json.dumps(["2" + shots[0][1:], *shots[1:]]))
+            refused(lambda: submit_next(series, runs, "", control, True), "binary digits")
+            shutil.rmtree(witness_dir)
+            # A second call while one holds the series lock is refused before it reads the series.
+            import fcntl
+            import os
+
+            holder = os.open(series, os.O_RDONLY)
+            fcntl.flock(holder, fcntl.LOCK_EX)
+            try:
+                refused(lambda: submit_next(series, runs, "synthetic", control, False), "another --submit-next")
+            finally:
+                os.close(holder)
             # An interrupted copy or a transport failure before the checkpoint removes the copied batch; a
             # failure after the checkpoint keeps the copy.
             for failure in ("staging", "submit", "checkpoint"):
