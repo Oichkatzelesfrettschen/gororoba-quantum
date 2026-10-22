@@ -7,7 +7,14 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from hypercomplex_libraries import ROOT, check_execution_coverage, execution_declarations, inventory, main
+from hypercomplex_libraries import (
+    ROOT,
+    check_execution_coverage,
+    check_inventory_denominator,
+    execution_declarations,
+    inventory,
+    main,
+)
 
 
 def test_inventory_covers_locks_and_independent_roles() -> None:
@@ -93,6 +100,7 @@ def test_retained_execution_inventory_covers_authoritative_sources() -> None:
 def test_check_rejects_omitted_requirement_library(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
     record["libraries"] = [row for row in record["libraries"] if row["distribution"] != "cryptography"]
+    record["coverage_counts"]["distributions"] = len(record["libraries"])
     (tmp_path / "libraries.json").write_text(json.dumps(record))
     monkeypatch.setattr(sys, "argv", ["hypercomplex_libraries.py", "--out", str(tmp_path), "--check"])
     with pytest.raises(ValueError, match="inventory declared library coverage differs: cryptography"):
@@ -112,3 +120,36 @@ def test_multiproduct_workflow_admission_differs_from_cvxpy_installation() -> No
         raise RuntimeError("the dated optional-workflow decision lost its source")
     if rows["cvxpy"]["observed_host_version"] != "1.9.3":
         raise RuntimeError("the retained host CVXPY observation changed")
+
+
+@pytest.mark.parametrize("alias", [False, True])
+def test_inventory_rejects_duplicate_normalized_distribution_names(alias: bool) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    duplicate = copy.deepcopy(next(row for row in record["libraries"] if row["distribution"] == "numpy-quaternion"))
+    if alias:
+        duplicate["distribution"] = "NumPy_Quaternion"
+    record["libraries"].append(duplicate)
+    with pytest.raises(ValueError, match="distribution names repeat after normalization"):
+        check_inventory_denominator(record, ROOT)
+
+
+@pytest.mark.parametrize(
+    "field", ["distributions", "execution_pin_distributions", "execution_pin_declarations", "execution_source_files"]
+)
+@pytest.mark.parametrize("value", [None, True, 347.0, "347", -1, 999, float("inf"), float("nan")])
+def test_inventory_rejects_edited_or_noninteger_counts(field: str, value: Any) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    record["coverage_counts"][field] = value
+    with pytest.raises(ValueError, match=f"inventory coverage count differs: {field}"):
+        check_inventory_denominator(record, ROOT)
+
+
+@pytest.mark.parametrize("change", ["missing", "extra"])
+def test_inventory_rejects_count_field_membership_changes(change: str) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    if change == "missing":
+        record["coverage_counts"].pop("distributions")
+    else:
+        record["coverage_counts"]["extra"] = 0
+    with pytest.raises(ValueError, match="inventory coverage count fields differ"):
+        check_inventory_denominator(record, ROOT)

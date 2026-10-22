@@ -306,6 +306,31 @@ def check_execution_coverage(record: dict[str, Any], root: Path) -> None:
         raise ValueError("execution source hash coverage differs")
 
 
+def check_inventory_denominator(record: dict[str, Any], root: Path) -> None:
+    """Validate unique canonical names and exact integer counts over current execution declarations."""
+    names = [row["distribution"] for row in record["libraries"]]
+    if any(not isinstance(name, str) or not name for name in names):
+        raise ValueError("inventory distribution names must be nonempty strings")
+    canonical = [normalized(name) for name in names]
+    if len(canonical) != len(set(canonical)):
+        raise ValueError("inventory distribution names repeat after normalization")
+    if names != canonical:
+        raise ValueError("inventory distribution name is not normalized")
+    pins, sources = execution_declarations(root)
+    expected = {
+        "distributions": len(names),
+        "execution_pin_distributions": len(pins),
+        "execution_pin_declarations": sum(len(versions) for versions in pins.values()),
+        "execution_source_files": len(sources),
+    }
+    counts = record.get("coverage_counts")
+    if not isinstance(counts, dict) or set(counts) != set(expected):
+        raise ValueError("inventory coverage count fields differ")
+    for name, value in expected.items():
+        if type(counts[name]) is not int or counts[name] != value:
+            raise ValueError(f"inventory coverage count differs: {name}")
+
+
 def requirement_manifests(root: Path) -> list[Path]:
     """The finite visible requirement-lock discovery surface, excluding hidden environments."""
     return [
@@ -532,6 +557,7 @@ def main() -> int:
     arguments = parser.parse_args()
     if arguments.check:
         record = json.loads((arguments.out / "libraries.json").read_text())
+        check_inventory_denominator(record, ROOT)
         check_execution_coverage(record, ROOT)
         declarations = declared_libraries()["declarations"]
         rows = {row["distribution"]: row for row in record["libraries"]}
@@ -566,6 +592,7 @@ def main() -> int:
         record["host_observation_policy"] = (
             "existing observations/import locations retained; additions observed by generator interpreter"
         )
+    check_inventory_denominator(record, ROOT)
     check_execution_coverage(record, ROOT)
     arguments.out.mkdir(parents=True, exist_ok=True)
     (arguments.out / "libraries.json").write_text(json.dumps(record, indent=1) + "\n")
