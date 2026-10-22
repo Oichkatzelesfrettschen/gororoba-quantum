@@ -16,12 +16,14 @@ assignments, so job position never aliases a seed or template across blocks.
 A compiled circuit is a function of the seed, the parameters and the
 compiler's component model (docs/evidence/bdsc/forensics/forensics.json,
 compilation_determinism), so block 2 repeats block 1's returned circuits
-while that model holds, which the readout verifies per instance.
+while that model holds. The readout compares each matched pair's returned
+circuit and reads a changed one as a recompiled request, never as drift.
 
 Without --draw the case directories read draft and carry no seeds or order.
 With --draw (an scripts/anu_qrng.py record of at least 100 uint16 values) the
-first four distinct values are the seeds of slots 0 to 3, and value 4 + i
-orders instance i within its job.
+first four values, which must be distinct, seed slots 0 to 3, and value 4 + i
+orders instance i within its job. --check without --draw reads the record the
+committed manifests name, so the gate holds before and after the draw.
 
 Usage:
   "$PYTHON" scripts/bdsc_diagnostic.py --write [--draw FILE]
@@ -67,10 +69,10 @@ SECONDS_PER_ITERATION = 6.3
 SECONDS_PER_SAMPLE = 2.6e-5
 # Block 2 waits this long after block 1's last execution ends, so the blocks are separated in time.
 BLOCK_GAP_HOURS = 1
-# A summary ratio of observed dispersion to its reference counting scale reads resolved at or above RESOLVED and
-# consistent with counting below CONSISTENT; between them it is inconclusive.
-CONSISTENT = 2.0
-RESOLVED = 3.0
+# A pooled chi-square of observed dispersion against its reference counting errors reads resolved below ALPHA,
+# consistent at or above CONSISTENT_P, and inconclusive between.
+ALPHA = 0.01
+CONSISTENT_P = 0.05
 MARGIN = 0.02
 DRAW_VALUES = SLOTS + 2 * 2 * SLOTS * len(LABELS)
 
@@ -172,24 +174,32 @@ def case_record() -> dict[str, Any]:
             "values": DRAW_VALUES,
             "requests": 1,
             "credits": 0,
-            "use": "the first four distinct values seed slots 0 to 3; value 4 + i orders instance i within its job",
+            "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders instance i "
+            "within its job",
         },
         "analysis": {
             "observation": "one-click conditioned selected fraction of returned counts; every standard error is a "
             "reference value under independent Bernoulli trials, which the provider contract has not established",
             "residuals": "Delta_R and Delta_I per block, template and seed, each from one job",
-            "block_change": "p(block 2) - p(block 1) per instance, with the returned-circuit identity of the pair",
-            "seed_dispersion": "SD over the four seeds per block, template and state, and of each residual",
-            "template_effect": "seed-mean outward minus reverse per block and state",
-            "ratios": "RMS observed dispersion over RMS reference standard error, read consistent below "
-            f"{CONSISTENT}, resolved at or above {RESOLVED}, inconclusive between",
+            "block_change": "p(block 2) - p(block 1) per instance whose pair returned one circuit; chi-square of "
+            "change over reference error",
+            "seed_dispersion": "pooled chi-square of the four seeds about their inverse-variance mean per block, "
+            "template and state, and per block, template and residual family",
+            "template_effect": "seed-mean outward minus reverse per block and state; reported, no branch reads it",
+            "tests": f"resolved at p < {ALPHA}, consistent at p >= {CONSISTENT_P}, inconclusive between",
+            "residual_margin": "a residual exceeds the margin when |Delta| minus its simultaneous normal quantile "
+            f"at {ALPHA} over all 32 residuals times its reference error exceeds the margin",
             "branches": {
+                "recompiled": "a matched pair returned different circuits: the blocks compare requests, the "
+                "compiler's model changed, and the case reruns before any branch is read",
                 "stationarity": "matched requests change between blocks: address stationarity and provider "
                 "calibration before any fixed-effect confirmation",
                 "seed": "seeds give reproducible differences: study seed selection on development data and "
                 "validate a frozen selection on fresh data",
                 "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate "
                 "preparation, filtering and processing; more seeds are not the remedy",
+                "inconclusive": "no component resolved and one test inconclusive: more compilations or trials "
+                "before a branch",
                 "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined "
                 "certification case becomes a candidate once a common ensemble effect is supported",
             },
@@ -236,9 +246,13 @@ def draw_claims(binding: dict[str, Any]) -> list[str]:
         for path in sorted(root.glob("**/cases.json")) if root.is_dir() else []:
             manifest = json.loads(path.read_text(encoding="utf-8"))
             named = manifest.get("draw")
-            if isinstance(named, dict) and named.get("sha256") == binding["sha256"]:
-                if manifest.get("diagnostic_case_sha256") != case_sha:
-                    claims.append(str(path.relative_to(ROOT)))
+            if isinstance(named, dict):
+                hit = named.get("sha256") == binding["sha256"]
+            else:
+                # Older cases name the record by file name.
+                hit = isinstance(named, str) and named == Path(binding["record"]).name
+            if hit and manifest.get("diagnostic_case_sha256") != case_sha:
+                claims.append(str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path))
     return claims
 
 
@@ -345,6 +359,9 @@ def write(draw: Path | None) -> None:
 
 def check(draw: Path | None) -> None:
     """A rebuild matches: the record and circuits exactly, manifests within cert.CHECK_TOLERANCE on floats."""
+    if draw is None:
+        named = json.loads((CASES_DIR / "b1-j1" / "cases.json").read_text(encoding="utf-8")).get("draw")
+        draw = ROOT / named["record"] if isinstance(named, dict) else None
     fresh = documents(draw)
     require(CASE.read_bytes() == fresh["case.json"], f"{CASE.relative_to(ROOT)} differs from a fresh build")
     jobs = sorted(k for k in fresh if k != "case.json")
@@ -363,19 +380,28 @@ def reference_se(p: float, n: int) -> float:
     return math.sqrt(max(p * (1 - p), 0.25 / n) / n)
 
 
-def reading(ratio: float) -> str:
-    return "consistent" if ratio < CONSISTENT else "resolved" if ratio >= RESOLVED else "inconclusive"
+def reading(p_value: float) -> str:
+    return "resolved" if p_value < ALPHA else "consistent" if p_value >= CONSISTENT_P else "inconclusive"
 
 
-def rms(values: list[float]) -> float:
-    return math.sqrt(sum(v * v for v in values) / len(values))
+def dispersion(groups: list[list[tuple[float, float]]]) -> tuple[float, int]:
+    """Pooled chi-square of each group's (value, reference error) pairs about its inverse-variance mean, and its df."""
+    statistic, df = 0.0, 0
+    for group in groups:
+        weights = [1 / s**2 for _, s in group]
+        mean = sum(w * v for w, (v, _) in zip(weights, group, strict=True)) / sum(weights)
+        statistic += sum(w * (v - mean) ** 2 for w, (v, _) in zip(weights, group, strict=True))
+        df += len(group) - 1
+    return statistic, df
 
 
 def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
-    """Residuals, block changes, seed dispersion, template effect, summary ratios and the preregistered branch.
+    """Residuals, block changes, seed dispersion, template effect, their tests and the preregistered branch.
 
     observed maps each instance index to its selected and eligible counts and returned-circuit sha256.
     """
+    from scipy.stats import chi2, norm
+
     items = instances()
     require(sorted(observed) == [i["index"] for i in items], "the readout needs every instance")
     key = {(i["block"], i["template"], i["slot"], i["label"]): i["index"] for i in items}
@@ -414,73 +440,71 @@ def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
                         "same_returned_circuit": first["circuit_sha256"] == second["circuit_sha256"],
                     }
                 )
-    seeds: list[dict[str, Any]] = []
-    for b in BLOCKS:
-        for t in templates:
-            for label in LABELS:
-                values = [p(b, t, s, label) for s in range(SLOTS)]
-                seeds.append(
-                    {
-                        "block": b,
-                        "template": t,
-                        "label": label,
-                        "sd": float(np.std(values, ddof=1)),
-                        "se": rms([se(b, t, s, label) for s in range(SLOTS)]),
-                    }
-                )
-    residual_seeds: list[dict[str, Any]] = []
-    for b in BLOCKS:
-        for t in templates:
-            for family in ("delta_R", "delta_I"):
-                chosen = [r for r in residuals if (r["block"], r["template"], r["family"]) == (b, t, family)]
-                residual_seeds.append(
-                    {
-                        "block": b,
-                        "template": t,
-                        "family": family,
-                        "mean": float(np.mean([r["value"] for r in chosen])),
-                        "sd": float(np.std([r["value"] for r in chosen], ddof=1)),
-                        "se": rms([r["se"] for r in chosen]),
-                    }
-                )
-    template_effect = [
-        {
-            "block": b,
-            "label": label,
-            "effect": float(
-                np.mean([p(b, templates[0], s, label) - p(b, templates[1], s, label) for s in range(SLOTS)])
-            ),
-        }
+    seed_groups = [
+        [(p(b, t, s, label), se(b, t, s, label)) for s in range(SLOTS)]
         for b in BLOCKS
+        for t in templates
         for label in LABELS
     ]
-    ratios = {
-        "block_change": rms([c["change"] for c in changes]) / rms([c["se"] for c in changes]),
-        "seed": rms([x["sd"] for x in seeds]) / rms([x["se"] for x in seeds]),
-        "residual_seed": rms([x["sd"] for x in residual_seeds]) / rms([x["se"] for x in residual_seeds]),
+    residual_groups = [
+        [(r["value"], r["se"]) for r in residuals if (r["block"], r["template"], r["family"]) == (b, t, family)]
+        for b in BLOCKS
+        for t in templates
+        for family in ("delta_R", "delta_I")
+    ]
+    template_effect: list[dict[str, Any]] = []
+    for b in BLOCKS:
+        for label in LABELS:
+            effect = float(np.mean([p(b, templates[0], s, label) - p(b, templates[1], s, label) for s in range(SLOTS)]))
+            ref = math.sqrt(sum(se(b, t, s, label) ** 2 for t in templates for s in range(SLOTS))) / SLOTS
+            template_effect.append({"block": b, "label": label, "effect": effect, "se": ref})
+    repeated = [c for c in changes if c["same_returned_circuit"]]
+    tests: dict[str, dict[str, Any]] = {}
+    if repeated:
+        statistic = sum((c["change"] / c["se"]) ** 2 for c in repeated)
+        tests["block_change"] = {"statistic": statistic, "df": len(repeated)}
+    for name, groups in (("seed", seed_groups), ("residual_seed", residual_groups)):
+        statistic, df = dispersion(groups)
+        tests[name] = {"statistic": statistic, "df": df}
+    tests["template"] = {
+        "statistic": sum((x["effect"] / x["se"]) ** 2 for x in template_effect),
+        "df": len(template_effect),
     }
-    readings = {k: reading(v) for k, v in ratios.items()}
-    mean_residual = float(np.mean([abs(r["value"]) for r in residuals]))
-    if readings["block_change"] == "resolved":
+    for test in tests.values():
+        test["p_value"] = float(chi2.sf(test["statistic"], test["df"]))
+        test["reading"] = reading(test["p_value"])
+    # A residual exceeds the margin when its simultaneous lower bound over all residuals clears it.
+    z = float(norm.isf(ALPHA / (2 * len(residuals))))
+    beyond = [r for r in residuals if abs(r["value"]) - z * r["se"] > MARGIN]
+    readings = {name: test["reading"] for name, test in tests.items()}
+    if len(repeated) < len(changes):
+        branch = "recompiled"
+    elif readings["block_change"] == "resolved":
         branch = "stationarity"
-    elif readings["seed"] == "resolved" and readings["residual_seed"] == "resolved":
+    elif readings["seed"] == "resolved":
         branch = "seed"
-    elif mean_residual > MARGIN:
+    elif beyond:
         branch = "common-effect"
+    elif "inconclusive" in (readings["block_change"], readings["seed"], readings["residual_seed"]):
+        branch = "inconclusive"
     else:
         branch = "ensemble-candidate"
     return {
         "residuals": residuals,
         "block_changes": changes,
-        "seed_dispersion": seeds,
-        "residual_seed_dispersion": residual_seeds,
         "template_effect": template_effect,
-        "ratios": ratios,
+        "tests": tests,
         "readings": readings,
-        "mean_abs_residual": mean_residual,
-        "returned_circuit_repeats": sum(c["same_returned_circuit"] for c in changes),
+        "residuals_beyond_margin": len(beyond),
+        "returned_circuit_repeats": len(repeated),
         "branch": branch,
     }
+
+
+def utc(text: str) -> float:
+    import datetime
+
+    return datetime.datetime.fromisoformat(text.replace("Z", "+00:00")).timestamp()
 
 
 def readout(runs: list[Path]) -> dict[str, Any]:
@@ -488,27 +512,66 @@ def readout(runs: list[Path]) -> dict[str, Any]:
     import qd_platform
 
     record_sha = sha256_bytes(CASE.read_bytes())
+    target_sha = json.loads(bdsc_cases.TARGET.read_text(encoding="utf-8"))["target_sha256"]
     observed: dict[int, dict[str, Any]] = {}
+    draws: dict[str, tuple[list[int], list[int]]] = {}
+    windows: dict[int, list[tuple[float, float]]] = {block: [] for block in BLOCKS}
+    maintenance: set[tuple[float, float]] = set()
     for run in runs:
         manifest_bytes = (run / "cases.json").read_bytes()
         manifest = json.loads(manifest_bytes)
         result = json.loads((run / "results.json").read_text(encoding="utf-8"))
         submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
         body_bytes = (run / "job-body.json").read_bytes()
-        require(
-            submission.get("platform") == bdsc_cases.QUALIFYING_PLATFORM, f"{run}: not {bdsc_cases.QUALIFYING_PLATFORM}"
-        )
+        platform = bdsc_cases.QUALIFYING_PLATFORM
+        require(submission.get("platform") == platform, f"{run}: submitted to {submission.get('platform')!r}")
+        served = result.get("data", {}).get("platform_name")
+        require(served == platform, f"{run}: the service reports {served!r}")
         require(submission.get("cases_sha256") == sha256_bytes(manifest_bytes), f"{run}: cases.json changed")
         require(submission.get("body_sha256") == bdsc_cases.body_digest(body_bytes), f"{run}: job-body.json differs")
         require(result.get("job_id") == submission.get("job_id"), f"{run}: the result answers another job")
         require(manifest.get("diagnostic_case_sha256") == record_sha, f"{run}: built from another case record")
-        require(not manifest.get("draft", True), f"{run}: a draft case")
+        require(manifest.get("target_sha256") == target_sha, f"{run}: built for another target")
+        require(manifest.get("mitigations") == POLICY, f"{run}: the manifest policy differs")
         require(qd_platform.body_mitigations(json.loads(body_bytes)) == POLICY, f"{run}: the body's policy differs")
         require(result.get("status", {}).get("status") == "completed", f"{run}: the job did not complete")
         require(result.get("partial") is False, f"{run}: a partial result")
+        binding = manifest.get("draw")
+        require(isinstance(binding, dict) and not manifest.get("draft", True), f"{run}: no bound QRNG draw")
+        if binding["sha256"] not in draws:
+            record = ROOT / binding["record"]
+            require(sha256_bytes(record.read_bytes()) == binding["sha256"], f"{run}: the QRNG record changed")
+            drawn = draw_values(record)
+            require(drawn is not None, f"{run}: unreadable QRNG record")
+            if drawn is not None:
+                draws[binding["sha256"]] = drawn
+        require(len(draws) == 1, f"{run}: the runs draw from more than one QRNG record")
+        seeds, order = draws[binding["sha256"]]
+        members = [s["instance_index"] for s in manifest["settings"]]
+        require(
+            members == sorted(members, key=lambda i: (order[i], i)), f"{run}: the iterations are not in drawn order"
+        )
+        for setting in manifest["settings"]:
+            require(setting["compilation_seed"] == seeds[setting["slot"]], f"{run}/{setting['name']}: seed not drawn")
+            indices = {"seed": setting["slot"], "order": SLOTS + setting["instance_index"]}
+            require(setting["draw_indices"] == indices, f"{run}/{setting['name']}: draw indices")
+        start = utc(result["data"]["start_time"])
+        windows[int(manifest["job_spec"]["block"])].append((start, start + float(result["data"]["duration"])))
+        window = submission.get("platform_at_plan", {}).get("maintenance")
+        if isinstance(window, dict):
+            maintenance.add((utc(window["start_time"]), utc(window["end_time"])))
         for index, item in observations(manifest, result).items():
             require(index not in observed, f"{run}: instance {index} collected twice")
             observed[index] = item
+    require(all(windows.values()), "the readout needs both blocks")
+    first_end = max(end for _, end in windows[1])
+    second_start = min(start for start, _ in windows[2])
+    require(second_start >= first_end + 3600 * BLOCK_GAP_HOURS, "block 2 started within the block gap")
+    span = (min(start for start, _ in windows[1]), max(end for _, end in windows[2]))
+    require(
+        not any(span[0] < opens < span[1] for opens, _ in maintenance),
+        "a scheduled maintenance window opened between the blocks",
+    )
     return analyse(observed)
 
 
@@ -520,23 +583,20 @@ def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, 
     for setting, iteration in zip(manifest["settings"], iterations, strict=True):
         ran = iteration["iteration"]
         echoed = ran.get("circuit_params") or {}
+        owner = f"{manifest['job']}/{setting['name']}"
         require(
             echoed.keys() == setting["circuit_params"].keys()
             and all(
                 abs(echoed[x] - v) <= bdsc_cases.PARAM_ECHO_TOLERANCE for x, v in setting["circuit_params"].items()
             ),
-            f"{manifest['job']}/{setting['name']}: parameters",
+            f"{owner}: parameters",
         )
-        require(
-            ran.get("compilation_seed") == setting["compilation_seed"], f"{manifest['job']}/{setting['name']}: seed"
-        )
-        require(iteration.get("samples") == TRIALS, f"{manifest['job']}/{setting['name']}: samples")
+        require(ran.get("compilation_seed") == setting["compilation_seed"], f"{owner}: seed")
+        require(iteration.get("samples") == TRIALS, f"{owner}: samples")
         counted = bdsc_cases.tally(iteration["counts"], manifest["selected_modes"])
-        require(
-            counted["eligible"] >= (1 - cert.ELIGIBLE_LOSS) * TRIALS, f"{manifest['job']}/{setting['name']}: eligible"
-        )
+        require(counted["eligible"] >= (1 - cert.ELIGIBLE_LOSS) * TRIALS, f"{owner}: eligible")
         circuit = iteration.get("result_fields", {}).get("computed_circuit")
-        require(isinstance(circuit, str), f"{manifest['job']}/{setting['name']}: no compiled circuit")
+        require(isinstance(circuit, str), f"{owner}: no compiled circuit")
         out[setting["instance_index"]] = {
             "selected": counted["selected"],
             "eligible": counted["eligible"],
@@ -545,90 +605,145 @@ def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, 
     return out
 
 
-def synthetic_result(
-    manifest: dict[str, Any], response: dict[tuple[int, str, int], float], seed: int
-) -> dict[str, Any]:
-    """A completed result whose iterations draw one-click counts from response[(block, name-without-slot, slot)]."""
-    rng = np.random.default_rng(seed)
-    selected = manifest["selected_modes"][0]
-    other = next(m for m in range(cert.MODES) if m not in manifest["selected_modes"])
-    iterations = []
-    for setting in manifest["settings"]:
-        probability = response[(setting["block"], setting["name"], setting["slot"])]
-        k = int(rng.binomial(TRIALS, probability))
-        pattern = ["0"] * cert.MODES
-        hit, miss = pattern.copy(), pattern.copy()
-        hit[selected], miss[other] = "1", "1"
-        iterations.append(
-            {
-                "counts": {",".join(hit): k, ",".join(miss): TRIALS - k},
-                "iteration": {
-                    "circuit_params": setting["circuit_params"],
-                    "compilation_seed": setting["compilation_seed"],
-                },
-                "result_fields": {"computed_circuit": f"seed {setting['compilation_seed']} {setting['name']}"},
-                "samples": TRIALS,
-            }
-        )
-    return {"iterations": iterations}
+def synthetic_runs(root: Path, manifests: dict[str, dict[str, Any]], response: Any, edit: Any = None) -> list[Path]:
+    """Collected run directories whose one-click counts draw from response(setting); edit may alter any record."""
+    import qd_platform
+
+    body = bdsc_cases.synthetic_body(POLICY)
+    starts = {"b1-j1": 0.0, "b1-j2": 400.0, "b2-j1": 8000.0, "b2-j2": 8400.0}
+    base = utc("2026-01-01T00:00:00Z")
+    runs = []
+    for k, (job, original) in enumerate(sorted(manifests.items())):
+        manifest = copy.deepcopy(original)
+        rng = np.random.default_rng(100 + k)
+        selected = manifest["selected_modes"][0]
+        other = next(m for m in range(cert.MODES) if m not in manifest["selected_modes"])
+        iterations = []
+        for setting in manifest["settings"]:
+            hits = int(rng.binomial(TRIALS, response(setting)))
+            hit, miss = ["0"] * cert.MODES, ["0"] * cert.MODES
+            hit[selected], miss[other] = "1", "1"
+            iterations.append(
+                {
+                    "counts": {",".join(hit): hits, ",".join(miss): TRIALS - hits},
+                    "iteration": {
+                        "circuit_params": setting["circuit_params"],
+                        "compilation_seed": setting["compilation_seed"],
+                    },
+                    "result_fields": {"computed_circuit": f"{setting['compilation_seed']} {setting['name']}"},
+                    "samples": TRIALS,
+                }
+            )
+        import datetime
+
+        start = datetime.datetime.fromtimestamp(base + starts[job], datetime.UTC).isoformat()
+        result = {
+            "job_id": job,
+            "status": {"status": "completed"},
+            "partial": False,
+            "data": {"platform_name": bdsc_cases.QUALIFYING_PLATFORM, "start_time": start, "duration": 160},
+            "iterations": iterations,
+        }
+        maintenance = {"start_time": "2026-02-01T00:00:00Z", "end_time": "2026-02-01T03:00:00Z"}
+        submission = {
+            "platform": bdsc_cases.QUALIFYING_PLATFORM,
+            "job_id": job,
+            "platform_at_plan": {"maintenance": maintenance},
+        }
+        if edit is not None:
+            edit(job, manifest, result, submission)
+        run = root / job
+        run.mkdir()
+        manifest_bytes = (json.dumps(manifest, indent=1) + "\n").encode()
+        (run / "cases.json").write_bytes(manifest_bytes)
+        (run / "job-body.json").write_bytes(body)
+        submission["cases_sha256"] = sha256_bytes(manifest_bytes)
+        submission["body_sha256"] = bdsc_cases.body_digest(body)
+        qd_platform.write_json(run / "results.json", result)
+        qd_platform.write_json(run / "submission.json", submission)
+        runs.append(run)
+    return runs
 
 
 def self_test() -> int:
-    """Synthetic responses with a known component are read into the branch that component predicts."""
-    seeds = [101, 202, 303, 404]
+    """Synthetic runs with a known component read into the branch it predicts; malformed runs are refused."""
+    import tempfile
+
     base = {"f": 0.003, "g": 0.986}
-    jobs = {}
-    for name, content in documents(None).items():
-        if isinstance(content, dict):
-            manifest = json.loads(content["cases.json"])
-            for setting in manifest["settings"]:
-                setting["compilation_seed"] = seeds[setting["slot"]]
-            jobs[name] = manifest
-    label_of = {f"-{tag}": label for label, tag in bdsc_cases.LABEL_TAGS.items()}
+    sup = (base["f"] + base["g"]) / 2
 
-    def label(name: str) -> str:
-        return next(v for k, v in label_of.items() if name.endswith(k))
+    def label(setting: dict[str, Any]) -> str:
+        return next(k for k, tag in bdsc_cases.LABEL_TAGS.items() if setting["name"].endswith(f"-{tag}"))
 
-    def run(shift: dict[str, Any]) -> dict[str, Any]:
-        observed: dict[int, dict[str, Any]] = {}
-        for k, manifest in enumerate(jobs.values()):
-            response = {}
-            for s in manifest["settings"]:
-                lab = label(s["name"])
-                p0 = base.get(lab, 0.4945)
-                p0 += shift.get("seed", [0.0] * SLOTS)[s["slot"]] if lab not in base else 0.0
-                p0 += (
-                    shift.get("block", 0.0) * (s["block"] - 1) * (1 if s["slot"] % 2 else -1)
-                    if lab not in base
-                    else 0.0
-                )
-                response[(s["block"], s["name"], s["slot"])] = p0
-            observed.update(observations(manifest, synthetic_result(manifest, response, 7 + k)))
-        return analyse(observed)
+    def response(seed: list[float] | None = None, drift: float = 0.0, common: float = 0.0, odd: bool = False) -> Any:
+        def at(setting: dict[str, Any]) -> float:
+            lab = label(setting)
+            if lab in base:
+                return base[lab]
+            shift = (seed or [0.0] * SLOTS)[setting["slot"]] * (-1 if odd and lab in ("-", "-i") else 1)
+            return sup + shift + common + drift * (setting["block"] - 1)
 
-    null = run({})
-    require(null["branch"] == "ensemble-candidate", f"a counting-only response read {null['branch']}")
-    require(null["returned_circuit_repeats"] == 2 * SLOTS * len(LABELS), "matched requests lost their circuit identity")
-    seeded = run({"seed": [0.03, -0.03, 0.02, -0.02]})
-    require(seeded["branch"] == "seed", f"a seed-dependent response read {seeded['branch']}")
-    drifting = run({"block": 0.04})
-    require(drifting["branch"] == "stationarity", f"a block-dependent response read {drifting['branch']}")
-    common = run({"seed": [-0.03] * SLOTS})
-    require(common["branch"] == "common-effect", f"a common residual read {common['branch']}")
-    broken = copy.deepcopy(next(iter(jobs.values())))
-    broken["settings"][0]["compilation_seed"] = 9
-    try:
-        observations(
-            broken,
-            synthetic_result(
-                next(iter(jobs.values())), {(s["block"], s["name"], s["slot"]): 0.5 for s in broken["settings"]}, 1
-            ),
-        )
-    except ValueError:
-        pass
-    else:
-        raise ValueError("an iteration that ran another seed was admitted")
-    print("bdsc diagnostic self-test: counting, seed, block and common-residual responses read their branches")
+        return at
+
+    cases = [
+        ("counting only", response(), "ensemble-candidate"),
+        ("seed shifts", response(seed=[0.008, -0.008, 0.006, -0.006]), "seed"),
+        ("seed shifts cancelling in each residual", response(seed=[0.02, -0.02, 0.01, -0.01], odd=True), "seed"),
+        ("block drift", response(drift=0.012), "stationarity"),
+        ("common residual", response(common=-0.03), "common-effect"),
+    ]
+    # The QRNG record must sit inside the repository, so the synthetic one goes under the ignored docs/local.
+    scratch_root = ROOT / "docs/local"
+    scratch_root.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=scratch_root) as scratch:
+        root = Path(scratch)
+        draw = bdsc_cases.synthetic_draw(root, DRAW_VALUES // 2)
+        manifests = {k: json.loads(v["cases.json"]) for k, v in documents(draw).items() if isinstance(v, dict)}
+        for n, (name, model, expected) in enumerate(cases):
+            (root / str(n)).mkdir()
+            got = readout(synthetic_runs(root / str(n), manifests, model))["branch"]
+            require(got == expected, f"self-test: {name} read {got}, expected {expected}")
+
+        def recompile(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job.startswith("b2"):
+                result["iterations"][0]["result_fields"]["computed_circuit"] += " recompiled"
+
+        (root / "recompiled").mkdir()
+        got = readout(synthetic_runs(root / "recompiled", manifests, response(), recompile))["branch"]
+        require(got == "recompiled", f"self-test: a changed returned circuit read {got}")
+
+        def undrawn(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job == "b2-j2":
+                for setting, iteration in zip(manifest["settings"], result["iterations"], strict=True):
+                    setting["compilation_seed"] = iteration["iteration"]["compilation_seed"] = 7
+
+        def served(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            result["data"]["platform_name"] = "sim:belenos"
+
+        def early(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job.startswith("b2"):
+                result["data"]["start_time"] = result["data"]["start_time"].replace("T02", "T00")
+
+        def window(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            span = {"start_time": "2026-01-01T01:00:00Z", "end_time": "2026-01-01T01:30:00Z"}
+            submission["platform_at_plan"]["maintenance"] = span
+
+        for name, edit in (
+            ("an undrawn seed", undrawn),
+            ("a simulator run", served),
+            ("a short block gap", early),
+            ("a maintenance window between blocks", window),
+        ):
+            (root / name).mkdir()
+            runs = synthetic_runs(root / name, manifests, response(), edit)
+            try:
+                readout(runs)
+            except ValueError:
+                continue
+            raise ValueError(f"self-test: {name} was admitted")
+    print(
+        f"bdsc diagnostic self-test: {len(cases) + 1} synthetic run sets read their branches; 4 malformed sets refused"
+    )
     return 0
 
 

@@ -69,7 +69,7 @@ DIGITS = 10
 FIT_DIGITS = 6
 FIT_STARTS = 24
 FIT_SEED = 20261022
-# Planning premises of the next confirmatory case (docs/design/bdsc-qualification.md).
+# Planning premises of a confirmatory qualification case (docs/design/bdsc-qualification.md).
 PLAN_ALPHA = 0.01
 PLAN_MARGIN = 0.02
 PLAN_RESIDUAL = 0.005

@@ -93,19 +93,22 @@
   "values": 100,
   "requests": 1,
   "credits": 0,
-  "use": "the first four distinct values seed slots 0 to 3; value 4 + i orders instance i within its job"
+  "use": "the first four values, which must be distinct, seed slots 0 to 3; value 4 + i orders instance i within its job"
  },
  "analysis": {
   "observation": "one-click conditioned selected fraction of returned counts; every standard error is a reference value under independent Bernoulli trials, which the provider contract has not established",
   "residuals": "Delta_R and Delta_I per block, template and seed, each from one job",
-  "block_change": "p(block 2) - p(block 1) per instance, with the returned-circuit identity of the pair",
-  "seed_dispersion": "SD over the four seeds per block, template and state, and of each residual",
-  "template_effect": "seed-mean outward minus reverse per block and state",
-  "ratios": "RMS observed dispersion over RMS reference standard error, read consistent below 2.0, resolved at or above 3.0, inconclusive between",
+  "block_change": "p(block 2) - p(block 1) per instance whose pair returned one circuit; chi-square of change over reference error",
+  "seed_dispersion": "pooled chi-square of the four seeds about their inverse-variance mean per block, template and state, and per block, template and residual family",
+  "template_effect": "seed-mean outward minus reverse per block and state; reported, no branch reads it",
+  "tests": "resolved at p < 0.01, consistent at p >= 0.05, inconclusive between",
+  "residual_margin": "a residual exceeds the margin when |Delta| minus its simultaneous normal quantile at 0.01 over all 32 residuals times its reference error exceeds the margin",
   "branches": {
+   "recompiled": "a matched pair returned different circuits: the blocks compare requests, the compiler's model changed, and the case reruns before any branch is read",
    "stationarity": "matched requests change between blocks: address stationarity and provider calibration before any fixed-effect confirmation",
    "seed": "seeds give reproducible differences: study seed selection on development data and validate a frozen selection on fresh data",
    "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate preparation, filtering and processing; more seeds are not the remedy",
+   "inconclusive": "no component resolved and one test inconclusive: more compilations or trials before a branch",
    "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined certification case becomes a candidate once a common ensemble effect is supported"
   },
   "margin": 0.02

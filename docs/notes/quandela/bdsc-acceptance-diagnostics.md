@@ -213,9 +213,10 @@ excluded: rev-m's neighbors in execution order, rev-f and out-f, reweight to
 explanation of the leading TC shift and a setting-specific coherent transfer
 error in the reverse MM template. Neither displaces the other, and the
 per-mode vectors, not the selected fraction, carry the second. The
-[forensic reconstruction](#forensic-reconstruction-of-the-five-belenos-runs)
-shows that the returned circuits do not realize the requested relative phase,
-which places the redistribution in the implemented transfer.
+[forensic reconstruction](#forensic-reconstruction-of-the-retained-belenos-runs)
+shows that the returned circuits leave the requested relative phase free, so
+the redistribution belongs to the implemented transfer if the returned circuit
+describes what ran, which `returned_circuit_semantics` leaves unresolved.
 
 ## Separate even response shifts from phase-sensitive response
 
@@ -271,7 +272,7 @@ This requires stable transfer apart from the declared swap, negligible or
 modelled background, and complete outcome accounting. It is not a license to
 relabel the already acquired masks or add settings to epoch 2.
 
-## Forensic reconstruction of the five Belenos runs
+## Forensic reconstruction of the retained Belenos runs
 
 `scripts/bdsc_forensics.py` carries out steps 1 to 5 above over the five
 retained qpu:belenos runs: the four first-acquisition jobs and the repeat of
@@ -286,8 +287,8 @@ plan source figures, the execution noise model, the 24 one-click counts with
 the zero- and multi-click categories, and the hashes of the returned compiled
 circuit and experiment. Every standard error and deviance below is a
 reference value under independent Bernoulli trials per returned sample. That
-observation law is the unresolved `count_provenance` and
-`uncorrected_observations` capabilities, and the processing a
+observation law rests on `count_provenance` (unsupported under defaults) and
+`uncorrected_observations` (unresolved), and the processing a
 default-policy run received is unknown (`processor_record_completeness`).
 
 ### The returned circuit preserves output intensities, not phase
@@ -296,14 +297,16 @@ Each iteration returns a 24-mode circuit of 1150 components: 552 beam
 splitters, 574 phase shifters and 24 barriers. On every setting its unitary
 reproduces the intensities of the requested source column to a
 total-variation distance of at most 2.5e-4. It does not reproduce the
-column's relative phase. The overlap |<v|U e_6>|^2 is 0.99999 on the f and g
-settings and ranges from 0.0024 to 0.9998 on the superpositions. Both banks
+column's relative phase. The overlap |<v|U e_6>|^2 is 0.99999 on the
+target-complement f and g settings, each a single output, and ranges from
+0.0067 to 0.949 on the middle-middle f and g settings, each spread over two
+outputs, and from 0.0024 to 0.9998 on the superpositions. Both banks
 send f and g to disjoint outputs: modes 0 and 12 for target-complement, and
 8, 20 against 9, 21 for middle-middle. Every superposition therefore requests
-the same intensities, and direct counting cannot see its relative phase.
-This extends the provider contract's `full_transform_preservation` answer
-from the full transformation to the phase of the occupied column. Three
-consequences follow.
+the same intensities, and direct counting cannot see its relative phase. A
+single photon under direct detection cannot reveal an output phase, so the
+overlaps carry no physical information; they show only that the compiler
+treats that phase as free. Three consequences follow.
 
 - These banks' sum rules test only intensity linearity, the even components
   m_X = m_Y = m_Z. d_X and d_Y carry no quadrature information. A "+"
@@ -314,20 +317,23 @@ consequences follow.
   recombines the f and g outputs.
 - The returned matrix of the reverse middle-middle settings rev-m and rev-p
   matches the requested intensities, yet the counts move between f's outputs
-  and g's. That redistribution is a physical departure from the returned
-  matrix, and relative phase is excluded as its cause.
+  and g's. If the returned circuit describes the configuration applied
+  (`returned_circuit_semantics`, unresolved), the redistribution is a
+  physical departure from it, an error of the chip's internal phases rather
+  than of a requested input phase the circuit never encodes.
 
-### Compilation is a function of seed, parameters and component model
+### A matched request returned the same circuit
 
 The 552 beam-splitter angles are bit-identical across all 60 settings of both
 epochs (one `beam_splitter_model_sha256`), while every phase shifter differs
 between any two compilations. The retained sim:belenos runs of `tc-none-e1`
 and `tc-def-e1` used the same seeds and parameters as the qpu:belenos runs.
 They returned byte-identical circuits on all 24 settings, nine hours and two
-noise models apart (`compilation_determinism`). A matched seed therefore
-repeats the returned transformation while the compiler's component model
-holds. The beam-splitter digest records any change of that model. An
-unchanged digest says nothing about the physical chip.
+noise models apart (`compilation_determinism`). On that evidence, 24
+settings on one day, a matched seed repeats the returned transformation while
+the compiler's component model holds; the diagnostic case tests it again on
+every matched pair. The beam-splitter digest records any change of that
+model. An unchanged digest says nothing about the physical chip.
 
 ### The repeat repeats the request, not the compilation
 
@@ -349,16 +355,18 @@ No calibration between the two executions is documented.
 
 The four basis settings move by at most 0.0033, against reference standard
 errors of a difference of 0.00014 to 0.00032. The eight superpositions move
-by -0.071 to +0.041 with mixed signs, against a reference standard error of
-0.0013. The reading below is an inference, rated moderate. Mixed-sign shifts
-at fixed requests with new compilations fit a per-compilation response
-better than a common drift. A balanced split is sensitive to first order in
-internal phase error, while routing the whole photon to one output is
-sensitive only to second order, which would explain why the basis settings
-hold. Two confounds remain: the changed characterization, and a change in the
-default policy's processing calibration. Only an empty-mitigation repeat
-separates processing from physics. A matched-seed block that reproduces its
-counts would raise the rating; a matched seed that shifts would lower it.
+by -0.071 to +0.041, seven of them downward, against a reference standard
+error of 0.0013: a common drop of 0.024 with a spread of 0.035 about it. The
+reading below is an inference, rated moderate. The spread at fixed requests
+with new compilations is a per-compilation response; the common drop is a
+change of the device, of its characterization or of the default policy's
+processing calibration, which these data cannot separate. A balanced split
+is sensitive to first order in internal phase error, while routing the whole
+photon to one output is sensitive only to second order, which would explain
+why the basis settings hold. Only an empty-mitigation repeat separates
+processing from physics. A matched-seed block that reproduces its counts
+would raise the rating of the per-compilation reading; a matched seed that
+shifts would lower it.
 
 ### Scatter at one requested intensity
 
@@ -376,7 +384,9 @@ together) plus counting noise. The reference standard error of each is
 
 The within-template SD runs from 7 to 34 times the reference error. Scatter
 among four states does not by itself violate a sum rule. In the f, g basis
-the effect F = [[0.003, 0.02 - 0.02i], [0.02 + 0.02i, 0.986]], with
+an effect whose off-diagonal elements reach the counts -- possible only in a
+design that recombines the f and g outputs -- such as
+F = [[0.003, 0.02 - 0.02i], [0.02 + 0.02i, 0.986]], with
 eigenvalues 0.0022 and 0.9868, gives superposition responses 0.5145, 0.4745,
 0.5145 and 0.4745: an SD of 0.023, with both residuals zero. The evidence
 against one fixed effect is the residuals below and the shifts at fixed
@@ -417,9 +427,10 @@ other), intensity predicts as well as filtered or better in eight. On the
 empty-mitigation target-complement job the linear model misses by up to
 0.106, while intensity misses by at most 0.037. Acceptance therefore carries
 the bulk of that deficit, consistent with the receipt-weight prediction
-above. On every job the best model still leaves residuals of 0.015 to 0.05,
-against reference standard errors near 0.001, which is the per-setting
-response. Fitted on `tc-def-e1`, no model predicts `tc-def-e2` within 0.05.
+above. On every job the best in-sample model still leaves a largest
+residual of 0.016 to 0.037, against reference standard errors near 0.001,
+which is the per-setting response. Fitted on `tc-def-e1`, the best model
+predicts `tc-def-e2` with a largest residual of 0.050.
 
 ### Root-cause comparison
 
@@ -429,9 +440,9 @@ response. Fitted on `tc-def-e1`, no model predicts `tc-def-e2` within 0.05.
 | B: plan-receipt terminal weights | sign and 67 to 95 % of the empty-mitigation target-complement deficit; middle-middle basis asymmetry | the template split, per-setting scatter, the shifts at fixed requests | weight semantics against acceptance | output-swap probe; uncorrected observations |
 | C: common intensity filter G, D | the common even-component shift per job | within-template scatter (max residual 0.025 to 0.049) | the filter's physical location | measured acceptance t_s per state |
 | D: wrong-mode response and background | outside-support shares of 0.009 to 0.112 | the selected-fraction shifts among on-support outputs | dark counts against routing error | per-mode counts under a matched request |
-| E: per-compilation transfer response | within-template scatter; mixed-sign shifts at fixed requests with new seeds; robust endpoints | nothing retained; untested at a matched seed | its stability over time | matched-seed repeat; several seeds per state |
+| E: per-compilation transfer response | within-template scatter; the spread of 0.035 about the common drop at fixed requests with new seeds; robust endpoints | nothing retained; untested at a matched seed | its stability over time | matched-seed repeat; several seeds per state |
 | F: preparation or phase drift | nothing specific: the design is phase-blind | d components with no label-bound phase | untestable in this design | recombining two-quadrature measurement |
-| G: change of default-processing calibration | part of the tc-def superposition mean drop of 0.024 from epoch 1 to the repeat | empty-mitigation behavior | confounded with E under defaults | empty-mitigation matched repeat |
+| G: change of device, characterization or default-processing calibration | the common superposition drop of 0.024 from epoch 1 to the repeat | empty-mitigation behavior | confounded with E under defaults | empty-mitigation matched repeat |
 
 ### Evidence ledger
 

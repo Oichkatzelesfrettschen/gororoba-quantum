@@ -125,12 +125,12 @@ it shows, and the stop conditions above still govern.
 
 ## Amendment of 2026-10-22: a crossed diagnostic replaces the confirmation plan
 
-The [forensic reconstruction](../notes/quandela/bdsc-acceptance-diagnostics.md#forensic-reconstruction-of-the-five-belenos-runs)
+The [forensic reconstruction](../notes/quandela/bdsc-acceptance-diagnostics.md#forensic-reconstruction-of-the-retained-belenos-runs)
 of the five retained jobs shows three things. Superposition settings that
 request one output intensity spread far beyond counting noise. The returned
 circuits leave the relative phase of the occupied column free. A matched
 compilation seed with matched parameters reproduces the returned circuit.
-The [design](../design/bdsc-qualification.md#confirmation-design-after-the-first-acquisition)
+The [design](../design/bdsc-qualification.md#confirmation-design-and-its-falsified-premise)
 therefore suspends the confirmation case, and this amendment orders the
 diagnostic case that identifies the response components first.
 

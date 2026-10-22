@@ -261,7 +261,7 @@ and makes no dark-subspace claim.
   0.9845 at 300000. The case fixes 300000, the first grid point at or
   above the 0.95 target. Drift, preparation error or a corrected sampling
   law lower this power, and the retained runs falsify its premise
-  ([Confirmation design](#confirmation-design-after-the-first-acquisition)).
+  ([Confirmation design](#confirmation-design-and-its-falsified-premise)).
 - **Resources.** 300000 eligible trials per setting are 28800000 in all;
   max_shots = 2 x 300000 per iteration. A job bills 1 credit plus 1e-6 per
   shot of its largest iteration's max_shots, so each job costs 1.6 credits
@@ -299,9 +299,9 @@ corrected or resampled data need a likelihood or concentration bound built
 for that object, and resampling an estimated distribution never raises the
 nominal n.
 
-## Confirmation design after the first acquisition
+## Confirmation design and its falsified premise
 
-The [forensic reconstruction](../notes/quandela/bdsc-acceptance-diagnostics.md#forensic-reconstruction-of-the-five-belenos-runs)
+The [forensic reconstruction](../notes/quandela/bdsc-acceptance-diagnostics.md#forensic-reconstruction-of-the-retained-belenos-runs)
 of the five retained qpu:belenos runs suspends the confirmation design.
 Development and diagnostic acquisitions continue under their own approved
 cases, and no certification decision is available until the observation
@@ -355,6 +355,11 @@ when every true contrast stays within 0.005, the campaign power is at least
 | 350000 | 0.00762 | 0.9816 |
 | 400000 | 0.00712 | 0.9990 |
 
+The bound is conservative: at 300000 trials it gives 0.7375 where the
+seeded simulation of the frozen Clopper-Pearson rule under exact E0 gives
+0.9845, because the bound allows every contrast a residual of 0.005 and
+replaces the exact interval by a concentration inequality.
+
 The calculated power is conditional on the declared observation law,
 nuisance model and dependence assumptions, and it is no universal bound on
 hardware power. Positive correlations can reduce the effective information,
@@ -368,8 +373,8 @@ contrast residuals, and the retained runs do not support it as a prediction
 of the present implementation. Within one template the four superpositions
 request one output intensity, yet their selected fractions spread by an SD of
 0.006 to 0.031, against a reference counting error of 0.0009. Default-policy
-residuals reach 0.08, and fixed requests moved by up to 0.071 when only the
-seed and the characterization changed. More trials within one compilation
+residuals reach 0.08, and fixed requests moved by up to 0.071 when the seed,
+the characterization and possibly the default processing changed. More trials within one compilation
 reduce counting uncertainty and leave a persistent setting-dependent
 response untouched: moving from 300000 to 350000 trials changes the reference
 error at p = 1/2 from 0.000913 to 0.000845. The 0.02 margins stay. Three
@@ -394,8 +399,8 @@ independent compilations, and a persistent mean bias falls with neither. A
 contrast c plans against c^T Sigma_seed c, so R B n returned observations are
 never independent evidence of the seed-averaged response. An ensemble
 certificate needs p_sr = Tr(F_r rho_s) with a state-independent seed law
-pi_r. The effect it certifies is then F_bar = sum_r pi_r F_r, and
-ker F_bar = intersection_r ker F_r: an exact null survives averaging only
+pi_r. The effect it certifies is then F_bar = sum_r pi_r F_r, and for
+positive effects with every pi_r > 0, ker F_bar = intersection_r ker F_r: an exact null survives averaging only
 when every component shares it. State-specific compilation, F_sr, admits no
 such common operator, and acceptance can reweight seeds among the retained
 events. Compiler-seed averaging differs from randomized compiling, which
