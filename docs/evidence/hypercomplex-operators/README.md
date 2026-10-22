@@ -28,4 +28,6 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.py --check
 ```
 
+Gate `core-630` replays both the active algebra certificate and the measured figure. The source gates `sources-120`, `sources-121` and `sources-122` cover the retained producer with lint, formatting and type checks.
+
 The producer accepts repository-relative `--summary` and `--output` paths and refuses to replace differing retained bytes. A new rendering environment therefore requires a separately named successor.
