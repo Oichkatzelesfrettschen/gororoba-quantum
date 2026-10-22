@@ -1,0 +1,79 @@
+{
+ "schema": "quantum-campaign-admission-v1",
+ "record_created_utc": "2026-10-22T06:31:10.172378+00:00",
+ "implementation_commit": "50731f320304dac7e2cea5b18c49e3c413dce97d",
+ "approval": {
+  "decision": "Approve corrected pilot after validation",
+  "plan_sha256": "43e0b67a8aaaa1203eacd5f0be9e4c74ac5f4f55576dc16f96591245864dc8a2",
+  "batches": 8,
+  "jobs": 24,
+  "shots_per_job": 16384,
+  "modeled_execution_seconds": 270.80448,
+  "minimum_interbatch_pause_seconds": 840,
+  "expected_credit_debit": 0
+ },
+ "hosted_review": {
+  "pull_request": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/342",
+  "reviewed_commit": "50731f320304dac7e2cea5b18c49e3c413dce97d",
+  "verdict": "clean-comment",
+  "completed_utc": "2026-10-22T06:19:12Z",
+  "unresolved_threads": 0
+ },
+ "validation_runtime": {
+  "python": "3.14.7",
+  "distributions": {
+   "sympy": "1.14.0",
+   "mpmath": "1.4.1",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "qiskit": "2.6.0",
+   "pytest": "9.1.1",
+   "perceval-quandela": "1.3.1",
+   "mcp": "1.29.0"
+  }
+ },
+ "runtime_inputs_sha256": {
+  "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816",
+  "ci/requirements-ci.txt": "77f9f2981d01ae43f7026db295a35bdb93cf04f6733ec0797f02fc354de913a7",
+  "ci/install_pins.sh": "3144b5982cbb816be22e995bce57fa7cf7c29f3775fca12888b61ab3329b9313",
+  "ci/patches/sympy-1.14.0-mpmath-1.4.patch": "671d911dae6af6b93c20d11a08dc764e014350e31ac2b3482d2c82ab64cc1225"
+ },
+ "gate_validation": {
+  "file": "validation-gates.txt",
+  "passed": 4,
+  "failed": 0
+ },
+ "provider_retention_validation": {
+  "file": "validation-retention.txt",
+  "tests": 58,
+  "passed": 58
+ },
+ "live_admission": {
+  "observed_at": "2026-10-22T06:26:28.131684+00:00",
+  "checks": {
+   "frozen_plan": true,
+   "availability": true,
+   "coupling_0_1": true,
+   "account_queue_empty": true,
+   "hardware_pause_elapsed": true,
+   "shots_capacity": true,
+   "batch_capacity": true,
+   "shared_account_deferral_elapsed": true
+  },
+  "status": "executing",
+  "account_queue": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "pause_seconds": 0,
+  "observed_compute_debits": 0,
+  "usage_jobs": 292,
+  "admitted": true,
+  "scope": "approved order pilot only; current-head review and canonical-stack validation separately retained"
+ },
+ "shared_account_not_before_utc": "2026-10-22T05:32:52.443652Z",
+ "inference_scope": "descriptive device reconnaissance; fundamental quaternion scalar physics, equivalence and scientific continuation unestablished",
+ "broad_repository_suite": "integration held; numerical replay mismatches and later disappearance of shared CI/replay environments remain separately recorded"
+}

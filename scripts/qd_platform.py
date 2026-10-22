@@ -564,7 +564,7 @@ def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quandela/runs"
-CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1", "qd-bdsc-cases-v1")
+CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1", "qd-bdsc-cases-v1", "qd-hypercomplex-cases-v1")
 CIRCUIT_SCHEMA = "qd-circuit-v1"
 TEMPLATE_CIRCUIT_SCHEMA = "qd-template-circuit-v1"
 CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1", TEMPLATE_CIRCUIT_SCHEMA)
@@ -728,6 +728,15 @@ def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tu
         deviation = float(numpy.max(numpy.abs(numpy.array(chip.compute_unitary())[:, source] - column)))
         if deviation > 1e-9:
             raise PlatformError(f"{setting['name']}: the template misses its column by {deviation:.2e}")
+        if manifest.get("schema") == "qd-hypercomplex-cases-v1":
+            expected = setting["operator"]
+            matrix = numpy.asarray(expected["real"]) + 1j * numpy.asarray(expected["imaginary"])
+            actual = numpy.asarray(chip.compute_unitary())
+            if matrix.shape != actual.shape or not numpy.isfinite(matrix).all():
+                raise PlatformError(f"{setting['name']}: full operator needs matching finite dimensions")
+            deviation = float(numpy.max(numpy.abs(actual - matrix)))
+            if deviation > 1e-9:
+                raise PlatformError(f"{setting['name']}: the template misses its full operator by {deviation:.2e}")
         for parameter in parameters.values():
             parameter.reset()
     built = pcvl.Experiment(chip)

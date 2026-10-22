@@ -112,7 +112,7 @@ def scripts_closure(entry: Path, directories: tuple[Path, ...] = (SCRIPTS_DIR,))
 
 def ramsey_analyzer_closure() -> dict[str, Any]:
     """Per-file sha256 of the analyzer's scripts/ closure and the sha256 of that map's canonical JSON."""
-    return analyzer_closure(RAMSEY_ANALYZER)
+    return analyzer_closure(RAMSEY_ANALYZER, (SCRIPTS_DIR,))
 
 
 def observable_contract_records(contracts: Any) -> list[dict[str, Any]]:

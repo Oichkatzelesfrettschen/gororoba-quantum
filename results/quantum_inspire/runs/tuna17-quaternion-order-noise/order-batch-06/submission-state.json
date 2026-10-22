@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-22T07:08:39+00:00",
+ "approval": "Approve corrected pilot after validation",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "71c87bf881689b96c3303f0f55a9b3f55af32add8819053077ff3245dfb03df3",
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1565985,
+   "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1565986,
+   "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15"
+  },
+  {
+   "file": "order-i1-j1-representative0.cq",
+   "job": 1565987,
+   "sha256": "72612aa06e79bbe70dd89ce766bb340ea1b89db361622a86e3fb831fb3228d75"
+  }
+ ],
+ "project": 781042,
+ "batch_job": 881890,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-22T07:08:42+00:00",
+  "approval": "Approve corrected pilot after validation",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "71c87bf881689b96c3303f0f55a9b3f55af32add8819053077ff3245dfb03df3",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 881890,
+  "project": 781042,
+  "shots": 16384,
+  "jobs": [
+   {
+    "file": "readout-0.cq",
+    "job": 1565985,
+    "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1565986,
+    "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15"
+   },
+   {
+    "file": "order-i1-j1-representative0.cq",
+    "job": 1565987,
+    "sha256": "72612aa06e79bbe70dd89ce766bb340ea1b89db361622a86e3fb831fb3228d75"
+   }
+  ],
+  "submitted_utc": "2026-10-22T07:08:43+00:00"
+ },
+ "confirmed_utc": "2026-10-22T07:08:43+00:00"
+}

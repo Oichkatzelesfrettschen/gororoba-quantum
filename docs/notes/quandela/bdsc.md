@@ -15,6 +15,23 @@ No acquisition, upload or cloud submission is authorized by these records.
 mathematical instrumentation and the statistical inference the certificate
 rests on, with each source's registered copy.
 
+The [principal-angle numerical successor](../../evidence/bdsc-principal-angle-svd/controls.json)
+contains the complete eight-record bundle under `docs/evidence/bdsc-principal-angle-svd/`.
+The original eight records under `docs/evidence/bdsc/` retain their recorded bytes.
+For rank-four orthogonal projectors, the angle calculation uses
+`atan2(sigma_max((I - P2) U1), sigma_min(U2^dagger U1))`, where each `U` is an
+orthonormal basis of its projector's range. The residual singular value avoids
+the square-root amplification of near-zero squared-sine roundoff; `atan2`
+also avoids the loss of precision in `asin` near 90 degrees. Gate `core-606`
+replays the successor with the unchanged `CHECK_TOLERANCE = 1e-9`.
+The successor changes 17 `controls.json` truth angles: aligned subspaces round to
+zero degrees and orthogonal subspaces to 90 degrees. Complete regeneration with
+Python 3.14.7 also changes 12 `pilot.json` confidence-interval endpoints by at
+most 2.3e-16; the pilot calculation does not call the principal-angle function.
+The remaining six records retain identical bytes. Analytic rank-four rotations,
+including small angles and both endpoints, and the complete successor replay
+pass with OpenBLAS 0.3.34.106.0 Haswell, Sandybridge and Nehalem kernels.
+
 ## Target
 
 E0 = L_x^T L_x / 2 = (L_e1 + L_e10)^T (L_e1 + L_e10) / 4 in the basis and
@@ -281,9 +298,9 @@ Tr(G rho) / Tr(D rho) from `bdsc.acceptance` on every setting. A g2 of
 ## Commands
 
 ```sh
-"$PYTHON" scripts/bdsc_certificate.py --write docs/evidence/bdsc
-"$PYTHON" scripts/bdsc_certificate.py --check docs/evidence/bdsc     # core-606
+"$PYTHON" scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd     # core-606
 "$PYTHON" scripts/bdsc_certificate.py --self-test                    # core-607
+"$PYTHON" -B -W error -m pytest -q tests/gororoba_quantum/test_bdsc_principal_angles.py
 "$PYTHON" scripts/bdsc_packages.py --write docs/evidence/bdsc/packages/packages.json
 "$PYTHON" scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json   # core-608
 ```

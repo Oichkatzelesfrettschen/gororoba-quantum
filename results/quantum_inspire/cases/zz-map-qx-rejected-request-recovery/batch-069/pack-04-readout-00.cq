@@ -1,0 +1,39 @@
+version 3.0
+
+qubit[6] q
+bit[6] b
+
+// Proposed conditional-Ramsey acquisition: no coupler controls or CZ.
+// pack-04-readout-00.cq
+init q
+barrier q
+X90 q[0]
+X90 q[1]
+X90 q[2]
+X90 q[3]
+X90 q[4]
+X90 q[5]
+barrier q
+mX90 q[0]
+mX90 q[1]
+mX90 q[2]
+mX90 q[3]
+mX90 q[4]
+mX90 q[5]
+barrier q
+wait(1) q[0]
+wait(1) q[1]
+wait(1) q[2]
+wait(1) q[3]
+wait(1) q[4]
+wait(1) q[5]
+barrier q
+barrier q
+wait(1) q[0]
+wait(1) q[1]
+wait(1) q[2]
+wait(1) q[3]
+wait(1) q[4]
+wait(1) q[5]
+barrier q
+b = measure q

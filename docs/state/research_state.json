@@ -1136,6 +1136,76 @@
       "question": "Does qubit 143's Ramsey visibility decay monotonically over 0 to 20 us with the control grounded?"
     },
     {
+      "id": "marrakesh-n21-q47-segmented-baseline",
+      "provider": "ibm",
+      "run": "results/live/2026-10-21T043156.858484Z",
+      "family": "n21-orbit-rca",
+      "question": "Does the segmented coprime sweep read two frequency lines, herald backaction or Z swap memory on ibm_marrakesh qubit 47, a qubit with no recorded beat?"
+    },
+    {
+      "id": "fez-n21-q143-segmented-sweep",
+      "provider": "ibm",
+      "run": "results/live/2026-10-21T064222.721454Z",
+      "family": "n21-orbit-rca",
+      "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
       "id": "qd-qpu-belenos-bdsc-queue-test",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00",
@@ -1197,20 +1267,6 @@
       "run": "results/quandela/runs/2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00",
       "family": "BDSC six-state control on qpu:ascella",
       "question": "does the same six-state linear-effect test, on a 12-mode union circuit, hold on Ascella?"
-    },
-    {
-      "id": "marrakesh-n21-q47-segmented-baseline",
-      "provider": "ibm",
-      "run": "results/live/2026-10-21T043156.858484Z",
-      "family": "n21-orbit-rca",
-      "question": "Does the segmented coprime sweep read two frequency lines, herald backaction or Z swap memory on ibm_marrakesh qubit 47, a qubit with no recorded beat?"
-    },
-    {
-      "id": "fez-n21-q143-segmented-sweep",
-      "provider": "ibm",
-      "run": "results/live/2026-10-21T064222.721454Z",
-      "family": "n21-orbit-rca",
-      "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
     },
     {
       "id": "qd-qpu-belenos-bdsc-tc-def-e2",
@@ -6448,7 +6504,7 @@
         "results/live/N21_ORBIT_RCA.md"
       ],
       "gates": {
-        "core-612": "replay",
+        "core-612": "regression",
         "core-613": "replay"
       },
       "acquisitions": [
@@ -6486,15 +6542,212 @@
         "results/live/N21_SPECTATOR_RAMSEY_CASE.md"
       ],
       "gates": {
-        "core-600": "replay",
-        "core-603": "replay",
-        "core-605": "replay"
+        "core-600": "regression",
+        "core-603": "regression",
+        "core-605": "regression"
       },
       "acquisitions": [
         "fez-n21-spectator-ground-control",
         "fez-n21-spectator-ramsey-sweep"
       ],
       "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-q143-segmented-lines",
+      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
+          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
+        },
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
+          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
+        },
+        {
+          "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
+          "sha256": "4d4ddf6182415af3cafad341521545be9b4bb80b2650e5f412cd2343a1c9560d"
+        }
+      ],
+      "documents": [
+        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
+      ],
+      "gates": {
+        "core-617": "replay",
+        "core-619": "regression"
+      },
+      "acquisitions": [
+        "fez-n21-q143-segmented-sweep"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-n21-spectator-143-beat"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-q47-segmented-baseline",
+      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
+          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
+        },
+        {
+          "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",
+          "sha256": "f21326d0e9e7e94bad5ebc658f14468179c04d6e22db8f774f08be185c4550a7"
+        }
+      ],
+      "documents": [
+        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
+      ],
+      "gates": {
+        "core-620": "regression"
+      },
+      "acquisitions": [
+        "marrakesh-n21-q47-segmented-baseline"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-quaternion-encoded-order-pilot",
+      "statement": "The Tuna-17 order pilot completed 24 jobs and 393216 shots. Six native-zero dark-port controls measured 0.0396118 to 0.0508423; two native-0.25 settings measured 0.2669067 and 0.2703857. The refreshed ledger records 186.801814 execution seconds and zero credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One fixed chronological acquisition per science setting leaves preparation, compiled-circuit effects, readout and time drift confounded. The observations establish neither representative equivalence, process fidelity, calibrated uncertainty coverage nor a fundamental quaternion scalar field.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json",
+          "sha256": "ab1dfe679f1577c63f587db4241d65b86ac061dafa9d6eeb00a588ac06661bad"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/hypercomplex-analysis.json",
+          "sha256": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/hypercomplex-analysis.json",
+          "sha256": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/hypercomplex-analysis.json",
+          "sha256": "864422ca90b971e2174a0f24838772a32c1c6acd93601d27df2372ab0e94eb0f"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/hypercomplex-analysis.json",
+          "sha256": "ad791fbe36bd5220cbbeb3dc8b65f39f69122fe974ac987b9d1968d6b6fef25b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/hypercomplex-analysis.json",
+          "sha256": "34dc1530c70289e9509defb51f06775c9c9d3ba27040d04d40fa2897ccf7dfa0"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/hypercomplex-analysis.json",
+          "sha256": "f374fd93f4ae949f756508ea5639a53f8c01ecd55f81d0ac654764e62ec59c0a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/hypercomplex-analysis.json",
+          "sha256": "0e76fb592e1a09c0f65857eba9c5c785dbec6e57729af27f0ae88e37c80e234d"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/hypercomplex-analysis.json",
+          "sha256": "5504e32ee3e76cd3ae8500434e5787dc00808879f3ed46b941f1423ab3082c4a"
+        }
+      ],
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md",
+        "docs/design/tuna-order-pilot-adversarial-admission.md"
+      ],
+      "gates": {
+        "core-347": "freshness",
+        "core-615": "admission"
+      },
+      "acquisitions": [
+        "qi-tuna17-quaternion-order-00",
+        "qi-tuna17-quaternion-order-01",
+        "qi-tuna17-quaternion-order-02",
+        "qi-tuna17-quaternion-order-03",
+        "qi-tuna17-quaternion-order-04",
+        "qi-tuna17-quaternion-order-05",
+        "qi-tuna17-quaternion-order-06",
+        "qi-tuna17-quaternion-order-07"
+      ],
+      "assumptions": [
+        "Provider shot order is retained as delivered; timing and stationarity are unestablished."
+      ],
+      "depends_on": [
+        "algebra-hypercomplex-operator-witnesses"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-hypercomplex-operator-witnesses",
+      "statement": "The registered finite exact calculations give derivation dimension 14, chosen-octonion stabilizer dimension 8, occupation dimensions 1/3/3/1 and complex Clifford image dimension 64. The draft ladder pairing fails six stabilizer checks, while the aligned pairing passes all implemented checks. The even five-mode reference has vanishing recorded Standard Model anomaly sums.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Finite convention-bound algebra and a representation reference establish neither a unique Standard Model derivation nor its dynamics, a fundamental scalar field, or device performance.",
+      "evidence": [
+        {
+          "path": "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json",
+          "sha256": "f19765c621179b3f3eee707b9ed70dadb0a3e25d4a3702bfda61ebaeabbf7f60"
+        }
+      ],
+      "documents": [
+        "docs/evidence/hypercomplex-operators/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-630": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-sedenion-eight-generator-clifford-envelope",
+      "statement": "The first eight canonical sedenion left-multiplication operators satisfy the recorded Cl(0,8) relations. Their 256 integer word operators have Hilbert-Schmidt Gram matrix 16 times identity and span M16(R).",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "The result concerns the named eight-generator associative operator envelope. Sedenion coefficient multiplication remains nonassociative with zero divisors; the left encoding is not a product homomorphism.",
+      "evidence": [
+        {
+          "path": "docs/evidence/sedenion-clifford-envelope/certificate-batched-products.json",
+          "sha256": "e66fc928d9b4a330fef82c15e648977551fb2656aace0a13f769ca68b601706a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/sedenion-clifford-envelope/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-631": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
@@ -6618,75 +6871,6 @@
       "gates": {},
       "acquisitions": [
         "qd-qpu-ascella-bdsc-control"
-      ],
-      "assumptions": [],
-      "depends_on": [],
-      "supersedes": [],
-      "superseded_by": null
-    },
-    {
-      "id": "hw-n21-q143-segmented-lines",
-      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
-      "domain": "hardware",
-      "evidence_class": "exploratory reanalysis",
-      "status": "exploratory",
-      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
-      "evidence": [
-        {
-          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
-        },
-        {
-          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
-          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
-        },
-        {
-          "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
-          "sha256": "4d4ddf6182415af3cafad341521545be9b4bb80b2650e5f412cd2343a1c9560d"
-        }
-      ],
-      "documents": [
-        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
-      ],
-      "gates": {
-        "core-617": "replay",
-        "core-619": "replay"
-      },
-      "acquisitions": [
-        "fez-n21-q143-segmented-sweep"
-      ],
-      "assumptions": [],
-      "depends_on": [
-        "hw-n21-spectator-143-beat"
-      ],
-      "supersedes": [],
-      "superseded_by": null
-    },
-    {
-      "id": "hw-n21-q47-segmented-baseline",
-      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
-      "domain": "hardware",
-      "evidence_class": "exploratory reanalysis",
-      "status": "exploratory",
-      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
-      "evidence": [
-        {
-          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
-        },
-        {
-          "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",
-          "sha256": "f21326d0e9e7e94bad5ebc658f14468179c04d6e22db8f774f08be185c4550a7"
-        }
-      ],
-      "documents": [
-        "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
-      ],
-      "gates": {
-        "core-620": "replay"
-      },
-      "acquisitions": [
-        "marrakesh-n21-q47-segmented-baseline"
       ],
       "assumptions": [],
       "depends_on": [],
