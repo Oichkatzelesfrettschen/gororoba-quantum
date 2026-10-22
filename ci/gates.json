@@ -3932,6 +3932,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --check results/quantum_inspire/cases",
+   "name": "core-626",
+   "seconds": 1.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --self-test",
+   "name": "core-627",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
    "name": "core-611",
    "seconds": 1.0,
