@@ -35,6 +35,14 @@ The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is p
 The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
 the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
 
+The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
+and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
+The checksum-bound historical README and replay keep their bytes. The active source ledgers
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-contracts) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-contracts) bind the validated
+`cd_core.py` source and preserve every other identity in their historical `SHA256SUMS` files.
+
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
 with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
