@@ -207,3 +207,36 @@ def test_tree_verification_discovers_and_checks_new_inventory(tmp_path: Path) ->
     (root / "third" / "inventory.sha256").write_text("corrupt")
     with pytest.raises(ValueError, match="digest"):
         check_tree(root)
+
+
+def test_escaped_private_values_are_fully_redacted() -> None:
+    for original in (
+        "clientSecret='prefix\\'SENSITIVE'\nmeasurement=7\n",
+        'accountId="prefix\\"SENSITIVE"\nmeasurement=7\n',
+    ):
+        result = sanitize(original.encode())
+        if b"SENSITIVE" in result or b"measurement=7" not in result:
+            raise AssertionError("escaped quotes truncated private-value redaction")
+
+
+def test_check_rejects_capture_only_repository_option(tmp_path: Path) -> None:
+    source = tmp_path / "source.txt"
+    source.write_text("bounded result")
+    output = tmp_path / "retained"
+    capture({"analysis": source}, output)
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-B",
+            str(ROOT / "scripts/quantum_artifact_retention.py"),
+            str(output),
+            "--check",
+            "--tracked-root",
+            str(tmp_path),
+        ],
+        env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "GOROROBA_WORKERS": "1"},
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 2 or b"--check reads retained evidence alone" not in completed.stderr:
+        raise AssertionError("verification silently accepted a capture-only repository option")

@@ -1,0 +1,3 @@
+PASS core-654    21.5s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -B -W error scripts/quantum_artifact_retention.py docs/evidence/
+
+1 passed, 0 failed of 1 gates in shard 0/1 on CPU

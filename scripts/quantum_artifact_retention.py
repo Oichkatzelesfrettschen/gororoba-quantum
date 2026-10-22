@@ -85,7 +85,7 @@ def clean_text(text: str) -> str:
     text = re.sub(r"(?i)([?&](?:code|state|access_token|refresh_token)=)[^&\s\"<>]+", r"\1[REDACTED]", text)
     text = re.sub(
         rf"(?i)(?<![\w-])(?:{PRIVATE_FIELD_PATTERN})"
-        r"[\"']?\s*[:=]\s*(?:\"[^\"\r\n]*\"|'[^'\r\n]*'|[^,;\r\n]+)",
+        r"[\"']?\s*[:=]\s*(?:\"(?:\\.|[^\"\\\r\n])*\"|'(?:\\.|[^'\\\r\n])*'|[^,;\r\n]+)",
         "[REDACTED-CREDENTIAL-FIELD]",
         text,
     )
@@ -389,7 +389,7 @@ def main() -> int:
             stream.write(json.dumps(disposition_corrections(record), indent=1, sort_keys=True) + "\n")
         check(args.directory)
     elif args.check:
-        if args.source:
+        if args.source or args.tracked_root:
             parser.error("--check reads retained evidence alone")
         check(args.directory)
     else:

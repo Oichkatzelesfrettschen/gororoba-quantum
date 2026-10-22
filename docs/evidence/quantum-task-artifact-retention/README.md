@@ -25,6 +25,23 @@ dephasing. The inventory retains 25 source identities and 19 unique captures.
 Regenerable pytest fixture repositories receive a metadata disposition rather
 than publication of their generated Git objects and sockets.
 
+The [broad validation and orchestration inventory](broad-validation-and-orchestration/inventory.json)
+adds 32 source identities and 25 captures. The completed frozen-source run at
+`46b50f4625641ca8dd9df0baf492e48ee7256508` records 535 passing gates and one
+failure across 536 gates in 7362.42 seconds. The failing lint/type gate
+`core-000` exposed an unused type-ignore suppression, repaired in `fd65f74`.
+That historical receipt is distinct from the integrated-head qualification at
+`278d415`, which remained running when the capture was made. Orchestration
+snapshots describe bounded observations of active waiting processes. The capture
+also retains the bytecode before/after digest observation and checkout-line-ending
+probe inputs.
+
+The [verifier regression and provenance checks](verifier-regression-and-provenance-checks/inventory.json)
+retain two failing regression reproductions, the subsequent 53-test passing
+result, the passing retention-gate timing receipt, and local simulator
+provenance-fix gate timings. These completed focused checks differ from the
+pending integrated qualification receipts.
+
 Byte-identical tracked artifacts link to their repository path and original Git
 identity. The verifier checks the checkout bytes, so a shallow offline checkout
 needs no historical Git object. A future source change must retain the prior
@@ -43,8 +60,10 @@ supersedes exactly those classifications while preserving the checksum-bound
 original inventory bytes. The verifier derives the required correction domain
 from every historical row and rejects missing, additional, or incorrect entries.
 New captures preserve non-content classifications before tracked deduplication.
-The expanded plaintext sanitizer normalizes casing and separators for every declared private field; all
-retained text also passes the expanded sanitizer's idempotence check.
+The plaintext sanitizer normalizes casing and separators for every declared
+private field and consumes escaped quotes inside quoted values. All retained
+text also passes the sanitizer's idempotence check. Verification rejects
+capture-only options rather than silently ignoring their requested behavior.
 
 PR #352 owns MCP/API repairs. PR #368 owns the approved Ascella plan and waiting
 evidence. PR #369 owns local simulator outputs and the full-precision cQASM
