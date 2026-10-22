@@ -15,9 +15,10 @@ The subsequently retained zero-divisor QX twins likewise exercise their
 own circuits and are not substitutes for this case's conformance criteria.
 
 The original [QX proposal](../../../results/quantum_inspire/cases/zz_map_qx/plan.json)
-retains its recorded bytes. The active unsubmitted
-[catalogue-bound successor](../../../results/quantum_inspire/cases/zz-map-qx-catalogue-bound/plan.json)
-binds the [Tuna submission-source successor](../../../results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json)
+and [catalogue-bound successor](../../../results/quantum_inspire/cases/zz-map-qx-catalogue-bound/plan.json)
+retain their recorded bytes. The active unsubmitted
+[rejected-request recovery successor](../../../results/quantum_inspire/cases/zz-map-qx-rejected-request-recovery/plan.json)
+binds the [Tuna submission-source successor](../../../results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery/plan.json)
 and the immutable [proposal catalogue](../../evidence/quantum_inspire/catalogue-submission-deadline-proposal.json).
 All 416 compact cQASM payloads match the original QX proposal byte for byte;
 source identities and dependent manifest hashes change. A refreshed live
@@ -89,8 +90,8 @@ specific failed circuit criteria and does not submit anything.
 
 ```bash
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-catalogue-bound \
-  --source-plan results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json \
+"$PYTHON" scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-rejected-request-recovery \
+  --source-plan results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery/plan.json \
   --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 "$PYTHON" scripts/qi_zz_map_qx.py --self-test
 "$PYTHON" -O scripts/qi_zz_map_qx.py --self-test
@@ -107,7 +108,7 @@ receipt, service results and raw shots, then run:
 
 ```bash
 "$PYTHON" scripts/qi_zz_map_qx.py --analyze RUNS_ROOT \
-  --plan results/quantum_inspire/cases/zz-map-qx-catalogue-bound/plan.json \
+  --plan results/quantum_inspire/cases/zz-map-qx-rejected-request-recovery/plan.json \
   --out NEW_REPORT.json
 ```
 
