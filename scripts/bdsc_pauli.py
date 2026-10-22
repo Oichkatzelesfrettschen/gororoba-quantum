@@ -45,6 +45,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import bdsc  # noqa: E402
 import cd_core  # noqa: E402
+import parallel  # noqa: E402
 
 SCHEMA = "bdsc-pauli-v1"
 DIM = 16
@@ -136,7 +137,8 @@ def outcome_projector(basis: str, signs: tuple[int, ...]) -> np.ndarray:
     return out
 
 
-def blade_entry(i: int, j: int, t: int) -> dict[str, Any]:
+def blade_entry(blade: tuple[int, int, int]) -> dict[str, Any]:
+    i, j, t = blade
     terms = decompose(effect_times4(i, j, t))
     words = sorted(w for w in terms if w != "IIII")
     require(terms.get("IIII") == Fraction(1, 2), f"blade {(i, j, t)}: identity coefficient {terms.get('IIII')}")
@@ -214,7 +216,8 @@ def probe_cover(entries: dict[tuple[int, int, int], dict[str, Any]]) -> dict[str
 
 
 def record() -> dict[str, Any]:
-    entries = {b: blade_entry(*b) for b in blades()}
+    keys = blades()
+    entries = dict(zip(keys, parallel.ordered_map(blade_entry, keys, min_items=1), strict=True))
     target = entries[TARGET_BLADE]["terms"]
     require(target == {"IIII": "1/2", "YIXY": "-1/4", "YZXY": "1/4"}, f"E0 terms {target}")
     return {
