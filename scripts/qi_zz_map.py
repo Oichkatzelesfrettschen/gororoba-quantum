@@ -369,9 +369,11 @@ def build(catalogue_path: Path = CATALOGUE, shots: int | None = None) -> dict[st
             "max_jobs_per_batch": limit,
             "catalogue_max_jobs_per_batch": backend["max_jobs_per_batch_job"],
             "hardware_policy_max_jobs_per_batch": HARDWARE_BATCH_CIRCUITS,
-            # The budget ceiling: the top step of the pause ladder, so the plan holds whichever step runs.
+            # The pause ladder's first step sets the least interbatch spacing and its top step the budget
+            # ceiling, so the plan holds whichever step runs.
             "hardware_policy_pause_seconds": HARDWARE_PAUSE_LADDER[-1],
-            "minimum_interbatch_pause_seconds": max(0, len(batches) - 1) * HARDWARE_PAUSE_LADDER[-1],
+            "minimum_interbatch_pause_seconds": max(0, len(batches) - 1) * HARDWARE_PAUSE_LADDER[0],
+            "ceiling_interbatch_pause_seconds": max(0, len(batches) - 1) * HARDWARE_PAUSE_LADDER[-1],
             "pause_scope": (
                 "account-wide hardware spacing only; excludes the initial wait, execution, collection, "
                 "queueing, calibration and other sessions' jobs"
@@ -462,7 +464,8 @@ def validate_plan(plan: dict[str, Any], files: dict[str, str]) -> None:
     require(plan["cost"]["max_jobs_per_batch"] == HARDWARE_BATCH_CIRCUITS, "hardware batch policy differs")
     require(plan["cost"]["total_jobs"] == 416 and plan["cost"]["batches"] == 139, "packing cost changed")
     require(
-        plan["cost"]["minimum_interbatch_pause_seconds"] == 138 * HARDWARE_PAUSE_LADDER[-1],
+        plan["cost"]["minimum_interbatch_pause_seconds"] == 138 * HARDWARE_PAUSE_LADDER[0]
+        and plan["cost"]["ceiling_interbatch_pause_seconds"] == 138 * HARDWARE_PAUSE_LADDER[-1],
         "account-wide interbatch pause budget changed",
     )
 

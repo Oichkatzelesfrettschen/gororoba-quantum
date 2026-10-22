@@ -6468,7 +6468,7 @@
     },
     {
       "id": "qi-tuna17-effective-idle-zz-map",
-      "statement": "A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. Under the current 120-second hardware pause policy, the series requires at least 16560 seconds of interbatch pauses. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission.",
+      "statement": "A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. The hardware pause ladder puts its interbatch pauses between 4140 seconds at the 30-second first step and 16560 seconds at the 120-second ceiling. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
@@ -6476,11 +6476,11 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/cases/zz_map_tuna_17/plan.json",
-          "sha256": "a8fedf01784dcb32995a4c143d7bfa64e85d6953ef0a7468cc55866c286ecefd"
+          "sha256": "30de8a54a4d85c40d74b11cc3cf557e26e1fcbe1ca96f634dae8ddfec34c5eae"
         },
         {
           "path": "results/quantum_inspire/cases/zz_map_qx/plan.json",
-          "sha256": "2e9979b6aaa5c3f7d31a469f59fbad8e48c16919f70c944e3dcea8727bc06f9c"
+          "sha256": "ea5119dfc70dafd2f0e437ddd1f60d2af86a0f8bc25c30a43d75c3d7f0efce9b"
         }
       ],
       "documents": [

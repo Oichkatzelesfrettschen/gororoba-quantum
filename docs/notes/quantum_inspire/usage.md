@@ -207,6 +207,10 @@ requested, or a platform message about load or fair use; a series whose own
 preregistered stop ends it on such an issue resumes, as a new series, at the
 next step. The step that ran
 is recorded in each batch's `series-gate.json` (`pause_seconds`) for the
-series that write one, and the case states it. Case budgets take the top
+series that write one, and the case states it. The `bdsc_pauli_tuna_17`
+batch-00 and batch-01 receipts predate the field: both were submitted under
+the fixed 120 s pause that preceded the ladder, and the 129 s between
+batch-00's last finish and batch-01's creation in their `results.json`
+records matches it; batches 02 to 08 record 30 s. Case budgets take the top
 step, 120 s, as their wall-time ceiling, so a series run at any step stays
 inside its approved budget and its manifests do not depend on the step.

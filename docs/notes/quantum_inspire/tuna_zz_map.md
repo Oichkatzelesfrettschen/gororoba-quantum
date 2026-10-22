@@ -347,8 +347,9 @@ charge. They exclude any undocumented repetition, control, compilation,
 job, queue and calibration overhead. Batch regrouping changes
 those unpriced overheads while preserving the circuit-level primitive
 sums. Actual QPU seconds and any monetary charge remain unset in the
-machine-readable proposal. These primitive sums exclude the current
-policy's minimum 16,560 s of pauses between the 139 hardware batches;
+machine-readable proposal. These primitive sums exclude the 4,140 to
+16,560 s of pauses between the 139 hardware batches (the ladder's 30 s
+first step to its 120 s ceiling);
 elapsed acquisition time cannot be inferred from the primitive sums alone.
 
 ## Offline generation, review and future collection
