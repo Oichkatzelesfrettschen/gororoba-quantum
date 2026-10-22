@@ -7,7 +7,9 @@ import hashlib
 import json
 import platform
 import re
+import sys
 import time
+import warnings
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any
@@ -17,6 +19,21 @@ from parallel import ordered_map
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 20261022
 SHOTS = 1024
+DEFAULT_WRITER_RESIDUALS = {
+    f"results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-{batch:02d}/{name}.cq"
+    for batch, name in (
+        (2, "order-i0-j1-representative0"),
+        (3, "order-i0-j1-representative1"),
+        (6, "order-i1-j1-representative0"),
+        (7, "order-i1-j1-representative1"),
+    )
+}
+
+
+def qi_warning_policy() -> None:
+    """Fail warnings except the pinned libqasm/qxelarator SWIG type diagnostic."""
+    warnings.simplefilter("error")
+    warnings.filterwarnings("ignore", r"builtin type \w+ has no __module__ attribute", DeprecationWarning)
 
 
 def digest(path: Path) -> str:
@@ -91,6 +108,7 @@ def photonic(item: tuple[str, int]) -> dict[str, Any]:
 
 
 def qi_case(item: tuple[str, dict[str, Any]]) -> dict[str, Any]:
+    qi_warning_policy()
     import cqasm.v3x as v3
     import qxelarator
     from qi_toolchain_check import compile_circuit, compiler_configs
@@ -191,15 +209,32 @@ def main() -> None:
                 (str(manifest_path.parent.relative_to(ROOT)), index) for index in range(len(manifest["settings"]))
             )
         rows = ordered_map(photonic, inputs, min_items=1)
-        stack = probe()
-        if not stack.available:
-            raise RuntimeError(stack.reason)
-        run([str(Path(__file__).relative_to(ROOT)), "--qi-worker", "--out", str(arguments.out)])
         record = {
             "rows": rows,
             "source_sha256": identities,
             "versions": {name: version(name) for name in ("perceval-quandela", "exqalibur", "numpy")},
         }
+        stack = probe()
+        if not stack.available:
+            print(stack.reason, file=sys.stderr)
+            record["qi_worker_error"] = "pinned QI stack unavailable"
+        else:
+            try:
+                run(
+                    [
+                        "-B",
+                        "-W",
+                        "error",
+                        str(Path(__file__).relative_to(ROOT)),
+                        "--qi-worker",
+                        "--out",
+                        str(arguments.out),
+                    ]
+                )
+            except SystemExit as error:
+                print(str(error), file=sys.stderr)
+                record["qi_worker_error"] = "QI subprocess failed"
+                record["qi_worker_record_present"] = (arguments.out / "qi.json").is_file()
     record |= {
         "schema": "local-photonic-compiler-simulation-v1",
         "python": platform.python_version(),
@@ -220,6 +255,13 @@ def main() -> None:
         json.dumps({"record": destination.name, "rows": len(rows), "passed": sum(row["passed"] for row in rows)}),
         flush=True,
     )
+    execution_errors = any(row.get("error") or row.get("source_errors") or row.get("compiled_errors") for row in rows)
+    failed_cases = {row.get("case", "") for row in rows if not row["passed"]}
+    expected_residuals = (
+        arguments.qi_worker and not arguments.full_precision and failed_cases == DEFAULT_WRITER_RESIDUALS
+    )
+    if record.get("qi_worker_error") or execution_errors or (failed_cases and not expected_residuals):
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

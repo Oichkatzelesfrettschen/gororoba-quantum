@@ -2012,6 +2012,7 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/iqm_mcp_server.py",
+    "scripts/oq_mcp_server.py",
     "scripts/qd_mcp_server.py",
     "scripts/qi_mcp_server.py"
    ]
@@ -2261,9 +2262,13 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/provider_patch_packing.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/provider_patch_packing.py"
+   ]
   },
   {
    "distribution": "numba",
@@ -2427,6 +2432,7 @@
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2587,6 +2593,7 @@
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2599,10 +2606,12 @@
     "scripts/n21_qx_conformance.py",
     "scripts/n21_replica_covariance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/packed_pauli_analysis.py",
     "scripts/patch_window_analysis.py",
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
+    "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
@@ -2868,6 +2877,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/oq_mcp_server.py",
     "scripts/oq_platform.py"
    ]
   },
@@ -4328,6 +4338,7 @@
     "scripts/n21_orbit_rca.py",
     "scripts/n21_qx_conformance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/packed_pauli_probe.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
@@ -5331,6 +5342,7 @@
    "imported_by": [
     "scripts/box_kite_qx_sweep.py",
     "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -5339,6 +5351,7 @@
    "historical_imported_by": [
     "scripts/box_kite_qx_sweep.py",
     "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -5666,6 +5679,7 @@
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
     "scripts/patch_window_analysis.py",
+    "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
@@ -10096,8 +10110,10 @@
    "qi_toolchain_check",
    "qxelarator",
    "re",
+   "sys",
    "time",
-   "typing"
+   "typing",
+   "warnings"
   ],
   "scripts/local_simulation_replay.py": [
    "__future__",
@@ -10106,9 +10122,11 @@
    "json",
    "local_photonic_compiler_crosscheck",
    "math",
+   "numpy",
    "parallel",
    "pathlib",
    "qi_stack",
+   "qxelarator",
    "subprocess",
    "sys",
    "typing"
@@ -11659,7 +11677,9 @@
   "mcp": [
    "mcp"
   ],
-  "networkx": [],
+  "networkx": [
+   "networkx"
+  ],
   "numpy": [
    "numpy"
   ],
@@ -11743,9 +11763,7 @@
   ]
  },
  "import_mapping_origin": "normalized importlib.metadata.packages_distributions observation with ISOLATED_IMPORTS fallback; checks project fresh tracked AST through this retained map instead of reinterpreting another host",
- "unresolved_import_roots": [
-  "networkx"
- ],
+ "unresolved_import_roots": [],
  "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
  "coverage": "all requirements locks, top-level literal pins and referenced runtime pin files in scripts/kaggle_run.py (without executing dispatch), retained IQM distributions, maintained scientific roles and tracked runtime imports; every named package-table entry in the maintained ecosystem and algebra-candidate notes, plus retained provider PyPI records",
  "host_observation_policy": "host versions retained; historical import locations archived separately; current imported_by follows fresh AST"

@@ -1,6 +1,7 @@
 """Retained numerical contracts reject altered samples, probabilities and verdicts."""
 
 import copy
+import json
 import subprocess
 from pathlib import Path
 
@@ -69,3 +70,50 @@ def test_inventory_excludes_fresh_untracked_replay_output(tmp_path: Path, monkey
     monkeypatch.setattr(local_simulation_replay, "BUNDLE", bundle)
     if set(local_simulation_replay.inventory()) != {"retained.json"}:
         raise RuntimeError("fresh untracked replay output entered the retained artifact denominator")
+
+
+def test_state_basis_label_rejects_negative_index_alias() -> None:
+    row = copy.deepcopy(load("fullprecision-compiler-crosscheck/qi.json")["rows"][1])
+    row["simulations"]["source"]["state"]["-1"] = row["simulations"]["source"]["state"].pop("11")
+    with pytest.raises(ValueError, match="basis labels"):
+        check_qi((row, True, True))
+
+
+def test_optical_source_identity_requires_every_circuit() -> None:
+    record = copy.deepcopy(load("physical-photonic-compiler-crosscheck/photonic.json"))
+    circuit = next(name for name in record["source_sha256"] if name.endswith("circuit.json"))
+    del record["source_sha256"][circuit]
+    with pytest.raises(ValueError, match="source-hash denominator"):
+        local_simulation_replay.check_optical_sources(record)
+
+
+def test_retained_histogram_rejects_impossible_readout_reference() -> None:
+    row = copy.deepcopy(load("physical-photonic-compiler-crosscheck/qi.json")["rows"][1])
+    row["simulations"]["source"]["counts"] = {"00": 1024}
+    with pytest.raises(ValueError, match="native support"):
+        check_qi((row, False, False))
+
+
+def test_live_replay_checks_default_writer_histograms(monkeypatch: pytest.MonkeyPatch) -> None:
+    import qi_stack
+
+    histograms = [
+        row["simulations"][kind]["counts"]
+        for directory, _, _ in local_simulation_replay.QI_BUNDLES
+        for row in load(directory + "/qi.json")["rows"]
+        for kind in ("source", "compiled")
+    ]
+    histograms[0] = {"11": 1024}
+    payload = {"rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"], "histograms": histograms}
+    monkeypatch.setattr(qi_stack, "live", lambda *args: True)
+    monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
+    with pytest.raises(ValueError, match="seeded histograms"):
+        local_simulation_replay.live_qi()
+
+
+def test_synthetic_photonic_counts_replay_the_recorded_seed() -> None:
+    row = copy.deepcopy(load("physical-photonic-compiler-crosscheck/photonic.json")["rows"][0])
+    row["simulated_counts"][0] -= 1
+    row["simulated_counts"][1] += 1
+    with pytest.raises(ValueError, match="seeded sampler"):
+        check_photonic(row)

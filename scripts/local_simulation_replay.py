@@ -16,6 +16,13 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from parallel import ordered_map  # noqa: E402
 
 BUNDLE = ROOT / "results/local-simulation"
+QI_BUNDLES = (
+    ("photonic-compiler-crosscheck", False, False),
+    ("physical-photonic-compiler-crosscheck", False, False),
+    ("terminal-unitary-compiler-crosscheck", False, True),
+    ("validated-terminal-unitary-compiler-crosscheck", False, True),
+    ("fullprecision-compiler-crosscheck", True, True),
+)
 
 
 def sha(path: Path) -> str:
@@ -75,8 +82,12 @@ def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
             raise ValueError("simulated measurement-register histogram malformed")
         probabilities = [0.0] * len(expected)
         for bits, amplitude in simulation["state"].items():
+            if len(bits) != 2 or set(bits) - {"0", "1"}:
+                raise ValueError("state-vector basis labels must contain exactly two binary digits")
             probabilities[int(bits, 2)] = amplitude[0] ** 2 + amplitude[1] ** 2
         check_probabilities(probabilities)
+        if any(count and expected[int(bits, 2)] == 0 for bits, count in counts.items()):
+            raise ValueError("simulated histogram contradicts the frozen native support")
         errors[kind] = max(abs(actual - wanted) for actual, wanted in zip(probabilities, expected, strict=True))
         if terminal:
             from local_photonic_compiler_crosscheck import terminal_unitary
@@ -98,6 +109,8 @@ def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
 
 
 def check_photonic(row: dict[str, Any]) -> None:
+    import numpy as np
+
     manifest = json.loads((ROOT / row["case"] / "cases.json").read_text())
     setting = manifest["settings"][row["index"]]
     if setting["name"] != row["name"] or row["modes"] not in {12, 24}:
@@ -113,6 +126,10 @@ def check_photonic(row: dict[str, Any]) -> None:
         if not math.isfinite(actual) or abs(actual - wanted) > 1e-12:
             raise ValueError("ideal probabilities differ from the frozen optical column")
     check_probabilities(row["ideal"])
+    ideal = np.asarray(row["ideal"])
+    seeded_counts = np.random.default_rng(20261022 + row["index"]).multinomial(1024, ideal / ideal.sum()).tolist()
+    if row["simulated_counts"] != seeded_counts:
+        raise ValueError("synthetic photonic counts differ from the frozen-ideal seeded sampler")
     if set(row["probabilities"]) != {"SLOS", "Naive"}:
         raise ValueError("optical comparison requires both SLOS and Naive")
     for kind, values in row["probabilities"].items():
@@ -131,6 +148,17 @@ def check_photonic(row: dict[str, Any]) -> None:
         raise ValueError("optical full-operator criterion differs")
 
 
+def check_optical_sources(record: dict[str, Any]) -> None:
+    manifests = sorted((ROOT / "results/hypercomplex/photonic-successors").glob("*/*/cases.json"))
+    expected = {
+        path.relative_to(ROOT).as_posix(): sha(path)
+        for manifest in manifests
+        for path in (manifest, manifest.parent / json.loads(manifest.read_text())["circuit"]["file"])
+    }
+    if record["source_sha256"] != expected:
+        raise ValueError("frozen optical source-hash denominator or digest differs")
+
+
 def check() -> None:
     if load("artifacts.json")["sha256"] != inventory():
         raise ValueError("local simulation file set or bytes differ from artifact inventory")
@@ -140,6 +168,8 @@ def check() -> None:
     ):
         raise ValueError("initial Perceval harness failure diagnosis differs")
     optical = load("physical-photonic-compiler-crosscheck/photonic.json")
+    if optical["seed"] != 20261022 or optical["shots"] != 1024:
+        raise ValueError("optical synthetic sampling seed or denominator differs")
     rows = optical["rows"]
     expected = {
         (str(path.parent.relative_to(ROOT)), index)
@@ -149,17 +179,11 @@ def check() -> None:
     if len(rows) != 128 or {(row["case"], row["index"]) for row in rows} != expected:
         raise ValueError("physical photonic setting denominator differs")
     ordered_map(check_photonic, rows, min_items=1)
-    for relative, wanted in optical["source_sha256"].items():
-        if sha(ROOT / relative) != wanted:
-            raise ValueError("frozen optical source changed")
-    for directory, precise, terminal in (
-        ("photonic-compiler-crosscheck", False, False),
-        ("physical-photonic-compiler-crosscheck", False, False),
-        ("terminal-unitary-compiler-crosscheck", False, True),
-        ("validated-terminal-unitary-compiler-crosscheck", False, True),
-        ("fullprecision-compiler-crosscheck", True, True),
-    ):
+    check_optical_sources(optical)
+    for directory, precise, terminal in QI_BUNDLES:
         record = load(directory + "/qi.json")
+        if record["seed"] != 20261022 or record["shots"] != 1024:
+            raise ValueError("QI seeded sampling metadata differs")
         rows = record["rows"]
         expected_qi = {
             str(path.relative_to(ROOT))
@@ -185,6 +209,16 @@ def check() -> None:
             raise ValueError("retained full-precision exporter identity differs")
 
 
+def qi_histogram(code: str) -> dict[str, int]:
+    from local_photonic_compiler_crosscheck import qi_warning_policy
+
+    qi_warning_policy()
+    import qxelarator
+
+    result = qxelarator.execute_string(code, iterations=1024, seed=20261022)
+    return {str(bits): int(count) for bits, count in result.results.items()}
+
+
 def live_qi() -> None:
     from qi_stack import live, run
 
@@ -195,17 +229,31 @@ import json,sys
 sys.path[:0] = ['scripts', 'gororoba_quantum']
 from pathlib import Path
 from local_photonic_compiler_crosscheck import qi_case
+from local_simulation_replay import QI_BUNDLES, load, qi_histogram
 from parallel import ordered_map
 inputs = []
 root = Path('results/quantum_inspire/runs/tuna17-quaternion-order-noise')
 for manifest in sorted(root.glob('order-batch-*/cases.json')):
     cases = json.loads(manifest.read_text())['circuits']
     inputs.extend((str(manifest.parent), case | {'_full_precision': True}) for case in cases)
-print(json.dumps(ordered_map(qi_case, inputs, min_items=1)))
+histogram_inputs = []
+for directory, _, _ in QI_BUNDLES:
+    for row in load(directory + '/qi.json')['rows']:
+        histogram_inputs.extend([Path(row['case']).read_text(), row['compiled']])
+print(json.dumps({'rows': ordered_map(qi_case, inputs, min_items=1),
+                 'histograms': ordered_map(qi_histogram, histogram_inputs, min_items=1)}))
 """
-    actual = json.loads(run(["-c", code]))
-    if actual != load("fullprecision-compiler-crosscheck/qi.json")["rows"]:
+    actual = json.loads(run(["-B", "-W", "error", "-c", code]))
+    if actual["rows"] != load("fullprecision-compiler-crosscheck/qi.json")["rows"]:
         raise ValueError("live pinned QI replay differs from retained full-precision evidence")
+    expected_histograms = [
+        row["simulations"][kind]["counts"]
+        for directory, _, _ in QI_BUNDLES
+        for row in load(directory + "/qi.json")["rows"]
+        for kind in ("source", "compiled")
+    ]
+    if actual["histograms"] != expected_histograms:
+        raise ValueError("live pinned QI seeded histograms differ from retained source or compiled evidence")
 
 
 def main() -> None:

@@ -1,5 +1,10 @@
 """Protect the boundary between terminal measurement samples and unitary probabilities."""
 
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import local_photonic_compiler_crosscheck
 import pytest
 from local_photonic_compiler_crosscheck import photonic, terminal_unitary
 
@@ -34,3 +39,36 @@ def test_unsupported_measurement_assignment_fails_closed() -> None:
     source = "version 3.0\nqubit[1] q\nbit[1] c\nc[0] = measure q[0]\n"
     with pytest.raises(ValueError, match="supported terminal"):
         terminal_unitary(source)
+
+
+def test_worker_execution_error_retains_record_and_exits_nonzero(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    runner = local_photonic_compiler_crosscheck
+    monkeypatch.setattr(runner.sys, "argv", ["crosscheck", "--qi-worker", "--out", str(tmp_path)])
+    monkeypatch.setattr(runner, "version", lambda name: "test")
+    monkeypatch.setattr(runner, "ordered_map", lambda *args, **kwargs: [{"passed": False, "error": "simulator failed"}])
+    with pytest.raises(SystemExit, match="1"):
+        runner.main()
+    record = json.loads((tmp_path / "qi.json").read_text())
+    if record["rows"][0]["error"] != "simulator failed":
+        raise RuntimeError("worker diagnostics must precede the unsuccessful exit")
+
+
+def test_parent_retains_photonic_record_when_qi_child_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import qi_stack
+
+    def failed_child(*args: object, **kwargs: object) -> str:
+        raise SystemExit("synthetic child failure")
+
+    runner = local_photonic_compiler_crosscheck
+    monkeypatch.setattr(runner.sys, "argv", ["crosscheck", "--out", str(tmp_path)])
+    monkeypatch.setattr(runner, "version", lambda name: "test")
+    monkeypatch.setattr(runner, "ordered_map", lambda *args, **kwargs: [{"passed": True}])
+    monkeypatch.setattr(qi_stack, "probe", lambda: SimpleNamespace(available=True))
+    monkeypatch.setattr(qi_stack, "run", failed_child)
+    with pytest.raises(SystemExit, match="1"):
+        runner.main()
+    record = json.loads((tmp_path / "photonic.json").read_text())
+    if record["qi_worker_error"] != "QI subprocess failed" or record["rows"] != [{"passed": True}]:
+        raise RuntimeError("the parent must retain photonic rows and the child failure outcome")
