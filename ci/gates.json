@@ -3868,7 +3868,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd",
    "name": "core-606",
    "seconds": 7.7,
    "tier": "pr"
