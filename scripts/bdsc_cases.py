@@ -321,6 +321,8 @@ def tally(counts: dict[str, int], selected_modes: list[int]) -> dict[str, int]:
 
 def readout(runs: list[Path], contract: dict[str, Any] | None = None) -> dict[str, Any]:
     """Every contrast of the frozen case from collected qpu:belenos runs, each policy admitted only by its contract."""
+    import qd_platform
+
     case_bytes = CASE.read_bytes()
     case = json.loads(case_bytes)
     observations = case["observations"]
@@ -348,14 +350,14 @@ def readout(runs: list[Path], contract: dict[str, Any] | None = None) -> dict[st
         # plan digests the compact sorted body and submit writes it indented, so the digest re-dumps the parsed file.
         require(submission.get("body_sha256") == body_digest(body_bytes), f"{run}: job-body.json is not the sent body")
         require(result.get("job_id") == submission.get("job_id"), f"{run}: the result answers another job")
-        # A returned iteration names no applied mitigation, so the sent body is the only record of the policy:
-        # Perceval writes the mitigations key exactly when the policy is a list.
-        from perceval.utils.constants import KEY_MITIGATIONS
-
+        # A returned iteration names no applied mitigation, so the sent body is the only record of the policy.
         requested = cert.PROCESSING_POLICIES[manifest["job_spec"]["processing"]]
         require(manifest.get("mitigations") == requested, f"{run}: the manifest policy differs from its job")
-        carried = KEY_MITIGATIONS in json.dumps(json.loads(body_bytes))
-        require(carried == (requested is not None), f"{run}: the sent body does not carry the {requested!r} policy")
+        try:
+            carried = qd_platform.body_mitigations(json.loads(body_bytes))
+        except qd_platform.PlatformError as error:
+            raise ValueError(f"{run}: the sent body does not carry the {requested!r} policy: {error}") from None
+        require(carried == requested, f"{run}: the sent body does not carry the {requested!r} policy")
         binding = manifest.get("draw")
         require(isinstance(binding, dict), f"{run}: the manifest names no bound QRNG record")
         if binding["sha256"] not in draws:
@@ -514,10 +516,15 @@ def self_test() -> int:
             "duplicate": "collected twice",
             "simulator": "the case qualifies",
             "policy": "does not carry",
+            "listed": "does not carry",
+            "misplaced": "does not carry",
             "order": "drawn order",
         }
         for mutate, expected in mutations.items():
+            # Policy mutations need an empty-mitigation run, where a stray or nonempty key changes the reading.
             target = runs[0]
+            if mutate in ("listed", "misplaced"):
+                target = next(r for r in runs if json.loads((r / "cases.json").read_bytes())["mitigations"] == [])
             saved = {
                 f: (target / f).read_bytes() for f in ("cases.json", "results.json", "submission.json", "job-body.json")
             }
@@ -538,6 +545,15 @@ def self_test() -> int:
                 result["iterations"].reverse()
             elif mutate == "simulator":
                 submission["platform"] = "sim:belenos"
+            elif mutate in ("listed", "misplaced"):
+                # A nonempty list, or the empty list beside the payload, is not the manifest's policy.
+                sent = json.loads(synthetic_body(manifest["mitigations"]))
+                if mutate == "listed":
+                    sent["payload"]["mitigations"] = ["detector-balancing"]
+                else:
+                    sent["mitigations"] = []
+                (target / "job-body.json").write_text(json.dumps(sent), encoding="utf-8")
+                submission["body_sha256"] = body_digest((target / "job-body.json").read_bytes())
             else:
                 # A body that carries the other policy, sent and digested as such, still differs from the manifest.
                 swapped = synthetic_body(None if manifest["mitigations"] is not None else [])
