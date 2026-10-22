@@ -1,11 +1,9 @@
 {
  "schema": "runner-image-records-v1",
- "image": "db878bf61fd4254fbbc1340336441f83600335eed488d00ba23d15071a7c65cb",
+ "image": "d1f61a50acbe17bc0577618cffefd72041194c3d8e1bfc517285a39fd7bfa237",
  "records": {
   "results/live/2026-10-19T151959.226467Z/between-arm-095a30e32c9c.json": "ad7f19e3c55be0ed83dcdb688cabcc7fe92fd4eeeb8f176f53923bf5b5036b95",
-  "results/live/2026-10-19T231043.083602Z/between-arm-runner-image.json": "245372a42d0849d3c695ce962f690c7e4d22094cbaaf27a975c479f11d8f0f84",
   "results/live/2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json": "4652b9cf84a3c17a1047fa8e15fd60dc66b0054282cc180c25d7280e037e9960",
-  "results/live/2026-10-20T031212.175942Z/ramsey-runner-image.json": "34bece7c0ac2636ec5e72bab2e7f168b90bda4ce76d437becff54ba4c3b3558d",
   "results/live/2026-10-21T043156.858484Z/segmented-sweep-759d82d74c57.json": "2dcfaf7ddac2b3ece092ba1ca4e7ffa16bdb99c0f386edabc16c14ea6ba82128",
   "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json": "66f4ab5295eba9c6304a9efb797caf66d902f8f49459ac9e675ee195f0ade9f7",
   "results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json": "7eab64e4a10dfe16f4261cbab15a5138a14f1d7afd1faf9a3d5f842eac9a94e2",

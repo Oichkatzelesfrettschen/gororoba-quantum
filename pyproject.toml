@@ -5,9 +5,8 @@
 line-length = 120
 target-version = "py314"
 src = ["gororoba_quantum"]
-# Retained third-party bytes bound by their SHA256SUMS, and retained analyzer
-# closures bound by the records that approved them; their replay gates run them.
-extend-exclude = ["docs/evidence/reviewer_associator_audit/audit.py", "docs/evidence/analyzer_closures"]
+# Retained third-party bytes bound by their SHA256SUMS; their replay gates run them.
+extend-exclude = ["docs/evidence/reviewer_associator_audit/audit.py"]
 
 # Quantum Inspire shares these modules with its pinned Python 3.13 interpreter.
 [tool.ruff.per-file-target-version]

@@ -25,12 +25,24 @@ SCHEMA = "runner-image-records-v1"
 IMAGE_INPUTS = ("ci/runner-image/Containerfile", "requirements.txt", "ci/requirements-ci.txt", "ci/install_pins.sh")
 
 
+def requirement_lines(data: bytes) -> bytes:
+    """The lines pip installs from a requirements file: comments and blank lines drop out."""
+    lines = (line.split(b"#", 1)[0].strip() for line in data.splitlines())
+    return b"\n".join(line for line in lines if line)
+
+
 def image_id(root: Path = ROOT) -> str:
-    """sha256 over each image input's path and bytes, the patches of ci/patches/ in name order last."""
+    """sha256 over each image input's path and content, the patches of ci/patches/ in name order last.
+
+    A requirements file contributes its requirement lines alone, so a comment edit leaves the installed
+    packages, and the digest, unchanged.
+    """
     paths = [root / name for name in IMAGE_INPUTS] + sorted((root / "ci" / "patches").iterdir())
     digest = hashlib.sha256()
     for path in paths:
-        digest.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
+        data = path.read_bytes()
+        content = requirement_lines(data) if path.suffix == ".txt" else data
+        digest.update(path.relative_to(root).as_posix().encode() + b"\0" + content + b"\0")
     return digest.hexdigest()
 
 

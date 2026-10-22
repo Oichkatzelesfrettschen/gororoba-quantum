@@ -69,7 +69,9 @@ unit and more reads per shot is the lever.
 
 Trade table (scripts/n21_q143_segmented_sweep.py --design,
 [n21-q143-segmented-design-759d82d74c57.json](n21-q143-segmented-design-759d82d74c57.json),
-gates core-616 and core-622 to core-625, one per row; it corrects
+written in the runner image and bound by ci/runner_image_records.json; gate
+core-616 checks the design geometry and shot-cost scaling on synthetic
+inputs; it corrects
 [n21-q143-segmented-design.json](n21-q143-segmented-design.json), whose
 single local refits overstated alias pairs and understated slow telegraph rates). Asimov expected LLRs at the retained static fit under the
 shot-level likelihood with e0, e1 free, df confined to its alias cell for

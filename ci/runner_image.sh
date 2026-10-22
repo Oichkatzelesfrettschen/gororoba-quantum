@@ -27,7 +27,10 @@ tag=localhost/gororoba-runner:$(sha256sum ci/runner-image/Containerfile | cut -c
 if ! podman image exists "$tag"; then
     podman build --quiet -t "$tag" "$cache" >/dev/null
 fi
-pins=$(cat requirements.txt ci/requirements-ci.txt ci/install_pins.sh ci/patches/* | sha256sum | cut -c1-16)
+# The venv key reads the requirement lines alone, as pip does, so a comment
+# edit reuses the installed pins.
+pins=$({ sed -e 's/#.*//' -e 's/[[:space:]]*$//' -e '/^[[:space:]]*$/d' requirements.txt ci/requirements-ci.txt
+    cat ci/install_pins.sh ci/patches/*; } | sha256sum | cut -c1-16)
 venv=/cache/pins-$pins
 run_in() {
     network=$1

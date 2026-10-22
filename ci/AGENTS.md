@@ -124,10 +124,8 @@ of them given one libm and Python build. A record a gate byte-replays is
 written in the runner's userland through `ci/runner_image.sh` (podman), which
 supplies both, and `ci/runner_image_records.json` binds it to that image and
 its pins (`ci/runner_image_records.py add`; gate core-632 checks the ledger).
-A retained record a foreign stack wrote replays against a runner-image
-baseline (`ci/replay_check.py --baseline`), and a record whose analyzer
-refuses a changed closure replays through its
-[retained closure](../docs/evidence/analyzer_closures/README.md).
+`ci/replay_check.py` compares such a record with a fresh run bit for bit,
+skipping only the paths that name the analyzer (core-613, core-617).
 `parallel.default_threads()` and `workers()`
 share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
 receive one slot through a child-only initializer, so nested maps and simulator

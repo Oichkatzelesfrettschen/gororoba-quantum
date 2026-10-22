@@ -1361,15 +1361,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, help="write the analysis here instead of beside the run's raw files")
     parser.add_argument("--design", type=Path, help="write the design trade table here")
     parser.add_argument("--design-check", type=Path, help="require this retained design table to regenerate")
-    parser.add_argument(
-        "--design-row", type=int, help="with --out, write row K of the design table alone (one replay gate per row)"
-    )
     args = parser.parse_args(argv)
-    if args.design_row is not None:
-        if args.out is None:
-            parser.error("--design-row writes to --out")
-        args.out.write_text(serialize(design_rows(*DESIGN_TABLE[args.design_row])))
-        return 0
     if args.design is not None or args.design_check is not None:
         rows = [design_rows(k, s, pairs) for k, s, pairs in DESIGN_TABLE]
         table = serialize({"schema_version": SCHEMA + "-design", "rows": rows})

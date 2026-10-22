@@ -375,7 +375,8 @@ self-check). beat-model.json overstated the follow-up design's worst alias
 pairs, whose alternatives stopped in one basin of their cell;
 [beat-model-9bd206ca42ea.json](2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json),
 written by the analyzer that refits each alternative from its cell's best
-(df, a) profile points, corrects them, and core-605 regenerates it byte for byte. The data are the
+(df, a) profile points, corrects them; it was written in the runner image and
+ci/runner_image_records.json binds its bytes. The data are the
 all-zero herald-selected counts of the 14 PUBs.
 
 **Signal and readout.** single, static and telegraph predict
