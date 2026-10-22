@@ -28,16 +28,23 @@ the analysis replays on CI without Perceval. A seeded case (one fixed circuit
 iterated over compilation seeds) reports one block's statistics per
 iteration beside the sha256 of the mesh that iteration returned. --write RUN_DIR... writes each
 run's analysis.json; --check RUN_DIR... recomputes and compares bytes;
+--runs-under ROOT adds every run directory under ROOT whose cases.json
+schema this analysis covers (ANALYZED_CASE_SCHEMAS), and --exclude GLOB drops
+the run names matching GLOB, so runs of other case families (a BDSC
+qualification run, which the bdsc scripts analyze) stay out of the selection;
 --self-test requires a corrupted count, a swapped role and a pair histogram
 off its ideal to change the verdicts.
 
-Usage: "$PYTHON" scripts/qd_box_kite_analysis.py (--write | --check) RUN_DIR... | --self-test
+Usage: "$PYTHON" scripts/qd_box_kite_analysis.py (--write | --check)
+           [--runs-under ROOT [--exclude GLOB]...] [RUN_DIR...]
+       "$PYTHON" scripts/qd_box_kite_analysis.py --self-test
 """
 
 from __future__ import annotations
 
 import argparse
 import copy
+import fnmatch
 import hashlib
 import json
 import math
@@ -51,6 +58,8 @@ from qd_platform import PlatformError, iteration_form, load_case, run_facts
 SCHEMA = "qd-box-kite-analysis-v1"
 # A mesh analysis replays within qd_belenos_mesh.ANALYSIS_TOLERANCE; every other record replays byte for byte.
 MESH_SCHEMA = "qd-belenos-mesh-analysis-v1"
+# The case schemas analyze() reads: qd_box_kite_cases.SCHEMA and qd_belenos_mesh.CASES_SCHEMA.
+ANALYZED_CASE_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1")
 Z95 = 1.959963984540054
 
 
@@ -444,18 +453,37 @@ def self_test() -> int:
     return 0
 
 
+def runs_under(root: Path, exclude: list[str]) -> list[Path]:
+    """Run directories under root whose case schema analyze() reads, sorted by name, minus the excluded names."""
+    selected = []
+    for run in sorted(path for path in root.iterdir() if (path / "cases.json").is_file()):
+        schema = json.loads((run / "cases.json").read_text(encoding="utf-8")).get("schema")
+        if schema in ANALYZED_CASE_SCHEMAS and not any(fnmatch.fnmatchcase(run.name, glob) for glob in exclude):
+            selected.append(run)
+    if not selected:
+        raise SystemExit(f"{root}: no run directory holds an analyzed case schema")
+    return selected
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--write", action="store_true")
     group.add_argument("--check", action="store_true")
     group.add_argument("--self-test", action="store_true")
+    parser.add_argument("--runs-under", type=Path, help="add every analyzed run directory under this root")
+    parser.add_argument("--exclude", action="append", default=[], help="run-name glob to leave out of --runs-under")
     parser.add_argument("runs", type=Path, nargs="*")
     args = parser.parse_args()
     if args.self_test:
         return self_test()
+    if args.exclude and args.runs_under is None:
+        parser.error("--exclude applies to --runs-under")
+    runs = [*args.runs, *(runs_under(args.runs_under, args.exclude) if args.runs_under else [])]
+    if not runs:
+        parser.error("name a run directory or --runs-under")
     try:
-        for run in args.runs:
+        for run in runs:
             rendered = text(analyze(run))
             path = run / "analysis.json"
             if args.write:

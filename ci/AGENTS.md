@@ -123,7 +123,7 @@ every runner and build host executes, so a fitted value rounds one way on all
 of them given one libm and Python build. A record a gate byte-replays is
 written in the runner's userland through `ci/runner_image.sh` (podman), which
 supplies both, and `ci/runner_image_records.json` binds it to that image and
-its pins (`ci/runner_image_records.py add`; gate core-632 checks the ledger).
+its pins (`ci/runner_image_records.py add`; gate core-634 checks the ledger).
 `ci/replay_check.py` compares such a record with a fresh run bit for bit,
 skipping only the paths that name the analyzer (core-613, core-617).
 `parallel.default_threads()` and `workers()`

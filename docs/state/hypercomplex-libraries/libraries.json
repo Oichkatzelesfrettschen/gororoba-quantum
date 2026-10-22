@@ -10474,6 +10474,7 @@
    "__future__",
    "argparse",
    "copy",
+   "fnmatch",
    "fractions",
    "hashlib",
    "json",

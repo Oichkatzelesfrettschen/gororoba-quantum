@@ -520,9 +520,10 @@ Gates core-500 (`capture_qd_docs.py --check`), core-501 (its
 (`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
 docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
-`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
-retained run but the qpu:belenos mesh runs, which core-537 replays on the
-full tier), core-509 (its `--self-test`), core-510
+`--self-test`), core-508 (`qd_box_kite_analysis.py --check --runs-under
+results/quandela/runs` over every retained run whose case schema is a
+box-kite or Belenos mesh case, but the qpu:belenos mesh runs, which core-537
+replays on the full tier; the BDSC runs belong to the bdsc gates), core-509 (its `--self-test`), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
 `--check-rca` replay of the leakage record), core-512 (its
 `--self-test`), core-515 (full tier, `--self-test-rule`: the decision
