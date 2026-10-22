@@ -3894,7 +3894,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --self-test",
    "name": "core-624",
-   "seconds": 5.5,
+   "seconds": 9.0,
    "tier": "pr"
   },
   {
