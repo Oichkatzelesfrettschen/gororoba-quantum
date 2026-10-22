@@ -190,9 +190,22 @@ export PYTHON="${PYTHON:-python3}"
 ```
 
 Add `--portal-map` to fetch and compare the public bundle. A fresh OpenAPI
-capture uses `--capture` and a new destination; changing retained bytes raises
-an error. The Cloud schema contains generated example identities, so equal
-operation contracts can accompany differing raw document digests.
+capture uses `--capture` and a new or empty destination; the destination check
+precedes network access. The capture writes `capture-sha256.json`, which binds
+that successor's three raw schemas and portal route map. An offline replay
+uses the successor's own ledger, so a new WebIDE deployment can enter a new
+capture without replacing the historical portal digest. The ledger records
+retrieved identity; an unreviewed successor remains a new evidence object.
+
+The historical capture in this directory always uses the four reviewed
+code-pinned SHA-256 values, including each raw OpenAPI document's digest in
+the table above. A local successor ledger cannot replace those historical
+pins. A historical copy without a successor ledger also uses those pins.
+The replay checks each raw source before comparing its derived inventory;
+editing a source and its inventory together therefore rejects the historical
+replay. Changing successor source bytes without matching its retained ledger
+also raises an error. The Cloud schema contains generated example identities,
+so equal operation contracts can accompany differing raw document digests.
 
 The [instrument-readiness design](../../../design/ascella-instrument-readiness-and-packed-tests.md)
 binds the API findings to the static and native-mesh hardware diagnostics,

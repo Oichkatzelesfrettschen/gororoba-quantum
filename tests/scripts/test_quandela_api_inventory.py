@@ -1,11 +1,15 @@
 """API traversal preserves every operation while classifying state and credit effects."""
 
+import hashlib
+import io
+import json
 import shutil
 import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
+import quandela_api_inventory as api
 from quandela_api_inventory import inventory
 
 
@@ -58,3 +62,95 @@ def test_offline_api_replay_rejects_a_changed_portal_map(tmp_path: Path, monkeyp
     monkeypatch.setattr(sys, "argv", ["quandela_api_inventory", str(target)])
     with pytest.raises(ValueError, match="portal"):
         main()
+
+
+@pytest.mark.parametrize("name", ["cloud", "toolbox", "account"])
+def test_historical_raw_capture_rejects_matching_inventory_rewrite(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, name: str
+) -> None:
+    source = Path(__file__).resolve().parents[2] / "docs/evidence/quandela/input-port-api-audit"
+    target = tmp_path / "capture"
+    shutil.copytree(source, target)
+    path = target / f"{name}-openapi.json"
+    document = json.loads(path.read_bytes())
+    document["info"]["version"] = document["info"].get("version", "") + "-mutated"
+    data = (json.dumps(document) + "\n").encode()
+    path.write_bytes(data)
+    record = api.inventory(document, strict_references=False)
+    record.update(source_url=api.DOCUMENTS[name], source_sha256=hashlib.sha256(data).hexdigest())
+    (target / f"{name}-inventory.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
+    monkeypatch.setattr(sys, "argv", ["quandela_api_inventory", str(target)])
+    with pytest.raises(ValueError, match="capture.*digest|capture.*bytes"):
+        api.main()
+
+
+def test_successor_capture_admits_new_bundle_and_replays_offline(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import capture_qd_docs
+
+    raw = b'{"info":{"version":"successor"},"paths":{}}'
+
+    def response(url: str, timeout: int) -> io.BytesIO:
+        if url not in api.DOCUMENTS.values() or timeout != 30:
+            raise AssertionError("unexpected public capture request")
+        return io.BytesIO(raw)
+
+    monkeypatch.setattr(api.urllib.request, "urlopen", response)
+    monkeypatch.setattr(
+        capture_qd_docs,
+        "bundle",
+        lambda url: ("https://cloud.quandela.com/webide/assets/successor.js", b'request$1.get("/api/successor");'),
+    )
+    target = tmp_path / "successor"
+    monkeypatch.setattr(sys, "argv", ["quandela_api_inventory", str(target), "--capture"])
+    if api.main() != 0:
+        raise AssertionError("fresh public capture failed")
+    monkeypatch.setattr(sys, "argv", ["quandela_api_inventory", str(target)])
+    if api.main() != 0:
+        raise AssertionError("the successor capture failed its offline replay")
+    portal = target / "portal-route-map.json"
+    retained_portal = portal.read_bytes()
+    portal.write_bytes(retained_portal.replace(b"successor.js", b"mutated.js"))
+    with pytest.raises(ValueError, match="portal"):
+        api.main()
+    portal.write_bytes(retained_portal)
+    path = target / "cloud-openapi.json"
+    path.write_bytes(raw + b" ")
+    record = api.inventory(json.loads(path.read_bytes()), strict_references=False)
+    record.update(source_url=api.DOCUMENTS["cloud"], source_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+    (target / "cloud-inventory.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
+    with pytest.raises(ValueError, match="capture.*digest|capture.*bytes"):
+        api.main()
+
+
+def test_capture_requires_fresh_destination_before_network(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    (tmp_path / "retained.txt").write_text("preserve")
+
+    def forbidden(*args: Any, **kwargs: Any) -> None:
+        raise AssertionError("existing capture directory crossed the network boundary")
+
+    monkeypatch.setattr(api.urllib.request, "urlopen", forbidden)
+    monkeypatch.setattr(sys, "argv", ["quandela_api_inventory", str(tmp_path), "--capture"])
+    with pytest.raises(ValueError, match="new|empty|fresh"):
+        api.main()
+
+
+def test_historical_code_pins_override_a_rewritten_local_ledger(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = Path(__file__).resolve().parents[2] / "docs/evidence/quandela/input-port-api-audit"
+    target = tmp_path / "capture"
+    shutil.copytree(source, target)
+    (target / "cloud-openapi.json").write_bytes(b'{"info":{},"paths":{}}')
+    digests = {
+        path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in [*target.glob("*-openapi.json"), target / "portal-route-map.json"]
+    }
+    (target / "capture-sha256.json").write_text(
+        json.dumps({"schema": "quandela-api-capture-sha256-v1", "sha256": digests})
+    )
+    monkeypatch.setattr(api, "HISTORICAL_DIRECTORY", target)
+    monkeypatch.setattr(sys, "argv", ["quandela_api_inventory", str(target)])
+    with pytest.raises(ValueError, match="capture.*digest|capture.*bytes"):
+        api.main()
