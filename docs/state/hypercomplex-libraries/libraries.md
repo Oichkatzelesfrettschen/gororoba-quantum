@@ -1,6 +1,14 @@
 # Python libraries in the hypercomplex campaign
 
+The inventory explains 347 distributions over the declared source surfaces.
+
 Each row names a distribution, its scientific or operational role, and the observed host version. The JSON register retains environment pins and import locations separately. A missing host distribution may belong to an isolated provider environment.
+
+Execution pins come from requirement locks and the dispatcher's top-level string literals plus referenced runtime pin files. The JSON records each pin's file, line and constant, and hashes every source. Coverage is finite over these named surfaces, not every prose mention or an implicit transitive resolver closure.
+
+CPU, CUDA 11 and CUDA 13 Aer distributions share one simulator engine and exclusively own `qiskit_aer` within an environment. Isolate them; cross-build agreement supplies implementation conformance rather than independent algebra evidence. CUDA 12 Aer remains unused under the retained Python-wheel compatibility decision.
+
+CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capabilities, whereas OSQP solves quadratic programs with linear constraints. Solver selection requires model, status, residual and tolerance qualification. [Retained metadata and source observations](solver-role-grounding.json) bind these roles; the repository's [Quandela stack](../../notes/quandela/python-stack.md) and [ecosystem audit](../../notes/qiskit-ecosystem.md) supply the operational context.
 
 | Distribution | Host observation | Role |
 |---|---|---|
@@ -27,7 +35,7 @@ Each row names a distribution, its scientific or operational role, and the obser
 | cffi | 2.1.1 | SDK/environment infrastructure: Foreign Function Interface for Python calling C code. |
 | charset-normalizer | 3.5.1 | SDK/environment infrastructure: The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet. |
 | cirq-core | separate/unobserved | IQM circuit interface in its isolated stack. |
-| clarabel | 0.11.1 | SDK/environment infrastructure: Runtime dependency |
+| clarabel | 0.11.1 | Interior-point conic solver; retained CVXPY interface supports PSD cones. Qualify installed capabilities and the tomography model before selection; not interchangeable with an unconstrained fit. |
 | click | 8.5.0 | SDK/environment infrastructure: Composable command line interface toolkit |
 | clifford | 1.5.1 | Associative Clifford envelopes and rotor/spinor controls, not octonion multiplication. |
 | cloudpickle | 3.1.2 | SDK/environment infrastructure: Pickler class to extend the standard pickle.Pickler functionality |
@@ -39,7 +47,12 @@ Each row names a distribution, its scientific or operational role, and the obser
 | cotengra | 0.8.2 | Contraction planning for tensor-network references. |
 | cryptography | 50.0.2 | SDK/environment infrastructure: cryptography is a package which provides cryptographic recipes and primitives to Python developers. |
 | cupy | 14.2.0 | Qualified CUDA array and contraction reference path. |
-| cvxpy | 1.9.3 | SDK/environment infrastructure: A domain-specific language for modeling convex optimization problems in Python. |
+| cuquantum-cu11 | separate/unobserved | CUDA 11 cuQuantum dependency bundle for the isolated Aer GPU wheel; shared simulator engine infrastructure. |
+| custatevec-cu13 | separate/unobserved | CUDA 13 cuQuantum statevector primitives loaded by the qualified Aer cuStateVec path; shared simulator infrastructure, not an independent algebra witness. |
+| cutensor-cu11 | separate/unobserved | CUDA 11 tensor contraction library beneath cuTensorNet in the qualified Aer GPU runtime. |
+| cutensor-cu13 | separate/unobserved | CUDA 13 tensor contraction support beneath cuTensorNet; qualify ABI, device and actual method separately. |
+| cutensornet-cu13 | separate/unobserved | CUDA 13 cuQuantum tensor-network contraction library linked by the Aer GPU wheel; linking does not establish a selected simulation method or speedup. |
+| cvxpy | 1.9.3 | Convex modeling for constrained Qiskit state/process tomography and reconstruction; PSD, trace and trace-preserving constraints depend on the declared fitter and SDP-compatible solver. Inspect status, residuals and tolerances; supplies neither an exact algebra witness nor device proof. |
 | cycler | 0.12.1 | SDK/environment infrastructure: Composable style cycles |
 | cython | 3.3.0 | SDK/environment infrastructure: The Cython compiler for writing C extensions in the Python language. |
 | cytoolz | 1.1.0 | SDK/environment infrastructure: Cython implementation of Toolz: High performance functional utilities |
@@ -142,6 +155,12 @@ Each row names a distribution, its scientific or operational role, and the obser
 | numpy | 2.5.4 | Arrays, paired-channel probabilities and FFT reference arithmetic. |
 | numpy-quaternion | 2024.0.13 | Vectorized quaternion fields and products. |
 | numpy-typing-compat | separate/unobserved | SDK/environment infrastructure: Static typing compatibility layer for older versions of NumPy |
+| nvidia-cublas | separate/unobserved | Pinned CUDA 13 dense GPU linear algebra used by the simulator runtime stack; shared infrastructure. |
+| nvidia-cuda-nvrtc | separate/unobserved | Pinned CUDA 13 runtime compilation support in the GPU simulator environment. |
+| nvidia-cuda-runtime | separate/unobserved | Pinned CUDA 13 runtime loaded by the repository GPU Aer wheel; verify the driver and device in each execution environment. |
+| nvidia-cusolver | separate/unobserved | Pinned CUDA 13 GPU solver library for simulator numerical linear algebra; not a tomography SDP modeling layer. |
+| nvidia-cusparse | separate/unobserved | Pinned CUDA 13 sparse GPU linear algebra support in the simulator environment. |
+| nvidia-nvjitlink | separate/unobserved | Pinned CUDA 13 device-code JIT linking support; installation establishes neither GPU execution nor a numerical result. |
 | oauthlib | 3.3.1 | SDK/environment infrastructure: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic |
 | octonion | 0.1.0 | PyTorch octonion/Fano batches after the certified signed relabeling. |
 | octonion-sedenion | 1.0.0 | Independent product witness over numpy-quaternion; exclude documented mutating functions. |
@@ -168,7 +187,7 @@ Each row names a distribution, its scientific or operational role, and the obser
 | optype | separate/unobserved | SDK/environment infrastructure: Building Blocks for Precise & Flexible Type Hints |
 | ordered-set | 4.1.0 | SDK/environment infrastructure: An OrderedSet is a custom MutableSet that remembers its order, so that every |
 | orjson | 3.13.0 | SDK/environment infrastructure: Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy |
-| osqp | 1.1.3 | SDK/environment infrastructure: OSQP: The Operator Splitting QP Solver |
+| osqp | 1.1.3 | Operator-splitting convex quadratic-program solver for QPs with linear constraints; not a PSD-constrained tomography SDP solver. Qualify the objective and constraint class before use. |
 | packaging | 26.3 | SDK/environment infrastructure: Core utilities for Python packages |
 | padic | separate/unobserved | Documented algebra candidate: p-adic intervals `a p^v + O(p^N)`, Hensel roots, log/exp/sin/cos. Decision: **skip**: pyadic covers Fraction input and finite-field work; single-author, 2023 |
 | pandas | 2.3.3 | Tabular evidence joins and summaries. |
@@ -225,7 +244,7 @@ Each row names a distribution, its scientific or operational role, and the obser
 | qiskit-addon-aqc-tensor | separate/unobserved | Documented ecosystem candidate: skip: approximate quantum compilation with tensor networks; quimb and cotengra already cover contraction |
 | qiskit-addon-cutting | separate/unobserved | Documented ecosystem candidate: skip: circuits stay within 14 qubits, so wire cutting has no use |
 | qiskit-addon-dice-solver | separate/unobserved | Documented ecosystem candidate: skip: chemistry HPC solvers |
-| qiskit-addon-mpf | separate/unobserved | Documented ecosystem candidate: skip: Trotter error reduction, pulls cvxpy (not installed) |
+| qiskit-addon-mpf | separate/unobserved | Optional multiproduct-formula Trotter-error reduction using CVXPY. The 2026-10-16 ecosystem audit declined the workflow; host CVXPY availability does not establish its admission. Qualify circuit approximations, solver residuals and error budgets before use. |
 | qiskit-addon-obp | separate/unobserved | Documented ecosystem candidate: skip: operator backpropagation targets observable estimation of Trotter circuits |
 | qiskit-addon-opt-mapper | separate/unobserved | Documented ecosystem candidate: skip: optimization modeling |
 | qiskit-addon-pna | separate/unobserved | Documented ecosystem candidate: skip: global-noise-channel mitigation of observables |
@@ -234,8 +253,9 @@ Each row names a distribution, its scientific or operational role, and the obser
 | qiskit-addon-sqd-hpc | separate/unobserved | Documented ecosystem candidate: skip: chemistry HPC solvers |
 | qiskit-addon-utils | 0.4.0 | Supported circuit interchange and utility operations. |
 | qiskit-aer | 0.17.2 | Ideal/noise circuit simulation; provider/routing approval rules apply to submitted jobs. |
-| qiskit-aer-gpu | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
-| qiskit-aer-gpu-cu11 | separate/unobserved | Documented ecosystem candidate: Kaggle GPU kernels only, 0.17.2; a Python 3.14 kernel would lose GPU Aer |
+| qiskit-aer-gpu | separate/unobserved | CUDA 12 Aer alternative remains unused: retained ecosystem audit records release 0.15.1 without a Python 3.13 wheel; do not coinstall qiskit_aer owners. |
+| qiskit-aer-gpu-cu11 | separate/unobserved | CUDA 11 Aer wheel for the isolated Kaggle GPU path; exclusively owns qiskit_aer and shares the CPU/CUDA 13 Aer engine. |
+| qiskit-aer-gpu-cu13 | separate/unobserved | Repository-built CUDA 13 Aer wheel for qualified Kaggle GPU simulation; exclusively owns qiskit_aer in that environment and shares the Aer engine, not an independent witness. |
 | qiskit-algorithms | separate/unobserved | Documented ecosystem candidate: host only, optional: phase and amplitude estimation references for algebra-circuit cross-checks; no current consumer |
 | qiskit-code-assistant-mcp-server | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | qiskit-device-benchmarking | separate/unobserved | Documented ecosystem candidate: host only: benchmarks that submit to IBM backends; needs an IBM credential |
@@ -287,7 +307,7 @@ Each row names a distribution, its scientific or operational role, and the obser
 | scipy | 1.18.1 | Matrix exponentiation, linear algebra, integration and uncertainty estimates. |
 | scipy-stubs | separate/unobserved | SDK/environment infrastructure: The official type stubs for SciPy |
 | scmver | 1.10 | A package version manager based on SCM tags |
-| scs | 3.3.1 | SDK/environment infrastructure: Splitting conic solver |
+| scs | 3.3.1 | First-order splitting conic solver supporting PSD tomography through CVXPY; qualify convergence, constraint residuals and tolerances for the actual fit. |
 | seaborn | 0.13.2 | SDK/environment infrastructure: Statistical data visualization |
 | selenium | 4.44.0 | SDK/environment infrastructure: Official Python bindings for Selenium WebDriver. |
 | setuptools | 84.0.0 | SDK/environment infrastructure: Most extensible Python build backend with support for C/C++ extension modules |
@@ -332,6 +352,7 @@ Each row names a distribution, its scientific or operational role, and the obser
 | typing-inspection | 0.4.4 | SDK/environment infrastructure: Runtime typing introspection tools |
 | uncertainties | 3.2.4 | SDK/environment infrastructure: calculations with values with uncertainties, error propagation |
 | urllib3 | 2.8.0 | SDK/environment infrastructure: HTTP library with thread-safe connection pooling, file post, and more. |
+| uv | separate/unobserved | Pinned environment installer used by Kaggle kernel bootstrap; records package resolution rather than quantum evidence. |
 | uvicorn | 0.54.0 | SDK/environment infrastructure: The lightning-fast ASGI server. |
 | wcwidth | 0.9.2 | SDK/environment infrastructure: Measures the displayed width of unicode strings in a terminal |
 | wheel | 0.48.0 | SDK/environment infrastructure: Command line tool for manipulating wheel files |

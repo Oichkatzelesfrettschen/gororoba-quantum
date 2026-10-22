@@ -1,5 +1,11 @@
 {
  "schema": "hypercomplex-library-inventory-v1",
+ "coverage_counts": {
+  "distributions": 347,
+  "execution_pin_distributions": 39,
+  "execution_pin_declarations": 51,
+  "execution_source_files": 2
+ },
  "libraries": [
   {
    "distribution": "aiohappyeyeballs",
@@ -9,6 +15,7 @@
    "observed_host_version": "2.7.1",
    "role": "SDK/environment infrastructure: Happy Eyeballs for asyncio",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -22,6 +29,7 @@
    "observed_host_version": "3.14.3",
    "role": "SDK/environment infrastructure: Async http client/server framework (asyncio)",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -35,6 +43,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -48,6 +57,7 @@
    "observed_host_version": "1.4.0",
    "role": "SDK/environment infrastructure: aiosignal: a list of registered asynchronous callbacks",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -61,6 +71,7 @@
    "observed_host_version": "1.0.0",
    "role": "SDK/environment infrastructure: A light, configurable Sphinx theme",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -74,6 +85,7 @@
    "observed_host_version": "1.20.0",
    "role": "SDK/environment infrastructure: A database migration tool for SQLAlchemy.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -87,6 +99,7 @@
    "observed_host_version": "0.0.5",
    "role": "SDK/environment infrastructure: Document parameters, class attributes, return types, and variables inline, with Annotated.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -102,6 +115,7 @@
    "observed_host_version": "0.8.0",
    "role": "SDK/environment infrastructure: Reusable constraint types to use with typing.Annotated",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -109,10 +123,13 @@
   },
   {
    "distribution": "antlr4-python3-runtime",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:168:PIN_GROUPS": "4.13.2"
+   },
    "observed_host_version": "4.13.2",
    "role": "Parser runtime for OpenQASM import.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -127,6 +144,7 @@
    "observed_host_version": "4.15.1",
    "role": "SDK/environment infrastructure: High-level concurrency and networking framework on top of asyncio or Trio",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -143,6 +161,7 @@
    "observed_host_version": "1.0.10",
    "role": "SDK/environment infrastructure: Safe, minimalistic evaluator of python expression using ast module",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -156,6 +175,7 @@
    "observed_host_version": "3.0.2",
    "role": "SDK/environment infrastructure: Annotate AST trees with source code positions",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -171,6 +191,7 @@
    "observed_host_version": "26.1.0",
    "role": "SDK/environment infrastructure: Classes Without Boilerplate",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -179,6 +200,7 @@
   {
    "distribution": "autoray",
    "declared_versions": {
+    "scripts/kaggle_run.py:174:PIN_GROUPS": "0.11.0",
     "IQM retained environment": "0.11.0"
    },
    "observed_host_version": "0.11.0",
@@ -187,6 +209,7 @@
     "docs/notes/qiskit-ecosystem.md:106",
     "docs/notes/qiskit-ecosystem.md:189"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -200,6 +223,7 @@
    "observed_host_version": "2.18.0",
    "role": "SDK/environment infrastructure: Internationalization utilities",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -211,6 +235,7 @@
    "observed_host_version": null,
    "role": "Documented compiler benchmark alternative; qualification needs the same full-operator oracle.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -224,6 +249,7 @@
    "observed_host_version": "1.6.1",
    "role": "SDK/environment infrastructure: A simple, correct Python build frontend",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -235,6 +261,7 @@
    "observed_host_version": "1.3.1",
    "role": "Independent multiplication reference; qualify each special function before use.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -249,6 +276,7 @@
    "observed_host_version": "0.1.0",
    "role": "Independent recursive doubling reference; local reading and checks under its license boundary.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -267,6 +295,7 @@
    "observed_host_version": "2026.10.18",
    "role": "SDK/environment infrastructure: Python package for providing Mozilla's CA Bundle.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -282,6 +311,7 @@
    "observed_host_version": "2.1.1",
    "role": "SDK/environment infrastructure: Foreign Function Interface for Python calling C code.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -297,6 +327,7 @@
    "observed_host_version": "3.5.1",
    "role": "SDK/environment infrastructure: The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -312,6 +343,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/cirq-core.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -323,8 +355,12 @@
     "IQM retained environment": "0.11.1"
    },
    "observed_host_version": "0.11.1",
-   "role": "SDK/environment infrastructure: Runtime dependency",
+   "role": "Interior-point conic solver; retained CVXPY interface supports PSD cones. Qualify installed capabilities and the tomography model before selection; not interchangeable with an unconstrained fit.",
    "documentation_mentions": [],
+   "role_sources": [
+    "docs/state/hypercomplex-libraries/solver-role-grounding.json",
+    "docs/notes/quandela/python-stack.md:63"
+   ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -340,6 +376,7 @@
    "observed_host_version": "8.5.0",
    "role": "SDK/environment infrastructure: Composable command line interface toolkit",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -351,6 +388,7 @@
    "observed_host_version": "1.5.1",
    "role": "Associative Clifford envelopes and rotor/spinor controls, not octonion multiplication.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -366,6 +404,7 @@
    "observed_host_version": "3.1.2",
    "role": "SDK/environment infrastructure: Pickler class to extend the standard pickle.Pickler functionality",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -377,6 +416,7 @@
    "observed_host_version": null,
    "role": "Documented ecosystem alternative outside the maintained IBM execution workflow.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -390,6 +430,7 @@
    "observed_host_version": "0.4.6",
    "role": "SDK/environment infrastructure: Cross-platform colored terminal text.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -403,6 +444,7 @@
    "observed_host_version": "6.10.0",
    "role": "SDK/environment infrastructure: Add colours to the output of Python's logging module.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -416,6 +458,7 @@
    "observed_host_version": "0.2.3",
    "role": "SDK/environment infrastructure: Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -429,6 +472,7 @@
    "observed_host_version": "1.4.0",
    "role": "SDK/environment infrastructure: Python library for calculating contours of 2D quadrilateral grids",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -437,6 +481,7 @@
   {
    "distribution": "cotengra",
    "declared_versions": {
+    "scripts/kaggle_run.py:173:PIN_GROUPS": "0.8.2",
     "IQM retained environment": "0.8.2"
    },
    "observed_host_version": "0.8.2",
@@ -445,6 +490,7 @@
     "docs/notes/qiskit-ecosystem.md:105",
     "docs/notes/qiskit-ecosystem.md:188"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -460,6 +506,7 @@
    "observed_host_version": "50.0.2",
    "role": "SDK/environment infrastructure: cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -471,6 +518,89 @@
    "observed_host_version": "14.2.0",
    "role": "Qualified CUDA array and contraction reference path.",
    "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "cuquantum-cu11",
+   "declared_versions": {
+    "scripts/kaggle_run.py:83:KERNEL_PINS": "24.8.0"
+   },
+   "observed_host_version": null,
+   "role": "CUDA 11 cuQuantum dependency bundle for the isolated Aer GPU wheel; shared simulator engine infrastructure.",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "custatevec-cu13",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:13": "1.15.0",
+    "scripts/kaggle_run.py:100:CU13_RUNTIME_PINS": "1.15.0"
+   },
+   "observed_host_version": null,
+   "role": "CUDA 13 cuQuantum statevector primitives loaded by the qualified Aer cuStateVec path; shared simulator infrastructure, not an independent algebra witness.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "cutensor-cu11",
+   "declared_versions": {
+    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.2.0"
+   },
+   "observed_host_version": null,
+   "role": "CUDA 11 tensor contraction library beneath cuTensorNet in the qualified Aer GPU runtime.",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "cutensor-cu13",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:15": "2.8.1",
+    "scripts/kaggle_run.py:102:CU13_RUNTIME_PINS": "2.8.1"
+   },
+   "observed_host_version": null,
+   "role": "CUDA 13 tensor contraction support beneath cuTensorNet; qualify ABI, device and actual method separately.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "cutensornet-cu13",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:14": "2.14.0",
+    "scripts/kaggle_run.py:101:CU13_RUNTIME_PINS": "2.14.0"
+   },
+   "observed_host_version": null,
+   "role": "CUDA 13 cuQuantum tensor-network contraction library linked by the Aer GPU wheel; linking does not establish a selected simulation method or speedup.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -482,8 +612,12 @@
     "IQM retained environment": "1.9.3"
    },
    "observed_host_version": "1.9.3",
-   "role": "SDK/environment infrastructure: A domain-specific language for modeling convex optimization problems in Python.",
+   "role": "Convex modeling for constrained Qiskit state/process tomography and reconstruction; PSD, trace and trace-preserving constraints depend on the declared fitter and SDP-compatible solver. Inspect status, residuals and tolerances; supplies neither an exact algebra witness nor device proof.",
    "documentation_mentions": [],
+   "role_sources": [
+    "docs/state/hypercomplex-libraries/solver-role-grounding.json",
+    "docs/notes/quandela/python-stack.md:63"
+   ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -497,6 +631,7 @@
    "observed_host_version": "0.12.1",
    "role": "SDK/environment infrastructure: Composable style cycles",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -510,6 +645,7 @@
    "observed_host_version": "3.3.0",
    "role": "SDK/environment infrastructure: The Cython compiler for writing C extensions in the Python language.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -523,6 +659,7 @@
    "observed_host_version": "1.1.0",
    "role": "SDK/environment infrastructure: Cython implementation of Toolz: High performance functional utilities",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -536,6 +673,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: An implementation of the Debug Adapter Protocol for Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -551,6 +689,7 @@
    "observed_host_version": "0.4.1",
    "role": "SDK/environment infrastructure: serialize all of Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -564,6 +703,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: A shared API for binary quadratic model samplers.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -577,6 +717,7 @@
    "observed_host_version": "1.9.0",
    "role": "SDK/environment infrastructure: Distro - an OS platform information API",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -590,6 +731,7 @@
    "observed_host_version": "0.23",
    "role": "SDK/environment infrastructure: Docutils -- Python Documentation Utilities",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -603,6 +745,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:32"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -616,6 +759,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:31"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -629,6 +773,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: A simple future-based async library for python.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -642,6 +787,7 @@
    "observed_host_version": "2.2.1",
    "role": "SDK/environment infrastructure: Get the currently executing AST node of a frame, and other information",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -657,6 +803,7 @@
    "documentation_mentions": [
     "docs/notes/quandela/pypi/exqalibur.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -672,6 +819,7 @@
    "observed_host_version": "2.21.2",
    "role": "SDK/environment infrastructure: Fastest Python implementation of JSON schema",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -685,6 +833,7 @@
    "observed_host_version": "4.67.0",
    "role": "SDK/environment infrastructure: Tools to manipulate font files",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -698,6 +847,7 @@
    "observed_host_version": "1.8.0",
    "role": "SDK/environment infrastructure: A list-like structure which implements collections.abc.MutableSequence",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -709,6 +859,7 @@
    "observed_host_version": "0.6.0",
    "role": "Symbolic geometric calculus in an associative Clifford algebra.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -718,13 +869,16 @@
   },
   {
    "distribution": "galois",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:176:PIN_GROUPS": "0.4.11"
+   },
    "observed_host_version": "0.4.11",
    "role": "Finite-field Fano incidence and binary algebra certificates.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:108",
     "docs/notes/qiskit-ecosystem.md:191"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -738,6 +892,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:30"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -751,6 +906,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:38"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -764,6 +920,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Common protobufs used in Google APIs",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -777,6 +934,7 @@
    "observed_host_version": "1.84.0",
    "role": "SDK/environment infrastructure: HTTP/2-based RPC framework",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -791,6 +949,7 @@
    "observed_host_version": "0.16.0",
    "role": "SDK/environment infrastructure: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -804,6 +963,7 @@
    "observed_host_version": "1.15.1",
    "role": "SDK/environment infrastructure: A thin set of pybind11 wrappers to HiGHS",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -817,6 +977,7 @@
    "observed_host_version": "1.0.9",
    "role": "SDK/environment infrastructure: A minimal low-level HTTP client.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -830,6 +991,7 @@
    "observed_host_version": "2.13.1",
    "role": "SDK/environment infrastructure: A minimal low-level HTTP client.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -843,6 +1005,7 @@
    "observed_host_version": "0.28.1",
    "role": "SDK/environment infrastructure: The next generation HTTP client.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -856,6 +1019,7 @@
    "observed_host_version": "0.4.3",
    "role": "SDK/environment infrastructure: Consume Server-Sent Event (SSE) messages with HTTPX.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -869,6 +1033,7 @@
    "observed_host_version": "2.13.1",
    "role": "SDK/environment infrastructure: The next generation HTTP client.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -882,6 +1047,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:27"
    ],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -901,6 +1067,7 @@
    "observed_host_version": "0.2.0.2",
    "role": "Expression and tensor notation; shares the hypercomplex-engine implementation.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -915,6 +1082,7 @@
    "observed_host_version": "0.5.0",
    "role": "Fast basis signs and higher-dimensional finite checks.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -934,6 +1102,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:35"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -947,6 +1116,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:37"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -958,6 +1128,7 @@
    "observed_host_version": "0.2.0",
    "role": "Exact rational CD coefficients, generalized signs, annihilators and regular representations.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -976,6 +1147,7 @@
    "observed_host_version": "3.24.4",
    "role": "SDK/environment infrastructure: Core library used by SDKs for IBM Cloud Services",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -989,6 +1161,7 @@
    "observed_host_version": "0.77.1",
    "role": "SDK/environment infrastructure: Python client library for IBM Cloud Platform Services",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -998,7 +1171,8 @@
    "distribution": "ibm-quantum-schemas",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.12.20260921",
-    "requirements.txt": "0.13.20261016"
+    "requirements.txt": "0.13.20261016",
+    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.13.20261016"
    },
    "observed_host_version": "0.12.20260921",
    "role": "Runtime task and option schema conformance.",
@@ -1006,6 +1180,7 @@
     "docs/notes/qiskit-ecosystem.md:176",
     "docs/notes/qiskit-ecosystem.md:88"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1021,6 +1196,7 @@
    "observed_host_version": "3.20",
    "role": "SDK/environment infrastructure: Internationalized Domain Names in Applications (IDNA)",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1034,6 +1210,7 @@
    "observed_host_version": "2.0.1",
    "role": "SDK/environment infrastructure: Get image size from headers (BMP/PNG/JPEG/JPEG2000/GIF/TIFF/SVG/Netpbm/WebP/AVIF/HEIC/HEIF)",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1047,6 +1224,7 @@
    "observed_host_version": "9.0.1",
    "role": "SDK/environment infrastructure: Read metadata from Python packages",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1060,6 +1238,7 @@
    "observed_host_version": "2.3.0",
    "role": "SDK/environment infrastructure: brain-dead simple config-ini parsing",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1073,6 +1252,7 @@
    "observed_host_version": "7.4.0",
    "role": "SDK/environment infrastructure: IPython Kernel for Jupyter",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1086,6 +1266,7 @@
    "observed_host_version": "9.17.1",
    "role": "SDK/environment infrastructure: IPython: Productive Interactive Computing",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1099,6 +1280,7 @@
    "observed_host_version": "1.1.1",
    "role": "SDK/environment infrastructure: Defines a variety of Pygments lexers for highlighting IPython code.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1114,6 +1296,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-benchmarks.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -1129,6 +1312,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-client.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -1144,6 +1328,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-data-definitions.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1159,6 +1344,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-error-reduction-tools.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -1174,6 +1360,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-exa-common.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1189,6 +1376,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-pulla.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1204,6 +1392,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-pulse.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1219,6 +1408,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-qaoa.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1234,6 +1424,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-qubit-selector.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1249,6 +1440,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/iqm-station-control-client.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1262,6 +1454,7 @@
    "observed_host_version": "0.9.0",
    "role": "Differentiable array candidate; record actual devices rather than assuming GPU/TPU access.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1280,6 +1473,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:33"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1293,6 +1487,7 @@
    "observed_host_version": "0.9.0.dev0+selfbuilt",
    "role": "SDK/environment infrastructure: XLA library for JAX",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1306,6 +1501,7 @@
    "observed_host_version": "0.20.1",
    "role": "SDK/environment infrastructure: An autocompletion tool for Python that can be used for text editors.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1319,6 +1515,7 @@
    "observed_host_version": "3.1.6",
    "role": "SDK/environment infrastructure: A very fast and expressive template engine.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1332,6 +1529,7 @@
    "observed_host_version": "1.6.0",
    "role": "SDK/environment infrastructure: Lightweight pipelining with Python functions",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1347,6 +1545,7 @@
    "observed_host_version": "4.26.0",
    "role": "SDK/environment infrastructure: An implementation of JSON Schema validation for Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1362,6 +1561,7 @@
    "observed_host_version": "2025.9.1",
    "role": "SDK/environment infrastructure: The JSON Schema meta-schemas and vocabularies, exposed as a Registry",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1375,6 +1575,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: A defined interface for working with a cache of jupyter notebooks.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1388,6 +1589,7 @@
    "observed_host_version": "8.10.0",
    "role": "SDK/environment infrastructure: Jupyter protocol implementation and client libraries",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1401,6 +1603,7 @@
    "observed_host_version": "5.9.1",
    "role": "SDK/environment infrastructure: Jupyter core package. A base package on which Jupyter projects rely.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1412,6 +1615,7 @@
    "observed_host_version": "2.2.4",
    "role": "SDK/environment infrastructure: Access Kaggle resources anywhere",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1425,6 +1629,7 @@
    "observed_host_version": "0.1.37",
    "role": "SDK/environment infrastructure: Bindings to access kaggle's external-facing APIs",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1438,6 +1643,7 @@
    "observed_host_version": "3.0.0",
    "role": "Generated symbolic or batched Clifford operators.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1453,6 +1659,7 @@
    "observed_host_version": "1.5.1",
    "role": "SDK/environment infrastructure: A fast implementation of the Cassowary constraint solver",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1466,6 +1673,7 @@
    "observed_host_version": null,
    "role": "cQASM parsing and validation before upload.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1481,6 +1689,7 @@
    "observed_host_version": "0.50.0",
    "role": "SDK/environment infrastructure: lightweight wrapper around basic LLVM functionality",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1489,6 +1698,7 @@
   {
    "distribution": "lmfit",
    "declared_versions": {
+    "scripts/kaggle_run.py:171:PIN_GROUPS": "1.3.4",
     "IQM retained environment": "1.3.4"
    },
    "observed_host_version": "1.3.4",
@@ -1497,6 +1707,7 @@
     "docs/notes/qiskit-ecosystem.md:109",
     "docs/notes/qiskit-ecosystem.md:192"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1510,6 +1721,7 @@
    "observed_host_version": "1.4.3.dev0",
    "role": "SDK/environment infrastructure: A super-fast templating language that borrows the best ideas from the existing templating languages.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1521,6 +1733,7 @@
    "observed_host_version": null,
    "role": "Layout-search candidate; admit only against fresh targets and measured layout controls.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1535,6 +1748,7 @@
    "observed_host_version": "4.2.0",
    "role": "SDK/environment infrastructure: Python port of markdown-it. Markdown parsing, done right!",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1548,6 +1762,7 @@
    "observed_host_version": "3.0.4",
    "role": "SDK/environment infrastructure: Safely add untrusted strings to HTML/XML markup.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1559,6 +1774,7 @@
    "observed_host_version": "0.4.2",
    "role": "Numeric-method plumbing; supplies no independent multiplication evidence.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1573,6 +1789,7 @@
    "observed_host_version": "3.11.2",
    "role": "Measured plots and static exports with uncertainty and evidence labels.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1589,6 +1806,7 @@
    "observed_host_version": "0.2.2",
    "role": "SDK/environment infrastructure: Inline Matplotlib backend for Jupyter",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1604,6 +1822,7 @@
    "observed_host_version": "1.29.0",
    "role": "SDK/environment infrastructure: Model Context Protocol SDK",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1621,6 +1840,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1634,6 +1854,7 @@
    "observed_host_version": "0.6.1",
    "role": "SDK/environment infrastructure: Collection of plugins for markdown-it-py",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1648,6 +1869,7 @@
    "observed_host_version": "0.1.2",
    "role": "SDK/environment infrastructure: Markdown URL utilities",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1661,6 +1883,7 @@
    "observed_host_version": "0.6.0",
    "role": "SDK/environment infrastructure: ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1674,6 +1897,7 @@
    "observed_host_version": "11.2.0",
    "role": "SDK/environment infrastructure: More routines for operating on iterables, beyond itertools",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1689,6 +1913,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:38"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1697,6 +1922,7 @@
   {
    "distribution": "mthree",
    "declared_versions": {
+    "scripts/kaggle_run.py:158:PIN_GROUPS": "3.0.0",
     "IQM retained environment": "3.0.0"
    },
    "observed_host_version": "3.0.0",
@@ -1706,6 +1932,7 @@
     "docs/notes/qiskit-ecosystem.md:182",
     "docs/notes/qiskit-ecosystem.md:99"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1719,6 +1946,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:34"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1732,6 +1960,7 @@
    "observed_host_version": "7.0.0",
    "role": "SDK/environment infrastructure: multidict implementation",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1745,6 +1974,7 @@
    "observed_host_version": "2.4.0",
    "role": "Pinned static type gate.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1758,6 +1988,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: A Jupyter Notebook Sphinx reader built on top of the MyST markdown parser.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1771,6 +2002,7 @@
    "observed_host_version": "5.1.0",
    "role": "SDK/environment infrastructure: An extended [CommonMark](https://spec.commonmark.org/) compliant parser,",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1784,6 +2016,7 @@
    "observed_host_version": "0.11.0",
    "role": "SDK/environment infrastructure: A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1797,6 +2030,7 @@
    "observed_host_version": "5.11.1",
    "role": "SDK/environment infrastructure: The Jupyter Notebook format",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1810,6 +2044,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Patch asyncio to allow nested event loops",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1824,6 +2059,7 @@
    "observed_host_version": "3.7",
    "role": "Graph inspection and independent topology controls.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1832,6 +2068,7 @@
   {
    "distribution": "numba",
    "declared_versions": {
+    "scripts/kaggle_run.py:177:PIN_GROUPS": "0.68.0",
     "IQM retained environment": "0.63.1"
    },
    "observed_host_version": "0.68.0",
@@ -1840,6 +2077,7 @@
     "docs/notes/qiskit-ecosystem.md:110",
     "docs/notes/qiskit-ecosystem.md:193"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1853,6 +2091,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:29"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -1870,6 +2109,7 @@
    "observed_host_version": "2.5.4",
    "role": "Arrays, paired-channel probabilities and FFT reference arithmetic.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -1951,9 +2191,13 @@
     "scripts/atlas_detuning_map.py",
     "scripts/atlas_fringe_amplitudes.py",
     "scripts/axis_tilt_substrate_split.py",
+    "scripts/bdsc_ascella_control.py",
     "scripts/bdsc_cases.py",
     "scripts/bdsc_certificate.py",
+    "scripts/bdsc_diagnostic.py",
+    "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
+    "scripts/bdsc_pauli.py",
     "scripts/box_kite_analysis.py",
     "scripts/box_kite_cases.py",
     "scripts/box_kite_follow_design.py",
@@ -2026,6 +2270,7 @@
    "observed_host_version": "2024.0.13",
    "role": "Vectorized quaternion fields and products.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -2041,6 +2286,115 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Static typing compatibility layer for older versions of NumPy",
    "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "nvidia-cublas",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:8": "13.1.1.3",
+    "scripts/kaggle_run.py:95:CU13_RUNTIME_PINS": "13.1.1.3"
+   },
+   "observed_host_version": null,
+   "role": "Pinned CUDA 13 dense GPU linear algebra used by the simulator runtime stack; shared infrastructure.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "nvidia-cuda-nvrtc",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:9": "13.0.88",
+    "scripts/kaggle_run.py:96:CU13_RUNTIME_PINS": "13.0.88"
+   },
+   "observed_host_version": null,
+   "role": "Pinned CUDA 13 runtime compilation support in the GPU simulator environment.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "nvidia-cuda-runtime",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:7": "13.0.96",
+    "scripts/kaggle_run.py:94:CU13_RUNTIME_PINS": "13.0.96"
+   },
+   "observed_host_version": null,
+   "role": "Pinned CUDA 13 runtime loaded by the repository GPU Aer wheel; verify the driver and device in each execution environment.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "nvidia-cusolver",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:10": "12.0.4.66",
+    "scripts/kaggle_run.py:97:CU13_RUNTIME_PINS": "12.0.4.66"
+   },
+   "observed_host_version": null,
+   "role": "Pinned CUDA 13 GPU solver library for simulator numerical linear algebra; not a tomography SDP modeling layer.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "nvidia-cusparse",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:11": "12.6.3.3",
+    "scripts/kaggle_run.py:98:CU13_RUNTIME_PINS": "12.6.3.3"
+   },
+   "observed_host_version": null,
+   "role": "Pinned CUDA 13 sparse GPU linear algebra support in the simulator environment.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "nvidia-nvjitlink",
+   "declared_versions": {
+    "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:12": "13.0.88",
+    "scripts/kaggle_run.py:99:CU13_RUNTIME_PINS": "13.0.88"
+   },
+   "observed_host_version": null,
+   "role": "Pinned CUDA 13 device-code JIT linking support; installation establishes neither GPU execution nor a numerical result.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
+   ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2054,6 +2408,7 @@
    "observed_host_version": "3.3.1",
    "role": "SDK/environment infrastructure: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2065,6 +2420,7 @@
    "observed_host_version": "0.1.0",
    "role": "PyTorch octonion/Fano batches after the certified signed relabeling.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -2079,6 +2435,7 @@
    "observed_host_version": "1.0.0",
    "role": "Independent product witness over numpy-quaternion; exclude documented mutating functions.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -2089,13 +2446,16 @@
   },
   {
    "distribution": "openqasm3",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:167:PIN_GROUPS": "1.0.1"
+   },
    "observed_host_version": "1.0.1",
    "role": "OpenQASM syntax and AST support.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:179",
     "docs/notes/qiskit-ecosystem.md:91"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2111,6 +2471,7 @@
    "documentation_mentions": [
     "docs/notes/open_quantum/pypi/openquantum-mcp.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
@@ -2128,6 +2489,7 @@
    "documentation_mentions": [
     "docs/notes/open_quantum/pypi/openquantum-sdk.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
@@ -2143,6 +2505,7 @@
    "documentation_mentions": [
     "docs/notes/open_quantum/pypi/openquantum-sdk-cirq.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -2156,6 +2519,7 @@
    "documentation_mentions": [
     "docs/notes/open_quantum/pypi/openquantum-sdk-pennylane.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -2171,6 +2535,7 @@
    "documentation_mentions": [
     "docs/notes/open_quantum/pypi/openquantum-sdk-qiskit.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -2184,6 +2549,7 @@
    "documentation_mentions": [
     "docs/notes/open_quantum/pypi/openquantum-sdk-qrisp.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -2197,6 +2563,7 @@
    "observed_host_version": null,
    "role": "Native decomposition and coupling checks; record scheduling limitations.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -2213,6 +2580,7 @@
    "observed_host_version": "1.45.1",
    "role": "SDK/environment infrastructure: OpenTelemetry Python API",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2226,6 +2594,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Exporters HTTP transport",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2239,6 +2608,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Collector Exporters",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2252,6 +2622,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry OTLP HTTP export utilities",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2265,6 +2636,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Protobuf encoding",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2278,6 +2650,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Collector Protobuf over gRPC Exporter",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2291,6 +2664,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Collector Protobuf over HTTP Exporter",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2304,6 +2678,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Python Proto",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2317,6 +2692,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Python SDK",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2330,6 +2706,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: OpenTelemetry Semantic Conventions",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2343,6 +2720,7 @@
    "observed_host_version": "3.4.0",
    "role": "SDK/environment infrastructure: Path optimization of einsum functions.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2356,6 +2734,7 @@
    "observed_host_version": "5.0.0",
    "role": "SDK/environment infrastructure: A hyperparameter optimization framework",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2369,6 +2748,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Building Blocks for Precise & Flexible Type Hints",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2382,6 +2762,7 @@
    "observed_host_version": "4.1.0",
    "role": "SDK/environment infrastructure: An OrderedSet is a custom MutableSet that remembers its order, so that every",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2395,6 +2776,7 @@
    "observed_host_version": "3.13.0",
    "role": "SDK/environment infrastructure: Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2406,8 +2788,12 @@
     "IQM retained environment": "1.1.3"
    },
    "observed_host_version": "1.1.3",
-   "role": "SDK/environment infrastructure: OSQP: The Operator Splitting QP Solver",
+   "role": "Operator-splitting convex quadratic-program solver for QPs with linear constraints; not a PSD-constrained tomography SDP solver. Qualify the objective and constraint class before use.",
    "documentation_mentions": [],
+   "role_sources": [
+    "docs/state/hypercomplex-libraries/solver-role-grounding.json",
+    "docs/notes/quandela/python-stack.md:63"
+   ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2422,6 +2808,7 @@
    "observed_host_version": "26.3",
    "role": "SDK/environment infrastructure: Core utilities for Python packages",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2435,6 +2822,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:28"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2448,6 +2836,7 @@
    "observed_host_version": "2.3.3",
    "role": "Tabular evidence joins and summaries.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2461,6 +2850,7 @@
    "observed_host_version": "0.8.7",
    "role": "SDK/environment infrastructure: A Python Parser",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2475,6 +2865,7 @@
     "docs/notes/qiskit-ecosystem.md:125",
     "docs/notes/qiskit-ecosystem.md:208"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2486,6 +2877,7 @@
    "observed_host_version": null,
    "role": "Documented alternative differentiable circuit stack; not required for current cases.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2497,6 +2889,7 @@
    "observed_host_version": null,
    "role": "Documented optional provider adapter; preserve its separate compatibility caps.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2510,6 +2903,7 @@
    "documentation_mentions": [
     "docs/notes/quandela/pypi/perceval-interop.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2525,10 +2919,12 @@
    "documentation_mentions": [
     "docs/notes/quandela/pypi/perceval-quandela.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
     "scripts/bdsc_cases.py",
+    "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
@@ -2544,6 +2940,7 @@
    "observed_host_version": "4.9.0",
    "role": "SDK/environment infrastructure: Pexpect allows easy control of interactive console applications.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2557,6 +2954,7 @@
    "observed_host_version": "13.0.0",
    "role": "SDK/environment infrastructure: Python Imaging Library (fork)",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2570,6 +2968,7 @@
    "observed_host_version": "26.2.1",
    "role": "SDK/environment infrastructure: The PyPA recommended tool for installing Python packages.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2583,6 +2982,7 @@
    "observed_host_version": "4.13.0",
    "role": "SDK/environment infrastructure: A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2596,6 +2996,7 @@
    "observed_host_version": "1.64.0",
    "role": "SDK/environment infrastructure: A high-level API to automate web browsers",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -2611,6 +3012,7 @@
    "observed_host_version": "1.7.0",
    "role": "SDK/environment infrastructure: plugin and hook calling mechanisms for python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2624,6 +3026,7 @@
    "observed_host_version": "3.11",
    "role": "SDK/environment infrastructure: Python Lex & Yacc",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2637,6 +3040,7 @@
    "observed_host_version": "3.0.53",
    "role": "SDK/environment infrastructure: Library for building powerful interactive command lines in Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2650,6 +3054,7 @@
    "observed_host_version": "0.5.4",
    "role": "SDK/environment infrastructure: Accelerated property cache",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2663,6 +3068,7 @@
    "observed_host_version": "7.36.1",
    "role": "SDK/environment infrastructure: Runtime dependency",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2676,6 +3082,7 @@
    "observed_host_version": "7.2.2",
    "role": "SDK/environment infrastructure: Cross-platform lib for process and system monitoring.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2689,6 +3096,7 @@
    "observed_host_version": "0.7.0",
    "role": "SDK/environment infrastructure: Run a subprocess in a pseudo terminal",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2702,6 +3110,7 @@
    "observed_host_version": "0.2.3",
    "role": "SDK/environment infrastructure: Safely evaluate AST nodes without side effects",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2709,12 +3118,15 @@
   },
   {
    "distribution": "pyadic",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:182:PIN_GROUPS": "0.3.0"
+   },
    "observed_host_version": "0.3.0",
    "role": "Finite-field and finite-precision p-adic coefficients; a separate arithmetic experiment.",
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:26"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -2731,6 +3143,7 @@
    "observed_host_version": "3.1.0",
    "role": "SDK/environment infrastructure: Seamless operability between C++11 and Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2746,6 +3159,7 @@
    "observed_host_version": "3.11",
    "role": "SDK/environment infrastructure: C parser in Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2759,6 +3173,7 @@
    "observed_host_version": "7.48.0",
    "role": "SDK/environment infrastructure: PycURL -- A Python Interface To The cURL library",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2776,6 +3191,7 @@
    "observed_host_version": "2.14.1",
    "role": "SDK/environment infrastructure: Data validation using Python type hints",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -2794,6 +3210,7 @@
    "observed_host_version": "2.50.1",
    "role": "SDK/environment infrastructure: Core functionality for Pydantic validation and serialization",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2808,6 +3225,7 @@
    "observed_host_version": "2.16.0",
    "role": "SDK/environment infrastructure: Settings management using Pydantic",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2822,6 +3240,7 @@
    "observed_host_version": "2.21.0",
    "role": "SDK/environment infrastructure: Pygments is a syntax highlighting package written in Python.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2837,6 +3256,7 @@
    "observed_host_version": "2.15.1",
    "role": "SDK/environment infrastructure: JSON Web Token implementation in Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2850,6 +3270,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: A Python library for creating LaTeX files and snippets",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2863,6 +3284,7 @@
    "observed_host_version": "2.11",
    "role": "SDK/environment infrastructure: Simple LaTeX parser providing latex-to-unicode and unicode-to-latex conversion",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2879,6 +3301,7 @@
     "docs/notes/qiskit-ecosystem.md:102",
     "docs/notes/qiskit-ecosystem.md:185"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2890,6 +3313,7 @@
    "observed_host_version": "3.12",
    "role": "Small octonion cross-check; depends on pyquaternion.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -2906,6 +3330,7 @@
    "observed_host_version": "3.3.3",
    "role": "SDK/environment infrastructure: pyparsing - Classes and methods to define and execute parsing grammars",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2919,6 +3344,7 @@
    "observed_host_version": "1.3.3",
    "role": "SDK/environment infrastructure: Wrappers to call pyproject.toml-based build backend hooks.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2930,6 +3356,7 @@
    "observed_host_version": "0.9.9",
    "role": "Scalar quaternion and rotation bookkeeping.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -2945,6 +3372,7 @@
    "observed_host_version": "0.12.4",
    "role": "SDK/environment infrastructure: Windows Negotiate Authentication Client and Server",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2959,6 +3387,7 @@
    "observed_host_version": "9.1.1",
    "role": "Behavioral regressions and mutation checks.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2972,6 +3401,7 @@
    "observed_host_version": "3.8.0",
    "role": "CPU-budgeted independent test execution.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -2986,6 +3416,7 @@
    "observed_host_version": "2.9.0",
    "role": "SDK/environment infrastructure: Extensions to the standard Python datetime module",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3001,6 +3432,7 @@
    "observed_host_version": "1.2.4",
    "role": "SDK/environment infrastructure: Read key-value pairs from a .env file and set them as environment variables",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3010,13 +3442,15 @@
    "distribution": "python-flint",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.9.0",
-    "requirements.txt": "0.9.0"
+    "requirements.txt": "0.9.0",
+    "scripts/kaggle_run.py:182:PIN_GROUPS": "0.9.0"
    },
    "observed_host_version": "0.9.0",
    "role": "Exact rational/modular matrix rank and kernel certificates; defines no CD table.",
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:23"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -3037,6 +3471,7 @@
    "observed_host_version": "0.0.32",
    "role": "SDK/environment infrastructure: A streaming multipart parser for Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3050,6 +3485,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Python wrapper around rapidjson",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3063,6 +3499,7 @@
    "observed_host_version": "6.0.3",
    "role": "SDK/environment infrastructure: YAML parser and emitter for Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3076,6 +3513,7 @@
    "observed_host_version": "27.2.0",
    "role": "SDK/environment infrastructure: Python bindings for 0MQ",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3083,13 +3521,16 @@
   },
   {
    "distribution": "pyzx",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:175:PIN_GROUPS": "0.10.7"
+   },
    "observed_host_version": "0.10.7",
    "role": "ZX circuit simplification followed by exact operator-equivalence checks.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:107",
     "docs/notes/qiskit-ecosystem.md:190"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3101,6 +3542,7 @@
    "observed_host_version": null,
    "role": "Documented multi-provider SDK alternative; current cases use the repository's guarded clients.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3114,6 +3556,7 @@
    "observed_host_version": "0.1.9.post1",
    "role": "SDK/environment infrastructure: QDLDL, a free LDL factorization routine.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3127,6 +3570,7 @@
    "observed_host_version": null,
    "role": "Typed Quantum Inspire compute API transport beneath the guarded runner.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3139,6 +3583,8 @@
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
     "requirements.txt": "2.6.0",
+    "scripts/kaggle_run.py:81:KERNEL_PINS": "2.6.0",
+    "scripts/kaggle_run.py:135:CPU_KERNEL_PINS": "2.6.0",
     "IQM retained environment": "2.1.2"
    },
    "observed_host_version": "2.5.2",
@@ -3148,6 +3594,7 @@
     "docs/notes/qiskit-ecosystem.md:171",
     "docs/notes/qiskit-ecosystem.md:82"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -3280,6 +3727,7 @@
     "docs/notes/qiskit-ecosystem.md:119",
     "docs/notes/qiskit-ecosystem.md:202"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3294,6 +3742,7 @@
     "docs/notes/qiskit-ecosystem.md:120",
     "docs/notes/qiskit-ecosystem.md:203"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3308,6 +3757,7 @@
     "docs/notes/qiskit-ecosystem.md:131",
     "docs/notes/qiskit-ecosystem.md:213"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3317,10 +3767,14 @@
    "distribution": "qiskit-addon-mpf",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: skip: Trotter error reduction, pulls cvxpy (not installed)",
+   "role": "Optional multiproduct-formula Trotter-error reduction using CVXPY. The 2026-10-16 ecosystem audit declined the workflow; host CVXPY availability does not establish its admission. Qualify circuit approximations, solver residuals and error budgets before use.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:118",
     "docs/notes/qiskit-ecosystem.md:201"
+   ],
+   "role_sources": [
+    "docs/notes/qiskit-ecosystem.md:201",
+    "docs/state/hypercomplex-libraries/solver-role-grounding.json"
    ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
@@ -3336,6 +3790,7 @@
     "docs/notes/qiskit-ecosystem.md:117",
     "docs/notes/qiskit-ecosystem.md:200"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3350,6 +3805,7 @@
     "docs/notes/qiskit-ecosystem.md:124",
     "docs/notes/qiskit-ecosystem.md:207"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3364,6 +3820,7 @@
     "docs/notes/qiskit-ecosystem.md:123",
     "docs/notes/qiskit-ecosystem.md:206"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3378,6 +3835,7 @@
     "docs/notes/qiskit-ecosystem.md:122",
     "docs/notes/qiskit-ecosystem.md:205"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3392,6 +3850,7 @@
     "docs/notes/qiskit-ecosystem.md:121",
     "docs/notes/qiskit-ecosystem.md:204"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3406,6 +3865,7 @@
     "docs/notes/qiskit-ecosystem.md:130",
     "docs/notes/qiskit-ecosystem.md:213"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3413,13 +3873,16 @@
   },
   {
    "distribution": "qiskit-addon-utils",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:169:PIN_GROUPS": "0.4.0"
+   },
    "observed_host_version": "0.4.0",
    "role": "Supported circuit interchange and utility operations.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:116",
     "docs/notes/qiskit-ecosystem.md:199"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3430,6 +3893,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.17.2",
     "requirements.txt": "0.17.2",
+    "scripts/kaggle_run.py:135:CPU_KERNEL_PINS": "0.17.2",
     "IQM retained environment": "0.17.2"
    },
    "observed_host_version": "0.17.2",
@@ -3439,6 +3903,7 @@
     "docs/notes/qiskit-ecosystem.md:172",
     "docs/notes/qiskit-ecosystem.md:83"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -3491,10 +3956,11 @@
    "distribution": "qiskit-aer-gpu",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "SDK/environment infrastructure: Environment support dependency",
+   "role": "CUDA 12 Aer alternative remains unused: retained ecosystem audit records release 0.15.1 without a Python 3.13 wheel; do not coinstall qiskit_aer owners.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:85"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3502,12 +3968,32 @@
   },
   {
    "distribution": "qiskit-aer-gpu-cu11",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:82:KERNEL_PINS": "0.17.2"
+   },
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: Kaggle GPU kernels only, 0.17.2; a Python 3.14 kernel would lose GPU Aer",
+   "role": "CUDA 11 Aer wheel for the isolated Kaggle GPU path; exclusively owns qiskit_aer and shares the CPU/CUDA 13 Aer engine.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:173",
     "docs/notes/qiskit-ecosystem.md:84"
+   ],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "qiskit-aer-gpu-cu13",
+   "declared_versions": {
+    "scripts/kaggle_run.py:110:GPU_AER_PINS": "0.17.2"
+   },
+   "observed_host_version": null,
+   "role": "Repository-built CUDA 13 Aer wheel for qualified Kaggle GPU simulation; exclusively owns qiskit_aer in that environment and shares the Aer engine, not an independent witness.",
+   "documentation_mentions": [],
+   "role_sources": [
+    "scripts/kaggle_run.py",
+    "docs/notes/qiskit-ecosystem.md"
    ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
@@ -3523,6 +4009,7 @@
     "docs/notes/qiskit-ecosystem.md:150",
     "docs/notes/qiskit-ecosystem.md:227"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3536,6 +4023,7 @@
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:144"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3550,6 +4038,7 @@
     "docs/notes/qiskit-ecosystem.md:129",
     "docs/notes/qiskit-ecosystem.md:212"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3563,6 +4052,7 @@
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:144"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3577,6 +4067,7 @@
     "docs/notes/qiskit-ecosystem.md:155",
     "docs/notes/qiskit-ecosystem.md:232"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3584,13 +4075,16 @@
   },
   {
    "distribution": "qiskit-experiments",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:170:PIN_GROUPS": "0.14.2"
+   },
    "observed_host_version": "0.14.2",
    "role": "Device-characterization circuits and analyses; calibration jobs require approval.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:181",
     "docs/notes/qiskit-ecosystem.md:98"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3605,6 +4099,7 @@
     "docs/notes/qiskit-ecosystem.md:127",
     "docs/notes/qiskit-ecosystem.md:210"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3619,6 +4114,7 @@
     "docs/notes/qiskit-ecosystem.md:154",
     "docs/notes/qiskit-ecosystem.md:231"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3633,6 +4129,7 @@
     "docs/notes/qiskit-ecosystem.md:143",
     "docs/notes/qiskit-ecosystem.md:225"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3646,6 +4143,7 @@
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:144"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3660,6 +4158,7 @@
     "docs/notes/qiskit-ecosystem.md:138",
     "docs/notes/qiskit-ecosystem.md:220"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3674,6 +4173,7 @@
     "docs/notes/qiskit-ecosystem.md:139",
     "docs/notes/qiskit-ecosystem.md:221"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3688,6 +4188,7 @@
     "docs/notes/qiskit-ecosystem.md:141",
     "docs/notes/qiskit-ecosystem.md:223"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3702,6 +4203,7 @@
     "docs/notes/qiskit-ecosystem.md:142",
     "docs/notes/qiskit-ecosystem.md:224"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3712,6 +4214,9 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.50.0",
     "requirements.txt": "0.50.0",
+    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.50.0",
+    "scripts/kaggle_run.py:135:CPU_KERNEL_PINS": "0.50.0",
+    "scripts/kaggle_run.py:160:PIN_GROUPS": "0.50.0",
     "IQM retained environment": "0.43.1"
    },
    "observed_host_version": "0.50.0",
@@ -3720,6 +4225,7 @@
     "docs/notes/qiskit-ecosystem.md:174",
     "docs/notes/qiskit-ecosystem.md:86"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
@@ -3772,6 +4278,7 @@
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:144"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3786,6 +4293,7 @@
     "docs/notes/qiskit-ecosystem.md:137",
     "docs/notes/qiskit-ecosystem.md:219"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3799,6 +4307,7 @@
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:144"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3813,6 +4322,7 @@
     "docs/notes/qiskit-ecosystem.md:151",
     "docs/notes/qiskit-ecosystem.md:228"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3826,6 +4336,7 @@
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:144"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3835,7 +4346,8 @@
    "distribution": "qiskit-mitigation",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.1.1",
-    "requirements.txt": "0.1.1"
+    "requirements.txt": "0.1.1",
+    "scripts/kaggle_run.py:164:PIN_GROUPS": "0.1.1"
    },
    "observed_host_version": "0.1.1",
    "role": "Hardware mitigation tasks; invocation can submit and needs the written case.",
@@ -3843,6 +4355,7 @@
     "docs/notes/qiskit-ecosystem.md:177",
     "docs/notes/qiskit-ecosystem.md:89"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3857,6 +4370,7 @@
     "docs/notes/qiskit-ecosystem.md:153",
     "docs/notes/qiskit-ecosystem.md:230"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3871,6 +4385,7 @@
     "docs/notes/qiskit-ecosystem.md:128",
     "docs/notes/qiskit-ecosystem.md:211"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3885,6 +4400,7 @@
     "docs/notes/qiskit-ecosystem.md:152",
     "docs/notes/qiskit-ecosystem.md:229"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3899,6 +4415,7 @@
     "docs/notes/qiskit-ecosystem.md:126",
     "docs/notes/qiskit-ecosystem.md:209"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3906,13 +4423,16 @@
   },
   {
    "distribution": "qiskit-qasm3-import",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:166:PIN_GROUPS": "0.6.0"
+   },
    "observed_host_version": "0.6.0",
    "role": "Validated OpenQASM interchange between isolated SDK environments.",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:178",
     "docs/notes/qiskit-ecosystem.md:90"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3926,6 +4446,7 @@
    "observed_host_version": null,
    "role": "Circuit conversion in the isolated Quantum Inspire environment.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3940,6 +4461,7 @@
     "docs/notes/qiskit-ecosystem.md:140",
     "docs/notes/qiskit-ecosystem.md:222"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [],
@@ -3955,6 +4477,7 @@
    "documentation_mentions": [
     "docs/notes/iqm/pypi/qrisp.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3968,6 +4491,7 @@
    "observed_host_version": null,
    "role": "Account and case lifecycle through the existing guarded Quantum Inspire runner.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
@@ -3983,6 +4507,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:35"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -3994,6 +4519,7 @@
    "observed_host_version": "1.0.18",
    "role": "Numba quaternion arrays and independent numerical comparisons.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -4004,6 +4530,7 @@
   {
    "distribution": "quimb",
    "declared_versions": {
+    "scripts/kaggle_run.py:172:PIN_GROUPS": "1.15.0",
     "IQM retained environment": "1.15.0"
    },
    "observed_host_version": "1.15.0",
@@ -4012,6 +4539,7 @@
     "docs/notes/qiskit-ecosystem.md:104",
     "docs/notes/qiskit-ecosystem.md:187"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4023,6 +4551,7 @@
    "observed_host_version": null,
    "role": "Reference-only Lindblad alternative; qualify a capability gap before adding it.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4031,11 +4560,13 @@
   {
    "distribution": "qxelarator",
    "declared_versions": {
-    "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.0"
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.0",
+    "scripts/kaggle_run.py:187:PIN_GROUPS": "0.10.0"
    },
    "observed_host_version": null,
    "role": "Local QX execution; measurement-register semantics differ from Tuna classical bits.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4055,6 +4586,7 @@
    "observed_host_version": "0.37.0",
    "role": "SDK/environment infrastructure: JSON Referencing + Python",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4070,6 +4602,7 @@
    "observed_host_version": "2.34.2",
    "role": "SDK/environment infrastructure: Python HTTP for Humans.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4086,6 +4619,7 @@
    "observed_host_version": "1.3.0",
    "role": "SDK/environment infrastructure: This package allows for HTTP NTLM authentication using the requests library.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4099,6 +4633,7 @@
    "observed_host_version": "15.0.0",
    "role": "SDK/environment infrastructure: Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4112,6 +4647,7 @@
    "observed_host_version": "4.1.0",
    "role": "SDK/environment infrastructure: Manipulate well-formed Roman numerals",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4127,6 +4663,7 @@
    "observed_host_version": "2026.9.1",
    "role": "SDK/environment infrastructure: Python bindings to Rust's persistent data structures (rpds)",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4140,6 +4677,7 @@
    "observed_host_version": "0.19.1",
    "role": "SDK/environment infrastructure: ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4153,6 +4691,7 @@
    "observed_host_version": "0.17.1",
    "role": "Pinned lint and format gate.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4161,6 +4700,7 @@
   {
    "distribution": "runningman",
    "declared_versions": {
+    "scripts/kaggle_run.py:159:PIN_GROUPS": "2.3.0",
     "IQM retained environment": "2.3.0"
    },
    "observed_host_version": "2.3.0",
@@ -4169,6 +4709,7 @@
     "docs/notes/qiskit-ecosystem.md:100",
     "docs/notes/qiskit-ecosystem.md:183"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4189,6 +4730,7 @@
     "docs/notes/qiskit-ecosystem.md:180",
     "docs/notes/qiskit-ecosystem.md:92"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4208,6 +4750,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:25"
    ],
+   "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
    "imported_by": [
@@ -4221,7 +4764,8 @@
    "distribution": "samplomatic",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.21.0",
-    "requirements.txt": "0.21.0"
+    "requirements.txt": "0.21.0",
+    "scripts/kaggle_run.py:162:PIN_GROUPS": "0.21.0"
    },
    "observed_host_version": "0.21.0",
    "role": "Runtime circuit preparation; dynamic-circuit restrictions remain binding.",
@@ -4229,6 +4773,7 @@
     "docs/notes/qiskit-ecosystem.md:175",
     "docs/notes/qiskit-ecosystem.md:87"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4242,6 +4787,7 @@
    "observed_host_version": "0.19.1",
    "role": "SDK/environment infrastructure: Improved build system generator for Python C/C++/Fortran/Cython extensions",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4259,6 +4805,7 @@
    "observed_host_version": "1.18.1",
    "role": "Matrix exponentiation, linear algebra, integration and uncertainty estimates.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4275,6 +4822,8 @@
     "gororoba_quantum/variance.py",
     "scripts/atlas_fringe_amplitudes.py",
     "scripts/axis_tilt_substrate_split.py",
+    "scripts/bdsc_diagnostic.py",
+    "scripts/bdsc_forensics.py",
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
@@ -4304,6 +4853,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: The official type stubs for SciPy",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4317,6 +4867,7 @@
    "documentation_mentions": [
     "docs/notes/quandela/pypi/scmver.json"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4328,8 +4879,12 @@
     "IQM retained environment": "3.3.1"
    },
    "observed_host_version": "3.3.1",
-   "role": "SDK/environment infrastructure: Splitting conic solver",
+   "role": "First-order splitting conic solver supporting PSD tomography through CVXPY; qualify convergence, constraint residuals and tolerances for the actual fit.",
    "documentation_mentions": [],
+   "role_sources": [
+    "docs/state/hypercomplex-libraries/solver-role-grounding.json",
+    "docs/notes/quandela/python-stack.md:63"
+   ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4343,6 +4898,7 @@
    "observed_host_version": "0.13.2",
    "role": "SDK/environment infrastructure: Statistical data visualization",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4354,6 +4910,7 @@
    "observed_host_version": "4.44.0",
    "role": "SDK/environment infrastructure: Official Python bindings for Selenium WebDriver.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4370,6 +4927,7 @@
    "observed_host_version": "84.0.0",
    "role": "SDK/environment infrastructure: Most extensible Python build backend with support for C/C++ extension modules",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4383,6 +4941,7 @@
    "observed_host_version": "1.5.4",
    "role": "SDK/environment infrastructure: Tool to Detect Surrounding Shell",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4397,6 +4956,7 @@
     "docs/notes/qiskit-ecosystem.md:103",
     "docs/notes/qiskit-ecosystem.md:186"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4411,6 +4971,7 @@
    "observed_host_version": "1.17.0",
    "role": "SDK/environment infrastructure: Python 2 and 3 compatibility utilities",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4424,6 +4985,7 @@
    "observed_host_version": "3.1.1",
    "role": "SDK/environment infrastructure: This package provides 36 stemmers for 34 languages generated from Snowball algorithms.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4437,6 +4999,7 @@
    "observed_host_version": "0.8.0",
    "role": "SDK/environment infrastructure: Python bindings for SparseDiffEngine algorithmic differentiation",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4450,6 +5013,7 @@
    "observed_host_version": "9.1.0",
    "role": "SDK/environment infrastructure: Python documentation generator",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4463,6 +5027,7 @@
    "observed_host_version": "2.0.0",
    "role": "SDK/environment infrastructure: sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4476,6 +5041,7 @@
    "observed_host_version": "2.0.0",
    "role": "SDK/environment infrastructure: sphinxcontrib-devhelp is a sphinx extension which outputs Devhelp documents",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4489,6 +5055,7 @@
    "observed_host_version": "2.1.0",
    "role": "SDK/environment infrastructure: sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4502,6 +5069,7 @@
    "observed_host_version": "1.0.1",
    "role": "SDK/environment infrastructure: A sphinx extension which renders display math in HTML via JavaScript",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4515,6 +5083,7 @@
    "observed_host_version": "2.0.0",
    "role": "SDK/environment infrastructure: sphinxcontrib-qthelp is a sphinx extension which outputs QtHelp documents",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4528,6 +5097,7 @@
    "observed_host_version": "2.0.0",
    "role": "SDK/environment infrastructure: sphinxcontrib-serializinghtml is a sphinx extension which outputs \"serialized\" HTML files (json and pickle)",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4539,6 +5109,7 @@
    "observed_host_version": "0.16",
    "role": "Split-signature negative control; associator agreement does not establish algebra identity.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4555,6 +5126,7 @@
    "observed_host_version": "2.0.54",
    "role": "SDK/environment infrastructure: Database Abstraction Library",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4569,6 +5141,7 @@
    "observed_host_version": "3.5.0",
    "role": "SDK/environment infrastructure: SSE plugin for Starlette",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4582,6 +5155,7 @@
    "observed_host_version": "0.6.4.dev0+g53501eb8b.d20251216",
    "role": "SDK/environment infrastructure: Extract data from python stack frames and tracebacks for informative displays",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4596,6 +5170,7 @@
    "observed_host_version": "1.9.0",
    "role": "SDK/environment infrastructure: The little ASGI library that shines.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4611,6 +5186,7 @@
    "observed_host_version": "5.7.0",
    "role": "SDK/environment infrastructure: Manage dynamic plugins for Python applications",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4619,6 +5195,7 @@
   {
    "distribution": "stim",
    "declared_versions": {
+    "scripts/kaggle_run.py:157:PIN_GROUPS": "1.16.0",
     "IQM retained environment": "1.16.0"
    },
    "observed_host_version": "1.16.0",
@@ -4627,6 +5204,7 @@
     "docs/notes/qiskit-ecosystem.md:101",
     "docs/notes/qiskit-ecosystem.md:184"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4640,6 +5218,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:36"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4657,6 +5236,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:38"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4701,6 +5281,7 @@
    "observed_host_version": "0.10.0",
    "role": "SDK/environment infrastructure: Pretty-print tabular data",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4714,6 +5295,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:33"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4728,6 +5310,7 @@
    "observed_host_version": "3.7.0",
    "role": "Inspect and bound native BLAS/OpenMP threads.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4743,6 +5326,7 @@
    "observed_host_version": "1.1.0",
    "role": "SDK/environment infrastructure: List processing tools and functional utilities",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4750,10 +5334,13 @@
   },
   {
    "distribution": "torch",
-   "declared_versions": {},
+   "declared_versions": {
+    "scripts/kaggle_run.py:129:GPU_ENV_GROUPS": "2.14.1"
+   },
    "observed_host_version": "2.14.1",
    "role": "Qualified GPU tensor arithmetic and the octonion package backend.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
@@ -4769,6 +5356,7 @@
    "documentation_mentions": [
     "docs/notes/packages/candidates.md:33"
    ],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4782,6 +5370,7 @@
    "observed_host_version": "6.5.10",
    "role": "SDK/environment infrastructure: Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4795,6 +5384,7 @@
    "observed_host_version": "4.70.1",
    "role": "SDK/environment infrastructure: Fast, Extensible Progress Meter",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4808,6 +5398,7 @@
    "observed_host_version": "5.16.1",
    "role": "SDK/environment infrastructure: Traitlets Python configuration system",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4821,6 +5412,7 @@
    "observed_host_version": "0.10.4",
    "role": "SDK/environment infrastructure: Verify certificates using native system trust stores",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4834,6 +5426,7 @@
    "observed_host_version": "0.27.3",
    "role": "SDK/environment infrastructure: Typer, build great CLIs. Easy to code. Based on Python type hints.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4847,6 +5440,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Typing stubs for networkx",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4860,6 +5454,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Typing stubs for protobuf",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4873,6 +5468,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Typing stubs for requests",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4886,6 +5482,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Typing stubs for six",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4899,6 +5496,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Typing stubs for tqdm",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4914,6 +5512,7 @@
    "observed_host_version": "4.16.0",
    "role": "SDK/environment infrastructure: Backported and Experimental Type Hints for Python 3.9+",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4929,6 +5528,7 @@
    "observed_host_version": "0.4.4",
    "role": "SDK/environment infrastructure: Runtime typing introspection tools",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4942,6 +5542,7 @@
    "observed_host_version": "3.2.4",
    "role": "SDK/environment infrastructure: calculations with values with uncertainties, error propagation",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4957,6 +5558,21 @@
    "observed_host_version": "2.8.0",
    "role": "SDK/environment infrastructure: HTTP library with thread-safe connection pooling, file post, and more.",
    "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "uv",
+   "declared_versions": {
+    "scripts/kaggle_run.py:204:UV_PIN": "0.13.0"
+   },
+   "observed_host_version": null,
+   "role": "Pinned environment installer used by Kaggle kernel bootstrap; records package resolution rather than quantum evidence.",
+   "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4971,6 +5587,7 @@
    "observed_host_version": "0.54.0",
    "role": "SDK/environment infrastructure: The lightning-fast ASGI server.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4984,6 +5601,7 @@
    "observed_host_version": "0.9.2",
    "role": "SDK/environment infrastructure: Measures the displayed width of unicode strings in a terminal",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -4997,6 +5615,7 @@
    "observed_host_version": "0.48.0",
    "role": "SDK/environment infrastructure: Command line tool for manipulating wheel files",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -5010,6 +5629,7 @@
    "observed_host_version": null,
    "role": "Labeled acquisition arrays and parameter axes.",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -5023,6 +5643,7 @@
    "observed_host_version": "1.25.1",
    "role": "SDK/environment infrastructure: Yet another URL library",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -5036,6 +5657,7 @@
    "observed_host_version": "3.21.0",
    "role": "SDK/environment infrastructure: Backport of pathlib-compatible object wrapper for zip files",
    "documentation_mentions": [],
+   "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
@@ -5077,9 +5699,16 @@
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
   "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816",
+  "scripts/kaggle_run.py": "04e69833aefcd34311c033747cf73e9bf207bf56684a877f16d0f966ae634114",
+  "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
+  "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
+  "scripts/hypercomplex_libraries.py": "fef6c4f379c1e9832b78d46eabe2537635c53258f5e708de544f1b9d11004b25",
+  "docs/notes/quandela/python-stack.md": "2f4be7a75a82b1c94a11e6bd45b7ff9d415c10c9a02953a9768100c03fac856e",
+  "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
  },
  "unresolved_import_roots": [],
  "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
- "coverage": "all requirements locks, retained IQM distributions, maintained scientific roles and tracked runtime imports; every named package-table entry in the maintained ecosystem and algebra-candidate notes, plus retained provider PyPI records"
+ "coverage": "all requirements locks, top-level literal pins and referenced runtime pin files in scripts/kaggle_run.py (without executing dispatch), retained IQM distributions, maintained scientific roles and tracked runtime imports; every named package-table entry in the maintained ecosystem and algebra-candidate notes, plus retained provider PyPI records",
+ "host_observation_policy": "existing observations/import locations retained; additions observed by generator interpreter"
 }

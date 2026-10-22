@@ -1,6 +1,20 @@
 """The library register covers pinned dependencies and scientific alternatives."""
 
-from hypercomplex_libraries import inventory
+import copy
+import json
+import sys
+from pathlib import Path
+from typing import Any
+
+import pytest
+from hypercomplex_libraries import (
+    ROOT,
+    check_execution_coverage,
+    check_inventory_denominator,
+    execution_declarations,
+    inventory,
+    main,
+)
 
 
 def test_inventory_covers_locks_and_independent_roles() -> None:
@@ -38,3 +52,104 @@ def test_documented_candidates_and_provider_adapters_have_roles() -> None:
     ):
         if not rows[name]["hardware_execution"]:
             raise RuntimeError(f"a provider acquisition surface needs an execution boundary: {name}")
+
+
+def test_runtime_manifest_and_dispatch_pin_discovery(tmp_path: Path) -> None:
+    dispatcher = tmp_path / "scripts/kaggle_run.py"
+    dispatcher.parent.mkdir()
+    manifest = tmp_path / "docs/runtime-pins.txt"
+    manifest.parent.mkdir()
+    manifest.write_text("manifest-only==1.2.3\n")
+    dispatcher.write_text(
+        'RUNTIME_PINS_FILE = "docs/runtime-pins.txt"\n'
+        'GPU_AER_PINS = {"cu13": ("dispatch-only==4.5.6",)}\n'
+        'def submit():\n    raise RuntimeError("dispatcher must remain unexecuted")\n'
+    )
+    declarations, sources = execution_declarations(tmp_path)
+    if declarations["manifest-only"] != {"docs/runtime-pins.txt:1": "1.2.3"}:
+        raise RuntimeError("the referenced runtime manifest was omitted")
+    if declarations["dispatch-only"] != {"scripts/kaggle_run.py:2:GPU_AER_PINS": "4.5.6"}:
+        raise RuntimeError("the dispatch literal was omitted")
+    record: dict[str, Any] = {
+        "libraries": [{"distribution": name, "declared_versions": pins} for name, pins in declarations.items()],
+        "sources_sha256": sources,
+    }
+    check_execution_coverage(record, tmp_path)
+    for name in declarations:
+        changed = copy.deepcopy(record)
+        changed["libraries"] = [row for row in changed["libraries"] if row["distribution"] != name]
+        with pytest.raises(ValueError, match="execution pin coverage differs"):
+            check_execution_coverage(changed, tmp_path)
+    manifest.write_text("manifest-only==1.2.4\nnew-manifest-pin==3.0\n")
+    with pytest.raises(ValueError, match="execution pin coverage differs"):
+        check_execution_coverage(record, tmp_path)
+
+
+def test_retained_execution_inventory_covers_authoritative_sources() -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    check_execution_coverage(record, ROOT)
+    rows = {row["distribution"]: row for row in record["libraries"]}
+    for name in ("qiskit-aer-gpu-cu13", "custatevec-cu13", "cutensornet-cu13", "cutensor-cu13"):
+        if rows[name]["independent_algebra_witness"] or not rows[name]["declared_versions"]:
+            raise RuntimeError(f"GPU runtime requires provenance and shared-engine boundaries: {name}")
+    for name in ("cvxpy", "scs", "clarabel", "osqp"):
+        if rows[name]["independent_algebra_witness"] or "infrastructure:" in rows[name]["role"]:
+            raise RuntimeError(f"solver needs a qualified scientific role: {name}")
+
+
+def test_check_rejects_omitted_requirement_library(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    record["libraries"] = [row for row in record["libraries"] if row["distribution"] != "cryptography"]
+    record["coverage_counts"]["distributions"] = len(record["libraries"])
+    (tmp_path / "libraries.json").write_text(json.dumps(record))
+    monkeypatch.setattr(sys, "argv", ["hypercomplex_libraries.py", "--out", str(tmp_path), "--check"])
+    with pytest.raises(ValueError, match="inventory declared library coverage differs: cryptography"):
+        main()
+
+
+def test_multiproduct_workflow_admission_differs_from_cvxpy_installation() -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    rows = {row["distribution"]: row for row in record["libraries"]}
+    addon = rows["qiskit-addon-mpf"]
+    for text in ("multiproduct-formula", "CVXPY", "2026-10-16", "admission", "solver residuals"):
+        if text not in addon["role"]:
+            raise RuntimeError(f"multiproduct workflow needs explicit scope: {text}")
+    if "not installed" in addon["role"]:
+        raise RuntimeError("a historical dependency observation became a current installation claim")
+    if "docs/notes/qiskit-ecosystem.md:201" not in addon["role_sources"]:
+        raise RuntimeError("the dated optional-workflow decision lost its source")
+    if rows["cvxpy"]["observed_host_version"] != "1.9.3":
+        raise RuntimeError("the retained host CVXPY observation changed")
+
+
+@pytest.mark.parametrize("alias", [False, True])
+def test_inventory_rejects_duplicate_normalized_distribution_names(alias: bool) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    duplicate = copy.deepcopy(next(row for row in record["libraries"] if row["distribution"] == "numpy-quaternion"))
+    if alias:
+        duplicate["distribution"] = "NumPy_Quaternion"
+    record["libraries"].append(duplicate)
+    with pytest.raises(ValueError, match="distribution names repeat after normalization"):
+        check_inventory_denominator(record, ROOT)
+
+
+@pytest.mark.parametrize(
+    "field", ["distributions", "execution_pin_distributions", "execution_pin_declarations", "execution_source_files"]
+)
+@pytest.mark.parametrize("value", [None, True, 347.0, "347", -1, 999, float("inf"), float("nan")])
+def test_inventory_rejects_edited_or_noninteger_counts(field: str, value: Any) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    record["coverage_counts"][field] = value
+    with pytest.raises(ValueError, match=f"inventory coverage count differs: {field}"):
+        check_inventory_denominator(record, ROOT)
+
+
+@pytest.mark.parametrize("change", ["missing", "extra"])
+def test_inventory_rejects_count_field_membership_changes(change: str) -> None:
+    record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+    if change == "missing":
+        record["coverage_counts"].pop("distributions")
+    else:
+        record["coverage_counts"]["extra"] = 0
+    with pytest.raises(ValueError, match="inventory coverage count fields differ"):
+        check_inventory_denominator(record, ROOT)
