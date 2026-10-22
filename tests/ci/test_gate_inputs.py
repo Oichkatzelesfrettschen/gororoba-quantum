@@ -549,8 +549,10 @@ with patch("builtins.open", guard(builtins.open)), patch("io.open", guard(io.ope
             self.assertEqual(environment["OMP_NUM_THREADS"], "1")
             self.assertEqual(environment["OPENBLAS_NUM_THREADS"], "1")
             self.assertEqual(environment["GLIBC_TUNABLES"], "glibc.rtld.optional_static_tls=4096")
-        with patch.dict("os.environ", {"OMP_NUM_THREADS": "2"}, clear=True):
+            self.assertEqual(environment["OPENBLAS_CORETYPE"], "Haswell")
+        with patch.dict("os.environ", {"OMP_NUM_THREADS": "2", "OPENBLAS_CORETYPE": "Zen"}, clear=True):
             self.assertEqual(run_gates.environment_for(None)["OMP_NUM_THREADS"], "2")
+            self.assertEqual(run_gates.environment_for(None)["OPENBLAS_CORETYPE"], "Zen")
         for configured, expected in (("128", "4096"), ("8192", "8192"), ("invalid", "4096")):
             original = f"glibc.malloc.arena_max=2:glibc.rtld.optional_static_tls={configured}"
             with patch.dict("os.environ", {"GLIBC_TUNABLES": original}, clear=True):

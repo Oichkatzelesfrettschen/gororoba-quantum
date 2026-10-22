@@ -1452,7 +1452,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --check",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T231043.083602Z/between-arm.json --rel 1e-9 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --out {out}",
    "name": "core-600",
    "seconds": 1.0,
    "tier": "full"
@@ -1500,7 +1500,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --check",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-20T031212.175942Z/ramsey.json --rel 1e-3 -- \"$PYTHON\" scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --out {out}",
    "name": "core-603",
    "seconds": 4.1,
    "tier": "full"

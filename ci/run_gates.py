@@ -69,6 +69,7 @@ DEFAULT_SHARD_CPUS = 4
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED"}
+OPENBLAS_CORETYPE = "Haswell"
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # Each collector owns exactly one shell tree, so parallel gates cannot mix
 # their RUSAGE_CHILDREN counters. POSIX Python supplies the platform binding.
@@ -254,6 +255,10 @@ def environment_for(device: str | None, requires: str | None = None) -> dict[str
         "QISKIT_NUM_PROCS",
     ):
         environment.setdefault(variable, "1")
+    # OpenBLAS selects its kernels by the running CPU, and kernels differ in
+    # rounding, so a byte replay of a fitted value names one x86-64 AVX2 kernel
+    # set that every build host and CI runner executes.
+    environment.setdefault("OPENBLAS_CORETYPE", OPENBLAS_CORETYPE)
     return environment
 
 
