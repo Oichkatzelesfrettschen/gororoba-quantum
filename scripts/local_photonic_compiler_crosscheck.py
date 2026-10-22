@@ -101,7 +101,12 @@ def qi_case(item: tuple[str, dict[str, Any]]) -> dict[str, Any]:
         if result["sha256"] != case["sha256"]:
             raise ValueError("source hash differs from frozen manifest")
         source_errors = json.loads(v3.Analyzer().analyze_string_to_json(text), strict=False).get("errors", [])
-        compiled = compile_circuit(text, compiler_configs()["tuna_17"])
+        if case.get("_full_precision"):
+            from opensquirrel_fullprecision import compile_circuit as precise_compile
+
+            compiled = precise_compile(text, compiler_configs()["tuna_17"])
+        else:
+            compiled = compile_circuit(text, compiler_configs()["tuna_17"])
         compiled_errors = json.loads(v3.Analyzer().analyze_string_to_json(compiled), strict=False).get("errors", [])
         simulations = {}
         for name, code in (("source", text), ("compiled", compiled)):
@@ -142,6 +147,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--qi-worker", action="store_true")
+    parser.add_argument("--full-precision", action="store_true")
     arguments = parser.parse_args()
     destination = arguments.out / ("qi.json" if arguments.qi_worker else "photonic.json")
     if destination.exists():
@@ -158,11 +164,17 @@ def main() -> None:
             (ROOT / "results/quantum_inspire/runs/tuna17-quaternion-order-noise").glob("order-batch-*/cases.json")
         ):
             inputs.extend(
-                (str(manifest_path.parent.relative_to(ROOT)), case)
+                (str(manifest_path.parent.relative_to(ROOT)), case | {"_full_precision": arguments.full_precision})
                 for case in json.loads(manifest_path.read_text())["circuits"]
             )
         rows = ordered_map(qi_case, inputs, min_items=1)
         record = {"versions": {name: version(name) for name in ("opensquirrel", "libqasm", "qxelarator")}, "rows": rows}
+        if arguments.full_precision:
+            record["exporter"] = {
+                "path": "scripts/opensquirrel_fullprecision.py",
+                "sha256": digest(ROOT / "scripts/opensquirrel_fullprecision.py"),
+                "precision": "17 significant decimal digits, public IRVisitor, finite native pilot contract",
+            }
     else:
         from qi_stack import probe, run
 

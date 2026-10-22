@@ -11,8 +11,10 @@ thread and process niceness 10. The background launches had a 1800-second
 timeout; the final verification launch had a 120-second timeout. The initial
 launch, physical rerun and two terminal-unitary runs record 144.89 seconds
 of cumulative elapsed execution (nested QI subprocess time is included in
-its parent launch). The four launches remained within the user's total
-30-minute budget.
+its parent launch). The four launches remained within the total
+30-minute task budget selected by the coordinating agent. A fifth local
+execution of the full-precision exporter adds 20.35 seconds, bringing the
+cumulative execution to 165.24 seconds.
 
 ## Retained results
 
@@ -44,8 +46,19 @@ its parent launch). The four launches remained within the user's total
   signature accepts the circuit alone and whose implementation instantiates
   the private `_WriterImpl`. A supported public precision control is absent
   from that installed path. A separately tested repository adapter can
-  address serialization precision in follow-up work; the installed package
-  and frozen circuits retain their bytes.
+  address serialization precision through the separately retained export
+  below; the installed package and frozen circuits retain their bytes.
+- `fullprecision-compiler-crosscheck/qi.json` retains the repository-owned
+  public `IRVisitor` export of the same default Tuna compiler passes. All
+  24 source and full-precision compiled probes satisfy 1e-9, with maximum
+  probability error 2.23e-16. Every paired source/compiled 1024-shot seeded
+  histogram agrees exactly. The adapter pins OpenSquirrel 0.9.1 and accepts
+  exact `Rx`, `Ry`, `Rz`, `X`, `CZ`, `Barrier` and Z-axis `Measure` statement
+  classes. Unsupported IR and nonfinite angles raise explicit exceptions.
+  The adapter serializes finite binary64 angles with 17 significant digits
+  and preserves each measurement's bit/qubit mapping. Producer and exporter
+  snapshots beside the record bind the executing sources. The default
+  writer's four numerical failures remain retained independently.
 - OpenQASM circuits are absent from the selected frozen cases. The run
   establishes the listed cQASM path and the Perceval optical template path.
 
@@ -83,3 +96,15 @@ probabilities are deterministic; elapsed time and resource scheduling vary.
 The measured sample seed is 20261022. Photonic simulated counts use NumPy
 multinomial sampling of frozen ideal probabilities; Perceval contributes
 the two independently evaluated probability distributions.
+
+Replay the full-precision QI comparison separately in a fresh directory:
+
+```sh
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export GOROROBA_WORKERS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+PYTHONPATH=gororoba_quantum:scripts nice -n 14 timeout 120 "$PYTHON" -c '
+from qi_stack import run
+print(run(["scripts/local_photonic_compiler_crosscheck.py", "--qi-worker",
+           "--full-precision", "--out", "results/local-simulation/fresh-fullprecision-replay"]))
+'
+```
