@@ -13,6 +13,7 @@ from local_simulation_replay import check_photonic, check_probabilities, check_q
 
 def retained_live_payload() -> dict[str, Any]:
     return {
+        "versions": load("fullprecision-compiler-crosscheck/qi.json")["versions"],
         "rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"],
         "default_compiled": {
             row["case"]: row["compiled"]
@@ -46,6 +47,36 @@ def test_qi_replay_rejects_changed_verdict() -> None:
     row["passed"] = True
     with pytest.raises(ValueError, match="verdict"):
         check_qi((row, False, True))
+
+
+def test_qi_replay_binds_manifest_digest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    row = copy.deepcopy(load("fullprecision-compiler-crosscheck/qi.json")["rows"][0])
+    source = local_simulation_replay.ROOT / row["case"]
+    target = tmp_path / row["case"]
+    target.parent.mkdir(parents=True)
+    target.write_bytes(source.read_bytes())
+    manifest = json.loads(source.with_name("cases.json").read_text())
+    next(case for case in manifest["circuits"] if case["file"] == source.name)["sha256"] = "0" * 64
+    target.with_name("cases.json").write_text(json.dumps(manifest))
+    monkeypatch.setattr(local_simulation_replay, "ROOT", tmp_path)
+    with pytest.raises(ValueError, match="source identity"):
+        check_qi((row, True, True))
+
+
+@pytest.mark.parametrize("distribution", ["opensquirrel", "libqasm", "qxelarator"])
+def test_replay_rejects_altered_qi_version(distribution: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    original_load = local_simulation_replay.load
+
+    def altered_load(name: str) -> dict[str, Any]:
+        record = original_load(name)
+        if name == "photonic-compiler-crosscheck/qi.json":
+            record["versions"][distribution] = "0.0.0"
+        return record
+
+    monkeypatch.setattr(local_simulation_replay, "load", altered_load)
+    monkeypatch.setattr(local_simulation_replay, "ordered_map", lambda *args, **kwargs: [])
+    with pytest.raises(ValueError, match="toolchain versions"):
+        local_simulation_replay.check()
 
 
 @pytest.mark.parametrize("values", [[float("nan"), 1.0], [float("inf")], [0.5], [-0.1, 1.1]])
@@ -119,6 +150,17 @@ def test_live_replay_checks_default_writer_histograms(monkeypatch: pytest.Monkey
     monkeypatch.setattr(qi_stack, "live", lambda *args: True)
     monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
     with pytest.raises(ValueError, match="seeded counts or states"):
+        local_simulation_replay.live_qi()
+
+
+def test_live_replay_checks_probed_versions(monkeypatch: pytest.MonkeyPatch) -> None:
+    import qi_stack
+
+    payload = retained_live_payload()
+    payload["versions"]["libqasm"] = "0.0.0"
+    monkeypatch.setattr(qi_stack, "live", lambda *args: True)
+    monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
+    with pytest.raises(ValueError, match="toolchain versions"):
         local_simulation_replay.live_qi()
 
 

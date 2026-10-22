@@ -9,6 +9,31 @@ import pytest
 from local_photonic_compiler_crosscheck import photonic, terminal_unitary
 
 
+@pytest.mark.parametrize("missing", ["all", "manifest", "case"])
+def test_qi_worker_rejects_incomplete_frozen_input_set(
+    missing: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import shutil
+
+    runner = local_photonic_compiler_crosscheck
+    relative = Path("results/quantum_inspire/runs/tuna17-quaternion-order-noise")
+    if missing != "all":
+        shutil.copytree(runner.ROOT / relative, tmp_path / relative)
+        manifest_path = tmp_path / relative / "order-batch-00/cases.json"
+        if missing == "manifest":
+            manifest_path.rename(manifest_path.with_suffix(".missing"))
+        else:
+            manifest = json.loads(manifest_path.read_text())
+            manifest["circuits"].pop()
+            manifest_path.write_text(json.dumps(manifest))
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(runner.sys, "argv", ["crosscheck", "--qi-worker", "--out", str(tmp_path / "output")])
+    monkeypatch.setattr(runner, "version", lambda name: "test")
+    monkeypatch.setattr(runner, "ordered_map", lambda *args, **kwargs: [])
+    with pytest.raises(ValueError, match="case denominator"):
+        runner.main()
+
+
 def test_terminal_measurement_removal_keeps_unitary_gates() -> None:
     source = "version 3.0\nqubit[1] q\nbit[1] b\nH q[0]\nb[0] = measure q[0]\n"
     expected = "version 3.0\nqubit[1] q\nbit[1] b\nH q[0]\n"

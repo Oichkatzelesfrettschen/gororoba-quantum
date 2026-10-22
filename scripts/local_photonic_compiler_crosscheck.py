@@ -19,6 +19,16 @@ from parallel import ordered_map
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 20261022
 SHOTS = 1024
+QI_SOURCE_DIRECTORY = Path("results/quantum_inspire/runs/tuna17-quaternion-order-noise")
+QI_CASE_PATHS = {
+    str(QI_SOURCE_DIRECTORY / f"order-batch-{batch:02d}" / filename)
+    for batch in range(8)
+    for filename in (
+        "readout-0.cq",
+        "readout-1.cq",
+        f"order-i{batch // 4}-j{batch // 2 % 2}-representative{batch % 2}.cq",
+    )
+}
 DEFAULT_WRITER_RESIDUALS = {
     f"results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-{batch:02d}/{name}.cq"
     for batch, name in (
@@ -38,6 +48,18 @@ def qi_warning_policy() -> None:
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def qi_inputs(full_precision: bool) -> list[tuple[str, dict[str, Any]]]:
+    inputs = [
+        (str(manifest.parent.relative_to(ROOT)), case | {"_full_precision": full_precision})
+        for manifest in sorted((ROOT / QI_SOURCE_DIRECTORY).glob("order-batch-*/cases.json"))
+        for case in json.loads(manifest.read_text())["circuits"]
+    ]
+    paths = {str(Path(directory) / case["file"]) for directory, case in inputs}
+    if len(inputs) != len(QI_CASE_PATHS) or paths != QI_CASE_PATHS:
+        raise ValueError("QI frozen case denominator differs from the registered 24 source paths")
+    return inputs
 
 
 def terminal_unitary(text: str) -> str:
@@ -179,14 +201,7 @@ def main() -> None:
     record: dict[str, Any]
     inputs: list[Any]
     if arguments.qi_worker:
-        inputs = []
-        for manifest_path in sorted(
-            (ROOT / "results/quantum_inspire/runs/tuna17-quaternion-order-noise").glob("order-batch-*/cases.json")
-        ):
-            inputs.extend(
-                (str(manifest_path.parent.relative_to(ROOT)), case | {"_full_precision": arguments.full_precision})
-                for case in json.loads(manifest_path.read_text())["circuits"]
-            )
+        inputs = qi_inputs(arguments.full_precision)
         rows = ordered_map(qi_case, inputs, min_items=1)
         record = {"versions": {name: version(name) for name in ("opensquirrel", "libqasm", "qxelarator")}, "rows": rows}
         if arguments.full_precision:

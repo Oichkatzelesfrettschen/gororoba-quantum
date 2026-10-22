@@ -55,10 +55,10 @@ def check_probabilities(values: list[float]) -> None:
 def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
     row, precise, terminal = arguments
     source = ROOT / row["case"]
-    if sha(source) != row["sha256"]:
-        raise ValueError("QI frozen source identity changed")
     manifest = json.loads(source.with_name("cases.json").read_text())
     case = next(case for case in manifest["circuits"] if case["file"] == source.name)
+    if sha(source) != row["sha256"] or row["sha256"] != case["sha256"]:
+        raise ValueError("QI frozen source identity changed")
     expected = case.get("native_probabilities")
     if expected is None:
         expected = [0.0] * 4
@@ -181,6 +181,10 @@ def check_optical_operator(arguments: tuple[dict[str, Any], dict[str, Any]]) -> 
 
 
 def check() -> None:
+    from local_photonic_compiler_crosscheck import QI_CASE_PATHS, qi_inputs
+
+    from qi_stack import pins
+
     if load("artifacts.json")["sha256"] != inventory():
         raise ValueError("local simulation file set or bytes differ from artifact inventory")
     initial = load("photonic-compiler-crosscheck/photonic.json")["rows"]
@@ -214,14 +218,13 @@ def check() -> None:
     ordered_map(check_optical_operator, [(row, outputs[(row["case"], row["index"])]) for row in rows], min_items=1)
     for directory, precise, terminal in QI_BUNDLES:
         record = load(directory + "/qi.json")
+        if record["versions"] != pins():
+            raise ValueError("retained QI toolchain versions differ from the lock")
         if record["seed"] != 20261022 or record["shots"] != 1024:
             raise ValueError("QI seeded sampling metadata differs")
         rows = record["rows"]
-        expected_qi = {
-            str(path.relative_to(ROOT))
-            for path in (ROOT / "results/quantum_inspire/runs/tuna17-quaternion-order-noise").glob("order-batch-*/*.cq")
-        }
-        if len(rows) != 24 or {row["case"] for row in rows} != expected_qi:
+        qi_inputs(precise)
+        if len(rows) != 24 or {row["case"] for row in rows} != QI_CASE_PATHS:
             raise ValueError("QI case denominator differs")
         ordered_map(check_qi, [(row, precise, terminal) for row in rows], min_items=1)
         if sum(row["passed"] for row in rows) != (24 if precise else 20):
@@ -268,7 +271,7 @@ def qi_default_compile(case: str) -> str:
 
 
 def live_qi() -> None:
-    from qi_stack import live, run
+    from qi_stack import live, pins, run
 
     if not live("local QI compiler simulation", "retained numerical and identity replay"):
         return
@@ -276,14 +279,11 @@ def live_qi() -> None:
 import json,sys
 sys.path[:0] = ['scripts', 'gororoba_quantum']
 from pathlib import Path
-from local_photonic_compiler_crosscheck import qi_case
+from importlib.metadata import version
+from local_photonic_compiler_crosscheck import qi_case, qi_inputs
 from local_simulation_replay import QI_BUNDLES, load, qi_default_compile, qi_simulation
 from parallel import ordered_map
-inputs = []
-root = Path('results/quantum_inspire/runs/tuna17-quaternion-order-noise')
-for manifest in sorted(root.glob('order-batch-*/cases.json')):
-    cases = json.loads(manifest.read_text())['circuits']
-    inputs.extend((str(manifest.parent), case | {'_full_precision': True}) for case in cases)
+inputs = qi_inputs(True)
 case_paths = [row['case'] for row in load('fullprecision-compiler-crosscheck/qi.json')['rows']]
 default_compiled = dict(zip(case_paths, ordered_map(qi_default_compile, case_paths, min_items=1), strict=True))
 simulation_inputs = []
@@ -294,11 +294,16 @@ for directory, precise, terminal in QI_BUNDLES:
         for kind, code in [('source', Path(row['case']).read_text()), ('compiled', row['compiled'])]:
             probe = row['simulations'][kind]['unitary_probe'] if terminal else None
             simulation_inputs.append((code, probe))
-print(json.dumps({'rows': ordered_map(qi_case, inputs, min_items=1),
+print(json.dumps({'versions': {name: version(name) for name in ('opensquirrel', 'libqasm', 'qxelarator')},
+                 'rows': ordered_map(qi_case, inputs, min_items=1),
                  'default_compiled': default_compiled,
                  'simulations': ordered_map(qi_simulation, simulation_inputs, min_items=1)}))
 """
     actual = json.loads(run(["-B", "-W", "error", "-c", code]))
+    if actual["versions"] != pins() or any(
+        load(directory + "/qi.json")["versions"] != actual["versions"] for directory, _, _ in QI_BUNDLES
+    ):
+        raise ValueError("live QI toolchain versions differ from the lock or retained provenance")
     if actual["rows"] != load("fullprecision-compiler-crosscheck/qi.json")["rows"]:
         raise ValueError("live pinned QI replay differs from retained full-precision evidence")
     for directory, precise, _ in QI_BUNDLES:
