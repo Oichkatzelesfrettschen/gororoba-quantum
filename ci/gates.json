@@ -3904,6 +3904,14 @@
    "name": "core-610",
    "seconds": 0.2,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate.json",
+   "name": "core-630",
+   "seconds": 10.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
