@@ -157,6 +157,25 @@ def test_repository_manifest_selects() -> None:
     run_gates.select(ROOT, "full")
 
 
+def test_historical_selection_needs_no_current_runtime(root: Path, tmp_path: Path) -> None:
+    # A selection of historical gates alone runs under the replay interpreter
+    # even where no interpreter holds the current runtime's pins.
+    marker = tmp_path / "ran"
+    manifest(root, [{"name": "historical", "cwd": ".", "cmd": f"touch {marker}", "runtime": "qiskit-2.5"}])
+
+    def unresolvable(*_arguments: Any) -> tuple[None, str]:
+        raise AssertionError("a historical-only selection resolved the current runtime")
+
+    with (
+        patch.object(run_gates.pins, "resolve_current", unresolvable),
+        patch.object(run_gates.pins, "mismatches", lambda _python, _pins, _patches=None: []),
+        runner(root, REPLAY_PYTHON=os.environ.get("PYTHON") or "python3", GOROROBA_PINS_REQUIRED=None) as output,
+    ):
+        status = run_gates.main([])
+    if status != 0 or not marker.exists():
+        raise AssertionError(f"a historical-only selection returned {status}:\n{output.getvalue()}")
+
+
 def test_unresolved_runtime_runs_no_gate(root: Path, tmp_path: Path) -> None:
     # A selection whose historical runtime no interpreter holds exits 2
     # before any gate runs, rather than failing each of its gates with 127.

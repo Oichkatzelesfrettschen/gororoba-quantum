@@ -93,9 +93,15 @@ def read(root: Path | None = None) -> dict[str, Any]:
 
 
 def problems(ledger: dict[str, Any], root: Path = ROOT) -> list[str]:
+    """Each way the ledger fails to bind its records to the current image; a ledger binding no record fails,
+    so deleting or emptying ci/runner_image_records.json cannot pass ``check``."""
+    if ledger.get("schema") != SCHEMA:
+        return [f"the ledger's schema is {ledger.get('schema')!r}, not {SCHEMA}"]
     records = ledger.get("records", {})
     if not isinstance(records, dict):
         return ["the ledger's records is not a map"]
+    if not records:
+        return ["the ledger binds no record; bind each runner-image record with `add`"]
     found = []
     current = image_id(root)
     if records and ledger.get("image") != current:
@@ -121,6 +127,9 @@ def main(argv: list[str]) -> int:
         return 0
     ledger = read()
     if command == "check":
+        if not LEDGER.is_file():
+            print(f"{LEDGER.relative_to(ROOT)} is missing")
+            return 1
         found = problems(ledger)
         for line in found:
             print(line)

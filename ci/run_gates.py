@@ -466,10 +466,15 @@ def main(argv: list[str] | None = None) -> int:
         for gate in selected:
             print(f"{gate['name']}\t{gate['cwd']}\t{gate['cmd']}")
         return 0
-    primary, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
-    print(f"current runtime: {reason}", flush=True)
-    if primary is None:
-        return 2
+    # _run gives each historical gate its runtime's interpreter as $PYTHON, so the current runtime
+    # resolves only when a selected gate runs under it.
+    primary = sys.executable
+    if any(not gate.get("runtime") for gate in selected):
+        resolved, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
+        print(f"current runtime: {reason}", flush=True)
+        if resolved is None:
+            return 2
+        primary = resolved
     environment = environment_for(arguments.device, arguments.requires)
     environment["PYTHON"] = primary
     unresolved = []

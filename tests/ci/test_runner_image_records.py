@@ -98,3 +98,18 @@ def test_add_rebinds_only_the_complete_record_set() -> None:
         bound = json.loads(ledger.read_text())
         if bound["image"] != "new" or sorted(bound["records"]) != ["first.json", "second.json"]:
             raise AssertionError(bound)
+
+
+def test_check_fails_on_an_empty_or_foreign_ledger() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        copy_inputs(root)
+        empty = {"schema": records.SCHEMA, "image": records.image_id(root), "records": {}}
+        if records.problems(empty, root) != ["the ledger binds no record; bind each runner-image record with `add`"]:
+            raise AssertionError(records.problems(empty, root))
+        if not records.problems({}, root)[0].startswith("the ledger's schema is None"):
+            raise AssertionError(records.problems({}, root))
+        ledger = root / "ci" / "runner_image_records.json"
+        with mock.patch.object(records, "ROOT", root), mock.patch.object(records, "LEDGER", ledger):
+            if records.main(["check"]) != 1:
+                raise AssertionError("check passed with the ledger missing")
