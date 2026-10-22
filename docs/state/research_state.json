@@ -1511,7 +1511,7 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.",
+      "boundary": "Real basis triples under the cd_core.cd_sign convention; the moving-pair spectrum is the separate claim cd-moving-pair-walsh-proof.",
       "evidence": [
         {
           "path": "docs/evidence/cd_associator_defect_census/census.json",
@@ -1540,16 +1540,19 @@
     },
     {
       "id": "cd-moving-pair-walsh-proof",
-      "statement": "The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.",
+      "statement": "For every D = 2^n >= 16, omega(D/2+1, D/4+3, k) = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; the pair has algebraic degree n - 2, and for D >= 32 Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 (at D = 16 support 4, amplitude 1/2, nonlinearity 4).",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
-      "status": "open",
-      "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
+      "status": "established",
+      "boundary": "Theorem 5 and its corollary in the census note prove the formula from the certified associator lifting (Lemma 3) and the fixed-pair parity law (Theorem 4); the census checks the formula, both lifting steps and every spectral law from 16 to 4096. No proof assistant has checked the argument.",
       "evidence": [],
       "documents": [
         "docs/notes/topics/cd_associator_defect_census.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-212": "replay",
+        "sources-215": "replay"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -1559,7 +1562,7 @@
       ],
       "supersedes": [],
       "superseded_by": null,
-      "proof_origin": "unproved-open"
+      "proof_origin": "repository-written"
     },
     {
       "id": "singular-sector-split",
