@@ -2,6 +2,69 @@
   "schema": "research-state-v1",
   "acquisitions": [
     {
+      "id": "qd-ascella-native-input-map-recheck",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-native-input-map-recheck",
+      "family": "native input-map readiness after observed calibration status",
+      "question": "Does the native-mesh single-photon readiness request execute after Ascella returns from an observed calibration status to available?"
+    },
+    {
+      "id": "qd-belenos-order-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-order-repeat-block-0",
+      "family": "photonic order matched repeats",
+      "question": "What conditional mode frequencies and matched-request changes appear across three repeats of all eight order settings?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-0",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the seventeen wave times, five free references and two representative controls in the first repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-1",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the second repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-2",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the third repeat block?"
+    },
+    {
+      "id": "qd-belenos-transform-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-transform-repeat-block-0",
+      "family": "photonic Fourier matched repeats",
+      "question": "What mode frequencies and matched-request changes appear across three repeats of all eight Fourier and reference settings?"
+    },
+    {
+      "id": "qd-ascella-order-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-hypercomplex-order-pilot",
+      "family": "photonic quaternion order pilot",
+      "question": "Does the approved eight-setting order template execute and provide mesh conformance, loss and drift observations on Ascella?"
+    },
+    {
+      "id": "qd-ascella-static-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-static-input-readiness",
+      "family": "static native coupler readiness",
+      "question": "Does a static single-computation H coupler with connected source zero and twelve outputs avoid the input-port failure of template iterators?"
+    },
+    {
+      "id": "qd-ascella-calibrated-mesh-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-calibrated-mesh-input-readiness",
+      "family": "calibrated native mesh readiness",
+      "question": "Does a numerically bound circuit matching Ascella's published calibrated architecture execute through the documented compatible-circuit path?"
+    },
+    {
       "id": "kingston-mod15-pilot",
       "provider": "ibm",
       "run": "results/live/2026-10-11T152922.787095Z",
@@ -1277,6 +1340,61 @@
     }
   ],
   "claims": [
+    {
+      "id": "belenos-operator-repeat-counts-and-compilation-boundary",
+      "statement": "The approved five-job Belenos programme completed 120 settings with 983040 returned samples in 724 execution seconds, charged 5.081920 credits. The descriptive one-click readout excludes and retains 350 vacuum or multi-click outcomes. The 120 matched-repeat pair comparisons have maximum conditional total variation 0.036181 and identical returned compiled-circuit bytes within every matched pair. Returned compiled intensity distributions differ from requested ideal distributions by at most 0.000210 total variation. The imaginary-superposition Fourier control on representative zero instead gives measured-versus-compiled total variation from 0.996336 to 0.997313 across its three repeats, while its measured-versus-preceding-compiled distance is 0.030785 to 0.034049.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Conditional one-click frequencies and decoded numerical metadata from these five jobs. The records establish a compilation-metadata/measurement mismatch, rather than which applied-control or result-association mechanism caused it. Fixed request ordering confounds a setting-specific response with a preceding-setting effect. The analysis supplies neither calibrated uncertainty coverage, absolute transmission, process tomography nor fundamental quaternionic-physics evidence. A newly ordered intervention requires its own approved case.",
+      "evidence": [
+        {"path": "results/hypercomplex/belenos-repeat-readout.json", "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"},
+        {"path": "results/hypercomplex/belenos-compilation-measurement-audit.json", "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {"core-633": "replay"},
+      "acquisitions": ["qd-belenos-order-repeat", "qd-belenos-wave-repeat-0", "qd-belenos-wave-repeat-1", "qd-belenos-wave-repeat-2", "qd-belenos-transform-repeat"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-native-input-map-error-after-status-transition",
+      "statement": "A native-mesh readiness recheck after an observed Ascella calibration-to-available status transition and changed published performance figures again returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero reported credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One newly recorded recheck. The observed public status transition was insufficient to restore this sampling path. The instrument's private configuration and internal worker control flow remain unobserved.",
+      "evidence": [{"path": "results/quandela/runs/ascella-native-input-map-recheck/results.json", "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"}],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-native-input-map-recheck"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-input-port-failure-across-payloads",
+      "statement": "The eight-setting order iterator, static twelve-mode H coupler and static twelve-mode calibrated native mesh each failed after one execution second with zero shots and zero samples and the same missing hardware_info.circuit_input_ports diagnostic. Their collected token-usage deltas report zero credit debit. The failures span generic iterated, generic static and architecture-compatible static requests on connected input zero.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Three sampling requests under their recorded platform snapshots. The observations reject static payload class and native-architecture compatibility as sufficient remedies on the tested paths. They provide neither measured operator probabilities nor an exhaustive statement about every command or future configuration. The deployment's instrument map and private worker implementation remain unobserved.",
+      "evidence": [
+        {"path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json", "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"},
+        {"path": "results/quandela/runs/ascella-static-input-readiness/results.json", "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"},
+        {"path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json", "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-order-input-readiness", "qd-ascella-static-input-readiness", "qd-ascella-calibrated-mesh-input-readiness"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "cd-associator-census",
       "statement": "The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).",

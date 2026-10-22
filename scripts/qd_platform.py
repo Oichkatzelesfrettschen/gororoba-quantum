@@ -737,8 +737,9 @@ def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tu
             deviation = float(numpy.max(numpy.abs(actual - matrix)))
             if deviation > 1e-9:
                 raise PlatformError(f"{setting['name']}: the template misses its full operator by {deviation:.2e}")
-        for parameter in parameters.values():
-            parameter.reset()
+        if iteration_form(manifest) != "single":
+            for parameter in parameters.values():
+                parameter.reset()
     built = pcvl.Experiment(chip)
     built.with_input(pcvl.BasicState(circuit["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
@@ -1023,7 +1024,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     computer.mitigations = None if policy is None else []
     form = iteration_form(manifest)
     mesh = manifest.get("gate_form") == "mesh"
-    template = form == "template"
+    template = manifest.get("gate_form") == "template"
     if mesh:
         built, settings = mesh_experiment(manifest, circuit)
     elif template:
@@ -1187,7 +1188,7 @@ def plan(
         message = hom_warning(platform, perfs, block_photons(circuit), case_dir.name)
         if message is not None:
             print(message, file=sys.stderr)
-    if manifest.get("gate_form") == "mesh":
+    if manifest.get("gate_form") == "mesh" or "architecture" in circuit:
         live_mesh(processor, circuit, platform)
     if "seeded_from" in manifest:
         live_architecture(processor, platform)
@@ -1556,6 +1557,15 @@ def result_summary(
             raise PlatformError("the result carries no serialized counts")
         return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
     else:
+        if not complete and not inner["results"].startswith(":PCVL:"):
+            return {
+                "shots": shots,
+                "partial": True,
+                "counts": {},
+                "samples": 0,
+                "error": inner["results"][:2000],
+                "result_fields": scalar_tree({key: value for key, value in inner.items() if key != "results"}),
+            }
         counts = parse_counts(inner["results"])
     # An iterated answer's top-level shots is one iteration's max_shots; each
     # entry reports the shots it used, and their sum is what the job consumed.

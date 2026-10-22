@@ -1,6 +1,7 @@
 """Hardware cases retain native errors, budgets and existing submission boundaries."""
 
 import json
+from pathlib import Path
 from unittest.mock import patch
 
 import numpy as np
@@ -16,6 +17,131 @@ from hypercomplex_cases import (
 
 from hypercomplex_operators import order_interferometer
 from parallel import ordered_map
+
+
+def test_photonic_successor_retains_leakage_and_repeat_identity() -> None:
+    from hypercomplex_photonic_cases import campaign_cases
+
+    files = campaign_cases("belenos", repeats=3)
+    manifests = [json.loads(text) for name, text in files.items() if name.endswith("/cases.json")]
+    if len(manifests) != 5:
+        raise RuntimeError("three repeat blocks need one order, three wave and one Fourier job")
+    for manifest in manifests:
+        circuit = json.loads(files[manifest["job"] + "/circuit.json"])
+        if circuit["modes"] != 24 or len(circuit["input_state"]) != 24:
+            raise RuntimeError("every physical output must remain observable")
+        if manifest["platforms"] != ["qpu:belenos"] or manifest["mitigations"] != []:
+            raise RuntimeError("the physical backend and observation policy must be explicit")
+        import qd_platform
+
+        qd_platform.template_experiment(manifest, circuit)
+        if len({setting["name"] for setting in manifest["settings"]}) != manifest["iterations"]:
+            raise RuntimeError("repeated settings must retain distinct acquisition identities")
+    if sum(m["iterations"] for m in manifests) != 120:
+        raise RuntimeError("the design must retain three observations of each of forty settings")
+
+
+def test_ascella_readiness_uses_static_native_computation() -> None:
+    import qd_platform
+    from hypercomplex_photonic_cases import readiness_case
+
+    files = readiness_case()
+    manifest, circuit = json.loads(files["cases.json"]), json.loads(files["circuit.json"])
+    if qd_platform.iteration_form(manifest) != "single":
+        raise RuntimeError("readiness must test the static computation path")
+    experiment = qd_platform.experiment(manifest, circuit)
+    matrix = np.asarray(experiment.unitary_circuit().compute_unitary())
+    np.testing.assert_allclose(np.abs(matrix[:, 0]) ** 2, [0.5, 0.5] + [0.0] * 10, atol=1e-12)
+    if manifest["max_samples"] != 1024 or manifest["max_shots"] != 2048:
+        raise RuntimeError("readiness must remain bounded before the eight-setting pilot")
+
+
+def test_single_template_payload_binds_angles_before_serialization(monkeypatch: pytest.MonkeyPatch) -> None:
+    from pathlib import Path
+
+    import perceval as pcvl
+    import qd_platform
+    from perceval.providers.quandela.rpc_handler import RPCHandler
+
+    root = Path(__file__).resolve().parents[2]
+    processor = json.loads((root / "docs/evidence/quandela/catalogue.json").read_text())["processors"]["qpu:ascella"]
+    monkeypatch.setattr(RPCHandler, "fetch_platform_details", lambda self: processor)
+    monkeypatch.setattr(qd_platform, "token", lambda: "offline-test-token")
+    files = qd_cases([transform_settings()[2]], "single-template")
+    manifest, circuit = json.loads(files["cases.json"]), json.loads(files["circuit.json"])
+    built = qd_platform.payload(root, manifest, circuit, "qpu:ascella")
+    # The payload is produced locally by the SDK, rather than deserialized from a service response.
+    computation = pcvl.serialization.deserialize(built["body"]["payload"]["computation"])
+    if isinstance(computation, pcvl.ComputationIterator):
+        raise RuntimeError("one template setting must remain a static computation")
+    matrix = np.asarray(computation.experiment.unitary_circuit().compute_unitary())
+    expected = manifest["settings"][0]["operator"]
+    np.testing.assert_allclose(
+        matrix, np.asarray(expected["real"]) + 1j * np.asarray(expected["imaginary"]), atol=1e-12
+    )
+
+
+def test_native_ascella_readiness_matches_calibrated_architecture() -> None:
+    from pathlib import Path
+
+    import qd_platform
+    from hypercomplex_photonic_cases import native_readiness_case
+
+    root = Path(__file__).resolve().parents[2]
+    processor = json.loads((root / "docs/evidence/quandela/catalogue.json").read_text())["processors"]["qpu:ascella"]
+    files = native_readiness_case(processor)
+    manifest, circuit = json.loads(files["cases.json"]), json.loads(files["circuit.json"])
+    qd_platform.live_mesh(processor, circuit, "qpu:ascella")
+    qd_platform.template_experiment(manifest, circuit)
+    circuit["architecture"]["couplers"][0][1] += 0.01
+    with pytest.raises(qd_platform.PlatformError, match="architecture differs"):
+        qd_platform.live_mesh(processor, circuit, "qpu:ascella")
+
+
+def test_full_source_readiness_uses_only_published_input_modes() -> None:
+    from pathlib import Path
+
+    import qd_platform
+    from hypercomplex_photonic_cases import native_readiness_case
+
+    root = Path(__file__).resolve().parents[2]
+    processor = json.loads((root / "docs/evidence/quandela/catalogue.json").read_text())["processors"]["qpu:ascella"]
+    files = native_readiness_case(processor, all_sources=True)
+    manifest, circuit = json.loads(files["cases.json"]), json.loads(files["circuit.json"])
+    if circuit["input_state"] != [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]:
+        raise RuntimeError("full-source readiness must occupy all six connected sources exactly once")
+    if "ideal_probabilities" in manifest["preregistered"]:
+        raise RuntimeError("a six-photon readiness case must not carry a one-photon probability law")
+    qd_platform.template_experiment(manifest, circuit)
+
+
+def test_retained_successor_replay_rejects_a_changed_budget(tmp_path: Path) -> None:
+    from hypercomplex_cases import write_files
+    from hypercomplex_photonic_cases import check_files, readiness_case
+
+    files = readiness_case()
+    write_files(tmp_path, files)
+    check_files(tmp_path, files)
+    manifest = json.loads((tmp_path / "cases.json").read_text())
+    manifest["max_shots"] += 1
+    (tmp_path / "cases.json").write_text(json.dumps(manifest))
+    with pytest.raises(ValueError):
+        check_files(tmp_path, files)
+
+
+def test_ascella_frontier_covers_all_connected_ports_pairs_and_quadratures() -> None:
+    from hypercomplex_photonic_cases import characterization_frontier
+
+    record = characterization_frontier()
+    rows = record["settings"]
+    ports = [row for row in rows if row["mechanism"] == "transfer"]
+    phases = [row for row in rows if row["mechanism"] == "recombined-phase"]
+    if len(ports) != 72 or len(phases) != 1584 or len({row["name"] for row in rows}) != 1656:
+        raise RuntimeError("the finite frontier must contain every 6x12 transfer and 6x66x4 recombined-phase setting")
+    if set(row["source"] for row in rows) != {0, 2, 4, 6, 8, 10}:
+        raise RuntimeError("the frontier must use each physically connected input")
+    if any(row["state"] != "awaiting-instrument-and-timing-admission" for row in rows):
+        raise RuntimeError("a planned setting must never masquerade as a hardware acquisition")
 
 
 def test_photonic_mesh_reconstructs_the_entire_operator() -> None:

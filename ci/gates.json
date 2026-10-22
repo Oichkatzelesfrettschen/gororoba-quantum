@@ -3972,6 +3972,22 @@
    "name": "core-631",
    "seconds": 1.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_photonic_cases.py --out results/hypercomplex/photonic-successors --native-catalogue results/hypercomplex/photonic-successors/native-target-catalogue.json --check && \"$PYTHON\" -B -W error scripts/quandela_api_inventory.py docs/evidence/quandela/input-port-api-audit",
+   "name": "core-632",
+   "seconds": 10.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/photonic_repeat_readout.py results/quandela/runs/belenos-order-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-1 results/quandela/runs/belenos-wave-repeat-block-2 results/quandela/runs/belenos-transform-repeat-block-0 --check results/hypercomplex/belenos-repeat-readout.json && \"$PYTHON\" -B -W error scripts/photonic_compilation_audit.py results/hypercomplex/belenos-repeat-readout.json --check results/hypercomplex/belenos-compilation-measurement-audit.json",
+   "name": "core-633",
+   "seconds": 15.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

@@ -248,7 +248,7 @@ it:
 <!-- quandela-facts:begin -->
 | platform | kind | description | modes | photons | photon-source input modes | native commands | detector | max s per job | credits per shot |
 |---|---|---|---|---|---|---|---|---|---|
-| `qpu:ascella` | qpu | Ascella QPU | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
+| `qpu:ascella` | qpu | Ascella QPU | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count, entropy, entropy_demo | threshold | 300 | 1e-06 |
 | `qpu:belenos` | qpu | Belenos QPU | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
 | `sim:ascella` | simulator | Arcturus simulator | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count | threshold | 300 | 0 |
 | `sim:belenos` | simulator | Belenos simulator | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 0 |
@@ -509,8 +509,9 @@ transpiler model and the 84/84 mapping.
 
 ## Gates
 
-CI never imports Perceval: its gates read retained JSON and Markdown with the
-standard library. Every retained run enters docs/state/research_state.json
+The snapshot and retained-result validators read JSON and Markdown with the
+standard library. Circuit-conformance behavioral tests use the Perceval and
+exqalibur versions pinned in ci/requirements-ci.txt. Every retained run enters docs/state/research_state.json
 under the `quandela` provider in the change that retains it.
 
 Gates core-500 (`capture_qd_docs.py --check`), core-501 (its

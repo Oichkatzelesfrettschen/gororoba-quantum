@@ -47,6 +47,10 @@ Replace uppercase command arguments with the retained acquisition paths. The col
 
 ## Quandela written cases
 
+The [Ascella instrument-readiness and packed-test design](../design/ascella-instrument-readiness-and-packed-tests.md)
+records the input-port configuration incident, tested static reproducer, full-output
+successor cases, finite capability frontier and the approved five-job Belenos repeat programme.
+
 The fixed single-photon meshes implement complete 4-mode order or 8-mode wave/Fourier operators. Every iteration requests at most 8192 detected samples and 16384 shots, under a 180 s job duration cap. The existing Quandela runner checks the complete operator for this schema. The order, wave and transform jobs contain 8, 24 and 8 iterations respectively.
 
 Use `scripts/qd_platform.py` with the generated `cases.json` through the [Quandela guide](../notes/quandela/README.md). Obtain a fresh estimate for each supported platform before choosing Ascella, Belenos or their cloud simulators. The documented per-job formula uses the largest iteration's shot limit: where the recorded tariff applies, `1+0.000001*16384 = 1.016384` credits per job. Backend tariff, duration charge and remaining account balance require fresh read-only checks. Cloud simulator execution still requires a written case and may carry a per-job charge.
