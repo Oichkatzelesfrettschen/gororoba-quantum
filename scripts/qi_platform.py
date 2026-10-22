@@ -589,7 +589,9 @@ def hardware_pause_left(client: Client) -> int:
     return math.ceil(left)
 
 
-def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
+def submit(
+    case_dir: Path, backend_type_id: int, approval: str, *, expected_cases_sha256: str | None = None
+) -> dict[str, Any]:
     """Submit one case batch while holding the account submit lock.
 
     Every local process holds SUBMIT_LOCK from the pause and queue checks
@@ -597,10 +599,12 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any
     the checks before either batch exists on the service.
     """
     with token_lock(SUBMIT_LOCK):
-        return _submit(case_dir, backend_type_id, approval)
+        return _submit(case_dir, backend_type_id, approval, expected_cases_sha256=expected_cases_sha256)
 
 
-def _submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
+def _submit(
+    case_dir: Path, backend_type_id: int, approval: str, *, expected_cases_sha256: str | None = None
+) -> dict[str, Any]:
     if (case_dir / "submission.json").exists():
         raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
     state_path = case_dir / "submission-state.json"
@@ -609,6 +613,8 @@ def _submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, An
     if not approval.strip():
         raise SystemExit("a nonempty approval is required")
     cases_bytes = (case_dir / "cases.json").read_bytes()
+    if expected_cases_sha256 is not None and hashlib.sha256(cases_bytes).hexdigest() != expected_cases_sha256:
+        raise SystemExit("cases.json differs from the approved manifest digest; renewed case approval is required")
     cases = json.loads(cases_bytes)
     if cases["backend_type_id"] != backend_type_id:
         raise SystemExit(f"cases.json names backend type {cases['backend_type_id']}, not {backend_type_id}")

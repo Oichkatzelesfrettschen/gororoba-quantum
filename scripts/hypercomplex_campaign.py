@@ -116,6 +116,18 @@ def analyze_batch(directory: Path) -> dict[str, Any]:
         raise ValueError("readout-reference contrast falls below the preregistered 0.2 quality boundary")
     counts = Counter(int(shot, 2) // 2 for shot in shots)
     count_vector = [counts[index] for index in range(2 ** (width - 1))]
+    observed = [count / len(shots) for count in count_vector]
+    predictions = {}
+    residuals = {}
+    for label in ("requested", "native"):
+        resolved = science[f"{label}_probabilities"]
+        if len(resolved) != 2**width or any(not math.isfinite(value) or value < 0 for value in resolved):
+            raise ValueError("predicted probabilities need finite nonnegative full-register values")
+        grouped = [sum(resolved[index : index + 2]) for index in range(0, len(resolved), 2)]
+        if not math.isclose(sum(grouped), 1, abs_tol=1e-12, rel_tol=0):
+            raise ValueError("predicted probabilities must have unit total")
+        predictions[label] = grouped
+        residuals[label] = [actual - expected for actual, expected in zip(observed, grouped, strict=True)]
     diagnostics = shot_diagnostics([int(int(shot, 2) // 2 != 0) for shot in shots]) if len(shots) >= 16 else None
     return {
         "schema": "hypercomplex-measured-frame-v1",
@@ -123,7 +135,12 @@ def analyze_batch(directory: Path) -> dict[str, Any]:
         "time": science["setting"].get("time", 0),
         "setting": science["setting"],
         "counts": count_vector,
-        "probabilities": [count / len(shots) for count in count_vector],
+        "probabilities": observed,
+        "grouped_predictions": predictions,
+        "observed_minus_predicted": residuals,
+        "total_variation_residual": {
+            label: sum(abs(value) for value in values) / 2 for label, values in residuals.items()
+        },
         "raw_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "reference_raw_sha256": raw_digests,
         "receipt_sha256": hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
@@ -132,6 +149,13 @@ def analyze_batch(directory: Path) -> dict[str, Any]:
         "operator_error": science["operator_error"],
         "readout_contrasts": contrasts,
         "physical_readout_contrasts": physical_contrasts,
+        "physical_readout_one_probabilities": reference_probabilities,
+        "logical_readout_one_probabilities": [
+            [row[physical] for physical in mapping] for row in reference_probabilities
+        ],
+        "inference_scope": "descriptive acquisition; conformance, equivalence and ray invariance unestablished",
+        "acquisition_quality": "output readout contrast >=0.2 only; no bias correction or scientific acceptance",
+        "scientific_continuation_admitted": False,
         "job_id": next(row["job"] for row in receipt["jobs"] if row["file"] == science["file"]),
     }
 
@@ -188,7 +212,9 @@ def execute(directory: Path, approval: str, approved_sha256: str, max_wait_secon
                     break
                 print(f"account hardware pause: {remaining} seconds remaining", flush=True)
                 time.sleep(min(30, remaining))
-            qi_platform.submit(batch, 7, approval)
+            qi_platform.submit(
+                batch, 7, approval, expected_cases_sha256=plan["bindings"][path.relative_to(directory).as_posix()]
+            )
         qi_platform.collect(batch, poll=10, timeout=max(1, deadline - time.monotonic()))
         analysis = analyze_batch(batch)
         analysis_path = batch / "hypercomplex-analysis.json"

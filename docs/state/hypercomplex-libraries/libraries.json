@@ -1113,7 +1113,7 @@
     "docs/notes/iqm/pypi/iqm-benchmarks.json"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -1158,7 +1158,7 @@
     "docs/notes/iqm/pypi/iqm-error-reduction-tools.json"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -2109,7 +2109,7 @@
     "docs/notes/open_quantum/pypi/openquantum-mcp.json"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [
     "scripts/oq_platform.py"
    ],
@@ -2141,7 +2141,7 @@
     "docs/notes/open_quantum/pypi/openquantum-sdk-cirq.json"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -2154,7 +2154,7 @@
     "docs/notes/open_quantum/pypi/openquantum-sdk-pennylane.json"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -2182,7 +2182,7 @@
     "docs/notes/open_quantum/pypi/openquantum-sdk-qrisp.json"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -3546,7 +3546,7 @@
     "docs/notes/qiskit-ecosystem.md:212"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -3587,7 +3587,7 @@
     "docs/notes/qiskit-ecosystem.md:98"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -3670,7 +3670,7 @@
     "docs/notes/qiskit-ecosystem.md:221"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -3698,7 +3698,7 @@
     "docs/notes/qiskit-ecosystem.md:224"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -3768,7 +3768,7 @@
     "docs/notes/qiskit-ecosystem.md:144"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -3936,7 +3936,7 @@
     "docs/notes/qiskit-ecosystem.md:222"
    ],
    "independent_algebra_witness": false,
-   "hardware_execution": false,
+   "hardware_execution": true,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
@@ -5075,5 +5075,6 @@
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
  },
  "unresolved_import_roots": [],
+ "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
  "coverage": "all requirements locks, retained IQM distributions, maintained scientific roles and tracked runtime imports; every named package-table entry in the maintained ecosystem and algebra-candidate notes, plus retained provider PyPI records"
 }

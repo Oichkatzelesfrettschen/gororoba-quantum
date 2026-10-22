@@ -78,6 +78,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 
 | File | Contents |
 |---|---|
+| [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
 | [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
 | [runbooks/hypercomplex-operator-cases.md](runbooks/hypercomplex-operator-cases.md) | frozen provider cases, pacing, costs and approval boundary |
 | [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | expanded Python distribution roles and documented candidates |

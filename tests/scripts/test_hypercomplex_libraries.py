@@ -29,3 +29,12 @@ def test_documented_candidates_and_provider_adapters_have_roles() -> None:
     for prose in ("github", "pypi", "probe", "not", "aur"):
         if prose in rows:
             raise RuntimeError(f"a documentation word became a distribution: {prose}")
+    for name in (
+        "openquantum-sdk-pennylane",
+        "openquantum-sdk-cirq",
+        "openquantum-sdk-qrisp",
+        "openquantum-mcp",
+        "qiskit-experiments",
+    ):
+        if not rows[name]["hardware_execution"]:
+            raise RuntimeError(f"a provider acquisition surface needs an execution boundary: {name}")

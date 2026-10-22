@@ -135,7 +135,19 @@ EXECUTION = {
     "perceval-quandela",
     "openquantum-sdk",
     "openquantum-sdk-qiskit",
+    "openquantum-sdk-pennylane",
+    "openquantum-sdk-cirq",
+    "openquantum-sdk-qrisp",
+    "openquantum-mcp",
     "iqm-client",
+    "iqm-benchmarks",
+    "iqm-error-reduction-tools",
+    "qiskit-experiments",
+    "qiskit-device-benchmarking",
+    "qiskit-serverless",
+    "qiskit-ibm-catalog",
+    "qiskit-ibm-provider",
+    "qiskit-ibm-runtime-mcp-server",
     "qiskit-mitigation",
 }
 ISOLATED_IMPORTS = {
@@ -281,6 +293,7 @@ def inventory() -> dict[str, Any]:
         "libraries": rows,
         "sources_sha256": sources,
         "unresolved_import_roots": sorted(unresolved),
+        "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
         "coverage": (
             "all requirements locks, retained IQM distributions, maintained scientific roles "
             "and tracked runtime imports; every named package-table entry in the maintained ecosystem "

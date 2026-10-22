@@ -2,9 +2,10 @@
 
 import hashlib
 import json
+import shutil
 
 import pytest
-from hypercomplex_campaign import analyze_batch, campaign_plan, execute, measured_wave
+from hypercomplex_campaign import ROOT, analyze_batch, campaign_plan, execute, measured_wave
 from hypercomplex_cases import qi_cases, write_files
 
 
@@ -40,14 +41,12 @@ def test_hardware_analysis_checks_manifest_identity_before_reading_shots(tmp_pat
 def test_output_readout_gate_follows_swapped_layout(tmp_path) -> None:
     import qi_platform
 
-    write_files(tmp_path, qi_cases(16, "wave"))
-    batch = next(
-        path.parent
-        for path in tmp_path.glob("*/cases.json")
-        if json.loads(path.read_text())["circuits"][2]["measurement_mapping"] == [1, 0, 2]
-    )
+    batch = tmp_path / "swapped-layout"
+    shutil.copytree(ROOT / "results/hypercomplex/cases/quantum_inspire/wave/wave-batch-19", batch)
     manifest_path = batch / "cases.json"
     manifest = json.loads(manifest_path.read_text())
+    manifest["shots"] = 16
+    manifest_path.write_text(json.dumps(manifest))
     receipt = {
         "schema": qi_platform.SUBMISSION_SCHEMA,
         "state": "enqueued",
@@ -71,3 +70,28 @@ def test_output_readout_gate_follows_swapped_layout(tmp_path) -> None:
     record = analyze_batch(batch)
     if record["readout_contrasts"] != [0.0, 1.0, 1.0]:
         raise RuntimeError("logical output readout gating must follow the declared mapping")
+    if record["physical_readout_one_probabilities"] != [[0.0, 0.0, 0.0], [1.0, 0.0, 1.0]]:
+        raise RuntimeError("the analysis must preserve asymmetric readout references")
+    if record["scientific_continuation_admitted"]:
+        raise RuntimeError("readout quality alone cannot admit scientific continuation")
+    for label in ("native", "requested"):
+        if abs(sum(record["observed_minus_predicted"][label])) > 1e-12:
+            raise RuntimeError("paired prediction residuals must retain their zero total")
+
+
+def test_pacing_wait_cannot_replace_approved_manifest(tmp_path, monkeypatch) -> None:
+    from contextlib import nullcontext
+
+    import hypercomplex_campaign
+    import qi_platform
+
+    write_files(tmp_path, qi_cases(16))
+    approved = campaign_plan(tmp_path)["plan_sha256"]
+    first = sorted(tmp_path.glob("*/cases.json"))[0]
+    pauses = iter((1, 0))
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: next(pauses))
+    monkeypatch.setattr(qi_platform, "token_lock", lambda *args: nullcontext())
+    monkeypatch.setattr(hypercomplex_campaign.time, "sleep", lambda seconds: first.write_text(first.read_text() + " "))
+    with pytest.raises(SystemExit, match="approved manifest"):
+        execute(tmp_path, "approved fixture", approved, 60)
