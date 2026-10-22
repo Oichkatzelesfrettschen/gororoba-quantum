@@ -53,7 +53,11 @@ def differences(retained: Any, fresh: Any, path: str = "", skip: tuple[str, ...]
         for index, (left, right) in enumerate(zip(retained, fresh, strict=True)):
             found += differences(left, right, f"{path}[{index}]", skip)
         return found
-    same = type(retained) is type(fresh) and retained == fresh
+    # A float compares by its IEEE-754 encoding: 0.0 and -0.0 differ, and a NaN equals itself.
+    if isinstance(retained, float) and type(fresh) is float:
+        same = retained.hex() == fresh.hex()
+    else:
+        same = type(retained) is type(fresh) and retained == fresh
     return [] if same else [f"{path or '.'}: {retained!r} -> {fresh!r}"]
 
 

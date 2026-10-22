@@ -50,7 +50,7 @@ def test_replay_resolution() -> None:
         raise AssertionError("an interpreter that cannot start reads as matching")
 
     def resolve(probe: list[str], explicit: str | None, environment: dict[str, str]) -> tuple[str | None, str]:
-        with patch.object(pins, "mismatches", lambda _python, _pins: list(probe)):
+        with patch.object(pins, "mismatches", lambda _python, _pins, _patches=None: list(probe)):
             return pins.resolve_replay("qiskit-2.5", explicit, environment, python)
 
     differing = ["qiskit 2.6.0 (pin 2.5.2)"]
@@ -79,6 +79,25 @@ def test_replay_resolution() -> None:
             raise AssertionError(f"a tree's own pins were not applied: {chosen} ({reason})")
 
 
+def test_installer_state_enters_the_comparison() -> None:
+    # ci/install_pins.sh installs its --no-deps pins and patches site-packages
+    # after the pin files; an interpreter without either differs from a built one.
+    if pins.installer_pins().get("mpmath") != "1.4.1":
+        raise AssertionError(f"install_pins.sh's --no-deps pins read {pins.installer_pins()}")
+    with TemporaryDirectory(prefix="ci-pins-patch-") as temporary:
+        tree = Path(temporary)
+        (tree / "ci" / "patches").mkdir(parents=True)
+        (tree / "ci" / "install_pins.sh").write_text(
+            '"$PYTHON" -m pip install --no-deps pip-package-that-is-absent==2.0\n'
+        )
+        (tree / "ci" / "patches" / "absent.patch").write_text(
+            "--- a/package-that-is-absent/module.py\n+++ b/package-that-is-absent/module.py\n@@ -1 +1 @@\n-old\n+new\n"
+        )
+        found = pins.environment_mismatches(sys.executable, {}, tree)
+        if found != ["pip-package-that-is-absent absent (pin 2.0)", "absent.patch not applied"]:
+            raise AssertionError(f"the installer state of a tree reads {found}")
+
+
 def test_host_environment_fallback() -> None:
     # A drifted running interpreter falls back to the runtime's host
     # environment when that holds every pin; neither names the build command.
@@ -92,7 +111,9 @@ def test_host_environment_fallback() -> None:
             raise AssertionError(f"the current runtime's host environment is {current_host}")
 
         def resolve(probe: dict[str, list[str]], environment: dict[str, str]) -> dict[str, tuple[str | None, str]]:
-            with patch.object(pins, "mismatches", lambda candidate, _pins: list(probe.get(candidate, differing))):
+            with patch.object(
+                pins, "mismatches", lambda candidate, _pins, _patches=None: list(probe.get(candidate, differing))
+            ):
                 return {
                     "current": pins.resolve_current(environment, python),
                     "replay": pins.resolve_replay("qiskit-2.5", None, environment, python),

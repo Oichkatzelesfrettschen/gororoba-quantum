@@ -6712,6 +6712,7 @@
    "collections",
    "json",
    "pathlib",
+   "re",
    "subprocess"
   ],
   "ci/premerge_gates.py": [
@@ -6779,8 +6780,10 @@
    "hashlib",
    "json",
    "pathlib",
+   "run_gates",
    "sys",
-   "typing"
+   "typing",
+   "unittest"
   ],
   "ci/runner_specs.py": [
    "__future__",

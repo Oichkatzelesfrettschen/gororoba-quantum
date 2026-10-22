@@ -473,6 +473,13 @@ def profile_starts(model: str, params: list[float], points: list[Point], cell: i
     return [trial for _value, trial in rows[:PROFILE_KEEP]]
 
 
+class ProfileStarts:
+    """profile_starts of one (model, params, points, cell) item; pool-picklable."""
+
+    def __call__(self, item: tuple[str, list[float], list[Point], int]) -> list[list[float]]:
+        return profile_starts(*item)
+
+
 class ProfiledFit:
     """Fit from a start, then Fit from the cell's best profile points at its endpoint; the least NLL."""
 
@@ -531,11 +538,16 @@ def cell_fits(points: list[Point], model: str = "static") -> dict[int, tuple[flo
         if cell is not None and (cell not in best or result[0] < best[cell][0]):
             best[cell] = result
     leader = best[min(best, key=lambda cell: best[cell][0])][1]
-    profiled: list[tuple[str, list[float], list[Point], int | None]] = [
-        (model, trial, points, cell)
+    seeds = [
+        (model, seed, points, cell)
         for cell in CELLS
         for seed in (best[cell][1], leader[:DF_INDEX] + [cell_center(cell)] + leader[DF_INDEX + 1 :])
-        for trial in profile_starts(model, seed, points, cell)
+    ]
+    lattices = parallel.ordered_map(ProfileStarts(), seeds, min_items=2)
+    profiled: list[tuple[str, list[float], list[Point], int | None]] = [
+        (model, trial, points, cell)
+        for (_model, _seed, _points, cell), trials in zip(seeds, lattices, strict=True)
+        for trial in trials
     ]
     for (_model, _start, _points, cell), result in zip(
         profiled, parallel.ordered_map(Fit(), profiled, min_items=2), strict=True

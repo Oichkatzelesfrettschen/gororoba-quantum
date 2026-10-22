@@ -9,6 +9,7 @@ import json
 import shutil
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import mock
 
 import runner_image_records as records
 
@@ -63,3 +64,37 @@ def test_check_names_records_after_the_digest_moves() -> None:
         found = records.problems(moved, root)
         if len(found) != 2 or not found[1].startswith("results/record.json: written under"):
             raise AssertionError(found)
+
+
+def test_add_rebinds_only_the_complete_record_set() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / "ci").mkdir()
+        first, second = root / "first.json", root / "second.json"
+        first.write_text("{}\n")
+        second.write_text("[]\n")
+        ledger = root / "ci" / "runner_image_records.json"
+        with (
+            mock.patch.object(records, "ROOT", root),
+            mock.patch.object(records, "LEDGER", ledger),
+            mock.patch.object(records, "image_id", lambda _root=root: "old"),
+        ):
+            if records.main(["add", str(first), str(second)]) != 0:
+                raise AssertionError("binding two records failed")
+        with (
+            mock.patch.object(records, "ROOT", root),
+            mock.patch.object(records, "LEDGER", ledger),
+            mock.patch.object(records, "image_id", lambda _root=root: "new"),
+        ):
+            try:
+                records.main(["add", str(first)])
+            except SystemExit as error:
+                if "second.json" not in str(error):
+                    raise AssertionError(f"a partial rebind named {error}") from error
+            else:
+                raise AssertionError("a partial rebind under a new image passed")
+            if records.main(["add", str(first), str(second)]) != 0:
+                raise AssertionError("a complete rebind under a new image failed")
+        bound = json.loads(ledger.read_text())
+        if bound["image"] != "new" or sorted(bound["records"]) != ["first.json", "second.json"]:
+            raise AssertionError(bound)

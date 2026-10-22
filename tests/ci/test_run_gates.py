@@ -170,7 +170,7 @@ def test_unresolved_runtime_runs_no_gate(root: Path, tmp_path: Path) -> None:
     )
     differing = ["qiskit 2.6.0 (pin 2.5.2)"]
     with (
-        patch.object(run_gates.pins, "mismatches", lambda _python, _pins: list(differing)),
+        patch.object(run_gates.pins, "mismatches", lambda _python, _pins, _patches=None: list(differing)),
         runner(root, REPLAY_PYTHON=None, XDG_CACHE_HOME=str(tmp_path / "cache"), GOROROBA_PINS_REQUIRED=None) as output,
     ):
         status = run_gates.main([])

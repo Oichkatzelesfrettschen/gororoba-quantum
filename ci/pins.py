@@ -4,7 +4,11 @@ A pin file lists one ``name==version`` per line; ``#`` starts a comment.
 ``mismatches`` imports nothing from the probed environment beyond
 importlib.metadata, in a ``-I`` subprocess of that interpreter, so a probe of
 a replay interpreter sees that interpreter's site-packages and not the
-caller's.
+caller's. ci/install_pins.sh builds every pinned environment, and after the
+pin files it installs its ``--no-deps`` pins and applies ci/patches/ to
+site-packages; ``environment_mismatches`` holds an interpreter to those too
+(``installer_pins``, ``installer_patches``), so a stock environment holding
+the pin files' versions alone never stands in for a built one.
 
 GOROROBA_PINS_REQUIRED=1 turns every version fallback into a failure: the
 replay interpreter must be named explicitly and match its pins, a lint tool
@@ -24,6 +28,7 @@ differences rather than on the change under test.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from collections.abc import Mapping
 from pathlib import Path
@@ -42,7 +47,7 @@ HOST_ENVS = {"current": f"ci-py{PYTHON_VERSION}", "qiskit-2.5": f"replay-py{PYTH
 BUILD_COMMAND = "sh ci/build_host_envs.sh"
 
 _PROBE = """
-import json, sys
+import json, sys, sysconfig
 from importlib.metadata import PackageNotFoundError, version
 found = {}
 for name in json.loads(sys.argv[1]):
@@ -50,7 +55,7 @@ for name in json.loads(sys.argv[1]):
         found[name] = version(name)
     except PackageNotFoundError:
         found[name] = None
-print(json.dumps(found))
+print(json.dumps({"versions": found, "purelib": sysconfig.get_paths()["purelib"]}))
 """
 
 
@@ -72,8 +77,27 @@ def pins_required(environment: Mapping[str, str]) -> bool:
     return environment.get(PINS_REQUIRED) == "1"
 
 
-def mismatches(python: str, pins: Mapping[str, str]) -> list[str]:
-    """Each pin the interpreter does not hold, as ``name VERSION (pin PIN)``; a launch failure is one entry."""
+def installer_pins(root: Path = ROOT) -> dict[str, str]:
+    """The ``--no-deps`` pins root's ci/install_pins.sh installs after the pin files, which win over them."""
+    path = root / "ci" / "install_pins.sh"
+    text = path.read_text(encoding="utf-8") if path.is_file() else ""
+    return {name: version for name, version in re.findall(r"--no-deps ([A-Za-z0-9_.-]+)==(\S+)", text)}
+
+
+def installer_patches(root: Path = ROOT) -> list[Path]:
+    """The ci/patches/ files ci/install_pins.sh applies to site-packages, in name order."""
+    directory = root / "ci" / "patches"
+    return sorted(directory.glob("*.patch")) if directory.is_dir() else []
+
+
+def environment_mismatches(python: str, pins: Mapping[str, str], root: Path = ROOT) -> list[str]:
+    """``mismatches`` against the pins plus root's installer pins, and each installer patch left unapplied."""
+    return mismatches(python, {**pins, **installer_pins(root)}, installer_patches(root))
+
+
+def mismatches(python: str, pins: Mapping[str, str], patches: list[Path] | None = None) -> list[str]:
+    """Each pin the interpreter does not hold, as ``name VERSION (pin PIN)``, then each patch its site-packages
+    lacks; a launch failure is one entry."""
     try:
         completed = subprocess.run(
             [python, "-I", "-c", _PROBE, json.dumps(list(pins))],
@@ -86,12 +110,24 @@ def mismatches(python: str, pins: Mapping[str, str]) -> list[str]:
         return [f"{python} could not run: {error}"]
     if completed.returncode != 0:
         return [f"{python} exited {completed.returncode}: {completed.stderr.strip()[-200:]}"]
-    found = json.loads(completed.stdout)
-    return [
+    probe = json.loads(completed.stdout)
+    found = probe["versions"]
+    missing = [
         f"{name} {found.get(name) or 'absent'} (pin {version})"
         for name, version in pins.items()
         if found.get(name) != version
     ]
+    for patch in patches or []:
+        with patch.open("rb") as stream:
+            applied = subprocess.run(
+                ["patch", "-R", "--dry-run", "-s", "-f", "-p1", "-d", probe["purelib"]],
+                stdin=stream,
+                capture_output=True,
+                check=False,
+            )
+        if applied.returncode != 0:
+            missing.append(f"{patch.name} not applied")
+    return missing
 
 
 def resolve_replay(
@@ -115,17 +151,17 @@ def resolve_replay(
     named = explicit or environment.get(variable)
     source = "--replay-python" if explicit else variable
     if named:
-        missing = mismatches(named, pins)
+        missing = environment_mismatches(named, pins, root)
         if missing:
             return None, f"{source}={named} differs from {path.name}: {', '.join(missing)}"
         return named, f"{source}={named} holds every pin of {path.name}"
     if pins_required(environment):
         return None, f"historical runtime {runtime} requires {variable} under {PINS_REQUIRED}=1"
-    missing = mismatches(current, pins)
+    missing = environment_mismatches(current, pins, root)
     if not missing:
         return current, f"the running interpreter {current} holds every pin of {path.name}"
     host = host_env(runtime, environment)
-    if host.is_file() and not mismatches(str(host), pins):
+    if host.is_file() and not environment_mismatches(str(host), pins, root):
         return str(host), f"the host environment {host} holds every pin of {path.name}"
     return None, (
         f"historical runtime {runtime} requires {variable}; the running interpreter differs "
@@ -164,19 +200,19 @@ def resolve_current(environment: Mapping[str, str], current: str, root: Path = R
     if not pins:
         return named or current, f"{named or current}: the tree pins no current runtime"
     if named:
-        missing = mismatches(named, pins)
+        missing = environment_mismatches(named, pins, root)
         if not missing:
             return named, f"PYTHON={named} holds every pin of {files}"
         if pins_required(environment):
             return None, f"PYTHON={named} differs from {files} under {PINS_REQUIRED}=1: {', '.join(missing)}"
         return named, f"PYTHON={named} differs from {files} and runs as named: {', '.join(missing)}"
-    missing = mismatches(current, pins)
+    missing = environment_mismatches(current, pins, root)
     if not missing:
         return current, f"the running interpreter {current} holds every pin of {files}"
     if pins_required(environment):
         return None, f"the running interpreter differs from {files} under {PINS_REQUIRED}=1: {', '.join(missing)}"
     host = host_env("current", environment)
-    if host.is_file() and not mismatches(str(host), pins):
+    if host.is_file() and not environment_mismatches(str(host), pins, root):
         return str(host), f"the host environment {host} holds every pin of {files}"
     return None, (
         f"the running interpreter {current} differs from {files}: {', '.join(missing)}; {BUILD_COMMAND} builds {host}"

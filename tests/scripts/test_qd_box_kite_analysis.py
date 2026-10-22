@@ -25,6 +25,8 @@ def test_selection_follows_case_schema_and_exclusions() -> None:
         make_run(root, "c-qpu_belenos-belenos_mesh-job-03", "qd-belenos-mesh-cases-v1")
         make_run(root, "d-qpu_belenos-bdsc_qualification-tc-def-e1", "qd-bdsc-cases-v1")
         (root / "e-no-case").mkdir()
+        (root / "f-qpu_belenos-belenos_mesh-job-04").mkdir()
+        (root / "f-qpu_belenos-belenos_mesh-job-04" / "cases.json").write_text("{not json")
         selected = [run.name for run in analysis.runs_under(root, ["*-qpu_belenos-belenos_mesh-*"])]
         if selected != ["a-sim_belenos-belenos_mesh-job-00", "b-sim_belenos-box_kite_photonic_single-job-00"]:
             raise AssertionError(selected)

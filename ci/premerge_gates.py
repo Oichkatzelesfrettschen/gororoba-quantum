@@ -108,15 +108,18 @@ def worktree(repo: Path, path: Path, commit: str) -> Iterator[Path]:
 
 
 @functools.cache
-def interpreter() -> str:
-    """The current-runtime interpreter pins.resolve_current chooses, as an absolute path.
+def interpreter(root: Path) -> str:
+    """The current-runtime interpreter pins.resolve_current chooses against root's own pins, as an absolute path.
 
-    Every gate runs with its cwd inside a scratch worktree, so the path is
-    absolute; a host whose running interpreter and host environment both
-    differ from the pins stops here with the build command.
+    The base and the merge each resolve against their own requirements.txt
+    and ci/requirements-ci.txt, so a branch that changes a pin runs its gates
+    under an interpreter holding the new pins. Every gate runs with its cwd
+    inside a scratch worktree, so the path is absolute; a tree whose running
+    interpreter and host environment both differ from its pins stops here
+    with the build command.
     """
-    chosen, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
-    print(f"premerge: current runtime: {reason}", flush=True)
+    chosen, reason = pins.resolve_current(os.environ, sys.executable, root)
+    print(f"premerge: {root.name} current runtime: {reason}", flush=True)
     if chosen is None:
         raise SystemExit(f"premerge: the current runtime cannot run: {reason}")
     found = shutil.which(chosen)
@@ -133,7 +136,9 @@ def default_worktrees(repo: Path = ROOT) -> Path:
     return Path(tempfile.gettempdir()) / "gororoba-quantum" / "premerge-worktrees" / repository_name(repo)
 
 
-def cache_key(base_commit: str, max_seconds: float, replay: dict[str, str]) -> tuple[str, dict[str, Any]]:
+def cache_key(
+    base_tree: Path, base_commit: str, max_seconds: float, replay: dict[str, str]
+) -> tuple[str, dict[str, Any]]:
     """The digest naming a base result and the components it covers.
 
     Environment values enter as sha256 digests, so a credential a variable
@@ -144,7 +149,7 @@ def cache_key(base_commit: str, max_seconds: float, replay: dict[str, str]) -> t
         "schema": CACHE_SCHEMA,
         "base": base_commit,
         "max_seconds": max_seconds,
-        **identity(os.environ, interpreter(), replay),
+        **identity(os.environ, interpreter(base_tree), replay),
     }
     digest = hashlib.sha256(json.dumps(components, sort_keys=True).encode()).hexdigest()
     return digest, components
@@ -194,7 +199,7 @@ def results(
     root: Path, max_seconds: float, replay: dict[str, str] | None = None, gates: list[str] | None = None
 ) -> dict[str, tuple[int, str]]:
     """Each gate's status and failure output from the tree's own ci/run_gates.py, optionally only named gates."""
-    python = interpreter()
+    python = interpreter(root)
     environment = {**os.environ, "PYTHON": python, **(replay or {})}
     selection = ["--gates", ",".join(gates)] if gates is not None else []
     completed = subprocess.run(
@@ -245,7 +250,7 @@ def replay_interpreters(explicit: str | None, root: Path, label: str) -> tuple[d
     found: dict[str, str] = {}
     refused: list[str] = []
     for runtime, (variable, _path) in pins.REPLAY_RUNTIMES.items():
-        chosen, reason = pins.resolve_replay(runtime, explicit, os.environ, interpreter(), root)
+        chosen, reason = pins.resolve_replay(runtime, explicit, os.environ, interpreter(root), root)
         print(f"premerge: {label} historical runtime {runtime}: {reason}", flush=True)
         if chosen is not None:
             found[variable] = os.path.abspath(shutil.which(chosen) or chosen)
@@ -342,7 +347,7 @@ def base_gates(
     """
     if cache is None:
         return results(base_tree, max_seconds, replay), None
-    digest, components = cache_key(base_commit, max_seconds, replay)
+    digest, components = cache_key(base_tree, base_commit, max_seconds, replay)
     path = cache / f"{base_commit[:12]}-{digest[:16]}.json"
     with locked(path):
         passes = cached_passes(path, digest)

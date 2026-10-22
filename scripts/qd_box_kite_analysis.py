@@ -457,8 +457,9 @@ def runs_under(root: Path, exclude: list[str]) -> list[Path]:
     """Run directories under root whose case schema analyze() reads, sorted by name, minus the excluded names."""
     selected = []
     for run in sorted(path for path in root.iterdir() if (path / "cases.json").is_file()):
-        schema = json.loads((run / "cases.json").read_text(encoding="utf-8")).get("schema")
-        if schema in ANALYZED_CASE_SCHEMAS and not any(fnmatch.fnmatchcase(run.name, glob) for glob in exclude):
+        if any(fnmatch.fnmatchcase(run.name, glob) for glob in exclude):
+            continue
+        if json.loads((run / "cases.json").read_text(encoding="utf-8")).get("schema") in ANALYZED_CASE_SCHEMAS:
             selected.append(run)
     if not selected:
         raise SystemExit(f"{root}: no run directory holds an analyzed case schema")

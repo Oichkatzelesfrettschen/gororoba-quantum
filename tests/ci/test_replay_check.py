@@ -25,6 +25,8 @@ def test_every_value_compares_exactly() -> None:
     expect(differences(retained, retained | {"fit": [1.0 + 2**-52, 2e-9]}), [f".fit[0]: 1.0 -> {1.0 + 2**-52!r}"])
     expect(differences(retained, retained | {"cell": 1}), [".cell: 0 -> 1"])
     expect(differences(retained, retained | {"cell": 0.0}), [".cell: 0 -> 0.0"])
+    expect(differences({"x": 0.0}, {"x": -0.0}), [".x: 0.0 -> -0.0"])
+    expect(differences({"x": float("nan")}, {"x": float("nan")}), [])
     expect(differences(retained, retained | {"status": "fail"}), [".status: 'pass' -> 'fail'"])
     expect(differences(retained, retained | {"ok": 1}), [".ok: True -> 1"])
     expect(differences(retained, retained | {"fit": [1.0]}), [".fit: length 2 -> 1"])

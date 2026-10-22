@@ -1,6 +1,6 @@
 {
  "schema": "runner-image-records-v1",
- "image": "d1f61a50acbe17bc0577618cffefd72041194c3d8e1bfc517285a39fd7bfa237",
+ "image": "5937ab7c1bc2555398b96956a4ddb1975684edfc8bb31cd28434cb19564a965c",
  "records": {
   "results/live/2026-10-19T151959.226467Z/between-arm-095a30e32c9c.json": "ad7f19e3c55be0ed83dcdb688cabcc7fe92fd4eeeb8f176f53923bf5b5036b95",
   "results/live/2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json": "4652b9cf84a3c17a1047fa8e15fd60dc66b0054282cc180c25d7280e037e9960",
