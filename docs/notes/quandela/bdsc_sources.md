@@ -6,10 +6,12 @@ Mathematical instrumentation supplies the optical dilation, the interferometer
 and the concentration and perturbation theory. Physical statistical inference
 connects counts from a characterized device to a confidence statement. The
 target/complement certificate itself, sin^2 theta_max <= a_U / gamma_L from
-bounds on the blocks A = V_K^T F V_K and C = V_Q^T F V_Q, follows from
-Courant-Fischer and positivity alone (bdsc.md, Certificate). No source below
-states it, and the repository asserts no literature priority for the complete
-experimental architecture.
+simultaneous bounds on the blocks A = V_K^dagger F V_K and
+C = V_Q^dagger F V_Q, requires F >= 0 and 0 <= a_U < gamma_L.
+Those premises separate the four lowest eigenvalues before the angle is
+bounded. The result follows from Courant-Fischer and positivity alone
+(bdsc.md, Certificate). No source below states it, and the repository asserts
+no literature priority for the complete experimental architecture.
 
 Every source is registered in [SOURCES.json](../../SOURCES.json). The arXiv
 grant of most of them permits no rehosting, so their PDFs live in the ignored
@@ -46,7 +48,7 @@ none of their combinatorial results as a premise.
 | Source | Repository copy | What the certificate takes |
 |---|---|---|
 | Tischler, Rockstuhl, Slowik, Quantum Optical Realization of Arbitrary Linear Transformations Allowing for Loss and Gain, Physical Review X 8 (2018), 021017 | [note](../papers/1712.01413.md), arXiv 1712.01413v2, cache | The dilation of the 12 x 16 Kraus compression into a passive 24-mode unitary |
-| Clements, Humphreys, Metcalf, Kolthammer, Walmsley, Optimal design for universal multiport interferometers, Optica 3 (2016), 1460-1465 | [note](../papers/1603.08788.md), arXiv 1603.08788v2, cache | The mesh on which qpu:belenos realizes any unitary; balanced loss as a scalar |
+| Clements, Humphreys, Metcalf, Kolthammer, Walmsley, Optimal design for universal multiport interferometers, Optica 3 (2016), 1460-1465 | [note](../papers/1603.08788.md), arXiv 1603.08788v2, cache | Ideal universal interferometer synthesis; balanced-loss model, not a qualification of current Belenos compilation or acceptance |
 | Tropp, User-friendly tail bounds for sums of random matrices, Foundations of Computational Mathematics 12 (2012), 389-434 | [note](../papers/1004.4389.md), arXiv 1004.4389v7, cache | Matrix Bernstein, Theorem 1.4: `bdsc.bernstein_radius` |
 | Davis and Kahan, The rotation of eigenvectors by a perturbation. III, SIAM Journal on Numerical Analysis 7 (1970), 1-46, DOI 10.1137/0707001 | citation only; SIAM hosts the paper behind a subscription and no repository copy exists | The standard perturbation theory of spectral subspaces, for comparison |
 
@@ -86,10 +88,15 @@ Gate-set tomography explains the premise that reconstruction carries. State
 and process tomography each assume one side of the experiment known, and GST
 estimates both up to a gauge M. The certificate assumes the preparations
 known up to `preparation_bias_bound` and the conditioning up to
-`conditioning_delta`. Its M4 blocker on qpu:belenos, a compiled mesh that
-follows the preparation label, is the case in which that premise fails and
-only a self-consistent model of the kind GST builds could recover a common
-effect.
+`conditioning_delta`. Preparation-dependent returned meshes do not by
+themselves prove that the induced measurement effects differ: distinct
+transformations can preserve the measured effect. They leave the required
+common-effect premise unqualified unless physical implementation differences
+are bounded. GST supplies a framework for testing a self-consistent model
+when its own assumptions hold; it does not manufacture a common instrument
+from arbitrary label-dependent transformations, and its gauge freedom does
+not independently fix the target kernel frame. The preparation, observation
+and common-effect contracts remain experimental obligations.
 
 Chen et al. solve the dual problem. They trust the measurement and certify
 that a state lies near a known subspace, bounding Tr(Omega rho) through the
@@ -117,3 +124,16 @@ Ascella incident. That note preserves the frozen experiment and identifies
 its source pin and the limited scope of the independently recomputed counts.
 It does not replace the registered algebra, provider contracts, or formal
 qualification readout with an inferred detector calibration.
+
+
+## Evidence-map disposition and remaining work
+
+The [evidence-map resolution](../../design/evidence-map-resolution.md) maps
+the public infographic to canonical sources, completed corrections, open PR
+integration, offline accounting work and provider-dependent experiments. Its
+[disposition record](../../evidence/evidence-map-resolution/disposition.json)
+is a task snapshot, not another research registry or a new hardware result.
+The [targeted checks](../../evidence/evidence-map-resolution/checks.json)
+recalculate only the listed retained count-level and identity fixtures.
+The [validation note](../../evidence/evidence-map-resolution/README.md) states
+which checks ran and which repository-wide gates remain unrun.
