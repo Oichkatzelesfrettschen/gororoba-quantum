@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import re
 import subprocess
@@ -203,7 +204,7 @@ def capture(sources: dict[str, Path], output: Path, tracked_root: Path | None = 
             if path.suffix == ".tar":
                 count = 0
                 expanded = 0
-                with tarfile.open(path, "r:") as archive:
+                with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
                     for member in archive:
                         part = PurePosixPath(member.name)
                         if part.is_absolute() or ".." in part.parts or member.issym() or member.islnk():

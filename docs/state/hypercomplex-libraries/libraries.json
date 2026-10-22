@@ -10996,6 +10996,7 @@
    "__future__",
    "argparse",
    "hashlib",
+   "io",
    "json",
    "parallel",
    "pathlib",
