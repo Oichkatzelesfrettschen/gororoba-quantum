@@ -13,6 +13,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(0, str(ROOT / "ci"))
+from pins import read_pins  # noqa: E402
+
 from parallel import ordered_map  # noqa: E402
 
 BUNDLE = ROOT / "results/local-simulation"
@@ -100,7 +103,11 @@ def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
             ):
                 raise ValueError("derived terminal-unitary identity changed")
         retained_error = row["native_probability_errors"][kind]
-        if not math.isfinite(retained_error) or retained_error < 0 or abs(errors[kind] - retained_error) > 1e-15:
+        if (
+            not math.isfinite(retained_error)
+            or retained_error < 0
+            or abs(errors[kind] - retained_error) > max(math.ulp(errors[kind]), math.ulp(retained_error))
+        ):
             raise ValueError("stored probability error differs from amplitudes")
     if row["passed"] != (max(errors.values()) < 1e-9):
         raise ValueError("retained QI verdict differs from numerical criterion")
@@ -112,6 +119,16 @@ def check_photonic(row: dict[str, Any]) -> None:
     import numpy as np
 
     manifest = json.loads((ROOT / row["case"] / "cases.json").read_text())
+    circuit = json.loads((ROOT / row["case"] / manifest["circuit"]["file"]).read_text())
+    input_state = circuit["input_state"]
+    if (
+        len(input_state) != row["modes"]
+        or input_state.count(1) != 1
+        or any(type(value) is not int or value not in {0, 1} for value in input_state)
+        or type(row["source"]) is not int
+        or row["source"] != input_state.index(1)
+    ):
+        raise ValueError("physical source mode differs from the registered one-photon input")
     setting = manifest["settings"][row["index"]]
     if setting["name"] != row["name"] or row["modes"] not in {12, 24}:
         raise ValueError("physical setting identity differs")
@@ -139,7 +156,7 @@ def check_photonic(row: dict[str, Any]) -> None:
         if (
             not math.isfinite(retained_error)
             or retained_error < 0
-            or abs(error - retained_error) > 1e-15
+            or abs(error - retained_error) > max(math.ulp(error), math.ulp(retained_error))
             or error >= 1e-9
         ):
             raise ValueError("optical backend probability criterion differs")
@@ -206,6 +223,10 @@ def check() -> None:
     ordered_map(check_photonic, rows, min_items=1)
     check_optical_sources(optical)
     operators = load("optical-operator-replay.json")
+    requirements = read_pins(ROOT / "requirements.txt") | read_pins(ROOT / "ci/requirements-ci.txt")
+    optical_versions = {name: requirements[name] for name in ("perceval-quandela", "exqalibur", "numpy")}
+    if optical["versions"] != optical_versions or operators["versions"] != optical_versions:
+        raise ValueError("retained optical toolchain versions differ from the requirement pins")
     outputs = {(row["case"], row["index"]): row for row in operators["rows"]}
     if len(operators["rows"]) != 128 or set(outputs) != expected:
         raise ValueError("complete optical operator denominator differs")

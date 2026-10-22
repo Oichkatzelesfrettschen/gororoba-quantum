@@ -10141,6 +10141,7 @@
    "numpy",
    "parallel",
    "pathlib",
+   "pins",
    "qi_stack",
    "qi_toolchain_check",
    "qxelarator",

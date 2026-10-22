@@ -35,6 +35,41 @@ def test_photonic_replay_rejects_changed_probability() -> None:
         check_photonic(row)
 
 
+def test_photonic_replay_binds_source_mode() -> None:
+    row = copy.deepcopy(load("physical-photonic-compiler-crosscheck/photonic.json")["rows"][0])
+    row["source"] = 1
+    with pytest.raises(ValueError, match="source mode"):
+        check_photonic(row)
+
+
+def test_photonic_replay_rejects_false_zero_residual() -> None:
+    row = copy.deepcopy(load("physical-photonic-compiler-crosscheck/photonic.json")["rows"][0])
+    row["max_probability_errors"] = {name: 0.0 for name in row["max_probability_errors"]}
+    with pytest.raises(ValueError, match="probability criterion"):
+        check_photonic(row)
+
+
+@pytest.mark.parametrize(
+    "record_name", ["physical-photonic-compiler-crosscheck/photonic.json", "optical-operator-replay.json"]
+)
+@pytest.mark.parametrize("distribution", ["perceval-quandela", "exqalibur", "numpy"])
+def test_replay_rejects_altered_optical_version(
+    record_name: str, distribution: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    original_load = local_simulation_replay.load
+
+    def altered_load(name: str) -> dict[str, Any]:
+        record = original_load(name)
+        if name == record_name:
+            record["versions"][distribution] = "0.0.0"
+        return record
+
+    monkeypatch.setattr(local_simulation_replay, "load", altered_load)
+    monkeypatch.setattr(local_simulation_replay, "ordered_map", lambda *args, **kwargs: [])
+    with pytest.raises(ValueError, match="optical toolchain versions"):
+        local_simulation_replay.check()
+
+
 def test_qi_replay_rejects_changed_sample_denominator() -> None:
     row = copy.deepcopy(load("fullprecision-compiler-crosscheck/qi.json")["rows"][0])
     row["simulations"]["source"]["counts"]["00"] -= 1
@@ -47,6 +82,14 @@ def test_qi_replay_rejects_changed_verdict() -> None:
     row["passed"] = True
     with pytest.raises(ValueError, match="verdict"):
         check_qi((row, False, True))
+
+
+def test_qi_replay_rejects_false_zero_residual() -> None:
+    rows = load("fullprecision-compiler-crosscheck/qi.json")["rows"]
+    row = copy.deepcopy(next(row for row in rows if max(row["native_probability_errors"].values()) > 0))
+    row["native_probability_errors"] = {"source": 0.0, "compiled": 0.0}
+    with pytest.raises(ValueError, match="stored probability error"):
+        check_qi((row, True, True))
 
 
 def test_qi_replay_binds_manifest_digest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
