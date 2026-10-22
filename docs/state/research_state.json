@@ -6620,6 +6620,64 @@
       "assumptions": [
         "Provider shot order is retained as delivered; timing and stationarity are unestablished."
       ],
+      "depends_on": [
+        "algebra-hypercomplex-operator-witnesses"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-hypercomplex-operator-witnesses",
+      "statement": "The registered finite exact calculations give derivation dimension 14, chosen-octonion stabilizer dimension 8, occupation dimensions 1/3/3/1 and complex Clifford image dimension 64. The draft ladder pairing fails six stabilizer checks, while the aligned pairing passes all implemented checks. The even five-mode reference has vanishing recorded Standard Model anomaly sums.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Finite convention-bound algebra and a representation reference establish neither a unique Standard Model derivation nor its dynamics, a fundamental scalar field, or device performance.",
+      "evidence": [
+        {
+          "path": "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json",
+          "sha256": "f19765c621179b3f3eee707b9ed70dadb0a3e25d4a3702bfda61ebaeabbf7f60"
+        }
+      ],
+      "documents": [
+        "docs/evidence/hypercomplex-operators/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-630": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-sedenion-eight-generator-clifford-envelope",
+      "statement": "The first eight canonical sedenion left-multiplication operators satisfy the recorded Cl(0,8) relations. Their 256 integer word operators have Hilbert-Schmidt Gram matrix 16 times identity and span M16(R).",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "The result concerns the named eight-generator associative operator envelope. Sedenion coefficient multiplication remains nonassociative with zero divisors; the left encoding is not a product homomorphism.",
+      "evidence": [
+        {
+          "path": "docs/evidence/sedenion-clifford-envelope/certificate-batched-products.json",
+          "sha256": "e66fc928d9b4a330fef82c15e648977551fb2656aace0a13f769ca68b601706a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/sedenion-clifford-envelope/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-631": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
