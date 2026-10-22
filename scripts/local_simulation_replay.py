@@ -24,7 +24,7 @@ def sha(path: Path) -> str:
 
 def inventory() -> dict[str, str]:
     visible = subprocess.check_output(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z", "--", "results/local-simulation"],
+        ["git", "ls-files", "--cached", "-z", "--", "results/local-simulation"],
         cwd=ROOT,
     )
     return {
@@ -36,6 +36,13 @@ def inventory() -> dict[str, str]:
 
 def load(name: str) -> dict[str, Any]:
     return json.loads((BUNDLE / name).read_text())
+
+
+def check_probabilities(values: list[float]) -> None:
+    if any(not math.isfinite(value) or value < 0 or value > 1 + 1e-12 for value in values):
+        raise ValueError("probabilities must be finite and bounded")
+    if abs(sum(values) - 1) > 1e-12:
+        raise ValueError("probabilities must retain unit normalization")
 
 
 def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
@@ -52,6 +59,11 @@ def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
     if row["source_errors"] or row["compiled_errors"]:
         raise ValueError("retained cQASM parser errors")
     errors = {}
+    if set(row["simulations"]) != {"source", "compiled"} or set(row["native_probability_errors"]) != {
+        "source",
+        "compiled",
+    }:
+        raise ValueError("QI comparison requires source and compiled simulations")
     for kind, simulation in row["simulations"].items():
         counts = simulation["counts"]
         if simulation["shots_done"] != 1024 or sum(counts.values()) != 1024:
@@ -64,6 +76,7 @@ def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
         probabilities = [0.0] * len(expected)
         for bits, amplitude in simulation["state"].items():
             probabilities[int(bits, 2)] = amplitude[0] ** 2 + amplitude[1] ** 2
+        check_probabilities(probabilities)
         errors[kind] = max(abs(actual - wanted) for actual, wanted in zip(probabilities, expected, strict=True))
         if terminal:
             from local_photonic_compiler_crosscheck import terminal_unitary
@@ -75,7 +88,8 @@ def check_qi(arguments: tuple[dict[str, Any], bool, bool]) -> None:
                 or hashlib.sha256(probe.encode()).hexdigest() != simulation["unitary_probe_sha256"]
             ):
                 raise ValueError("derived terminal-unitary identity changed")
-        if abs(errors[kind] - row["native_probability_errors"][kind]) > 1e-15:
+        retained_error = row["native_probability_errors"][kind]
+        if not math.isfinite(retained_error) or retained_error < 0 or abs(errors[kind] - retained_error) > 1e-15:
             raise ValueError("stored probability error differs from amplitudes")
     if row["passed"] != (max(errors.values()) < 1e-9):
         raise ValueError("retained QI verdict differs from numerical criterion")
@@ -93,14 +107,27 @@ def check_photonic(row: dict[str, Any]) -> None:
         raise ValueError("physical output coverage differs")
     if sum(row["simulated_counts"]) != 1024:
         raise ValueError("synthetic photonic count denominator differs")
+    if any(type(count) is not int or count < 0 for count in row["simulated_counts"]):
+        raise ValueError("synthetic photonic counts must be nonnegative integers")
     for actual, wanted in zip(row["ideal"], expected, strict=True):
         if not math.isfinite(actual) or abs(actual - wanted) > 1e-12:
             raise ValueError("ideal probabilities differ from the frozen optical column")
+    check_probabilities(row["ideal"])
+    if set(row["probabilities"]) != {"SLOS", "Naive"}:
+        raise ValueError("optical comparison requires both SLOS and Naive")
     for kind, values in row["probabilities"].items():
+        check_probabilities(values)
         error = max(abs(actual - wanted) for actual, wanted in zip(values, row["ideal"], strict=True))
-        if abs(error - row["max_probability_errors"][kind]) > 1e-15 or error >= 1e-9:
+        retained_error = row["max_probability_errors"][kind]
+        if (
+            not math.isfinite(retained_error)
+            or retained_error < 0
+            or abs(error - retained_error) > 1e-15
+            or error >= 1e-9
+        ):
             raise ValueError("optical backend probability criterion differs")
-    if not row["passed"] or row["full_operator_max_error"] >= 1e-9:
+    operator_error = row["full_operator_max_error"]
+    if not row["passed"] or not math.isfinite(operator_error) or not 0 <= operator_error < 1e-9:
         raise ValueError("optical full-operator criterion differs")
 
 

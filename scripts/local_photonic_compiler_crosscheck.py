@@ -28,11 +28,13 @@ def terminal_unitary(text: str) -> str:
     kept = []
     measured = False
     for line in text.splitlines():
-        statement = line.strip()
+        statement = line.partition("//")[0].strip()
         if re.fullmatch(r"b(?:\[[0-9:, ]+\])?\s*=\s*measure\s+q(?:\[[0-9:, ]+\])?", statement):
             measured = True
             continue
-        if measured and statement and not statement.startswith("//"):
+        if re.search(r"\bmeasure\b", statement):
+            raise ValueError("unitary probe requires supported terminal measurements")
+        if measured and statement:
             raise ValueError("unitary probe requires terminal measurements")
         kept.append(line)
     if not measured:

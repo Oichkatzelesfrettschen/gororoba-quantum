@@ -22,3 +22,15 @@ def test_physical_experiment_api_retains_twelve_mode_distribution() -> None:
     row = photonic(("results/hypercomplex/photonic-successors/ascella/order-repeat-block-0", 0))
     if not row["passed"] or row["modes"] != 12 or len(row["probabilities"]["Naive"]) != 12:
         raise RuntimeError(f"physical single-photon experiment must retain all twelve outputs: {row}")
+
+
+def test_inline_measurement_comment_preserves_terminal_guard() -> None:
+    source = "version 3.0\nqubit[1] q\nbit[1] b\nb[0] = measure q[0] // terminal\nX q[0]\n"
+    with pytest.raises(ValueError, match="terminal"):
+        terminal_unitary(source)
+
+
+def test_unsupported_measurement_assignment_fails_closed() -> None:
+    source = "version 3.0\nqubit[1] q\nbit[1] c\nc[0] = measure q[0]\n"
+    with pytest.raises(ValueError, match="supported terminal"):
+        terminal_unitary(source)
