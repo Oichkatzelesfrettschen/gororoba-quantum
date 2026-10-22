@@ -521,9 +521,16 @@ def low_projector(effect: np.ndarray, dim: int = KERNEL_DIM) -> np.ndarray:
 
 
 def max_principal_angle_deg(p1: np.ndarray, p2: np.ndarray) -> float:
-    """Largest principal angle between the ranges of two rank-4 projectors."""
-    w = np.linalg.eigvalsh(p1 @ (np.eye(len(p1)) - p2) @ p1)
-    return math.degrees(math.asin(math.sqrt(min(1.0, max(0.0, float(w[-1]))))))
+    """Largest principal angle between the ranges of two rank-4 projectors.
+
+    sin theta_max is the largest singular value of (I - p2) U1, U1 an
+    orthonormal basis of p1's range. The eigenvalues of p1 (I - p2) p1 are
+    sin^2 theta, whose square root lifts a rounding residue of 1e-16 to an
+    angle of 1e-8 rad; the singular value carries it at 1e-16.
+    """
+    basis = np.linalg.eigh(p1)[1][:, -KERNEL_DIM:]
+    sines = np.linalg.svd((np.eye(len(p1)) - p2) @ basis, compute_uv=False)
+    return math.degrees(math.asin(min(1.0, float(sines[0]))))
 
 
 def theorem_holds(effect: np.ndarray) -> dict[str, Any]:
