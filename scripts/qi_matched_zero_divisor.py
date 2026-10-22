@@ -49,7 +49,14 @@ PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched
 ANGLES = {"dark": math.pi / 2, "bright": -math.pi / 2, "fixture": math.pi}
 IDEALS = {"dark": 0.0, "bright": 1.0, "fixture": 0.5}
 SHOTS = 16384
-TOOLCHAIN_RECORD = ROOT / "docs/evidence/quantum_inspire/matched-zero-divisor-toolchain.json"
+TOOLCHAIN_RECORD = ROOT / "docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-source-closure.json"
+COMPILER_SOURCES = (
+    "scripts/qi_matched_zero_divisor.py",
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_zero_divisor_cases.py",
+    "gororoba_quantum/qi_stack.py",
+    "gororoba_quantum/parallel.py",
+)
 
 
 def matched_response_contrast(
@@ -333,10 +340,16 @@ def toolchain_record(directory: Path) -> dict[str, Any]:
     return {
         "schema": "qi-matched-zero-divisor-toolchain-v1",
         "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "producer_sources_sha256": compiler_sources(),
         "catalogue_sha256": CATALOGUE_SHA256,
         "toolchain": {name: version(name) for name in qi_stack.DISTRIBUTIONS},
         "circuits": parallel.ordered_map(_check_toolchain, items, min_items=1),
     }
+
+
+def compiler_sources() -> dict[str, str]:
+    """Bind the executed compiler, catalogue admission, stack adapter and pool drivers."""
+    return {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in COMPILER_SOURCES}
 
 
 def validate_toolchain_record(directory: Path, record: dict[str, Any]) -> None:
@@ -344,6 +357,8 @@ def validate_toolchain_record(directory: Path, record: dict[str, Any]) -> None:
         raise ValueError("matched toolchain receipt schema differs")
     if record.get("source_sha256") != hashlib.sha256(Path(__file__).read_bytes()).hexdigest():
         raise ValueError("matched toolchain receipt producer source differs")
+    if record.get("producer_sources_sha256") != compiler_sources():
+        raise ValueError("matched toolchain receipt producer dependency sources differ")
     if record.get("catalogue_sha256") != hashlib.sha256(CATALOGUE.read_bytes()).hexdigest():
         raise ValueError("matched toolchain receipt catalogue differs")
     if record.get("toolchain") != qi_stack.pins():
