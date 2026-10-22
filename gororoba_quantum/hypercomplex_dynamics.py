@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import math
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy.linalg import expm
 
-from hypercomplex_operators import ComplexMatrix
+if TYPE_CHECKING:
+    from hypercomplex_operators import ComplexMatrix
 
 
 def dephase_evolve(density: ComplexMatrix, generator: ComplexMatrix, time: float, rate: float) -> ComplexMatrix:

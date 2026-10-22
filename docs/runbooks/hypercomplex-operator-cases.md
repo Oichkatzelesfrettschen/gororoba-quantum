@@ -5,7 +5,7 @@ Run commands from the repository root. Export the intended interpreter and TLS s
 ```sh
 export PYTHON="${PYTHON:-python3}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
-"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate.json
+"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-runtime-annotations.json
 "$PYTHON" scripts/hypercomplex_cases.py --out results/hypercomplex/cases
 "$PYTHON" scripts/hypercomplex_campaign.py results/hypercomplex/cases/quantum_inspire/order
 ```

@@ -2,11 +2,13 @@
 
 `certificate.json` binds source hashes, exact derivation/stabilizer/Clifford checks, the even five-mode reference and seventeen matrix-propagated probability frames. `probability-evolution.html` displays those local simulation frames. The bundle contains mathematical computation rather than provider acquisitions.
 
+The successor [runtime annotation certificate](certificate-runtime-annotations.json) binds the type-only algebra import in the dynamics module. The import permits the campaign diagnostics to run in the isolated Quantum Inspire environment without loading SymPy. Exact observations agree with the original certificate; floating propagation agrees within the admitted replay tolerance. The original certificate and explorer retain their bytes.
+
 Replay from the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate.json
+"$PYTHON" scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-runtime-annotations.json
 ```
 
 Exact fields compare exactly. Floating probability and representative residual fields use absolute tolerance 1e-12. Source changes require a separately retained certificate; the writer refuses to replace different certificate bytes.

@@ -1,10 +1,31 @@
 """Density evolution and measured rendering retain physical and provenance boundaries."""
 
+import subprocess
+import sys
+from pathlib import Path
+
 import numpy as np
 import pytest
 
 from hypercomplex_dynamics import dephase_evolve, shot_diagnostics
 from hypercomplex_operators import periodic_generator
+
+
+def test_shot_diagnostics_import_without_symbolic_runtime() -> None:
+    source_directory = Path(__file__).resolve().parents[2] / "gororoba_quantum"
+    subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-c",
+            "import sys; sys.path.insert(0, sys.argv[1]); "
+            "sys.modules['sympy'] = None; "
+            "from hypercomplex_dynamics import shot_diagnostics; "
+            "shot_diagnostics([0, 1] * 16)",
+            str(source_directory),
+        ],
+        check=True,
+    )
 
 
 def test_dephasing_preserves_density_and_rejects_negative_rate() -> None:
