@@ -21,6 +21,52 @@ from hypercomplex_cases import order_settings, qd_cases, transform_settings, wav
 
 from parallel import ordered_map
 
+FROZEN_INVENTORY_SHA256 = "8918c58f0c1b82849078257a831e2f2d210165c66709f3f7cca12ba3a69de452"
+
+
+def check_frozen_identity(directory: Path) -> None:
+    """Bind the exact retained file set and bytes independently of numerical synthesis."""
+    inventory = directory / "frozen-file-sha256.json"
+    if hashlib.sha256(inventory.read_bytes()).hexdigest() != FROZEN_INVENTORY_SHA256:
+        raise ValueError("frozen identity inventory differs from the reviewed SHA-256")
+    expected = json.loads(inventory.read_bytes())
+    actual = {path.relative_to(directory).as_posix() for path in directory.rglob("*.json") if path != inventory}
+    if actual != set(expected):
+        raise ValueError("frozen identity file set differs from the reviewed inventory")
+    for name, digest in expected.items():
+        if hashlib.sha256((directory / name).read_bytes()).hexdigest() != digest:
+            raise ValueError(f"frozen identity differs: {name}")
+
+
+def _campaign_file(arguments: tuple[str, str, str]) -> None:
+    directory, name, expected = arguments
+    retained = json.loads((Path(directory) / name).read_bytes())
+    fresh = json.loads(expected)
+    if not name.endswith("/cases.json"):
+        if retained != fresh:
+            raise ValueError(f"campaign metadata differs: {name}")
+        return
+    import qd_platform
+    from bdsc_certificate import close
+
+    circuit = qd_platform.load_case(Path(directory) / Path(name).parent)[1]
+    qd_platform.template_experiment(retained, circuit)
+    # The hash inventory protects the angles exactly; full-operator reconstruction
+    # checks their meaning. Numerical synthesis may choose another phase branch.
+    for manifest in (retained, fresh):
+        manifest["circuit"].pop("sha256")
+        for setting in manifest["settings"]:
+            setting.pop("circuit_params")
+    try:
+        close(retained, fresh, name)
+    except ValueError as error:
+        raise ValueError(f"campaign metadata differs: {error}") from error
+
+
+def check_campaign_files(directory: Path, files: dict[str, str]) -> None:
+    """Check metadata and the entire frozen optical operator, without resynthesizing its identity."""
+    ordered_map(_campaign_file, [(str(directory), name, value) for name, value in files.items()], min_items=1)
+
 
 def _check_file(arguments: tuple[str, str, str]) -> None:
     directory, name, expected = arguments
@@ -284,10 +330,13 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="compare retained cases without writing")
     parser.add_argument("--native-catalogue", type=Path, help="also build a static case from captured Ascella couplers")
     arguments = parser.parse_args()
+    if arguments.check:
+        check_frozen_identity(arguments.out)
     publish = check_files if arguments.check else write_files
+    campaign_publish = check_campaign_files if arguments.check else write_files
     publish(arguments.out / "ascella-readiness", readiness_case())
-    publish(arguments.out / "ascella", campaign_cases("ascella"))
-    publish(arguments.out / "belenos", campaign_cases("belenos", repeats=3))
+    campaign_publish(arguments.out / "ascella", campaign_cases("ascella"))
+    campaign_publish(arguments.out / "belenos", campaign_cases("belenos", repeats=3))
     frontier = {"frontier.json": json.dumps(characterization_frontier(), indent=1) + "\n"}
     publish(arguments.out / "ascella-capability-frontier", frontier)
     if arguments.native_catalogue:

@@ -9853,6 +9853,7 @@
   "scripts/hypercomplex_photonic_cases.py": [
    "__future__",
    "argparse",
+   "bdsc_certificate",
    "copy",
    "hashlib",
    "hypercomplex_cases",
@@ -9863,6 +9864,7 @@
    "parallel",
    "pathlib",
    "qd_belenos_mesh",
+   "qd_platform",
    "typing"
   ],
   "scripts/ibm_runtime_options_inventory.py": [
@@ -10528,6 +10530,7 @@
    "__future__",
    "argparse",
    "copy",
+   "fnmatch",
    "fractions",
    "hashlib",
    "json",

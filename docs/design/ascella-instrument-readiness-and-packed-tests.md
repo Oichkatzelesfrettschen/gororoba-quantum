@@ -309,11 +309,19 @@ weaker condition than byte-identical numerical synthesis. The observations
 identify different native stacks, rather than isolating BLAS as the sole cause.
 
 The frozen manifests and acquisition receipts retain their approved bytes.
-Final CI qualification remains open pending the replay design choice: reproduce
-the original native stack for exact regeneration, or add a separately reviewed
-hash-pinned file inventory and independent full-operator verification. The
-second design separates immutable case identity from noncanonical synthesis;
-its numerical operator comparison must never replace the byte-identity check.
+The successor replay checks a SHA-256-pinned inventory of all twenty original
+JSON files before regenerating metadata. The inventory itself has a reviewed
+SHA-256 in `hypercomplex_photonic_cases.py`. A changed byte, missing file or
+additional JSON file rejects the replay. Campaign metadata then compares
+against regenerated metadata with the certificate's `1e-9` numerical tolerance;
+the circuit parameters remain protected by exact hashes rather than compared
+against a noncanonical decomposition. Perceval reconstructs every setting's
+full optical operator and prepared column within `1e-9`. Circuit topology,
+budgets, setting order and names remain checked. Static/native readiness
+documents and the finite frontier also retain exact regeneration checks.
+Numerical operator agreement therefore complements, and never replaces, exact
+frozen-case identity. The replay consumes the inventory; case generation does
+not mint or update an approval inventory automatically.
 
 ## Library use and independence
 

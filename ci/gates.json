@@ -2348,7 +2348,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check $(for d in results/quandela/runs/*/; do case \"$d\" in *-qpu_belenos-belenos_mesh-*) ;; *) printf \"%s \" \"$d\" ;; esac; done)",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check --runs-under results/quandela/runs --exclude '*-qpu_belenos-belenos_mesh-*'",
    "name": "core-508",
    "seconds": 80.0,
    "tier": "full",
