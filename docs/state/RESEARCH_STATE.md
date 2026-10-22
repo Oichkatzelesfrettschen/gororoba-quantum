@@ -30,7 +30,7 @@ The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 
 
 The Quantum Inspire ledger retrieved at 2026-10-22T07:18:20+00:00 lists 316 jobs with 6469632 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 44 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 46 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -222,6 +222,8 @@ circuit and charges the account ledger's change.
 | [2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1](../../results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits | qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session |
 | [2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2](../../results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits | qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session |
 | [2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2](../../results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 1.08 credits | qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session |
+| [2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1](../../results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits | qd-belenos-bdsc-diagnostic-block1-collected |
+| [2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2](../../results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits | qd-belenos-bdsc-diagnostic-block1-collected |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -408,6 +410,8 @@ circuit and charges the account ledger's change.
 - **qd-qpu-belenos-bdsc-diagnostic-block1-job1-canceled** (2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1, job 5aec4d50-50f0-4273-8ee5-c3476eff195e, 0 samples, 0 shots): the first job of block 1 (`b1-j1`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
 - **qd-qpu-belenos-bdsc-diagnostic-block1-job2-canceled** (2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2, job e51b9f4f-b904-46b9-a51d-2aa861186a6b, 0 samples, 0 shots): the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
 - **qd-qpu-belenos-bdsc-diagnostic-block1-job2-retry-canceled** (2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2, job 2d868daa-57e7-4296-a4d4-f691a44cc2cd, 0 samples, 0 shots): the resubmission of the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
+- **qd-qpu-belenos-bdsc-diagnostic-block1-job1** (2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1, job c8d90a80-4330-4e7a-875e-938c561ca71c, 960000 samples, 960000 shots): the first job of block 1 (`b1-j1`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
+- **qd-qpu-belenos-bdsc-diagnostic-block1-job2** (2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2, job ef06045d-de41-47dc-ad42-e8fc8e318448, 960000 samples, 960000 shots): the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
 
 ## Established claims
 
@@ -1152,6 +1156,10 @@ circuit and charges the account ledger's change.
   Boundary: An operational record of three canceled jobs: no device measurement, no setting response and no statement about Belenos availability follows from them. The cancel source is read from the other session's local transcript, which the repository does not retain; the service records only that a client requested the cancel.
   Evidence: [results.json](../../results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1/results.json), [results.json](../../results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json), [results.json](../../results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json), [bdsc-qualification-case.md](../runbooks/bdsc-qualification-case.md).
   Acquisitions: qd-qpu-belenos-bdsc-diagnostic-block1-job1-canceled, qd-qpu-belenos-bdsc-diagnostic-block1-job2-canceled, qd-qpu-belenos-bdsc-diagnostic-block1-job2-retry-canceled.
+- **qd-belenos-bdsc-diagnostic-block1-collected** (exploratory reanalysis, hardware). Block 1 of the approved crossed BDSC diagnostic on qpu:belenos completed: job c8d90a80 (submitted 2026-10-22 16:00:38 UTC) and job ef06045d (submitted 16:03:56 UTC, started after job 1 ended) each returned all 24 iterations with 960000 samples in total and 164 s of execution, with no partial result. Block 2 and the readout follow under the same approval; the preregistered readout over all four jobs carries the diagnostic's inference.
+  Boundary: A collection record of two of the four jobs: no setting response, contrast or mechanism is read before the preregistered readout over both blocks.
+  Evidence: [results.json](../../results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1/results.json), [results.json](../../results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json), [bdsc-qualification-case.md](../runbooks/bdsc-qualification-case.md).
+  Acquisitions: qd-qpu-belenos-bdsc-diagnostic-block1-job1, qd-qpu-belenos-bdsc-diagnostic-block1-job2.
 
 ## Open claims
 

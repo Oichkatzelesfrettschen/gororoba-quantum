@@ -1295,6 +1295,20 @@
       "run": "results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2",
       "family": "BDSC crossed diagnostic on qpu:belenos",
       "question": "the resubmission of the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block1-job1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the first job of block 1 (`b1-j1`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block1-job2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
     }
   ],
   "claims": [
@@ -6960,6 +6974,36 @@
         "qd-qpu-belenos-bdsc-diagnostic-block1-job1-canceled",
         "qd-qpu-belenos-bdsc-diagnostic-block1-job2-canceled",
         "qd-qpu-belenos-bdsc-diagnostic-block1-job2-retry-canceled"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-diagnostic-block1-collected",
+      "statement": "Block 1 of the approved crossed BDSC diagnostic on qpu:belenos completed: job c8d90a80 (submitted 2026-10-22 16:00:38 UTC) and job ef06045d (submitted 16:03:56 UTC, started after job 1 ended) each returned all 24 iterations with 960000 samples in total and 164 s of execution, with no partial result. Block 2 and the readout follow under the same approval; the preregistered readout over all four jobs carries the diagnostic's inference.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A collection record of two of the four jobs: no setting response, contrast or mechanism is read before the preregistered readout over both blocks.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1/results.json",
+          "sha256": "c40a31367fd3394a7d746198ac4d350c06497da242875076138f0bbea7011377"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json",
+          "sha256": "d38ccaa083658ff030d2076e93f92ffb6e14c764b7e61e4ca1dc2bf05bd5c8af"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job1",
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job2"
       ],
       "assumptions": [],
       "depends_on": [],
