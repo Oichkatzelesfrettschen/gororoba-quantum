@@ -101,11 +101,14 @@ import argparse
 import ast
 import base64
 import datetime
+import email.message
 import fcntl
 import functools
 import hashlib
+import http.client
 import importlib.metadata
 import importlib.util
+import io
 import json
 import math
 import os
@@ -266,8 +269,12 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
         raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
-    except (urllib.error.URLError, TimeoutError) as error:
-        raise UnansweredError(f"{method} {route}: {error}") from None
+    # HTTPError subclasses URLError and is caught above. urlopen wraps only
+    # connection setup in URLError; a connection dropped while the answer is
+    # read surfaces as http.client.HTTPException (IncompleteRead,
+    # RemoteDisconnected) or ConnectionError, and is unanswered as well.
+    except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException) as error:
+        raise UnansweredError(f"{method} {route}: {error!r}") from None
     if raw:
         return answer
     try:
@@ -1851,6 +1858,24 @@ def runner_self_test() -> int:
     ):
         if transient(error) != want:
             raise SystemExit(f"self-test: transient() read {error.code if isinstance(error, RefusedError) else None}")
+    # request() maps a refusal to its HTTP code and a connection lost at any stage to UnansweredError.
+    refusal = urllib.error.HTTPError(API, 503, "unavailable", email.message.Message(), io.BytesIO(b"busy"))
+    for raised, want_class in (
+        (refusal, RefusedError),
+        (urllib.error.URLError("no route"), UnansweredError),
+        (TimeoutError("timed out"), UnansweredError),
+        (ConnectionResetError("reset"), UnansweredError),
+        (http.client.RemoteDisconnected("closed"), UnansweredError),
+        (http.client.IncompleteRead(b"par"), UnansweredError),
+    ):
+        with patch.object(OPENER, "open", side_effect=raised):
+            try:
+                request("GET", "/api/jobs/x/status", auth=False)
+            except PlatformError as error:
+                if type(error) is not want_class or (isinstance(error, RefusedError) and error.code != 503):
+                    raise SystemExit(f"self-test: request() mapped {raised!r} to {error!r}") from None
+            else:
+                raise SystemExit(f"self-test: request() swallowed {raised!r}")
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
     modes = ["0"] * 24
