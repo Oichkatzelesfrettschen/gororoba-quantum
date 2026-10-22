@@ -17,6 +17,27 @@ versions of record to the retained arXiv notes. No publisher PDF is retained.
 
 ## Mapping to this repository
 
+## Cayley-Dickson source status
+
+The 2026-10-22 audit retrieved the metadata below. SHA-256 and byte counts
+identify the responses read during retrieval; response bytes are unretained,
+so these entries are retrieval receipts rather than byte-replay certificates.
+The Albuquerque-Majid identity uses the earlier receipt above.
+
+| Source | Status and identity | Retrieval URL | UTC timestamp | Bytes | SHA-256 |
+|---|---|---|---|---:|---|
+| Biss-Dugger-Isaksen | Journal identity verified: Communications in Algebra 36(2), 632-664 (2008) | https://api.crossref.org/works/10.1080%2F00927870701724094 | 2026-10-22T12:01:58Z | 4015 | `cf9d278e6b8569fbe3b36522748563d4653e33eb9c420b73ada5527102b901a1` |
+| Kirshtein | Journal identity verified: Journal of Algebra and Its Applications 13(1), 1350078 (print February 2014; online 2013-08-20) | https://api.crossref.org/works/10.1142/S0219498813500783 | 2026-10-22T12:01:42Z | 4832 | `3a204f7ed409296401f31c2ea8b489ed7b398bf67bb5eefca2854933e18a7322` |
+| Large Annihilators II | arXiv-supplied journal reference; independent journal identity unverified | https://arxiv.org/abs/math/0702075 | 2026-10-22T12:01:42Z | 38364 | `fbd021705c9bf8fc725fc38cca6c50c21764c5c184e0e84bff7613d2c8f65b0d` |
+
+[Reggiani](2411.18881.md), [Koebisu](2512.13002.md) and
+[Wilmot](2505.11747.md) retain journal-venue-unverified status. Metadata
+verification establishes bibliographic identity, rather than mathematical
+validation of the inspected version. The research registry owns proof origin,
+finite certificates and Rocq status separately from venue status.
+
+## Citation corrections
+
 - [I] The second measurement review cited Adler's article as a 2016 preprint; Crossref records its 2017 Physical Review A publication under a different title, and the authors' reply under Physical Review A 96.
 
 ## Boundaries

@@ -1129,7 +1129,62 @@
       "record": "results/hw_estimate/rank_topology_verification.json"
     }
   ],
+  "publication_status": {
+    "docs/notes/math-0511691.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1080/00927870701724094",
+      "venue": "Communications in Algebra 36(2), 632-664 (2008)",
+      "receipt_url": "https://api.crossref.org/works/10.1080%2F00927870701724094"
+    },
+    "docs/notes/1207.4230.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1142/S0219498813500783",
+      "venue": "Journal of Algebra and Its Applications 13(1), 1350078 (2014; online 2013)",
+      "receipt_url": "https://api.crossref.org/works/10.1142/S0219498813500783"
+    },
+    "docs/notes/math-9802116.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1006/jabr.1998.7850",
+      "venue": "Journal of Algebra 220(1), 188-224 (1999)",
+      "receipt_url": "https://api.crossref.org/works/10.1006/jabr.1998.7850"
+    },
+    "docs/notes/math-0702075.md": {
+      "status": "arxiv-journal-reference",
+      "venue": "Boletin de la Sociedad Matematica Mexicana (3) 13(2), 269-292 (2007)",
+      "receipt_url": "https://arxiv.org/abs/math/0702075"
+    },
+    "docs/notes/papers/2411.18881.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/2512.13002.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/2505.11747.md": {"status": "journal-venue-unverified"}
+  },
   "web_sources": [
+    {
+      "url": "https://api.crossref.org/works/10.1080%2F00927870701724094",
+      "note": "docs/notes/papers/hypercomplex_quantum_crossref_records.md",
+      "sha256": "cf9d278e6b8569fbe3b36522748563d4653e33eb9c420b73ada5527102b901a1",
+      "bytes": 4015,
+      "retrieved_at_utc": "2026-10-22T12:01:58Z",
+      "reading_scope": "Biss-Dugger-Isaksen journal title, DOI, volume 36, issue 2, pages 632-664 and publication date; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1142/S0219498813500783",
+      "note": "docs/notes/papers/hypercomplex_quantum_crossref_records.md",
+      "sha256": "3a204f7ed409296401f31c2ea8b489ed7b398bf67bb5eefca2854933e18a7322",
+      "bytes": 4832,
+      "retrieved_at_utc": "2026-10-22T12:01:42Z",
+      "reading_scope": "Kirshtein journal title, DOI, volume 13, issue 1, article 1350078, online 2013-08-20 and print 2014-02; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/math/0702075",
+      "note": "docs/notes/papers/hypercomplex_quantum_crossref_records.md",
+      "sha256": "fbd021705c9bf8fc725fc38cca6c50c21764c5c184e0e84bff7613d2c8f65b0d",
+      "bytes": 38364,
+      "retrieved_at_utc": "2026-10-22T12:01:42Z",
+      "reading_scope": "Large Annihilators II arXiv journal-reference field only; independent journal identity unverified",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
     {
       "note": "docs/notes/papers/elkies-2013-m256.md",
       "url": "https://people.math.harvard.edu/~elkies/M256.13/index.html",
