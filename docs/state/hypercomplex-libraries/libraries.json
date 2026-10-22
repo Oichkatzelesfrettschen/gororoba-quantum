@@ -6604,7 +6604,7 @@
   "scripts/kaggle_run.py": "04e69833aefcd34311c033747cf73e9bf207bf56684a877f16d0f966ae634114",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
-  "scripts/hypercomplex_libraries.py": "a674e6a43f0089f7560150a04e9f52afef986400045e52f034e923c81a5235fc",
+  "scripts/hypercomplex_libraries.py": "4e57cdd6be4967ebbbbfb5698e8a43174b29b3cc91572904f0c4207d622a1141",
   "docs/notes/quandela/python-stack.md": "2f4be7a75a82b1c94a11e6bd45b7ff9d415c10c9a02953a9768100c03fac856e",
   "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
