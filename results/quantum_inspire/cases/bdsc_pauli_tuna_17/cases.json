@@ -5,49 +5,65 @@
   {
    "batch": "batch-00",
    "files": [
-    "witness-01.cq",
-    "witness-02.cq",
-    "readout-0.cq"
+    "readout-0.cq",
+    "readout-1.cq",
+    "checkerboard-p.cq"
    ]
   },
   {
    "batch": "batch-01",
    "files": [
-    "witness-03.cq",
-    "witness-04.cq",
-    "readout-1.cq"
+    "witness-01.cq",
+    "witness-02.cq",
+    "checkerboard-q.cq"
    ]
   },
   {
    "batch": "batch-02",
    "files": [
-    "witness-05.cq",
-    "witness-06.cq",
+    "witness-03.cq",
+    "witness-04.cq",
     "readout-0.cq"
    ]
   },
   {
    "batch": "batch-03",
    "files": [
-    "witness-07.cq",
-    "witness-08.cq",
+    "witness-05.cq",
+    "witness-06.cq",
     "readout-1.cq"
    ]
   },
   {
    "batch": "batch-04",
    "files": [
-    "witness-09.cq",
-    "witness-10.cq",
-    "readout-0.cq"
+    "quadrature-k1.cq",
+    "quadrature-b1.cq",
+    "quadrature-e7.cq"
    ]
   },
   {
    "batch": "batch-05",
    "files": [
+    "witness-07.cq",
+    "witness-08.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "files": [
+    "witness-09.cq",
+    "witness-10.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-07",
+   "files": [
     "witness-11.cq",
     "witness-12.cq",
-    "readout-1.cq"
+    "readout-0.cq"
    ]
   }
  ]

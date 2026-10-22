@@ -3902,7 +3902,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --check results/quantum_inspire/cases",
    "name": "core-626",
-   "seconds": 2.5,
+   "seconds": 1.5,
    "tier": "pr"
   },
   {
@@ -3910,7 +3910,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --self-test",
    "name": "core-627",
-   "seconds": 8.5,
+   "seconds": 6.0,
    "tier": "pr"
   },
   {
