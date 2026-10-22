@@ -1,0 +1,158 @@
+{
+  "schema": "evidence-map-work-disposition-v1",
+  "main_snapshot": "4e56b8097e8227c757cff80df30e6a7ccb285fb7",
+  "scope": "Work-item snapshot; research_state.json remains the authoritative scientific registry",
+  "source_infographic": {
+    "name": "sedenion_quantum_evidence_map_4k.svg",
+    "sha256": "167efece7812a955731420cda74e4460b646a10998ef140e2ea9ad0c428a3823",
+    "findings_are_not_all_code_defects": true
+  },
+  "open_pr_snapshots": [
+    {
+      "number": 349,
+      "head": "2f9168052148f1dce851dabbffbe41bc277ba025"
+    },
+    {
+      "number": 352,
+      "head": "27e31f46554b99086cc8b0f235e7ce9d27967f0d"
+    },
+    {
+      "number": 358,
+      "head": "d4a95cc3ee87512e42a1e97db86cf26c8291d523"
+    }
+  ],
+  "items": [
+    {
+      "id": "EM-01",
+      "subject": "exact_core",
+      "work_status": "already_on_main",
+      "canonical_path": "docs/notes/algebra_circuit_rules.md",
+      "next_action": "Preserve existing exact contracts; no further implementation correction established here.",
+      "closure_evidence": "Exact contracts and their stated finite scope remain intact."
+    },
+    {
+      "id": "EM-02",
+      "subject": "certificate_summary",
+      "work_status": "corrected_documentation",
+      "canonical_path": "docs/notes/quandela/bdsc_sources.md",
+      "next_action": "State F positive and 0 <= a_U < gamma_L before the angle bound.",
+      "closure_evidence": "Source map includes positivity, separation and simultaneous bounds."
+    },
+    {
+      "id": "EM-03",
+      "subject": "ideal_mesh_vs_hardware",
+      "work_status": "corrected_documentation",
+      "canonical_path": "docs/notes/quandela/bdsc_sources.md",
+      "next_action": "Remove the inference from universal ideal synthesis to current Belenos service qualification.",
+      "closure_evidence": "Attribution explicitly excludes current cloud compilation and acceptance qualification."
+    },
+    {
+      "id": "EM-04",
+      "subject": "common_effect_and_gauge",
+      "work_status": "corrected_documentation",
+      "canonical_path": "docs/notes/quandela/bdsc_sources.md",
+      "next_action": "Separate changing matrices, measured effects, physical error and GST gauge freedom.",
+      "closure_evidence": "Source map no longer promises GST can recover a common instrument from arbitrary label-dependent operations."
+    },
+    {
+      "id": "EM-05",
+      "subject": "two_anomaly_identity",
+      "work_status": "clarified_scope",
+      "canonical_path": "docs/design/evidence-map-resolution.md",
+      "next_action": "Keep first-load and transform evidence separate by commit, job and setting.",
+      "closure_evidence": "Two identities retained; predecessor causation and shared mechanism remain open."
+    },
+    {
+      "id": "EM-06",
+      "subject": "transform_cause",
+      "work_status": "physical_evidence_required",
+      "canonical_path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "next_action": "Replay full retained provenance and prepare a bounded predecessor-intervention case.",
+      "closure_evidence": "Qualified changed-predecessor and target-only comparison distinguishes the declared alternatives."
+    },
+    {
+      "id": "EM-07",
+      "subject": "opening_budget_cause",
+      "work_status": "physical_evidence_required",
+      "canonical_path": "docs/archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md",
+      "next_action": "Retain sweep artifacts and separate budget, time, recovery and prevention.",
+      "closure_evidence": "Preregistered matched interventions or a correctly bounded inconclusive/closed route."
+    },
+    {
+      "id": "EM-08",
+      "subject": "linear_observation_and_likelihood",
+      "work_status": "provider_evidence_required",
+      "canonical_path": "docs/evidence/bdsc/provider_contract.json",
+      "next_action": "Qualify preparations, acceptance, effective processing and eligible trials.",
+      "closure_evidence": "A supported observation law and common-effect scope, not returned integers alone."
+    },
+    {
+      "id": "EM-09",
+      "subject": "phase_and_ensemble",
+      "work_status": "physical_evidence_required",
+      "canonical_path": "docs/design/bdsc-qualification.md",
+      "next_action": "Preserve held-fixed diagnostic variables and add coherent readout only through an approved case.",
+      "closure_evidence": "Phase-sensitive and ensemble claims attach to supported physical models."
+    },
+    {
+      "id": "EM-10",
+      "subject": "tuna_reference_stop",
+      "work_status": "stop_preserved",
+      "canonical_path": "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json",
+      "next_action": "Retain the frozen 0.02 refusal; do not rescope the old series to pass.",
+      "closure_evidence": "Stopped series stays diagnostics-only; any successor is independently approved."
+    },
+    {
+      "id": "EM-11",
+      "subject": "ledger_identity",
+      "work_status": "identity_resolved_integration_pending",
+      "canonical_path": "docs/evidence/quantum_inspire/usage.json",
+      "next_action": "Deduplicate the 24 matched IDs across snapshots without changing the historical ledger.",
+      "closure_evidence": "Reviewed integrated adapter/registry coverage, with each physical execution counted once."
+    },
+    {
+      "id": "EM-12",
+      "subject": "registry_integration",
+      "work_status": "integration_pending",
+      "canonical_path": "scripts/research_state.py",
+      "next_action": "Merge records with schema-v2 semantics and explicit conflict adjudication.",
+      "closure_evidence": "Integrated registry, generated state and provider adapters agree without lost evidence."
+    },
+    {
+      "id": "EM-13",
+      "subject": "denominators_and_dependencies",
+      "work_status": "offline_work_required",
+      "canonical_path": "scripts/research_state.py",
+      "next_action": "Derive unit-specific totals and support-root withdrawal reports; classify unbound directories.",
+      "closure_evidence": "Complete inspected coverage, shared-root logic and unresolved identities are explicit."
+    },
+    {
+      "id": "EM-14",
+      "subject": "gate_and_fitter_repairs",
+      "work_status": "existing_pr",
+      "canonical_path": "ci/AGENTS.md",
+      "next_action": "Review existing PR 358 rather than duplicate its code changes.",
+      "closure_evidence": "Current-head review and required gates pass including the declared environment checks."
+    },
+    {
+      "id": "EM-15",
+      "subject": "physical_certificate",
+      "work_status": "provider_evidence_required",
+      "canonical_path": "docs/notes/quandela/bdsc.md",
+      "next_action": "Keep M2-M4 blockers; close only with supported capability and bounded physical evidence.",
+      "closure_evidence": "Primary certificate admitted, alternative supported, route unavailable, or allocated case inconclusive."
+    },
+    {
+      "id": "EM-16",
+      "subject": "frontier_and_spending",
+      "work_status": "scope_preserved",
+      "canonical_path": "docs/notes/quandela/bdsc_sources.md",
+      "next_action": "Keep frontier mathematics and dated usage separate from hardware validation and authorization.",
+      "closure_evidence": "Every new proposal has explicit alternatives, cost, stopping and approval."
+    }
+  ],
+  "scientific_statuses_changed": false,
+  "historical_records_changed": false,
+  "production_python_changed": false,
+  "hardware_authorized": false
+}
