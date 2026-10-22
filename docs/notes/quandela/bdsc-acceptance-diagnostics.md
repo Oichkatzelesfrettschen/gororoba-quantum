@@ -13,10 +13,10 @@ observation contract and the frozen complete readout remain outstanding.
 
 The source review covers the current case generator, one-click readout,
 collection path, Ascella control, submitted target columns, and run receipts.
-Independent arithmetic below uses two complete 24-mode one-click count
-vectors extracted from `tc-none-e1`, plus its receipt and the `mm-none-e1`
-receipt. It is not an end-to-end replay of all 48 settings or of the compressed
-raw responses. The reported 9/16 violated sum rules are the campaign's
+Independent arithmetic below uses every one-click count vector of the 24
+empty-mitigation settings in `tc-none-e1` and `mm-none-e1`, with each run's
+receipt. The 24 default-mitigation settings and the compressed raw responses
+are not replayed here. The reported 9/16 violated sum rules are the campaign's
 exploratory readout, not an independently regenerated verdict in this note.
 
 Source locations under `results/quandela/runs/`:
@@ -24,7 +24,7 @@ Source locations under `results/quandela/runs/`:
 - `2026-10-21T162332Z-qpu_belenos-bdsc_qualification-tc-none-e1/`:
   `cases.json`, `submission.json`, `results.json`.
 - `2026-10-21T165036Z-qpu_belenos-bdsc_qualification-mm-none-e1/`:
-  `cases.json`, `submission.json`.
+  `cases.json`, `submission.json`, `results.json`.
 - `2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1/`:
   `submission.json`.
 - `2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00/`:
@@ -133,7 +133,9 @@ intended two-output support. On the intended outputs alone,
 The ratio of these odds is 0.976604730480. Applying the receipt's inverse
 weights as a sensitivity calculation gives 0.494081955497 on the intended
 pair, or 0.487869865444 across all outputs. Neither number is an observed
-probability, an admitted correction, or confirmatory evidence.
+probability, an admitted correction, or confirmatory evidence. out-m is the
+closest TC superposition row to the receipt prediction; the full table below
+carries the other eleven.
 
 `tc-none-e1/out-f`:
 
@@ -151,6 +153,66 @@ probability by at most d. If each of four settings drops at most 0.0006,
 the sum-rule change caused solely by that removal is at most 0.0024.
 That cannot account for a residual near -0.17. It does not bound the much
 larger or state-dependent optical losses absent from the returned records.
+
+## All 24 empty-mitigation rows against the receipt weights
+
+Each row counts one-click records only. "Observed" is the selected fraction
+over all one-click records, "receipt" the terminal-weight prediction above,
+"support" the selected fraction on the intended outputs alone, "reweighted"
+the support fraction after dividing each intended output's count by its
+`t_out`, and "outside" the one-click share off the intended support. The
+ideal selected value is 0, 1 or 0.5 for TC basis states and superpositions
+and 0.5 for every MM row.
+
+    TC   observed receipt support reweighted outside | MM  observed receipt support reweighted outside
+    out-f  0.0037  0.0000  0.0000  0.0000   6.50%    | out-f  0.3696  0.3732  0.3690  0.4955   1.34%
+    out-g  0.9860  1.0000  1.0000  1.0000   1.69%    | out-g  0.5473  0.5847  0.5498  0.4645   1.68%
+    out-p  0.4013  0.4251  0.4030  0.4773   1.37%    | out-p  0.4632  0.4922  0.4655  0.4774   1.24%
+    out-m  0.4150  0.4251  0.4193  0.4941   1.53%    | out-m  0.4900  0.4922  0.4949  0.5042   1.58%
+    out-pi 0.3940  0.4251  0.3997  0.4738   2.44%    | out-pi 0.4769  0.4922  0.4793  0.4870   1.90%
+    out-mi 0.4373  0.4251  0.4404  0.5156   1.42%    | out-mi 0.4886  0.4922  0.4899  0.4930   0.89%
+    rev-f  0.0023  0.0000  0.0000  0.0000   1.35%    | rev-f  0.3559  0.3732  0.3608  0.4866   2.65%
+    rev-g  0.9865  1.0000  1.0000  1.0000   1.61%    | rev-g  0.5899  0.5847  0.5846  0.4999   5.82%
+    rev-p  0.3915  0.4251  0.3972  0.4712   3.09%    | rev-p  0.4679  0.4922  0.4711  0.4726   1.80%
+    rev-m  0.3753  0.4251  0.3813  0.4546   2.96%    | rev-m  0.5085  0.4922  0.5083  0.5038   3.67%
+    rev-pi 0.3944  0.4251  0.3955  0.4694   3.38%    | rev-pi 0.4854  0.4922  0.4890  0.4990   1.38%
+    rev-mi 0.3937  0.4251  0.3997  0.4738   3.21%    | rev-mi 0.4751  0.4922  0.4771  0.4864   1.20%
+
+The sum-rule residuals per template, observed against receipt-predicted:
+
+    TC out: Delta_R -0.1734 (-0.1499), Delta_I -0.1584 (-0.1499)
+    TC rev: Delta_R -0.2221 (-0.1499), Delta_I -0.2008 (-0.1499)
+    MM out: Delta_R +0.0364 (+0.0264), Delta_I +0.0487 (+0.0264)
+    MM rev: Delta_R +0.0306 (+0.0264), Delta_I +0.0147 (+0.0264)
+
+The receipt weights account for 0.150 of the TC deficit: 86 to 95 percent of
+it in the outward template and 67 to 75 percent in the reverse template. The
+reweighted TC superposition fractions span 0.455 to 0.516 rather than sitting
+at 0.5, and every reverse row lies below 0.475. A shared terminal-weight
+model cannot produce that template split, so the reverse template carries
+an additional response the receipts leave unexplained.
+
+The MM basis rows reweight to 0.465 to 0.500 from raw values of 0.356 to
+0.590, so the receipt weights carry most of the MM basis asymmetry. Two MM
+superposition rows carry a setting-specific term that the selected fraction
+cannot see. Reweighted to shares of the four intended outputs (ideal 0.25
+each), rev-m reads mode 8 0.122, mode 20 0.246, mode 9 0.375, mode 21 0.258,
+and rev-p reads mode 9 0.304. Modes 8 and 9 are both complementary, so an
+8-to-9 exchange leaves the selected fraction unchanged. A terminal weight or
+an acceptance filter acting on fixed output intensities cannot move counts
+between f's outputs and g's outputs, because f and g occupy disjoint outputs;
+the redistribution therefore requires coherent coupling of f's outputs into
+g's in the transfer implemented for those settings.
+
+Each setting carries its own `compilation_seed`, so a setting combines its
+prepared relative phase with its own compilation of the transfer. rev-m and
+rev-p alone do not separate a dependence on relative phase from one
+compilation that realized the transfer badly. Drift is unlikely, though not
+excluded: rev-m's neighbors in execution order, rev-f and out-f, reweight to
+0.511/0.484 and 0.504/0.495. The epoch-1 data thus carry an acceptance-scale
+explanation of the leading TC shift and a setting-specific coherent transfer
+error in the reverse MM template. Neither displaces the other, and the
+per-mode vectors, not the selected fraction, carry the second.
 
 ## Separate even response shifts from phase-sensitive response
 
@@ -237,20 +299,34 @@ configuration remedy or independently justified readiness check. The public
 
 ## Collection and epoch controls
 
-The status-read retry change is correctly separated from submitting a new
-job. Retrying a GET after 408/429/5xx is not permission to retry POST creation.
-Inspect the terminal data/result/usage reads as well: the current retry loop
-covers status polling, while those later reads can still fail transiently.
-Retain successful raw result bytes independently of a subsequent accounting
-read so an accounting outage cannot block preservation of scientific data.
+`scripts/qd_platform.py collect` repeats each terminal GET of the existing
+job -- status, result, job data and usage -- after a transient failure until
+the collection deadline, and never repeats the POST that created the job. A
+first collection writes `raw/result.json` before it parses the answer or reads
+the job data and usage, so a later failure leaves the scientific bytes on
+disk and a rerun completes the record. A usage report that stays unreadable
+is recorded as `usage_absent`, and the charge falls back to the billing rule.
 
-`result_summary` currently returns an empty summary upon the first non-count
-error entry of a failed iterated job. For a future partially successful job,
-that discards earlier count-bearing iterations from the derived summary
-(the original raw response remains retained). A future collector revision
-must preserve each successful/error iteration separately and must never admit
-that partial result into the frozen complete BDSC readout. Test mixed success,
-error, malformed and missing iterations, not only an all-error result.
+`result_summary` keeps every entry of a partial iterated answer at its
+position: a counted iteration as a completed job would, an iteration answered
+with the worker's error text as `error`, and an unreadable entry as
+`malformed`, and appends one `missing` entry for each iteration the case
+expects but the answer omits. Only counted iterations contribute counts, and the BDSC readout
+still admits only a completed, non-partial result.
+
+`body_mitigations` reads the requested policy from `payload.mitigations`
+alone, decoding Perceval's archive string, and refuses the key at any other
+depth. The submission check and the BDSC readout both compare its value with
+the manifest policy exactly, so an absent key, an empty list and a nonempty
+list stay distinct. This records the requested policy; the processing the
+provider applied remains a provider-contract question.
+
+`scripts/bdsc_ascella_control.py` sets `bdsc_certificate.MODES` to 12 before
+it calls the shared template constructors, so a same-process caller that
+builds 24-mode cases afterwards reads the wrong width. Passing the optical
+width explicitly through those constructors is open; its acceptance is a
+byte-identical regeneration of the retained Ascella `cases.json`, 12- and
+24-mode constructor coverage, and a same-process call-order test.
 
 The scheduled maintenance window on the run receipts is
 2026-10-22 07:30--11:00 UTC (00:30--04:00 America/Los_Angeles).
@@ -281,5 +357,6 @@ External primary sources used for the conditioning interpretation:
 The source-map registration is not changed by this note. No new theorem of
 sedenion algebra, altered likelihood, or physical detector correction is
 claimed. The strongest current diagnosis is an identifiable acceptance
-confound with a quantitatively relevant receipt-based prediction, plus
-residual wrong-mode and template dependence whose mechanisms remain open.
+confound with a quantitatively relevant receipt-based prediction, plus a
+reverse-template residual, a setting-specific 8-to-9 redistribution in the
+MM reverse rows, and wrong-mode response whose mechanisms remain open.
