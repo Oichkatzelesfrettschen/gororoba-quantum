@@ -24,13 +24,13 @@ No step here is authorized until its written case is approved
    an empty list for the empty policy), which `qd_platform.py` writes into
    the job body, and each setting's template beside its chip column.
 4. A fresh `qd_platform.py snapshot` and a `plan` that passes for
-   qpu:belenos. The cases submit parameterized templates, which `plan`
+   qpu:belenos with `--admit-status running`. The cases submit parameterized templates, which `plan`
    checks without `specs.architecture`; it reads the architecture only for
    mesh and seeded cases.
 
 ## Order
 
-1. Run `qd_platform.py plan` on every run directory and read from it the
+1. Run `qd_platform.py plan --admit-status running` on every run directory and read from it the
    live price per shot, the per-job duration limit and Perceval's shot
    estimate.
 2. Write the case: the 96 settings in 8 jobs of 12 iterations (one per
@@ -119,8 +119,9 @@ stay those of the approved case.
 
 The other three epoch-2 jobs -- target-complement with an empty mitigation
 list (`tc-none-e2`) and the middle-middle pair under both policies
-(`mm-def-e2`, `mm-none-e2`) -- stay unsent until that evidence exists, and
-then run under Step 5 as written. Every returned result is retained whatever
+(`mm-def-e2`, `mm-none-e2`) -- stay unsent; the amendment below, which
+suspends the confirmation design, leaves whether they run to a later
+amendment. Every returned result is retained whatever
 it shows, and the stop conditions above still govern.
 
 ## Amendment of 2026-10-22: a crossed diagnostic replaces the confirmation plan

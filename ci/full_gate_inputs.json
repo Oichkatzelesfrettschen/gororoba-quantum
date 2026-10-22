@@ -459,6 +459,12 @@
       "docs/evidence/calibration/**",
       "docs/evidence/signed_kernel_noise/**",
       "results/kaggle/2026-10-16T071913Z-gororoba-signed-kernel-noise/**"
+    ],
+    "core-622": [
+      "docs/evidence/bdsc/**",
+      "results/quandela/cases/bdsc_qualification/**",
+      "results/quandela/runs/*-qpu_belenos-bdsc_qualification-*/**",
+      "results/quandela/runs/*-sim_belenos-bdsc_qualification-*/**"
     ]
   }
 }
