@@ -248,7 +248,10 @@ and makes no dark-subspace claim.
   its family tests reproducibility across a calibration change, an
   intervention that may legitimately move the effect; within-epoch
   stability rests on the randomized order alone, and the epochs are never
-  pooled into one stationary reconstruction.
+  pooled into one stationary reconstruction. Each observation, epoch
+  included, draws its own compilation seed, so a cross-epoch contrast
+  compares two compilations of one request rather than one compilation
+  twice.
 - **Power.** False certification of any family is bounded by alpha; the
   probability of passing an acceptable implementation is a separate
   number. Under E0 itself, one effect across templates, policies and
@@ -257,7 +260,8 @@ and makes no dark-subspace claim.
   at margin 0.02: 0 at 45000 and 175000, 0.683 at 250000, 0.912 at 275000,
   0.9845 at 300000. The case fixes 300000, the first grid point at or
   above the 0.95 target. Drift, preparation error or a corrected sampling
-  law lower this power.
+  law lower this power, and the retained runs falsify its premise
+  ([Confirmation design](#confirmation-design-after-the-first-acquisition)).
 - **Resources.** 300000 eligible trials per setting are 28800000 in all;
   max_shots = 2 x 300000 per iteration. A job bills 1 credit plus 1e-6 per
   shot of its largest iteration's max_shots, so each job costs 1.6 credits
@@ -295,6 +299,118 @@ corrected or resampled data need a likelihood or concentration bound built
 for that object, and resampling an estimated distribution never raises the
 nominal n.
 
+## Confirmation design after the first acquisition
+
+The [forensic reconstruction](../notes/quandela/bdsc-acceptance-diagnostics.md#forensic-reconstruction-of-the-five-belenos-runs)
+of the five retained qpu:belenos runs suspends the confirmation design.
+Development and diagnostic acquisitions continue under their own approved
+cases, and no certification decision is available until the observation
+model and the measurement identity support the theorem.
+
+**The banks are phase-blind.** Both pairs send f and g to disjoint outputs,
+so every superposition requests the same output intensities. The returned
+compiled circuits reproduce those intensities to 2.5e-4 and leave the
+relative phase free. The sum rules of these banks therefore test intensity
+linearity, the even components m_X = m_Y = m_Z, and the odd components
+d_X, d_Y measure setting-to-setting response differences rather than
+coherent quadratures. A phase claim needs a measurement that recombines the
+two outputs in at least two quadratures.
+
+**Fixed decisions for the next confirmatory case.** These margins are
+engineering tolerances, never inferred from the observed deficits, and they
+govern a prospective case without reinterpreting a retained one.
+
+| Quantity | Decision |
+|---|---|
+| Campaign confidence of the qualification contrasts | 99 %, alpha = 0.01 |
+| Sum-rule, cross-template and matched-repeat equivalence margins | 0.02 each |
+| Campaign power | at least 0.95 |
+| Design-point residual of every declared contrast, for power | at most 0.005 |
+| Dark-subspace certificate | theta_max <= 10 degrees at joint confidence 0.95 |
+
+**Planning family.** The planning neighborhood of acceptable
+implementations is 0 <= F_e <= I with ||F_e - E0||_op <= 0.01. A repeat pair
+satisfies ||F_2 - F_1||_op <= 0.003, and each setting adds a fixed
+probability perturbation of at most 0.001. The family bounds sum-rule
+deviations by 0.004, cross-template deviations by 0.002 and repeat
+deviations by 0.005. It plans power without assuming that the hardware
+belongs to it, and it imposes no full-effect fidelity requirement on the
+subspace certificate.
+
+**Direct-contrast bound.** For a contrast sum_j c_j p_j on independent
+bounded trials, the simultaneous Hoeffding radius is
+r = sqrt((1/2) sum_j (c_j^2 / n_j) log(2M / alpha)) ([note](../notes/papers/hoeffding-1963.md)).
+A union bound needs no independence between contrasts; it does need the
+observation assumptions of each one. The two-acquisition design has
+M = 128 contrasts, 32 sum rules, 48 template comparisons and 48 temporal
+comparisons, and its worst contrast has four unit coefficients. At equal n,
+when every true contrast stays within 0.005, the campaign power is at least
+1 - 256 exp(-(n/2)(0.015 - r_max)^2), with r_max = sqrt(2 log(25600) / n).
+`scripts/bdsc_forensics.py` records the arithmetic (`planning`):
+
+| Eligible trials per setting | Radius r_max | Power lower bound |
+|---:|---:|---:|
+| 300000 | 0.00823 | 0.7375 |
+| 331672 | 0.00782 | 0.9500 |
+| 350000 | 0.00762 | 0.9816 |
+| 400000 | 0.00712 | 0.9990 |
+
+The calculated power is conditional on the declared observation law,
+nuisance model and dependence assumptions, and it is no universal bound on
+hardware power. Positive correlations can reduce the effective information,
+while other dependence structures or variance-reducing estimators can behave
+differently. Detection conditioning does not by itself destroy binomial
+sampling, and integer counts do not by themselves establish it.
+
+**The retained observations falsify the planning premise.** The 350000-trial
+point describes an independent-binomial design with prescribed small
+contrast residuals, and the retained runs do not support it as a prediction
+of the present implementation. Within one template the four superpositions
+request one output intensity, yet their selected fractions spread by an SD of
+0.006 to 0.031, against a reference counting error of 0.0009. Default-policy
+residuals reach 0.08, and fixed requests moved by up to 0.071 when only the
+seed and the characterization changed. More trials within one compilation
+reduce counting uncertainty and leave a persistent setting-dependent
+response untouched: moving from 300000 to 350000 trials changes the reference
+error at p = 1/2 from 0.000913 to 0.000845. The 0.02 margins stay. Three
+findings stay distinct:
+
+| Finding | Conclusion it supports |
+|---|---|
+| Responses differ from the ideal probabilities | ideal-response agreement fails at the observed scale |
+| Sum-rule residuals exceed the margin under an admitted likelihood | the declared common linear-observation model fails for that case |
+| Repeated identical states vary across controlled compilations | compilation-associated variability is measured |
+
+Four-state scatter alone settles none of them, because a fixed effect with
+off-diagonal elements spreads the superpositions while satisfying both sum
+rules; the acceptance note gives one with an SD of 0.023.
+
+**Randomized compilation is a new estimand.** Suppose there are R
+independent seed realizations, B repeat blocks per realization and n trials
+per block. Under a hierarchical model,
+Var(mu_s) = Var_r(p_sr) / R + E_r[p_sr (1 - p_sr)] / (R B n), and temporal
+or correlated components add terms. The first term falls only with
+independent compilations, and a persistent mean bias falls with neither. A
+contrast c plans against c^T Sigma_seed c, so R B n returned observations are
+never independent evidence of the seed-averaged response. An ensemble
+certificate needs p_sr = Tr(F_r rho_s) with a state-independent seed law
+pi_r. The effect it certifies is then F_bar = sum_r pi_r F_r, and
+ker F_bar = intersection_r ker F_r: an exact null survives averaging only
+when every component shares it. State-specific compilation, F_sr, admits no
+such common operator, and acceptance can reweight seeds among the retained
+events. Compiler-seed averaging differs from randomized compiling, which
+prescribes a logically equivalent randomization under stated assumptions.
+
+**Next step.** The [crossed diagnostic case](../runbooks/bdsc-qualification-case.md#amendment-of-2026-10-22-a-crossed-diagnostic-replaces-the-confirmation-plan)
+([case.json](../evidence/bdsc/diagnostic/case.json)) separates counting noise,
+matched-request change between blocks, seed dependence, template and
+state-by-seed interaction. Its result chooses among seed selection on
+development data, stationarity work, a common-effect investigation, an
+ensemble-defined certification case, and moving certification to another
+access mode. A confirmation sample count is frozen only after that, and it
+is planned over the number of independent compilations as well as trials
+per compilation.
+
 ## Conjecture ledger
 
 Each conjecture names the observable that tests it and what a result can and
@@ -313,6 +429,7 @@ levels and never share one "verified" label.
 | Exactly five eigenvalues lie below the threshold | U_5 and L_6 | overlapping intervals leave the count unresolved |
 | Complex controls are necessary for the error family | real bank against phase-sensitive controls | agreement on real inputs cannot exclude E_I |
 | A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
+| Per-compilation transfer response carries the superposition scatter | matched seeds across blocks and four seeds per state (diagnostic case) | a matched seed whose response shifts beyond counting puts the scatter in time, not compilation |
 
 Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
 exploits target structure for efficiency once the trusted objects and the

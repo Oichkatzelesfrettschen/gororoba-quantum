@@ -202,6 +202,8 @@ def case_record() -> dict[str, Any]:
             "excludes more than 0.01 of an iteration's samples",
             "an iteration returns no compiled circuit",
             "block 2 starts before block 1's readout integrity passes or before the block gap elapses",
+            "a scheduled maintenance window opens between block 1's first execution and block 2's last; the pair "
+            "then waits and reruns both blocks on one side of the window",
             "spent credits or seconds reach the approved ceiling",
         ],
     }
