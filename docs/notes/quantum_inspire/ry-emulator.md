@@ -41,7 +41,7 @@ marked "inferred" has no page or run behind it.
 - **Shared pause.** The same flag puts Ry under the account-wide hardware
   guard of `submit`: a batch is refused while any job on an `is_hardware`
   backend type, Ry or Tuna-17, is unfinished or finished less than
-  `HARDWARE_PAUSE_SECONDS` = 120 s ago. Ry and Tuna-17 batches therefore
+  `HARDWARE_PAUSE_SECONDS` ago (30 s by default, [usage.md](usage.md#pause-escalation)). Ry and Tuna-17 batches therefore
   interleave on one clock, and a Ry submit inside a Tuna batch's window is
   refused before any remote write ("wait N more seconds") and retried, as
   [tuna-17.md](tuna-17.md) describes.

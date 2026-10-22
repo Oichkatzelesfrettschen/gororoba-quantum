@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-22T10:39:59+00:00",
+ "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "1909de66234e7dfa4c5f008ab9d724b1c0c646301f7c8b0f9788aaa7c5e2154f",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 882193,
+ "project": 781333,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-quadrature-02.cq",
+   "job": 1567078,
+   "sha256": "1b672f25a0086acc3a4c617741b2abe6ae3c0e01530df10f163c068b045938ed"
+  },
+  {
+   "file": "twin-quadrature-03.cq",
+   "job": 1567079,
+   "sha256": "486599a8b400eaa7093f7c26d3dd5fe1342e4cac2acca4b094dd6f818daa8e6b"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1567080,
+   "sha256": "456fc692b2493a62697f9080fa0568792c9f4fbddbbd091a7abfb68bd289c350"
+  }
+ ],
+ "submitted_utc": "2026-10-22T10:39:59+00:00"
+}

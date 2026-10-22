@@ -1,8 +1,9 @@
 # Tuna-17 run design: platform configuration and the packed box-kite follow series
 
-A Tuna-17 batch costs the account about three minutes of wall time no
-matter what it holds: 120 s of enforced pause, a few seconds of fixed cost per
-job, collection and checks. The scarce resource is circuits per batch (three)
+A Tuna-17 batch costs the account one account pause (a repository rule:
+120 s when this series ran, 30 s by default since 2026-10-22, with the
+escalation of [usage.md](usage.md#pause-escalation)), a few seconds of fixed
+cost per job, collection, checks and the shared queue. The scarce resource is circuits per batch (three)
 and batches per hour, not shots. This note records what the platform
 documentation, the API and the retained runs establish about that cost, and
 how the box-kite follow series (`scripts/box_kite_cases.py`, `FOLLOW_PLAN`)
@@ -19,7 +20,7 @@ gates core-439 and core-440).
 | Native: Rx, Ry, Rz, X90, Y90, mX90, mY90, X, Y, Z, I, S, Sdag, T, Tdag, CZ; H, CNOT, SWAP, CR, CRk are decomposed | H costs more than one instruction; its decomposition is not published | Tuna page |
 | A job submits `number_of_shots` and `raw_data_enabled` only; `compile_stage` labels a file and changes nothing | no repetition-delay, initialization-time or active-reset option exists; `reset` is measure and flip | `docs/notes/quantum_inspire/api` OpenAPI `JobIn`, `FileIn` |
 | `raw_data_enabled` returns one bit string per shot; `qi_platform.py` always requests it and retains `raw/` | per-shot data are available; whether their order is temporal is untested | catalogue `supports_raw_data`; `scripts/qi_platform.py` |
-| At most 3 jobs queued on a hardware backend, abuse removes the account; "avoid unnecessary loss of processor hours" | the repository submits 3 circuits per batch, one batch at a time, 120 s apart | [FAQ](site/faq.md); terms |
+| At most 3 jobs queued on a hardware backend, abuse removes the account; "avoid unnecessary loss of processor hours" | the repository submits 3 circuits per batch, one batch at a time, one account pause apart (a repository rule; no provider page sets an interval) | [FAQ](site/faq.md); terms; [usage.md](usage.md#what-the-provider-requires) |
 | The platform publishes no calibration data | the account's own readout pairs, coupler-ZZ map and T0 ladder are the device model | `docs/notes/quantum_inspire/tuna-17.md` |
 
 ## Measured constraints
@@ -129,7 +130,8 @@ execution.
 ## The ladder series
 
 The pause guard of `qi_platform.py submit` refuses a hardware batch until
-every hardware job of the account has been finished for 120 s, so the pause
+every hardware job of the account has been finished for one account pause
+(120 s when this series ran), so the pause
 falls per batch. The three jobs inside a batch run back to back. Shots are
 priced by the timing fit and capped at 131072 per job and 300 s per job.
 Shots inside one job are therefore the cheap resource.

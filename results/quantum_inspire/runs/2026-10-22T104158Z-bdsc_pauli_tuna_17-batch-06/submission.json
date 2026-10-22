@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-22T11:27:37+00:00",
+ "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "e571bc7a1669ef27730caa9e9d1de2f8d189878258eba4cd93f395440b24b3bb",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 882228,
+ "project": 781360,
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "witness-07.cq",
+   "job": 1567157,
+   "sha256": "97b5c30eaa7e29db2506f6947c78742997f6f69b16243fe54c11e01317b462b4"
+  },
+  {
+   "file": "witness-08.cq",
+   "job": 1567158,
+   "sha256": "944b1bccbd42ae39cb4da9c46ae1d6e5cfcaf91e2ecb31c5f86013e248da934c"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1567159,
+   "sha256": "f23be75aa8b709b6af29c7a3756ce6d560653c120217cb2a944c7864c8c038b6"
+  }
+ ],
+ "submitted_utc": "2026-10-22T11:27:37+00:00"
+}

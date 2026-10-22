@@ -111,8 +111,12 @@ together with q11).
 
 ## Series, references and shots
 
-A batch holds at most three circuits (`HARDWARE_BATCH_CIRCUITS`) 120 s apart.
-The series runs eight batches and 24 jobs at 32768 shots:
+A batch holds at most three circuits (`HARDWARE_BATCH_CIRCUITS`), and
+`qi_platform.submit` sends a hardware batch only after every hardware job of the
+account finished at least one account pause earlier (30 s by default, a
+repository rule with the escalation of
+[usage.md](../notes/quantum_inspire/usage.md#pause-escalation)). The series runs nine batches and 27
+jobs at 32768 shots:
 
 | batch | circuits |
 |---|---|
@@ -120,10 +124,11 @@ The series runs eight batches and 24 jobs at 32768 shots:
 | 01 | witness-01, witness-02, checkerboard-q |
 | 02 | witness-03, witness-04, readout-0 |
 | 03 | witness-05, witness-06, readout-1 |
-| 04 | quadrature-k1, quadrature-b1, quadrature-e7 |
-| 05 | witness-07, witness-08, readout-0 |
-| 06 | witness-09, witness-10, readout-1 |
-| 07 | witness-11, witness-12, readout-0 |
+| 04 | quadrature-k1, cosine-k1, quadrature-e7 |
+| 05 | quadrature-b1, cosine-b1, readout-0 |
+| 06 | witness-07, witness-08, readout-1 |
+| 07 | witness-09, witness-10, readout-0 |
+| 08 | witness-11, witness-12, readout-1 |
 
 References. Readout-0 prepares nothing. Readout-1 applies X to the 12 patch
 qubits only, so the five idle qubits stay in |0> as they do in every witness.
@@ -139,10 +144,13 @@ with its nearest readout-0 and readout-1 (the earlier batch on a tie), which
 `readout_pairing` records.
 
 The jobs take about 19.97 s each under the retained fit (2.6 s + 0.53 ms per
-shot): 24 jobs are 479.2 s of execution, and the seven 120 s pauses bring the
-wall time to 1319.2 s (22 minutes) before queue time. Shot order is retained.
+shot): 27 jobs are 539.1 s of execution. The case budgets the top pause step,
+so the eight 120 s pauses bring the wall-time ceiling to 1499.1 s (25 minutes)
+before queue time; at the default 30 s step the pauses take 4 minutes. Each batch also waits
+behind other users' batches on the shared queue, which has held waits of
+9 to 56 minutes, so the wall time is set by the queue. Shot order is retained.
 
-## Quadrature batch
+## Quadrature batches
 
 A GHZ pair (|a> + s e^{i phi}|~a>)/sqrt2 with a3 = 0 carries a branch phase phi
 when a Z rotation acts on q3 (the q3 = 1 branch is ~a). For P with no Z factor,
@@ -157,43 +165,79 @@ when a Z rotation acts on q3 (the q3 = 1 branch is ~a). For P with no Z factor,
 
 `verify_quadrature_derivation()` checks both closed forms against a Qiskit
 Statevector of the emitted pulses with a synthetic phase on q3, for eight pair
-states, four basis states and six phases (maximum difference 1e-15). The batch
-holds k1, b1 and e7 on all three patches. With V the visibility of the parity,
-S = (m_b1 - m_k1)/2 = V sin(phi) from the quadrature circuits and
-C = (m_k1 - m_b1)/2 = V cos(phi) from the Y-basis witnesses of the same patch,
-phi = atan2(S, C) and V = hypot(S, C); phi has the standard error
-sqrt(C^2 var S + S^2 var C)/(S^2 + C^2). The half sums (m_k1 + m_b1)/2 in both
-bases and the e7 parity are null statistics. The estimator separates a phase
-from damping, which the contraction law cannot do. The three circuits drive all
-patches with the same state, so the neighbor activity differs from the
-witnesses; the phase is a per-patch property read to first order.
+states, four basis states and six phases (maximum difference 1e-15).
+
+Each quadrature circuit prepares one state on all three patches. Batch 04
+holds k1 read with q3 in X (quadrature-k1) and in Y (cosine-k1) plus the e7
+null; batch 05 holds the same pair for b1 plus readout-0. With V the
+visibility of the parity, S = (m_b1x - m_k1x)/2 = V sin(phi) and
+C = (m_k1y - m_b1y)/2 = V cos(phi). The X-basis and Y-basis circuits of a state
+share their batch, preparation and neighbor activity, so S and C both carry
+the mean of the batch 04 and batch 05 visibilities and atan2 cancels it. Taking
+C from the witnesses instead would pair the quadrature visibility with the
+witnesses' other neighbor activity: a visibility of 0.70 against 0.85 biases
+a 0.1 rad phase to 0.0825 rad, three times its standard error. The witness
+cosine amplitude minus C is reported as an exploratory measure of that context
+effect.
+
+phi = atan2(S, C) and V = hypot(S, C) are reported only when the amplitude
+rejects zero, S^2/var S + C^2/var C >= 11.83 (the 2-dof chi-square at
+p = 0.0027); otherwise the phase is unidentified and withheld. An admitted phase
+carries the delta-method standard error sqrt(C^2 var S + S^2 var C)/(S^2 + C^2),
+accurate once V is many standard errors from zero. The half sums
+(m_k1 + m_b1)/2 in both bases and the e7 parity are null statistics.
+
+This is a repository-derived fixed-quadrature estimator: two fixed analysis
+bases from matched acquisitions. GHZ parity-oscillation and
+multiple-quantum-coherence practice instead scan the analysis phase and fit a
+sinusoid, which identifies V and phi with more circuits. The two-basis form is
+the minimum that separates a phase from damping, which the contraction law
+cannot do.
 
 ## Preregistered analysis
 
 - Per state and patch: the raw score mean with an empirical-Bernstein 95 %
   interval (the score is bounded in [0, 1] and is not a binomial
   proportion), and the kernel-outcome fraction with a Wilson interval.
-- A readout-corrected score from the inverse tensor product of the four
-  single-qubit assignment matrices of the nearest references, with a 95 %
-  percentile interval from a seeded parametric bootstrap (4000 draws, seed
-  20261022, numpy-batched per cell and pooled over cells) that redraws the
-  witness outcome counts (multinomial) and every assignment rate from its
-  reference counts (binomial). It is reported beside the raw interval. The
-  correction applies the closed-form inverse of each 2 x 2 matrix in one
+- The raw score is the primary estimand. A tensor-model mitigated score
+  applies the inverse tensor product of the four single-qubit assignment
+  matrices of the nearest references. It is an estimate under the model that
+  each qubit's assignment is independent of the other qubits' states, and its
+  interval is conditional on that model. The 95 % interval is the percentile
+  interval of 4000 seeded draws (seed 20261022, numpy-batched per cell and
+  pooled over cells) from the Jeffreys posterior: Dirichlet(counts + 1/2) over
+  the 16 witness outcomes and over the 16 joint outcomes of the patch qubits in
+  each reference, so the four rates of a draw keep the covariance of the
+  calibration shots they share and an unobserved outcome keeps a positive
+  weight. The interval is widened to hold the plug-in value, the boundary rule
+  of Brown, Cai and DasGupta (2001) for a cell with every shot in one outcome.
+  The correction applies the closed-form inverse of each 2 x 2 matrix in one
   operation order in the scalar and in the batched path, and the self-test
   compares their bits.
+- When a neighbor-context shift of the references flags a patch qubit (the
+  retained q13 readout reads 0.046 with q11 idle and 0.091 with q11 excited),
+  the tensor model is rejected for that patch and its mitigated scores are
+  withheld; the raw scores stand.
 - Contraction law: under a depolarizing contraction V of the (q3, q1, q0)
   parity, kernel and bright states read (1 - V)/2 and (1 + V)/2, so
   kernel + bright - 1 is consistent with zero, and middle and sector states
-  read 1/2. Each kernel/bright pair of a batch, their pooled value and each
-  middle and sector state are tested; a violation at |z| >= 3 names a
-  multi-qubit error outside the contraction, such as an entangling coherent
-  error or leakage. The law is blind to a branch phase (kernel and bright
+  read 1/2. The primary test of a patch is the chi-square of its four pair
+  residuals (sum of z^2, 4 dof) beyond the p = 0.0027 quantile 16.25. A
+  coherent error moves the pairs by +0.15 and -0.15 in the self-test, which the
+  pooled mean cancels and the chi-square adds. A rejection falsifies the
+  stationary contraction-plus-readout model on that patch; an entangling
+  coherent error, leakage, drift within the series and context-dependent
+  readout each produce one, and the test does not tell them apart. The law is
+  blind to a branch phase (kernel and bright
   move by (1 -+ cos phi) V/2 and still sum to one) and to single-qubit
-  coherent errors; the quadrature batch reads the phase. It is blind to
+  coherent errors; the quadrature batches read the phase. It is blind to
   readout bias as well, which the parity averages almost away (P(1|0) 0.03
   and P(0|1) 0.08 under a 0.3 depolarization move the pooled pair sum by
-  about 0.004), so readout bias is read from the corrected score.
+  about 0.004).
+- Multiplicity: the primary family is the pair chi-square of each patch and
+  the branch phase of each patch, six tests at p = 0.0027, family-wise error at
+  most 0.016 by Bonferroni. Single pair residuals, the pooled means, middle and
+  sector residuals, the nulls and the context shifts are exploratory.
 - Patches are analyzed separately. The equal-weight pooled value names its
   estimand, and its variance includes the covariance of the patches' per-shot
   scores inside each circuit, because the three patches of one circuit are
@@ -216,7 +260,18 @@ witnesses; the phase is a per-patch property read to first order.
 - A job fails or returns fewer shots than requested; `--analyze` refuses a
   hardware series whose shot list is short and names the file before it
   computes a cell.
+- The QX control analysis misses its ideal (`control_verdict`).
 - The account-wide pause or the three-circuit limit would be broken.
+
+`--submit-next` enforces these stops in code: it sends a batch only after
+every earlier batch of the series is collected, byte-equal to the case, with
+every job completed and every shot list full, the batch-00 and drift stops
+clear over the collected references, the QX twin's control verdict passing
+(Tuna-17), and the live backend's topology, gate set and default compiler
+configuration equal to the digests in the cases (`backend_contract`). It
+writes `series-gate.json` into the run directory with the predecessors'
+result and raw digests. A stopped analysis records the stop, the references
+and the shot counts only.
 
 ## Dry run and approval
 
@@ -228,8 +283,8 @@ The local manifests carry `control: local_qxelarator`, the simulator version
 and the shots actually run, so the analysis labels them an emulator control.
 
 The remote emulator takes 10 qubits, so the QX twin (`bdsc_pauli_qx`) packs
-two patches per circuit on qubits 0 to 3 and 4 to 7: 23 circuits with
-readout-0 and readout-1 in 12 batches at 2048 shots. Each patch repeats its
+two patches per circuit on qubits 0 to 3 and 4 to 7: 26 circuits with
+readout-0 and readout-1 in 14 batches (41 jobs) at 2048 shots. Each patch repeats its
 Tuna gate sequence on relabeled qubits (`build()` requires the equality) and
 names its Tuna patch, circuit and batch, so the analysis and the contraction
 pairs read as in the Tuna series. It is a noiseless plumbing control, and a

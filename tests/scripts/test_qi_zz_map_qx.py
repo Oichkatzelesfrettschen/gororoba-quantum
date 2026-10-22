@@ -38,9 +38,13 @@ def test_toolchain_successor_preserves_original_rows_and_covers_current_cases() 
 
     predecessor = json.loads((ROOT / "docs/evidence/quantum_inspire/toolchain_check.json").read_text())
     successor = json.loads(RECORD.read_text())
-    old_rows = {row["case"]: row for row in predecessor["circuits"]}
+    current = case_files()
+    # A case file rebuilt at its path carries new bytes and a new row; every row of unchanged bytes is preserved.
+    old_rows = {
+        row["case"]: row for row in predecessor["circuits"] if current.get(row["case"], ("",))[0] == row["sha256"]
+    }
     new_rows = {row["case"]: row for row in successor["circuits"]}
     if any(new_rows.get(path) != row for path, row in old_rows.items()):
         raise RuntimeError("the toolchain successor changed original compilation evidence")
-    if set(new_rows) != set(case_files()):
+    if set(new_rows) != set(current):
         raise RuntimeError("the toolchain successor omitted retained case circuits")
