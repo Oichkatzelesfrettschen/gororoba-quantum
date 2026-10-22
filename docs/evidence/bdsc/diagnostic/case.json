@@ -27,8 +27,8 @@
   "instances": 96,
   "processing": "empty-mitigation",
   "mitigations": [],
-  "eligible_trials_per_instance": 10000,
-  "max_shots_per_iteration": 20000,
+  "eligible_trials_per_instance": 40000,
+  "max_shots_per_iteration": 80000,
   "block_gap_hours": 1,
   "role": "diagnostic, not a confirmation design: four seeds do not determine the tails of a seed distribution, and the result decides whether further compilation replication is warranted"
  },
@@ -80,11 +80,11 @@
  ],
  "resources": {
   "billing_rule": "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots",
-  "credits": 4.08,
-  "eligible_trials_total": 960000,
-  "max_shots_total": 1920000,
-  "seconds_per_job_estimate": 157.44,
-  "seconds_estimate": 629.76,
+  "credits": 4.32,
+  "eligible_trials_total": 3840000,
+  "max_shots_total": 7680000,
+  "seconds_per_job_estimate": 176.16,
+  "seconds_estimate": 704.64,
   "timing_rule": "6.3 s plus 2.6e-05 s per sample for each iteration against the 300 s per-job limit; the written case restates credits and seconds from the live qd_platform.py plan output"
  },
  "qrng": {

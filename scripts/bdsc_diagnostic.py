@@ -6,7 +6,7 @@ blocks, differences across compilation seeds of one state, the template, and
 state-by-seed interaction. Its instances are the six target-complement states
 of docs/evidence/bdsc/qualification_case.json under both preparation
 templates, compiled with each of four seeds, in each of two blocks: 96
-instances of 10000 eligible trials under an explicit empty mitigation list.
+instances of 40000 eligible trials under an explicit empty mitigation list.
 
 Every (template, seed) group of six states runs inside one job, so its two
 sum-rule residuals compare iterations of one job. A block runs two jobs of 24
@@ -65,7 +65,7 @@ LABELS = ("f", "g", "+", "-", "+i", "-i")
 SUPERPOSITIONS = ("+", "-", "+i", "-i")
 SLOTS = 4
 BLOCKS = (1, 2)
-TRIALS = 10000
+TRIALS = 40000
 MAX_SHOTS = 2 * TRIALS
 # Billing and timing rules of docs/runbooks/quandela-credit-optimization.md, measured on retained qpu:belenos jobs.
 CREDIT_PER_JOB = 1.0
@@ -766,7 +766,9 @@ def self_test() -> int:
         return at
 
     cases = [
-        ("counting only", response(), "ensemble-candidate"),
+        # Under counting noise alone the inconclusive branch is a preregistered null reading: it fires when any of
+        # three calibrated tests lands in [ALPHA, CONSISTENT_P), about one null draw in eleven.
+        ("counting only", response(), ("ensemble-candidate", "inconclusive")),
         ("common seed shifts", response(seed=[0.008, -0.008, 0.006, -0.006]), "seed-common"),
         (
             "state-specific seed shifts cancelling in each residual",
@@ -785,8 +787,13 @@ def self_test() -> int:
         manifests = {k: json.loads(v["cases.json"]) for k, v in documents(draw).items() if isinstance(v, dict)}
         for n, (name, model, expected) in enumerate(cases):
             (root / str(n)).mkdir()
-            got = readout(validate=False, runs=synthetic_runs(root / str(n), manifests, model))["branch"]
-            require(got == expected, f"self-test: {name} read {got}, expected {expected}")
+            read = readout(validate=False, runs=synthetic_runs(root / str(n), manifests, model))
+            got = read["branch"]
+            allowed = expected if isinstance(expected, tuple) else (expected,)
+            require(got in allowed, f"self-test: {name} read {got}, expected {expected}")
+            if isinstance(expected, tuple):
+                resolved = [k for k, reading in read["readings"].items() if reading == "resolved"]
+                require(not resolved, f"self-test: {name} resolved {resolved} under counting noise alone")
 
         def recompile(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
             if job.startswith("b2"):
