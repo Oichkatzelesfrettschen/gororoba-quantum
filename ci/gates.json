@@ -1452,25 +1452,26 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T231043.083602Z/between-arm.json --rel 1e-9 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --out {out}",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T231043.083602Z/between-arm.json --baseline results/live/2026-10-19T231043.083602Z/between-arm-runner-image.json --skip .analyzer_sha256 --rel 1e-12 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --out {out}",
    "name": "core-600",
-   "seconds": 1.0,
+   "seconds": 2.3,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --check",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T151959.226467Z/between-arm-095a30e32c9c.json --skip .analyzer_sha256 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --out {out}",
    "name": "core-612",
-   "seconds": 18.0,
-   "tier": "full"
+   "seconds": 45.0,
+   "tier": "full",
+   "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T170620.832658Z --check",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T170620.832658Z/between-arm.json --skip .analyzer_sha256 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T170620.832658Z --out {out}",
    "name": "core-613",
-   "seconds": 2.0,
+   "seconds": 4.3,
    "tier": "full"
   },
   {
@@ -1500,9 +1501,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-20T031212.175942Z/ramsey.json --rel 1e-3 -- \"$PYTHON\" scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --out {out}",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-20T031212.175942Z/ramsey.json --baseline results/live/2026-10-20T031212.175942Z/ramsey-runner-image.json --rel 1e-3 -- \"$PYTHON\" ci/frozen_replay.py docs/evidence/analyzer_closures/46d2411ed6a7/scripts docs/evidence/analyzer_closures/46d2411ed6a7/scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --out {out}",
    "name": "core-603",
-   "seconds": 4.1,
+   "seconds": 12.6,
    "tier": "full"
   },
   {
@@ -1516,18 +1517,18 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_beat_model.py results/live/2026-10-20T031212.175942Z --check",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json -- \"$PYTHON\" scripts/n21_q143_beat_model.py results/live/2026-10-20T031212.175942Z --out {out}",
    "name": "core-605",
-   "seconds": 60.0,
+   "seconds": 195.3,
    "tier": "full",
    "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-check results/live/n21-q143-segmented-design.json",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[0] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 0 --out {out}",
    "name": "core-616",
-   "seconds": 666.4,
+   "seconds": 353.0,
    "tier": "full",
    "workers": "all"
   },
@@ -1536,8 +1537,8 @@
    "cwd": ".",
    "workers": 1,
    "name": "core-617",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_line_switching.py results/live/2026-10-21T064222.721454Z results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json --check",
-   "seconds": 10.0,
+   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json -- \"$PYTHON\" scripts/n21_q143_line_switching.py results/live/2026-10-21T064222.721454Z results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json --out {out}",
+   "seconds": 1.0,
    "tier": "pr"
   },
   {
@@ -1554,8 +1555,8 @@
    "cwd": ".",
    "workers": "all",
    "name": "core-619",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --check --against results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
-   "seconds": 480.0,
+   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json --skip .analyzer_closure --skip .preregistered --skip .amendment -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --out {out}",
+   "seconds": 393.7,
    "tier": "full"
   },
   {
@@ -1563,9 +1564,17 @@
    "cwd": ".",
    "workers": "all",
    "name": "core-620",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --check --against results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
-   "seconds": 480.0,
+   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-21T043156.858484Z/segmented-sweep-759d82d74c57.json --skip .analyzer_closure --skip .preregistered --skip .amendment -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --out {out}",
+   "seconds": 676.5,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/runner_image_records.py check",
+   "name": "core-621",
+   "seconds": 0.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -1574,6 +1583,42 @@
    "name": "core-193",
    "seconds": 1.9,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[1] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 1 --out {out}",
+   "name": "core-622",
+   "seconds": 38.3,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[2] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 2 --out {out}",
+   "name": "core-623",
+   "seconds": 59.5,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[3] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 3 --out {out}",
+   "name": "core-624",
+   "seconds": 76.9,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[4] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 4 --out {out}",
+   "name": "core-625",
+   "seconds": 650.1,
+   "tier": "full",
+   "workers": "all"
   },
   {
    "suite": "core",

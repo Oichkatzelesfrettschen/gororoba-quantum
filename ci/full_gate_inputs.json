@@ -44,13 +44,14 @@
       "results/live/2026-10-21T064222.721454Z/**"
     ],
     "core-603": [
-      "results/live/2026-10-20T031212.175942Z/**"
+      "results/live/2026-10-20T031212.175942Z/**",
+      "docs/evidence/analyzer_closures/46d2411ed6a7/**"
     ],
     "core-605": [
       "results/live/2026-10-20T031212.175942Z/**"
     ],
     "core-616": [
-      "results/live/n21-q143-segmented-design.json"
+      "results/live/n21-q143-segmented-design-759d82d74c57.json"
     ],
     "core-289": [
       "docs/evidence/walk-control-scaffolding/local_member_conformance.json",
@@ -459,6 +460,18 @@
       "docs/evidence/calibration/**",
       "docs/evidence/signed_kernel_noise/**",
       "results/kaggle/2026-10-16T071913Z-gororoba-signed-kernel-noise/**"
+    ],
+    "core-622": [
+      "results/live/n21-q143-segmented-design-759d82d74c57.json"
+    ],
+    "core-623": [
+      "results/live/n21-q143-segmented-design-759d82d74c57.json"
+    ],
+    "core-624": [
+      "results/live/n21-q143-segmented-design-759d82d74c57.json"
+    ],
+    "core-625": [
+      "results/live/n21-q143-segmented-design-759d82d74c57.json"
     ]
   }
 }

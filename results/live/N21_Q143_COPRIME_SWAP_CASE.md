@@ -68,27 +68,29 @@ unit and more reads per shot is the lever.
 | measure_reset in place of readout + reset | 415 dt less per segment (about 8 %) | not emitted by the planner's compile path; Aer lacks it | not adopted |
 
 Trade table (scripts/n21_q143_segmented_sweep.py --design,
-[n21-q143-segmented-design.json](n21-q143-segmented-design.json), gate
-core-616). Asimov expected LLRs at the retained static fit under the
+[n21-q143-segmented-design-759d82d74c57.json](n21-q143-segmented-design-759d82d74c57.json),
+gates core-616 and core-622 to core-625, one per row; it corrects
+[n21-q143-segmented-design.json](n21-q143-segmented-design.json), whose
+single local refits overstated alias pairs and understated slow telegraph rates). Asimov expected LLRs at the retained static fit under the
 shot-level likelihood with e0, e1 free, df confined to its alias cell for
 every alternative, and the TLS population p0 profiled; tls rows give the
 worst p0 over {0, 0.5, 1}. "1 x 2048" is the uniform one-read design.
 
 | Design | PUBs x shots | Kept reads | Rule (s) | Charge est. (s) | Worst alias pair | tls truth, worst p0 | static truth vs tls | telegraph 0.01 / 0.03 / 0.1 per us |
 |---|---|---|---|---|---|---|---|---|
-| 1 x 2048 (uniform) | 69 x 2048 | 138910 | 14.7 | 13.8 | 1570 | 11.2 | 20.2 | 49 / 11 / 846 |
-| 2 x 2048 | 48 x 2048 | 185872 | 12.9 | 12.3 | 2503 (truth cell 0) | 764 | 1009 | 58 / 276 / 879 |
-| 4 x 1536 | 48 x 1536 | 279303 | 13.5 | 13.1 | 4340 (truth cell 0) | 2149 | 4129 | 121 / 299 / 308 |
-| 6 x 1024 | 48 x 1024 | 279468 | 11.9 | 11.8 | 4549 (truth cell 0) | 2550 | 5752 | 425 / 661 / 487 |
-| **6 x 1536 (chosen)** | 48 x 1536 | 419202 | 16.7 | 16.3 | 6823 | 3825 | 8627 | 553 / 992 / 731 |
+| 1 x 2048 (uniform) | 69 x 2048 | 138910 | 14.7 | 13.8 | 1503 | 9.0 | 19.4 | 1.7 / 10.7 / 44.7 |
+| 2 x 2048 | 48 x 2048 | 185872 | 12.9 | 12.3 | 2350 (truth cell 0) | 764 | 1008 | 4.1 / 21.8 / 70.4 |
+| 4 x 1536 | 48 x 1536 | 279303 | 13.5 | 13.1 | 4173 (truth cell 0) | 2147 | 4129 | 121 / 299 / 308 |
+| 6 x 1024 | 48 x 1024 | 279468 | 11.9 | 11.8 | 4456 (truth cell 0) | 2548 | 5752 | 368 / 661 / 487 |
+| **6 x 1536 (chosen)** | 48 x 1536 | 419202 | 16.7 | 16.3 | 6663 | 3822 | 8627 | 553 / 992 / 731 |
 
 The chosen design reads 2.97 times the uniform design's kept reads for
 1.6 s more by the cost rule, and every separation the selection rule names
-(50) is passed by a factor of 76 or more; the uniform design fails the TLS
-separation at p0 = 1 under this likelihood. LLRs come from one local refit
-per alternative, so a refit trapped above the alternative's minimum
-overstates its row; the telegraph columns of the uniform design (49 at
-0.01 above 11 at 0.03) show that limitation.
+(50) is passed by a factor of 11 or more; the uniform design fails the TLS
+separation at p0 = 1 under this likelihood. Each alternative is refit from
+its start and from its cell's best (df, a) profile points, and the least
+NLL decides; a telegraph rate of 0.01 per us stays below the rule in every
+design.
 
 ## Analysis rules (preregistered)
 
@@ -126,7 +128,7 @@ Planted truths (tests/scripts/test_n21_q143_segmented_sweep.py): the one-segment
 binomial; segment marginals equal the telegraph kernel; a refused segment
 marginalizes; static draws pass exchangeability and a later-segment offset
 fails it; a 10 % coherence loss in the controls reads backaction; a static
-plant favors the line mixture over tls by 6065 and a tls plant tls by 6981.
+plant favors the line mixture over tls by 6065 and a tls plant tls by 6976.
 
 ## Cost and quota
 
@@ -204,7 +206,7 @@ four or more per measure and reset; it indexed the four orbit herald roles
 with reset-herald keys; and it fixed the spectator at 143. The amended
 analyzer reads the barrier stages of the returned table, the spectator
 from the run, and every herald through its undetected excitation, and
-writes `segmented-sweep-6d59d710eb61.json` beside the record as an
+writes `segmented-sweep-<closure>.json` beside the record as an
 amended analysis. On run 2026-10-21T043156.858484Z all 48 members admit
 their schedule (pre-idle 1250 dt on both controls, every idle as
 designed) and the heralds admit; Z members leave about twice the reset
@@ -212,8 +214,11 @@ excitation of xy members (segment 6: 0.019 against 0.010), which the
 design predicts and the herald drops. Amended verdicts on qubit 47:
 exchangeable segments (51.5 against 72.1), herald backaction (47.9
 against 13.7, a Wald test of each pair's per-shot X and Y means), z_memory (284 against 42), and a line mixture over tls
-(239) with a 0.048 second line at alias cell -2 (df -0.735 MHz), T1 81
-us and T2* 52 us (`hw-n21-q47-segmented-baseline`).
+(552) with a 0.105 second line at alias cell 0 (df -12.9 kHz, next cell
+worse by 317), T1 81 us and T2* 60 us (`hw-n21-q47-segmented-baseline`;
+segmented-sweep-759d82d74c57.json). The first amended analysis
+(segmented-sweep-6d59d710eb61.json) read cell -2 and T2* 52 us: its
+unscaled optimizer left the decay times at their starts.
 
 ### ibm_fez qubit 143
 
@@ -228,7 +233,7 @@ The preregistered segmented-sweep.json refuses every member: the ibm_fez
 table opens with a barrier before INIT, which the bound stage reader kept
 as an 842 dt idle ahead of the segment-1 herald. The amended reader starts
 the program at INIT and ends it at FINI, and its analysis
-(segmented-sweep-6d59d710eb61.json) admits all 48 members (1508 to
+(segmented-sweep-759d82d74c57.json, correcting segmented-sweep-6d59d710eb61.json) admits all 48 members (1508 to
 1528 kept shots each, dead gaps 1264 dt as designed) and every herald.
 
 | Test | qubit 143 (fez) | qubit 47 (marrakesh) |
@@ -236,17 +241,17 @@ the program at INIT and ends it at FINI, and its analysis
 | segment_exchangeability | exchangeable, 42.2 against 72.1 | exchangeable, 51.5 |
 | herald_backaction | none, 3.5 against 13.7 | backaction, 47.9 |
 | z_memory | none, 18.3 against 42.3 | memory, 284 |
-| model_decision | line mixture, tls worse by 10060 | line mixture, by 239 |
-| second-line weight 1 - a | 0.471 | 0.048 |
-| alias | cell 0 resolved, next cell worse by 5342 | cell -2 |
-| df | -90.2 kHz | -735 kHz |
+| model_decision | line mixture, tls worse by 10063 | line mixture, by 552 |
+| second-line weight 1 - a | 0.471 | 0.105 |
+| alias | cell 0 resolved, next cell worse by 5350 | cell 0, next worse by 317 |
+| df | -90.2 kHz | -12.9 kHz |
 | switching rate (telegraph) | 0 per us | 0 per us |
-| T1, T2* (fit) | 152 us, 138 us | 81 us, 52 us |
+| T1, T2* (fit) | 153 us, 152 us | 81 us, 60 us |
 
 Answers. (1) df = -90.2 kHz in alias cell 0, the residue the retained
 836 dt sweep left modulo 299.04 kHz, now unaliased. (2) The two lines of
 qubit 143 are a classical mixture fixed within each shot: the segments of
-a shot correlate as one line, an exchange-coupled TLS is worse by 10060 in
+a shot correlate as one line, an exchange-coupled TLS is worse by 10063 in
 NLL, and the Z arms carry no swap memory; the fitted switching rate is 0,
 so the line holds over a shot, 30 to 230 us across the delays. The weights 0.529 / 0.471
 differ from the retained sweep's 0.644 / 0.356. A line pair near equal
@@ -274,7 +279,7 @@ at the four whole-cycle delays up to 30.5 us the raw lag-1 correlation
 stays within 0.034 (standard error 0.026), and at 8316 dt (33 us) the raw
 0.090 equals that arm's own label correlation 0.089, the lines' residual
 separation there. scripts/n21_q143_line_switching.py writes
-line-switching.json beside the run (gate core-617,
+line-switching-759d82d74c57.json beside the run from the corrected analysis (gate core-617,
 `hw-n21-q143-segmented-lines`). The correlation across 8.9 ms also means
 the per-shot Wald statistics above treat correlated shots as independent:
 the non-rejections and the model and alias margins survive that, while a
