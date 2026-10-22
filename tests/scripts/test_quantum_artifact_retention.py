@@ -9,7 +9,7 @@ import tarfile
 from pathlib import Path
 
 import pytest
-from quantum_artifact_retention import PRIVATE_KEYS, ROOT, capture, check, digest, sanitize
+from quantum_artifact_retention import PRIVATE_KEYS, ROOT, capture, check, check_tree, digest, sanitize
 
 
 def test_sanitizer_removes_identifiers_and_local_paths() -> None:
@@ -145,9 +145,11 @@ def test_standalone_cli_imports_without_pythonpath(tmp_path: Path) -> None:
     output = tmp_path / "retained"
     environment = {key: value for key, value in os.environ.items() if key != "PYTHONPATH"}
     environment["GOROROBA_WORKERS"] = "1"
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     subprocess.run(
         [
             sys.executable,
+            "-B",
             str(ROOT / "scripts/quantum_artifact_retention.py"),
             str(output),
             "--source",
@@ -182,3 +184,26 @@ def test_historical_disposition_correction_is_exact_and_keeps_bound_inventory(tm
     correction.write_text(json.dumps({"submit.lock": "external-reading-copy"}))
     with pytest.raises(ValueError, match="corrections"):
         check(output)
+
+
+@pytest.mark.parametrize("field", sorted(PRIVATE_KEYS))
+def test_provider_private_field_variants_are_redacted(field: str) -> None:
+    parts = field.replace("-", "_").split("_")
+    camel_case = parts[0] + "".join(part.title() for part in parts[1:])
+    for variant in (camel_case, field.upper(), field.replace("_", "-")):
+        for original in (json.dumps({variant: "private-value"}), f"{variant}=private-value"):
+            if b"private-value" in sanitize(original.encode()):
+                raise AssertionError("provider field spelling bypassed redaction")
+
+
+def test_tree_verification_discovers_and_checks_new_inventory(tmp_path: Path) -> None:
+    source = tmp_path / "source.txt"
+    source.write_text("measurement")
+    root = tmp_path / "retained"
+    capture({"first": source}, root / "first")
+    capture({"second": source}, root / "second")
+    check_tree(root)
+    capture({"third": source}, root / "third")
+    (root / "third" / "inventory.sha256").write_text("corrupt")
+    with pytest.raises(ValueError, match="digest"):
+        check_tree(root)

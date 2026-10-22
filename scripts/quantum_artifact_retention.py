@@ -20,6 +20,7 @@ from typing import Any
 
 SCHEMA = "quantum-task-artifact-retention-v1"
 ROOT = Path(__file__).resolve().parents[1]
+sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from parallel import ordered_map  # noqa: E402
 
@@ -62,6 +63,11 @@ PRIVATE_KEYS = frozenset(
         "x-api-key",
     }
 )
+NORMALIZED_PRIVATE_KEYS = frozenset(re.sub(r"[^a-z0-9]", "", key.lower()) for key in PRIVATE_KEYS)
+PRIVATE_FIELD_PATTERN = "|".join(
+    r"[-_ ]*".join(re.escape(character) for character in key)
+    for key in sorted(NORMALIZED_PRIVATE_KEYS, key=len, reverse=True)
+)
 READING = re.compile(r"^(?:\d{4}\.\d{4,5}(?:v\d+)?|quant-ph-\d+(?:v\d+)?|rfc\d+)\.(?:html|txt)$")
 
 
@@ -77,9 +83,8 @@ def clean_text(text: str) -> str:
     text = re.sub(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", "[REDACTED-EMAIL]", text)
     text = re.sub(r"crn:v\d:[^\s\"<>]+", "[REDACTED-CRN]", text)
     text = re.sub(r"(?i)([?&](?:code|state|access_token|refresh_token)=)[^&\s\"<>]+", r"\1[REDACTED]", text)
-    private_fields = "|".join(re.escape(key) for key in sorted(PRIVATE_KEYS, key=len, reverse=True))
     text = re.sub(
-        rf"(?i)(?<![\w-])(?:{private_fields})"
+        rf"(?i)(?<![\w-])(?:{PRIVATE_FIELD_PATTERN})"
         r"[\"']?\s*[:=]\s*(?:\"[^\"\r\n]*\"|'[^'\r\n]*'|[^,;\r\n]+)",
         "[REDACTED-CREDENTIAL-FIELD]",
         text,
@@ -89,7 +94,11 @@ def clean_text(text: str) -> str:
 
 def _clean(value: Any) -> Any:
     if isinstance(value, dict):
-        return {clean_text(key): _clean(item) for key, item in value.items() if key.lower() not in PRIVATE_KEYS}
+        return {
+            clean_text(key): _clean(item)
+            for key, item in value.items()
+            if re.sub(r"[^a-z0-9]", "", key.lower()) not in NORMALIZED_PRIVATE_KEYS
+        }
     if isinstance(value, list):
         return [_clean(item) for item in value]
     return clean_text(value) if isinstance(value, str) else value
@@ -346,15 +355,32 @@ def check(output: Path) -> None:
     print(f"artifact retention: {len(names)} source identities, {len(expected)} unique retained captures")
 
 
+def check_tree(root: Path) -> None:
+    paths = list(root.rglob("*"))
+    if root.is_symlink() or any(path.is_symlink() for path in paths):
+        raise ValueError("retention tree contains a symbolic link")
+    directories = sorted(path.parent for path in paths if path.name == "inventory.json")
+    checksums = {path.parent for path in paths if path.name == "inventory.sha256"}
+    capture_directories = {path.parent.parent for path in paths if path.is_file() and path.parent.name == "captures"}
+    if not directories or checksums != set(directories) or not capture_directories.issubset(directories):
+        raise ValueError("retention tree inventory coverage differs")
+    ordered_map(check, directories, min_items=1)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--check-tree", action="store_true")
     parser.add_argument("--source", action="append", default=[], metavar="LABEL=PATH")
     parser.add_argument("--tracked-root", type=Path, help="link byte-identical inputs to retained Git blobs")
     parser.add_argument("--write-disposition-corrections", action="store_true")
     args = parser.parse_args()
-    if args.write_disposition_corrections:
+    if args.check_tree:
+        if args.source or args.check or args.write_disposition_corrections or args.tracked_root:
+            parser.error("tree verification reads all retained inventories alone")
+        check_tree(args.directory)
+    elif args.write_disposition_corrections:
         if args.source or args.check or args.tracked_root:
             parser.error("correction generation reads one historical inventory alone")
         record = json.loads((args.directory / "inventory.json").read_text())

@@ -43,7 +43,7 @@ supersedes exactly those classifications while preserving the checksum-bound
 original inventory bytes. The verifier derives the required correction domain
 from every historical row and rejects missing, additional, or incorrect entries.
 New captures preserve non-content classifications before tracked deduplication.
-The expanded plaintext sanitizer covers every declared private field; all
+The expanded plaintext sanitizer normalizes casing and separators for every declared private field; all
 retained text also passes the expanded sanitizer's idempotence check.
 
 PR #352 owns MCP/API repairs. PR #368 owns the approved Ascella plan and waiting
@@ -57,13 +57,15 @@ Replay from the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-export PYTHONPATH=gororoba_quantum:scripts
-"$PYTHON" scripts/quantum_artifact_retention.py \
-  docs/evidence/quantum-task-artifact-retention/snapshot --check
-"$PYTHON" -m pytest -q tests/scripts/test_quantum_artifact_retention.py
+"$PYTHON" -B scripts/quantum_artifact_retention.py \
+  docs/evidence/quantum-task-artifact-retention --check-tree
+"$PYTHON" -B -m pytest -q tests/scripts/test_quantum_artifact_retention.py
 ```
 
 The capture CLI accepts repeated `--source logical-name=PATH` arguments and a
 fresh destination. `--tracked-root .` enables repository-byte deduplication.
 The capture refuses existing destinations, unclassified binary inputs, unsafe
 archive members, and oversized inputs.
+Tree verification discovers every inventory, rejects orphan checksums or capture
+directories, and applies the verifier to each discovered snapshot. A later
+immutable capture therefore enters the same gate without a directory-list edit.
