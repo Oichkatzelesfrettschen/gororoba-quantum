@@ -72,6 +72,15 @@ results retain their original bytes. Further Ascella execution is paused and
 requires the user's heads-up plus an explicit replacement or override of the
 stopping rule, as well as the applicable case and resource approval.
 
+The user subsequently authorized Ascella again. The
+[authorized order-retry preflight](../evidence/quandela/ascella-order-pilot-retry-preflight/README.md)
+retains the unchanged manifest identity and original resource ceilings. The
+read-only preflight observed an occupied shared-token queue belonging to a
+separate active Belenos diagnostic acquisition and submitted zero jobs.
+The bounded retry authorization replaces the execution hold for that attempt;
+it establishes neither instrument recovery nor authority to cancel the other
+workflow's acquisition.
+
 A safe protobuf inspection of the published architecture finds empty logical
 `input_ports` and `output_ports` maps, alongside the six-source occupation,
 twelve detectors and optical circuit. Logical Perceval ports therefore supply
