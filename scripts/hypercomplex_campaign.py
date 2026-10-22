@@ -193,6 +193,20 @@ def execute(directory: Path, approval: str, approved_sha256: str, max_wait_secon
         raise ValueError("max wait must be finite and positive")
     import qi_platform
 
+    container = {
+        "schema": "qi-campaign-v1",
+        "plan_sha256": approved_sha256,
+        "batches": {
+            Path(name).parent.name: digest for name, digest in plan["bindings"].items() if name.endswith("/cases.json")
+        },
+    }
+    container_path = directory / "campaign.json"
+    container_text = json.dumps(container, indent=1) + "\n"
+    if container_path.exists():
+        if container_path.read_text() != container_text:
+            raise ValueError("campaign container differs from the approved batch identities")
+    else:
+        qi_platform._write_json(container_path, container, exclusive=True)
     deadline = time.monotonic() + max_wait_seconds
     for path in sorted(directory.glob("*/cases.json")):
         batch = path.parent
@@ -216,9 +230,38 @@ def execute(directory: Path, approval: str, approved_sha256: str, max_wait_secon
                     break
                 print(f"account hardware pause: {remaining} seconds remaining", flush=True)
                 time.sleep(min(30, remaining))
-            qi_platform.submit(
-                batch, 7, approval, expected_cases_sha256=plan["bindings"][path.relative_to(directory).as_posix()]
-            )
+            intent = {
+                "schema": "qi-campaign-intent-v1",
+                "plan_sha256": approved_sha256,
+                "cases_sha256": plan["bindings"][path.relative_to(directory).as_posix()],
+            }
+            intent_path = batch / "execution-intent.json"
+            if intent_path.exists():
+                if json.loads(intent_path.read_text()) != intent:
+                    raise ValueError("batch execution intent differs from the approved identities")
+            else:
+                qi_platform._write_json(intent_path, intent, exclusive=True)
+            if (batch / "preflight-refusal.json").exists():
+                raise ValueError("a retained preflight refusal requires a separately recorded retry")
+            try:
+                qi_platform.submit(batch, 7, approval, expected_cases_sha256=intent["cases_sha256"])
+            except BaseException:
+                with qi_platform.token_lock(qi_platform.SUBMIT_LOCK):
+                    if not any(
+                        (batch / name).exists()
+                        for name in ("submission-state.json", "submission.json", "results.json", "raw")
+                    ):
+                        # The submitter syncs its creation state and checks refusals under the same lock.
+                        refusal = {**intent, "schema": "qi-campaign-refusal-v1", "phase": "preflight-refused"}
+                        refusal_path = batch / "preflight-refusal.json"
+                        if refusal_path.exists():
+                            if json.loads(refusal_path.read_text()) != refusal:
+                                raise ValueError(
+                                    "retained preflight refusal differs from the approved identities"
+                                ) from None
+                        else:
+                            qi_platform._write_json(refusal_path, refusal, exclusive=True)
+                raise
         qi_platform.collect(batch, poll=10, timeout=max(1, deadline - time.monotonic()))
         analysis = analyze_batch(batch)
         analysis_path = batch / "hypercomplex-analysis.json"

@@ -120,3 +120,83 @@ def test_measured_wave_requires_retained_shot_order(tmp_path, monkeypatch) -> No
     monkeypatch.setattr(hypercomplex_campaign, "analyze_batch", reordered)
     with pytest.raises(ValueError, match="retained per-batch"):
         measured_wave(tmp_path)
+
+
+def test_execution_registers_explicit_nested_batch_container(tmp_path, monkeypatch) -> None:
+    import qi_platform
+
+    runs = tmp_path / "runs"
+    campaign = runs / "order-acquisition"
+    write_files(campaign, qi_cases(16))
+    plan = campaign_plan(campaign)
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: 0)
+
+    def stop_before_cloud(*args, **kwargs):
+        qi_platform._write_json(args[0] / "submission-state.json", {"phase": "creating"}, exclusive=True)
+        raise RuntimeError("stop before cloud")
+
+    monkeypatch.setattr(qi_platform, "submit", stop_before_cloud)
+    with pytest.raises(RuntimeError, match="stop before cloud"):
+        execute(campaign, "approved fixture", plan["plan_sha256"], 60)
+    if len(qi_platform.run_directories(runs)) != 1:
+        raise RuntimeError("the campaign container must expose the attempted batch and distinguish future plans")
+    marker = json.loads((campaign / "campaign.json").read_text())
+    if len(marker["batches"]) != 8:
+        raise RuntimeError("the immutable container must bind every approved batch")
+    if campaign_plan(campaign)["plan_sha256"] != plan["plan_sha256"]:
+        raise RuntimeError("container metadata must preserve the frozen plan identity")
+
+
+def test_preflight_refusal_distinguishes_plans_from_acquisitions(tmp_path, monkeypatch) -> None:
+    import qi_platform
+
+    runs = tmp_path / "runs"
+    campaign = runs / "order-acquisition"
+    write_files(campaign, qi_cases(16))
+    plan = campaign_plan(campaign)
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: 0)
+
+    def refuse_before_creation(*args, **kwargs):
+        raise SystemExit("fixture admission refused")
+
+    monkeypatch.setattr(qi_platform, "submit", refuse_before_creation)
+    with pytest.raises(SystemExit, match="admission refused"):
+        execute(campaign, "approved fixture", plan["plan_sha256"], 60)
+    if qi_platform.run_directories(runs):
+        raise RuntimeError("a local preflight refusal must remain distinct from an acquisition")
+    refusals = list(campaign.glob("*/preflight-refusal.json"))
+    if len(refusals) != 1:
+        raise RuntimeError("the attempted batch needs exactly one durable refusal record")
+
+
+def test_refusal_classification_observes_competing_creation_under_lock(tmp_path, monkeypatch) -> None:
+    from contextlib import contextmanager
+
+    import qi_platform
+
+    runs = tmp_path / "runs"
+    campaign = runs / "order-acquisition"
+    write_files(campaign, qi_cases(16))
+    first = sorted(campaign.glob("*/cases.json"))[0].parent
+    plan = campaign_plan(campaign)
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: 0)
+
+    @contextmanager
+    def competing_creation(lock_path):
+        if lock_path != qi_platform.SUBMIT_LOCK:
+            raise RuntimeError("refusal classification must reacquire the account submission lock")
+        qi_platform._write_json(first / "submission-state.json", {"phase": "creating"}, exclusive=True)
+        yield
+
+    def refused(*args, **kwargs):
+        raise SystemExit("fixture preflight refused")
+
+    monkeypatch.setattr(qi_platform, "token_lock", competing_creation)
+    monkeypatch.setattr(qi_platform, "submit", refused)
+    with pytest.raises(SystemExit, match="preflight refused"):
+        execute(campaign, "approved fixture", plan["plan_sha256"], 60)
+    if (first / "preflight-refusal.json").exists() or qi_platform.run_directories(runs) != [first]:
+        raise RuntimeError("a competing durable creation must remain an attempted acquisition")

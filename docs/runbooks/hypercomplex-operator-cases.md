@@ -30,6 +30,8 @@ After the user approves the named plan digest and written case, invoke the exist
 
 The generated files live under `results/hypercomplex/cases/quantum_inspire/`. A live acquisition must retain under the provider's canonical `results/quantum_inspire/runs/` tree and enter the usage ledger and research registry together. Copy a complete frozen family to its named acquisition directory, verify the printed plan digest agrees, and execute there. The case filenames and manifests remain unchanged. The case-only tree contains no acquisition.
 
+Execution durably writes `campaign.json`, binding every planned batch manifest without changing the approved plan digest. The provider adapter validates the complete container and enumerates batches with `execution-intent.json`; future planned batches remain distinct from attempted acquisitions. The runner syncs each intent before submission. The submitter syncs `submission-state.json` before its first resource-creating request. A caught refusal before that boundary receives `preflight-refusal.json` and represents a local admission refusal. Remote artifacts without an intent, missing receipts after an attempted creation, and inconsistent refusal records fail validation. An interrupted creation requires read-only reconciliation; a retained preflight refusal requires a separately recorded retry. Raw acquisitions and intent records remain immutable.
+
 Collect the complete primary wave before producing measured art:
 
 ```sh

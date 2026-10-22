@@ -470,6 +470,14 @@ class RetentionChecks(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, "exists"):
                 platform.submit(self.case_dir, 7, "fixture approval for one batch")
 
+    def test_preflight_refusal_blocks_direct_submission_before_service_access(self) -> None:
+        (self.case_dir / "preflight-refusal.json").write_text("{}")
+        with patch.object(platform, "Client", side_effect=AssertionError("refused case reached the service")):
+            with self.assertRaisesRegex(SystemExit, "preflight-refusal"):
+                platform.submit(self.case_dir, 7, "approved")
+        self.assertFalse((self.case_dir / "submission-state.json").exists())
+        self.assertFalse((self.case_dir / "submission.json").exists())
+
     def test_success_and_historical_receipts_block_repeats(self) -> None:
         client = FakeClient(self.case_dir)
         self.submit(client)
@@ -1018,6 +1026,114 @@ class RetentionChecks(unittest.TestCase):
         self.assertEqual((record["schema"], record["unretained"]), ("qi-usage-v2", [40]))
         self.assertEqual([row["job"] for row in record["jobs"]], [10, 20, 30, 40])
         self.assertEqual(platform.retained_job_ids(runs / "absent"), set())
+
+    def test_marked_campaign_enumerates_bound_batches_beside_legacy_runs(self) -> None:
+        runs = self.case_dir / "runs"
+        legacy = runs / "legacy"
+        legacy.mkdir(parents=True)
+        campaign = runs / "campaign"
+        batches = {}
+        for index, name in enumerate(("batch-b", "batch-a")):
+            directory = campaign / name
+            directory.mkdir(parents=True)
+            source = b'{"circuits": []}'
+            (directory / "cases.json").write_bytes(source)
+            (directory / "submission.json").write_text(json.dumps({"jobs": [{"job": index + 1}]}))
+            batches[name] = hashlib.sha256(source).hexdigest()
+        marker = {"schema": "qi-campaign-v1", "plan_sha256": "a" * 64, "batches": batches}
+        (campaign / "campaign.json").write_text(json.dumps(marker))
+        for name, digest in batches.items():
+            (campaign / name / "execution-intent.json").write_text(
+                json.dumps({"schema": "qi-campaign-intent-v1", "plan_sha256": "a" * 64, "cases_sha256": digest})
+            )
+        expected = [campaign / "batch-a", campaign / "batch-b"]
+        self.assertEqual(platform.run_directories(campaign), expected)
+        self.assertEqual(platform.run_directories(runs), [*expected, legacy])
+        self.assertEqual(platform.retained_job_ids(runs), {1, 2})
+
+    def test_marked_campaign_refuses_omitted_extra_and_changed_batches(self) -> None:
+        campaign = self.case_dir / "campaign"
+        batch = campaign / "batch"
+        batch.mkdir(parents=True)
+        source = b"{}"
+        (batch / "cases.json").write_bytes(source)
+        marker: dict[str, Any] = {
+            "schema": "qi-campaign-v1",
+            "plan_sha256": "a" * 64,
+            "batches": {"batch": hashlib.sha256(source).hexdigest()},
+        }
+        invalid = [
+            {**marker, "schema": "unknown"},
+            {**marker, "plan_sha256": "x" * 64},
+            {**marker, "batches": {}},
+            {**marker, "batches": {"omitted": "a" * 64}},
+            {**marker, "batches": {**marker["batches"], "extra": "a" * 64}},
+            {**marker, "batches": {"../batch": "a" * 64}},
+            {**marker, "batches": {"batch": "a" * 64}},
+        ]
+        for record in invalid:
+            with self.subTest(record=record):
+                (campaign / "campaign.json").write_text(json.dumps(record))
+                with self.assertRaises(platform.PlatformError):
+                    platform.run_directories(self.case_dir)
+        (campaign / "campaign.json").write_text(json.dumps(marker))
+        (batch / "cases.json").write_text("changed")
+        with self.assertRaisesRegex(platform.PlatformError, "bound digest"):
+            platform.run_directories(campaign)
+
+    def test_campaign_journal_distinguishes_planned_intended_and_refused_batches(self) -> None:
+        campaign = self.case_dir / "campaign"
+        batch = campaign / "batch"
+        batch.mkdir(parents=True)
+        source = b"{}"
+        (batch / "cases.json").write_bytes(source)
+        binding = {"plan_sha256": "a" * 64, "cases_sha256": hashlib.sha256(source).hexdigest()}
+        (campaign / "campaign.json").write_text(
+            json.dumps(
+                {
+                    "schema": "qi-campaign-v1",
+                    "plan_sha256": binding["plan_sha256"],
+                    "batches": {"batch": binding["cases_sha256"]},
+                }
+            )
+        )
+        self.assertEqual(platform.run_directories(campaign), [])
+        intent_path = batch / "execution-intent.json"
+        intent = {"schema": "qi-campaign-intent-v1", **binding}
+        refusal_path = batch / "preflight-refusal.json"
+        refusal = {"schema": "qi-campaign-refusal-v1", "phase": "preflight-refused", **binding}
+        for artifact in ("submission.json", "submission-state.json", "results.json", "raw"):
+            path = batch / artifact
+            path.write_text("{}")
+            with self.subTest(artifact=artifact), self.assertRaisesRegex(platform.PlatformError, "intent"):
+                platform.run_directories(campaign)
+            path.unlink()
+        refusal_path.write_text(json.dumps(refusal))
+        with self.assertRaisesRegex(platform.PlatformError, "intent"):
+            platform.run_directories(campaign)
+        refusal_path.unlink()
+        for invalid in ({**intent, "cases_sha256": "0" * 64}, {**intent, "extra": True}):
+            intent_path.write_text(json.dumps(invalid))
+            with self.assertRaisesRegex(platform.PlatformError, "intent"):
+                platform.run_directories(campaign)
+        intent_path.write_text(json.dumps(intent))
+        self.assertEqual(platform.run_directories(campaign), [batch])
+        for invalid in (
+            {**refusal, "phase": "completed"},
+            {**refusal, "plan_sha256": "0" * 64},
+            {**refusal, "extra": True},
+        ):
+            refusal_path.write_text(json.dumps(invalid))
+            with self.assertRaisesRegex(platform.PlatformError, "refusal"):
+                platform.run_directories(campaign)
+        refusal_path.write_text(json.dumps(refusal))
+        self.assertEqual(platform.run_directories(campaign), [])
+        for artifact in ("submission.json", "submission-state.json", "results.json", "raw"):
+            path = batch / artifact
+            path.write_text("{}")
+            with self.subTest(artifact=artifact), self.assertRaisesRegex(platform.PlatformError, "conflicts"):
+                platform.run_directories(campaign)
+            path.unlink()
 
     def test_snapshot_check_validates_the_unretained_list(self) -> None:
         retained = Path(__file__).resolve().parents[1] / "docs/evidence/quantum_inspire"

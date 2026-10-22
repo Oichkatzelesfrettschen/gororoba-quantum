@@ -127,8 +127,73 @@ def utc_now() -> datetime.datetime:
 
 
 def run_directories(runs: Path = RUNS) -> list[Path]:
-    """Every retained run directory under `runs`, in name order."""
-    return sorted(path for path in runs.iterdir() if path.is_dir()) if runs.is_dir() else []
+    """Enumerate legacy runs and explicitly digest-bound campaign batch directories."""
+    if not runs.is_dir():
+        return []
+
+    def campaign_batches(directory: Path) -> list[Path]:
+        try:
+            marker = json.loads((directory / "campaign.json").read_text(encoding="utf-8"))
+            if not isinstance(marker, dict) or marker.get("schema") != "qi-campaign-v1":
+                raise ValueError("unexpected campaign schema")
+            if not isinstance(marker.get("plan_sha256"), str) or not re.fullmatch(
+                r"[0-9a-fA-F]{64}", marker["plan_sha256"]
+            ):
+                raise ValueError("campaign plan digest needs 64 hexadecimal characters")
+            batches = marker.get("batches")
+            if not isinstance(batches, dict) or not batches:
+                raise ValueError("campaign needs a nonempty batch mapping")
+            for name, digest in batches.items():
+                if not re.fullmatch(r"[A-Za-z0-9_-]+", name):
+                    raise ValueError("campaign batch names must be immediate directory names without dots")
+                if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", digest):
+                    raise ValueError("campaign batch digest needs 64 hexadecimal characters")
+            children = {path.name: path for path in directory.iterdir() if path.is_dir()}
+            if children.keys() != batches.keys():
+                raise ValueError("campaign batch mapping differs from its child directories")
+            for name, path in children.items():
+                if path.is_symlink():
+                    raise ValueError("campaign batch directories must not be symlinks")
+                digest = hashlib.sha256((path / "cases.json").read_bytes()).hexdigest()
+                if digest != batches[name].lower():
+                    raise ValueError("campaign batch cases.json differs from its bound digest")
+            retained = []
+            for name, path in sorted(children.items()):
+                artifacts = any(
+                    (path / filename).exists()
+                    for filename in ("submission.json", "submission-state.json", "results.json", "raw")
+                )
+                intent_path = path / "execution-intent.json"
+                refusal_path = path / "preflight-refusal.json"
+                if not intent_path.exists():
+                    if artifacts or refusal_path.exists():
+                        raise ValueError("campaign acquisition artifacts require an execution intent")
+                    continue
+                intent = json.loads(intent_path.read_text(encoding="utf-8"))
+                binding = {"plan_sha256": marker["plan_sha256"], "cases_sha256": batches[name]}
+                if intent != {"schema": "qi-campaign-intent-v1", **binding}:
+                    raise ValueError("campaign execution intent differs from its exact plan and case binding")
+                if refusal_path.exists():
+                    refusal = json.loads(refusal_path.read_text(encoding="utf-8"))
+                    if refusal != {"schema": "qi-campaign-refusal-v1", "phase": "preflight-refused", **binding}:
+                        raise ValueError("campaign preflight refusal differs from its exact plan and case binding")
+                    if artifacts:
+                        raise ValueError("campaign preflight refusal conflicts with acquisition artifacts")
+                    continue
+                retained.append(path)
+            return retained
+        except (OSError, ValueError, TypeError) as error:
+            raise PlatformError(f"{directory.name}: invalid campaign marker: {error}") from error
+
+    if (runs / "campaign.json").exists():
+        return campaign_batches(runs)
+    directories = []
+    for directory in sorted(path for path in runs.iterdir() if path.is_dir()):
+        if (directory / "campaign.json").exists():
+            directories.extend(campaign_batches(directory))
+        else:
+            directories.append(directory)
+    return sorted(directories)
 
 
 def retained_job_ids(runs: Path = RUNS) -> set[int]:
@@ -605,6 +670,8 @@ def submit(
 def _submit(
     case_dir: Path, backend_type_id: int, approval: str, *, expected_cases_sha256: str | None = None
 ) -> dict[str, Any]:
+    if (case_dir / "preflight-refusal.json").exists():
+        raise SystemExit("preflight-refusal.json exists; retain the refusal and prepare a separately approved case")
     if (case_dir / "submission.json").exists():
         raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
     state_path = case_dir / "submission-state.json"
