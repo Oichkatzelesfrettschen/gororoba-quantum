@@ -204,12 +204,11 @@ runs inside one job.
    support), `stationarity`, `seed-common` or `seed-interaction`,
    `common-effect`, `inconclusive` and `ensemble-candidate`. It also reports,
    with no branch reading them:
-   - the acceptance ratio r-hat = perf_g / (perf_f + perf_g) of each group
-     and each superposition's deviation from it. The deviations are
-     diagnostic: r-hat carries an uncertainty above the 0.02 margin, and the
-     margin rule reads the raw sum-rule residuals. A `common-effect` branch
-     names unequal output acceptance as a candidate cause with the r-hat
-     summary as its evidence;
+   - `perf_ratio`: r-hat = perf_g / (perf_f + perf_g) of each group and each
+     superposition's deviation from it. physical_perf moves with the sample
+     budget and DetectorBalancing rescales it
+     ([strategy.md](../notes/quandela/strategy.md)), so the ratio is an
+     uninterpreted provider diagnostic, not a qualified output acceptance;
    - `calibration_shift`, the common block-to-block change of the
      superpositions, of f and of g (f and g drift apart in physical_perf),
      apart from the heterogeneity

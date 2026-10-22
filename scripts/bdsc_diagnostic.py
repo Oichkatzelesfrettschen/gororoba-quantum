@@ -23,13 +23,14 @@ their returned-circuit hashes after b2-j1 is collected and before b2-j2 is
 submitted; a mismatch stops the case.
 
 The target-complement bank sends f to one output mode and g to another and
-splits every superposition equally between them, so a superposition's selected
-fraction tracks r-hat = perf_g / (perf_f + perf_g) of its group's f and g
-iterations (result_fields.physical_perf), which measures unequal output
-acceptance. The analysis reports r-hat per block, template and seed and the
-acceptance-corrected deviation p(state) - r-hat of each superposition. The
-deviations are diagnostic: r-hat carries an uncertainty above the 0.02 margin,
-so the beyond-margin rule keeps reading the raw sum-rule residuals. The
+splits every superposition equally between them. The provider reports
+result_fields.physical_perf per iteration; it moves with the requested sample
+budget and DetectorBalancing rescales it (docs/notes/quandela/strategy.md), so
+it is no qualified output acceptance. Its ratio r-hat = perf_g / (perf_f +
+perf_g) of a group's f and g iterations tracked the superposition mean in the
+retained jobs, so the analysis reports r-hat per block, template and seed and
+each superposition's deviation p(state) - r-hat as an uninterpreted provider
+diagnostic (perf_ratio); no branch reads it and no cause is attributed to it. The
 block-change statistic splits into a per-class common shift
 (calibration_shift of the superpositions, f and g) and a heterogeneity test about
 the class means, which is the statistic the stationarity branch reads. The
@@ -52,7 +53,6 @@ Usage:
   "$PYTHON" scripts/bdsc_diagnostic.py --check [--draw FILE]
   "$PYTHON" scripts/bdsc_diagnostic.py --readout RUN_DIR...
   "$PYTHON" scripts/bdsc_diagnostic.py --matched-check B1J2_RUN B2J1_RUN
-  "$PYTHON" scripts/bdsc_diagnostic.py --null-calibration [N]
   "$PYTHON" scripts/bdsc_diagnostic.py --self-test
 """
 
@@ -113,7 +113,6 @@ ALPHA = 0.01
 CONSISTENT_P = 0.05
 MARGIN = 0.02
 DRAW_VALUES = SLOTS + 2 * 2 * SLOTS * len(LABELS)
-NULL_REPLICATES = 300
 
 
 def require(condition: bool, message: str) -> None:
@@ -241,11 +240,11 @@ def case_record() -> dict[str, Any]:
             "reference value under independent Bernoulli trials, which the provider contract has not established",
             "residuals": "Delta_R and Delta_I per block, template and seed, each from one job; the beyond-margin "
             "rule reads these raw residuals",
-            "acceptance": "per block, template and seed, r-hat = perf_g / (perf_f + perf_g) from that group's f and "
-            "g iterations (result_fields.physical_perf), which predicts the mean superposition fraction when the two "
-            "output modes accept unequally; the readout reports r-hat, each superposition's deviation "
-            "p(state) - r-hat and their RMS. The deviations are diagnostic only: r-hat carries an uncertainty above "
-            f"the {MARGIN} margin, so no branch reads them",
+            "perf_ratio": "per block, template and seed, r-hat = perf_g / (perf_f + perf_g) from that group's f and "
+            "g iterations (result_fields.physical_perf, a provider field that moves with the sample budget and that "
+            "DetectorBalancing rescales, so no qualified output acceptance); the readout reports r-hat, each "
+            "superposition's deviation p(state) - r-hat and their RMS as an uninterpreted diagnostic that no branch "
+            "reads",
             "block_change": "p(block 2) - p(block 1) per instance whose pair returned one circuit, split by class "
             "(the four superpositions; f; g, each its own class because their output efficiencies drift apart). "
             "calibration_shift reports each class's inverse-variance mean change "
@@ -281,9 +280,8 @@ def case_record() -> dict[str, Any]:
                 "seed-interaction": "seed effects differ between superposition states: a seed selection cannot "
                 "transfer across states, so study the per-state compilation before any seed choice",
                 "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate "
-                "preparation, filtering and processing, and unequal output acceptance as a candidate cause, whose "
-                "evidence is the r-hat summary and the deviation RMS of the acceptance report; more seeds are not "
-                "the remedy",
+                "preparation, filtering and processing, including unequal output acceptance, which only a qualified "
+                "per-mode acceptance measurement can test; more seeds are not the remedy",
                 "inconclusive": "no component resolved and one test inconclusive, or a resolved common seed offset "
                 "beside an inconclusive interaction test: more compilations or trials before a branch",
                 "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined "
@@ -767,7 +765,7 @@ def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
         branch = "ensemble-candidate"
     return {
         "residuals": residuals,
-        "acceptance": acceptance,
+        "perf_ratio": acceptance,
         "block_changes": changes,
         "calibration_shift": calibration_shift,
         "template_effect": template_effect,
@@ -788,68 +786,85 @@ def utc(text: str) -> float:
     return datetime.datetime.fromisoformat(text.replace("Z", "+00:00")).timestamp()
 
 
+def admit_run(
+    run: Path, validate: bool, context: dict[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """(manifest, result, submission) of one diagnostic run after every integrity check the readout applies.
+
+    validate runs qd_platform.run_facts, binding cases.json, circuit.json, job-body.json and the receipt to one another
+    and results.json to raw/result.json; the self-test's synthetic runs carry no receipt or raw result. context holds
+    the QRNG draws and the frozen rebuild shared across one call's runs.
+    """
+    import qd_platform
+
+    record_sha = sha256_bytes(CASE.read_bytes())
+    target_sha = json.loads(bdsc_cases.TARGET.read_text(encoding="utf-8"))["target_sha256"]
+    draws: dict[str, tuple[list[int], list[int]]] = context.setdefault("draws", {})
+    if validate:
+        qd_platform.run_facts(run)
+    manifest_bytes = (run / "cases.json").read_bytes()
+    manifest = json.loads(manifest_bytes)
+    result = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+    body_bytes = (run / "job-body.json").read_bytes()
+    platform = bdsc_cases.QUALIFYING_PLATFORM
+    require(submission.get("platform") == platform, f"{run}: submitted to {submission.get('platform')!r}")
+    served = result.get("data", {}).get("platform_name")
+    require(served == platform, f"{run}: the service reports {served!r}")
+    require(submission.get("cases_sha256") == sha256_bytes(manifest_bytes), f"{run}: cases.json changed")
+    require(submission.get("body_sha256") == bdsc_cases.body_digest(body_bytes), f"{run}: job-body.json differs")
+    require(result.get("job_id") == submission.get("job_id"), f"{run}: the result answers another job")
+    require(manifest.get("diagnostic_case_sha256") == record_sha, f"{run}: built from another case record")
+    require(manifest.get("target_sha256") == target_sha, f"{run}: built for another target")
+    require(manifest.get("mitigations") == POLICY, f"{run}: the manifest policy differs")
+    require(qd_platform.body_mitigations(json.loads(body_bytes)) == POLICY, f"{run}: the body's policy differs")
+    require(result.get("status", {}).get("status") == "completed", f"{run}: the job did not complete")
+    require(result.get("partial") is False, f"{run}: a partial result")
+    binding = manifest.get("draw")
+    require(isinstance(binding, dict) and not manifest.get("draft", True), f"{run}: no bound QRNG draw")
+    if binding["sha256"] not in draws:
+        record = ROOT / binding["record"]
+        require(sha256_bytes(record.read_bytes()) == binding["sha256"], f"{run}: the QRNG record changed")
+        drawn = draw_values(record)
+        require(drawn is not None, f"{run}: unreadable QRNG record")
+        if drawn is not None:
+            draws[binding["sha256"]] = drawn
+        rebuilt = documents(record)
+        context["frozen"] = {
+            job: json.loads(files["cases.json"]) for job, files in rebuilt.items() if isinstance(files, dict)
+        }
+    require(len(draws) == 1, f"{run}: the runs draw from more than one QRNG record")
+    job = manifest.get("job")
+    frozen: dict[str, dict[str, Any]] = context["frozen"]
+    require(job in frozen, f"{run}: job {job!r} is not a job of the case")
+    cert.close(frozen[job], manifest, f"{run}: manifest against the frozen rebuild")
+    seeds, order = draws[binding["sha256"]]
+    members = [s["instance_index"] for s in manifest["settings"]]
+    require(members == sorted(members, key=lambda i: (order[i], i)), f"{run}: the iterations are not in drawn order")
+    for setting in manifest["settings"]:
+        require(setting["compilation_seed"] == seeds[setting["slot"]], f"{run}/{setting['name']}: seed not drawn")
+        indices = {"seed": setting["slot"], "order": SLOTS + setting["instance_index"]}
+        require(setting["draw_indices"] == indices, f"{run}/{setting['name']}: draw indices")
+    return manifest, result, submission
+
+
 def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
     """The analysis of collected qpu:belenos runs of every diagnostic job, after the integrity checks.
 
     validate runs qd_platform.run_facts on each run, binding cases.json, circuit.json, job-body.json and the receipt to
     one another and results.json to raw/result.json; the self-test's synthetic runs carry no receipt or raw result.
     """
-    import qd_platform
-
-    record_sha = sha256_bytes(CASE.read_bytes())
-    target_sha = json.loads(bdsc_cases.TARGET.read_text(encoding="utf-8"))["target_sha256"]
     observed: dict[int, dict[str, Any]] = {}
-    draws: dict[str, tuple[list[int], list[int]]] = {}
     frozen: dict[str, dict[str, Any]] = {}
     windows: dict[str, tuple[float, float]] = {}
     collected: dict[str, float] = {}
     maintenance: set[tuple[float, float]] = set()
+    context: dict[str, Any] = {}
     for run in runs:
-        if validate:
-            qd_platform.run_facts(run)
-        manifest_bytes = (run / "cases.json").read_bytes()
-        manifest = json.loads(manifest_bytes)
-        result = json.loads((run / "results.json").read_text(encoding="utf-8"))
-        submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-        body_bytes = (run / "job-body.json").read_bytes()
-        platform = bdsc_cases.QUALIFYING_PLATFORM
-        require(submission.get("platform") == platform, f"{run}: submitted to {submission.get('platform')!r}")
-        served = result.get("data", {}).get("platform_name")
-        require(served == platform, f"{run}: the service reports {served!r}")
-        require(submission.get("cases_sha256") == sha256_bytes(manifest_bytes), f"{run}: cases.json changed")
-        require(submission.get("body_sha256") == bdsc_cases.body_digest(body_bytes), f"{run}: job-body.json differs")
-        require(result.get("job_id") == submission.get("job_id"), f"{run}: the result answers another job")
-        require(manifest.get("diagnostic_case_sha256") == record_sha, f"{run}: built from another case record")
-        require(manifest.get("target_sha256") == target_sha, f"{run}: built for another target")
-        require(manifest.get("mitigations") == POLICY, f"{run}: the manifest policy differs")
-        require(qd_platform.body_mitigations(json.loads(body_bytes)) == POLICY, f"{run}: the body's policy differs")
-        require(result.get("status", {}).get("status") == "completed", f"{run}: the job did not complete")
-        require(result.get("partial") is False, f"{run}: a partial result")
-        binding = manifest.get("draw")
-        require(isinstance(binding, dict) and not manifest.get("draft", True), f"{run}: no bound QRNG draw")
-        if binding["sha256"] not in draws:
-            record = ROOT / binding["record"]
-            require(sha256_bytes(record.read_bytes()) == binding["sha256"], f"{run}: the QRNG record changed")
-            drawn = draw_values(record)
-            require(drawn is not None, f"{run}: unreadable QRNG record")
-            if drawn is not None:
-                draws[binding["sha256"]] = drawn
-            rebuilt = documents(record)
-            frozen = {job: json.loads(files["cases.json"]) for job, files in rebuilt.items() if isinstance(files, dict)}
-        require(len(draws) == 1, f"{run}: the runs draw from more than one QRNG record")
-        job = manifest.get("job")
-        require(job in frozen, f"{run}: job {job!r} is not a job of the case")
+        manifest, result, submission = admit_run(run, validate, context)
+        job = manifest["job"]
+        frozen = context["frozen"]
         require(job not in windows, f"{run}: job {job} collected twice")
-        cert.close(frozen[job], manifest, f"{run}: manifest against the frozen rebuild")
-        seeds, order = draws[binding["sha256"]]
-        members = [s["instance_index"] for s in manifest["settings"]]
-        require(
-            members == sorted(members, key=lambda i: (order[i], i)), f"{run}: the iterations are not in drawn order"
-        )
-        for setting in manifest["settings"]:
-            require(setting["compilation_seed"] == seeds[setting["slot"]], f"{run}/{setting['name']}: seed not drawn")
-            indices = {"seed": setting["slot"], "order": SLOTS + setting["instance_index"]}
-            require(setting["draw_indices"] == indices, f"{run}/{setting['name']}: draw indices")
         start = utc(result["data"]["start_time"])
         windows[job] = (start, start + float(result["data"]["duration"]))
         collected[job] = utc(result["collected_utc"])
@@ -927,18 +942,15 @@ def matched_check(b1j2: Path, b2j1: Path, validate: bool = True) -> list[str]:
     """Matched instances of b1-j2 and b2-j1 whose returned-circuit hashes differ, one line each.
 
     The two jobs request the same groups with the same seeds and parameters (matched_pairs), so a differing hash is
-    a recompiled request. validate runs qd_platform.run_facts on each run; the self-test's synthetic runs carry no
-    receipt.
+    a recompiled request. Each run first passes every integrity check of the readout (admit_run): qpu:belenos
+    submitted and served, completed and not partial, the current case, the empty policy, the bound QRNG draw and
+    the frozen manifest, so only a valid b2-j1 can clear the checkpoint before b2-j2.
     """
-    import qd_platform
-
     items = instances()
+    context: dict[str, Any] = {}
     loaded: dict[str, tuple[dict[str, Any], dict[int, dict[str, Any]]]] = {}
     for run, job in ((b1j2, "b1-j2"), (b2j1, "b2-j1")):
-        if validate:
-            qd_platform.run_facts(run)
-        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
-        result = json.loads((run / "results.json").read_text(encoding="utf-8"))
+        manifest, result, _ = admit_run(run, validate, context)
         require(manifest.get("job") == job, f"{run}: job {manifest.get('job')!r}, expected {job}")
         loaded[job] = (manifest, observations(manifest, result))
     requested = {
@@ -970,40 +982,6 @@ def run_matched_check(b1j2: Path, b2j1: Path, validate: bool = True) -> int:
         return 1
     print(f"bdsc diagnostic matched check: all {len(matched_pairs())} matched returned circuits are equal")
     return 0
-
-
-def null_replicate(seed: int) -> dict[str, float]:
-    """p-value of every test and calibration shift of one pure-counting replicate with equal f and g perf."""
-    rng = np.random.default_rng(seed)
-    base = {"f": 0.003, "g": 0.986, **{label: 0.4945 for label in SUPERPOSITIONS}}
-    items = instances()
-    observed: dict[int, dict[str, Any]] = {}
-    positions: dict[str, int] = {}
-    for item in items:
-        position = positions.get(item["job"], 0)
-        positions[item["job"]] = position + 1
-        observed[item["index"]] = {
-            "selected": int(rng.binomial(TRIALS, base[item["label"]])),
-            "eligible": TRIALS,
-            "circuit_sha256": f"{item['template']}-{item['slot']}-{item['label']}",
-            "perf": 0.078,
-            "outside_share": 0.0,
-            "position": position,
-        }
-    read = analyse(observed)
-    out = {name: test["p_value"] for name, test in read["tests"].items()}
-    out.update({f"calibration_shift_{name}": shift["p_value"] for name, shift in read["calibration_shift"].items()})
-    out["beyond_margin"] = 0.0 if read["residuals_beyond_margin"] == 0 else 1.0
-    return out
-
-
-def null_calibration(replicates: int) -> dict[str, float]:
-    """Fraction of pure-counting replicates in which each test reads resolved; every test targets ALPHA."""
-    seeds = [20261022 + k for k in range(replicates)]
-    rows = parallel.ordered_map(null_replicate, seeds, min_items=1)
-    rates = {name: sum(1 for r in rows if r[name] < ALPHA) / replicates for name in rows[0] if name != "beyond_margin"}
-    rates["beyond_margin"] = sum(r["beyond_margin"] for r in rows) / replicates
-    return rates
 
 
 def synthetic_runs(
@@ -1160,9 +1138,9 @@ def self_test() -> int:
             perf,
             ("ensemble-candidate", "inconclusive"),
             lambda read: (
-                read["acceptance"]["deviation_rms"] < 0.006
-                and read["acceptance"]["residual_rms"] > 2 * read["acceptance"]["deviation_rms"]
-                and 0.48 < read["acceptance"]["r_hat_summary"]["min"] < read["acceptance"]["r_hat_summary"]["max"] < 0.5
+                read["perf_ratio"]["deviation_rms"] < 0.006
+                and read["perf_ratio"]["residual_rms"] > 2 * read["perf_ratio"]["deviation_rms"]
+                and 0.48 < read["perf_ratio"]["r_hat_summary"]["min"] < read["perf_ratio"]["r_hat_summary"]["max"] < 0.5
             ),
         ),
         (
@@ -1233,6 +1211,20 @@ def self_test() -> int:
         runs = synthetic_runs(root / "matched", manifests, response())
         require(run_matched_check(runs[1], runs[2], validate=False) == 0, "self-test: equal matched hashes failed")
 
+        def simulated(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job == "b2-j1":
+                result["data"]["platform_name"] = "sim:belenos"
+
+        # The checkpoint applies the readout's run integrity, so a simulator collection cannot clear it.
+        (root / "matched-sim").mkdir()
+        runs = synthetic_runs(root / "matched-sim", manifests, response(), simulated)
+        try:
+            run_matched_check(runs[1], runs[2], validate=False)
+        except ValueError:
+            pass
+        else:
+            raise ValueError("self-test: the matched check admitted a b2-j1 served by sim:belenos")
+
         def undrawn(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
             if job == "b2-j2":
                 for setting, iteration in zip(manifest["settings"], result["iterations"], strict=True):
@@ -1302,7 +1294,6 @@ def main() -> int:
     group.add_argument("--check", action="store_true")
     group.add_argument("--readout", type=Path, nargs="+")
     group.add_argument("--matched-check", type=Path, nargs=2, metavar=("B1J2_RUN", "B2J1_RUN"))
-    group.add_argument("--null-calibration", type=int, nargs="?", const=NULL_REPLICATES, metavar="N")
     group.add_argument("--self-test", action="store_true")
     parser.add_argument("--draw", type=Path)
     args = parser.parse_args()
@@ -1314,8 +1305,6 @@ def main() -> int:
         print(json.dumps(readout(args.readout), indent=1))
     elif args.matched_check:
         return run_matched_check(*args.matched_check)
-    elif args.null_calibration:
-        print(json.dumps(null_calibration(args.null_calibration), indent=1))
     else:
         return self_test()
     return 0
