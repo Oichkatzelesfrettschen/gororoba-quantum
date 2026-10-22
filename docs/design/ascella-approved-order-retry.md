@@ -65,9 +65,11 @@ RETRY=results/quandela/cases/ascella-hypercomplex-order-approved-retry
 The planned directory carries only frozen case inputs. The research-state
 adapter treats every directory under `results/quandela/runs/` as a retained
 job and requires a submission receipt, so the planned directory stays under
-`cases/` until the admitted execution. Move that directory intact into
-`results/quandela/runs/ascella-hypercomplex-order-approved-retry`, repeat the
-guarded plan, and invoke `qd_platform.py submit` once with the same caps and
+`cases/` as the immutable planned source. At admission, create the single new
+`results/quandela/runs/ascella-hypercomplex-order-approved-retry` directory and
+copy only its `cases.json` and `circuit.json` from the planned source. Verify
+both copied SHA-256 identities against the values above, repeat the guarded
+plan on the run directory, and invoke `qd_platform.py submit` once with the same caps and
 the actual quoted authorization above. Preserve the submit checkpoint before
 reconciliation; an ambiguous POST response permits read-only reconciliation,
 never a blind second POST. Collect through `qd_platform.py collect`, preserve
