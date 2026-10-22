@@ -27,6 +27,10 @@ Placement, naming, linking and immutability rules for every new or moved documen
 
 ## Start here by task
 
+The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
+retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
+with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
+
 | Task | Read in order |
 |---|---|
 | IBM hardware run | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [qpu-submission.md](notes/ibm_quantum/qpu-submission.md), [QPU_EXECUTION_ROADMAP.md](../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) |
