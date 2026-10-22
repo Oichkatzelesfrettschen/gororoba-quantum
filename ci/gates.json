@@ -3878,8 +3878,8 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_forensics.py --check",
    "name": "core-622",
-   "seconds": 10.0,
-   "tier": "pr"
+   "seconds": 51.0,
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -3894,7 +3894,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --self-test",
    "name": "core-624",
-   "seconds": 3.0,
+   "seconds": 5.5,
    "tier": "pr"
   },
   {

@@ -1058,6 +1058,16 @@ Not yet used:
 | 2026-10-18 15:53 | c0db42f6 | qpu:belenos | belenos_mesh job-13, Q1's single job at seed 20 | 1.01 | served 29dc6ef8; in_block_cone 0.389 (raw 0.335); 14 s; preregistered: single-job form at Q1's budget, whatever the seed |
 | 2026-10-18 19:05 | 3d95587b | qpu:belenos | belenos_mesh job-14, Q1's circuit as a one-entry iterator at seed 20 | 1.01 | served 29dc6ef8; one results_list entry, 10000 samples; tvd_cone_from_ideal 0.823; 14 s; preregistered: fail, follower job-16 |
 | 2026-10-18 19:35 | 46b810ae | qpu:belenos | belenos_mesh job-16, pair at seed 20 plus 11 blocks of seeds 46667 and 20, 10000 samples each | 1.02 | 24 entries in 149 s; pair fail (0.819, 0.814); 14a96ca6 11/11 pass; post-load 29dc6ef8 11/11 pass; preregistered: recovers after a mesh load |
+| 2026-10-21 06:21 | 90712931 | qpu:belenos | box_kite_photonic_single job-00, queue test under status running | 0 | waited 26 min with no start time; canceled, 0 shots: only the Explorer status predicts a start |
+| 2026-10-21 06:47 | 03dd195b | sim:belenos | bdsc_qualification tc-def-e1, provider-default policy | 1.00 | error at iteration 4 after 55 s; no counts retained |
+| 2026-10-21 06:44 | 19f18f8c | sim:belenos | bdsc_qualification tc-none-e1, empty mitigation list | 1.00 | 148 s; 12 iterations at 300000 samples, parameters bit-exact, seeds echoed; superpositions 0.4989 to 0.5017 |
+| 2026-10-21 07:18 | cac942bd | sim:belenos | bdsc_qualification tc-def-e1 rerun | 1.00 | 153 s; same pipeline result under the default policy |
+| 2026-10-21 16:21 | 2524f061 | qpu:belenos | bdsc_qualification tc-def-e1, epoch 1 | 1.60 | 90 s; the target-complement pair under the default policy, the baseline the tc-def-e2 repeat compares against |
+| 2026-10-21 16:24 | b5bdf7f2 | qpu:belenos | bdsc_qualification tc-none-e1, epoch 1 | 1.60 | 87 s; f 0.002 to 0.004, g 0.986, superpositions 0.375 to 0.437 against 0.5 |
+| 2026-10-21 16:47 | 2bc57917 | qpu:belenos | bdsc_qualification mm-def-e1, epoch 1 | 1.60 | 105 s; middle-middle pair under the default policy |
+| 2026-10-21 16:51 | 6d2dac12 | qpu:belenos | bdsc_qualification mm-none-e1, epoch 1 | 1.60 | 115 s; epoch 1 sum rules: 9 violated, 4 inconclusive, 3 compatible of 16 at margin 0.02 |
+| 2026-10-21 20:34 | c2edef5d | qpu:ascella | bdsc_ascella_control job-00, 12-mode union circuit | 0 | RUNTIME ERROR after 1 s, circuit_input_ports undefined; one results_list entry, no counts |
+| 2026-10-22 02:17 | ee6fc975 | qpu:belenos | bdsc_qualification tc-def-e2, repeat under the default policy with new seeds | 1.60 | 42 min queue, 92 s; f and g within 0.0033, superpositions -0.071 to +0.041 against epoch 1 |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes

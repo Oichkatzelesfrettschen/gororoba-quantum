@@ -1329,16 +1329,34 @@ def expected_iterations(manifest: dict[str, Any]) -> int | None:
     return None if iteration_form(manifest) == "single" else int(manifest.get("iterations", 1))
 
 
+# Count-less partial collections retained before results.json carried failed iterations; their job ids are bound to
+# submission.json, and every later collection must carry the iterations field.
+ITERATIONS_PREDATING_JOBS = frozenset(
+    {
+        "03dd195b-b429-4ef1-be96-98005617343c",
+        "90712931-1b5a-4c14-bdd0-95e01ac02292",
+        "c2edef5d-5e6f-4161-83fc-aadd024171fb",
+    }
+)
+
+
 def predates(retained: dict[str, Any], summary: dict[str, Any], key: str) -> bool:
     """Whether a retained collection omits summary[key] because it was written before the field existed.
 
     shots_used is derived from the raw bytes, so a record without it takes it
-    from the raw result. A partial record written before failed iterations
-    were kept omits their entries and recorded no counts.
+    from the raw result. Only the count-less partial records of
+    ITERATIONS_PREDATING_JOBS may omit their failed iteration entries.
     """
     if key in retained or key not in summary:
         return False
-    return key == "shots_used" or (key == "iterations" and summary.get("partial") is True and not summary.get("counts"))
+    if key == "shots_used":
+        return True
+    return (
+        key == "iterations"
+        and summary.get("partial") is True
+        and not summary.get("counts")
+        and retained.get("job_id") in ITERATIONS_PREDATING_JOBS
+    )
 
 
 def patient(read: Callable[[], Any], job: str, what: str, deadline: float, poll: float) -> Any:
@@ -2367,6 +2385,12 @@ def self_test() -> None:
     source = root / "docs" / "evidence" / "quandela"
     guides = (root / "docs" / "notes" / "quandela" / "README.md",)
     check(source, list(guides))
+    countless = {"partial": True, "counts": {}, "iterations": [{"failed": True}]}
+    for job_id in ITERATIONS_PREDATING_JOBS:
+        if not predates({"job_id": job_id}, countless, "iterations"):
+            raise PlatformError(f"self-test: legacy partial record {job_id} must omit iterations")
+    if predates({"job_id": "job-a"}, countless, "iterations"):
+        raise PlatformError("self-test: a later count-less partial record omitted its failed iterations")
 
     def rewrite(path: Path, change: Callable[[Any], None]) -> None:
         value = json.loads(path.read_text(encoding="utf-8"))
