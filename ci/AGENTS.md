@@ -126,6 +126,10 @@ supplies both, and `ci/runner_image_records.json` binds it to that image and
 its pins (`ci/runner_image_records.py add`; gate core-634 checks the ledger).
 `ci/replay_check.py` compares such a record with a fresh run bit for bit,
 skipping only the paths that name the analyzer (core-613, core-617).
+Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs
+every such replay gate on an `avx512f` CPU and reports not run, exit 0, on any
+other; each CI gate shard runs it, since GitHub assigns runner CPUs of both
+kinds.
 `parallel.default_threads()` and `workers()`
 share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
 receive one slot through a child-only initializer, so nested maps and simulator
