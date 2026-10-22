@@ -1,0 +1,121 @@
+{
+ "schema": "bdsc-diagnostic-case-v1",
+ "record": "diagnostic_case",
+ "question": "which of counting noise, a matched request's change between blocks, compilation seed, template and state-by-seed interaction carry the per-setting response scatter of the target-complement bank",
+ "authorization": "none: the case waits for its written-case approval, which also covers its QRNG read",
+ "qualification_case_sha256": "5d308a9b17b86007a1a371f1b4e47089451a5802a4820ba19a28782ecf0c5681",
+ "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794",
+ "design": {
+  "pair": "target-complement",
+  "states": [
+   "f",
+   "g",
+   "+",
+   "-",
+   "+i",
+   "-i"
+  ],
+  "templates": [
+   "outward-ladder",
+   "reverse-ladder"
+  ],
+  "seed_slots": 4,
+  "blocks": [
+   1,
+   2
+  ],
+  "instances": 96,
+  "processing": "empty-mitigation",
+  "mitigations": [],
+  "eligible_trials_per_instance": 10000,
+  "max_shots_per_iteration": 20000,
+  "block_gap_hours": 1,
+  "role": "diagnostic, not a confirmation design: four seeds do not determine the tails of a seed distribution, and the result decides whether further compilation replication is warranted"
+ },
+ "jobs": [
+  {
+   "job": "b1-j1",
+   "block": 1,
+   "groups": [
+    "out-s0",
+    "out-s1",
+    "rev-s2",
+    "rev-s3"
+   ],
+   "iterations": 24
+  },
+  {
+   "job": "b1-j2",
+   "block": 1,
+   "groups": [
+    "out-s2",
+    "out-s3",
+    "rev-s0",
+    "rev-s1"
+   ],
+   "iterations": 24
+  },
+  {
+   "job": "b2-j1",
+   "block": 2,
+   "groups": [
+    "out-s2",
+    "out-s3",
+    "rev-s0",
+    "rev-s1"
+   ],
+   "iterations": 24
+  },
+  {
+   "job": "b2-j2",
+   "block": 2,
+   "groups": [
+    "out-s0",
+    "out-s1",
+    "rev-s2",
+    "rev-s3"
+   ],
+   "iterations": 24
+  }
+ ],
+ "resources": {
+  "billing_rule": "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots",
+  "credits": 4.08,
+  "eligible_trials_total": 960000,
+  "max_shots_total": 1920000,
+  "seconds_per_job_estimate": 157.44,
+  "seconds_estimate": 629.76,
+  "timing_rule": "6.3 s plus 2.6e-05 s per sample for each iteration against the 300 s per-job limit; the written case restates credits and seconds from the live qd_platform.py plan output"
+ },
+ "qrng": {
+  "service": "ANU Quantum Numbers (aqn, keyed), scripts/anu_qrng.py draw",
+  "type": "uint16",
+  "values": 100,
+  "requests": 1,
+  "credits": 0,
+  "use": "the first four distinct values seed slots 0 to 3; value 4 + i orders instance i within its job"
+ },
+ "analysis": {
+  "observation": "one-click conditioned selected fraction of returned counts; every standard error is a reference value under independent Bernoulli trials, which the provider contract has not established",
+  "residuals": "Delta_R and Delta_I per block, template and seed, each from one job",
+  "block_change": "p(block 2) - p(block 1) per instance, with the returned-circuit identity of the pair",
+  "seed_dispersion": "SD over the four seeds per block, template and state, and of each residual",
+  "template_effect": "seed-mean outward minus reverse per block and state",
+  "ratios": "RMS observed dispersion over RMS reference standard error, read consistent below 2.0, resolved at or above 3.0, inconclusive between",
+  "branches": {
+   "stationarity": "matched requests change between blocks: address stationarity and provider calibration before any fixed-effect confirmation",
+   "seed": "seeds give reproducible differences: study seed selection on development data and validate a frozen selection on fresh data",
+   "common-effect": "seed dispersion is small but residuals persist beyond the margin: investigate preparation, filtering and processing; more seeds are not the remedy",
+   "ensemble-candidate": "seed effects small and residuals within the margin: an ensemble-defined certification case becomes a candidate once a common ensemble effect is supported"
+  },
+  "margin": 0.02
+ },
+ "stop_conditions": [
+  "scripts/qd_platform.py plan refuses the platform",
+  "a retained job body differs from the empty mitigation list, or a result is not an integer BSCount",
+  "a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule excludes more than 0.01 of an iteration's samples",
+  "an iteration returns no compiled circuit",
+  "block 2 starts before block 1's readout integrity passes or before the block gap elapses",
+  "spent credits or seconds reach the approved ceiling"
+ ]
+}
