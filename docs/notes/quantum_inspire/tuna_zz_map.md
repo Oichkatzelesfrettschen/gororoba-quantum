@@ -33,6 +33,15 @@ when the service creates a resource. All 416 cQASM payloads and scientific
 settings match both retained proposals. Gate `core-594` replays the active
 successor. Both earlier proposals retain their recorded bytes.
 
+The active successor replays against the exact
+[proposal catalogue](../../evidence/quantum_inspire/catalogue-submission-deadline-proposal.json)
+whose SHA-256 appears in its source digests. The frozen catalogue separates
+proposal reproducibility from the account inventory refreshed after acquisitions.
+The frozen and refreshed Tuna-17 records have identical topology, gate set,
+capacity, compiler configuration and execution limits; queue and status differ.
+Submission checks the live backend, account queue and hardware pause afresh;
+the archived catalogue establishes proposal provenance rather than availability.
+
 ## Acquisition decision after the later Tuna-17 results
 
 The [retained readout experiment](experiments.md#post-readout-frequency-tail-on-tuna-17-preregistered)
@@ -373,8 +382,8 @@ From the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-submission-deadline
-"$PYTHON" scripts/qi_zz_map.py --self-test
+"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-submission-deadline --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
+"$PYTHON" scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 ```
 
 The generator imports neither the Quantum Inspire SDK nor Qiskit, performs
