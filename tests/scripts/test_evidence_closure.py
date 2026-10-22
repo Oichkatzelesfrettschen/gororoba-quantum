@@ -56,6 +56,18 @@ def test_unknown_is_not_zero_and_conflicts_have_no_selected_total() -> None:
         raise AssertionError("A conflicting observation was silently preferred")
 
 
+def test_changed_observation_bytes_with_the_same_count_are_versioned() -> None:
+    first = snapshot("old", "run")
+    second = snapshot("new", "run")
+    first["observations"][0]["observation_sha256"] = "a" * 64
+    second["observations"][0]["observation_sha256"] = "b" * 64
+    result = closure.reconcile([first, second])["identities"]
+    if len(result) != 1 or "versioned observation" not in result[0]["classifications"]:
+        raise AssertionError("Changed counts with unchanged totals lost their observation version")
+    if result[0]["denominators"]["returned_samples"]["value"] != 75:
+        raise AssertionError("Observation versions multiplied one job denominator")
+
+
 def test_cross_branch_retention_gap_is_not_missing_physical_data() -> None:
     first = snapshot("first", "one")
     first["declared_unretained_qi"] = [123]
@@ -74,6 +86,38 @@ def test_legacy_and_ambiguous_dispatch_stay_unresolved() -> None:
         != "ambiguously dispatched"
     ):
         raise AssertionError("A dispatch attempt without a job identity was counted as completed")
+
+
+@pytest.mark.parametrize("changed", ["evidence", "gates", "proof_origin"])
+def test_changed_support_is_not_an_auditor_nonconflict(changed: str) -> None:
+    first = snapshot("main", "run")
+    claim = {
+        "id": "claim",
+        "statement": "same text",
+        "status": "established",
+        "evidence_class": "exact finite certificate",
+        "boundary": "finite",
+        "acquisitions": [],
+        "depends_on": [],
+        "assumptions": [],
+        "evidence": [{"path": "one.json", "sha256": "a" * 64}],
+        "gates": {"gate-one": "replay"},
+        "proof_origin": "external-theorem",
+    }
+    first["claims"] = [claim]
+    second = copy.deepcopy(first)
+    second["source"]["name"] = "other"
+    if changed == "evidence":
+        second["claims"][0]["evidence"].append({"path": "two.json", "sha256": "b" * 64})
+    elif changed == "gates":
+        second["claims"][0]["gates"] = {"gate-two": "bytes"}
+    else:
+        second["claims"][0]["proof_origin"] = "repository-proof"
+    view = closure.reconcile([first, second])
+    if not view["unresolved"] or view["claims"][0]["classification"] != "claim conflict":
+        raise AssertionError("An evidence/gate/proof-origin change escaped support reconciliation")
+    if closure.auditor_subset(view)["claims"]:
+        raise AssertionError("A support-conflicted claim entered the nonconflicting audit packet")
 
 
 def test_same_job_scores_are_removed_together() -> None:
@@ -121,6 +165,9 @@ def test_future_case_cannot_omit_power_or_stop_without_retry() -> None:
             k: "specified"
             for k in (
                 "case_id",
+                "provider",
+                "backend",
+                "simulation_justification",
                 "objective",
                 "discriminating_observable",
                 "trial_definition",
@@ -141,6 +188,11 @@ def test_future_case_cannot_omit_power_or_stop_without_retry() -> None:
         "retry_authorized": False,
     }
     decisions.validate_decision(case)
+    for field in ("provider", "backend", "simulation_justification"):
+        missing = copy.deepcopy(case)
+        missing.pop(field)
+        with pytest.raises(ValueError, match=field):
+            decisions.validate_decision(missing)
     bad = copy.deepcopy(case)
     bad["power_model"]["status"] = "unavailable"
     with pytest.raises(ValueError, match="not qualified"):

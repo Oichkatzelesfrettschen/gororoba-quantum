@@ -141,7 +141,8 @@ leave-one-out cannot be inferred from job leave-one-out or from directory names.
 
 Before submitting a future case, retain an `acquisition-decision-v1` record and
 validate it with `scripts/acquisition_decisions.py decision CASE.json`. It must
-state distinct alternatives, discriminating observable, trial definition,
+state the provider and backend, why simulation cannot answer the question,
+distinct alternatives, discriminating observable, trial definition,
 observation chain, processing, dependence and qualified power/covariance model,
 current layout/timing identity, shot/seconds/credit ceilings, reserve, all five
 terminal decisions, and the end-without-retry condition. This local preflight

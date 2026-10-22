@@ -151,6 +151,7 @@ def quantum_inspire(tree: Tree, run: str, acquisition: dict[str, Any]) -> list[d
     if not sub or not result:
         return []
     returned = {str(r["job"]["id"]): r for r in result["jobs"]}
+    require(len(returned) == len(result["jobs"]), f"{run}: duplicate job identities within one collection")
     rows = []
     for item in sub["jobs"]:
         identity = str(item["job"])
@@ -187,6 +188,7 @@ def quantum_inspire(tree: Tree, run: str, acquisition: dict[str, Any]) -> list[d
             "acquisition_id": acquisition["id"],
             "run": run,
             "source_paths": [run + "/submission.json", run + "/results.json"],
+            "observation_sha256": sha(canonical(observation).encode()),
         }
         rows.append(row)
     return rows
@@ -239,6 +241,7 @@ def quandela(tree: Tree, run: str, acquisition: dict[str, Any]) -> list[dict[str
             "acquisition_id": acquisition["id"],
             "run": run,
             "source_paths": [run + "/submission.json", run + "/results.json", run + "/cases.json"],
+            "observation_sha256": sha(canonical(result).encode()),
         }
     ]
 
@@ -299,6 +302,15 @@ def load_snapshot(source: dict[str, str]) -> dict[str, Any]:
                 "acquisition_id": by_run.get(run),
                 "run": run,
                 "source_paths": ["results/live/qpu-job-retention-audit.json", *item.get("source_files", {})],
+                "observation_sha256": sha(
+                    canonical(
+                        {
+                            path.removeprefix(run + "/"): digest
+                            for path, digest in item.get("source_files", {}).items()
+                            if "/raw/" in path
+                        }
+                    ).encode()
+                ),
             }
         )
     records = []
@@ -549,8 +561,25 @@ def reconcile(snapshots: list[dict[str, Any]]) -> dict[str, Any]:
             "acquisitions",
             "depends_on",
             "assumptions",
+            "evidence",
+            "gates",
+            "documents",
+            "proof_origin",
+            "kernel_receipt",
+            "supersedes",
+            "superseded_by",
         )
-        semantics = {canonical({k: v["claim"].get(k) for k in semantic_fields}) for v in variants}
+        semantics = {
+            canonical(
+                {
+                    k: sorted(v["claim"][k], key=canonical)
+                    if isinstance(v["claim"].get(k), list)
+                    else v["claim"].get(k)
+                    for k in semantic_fields
+                }
+            )
+            for v in variants
+        }
         classification = "claim conflict" if len(semantics) > 1 else "same declared semantics"
         if len(semantics) > 1:
             conflicts.append(
@@ -883,8 +912,9 @@ def build(pins: list[dict[str, str]]) -> dict[str, Any]:
                 "independence."
             ),
             "future_acquisitions": (
-                "No new execution authorized. Diagnostic block 2 absent at pinned sources; "
-                "successor admission and Fourier discrimination remain prospective."
+                "This view grants no new execution authority; existing frozen approvals retain their scope. "
+                "Diagnostic block 2 is absent at pinned sources; successor admission and Fourier "
+                "discrimination remain prospective."
             ),
         },
         "source_inputs": [{"source": s["source"], "schema": s["schema"], "inputs": s["inputs"]} for s in snapshots],

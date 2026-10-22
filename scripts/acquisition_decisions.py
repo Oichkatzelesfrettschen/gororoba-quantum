@@ -35,6 +35,9 @@ def validate_decision(case: dict[str, Any]) -> None:
     require(case.get("schema") == "acquisition-decision-v1", "decision schema differs")
     for field in (
         "case_id",
+        "provider",
+        "backend",
+        "simulation_justification",
         "objective",
         "discriminating_observable",
         "trial_definition",
