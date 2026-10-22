@@ -1,10 +1,22 @@
 """Returned mesh propagation stays distinct from detector observations."""
 
+import json
 import math
 
 import numpy as np
 import pytest
 from photonic_compilation_audit import compiled_probabilities
+
+
+def test_pooled_compilation_audit_preserves_retained_scientific_rows() -> None:
+    from photonic_repeat_readout import ROOT
+
+    base = ROOT / "results/hypercomplex"
+    serial = json.loads((base / "belenos-compilation-measurement-audit.json").read_text())
+    pooled = json.loads((base / "belenos-compilation-measurement-audit-pooled.json").read_text())
+    for key in ("rows", "max_compiled_vs_requested_tvd", "max_measured_vs_compiled_tvd", "boundary"):
+        if pooled[key] != serial[key]:
+            raise RuntimeError(f"pooled compilation audit changed retained scientific results: {key}")
 
 
 def test_compiled_rx_column_uses_the_returned_source_and_numeric_phases() -> None:

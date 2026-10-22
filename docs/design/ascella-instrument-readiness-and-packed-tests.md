@@ -37,7 +37,8 @@ unobserved. The [API audit](../evidence/quandela/input-port-api-audit/README.md)
 retains the current schemas, portal call sites and authentication boundaries.
 
 The full-source native readiness successor occupies each of the six connected
-input modes once and keeps a one-click filter. The successor asks whether the
+input modes once and keeps an at-least-one-click filter, including multi-click
+outputs. The successor asks whether the
 failure depends on selecting a subset of sources; it claims neither a
 six-photon coincidence law nor quantum advantage. Its dry plan fits 1024
 samples, 2048 shots, 300 seconds and 1.002048 credits, but emits the binding
@@ -49,6 +50,27 @@ The recheck `6fa19f42-da09-47e9-aecd-51c690622f4c` follows the observed
 checks pass, but the job again returns the input-port error after one second
 with zero shots and zero debit. The public status transition is insufficient
 evidence of restored input control.
+
+### Stopping-rule adjudication
+
+The [static readiness receipt](../../results/quandela/runs/ascella-static-input-readiness/submission.json)
+states: "Stop further Ascella submissions on instrument error or zero samples."
+Its [collected result](../../results/quandela/runs/ascella-static-input-readiness/results.json)
+recorded both conditions at 11:25:22 UTC on 22 October 2026. The
+[native-mesh receipt](../../results/quandela/runs/ascella-calibrated-mesh-input-readiness/submission.json)
+records a later submission at 11:37:08 UTC; the
+[post-status-transition receipt](../../results/quandela/runs/ascella-native-input-map-recheck/submission.json)
+records another at 12:09:17 UTC. The retained approval text for those requests
+does not record an explicit override of the observed stop.
+
+Both later submissions are protocol deviations. The broad authorization to
+investigate and debug supplies context, rather than an explicit supersession
+of the recorded stopping rule. Their errors remain descriptive diagnostic
+observations; they cannot qualify as adherence to that preregistered protocol
+or successful device conformance. The receipts, approval text, cases and raw
+results retain their original bytes. Further Ascella execution is paused and
+requires the user's heads-up plus an explicit replacement or override of the
+stopping rule, as well as the applicable case and resource approval.
 
 A safe protobuf inspection of the published architecture finds empty logical
 `input_ports` and `output_ports` maps, alongside the six-source occupation,
@@ -189,7 +211,7 @@ All five approved jobs completed on 22 October 2026:
 | Fourier, three repeat blocks | `e99c049c-b9c1-4663-bbd0-e57e59bb6993` | 24 | 196608 | 141 | 1.016384 |
 | Total | five jobs | 120 | 983040 | 724 | 5.081920 |
 
-The [conditional readout](../../results/hypercomplex/belenos-repeat-readout.json)
+The [conditional readout](../../results/hypercomplex/belenos-repeat-readout-pooled.json)
 binds every case, circuit, submission, sent body, result and raw result by
 digest. All requested parameter echoes and compilation seeds match. Of the
 983040 returned samples, 350 are vacuum or multiple-click outcomes and remain
@@ -198,7 +220,7 @@ pair comparisons have maximum conditional total variation 0.036181. Every
 matched pair carries identical returned compiled-circuit bytes; physical
 heater states and calibration-event identity remain unobserved.
 
-The [compiled-mesh audit](../../results/hypercomplex/belenos-compilation-measurement-audit.json)
+The [compiled-mesh audit](../../results/hypercomplex/belenos-compilation-measurement-audit-pooled.json)
 uses the bounded protobuf decoder and the repository's Rx convention to
 propagate the returned `computed_input` through every numerical mesh. The
 largest compiled-versus-requested intensity total variation is 0.000210.
@@ -236,6 +258,12 @@ meshes and outputs, and retain the same empty processing policy. The approved
 five-job ceiling is consumed; that intervention remains an unsubmitted design.
 
 Gate `core-633` replays the descriptive readout and returned-mesh audit.
+The [pooled readout producer](../../scripts/photonic_repeat_readout_pooled.py)
+and [compiled-mesh producer](../../scripts/photonic_compilation_audit_pooled.py)
+validate independent acquisition directories through
+`parallel.ordered_map`. Their successor records preserve every scientific
+observation and comparison from the serial records. The original producers
+and their hash-bound outputs remain immutable historical evidence.
 Gate `core-632` replays the frozen successor cases, finite frontier and API
 contracts.
 The successor replay reads

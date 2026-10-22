@@ -3984,7 +3984,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/photonic_repeat_readout.py results/quandela/runs/belenos-order-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-1 results/quandela/runs/belenos-wave-repeat-block-2 results/quandela/runs/belenos-transform-repeat-block-0 --check results/hypercomplex/belenos-repeat-readout.json && \"$PYTHON\" -B -W error scripts/photonic_compilation_audit.py results/hypercomplex/belenos-repeat-readout.json --check results/hypercomplex/belenos-compilation-measurement-audit.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/photonic_repeat_readout_pooled.py results/quandela/runs/belenos-order-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-1 results/quandela/runs/belenos-wave-repeat-block-2 results/quandela/runs/belenos-transform-repeat-block-0 --check results/hypercomplex/belenos-repeat-readout-pooled.json && \"$PYTHON\" -B -W error scripts/photonic_compilation_audit_pooled.py results/hypercomplex/belenos-repeat-readout-pooled.json --check results/hypercomplex/belenos-compilation-measurement-audit-pooled.json",
    "name": "core-633",
    "seconds": 15.0,
    "tier": "pr"

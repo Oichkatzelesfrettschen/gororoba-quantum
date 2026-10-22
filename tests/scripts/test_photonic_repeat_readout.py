@@ -4,6 +4,18 @@ import pytest
 from photonic_repeat_readout import observation
 
 
+def test_pooled_directory_readout_preserves_every_retained_serial_result() -> None:
+    import json
+
+    from photonic_repeat_readout_pooled import ROOT, analyze
+
+    serial = json.loads((ROOT / "results/hypercomplex/belenos-repeat-readout.json").read_text())
+    pooled = analyze([ROOT / "results/quandela/runs" / row["run"] for row in serial["acquisitions"]])
+    for key in serial.keys() - {"producer_sha256"}:
+        if pooled[key] != serial[key]:
+            raise RuntimeError(f"pooled directory validation changed retained scientific results: {key}")
+
+
 def test_readout_excludes_vacuum_and_multiple_clicks_without_losing_their_counts() -> None:
     row = observation(
         {

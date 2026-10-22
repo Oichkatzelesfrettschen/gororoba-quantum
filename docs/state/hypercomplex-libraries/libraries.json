@@ -2436,6 +2436,7 @@
     "scripts/patch_window_analysis.py",
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
+    "scripts/photonic_repeat_readout_pooled.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
@@ -9845,7 +9846,6 @@
   "scripts/hypercomplex_photonic_cases.py": [
    "__future__",
    "argparse",
-   "bdsc_certificate",
    "copy",
    "hashlib",
    "hypercomplex_cases",
@@ -10426,6 +10426,19 @@
    "typing",
    "zlib"
   ],
+  "scripts/photonic_compilation_audit_pooled.py": [
+   "__future__",
+   "argparse",
+   "bdsc_certificate",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "photonic_compilation_audit",
+   "photonic_repeat_readout_pooled",
+   "qd_platform",
+   "typing"
+  ],
   "scripts/photonic_repeat_readout.py": [
    "__future__",
    "argparse",
@@ -10438,6 +10451,20 @@
    "pathlib",
    "qd_platform",
    "sys",
+   "typing"
+  ],
+  "scripts/photonic_repeat_readout_pooled.py": [
+   "__future__",
+   "argparse",
+   "bdsc_certificate",
+   "hashlib",
+   "itertools",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "photonic_repeat_readout",
+   "qd_platform",
    "typing"
   ],
   "scripts/python_call_graph.py": [

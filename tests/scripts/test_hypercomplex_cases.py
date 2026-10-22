@@ -115,6 +115,48 @@ def test_full_source_readiness_uses_only_published_input_modes() -> None:
     qd_platform.template_experiment(manifest, circuit)
 
 
+@pytest.mark.parametrize("phase_index", [1, 2, 3, 4])
+def test_native_readiness_rejects_recalibrated_coupler_phases(phase_index: int) -> None:
+    import perceval as pcvl
+    import qd_platform
+    from hypercomplex_photonic_cases import native_readiness_case
+    from qd_belenos_mesh import decode
+
+    root = Path(__file__).resolve().parents[2]
+    processor = json.loads((root / "docs/evidence/quandela/catalogue.json").read_text())["processors"]["qpu:ascella"]
+    files = native_readiness_case(processor)
+    circuit = json.loads(files["circuit.json"])
+    chip = pcvl.Circuit(12)
+    changed = False
+    for kind, mode, value in decode(processor["specs"]["architecture"]):
+        if kind == "bs":
+            parameters = list(value)
+            if not changed:
+                parameters[phase_index] = 0.125
+                changed = True
+            chip.add(mode, pcvl.BS(*parameters))
+        else:
+            chip.add(mode, pcvl.PS(pcvl.P(value)))
+    processor["specs"]["architecture"] = pcvl.serialization.serialize(chip)
+    with pytest.raises(qd_platform.PlatformError, match="architecture differs"):
+        qd_platform.live_mesh(processor, circuit, "qpu:ascella")
+
+
+def test_frozen_case_replay_rejects_sub_tolerance_coupler_change(tmp_path: Path) -> None:
+    from hypercomplex_cases import write_files
+    from hypercomplex_photonic_cases import check_files, native_readiness_case
+
+    root = Path(__file__).resolve().parents[2]
+    processor = json.loads((root / "docs/evidence/quandela/catalogue.json").read_text())["processors"]["qpu:ascella"]
+    files = native_readiness_case(processor)
+    write_files(tmp_path, files)
+    circuit = json.loads(files["circuit.json"])
+    circuit["architecture"]["couplers"][0][1] += 1e-12
+    (tmp_path / "circuit.json").write_text(json.dumps(circuit, indent=1) + "\n")
+    with pytest.raises(ValueError):
+        check_files(tmp_path, files)
+
+
 def test_retained_successor_replay_rejects_a_changed_budget(tmp_path: Path) -> None:
     from hypercomplex_cases import write_files
     from hypercomplex_photonic_cases import check_files, readiness_case

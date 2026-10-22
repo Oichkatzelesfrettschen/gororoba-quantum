@@ -1,7 +1,8 @@
 """Retain public Quandela API schemas and recursively inventory their contracts.
 
-Only the three literal public OpenAPI URLs are fetched. Inventoried operations
-remain descriptions: the inventory executes neither jobs nor QRNG/token routes.
+Captures fetch the three literal public OpenAPI URLs and the public WebIDE
+bundle. Inventoried operations remain descriptions; jobs and QRNG/token
+routes are never executed by the inventory.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ DOCUMENTS = {
     "account": "https://api.account.quandela.com/openapi.json",
 }
 METHODS = frozenset({"get", "post", "put", "patch", "delete", "head", "options", "trace"})
+PORTAL_MAP_SHA256 = "29842b690e3fd8a48fa3d36286c5f7ec7258ba9639a62f9f5b6410a9f91c7262"
 
 
 def portal_routes(data: bytes, url: str) -> dict[str, Any]:
@@ -125,7 +127,7 @@ def retain(path: Path, data: bytes) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
-    parser.add_argument("--capture", action="store_true", help="GET only the three public OpenAPI documents")
+    parser.add_argument("--capture", action="store_true", help="GET the three public schemas and WebIDE bundle")
     parser.add_argument("--portal-map", action="store_true", help="also GET and map the public WebIDE index bundle")
     arguments = parser.parse_args()
     records = []
@@ -150,7 +152,7 @@ def main() -> int:
                 "sha256": record["source_sha256"],
             }
         )
-    if arguments.portal_map:
+    if arguments.portal_map or arguments.capture:
         from capture_qd_docs import WEBIDE, bundle
 
         url, data = bundle(WEBIDE)
@@ -158,6 +160,9 @@ def main() -> int:
             arguments.directory / "portal-route-map.json",
             (json.dumps(portal_routes(data, url), indent=1, sort_keys=True) + "\n").encode(),
         )
+    portal = arguments.directory / "portal-route-map.json"
+    if hashlib.sha256(portal.read_bytes()).hexdigest() != PORTAL_MAP_SHA256:
+        raise ValueError("the retained portal route-map bytes differ from the reviewed capture")
     print(json.dumps(records, sort_keys=True))
     return 0
 

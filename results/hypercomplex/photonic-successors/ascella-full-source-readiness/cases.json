@@ -674,7 +674,7 @@
  "max_duration": 300,
  "preregistered": {
   "primary": "instrument readiness with the full connected-source occupation",
-  "boundary": "one-click filter; tests source selection, not a six-photon coincidence law",
+  "boundary": "at-least-one-click filter, including multi-click outputs; not a six-photon coincidence law",
   "stop": "instrument error rejects full-source selection as a remedy; preserve all diagnostics"
  },
  "circuit": {

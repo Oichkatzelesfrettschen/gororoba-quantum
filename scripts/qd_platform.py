@@ -933,9 +933,11 @@ def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str)
 
     live = mesh.decode(architecture_blob(processor, platform))
     spec = circuit["architecture"]
-    if [p for k, _, p in live if k == "ps"] != spec["symbols"] or [[m, p[0]] for k, m, p in live if k == "bs"] != spec[
-        "couplers"
-    ]:
+    if (
+        any(p[1:] != (0.0, 0.0, 0.0, 0.0) for k, _, p in live if k == "bs")
+        or [p for k, _, p in live if k == "ps"] != spec["symbols"]
+        or [[m, p[0]] for k, m, p in live if k == "bs"] != spec["couplers"]
+    ):
         raise PlatformError("the live architecture differs from the case: regenerate the mesh case after recalibration")
 
 

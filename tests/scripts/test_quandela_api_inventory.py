@@ -1,5 +1,8 @@
 """API traversal preserves every operation while classifying state and credit effects."""
 
+import shutil
+import sys
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -42,3 +45,16 @@ def test_portal_inventory_retains_methods_and_dynamic_route_literals() -> None:
     actual = [(row["method"], row["literal"]) for row in record["routes"]]
     if actual != [("GET", "/api/jobs/page"), ("POST", "/api/jobs/${id}/cancel")]:
         raise RuntimeError("the lexical inventory must preserve each method and the unresolved template literal")
+
+
+def test_offline_api_replay_rejects_a_changed_portal_map(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from quandela_api_inventory import main
+
+    source = Path(__file__).resolve().parents[2] / "docs/evidence/quandela/input-port-api-audit"
+    target = tmp_path / "capture"
+    shutil.copytree(source, target)
+    portal = target / "portal-route-map.json"
+    portal.write_bytes(portal.read_bytes().replace(b'"GET"', b'"PUT"', 1))
+    monkeypatch.setattr(sys, "argv", ["quandela_api_inventory", str(target)])
+    with pytest.raises(ValueError, match="portal"):
+        main()

@@ -19,6 +19,10 @@ The matching source identity also appears in the retained
 [guide manifest](../../../notes/quandela/guide/MANIFEST.json).
 The map is lexical evidence rather than proof of complete route coverage or
 runtime reachability. Dynamic route templates retain their unresolved expressions.
+The offline inventory replay pins the route-map bytes to SHA-256
+`29842b690e3fd8a48fa3d36286c5f7ec7258ba9639a62f9f5b6410a9f91c7262`.
+That integrity check preserves the reviewed lexical evidence; recomputing the
+call sites from the public bundle remains the separate `--portal-map` probe.
 The three literal strings `hardware_config`, `hardware_info` and
 `circuit_input_ports` are absent from that bundle.
 
