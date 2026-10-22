@@ -1148,6 +1148,62 @@
       "run": "results/live/2026-10-21T064222.721454Z",
       "family": "n21-orbit-rca",
       "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
     }
   ],
   "claims": [
@@ -6494,6 +6550,76 @@
         "marrakesh-n21-q47-segmented-baseline"
       ],
       "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-quaternion-encoded-order-pilot",
+      "statement": "The Tuna-17 order pilot completed 24 jobs and 393216 shots. Six native-zero dark-port controls measured 0.0396118 to 0.0508423; two native-0.25 settings measured 0.2669067 and 0.2703857. The refreshed ledger records 186.801814 execution seconds and zero credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One fixed chronological acquisition per science setting leaves preparation, compiled-circuit effects, readout and time drift confounded. The observations establish neither representative equivalence, process fidelity, calibrated uncertainty coverage nor a fundamental quaternion scalar field.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json",
+          "sha256": "ab1dfe679f1577c63f587db4241d65b86ac061dafa9d6eeb00a588ac06661bad"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/hypercomplex-analysis.json",
+          "sha256": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/hypercomplex-analysis.json",
+          "sha256": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/hypercomplex-analysis.json",
+          "sha256": "864422ca90b971e2174a0f24838772a32c1c6acd93601d27df2372ab0e94eb0f"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/hypercomplex-analysis.json",
+          "sha256": "ad791fbe36bd5220cbbeb3dc8b65f39f69122fe974ac987b9d1968d6b6fef25b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/hypercomplex-analysis.json",
+          "sha256": "34dc1530c70289e9509defb51f06775c9c9d3ba27040d04d40fa2897ccf7dfa0"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/hypercomplex-analysis.json",
+          "sha256": "f374fd93f4ae949f756508ea5639a53f8c01ecd55f81d0ac654764e62ec59c0a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/hypercomplex-analysis.json",
+          "sha256": "0e76fb592e1a09c0f65857eba9c5c785dbec6e57729af27f0ae88e37c80e234d"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/hypercomplex-analysis.json",
+          "sha256": "5504e32ee3e76cd3ae8500434e5787dc00808879f3ed46b941f1423ab3082c4a"
+        }
+      ],
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md",
+        "docs/design/tuna-order-pilot-adversarial-admission.md"
+      ],
+      "gates": {
+        "core-347": "freshness",
+        "core-615": "admission"
+      },
+      "acquisitions": [
+        "qi-tuna17-quaternion-order-00",
+        "qi-tuna17-quaternion-order-01",
+        "qi-tuna17-quaternion-order-02",
+        "qi-tuna17-quaternion-order-03",
+        "qi-tuna17-quaternion-order-04",
+        "qi-tuna17-quaternion-order-05",
+        "qi-tuna17-quaternion-order-06",
+        "qi-tuna17-quaternion-order-07"
+      ],
+      "assumptions": [
+        "Provider shot order is retained as delivered; timing and stationarity are unestablished."
+      ],
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null

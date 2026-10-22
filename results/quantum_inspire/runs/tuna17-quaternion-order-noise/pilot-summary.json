@@ -1,0 +1,178 @@
+{
+ "schema": "hypercomplex-order-pilot-summary-v1",
+ "evidence_class": "descriptive hardware acquisition",
+ "approved_plan_sha256": "43e0b67a8aaaa1203eacd5f0be9e4c74ac5f4f55576dc16f96591245864dc8a2",
+ "acquisition_source_revision": "50731f320304dac7e2cea5b18c49e3c413dce97d",
+ "analysis_files_sha256": {
+  "order-batch-00/hypercomplex-analysis.json": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae",
+  "order-batch-01/hypercomplex-analysis.json": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2",
+  "order-batch-02/hypercomplex-analysis.json": "864422ca90b971e2174a0f24838772a32c1c6acd93601d27df2372ab0e94eb0f",
+  "order-batch-03/hypercomplex-analysis.json": "ad791fbe36bd5220cbbeb3dc8b65f39f69122fe974ac987b9d1968d6b6fef25b",
+  "order-batch-04/hypercomplex-analysis.json": "34dc1530c70289e9509defb51f06775c9c9d3ba27040d04d40fa2897ccf7dfa0",
+  "order-batch-05/hypercomplex-analysis.json": "f374fd93f4ae949f756508ea5639a53f8c01ecd55f81d0ac654764e62ec59c0a",
+  "order-batch-06/hypercomplex-analysis.json": "0e76fb592e1a09c0f65857eba9c5c785dbec6e57729af27f0ae88e37c80e234d",
+  "order-batch-07/hypercomplex-analysis.json": "5504e32ee3e76cd3ae8500434e5787dc00808879f3ed46b941f1423ab3082c4a"
+ },
+ "job_ids": [
+  1565780,
+  1565781,
+  1565782,
+  1565803,
+  1565804,
+  1565805,
+  1565840,
+  1565841,
+  1565842,
+  1565875,
+  1565876,
+  1565877,
+  1565920,
+  1565921,
+  1565922,
+  1565955,
+  1565956,
+  1565957,
+  1565985,
+  1565986,
+  1565987,
+  1566041,
+  1566042,
+  1566043
+ ],
+ "completed_jobs": 24,
+ "total_shots": 393216,
+ "provider_execution_seconds": 186.801814,
+ "credit_debit": 0,
+ "settings": [
+  {
+   "batch": "order-batch-00",
+   "setting": {
+    "name": "order-i0-j0-representative0",
+    "theta": 0.0,
+    "phi": 0.0,
+    "representative": 0
+   },
+   "science_job": 1565782,
+   "shots": 16384,
+   "dark_count": 653,
+   "observed_dark_probability": 0.03985595703125,
+   "native_dark_probability": 0.0,
+   "native_total_variation_residual": 0.03985595703125,
+   "output_readout_contrast": 0.864501953125
+  },
+  {
+   "batch": "order-batch-01",
+   "setting": {
+    "name": "order-i0-j0-representative1",
+    "theta": 0.0,
+    "phi": 0.0,
+    "representative": 1
+   },
+   "science_job": 1565805,
+   "shots": 16384,
+   "dark_count": 766,
+   "observed_dark_probability": 0.0467529296875,
+   "native_dark_probability": 0.0,
+   "native_total_variation_residual": 0.04675292968749978,
+   "output_readout_contrast": 0.8804931640625
+  },
+  {
+   "batch": "order-batch-02",
+   "setting": {
+    "name": "order-i0-j1-representative0",
+    "theta": 0.0,
+    "phi": 0.7853981633974483,
+    "representative": 0
+   },
+   "science_job": 1565842,
+   "shots": 16384,
+   "dark_count": 649,
+   "observed_dark_probability": 0.03961181640625,
+   "native_dark_probability": 0.0,
+   "native_total_variation_residual": 0.03961181640625,
+   "output_readout_contrast": 0.78961181640625
+  },
+  {
+   "batch": "order-batch-03",
+   "setting": {
+    "name": "order-i0-j1-representative1",
+    "theta": 0.0,
+    "phi": 0.7853981633974483,
+    "representative": 1
+   },
+   "science_job": 1565877,
+   "shots": 16384,
+   "dark_count": 785,
+   "observed_dark_probability": 0.04791259765625,
+   "native_dark_probability": 0.0,
+   "native_total_variation_residual": 0.04791259765624983,
+   "output_readout_contrast": 0.86810302734375
+  },
+  {
+   "batch": "order-batch-04",
+   "setting": {
+    "name": "order-i1-j0-representative0",
+    "theta": 0.7853981633974483,
+    "phi": 0.0,
+    "representative": 0
+   },
+   "science_job": 1565922,
+   "shots": 16384,
+   "dark_count": 669,
+   "observed_dark_probability": 0.04083251953125,
+   "native_dark_probability": 0.0,
+   "native_total_variation_residual": 0.04083251953125,
+   "output_readout_contrast": 0.76190185546875
+  },
+  {
+   "batch": "order-batch-05",
+   "setting": {
+    "name": "order-i1-j0-representative1",
+    "theta": 0.7853981633974483,
+    "phi": 0.0,
+    "representative": 1
+   },
+   "science_job": 1565957,
+   "shots": 16384,
+   "dark_count": 833,
+   "observed_dark_probability": 0.05084228515625,
+   "native_dark_probability": 0.0,
+   "native_total_variation_residual": 0.05084228515625,
+   "output_readout_contrast": 0.86090087890625
+  },
+  {
+   "batch": "order-batch-06",
+   "setting": {
+    "name": "order-i1-j1-representative0",
+    "theta": 0.7853981633974483,
+    "phi": 0.7853981633974483,
+    "representative": 0
+   },
+   "science_job": 1565987,
+   "shots": 16384,
+   "dark_count": 4373,
+   "observed_dark_probability": 0.26690673828125,
+   "native_dark_probability": 0.24999999999999983,
+   "native_total_variation_residual": 0.016906738281249972,
+   "output_readout_contrast": 0.92578125
+  },
+  {
+   "batch": "order-batch-07",
+   "setting": {
+    "name": "order-i1-j1-representative1",
+    "theta": 0.7853981633974483,
+    "phi": 0.7853981633974483,
+    "representative": 1
+   },
+   "science_job": 1566043,
+   "shots": 16384,
+   "dark_count": 4430,
+   "observed_dark_probability": 0.2703857421875,
+   "native_dark_probability": 0.2499999999999999,
+   "native_total_variation_residual": 0.020385742187499944,
+   "output_readout_contrast": 0.91595458984375
+  }
+ ],
+ "inference_boundary": "Fixed chronological acquisition with one job per science setting. Readout contrast is acquisition quality only. Frequencies establish neither representative equivalence, process fidelity, calibrated uncertainty coverage nor a fundamental quaternion scalar field.",
+ "scientific_continuation_admitted": false
+}

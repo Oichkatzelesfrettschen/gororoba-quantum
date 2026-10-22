@@ -56,4 +56,35 @@ The repository routes ordinary small circuit simulations through its Kaggle work
 5. Qualify disjoint-pair packing against isolated baselines before maximizing concurrent drive. The documented graph and measured crosstalk govern usable placement; a maximum graph matching alone supplies no equivalence certificate. Keep packed execution unadmitted until a paired equivalence case has approved margins and temporal-dependence treatment.
 6. Assess the descriptive pilot against the [adversarial admission addendum](tuna-order-pilot-adversarial-admission.md). Wave and transform acquisitions require their own reviewed entry conditions and approved cases. Preserve raw shots and provider identity, refresh the account ledger and research registry in the same evidence change, then render measured probabilities.
 
-The [operator runbook](../runbooks/hypercomplex-operator-cases.md) provides submit-free commands and the approval boundary. The branch implements isolated cases and guard reuse. Packed equivalence measurements, provider acquisitions and measured art remain contingent on their concrete approved cases.
+The [operator runbook](../runbooks/hypercomplex-operator-cases.md) provides submit-free commands and the approval boundary. The branch implements isolated cases and guard reuse. Packed equivalence measurements and additional provider acquisitions remain contingent on their concrete approved cases.
+
+## Retained Tuna-17 order pilot
+
+The approved order pilot completed eight batches, 24 jobs and 393216 shots on 22 October 2026. The
+[retained summary](../../results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json)
+binds each batch analysis and the corrected approval digest. The refreshed provider ledger records
+186.801814 execution seconds and zero credit debit for the 24 jobs. The observed debit describes
+these acquisitions rather than a guaranteed future tariff.
+
+The table reports the grouped dark-port frequency after summing the internal complex encoding
+channels. The two phase angles specify the frozen i/j phase settings. The representative is the
+identity or global right-j quaternion representative. Every science job contains 16384 shots.
+
+| i phase | j phase | Representative | Native dark probability | Measured dark probability |
+|---|---|---|---|---|
+| 0 | 0 | identity | 0 | 0.0398559570 |
+| 0 | 0 | right-j | 0 | 0.0467529297 |
+| 0 | pi/4 | identity | 0 | 0.0396118164 |
+| 0 | pi/4 | right-j | 0 | 0.0479125977 |
+| pi/4 | 0 | identity | 0 | 0.0408325195 |
+| pi/4 | 0 | right-j | 0 | 0.0508422852 |
+| pi/4 | pi/4 | identity | 0.25 | 0.2669067383 |
+| pi/4 | pi/4 | right-j | 0.25 | 0.2703857422 |
+
+Every contemporaneous output readout contrast exceeds the preregistered 0.2 acquisition guard;
+the observed contrasts range from 0.7619018555 to 0.92578125. The guard establishes acquisition
+quality only. The fixed chronological order and one acquisition per science setting leave
+preparation, compiled-circuit effects, readout and time-dependent drift confounded. The measured
+representative differences establish neither ray invariance nor its violation. The
+[admission addendum](tuna-order-pilot-adversarial-admission.md) supplies the inference boundaries;
+additional wave, transform, packing or replication acquisitions retain separate approval cases.

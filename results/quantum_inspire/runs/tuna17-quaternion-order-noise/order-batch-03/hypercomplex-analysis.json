@@ -1,0 +1,92 @@
+{
+ "schema": "hypercomplex-measured-frame-v1",
+ "evidence_kind": "hardware-measurement",
+ "time": 0,
+ "setting": {
+  "name": "order-i0-j1-representative1",
+  "theta": 0.0,
+  "phi": 0.7853981633974483,
+  "representative": 1
+ },
+ "counts": [
+  15599,
+  785
+ ],
+ "probabilities": [
+  0.95208740234375,
+  0.04791259765625
+ ],
+ "grouped_predictions": {
+  "requested": [
+   0.9999999999999997,
+   5.286997409534849e-34
+  ],
+  "native": [
+   0.9999999999999997,
+   0.0
+  ]
+ },
+ "observed_minus_predicted": {
+  "requested": [
+   -0.04791259765624967,
+   0.04791259765625
+  ],
+  "native": [
+   -0.04791259765624967,
+   0.04791259765625
+  ]
+ },
+ "total_variation_residual": {
+  "requested": 0.04791259765624983,
+  "native": 0.04791259765624983
+ },
+ "raw_sha256": "2d7d7b7af2743cdab331f5db609ecb6b5a31c243f47ddfd8578bfe5cb2c7736e",
+ "reference_raw_sha256": {
+  "readout-0.cq": "f0450555d17c80d4f6bfd4c58dc1277d40f19e9226e22c79f63d1ad79e32073e",
+  "readout-1.cq": "2a0f2ec56ab3d6463c54b72db87785e42ba2bc987b41830abb761f135bb45c03"
+ },
+ "receipt_sha256": "d3a581d4adddfc7dee8add101b10077073b8170cff6ca2b2989963dbd9319249",
+ "manifest_sha256": "cbc3b108fafecaef1180190d41b1759e4c9b6258276a808ab63f673e02e1a5e6",
+ "ordered_shots": {
+  "shots": 16384,
+  "mean": 0.04791259765625,
+  "block_length": 128,
+  "block_mean_range": 0.0859375,
+  "lag_one_correlation": 0.0018548842208252312,
+  "block_standard_error": 0.001619726425340386,
+  "interpretation": "descriptive dependence diagnostic; stationarity and confidence coverage unestablished"
+ },
+ "operator_error": 5.832446747713848e-16,
+ "readout_contrasts": [
+  0.97369384765625,
+  0.86810302734375
+ ],
+ "physical_readout_contrasts": [
+  0.97369384765625,
+  0.86810302734375
+ ],
+ "physical_readout_one_probabilities": [
+  [
+   0.00909423828125,
+   0.04058837890625
+  ],
+  [
+   0.9827880859375,
+   0.90869140625
+  ]
+ ],
+ "logical_readout_one_probabilities": [
+  [
+   0.00909423828125,
+   0.04058837890625
+  ],
+  [
+   0.9827880859375,
+   0.90869140625
+  ]
+ ],
+ "inference_scope": "descriptive acquisition; conformance, equivalence and ray invariance unestablished",
+ "acquisition_quality": "output readout contrast >=0.2 only; no bias correction or scientific acceptance",
+ "scientific_continuation_admitted": false,
+ "job_id": 1565877
+}
