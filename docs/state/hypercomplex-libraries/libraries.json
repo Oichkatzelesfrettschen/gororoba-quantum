@@ -6643,6 +6643,12 @@
    "re",
    "sys"
   ],
+  "ci/gate_env.py": [
+   "__future__",
+   "os",
+   "run_gates",
+   "sys"
+  ],
   "ci/gate_inputs.py": [
    "__future__",
    "ast",
@@ -6714,6 +6720,7 @@
    "collections",
    "contextlib",
    "fcntl",
+   "functools",
    "hashlib",
    "host_identity",
    "json",
@@ -6735,6 +6742,17 @@
    "sys",
    "typing"
   ],
+  "ci/replay_check.py": [
+   "__future__",
+   "argparse",
+   "fnmatch",
+   "json",
+   "pathlib",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
   "ci/run_gates.py": [
    "__future__",
    "argparse",
@@ -6754,6 +6772,14 @@
    "sys",
    "tempfile",
    "time",
+   "typing"
+  ],
+  "ci/runner_image_records.py": [
+   "__future__",
+   "hashlib",
+   "json",
+   "pathlib",
+   "sys",
    "typing"
   ],
   "ci/runner_specs.py": [
@@ -10186,6 +10212,7 @@
    "copy",
    "datetime",
    "diagnostic_experiments",
+   "fractions",
    "functools",
    "hashlib",
    "heapq",
