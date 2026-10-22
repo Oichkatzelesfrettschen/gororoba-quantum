@@ -1665,12 +1665,69 @@
       "superseded_by": null
     },
     {
+      "id": "a5-stiefel-pfaffian-reduction",
+      "statement": "For pure a, b in A_4, L_(a,b)^2 is the real form of (L_a + i R_b)(L_a - i R_b) and L_a + i R_b is complex skew-symmetric, so |det L_(a,b)| = |Pf(L_a + i R_b)|^4; every A_5 Stiefel element is a zero divisor exactly when the degree-8 polynomial Pf(L_a + i R_b) vanishes on a dense subset of the Stiefel set.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof from Moreno's Theorem 2.3, which gate core-660 checks exactly on every e_i and e_i + e_j of the 30 pure coordinates (an identity of degree 2); the density step uses lower semicontinuity of rank. It reduces the A_5 question and does not decide it.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md",
+        "docs/notes/math-0512517.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Moreno math/0512517 Theorem 2.3: L_(a,b)^2 = [[A, -S], [S, A]] for pure a, b"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-stiefel-pfaffian-identity-test",
+      "statement": "At 96 seeded points of the A_5 Stiefel variety over F_p, 48 for each of the two largest primes p = 1 mod 4 below 2^61, drawn through the isotropic parametrization z = a + i b, z' = a - i b, rank(L_a + i R_b) = 14 and rank L_(a,b) = 28 modulo p, so Pf(L_a + i R_b) = 0; 16 A_6 Stiefel controls read full ranks 32 and 64 and 16 non-Stiefel A_5 controls read 16 and 32.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact modulo-p ranks at the recorded points only. By Schwartz-Zippel a Pfaffian whose restriction is nonzero modulo p vanishes at one uniform point with probability at most 26/p, so the record makes a generic counterexample improbable without proving universality; the draws are pseudorandom and a modulo-p rank bounds the rational rank from below only.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "a5-stiefel-pfaffian-reduction"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-stiefel-universal",
       "statement": "Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The 32 exact points support it and prove nothing beyond themselves.",
+      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction a counterexample is a generic point where Pf(L_a + i R_b) is nonzero, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
       "evidence": [],
       "documents": [
         "docs/notes/math-0512517.md"
@@ -1681,7 +1738,9 @@
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
       ],
       "depends_on": [
-        "a5-stiefel-selected-nullity"
+        "a5-stiefel-selected-nullity",
+        "a5-stiefel-pfaffian-reduction",
+        "a5-stiefel-pfaffian-identity-test"
       ],
       "supersedes": [],
       "superseded_by": null,
