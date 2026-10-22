@@ -53,8 +53,10 @@ establishes identity rather than a theorem or experimental replication.
 
 The [ETH viewer](https://www.e-periodica.ch/digbib/view?pid=hpa-001:1960:33::735)
 identifies Stueckelberg's article title and page 727 in its contents table.
-The canonical local historical review cites pages 727–752; that secondary
-locator remains separate from DataCite's fields. Automated PDF retrieval from
+Manfred Liebmann, Horst Rühaak and Bernd Henschenmacher,
+[Non-Associative Algebras and Quantum Physics: A Historical Perspective](https://arxiv.org/abs/1909.04027v1)
+(arXiv:1909.04027v1, 2019), cite Stueckelberg at pages 727–752 in their
+bibliography. That secondary locator remains separate from DataCite's fields. Automated PDF retrieval from
 the archive returned HTML, so the source body remains unreviewed.
 
 ## Relevance
