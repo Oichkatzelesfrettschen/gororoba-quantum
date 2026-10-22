@@ -16,7 +16,7 @@ from qi_toolchain_check import ROOT, SCHEMA, case_files, compiler_configs, confi
 
 import qi_stack
 
-RECORD = ROOT / "docs/evidence/quantum_inspire/toolchain-complete-retained-cases.json"
+RECORD = ROOT / "docs/evidence/quantum_inspire/toolchain-pause-ladder.json"
 
 
 def check() -> int:

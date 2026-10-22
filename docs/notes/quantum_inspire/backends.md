@@ -157,14 +157,18 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   (`scripts/qi_toolchain_check.py`,
   [original toolchain record](../../evidence/quantum_inspire/toolchain_check.json)).
   The [source-bound proposal toolchain record](../../evidence/quantum_inspire/toolchain-source-bound-proposals.json)
-  retains its bytes. The
+  and the
   [rejected-request proposal toolchain successor](../../evidence/quantum_inspire/toolchain-rejected-request-proposals.json)
-  preserves all 2,779 predecessor compilation rows and adds 832 exact-payload
-  submission-source and compact-QX successor circuits. The active
+  retain their bytes; the latter preserves all 2,779 rows before it and adds 832
+  exact-payload submission-source and compact-QX successor circuits. The
   [complete retained-case successor](../../evidence/quantum_inspire/toolchain-complete-retained-cases.json)
-  also restores 60 original BDSC Pauli cases omitted from that 3,611-row record,
-  for 3,671 retained cases. Every original and rejected-request compilation row
-  is preserved in the complete successor. Gate `core-368` checks the complete
+  preserves the 3,671 cases that included the original 60 BDSC Pauli circuits.
+  The active
+  [pause-ladder toolchain successor](../../evidence/quantum_inspire/toolchain-pause-ladder.json)
+  preserves unchanged-circuit compilation rows and includes 68 BDSC Pauli circuits (27 Tuna-17,
+  41 QX twin) and the 832 pause-ladder ZZ-map successor circuits, for 4,511 current
+  cases. Rebuilt paths receive rows bound to their new circuit bytes; the
+  historical records retain their original rows. Gate `core-368` checks the complete
   current case set through `scripts/qi_complete_toolchain_check.py` and regenerates
   the successor under the pinned local QI
   interpreter. The original record keeps its bytes; compilation proves source

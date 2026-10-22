@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-22T11:41:48+00:00",
+ "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "283db5700c35bf08153519cad97fba7d23e0b05dd9d6b2b5fb9379df67a70624",
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "witness-11.cq",
+   "job": 1567173,
+   "sha256": "548a601032032053866bbb7165f7bb5563af3c530f20e9f2f3668692e68f8aaf"
+  },
+  {
+   "file": "witness-12.cq",
+   "job": 1567174,
+   "sha256": "5cb39cfb143195ebe5b66a56f9763c5ef25dc1967ed9ce4738a1b1ec5436f8cc"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1567175,
+   "sha256": "f23be75aa8b709b6af29c7a3756ce6d560653c120217cb2a944c7864c8c038b6"
+  }
+ ],
+ "project": 781365,
+ "batch_job": 882240,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-22T11:41:51+00:00",
+  "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "283db5700c35bf08153519cad97fba7d23e0b05dd9d6b2b5fb9379df67a70624",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 882240,
+  "project": 781365,
+  "shots": 32768,
+  "jobs": [
+   {
+    "file": "witness-11.cq",
+    "job": 1567173,
+    "sha256": "548a601032032053866bbb7165f7bb5563af3c530f20e9f2f3668692e68f8aaf"
+   },
+   {
+    "file": "witness-12.cq",
+    "job": 1567174,
+    "sha256": "5cb39cfb143195ebe5b66a56f9763c5ef25dc1967ed9ce4738a1b1ec5436f8cc"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1567175,
+    "sha256": "f23be75aa8b709b6af29c7a3756ce6d560653c120217cb2a944c7864c8c038b6"
+   }
+  ],
+  "submitted_utc": "2026-10-22T11:41:51+00:00"
+ },
+ "confirmed_utc": "2026-10-22T11:41:51+00:00"
+}

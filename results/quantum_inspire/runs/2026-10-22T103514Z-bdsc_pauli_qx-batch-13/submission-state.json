@@ -1,0 +1,59 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-22T10:41:17+00:00",
+ "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "6fb9e71f01f3512ea54e6c3f9bccfd0b183d0039b57426b18e8c42194219c63e",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-cosine-03.cq",
+   "job": 1567088,
+   "sha256": "4e625aacb0493308b927da4cc891f2fe092d1f8ed164c9c822392efa2e9fd937"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1567089,
+   "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e"
+  }
+ ],
+ "project": 781336,
+ "batch_job": 882197,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-22T10:41:19+00:00",
+  "approval": "approved: QX twin 41 jobs, then Tuna-17 27 jobs, 0 credits",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "6fb9e71f01f3512ea54e6c3f9bccfd0b183d0039b57426b18e8c42194219c63e",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 882197,
+  "project": 781336,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "twin-cosine-03.cq",
+    "job": 1567088,
+    "sha256": "4e625aacb0493308b927da4cc891f2fe092d1f8ed164c9c822392efa2e9fd937"
+   },
+   {
+    "file": "readout-0.cq",
+    "job": 1567089,
+    "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e"
+   }
+  ],
+  "submitted_utc": "2026-10-22T10:41:19+00:00"
+ },
+ "confirmed_utc": "2026-10-22T10:41:19+00:00"
+}

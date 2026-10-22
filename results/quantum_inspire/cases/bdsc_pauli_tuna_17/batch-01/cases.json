@@ -1105,6 +1105,10 @@
   "batch-07": {
    "readout-0.cq": "batch-07",
    "readout-1.cq": "batch-06"
+  },
+  "batch-08": {
+   "readout-0.cq": "batch-07",
+   "readout-1.cq": "batch-08"
   }
  },
  "schedule": [
@@ -1130,41 +1134,53 @@
   ],
   [
    "quadrature-k1.cq",
-   "quadrature-b1.cq",
+   "cosine-k1.cq",
    "quadrature-e7.cq"
+  ],
+  [
+   "quadrature-b1.cq",
+   "cosine-b1.cq",
+   "readout-0.cq"
   ],
   [
    "witness-07.cq",
    "witness-08.cq",
-   "readout-0.cq"
+   "readout-1.cq"
   ],
   [
    "witness-09.cq",
    "witness-10.cq",
-   "readout-1.cq"
+   "readout-0.cq"
   ],
   [
    "witness-11.cq",
    "witness-12.cq",
-   "readout-0.cq"
+   "readout-1.cq"
   ]
  ],
  "cost": {
-  "jobs": 24,
-  "batches": 8,
+  "jobs": 27,
+  "batches": 9,
   "shots": 32768,
   "seconds_per_job": 19.967,
-  "execution_seconds": 479.2,
+  "execution_seconds": 539.1,
   "pause_seconds": 120,
-  "wall_seconds": 1319.2,
-  "fit": "2.6 s + 0.53 ms per shot per job"
+  "wall_seconds": 1499.1,
+  "fit": "2.6 s + 0.53 ms per shot per job",
+  "queue": "excluded: each batch also waits behind other users' batches"
+ },
+ "backend_contract": {
+  "topology": "fcc3f624127bff8d1901b53068e99d240b158d1cbe0eb9494f8529e348491c03",
+  "gateset": "4b3df407368a58658d5233a9d14f3972f3b3a18170fef8ae1e18968211853ed1",
+  "default_compiler_config": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd"
  },
  "preregistered": {
-  "estimators": "Per state and patch: the raw score mean with an empirical-Bernstein 95% interval (Maurer-Pontil Theorem 4, range 1, unbiased sample variance, two-sided) and the kernel-outcome fraction (z2 = -1 and t = +1) with a Wilson 95% interval. The readout-corrected score applies the inverse tensor product of the four single-qubit assignment matrices of the witness batch's nearest readout-0 and readout-1 (the earlier batch on a tie, the pairing in readout_pairing) and carries a 95% percentile interval of a seeded parametric bootstrap of 4000 draws that redraws the witness outcome counts (multinomial) and every assignment rate from the reference counts (binomial), reported beside the raw interval.",
-  "contraction": "A depolarizing contraction V of the (q3, q1, q0) parity gives kernel and bright states (1 - V)/2 and (1 + V)/2, so kernel + bright - 1 is consistent with zero for each partner pair (k_i, b_i) of a batch and pooled over the four pairs of a patch, and middle and sector states read 1/2. A violation at |z| >= 3 names a multi-qubit error outside the contraction, such as an entangling coherent error or leakage. The law is blind to a phase between the two GHZ branches (kernel and bright scores move by (1 -+ cos phi) V/2 and still sum to one), to single-qubit coherent errors and to readout bias; the quadrature batch reads the branch phase, and readout bias is read from the corrected score. Each z divides the raw residual by the square root of the summed sample variances over shots.",
-  "quadrature": "Circuits that read q3 in the X basis give <X3 X1 Y0> = -s sin(phi) V for a GHZ pair (|a> + s e^{i phi}|~a>)/sqrt2 with a3 = 0, a0 = 1, while the Y-basis parity of the witnesses gives <Y3 X1 Y0> = s cos(phi) V. With S = (m_b1 - m_k1)/2 from the quadrature circuits and C = (m_k1 - m_b1)/2 from the witnesses of the same patch, phi = atan2(S, C), V = hypot(S, C); (m_k1 + m_b1)/2 of both bases and the e7 parity are null statistics.",
+  "estimators": "Per state and patch the primary estimand is the raw score: its mean with an empirical-Bernstein 95% interval (Maurer-Pontil Theorem 4, range 1, unbiased sample variance, two-sided) and the kernel-outcome fraction (z2 = -1 and t = +1) with a Wilson 95% interval. The tensor-model mitigated score applies the inverse tensor product of the four single-qubit assignment matrices of the witness batch's nearest readout-0 and readout-1 (the earlier batch on a tie, the pairing in readout_pairing); it is an estimate under the model that each qubit's assignment is independent of the other qubits' states, and its 95% interval is conditional on that model. The interval is the percentile interval of 4000 seeded draws from the Jeffreys posterior: Dirichlet(counts + 1/2) over the 16 witness outcomes and over the 16 joint outcomes of the patch qubits in each reference, so every rate keeps the covariance of the calibration shots and an outcome never observed keeps a positive weight. A cell whose patch holds a qubit with a neighbor-context flag in the references rejects that model, and its mitigated score is withheld.",
+  "contraction": "A depolarizing contraction V of the (q3, q1, q0) parity gives kernel and bright states (1 - V)/2 and (1 + V)/2, so kernel + bright - 1 is consistent with zero for each partner pair (k_i, b_i) of a batch and pooled over the four pairs of a patch, and middle and sector states read 1/2. A chi-square of a patch's four pair residuals (sum of z^2, 4 dof) beyond its p = 0.0027 quantile rejects the stationary contraction-plus-readout model on that patch; an entangling coherent error, leakage, drift within the series and context-dependent readout each produce one, and the test does not tell them apart. The law is blind to a phase between the two GHZ branches (kernel and bright scores move by (1 -+ cos phi) V/2 and still sum to one), to single-qubit coherent errors and to readout bias. Each z divides the raw residual by the square root of the summed sample variances over shots.",
+  "quadrature": "A GHZ pair (|a> + s e^{i phi}|~a>)/sqrt2 with a3 = 0, a0 = 1 gives <X3 X1 Y0> = -s sin(phi) V with q3 read in X and <Y3 X1 Y0> = s cos(phi) V with q3 read in Y. The quadrature batches hold, for k1 and for b1, one X-basis and one Y-basis circuit in the same batch with the same state on every patch, so the sine and cosine amplitudes S = (m_b1x - m_k1x)/2 and C = (m_k1y - m_b1y)/2 carry the same visibility, neighbor activity and calibration window. phi = atan2(S, C) and V = hypot(S, C); the phase is reported only when S^2/var(S) + C^2/var(C) >= 11.83 (2-dof chi-square at p = 0.0027), and is otherwise withheld as unidentified. This is a repository-derived fixed-quadrature estimator from two fixed bases, not the phase scan of GHZ parity-oscillation or multiple-quantum-coherence practice. (m_k1 + m_b1)/2 of both bases and the e7 parity are null statistics, and the cosine amplitude of the witness circuits minus the matched C measures how far neighbor context moves the visibility.",
   "pooling": "Patches are analyzed separately; the pooled value is the equal-weight mean over the three patches of the per-patch pooled kernel + bright - 1.",
-  "stop_conditions": "Batch 0's readout-0 or readout-1 shows a patch qubit with P(1|0) or P(0|1) above 0.15: stop and redraw the placement. Two successive readout-0 circuits move a patch qubit's P(1|0), or two successive readout-1 circuits move its P(0|1), by more than 0.02: stop. A job fails or returns fewer shots than requested. The account-wide pause or the three-circuit limit would be broken."
+  "multiplicity": "The primary family is the pair chi-square of each patch and the branch phase of each patch: 6 tests at p = 0.0027 (|z| >= 3.0 for the phase), family-wise error at most 0.016 by Bonferroni. Single pair residuals, the per-patch and equal-weight pooled means, middle and sector residuals, the nulls and the neighbor-context shifts are exploratory and carry no claim.",
+  "stop_conditions": "Batch 0's readout-0 or readout-1 shows a patch qubit with P(1|0) or P(0|1) above 0.15: stop and redraw the placement. Two successive readout-0 circuits move a patch qubit's P(1|0), or two successive readout-1 circuits move its P(0|1), by more than 0.02: stop. A job fails or returns fewer shots than requested. The QX control misses its ideal. The account-wide pause or the three-circuit limit would be broken. --submit-next enforces every stop before it sends a batch, and a stopped analysis emits operational diagnostics only."
  },
  "witnesses": [
   {
@@ -1451,7 +1467,7 @@
       3
      ],
      "source_file": "witness-07.cq",
-     "source_batch": "batch-05",
+     "source_batch": "batch-06",
      "ideal_score": 0.0
     },
     {
@@ -1464,7 +1480,7 @@
       13
      ],
      "source_file": "witness-07.cq",
-     "source_batch": "batch-05",
+     "source_batch": "batch-06",
      "ideal_score": 1.0
     },
     {
@@ -1477,7 +1493,7 @@
       10
      ],
      "source_file": "witness-07.cq",
-     "source_batch": "batch-05",
+     "source_batch": "batch-06",
      "ideal_score": 0.5
     }
    ]
@@ -1496,7 +1512,7 @@
       3
      ],
      "source_file": "witness-08.cq",
-     "source_batch": "batch-05",
+     "source_batch": "batch-06",
      "ideal_score": 1.0
     },
     {
@@ -1509,7 +1525,7 @@
       13
      ],
      "source_file": "witness-08.cq",
-     "source_batch": "batch-05",
+     "source_batch": "batch-06",
      "ideal_score": 0.0
     },
     {
@@ -1522,7 +1538,7 @@
       10
      ],
      "source_file": "witness-08.cq",
-     "source_batch": "batch-05",
+     "source_batch": "batch-06",
      "ideal_score": 0.5
     }
    ]
@@ -1541,7 +1557,7 @@
       3
      ],
      "source_file": "witness-09.cq",
-     "source_batch": "batch-06",
+     "source_batch": "batch-07",
      "ideal_score": 0.0
     },
     {
@@ -1554,7 +1570,7 @@
       13
      ],
      "source_file": "witness-09.cq",
-     "source_batch": "batch-06",
+     "source_batch": "batch-07",
      "ideal_score": 0.5
     },
     {
@@ -1567,7 +1583,7 @@
       10
      ],
      "source_file": "witness-09.cq",
-     "source_batch": "batch-06",
+     "source_batch": "batch-07",
      "ideal_score": 1.0
     }
    ]
@@ -1586,7 +1602,7 @@
       3
      ],
      "source_file": "witness-10.cq",
-     "source_batch": "batch-06",
+     "source_batch": "batch-07",
      "ideal_score": 1.0
     },
     {
@@ -1599,7 +1615,7 @@
       13
      ],
      "source_file": "witness-10.cq",
-     "source_batch": "batch-06",
+     "source_batch": "batch-07",
      "ideal_score": 0.5
     },
     {
@@ -1612,7 +1628,7 @@
       10
      ],
      "source_file": "witness-10.cq",
-     "source_batch": "batch-06",
+     "source_batch": "batch-07",
      "ideal_score": 0.0
     }
    ]
@@ -1631,7 +1647,7 @@
       3
      ],
      "source_file": "witness-11.cq",
-     "source_batch": "batch-07",
+     "source_batch": "batch-08",
      "ideal_score": 0.5
     },
     {
@@ -1644,7 +1660,7 @@
       13
      ],
      "source_file": "witness-11.cq",
-     "source_batch": "batch-07",
+     "source_batch": "batch-08",
      "ideal_score": 0.0
     },
     {
@@ -1657,7 +1673,7 @@
       10
      ],
      "source_file": "witness-11.cq",
-     "source_batch": "batch-07",
+     "source_batch": "batch-08",
      "ideal_score": 1.0
     }
    ]
@@ -1676,7 +1692,7 @@
       3
      ],
      "source_file": "witness-12.cq",
-     "source_batch": "batch-07",
+     "source_batch": "batch-08",
      "ideal_score": 0.5
     },
     {
@@ -1689,7 +1705,7 @@
       13
      ],
      "source_file": "witness-12.cq",
-     "source_batch": "batch-07",
+     "source_batch": "batch-08",
      "ideal_score": 1.0
     },
     {
@@ -1702,7 +1718,7 @@
       10
      ],
      "source_file": "witness-12.cq",
-     "source_batch": "batch-07",
+     "source_batch": "batch-08",
      "ideal_score": 0.0
     }
    ]
@@ -1778,7 +1794,7 @@
       3
      ],
      "source_file": "quadrature-b1.cq",
-     "source_batch": "batch-04",
+     "source_batch": "batch-05",
      "ideal_parity": 0.0,
      "quadrature": {
       "cos_coefficient": -1.0,
@@ -1795,7 +1811,7 @@
       13
      ],
      "source_file": "quadrature-b1.cq",
-     "source_batch": "batch-04",
+     "source_batch": "batch-05",
      "ideal_parity": 0.0,
      "quadrature": {
       "cos_coefficient": -1.0,
@@ -1812,7 +1828,7 @@
       10
      ],
      "source_file": "quadrature-b1.cq",
-     "source_batch": "batch-04",
+     "source_batch": "batch-05",
      "ideal_parity": 0.0,
      "quadrature": {
       "cos_coefficient": -1.0,
@@ -1874,6 +1890,120 @@
      "quadrature": {
       "cos_coefficient": 0.0,
       "sin_coefficient": 0.0
+     }
+    }
+   ]
+  },
+  {
+   "file": "cosine-k1.cq",
+   "kind": "cosine",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "k1",
+     "qubits": [
+      1,
+      4,
+      2,
+      3
+     ],
+     "source_file": "cosine-k1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 1.0,
+     "quadrature": {
+      "cos_coefficient": 1.0,
+      "sin_coefficient": -1.0
+     }
+    },
+    {
+     "patch": 1,
+     "state": "k1",
+     "qubits": [
+      8,
+      11,
+      14,
+      13
+     ],
+     "source_file": "cosine-k1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 1.0,
+     "quadrature": {
+      "cos_coefficient": 1.0,
+      "sin_coefficient": -1.0
+     }
+    },
+    {
+     "patch": 2,
+     "state": "k1",
+     "qubits": [
+      12,
+      15,
+      16,
+      10
+     ],
+     "source_file": "cosine-k1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 1.0,
+     "quadrature": {
+      "cos_coefficient": 1.0,
+      "sin_coefficient": -1.0
+     }
+    }
+   ]
+  },
+  {
+   "file": "cosine-b1.cq",
+   "kind": "cosine",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "b1",
+     "qubits": [
+      1,
+      4,
+      2,
+      3
+     ],
+     "source_file": "cosine-b1.cq",
+     "source_batch": "batch-05",
+     "ideal_parity": -1.0,
+     "quadrature": {
+      "cos_coefficient": -1.0,
+      "sin_coefficient": 1.0
+     }
+    },
+    {
+     "patch": 1,
+     "state": "b1",
+     "qubits": [
+      8,
+      11,
+      14,
+      13
+     ],
+     "source_file": "cosine-b1.cq",
+     "source_batch": "batch-05",
+     "ideal_parity": -1.0,
+     "quadrature": {
+      "cos_coefficient": -1.0,
+      "sin_coefficient": 1.0
+     }
+    },
+    {
+     "patch": 2,
+     "state": "b1",
+     "qubits": [
+      12,
+      15,
+      16,
+      10
+     ],
+     "source_file": "cosine-b1.cq",
+     "source_batch": "batch-05",
+     "ideal_parity": -1.0,
+     "quadrature": {
+      "cos_coefficient": -1.0,
+      "sin_coefficient": 1.0
      }
     }
    ]

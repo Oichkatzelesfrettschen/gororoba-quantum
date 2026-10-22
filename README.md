@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (100 established, 48 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (102 established, 48 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -212,9 +212,32 @@ acquisition of every provider:
 | [order-batch-05](results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [order-batch-06](results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [order-batch-07](results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-00](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-01](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-02](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-03](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-04](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-05](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-06](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-07](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-08](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-09](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-10](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-11](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-12](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T103514Z-bdsc_pauli_qx-batch-13](results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13) | Quantum Inspire | BDSC four-qubit local Pauli readout, QX emulator twin | QXsinglenodesimulator | 2 | 2 | completed | 0 ledger change |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [ascella-hypercomplex-order-pilot](results/quandela/runs/ascella-hypercomplex-order-pilot) | Quandela Cloud | photonic quaternion order pilot | qpu:ascella | 1 | 8 | error | 0.0 credits |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [ascella-static-input-readiness](results/quandela/runs/ascella-static-input-readiness) | Quandela Cloud | static native coupler readiness | qpu:ascella | 1 | 1 | error | 0.0 credits |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [ascella-calibrated-mesh-input-readiness](results/quandela/runs/ascella-calibrated-mesh-input-readiness) | Quandela Cloud | calibrated native mesh readiness | qpu:ascella | 1 | 1 | error | 0.0 credits |
+| [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [belenos-order-repeat-block-0](results/quandela/runs/belenos-order-repeat-block-0) | Quandela Cloud | photonic order matched repeats | qpu:belenos | 1 | 24 | completed | 1.016384 credits |
 | [belenos-wave-repeat-block-0](results/quandela/runs/belenos-wave-repeat-block-0) | Quandela Cloud | photonic wave matched repeats | qpu:belenos | 1 | 24 | completed | 1.016384 credits |
 | [belenos-wave-repeat-block-1](results/quandela/runs/belenos-wave-repeat-block-1) | Quandela Cloud | photonic wave matched repeats | qpu:belenos | 1 | 24 | completed | 1.016384 credits |
@@ -224,9 +247,9 @@ acquisition of every provider:
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-22T07:18:20+00:00 lists 316 jobs with 6469632 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs with 7438336 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-22T12:27:41+00:00 counts 53 jobs, and 50 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 50 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents

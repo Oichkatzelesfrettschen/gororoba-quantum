@@ -1,0 +1,61 @@
+{
+ "schema": "qi-bdsc-pauli-gate-v1",
+ "series": "bdsc_pauli_qx",
+ "batch": "batch-04",
+ "cases_sha256": "8396589ca17f53e70dcf094eaea221f155477091aeb1e37c576e3fceea701232",
+ "predecessors": [
+  {
+   "batch": "batch-00",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
+   "results_sha256": "02227ca8b08af7c7741e3616871331380270708c7802392c78a79e1ac428c360",
+   "raw_sha256": {
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715",
+    "twin-witness-01.cq": "ebbf3a2aa61561abdc75487c673b62934aa44cd3a2aa52c216c0652273c7d42d"
+   }
+  },
+  {
+   "batch": "batch-01",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-01",
+   "results_sha256": "47d118e7a8b6486d9fdac6d8f50d72045a2dd802fc438642b07419cfe7ae5f29",
+   "raw_sha256": {
+    "twin-witness-02.cq": "c5509c71cbf648128f4a8fd1516826e5cba816a7861fecf615e0b2ef34c1e401",
+    "twin-witness-03.cq": "9d33ebc0c25cd0d5801139c3c66aba296fc87428951ae68825412b6c6148cbf2",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  },
+  {
+   "batch": "batch-02",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-02",
+   "results_sha256": "d0559cf62cfa2cdbaa1be922f604dd01522cff2e4ff91fdf96967372792bdb82",
+   "raw_sha256": {
+    "twin-witness-04.cq": "d171ed356d7ce73d1653c41ab1cfce0ce071cbbb52148e725ef38d9b2d6eb498",
+    "twin-witness-05.cq": "78de1a2654d6bc3203e75e9228bdf900bf5a07f34e3aede8101c37efb7fb4210",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715"
+   }
+  },
+  {
+   "batch": "batch-03",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-03",
+   "results_sha256": "6cab5a6025c4bcaecb5e623614e98248ccc29ad796fd90d709215db608d029b7",
+   "raw_sha256": {
+    "twin-witness-06.cq": "12ee38382f0d5f7f011219d222a0c2422fab8e90c088fb888aeb01fd64d043d1",
+    "twin-witness-07.cq": "255cce8e361c4ede790e303653a6e8d2fcbcb260e549d85368460a09f49beccf",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  }
+ ],
+ "stops": {
+  "batches_checked": [
+   "batch-00",
+   "batch-01",
+   "batch-02",
+   "batch-03"
+  ],
+  "stop_condition_batch_00": [],
+  "bracket_drift_flagged": [],
+  "max_drift": 0.0
+ },
+ "control": null,
+ "backend_contract": "live record matches"
+}
