@@ -599,7 +599,8 @@ def local_minima(profile: list[tuple[float, float, list[float]]]) -> list[int]:
     Consecutive points fitted at a = LINE_WEIGHT_MAX share one df-free
     likelihood, so they form one run at their least NLL, represented by the
     run's middle index; every other point is its own run. A run lower than
-    both neighboring runs is a minimum.
+    the run before it and no higher than the run after it is a minimum, so
+    of two adjacent runs at one NLL the first stands for both.
     """
     weight = names("static").index("a")
     size = len(profile)
@@ -618,7 +619,7 @@ def local_minima(profile: list[tuple[float, float, list[float]]]) -> list[int]:
     found = [
         (values[k], runs[k][len(runs[k]) // 2])
         for k in range(len(runs))
-        if values[k] < values[k - 1] and values[k] < values[(k + 1) % len(runs)]
+        if values[k] < values[k - 1] and values[k] <= values[(k + 1) % len(runs)]
     ]
     return [index for _value, index in sorted(found)]
 

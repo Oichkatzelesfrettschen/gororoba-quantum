@@ -23,7 +23,9 @@ if [ ! -f "$cache/$tarball" ]; then
 fi
 echo "$digest  $cache/$tarball" | sha256sum -c --quiet
 cp ci/runner-image/Containerfile "$cache/Containerfile"
-tag=localhost/gororoba-runner:$(sha256sum ci/runner-image/Containerfile | cut -c1-12)
+# The tag names the whole build context, the Containerfile and the Python
+# archive's digest, so a changed archive builds a new image.
+tag=localhost/gororoba-runner:$({ cat ci/runner-image/Containerfile; echo "$digest"; } | sha256sum | cut -c1-12)
 if ! podman image exists "$tag"; then
     podman build --quiet -t "$tag" "$cache" >/dev/null
 fi

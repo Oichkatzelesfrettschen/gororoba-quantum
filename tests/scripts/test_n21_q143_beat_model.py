@@ -33,3 +33,6 @@ def test_interior_points_keep_their_own_minima() -> None:
         raise AssertionError(f"interior points read minima {beat.local_minima(profile)}")
     if beat.local_minima([row(float(k), 1.0, beat.LINE_WEIGHT_MAX) for k in range(4)]) != [0]:
         raise AssertionError("a profile fitted at the bound everywhere reads more than one minimum")
+    tied = [row(float(k), value, 0.75) for k, value in enumerate((3.0, 1.0, 1.0, 3.0, 2.0, 3.0))]
+    if beat.local_minima(tied) != [1, 4]:
+        raise AssertionError(f"two adjacent interior points at one NLL read minima {beat.local_minima(tied)}")
