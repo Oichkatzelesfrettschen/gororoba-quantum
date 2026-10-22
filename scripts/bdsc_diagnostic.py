@@ -221,7 +221,8 @@ def case_record() -> dict[str, Any]:
             "a job fails, an iteration returns fewer samples than the frozen n, or the one-click eligibility rule "
             "excludes more than 0.01 of an iteration's samples",
             "an iteration returns no compiled circuit",
-            "block 2 starts before block 1's readout integrity passes or before the block gap elapses",
+            "block 2 starts before both block-1 runs are collected and their readout integrity passes, or before "
+            "the block gap elapses",
             "a job of a block executes before the job that precedes it in the block, or a manifest differs from "
             "the frozen rebuild for its draw",
             "a scheduled maintenance window overlaps the span from block 1's first execution to block 2's last; "
@@ -583,6 +584,7 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
     draws: dict[str, tuple[list[int], list[int]]] = {}
     frozen: dict[str, dict[str, Any]] = {}
     windows: dict[str, tuple[float, float]] = {}
+    collected: dict[str, float] = {}
     maintenance: set[tuple[float, float]] = set()
     for run in runs:
         if validate:
@@ -632,6 +634,7 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
             require(setting["draw_indices"] == indices, f"{run}/{setting['name']}: draw indices")
         start = utc(result["data"]["start_time"])
         windows[job] = (start, start + float(result["data"]["duration"]))
+        collected[job] = utc(result["collected_utc"])
         window = submission.get("platform_at_plan", {}).get("maintenance")
         if isinstance(window, dict):
             maintenance.add((utc(window["start_time"]), utc(window["end_time"])))
@@ -647,6 +650,11 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
     first_end = max(end for job, (_, end) in windows.items() if job.startswith("b1"))
     second_start = min(start for job, (start, _) in windows.items() if job.startswith("b2"))
     require(second_start >= first_end + 3600 * BLOCK_GAP_HOURS, "block 2 started within the block gap")
+    # Block 1's integrity is checked on its collected records, so both must exist before block 2 executes.
+    require(
+        all(collected[job] < second_start for job in collected if job.startswith("b1")),
+        "block 2 started before block 1 was collected and checked",
+    )
     span = (min(start for start, _ in windows.values()), max(end for _, end in windows.values()))
     require(
         not any(opens < span[1] and closes > span[0] for opens, closes in maintenance),
@@ -722,6 +730,7 @@ def synthetic_runs(root: Path, manifests: dict[str, dict[str, Any]], response: A
             "status": {"status": "completed"},
             "partial": False,
             "data": {"platform_name": bdsc_cases.QUALIFYING_PLATFORM, "start_time": start, "duration": 160},
+            "collected_utc": datetime.datetime.fromtimestamp(base + starts[job] + 220, datetime.UTC).isoformat(),
             "iterations": iterations,
         }
         maintenance = {"start_time": "2026-02-01T00:00:00Z", "end_time": "2026-02-01T03:00:00Z"}
@@ -821,6 +830,10 @@ def self_test() -> int:
             span = {"start_time": "2026-01-01T01:00:00Z", "end_time": "2026-01-01T01:30:00Z"}
             submission["platform_at_plan"]["maintenance"] = span
 
+        def uncollected(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+            if job == "b1-j2":
+                result["collected_utc"] = "2026-01-01T03:00:00+00:00"
+
         def straddle(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
             span = {"start_time": "2025-12-31T23:00:00Z", "end_time": "2026-01-01T00:30:00Z"}
             submission["platform_at_plan"]["maintenance"] = span
@@ -846,6 +859,7 @@ def self_test() -> int:
             ("a maintenance window between blocks", window),
             ("a maintenance window open when block 1 started", straddle),
             ("job 2 of block 1 before its job 1", reversed_block),
+            ("block 1 collected after block 2 started", uncollected),
             ("a manifest whose setting carries another state's parameters", substituted),
         ):
             (root / name).mkdir()
@@ -856,7 +870,7 @@ def self_test() -> int:
                 continue
             raise ValueError(f"self-test: {name} was admitted")
     print(
-        f"bdsc diagnostic self-test: {len(cases) + 1} synthetic run sets read their branches; 7 malformed sets refused"
+        f"bdsc diagnostic self-test: {len(cases) + 1} synthetic run sets read their branches; 8 malformed sets refused"
     )
     return 0
 

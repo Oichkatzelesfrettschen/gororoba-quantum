@@ -114,6 +114,7 @@ import math
 import os
 import re
 import shutil
+import ssl
 import sys
 import tempfile
 import time
@@ -272,8 +273,9 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
     # HTTPError subclasses URLError and is caught above. urlopen wraps only
     # connection setup in URLError; a connection dropped while the answer is
     # read surfaces as http.client.HTTPException (IncompleteRead,
-    # RemoteDisconnected) or ConnectionError, and is unanswered as well.
-    except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException) as error:
+    # RemoteDisconnected), ConnectionError or ssl.SSLEOFError (an OSError that
+    # is neither), and is unanswered as well.
+    except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
         raise UnansweredError(f"{method} {route}: {error!r}") from None
     if raw:
         return answer
@@ -1395,8 +1397,9 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
     raw_dir = case_dir / "raw"
     raw_dir.mkdir(exist_ok=True)
     retained_path = case_dir / "results.json"
-    # An error or canceled job can still carry partial results; a refused
-    # /result is recorded as absent, and only a completed job must have one.
+    # An error or canceled job can still carry partial results. Only HTTP 404,
+    # the cloud API's "Not found" answer of /api/jobs/{job_id}/result, records
+    # the result as absent; any other refusal leaves the run recollectable.
     result_bytes: bytes | None
     absent: str | None = None
     try:
@@ -1404,7 +1407,7 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
             lambda: request("GET", job_route(job, "result"), raw=True), job, "result", deadline, poll
         )
     except RefusedError as error:
-        if status["status"] == "completed":
+        if status["status"] == "completed" or error.code != 404:
             raise
         # An earlier collection already retained an answer, so a refusal now is a changed answer.
         if (raw_dir / "result.json").exists():
@@ -1531,6 +1534,8 @@ def result_summary(
                     "result_fields": scalar_tree(fields),
                 }
             )
+        if expected is not None and complete and len(iterations) != expected:
+            raise PlatformError(f"job {job}: a completed job answers {len(iterations)} iterations of {expected}")
         if expected is not None and not complete:
             if len(iterations) > expected:
                 raise PlatformError(f"job {job}: {len(iterations)} iterations answer a case of {expected}")
@@ -1658,9 +1663,37 @@ def run_facts(directory: Path) -> dict[str, Any]:
         # A box-kite case counts its blocks and a mesh case its phase settings.
         "circuits": len(manifest["blocks"] if "blocks" in manifest else manifest["settings"]),
         "statuses": {status: 1},
-        "charge": charged(submission, collected, shots, manifest),
+        "charge": charged(submission, collected, shots, manifest, interim_usage(directory, submission, collected)),
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
+
+
+def usage_jobs(report: Any) -> int | None:
+    """nb_jobs summed over every platform row of a token usage report."""
+    if not isinstance(report, list):
+        return None
+    return sum(
+        int(row.get("nb_jobs") or 0)
+        for token_row in report
+        if isinstance(token_row, dict)
+        for row in token_row.get("usage", [])
+        if isinstance(row, dict)
+    )
+
+
+def interim_usage(directory: Path, submission: dict[str, Any], collected: dict[str, Any]) -> list[Any]:
+    """usage_before reports of sibling runs submitted after this run and before its collection, in time order."""
+    start, end = str(submission.get("submitted_utc", "")), str(collected.get("collected_utc", ""))
+    reads = []
+    for other in run_directories(directory.parent):
+        path = other / "submission.json"
+        if other == directory or not path.is_file():
+            continue
+        sibling = json.loads(path.read_text(encoding="utf-8"))
+        when = str(sibling.get("submitted_utc", ""))
+        if start < when < end:
+            reads.append((when, sibling.get("usage_before")))
+    return [report for _, report in sorted(reads, key=lambda item: item[0])]
 
 
 def usage_total(report: Any) -> float | None:
@@ -1675,20 +1708,39 @@ def usage_total(report: Any) -> float | None:
 
 
 def charged(
-    submission: dict[str, Any], collected: dict[str, Any], shots: int, manifest: dict[str, Any] | None = None
+    submission: dict[str, Any],
+    collected: dict[str, Any],
+    shots: int,
+    manifest: dict[str, Any] | None = None,
+    interim: list[Any] | None = None,
 ) -> float:
-    """The credits a run consumed: the usage report after collection minus the one before submission.
+    """The credits a run consumed: the first later usage report holding exactly one more job, minus the one before.
 
-    Jobs run one at a time on the token, so the difference is this job's
-    charge. The usage report counts the calendar month, so a job submitted and
-    collected in different months, a negative difference or a receipt without
-    both reports falls back to the billing rule: the recorded per-job price plus
-    the price per shot times the shots used by a one-computation job, or times
-    the largest iteration's max_shots of an iterated one.
+    The later report is the earliest of interim (sibling runs' usage_before
+    reports taken between this submission and its collection) and the
+    collection's usage_after whose job counter exceeds the counter before
+    submission; the difference is this job's charge only when that counter
+    advanced by exactly one. The usage report counts the calendar month, so a
+    job submitted and collected in different months, a negative difference, a
+    window holding another job or a receipt without both reports falls back to
+    the billing rule: the recorded per-job price plus the price per shot times
+    the shots used by a one-computation job, or times the largest iteration's
+    max_shots of an iterated one.
     """
-    before, after = usage_total(submission.get("usage_before")), usage_total(collected.get("usage_after"))
+    first = submission.get("usage_before")
+    before, jobs_before = usage_total(first), usage_jobs(first)
+    later = next(
+        (
+            report
+            for report in [*(interim or []), collected.get("usage_after")]
+            if jobs_before is not None and (usage_jobs(report) or 0) > jobs_before
+        ),
+        None,
+    )
+    after, jobs_after = usage_total(later), usage_jobs(later)
     same_month = str(submission.get("submitted_utc", ""))[:7] == str(collected.get("collected_utc", ""))[:7]
-    if before is not None and after is not None and same_month and after >= before:
+    one_job = jobs_before is not None and jobs_after == jobs_before + 1
+    if before is not None and after is not None and same_month and after >= before and one_job:
         return round(after - before, 6)
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
@@ -1708,22 +1760,26 @@ def zipped(text: str) -> str:
 def charge_self_test() -> None:
     """charged() takes the usage delta within one calendar month and the recorded price across a reset."""
 
-    def report(credits: float) -> list[dict[str, Any]]:
-        return [{"usage": [{"credits": 0.0, "free_credits": credits, "nb_jobs": 1, "platform_name": "qpu:belenos"}]}]
+    def report(credits: float, jobs: int = 2) -> list[dict[str, Any]]:
+        return [{"usage": [{"credits": 0.0, "free_credits": credits, "nb_jobs": jobs, "platform_name": "qpu:belenos"}]}]
 
     submission = {
         "submitted_utc": "2026-10-31T23:59:00+00:00",
-        "usage_before": report(12.0),
+        "usage_before": report(12.0, 1),
         "per_job_credits": 1.0,
         "platform_at_plan": {"price_per_shot": 1e-06},
     }
-    cases = (
-        ("2026-10-31T23:59:30+00:00", report(13.01), 1.01),
-        ("2026-11-01T00:00:30+00:00", report(1.01), 1.01),
-        ("2026-10-31T23:59:30+00:00", report(11.0), 1.01),
+    cases: tuple[tuple[str, Any, list[Any], float], ...] = (
+        ("2026-10-31T23:59:30+00:00", report(13.02), [], 1.02),
+        ("2026-11-01T00:00:30+00:00", report(1.02), [], 1.01),
+        ("2026-10-31T23:59:30+00:00", report(11.0), [], 1.01),
+        # A later job ran inside the window: the delta over two jobs is not this job's charge.
+        ("2026-10-31T23:59:30+00:00", report(14.0, 3), [], 1.01),
+        # A sibling's pre-submission read holding one more job bounds this job's charge, here none.
+        ("2026-10-31T23:59:30+00:00", report(13.0, 3), [report(12.0, 2)], 0.0),
     )
-    for collected_utc, after, want in cases:
-        got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000)
+    for collected_utc, after, interim, want in cases:
+        got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000, None, interim)
         if got != want:
             raise SystemExit(f"self-test: charged() read {got} for a collection at {collected_utc}, not {want}")
     # An iterated job across a month boundary bills its largest iteration's max_shots, not the shots it used.
@@ -1885,6 +1941,7 @@ def runner_self_test() -> int:
         (ConnectionResetError("reset"), UnansweredError),
         (http.client.RemoteDisconnected("closed"), UnansweredError),
         (http.client.IncompleteRead(b"par"), UnansweredError),
+        (ssl.SSLEOFError(8, "EOF occurred in violation of protocol"), UnansweredError),
     ):
         with patch.object(OPENER, "open", side_effect=raised):
             try:
@@ -1932,7 +1989,7 @@ def runner_self_test() -> int:
         if (method, route) == ("POST", "/api/jobs"):
             service["posts"] += 1
             if service["refuse"]:
-                raise RefusedError("POST /api/jobs: HTTP 422 unprocessable payload")
+                raise RefusedError("POST /api/jobs: HTTP 422 unprocessable payload", 422)
             return {"job_id": "job-a"}
         if route.endswith("/status"):
             return {"status": service["status"], "shots": 10012, "token_id": 7}
@@ -1940,7 +1997,7 @@ def runner_self_test() -> int:
             return {"job_id": "job-a", "token_label": "secret-label", "status": "completed"}
         if route.endswith("/result"):
             if service["result"] is None:
-                raise RefusedError(f"GET {route}: HTTP 404 no result")
+                raise RefusedError(f"GET {route}: HTTP 404 no result", 404)
             return str(service["result"]).encode("utf-8")
         if route == platform_route("sim:belenos"):
             return {"status": service["processor_status"], "perfs": {"g2 (%)": 1.0, "HOM (%)": 94.2}, "token_id": 7}
@@ -2139,11 +2196,21 @@ def runner_self_test() -> int:
             late_read = submitted("late-read")
             service["fail"] = {"/result": [RefusedError("GET result: HTTP 503", 503)]}
             refuse("a transient read past the deadline", lambda: collect(late_read, 0.0, -1.0), "HTTP 503")
+            # Only the result route's 404 records an error job's result as absent; a 401 leaves it recollectable.
+            not_found = submitted("not-found")
+            service["status"], service["fail"] = "error", {"/result": [RefusedError("GET result: HTTP 404", 404)]}
+            if "HTTP 404" not in collect(not_found, 0.0, 1.0).get("result_absent", ""):
+                raise AssertionError("a 404 result of an error job was not recorded as absent")
+            unauthorized = submitted("unauthorized")
+            service["fail"] = {"/result": [RefusedError("GET result: HTTP 401", 401)]}
+            refuse("a 401 result of an error job", lambda: collect(unauthorized, 0.0, 1.0), "HTTP 401")
+            if (unauthorized / "results.json").exists():
+                raise AssertionError("a 401 result of an error job was recorded")
             # A refused /result after an earlier collection retained one is a changed answer, not an absence.
             refused_late = submitted("refused-late")
             service["status"], service["fail"] = "error", {"/data": [RefusedError("GET data: HTTP 404", 404)]}
             refuse("a refused job-data read of an error job", lambda: collect(refused_late, 0.0, 1.0), "HTTP 404")
-            service["fail"] = {"/result": [RefusedError("GET result: HTTP 401", 401)]}
+            service["fail"] = {"/result": [RefusedError("GET result: HTTP 404", 404)]}
             refuse(
                 "a refused result after its bytes were retained", lambda: collect(refused_late, 0.0, 1.0), "now answers"
             )

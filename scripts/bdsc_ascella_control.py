@@ -152,9 +152,16 @@ def check() -> int:
     require(before[1] == after[1], "the 12-mode build changed the 24-mode union circuit")
     require(np.array_equal(before[2], after[2]), "the 12-mode build changed a 24-mode parameterization")
     require(documents() == built, "a second 12-mode build differs from the first")
+    # The solved circuit parameters move by an ulp between BLAS kernels, so the retained manifest, which holds the
+    # submitted bytes, is compared within cert.CHECK_TOLERANCE; the circuit carries no solved float and stays exact.
     for name, content in built.items():
-        require((OUT / name).read_bytes() == content, f"{OUT.relative_to(ROOT)}/{name} differs from the rebuild")
-    print(f"bdsc ascella control: {len(built)} retained files rebuilt byte for byte; 24-mode constructions unchanged")
+        owner = f"{OUT.relative_to(ROOT)}/{name}"
+        retained = (OUT / name).read_bytes()
+        if name == "cases.json":
+            cert.close(json.loads(content), json.loads(retained), owner)
+        else:
+            require(retained == content, f"{owner} differs from the rebuild")
+    print(f"bdsc ascella control: {len(built)} retained files rebuilt; 24-mode constructions unchanged")
     return 0
 
 

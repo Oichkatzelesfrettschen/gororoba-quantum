@@ -518,8 +518,10 @@ The shared template constructors of `scripts/bdsc_certificate.py`
 Ascella control passes its own width, so construction no longer depends on
 call order. `bdsc_certificate.py --self-test` covers both widths and a
 24-mode construction on either side of a 12-mode one;
-`bdsc_ascella_control.py --check` rebuilds the retained Ascella case byte for
-byte and confirms the 24-mode constructions are unchanged around it.
+`bdsc_ascella_control.py --check` rebuilds the retained Ascella case, its
+circuit byte for byte and its manifest within `CHECK_TOLERANCE` (the solved
+parameters move by one ulp between BLAS kernels), and confirms the 24-mode
+constructions are unchanged around it.
 
 The scheduled maintenance window on the run receipts is
 2026-10-22 07:30--11:00 UTC (00:30--04:00 America/Los_Angeles).

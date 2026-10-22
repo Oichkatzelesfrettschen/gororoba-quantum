@@ -154,6 +154,8 @@ def load_runs() -> list[dict[str, Any]]:
         body = json.loads((path / "job-body.json").read_text(encoding="utf-8"))
         circuit = json.loads((path / "circuit.json").read_text(encoding="utf-8"))
         require(submission["platform"] == bdsc_cases.QUALIFYING_PLATFORM, f"{path.name}: platform")
+        served = result.get("data", {}).get("platform_name")
+        require(served == bdsc_cases.QUALIFYING_PLATFORM, f"{path.name}: the service reports {served!r}")
         require(result["job_id"] == submission["job_id"], f"{path.name}: the result answers another job")
         require(result["status"]["status"] == "completed" and result["partial"] is False, f"{path.name}: incomplete")
         runs.append(
@@ -563,6 +565,9 @@ def determinism(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         result = json.loads((path / "results.json").read_text(encoding="utf-8"))
         if result.get("status", {}).get("status") != "completed" or "iterations" not in result:
             continue
+        submitted = json.loads((path / "submission.json").read_text(encoding="utf-8"))["platform"]
+        served = result.get("data", {}).get("platform_name")
+        require(served == submitted, f"{path.name}: submitted to {submitted!r}, the service reports {served!r}")
         manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
         for setting, iteration in zip(manifest["settings"], result["iterations"], strict=True):
             match = qpu.get((manifest["job"], setting["name"]))
