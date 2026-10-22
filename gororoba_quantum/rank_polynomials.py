@@ -31,7 +31,7 @@ import sympy as sp
 from sympy.polys.matrices import DomainMatrix
 
 import parallel
-from cd_core import cd_sign
+from cd_core import cd_sign, left_mult_determinant_exact
 
 ExactScalar = int | Fraction
 AUDIT_DIMENSIONS = (4, 8, 16, 32, 64)
@@ -106,6 +106,95 @@ class RankPolynomialEvaluation:
     reduced_power_sums: tuple[Fraction, ...]
     elementary: tuple[Fraction, ...]
     predicted_nullity: int
+
+
+@dataclass(frozen=True)
+class SedenionDeterminantEvaluation:
+    s: Fraction
+    a: Fraction
+    b: Fraction
+    gamma: Fraction
+    d1: Fraction
+    d2: Fraction
+    factorized_determinant: Fraction
+    matrix_determinant: Fraction
+    is_nonzero_zero_divisor: bool
+
+
+def evaluate_sedenion_determinant(coordinates: Sequence[ExactScalar]) -> SedenionDeterminantEvaluation:
+    """Evaluate Koebisu's real 16D determinant factors on rational coordinates.
+
+    The recorded all-real identity is det L_v = D1^4 D2^2. With scalar
+    coordinates 0 and 8, s is their squared norm; A and B are the imaginary
+    half norms and gamma their inner product. Nonzero membership requires
+    s=0, A=B and gamma=0. The zero vector receives singularity separately.
+    """
+    if len(coordinates) != 16:
+        raise ValueError(f"sedenion determinant requires exactly 16 coordinates, got {len(coordinates)}")
+    vector = _exact_vector(coordinates)
+    scalar_norm = vector[0] ** 2 + vector[8] ** 2
+    first_norm = sum((value**2 for value in vector[1:8]), Fraction(0))
+    second_norm = sum((value**2 for value in vector[9:16]), Fraction(0))
+    inner_product = sum((vector[index] * vector[index + 8] for index in range(1, 8)), Fraction(0))
+    first_factor = scalar_norm + first_norm + second_norm
+    second_factor = (
+        scalar_norm**2
+        + 2 * scalar_norm * (first_norm + second_norm)
+        + (first_norm - second_norm) ** 2
+        + 4 * inner_product**2
+    )
+    return SedenionDeterminantEvaluation(
+        scalar_norm,
+        first_norm,
+        second_norm,
+        inner_product,
+        first_factor,
+        second_factor,
+        first_factor**4 * second_factor**2,
+        left_mult_determinant_exact(16, vector),
+        first_factor != 0 and scalar_norm == 0 and first_norm == second_norm and inner_product == 0,
+    )
+
+
+def _check_sedenion_determinant(coordinates: tuple[ExactScalar, ...]) -> tuple[str, str]:
+    evaluation = evaluate_sedenion_determinant(coordinates)
+    _require(
+        evaluation.factorized_determinant == evaluation.matrix_determinant,
+        f"sedenion determinant factors disagree on {coordinates}",
+    )
+    _require(
+        evaluation.is_nonzero_zero_divisor == (any(coordinates) and evaluation.matrix_determinant == 0),
+        f"sedenion membership disagrees with singularity on {coordinates}",
+    )
+    return str(evaluation.factorized_determinant), str(evaluation.matrix_determinant)
+
+
+def audit_sedenion_determinant() -> dict[str, object]:
+    """Replay a bounded rational bridge without promoting its corpus to a proof."""
+    generator = random.Random(DENSE_SEED)
+    cases: list[tuple[ExactScalar, ...]] = [
+        tuple(int(index in indices) for index in range(16)) for indices in ((0, 9), (1, 9), (1, 10))
+    ]
+    cases += [tuple(generator.randint(-5, 5) for _ in range(16)) for _ in range(300)]
+    cases += [tuple(Fraction(generator.randint(-5, 5), generator.randint(1, 5)) for _ in range(16)) for _ in range(100)]
+    results = parallel.ordered_map(_check_sedenion_determinant, cases, min_items=2)
+    control = evaluate_sedenion_determinant(cases[1])
+    mutated_factor = control.d2 - 4 * control.gamma**2
+    _require(
+        control.d1**4 * mutated_factor**2 != control.matrix_determinant,
+        "removing the imaginary-half inner product escaped the determinant control",
+    )
+    return {
+        "domain": "403 exact rational fixtures; all-real identity supplied separately by source arguments",
+        "seed": DENSE_SEED,
+        "integer_cases": 300,
+        "rational_cases": 100,
+        "named_control_determinants": {
+            name: results[index][0] for index, name in enumerate(("e0+e9", "e1+e9", "e1+e10"))
+        },
+        "comparison_sha256": hashlib.sha256(json.dumps(results, separators=(",", ":")).encode()).hexdigest(),
+        "orthogonality_term_mutation_rejected": True,
+    }
 
 
 @dataclass(frozen=True)
@@ -512,6 +601,7 @@ def audit_rank_polynomials(maximum_dimension: int = 32) -> dict[str, object]:
         "unit_incidence_presentation": _audit_incidence_presentation(),
         "scaling_and_directional_derivatives": _audit_scaling_and_derivatives(),
         "falsifiers": _audit_falsifiers(),
+        "sedenion_determinant_bridge": audit_sedenion_determinant(),
     }
 
 
