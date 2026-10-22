@@ -158,18 +158,18 @@ diagnostic case that identifies the response components first.
 [case.json](../evidence/bdsc/diagnostic/case.json) holds the case, built by
 `scripts/bdsc_diagnostic.py`. It covers the six target-complement states
 under both templates, each compiled with four seeds, in two time blocks: 96
-instances of 10000 eligible trials under an explicit empty mitigation list,
+instances of 40000 eligible trials under an explicit empty mitigation list,
 in four jobs of 24 iterations. Each template-and-seed group of six states
 runs inside one job.
 
 1. `"$PYTHON" scripts/bdsc_diagnostic.py --check` passes. `qd_platform.py
    plan` passes on each of the four directories under
    `results/quandela/cases/bdsc_diagnostic/` for qpu:belenos with
-   `--max-credits 1.02 --expected-seconds 157.44 --per-job-credits 1.0
+   `--max-credits 1.08 --expected-seconds 176.16 --per-job-credits 1.0
    --admit-status running`.
-2. The written case restates the plan output: 1.02 credits per job and 4.08
-   in all, about 157 s per job and 630 s in all, and Perceval's shot estimate
-   within the 20000 max_shots per iteration. It also covers one ANU Quantum
+2. The written case restates the plan output: 1.08 credits per job and 4.32
+   in all, about 176 s per job and 705 s in all, and Perceval's shot estimate
+   within the 80000 max_shots per iteration. It also covers one ANU Quantum
    Numbers request of 100 uint16 values (about 2 s, no credits), the stop
    conditions of the case record and the branch each readout selects. Wait
    for approval.
@@ -181,16 +181,43 @@ runs inside one job.
 4. Block 1: submit and collect `b1-j1`, then `b1-j2`; the readout refuses
    a block whose second job started before its first ended. After each
    collection, confirm the empty policy in the retained body, an integer
-   BSCount, 10000 samples per iteration and a returned compiled circuit per
-   iteration.
+   BSCount, 40000 samples per iteration, and a returned compiled circuit and a
+   positive `physical_perf` per iteration.
 5. Block 2 (`b2-j1`, then `b2-j2`) starts at least one hour after block 1's
    last execution ends. No scheduled maintenance window may overlap the
    span from block 1's first execution to block 2's last, a window already
    open when block 1 starts included; the window on the latest receipt is
    2026-10-22 07:30 to 11:00 UTC.
+   `b2-j1` repeats exactly the groups of `b1-j2`. After collecting `b2-j1`
+   and before submitting `b2-j2`, run
+   `"$PYTHON" scripts/bdsc_diagnostic.py --matched-check B1J2_RUN B2J1_RUN`.
+   It compares the returned-circuit hash of each of the 24 matched
+   instances and exits nonzero on any difference. A difference means the
+   compiler's model changed between the blocks: the case stops, `b2-j2` is
+   not submitted (one job's 1.08 credits and about 3 minutes saved), and
+   the amendment that follows decides the rerun.
 6. `"$PYTHON" scripts/bdsc_diagnostic.py --readout RUN_DIR...` reads the four
    runs. The runs enter `docs/state/research_state.json` with their claim,
-   and the readout's branch names the next amendment.
+   and the readout's branch names the next amendment. The readout's
+   branches, in the order it reads them, are `recompiled`, `leak` (an
+   instance put more than 0.20 of its one-click samples outside the target
+   support), `stationarity`, `seed-common` or `seed-interaction`,
+   `common-effect`, `inconclusive` and `ensemble-candidate`. It also reports,
+   with no branch reading them:
+   - `perf_ratio`: r-hat = perf_g / (perf_f + perf_g) of each group and each
+     superposition's deviation from it. physical_perf moves with the sample
+     budget and DetectorBalancing rescales it
+     ([strategy.md](../notes/quandela/strategy.md)), so the ratio is an
+     uninterpreted provider diagnostic, not a qualified output acceptance;
+   - `calibration_shift`, the common block-to-block change of the
+     superpositions, of f and of g (f and g drift apart in physical_perf),
+     apart from the heterogeneity
+     test the `stationarity` branch reads;
+   - `seed_basis`, the seed dispersion of f and g, apart from
+     `seed_superposition`, which the seed branches read;
+   - whether the outward and reverse returned circuits of a seed alias, how
+     many distinct circuits the four superpositions of a group returned, and
+     the rank correlation of the deviation with position in the job.
 
 No certification decision is available from this case or from the
 retained runs.
