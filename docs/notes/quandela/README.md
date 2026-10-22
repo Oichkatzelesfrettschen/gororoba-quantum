@@ -221,6 +221,13 @@ records the dashboard route, browser probe and limits of the available count.
 
 ## Explorer plan, credits and notebooks
 
+The [22 October token-usage and API audit](../../evidence/provider-api-audit/README.md) distinguishes
+free-credit consumption from purchased-credit consumption and from an unavailable remaining balance.
+Its Belenos simulator rows consume free credits despite the zero per-shot tariff. The report preserves
+the disagreement between public availability and the detailed Belenos calibration status, and leaves
+unreadable per-job/notebook offer fees unknown. Historical plan and catalogue observations below retain
+their own source dates; they are neither a live balance nor an execution authorization.
+
 The account holds the free Explorer offer. Its plan page reads: low job
 priority, one running job at a time, one waiting job at a time, at most
 5 minutes per job, the embedded Jupyter notebook, the free simulator and
