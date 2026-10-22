@@ -16,6 +16,14 @@ directories contains a `cases.json` compatible with `qi_platform.py` and
 the exact cQASM payloads with SHA-256 digests. The complete analysis is in
 `scripts/qi_zz_map_analysis.py`.
 
+The unsubmitted source-binding successor is
+[`zz-map-tuna17-campaign-retention/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-campaign-retention/plan.json).
+The successor binds the campaign-retention submission guards in `scripts/qi_platform.py`.
+All 416 cQASM payloads and scientific settings match the frozen proposal above; the
+submission-source digest and the case hashes that bind that digest change. Gate `core-594`
+replays the successor. The original proposal retains its recorded bytes, and the
+acquisition recommendation below also applies to the successor.
+
 ## Acquisition decision after the later Tuna-17 results
 
 The [retained readout experiment](experiments.md#post-readout-frequency-tail-on-tuna-17-preregistered)
@@ -355,9 +363,9 @@ elapsed acquisition time cannot be inferred from the primitive sums alone.
 From the repository root:
 
 ```sh
-python scripts/qi_zz_map.py --write results/quantum_inspire/cases/zz_map_tuna_17
-python scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17
-python scripts/qi_zz_map.py --self-test
+export PYTHON="${PYTHON:-python3}"
+"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-campaign-retention
+"$PYTHON" scripts/qi_zz_map.py --self-test
 ```
 
 The generator imports neither the Quantum Inspire SDK nor Qiskit, performs
