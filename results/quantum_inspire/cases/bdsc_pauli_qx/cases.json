@@ -1,0 +1,102 @@
+{
+ "schema": "qi-bdsc-pauli-twin-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "twin-witness-01.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "twin-witness-02.cq",
+    "twin-witness-03.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "twin-witness-04.cq",
+    "twin-witness-05.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "files": [
+    "twin-witness-06.cq",
+    "twin-witness-07.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "files": [
+    "twin-witness-08.cq",
+    "twin-witness-09.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "files": [
+    "twin-witness-10.cq",
+    "twin-witness-11.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "files": [
+    "twin-witness-12.cq",
+    "twin-witness-13.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-07",
+   "files": [
+    "twin-witness-14.cq",
+    "twin-witness-15.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-08",
+   "files": [
+    "twin-witness-16.cq",
+    "twin-witness-17.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-09",
+   "files": [
+    "twin-witness-18.cq",
+    "twin-quadrature-01.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-10",
+   "files": [
+    "twin-quadrature-02.cq",
+    "twin-quadrature-03.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-11",
+   "files": [
+    "twin-quadrature-04.cq",
+    "twin-quadrature-05.cq",
+    "readout-0.cq"
+   ]
+  }
+ ]
+}
