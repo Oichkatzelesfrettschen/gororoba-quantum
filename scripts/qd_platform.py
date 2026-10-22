@@ -573,7 +573,10 @@ def body_mitigations(body: Any) -> list[Any] | None:
     if KEY_MITIGATIONS not in payload:
         return None
     value = payload[KEY_MITIGATIONS]
-    decoded = deserialize(value) if isinstance(value, str) else value
+    try:
+        decoded = deserialize(value) if isinstance(value, str) else value
+    except Exception as error:  # noqa: BLE001 -- deserialize raises ValueError, binascii.Error and others
+        raise PlatformError(f"the job body's {KEY_MITIGATIONS} is no Perceval archive: {error}") from None
     if not isinstance(decoded, list):
         raise PlatformError(f"the job body's {KEY_MITIGATIONS} decodes to {type(decoded).__name__}, not a list")
     return decoded
@@ -1309,6 +1312,18 @@ def expected_iterations(manifest: dict[str, Any]) -> int | None:
     return None if iteration_form(manifest) == "single" else int(manifest.get("iterations", 1))
 
 
+def predates(retained: dict[str, Any], summary: dict[str, Any], key: str) -> bool:
+    """Whether a retained collection omits summary[key] because it was written before the field existed.
+
+    shots_used is derived from the raw bytes, so a record without it takes it
+    from the raw result. A partial record written before failed iterations
+    were kept omits their entries and recorded no counts.
+    """
+    if key in retained or key not in summary:
+        return False
+    return key == "shots_used" or (key == "iterations" and summary.get("partial") is True and not summary.get("counts"))
+
+
 def patient(read: Callable[[], Any], job: str, what: str, deadline: float, poll: float) -> Any:
     """read() repeated after each transient failure until the deadline; any other failure raises at once.
 
@@ -1356,6 +1371,9 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
     except RefusedError as error:
         if status["status"] == "completed":
             raise
+        # An earlier collection already retained an answer, so a refusal now is a changed answer.
+        if (raw_dir / "result.json").exists():
+            raise PlatformError(f"job {job}: raw/result.json is retained but /result now answers {error}") from None
         absent, result_bytes = str(error), None
     # A first collection keeps the answer before parsing it or reading job data
     # and usage, so a later failure leaves the scientific bytes on disk. A
@@ -1389,7 +1407,7 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         retained = json.loads(retained_path.read_text(encoding="utf-8"))
         moving = ("collected_utc", "usage_after", "usage_absent")
         if {k: v for k, v in retained.items() if k not in moving} != {
-            k: v for k, v in collected.items() if k not in moving
+            k: v for k, v in collected.items() if k not in moving and not predates(retained, collected, k)
         }:
             raise PlatformError(f"{retained_path} differs from the recollection; nothing was rewritten")
         if result_bytes is not None:
@@ -1581,16 +1599,7 @@ def run_facts(directory: Path) -> dict[str, Any]:
             expected_iterations(manifest),
         )
 
-        # shots_used is derived from the raw bytes; a collection written before
-        # the field existed omits it and the raw result supplies it. A partial
-        # collection written before failed iterations were kept omits their
-        # entries and recorded no counts.
-        def predates(key: str) -> bool:
-            if key in collected:
-                return False
-            return key == "shots_used" or (key == "iterations" and summary["partial"] and not summary["counts"])
-
-        if any(collected.get(key) != value for key, value in summary.items() if not predates(key)):
+        if any(collected.get(key) != value for key, value in summary.items() if not predates(collected, summary, key)):
             raise PlatformError(f"{owner}: results.json differs from the raw result")
         modes = json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["modes"]
         if any(len(state.split(",")) != modes for state in summary["counts"]):
@@ -1923,6 +1932,7 @@ def runner_self_test() -> int:
         ("a nested mitigations key", {"payload": {"computation": {"mitigations": []}}}),
         ("a mitigations value that is no list", {"payload": {"mitigations": {}}}),
         ("a body without payload", {"mitigations": []}),
+        ("an unreadable mitigations archive", {"payload": {"mitigations": "pcvlar garbage"}}),
     )
     for label_text, misplaced_body in misplaced:
         refuse(label_text, functools.partial(body_mitigations, misplaced_body), "")
@@ -2062,10 +2072,26 @@ def runner_self_test() -> int:
                 raise AssertionError("a result that failed to parse was not retained")
             service["result"] = result
             # Past the deadline a transient failure raises instead of waiting.
+            # Two transient failures in a row are outlived inside the deadline; past it the first one raises.
+            repeated = submitted("repeated")
+            service["fail"] = {
+                "/result": [RefusedError("GET result: HTTP 503", 503), RefusedError("GET result: HTTP 503", 503)]
+            }
+            collect(repeated, 0.0, 1.0)
             late_read = submitted("late-read")
             service["fail"] = {"/result": [RefusedError("GET result: HTTP 503", 503)]}
             refuse("a transient read past the deadline", lambda: collect(late_read, 0.0, -1.0), "HTTP 503")
-            service["fail"] = {}
+            # A refused /result after an earlier collection retained one is a changed answer, not an absence.
+            refused_late = submitted("refused-late")
+            service["status"], service["fail"] = "error", {"/data": [RefusedError("GET data: HTTP 404", 404)]}
+            refuse("a refused job-data read of an error job", lambda: collect(refused_late, 0.0, 1.0), "HTTP 404")
+            service["fail"] = {"/result": [RefusedError("GET result: HTTP 401", 401)]}
+            refuse(
+                "a refused result after its bytes were retained", lambda: collect(refused_late, 0.0, 1.0), "now answers"
+            )
+            if (refused_late / "results.json").exists():
+                raise AssertionError("a refused result after retention wrote results.json")
+            service["status"], service["fail"] = "completed", {}
             run_facts(run)
             mutations: list[tuple[str, Callable[[Path], object], str]] = [
                 (

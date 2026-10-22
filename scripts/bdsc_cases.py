@@ -521,7 +521,10 @@ def self_test() -> int:
             "order": "drawn order",
         }
         for mutate, expected in mutations.items():
+            # Policy mutations need an empty-mitigation run, where a stray or nonempty key changes the reading.
             target = runs[0]
+            if mutate in ("listed", "misplaced"):
+                target = next(r for r in runs if json.loads((r / "cases.json").read_bytes())["mitigations"] == [])
             saved = {
                 f: (target / f).read_bytes() for f in ("cases.json", "results.json", "submission.json", "job-body.json")
             }
