@@ -954,15 +954,34 @@ def _status_counts(registry: dict[str, Any]) -> str:
     return ", ".join(f"{counts[status]} {status}" for status in STATUS_ORDER if counts[status])
 
 
+def evidence_class_matrix(registry: dict[str, Any]) -> list[str]:
+    counts = Counter((claim["evidence_class"], claim["status"]) for claim in registry["claims"])
+    lines = ["| Evidence class | Status | Claim records |", "| --- | --- | ---: |"]
+    lines.extend(f"| {kind} | {status} | {count} |" for (kind, status), count in sorted(counts.items()))
+    lines.extend(
+        [
+            "",
+            "These metadata counts are not summed into a headline of established scientific results.",
+            "Independent hardware replication requires an adjudicated replication design, not a job count.",
+        ]
+    )
+    return lines
+
+
 def render_readme_section(registry: dict[str, Any], context: Context) -> list[str]:
     origin = ROOT / "README.md"
     return [
         "## Research state",
         "",
         f"{_link('docs/state/RESEARCH_STATE.md', origin, 'RESEARCH_STATE.md')} is the current state of every",
-        f"registered claim ({_status_counts(registry)}) with its evidence class,",
+        "registered claim with its evidence class,",
         "boundary, pinned evidence and reproducing gates. Every retained",
         "acquisition of every provider:",
+        "",
+        *evidence_class_matrix(registry),
+        "",
+        f"The {_link('docs/evidence/evidence-closure/README.md', origin, 'derived closure view')} preserves",
+        "cross-branch coverage, denominator gaps and unresolved dependencies separately from this registry.",
         "",
         *_acquisition_table(registry, context, origin, with_claims=False),
         "",
@@ -976,8 +995,10 @@ def render_roadmap_section(registry: dict[str, Any], context: Context) -> list[s
         "### Open and proposed claims",
         "",
         f"{_link('docs/state/RESEARCH_STATE.md', origin, 'RESEARCH_STATE.md')} records every registered claim",
-        f"({_status_counts(registry)}) and every executed acquisition. Open and",
+        "by evidence class and every executed acquisition. Open and",
         "proposed work, in dependency order:",
+        "",
+        *evidence_class_matrix(registry),
         "",
     ]
     pending = [claim for claim in registry["claims"] if claim["status"] in {"open", "proposed"}]

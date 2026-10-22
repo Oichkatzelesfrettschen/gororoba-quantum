@@ -24,9 +24,31 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (100 established, 45 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
+
+| Evidence class | Status | Claim records |
+| --- | --- | ---: |
+| circuit-conformance check | established | 7 |
+| exact finite certificate | established | 16 |
+| exploratory reanalysis | exploratory | 45 |
+| exploratory reanalysis | superseded | 2 |
+| machine-checked proof | established | 4 |
+| mathematical claim | established | 16 |
+| mathematical claim | open | 4 |
+| numerical or stochastic simulation | established | 6 |
+| preregistered emulator control | established | 8 |
+| preregistered hardware inference | established | 43 |
+| proposed experiment | proposed | 10 |
+| proposed experiment | superseded | 2 |
+| withdrawn claim | withdrawn | 11 |
+
+These metadata counts are not summed into a headline of established scientific results.
+Independent hardware replication requires an adjudicated replication design, not a job count.
+
+The [derived closure view](docs/evidence/evidence-closure/README.md) preserves
+cross-branch coverage, denominator gaps and unresolved dependencies separately from this registry.
 
 | Run | Provider | Family | Backend | Jobs | PUBs or circuits | Status | Charge |
 | --- | --- | --- | --- | ---: | ---: | --- | ---: |

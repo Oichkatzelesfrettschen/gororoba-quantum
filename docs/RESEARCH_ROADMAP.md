@@ -57,8 +57,27 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(100 established, 45 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
+by evidence class and every executed acquisition. Open and
 proposed work, in dependency order:
+
+| Evidence class | Status | Claim records |
+| --- | --- | ---: |
+| circuit-conformance check | established | 7 |
+| exact finite certificate | established | 16 |
+| exploratory reanalysis | exploratory | 45 |
+| exploratory reanalysis | superseded | 2 |
+| machine-checked proof | established | 4 |
+| mathematical claim | established | 16 |
+| mathematical claim | open | 4 |
+| numerical or stochastic simulation | established | 6 |
+| preregistered emulator control | established | 8 |
+| preregistered hardware inference | established | 43 |
+| proposed experiment | proposed | 10 |
+| proposed experiment | superseded | 2 |
+| withdrawn claim | withdrawn | 11 |
+
+These metadata counts are not summed into a headline of established scientific results.
+Independent hardware replication requires an adjudicated replication design, not a job count.
 
 - **proposed-tuna17-zero-divisor-matched-response** (proposed, proposed experiment). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
 - **cd-moving-pair-walsh-proof** (open, mathematical claim). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
