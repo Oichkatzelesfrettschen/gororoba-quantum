@@ -1,0 +1,1513 @@
+{
+ "blades": [
+  {
+   "blade": [
+    1,
+    10,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIXY": "1/4",
+    "YZXY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    10,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIXY": "-1/4",
+    "YZXY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    11,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYI": "-1/4",
+    "YZYI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    11,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYI": "1/4",
+    "YZYI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    12,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "-1/4",
+    "YXZY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    12,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "1/4",
+    "YXZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    13,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "1/4",
+    "YYZI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    13,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "-1/4",
+    "YYZI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    14,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "1/4",
+    "YYXX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    14,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "-1/4",
+    "YYXX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    15,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "-1/4",
+    "YYXZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    1,
+    15,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "1/4",
+    "YYXZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    9,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIXY": "-1/4",
+    "YZXY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    9,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIXY": "1/4",
+    "YZXY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    11,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIZY": "1/4",
+    "YZZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    11,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIZY": "-1/4",
+    "YZZY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    12,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXYI": "1/4",
+    "YXYZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    12,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXYI": "-1/4",
+    "YXYZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    13,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "-1/4",
+    "YYYY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    13,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "1/4",
+    "YYYY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    14,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "1/4",
+    "YYIZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    14,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "-1/4",
+    "YYIZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    15,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "1/4",
+    "YYIX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    2,
+    15,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "-1/4",
+    "YYIX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    9,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYI": "1/4",
+    "YZYI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    9,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYI": "-1/4",
+    "YZYI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    10,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIZY": "-1/4",
+    "YZZY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    10,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIZY": "1/4",
+    "YZZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    12,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXXY": "1/4",
+    "YXYX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    12,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXXY": "-1/4",
+    "YXYX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    13,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "1/4",
+    "YYXI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    13,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "-1/4",
+    "YYXI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    14,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "-1/4",
+    "YYZX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    14,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "1/4",
+    "YYZX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    15,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "1/4",
+    "YYZZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    3,
+    15,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "-1/4",
+    "YYZZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    9,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "1/4",
+    "YXZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    9,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "-1/4",
+    "YXZY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    10,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXYI": "-1/4",
+    "YXYZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    10,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YXYI": "1/4",
+    "YXYZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    11,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXXY": "-1/4",
+    "YXYX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    11,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXXY": "1/4",
+    "YXYX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    13,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZIY": "1/4",
+    "YZZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    13,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZIY": "-1/4",
+    "YZZY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    14,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZYI": "-1/4",
+    "YZYZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    14,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZYI": "1/4",
+    "YZYZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    15,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YZXY": "-1/4",
+    "YZYX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    4,
+    15,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YZXY": "1/4",
+    "YZYX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    9,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "-1/4",
+    "YYZI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    9,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "1/4",
+    "YYZI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    10,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "1/4",
+    "YYYY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    10,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "-1/4",
+    "YYYY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    11,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "-1/4",
+    "YYXI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    11,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "1/4",
+    "YYXI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    12,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZIY": "-1/4",
+    "YZZY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    12,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZIY": "1/4",
+    "YZZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    14,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YIYX": "-1/4",
+    "YZXY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    14,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YIYX": "1/4",
+    "YZXY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    15,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYZ": "1/4",
+    "YZYI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    5,
+    15,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYZ": "-1/4",
+    "YZYI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    9,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "-1/4",
+    "YYXX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    9,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYX": "1/4",
+    "YYXX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    10,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "-1/4",
+    "YYIZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    10,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "1/4",
+    "YYIZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    11,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "1/4",
+    "YYZX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    11,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "-1/4",
+    "YYZX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    12,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZYI": "1/4",
+    "YZYZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    12,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YZYI": "-1/4",
+    "YZYZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    13,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YIYX": "1/4",
+    "YZXY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    13,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YIYX": "-1/4",
+    "YZXY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    15,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIIY": "-1/4",
+    "YZZY": "1/4"
+   }
+  },
+  {
+   "blade": [
+    6,
+    15,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIIY": "1/4",
+    "YZZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    9,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "1/4",
+    "YYXZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    9,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXYZ": "-1/4",
+    "YYXZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    10,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "-1/4",
+    "YYIX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    10,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YXIY": "1/4",
+    "YYIX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    11,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "-1/4",
+    "YYZZ": "1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    11,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YYII": "1/4",
+    "YYZZ": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    12,
+    -1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YZXY": "1/4",
+    "YZYX": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    12,
+    1
+   ],
+   "qubitwise_commuting": false,
+   "terms": {
+    "IIII": "1/2",
+    "YZXY": "-1/4",
+    "YZYX": "1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    13,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYZ": "-1/4",
+    "YZYI": "1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    13,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIYZ": "1/4",
+    "YZYI": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    14,
+    -1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIIY": "1/4",
+    "YZZY": "-1/4"
+   }
+  },
+  {
+   "blade": [
+    7,
+    14,
+    1
+   ],
+   "qubitwise_commuting": true,
+   "terms": {
+    "IIII": "1/2",
+    "YIIY": "-1/4",
+    "YZZY": "1/4"
+   }
+  }
+ ],
+ "encoding": "e_j -> |j3 j2 j1 j0>, word letters q3 q2 q1 q0",
+ "probe_cover": {
+  "basis_for_word": {
+   "1,10,1": {
+    "YIXY": "YXXY",
+    "YZXY": "YZXY"
+   },
+   "1,11,1": {
+    "YIYI": "YXYX",
+    "YZYI": "YZYX"
+   },
+   "1,12,1": {
+    "YXIY": "YXXY",
+    "YXZY": "YXZY"
+   },
+   "1,13,1": {
+    "YYII": "YYXX",
+    "YYZI": "YYZX"
+   },
+   "1,14,1": {
+    "YXYX": "YXYX",
+    "YYXX": "YYXX"
+   },
+   "1,15,1": {
+    "YXYZ": "YXYZ",
+    "YYXZ": "YYXZ"
+   },
+   "2,11,1": {
+    "YIZY": "YXZY",
+    "YZZY": "YZZY"
+   },
+   "2,12,1": {
+    "YXYI": "YXYX",
+    "YXYZ": "YXYZ"
+   },
+   "2,13,1": {
+    "YXYX": "YXYX",
+    "YYYY": "YYYY"
+   },
+   "2,14,1": {
+    "YYII": "YYXX",
+    "YYIZ": "YYXZ"
+   },
+   "2,15,1": {
+    "YXIY": "YXXY",
+    "YYIX": "YYXX"
+   },
+   "3,12,1": {
+    "YXXY": "YXXY",
+    "YXYX": "YXYX"
+   },
+   "3,13,1": {
+    "YXYZ": "YXYZ",
+    "YYXI": "YYXX"
+   },
+   "3,14,1": {
+    "YXIY": "YXXY",
+    "YYZX": "YYZX"
+   },
+   "3,15,1": {
+    "YYII": "YYXX",
+    "YYZZ": "YYZZ"
+   },
+   "4,13,1": {
+    "YZIY": "YZXY",
+    "YZZY": "YZZY"
+   },
+   "4,14,1": {
+    "YZYI": "YZYX",
+    "YZYZ": "YZYZ"
+   },
+   "4,15,1": {
+    "YZXY": "YZXY",
+    "YZYX": "YZYX"
+   },
+   "5,14,1": {
+    "YIYX": "YXYX",
+    "YZXY": "YZXY"
+   },
+   "5,15,1": {
+    "YIYZ": "YXYZ",
+    "YZYI": "YZYX"
+   },
+   "6,15,1": {
+    "YIIY": "YXXY",
+    "YZZY": "YZZY"
+   }
+  },
+  "distinct_words": [
+   "YIIY",
+   "YIXY",
+   "YIYI",
+   "YIYX",
+   "YIYZ",
+   "YIZY",
+   "YXIY",
+   "YXXY",
+   "YXYI",
+   "YXYX",
+   "YXYZ",
+   "YXZY",
+   "YYII",
+   "YYIX",
+   "YYIZ",
+   "YYXI",
+   "YYXX",
+   "YYXZ",
+   "YYYY",
+   "YYZI",
+   "YYZX",
+   "YYZZ",
+   "YZIY",
+   "YZXY",
+   "YZYI",
+   "YZYX",
+   "YZYZ",
+   "YZZY"
+  ],
+  "minimum_bases": [
+   "YXXY",
+   "YXYX",
+   "YXYZ",
+   "YXZY",
+   "YYXX",
+   "YYXZ",
+   "YYYY",
+   "YYZX",
+   "YYZZ",
+   "YZXY",
+   "YZYX",
+   "YZYZ",
+   "YZZY"
+  ],
+  "probes": [
+   [
+    1,
+    10,
+    1
+   ],
+   [
+    1,
+    11,
+    1
+   ],
+   [
+    1,
+    12,
+    1
+   ],
+   [
+    1,
+    13,
+    1
+   ],
+   [
+    1,
+    14,
+    1
+   ],
+   [
+    1,
+    15,
+    1
+   ],
+   [
+    2,
+    11,
+    1
+   ],
+   [
+    2,
+    12,
+    1
+   ],
+   [
+    2,
+    13,
+    1
+   ],
+   [
+    2,
+    14,
+    1
+   ],
+   [
+    2,
+    15,
+    1
+   ],
+   [
+    3,
+    12,
+    1
+   ],
+   [
+    3,
+    13,
+    1
+   ],
+   [
+    3,
+    14,
+    1
+   ],
+   [
+    3,
+    15,
+    1
+   ],
+   [
+    4,
+    13,
+    1
+   ],
+   [
+    4,
+    14,
+    1
+   ],
+   [
+    4,
+    15,
+    1
+   ],
+   [
+    5,
+    14,
+    1
+   ],
+   [
+    5,
+    15,
+    1
+   ],
+   [
+    6,
+    15,
+    1
+   ]
+  ],
+  "qubitwise_single_basis": 12
+ },
+ "record": "pauli_form",
+ "schema": "bdsc-pauli-v1",
+ "target": {
+  "blade": [
+   1,
+   10,
+   1
+  ],
+  "readout": {
+   "basis_q3q2q1q0": "YZXY",
+   "kernel_outcome": "z2 = -1 and y3 x1 y0 = +1",
+   "kernel_rank": 4,
+   "rotations": {
+    "X": [
+     "h"
+    ],
+    "Y": [
+     "sdg",
+     "h"
+    ],
+    "Z": []
+   },
+   "scores": [
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      1,
+      1,
+      1,
+      -1
+     ]
+    },
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      1,
+      1,
+      -1,
+      1
+     ]
+    },
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      1,
+      1,
+      -1,
+      -1
+     ]
+    },
+    {
+     "score": "0",
+     "signs_q3q2q1q0": [
+      1,
+      -1,
+      1,
+      1
+     ]
+    },
+    {
+     "score": "1",
+     "signs_q3q2q1q0": [
+      1,
+      -1,
+      1,
+      -1
+     ]
+    },
+    {
+     "score": "1",
+     "signs_q3q2q1q0": [
+      1,
+      -1,
+      -1,
+      1
+     ]
+    },
+    {
+     "score": "0",
+     "signs_q3q2q1q0": [
+      1,
+      -1,
+      -1,
+      -1
+     ]
+    },
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      -1,
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      -1,
+      1,
+      1,
+      -1
+     ]
+    },
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      -1,
+      1,
+      -1,
+      1
+     ]
+    },
+    {
+     "score": "1/2",
+     "signs_q3q2q1q0": [
+      -1,
+      1,
+      -1,
+      -1
+     ]
+    },
+    {
+     "score": "1",
+     "signs_q3q2q1q0": [
+      -1,
+      -1,
+      1,
+      1
+     ]
+    },
+    {
+     "score": "0",
+     "signs_q3q2q1q0": [
+      -1,
+      -1,
+      1,
+      -1
+     ]
+    },
+    {
+     "score": "0",
+     "signs_q3q2q1q0": [
+      -1,
+      -1,
+      -1,
+      1
+     ]
+    },
+    {
+     "score": "1",
+     "signs_q3q2q1q0": [
+      -1,
+      -1,
+      -1,
+      -1
+     ]
+    }
+   ]
+  },
+  "terms": {
+   "IIII": "1/2",
+   "YIXY": "-1/4",
+   "YZXY": "1/4"
+  }
+ }
+}
