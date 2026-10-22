@@ -55,6 +55,12 @@ by, in order:
 
 The admitted graph of 2026-10-17 has 12 qubits with q3 isolated, so three
 patches fill it; a fourth patch needs 16 admitted qubits and does not fit.
+The same graph forces q13 to be a q2 qubit beside q11: q10's only coupler
+is to q13, so q10 is a q2 qubit, and every path through q13 holds q11. In
+every placement that meets rules 1 to 3, q13 reads z2 of the patch whose
+path holds q11, so the q13 readout-context effect enters that patch's z2
+and its score; the analysis reports that patch separately and the readout
+references bracket q11 in |0> (readout-0) and |1> (readout-1) only.
 
 ## Series and shots
 
@@ -77,8 +83,13 @@ wall time with the pauses. Shot order is retained.
 - Contraction law: under a depolarizing contraction V of the (q3, q1, q0)
   parity, kernel and bright states read (1 - V)/2 and (1 + V)/2, so
   kernel + bright - 1 is consistent with zero, and middle and sector states
-  read 1/2. A violation at |z| >= 3 per patch names an error outside the
-  contraction (readout bias, leakage or a coherent preparation error).
+  read 1/2. Each kernel/bright pair, their pooled value and each middle and
+  sector state are tested; a violation at |z| >= 3 names an error outside
+  the contraction, such as a coherent preparation error or leakage. The
+  parity averages an asymmetric readout assignment almost away (P(1|0)
+  0.03 and P(0|1) 0.08 under a 0.3 depolarization move the pooled pair sum
+  by about 0.004), so readout bias is read from the assignment-corrected
+  score, not from the law.
 - Patches are analyzed separately; a pooled value is reported only with
   equal patch weights and names that estimand.
 
