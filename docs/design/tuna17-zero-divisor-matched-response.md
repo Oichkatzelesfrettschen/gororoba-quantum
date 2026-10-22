@@ -56,12 +56,18 @@ The generator binds the retained catalogue digest and its own source digest. Rep
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
+export QI_PYTHON
 "$PYTHON" scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response
 "$QI_PYTHON" scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response
 ```
 
-The first command uses the pinned Qiskit replay runtime. The second uses the Quantum Inspire
-interpreter and performs local parsing and compilation. Neither command contacts a provider.
+The first command uses the pinned Qiskit replay runtime. The second checks the
+[retained compiler receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain.json)
+against the source, catalogue, locked toolchain and all nine circuit hashes. With `QI_PYTHON`
+set, the second command also repeats local parsing and compilation through the repository's
+`qi_stack` adapter and compares every receipt field. Gate `core-633` requires that live path
+in the Quantum Inspire CI stack; the ordinary stack checks the retained receipt explicitly.
+Neither command contacts a provider.
 Before submission, freeze analysis, inspect emitted and served scheduling, refresh the catalogue
 and budget, and obtain the user's approval of the exact circuit digests, backend, shots, seconds
 and credits. Preserve each acquired batch and its calibration and timing records separately.

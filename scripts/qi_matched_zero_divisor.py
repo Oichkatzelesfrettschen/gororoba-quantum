@@ -16,6 +16,7 @@ import re
 import sys
 import warnings
 from collections.abc import Sequence
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +41,7 @@ from qi_zero_divisor_cases import (  # noqa: E402
 )
 
 import parallel  # noqa: E402
+import qi_stack  # noqa: E402
 from cd_core import cd_multiply_exact  # noqa: E402
 
 CATALOGUE_SHA256 = "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78"
@@ -47,6 +49,7 @@ PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched
 ANGLES = {"dark": math.pi / 2, "bright": -math.pi / 2, "fixture": math.pi}
 IDEALS = {"dark": 0.0, "bright": 1.0, "fixture": 0.5}
 SHOTS = 16384
+TOOLCHAIN_RECORD = ROOT / "docs/evidence/quantum_inspire/matched-zero-divisor-toolchain.json"
 
 
 def matched_response_contrast(
@@ -319,7 +322,66 @@ def _check_toolchain(item: tuple[str, str]) -> dict[str, Any]:
         "source_sha256": hashlib.sha256(text.encode()).hexdigest(),
         "compiled_sha256": hashlib.sha256(compiled.encode()).hexdigest(),
         "maximum_angle_serialization_error": angle_error,
+        "operand_control_order_preserved": True,
     }
+
+
+def toolchain_record(directory: Path) -> dict[str, Any]:
+    items = [(path.relative_to(directory).as_posix(), path.read_text()) for path in sorted(directory.rglob("*.cq"))]
+    if len(items) != 9:
+        raise ValueError("matched toolchain check requires exactly nine circuit files")
+    return {
+        "schema": "qi-matched-zero-divisor-toolchain-v1",
+        "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "catalogue_sha256": CATALOGUE_SHA256,
+        "toolchain": {name: version(name) for name in qi_stack.DISTRIBUTIONS},
+        "circuits": parallel.ordered_map(_check_toolchain, items, min_items=1),
+    }
+
+
+def validate_toolchain_record(directory: Path, record: dict[str, Any]) -> None:
+    if record.get("schema") != "qi-matched-zero-divisor-toolchain-v1":
+        raise ValueError("matched toolchain receipt schema differs")
+    if record.get("source_sha256") != hashlib.sha256(Path(__file__).read_bytes()).hexdigest():
+        raise ValueError("matched toolchain receipt producer source differs")
+    if record.get("catalogue_sha256") != hashlib.sha256(CATALOGUE.read_bytes()).hexdigest():
+        raise ValueError("matched toolchain receipt catalogue differs")
+    if record.get("toolchain") != qi_stack.pins():
+        raise ValueError("matched toolchain receipt versions differ from the locked stack")
+    expected = {
+        path.relative_to(directory).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in directory.rglob("*.cq")
+    }
+    rows = record.get("circuits")
+    if len(expected) != 9 or not isinstance(rows, list) or len(rows) != 9:
+        raise ValueError("matched toolchain receipt requires nine circuit rows")
+    observed = {}
+    for row in rows:
+        if not isinstance(row, dict) or set(row) != {
+            "file",
+            "source_sha256",
+            "compiled_sha256",
+            "maximum_angle_serialization_error",
+            "operand_control_order_preserved",
+        }:
+            raise ValueError("matched toolchain receipt row shape differs")
+        name = row["file"]
+        if not isinstance(name, str) or name in observed:
+            raise ValueError("matched toolchain receipt repeats a circuit")
+        observed[name] = row["source_sha256"]
+        error = row["maximum_angle_serialization_error"]
+        if (
+            row["operand_control_order_preserved"] is not True
+            or not isinstance(row["compiled_sha256"], str)
+            or not re.fullmatch(r"[0-9a-f]{64}", row["compiled_sha256"])
+            or isinstance(error, bool)
+            or not isinstance(error, int | float)
+            or not math.isfinite(error)
+            or not 0 <= error <= 5e-8
+        ):
+            raise ValueError("matched toolchain receipt contains a failed compiler comparison")
+    if observed != expected:
+        raise ValueError("matched toolchain receipt circuit bytes differ")
 
 
 def main() -> int:
@@ -328,13 +390,41 @@ def main() -> int:
     mode.add_argument("--write", type=Path)
     mode.add_argument("--check", type=Path)
     mode.add_argument("--check-toolchain", type=Path)
+    mode.add_argument("--write-toolchain", type=Path)
+    mode.add_argument("--emit-toolchain", type=Path)
+    parser.add_argument("--toolchain-record", type=Path, default=TOOLCHAIN_RECORD)
     arguments = parser.parse_args()
+    if arguments.emit_toolchain or arguments.write_toolchain:
+        directory = arguments.emit_toolchain or arguments.write_toolchain
+        rendered = json.dumps(toolchain_record(directory), indent=1) + "\n"
+        if arguments.emit_toolchain:
+            print(rendered, end="")
+        else:
+            destination = arguments.toolchain_record
+            if destination.exists() and destination.read_text() != rendered:
+                raise ValueError("retain a separately named matched toolchain successor")
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(rendered)
+        return 0
     if arguments.check_toolchain:
-        directory = arguments.check_toolchain
-        items = [(path.relative_to(directory).as_posix(), path.read_text()) for path in sorted(directory.rglob("*.cq"))]
-        if len(items) != 9:
-            raise ValueError("matched toolchain check requires exactly nine circuit files")
-        print(json.dumps(parallel.ordered_map(_check_toolchain, items, min_items=1), indent=1))
+        record = json.loads(arguments.toolchain_record.read_text())
+        validate_toolchain_record(arguments.check_toolchain, record)
+        if qi_stack.live("matched compiler", "checked the retained operand/control-order receipt"):
+            rebuilt = json.loads(
+                qi_stack.run(
+                    [
+                        "-B",
+                        "-W",
+                        "error",
+                        str(Path(__file__).resolve()),
+                        "--emit-toolchain",
+                        str(arguments.check_toolchain.resolve()),
+                    ]
+                )
+            )
+            if rebuilt != record:
+                raise ValueError("live matched compiler differs from its retained receipt")
+            print("all nine live compiler rows match the retained operand/control-order receipt")
         return 0
     files = build()
     destination = arguments.write if arguments.write is not None else arguments.check

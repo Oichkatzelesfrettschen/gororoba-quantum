@@ -1,9 +1,46 @@
 """Matched response proposals retain routing and cancel batch offsets."""
 
 import json
+from copy import deepcopy
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
+
+
+@pytest.mark.parametrize("mutation", ["source", "angle", "operands", "duplicate", "compiled"])
+def test_toolchain_receipt_rejects_mutations(mutation: str) -> None:
+    from qi_matched_zero_divisor import PROPOSAL, TOOLCHAIN_RECORD, validate_toolchain_record
+
+    record = deepcopy(json.loads(TOOLCHAIN_RECORD.read_text()))
+    if mutation == "source":
+        record["source_sha256"] = "0" * 64
+    elif mutation == "angle":
+        record["circuits"][0]["maximum_angle_serialization_error"] = 0.01
+    elif mutation == "operands":
+        record["circuits"][0]["operand_control_order_preserved"] = False
+    elif mutation == "duplicate":
+        record["circuits"][1] = record["circuits"][0]
+    else:
+        record["circuits"][0]["compiled_sha256"] = "invalid"
+    with pytest.raises(ValueError):
+        validate_toolchain_record(PROPOSAL, record)
+
+
+def test_toolchain_gate_requires_the_stack_when_selected(monkeypatch: Any) -> None:
+    from qi_matched_zero_divisor import PROPOSAL, main
+
+    import qi_stack
+
+    monkeypatch.setattr("sys.argv", [str(Path(__file__)), "--check-toolchain", str(PROPOSAL)])
+    monkeypatch.setattr(qi_stack, "probe", lambda: qi_stack.Probe(None, False, "test stack unavailable"))
+    monkeypatch.delenv("GOROROBA_QI_REQUIRED", raising=False)
+    if main() != 0:
+        raise AssertionError("the ordinary stack must verify the retained compiler receipt")
+    monkeypatch.setenv("GOROROBA_QI_REQUIRED", "1")
+    with pytest.raises(SystemExit, match="unavailable"):
+        main()
 
 
 @pytest.mark.parametrize(
