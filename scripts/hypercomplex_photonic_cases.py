@@ -24,6 +24,12 @@ from parallel import ordered_map
 FROZEN_INVENTORY_SHA256 = "8918c58f0c1b82849078257a831e2f2d210165c66709f3f7cca12ba3a69de452"
 
 
+def _check_frozen_file(arguments: tuple[str, str, str]) -> None:
+    directory, name, digest = arguments
+    if hashlib.sha256((Path(directory) / name).read_bytes()).hexdigest() != digest:
+        raise ValueError(f"frozen identity differs: {name}")
+
+
 def check_frozen_identity(directory: Path) -> None:
     """Bind the exact retained file set and bytes independently of numerical synthesis."""
     inventory = directory / "frozen-file-sha256.json"
@@ -33,9 +39,7 @@ def check_frozen_identity(directory: Path) -> None:
     actual = {path.relative_to(directory).as_posix() for path in directory.rglob("*.json") if path != inventory}
     if actual != set(expected):
         raise ValueError("frozen identity file set differs from the reviewed inventory")
-    for name, digest in expected.items():
-        if hashlib.sha256((directory / name).read_bytes()).hexdigest() != digest:
-            raise ValueError(f"frozen identity differs: {name}")
+    ordered_map(_check_frozen_file, [(str(directory), name, digest) for name, digest in expected.items()], min_items=1)
 
 
 def _campaign_file(arguments: tuple[str, str, str]) -> None:

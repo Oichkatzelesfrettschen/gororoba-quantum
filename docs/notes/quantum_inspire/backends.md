@@ -169,12 +169,12 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   41 QX twin) and the 832 pause-ladder ZZ-map successor circuits, for 4,511 current
   cases. Rebuilt paths receive rows bound to their new circuit bytes; the
   historical records retain their original rows. Gate `core-368` checks the complete
-  current case set through `scripts/qi_complete_toolchain_check.py` and regenerates
+  current case set through `scripts/qi_toolchain_check.py` and regenerates
   the successor under the pinned local QI
   interpreter. The original record keeps its bytes; compilation proves source
   and default-pass conformance, while provider scheduling remains separate.
-  The complete checker keeps `qi_toolchain_check.py` unchanged because the
-  matched-proposal receipt binds that compiler dependency's exact bytes.
+  The matched-proposal receipt binds the compiler dependency's exact bytes;
+  selecting the current receipt retains that bound compiler source.
 - **Compiler** (API): SWAP2CZDecomposer then CZDecomposer; the configuration
   lists no mapping and no routing pass, so a circuit keeps every two-qubit
   gate on a coupled pair itself.

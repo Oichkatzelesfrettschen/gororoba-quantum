@@ -10646,15 +10646,6 @@
    "time",
    "typing"
   ],
-  "scripts/qi_complete_toolchain_check.py": [
-   "__future__",
-   "argparse",
-   "json",
-   "pathlib",
-   "qi_stack",
-   "qi_toolchain_check",
-   "tempfile"
-  ],
   "scripts/qi_coupler_zz_map.py": [
    "__future__",
    "argparse",

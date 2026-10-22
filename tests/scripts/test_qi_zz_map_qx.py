@@ -34,7 +34,7 @@ def test_qx_builder_checks_selected_catalogue_capacity(tmp_path: Path) -> None:
 
 
 def test_toolchain_successor_preserves_original_rows_and_covers_current_cases() -> None:
-    from qi_complete_toolchain_check import RECORD, case_files
+    from qi_toolchain_check import RECORD, case_files
 
     successor = json.loads(RECORD.read_text())
     current = case_files()

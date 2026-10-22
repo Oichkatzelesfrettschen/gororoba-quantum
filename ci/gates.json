@@ -2683,7 +2683,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_complete_toolchain_check.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_toolchain_check.py --check",
    "name": "core-368",
    "seconds": 0.1,
    "tier": "pr",
