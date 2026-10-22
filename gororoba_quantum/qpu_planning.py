@@ -85,7 +85,7 @@ SEGMENTED_ANALYZER = SCRIPTS_DIR / "n21_q143_segmented_sweep.py"
 MODULES_DIR = Path(__file__).resolve().parent
 
 
-def scripts_closure(entry: Path, directories: tuple[Path, ...] = (SCRIPTS_DIR,)) -> list[Path]:
+def scripts_closure(entry: Path, directories: tuple[Path, ...]) -> list[Path]:
     """entry and every module of directories its imports reach, at any nesting, sorted by name."""
     seen: dict[str, Path] = {}
     pending = [entry]
@@ -112,7 +112,7 @@ def scripts_closure(entry: Path, directories: tuple[Path, ...] = (SCRIPTS_DIR,))
 
 def ramsey_analyzer_closure() -> dict[str, Any]:
     """Per-file sha256 of the analyzer's scripts/ closure and the sha256 of that map's canonical JSON."""
-    return analyzer_closure(RAMSEY_ANALYZER)
+    return analyzer_closure(RAMSEY_ANALYZER, (SCRIPTS_DIR,))
 
 
 def observable_contract_records(contracts: Any) -> list[dict[str, Any]]:
@@ -129,8 +129,12 @@ def segmented_analyzer_closure() -> dict[str, Any]:
     return analyzer_closure(SEGMENTED_ANALYZER, (SCRIPTS_DIR, MODULES_DIR))
 
 
-def analyzer_closure(entry: Path, directories: tuple[Path, ...] = (SCRIPTS_DIR,)) -> dict[str, Any]:
-    """Per-file sha256 of entry's closure over directories and the sha256 of that map's canonical JSON."""
+def analyzer_closure(entry: Path, directories: tuple[Path, ...]) -> dict[str, Any]:
+    """Per-file sha256 of entry's closure over directories and the sha256 of that map's canonical JSON.
+
+    Callers pass directories read from the module globals at call time, so a
+    contract that points SCRIPTS_DIR at a modified copy hashes that copy.
+    """
     files = {
         f"{path.parent.name}/{path.name}": hashlib.sha256(path.read_bytes()).hexdigest()
         for path in scripts_closure(entry, directories)
