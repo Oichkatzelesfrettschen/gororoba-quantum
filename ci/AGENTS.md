@@ -67,11 +67,12 @@ changes and an unavailable diff base select every gate, and the gate ledger
 (Gate cost below) then skips each selected gate whose key is unchanged.
 The import closure resolves against the files `git ls-files --cached --others
 --exclude-standard` lists (`gate_inputs.checkout_files`), the modules a CI
-clone of the same tree holds, so an ignored tree never widens it. Build trees,
-virtual environments and package caches still live outside every checkout,
-under `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/` or
-`~/.local/share/`: `git worktree remove` deletes ignored files with the
-worktree, and a wheel or venv built inside one goes with it.
+clone of the same tree holds, so an ignored tree never widens it. Disposable
+build trees, task virtual environments, package caches and probes belong in
+the system temporary directory, normally `/tmp`, so temporary-file cleanup
+can reclaim them. Keep durable code, evidence and documentation in the
+repository. Never create task repositories or scratch stores in
+`~/.local/share`. Preserve existing shared provider environments and credentials.
 Gate seconds are scheduling estimates, independent of tier membership.
 [CI runtime analysis](../docs/runbooks/ci-runtime.md) records the timing
 denominators, measured bottlenecks and replay commands. Runner-spec logs
@@ -273,7 +274,7 @@ and child interpreters, so the gate ledger never skips it.
   seconds before tuning it.
 - Spend CPU only on results that can change. `ci/premerge_gates.py` caches
   the base tree's passing gates under
-  `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/premerge`, keyed by the
+  the system temporary directory's `gororoba-quantum/premerge`, keyed by the
   base commit, `--max-seconds`, each interpreter's real path, version and
   installed distributions, and every `GOROROBA_`, `QI_`, `OQ_`, `QD_`,
   `QISKIT_`, `PYTHON`, thread-count and `GLIBC_TUNABLES` variable. A flock

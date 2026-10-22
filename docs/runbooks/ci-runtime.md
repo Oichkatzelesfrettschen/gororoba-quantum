@@ -382,7 +382,7 @@ gates at origin/main 5ea77f5, in two trees: the merge of the branch into
 main and main itself. Main's half depends only on its commit, the
 interpreters and their installed distributions, the PATH tools the gates
 run and the environment they read, so its passing gates are cached under
-`${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/premerge` by a sha256 over
+the system temporary directory's `gororoba-quantum/premerge` by a sha256 over
 those inputs (`cache_key`). Every later premerge against the same main
 commit under the same key runs the merge tree alone plus a `--gates` rerun
 of each merge failure the cached passes do not cover. Environment values
