@@ -5,6 +5,7 @@ import subprocess
 import sys
 from datetime import timedelta
 from pathlib import Path
+from typing import cast
 
 import anyio
 import pytest
@@ -27,7 +28,7 @@ def test_local_simulation_rejects_non_binary_integer_occupation(occupation: obje
     import qd_mcp_server
 
     with pytest.raises(ValueError, match="photon"):
-        qd_mcp_server.simulate([[1.0]], None, [occupation], "SLOS")  # type: ignore[list-item]
+        qd_mcp_server.simulate([[1.0]], None, cast(list[int], [occupation]), "SLOS")
 
 
 @pytest.mark.parametrize("entry", [float("nan"), float("inf"), -float("inf"), 1e308])
