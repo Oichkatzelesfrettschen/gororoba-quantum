@@ -1836,11 +1836,13 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ]
@@ -2423,6 +2425,7 @@
     "scripts/hypercomplex_photonic_cases.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2580,6 +2583,7 @@
     "scripts/hypercomplex_photonic_cases.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2958,10 +2962,12 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_toolchain_check.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_toolchain_check.py"
    ]
   },
@@ -3344,6 +3350,7 @@
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py"
@@ -3353,6 +3360,7 @@
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py"
@@ -5317,6 +5325,7 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/box_kite_qx_sweep.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -5324,6 +5333,7 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/box_kite_qx_sweep.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -10060,6 +10070,40 @@
    "sys",
    "typing"
   ],
+  "scripts/local_photonic_compiler_crosscheck.py": [
+   "__future__",
+   "argparse",
+   "cqasm",
+   "hashlib",
+   "importlib",
+   "json",
+   "numpy",
+   "opensquirrel_fullprecision",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "platform",
+   "qd_platform",
+   "qi_stack",
+   "qi_toolchain_check",
+   "qxelarator",
+   "re",
+   "time",
+   "typing"
+  ],
+  "scripts/local_simulation_replay.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "local_photonic_compiler_crosscheck",
+   "math",
+   "parallel",
+   "pathlib",
+   "qi_stack",
+   "sys",
+   "typing"
+  ],
   "scripts/lsq_conditioning_study.py": [
    "__future__",
    "argparse",
@@ -10383,6 +10427,13 @@
    "predict",
    "random",
    "sys"
+  ],
+  "scripts/opensquirrel_fullprecision.py": [
+   "__future__",
+   "importlib",
+   "math",
+   "opensquirrel",
+   "typing"
   ],
   "scripts/oq_platform.py": [
    "__future__",
