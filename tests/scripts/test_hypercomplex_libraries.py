@@ -2,6 +2,7 @@
 
 import copy
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -10,11 +11,13 @@ import pytest
 from hypercomplex_libraries import (
     ROOT,
     check_execution_coverage,
+    check_import_coverage,
     check_inventory_denominator,
     execution_declarations,
     inventory,
     main,
     markdown,
+    tracked_imports,
 )
 
 
@@ -186,3 +189,53 @@ def test_check_rejects_extra_source_hash(tmp_path: Path, monkeypatch: pytest.Mon
     monkeypatch.setattr(sys, "argv", ["hypercomplex_libraries.py", "--out", str(tmp_path), "--check"])
     with pytest.raises(ValueError, match="inventory declared source coverage differs"):
         main()
+
+
+@pytest.fixture
+def import_snapshot(tmp_path: Path) -> tuple[Path, dict[str, Any]]:
+    source = tmp_path / "scripts/consumer.py"
+    source.parent.mkdir()
+    source.write_text("import numpy\nimport unresolved_probe\n")
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    subprocess.run(["git", "add", "scripts/consumer.py"], cwd=tmp_path, check=True)
+    roots, _ = tracked_imports(tmp_path)
+    record: dict[str, Any] = {
+        "libraries": [{"distribution": "numpy", "imported_by": ["scripts/consumer.py"]}],
+        "tracked_import_roots": roots,
+        "import_root_distributions": {"numpy": ["numpy"], "unresolved_probe": []},
+        "unresolved_import_roots": ["unresolved_probe"],
+    }
+    check_import_coverage(record, tmp_path)
+    return tmp_path, record
+
+
+@pytest.mark.parametrize("change", ["add", "remove"])
+def test_current_import_scan_rejects_tracked_source_changes(
+    import_snapshot: tuple[Path, dict[str, Any]], change: str
+) -> None:
+    root, record = import_snapshot
+    source = root / "scripts/consumer.py"
+    if change == "add":
+        source.write_text(source.read_text() + "import scipy\n")
+    else:
+        source.write_text(source.read_text().replace("import numpy\n", ""))
+    with pytest.raises(ValueError, match="inventory tracked import roots differ"):
+        check_import_coverage(record, root)
+
+
+@pytest.mark.parametrize("field", ["imported_by", "unresolved", "mapping"])
+def test_current_import_projection_rejects_stale_or_noncanonical_fields(
+    import_snapshot: tuple[Path, dict[str, Any]], field: str
+) -> None:
+    root, record = import_snapshot
+    if field == "imported_by":
+        record["libraries"][0]["imported_by"] = []
+        message = "inventory current import locations differ"
+    elif field == "unresolved":
+        record["unresolved_import_roots"] = []
+        message = "inventory unresolved import roots differ"
+    else:
+        record["import_root_distributions"]["numpy"] = ["NumPy"]
+        message = "inventory import distribution mapping is not normalized"
+    with pytest.raises(ValueError, match=message):
+        check_import_coverage(record, root)

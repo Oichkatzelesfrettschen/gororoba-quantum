@@ -246,14 +246,73 @@ def normalized(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name).lower()
 
 
-def _file_imports(filename: str) -> tuple[str, list[str]]:
+def _file_imports(task: tuple[str, str]) -> tuple[str, list[str]]:
+    root, filename = task
     roots: set[str] = set()
-    for node in ast.walk(ast.parse((ROOT / filename).read_text())):
+    for node in ast.walk(ast.parse((Path(root) / filename).read_text())):
         if isinstance(node, ast.Import):
             roots.update(alias.name.split(".")[0] for alias in node.names)
         elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
             roots.add(node.module.split(".")[0])
     return filename, sorted(roots)
+
+
+def tracked_imports(root: Path) -> tuple[dict[str, list[str]], set[str]]:
+    """Parse the tracked runtime source set independently of installed distributions."""
+    tracked = subprocess.check_output(["git", "ls-files", "-z", "*.py"], cwd=root).decode().split("\0")
+    local_modules = {Path(name).stem for name in tracked if name}
+    runtime_files = sorted(
+        name for name in tracked if name.startswith(("gororoba_quantum/", "scripts/", "ci/", "kaggle_kernel/"))
+    )
+    return dict(ordered_map(_file_imports, [(str(root), name) for name in runtime_files])), local_modules
+
+
+def project_imports(
+    roots: dict[str, list[str]], local_modules: set[str], mapping: dict[str, list[str]]
+) -> tuple[dict[str, set[str]], set[str]]:
+    """Project a current AST through the retained normalized distribution mapping."""
+    imports: dict[str, set[str]] = {}
+    unresolved: set[str] = set()
+    for filename, names in roots.items():
+        for name in names:
+            if name in sys.stdlib_module_names or name in local_modules:
+                continue
+            distributions = mapping.get(name, [])
+            if not distributions:
+                unresolved.add(name)
+            for distribution in distributions:
+                imports.setdefault(distribution, set()).add(filename)
+    return imports, unresolved
+
+
+def check_import_coverage(record: dict[str, Any], root: Path) -> None:
+    """Fresh tracked imports must equal the snapshot and its current distribution projection."""
+    roots, local_modules = tracked_imports(root)
+    if record.get("tracked_import_roots") != roots:
+        raise ValueError("inventory tracked import roots differ")
+    external = {
+        name
+        for names in roots.values()
+        for name in names
+        if name not in sys.stdlib_module_names and name not in local_modules
+    }
+    mapping = record.get("import_root_distributions")
+    if not isinstance(mapping, dict) or set(mapping) != external:
+        raise ValueError("inventory import distribution mapping coverage differs")
+    rows = {row["distribution"]: row for row in record["libraries"]}
+    for distributions in mapping.values():
+        if (
+            not isinstance(distributions, list)
+            or any(not isinstance(name, str) or name != normalized(name) or name not in rows for name in distributions)
+            or distributions != sorted(set(distributions))
+        ):
+            raise ValueError("inventory import distribution mapping is not normalized")
+    imports, unresolved = project_imports(roots, local_modules, mapping)
+    if record["unresolved_import_roots"] != sorted(unresolved):
+        raise ValueError("inventory unresolved import roots differ")
+    for name, row in rows.items():
+        if row["imported_by"] != sorted(imports.get(name, set())):
+            raise ValueError(f"inventory current import locations differ: {name}")
 
 
 def execution_declarations(root: Path) -> tuple[dict[str, dict[str, str]], dict[str, str]]:
@@ -441,26 +500,26 @@ def inventory() -> dict[str, Any]:
     execution_pins = declared["execution_pins"]
     execution_sources = execution_declarations(ROOT)[1]
     package_map = metadata.packages_distributions()
-    tracked = subprocess.check_output(["git", "ls-files", "-z", "*.py"], cwd=ROOT).decode().split("\0")
-    local_modules = {Path(name).stem for name in tracked if name}
-    imports: dict[str, set[str]] = {}
-    unresolved: set[str] = set()
-    runtime_files = [
-        name for name in tracked if name.startswith(("gororoba_quantum/", "scripts/", "ci/", "kaggle_kernel/"))
-    ]
-    for filename, roots in ordered_map(_file_imports, runtime_files):
-        for root in roots:
-            if root in sys.stdlib_module_names or root in local_modules:
-                continue
-            distributions = package_map.get(root, [])
-            if not distributions and root in ISOLATED_IMPORTS:
-                distributions = [ISOLATED_IMPORTS[root]]
-            if not distributions:
-                unresolved.add(root)
-            for distribution in distributions:
-                name = normalized(distribution)
-                declarations.setdefault(name, {})
-                imports.setdefault(name, set()).add(filename)
+    roots, local_modules = tracked_imports(ROOT)
+    external = {
+        name
+        for names in roots.values()
+        for name in names
+        if name not in sys.stdlib_module_names and name not in local_modules
+    }
+    mapping = {
+        name: sorted(
+            {
+                normalized(distribution)
+                for distribution in package_map.get(name, [])
+                or ([ISOLATED_IMPORTS[name]] if name in ISOLATED_IMPORTS else [])
+            }
+        )
+        for name in sorted(external)
+    }
+    imports, unresolved = project_imports(roots, local_modules, mapping)
+    for name in imports:
+        declarations.setdefault(name, {})
     rows = []
     for name, pins in sorted(declarations.items()):
         try:
@@ -502,6 +561,12 @@ def inventory() -> dict[str, Any]:
         },
         "libraries": rows,
         "sources_sha256": sources,
+        "tracked_import_roots": roots,
+        "import_root_distributions": mapping,
+        "import_mapping_origin": (
+            "normalized importlib.metadata.packages_distributions observation with ISOLATED_IMPORTS fallback; "
+            "checks project fresh tracked AST through this retained map instead of reinterpreting another host"
+        ),
         "unresolved_import_roots": sorted(unresolved),
         "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
         "coverage": (
@@ -522,7 +587,9 @@ def markdown(record: dict[str, Any]) -> str:
         "",
         "Each row names a distribution, its scientific or operational role, and the observed host version. "
         "The JSON register retains environment pins and import locations separately. "
-        "A missing host distribution may belong to an isolated provider environment.",
+        "A missing host distribution may belong to an isolated provider environment. "
+        "Current import locations and unresolved roots follow a fresh tracked-source AST scan through the "
+        "retained normalized module mapping. Historical import locations remain separately recorded.",
         "",
         "Execution pins come from requirement locks and the dispatcher's top-level string literals plus referenced "
         "runtime pin files. The JSON records each pin's file, line and constant, and hashes every source. "
@@ -579,6 +646,7 @@ def main() -> int:
         for row in record["libraries"]:
             if row["distribution"] in ROLES and row["role"] != ROLES[row["distribution"]]:
                 raise ValueError(f"inventory role differs: {row['distribution']}")
+        check_import_coverage(record, ROOT)
         if (arguments.out / "libraries.md").read_text() != markdown(record):
             raise ValueError("inventory Markdown differs")
         print(f"validated {len(record['libraries'])} distributions and every execution pin")
@@ -591,12 +659,16 @@ def main() -> int:
             if row["distribution"] in prior:
                 retained = prior[row["distribution"]]
                 row["observed_host_version"] = retained["observed_host_version"]
-                row["imported_by"] = sorted(set(row["imported_by"]) | set(retained["imported_by"]))
+                row["historical_imported_by"] = sorted(
+                    set(retained.get("historical_imported_by", [])) | set(retained["imported_by"])
+                )
         record["host_observation_policy"] = (
-            "existing observations/import locations retained; additions observed by generator interpreter"
+            "host versions retained; historical import locations archived separately; "
+            "current imported_by follows fresh AST"
         )
     check_inventory_denominator(record, ROOT)
     check_execution_coverage(record, ROOT)
+    check_import_coverage(record, ROOT)
     arguments.out.mkdir(parents=True, exist_ok=True)
     (arguments.out / "libraries.json").write_text(json.dumps(record, indent=1) + "\n")
     (arguments.out / "libraries.md").write_text(markdown(record))

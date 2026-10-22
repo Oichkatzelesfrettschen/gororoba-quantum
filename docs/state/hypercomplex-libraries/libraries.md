@@ -2,7 +2,7 @@
 
 The inventory explains 347 distributions over the declared source surfaces.
 
-Each row names a distribution, its scientific or operational role, and the observed host version. The JSON register retains environment pins and import locations separately. A missing host distribution may belong to an isolated provider environment.
+Each row names a distribution, its scientific or operational role, and the observed host version. The JSON register retains environment pins and import locations separately. A missing host distribution may belong to an isolated provider environment. Current import locations and unresolved roots follow a fresh tracked-source AST scan through the retained normalized module mapping. Historical import locations remain separately recorded.
 
 Execution pins come from requirement locks and the dispatcher's top-level string literals plus referenced runtime pin files. The JSON records each pin's file, line and constant, and hashes every source. Coverage is finite over these named surfaces, not every prose mention or an implicit transitive resolver closure.
 
