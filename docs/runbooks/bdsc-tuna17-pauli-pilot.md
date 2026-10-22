@@ -37,13 +37,22 @@ approved ([AGENTS.md](../../AGENTS.md#hardware-services)).
    `OUT/.../batch-NN/` with a cases.json that records the shots run, the
    simulator version and `control: local_qxelarator`, and `raw/<file>.json`
    for every circuit.
-2. `"$PYTHON" scripts/qi_bdsc_pauli_cases.py --analyze OUT/tuna/batch-0* --out OUT/tuna-analysis.json`
+2. `"$PYTHON" scripts/qi_bdsc_pauli_cases.py --analyze OUT/tuna/batch-* --out OUT/tuna-analysis.json`
    (and `OUT/qx`). The claim kind reads "emulator control". Every witness
    cell reads its ideal score (0, 1/2 or 1) within its empirical-Bernstein
    interval, the quadrature phase reads 0 within three standard errors, the
    readout references read their preparation exactly, and no contraction
    statistic flags.
-3. A remote QX twin is a job and joins the written case.
+3. The remote QX twin is a job and joins the written case with its own
+   budget: backend QXsinglenodesimulator (backend type 1), the
+   `bdsc_pauli_qx` series of 12 batches and 36 jobs at 2048 shots. Retained
+   QX jobs on this account executed in 0.006 to 10.4 s each (median 0.06 s,
+   108 jobs), so the twin needs at most about 6 minutes of execution and
+   starts within seconds; the account's transaction ledger has recorded no
+   credits for QX jobs ([usage.md](../notes/quantum_inspire/usage.md)), so its
+   expected credits are 0, restated from a fresh `qi_platform.py snapshot`.
+   The QX twin runs before the first Tuna-17 batch, and the hardware pause does
+   not apply to it.
 
 ## Submission order
 

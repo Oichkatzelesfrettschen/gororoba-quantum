@@ -1148,6 +1148,9 @@ def reference_counts(bits0: np.ndarray, bits1: np.ndarray, qubit: int, width: in
     return int(bits0[:, column].sum()), len(bits0), int(len(bits1) - bits1[:, column].sum()), len(bits1)
 
 
+STOPPED_CLAIM = "stopped series: a preregistered stop fired, no inference"
+
+
 def claim_kind(cases: dict[str, Any]) -> str:
     """Hardware inference, or an emulator control for the QX twin and for a local qxelarator run of either series."""
     if "control" in cases or "simulator" in cases:
@@ -1257,6 +1260,11 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
     for index, interval in zip(task_cell, intervals, strict=True):
         cells[index]["score_readout_corrected_ci95_bootstrap"] = interval
     references = reference_report(cases, raw)
+    # A fired preregistered stop invalidates every inference from the series; the cells and references stay as
+    # diagnostics, and the contraction law and quadrature phase are withheld.
+    stopped = bool(references["stop_condition_batch_00"]) or bool(references["bracket_drift"]["flagged"])
+    if stopped:
+        claim = STOPPED_CLAIM
     return {
         "schema": "qi-bdsc-pauli-analysis-v2",
         "claim_kind": claim,
@@ -1264,8 +1272,8 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
         "cells": cells,
         "references": references,
         "stop_condition_readout": references["stop_condition_batch_00"],
-        "contraction": contraction(cells, sorted({c["patch"] for c in cells}), shot_scores),
-        "quadrature": quadrature(cells, sorted({c["patch"] for c in cells})),
+        "contraction": None if stopped else contraction(cells, sorted({c["patch"] for c in cells}), shot_scores),
+        "quadrature": None if stopped else quadrature(cells, sorted({c["patch"] for c in cells})),
     }
 
 
@@ -1842,12 +1850,18 @@ def self_test() -> None:
     flagged = {(d["qubit"], d["reference"], d["to"]) for d in drifted["references"]["bracket_drift"]["flagged"]}
     if flagged != {(8, READOUT_ZERO, "batch-05"), (8, READOUT_ZERO, "batch-07")}:  # out of and back from the excursion
         raise AssertionError(f"drift flags {sorted(flagged)}")
+    if drifted["claim_kind"] != STOPPED_CLAIM or drifted["contraction"] is not None:
+        raise AssertionError("a series whose bracket drift stop fired kept its inference")
     steady = run(ideal_distribution, (0.02, 0.04), 8)
     if steady["references"]["bracket_drift"]["flagged"]:
         raise AssertionError("steady references trip the drift stop")
+    if steady["claim_kind"] == STOPPED_CLAIM or steady["contraction"] is None:
+        raise AssertionError("a series with no fired stop lost its inference")
     breach = run(ideal_distribution, (0.02, 0.04), 9, ref_flips={("batch-00", READOUT_ONE): {13: (0.02, 0.2)}})
     if [(r["qubit"], r["reference"]) for r in breach["stop_condition_readout"]] != [(13, READOUT_ONE)]:
         raise AssertionError(f"batch-00 breach read {breach['stop_condition_readout']}")
+    if breach["claim_kind"] != STOPPED_CLAIM or breach["quadrature"] is not None:
+        raise AssertionError("a series whose batch-00 stop fired kept its inference")
     later = run(ideal_distribution, (0.02, 0.04), 9, ref_flips={("batch-02", READOUT_ZERO): {13: (0.3, 0.04)}})
     if later["stop_condition_readout"]:
         raise AssertionError("a breach after batch-00 is reported as the batch-00 stop")
