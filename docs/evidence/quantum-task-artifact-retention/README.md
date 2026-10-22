@@ -86,6 +86,15 @@ The plaintext sanitizer normalizes casing and separators for every declared
 private field and consumes escaped quotes inside quoted values. All retained
 text also passes the sanitizer's idempotence check. Verification rejects
 capture-only options rather than silently ignoring their requested behavior.
+Capture rejects private identifiers in logical source names, directory-entry
+names, and archive-member names before publishing metadata. Verification checks
+the same source-identity boundary on every retained inventory row.
+A direct private-named file can use a non-private `--source` logical label;
+directory and archive source identities must already satisfy the privacy rule.
+The [source-identity privacy regression inventory](source-identity-privacy-regressions/inventory.json)
+retains the failing directory/archive/metadata reproductions, the subsequent
+57-test passing result, and focused gate timing receipts. Every historical
+inventory source name passed the added privacy check without a byte change.
 
 PR #352 owns MCP/API repairs. PR #368 owns the approved Ascella plan and waiting
 evidence. PR #369 owns local simulator outputs and the full-precision cQASM

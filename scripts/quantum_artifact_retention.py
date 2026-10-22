@@ -123,8 +123,14 @@ def external_copy(name: str) -> bool:
     )
 
 
+def _validate_source_identity(name: str) -> None:
+    if clean_text(name) != name:
+        raise ValueError("source identity contains a private identifier; use a non-private logical source name")
+
+
 def _payload(arguments: tuple[str, bytes]) -> tuple[dict[str, Any], bytes | None]:
     name, data = arguments
+    _validate_source_identity(name)
     original_data = data
     row: dict[str, Any] = {"source": name, "source_bytes": len(data), "source_sha256": digest(data)}
     row["git_blob_oid"] = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
@@ -199,6 +205,7 @@ def capture(sources: dict[str, Path], output: Path, tracked_root: Path | None = 
                     tracked.setdefault(oid, name)
 
     def visit(path: Path, name: str) -> None:
+        _validate_source_identity(name)
         if path.is_symlink():
             rows.append({"source": name, "classification": "symbolic-link-not-followed"})
         elif path.is_dir():
@@ -292,6 +299,7 @@ def capture(sources: dict[str, Path], output: Path, tracked_root: Path | None = 
 
 def _verify_row(arguments: tuple[Path, dict[str, Any]]) -> str | None:
     output, row = arguments
+    _validate_source_identity(row["source"])
     if row["classification"] == "already-retained":
         repository_path = PurePosixPath(row["repository_path"])
         if repository_path.is_absolute() or ".." in repository_path.parts:

@@ -240,3 +240,52 @@ def test_check_rejects_capture_only_repository_option(tmp_path: Path) -> None:
     )
     if completed.returncode != 2 or b"--check reads retained evidence alone" not in completed.stderr:
         raise AssertionError("verification silently accepted a capture-only repository option")
+
+
+def test_capture_rejects_private_source_names_before_publication(tmp_path: Path) -> None:
+    source = tmp_path / "research"
+    source.mkdir()
+    (source / "alice@example.org.txt").write_text("bounded result")
+    output = tmp_path / "retained"
+    with pytest.raises(ValueError, match="source identity contains a private identifier"):
+        capture({"research": source}, output)
+    if output.exists():
+        raise AssertionError("private source metadata entered a capture destination")
+
+
+def test_private_file_name_can_use_a_nonprivate_logical_source_label(tmp_path: Path) -> None:
+    source = tmp_path / "alice@example.org.txt"
+    source.write_text("bounded result")
+    output = tmp_path / "retained"
+    capture({"logical-source": source}, output)
+    if b"alice@example.org" in (output / "inventory.json").read_bytes():
+        raise AssertionError("a source host filename bypassed its logical label")
+    check(output)
+
+
+def test_capture_rejects_private_archive_member_names(tmp_path: Path) -> None:
+    source = tmp_path / "research.tar"
+    with tarfile.open(source, "w") as stream:
+        member = tarfile.TarInfo("alice@example.org.txt")
+        member.size = 0
+        stream.addfile(member, io.BytesIO())
+    output = tmp_path / "retained"
+    with pytest.raises(ValueError, match="source identity contains a private identifier"):
+        capture({"research": source}, output)
+    if output.exists():
+        raise AssertionError("private archive metadata entered a capture destination")
+
+
+def test_verifier_rejects_private_source_metadata_with_matching_inventory_hash(tmp_path: Path) -> None:
+    source = tmp_path / "result.txt"
+    source.write_text("bounded result")
+    output = tmp_path / "retained"
+    capture({"logical-source": source}, output)
+    inventory = output / "inventory.json"
+    record = json.loads(inventory.read_bytes())
+    record["artifacts"][0]["source"] = "alice@example.org.txt"
+    data = json.dumps(record).encode()
+    inventory.write_bytes(data)
+    (output / "inventory.sha256").write_text(digest(data))
+    with pytest.raises(ValueError, match="source identity contains a private identifier"):
+        check(output)
