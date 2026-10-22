@@ -36,6 +36,12 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 [Tuna-17](notes/quantum_inspire/experiments.md). The
 [hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
+native execution limits, billing units and MCP observations. The
+[current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
+density interventions and a separately labeled trapped-ion qualification; every generated program remains
+unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
+tracks the audit and integration gates.
 The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
 the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
 

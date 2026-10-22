@@ -1,0 +1,1410 @@
+{
+ "networkx_version": "3.7",
+ "rows": [
+  {
+   "attains_dimension_bound": true,
+   "backend": "iqm:emerald",
+   "dimension_upper_bound": 13,
+   "max_qubits_per_job": 54,
+   "method": "connected four-vertex set integer program",
+   "patches": [
+    {
+     "preparation_edges": [
+      [
+       "QB2",
+       "QB1"
+      ],
+      [
+       "QB2",
+       "QB6"
+      ]
+     ],
+     "qubits": [
+      "QB1",
+      "QB12",
+      "QB2",
+      "QB6"
+     ],
+     "roles": {
+      "q0": "QB6",
+      "q1": "QB1",
+      "q2": "QB12",
+      "q3": "QB2"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB18",
+       "QB10"
+      ],
+      [
+       "QB18",
+       "QB19"
+      ]
+     ],
+     "qubits": [
+      "QB10",
+      "QB18",
+      "QB19",
+      "QB20"
+     ],
+     "roles": {
+      "q0": "QB19",
+      "q1": "QB10",
+      "q2": "QB20",
+      "q3": "QB18"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB4",
+       "QB3"
+      ],
+      [
+       "QB4",
+       "QB5"
+      ]
+     ],
+     "qubits": [
+      "QB11",
+      "QB3",
+      "QB4",
+      "QB5"
+     ],
+     "roles": {
+      "q0": "QB5",
+      "q1": "QB3",
+      "q2": "QB11",
+      "q3": "QB4"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB13",
+       "QB14"
+      ],
+      [
+       "QB13",
+       "QB7"
+      ]
+     ],
+     "qubits": [
+      "QB13",
+      "QB14",
+      "QB22",
+      "QB7"
+     ],
+     "roles": {
+      "q0": "QB7",
+      "q1": "QB14",
+      "q2": "QB22",
+      "q3": "QB13"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB16",
+       "QB15"
+      ],
+      [
+       "QB16",
+       "QB24"
+      ]
+     ],
+     "qubits": [
+      "QB15",
+      "QB16",
+      "QB23",
+      "QB24"
+     ],
+     "roles": {
+      "q0": "QB24",
+      "q1": "QB15",
+      "q2": "QB23",
+      "q3": "QB16"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB17",
+       "QB25"
+      ],
+      [
+       "QB17",
+       "QB9"
+      ]
+     ],
+     "qubits": [
+      "QB17",
+      "QB25",
+      "QB8",
+      "QB9"
+     ],
+     "roles": {
+      "q0": "QB9",
+      "q1": "QB25",
+      "q2": "QB8",
+      "q3": "QB17"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB27",
+       "QB26"
+      ],
+      [
+       "QB27",
+       "QB28"
+      ]
+     ],
+     "qubits": [
+      "QB26",
+      "QB27",
+      "QB28",
+      "QB35"
+     ],
+     "roles": {
+      "q0": "QB28",
+      "q1": "QB26",
+      "q2": "QB35",
+      "q3": "QB27"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB30",
+       "QB31"
+      ],
+      [
+       "QB30",
+       "QB38"
+      ]
+     ],
+     "qubits": [
+      "QB30",
+      "QB31",
+      "QB38",
+      "QB39"
+     ],
+     "roles": {
+      "q0": "QB38",
+      "q1": "QB31",
+      "q2": "QB39",
+      "q3": "QB30"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB40",
+       "QB32"
+      ],
+      [
+       "QB40",
+       "QB41"
+      ]
+     ],
+     "qubits": [
+      "QB32",
+      "QB40",
+      "QB41",
+      "QB47"
+     ],
+     "roles": {
+      "q0": "QB41",
+      "q1": "QB32",
+      "q2": "QB47",
+      "q3": "QB40"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB34",
+       "QB33"
+      ],
+      [
+       "QB34",
+       "QB42"
+      ]
+     ],
+     "qubits": [
+      "QB33",
+      "QB34",
+      "QB42",
+      "QB48"
+     ],
+     "roles": {
+      "q0": "QB42",
+      "q1": "QB33",
+      "q2": "QB48",
+      "q3": "QB34"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB44",
+       "QB36"
+      ],
+      [
+       "QB44",
+       "QB43"
+      ]
+     ],
+     "qubits": [
+      "QB36",
+      "QB43",
+      "QB44",
+      "QB50"
+     ],
+     "roles": {
+      "q0": "QB43",
+      "q1": "QB36",
+      "q2": "QB50",
+      "q3": "QB44"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB45",
+       "QB37"
+      ],
+      [
+       "QB45",
+       "QB46"
+      ]
+     ],
+     "qubits": [
+      "QB37",
+      "QB45",
+      "QB46",
+      "QB51"
+     ],
+     "roles": {
+      "q0": "QB46",
+      "q1": "QB37",
+      "q2": "QB51",
+      "q3": "QB45"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB53",
+       "QB49"
+      ],
+      [
+       "QB53",
+       "QB52"
+      ]
+     ],
+     "qubits": [
+      "QB49",
+      "QB52",
+      "QB53",
+      "QB54"
+     ],
+     "roles": {
+      "q0": "QB52",
+      "q1": "QB49",
+      "q2": "QB54",
+      "q3": "QB53"
+     }
+    }
+   ],
+   "physical_width": 54,
+   "scope": "connected disjoint template; physical independence and timing remain unqualified"
+  },
+  {
+   "attains_dimension_bound": true,
+   "backend": "iqm:garnet",
+   "dimension_upper_bound": 5,
+   "max_qubits_per_job": 20,
+   "method": "connected four-vertex set integer program",
+   "patches": [
+    {
+     "preparation_edges": [
+      [
+       "QB3",
+       "QB4"
+      ],
+      [
+       "QB3",
+       "QB8"
+      ]
+     ],
+     "qubits": [
+      "QB1",
+      "QB3",
+      "QB4",
+      "QB8"
+     ],
+     "roles": {
+      "q0": "QB8",
+      "q1": "QB4",
+      "q2": "QB1",
+      "q3": "QB3"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB11",
+       "QB10"
+      ],
+      [
+       "QB11",
+       "QB12"
+      ]
+     ],
+     "qubits": [
+      "QB10",
+      "QB11",
+      "QB12",
+      "QB17"
+     ],
+     "roles": {
+      "q0": "QB12",
+      "q1": "QB10",
+      "q2": "QB17",
+      "q3": "QB11"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB14",
+       "QB13"
+      ],
+      [
+       "QB14",
+       "QB15"
+      ]
+     ],
+     "qubits": [
+      "QB13",
+      "QB14",
+      "QB15",
+      "QB9"
+     ],
+     "roles": {
+      "q0": "QB15",
+      "q1": "QB13",
+      "q2": "QB9",
+      "q3": "QB14"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB19",
+       "QB18"
+      ],
+      [
+       "QB19",
+       "QB20"
+      ]
+     ],
+     "qubits": [
+      "QB16",
+      "QB18",
+      "QB19",
+      "QB20"
+     ],
+     "roles": {
+      "q0": "QB20",
+      "q1": "QB18",
+      "q2": "QB16",
+      "q3": "QB19"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "QB5",
+       "QB2"
+      ],
+      [
+       "QB5",
+       "QB6"
+      ]
+     ],
+     "qubits": [
+      "QB2",
+      "QB5",
+      "QB6",
+      "QB7"
+     ],
+     "roles": {
+      "q0": "QB6",
+      "q1": "QB2",
+      "q2": "QB7",
+      "q3": "QB5"
+     }
+    }
+   ],
+   "physical_width": 20,
+   "scope": "connected disjoint template; physical independence and timing remain unqualified"
+  },
+  {
+   "attains_dimension_bound": true,
+   "backend": "aqt:ibex-q1",
+   "dimension_upper_bound": 3,
+   "max_qubits_per_job": 12,
+   "method": "two matchings",
+   "patches": [
+    {
+     "preparation_edges": [
+      [
+       "0",
+       "4"
+      ],
+      [
+       "0",
+       "5"
+      ]
+     ],
+     "qubits": [
+      "0",
+      "4",
+      "5",
+      "9"
+     ],
+     "roles": {
+      "q0": "5",
+      "q1": "4",
+      "q2": "9",
+      "q3": "0"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "1",
+       "3"
+      ],
+      [
+       "1",
+       "6"
+      ]
+     ],
+     "qubits": [
+      "1",
+      "3",
+      "6",
+      "8"
+     ],
+     "roles": {
+      "q0": "6",
+      "q1": "3",
+      "q2": "8",
+      "q3": "1"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "10",
+       "11"
+      ],
+      [
+       "10",
+       "2"
+      ]
+     ],
+     "qubits": [
+      "10",
+      "11",
+      "2",
+      "7"
+     ],
+     "roles": {
+      "q0": "2",
+      "q1": "11",
+      "q2": "7",
+      "q3": "10"
+     }
+    }
+   ],
+   "physical_width": 12,
+   "scope": "connected disjoint template; physical independence and timing remain unqualified"
+  },
+  {
+   "attains_dimension_bound": true,
+   "backend": "ionq:forte-1",
+   "dimension_upper_bound": 9,
+   "max_qubits_per_job": 36,
+   "method": "two matchings",
+   "patches": [
+    {
+     "preparation_edges": [
+      [
+       "0",
+       "4"
+      ],
+      [
+       "0",
+       "5"
+      ]
+     ],
+     "qubits": [
+      "0",
+      "4",
+      "5",
+      "9"
+     ],
+     "roles": {
+      "q0": "5",
+      "q1": "4",
+      "q2": "9",
+      "q3": "0"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "1",
+       "3"
+      ],
+      [
+       "1",
+       "6"
+      ]
+     ],
+     "qubits": [
+      "1",
+      "3",
+      "6",
+      "8"
+     ],
+     "roles": {
+      "q0": "6",
+      "q1": "3",
+      "q2": "8",
+      "q3": "1"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "10",
+       "22"
+      ],
+      [
+       "10",
+       "23"
+      ]
+     ],
+     "qubits": [
+      "10",
+      "22",
+      "23",
+      "35"
+     ],
+     "roles": {
+      "q0": "23",
+      "q1": "22",
+      "q2": "35",
+      "q3": "10"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "11",
+       "21"
+      ],
+      [
+       "11",
+       "24"
+      ]
+     ],
+     "qubits": [
+      "11",
+      "21",
+      "24",
+      "34"
+     ],
+     "roles": {
+      "q0": "24",
+      "q1": "21",
+      "q2": "34",
+      "q3": "11"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "12",
+       "20"
+      ],
+      [
+       "12",
+       "25"
+      ]
+     ],
+     "qubits": [
+      "12",
+      "20",
+      "25",
+      "33"
+     ],
+     "roles": {
+      "q0": "25",
+      "q1": "20",
+      "q2": "33",
+      "q3": "12"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "13",
+       "2"
+      ],
+      [
+       "13",
+       "32"
+      ]
+     ],
+     "qubits": [
+      "13",
+      "2",
+      "32",
+      "7"
+     ],
+     "roles": {
+      "q0": "32",
+      "q1": "2",
+      "q2": "7",
+      "q3": "13"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "14",
+       "19"
+      ],
+      [
+       "14",
+       "26"
+      ]
+     ],
+     "qubits": [
+      "14",
+      "19",
+      "26",
+      "31"
+     ],
+     "roles": {
+      "q0": "26",
+      "q1": "19",
+      "q2": "31",
+      "q3": "14"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "15",
+       "18"
+      ],
+      [
+       "15",
+       "27"
+      ]
+     ],
+     "qubits": [
+      "15",
+      "18",
+      "27",
+      "30"
+     ],
+     "roles": {
+      "q0": "27",
+      "q1": "18",
+      "q2": "30",
+      "q3": "15"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "16",
+       "17"
+      ],
+      [
+       "16",
+       "28"
+      ]
+     ],
+     "qubits": [
+      "16",
+      "17",
+      "28",
+      "29"
+     ],
+     "roles": {
+      "q0": "28",
+      "q1": "17",
+      "q2": "29",
+      "q3": "16"
+     }
+    }
+   ],
+   "physical_width": 36,
+   "scope": "connected disjoint template; physical independence and timing remain unqualified"
+  },
+  {
+   "attains_dimension_bound": true,
+   "backend": "rigetti:cepheus-1-108q",
+   "dimension_upper_bound": 26,
+   "max_qubits_per_job": 107,
+   "method": "two matchings",
+   "patches": [
+    {
+     "preparation_edges": [
+      [
+       "18",
+       "27"
+      ],
+      [
+       "18",
+       "9"
+      ]
+     ],
+     "qubits": [
+      "0",
+      "18",
+      "27",
+      "9"
+     ],
+     "roles": {
+      "q0": "9",
+      "q1": "27",
+      "q2": "0",
+      "q3": "18"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "100",
+       "101"
+      ],
+      [
+       "100",
+       "99"
+      ]
+     ],
+     "qubits": [
+      "100",
+      "101",
+      "90",
+      "99"
+     ],
+     "roles": {
+      "q0": "99",
+      "q1": "101",
+      "q2": "90",
+      "q3": "100"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "103",
+       "102"
+      ],
+      [
+       "103",
+       "94"
+      ]
+     ],
+     "qubits": [
+      "102",
+      "103",
+      "85",
+      "94"
+     ],
+     "roles": {
+      "q0": "94",
+      "q1": "102",
+      "q2": "85",
+      "q3": "103"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "105",
+       "104"
+      ],
+      [
+       "105",
+       "106"
+      ]
+     ],
+     "qubits": [
+      "104",
+      "105",
+      "106",
+      "107"
+     ],
+     "roles": {
+      "q0": "106",
+      "q1": "104",
+      "q2": "107",
+      "q3": "105"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "11",
+       "2"
+      ],
+      [
+       "11",
+       "20"
+      ]
+     ],
+     "qubits": [
+      "11",
+      "2",
+      "20",
+      "3"
+     ],
+     "roles": {
+      "q0": "20",
+      "q1": "2",
+      "q2": "3",
+      "q3": "11"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "21",
+       "12"
+      ],
+      [
+       "21",
+       "30"
+      ]
+     ],
+     "qubits": [
+      "12",
+      "21",
+      "30",
+      "39"
+     ],
+     "roles": {
+      "q0": "30",
+      "q1": "12",
+      "q2": "39",
+      "q3": "21"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "22",
+       "13"
+      ],
+      [
+       "22",
+       "31"
+      ]
+     ],
+     "qubits": [
+      "13",
+      "22",
+      "31",
+      "40"
+     ],
+     "roles": {
+      "q0": "31",
+      "q1": "13",
+      "q2": "40",
+      "q3": "22"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "14",
+       "23"
+      ],
+      [
+       "14",
+       "5"
+      ]
+     ],
+     "qubits": [
+      "14",
+      "23",
+      "4",
+      "5"
+     ],
+     "roles": {
+      "q0": "5",
+      "q1": "23",
+      "q2": "4",
+      "q3": "14"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "15",
+       "24"
+      ],
+      [
+       "15",
+       "6"
+      ]
+     ],
+     "qubits": [
+      "15",
+      "24",
+      "6",
+      "7"
+     ],
+     "roles": {
+      "q0": "6",
+      "q1": "24",
+      "q2": "7",
+      "q3": "15"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "16",
+       "17"
+      ],
+      [
+       "16",
+       "25"
+      ]
+     ],
+     "qubits": [
+      "16",
+      "17",
+      "25",
+      "26"
+     ],
+     "roles": {
+      "q0": "25",
+      "q1": "17",
+      "q2": "26",
+      "q3": "16"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "37",
+       "28"
+      ],
+      [
+       "37",
+       "46"
+      ]
+     ],
+     "qubits": [
+      "28",
+      "37",
+      "46",
+      "55"
+     ],
+     "roles": {
+      "q0": "46",
+      "q1": "28",
+      "q2": "55",
+      "q3": "37"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "38",
+       "29"
+      ],
+      [
+       "38",
+       "47"
+      ]
+     ],
+     "qubits": [
+      "29",
+      "38",
+      "47",
+      "56"
+     ],
+     "roles": {
+      "q0": "47",
+      "q1": "29",
+      "q2": "56",
+      "q3": "38"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "41",
+       "32"
+      ],
+      [
+       "41",
+       "50"
+      ]
+     ],
+     "qubits": [
+      "32",
+      "41",
+      "50",
+      "59"
+     ],
+     "roles": {
+      "q0": "50",
+      "q1": "32",
+      "q2": "59",
+      "q3": "41"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "42",
+       "33"
+      ],
+      [
+       "42",
+       "51"
+      ]
+     ],
+     "qubits": [
+      "33",
+      "42",
+      "51",
+      "60"
+     ],
+     "roles": {
+      "q0": "51",
+      "q1": "33",
+      "q2": "60",
+      "q3": "42"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "43",
+       "34"
+      ],
+      [
+       "43",
+       "52"
+      ]
+     ],
+     "qubits": [
+      "34",
+      "43",
+      "52",
+      "61"
+     ],
+     "roles": {
+      "q0": "52",
+      "q1": "34",
+      "q2": "61",
+      "q3": "43"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "44",
+       "35"
+      ],
+      [
+       "44",
+       "53"
+      ]
+     ],
+     "qubits": [
+      "35",
+      "44",
+      "53",
+      "62"
+     ],
+     "roles": {
+      "q0": "53",
+      "q1": "35",
+      "q2": "62",
+      "q3": "44"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "45",
+       "36"
+      ],
+      [
+       "45",
+       "54"
+      ]
+     ],
+     "qubits": [
+      "36",
+      "45",
+      "54",
+      "63"
+     ],
+     "roles": {
+      "q0": "54",
+      "q1": "36",
+      "q2": "63",
+      "q3": "45"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "48",
+       "49"
+      ],
+      [
+       "48",
+       "57"
+      ]
+     ],
+     "qubits": [
+      "48",
+      "49",
+      "57",
+      "58"
+     ],
+     "roles": {
+      "q0": "57",
+      "q1": "49",
+      "q2": "58",
+      "q3": "48"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "64",
+       "65"
+      ],
+      [
+       "64",
+       "73"
+      ]
+     ],
+     "qubits": [
+      "64",
+      "65",
+      "73",
+      "74"
+     ],
+     "roles": {
+      "q0": "73",
+      "q1": "65",
+      "q2": "74",
+      "q3": "64"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "66",
+       "67"
+      ],
+      [
+       "66",
+       "75"
+      ]
+     ],
+     "qubits": [
+      "66",
+      "67",
+      "75",
+      "76"
+     ],
+     "roles": {
+      "q0": "75",
+      "q1": "67",
+      "q2": "76",
+      "q3": "66"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "77",
+       "68"
+      ],
+      [
+       "77",
+       "86"
+      ]
+     ],
+     "qubits": [
+      "68",
+      "77",
+      "86",
+      "95"
+     ],
+     "roles": {
+      "q0": "86",
+      "q1": "68",
+      "q2": "95",
+      "q3": "77"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "78",
+       "69"
+      ],
+      [
+       "78",
+       "87"
+      ]
+     ],
+     "qubits": [
+      "69",
+      "78",
+      "87",
+      "96"
+     ],
+     "roles": {
+      "q0": "87",
+      "q1": "69",
+      "q2": "96",
+      "q3": "78"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "70",
+       "71"
+      ],
+      [
+       "70",
+       "79"
+      ]
+     ],
+     "qubits": [
+      "70",
+      "71",
+      "79",
+      "80"
+     ],
+     "roles": {
+      "q0": "79",
+      "q1": "71",
+      "q2": "80",
+      "q3": "70"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "81",
+       "72"
+      ],
+      [
+       "81",
+       "82"
+      ]
+     ],
+     "qubits": [
+      "72",
+      "81",
+      "82",
+      "91"
+     ],
+     "roles": {
+      "q0": "82",
+      "q1": "72",
+      "q2": "91",
+      "q3": "81"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "83",
+       "84"
+      ],
+      [
+       "83",
+       "92"
+      ]
+     ],
+     "qubits": [
+      "83",
+      "84",
+      "92",
+      "93"
+     ],
+     "roles": {
+      "q0": "92",
+      "q1": "84",
+      "q2": "93",
+      "q3": "83"
+     }
+    },
+    {
+     "preparation_edges": [
+      [
+       "88",
+       "89"
+      ],
+      [
+       "88",
+       "97"
+      ]
+     ],
+     "qubits": [
+      "88",
+      "89",
+      "97",
+      "98"
+     ],
+     "roles": {
+      "q0": "97",
+      "q1": "89",
+      "q2": "98",
+      "q3": "88"
+     }
+    }
+   ],
+   "physical_width": 108,
+   "scope": "connected disjoint template; physical independence and timing remain unqualified"
+  }
+ ],
+ "schema": "provider-four-qubit-packing-v1",
+ "scipy_version": "1.18.1",
+ "sources_sha256": {
+  "iqm.json": "d8286e2ec0a0d30941454a3a95da18d39e7b861cb3118da938d2a54033451e1f",
+  "open-quantum/catalogue.json": "2384ced077d39c13fe5e919b11f573f94863d691273815a13e12f4398927e990"
+ }
+}

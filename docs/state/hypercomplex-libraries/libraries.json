@@ -2003,6 +2003,7 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/iqm_mcp_server.py",
+    "scripts/oq_mcp_server.py",
     "scripts/qd_mcp_server.py",
     "scripts/qi_mcp_server.py"
    ],
@@ -2435,10 +2436,12 @@
     "scripts/n21_qx_conformance.py",
     "scripts/n21_replica_covariance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/packed_pauli_analysis.py",
     "scripts/patch_window_analysis.py",
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
+    "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
@@ -2856,6 +2859,7 @@
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
+    "scripts/oq_mcp_server.py",
     "scripts/oq_platform.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -4193,6 +4197,7 @@
     "scripts/n21_orbit_rca.py",
     "scripts/n21_qx_conformance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/packed_pauli_probe.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
@@ -5613,6 +5618,7 @@
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
     "scripts/patch_window_analysis.py",
+    "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
@@ -9909,6 +9915,7 @@
    "__future__",
    "anyio",
    "collections",
+   "datetime",
    "functools",
    "iqm_platform",
    "json",
@@ -9917,7 +9924,8 @@
    "pydantic",
    "sys",
    "typing",
-   "urllib"
+   "urllib",
+   "uuid"
   ],
   "scripts/iqm_platform.py": [
    "__future__",
@@ -10384,6 +10392,16 @@
    "random",
    "sys"
   ],
+  "scripts/oq_mcp_server.py": [
+   "__future__",
+   "collections",
+   "datetime",
+   "functools",
+   "json",
+   "mcp",
+   "openquantum_mcp",
+   "typing"
+  ],
   "scripts/oq_platform.py": [
    "__future__",
    "argparse",
@@ -10400,6 +10418,30 @@
    "os",
    "pathlib",
    "shutil",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
+  "scripts/packed_pauli_analysis.py": [
+   "__future__",
+   "collections",
+   "fractions",
+   "numpy",
+   "operator",
+   "parallel",
+   "pathlib",
+   "sys"
+  ],
+  "scripts/packed_pauli_probe.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "random",
    "sys",
    "tempfile",
    "typing"
@@ -10474,6 +10516,37 @@
    "pathlib",
    "photonic_repeat_readout",
    "qd_platform",
+   "typing"
+  ],
+  "scripts/provider_api_audit.py": [
+   "__future__",
+   "argparse",
+   "capture_oq_docs",
+   "datetime",
+   "hashlib",
+   "iqm_platform",
+   "json",
+   "oq_platform",
+   "pathlib",
+   "qd_platform",
+   "typing"
+  ],
+  "scripts/provider_job_budget.py": [
+   "__future__",
+   "decimal"
+  ],
+  "scripts/provider_patch_packing.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "itertools",
+   "json",
+   "networkx",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
    "typing"
   ],
   "scripts/python_call_graph.py": [
@@ -11547,6 +11620,7 @@
   "mcp": [
    "mcp"
   ],
+  "networkx": [],
   "numpy": [
    "numpy"
   ],
@@ -11630,7 +11704,9 @@
   ]
  },
  "import_mapping_origin": "normalized importlib.metadata.packages_distributions observation with ISOLATED_IMPORTS fallback; checks project fresh tracked AST through this retained map instead of reinterpreting another host",
- "unresolved_import_roots": [],
+ "unresolved_import_roots": [
+  "networkx"
+ ],
  "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
  "coverage": "all requirements locks, top-level literal pins and referenced runtime pin files in scripts/kaggle_run.py (without executing dispatch), retained IQM distributions, maintained scientific roles and tracked runtime imports; every named package-table entry in the maintained ecosystem and algebra-candidate notes, plus retained provider PyPI records",
  "host_observation_policy": "host versions retained; historical import locations archived separately; current imported_by follows fresh AST"
