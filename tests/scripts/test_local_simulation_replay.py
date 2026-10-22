@@ -97,17 +97,34 @@ def test_retained_histogram_rejects_impossible_readout_reference() -> None:
 def test_live_replay_checks_default_writer_histograms(monkeypatch: pytest.MonkeyPatch) -> None:
     import qi_stack
 
-    histograms = [
-        row["simulations"][kind]["counts"]
+    simulations = [
+        {field: row["simulations"][kind][field] for field in ("counts", "state")}
         for directory, _, _ in local_simulation_replay.QI_BUNDLES
         for row in load(directory + "/qi.json")["rows"]
         for kind in ("source", "compiled")
     ]
-    histograms[0] = {"11": 1024}
-    payload = {"rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"], "histograms": histograms}
+    simulations[0]["counts"] = {"11": 1024}
+    payload = {"rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"], "simulations": simulations}
     monkeypatch.setattr(qi_stack, "live", lambda *args: True)
     monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
-    with pytest.raises(ValueError, match="seeded histograms"):
+    with pytest.raises(ValueError, match="seeded counts or states"):
+        local_simulation_replay.live_qi()
+
+
+def test_live_replay_checks_default_writer_states(monkeypatch: pytest.MonkeyPatch) -> None:
+    import qi_stack
+
+    simulations = [
+        {field: row["simulations"][kind][field] for field in ("counts", "state")}
+        for directory, _, _ in local_simulation_replay.QI_BUNDLES
+        for row in load(directory + "/qi.json")["rows"]
+        for kind in ("source", "compiled")
+    ]
+    simulations[0]["state"] = {"00": [0.0, 1.0]}
+    payload = {"rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"], "simulations": simulations}
+    monkeypatch.setattr(qi_stack, "live", lambda *args: True)
+    monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
+    with pytest.raises(ValueError, match="seeded counts or states"):
         local_simulation_replay.live_qi()
 
 

@@ -209,14 +209,21 @@ def check() -> None:
             raise ValueError("retained full-precision exporter identity differs")
 
 
-def qi_histogram(code: str) -> dict[str, int]:
+def qi_simulation(arguments: tuple[str, str | None]) -> dict[str, Any]:
     from local_photonic_compiler_crosscheck import qi_warning_policy
 
     qi_warning_policy()
     import qxelarator
 
+    code, unitary_probe = arguments
     result = qxelarator.execute_string(code, iterations=1024, seed=20261022)
-    return {str(bits): int(count) for bits, count in result.results.items()}
+    state_result = (
+        result if unitary_probe is None else qxelarator.execute_string(unitary_probe, iterations=1, seed=20261022)
+    )
+    return {
+        "counts": {str(bits): int(count) for bits, count in result.results.items()},
+        "state": {bits: [value.real, value.imag] for bits, value in state_result.state.items()},
+    }
 
 
 def live_qi() -> None:
@@ -229,31 +236,33 @@ import json,sys
 sys.path[:0] = ['scripts', 'gororoba_quantum']
 from pathlib import Path
 from local_photonic_compiler_crosscheck import qi_case
-from local_simulation_replay import QI_BUNDLES, load, qi_histogram
+from local_simulation_replay import QI_BUNDLES, load, qi_simulation
 from parallel import ordered_map
 inputs = []
 root = Path('results/quantum_inspire/runs/tuna17-quaternion-order-noise')
 for manifest in sorted(root.glob('order-batch-*/cases.json')):
     cases = json.loads(manifest.read_text())['circuits']
     inputs.extend((str(manifest.parent), case | {'_full_precision': True}) for case in cases)
-histogram_inputs = []
-for directory, _, _ in QI_BUNDLES:
+simulation_inputs = []
+for directory, _, terminal in QI_BUNDLES:
     for row in load(directory + '/qi.json')['rows']:
-        histogram_inputs.extend([Path(row['case']).read_text(), row['compiled']])
+        for kind, code in [('source', Path(row['case']).read_text()), ('compiled', row['compiled'])]:
+            probe = row['simulations'][kind]['unitary_probe'] if terminal else None
+            simulation_inputs.append((code, probe))
 print(json.dumps({'rows': ordered_map(qi_case, inputs, min_items=1),
-                 'histograms': ordered_map(qi_histogram, histogram_inputs, min_items=1)}))
+                 'simulations': ordered_map(qi_simulation, simulation_inputs, min_items=1)}))
 """
     actual = json.loads(run(["-B", "-W", "error", "-c", code]))
     if actual["rows"] != load("fullprecision-compiler-crosscheck/qi.json")["rows"]:
         raise ValueError("live pinned QI replay differs from retained full-precision evidence")
-    expected_histograms = [
-        row["simulations"][kind]["counts"]
+    expected_simulations = [
+        {field: row["simulations"][kind][field] for field in ("counts", "state")}
         for directory, _, _ in QI_BUNDLES
         for row in load(directory + "/qi.json")["rows"]
         for kind in ("source", "compiled")
     ]
-    if actual["histograms"] != expected_histograms:
-        raise ValueError("live pinned QI seeded histograms differ from retained source or compiled evidence")
+    if actual["simulations"] != expected_simulations:
+        raise ValueError("live pinned QI seeded counts or states differ from retained source or compiled evidence")
 
 
 def main() -> None:
