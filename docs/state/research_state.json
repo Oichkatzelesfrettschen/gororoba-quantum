@@ -6504,7 +6504,7 @@
         "results/live/N21_ORBIT_RCA.md"
       ],
       "gates": {
-        "core-612": "replay",
+        "core-612": "regression",
         "core-613": "replay"
       },
       "acquisitions": [
@@ -6542,9 +6542,9 @@
         "results/live/N21_SPECTATOR_RAMSEY_CASE.md"
       ],
       "gates": {
-        "core-600": "replay",
-        "core-603": "replay",
-        "core-605": "replay"
+        "core-600": "regression",
+        "core-603": "regression",
+        "core-605": "regression"
       },
       "acquisitions": [
         "fez-n21-spectator-ground-control",
@@ -6581,7 +6581,7 @@
       ],
       "gates": {
         "core-617": "replay",
-        "core-619": "replay"
+        "core-619": "regression"
       },
       "acquisitions": [
         "fez-n21-q143-segmented-sweep"
@@ -6614,7 +6614,7 @@
         "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
       ],
       "gates": {
-        "core-620": "replay"
+        "core-620": "regression"
       },
       "acquisitions": [
         "marrakesh-n21-q47-segmented-baseline"
