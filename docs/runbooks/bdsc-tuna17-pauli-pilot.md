@@ -90,6 +90,9 @@ approved ([AGENTS.md](../../AGENTS.md#hardware-services)).
    one stamp for the series, writes `series-gate.json` and submits through
    `qi_platform.submit`. A refused stop ends the series; a directory holding
    `submission.json` or `submission-state.json` is never resubmitted.
+   `"$QI_PYTHON" scripts/qi_series_watch.py bdsc_pauli_tuna_17` prints each
+   job's queue wait and run time and each collected batch's execution times,
+   applied pause, idle gap and stop metrics while the series runs.
 5. After the last batch, `"$PYTHON" scripts/qi_bdsc_pauli_cases.py --analyze RUN_DIR... --out FILE`
    over all nine run directories. The raw scores are primary; tensor-model
    mitigated scores carry Jeffreys-posterior intervals conditional on
