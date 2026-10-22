@@ -1,5 +1,10 @@
 # Source index
 
+The `publication_status` ledger in [SOURCES.json](SOURCES.json) separates verified journal
+identities, arXiv-supplied journal references and unverified venues. The
+[Crossref reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records retrieval
+identities and scopes; bibliographic verification differs from a mathematical proof check.
+
 The source library separates repository-hosted papers from local reading copies.
 All source notes, retrieval URLs, original byte identities, and reading scopes remain
 public in [SOURCES.json](SOURCES.json) and the linked notes. License evidence

@@ -1836,10 +1836,12 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ]
   },
@@ -2442,6 +2444,7 @@
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
+    "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_readout_ringdown_cases.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
@@ -2590,9 +2593,11 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
+    "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
+    "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_readout_ringdown_cases.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
@@ -4182,6 +4187,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_ibm_noise_replay.py",
+    "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_folded_jobs.py",
@@ -4301,7 +4307,9 @@
     "scripts/n21_orbit_rca.py",
     "scripts/n21_qx_conformance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_ibm_noise_replay.py",
+    "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_folded_jobs.py",
@@ -5309,7 +5317,8 @@
    "historical_imported_by": [
     "scripts/box_kite_qx_sweep.py",
     "scripts/n21_qx_conformance.py",
-    "scripts/qi_mcp_server.py"
+    "scripts/qi_mcp_server.py",
+    "scripts/qx_local_series.py"
    ]
   },
   {
@@ -5634,6 +5643,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/patch_window_analysis.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_zz_map_analysis.py",
@@ -10608,6 +10618,28 @@
    "sys",
    "tempfile",
    "typing"
+  ],
+  "scripts/qi_matched_zero_divisor.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "cqasm",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_stack",
+   "qi_toolchain_check",
+   "qi_zero_divisor_cases",
+   "qiskit",
+   "re",
+   "sys",
+   "typing",
+   "warnings"
   ],
   "scripts/qi_mcp_server.py": [
    "__future__",

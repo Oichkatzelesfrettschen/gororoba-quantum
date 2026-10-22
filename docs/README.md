@@ -27,6 +27,14 @@ Placement, naming, linking and immutability rules for every new or moved documen
 
 ## Start here by task
 
+Selected zero-divisor hardware witnesses have retained acquisitions on
+[IBM Kingston](../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md) and
+[Tuna-17](notes/quantum_inspire/experiments.md). The
+[hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
+The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
+the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
+
 The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
 and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
 The checksum-bound historical README and replay keep their bytes. The active source ledgers
@@ -38,6 +46,8 @@ for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
 with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
+The [determinant-contract successor](../results/live/rank-sector-endpoint-decomposition-determinant-contracts.json)
+also binds the extended `rank_polynomials.py`; its scientific fields remain identical.
 
 | Task | Read in order |
 |---|---|

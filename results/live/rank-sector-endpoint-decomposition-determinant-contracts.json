@@ -1,0 +1,510 @@
+{
+ "contract_kinds": {
+  "packing_difference": 16,
+  "success_mean": 160,
+  "test": 20
+ },
+ "devices": {
+  "ibm_fez": {
+   "bright_outside_weak_sector": {
+    "count": 27,
+    "measured": 0.8999,
+    "model": 0.9321
+   },
+   "dark_all": {
+    "count": 44,
+    "measured": 0.0535,
+    "model": 0.0401
+   },
+   "dark_outside_weak_sector": {
+    "count": 42,
+    "measured": 0.053,
+    "model": 0.0385
+   },
+   "off_model_by_probe": {
+    "basis": 2,
+    "bright": 2,
+    "bright_at_one": 5,
+    "kernel_at_one": 1,
+    "pulse_zero_two": 1
+   },
+   "off_model_by_sector": {
+    "1": 1,
+    "2": 7,
+    "7": 3
+   },
+   "off_model_endpoints": 11,
+   "packing_differences": {
+    "rank_sector_0_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0,
+     "half_width": 0.0687
+    },
+    "rank_sector_0_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0151,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0073,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0107,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0073,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0122,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0046,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0054,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_bright_t1d1_packed_minus_reference": {
+     "estimate": 0.0005,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0007,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0059,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0059,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0076,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_bright_t1d1_packed_minus_reference": {
+     "estimate": 0.0054,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0085,
+     "half_width": 0.0687
+    }
+   },
+   "tests": 20,
+   "tests_rejecting": 20,
+   "weak_sector": 2,
+   "weak_sector_qubits": [
+    2,
+    3,
+    4,
+    16
+   ]
+  },
+  "ibm_kingston": {
+   "bright_outside_weak_sector": {
+    "count": 22,
+    "measured": 0.8999,
+    "model": 0.9423
+   },
+   "dark_all": {
+    "count": 44,
+    "measured": 0.0573,
+    "model": 0.0288
+   },
+   "dark_outside_weak_sector": {
+    "count": 35,
+    "measured": 0.0566,
+    "model": 0.0301
+   },
+   "off_model_by_probe": {
+    "basis": 2,
+    "bright": 9,
+    "bright_at_one": 5,
+    "kernel_at_one": 1,
+    "persistent_kernel": 3,
+    "pulse_one_two": 3,
+    "pulse_zero_two": 6
+   },
+   "off_model_by_sector": {
+    "0": 1,
+    "1": 2,
+    "2": 4,
+    "3": 1,
+    "4": 15,
+    "5": 3,
+    "6": 1,
+    "7": 2
+   },
+   "off_model_endpoints": 29,
+   "packing_differences": {
+    "rank_sector_0_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0034,
+     "half_width": 0.0687
+    },
+    "rank_sector_0_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0081,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0085,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0051,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0325,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0042,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0024,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0083,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_bright_t1d1_packed_minus_reference": {
+     "estimate": 0.0879,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": -0.0071,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.011,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": -0.0012,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0007,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0022,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0056,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0017,
+     "half_width": 0.0687
+    }
+   },
+   "tests": 20,
+   "tests_rejecting": 20,
+   "weak_sector": 4,
+   "weak_sector_qubits": [
+    0,
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ "homogeneity_counterexample": {
+  "full_distribution_p": 0.0,
+  "modal_rate_change": 0.0,
+  "total_variation": 0.375
+ },
+ "inputs_sha256": {
+  "2026-10-13T024407.448597Z/record.json": "8c9bd292a6d6f976f2e7014fe49fd99ed7327ad79a982bdfb8ae641a64877c4d",
+  "2026-10-13T025444.603480Z/collect.json": "2c3cc9f751bddc7a0aa86460601f426411eb9a4c87e5b4819c0779f5cb23db13",
+  "2026-10-13T031726.380783Z/record.json": "5563c7e59b7e3a90d49cecefed223d354afcbbbacc121d7d2f3899455c6e37f6",
+  "2026-10-13T032011.664435Z/collect.json": "a0a4e59162ea9837322842a7e9094ef46761164b8a47a2917081338ec4b7c963",
+  "2026-10-13T032011.664435Z/record.json": "cde647e53a4a08164f71e474b63b36b60ad1417a850c48adb2907af050dc2368",
+  "2026-10-15T030638.132007Z/record.json": "fbc8826e6dfcd3924ab57f076912b7cc7edbf3675916e5dea7d2e9c18415f6e9",
+  "2026-10-15T030903.235380Z/collect.json": "daa5b9eb360ee7ac639a6a2195c092ca11fb63c22940e882934d9a1a83d66fe9",
+  "2026-10-15T030903.235380Z/record.json": "1e36e27c9e4f10a5fab1e0e37028c89c832717e06822d8bb17e5fd85b3eba1a0",
+  "2026-10-15T031229.371738Z/calibration-scoped-analysis.json": "879692e07df3594a4ab61c949ecba941a253bed3caae166c31a5d47c639f2808",
+  "2026-10-15T031229.371738Z/record.json": "044dd98ad5483accb0acfe3fa10841c7c06b1cac76f41fefe05fd89cc6645f07"
+ },
+ "kingston_block_homogeneity": {
+  "raw_files_sha256": {
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_00.json": "e929963b0fe97f41ddeceb05ece573e64ec76ec16647bca65a6c69b2b5f754c6",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_01.json": "164e7afa1b9c7cacbf90a99f5e97014e5efa9c0326b8e784ae2ebfb8ab95f888",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_02.json": "3982d61fcc15e6d16896567d94cfa852477f3c6b87123df5f4889eccfbd57cc6",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_03.json": "35ad15c481fe582df31ce74b5cd218dfaff14cf0a840838ac136ed2f5a7e0452",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_04.json": "9da52d41197079d8c2446751538d919056417c2587d2a294b5115337cd9b2720",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_05.json": "71ebb83f60141c4912c3b494cb5a473c3be44a24ca0b05beb4ddef18552557ca",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_06.json": "bc22f814f55db8ebc223808d0e8e0e18ca3ed1192c2329357af76fe3c463551d",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_07.json": "29d179653f9db0a1adb26e3c35d9993621205c39cdf4476b322b64e688a6b7a1",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_08.json": "44891c0dd84f708ef1ce3217564fa56157eb2be8edbe611881f3e43c762365c8",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_09.json": "bc8c8fb1e44b2a833dbe6a46b8fe21cb7969e1b4c51a0972139cc2a3b57739e9",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_10.json": "ec1b477775396fe042873f0a8e1bf2e5b32b840231d0591046fca67f38b33ef9",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_11.json": "400cbc544229abb0355d4d839d325e0d54eae6b53026c8335ca606d938d2e008",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_12.json": "ba0516cb3f43e938bda797985be26940f96440da350d08e097c99f3b9511dec0",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_13.json": "d0481271db45488d02165ed505ffdd07198bed32b2f78458d315325771d83341",
+   "2026-10-15T030903.235380Z/raw/db848h6r6oqs7388nfm0/pub_14.json": "be4828c00e194aab21054549881c01579802926dca41e361d0e15011a05aef39",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_00.json": "bdf31eec252fcff059f64eb21070c4b7e4a58fb8c9c775911f27e257af3b6611",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_01.json": "86240b8bf90cb374a3bcbfa44078b45d8cd57fd61ed99dff3dfebf5b61ddbb3b",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_02.json": "8d15a39fc01207440aeb49ab21dabd4bd0713549d7569051c7c80e9710624734",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_03.json": "e4f96a24bcd274df41d94bcda0ebf44220066a33d4332d2044de212e02ca1e60",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_04.json": "edff7816aa97cb3073eeef7e42cb3d9dc130e5a5b15fa37870f85782e8604789",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_05.json": "6a0513c74abbe375d9667ba3ab79d378e7d1fe76c147150aee1c60d771bde764",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_06.json": "8c1f270271b4517c30d9c5c84ea45802a26919a0bedc00bb085021178cfc3ee6",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_07.json": "eb71bde66d591b666b437645d7e9f3218d5dc2316205dec02dd7cba2a2500a96",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_08.json": "b617c0dc4e03844453343b43b2ec7228b0a403cf59fb88defb33051108b32422",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_09.json": "3105c9a06c2ddb19cd518785b604008394153d6d63d0de3af5ffac93ee5fa3b6",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_10.json": "fb23e37a7dff29574bd5878ebe5d8a8493c2b20d645af39f1d072427cbc7c0c6",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_11.json": "56173da00f4bc8b905b964b9f082c527837447f1a313a5666a7eaa0aefcb814a",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_12.json": "0ab76fe940398ce05d430da5b0b752f3661f4b812786c266a919341d9d7a44ef",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_13.json": "3c284214309269e2ca73c105465fbc186201ad98b1c326a08fccb60cf4b5de70",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_14.json": "dcea63dfa389ecfec86806b8fee6936084ce3caea38223c653f79d92fbc73cfa",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_15.json": "336ecbb7ce36c75eb5d02039335d5941c6b5c8b38a62324de5fd2d28c369c185",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_16.json": "2d6f487510868857d65296cca288a0136766de7122534ffe7bd5ad06cd6e53a8",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_17.json": "8f6b878f8551cb0cc5a204aaa71a8c8914ba8a18e5d2b1d3fd0921ce58a15c84",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_18.json": "471bdee53787aed1a954e02ae73088a3d41e1ab01e746987898f577ee218382e",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_19.json": "efad2796394da17a577943fdff37c0677387ad3d839a07ad5ddff8f7c6b57201",
+   "2026-10-15T030903.235380Z/raw/db848hmil99s73fp99tg/pub_20.json": "c3e28fb9c87484fb443f4e0245ed43395f83951c43c9d5190a8de2053eeeebcf"
+  },
+  "scope": "Pearson homogeneity of each member's complete outcome distribution over 8 consecutive shot blocks. A large p-value means no block-to-block change resolved at this block size; it does not establish shot independence or exclude slower or within-block dependence.",
+  "sectors": {
+   "0": {
+    "members": 22,
+    "members_p_below_0_01": 1,
+    "min_p": 0.008186
+   },
+   "1": {
+    "members": 22,
+    "members_p_below_0_01": 0,
+    "min_p": 0.0153
+   },
+   "2": {
+    "members": 22,
+    "members_p_below_0_01": 0,
+    "min_p": 0.014122
+   },
+   "3": {
+    "members": 22,
+    "members_p_below_0_01": 0,
+    "min_p": 0.051912
+   },
+   "4": {
+    "members": 22,
+    "members_p_below_0_01": 0,
+    "min_p": 0.025049
+   },
+   "5": {
+    "members": 22,
+    "members_p_below_0_01": 1,
+    "min_p": 0.005676
+   },
+   "6": {
+    "members": 22,
+    "members_p_below_0_01": 0,
+    "min_p": 0.012757
+   },
+   "7": {
+    "members": 22,
+    "members_p_below_0_01": 1,
+    "min_p": 0.00339
+   }
+  }
+ },
+ "kingston_vs_fez_separated": [
+  "rank_sector_2_bright_at_one_t1d1_success",
+  "rank_sector_4_bright_t0d1_success",
+  "rank_sector_4_bright_t1d1_success",
+  "rank_sector_4_bright_t1d2_success",
+  "rank_sector_4_bright_t2d1_success",
+  "rank_sector_4_bright_t3d2_success",
+  "rank_sector_4_pulse_one_two_t0d1_success",
+  "rank_sector_4_pulse_zero_two_t1d1_success"
+ ],
+ "producer_sources_sha256": {
+  "boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+  "cd_core.py": "cccd78580b5931ed72ea6c364361fa3d920a1617fa1ab70460e3e11ce6ca9300",
+  "rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+  "rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+  "rank_path_topology.py": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+  "rank_polynomials.py": "0d08095bab24f8743f7c547f01223887e092e8643fb26661ed01b8f03a460f98",
+  "rank_sector_contracts.py": "75b53897d7c2842be371f980e33d7f76cd0bc970b7dd79ab540b21f73ef2c144",
+  "rank_sector_experiments.py": "221bf8ed4043684843f9c6da24161a62ba5bde157078fd2f27e9b8b58d567436",
+  "select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354"
+ },
+ "ripple_lanes": {
+  "ibm_fez": {
+   "0": {
+    "box_kite_median": 0.481,
+    "contrasts": 12,
+    "qubits": [
+     112,
+     113,
+     114,
+     115,
+     119
+    ]
+   },
+   "1": {
+    "box_kite_median": 0.6685,
+    "contrasts": 12,
+    "qubits": [
+     86,
+     87,
+     88,
+     89,
+     97
+    ]
+   },
+   "2": {
+    "box_kite_median": 0.6338,
+    "contrasts": 12,
+    "qubits": [
+     24,
+     25,
+     26,
+     37,
+     45
+    ]
+   },
+   "3": {
+    "box_kite_median": 0.5356,
+    "contrasts": 12,
+    "qubits": [
+     130,
+     131,
+     132,
+     138,
+     151
+    ]
+   },
+   "4": {
+    "box_kite_median": 0.6367,
+    "contrasts": 12,
+    "qubits": [
+     50,
+     51,
+     52,
+     58,
+     71
+    ]
+   },
+   "5": {
+    "box_kite_median": 0.5386,
+    "contrasts": 12,
+    "qubits": [
+     126,
+     127,
+     128,
+     137,
+     147
+    ]
+   },
+   "6": {
+    "box_kite_median": 0.6626,
+    "contrasts": 12,
+    "qubits": [
+     103,
+     104,
+     105,
+     106,
+     117
+    ]
+   }
+  },
+  "ibm_kingston": {
+   "0": {
+    "box_kite_median": 0.585,
+    "contrasts": 12,
+    "qubits": [
+     117,
+     124,
+     125,
+     126,
+     127
+    ]
+   },
+   "1": {
+    "box_kite_median": 0.7358,
+    "contrasts": 12,
+    "qubits": [
+     107,
+     108,
+     109,
+     110,
+     118
+    ]
+   },
+   "2": {
+    "box_kite_median": 0.7261,
+    "contrasts": 12,
+    "qubits": [
+     32,
+     33,
+     34,
+     35,
+     39
+    ]
+   },
+   "3": {
+    "box_kite_median": 0.6987,
+    "contrasts": 12,
+    "qubits": [
+     100,
+     101,
+     102,
+     103,
+     116
+    ]
+   },
+   "4": {
+    "box_kite_median": 0.7158,
+    "contrasts": 12,
+    "qubits": [
+     138,
+     150,
+     151,
+     152,
+     153
+    ]
+   },
+   "5": {
+    "box_kite_median": 0.6746,
+    "contrasts": 12,
+    "qubits": [
+     50,
+     51,
+     52,
+     58,
+     71
+    ]
+   },
+   "6": {
+    "box_kite_median": 0.5576,
+    "contrasts": 12,
+    "qubits": [
+     1,
+     2,
+     3,
+     4,
+     16
+    ]
+   }
+  }
+ },
+ "schema": "rank-sector-endpoint-decomposition-v2",
+ "scope": "Exploratory decomposition of collected estimation endpoints. The weak sector is chosen after seeing the data and the medians outside it are post-selected; no threshold here is preregistered, and a prospective crossed design is needed to attribute a loss to tile or template.",
+ "source_sha256": "12eb593ae5e9ee5ae0a534211790d918b368d9e7b98a20ec85134dba55072f8c"
+}
