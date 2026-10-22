@@ -1,0 +1,43 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// patch 0 (q3 q1 q0 q2 = [1, 4, 2, 3]) state b4
+X q[3]
+H q[1]
+H q[4]
+CZ q[1], q[4]
+H q[4]
+H q[2]
+CZ q[4], q[2]
+H q[2]
+// patch 1 (q3 q1 q0 q2 = [8, 11, 14, 13]) state e10
+X q[11]
+X q[8]
+// patch 2 (q3 q1 q0 q2 = [12, 15, 16, 10]) state k2
+X q[10]
+H q[12]
+H q[15]
+CZ q[12], q[15]
+H q[15]
+H q[16]
+CZ q[15], q[16]
+H q[16]
+X q[15]
+Z q[12]
+
+barrier q
+
+X90 q[1]
+mY90 q[4]
+X90 q[2]
+X90 q[8]
+mY90 q[11]
+X90 q[14]
+X90 q[12]
+mY90 q[15]
+X90 q[16]
+
+barrier q
+b = measure q

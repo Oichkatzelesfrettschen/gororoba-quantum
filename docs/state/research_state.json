@@ -1148,6 +1148,132 @@
       "run": "results/live/2026-10-21T064222.721454Z",
       "family": "n21-orbit-rca",
       "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qi-tuna17-quaternion-order-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07",
+      "family": "quaternion operator order, paired-channel output and contemporaneous readout references",
+      "question": "What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-queue-test",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00",
+      "family": "Belenos usability test",
+      "question": "does qpu:belenos accept and start a one-computation job while its Explorer row and processor record read running?"
+    },
+    {
+      "id": "qd-sim-belenos-bdsc-tc-none-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1",
+      "family": "BDSC qualification pipeline on sim:belenos",
+      "question": "does the 12-iteration ladder-union job under the empty mitigation list run end to end and echo every iteration's parameters and seed?"
+    },
+    {
+      "id": "qd-sim-belenos-bdsc-tc-def-e1-timeout",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1",
+      "family": "BDSC qualification pipeline on sim:belenos",
+      "question": "does the same job under provider-default mitigation (DetectorBalancing) run end to end?"
+    },
+    {
+      "id": "qd-sim-belenos-bdsc-tc-def-e1-rerun",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1",
+      "family": "BDSC qualification pipeline on sim:belenos",
+      "question": "does a rerun of the provider-default job complete after the first ended in Worker timeout?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-tc-def-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job tc-def-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-tc-none-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T162332Z-qpu_belenos-bdsc_qualification-tc-none-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job tc-none-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-mm-def-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T162656Z-qpu_belenos-bdsc_qualification-mm-def-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job mm-def-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-mm-none-e1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T165036Z-qpu_belenos-bdsc_qualification-mm-none-e1",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "epoch-1 job mm-none-e1: the six states of one pair under both templates, 300000 eligible trials each; do the sum-rule and cross-template contrasts hold?"
+    },
+    {
+      "id": "qd-qpu-ascella-bdsc-control",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00",
+      "family": "BDSC six-state control on qpu:ascella",
+      "question": "does the same six-state linear-effect test, on a 12-mode union circuit, hold on Ascella?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-tc-def-e2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T013357Z-qpu_belenos-bdsc_qualification-tc-def-e2",
+      "family": "BDSC six-state qualification on qpu:belenos",
+      "question": "repeat acquisition (epoch 2, job tc-def-e2) of the target-complement state pair under the provider's default mitigation, sent before any recalibration since the first acquisition was documented: does the live path at collector revision f1dc1c0 submit the requested policy and retain the result, and how far do the twelve settings move from the first acquisition?"
     }
   ],
   "claims": [
@@ -6378,7 +6504,7 @@
         "results/live/N21_ORBIT_RCA.md"
       ],
       "gates": {
-        "core-612": "replay",
+        "core-612": "regression",
         "core-613": "replay"
       },
       "acquisitions": [
@@ -6424,9 +6550,9 @@
         "results/live/N21_SPECTATOR_RAMSEY_CASE.md"
       ],
       "gates": {
-        "core-600": "replay",
-        "core-603": "replay",
-        "core-605": "replay"
+        "core-600": "regression",
+        "core-603": "regression",
+        "core-605": "regression"
       },
       "acquisitions": [
         "fez-n21-spectator-ground-control",
@@ -6463,7 +6589,7 @@
       ],
       "gates": {
         "core-617": "replay",
-        "core-619": "replay"
+        "core-619": "regression"
       },
       "acquisitions": [
         "fez-n21-q143-segmented-sweep"
@@ -6496,10 +6622,296 @@
         "results/live/N21_Q143_COPRIME_SWAP_CASE.md"
       ],
       "gates": {
-        "core-620": "replay"
+        "core-620": "regression"
       },
       "acquisitions": [
         "marrakesh-n21-q47-segmented-baseline"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-quaternion-encoded-order-pilot",
+      "statement": "The Tuna-17 order pilot completed 24 jobs and 393216 shots. Six native-zero dark-port controls measured 0.0396118 to 0.0508423; two native-0.25 settings measured 0.2669067 and 0.2703857. The refreshed ledger records 186.801814 execution seconds and zero credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One fixed chronological acquisition per science setting leaves preparation, compiled-circuit effects, readout and time drift confounded. The observations establish neither representative equivalence, process fidelity, calibrated uncertainty coverage nor a fundamental quaternion scalar field.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json",
+          "sha256": "ab1dfe679f1577c63f587db4241d65b86ac061dafa9d6eeb00a588ac06661bad"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/hypercomplex-analysis.json",
+          "sha256": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/hypercomplex-analysis.json",
+          "sha256": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/hypercomplex-analysis.json",
+          "sha256": "864422ca90b971e2174a0f24838772a32c1c6acd93601d27df2372ab0e94eb0f"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/hypercomplex-analysis.json",
+          "sha256": "ad791fbe36bd5220cbbeb3dc8b65f39f69122fe974ac987b9d1968d6b6fef25b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/hypercomplex-analysis.json",
+          "sha256": "34dc1530c70289e9509defb51f06775c9c9d3ba27040d04d40fa2897ccf7dfa0"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/hypercomplex-analysis.json",
+          "sha256": "f374fd93f4ae949f756508ea5639a53f8c01ecd55f81d0ac654764e62ec59c0a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/hypercomplex-analysis.json",
+          "sha256": "0e76fb592e1a09c0f65857eba9c5c785dbec6e57729af27f0ae88e37c80e234d"
+        },
+        {
+          "path": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/hypercomplex-analysis.json",
+          "sha256": "5504e32ee3e76cd3ae8500434e5787dc00808879f3ed46b941f1423ab3082c4a"
+        }
+      ],
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md",
+        "docs/design/tuna-order-pilot-adversarial-admission.md"
+      ],
+      "gates": {
+        "core-347": "freshness",
+        "core-615": "admission"
+      },
+      "acquisitions": [
+        "qi-tuna17-quaternion-order-00",
+        "qi-tuna17-quaternion-order-01",
+        "qi-tuna17-quaternion-order-02",
+        "qi-tuna17-quaternion-order-03",
+        "qi-tuna17-quaternion-order-04",
+        "qi-tuna17-quaternion-order-05",
+        "qi-tuna17-quaternion-order-06",
+        "qi-tuna17-quaternion-order-07"
+      ],
+      "assumptions": [
+        "Provider shot order is retained as delivered; timing and stationarity are unestablished."
+      ],
+      "depends_on": [
+        "algebra-hypercomplex-operator-witnesses"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-hypercomplex-operator-witnesses",
+      "statement": "The registered finite exact calculations give derivation dimension 14, chosen-octonion stabilizer dimension 8, occupation dimensions 1/3/3/1 and complex Clifford image dimension 64. The draft ladder pairing fails six stabilizer checks, while the aligned pairing passes all implemented checks. The even five-mode reference has vanishing recorded Standard Model anomaly sums.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Finite convention-bound algebra and a representation reference establish neither a unique Standard Model derivation nor its dynamics, a fundamental scalar field, or device performance.",
+      "evidence": [
+        {
+          "path": "docs/evidence/hypercomplex-operators/certificate-diagonal-dephasing-formatted.json",
+          "sha256": "f19765c621179b3f3eee707b9ed70dadb0a3e25d4a3702bfda61ebaeabbf7f60"
+        }
+      ],
+      "documents": [
+        "docs/evidence/hypercomplex-operators/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-630": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-sedenion-eight-generator-clifford-envelope",
+      "statement": "The first eight canonical sedenion left-multiplication operators satisfy the recorded Cl(0,8) relations. Their 256 integer word operators have Hilbert-Schmidt Gram matrix 16 times identity and span M16(R).",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "The result concerns the named eight-generator associative operator envelope. Sedenion coefficient multiplication remains nonassociative with zero divisors; the left encoding is not a product homomorphism.",
+      "evidence": [
+        {
+          "path": "docs/evidence/sedenion-clifford-envelope/certificate-batched-products.json",
+          "sha256": "e66fc928d9b4a330fef82c15e648977551fb2656aace0a13f769ca68b601706a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/sedenion-clifford-envelope/README.md",
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "gates": {
+        "core-631": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-bdsc-qualification-pipeline-runs-on-sim-belenos",
+      "statement": "The frozen BDSC qualification job tc-*-e1 (12 iterations of the 77-parameter ladder-union circuit, 300000 samples each, QRNG seeds) ran end to end on sim:belenos under both policies: the empty-list job 19f18f8c in 148 s and the provider-default rerun cac942bd in 153 s, 1 credit each. Every iteration returned its 300000 samples with its circuit_params bit-exact and its compilation_seed echoed; f read 0 and g read 1 under both templates, the eight superposition states read 0.4989 to 0.5017 against 0.5, and the one-click rule excluded at most 21 samples per iteration. The first provider-default job 03dd195b stopped at iteration 4 (55 s of compute, progress 0.2567, progress message probs) and ended in Worker timeout after about 30 minutes without charge; the identical rerun completed.",
+      "domain": "implementation",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Simulator runs only; sim:belenos applies a fixed noise model and its default DetectorBalancing returns counts drawn from a corrected distribution, so neither policy here tests the QPU's observation contract, and the readout admits qpu:belenos runs only. One timeout in two provider-default runs establishes no rate; Perceval computes the same noisy distribution in 0.1 s locally, so the stall is placed in the service worker by inference.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1/results.json",
+          "sha256": "437e015e5527eb4082f8695ccff10f732b555c629ba9feec8b071f77cc273245"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json",
+          "sha256": "9b6544e6398fc78625d36fd5ddfdb8708786597395b2b4cfc621986e98f7863e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json",
+          "sha256": "cfef7b6c53682e7c700a5cac6d341587ad09a4f2353321970afeb04b0343ef7e"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-belenos-bdsc-tc-none-e1",
+        "qd-sim-belenos-bdsc-tc-def-e1-timeout",
+        "qd-sim-belenos-bdsc-tc-def-e1-rerun"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-running-status-holds-jobs",
+      "statement": "While qpu:belenos read running on its Explorer row and processor record, then calibration, a one-computation job (90712931, box_kite_photonic_single job-00, 10000 samples) entered the token's queue and stayed waiting with no start time for 26 minutes; it was canceled with 0 shots and no charge (qpu:belenos usage 17.2255 before and after). The run retains no read of the public platform list in that interval, so the observation concerns the Explorer and processor status only.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job in one window; whether running ever admits a job, and how long such a window lasts, is not measured.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00/results.json",
+          "sha256": "18870bd8acdc0b92d4a00de110e0be45c24e6a9aa0853a3ed318f96ce05b4883"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/calibration.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-queue-test"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-epoch1-sum-rules-fail",
+      "statement": "In epoch 1 of the frozen BDSC qualification case on qpu:belenos (jobs 2524f061, b5bdf7f2, 2bc57917, 6d2dac12; 48 settings, 300000 samples each, every iteration's parameters and seed echoed, at most 0.06 % excluded by the one-click rule, 1.6 credits per job) the within-cell sum rules p(+) + p(-) = p(f) + p(g) read 9 violated, 4 inconclusive and 3 compatible of 16 at margin 0.02 on the case's simultaneous Clopper-Pearson event restricted to epoch 1. Under the empty mitigation list the target-complement pair reads f 0.002 to 0.004 and g 0.986 against ideal 0 and 1 while all eight superposition states read 0.375 to 0.437 against 0.5; the cross-template contrasts read 13 compatible, 5 violated and 6 inconclusive of 24. Only the empty-list job returned zero-click outcomes (25 to 140 per iteration), so the provider-default route processes what it returns.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Epoch 1 alone, read before the frozen readout: the case decides only on all 96 observations across both epochs, and admission waits on the provider-contract answers, so this is no qualification verdict. A violated sum rule says the prepared states differ from the requested ones for any fixed effect; attributing it to the compiled mesh's phases rather than the detection stage is an inference the design does not isolate.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1/results.json",
+          "sha256": "e61a04042bfb7377847a588f6eef501fa1979d9cd506f305630380b62bda4e01"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T162332Z-qpu_belenos-bdsc_qualification-tc-none-e1/results.json",
+          "sha256": "ff175522cb3a6a1958c58d8ecf9f1406ad4ede02c3b8ff826a2b98eb3a5b02b2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T162656Z-qpu_belenos-bdsc_qualification-mm-def-e1/results.json",
+          "sha256": "ef91a8811fa3bc466448c1bce86407d3fe710af2e5ef13c178e6ab8861b3ce76"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T165036Z-qpu_belenos-bdsc_qualification-mm-none-e1/results.json",
+          "sha256": "e8f1e8fb944550720b9bfcb58649f49517fcadebeb825ab1e249ded647a83a25"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-mm-def-e1",
+        "qd-qpu-belenos-bdsc-mm-none-e1",
+        "qd-qpu-belenos-bdsc-tc-def-e1",
+        "qd-qpu-belenos-bdsc-tc-none-e1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-ascella-input-port-configuration-error",
+      "statement": "A 12-iteration template job on qpu:ascella (c2edef5d, 2026-10-21 20:34 UTC, platform reading available) ended in error 1 s after starting with failure_code RUNTIME ERROR and 'hardware_info.circuit_input_ports must be defined in the hardware_config to use Instruments.set_pic_input()', its one results_list entry, for the first of the 12 iterations (seed 0), holding that text instead of counts and the other eleven iterations returning no entry; it was charged nothing (qpu:ascella 0.0 credits for 1 job).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job; the message names the instrument layer's photon-input step, which every Ascella job takes, but whether other job forms fail the same way at this time is not tested.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00/results.json",
+          "sha256": "2f04069c346486a4c6c9bc1e0bacea4dfba76a4d75029f0affb61a952ad36e75"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/calibration.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-ascella-bdsc-control"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-repeat-tc-default-shifts",
+      "statement": "The repeat acquisition of the target-complement state pair under Quandela's default mitigation on qpu:belenos (job ee6fc975, case job tc-def-e2; submitted 2026-10-22 01:35 UTC under platform status running, started after a 42-minute queue wait, ran 92 s, 1.6 credits) returned all 12 settings at 300000 samples with at most 0.032 % excluded by the one-click rule, and the freshly built job body carried the requested policy, so the submission and collection path at collector revision f1dc1c0 works end to end. Against the first acquisition of the same job (2524f061, 2026-10-21) the basis states f and g moved by at most 0.0033 while the eight superposition states moved by -0.071 to +0.041, many times the binomial standard error of about 0.001, and the within-template sum-rule residuals p(+) + p(-) - p(f) - p(g) read -0.080 and -0.039 (outward ladder, real and imaginary pairs) and -0.032 and -0.081 (reverse ladder) against -0.035, +0.031, -0.042 and +0.000 in the first acquisition. Between the two acquisitions the published source figures moved from HOM 87.3 to 87.8 % to 80.4 %, transmittance 6.05 to 6.13 % to 5.25 % and g2 1.0 % to 0.9 %.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One repeat job, run as the engineering validation of the runbook's first 2026-10-22 amendment (step 5). scripts/bdsc_cases.py draws each compilation seed by observation index, epoch included, so all 12 settings ran with new seeds and returned different circuits: the shift compares matched requests, not matched compilations. The forensic reading (docs/notes/quandela/bdsc-acceptance-diagnostics.md, rated moderate) takes the 0.035 spread of the superpositions about their common drop as a per-compilation response and leaves the common drop of 0.024 unsplit between the device, its characterization and the default policy's processing. No calibration cycle between the two acquisitions is documented, so the shift supports no claim about reproducibility across a recalibration. The residuals are point differences without a simultaneous interval; the crossed diagnostic case, which replaces the suspended confirmation design, is the design that separates these components.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-22T013357Z-qpu_belenos-bdsc_qualification-tc-def-e2/results.json",
+          "sha256": "431cb656d4230cf11eab04850000f6d09a836ac3c407ade8d5e22a16c411ff0a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1/results.json",
+          "sha256": "e61a04042bfb7377847a588f6eef501fa1979d9cd506f305630380b62bda4e01"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/bdsc-acceptance-diagnostics.md",
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {
+        "core-622": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-tc-def-e1",
+        "qd-qpu-belenos-bdsc-tc-def-e2"
       ],
       "assumptions": [],
       "depends_on": [],

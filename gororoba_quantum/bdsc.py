@@ -526,11 +526,15 @@ def max_principal_angle_deg(p1: np.ndarray, p2: np.ndarray) -> float:
     sin theta_max is the largest singular value of (I - p2) U1, U1 an
     orthonormal basis of p1's range. The eigenvalues of p1 (I - p2) p1 are
     sin^2 theta, whose square root lifts a rounding residue of 1e-16 to an
-    angle of 1e-8 rad; the singular value carries it at 1e-16.
+    angle of 1e-8 rad; the singular value carries it at 1e-16. The
+    corresponding cosine is sigma_min(U2^dagger U1). atan2 retains precision
+    near both zero and pi/2, where asin of the sine loses precision.
     """
     basis = np.linalg.eigh(p1)[1][:, -KERNEL_DIM:]
+    other_basis = np.linalg.eigh(p2)[1][:, -KERNEL_DIM:]
     sines = np.linalg.svd((np.eye(len(p1)) - p2) @ basis, compute_uv=False)
-    return math.degrees(math.asin(min(1.0, float(sines[0]))))
+    cosines = np.linalg.svd(other_basis.conj().T @ basis, compute_uv=False)
+    return math.degrees(math.atan2(float(sines[0]), float(cosines[-1])))
 
 
 def theorem_holds(effect: np.ndarray) -> dict[str, Any]:

@@ -1,0 +1,67 @@
+"""Completely positive site dephasing and descriptive shot-order diagnostics."""
+
+from __future__ import annotations
+
+import math
+from typing import TYPE_CHECKING, Any
+
+import numpy as np
+from numpy.typing import NDArray
+from scipy.linalg import expm
+
+from parallel import ordered_map
+
+if TYPE_CHECKING:
+    from hypercomplex_operators import ComplexMatrix
+
+
+def _site_dissipator_diagonal(parameters: tuple[int, int, float]) -> NDArray[np.float64]:
+    size, site, rate = parameters
+    projector = np.zeros(size)
+    projector[2 * site : 2 * site + 2] = 1
+    return rate * (np.kron(projector, projector) - 0.5 * np.tile(projector, size) - 0.5 * np.repeat(projector, size))
+
+
+def dephase_evolve(density: ComplexMatrix, generator: ComplexMatrix, time: float, rate: float) -> ComplexMatrix:
+    """Evolve rho by [A,rho]+rate*sum(P*rho*P-{P,rho}/2), with paired site P."""
+    size = len(density)
+    if density.shape != (size, size) or generator.shape != density.shape or size % 2:
+        raise ValueError("density and generator need matching paired square matrices")
+    if not np.isfinite(density).all() or not np.isfinite(generator).all():
+        raise ValueError("density and generator must be finite")
+    if not math.isfinite(time) or not math.isfinite(rate) or time < 0 or rate < 0:
+        raise ValueError("time and dephasing rate must be finite and nonnegative")
+    if not np.allclose(generator + generator.conj().T, 0, atol=1e-12, rtol=0):
+        raise ValueError("the evolution generator must be anti-Hermitian")
+    if not np.allclose(density, density.conj().T, atol=1e-12, rtol=0):
+        raise ValueError("the density must be Hermitian")
+    if not np.isclose(np.trace(density), 1, atol=1e-12, rtol=0) or np.linalg.eigvalsh(density).min() < -1e-12:
+        raise ValueError("the density must be positive with trace one")
+    identity = np.eye(size)
+    liouvillian = np.kron(identity, generator) - np.kron(generator.T, identity)
+    parameters = [(size, site, rate) for site in range(size // 2)]
+    diagonal_indices = np.diag_indices(size * size)
+    for dissipator in ordered_map(_site_dissipator_diagonal, parameters, min_items=1):
+        liouvillian[diagonal_indices] += dissipator
+    return np.asarray((expm(time * liouvillian) @ density.reshape(-1, order="F")).reshape(size, size, order="F"))
+
+
+def shot_diagnostics(outcomes: list[int]) -> dict[str, Any]:
+    """Describe binary shot dependence without assigning IID coverage or a chaos interpretation."""
+    if len(outcomes) < 16 or any(type(value) is not int or value not in (0, 1) for value in outcomes):
+        raise ValueError("shot diagnostics require at least sixteen binary outcomes")
+    values = np.asarray(outcomes, dtype=float)
+    block_length = max(4, int(math.sqrt(len(values))))
+    used = len(values) // block_length * block_length
+    means = values[:used].reshape(-1, block_length).mean(axis=1)
+    variable_lags = np.var(values[:-1]) > 0 and np.var(values[1:]) > 0
+    lag = float(np.corrcoef(values[:-1], values[1:])[0, 1]) if variable_lags else None
+    return {
+        "shots": len(values),
+        "mean": float(values.mean()),
+        "block_length": block_length,
+        "block_mean_range": float(np.ptp(means)),
+        "lag_one_correlation": lag,
+        "block_standard_error": float(np.std(means, ddof=1) / math.sqrt(len(means))),
+        "interpretation": "descriptive dependence diagnostic; stationarity and confidence coverage unestablished",
+    }

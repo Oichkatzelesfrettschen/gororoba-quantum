@@ -27,6 +27,18 @@ Placement, naming, linking and immutability rules for every new or moved documen
 
 ## Start here by task
 
+The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
+and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
+The checksum-bound historical README and replay keep their bytes. The active source ledgers
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-contracts) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-contracts) bind the validated
+`cd_core.py` source and preserve every other identity in their historical `SHA256SUMS` files.
+
+The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
+retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
+with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
+
 | Task | Read in order |
 |---|---|
 | IBM hardware run | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [qpu-submission.md](notes/ibm_quantum/qpu-submission.md), [QPU_EXECUTION_ROADMAP.md](../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) |
@@ -55,6 +67,8 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | File | Contents |
 |---|---|
 | [notes/papers/](notes/papers/) | one note per registered source, named by arXiv-style id or author-year |
+| [quaternionic-foundational-source-review.md](notes/papers/quaternionic-foundational-source-review.md) | historical QQM citation identities and remaining reading obligations |
+| [quaternionic-optical-bound-reading.md](notes/papers/quaternionic-optical-bound-reading.md) | model-specific optical bound and Procopio/Adler exchange body-reading addendum |
 | [aflow-a_cf4-225-a.md](notes/papers/aflow-a_cf4-225-a.md) | AFLOW crystallographic prototype A_cF4_225_a |
 | [elkies-2013-m256.md](notes/papers/elkies-2013-m256.md) | Elkies 2013 course page on error-correcting codes |
 | [pmc-4957665-nonlinearity-measures.md](notes/papers/pmc-4957665-nonlinearity-measures.md) | nonlinearity measures for Boolean functions |
@@ -64,6 +78,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | File | Contents |
 |---|---|
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
+| [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
@@ -78,12 +93,21 @@ Placement, naming, linking and immutability rules for every new or moved documen
 
 | File | Contents |
 |---|---|
+| [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
+| [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
+| [runbooks/hypercomplex-operator-cases.md](runbooks/hypercomplex-operator-cases.md) | frozen provider cases, pacing, costs and approval boundary |
+| [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | expanded Python distribution roles and documented candidates |
+| [evidence/submitted_circuits/README.md](evidence/submitted_circuits/README.md) | complete retained IBM job-input comparison and immutable replay successor |
+| [evidence/sedenion-clifford-envelope/README.md](evidence/sedenion-clifford-envelope/README.md) | exact eight-generator Cl(0,8) envelope spanning M16(R) |
+| [evidence/hypercomplex-operators/README.md](evidence/hypercomplex-operators/README.md) | exact replay, probability explorer and distribution inventory |
 | [design/et-rows.md](design/et-rows.md) | ET-row device experiment |
 | [design/hybrid-shor.md](design/hybrid-shor.md) | hybrid Shor architecture for IBM Heron r2 |
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
-| [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements |
+| [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
+| [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
+| [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |

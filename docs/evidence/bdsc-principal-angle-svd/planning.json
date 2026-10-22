@@ -1,0 +1,323 @@
+{
+ "acceptance_under_receipt_t_out": {
+  "delta": 0.971702342262,
+  "reading": "taking the receipt t_out as relative detector efficiencies, the acceptance effect deviates from scalar by this delta; the receipt contradicts the detected light (strategy.md section 2), so the acceptance model stays unqualified"
+ },
+ "background_sensitivity": {
+  "model": "F = beta I + (1 - beta) E0, expected counts, frozen allocation, planning tiers",
+  "rows": [
+   {
+    "beta": 0.0,
+    "smallest_certifying_n": 10000
+   },
+   {
+    "beta": 0.002,
+    "smallest_certifying_n": 100000
+   },
+   {
+    "beta": 0.005,
+    "smallest_certifying_n": 1000000
+   },
+   {
+    "beta": 0.01,
+    "smallest_certifying_n": 1000000
+   },
+   {
+    "beta": 0.02,
+    "smallest_certifying_n": null
+   }
+  ]
+ },
+ "complement_radius_note": "the handoff table is matrix Bernstein on the 144 C settings at alpha_B = 0.0125, half of alpha_C = 0.025, m = 12",
+ "complement_radius_table": [
+  {
+   "handoff": 0.409805,
+   "n": 1500,
+   "radius": 0.409805208189,
+   "total": 216000
+  },
+  {
+   "handoff": 0.157552,
+   "n": 10000,
+   "radius": 0.157551940586,
+   "total": 1440000
+  },
+  {
+   "handoff": 0.049664,
+   "n": 100000,
+   "radius": 0.049663906901,
+   "total": 14400000
+  },
+  {
+   "handoff": 0.015689,
+   "n": 1000000,
+   "radius": 0.015689300291,
+   "total": 144000000
+  }
+ ],
+ "confidence": {
+  "allocations": {
+   "two-block": {
+    "A": 0.025,
+    "C": 0.025,
+    "cal": 0.0
+   },
+   "with-calibration": {
+    "A": 0.02,
+    "C": 0.02,
+    "cal": 0.01
+   }
+  },
+  "frozen_allocation": "two-block",
+  "split": "each block's alpha divides evenly between Clopper-Pearson propagation and matrix Bernstein; the smaller radius is reported, and the union bound covers that choice"
+ },
+ "consistency_hoeffding": {
+  "alpha": 0.01,
+  "margin": 0.05,
+  "rule": "n >= 8 log(12 / alpha) / m^2: six probabilities under a union bound, four per residual",
+  "scope": "the n at which the residual half-width equals the margin, a floor with no power: a compatible reading also needs the estimate inside the remaining band; qualification_case.json's power table sets n",
+  "trials_per_preparation": 22689
+ },
+ "five_space_witness": {
+  "alpha_one_sided": 0.025,
+  "bound": "lambda_5(F) <= lambda_max(S F S) <= Tr(S F) = 5 r_5, S = P + |q><q| for a unit q in Q",
+  "bright_reference_lower": 0.9,
+  "lambda_5_upper_at_zero_events": 0.089601153312,
+  "scope": "conditional on genuine Bernoulli trials of one effect and an independently measured bright reference; excludes the reference acquisition, preparation calibration and qualification; zero events on qpu:belenos cannot be promised, and approximate conditioning adds (1 + delta) and the bias bound",
+  "threshold": 0.09,
+  "zero_event_trials": 204
+ },
+ "ideal_effect_expected_counts": [
+  {
+   "a_U": 0.029371424725,
+   "allocation": "two-block",
+   "disposition": "not_certified",
+   "gamma_L": 0.211242615835,
+   "l_U": 0.010450009226,
+   "n": 3000,
+   "theta_max_bound_deg": 12.85102247
+  },
+  {
+   "a_U": 0.017632074029,
+   "allocation": "two-block",
+   "disposition": "certified",
+   "gamma_L": 0.276757714548,
+   "l_U": 0.006273285617,
+   "n": 5000,
+   "theta_max_bound_deg": 8.659140798
+  },
+  {
+   "a_U": 0.011757790691,
+   "allocation": "two-block",
+   "disposition": "certified",
+   "gamma_L": 0.317943582495,
+   "l_U": 0.004183284343,
+   "n": 7500,
+   "theta_max_bound_deg": 6.586630179
+  },
+  {
+   "a_U": 0.008819496322,
+   "allocation": "two-block",
+   "disposition": "certified",
+   "gamma_L": 0.342448059414,
+   "l_U": 0.00313787359,
+   "n": 10000,
+   "theta_max_bound_deg": 5.492985897
+  },
+  {
+   "a_U": 0.002940601178,
+   "allocation": "two-block",
+   "disposition": "certified",
+   "gamma_L": 0.409216200479,
+   "l_U": 0.001046231489,
+   "n": 30000,
+   "theta_max_bound_deg": 2.898313425
+  },
+  {
+   "a_U": 0.000882261125,
+   "allocation": "two-block",
+   "disposition": "certified",
+   "gamma_L": 0.450336093099,
+   "l_U": 0.000313898184,
+   "n": 100000,
+   "theta_max_bound_deg": 1.51286133
+  },
+  {
+   "a_U": 0.030205449949,
+   "allocation": "with-calibration",
+   "disposition": "not_certified",
+   "gamma_L": 0.206975623854,
+   "l_U": 0.010746745641,
+   "n": 3000,
+   "theta_max_bound_deg": 13.17144685
+  },
+  {
+   "a_U": 0.018133020507,
+   "allocation": "with-calibration",
+   "disposition": "certified",
+   "gamma_L": 0.273465204557,
+   "l_U": 0.006451516512,
+   "n": 5000,
+   "theta_max_bound_deg": 8.835377181
+  },
+  {
+   "a_U": 0.012091932267,
+   "allocation": "with-calibration",
+   "disposition": "certified",
+   "gamma_L": 0.315261776902,
+   "l_U": 0.004302168006,
+   "n": 7500,
+   "theta_max_bound_deg": 6.708468589
+  },
+  {
+   "a_U": 0.009070169001,
+   "allocation": "with-calibration",
+   "disposition": "certified",
+   "gamma_L": 0.340128907497,
+   "l_U": 0.003227059995,
+   "n": 10000,
+   "theta_max_bound_deg": 5.589764722
+  },
+  {
+   "a_U": 0.003024203087,
+   "allocation": "with-calibration",
+   "disposition": "certified",
+   "gamma_L": 0.407882526479,
+   "l_U": 0.00107597607,
+   "n": 30000,
+   "theta_max_bound_deg": 2.944065818
+  },
+  {
+   "a_U": 0.000907346356,
+   "allocation": "with-calibration",
+   "disposition": "certified",
+   "gamma_L": 0.44960739525,
+   "l_U": 0.000322823216,
+   "n": 100000,
+   "theta_max_bound_deg": 1.535466248
+  }
+ ],
+ "record": "planning",
+ "required_complement_floor": [
+  {
+   "min_lambda_min_C": 1.10201627921,
+   "n": 1500
+  },
+  {
+   "min_lambda_min_C": 0.261614615188,
+   "n": 10000
+  },
+  {
+   "min_lambda_min_C": 0.060073849712,
+   "n": 100000
+  },
+  {
+   "min_lambda_min_C": 0.016730331335,
+   "n": 1000000
+  }
+ ],
+ "resources_historical": {
+  "caveat": "detection-conditioned samples whose independence, processing (DetectorBalancing) and trial semantics are unqualified (M3); historical rates, not a current quote",
+  "rates": {
+   "credits": "1 per job plus 1e-6 per shot of the largest iteration, max_shots = 2 x samples",
+   "job_seconds": 300,
+   "max_iterations": 32,
+   "monthly_credits": 200,
+   "seconds_per_iteration": 6.3,
+   "seconds_per_sample": 2.6e-05,
+   "source": "docs/notes/quandela/strategy.md section 1a (jobs c2eea262, c1eb1cbb, b8e2ec0c)"
+  },
+  "rows": [
+   {
+    "credits": 5.015,
+    "eligible_trials_per_setting": 1500,
+    "jobs": 5,
+    "months_at_explorer_credits": 1,
+    "qpu_seconds": 1014.24,
+    "seconds_per_setting": 6.339,
+    "settings": 160,
+    "settings_per_job": 32
+   },
+   {
+    "credits": 5.1,
+    "eligible_trials_per_setting": 10000,
+    "jobs": 5,
+    "months_at_explorer_credits": 1,
+    "qpu_seconds": 1049.6,
+    "seconds_per_setting": 6.56,
+    "settings": 160,
+    "settings_per_job": 32
+   },
+   {
+    "credits": 6.0,
+    "eligible_trials_per_setting": 100000,
+    "jobs": 5,
+    "months_at_explorer_credits": 1,
+    "qpu_seconds": 1424.0,
+    "seconds_per_setting": 8.9,
+    "settings": 160,
+    "settings_per_job": 32
+   },
+   {
+    "credits": 54.0,
+    "eligible_trials_per_setting": 1000000,
+    "jobs": 18,
+    "months_at_explorer_credits": 1,
+    "qpu_seconds": 5168.0,
+    "seconds_per_setting": 32.3,
+    "settings": 160,
+    "settings_per_job": 9
+   }
+  ]
+ },
+ "schema": "bdsc-records-v1",
+ "snapshot_comparison": {
+  "handoff": {
+   "dark_mode5_per_s": 412.7,
+   "g2_percent": 0.9,
+   "hom_percent": 88.5,
+   "transmittance_percent": 6.06
+  },
+  "note": "sim:belenos's default noise model carries transmittance 0.06 (strategy.md section 2); neither snapshot bounds gamma",
+  "retained_catalogue": {
+   "dark_mode5_per_s": 38.2,
+   "g2_percent": 1.0,
+   "hom_percent": 94.2,
+   "retrieved_utc": "2026-10-17T17:53:31+00:00",
+   "transmittance_percent": 2.89
+  }
+ },
+ "systematic_tolerance": {
+  "model": "E0 at expected counts; the largest per-setting bias bound, or acceptance delta, that still certifies; both propagate as independent worst-case shifts through the |D_s| row sums",
+  "rows": [
+   {
+    "max_conditioning_delta": 0.0,
+    "max_preparation_bias_bound": 0.0,
+    "n": 1500
+   },
+   {
+    "max_conditioning_delta": 0.007400607,
+    "max_preparation_bias_bound": 0.001392356,
+    "n": 10000
+   },
+   {
+    "max_conditioning_delta": 0.013808491,
+    "max_preparation_bias_bound": 0.002569511,
+    "n": 100000
+   },
+   {
+    "max_conditioning_delta": 0.015212839,
+    "max_preparation_bias_bound": 0.00282267,
+    "n": 1000000
+   }
+  ]
+ },
+ "target_sha256": "0a4b00e121c2a64f4cbed7c117e898578d0ecfbcdecf83a4e0b74951163b1794",
+ "trace_route": {
+  "alpha_K": 0.025,
+  "belenos_status": "implausible on qpu:belenos: off-cone one-click samples on modes 0, 1 and 5 come and go at up to thousands per 40000-sample iteration (strategy.md section 2), and the 12/12 mask uses all 24 detectors, so a zero-event record cannot be planned for",
+  "gamma_L": 0.45,
+  "n_min": 1086,
+  "premise": "zero selected events among n eligible trials of the randomized kernel ensemble"
+ }
+}

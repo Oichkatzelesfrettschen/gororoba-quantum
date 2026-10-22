@@ -24,14 +24,8 @@
       "results/live/2026-10-13T083417.634585Z/**",
       "docs/evidence/heron_platform/targets.json"
     ],
-    "core-600": [
-      "results/live/2026-10-19T231043.083602Z/**",
-      "docs/evidence/heron_platform/targets.json"
-    ],
-    "core-612": [
-      "results/live/2026-10-19T151959.226467Z/**",
-      "docs/evidence/heron_platform/targets.json"
-    ],
+    "core-600": [],
+    "core-612": [],
     "core-613": [
       "results/live/2026-10-19T170620.832658Z/**",
       "docs/evidence/heron_platform/targets.json"
@@ -43,16 +37,9 @@
       "results/live/2026-10-19T170620.832658Z/**",
       "results/live/2026-10-21T064222.721454Z/**"
     ],
-    "core-603": [
-      "results/live/2026-10-20T031212.175942Z/**",
-      "docs/evidence/analyzer_closures/46d2411ed6a7/**"
-    ],
-    "core-605": [
-      "results/live/2026-10-20T031212.175942Z/**"
-    ],
-    "core-616": [
-      "results/live/n21-q143-segmented-design-759d82d74c57.json"
-    ],
+    "core-603": [],
+    "core-605": [],
+    "core-616": [],
     "core-289": [
       "docs/evidence/walk-control-scaffolding/local_member_conformance.json",
       "results/live/*/record.json"
@@ -279,12 +266,8 @@
       "results/live/2026-10-21T063625.403699Z/**",
       "results/live/2026-10-21T064222.721454Z/**"
     ],
-    "core-619": [
-      "results/live/2026-10-21T064222.721454Z/**"
-    ],
-    "core-620": [
-      "results/live/2026-10-21T043156.858484Z/**"
-    ],
+    "core-619": [],
+    "core-620": [],
     "core-339": [
       "docs/evidence/calibration/**",
       "docs/evidence/ghost_error_scale/**",
@@ -462,16 +445,10 @@
       "results/kaggle/2026-10-16T071913Z-gororoba-signed-kernel-noise/**"
     ],
     "core-622": [
-      "results/live/n21-q143-segmented-design-759d82d74c57.json"
-    ],
-    "core-623": [
-      "results/live/n21-q143-segmented-design-759d82d74c57.json"
-    ],
-    "core-624": [
-      "results/live/n21-q143-segmented-design-759d82d74c57.json"
-    ],
-    "core-625": [
-      "results/live/n21-q143-segmented-design-759d82d74c57.json"
+      "docs/evidence/bdsc/**",
+      "results/quandela/cases/bdsc_qualification/**",
+      "results/quandela/runs/*-qpu_belenos-bdsc_qualification-*/**",
+      "results/quandela/runs/*-sim_belenos-bdsc_qualification-*/**"
     ]
   }
 }

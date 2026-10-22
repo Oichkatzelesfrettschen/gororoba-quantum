@@ -41,7 +41,7 @@ Subcommands:
   table.
 - facts DIR prints the table.
 - plan RUN_DIR --platform NAME --max-credits C --expected-seconds S
-  --per-job-credits P (network, read-only) runs every check submit makes and
+  --per-job-credits P [--admit-status STATUS ...] (network, read-only) runs every check submit makes and
   prints the result: the circuit matches its cases.json sha256, the platform
   is one the case admits, is available and allows the case's max_duration,
   S stays within max_duration, P plus the largest iteration's max_shots times
@@ -62,9 +62,11 @@ Subcommands:
 - recover RUN_DIR writes submission.json from a posted checkpoint, which
   carries the returned job id before the receipt is written.
 - collect RUN_DIR waits for a terminal status, then retains the result
-  answer byte for byte in raw/result.json (written once; a recollection
-  must bring the same bytes) and results.json with the scrubbed
-  status and job data, the usage report after the job and the counts that
+  answer byte for byte in raw/result.json (written once, before the answer
+  is parsed or the job data and usage are read; a recollection must bring
+  the same bytes) and results.json with the scrubbed status and job data,
+  the usage report after the job (or usage_absent naming the failed read)
+  and the counts that
   parse_counts reads from the serialized BSCount: plain Fock states only,
   zipped or not, never through perceval.serialization.deserialize. The
   result must name the submitted job and agree with the status shots; an
@@ -99,16 +101,20 @@ import argparse
 import ast
 import base64
 import datetime
+import email.message
 import fcntl
 import functools
 import hashlib
+import http.client
 import importlib.metadata
 import importlib.util
+import io
 import json
 import math
 import os
 import re
 import shutil
+import ssl
 import sys
 import tempfile
 import time
@@ -191,6 +197,29 @@ class PlatformError(RuntimeError):
 class RefusedError(PlatformError):
     """The service answered with an HTTP error status, so the request took no effect it reported."""
 
+    def __init__(self, message: str, code: int | None = None) -> None:
+        super().__init__(message)
+        self.code = code
+
+
+class UnansweredError(PlatformError):
+    """The request reached no answer: the connection failed or timed out."""
+
+
+# Statuses a read may outlive: the service's own timeouts, throttling and gateway or upstream failures.
+TRANSIENT_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
+
+
+def transient(error: PlatformError) -> bool:
+    """A failed read worth repeating: a transient HTTP status, or no answer at all (network or timeout).
+
+    Any other failure (a missing token, an answer that is not JSON) recurs on
+    every attempt, so it raises at once.
+    """
+    if isinstance(error, RefusedError):
+        return error.code in TRANSIENT_STATUSES
+    return isinstance(error, UnansweredError)
+
 
 def now() -> str:
     return datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds")
@@ -240,9 +269,14 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         detail = error.read()[:500].decode("utf-8", errors="replace")
         error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
-        raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip()) from None
-    except (urllib.error.URLError, TimeoutError) as error:
-        raise PlatformError(f"{method} {route}: {error}") from None
+        raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
+    # HTTPError subclasses URLError and is caught above. urlopen wraps only
+    # connection setup in URLError; a connection dropped while the answer is
+    # read surfaces as http.client.HTTPException (IncompleteRead,
+    # RemoteDisconnected), ConnectionError or ssl.SSLEOFError (an OSError that
+    # is neither), and is unanswered as well.
+    except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
+        raise UnansweredError(f"{method} {route}: {error!r}") from None
     if raw:
         return answer
     try:
@@ -530,12 +564,43 @@ def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quandela/runs"
-CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1", "qd-bdsc-cases-v1")
+CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1", "qd-bdsc-cases-v1", "qd-hypercomplex-cases-v1")
 CIRCUIT_SCHEMA = "qd-circuit-v1"
 TEMPLATE_CIRCUIT_SCHEMA = "qd-template-circuit-v1"
 CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1", TEMPLATE_CIRCUIT_SCHEMA)
 # A case's processing policy: None leaves the server's default mitigations, an empty list disables them.
 MITIGATION_POLICIES: tuple[None, list[str]] = (None, [])
+
+
+def body_mitigations(body: Any) -> list[Any] | None:
+    """The mitigation policy a job body requests: None when its payload omits the mitigations key, else the list.
+
+    PayloadGenerator.from_computation writes the key at payload.mitigations
+    only for a non-null policy, and the sent body serializes the list as a
+    Perceval archive string, which deserialize decodes. A mitigations key at
+    any other depth, or a value that decodes to anything but a list, is refused.
+    """
+    from perceval.serialization import deserialize
+    from perceval.utils.constants import KEY_MITIGATIONS
+
+    payload = body.get("payload") if isinstance(body, dict) else None
+    if not isinstance(payload, dict):
+        raise PlatformError("the job body carries no payload")
+    elsewhere = {**body, "payload": {k: v for k, v in payload.items() if k != KEY_MITIGATIONS}}
+    if KEY_MITIGATIONS in keys(elsewhere):
+        raise PlatformError(f"the job body carries {KEY_MITIGATIONS} outside its payload")
+    if KEY_MITIGATIONS not in payload:
+        return None
+    value = payload[KEY_MITIGATIONS]
+    try:
+        decoded = deserialize(value) if isinstance(value, str) else value
+    except Exception as error:  # noqa: BLE001 -- deserialize raises ValueError, binascii.Error and others
+        raise PlatformError(f"the job body's {KEY_MITIGATIONS} is no Perceval archive: {error}") from None
+    if not isinstance(decoded, list):
+        raise PlatformError(f"the job body's {KEY_MITIGATIONS} decodes to {type(decoded).__name__}, not a list")
+    return decoded
+
+
 STATE_SCHEMA = "qd-submission-state-v1"
 SUBMISSION_SCHEMA = "qd-submission-v1"
 COLLECTION_SCHEMA = "qd-collection-v1"
@@ -663,6 +728,15 @@ def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tu
         deviation = float(numpy.max(numpy.abs(numpy.array(chip.compute_unitary())[:, source] - column)))
         if deviation > 1e-9:
             raise PlatformError(f"{setting['name']}: the template misses its column by {deviation:.2e}")
+        if manifest.get("schema") == "qd-hypercomplex-cases-v1":
+            expected = setting["operator"]
+            matrix = numpy.asarray(expected["real"]) + 1j * numpy.asarray(expected["imaginary"])
+            actual = numpy.asarray(chip.compute_unitary())
+            if matrix.shape != actual.shape or not numpy.isfinite(matrix).all():
+                raise PlatformError(f"{setting['name']}: full operator needs matching finite dimensions")
+            deviation = float(numpy.max(numpy.abs(actual - matrix)))
+            if deviation > 1e-9:
+                raise PlatformError(f"{setting['name']}: the template misses its full operator by {deviation:.2e}")
         for parameter in parameters.values():
             parameter.reset()
     built = pcvl.Experiment(chip)
@@ -933,7 +1007,6 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     Perceval reads the platform's processor record with the token to do so.
     """
     from perceval import ExecutionFactory, QuandelaCommunicationLayer, RemoteComputer
-    from perceval.utils.constants import KEY_MITIGATIONS
 
     found = versions()
     if found.get("perceval-quandela") != RUNNER_PERCEVAL:
@@ -1056,8 +1129,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
         raise PlatformError(
             f"{manifest['job']}: Perceval built a version-1 body because the {platform} record lacks specs.commands"
         )
-    # Perceval writes the mitigations key only for a non-null list, so the body shows which policy it carries.
-    if "mitigations" in manifest and (KEY_MITIGATIONS in json.dumps(body)) != (policy is not None):
+    if "mitigations" in manifest and body_mitigations(body) != policy:
         raise PlatformError(f"{manifest['job']}: the job body does not carry the mitigation policy {policy!r}")
     if token() in json.dumps(body):
         raise PlatformError("the job body carries the token")
@@ -1065,15 +1137,24 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
 
 
 def plan(
-    case_dir: Path, platform: str, max_credits: float, expected_seconds: float, per_job_credits: float
+    case_dir: Path,
+    platform: str,
+    max_credits: float,
+    expected_seconds: float,
+    per_job_credits: float,
+    admit_statuses: tuple[str, ...] = (),
 ) -> dict[str, Any]:
     """Every check submit makes, read-only: digests, platform, complete cost ceiling, availability and the estimate.
 
     expected_seconds and per_job_credits are the written case's values: the
     offer's per-job price is visible only in the portal, so the case states
     it, and per-job credits plus the largest iteration's max_shots times the live
-    price per shot must stay within max_credits.
+    price per shot must stay within max_credits. The platform must read
+    available on its Explorer row and processor record; admit_statuses names
+    further statuses a written case admits by name, such as running for a test
+    of whether a busy platform accepts a job, and the plan records them.
     """
+    statuses = ("available", *admit_statuses)
     for name, value in (
         ("--max-credits", max_credits),
         ("--expected-seconds", expected_seconds),
@@ -1085,7 +1166,7 @@ def plan(
     if platform not in manifest["platforms"]:
         raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
     row = explorer_row(platform)
-    if row["status"] != "available":
+    if row["status"] not in statuses:
         raise PlatformError(f"{platform} is {row['status']}")
     if manifest["max_duration"] > row["max_duration"]:
         raise PlatformError(f"max_duration {manifest['max_duration']} exceeds the platform's {row['max_duration']}")
@@ -1099,7 +1180,7 @@ def plan(
             f"{billed_shots} billed shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
         )
     processor = get(platform_route(platform))
-    if processor.get("status") != "available":
+    if processor.get("status") not in statuses:
         raise PlatformError(f"{platform} processor is {processor.get('status')}")
     perfs = scrub(processor.get("perfs") or {})
     if row["type"] == "qpu":
@@ -1134,6 +1215,8 @@ def plan(
         "max_credits": max_credits,
         "body": built["body"],
         "body_sha256": sha256_bytes(json.dumps(built["body"], sort_keys=True).encode()),
+        "admitted_statuses": list(statuses),
+        "status_at_plan": {"explorer": row["status"], "processor": processor.get("status")},
         "versions": built["versions"],
         "payload_version_basis": built["payload_version_basis"],
     }
@@ -1162,6 +1245,7 @@ def submit(
     max_credits: float,
     expected_seconds: float,
     per_job_credits: float,
+    admit_statuses: tuple[str, ...] = (),
 ) -> dict[str, Any]:
     """Send one approved case as one job while holding the token's submit lock beside the token file."""
     if not approval.strip():
@@ -1174,7 +1258,7 @@ def submit(
         state_path = case_dir / "submission-state.json"
         if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
-        checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits)
+        checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits, admit_statuses)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
         receipt = {
             "schema": SUBMISSION_SCHEMA,
@@ -1251,16 +1335,69 @@ def parse_counts(results: str) -> dict[str, int]:
     return counts
 
 
+def expected_iterations(manifest: dict[str, Any]) -> int | None:
+    """The iterations an iterated case sends, or None for a one-computation case."""
+    return None if iteration_form(manifest) == "single" else int(manifest.get("iterations", 1))
+
+
+# Count-less partial collections retained before results.json carried failed iterations; their job ids are bound to
+# submission.json, and every later collection must carry the iterations field.
+ITERATIONS_PREDATING_JOBS = frozenset(
+    {
+        "03dd195b-b429-4ef1-be96-98005617343c",
+        "90712931-1b5a-4c14-bdd0-95e01ac02292",
+        "c2edef5d-5e6f-4161-83fc-aadd024171fb",
+    }
+)
+
+
+def predates(retained: dict[str, Any], summary: dict[str, Any], key: str) -> bool:
+    """Whether a retained collection omits summary[key] because it was written before the field existed.
+
+    shots_used is derived from the raw bytes, so a record without it takes it
+    from the raw result. Only the count-less partial records of
+    ITERATIONS_PREDATING_JOBS may omit their failed iteration entries.
+    """
+    if key in retained or key not in summary:
+        return False
+    if key == "shots_used":
+        return True
+    return (
+        key == "iterations"
+        and summary.get("partial") is True
+        and not summary.get("counts")
+        and retained.get("job_id") in ITERATIONS_PREDATING_JOBS
+    )
+
+
+def patient(read: Callable[[], Any], job: str, what: str, deadline: float, poll: float) -> Any:
+    """read() repeated after each transient failure until the deadline; any other failure raises at once.
+
+    Every repeated call is a GET of the existing job, so a repeat never creates a job.
+    """
+    while True:
+        try:
+            return read()
+        except PlatformError as error:
+            if not transient(error) or time.monotonic() > deadline:
+                raise
+            print(f"job {job}: {what} read failed, retrying: {str(error)[:160]}", file=sys.stderr)
+            time.sleep(poll)
+
+
 def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
     """Wait for the job, then retain its status, result and job data; the raw result keeps its bytes."""
     submission = json.loads((case_dir / "submission.json").read_text(encoding="utf-8"))
-    _, _, cases_sha256 = load_case(case_dir)
+    manifest, _, cases_sha256 = load_case(case_dir)
     if submission.get("schema") != SUBMISSION_SCHEMA or submission["cases_sha256"] != cases_sha256:
         raise PlatformError("cases.json differs from the submission receipt")
     job = submission["job_id"]
+    expected = expected_iterations(manifest)
     deadline = time.monotonic() + timeout
     while True:
-        status = request("GET", job_route(job, "status"))
+        status: dict[str, Any] = patient(
+            lambda: request("GET", job_route(job, "status")), job, "status", deadline, poll
+        )
         if status.get("status") in TERMINAL:
             break
         if time.monotonic() > deadline:
@@ -1268,39 +1405,60 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         time.sleep(poll)
     raw_dir = case_dir / "raw"
     raw_dir.mkdir(exist_ok=True)
+    retained_path = case_dir / "results.json"
+    # An error or canceled job can still carry partial results. Only HTTP 404,
+    # the cloud API's "Not found" answer of /api/jobs/{job_id}/result, records
+    # the result as absent; any other refusal leaves the run recollectable.
+    result_bytes: bytes | None
+    absent: str | None = None
+    try:
+        result_bytes = patient(
+            lambda: request("GET", job_route(job, "result"), raw=True), job, "result", deadline, poll
+        )
+    except RefusedError as error:
+        if status["status"] == "completed" or error.code != 404:
+            raise
+        # An earlier collection already retained an answer, so a refusal now is a changed answer.
+        if (raw_dir / "result.json").exists():
+            raise PlatformError(f"job {job}: raw/result.json is retained but /result now answers {error}") from None
+        absent, result_bytes = str(error), None
+    # A first collection keeps the answer before parsing it or reading job data
+    # and usage, so a later failure leaves the scientific bytes on disk. A
+    # recollection writes only after its comparison below, so a result that
+    # appears after a recorded absence changes nothing on disk.
+    if result_bytes is not None and not retained_path.exists():
+        retain_bytes(raw_dir / "result.json", result_bytes)
     collected: dict[str, Any] = {
         "schema": COLLECTION_SCHEMA,
         "collected_utc": now(),
         "job_id": job,
         "status": scrub(status),
-        "data": scrub(request("GET", job_route(job, "data"))),
-        "usage_after": usage_rows(get("/api/tokens/usage/report")),
+        "data": scrub(patient(lambda: request("GET", job_route(job, "data")), job, "data", deadline, poll)),
     }
-    # An error or canceled job can still carry partial results; a refused
-    # /result is recorded as absent, and only a completed job must have one.
+    # charged() falls back to the billing rule when usage_after is missing, so
+    # an unreadable usage report is recorded and the collection proceeds.
     try:
-        result_bytes = request("GET", job_route(job, "result"), raw=True)
-    except RefusedError as error:
-        if status["status"] == "completed":
-            raise
-        collected["result_absent"] = str(error)
-        result_bytes = None
+        collected["usage_after"] = usage_rows(
+            patient(lambda: get("/api/tokens/usage/report"), job, "usage", deadline, poll)
+        )
+    except PlatformError as error:
+        collected["usage_absent"] = str(error)
+    if result_bytes is None:
+        collected["result_absent"] = absent
     else:
         collected["result_sha256"] = sha256_bytes(result_bytes)
-        collected.update(result_summary(result_bytes, job, status, complete=status["status"] == "completed"))
-    # A recollection is compared before any write, so a result that appears
-    # after a recorded absence changes nothing on disk and is reported.
-    retained_path = case_dir / "results.json"
+        collected.update(
+            result_summary(result_bytes, job, status, complete=status["status"] == "completed", expected=expected)
+        )
     if retained_path.exists():
         retained = json.loads(retained_path.read_text(encoding="utf-8"))
-        moving = ("collected_utc", "usage_after")
+        moving = ("collected_utc", "usage_after", "usage_absent")
         if {k: v for k, v in retained.items() if k not in moving} != {
-            k: v for k, v in collected.items() if k not in moving
+            k: v for k, v in collected.items() if k not in moving and not predates(retained, collected, k)
         }:
             raise PlatformError(f"{retained_path} differs from the recollection; nothing was rewritten")
-    if result_bytes is not None:
-        retain_bytes(raw_dir / "result.json", result_bytes)
-    if retained_path.exists():
+        if result_bytes is not None:
+            retain_bytes(raw_dir / "result.json", result_bytes)
         return dict(retained)
     write_json(retained_path, collected, exclusive=True)
     return collected
@@ -1318,12 +1476,21 @@ def retain_bytes(path: Path, data: bytes) -> None:
             raise PlatformError(f"{path} differs from the recollected bytes; nothing was rewritten") from None
 
 
-def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], complete: bool = True) -> dict[str, Any]:
+def result_summary(
+    result_bytes: bytes, job: str, status: dict[str, Any], complete: bool = True, expected: int | None = None
+) -> dict[str, Any]:
     """The counts and scalar fields of a raw /result answer, parsed without Perceval and bound to its job.
 
     The answer's job_id must be the submitted job and its shots must agree
     with any non-null status shots. A partial result (error or canceled job)
-    without serialized counts is summarized as partial with no counts.
+    without serialized counts is summarized as partial with no counts. A
+    partial iterated result keeps every entry at its position: a counted
+    iteration as a completed job would, an iteration answered with the
+    worker's error text as "error", and an unreadable entry as "malformed".
+    When the case expects more iterations than the answer holds, one "missing"
+    entry per absent iteration follows the answered ones; the answer names no
+    position, so a missing entry carries no attribution. None of these carries
+    counts, so a failed iteration never reads as a counted one.
     """
     answer = json.loads(result_bytes)
     if not isinstance(answer, dict) or answer.get("job_id") != job:
@@ -1331,13 +1498,14 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
             f"the result answers job {answer.get('job_id') if isinstance(answer, dict) else None}, not {job}"
         )
     shots = answer.get("shots")
-    if not isinstance(shots, int) or shots < 0:
+    # A job that ended without completing (error, canceled) may answer shots null: no count, kept as null.
+    if not (shots is None and not complete) and (not isinstance(shots, int) or shots < 0):
         raise PlatformError(f"the result of job {job} carries shots {shots!r}")
     if status.get("shots") is not None and status["shots"] != shots:
         raise PlatformError(f"job {job}: status shots {status['shots']} differ from the result's {shots}")
     serialized = answer.get("results")
     inner = json.loads(serialized) if isinstance(serialized, str) and serialized else None
-    iterations = None
+    iterations: list[dict[str, Any]] | None = None
     if isinstance(inner, dict) and isinstance(inner.get("results_list"), list):
         # An iterated job answers one entry per iteration; counts add up, and
         # each entry keeps its own counts and its iteration's scalar fields.
@@ -1345,12 +1513,28 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
         merged: dict[str, int] = {}
         for entry in inner["results_list"]:
             if not isinstance(entry, dict) or not isinstance(entry.get("results"), str):
-                raise PlatformError(f"job {job}: an iteration result carries no serialized counts")
+                if complete:
+                    raise PlatformError(f"job {job}: an iteration result carries no serialized counts")
+                malformed = {"malformed": type(entry.get("results") if isinstance(entry, dict) else entry).__name__}
+                if isinstance(entry, dict) and isinstance(entry.get("iteration"), dict):
+                    malformed["iteration"] = scalar_tree(entry["iteration"])
+                iterations.append(malformed)
+                continue
+            iteration = entry.get("iteration") if isinstance(entry.get("iteration"), dict) else {}
+            fields = {k: v for k, v in entry.items() if k not in ("results", "iteration")}
+            # A job that ended without completing can answer an iteration with the worker's error text.
+            if not complete and not entry["results"].startswith(":PCVL:"):
+                iterations.append(
+                    {
+                        "iteration": scalar_tree(iteration),
+                        "error": entry["results"][:2000],
+                        "result_fields": scalar_tree(fields),
+                    }
+                )
+                continue
             part = parse_counts(entry["results"])
             for state, n in part.items():
                 merged[state] = merged.get(state, 0) + n
-            iteration = entry.get("iteration") if isinstance(entry.get("iteration"), dict) else {}
-            fields = {k: v for k, v in entry.items() if k not in ("results", "iteration")}
             iterations.append(
                 {
                     "iteration": scalar_tree(iteration),
@@ -1359,6 +1543,12 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
                     "result_fields": scalar_tree(fields),
                 }
             )
+        if expected is not None and complete and len(iterations) != expected:
+            raise PlatformError(f"job {job}: a completed job answers {len(iterations)} iterations of {expected}")
+        if expected is not None and not complete:
+            if len(iterations) > expected:
+                raise PlatformError(f"job {job}: {len(iterations)} iterations answer a case of {expected}")
+            iterations.extend({"missing": True} for _ in range(expected - len(iterations)))
         inner = {**{k: v for k, v in inner.items() if k != "results_list"}, "results": None}
         counts = merged
     elif not isinstance(inner, dict) or not isinstance(inner.get("results"), str):
@@ -1370,20 +1560,29 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
     # An iterated answer's top-level shots is one iteration's max_shots; each
     # entry reports the shots it used, and their sum is what the job consumed.
     used = shots
+    failed = False
     if iterations is not None:
-        per = [entry["result_fields"].get("nb_shots_used") for entry in iterations]
+        counted = [entry for entry in iterations if "counts" in entry]
+        per = [entry["result_fields"].get("nb_shots_used") for entry in counted]
         if not all(isinstance(n, int) and n >= 0 for n in per):
             raise PlatformError(f"job {job}: an iteration reports no nb_shots_used")
         used = sum(per)
-        for entry, n in zip(iterations, per, strict=True):
+        for entry, n in zip(counted, per, strict=True):
             if entry["samples"] > n:
                 raise PlatformError(f"job {job}: an iteration counts {entry['samples']} samples from {n} shots")
-    if sum(counts.values()) > used:
+        # The shots a failed iteration consumed are unknown unless it reports them,
+        # so shots_used is left out and the top-level shots stand in for the charge.
+        failed = len(counted) < len(iterations)
+        spent = [entry.get("result_fields", {}).get("nb_shots_used") for entry in iterations]
+        if failed and all(isinstance(n, int) and n >= 0 for n in spent):
+            used, failed = sum(spent), False
+    # A partial job may answer shots null, which bounds nothing.
+    if used is not None and sum(counts.values()) > used:
         raise PlatformError(f"job {job}: {sum(counts.values())} samples exceed its {used} shots")
     scalars = {k: v for k, v in inner.items() if k != "results" and isinstance(v, int | float | str | None)}
-    summary = {
+    summary: dict[str, Any] = {
         "shots": shots,
-        "shots_used": used,
+        **({} if failed else {"shots_used": used}),
         "partial": not complete,
         "counts": counts,
         "samples": sum(counts.values()),
@@ -1441,14 +1640,15 @@ def run_facts(directory: Path) -> dict[str, Any]:
     if status == "completed" or raw.exists():
         if not raw.is_file() or sha256_bytes(raw.read_bytes()) != collected.get("result_sha256"):
             raise PlatformError(f"{owner}: raw/result.json differs from its recorded sha256")
-        summary = result_summary(raw.read_bytes(), submission["job_id"], collected["status"], status == "completed")
-        # shots_used is derived from the raw bytes; a collection written before
-        # the field existed omits it and the raw result supplies it.
-        if any(
-            collected.get(key) != value
-            for key, value in summary.items()
-            if not (key == "shots_used" and key not in collected)
-        ):
+        summary = result_summary(
+            raw.read_bytes(),
+            submission["job_id"],
+            collected["status"],
+            status == "completed",
+            expected_iterations(manifest),
+        )
+
+        if any(collected.get(key) != value for key, value in summary.items() if not predates(collected, summary, key)):
             raise PlatformError(f"{owner}: results.json differs from the raw result")
         modes = json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["modes"]
         if any(len(state.split(",")) != modes for state in summary["counts"]):
@@ -1472,9 +1672,37 @@ def run_facts(directory: Path) -> dict[str, Any]:
         # A box-kite case counts its blocks and a mesh case its phase settings.
         "circuits": len(manifest["blocks"] if "blocks" in manifest else manifest["settings"]),
         "statuses": {status: 1},
-        "charge": charged(submission, collected, shots, manifest),
+        "charge": charged(submission, collected, shots, manifest, interim_usage(directory, submission, collected)),
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
+
+
+def usage_jobs(report: Any) -> int | None:
+    """nb_jobs summed over every platform row of a token usage report."""
+    if not isinstance(report, list):
+        return None
+    return sum(
+        int(row.get("nb_jobs") or 0)
+        for token_row in report
+        if isinstance(token_row, dict)
+        for row in token_row.get("usage", [])
+        if isinstance(row, dict)
+    )
+
+
+def interim_usage(directory: Path, submission: dict[str, Any], collected: dict[str, Any]) -> list[Any]:
+    """usage_before reports of sibling runs submitted after this run and before its collection, in time order."""
+    start, end = str(submission.get("submitted_utc", "")), str(collected.get("collected_utc", ""))
+    reads = []
+    for other in run_directories(directory.parent):
+        path = other / "submission.json"
+        if other == directory or not path.is_file():
+            continue
+        sibling = json.loads(path.read_text(encoding="utf-8"))
+        when = str(sibling.get("submitted_utc", ""))
+        if start < when < end:
+            reads.append((when, sibling.get("usage_before")))
+    return [report for _, report in sorted(reads, key=lambda item: item[0])]
 
 
 def usage_total(report: Any) -> float | None:
@@ -1489,20 +1717,39 @@ def usage_total(report: Any) -> float | None:
 
 
 def charged(
-    submission: dict[str, Any], collected: dict[str, Any], shots: int, manifest: dict[str, Any] | None = None
+    submission: dict[str, Any],
+    collected: dict[str, Any],
+    shots: int,
+    manifest: dict[str, Any] | None = None,
+    interim: list[Any] | None = None,
 ) -> float:
-    """The credits a run consumed: the usage report after collection minus the one before submission.
+    """The credits a run consumed: the first later usage report holding exactly one more job, minus the one before.
 
-    Jobs run one at a time on the token, so the difference is this job's
-    charge. The usage report counts the calendar month, so a job submitted and
-    collected in different months, a negative difference or a receipt without
-    both reports falls back to the billing rule: the recorded per-job price plus
-    the price per shot times the shots used by a one-computation job, or times
-    the largest iteration's max_shots of an iterated one.
+    The later report is the earliest of interim (sibling runs' usage_before
+    reports taken between this submission and its collection) and the
+    collection's usage_after whose job counter exceeds the counter before
+    submission; the difference is this job's charge only when that counter
+    advanced by exactly one. The usage report counts the calendar month, so a
+    job submitted and collected in different months, a negative difference, a
+    window holding another job or a receipt without both reports falls back to
+    the billing rule: the recorded per-job price plus the price per shot times
+    the shots used by a one-computation job, or times the largest iteration's
+    max_shots of an iterated one.
     """
-    before, after = usage_total(submission.get("usage_before")), usage_total(collected.get("usage_after"))
+    first = submission.get("usage_before")
+    before, jobs_before = usage_total(first), usage_jobs(first)
+    later = next(
+        (
+            report
+            for report in [*(interim or []), collected.get("usage_after")]
+            if jobs_before is not None and (usage_jobs(report) or 0) > jobs_before
+        ),
+        None,
+    )
+    after, jobs_after = usage_total(later), usage_jobs(later)
     same_month = str(submission.get("submitted_utc", ""))[:7] == str(collected.get("collected_utc", ""))[:7]
-    if before is not None and after is not None and same_month and after >= before:
+    one_job = jobs_before is not None and jobs_after == jobs_before + 1
+    if before is not None and after is not None and same_month and after >= before and one_job:
         return round(after - before, 6)
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
@@ -1522,22 +1769,26 @@ def zipped(text: str) -> str:
 def charge_self_test() -> None:
     """charged() takes the usage delta within one calendar month and the recorded price across a reset."""
 
-    def report(credits: float) -> list[dict[str, Any]]:
-        return [{"usage": [{"credits": 0.0, "free_credits": credits, "nb_jobs": 1, "platform_name": "qpu:belenos"}]}]
+    def report(credits: float, jobs: int = 2) -> list[dict[str, Any]]:
+        return [{"usage": [{"credits": 0.0, "free_credits": credits, "nb_jobs": jobs, "platform_name": "qpu:belenos"}]}]
 
     submission = {
         "submitted_utc": "2026-10-31T23:59:00+00:00",
-        "usage_before": report(12.0),
+        "usage_before": report(12.0, 1),
         "per_job_credits": 1.0,
         "platform_at_plan": {"price_per_shot": 1e-06},
     }
-    cases = (
-        ("2026-10-31T23:59:30+00:00", report(13.01), 1.01),
-        ("2026-11-01T00:00:30+00:00", report(1.01), 1.01),
-        ("2026-10-31T23:59:30+00:00", report(11.0), 1.01),
+    cases: tuple[tuple[str, Any, list[Any], float], ...] = (
+        ("2026-10-31T23:59:30+00:00", report(13.02), [], 1.02),
+        ("2026-11-01T00:00:30+00:00", report(1.02), [], 1.01),
+        ("2026-10-31T23:59:30+00:00", report(11.0), [], 1.01),
+        # A later job ran inside the window: the delta over two jobs is not this job's charge.
+        ("2026-10-31T23:59:30+00:00", report(14.0, 3), [], 1.01),
+        # A sibling's pre-submission read holding one more job bounds this job's charge, here none.
+        ("2026-10-31T23:59:30+00:00", report(13.0, 3), [report(12.0, 2)], 0.0),
     )
-    for collected_utc, after, want in cases:
-        got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000)
+    for collected_utc, after, interim, want in cases:
+        got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000, None, interim)
         if got != want:
             raise SystemExit(f"self-test: charged() read {got} for a collection at {collected_utc}, not {want}")
     # An iterated job across a month boundary bills its largest iteration's max_shots, not the shots it used.
@@ -1680,6 +1931,35 @@ def runner_self_test() -> int:
     charge_self_test()
     payload_version_self_test()
     seed_self_test()
+    for error, want in (
+        (RefusedError("x", 502), True),
+        (RefusedError("x", 408), True),
+        (RefusedError("x", 404), False),
+        (RefusedError("x", 401), False),
+        (UnansweredError("x: timed out"), True),
+        (PlatformError("x: answer is not JSON"), False),
+    ):
+        if transient(error) != want:
+            raise SystemExit(f"self-test: transient() read {error.code if isinstance(error, RefusedError) else None}")
+    # request() maps a refusal to its HTTP code and a connection lost at any stage to UnansweredError.
+    refusal = urllib.error.HTTPError(API, 503, "unavailable", email.message.Message(), io.BytesIO(b"busy"))
+    for raised, want_class in (
+        (refusal, RefusedError),
+        (urllib.error.URLError("no route"), UnansweredError),
+        (TimeoutError("timed out"), UnansweredError),
+        (ConnectionResetError("reset"), UnansweredError),
+        (http.client.RemoteDisconnected("closed"), UnansweredError),
+        (http.client.IncompleteRead(b"par"), UnansweredError),
+        (ssl.SSLEOFError(8, "EOF occurred in violation of protocol"), UnansweredError),
+    ):
+        with patch.object(OPENER, "open", side_effect=raised):
+            try:
+                request("GET", "/api/jobs/x/status", auth=False)
+            except PlatformError as error:
+                if type(error) is not want_class or (isinstance(error, RefusedError) and error.code != 503):
+                    raise SystemExit(f"self-test: request() mapped {raised!r} to {error!r}") from None
+            else:
+                raise SystemExit(f"self-test: request() swallowed {raised!r}")
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
     modes = ["0"] * 24
@@ -1706,12 +1986,19 @@ def runner_self_test() -> int:
         "result": result,
         "status": "completed",
         "processor_status": "available",
+        "fail": {},
+        "posts": 0,
     }
 
     def fake_request(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
+        # service["fail"] maps a route suffix to the errors its next reads raise, in order.
+        for suffix, queue in service["fail"].items():
+            if route.endswith(suffix) and queue:
+                raise queue.pop(0)
         if (method, route) == ("POST", "/api/jobs"):
+            service["posts"] += 1
             if service["refuse"]:
-                raise RefusedError("POST /api/jobs: HTTP 422 unprocessable payload")
+                raise RefusedError("POST /api/jobs: HTTP 422 unprocessable payload", 422)
             return {"job_id": "job-a"}
         if route.endswith("/status"):
             return {"status": service["status"], "shots": 10012, "token_id": 7}
@@ -1719,7 +2006,7 @@ def runner_self_test() -> int:
             return {"job_id": "job-a", "token_label": "secret-label", "status": "completed"}
         if route.endswith("/result"):
             if service["result"] is None:
-                raise RefusedError(f"GET {route}: HTTP 404 no result")
+                raise RefusedError(f"GET {route}: HTTP 404 no result", 404)
             return str(service["result"]).encode("utf-8")
         if route == platform_route("sim:belenos"):
             return {"status": service["processor_status"], "perfs": {"g2 (%)": 1.0, "HOM (%)": 94.2}, "token_id": 7}
@@ -1747,6 +2034,28 @@ def runner_self_test() -> int:
             rejected += 1
             return
         raise AssertionError(f"runner accepted {label}")
+
+    archived = "pcvlar 0 1 0 list 0"
+    policies: tuple[tuple[dict[str, Any], list[str] | None], ...] = (
+        ({"payload": {"command": "sample_count"}}, None),
+        ({"job_name": "mitigations", "payload": {"command": "sample_count", "note": "mitigations"}}, None),
+        ({"payload": {"command": "sample_count", "mitigations": archived}}, []),
+        ({"payload": {"command": "sample_count", "mitigations": []}}, []),
+    )
+    for sent, want_policy in policies:
+        if body_mitigations(sent) != want_policy:
+            raise SystemExit(f"self-test: body_mitigations read {sent} as {body_mitigations(sent)!r}")
+    if body_mitigations({"payload": {"mitigations": ["detector-balancing"]}}) == []:
+        raise SystemExit("self-test: a nonempty mitigation list read as the empty policy")
+    misplaced: tuple[tuple[str, dict[str, Any]], ...] = (
+        ("a top-level mitigations key", {"mitigations": [], "payload": {}}),
+        ("a nested mitigations key", {"payload": {"computation": {"mitigations": []}}}),
+        ("a mitigations value that is no list", {"payload": {"mitigations": {}}}),
+        ("a body without payload", {"mitigations": []}),
+        ("an unreadable mitigations archive", {"payload": {"mitigations": "pcvlar garbage"}}),
+    )
+    for label_text, misplaced_body in misplaced:
+        refuse(label_text, functools.partial(body_mitigations, misplaced_body), "")
 
     with tempfile.TemporaryDirectory() as tmp:
         scratch = Path(tmp)
@@ -1841,6 +2150,82 @@ def runner_self_test() -> int:
             service["status"], service["result"] = "completed", result
             if collected["counts"] != {",".join(dark): 9990, ",".join(label): 10}:
                 raise AssertionError(f"collect parsed {collected['counts']}")
+
+            def submitted(name: str) -> Path:
+                directory = scratch / name
+                shutil.copytree(case, directory)
+                submit(directory, "sim:belenos", "approved", 0.0, 10.0, 0.0)
+                return directory
+
+            # Transient failures of every terminal read are outlived without a second POST.
+            flaky = submitted("flaky")
+            posts = service["posts"]
+            service["fail"] = {
+                "/status": [RefusedError("GET status: HTTP 503", 503)],
+                "/result": [RefusedError("GET result: HTTP 502", 502)],
+                "/data": [UnansweredError("GET data: timed out")],
+                "/api/tokens/usage/report": [RefusedError("GET usage: HTTP 429", 429)],
+            }
+            if collect(flaky, 0.0, 1.0)["counts"] != collected["counts"] or service["posts"] != posts:
+                raise AssertionError("a collection through transient read failures changed its counts or posted")
+            if "usage_absent" in json.loads((flaky / "results.json").read_text(encoding="utf-8")):
+                raise AssertionError("a usage read that recovered was recorded as absent")
+            # A usage report that stays unreadable is recorded, and the charge falls back to the billing rule.
+            unbilled = submitted("unbilled")
+            service["fail"] = {"/api/tokens/usage/report": [RefusedError("GET usage: HTTP 401", 401)]}
+            if "HTTP 401" not in collect(unbilled, 0.0, 1.0).get("usage_absent", ""):
+                raise AssertionError("an unreadable usage report was not recorded as absent")
+            run_facts(unbilled)
+            # A failed job-data read leaves the raw result on disk and no results.json; a later collect completes.
+            interrupted = submitted("interrupted")
+            service["fail"] = {"/data": [RefusedError("GET data: HTTP 404", 404)]}
+            refuse("a refused job-data read", lambda: collect(interrupted, 0.0, 1.0), "HTTP 404")
+            if not (interrupted / "raw/result.json").is_file() or (interrupted / "results.json").exists():
+                raise AssertionError("a refused job-data read lost the raw result or wrote results.json")
+            collect(interrupted, 0.0, 1.0)
+            run_facts(interrupted)
+            # A result whose parse fails is still retained byte for byte.
+            unparsed = submitted("unparsed")
+            service["result"] = result.replace("job-a", "job-z")
+            refuse("a result naming another job", lambda: collect(unparsed, 0.0, 1.0), "not job-a")
+            if (unparsed / "raw/result.json").read_bytes() != service["result"].encode():
+                raise AssertionError("a result that failed to parse was not retained")
+            service["result"] = result
+            # Two transient failures in a row are outlived inside the deadline; past it the first one raises.
+            repeated = submitted("repeated")
+            service["fail"] = {
+                "/result": [RefusedError("GET result: HTTP 503", 503), RefusedError("GET result: HTTP 503", 503)]
+            }
+            collect(repeated, 0.0, 1.0)
+            # A failure that recurs on every attempt raises at once, inside the deadline.
+            garbled = submitted("garbled")
+            service["fail"] = {"/data": [PlatformError("GET data: answer is not JSON")]}
+            refuse("an answer that is not JSON", lambda: collect(garbled, 0.0, 1.0), "not JSON")
+            # Past the deadline a transient failure raises instead of waiting.
+            late_read = submitted("late-read")
+            service["fail"] = {"/result": [RefusedError("GET result: HTTP 503", 503)]}
+            refuse("a transient read past the deadline", lambda: collect(late_read, 0.0, -1.0), "HTTP 503")
+            # Only the result route's 404 records an error job's result as absent; a 401 leaves it recollectable.
+            not_found = submitted("not-found")
+            service["status"], service["fail"] = "error", {"/result": [RefusedError("GET result: HTTP 404", 404)]}
+            if "HTTP 404" not in collect(not_found, 0.0, 1.0).get("result_absent", ""):
+                raise AssertionError("a 404 result of an error job was not recorded as absent")
+            unauthorized = submitted("unauthorized")
+            service["fail"] = {"/result": [RefusedError("GET result: HTTP 401", 401)]}
+            refuse("a 401 result of an error job", lambda: collect(unauthorized, 0.0, 1.0), "HTTP 401")
+            if (unauthorized / "results.json").exists():
+                raise AssertionError("a 401 result of an error job was recorded")
+            # A refused /result after an earlier collection retained one is a changed answer, not an absence.
+            refused_late = submitted("refused-late")
+            service["status"], service["fail"] = "error", {"/data": [RefusedError("GET data: HTTP 404", 404)]}
+            refuse("a refused job-data read of an error job", lambda: collect(refused_late, 0.0, 1.0), "HTTP 404")
+            service["fail"] = {"/result": [RefusedError("GET result: HTTP 404", 404)]}
+            refuse(
+                "a refused result after its bytes were retained", lambda: collect(refused_late, 0.0, 1.0), "now answers"
+            )
+            if (refused_late / "results.json").exists():
+                raise AssertionError("a refused result after retention wrote results.json")
+            service["status"], service["fail"] = "completed", {}
             run_facts(run)
             mutations: list[tuple[str, Callable[[Path], object], str]] = [
                 (
@@ -1892,6 +2277,80 @@ def runner_self_test() -> int:
             ),
         }
     ).encode()
+    worker_error = json.dumps(
+        {
+            "job_id": "job-w",
+            "results": json.dumps({"results_list": [{"results": "RuntimeError: no input ports", "iteration": {}}]}),
+            "shots": 0,
+        }
+    ).encode()
+    summary = result_summary(worker_error, "job-w", {"shots": 0}, complete=False)
+    failed_entry = {"iteration": {}, "error": "RuntimeError: no input ports", "result_fields": {}}
+    if summary != {
+        "shots": 0,
+        "partial": True,
+        "counts": {},
+        "samples": 0,
+        "result_fields": {},
+        "iterations": [failed_entry],
+    }:
+        raise AssertionError(f"an errored iteration without counts parsed as {summary}")
+    mixed = json.dumps(
+        {
+            "job_id": "job-x",
+            "shots": 5,
+            "results": json.dumps(
+                {
+                    "results_list": [
+                        {"results": ":PCVL:BSCount:{|1,0>=3}", "nb_shots_used": 5, "iteration": {"phi": 0.0}},
+                        {"results": "RuntimeError: no input ports", "iteration": {"phi": 1.0}},
+                        7,
+                        {"results": None, "iteration": {"phi": 2.0}},
+                    ]
+                }
+            ),
+        }
+    ).encode()
+    summary = result_summary(mixed, "job-x", {}, complete=False, expected=6)
+    kinds = [sorted(entry) for entry in summary["iterations"]]
+    if (
+        summary["counts"] != {"1,0": 3}
+        or kinds
+        != [
+            ["counts", "iteration", "result_fields", "samples"],
+            ["error", "iteration", "result_fields"],
+            ["malformed"],
+            ["iteration", "malformed"],
+            ["missing"],
+            ["missing"],
+        ]
+        or summary["iterations"][1]["iteration"] != {"phi": 1.0}
+        or summary["iterations"][3]["iteration"] != {"phi": 2.0}
+        or "shots_used" in summary
+    ):
+        raise AssertionError(f"a partial job with a counted, a failed and a malformed iteration parsed as {summary}")
+    refuse("a completed job with a malformed iteration", functools.partial(result_summary, mixed, "job-x", {}), "")
+    refuse(
+        "a partial answer with more iterations than its case",
+        functools.partial(result_summary, mixed, "job-x", {}, False, 3),
+        "answer a case of 3",
+    )
+    try:
+        result_summary(worker_error, "job-w", {"shots": 0})
+    except PlatformError:
+        pass
+    else:
+        raise AssertionError("a completed job whose iteration carries an error text was accepted")
+    errored = json.dumps({"job_id": "job-e", "duration": 55, "results": None, "shots": None}).encode()
+    summary = result_summary(errored, "job-e", {"shots": None}, complete=False)
+    if summary != {"shots": None, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}:
+        raise AssertionError(f"an errored result without a shot count parsed as {summary}")
+    try:
+        result_summary(errored, "job-e", {"shots": None})
+    except PlatformError:
+        pass
+    else:
+        raise AssertionError("a completed result without a shot count was accepted")
     summary = result_summary(iterated, "job-i", {"shots": 9})
     if (
         summary["counts"] != {"1,0": 3, "0,1": 5}
@@ -2002,6 +2461,12 @@ def self_test() -> None:
     source = root / "docs" / "evidence" / "quandela"
     guides = (root / "docs" / "notes" / "quandela" / "README.md",)
     check(source, list(guides))
+    countless = {"partial": True, "counts": {}, "iterations": [{"failed": True}]}
+    for job_id in ITERATIONS_PREDATING_JOBS:
+        if not predates({"job_id": job_id}, countless, "iterations"):
+            raise PlatformError(f"self-test: legacy partial record {job_id} must omit iterations")
+    if predates({"job_id": "job-a"}, countless, "iterations"):
+        raise PlatformError("self-test: a later count-less partial record omitted its failed iterations")
 
     def rewrite(path: Path, change: Callable[[Any], None]) -> None:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -2146,6 +2611,12 @@ def main() -> int:
         p.add_argument("--max-credits", type=float, required=True, help="the written case's credit ceiling")
         p.add_argument("--expected-seconds", type=float, required=True, help="the written case's expected seconds")
         p.add_argument("--per-job-credits", type=float, required=True, help="the offer's per-job price in the case")
+        p.add_argument(
+            "--admit-status",
+            action="append",
+            default=[],
+            help="a platform status besides available that the written case admits by name",
+        )
         if name == "submit":
             p.add_argument("--approval", required=True, help="the user's approval, quoted, kept in submission.json")
     p = sub.add_parser("recover")
@@ -2172,7 +2643,12 @@ def main() -> int:
         try:
             if args.command == "plan":
                 checked = plan(
-                    args.case_dir, args.platform, args.max_credits, args.expected_seconds, args.per_job_credits
+                    args.case_dir,
+                    args.platform,
+                    args.max_credits,
+                    args.expected_seconds,
+                    args.per_job_credits,
+                    tuple(args.admit_status),
                 )
                 print(json.dumps({k: v for k, v in checked.items() if k != "body"}, indent=1, sort_keys=True))
             elif args.command == "submit":
@@ -2183,6 +2659,7 @@ def main() -> int:
                     args.max_credits,
                     args.expected_seconds,
                     args.per_job_credits,
+                    tuple(args.admit_status),
                 )
                 print(f"job {record['job_id']} on {record['platform']}")
             elif args.command == "recover":

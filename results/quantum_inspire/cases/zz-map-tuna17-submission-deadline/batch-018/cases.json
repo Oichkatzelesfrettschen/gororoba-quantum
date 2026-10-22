@@ -1,0 +1,186 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "batch_index": 18,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-01-readout-10.cq",
+   "kind": "readout",
+   "packing_id": "pack-01",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "prepared": [
+      1,
+      0
+     ]
+    },
+    {
+     "edge": [
+      5,
+      8
+     ],
+     "prepared": [
+      1,
+      0
+     ]
+    },
+    {
+     "edge": [
+      7,
+      10
+     ],
+     "prepared": [
+      1,
+      0
+     ]
+    },
+    {
+     "edge": [
+      15,
+      16
+     ],
+     "prepared": [
+      1,
+      0
+     ]
+    }
+   ],
+   "prepared_pair": [
+    1,
+    0
+   ],
+   "sha256": "c829f4b35099097c5ca26cfd8e06bc51a5d8a118b49b32d1392d1bec336944fd"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-01-readout-11.cq",
+   "kind": "readout",
+   "packing_id": "pack-01",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "prepared": [
+      1,
+      1
+     ]
+    },
+    {
+     "edge": [
+      5,
+      8
+     ],
+     "prepared": [
+      1,
+      1
+     ]
+    },
+    {
+     "edge": [
+      7,
+      10
+     ],
+     "prepared": [
+      1,
+      1
+     ]
+    },
+    {
+     "edge": [
+      15,
+      16
+     ],
+     "prepared": [
+      1,
+      1
+     ]
+    }
+   ],
+   "prepared_pair": [
+    1,
+    1
+   ],
+   "sha256": "21afb60c24b91a907f7361ee86de157f7c8e14308cf78650f3677eff0f7e9864"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 0,
+   "delay_seconds": 0.0,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-01-a_probe-n0-x-t0000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "packing_id": "pack-01",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "neighbor": 1,
+     "neighbor_state": 0,
+     "probe": 0
+    },
+    {
+     "edge": [
+      5,
+      8
+     ],
+     "neighbor": 8,
+     "neighbor_state": 0,
+     "probe": 5
+    },
+    {
+     "edge": [
+      7,
+      10
+     ],
+     "neighbor": 10,
+     "neighbor_state": 0,
+     "probe": 7
+    },
+    {
+     "edge": [
+      15,
+      16
+     ],
+     "neighbor": 16,
+     "neighbor_state": 0,
+     "probe": 15
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "0265fbd4fb14b7aeaaab75815713c5ef6c0ff2707de5370a0dc8e105fc83479e"
+  }
+ ],
+ "nqubits": 17,
+ "plan_schema": "qi-zz-map-plan-v1",
+ "schema": "qi-zz-map-cases-v1",
+ "shots": 8192,
+ "source_digests": {
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "conditional_ramsey_note_sha256": "ddac02db9715550afcd22d19d312dc668d2558adb42ff7476c4c75b7940cb087",
+  "conditional_ramsey_source_sha256": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+  "proposal_builder_sha256": "a4bf473947b199b973933b17d99e09ac59f68c5321075f02b89dce3c3a81960b",
+  "qi_platform_source_sha256": "ca39e2dfe4aa74221268c607fab8e69d50b34f79f1e092b608a5a5fab87116f6",
+  "tuna_operations_sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
+ },
+ "status": "proposed_not_submitted"
+}

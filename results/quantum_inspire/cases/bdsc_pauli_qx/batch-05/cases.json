@@ -1,0 +1,1894 @@
+{
+ "schema": "qi-bdsc-pauli-cases-v2",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "placement_fields": [
+  "q3",
+  "q1",
+  "q0",
+  "q2"
+ ],
+ "patch_qubits": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7
+ ],
+ "patch_couplers": [],
+ "bit_order": "a shot string puts qubit 0 at the rightmost character: qubit q is character -(1 + q)",
+ "readout_basis": {
+  "witness": {
+   "3": "Y",
+   "2": "Z",
+   "1": "X",
+   "0": "Y"
+  },
+  "quadrature": {
+   "3": "X",
+   "2": "Z",
+   "1": "X",
+   "0": "Y"
+  }
+ },
+ "readout_rotation": {
+  "witness": [
+   [
+    "x90",
+    [
+     3
+    ]
+   ],
+   [
+    "my90",
+    [
+     1
+    ]
+   ],
+   [
+    "x90",
+    [
+     0
+    ]
+   ]
+  ],
+  "quadrature": [
+   [
+    "my90",
+    [
+     3
+    ]
+   ],
+   [
+    "my90",
+    [
+     1
+    ]
+   ],
+   [
+    "x90",
+    [
+     0
+    ]
+   ]
+  ],
+  "pulses": "X90 maps the Y eigenbasis and mY90 the X eigenbasis onto Z (cQASM v3 standard gate set)",
+  "verified": {
+   "x90": {
+    "maps_pauli_to_z": "Y",
+    "spec_matrix_equals_rn_form": true
+   },
+   "my90": {
+    "maps_pauli_to_z": "X",
+    "spec_matrix_equals_rn_form": true
+   }
+  }
+ },
+ "score": "g = 1/2 for z2 = +1 and (1 - t)/2 for z2 = -1, t = y3 x1 y0, as in docs/evidence/bdsc/pauli/pauli_form.json",
+ "bank": [
+  {
+   "name": "k1",
+   "group": "kernel",
+   "ideal_score": 0.0,
+   "terms": {
+    "7": 0.7071067811865475,
+    "12": 0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "x",
+     [
+      1
+     ]
+    ],
+    [
+     "x",
+     [
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "k2",
+   "group": "kernel",
+   "ideal_score": 0.0,
+   "terms": {
+    "6": 0.7071067811865475,
+    "13": -0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "x",
+     [
+      1
+     ]
+    ],
+    [
+     "z",
+     [
+      3
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "k3",
+   "group": "kernel",
+   "ideal_score": 0.0,
+   "terms": {
+    "5": 0.7071067811865475,
+    "14": 0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "x",
+     [
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "k4",
+   "group": "kernel",
+   "ideal_score": 0.0,
+   "terms": {
+    "4": 0.7071067811865475,
+    "15": -0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "z",
+     [
+      3
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "b1",
+   "group": "bright",
+   "ideal_score": 1.0,
+   "terms": {
+    "7": 0.7071067811865475,
+    "12": -0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "x",
+     [
+      1
+     ]
+    ],
+    [
+     "x",
+     [
+      0
+     ]
+    ],
+    [
+     "z",
+     [
+      3
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "b2",
+   "group": "bright",
+   "ideal_score": 1.0,
+   "terms": {
+    "6": 0.7071067811865475,
+    "13": 0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "x",
+     [
+      1
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "b3",
+   "group": "bright",
+   "ideal_score": 1.0,
+   "terms": {
+    "5": 0.7071067811865475,
+    "14": -0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "x",
+     [
+      0
+     ]
+    ],
+    [
+     "z",
+     [
+      3
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "b4",
+   "group": "bright",
+   "ideal_score": 1.0,
+   "terms": {
+    "4": 0.7071067811865475,
+    "15": 0.7071067811865475
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "h",
+     [
+      3
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "cz",
+     [
+      3,
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      1
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ],
+    [
+     "cz",
+     [
+      1,
+      0
+     ]
+    ],
+    [
+     "h",
+     [
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "e0",
+   "group": "middle",
+   "ideal_score": 0.5,
+   "terms": {
+    "0": 1.0
+   },
+   "preparation": []
+  },
+  {
+   "name": "e10",
+   "group": "middle",
+   "ideal_score": 0.5,
+   "terms": {
+    "10": 1.0
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      1
+     ]
+    ],
+    [
+     "x",
+     [
+      3
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "e7",
+   "group": "sector",
+   "ideal_score": 0.5,
+   "terms": {
+    "7": 1.0
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      0
+     ]
+    ],
+    [
+     "x",
+     [
+      1
+     ]
+    ],
+    [
+     "x",
+     [
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "e12",
+   "group": "sector",
+   "ideal_score": 0.5,
+   "terms": {
+    "12": 1.0
+   },
+   "preparation": [
+    [
+     "x",
+     [
+      2
+     ]
+    ],
+    [
+     "x",
+     [
+      3
+     ]
+    ]
+   ]
+  }
+ ],
+ "witness_layout": {
+  "plan_fields": [
+   "h_patch",
+   "kernel_index_low_patch",
+   "kernel_index_high_patch",
+   "h_circuit_1",
+   "h_circuit_2"
+  ],
+  "plan": [
+   [
+    2,
+    1,
+    3,
+    "e0",
+    "e7"
+   ],
+   [
+    1,
+    3,
+    1,
+    "e0",
+    "e7"
+   ],
+   [
+    0,
+    1,
+    3,
+    "e0",
+    "e7"
+   ],
+   [
+    2,
+    2,
+    4,
+    "e12",
+    "e10"
+   ],
+   [
+    1,
+    4,
+    2,
+    "e12",
+    "e10"
+   ],
+   [
+    0,
+    2,
+    4,
+    "e12",
+    "e10"
+   ]
+  ],
+  "balance": {
+   "state_patch_cells": {
+    "b1/patch-0": 1,
+    "b1/patch-1": 1,
+    "b1/patch-2": 1,
+    "b2/patch-0": 1,
+    "b2/patch-1": 1,
+    "b2/patch-2": 1,
+    "b3/patch-0": 1,
+    "b3/patch-1": 1,
+    "b3/patch-2": 1,
+    "b4/patch-0": 1,
+    "b4/patch-1": 1,
+    "b4/patch-2": 1,
+    "e0/patch-0": 1,
+    "e0/patch-1": 1,
+    "e0/patch-2": 1,
+    "e10/patch-0": 1,
+    "e10/patch-1": 1,
+    "e10/patch-2": 1,
+    "e12/patch-0": 1,
+    "e12/patch-1": 1,
+    "e12/patch-2": 1,
+    "e7/patch-0": 1,
+    "e7/patch-1": 1,
+    "e7/patch-2": 1,
+    "k1/patch-0": 1,
+    "k1/patch-1": 1,
+    "k1/patch-2": 1,
+    "k2/patch-0": 1,
+    "k2/patch-1": 1,
+    "k2/patch-2": 1,
+    "k3/patch-0": 1,
+    "k3/patch-1": 1,
+    "k3/patch-2": 1,
+    "k4/patch-0": 1,
+    "k4/patch-1": 1,
+    "k4/patch-2": 1
+   },
+   "group_patch_cells": {
+    "bright/patch-0": 4,
+    "bright/patch-1": 4,
+    "bright/patch-2": 4,
+    "kernel/patch-0": 4,
+    "kernel/patch-1": 4,
+    "kernel/patch-2": 4,
+    "middle/patch-0": 2,
+    "middle/patch-1": 2,
+    "middle/patch-2": 2,
+    "sector/patch-0": 2,
+    "sector/patch-1": 2,
+    "sector/patch-2": 2
+   },
+   "group_patch_neighbor_groups_cells": {
+    "bright/patch-0/half+kernel": 2,
+    "bright/patch-0/kernel+half": 2,
+    "bright/patch-1/half+kernel": 2,
+    "bright/patch-1/kernel+half": 2,
+    "bright/patch-2/half+kernel": 2,
+    "bright/patch-2/kernel+half": 2,
+    "kernel/patch-0/bright+half": 2,
+    "kernel/patch-0/half+bright": 2,
+    "kernel/patch-1/bright+half": 2,
+    "kernel/patch-1/half+bright": 2,
+    "kernel/patch-2/bright+half": 2,
+    "kernel/patch-2/half+bright": 2,
+    "middle/patch-0/bright+kernel": 1,
+    "middle/patch-0/kernel+bright": 1,
+    "middle/patch-1/bright+kernel": 1,
+    "middle/patch-1/kernel+bright": 1,
+    "middle/patch-2/bright+kernel": 1,
+    "middle/patch-2/kernel+bright": 1,
+    "sector/patch-0/bright+kernel": 1,
+    "sector/patch-0/kernel+bright": 1,
+    "sector/patch-1/bright+kernel": 1,
+    "sector/patch-1/kernel+bright": 1,
+    "sector/patch-2/bright+kernel": 1,
+    "sector/patch-2/kernel+bright": 1
+   },
+   "group_assignments_circuits": {
+    "bright+half+kernel": 2,
+    "bright+kernel+half": 2,
+    "half+bright+kernel": 2,
+    "half+kernel+bright": 2,
+    "kernel+bright+half": 2,
+    "kernel+half+bright": 2
+   },
+   "partner_pairs_per_patch": {
+    "patch-0": [
+     {
+      "plan_row": 0,
+      "pair": 1
+     },
+     {
+      "plan_row": 1,
+      "pair": 3
+     },
+     {
+      "plan_row": 3,
+      "pair": 2
+     },
+     {
+      "plan_row": 4,
+      "pair": 4
+     }
+    ],
+    "patch-1": [
+     {
+      "plan_row": 0,
+      "pair": 3
+     },
+     {
+      "plan_row": 2,
+      "pair": 1
+     },
+     {
+      "plan_row": 3,
+      "pair": 4
+     },
+     {
+      "plan_row": 5,
+      "pair": 2
+     }
+    ],
+    "patch-2": [
+     {
+      "plan_row": 1,
+      "pair": 1
+     },
+     {
+      "plan_row": 2,
+      "pair": 3
+     },
+     {
+      "plan_row": 4,
+      "pair": 2
+     },
+     {
+      "plan_row": 5,
+      "pair": 4
+     }
+    ]
+   },
+   "properties": [
+    "every state meets every patch once (36 witness cells)",
+    "each group meets each patch equally",
+    "each group meets each patch and ordered pair of neighbor groups equally (kernel and bright 2, middle and sector 1)",
+    "each of the six assignments of (kernel, bright, half) to the patches occurs in two circuits",
+    "kernel and bright states of one index share a batch on each patch that carries them"
+   ]
+  }
+ },
+ "references": {
+  "readout-0.cq": [],
+  "readout-1.cq": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ]
+ },
+ "readout_pairing": {
+  "batch-00": {
+   "readout-0.cq": "batch-00",
+   "readout-1.cq": "batch-00"
+  },
+  "batch-01": {
+   "readout-0.cq": "batch-01",
+   "readout-1.cq": "batch-00"
+  },
+  "batch-02": {
+   "readout-0.cq": "batch-01",
+   "readout-1.cq": "batch-02"
+  },
+  "batch-03": {
+   "readout-0.cq": "batch-03",
+   "readout-1.cq": "batch-02"
+  },
+  "batch-04": {
+   "readout-0.cq": "batch-03",
+   "readout-1.cq": "batch-04"
+  },
+  "batch-05": {
+   "readout-0.cq": "batch-05",
+   "readout-1.cq": "batch-04"
+  },
+  "batch-06": {
+   "readout-0.cq": "batch-05",
+   "readout-1.cq": "batch-06"
+  },
+  "batch-07": {
+   "readout-0.cq": "batch-07",
+   "readout-1.cq": "batch-06"
+  },
+  "batch-08": {
+   "readout-0.cq": "batch-07",
+   "readout-1.cq": "batch-08"
+  },
+  "batch-09": {
+   "readout-0.cq": "batch-09",
+   "readout-1.cq": "batch-08"
+  },
+  "batch-10": {
+   "readout-0.cq": "batch-09",
+   "readout-1.cq": "batch-10"
+  },
+  "batch-11": {
+   "readout-0.cq": "batch-11",
+   "readout-1.cq": "batch-10"
+  }
+ },
+ "schedule": [
+  [
+   "readout-0.cq",
+   "readout-1.cq",
+   "twin-witness-01.cq"
+  ],
+  [
+   "twin-witness-02.cq",
+   "twin-witness-03.cq",
+   "readout-0.cq"
+  ],
+  [
+   "twin-witness-04.cq",
+   "twin-witness-05.cq",
+   "readout-1.cq"
+  ],
+  [
+   "twin-witness-06.cq",
+   "twin-witness-07.cq",
+   "readout-0.cq"
+  ],
+  [
+   "twin-witness-08.cq",
+   "twin-witness-09.cq",
+   "readout-1.cq"
+  ],
+  [
+   "twin-witness-10.cq",
+   "twin-witness-11.cq",
+   "readout-0.cq"
+  ],
+  [
+   "twin-witness-12.cq",
+   "twin-witness-13.cq",
+   "readout-1.cq"
+  ],
+  [
+   "twin-witness-14.cq",
+   "twin-witness-15.cq",
+   "readout-0.cq"
+  ],
+  [
+   "twin-witness-16.cq",
+   "twin-witness-17.cq",
+   "readout-1.cq"
+  ],
+  [
+   "twin-witness-18.cq",
+   "twin-quadrature-01.cq",
+   "readout-0.cq"
+  ],
+  [
+   "twin-quadrature-02.cq",
+   "twin-quadrature-03.cq",
+   "readout-1.cq"
+  ],
+  [
+   "twin-quadrature-04.cq",
+   "twin-quadrature-05.cq",
+   "readout-0.cq"
+  ]
+ ],
+ "cost": {
+  "jobs": 36,
+  "batches": 12,
+  "shots": 2048,
+  "seconds_per_job": 3.685,
+  "execution_seconds": 132.7,
+  "pause_seconds": 120,
+  "wall_seconds": 1452.7,
+  "fit": "2.6 s + 0.53 ms per shot per job"
+ },
+ "preregistered": {
+  "estimators": "Per state and patch: the raw score mean with an empirical-Bernstein 95% interval (Maurer-Pontil Theorem 4, range 1, unbiased sample variance, two-sided) and the kernel-outcome fraction (z2 = -1 and t = +1) with a Wilson 95% interval. The readout-corrected score applies the inverse tensor product of the four single-qubit assignment matrices of the witness batch's nearest readout-0 and readout-1 (the earlier batch on a tie, the pairing in readout_pairing) and carries a 95% percentile interval of a seeded parametric bootstrap of 4000 draws that redraws the witness outcome counts (multinomial) and every assignment rate from the reference counts (binomial), reported beside the raw interval.",
+  "contraction": "A depolarizing contraction V of the (q3, q1, q0) parity gives kernel and bright states (1 - V)/2 and (1 + V)/2, so kernel + bright - 1 is consistent with zero for each partner pair (k_i, b_i) of a batch and pooled over the four pairs of a patch, and middle and sector states read 1/2. A violation at |z| >= 3 names a multi-qubit error outside the contraction, such as an entangling coherent error or leakage. The law is blind to a phase between the two GHZ branches (kernel and bright scores move by (1 -+ cos phi) V/2 and still sum to one), to single-qubit coherent errors and to readout bias; the quadrature batch reads the branch phase, and readout bias is read from the corrected score. Each z divides the raw residual by the square root of the summed sample variances over shots.",
+  "quadrature": "Circuits that read q3 in the X basis give <X3 X1 Y0> = -s sin(phi) V for a GHZ pair (|a> + s e^{i phi}|~a>)/sqrt2 with a3 = 0, a0 = 1, while the Y-basis parity of the witnesses gives <Y3 X1 Y0> = s cos(phi) V. With S = (m_b1 - m_k1)/2 from the quadrature circuits and C = (m_k1 - m_b1)/2 from the witnesses of the same patch, phi = atan2(S, C), V = hypot(S, C); (m_k1 + m_b1)/2 of both bases and the e7 parity are null statistics.",
+  "pooling": "Patches are analyzed separately; the pooled value is the equal-weight mean over the three patches of the per-patch pooled kernel + bright - 1.",
+  "stop_conditions": "Batch 0's readout-0 or readout-1 shows a patch qubit with P(1|0) or P(0|1) above 0.15: stop and redraw the placement. Two successive readout-0 circuits move a patch qubit's P(1|0), or two successive readout-1 circuits move its P(0|1), by more than 0.02: stop. A job fails or returns fewer shots than requested. The account-wide pause or the three-circuit limit would be broken."
+ },
+ "twin_of": "tuna_17",
+ "placement": [
+  [
+   3,
+   1,
+   0,
+   2
+  ],
+  [
+   7,
+   5,
+   4,
+   6
+  ]
+ ],
+ "logical_to_physical": [
+  {
+   "patch": 0,
+   "q3": 3,
+   "q2": 2,
+   "q1": 1,
+   "q0": 0
+  },
+  {
+   "patch": 1,
+   "q3": 7,
+   "q2": 6,
+   "q1": 5,
+   "q0": 4
+  }
+ ],
+ "twin_note": "slot s carries a Tuna patch on qubits 4s to 4s+3; each patch row names its Tuna patch, source circuit and source batch",
+ "witnesses": [
+  {
+   "file": "twin-witness-01.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "k1",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-01.cq",
+     "source_batch": "batch-01",
+     "ideal_score": 0.0
+    },
+    {
+     "patch": 1,
+     "state": "b3",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-01.cq",
+     "source_batch": "batch-01",
+     "ideal_score": 1.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-02.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "e0",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-01.cq",
+     "source_batch": "batch-01",
+     "ideal_score": 0.5
+    },
+    {
+     "patch": 0,
+     "state": "b1",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-02.cq",
+     "source_batch": "batch-01",
+     "ideal_score": 1.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-03.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 1,
+     "state": "k3",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-02.cq",
+     "source_batch": "batch-01",
+     "ideal_score": 0.0
+    },
+    {
+     "patch": 2,
+     "state": "e7",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-02.cq",
+     "source_batch": "batch-01",
+     "ideal_score": 0.5
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-04.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "k3",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-03.cq",
+     "source_batch": "batch-02",
+     "ideal_score": 0.0
+    },
+    {
+     "patch": 1,
+     "state": "e0",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-03.cq",
+     "source_batch": "batch-02",
+     "ideal_score": 0.5
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-05.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "b1",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-03.cq",
+     "source_batch": "batch-02",
+     "ideal_score": 1.0
+    },
+    {
+     "patch": 0,
+     "state": "b3",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-04.cq",
+     "source_batch": "batch-02",
+     "ideal_score": 1.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-06.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 1,
+     "state": "e7",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-04.cq",
+     "source_batch": "batch-02",
+     "ideal_score": 0.5
+    },
+    {
+     "patch": 2,
+     "state": "k1",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-04.cq",
+     "source_batch": "batch-02",
+     "ideal_score": 0.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-07.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "e0",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-05.cq",
+     "source_batch": "batch-03",
+     "ideal_score": 0.5
+    },
+    {
+     "patch": 1,
+     "state": "k1",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-05.cq",
+     "source_batch": "batch-03",
+     "ideal_score": 0.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-08.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "b3",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-05.cq",
+     "source_batch": "batch-03",
+     "ideal_score": 1.0
+    },
+    {
+     "patch": 0,
+     "state": "e7",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-06.cq",
+     "source_batch": "batch-03",
+     "ideal_score": 0.5
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-09.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 1,
+     "state": "b1",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-06.cq",
+     "source_batch": "batch-03",
+     "ideal_score": 1.0
+    },
+    {
+     "patch": 2,
+     "state": "k3",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-06.cq",
+     "source_batch": "batch-03",
+     "ideal_score": 0.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-10.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "k2",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-07.cq",
+     "source_batch": "batch-05",
+     "ideal_score": 0.0
+    },
+    {
+     "patch": 1,
+     "state": "b4",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-07.cq",
+     "source_batch": "batch-05",
+     "ideal_score": 1.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-11.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "e12",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-07.cq",
+     "source_batch": "batch-05",
+     "ideal_score": 0.5
+    },
+    {
+     "patch": 0,
+     "state": "b2",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-08.cq",
+     "source_batch": "batch-05",
+     "ideal_score": 1.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-12.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 1,
+     "state": "k4",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-08.cq",
+     "source_batch": "batch-05",
+     "ideal_score": 0.0
+    },
+    {
+     "patch": 2,
+     "state": "e10",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-08.cq",
+     "source_batch": "batch-05",
+     "ideal_score": 0.5
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-13.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "k4",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-09.cq",
+     "source_batch": "batch-06",
+     "ideal_score": 0.0
+    },
+    {
+     "patch": 1,
+     "state": "e12",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-09.cq",
+     "source_batch": "batch-06",
+     "ideal_score": 0.5
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-14.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "b2",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-09.cq",
+     "source_batch": "batch-06",
+     "ideal_score": 1.0
+    },
+    {
+     "patch": 0,
+     "state": "b4",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-10.cq",
+     "source_batch": "batch-06",
+     "ideal_score": 1.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-15.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 1,
+     "state": "e10",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-10.cq",
+     "source_batch": "batch-06",
+     "ideal_score": 0.5
+    },
+    {
+     "patch": 2,
+     "state": "k2",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-10.cq",
+     "source_batch": "batch-06",
+     "ideal_score": 0.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-16.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "e12",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-11.cq",
+     "source_batch": "batch-07",
+     "ideal_score": 0.5
+    },
+    {
+     "patch": 1,
+     "state": "k2",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-11.cq",
+     "source_batch": "batch-07",
+     "ideal_score": 0.0
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-17.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "b4",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-11.cq",
+     "source_batch": "batch-07",
+     "ideal_score": 1.0
+    },
+    {
+     "patch": 0,
+     "state": "e10",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-12.cq",
+     "source_batch": "batch-07",
+     "ideal_score": 0.5
+    }
+   ]
+  },
+  {
+   "file": "twin-witness-18.cq",
+   "kind": "witness",
+   "patches": [
+    {
+     "patch": 1,
+     "state": "b2",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "witness-12.cq",
+     "source_batch": "batch-07",
+     "ideal_score": 1.0
+    },
+    {
+     "patch": 2,
+     "state": "k4",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "witness-12.cq",
+     "source_batch": "batch-07",
+     "ideal_score": 0.0
+    }
+   ]
+  },
+  {
+   "file": "twin-quadrature-01.cq",
+   "kind": "quadrature",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "k1",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "quadrature-k1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": 1.0,
+      "sin_coefficient": -1.0
+     }
+    },
+    {
+     "patch": 1,
+     "state": "k1",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "quadrature-k1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": 1.0,
+      "sin_coefficient": -1.0
+     }
+    }
+   ]
+  },
+  {
+   "file": "twin-quadrature-02.cq",
+   "kind": "quadrature",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "k1",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "quadrature-k1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": 1.0,
+      "sin_coefficient": -1.0
+     }
+    },
+    {
+     "patch": 0,
+     "state": "b1",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "quadrature-b1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": -1.0,
+      "sin_coefficient": 1.0
+     }
+    }
+   ]
+  },
+  {
+   "file": "twin-quadrature-03.cq",
+   "kind": "quadrature",
+   "patches": [
+    {
+     "patch": 1,
+     "state": "b1",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "quadrature-b1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": -1.0,
+      "sin_coefficient": 1.0
+     }
+    },
+    {
+     "patch": 2,
+     "state": "b1",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "quadrature-b1.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": -1.0,
+      "sin_coefficient": 1.0
+     }
+    }
+   ]
+  },
+  {
+   "file": "twin-quadrature-04.cq",
+   "kind": "quadrature",
+   "patches": [
+    {
+     "patch": 0,
+     "state": "e7",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "quadrature-e7.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": 0.0,
+      "sin_coefficient": 0.0
+     }
+    },
+    {
+     "patch": 1,
+     "state": "e7",
+     "qubits": [
+      7,
+      5,
+      4,
+      6
+     ],
+     "source_file": "quadrature-e7.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": 0.0,
+      "sin_coefficient": 0.0
+     }
+    }
+   ]
+  },
+  {
+   "file": "twin-quadrature-05.cq",
+   "kind": "quadrature",
+   "patches": [
+    {
+     "patch": 2,
+     "state": "e7",
+     "qubits": [
+      3,
+      1,
+      0,
+      2
+     ],
+     "source_file": "quadrature-e7.cq",
+     "source_batch": "batch-04",
+     "ideal_parity": 0.0,
+     "quadrature": {
+      "cos_coefficient": 0.0,
+      "sin_coefficient": 0.0
+     }
+    }
+   ]
+  }
+ ],
+ "batch": "batch-05",
+ "circuits": [
+  {
+   "file": "twin-witness-10.cq",
+   "kind": "witness",
+   "sha256": "421cdab31fa327b41b455da2ae4a875cb7245cb617f46ff7fea2df9c551ccc7b"
+  },
+  {
+   "file": "twin-witness-11.cq",
+   "kind": "witness",
+   "sha256": "6861a6adabf24567a28284550e6fec98cd8139db04ce15583aa1144a1a806d4d"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "x_qubits": [],
+   "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e"
+  }
+ ]
+}

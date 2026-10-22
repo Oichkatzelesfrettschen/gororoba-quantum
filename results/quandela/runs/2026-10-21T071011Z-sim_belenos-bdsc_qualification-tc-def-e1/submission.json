@@ -1,0 +1,98 @@
+{
+ "admitted_statuses": [
+  "available"
+ ],
+ "approval": "User 2026-10-21: 'execute it.' (rerun approved: 'try the rerun') -- rerun of BDSC job tc-def-e1 on sim:belenos after job 03dd195b ended in Worker timeout at iteration 4; 12 iterations of 300000 samples, about 170 s, 1 credit",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "3f98c844fa9cc954353085c3bbca06872341cecad9c387df0550bf98dc28d652",
+ "case": "2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1",
+ "cases_sha256": "4c3ebc9ef8eed15595a27c73badebfce05179299f7b41832ae73307524504221",
+ "credit_ceiling": 1.0,
+ "estimated_credits": 1.0,
+ "estimated_shots": 3600000,
+ "expected_seconds": 250.0,
+ "job_id": "cac942bd-dee7-4b29-aea6-2e1435f7c76e",
+ "max_credits": 1.0,
+ "max_samples": 3600000,
+ "max_shots": 7200000,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {},
+ "platform": "sim:belenos",
+ "platform_at_plan": {
+  "bookable": false,
+  "description": "Belenos simulator",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "sim:belenos",
+  "price_per_shot": 0.0,
+  "statistic": {
+   "2026-10-14": {
+    "availability": 99.88000000000001
+   },
+   "2026-10-15": {
+    "availability": 99.9
+   },
+   "2026-10-16": {
+    "availability": 99.88000000000001
+   },
+   "2026-10-17": {
+    "availability": 99.89
+   },
+   "2026-10-18": {
+    "availability": 99.88
+   },
+   "2026-10-19": {
+    "availability": 99.86
+   },
+   "2026-10-20": {
+    "availability": 99.89999999999999
+   },
+   "2026-10-21": {
+    "availability": 99.85
+   }
+  },
+  "status": "available",
+  "type": "simulator"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "submitted_utc": "2026-10-21T07:18:01+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 34,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 975,
+     "free_credits": 15.0,
+     "nb_jobs": 16,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1380,
+     "free_credits": 17.2255,
+     "nb_jobs": 18,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

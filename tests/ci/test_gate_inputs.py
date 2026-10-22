@@ -99,6 +99,13 @@ class SelectionTests(unittest.TestCase):
         self.write("helper.py", "import deleted\n")
         self.assertEqual(self.chosen("deleted.py"), ["fast", "long"])
 
+    def test_pytest_node_selector_keeps_import_closure(self) -> None:
+        self.gates[1]["cmd"] = '"$PYTHON" -m pytest entry.py::test_contract'
+        self.write("ci/gates.json", json.dumps({"gates": self.gates}))
+        for path in ("entry.py", "helper.py", "leaf.py"):
+            with self.subTest(path=path):
+                self.assertEqual(self.chosen(path), ["fast", "long"])
+
     def test_ignored_trees_stay_out_of_the_module_index(self) -> None:
         # An ignored build tree holding a same-named module would otherwise
         # resolve `import helper` into its copy and select through its imports.
@@ -112,8 +119,11 @@ class SelectionTests(unittest.TestCase):
         indexed = {path.relative_to(self.root).parts[0] for paths in modules.values() for path in paths}
         self.assertNotIn("build", indexed)
         self.assertEqual(self.chosen("vendored.py"), ["fast"])
-        with tempfile.TemporaryDirectory() as outside, self.assertRaisesRegex(ValueError, "not a git work tree"):
-            gate_inputs.module_index(Path(outside))
+        with tempfile.TemporaryDirectory() as outside:
+            ceiling = str(Path(outside).parent)
+            with patch.dict(os.environ, {"GIT_CEILING_DIRECTORIES": ceiling}):
+                with self.assertRaisesRegex(ValueError, "not a git work tree"):
+                    gate_inputs.module_index(Path(outside))
 
     def test_source_digest_literal(self) -> None:
         self.write("entry.py", "SOURCES = ('helper.py',)\n")

@@ -962,7 +962,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay.py --check",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c5_zero_divisor_code/replay-exact.py --check",
    "name": "sources-389",
    "seconds": 18.0,
    "tier": "pr"
@@ -1250,7 +1250,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "name": "sources-183",
    "seconds": 0.1,
    "tier": "pr"
@@ -1266,7 +1266,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "name": "sources-186",
    "seconds": 0.1,
    "tier": "pr"
@@ -1306,7 +1306,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
    "seconds": 0.1,
    "tier": "pr",
    "name": "sources-194"
@@ -1452,19 +1452,18 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T231043.083602Z/between-arm.json --baseline results/live/2026-10-19T231043.083602Z/between-arm-runner-image.json --skip .analyzer_sha256 --rel 1e-12 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --out {out}",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_spectator_coherence_contract_and_missing_control",
    "name": "core-600",
-   "seconds": 2.3,
+   "seconds": 3.0,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T151959.226467Z/between-arm-095a30e32c9c.json --skip .analyzer_sha256 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --out {out}",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_contrast_magnitude_removes_work_phase",
    "name": "core-612",
-   "seconds": 45.0,
-   "tier": "full",
-   "workers": "all"
+   "seconds": 3.0,
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1501,9 +1500,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-20T031212.175942Z/ramsey.json --baseline results/live/2026-10-20T031212.175942Z/ramsey-runner-image.json --rel 1e-3 -- \"$PYTHON\" ci/frozen_replay.py docs/evidence/analyzer_closures/46d2411ed6a7/scripts docs/evidence/analyzer_closures/46d2411ed6a7/scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --out {out}",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_ramsey_quadratures_and_unidentified_decisions",
    "name": "core-603",
-   "seconds": 12.6,
+   "seconds": 3.0,
    "tier": "full"
   },
   {
@@ -1517,20 +1516,18 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json -- \"$PYTHON\" scripts/n21_q143_beat_model.py results/live/2026-10-20T031212.175942Z --out {out}",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_beat_kernel_and_uncoupled_tls_analytic_limits",
    "name": "core-605",
-   "seconds": 195.3,
-   "tier": "full",
-   "workers": "all"
+   "seconds": 3.0,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[0] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 0 --out {out}",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_design_geometry_and_shot_cost_scaling",
    "name": "core-616",
-   "seconds": 353.0,
-   "tier": "full",
-   "workers": "all"
+   "seconds": 3.0,
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -1553,26 +1550,24 @@
   {
    "suite": "core",
    "cwd": ".",
-   "workers": "all",
    "name": "core-619",
-   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json --skip .analyzer_closure --skip .preregistered --skip .amendment -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --out {out}",
-   "seconds": 393.7,
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_alias_resolution_threshold",
+   "seconds": 3.0,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "workers": "all",
    "name": "core-620",
-   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-21T043156.858484Z/segmented-sweep-759d82d74c57.json --skip .analyzer_closure --skip .preregistered --skip .amendment -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --out {out}",
-   "seconds": 676.5,
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_model_choice_and_missing_degrees_of_freedom",
+   "seconds": 3.0,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error ci/runner_image_records.py check",
-   "name": "core-621",
+   "name": "core-632",
    "seconds": 0.3,
    "tier": "pr"
   },
@@ -1583,42 +1578,6 @@
    "name": "core-193",
    "seconds": 1.9,
    "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[1] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 1 --out {out}",
-   "name": "core-622",
-   "seconds": 38.3,
-   "tier": "full",
-   "workers": "all"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[2] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 2 --out {out}",
-   "name": "core-623",
-   "seconds": 59.5,
-   "tier": "full",
-   "workers": "all"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[3] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 3 --out {out}",
-   "name": "core-624",
-   "seconds": 76.9,
-   "tier": "full",
-   "workers": "all"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/n21-q143-segmented-design-759d82d74c57.json --select .rows[4] -- \"$PYTHON\" scripts/n21_q143_segmented_sweep.py --design-row 4 --out {out}",
-   "name": "core-625",
-   "seconds": 650.1,
-   "tier": "full",
-   "workers": "all"
   },
   {
    "suite": "core",
@@ -1802,7 +1761,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity-exact-contracts.json",
    "name": "core-267",
    "seconds": 15.1,
    "tier": "pr"
@@ -1818,7 +1777,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition-exact-contracts.json",
    "name": "core-269",
    "seconds": 4.0,
    "tier": "pr"
@@ -2137,7 +2096,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-pooled-validation.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
@@ -3841,7 +3800,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17 && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json",
    "name": "core-594",
    "seconds": 4.0,
    "tier": "pr"
@@ -3857,7 +3816,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-rejected-request-recovery --source-plan results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery/plan.json --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
    "name": "core-596",
    "seconds": 4.0,
    "tier": "pr"
@@ -3913,9 +3872,33 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd",
    "name": "core-606",
    "seconds": 7.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_forensics.py --check",
+   "name": "core-622",
+   "seconds": 51.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --check",
+   "name": "core-623",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --self-test",
+   "name": "core-624",
+   "seconds": 9.0,
    "tier": "pr"
   },
   {
@@ -3937,6 +3920,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_ascella_control.py --check",
+   "name": "core-621",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_pauli.py --check docs/evidence/bdsc/pauli/pauli_form.json",
+   "name": "core-625",
+   "seconds": 1.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --check results/quantum_inspire/cases",
+   "name": "core-626",
+   "seconds": 1.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --self-test",
+   "name": "core-627",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py",
    "name": "core-611",
    "seconds": 1.0,
@@ -3948,6 +3963,22 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/check_markdown_links.py --self-test",
    "name": "core-610",
    "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check --summary results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json --output docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.png && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
+   "name": "core-630",
+   "seconds": 13.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-cd-core-exact-contracts.json",
+   "name": "core-631",
+   "seconds": 1.0,
    "tier": "pr"
   }
  ],

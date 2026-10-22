@@ -1,0 +1,47 @@
+version 3.0
+
+qubit[8] q
+bit[8] b
+
+// Proposed conditional-Ramsey acquisition: no coupler controls or CZ.
+// pack-00-b_probe-n1-x-t0000.cq
+init q
+barrier q
+X90 q[0]
+X90 q[1]
+wait(1) q[2]
+wait(1) q[3]
+X90 q[4]
+wait(1) q[5]
+X90 q[6]
+wait(1) q[7]
+barrier q
+X90 q[0]
+X90 q[1]
+wait(1) q[2]
+wait(1) q[3]
+X90 q[4]
+wait(1) q[5]
+X90 q[6]
+wait(1) q[7]
+barrier q
+wait(1) q[0]
+wait(1) q[1]
+Y90 q[2]
+Y90 q[3]
+wait(1) q[4]
+Y90 q[5]
+wait(1) q[6]
+Y90 q[7]
+barrier q
+barrier q
+wait(1) q[0]
+wait(1) q[1]
+mY90 q[2]
+mY90 q[3]
+wait(1) q[4]
+mY90 q[5]
+wait(1) q[6]
+mY90 q[7]
+barrier q
+b = measure q

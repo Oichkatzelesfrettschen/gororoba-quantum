@@ -1,0 +1,155 @@
+{
+ "body_sha256": "0802c5617b4cbab6e3892aa2a869e0a6547ac0d72a90d78677ef8ce03bad7974",
+ "cases_sha256": "3b397f3ad7fddb60b76ca2595d4f4de3d1f2daad3a80f52a0fa4dcc8a0651083",
+ "job_id": "c2edef5d-5e6f-4161-83fc-aadd024171fb",
+ "phase": "posted",
+ "platform": "qpu:ascella",
+ "receipt": {
+  "admitted_statuses": [
+   "available"
+  ],
+  "approval": "User 2026-10-21: 'run on the other QPU they have as well ... as a control'; written case approved ('Cancel, run Ascella'): BDSC six-state linear-effect control on qpu:ascella, 1 job of 12 iterations (both templates on the 12-mode union circuit), 300000 samples each, empty mitigation list, 1.6 credits max",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "0802c5617b4cbab6e3892aa2a869e0a6547ac0d72a90d78677ef8ce03bad7974",
+  "case": "2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00",
+  "cases_sha256": "3b397f3ad7fddb60b76ca2595d4f4de3d1f2daad3a80f52a0fa4dcc8a0651083",
+  "credit_ceiling": 1.6,
+  "estimated_credits": 1.6,
+  "estimated_shots": 3600000,
+  "expected_seconds": 200.0,
+  "max_credits": 1.6,
+  "max_samples": 3600000,
+  "max_shots": 7200000,
+  "payload_version_basis": "declared",
+  "per_job_credits": 1.0,
+  "perfs_at_plan": {
+   "Clock (MHz)": 13.33,
+   "Dark counts (detection/s)": [
+    321.0,
+    381.0,
+    306.0,
+    110.0,
+    134.0,
+    471.0,
+    225.0,
+    554.0,
+    2912.0,
+    3640.0,
+    4566.0,
+    681.0
+   ],
+   "HOM (%)": 87.38,
+   "Transmission per mode (%)": {
+    "t_in": [
+     37.31,
+     0.0,
+     25.5,
+     0.0,
+     26.84,
+     0.0,
+     28.35,
+     0.0,
+     26.31,
+     0.0,
+     27.67,
+     0.0
+    ],
+    "t_out": [
+     112.92,
+     111.48,
+     105.5,
+     110.32,
+     108.03,
+     100.16,
+     95.5,
+     99.84,
+     91.03,
+     91.68,
+     77.66,
+     88.25
+    ]
+   },
+   "Transmittance (%)": 5.18,
+   "g2 (%)": 1.9
+  },
+  "platform": "qpu:ascella",
+  "platform_at_plan": {
+   "bookable": true,
+   "description": "Ascella QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "qpu:ascella",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-14": {
+     "availability": 89.85000000000001
+    },
+    "2026-10-15": {
+     "availability": 89.82
+    },
+    "2026-10-16": {
+     "availability": 89.72
+    },
+    "2026-10-17": {
+     "availability": 89.79
+    },
+    "2026-10-18": {
+     "availability": 89.83
+    },
+    "2026-10-19": {
+     "availability": 89.93
+    },
+    "2026-10-20": {
+     "availability": 89.97
+    },
+    "2026-10-21": {
+     "availability": 89.60000000000001
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  "schema": "qd-submission-v1",
+  "status_at_plan": {
+   "explorer": "available",
+   "processor": "available"
+  },
+  "usage_before": [
+   {
+    "total_jobs": 39,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 1128,
+      "free_credits": 16.0,
+      "nb_jobs": 17,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1777,
+      "free_credits": 23.625500000000002,
+      "nb_jobs": 22,
+      "platform_name": "qpu:belenos"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-10-21T20:34:37+00:00",
+ "submitted_utc": "2026-10-21T20:34:41+00:00"
+}

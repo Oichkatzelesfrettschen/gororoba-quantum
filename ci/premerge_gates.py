@@ -28,7 +28,7 @@ gates too. A runtime either tree cannot resolve stops the run, since its
 gates would fail in both trees and read as shared failures.
 
 The base's passing gates are cached under --cache (default
-${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/premerge) by a key over the base
+<system temporary directory>/gororoba-quantum/premerge) by a key over the base
 commit, --max-seconds, each interpreter's path, version and installed
 distributions, the PATH tools gates run, and the environment variables
 gates read to pick a path, toolchain or thread count (KEY_PREFIXES,
@@ -38,7 +38,8 @@ reads the first's entry. Base failures are never cached: a merge failure
 absent from the cached passes reruns on the base through run_gates --gates,
 so a gate that failed once under load is classified by a fresh run.
 
-The worktrees live under --worktrees (default ~/worktrees/<repository>/premerge,
+The worktrees live under --worktrees (default
+<system temporary directory>/gororoba-quantum/premerge-worktrees/<repository>,
 <repository> naming the primary checkout), named by base, ref and process id,
 and are removed on exit. Exit
 status: 0 when the merge introduces no failure, 1 when it does, 2 on a merge
@@ -125,7 +126,11 @@ def interpreter() -> str:
 
 
 def default_cache() -> Path:
-    return Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "gororoba-quantum" / "premerge"
+    return Path(tempfile.gettempdir()) / "gororoba-quantum" / "premerge"
+
+
+def default_worktrees(repo: Path = ROOT) -> Path:
+    return Path(tempfile.gettempdir()) / "gororoba-quantum" / "premerge-worktrees" / repository_name(repo)
 
 
 def cache_key(base_commit: str, max_seconds: float, replay: dict[str, str]) -> tuple[str, dict[str, Any]]:
@@ -356,11 +361,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--base", default="origin/main")
     parser.add_argument("--max-seconds", type=float, default=DEFAULT_MAX_SECONDS)
     parser.add_argument("--no-fetch", action="store_true", help="use the local refs as they stand")
-    parser.add_argument("--worktrees", type=Path, help="scratch directory, default ~/worktrees/<repository>/premerge")
+    parser.add_argument("--worktrees", type=Path, help="scratch directory under the system temporary directory")
     caching = parser.add_mutually_exclusive_group()
-    caching.add_argument(
-        "--cache", type=Path, help="base result cache, default $XDG_CACHE_HOME/gororoba-quantum/premerge"
-    )
+    caching.add_argument("--cache", type=Path, help="base result cache under the system temporary directory")
     caching.add_argument("--no-cache", action="store_true", help="run the base on every invocation")
     parser.add_argument(
         "--replay-python",
@@ -369,7 +372,7 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     if not arguments.no_fetch:
         git(ROOT, "fetch", "--quiet", "origin")
-    worktrees = arguments.worktrees or Path.home() / "worktrees" / repository_name(ROOT) / "premerge"
+    worktrees = arguments.worktrees or default_worktrees()
     cache = None if arguments.no_cache else arguments.cache or default_cache()
     return premerge(
         ROOT, arguments.ref, arguments.base, arguments.max_seconds, worktrees, arguments.replay_python, cache

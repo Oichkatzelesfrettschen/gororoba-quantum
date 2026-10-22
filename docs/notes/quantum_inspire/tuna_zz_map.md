@@ -16,6 +16,38 @@ directories contains a `cases.json` compatible with `qi_platform.py` and
 the exact cQASM payloads with SHA-256 digests. The complete analysis is in
 `scripts/qi_zz_map_analysis.py`.
 
+The retained campaign-retention source-binding successor is
+[`zz-map-tuna17-campaign-retention/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-campaign-retention/plan.json).
+The successor binds the campaign-retention submission guards in `scripts/qi_platform.py`.
+All 416 cQASM payloads and scientific settings match the frozen proposal above; the
+submission-source digest and the case hashes that bind that digest change. Gate `core-594`
+previously replayed that successor. The original proposal retains its recorded bytes, and the
+acquisition recommendation below also applies to the successor.
+
+The retained submission-deadline successor is
+[`zz-map-tuna17-submission-deadline/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-submission-deadline/plan.json).
+Its recorded bytes remain immutable.
+
+The retained deadline-recovery source-binding successor is
+[`zz-map-tuna17-deadline-recovery/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json).
+Its recorded bytes remain immutable.
+
+The active unsubmitted source-binding successor is
+[`zz-map-tuna17-rejected-request-recovery/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery/plan.json).
+The successor binds collection deadlines and separate receipts for zero-dispatch
+refusal and a received first-project HTTP 401 whose retry window expired.
+All 416 cQASM payloads and scientific settings match the retained proposals.
+Gate `core-594` replays the active successor. Each predecessor retains its bytes.
+
+The active successor replays against the exact
+[proposal catalogue](../../evidence/quantum_inspire/catalogue-submission-deadline-proposal.json)
+whose SHA-256 appears in its source digests. The frozen catalogue separates
+proposal reproducibility from the account inventory refreshed after acquisitions.
+The frozen and refreshed Tuna-17 records have identical topology, gate set,
+capacity, compiler configuration and execution limits; queue and status differ.
+Submission checks the live backend, account queue and hardware pause afresh;
+the archived catalogue establishes proposal provenance rather than availability.
+
 ## Acquisition decision after the later Tuna-17 results
 
 The [retained readout experiment](experiments.md#post-readout-frequency-tail-on-tuna-17-preregistered)
@@ -355,9 +387,9 @@ elapsed acquisition time cannot be inferred from the primitive sums alone.
 From the repository root:
 
 ```sh
-python scripts/qi_zz_map.py --write results/quantum_inspire/cases/zz_map_tuna_17
-python scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17
-python scripts/qi_zz_map.py --self-test
+export PYTHON="${PYTHON:-python3}"
+"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
+"$PYTHON" scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 ```
 
 The generator imports neither the Quantum Inspire SDK nor Qiskit, performs

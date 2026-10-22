@@ -1,0 +1,1436 @@
+{
+ "account": {
+  "members": [
+   {
+    "is_active": true,
+    "role": "member"
+   }
+  ],
+  "projects": 104,
+  "reservations": 0,
+  "teams": [
+   {
+    "individual_user": true
+   }
+  ]
+ },
+ "backend_types": [
+  {
+   "batchjobs_per_queue_limit": 5,
+   "default_compiler_config": {
+    "decomposition": [],
+    "mapping": [],
+    "optimization": [],
+    "routing": []
+   },
+   "default_number_of_shots": 1024,
+   "description": "Quantum Inspire offers a powerful quantum computer simulator backend. The QX Simulator can simulate up to 34 qubits (on the Lisa supercomputer) on a classical computer setup. It can execute quantum circuits and allows inspection of the simulated quantum state.",
+   "enabled": true,
+   "features": [],
+   "gateset": [
+    "H",
+    "I",
+    "S",
+    "Sdag",
+    "T",
+    "Tdag",
+    "X",
+    "X90",
+    "Y",
+    "Y90",
+    "Z",
+    "Z90",
+    "mX90",
+    "mY90",
+    "mZ90",
+    "Rx",
+    "Ry",
+    "Rz",
+    "U",
+    "Rn",
+    "CNOT",
+    "CR",
+    "CRk",
+    "CZ",
+    "SWAP",
+    "Hadamard",
+    "Identity",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+   ],
+   "id": 1,
+   "identifier": "QXsinglenodesimulator",
+   "image_id": "img-3",
+   "infrastructure": "Cloud",
+   "is_hardware": false,
+   "job_execution_time_limit": 3600.0,
+   "max_jobs_per_batch_job": 5,
+   "max_number_of_shots": 2048,
+   "messages": {
+    "QX emulator": {
+     "content": ""
+    }
+   },
+   "name": "QX emulator",
+   "nqubits": 10,
+   "protocol_version": null,
+   "queue": {
+    "avg_wait_time_in_queue_secs": 0.0,
+    "max_wait_time_in_queue_secs": 0.0,
+    "min_wait_time_in_queue_secs": 0.0,
+    "number_of_jobs_in_queue": 0
+   },
+   "status": "idle",
+   "supports_raw_data": true,
+   "topology": [
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     3
+    ],
+    [
+     0,
+     4
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     0,
+     6
+    ],
+    [
+     0,
+     7
+    ],
+    [
+     0,
+     8
+    ],
+    [
+     0,
+     9
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     1,
+     3
+    ],
+    [
+     1,
+     4
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     1,
+     6
+    ],
+    [
+     1,
+     7
+    ],
+    [
+     1,
+     8
+    ],
+    [
+     1,
+     9
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     2,
+     1
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     2,
+     4
+    ],
+    [
+     2,
+     5
+    ],
+    [
+     2,
+     6
+    ],
+    [
+     2,
+     7
+    ],
+    [
+     2,
+     8
+    ],
+    [
+     2,
+     9
+    ],
+    [
+     3,
+     0
+    ],
+    [
+     3,
+     1
+    ],
+    [
+     3,
+     2
+    ],
+    [
+     3,
+     4
+    ],
+    [
+     3,
+     5
+    ],
+    [
+     3,
+     6
+    ],
+    [
+     3,
+     7
+    ],
+    [
+     3,
+     8
+    ],
+    [
+     3,
+     9
+    ],
+    [
+     4,
+     0
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     4,
+     2
+    ],
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     5
+    ],
+    [
+     4,
+     6
+    ],
+    [
+     4,
+     7
+    ],
+    [
+     4,
+     8
+    ],
+    [
+     4,
+     9
+    ],
+    [
+     5,
+     0
+    ],
+    [
+     5,
+     1
+    ],
+    [
+     5,
+     2
+    ],
+    [
+     5,
+     3
+    ],
+    [
+     5,
+     4
+    ],
+    [
+     5,
+     6
+    ],
+    [
+     5,
+     7
+    ],
+    [
+     5,
+     8
+    ],
+    [
+     5,
+     9
+    ],
+    [
+     6,
+     0
+    ],
+    [
+     6,
+     1
+    ],
+    [
+     6,
+     2
+    ],
+    [
+     6,
+     3
+    ],
+    [
+     6,
+     4
+    ],
+    [
+     6,
+     5
+    ],
+    [
+     6,
+     7
+    ],
+    [
+     6,
+     8
+    ],
+    [
+     6,
+     9
+    ],
+    [
+     7,
+     0
+    ],
+    [
+     7,
+     1
+    ],
+    [
+     7,
+     2
+    ],
+    [
+     7,
+     3
+    ],
+    [
+     7,
+     4
+    ],
+    [
+     7,
+     5
+    ],
+    [
+     7,
+     6
+    ],
+    [
+     7,
+     8
+    ],
+    [
+     7,
+     9
+    ],
+    [
+     8,
+     0
+    ],
+    [
+     8,
+     1
+    ],
+    [
+     8,
+     2
+    ],
+    [
+     8,
+     3
+    ],
+    [
+     8,
+     4
+    ],
+    [
+     8,
+     5
+    ],
+    [
+     8,
+     6
+    ],
+    [
+     8,
+     7
+    ],
+    [
+     8,
+     9
+    ],
+    [
+     9,
+     0
+    ],
+    [
+     9,
+     1
+    ],
+    [
+     9,
+     2
+    ],
+    [
+     9,
+     3
+    ],
+    [
+     9,
+     4
+    ],
+    [
+     9,
+     5
+    ],
+    [
+     9,
+     6
+    ],
+    [
+     9,
+     7
+    ],
+    [
+     9,
+     8
+    ]
+   ]
+  },
+  {
+   "batchjobs_per_queue_limit": 5,
+   "default_compiler_config": {
+    "decomposition": [
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer"
+     },
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.CZDecomposer"
+     }
+    ],
+    "mapping": [],
+    "optimization": [],
+    "routing": []
+   },
+   "default_number_of_shots": 8192,
+   "description": "The Tuna-5 backend has 5 transmon qubits in a star-like configuration, with 4 flux-tunable couplers connecting nearest neighbors.",
+   "enabled": true,
+   "features": [],
+   "gateset": [
+    "I",
+    "Rx",
+    "X",
+    "X90",
+    "mX90",
+    "Ry",
+    "Y",
+    "Y90",
+    "mY90",
+    "Rz",
+    "Z",
+    "S",
+    "T",
+    "Sdag",
+    "Tdag",
+    "H",
+    "CZ",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+   ],
+   "id": 4,
+   "identifier": "tuna_5",
+   "image_id": "1766393003-tuna-5_schematic.svg",
+   "infrastructure": "On-premise",
+   "is_hardware": true,
+   "job_execution_time_limit": 300.0,
+   "max_jobs_per_batch_job": 5,
+   "max_number_of_shots": 131072,
+   "messages": {
+    "Tuna-5": {
+     "content": ""
+    }
+   },
+   "name": "Tuna-5",
+   "nqubits": 5,
+   "protocol_version": 2,
+   "queue": {
+    "avg_wait_time_in_queue_secs": 2523535.0,
+    "max_wait_time_in_queue_secs": 7623359.0,
+    "min_wait_time_in_queue_secs": 792709.0,
+    "number_of_jobs_in_queue": 8
+   },
+   "status": "offline",
+   "supports_raw_data": true,
+   "topology": [
+    [
+     0,
+     2
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     2,
+     1
+    ],
+    [
+     3,
+     2
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     4,
+     2
+    ],
+    [
+     2,
+     4
+    ]
+   ]
+  },
+  {
+   "batchjobs_per_queue_limit": 5,
+   "default_compiler_config": {
+    "decomposition": [
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer"
+     },
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
+     }
+    ],
+    "mapping": [],
+    "optimization": [],
+    "routing": []
+   },
+   "default_number_of_shots": 1024,
+   "description": "...",
+   "enabled": true,
+   "features": [],
+   "gateset": [
+    "X",
+    "Z",
+    "Rx",
+    "Rz",
+    "T",
+    "S",
+    "H",
+    "CNOT"
+   ],
+   "id": 5,
+   "identifier": "Rydberg",
+   "image_id": "123",
+   "infrastructure": "On-premise",
+   "is_hardware": true,
+   "job_execution_time_limit": 3600.0,
+   "max_jobs_per_batch_job": 5,
+   "max_number_of_shots": 1024,
+   "messages": {
+    "Ry emulator": {
+     "content": ""
+    }
+   },
+   "name": "Ry emulator",
+   "nqubits": 9,
+   "protocol_version": 2,
+   "queue": {
+    "avg_wait_time_in_queue_secs": 0.0,
+    "max_wait_time_in_queue_secs": 0.0,
+    "min_wait_time_in_queue_secs": 0.0,
+    "number_of_jobs_in_queue": 0
+   },
+   "status": "idle",
+   "supports_raw_data": true,
+   "topology": [
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     3
+    ],
+    [
+     0,
+     4
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     0,
+     6
+    ],
+    [
+     0,
+     7
+    ],
+    [
+     0,
+     8
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     1,
+     3
+    ],
+    [
+     1,
+     4
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     1,
+     6
+    ],
+    [
+     1,
+     7
+    ],
+    [
+     1,
+     8
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     2,
+     1
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     2,
+     4
+    ],
+    [
+     2,
+     5
+    ],
+    [
+     2,
+     6
+    ],
+    [
+     2,
+     7
+    ],
+    [
+     2,
+     8
+    ],
+    [
+     3,
+     0
+    ],
+    [
+     3,
+     1
+    ],
+    [
+     3,
+     2
+    ],
+    [
+     3,
+     4
+    ],
+    [
+     3,
+     5
+    ],
+    [
+     3,
+     6
+    ],
+    [
+     3,
+     7
+    ],
+    [
+     3,
+     8
+    ],
+    [
+     4,
+     0
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     4,
+     2
+    ],
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     5
+    ],
+    [
+     4,
+     6
+    ],
+    [
+     4,
+     7
+    ],
+    [
+     4,
+     8
+    ],
+    [
+     5,
+     0
+    ],
+    [
+     5,
+     1
+    ],
+    [
+     5,
+     2
+    ],
+    [
+     5,
+     3
+    ],
+    [
+     5,
+     4
+    ],
+    [
+     5,
+     6
+    ],
+    [
+     5,
+     7
+    ],
+    [
+     5,
+     8
+    ],
+    [
+     6,
+     0
+    ],
+    [
+     6,
+     1
+    ],
+    [
+     6,
+     2
+    ],
+    [
+     6,
+     3
+    ],
+    [
+     6,
+     4
+    ],
+    [
+     6,
+     5
+    ],
+    [
+     6,
+     7
+    ],
+    [
+     6,
+     8
+    ],
+    [
+     7,
+     0
+    ],
+    [
+     7,
+     1
+    ],
+    [
+     7,
+     2
+    ],
+    [
+     7,
+     3
+    ],
+    [
+     7,
+     4
+    ],
+    [
+     7,
+     5
+    ],
+    [
+     7,
+     6
+    ],
+    [
+     7,
+     8
+    ],
+    [
+     8,
+     0
+    ],
+    [
+     8,
+     1
+    ],
+    [
+     8,
+     2
+    ],
+    [
+     8,
+     3
+    ],
+    [
+     8,
+     4
+    ],
+    [
+     8,
+     5
+    ],
+    [
+     8,
+     6
+    ],
+    [
+     8,
+     7
+    ]
+   ]
+  },
+  {
+   "batchjobs_per_queue_limit": 5,
+   "default_compiler_config": {
+    "decomposition": [
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer"
+     },
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.CZDecomposer"
+     }
+    ],
+    "mapping": [],
+    "optimization": [],
+    "routing": []
+   },
+   "default_number_of_shots": 8192,
+   "description": "The Tuna-9 backend has 9 transmon qubits in a diamond-like configuration, with 12 flux-tunable couplers connecting nearest neighbors.",
+   "enabled": true,
+   "features": [],
+   "gateset": [
+    "I",
+    "Rx",
+    "X",
+    "X90",
+    "mX90",
+    "Ry",
+    "Y",
+    "Y90",
+    "mY90",
+    "Rz",
+    "Z",
+    "S",
+    "T",
+    "Sdag",
+    "Tdag",
+    "H",
+    "CZ",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+   ],
+   "id": 6,
+   "identifier": "tuna_9",
+   "image_id": "1766393015-tuna-9_schematic.svg",
+   "infrastructure": "On-premise",
+   "is_hardware": true,
+   "job_execution_time_limit": 300.0,
+   "max_jobs_per_batch_job": 5,
+   "max_number_of_shots": 131072,
+   "messages": {
+    "Tuna-9": {
+     "content": "Please be aware that Q8 is affected by a spurious two-level system (TLS)"
+    }
+   },
+   "name": "Tuna-9",
+   "nqubits": 9,
+   "protocol_version": 2,
+   "queue": {
+    "avg_wait_time_in_queue_secs": 3539087.0,
+    "max_wait_time_in_queue_secs": 4869853.0,
+    "min_wait_time_in_queue_secs": 1150598.0,
+    "number_of_jobs_in_queue": 8
+   },
+   "status": "offline",
+   "supports_raw_data": true,
+   "topology": [
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     1,
+     3
+    ],
+    [
+     3,
+     1
+    ],
+    [
+     1,
+     4
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     2,
+     4
+    ],
+    [
+     4,
+     2
+    ],
+    [
+     2,
+     5
+    ],
+    [
+     5,
+     2
+    ],
+    [
+     3,
+     6
+    ],
+    [
+     6,
+     3
+    ],
+    [
+     4,
+     6
+    ],
+    [
+     6,
+     4
+    ],
+    [
+     4,
+     7
+    ],
+    [
+     7,
+     4
+    ],
+    [
+     5,
+     7
+    ],
+    [
+     7,
+     5
+    ],
+    [
+     6,
+     8
+    ],
+    [
+     8,
+     6
+    ],
+    [
+     7,
+     8
+    ],
+    [
+     8,
+     7
+    ]
+   ]
+  },
+  {
+   "batchjobs_per_queue_limit": 5,
+   "default_compiler_config": {
+    "decomposition": [
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer"
+     },
+     {
+      "arguments": {},
+      "method": "decompose",
+      "path": "opensquirrel.passes.decomposer.CZDecomposer"
+     }
+    ],
+    "mapping": [],
+    "optimization": [],
+    "routing": []
+   },
+   "default_number_of_shots": 8192,
+   "description": "The Tuna-17 backend has 17 transmon qubits in a ninja-star configuration, with 24 flux-tunable couplers connecting nearest neighbors.",
+   "enabled": true,
+   "features": [],
+   "gateset": [
+    "I",
+    "Rx",
+    "X",
+    "X90",
+    "mX90",
+    "Ry",
+    "Y",
+    "Y90",
+    "mY90",
+    "Rz",
+    "Z",
+    "S",
+    "T",
+    "Sdag",
+    "Tdag",
+    "H",
+    "CZ",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+   ],
+   "id": 7,
+   "identifier": "tuna_17",
+   "image_id": "1772648307-tuna-17_schematic-svg.svg",
+   "infrastructure": "On-premise",
+   "is_hardware": true,
+   "job_execution_time_limit": 300.0,
+   "max_jobs_per_batch_job": 5,
+   "max_number_of_shots": 131072,
+   "messages": {
+    "Tuna-17": {
+     "content": ""
+    }
+   },
+   "name": "Tuna-17",
+   "nqubits": 17,
+   "protocol_version": 2,
+   "queue": {
+    "avg_wait_time_in_queue_secs": 10365.0,
+    "max_wait_time_in_queue_secs": 40288.0,
+    "min_wait_time_in_queue_secs": 1129.0,
+    "number_of_jobs_in_queue": 7
+   },
+   "status": "benchmarking",
+   "supports_raw_data": true,
+   "topology": [
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     2,
+     0
+    ],
+    [
+     4,
+     1
+    ],
+    [
+     1,
+     4
+    ],
+    [
+     4,
+     2
+    ],
+    [
+     2,
+     4
+    ],
+    [
+     4,
+     7
+    ],
+    [
+     7,
+     4
+    ],
+    [
+     4,
+     8
+    ],
+    [
+     8,
+     4
+    ],
+    [
+     5,
+     2
+    ],
+    [
+     2,
+     5
+    ],
+    [
+     5,
+     3
+    ],
+    [
+     3,
+     5
+    ],
+    [
+     5,
+     8
+    ],
+    [
+     8,
+     5
+    ],
+    [
+     5,
+     9
+    ],
+    [
+     9,
+     5
+    ],
+    [
+     6,
+     3
+    ],
+    [
+     3,
+     6
+    ],
+    [
+     6,
+     9
+    ],
+    [
+     9,
+     6
+    ],
+    [
+     10,
+     7
+    ],
+    [
+     7,
+     10
+    ],
+    [
+     10,
+     13
+    ],
+    [
+     13,
+     10
+    ],
+    [
+     11,
+     7
+    ],
+    [
+     7,
+     11
+    ],
+    [
+     11,
+     8
+    ],
+    [
+     8,
+     11
+    ],
+    [
+     11,
+     13
+    ],
+    [
+     13,
+     11
+    ],
+    [
+     11,
+     14
+    ],
+    [
+     14,
+     11
+    ],
+    [
+     12,
+     8
+    ],
+    [
+     8,
+     12
+    ],
+    [
+     12,
+     9
+    ],
+    [
+     9,
+     12
+    ],
+    [
+     12,
+     14
+    ],
+    [
+     14,
+     12
+    ],
+    [
+     12,
+     15
+    ],
+    [
+     15,
+     12
+    ],
+    [
+     16,
+     14
+    ],
+    [
+     14,
+     16
+    ],
+    [
+     16,
+     15
+    ],
+    [
+     15,
+     16
+    ]
+   ]
+  }
+ ],
+ "backends": [
+  {
+   "backend_type_id": 1,
+   "id": 1,
+   "last_heartbeat": "2026-10-18T18:43:25.363350Z",
+   "location": "Cloud",
+   "message": {
+    "content": ""
+   },
+   "name": "QX emulator",
+   "status": "idle"
+  },
+  {
+   "backend_type_id": 2,
+   "id": 2,
+   "last_heartbeat": "2025-12-10T13:01:25Z",
+   "location": "TU Delft",
+   "message": {
+    "content": ""
+   },
+   "name": "Spin-2+",
+   "status": "offline"
+  },
+  {
+   "backend_type_id": 3,
+   "id": 3,
+   "last_heartbeat": "2026-03-27T17:04:14.958013Z",
+   "location": "TU Delft",
+   "message": {
+    "content": ""
+   },
+   "name": "Starmon-7",
+   "status": "offline"
+  },
+  {
+   "backend_type_id": 4,
+   "id": 4,
+   "last_heartbeat": "2026-03-09T17:41:44.628372Z",
+   "location": "TU Delft",
+   "message": {
+    "content": ""
+   },
+   "name": "Tuna-5",
+   "status": "offline"
+  },
+  {
+   "backend_type_id": 5,
+   "id": 5,
+   "last_heartbeat": "2026-10-18T18:43:26.532470Z",
+   "location": "TU/eindhoven",
+   "message": {
+    "content": ""
+   },
+   "name": "Ry emulator",
+   "status": "idle"
+  },
+  {
+   "backend_type_id": 6,
+   "id": 6,
+   "last_heartbeat": "2026-10-18T18:43:21.758867Z",
+   "location": "TU Delft",
+   "message": {
+    "content": "Please be aware that Q8 is affected by a spurious two-level system (TLS)"
+   },
+   "name": "Tuna-9",
+   "status": "offline"
+  },
+  {
+   "backend_type_id": 7,
+   "id": 7,
+   "last_heartbeat": "2026-10-18T18:43:22.303927Z",
+   "location": "TU Delft",
+   "message": {
+    "content": ""
+   },
+   "name": "Tuna-17",
+   "status": "benchmarking"
+  }
+ ],
+ "host": "https://api.quantum-inspire.com",
+ "languages": [
+  {
+   "id": 1,
+   "name": "Python",
+   "version": "3.11"
+  },
+  {
+   "id": 2,
+   "name": "cQASM",
+   "version": "3.0"
+  }
+ ],
+ "retrieved_utc": "2026-10-18T18:43:27+00:00",
+ "schema": "qi-catalogue-v1"
+}
