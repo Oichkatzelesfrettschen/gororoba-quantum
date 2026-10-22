@@ -17,7 +17,7 @@ Exact fields compare exactly. Floating probability and representative residual f
 
 The retained [library table](libraries.md) records 275 distributions. The expanded [current inventory](../../state/hypercomplex-libraries/libraries.md) also covers maintained ecosystem/candidate tables and provider PyPI records. `libraries.json` preserves environment-specific pins, observed host versions and import locations. Host observations are snapshots and can differ from the pinned CI or provider environments.
 
-The [design](../../design/hypercomplex-operator-evidence.md) states falsifiers and interpretation boundaries. The [runbook](../../runbooks/hypercomplex-operator-cases.md) states provider cases, pacing and approvals. The approved Tuna-17 order pilot now supplies [raw acquisition records](../../../results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json) and the [measured probability figure](tuna-order-measured-probabilities.png). The [producer](tuna-order-measured-probabilities.py) verifies all eight bound batch analyses before rendering; the [metadata](tuna-order-measured-probabilities.json) binds the summary, producer, figure and Matplotlib version.
+The [design](../../design/hypercomplex-operator-evidence.md) states falsifiers and interpretation boundaries. The [runbook](../../runbooks/hypercomplex-operator-cases.md) states provider cases, pacing and approvals. The approved Tuna-17 order pilot now supplies [raw acquisition records](../../../results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json) and the [measured probability figure](tuna-order-analysis-bound-probabilities.png). The [producer](tuna-order-analysis-bound-probabilities.py) verifies all eight bound batch analyses before rendering; the [metadata](tuna-order-analysis-bound-probabilities.json) binds the summary, producer, figure and Matplotlib version.
 
 The figure compares raw measured frequencies with ideal native complex-encoding predictions. Fixed chronological order and one acquisition per setting confound preparation, circuit effects, readout and drift. The observations establish neither representative equivalence nor fundamental quaternionic physics. Confidence-interval coverage remains unestablished.
 
@@ -25,9 +25,11 @@ Replay the retained measured figure from the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" -B -W error docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.py --check
+"$PYTHON" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check
 ```
 
 Gate `core-630` replays both the active algebra certificate and the measured figure. The source gates `sources-120`, `sources-121` and `sources-122` cover the retained producer with lint, formatting and type checks.
+
+The original [figure](tuna-order-measured-probabilities.png), [producer](tuna-order-measured-probabilities.py) and [metadata](tuna-order-measured-probabilities.json) retain their bytes. Their producer verified the listed analysis hashes but trusted independently editable summary rows. A corruption probe changed a plotted probability while keeping all eight analysis digests; the original producer accepted the changed summary. The active successor requires exactly eight chronological rows and analysis bindings, derives each complete row from its analysis, checks each science job against the hash-bound submission receipt, and checks job and shot totals. Its self-test rejects 80 value, membership and ordering mutations. The successor metadata binds the original metadata, and both figures contain identical PNG bytes.
 
 The producer accepts repository-relative `--summary` and `--output` paths and refuses to replace differing retained bytes. A new rendering environment therefore requires a separately named successor.
