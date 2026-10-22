@@ -113,9 +113,10 @@ class Watch:
             if not (run_dir / "results.json").exists():
                 continue
             if batch not in self.collected:
-                self.collected.add(batch)
                 done = [d for d in dirs if (d / "results.json").exists()]
                 say(self.batch_line(batch, run_dir, done, previous))
+                # A read that fails leaves the batch unmarked, so the next poll reports it again.
+                self.collected.add(batch)
             results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
             finished = [stamp(row["job"]["finished_at"]) for row in results["jobs"] if row["job"]["finished_at"]]
             previous = max(finished) if finished else previous

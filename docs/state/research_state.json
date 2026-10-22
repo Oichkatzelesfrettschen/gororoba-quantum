@@ -1224,98 +1224,98 @@
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 00 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 00 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-01",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 01 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 01 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-02",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 02 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 02 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-03",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 03 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 03 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-04",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 04 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 04 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-05",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 05 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 05 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-06",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 06 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 06 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-07",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 07 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 07 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-08",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 08 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 08 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-09",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 09 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 09 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-10",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 10 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 10 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-11",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 11 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 11 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-12",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 12 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 12 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-qx-bdsc-pauli-batch-13",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13",
       "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
-      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 13 at the Tuna-17 layout, so the identical cQASM reaching Tuna-17 is semantically clean?"
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 13 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
     },
     {
       "id": "qi-tuna17-bdsc-pauli-batch-00",
@@ -6889,11 +6889,11 @@
     },
     {
       "id": "qi-qx-bdsc-pauli-twin-control",
-      "statement": "The hosted QX emulator returned the preregistered exact outcomes of all 41 BDSC Pauli readout circuits of the twin series (14 batches, 2048 shots each, completed 2026-10-22 10:35 to 10:41 UTC, 0 credits): every kernel+bright-1 pair residual and middle or sector residual is within its preregistered bound, and the matched quadrature phase is 0.0039, 0.0029 and -0.0181 rad (standard error 0.0156) on the three patches, consistent with zero. The control verdict passes with no miss, so the identical cQASM is semantically clean before it reaches Tuna-17.",
+      "statement": "The hosted QX emulator returned the preregistered exact outcomes of all 41 BDSC Pauli readout circuits of the twin series (14 batches, 2048 shots each, completed 2026-10-22 10:35 to 10:41 UTC, 0 credits): every kernel+bright-1 pair residual and middle or sector residual is within its preregistered bound, and the matched quadrature phase is 0.0039, 0.0029 and -0.0181 rad (standard error 0.0156) on the three patches, consistent with zero. The control verdict passes with no miss, so each Tuna-17 patch's gate sequence, which the case builder requires the twin to repeat on relabeled qubits, is semantically clean before it reaches Tuna-17.",
       "domain": "hardware",
       "evidence_class": "preregistered emulator control",
       "status": "established",
-      "boundary": "Noiseless emulator semantics of the twin's circuits at the Tuna-17 layout; no device noise, readout or calibration behavior. The retained analysis was written by the Quantum Inspire interpreter and is bound by sha256 in every Tuna-17 series-gate.json, so its replay accepts float rounding within 1e-12 relative.",
+      "boundary": "Noiseless emulator semantics of the twin's 10-qubit circuits, which pack two relabeled patches each; the 17-qubit Tuna-17 files, their physical qubit indices and their three-patch composition are not executed by this control, and it carries no device noise, readout or calibration behavior. The retained analysis was written by the Quantum Inspire interpreter and is bound by sha256 in every Tuna-17 series-gate.json, so its replay accepts float rounding within 1e-12 relative.",
       "evidence": [
         {
           "path": "results/quantum_inspire/bdsc_pauli_qx_analysis.json",

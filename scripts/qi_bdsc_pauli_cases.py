@@ -1901,14 +1901,16 @@ def submit_next(
         # hardware_pause_left refuses while any hardware job of the account is unfinished.
         while (left := qi_platform.hardware_pause_left(client)) > 0:
             time.sleep(left + 1)
-    shutil.copytree(series_dir / batch, run_dir)
-    (run_dir / "series-gate.json").write_text(json.dumps(receipt, indent=1) + "\n", encoding="utf-8")
+    if run_dir.exists():
+        raise SystemExit(f"{run_dir.name} already exists; another submission holds it")
     try:
+        shutil.copytree(series_dir / batch, run_dir)
+        (run_dir / "series-gate.json").write_text(json.dumps(receipt, indent=1) + "\n", encoding="utf-8")
         record = qi_platform.submit(run_dir, first["backend_type_id"], approval)
     except BaseException:
-        # A refusal or a transport failure before the checkpoint leaves nothing on the service; the copy
-        # goes so the next call does not read an unsent batch as submitted.
-        if not (run_dir / "submission-state.json").exists():
+        # A staging failure, a refusal or a transport failure before the checkpoint leaves nothing on the
+        # service; the copy goes so the next call does not read an unsent batch as submitted.
+        if run_dir.exists() and not (run_dir / "submission-state.json").exists():
             shutil.rmtree(run_dir)
         raise
     print(f"{run_dir.name}: batch {record['batch_job']}, jobs {[row['job'] for row in record['jobs']]}")
@@ -2093,16 +2095,24 @@ def series_gate_self_test(
             receipt_dir, _ = submit_next(series, runs, "", control, True)
             if receipt_dir.name != f"2026-10-22T000000Z-{SERIES}-batch-01":
                 raise AssertionError(f"the gate chose {receipt_dir.name}")
-            # A transport failure before the checkpoint removes the copied batch; one after it keeps the copy.
-            for checkpoint in (False, True):
+            # An interrupted copy or a transport failure before the checkpoint removes the copied batch; a
+            # failure after the checkpoint keeps the copy.
+            for failure in ("staging", "submit", "checkpoint"):
 
-                def failing_submit(run_dir: Path, *_: Any, checkpoint: bool = checkpoint) -> dict[str, Any]:
-                    if checkpoint:
+                def failing_submit(run_dir: Path, *_: Any, failure: str = failure) -> dict[str, Any]:
+                    if failure == "checkpoint":
                         (run_dir / "submission-state.json").write_text("{}", encoding="utf-8")
                     raise OSError("synthetic transport failure")
 
+                def failing_copy(src: Path, dst: Path, copy: Callable[..., Any] = shutil.copytree) -> None:
+                    copy(src, dst)
+                    raise OSError("synthetic interrupted copy")
+
                 saved_submit, saved_pause = qi_platform.submit, qi_platform.hardware_pause_left
+                saved_copy = shutil.copytree
                 qi_platform.submit, qi_platform.hardware_pause_left = failing_submit, lambda _: 0  # type: ignore[assignment]
+                if failure == "staging":
+                    shutil.copytree = failing_copy  # type: ignore[assignment]
                 try:
                     submit_next(series, runs, "synthetic", control, False)
                 except OSError:
@@ -2111,10 +2121,9 @@ def series_gate_self_test(
                     raise AssertionError("a failing submit returned")
                 finally:
                     qi_platform.submit, qi_platform.hardware_pause_left = saved_submit, saved_pause
-                if receipt_dir.exists() != checkpoint:
-                    raise AssertionError(
-                        f"a submit failing with checkpoint {checkpoint} left exists={receipt_dir.exists()}"
-                    )
+                    shutil.copytree = saved_copy
+                if receipt_dir.exists() != (failure == "checkpoint"):
+                    raise AssertionError(f"a {failure} failure left exists={receipt_dir.exists()}")
             shutil.rmtree(receipt_dir)
             shutil.rmtree(done)
             collect("batch-00", {("batch-00", READOUT_ONE): {13: (0.02, 0.2)}}, "completed")
