@@ -186,6 +186,11 @@ Properties of the server that its code and gate hold:
 - Parameters carry schemas: a platform name matches `(qpu|sim):...`, a job
   id is hexadecimal with dashes, so a path such as `../../api/tokens` fails
   validation before any request.
+- The protocol validates JSON types and rejects undeclared arguments before
+  FastMCP compatibility conversion. Boolean photon counts and JSON-string
+  matrices therefore fail at the protocol boundary. The HTTP adapter bounds
+  responses to 64 MiB; an oversized or unusable JSON acknowledgment reports an
+  unknown outcome, which requires reconciliation before a mutation retry.
 
 | Tool | Parameters | Effect | Claude / Codex approval |
 |---|---|---|---|

@@ -47,8 +47,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import anyio  # noqa: E402
 from mcp.server.fastmcp import FastMCP  # noqa: E402
 from mcp.server.fastmcp.exceptions import ToolError  # noqa: E402
+from mcp.server.fastmcp.server import Settings  # noqa: E402
 from mcp.server.stdio import stdio_server  # noqa: E402
-from mcp.types import ToolAnnotations  # noqa: E402
+from mcp.types import Tool, ToolAnnotations  # noqa: E402
 from pydantic import Field  # noqa: E402
 from qd_platform import (  # noqa: E402
     PlatformError,
@@ -83,7 +84,22 @@ Matrix = Annotated[
     Field(description="Square matrix as rows of numbers; real part, or imaginary part when passed as imag"),
 ]
 
-server = FastMCP("quandela")
+# MCP 1.29 defines Settings before FastMCP; resolve its lifespan annotation
+# after the SDK module has finished loading instead of suppressing warnings.
+Settings.model_rebuild(force=True)
+
+
+class ContractMCP(FastMCP):
+    """Reject unadvertised arguments before the SDK's compatibility coercion."""
+
+    async def list_tools(self) -> list[Tool]:
+        tools = await super().list_tools()
+        for tool in tools:
+            tool.inputSchema = {**tool.inputSchema, "additionalProperties": False}
+        return tools
+
+
+server = ContractMCP("quandela")
 
 
 def reported[**P, R](function: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
@@ -210,8 +226,17 @@ def simulate(
         raise ValueError(f"real must be a square matrix of 1 to {LOCAL_MAX_MODES} modes")
     if imag is not None and (len(imag) != modes or any(len(row) != modes for row in imag)):
         raise ValueError("imag must have the shape of real")
-    if len(photons) != modes or any(not 0 <= n <= 1 for n in photons):
+    if len(photons) != modes or any(type(occupation) is not int or occupation not in (0, 1) for occupation in photons):
         raise ValueError("input_photons must give 0 or 1 photon for each mode")
+    for matrix in (real, imag):
+        if matrix is not None and any(
+            isinstance(entry, bool)
+            or not isinstance(entry, (int, float))
+            or not -1 - UNITARY_TOLERANCE <= entry <= 1 + UNITARY_TOLERANCE
+            for row in matrix
+            for entry in row
+        ):
+            raise ValueError("unitary matrix entries must be finite real numbers bounded by one within 1e-9")
     unitary = np.array(real, dtype=complex) + (1j * np.array(imag) if imag is not None else 0)
     if not np.allclose(unitary.conj().T @ unitary, np.eye(modes), rtol=0, atol=UNITARY_TOLERANCE):
         raise ValueError("the matrix is not unitary within 1e-9")
@@ -264,8 +289,11 @@ def serve() -> None:
     stream = anyio.wrap_file(io.TextIOWrapper(os.fdopen(protocol, "wb"), encoding="utf-8"))
 
     async def run() -> None:
-        async with stdio_server(stdout=stream) as (read_stream, write_stream):
+        async with stream, stdio_server(stdout=stream) as (read_stream, write_stream):
             core = server._mcp_server
+            # FastMCP disables JSON Schema checks to permit string-to-JSON
+            # conversion. The advertised JSON types form the server contract.
+            core.call_tool(validate_input=True)(server.call_tool)
             await core.run(read_stream, write_stream, core.create_initialization_options())
 
     anyio.run(run)

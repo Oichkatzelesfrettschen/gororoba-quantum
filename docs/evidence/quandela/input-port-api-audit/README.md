@@ -12,6 +12,75 @@ The inventory preserves that source defect in `unresolved_references`.
 The strict `inventory()` interface rejects unresolved references. The audit
 CLI retains them explicitly so the remaining source surface remains inspectable.
 
+## Schema validation and MCP contract repair
+
+The 22 October 2026 host audit used `openapi-spec-validator` 0.9.0,
+`openapi-schema-validator` 0.9.0 and `jsonschema` 4.26.0. The validator
+accepted Cloud (OpenAPI 3.0.3), rejected Toolbox because `info.title` is
+missing, and rejected Account because the reference above has no target.
+The captures retain the vendor bytes, including both defects:
+
+| Capture | SHA-256 | Validator outcome |
+|---|---|---|
+| Cloud | `d444026d3d2735c4eee078410e001efe67863d670b55aaa0696e8f440540ab2f` | valid |
+| Toolbox | `a1fe41a393a997f6bd764f05043e7a6478fa295806c5aab0b733944896d2d279` | missing title |
+| Account | `eecb463e7e8c53dc2d39b1ce2f3c07a9684210b82757584d0e877f6b4baac65a` | unresolved reference |
+
+Replay the optional host validator with the interpreter that carries those
+packages; the standard inventory replay below needs neither optional validator:
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+"$PYTHON" - <<'PY'
+import json
+from pathlib import Path
+from openapi_spec_validator import validate
+for name in ("cloud", "toolbox", "account"):
+    path = Path("docs/evidence/quandela/input-port-api-audit") / f"{name}-openapi.json"
+    try:
+        validate(json.loads(path.read_bytes()))
+        print(name, "valid")
+    except Exception as error:
+        print(name, type(error).__name__)
+PY
+```
+
+`paru -Ss 'openapi|jsonschema|httpie'` identified installed `openapi-tui`,
+`python-jsonschema`, `python-openapi-spec-validator` and
+`python-openapi-schema-validator`. Those packages cover browsing and structural
+validation. `openapi-diff` can compare future captures; `openapi-generator`
+generates clients but cannot repair missing provider-side instrument mappings.
+The audit required zero package installations. Automated endpoint fuzzing stays
+outside the audit because documented GET routes include priced QRNG and session
+mutation, and job/booking/token operations change remote state.
+
+Eight MCP tools expose eight unique Cloud operations plus local simulation:
+
+| Tool | Cloud operation |
+|---|---|
+| `qd_platforms` | GET `/api/platforms/public/explorer`, GET `/api/platforms/public` |
+| `qd_platform` | GET `/api/platforms/{name}/processor` |
+| `qd_availability` | GET `/api/jobs/availability` |
+| `qd_usage` | GET `/api/tokens/usage/report` |
+| `qd_job_status` | GET `/api/jobs/{id}/status` |
+| `qd_job_result` | GET `/api/jobs/{id}/result` |
+| `qd_cancel_job` | POST `/api/jobs/{id}/cancel` |
+| `qd_simulate_local` | host Perceval; provider access excluded |
+
+The MCP 1.29 startup repair completes the SDK Settings forward references
+instead of suppressing warnings. The server enables low-level JSON Schema
+validation before FastMCP compatibility coercion and rejects undeclared tool
+arguments. Local simulation rejects Boolean/fractional photon occupations and
+nonfinite or oversized matrix entries before native arithmetic. The HTTP
+adapter bounds responses to 64 MiB and classifies oversized or unusable JSON
+acknowledgments as unanswered; a mutation can have happened despite an unusable
+acknowledgment, so callers must reconcile before retrying.
+
+`tests/scripts/test_quandela_mcp_contract.py` exercises warning-free startup,
+numeric rejection, bounded HTTP reads, unknown mutation outcomes and the real
+SDK client/server stdio boundary. Synthetic transport tests disable provider
+access and establish software contracts rather than optical instrument recovery.
+
 The portal route map records 59 literal `request$1` call sites in WebIDE
 bundle `index-DrG4GsjV.js`, SHA-256
 `2f86182fa9ea5999d49645c2553e6b645e7d390249838c9261b2132f51051c7e`.

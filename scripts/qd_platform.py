@@ -264,9 +264,9 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
     call = urllib.request.Request(API + route, data=data, headers=headers, method=method)
     try:
         with OPENER.open(call, timeout=60) as response:
-            answer = response.read()
+            answer = response.read(RESULT_LIMIT + 1)
     except urllib.error.HTTPError as error:
-        detail = error.read()[:500].decode("utf-8", errors="replace")
+        detail = error.read(500).decode("utf-8", errors="replace")
         error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
         raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
@@ -277,12 +277,14 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
     # is neither), and is unanswered as well.
     except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
         raise UnansweredError(f"{method} {route}: {error!r}") from None
+    if len(answer) > RESULT_LIMIT:
+        raise UnansweredError(f"{method} {route}: answer exceeds the {RESULT_LIMIT}-byte response limit")
     if raw:
         return answer
     try:
         return json.loads(answer) if answer else None
-    except json.JSONDecodeError:
-        raise PlatformError(f"{method} {route}: answer is not JSON: {answer[:200]!r}") from None
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        raise UnansweredError(f"{method} {route}: answer is not usable JSON") from None
 
 
 def get(route: str, auth: bool = True) -> Any:
@@ -479,6 +481,7 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
         "mcp.server",
         "mcp.server.fastmcp",
         "mcp.server.fastmcp.exceptions",
+        "mcp.server.fastmcp.server",
         "mcp.server.stdio",
         "mcp.types",
         "pydantic",
@@ -486,8 +489,10 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
     modules = {name: ModuleType(name) for name in names}
     modules["mcp.server.fastmcp"].FastMCP = ToolRecorder  # type: ignore[attr-defined]
     modules["mcp.server.fastmcp.exceptions"].ToolError = RuntimeError  # type: ignore[attr-defined]
+    modules["mcp.server.fastmcp.server"].Settings = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.server.stdio"].stdio_server = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.types"].ToolAnnotations = dict  # type: ignore[attr-defined]
+    modules["mcp.types"].Tool = MagicMock()  # type: ignore[attr-defined]
     modules["pydantic"].Field = MagicMock()  # type: ignore[attr-defined]
     spec = importlib.util.spec_from_file_location("qd_mcp_surface", server)
     if spec is None or spec.loader is None:
