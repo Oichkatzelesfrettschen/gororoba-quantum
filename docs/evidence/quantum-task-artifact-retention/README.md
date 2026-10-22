@@ -39,8 +39,17 @@ probe inputs.
 The [verifier regression and provenance checks](verifier-regression-and-provenance-checks/inventory.json)
 retain two failing regression reproductions, the subsequent 53-test passing
 result, the passing retention-gate timing receipt, and local simulator
-provenance-fix gate timings. These completed focused checks differ from the
-pending integrated qualification receipts.
+provenance-fix gate timings. These completed focused checks differ from full
+integrated qualification receipts.
+
+The [integrated MCP qualification inventory](integrated-mcp-qualification/inventory.json)
+retains the completed exact-head run at
+`278d41587c4e78a6406023536b5b4b5d77bca0aa`: 391 passing gates, zero failures,
+and 145 unchanged-ledger skips across 536 gates. The inventory includes the
+validation log, ledger, timing receipt, and launcher/orchestration evidence.
+Sanitized launcher snapshots describe the recorded execution environment;
+their process-specific environment sources are historical rather than portable
+replay entry points.
 
 Byte-identical tracked artifacts link to their repository path and original Git
 identity. The verifier checks the checkout bytes, so a shallow offline checkout
