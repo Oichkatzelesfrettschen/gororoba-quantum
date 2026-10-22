@@ -30,7 +30,7 @@ The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 
 
 The Quantum Inspire ledger retrieved at 2026-10-22T07:18:20+00:00 lists 316 jobs with 6469632 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 41 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 44 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -219,6 +219,9 @@ circuit and charges the account ledger's change.
 | [order-batch-05](../../results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change | hw-quaternion-encoded-order-pilot |
 | [order-batch-06](../../results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change | hw-quaternion-encoded-order-pilot |
 | [order-batch-07](../../results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change | hw-quaternion-encoded-order-pilot |
+| [2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1](../../results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits | qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session |
+| [2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2](../../results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits | qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session |
+| [2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2](../../results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 1.08 credits | qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -402,6 +405,9 @@ circuit and charges the account ledger's change.
 - **qi-tuna17-quaternion-order-05** (order-batch-05, batch job 881880, 49152 of 49152 shots done): What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0 rad and the global right-j representative in the frozen ordinary complex encoding?
 - **qi-tuna17-quaternion-order-06** (order-batch-06, batch job 881890, 49152 of 49152 shots done): What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the identity representative in the frozen ordinary complex encoding?
 - **qi-tuna17-quaternion-order-07** (order-batch-07, batch job 881903, 49152 of 49152 shots done): What grouped output and readout frequencies occur for i phase 0.7853981633974483 rad, j phase 0.7853981633974483 rad and the global right-j representative in the frozen ordinary complex encoding?
+- **qd-qpu-belenos-bdsc-diagnostic-block1-job1-canceled** (2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1, job 5aec4d50-50f0-4273-8ee5-c3476eff195e, 0 samples, 0 shots): the first job of block 1 (`b1-j1`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
+- **qd-qpu-belenos-bdsc-diagnostic-block1-job2-canceled** (2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2, job e51b9f4f-b904-46b9-a51d-2aa861186a6b, 0 samples, 0 shots): the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
+- **qd-qpu-belenos-bdsc-diagnostic-block1-job2-retry-canceled** (2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2, job 2d868daa-57e7-4296-a4d4-f691a44cc2cd, 0 samples, 0 shots): the resubmission of the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?
 
 ## Established claims
 
@@ -1142,6 +1148,10 @@ circuit and charges the account ledger's change.
   Evidence: [results.json](../../results/quandela/runs/2026-10-22T013357Z-qpu_belenos-bdsc_qualification-tc-def-e2/results.json), [results.json](../../results/quandela/runs/2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1/results.json), [bdsc-acceptance-diagnostics.md](../notes/quandela/bdsc-acceptance-diagnostics.md), [bdsc-qualification-case.md](../runbooks/bdsc-qualification-case.md).
   Gates: replayed by core-622.
   Acquisitions: qd-qpu-belenos-bdsc-tc-def-e1, qd-qpu-belenos-bdsc-tc-def-e2.
+- **qd-belenos-bdsc-diagnostic-block1-canceled-by-concurrent-session** (exploratory reanalysis, hardware). The three qpu:belenos jobs of block 1 of the approved crossed BDSC diagnostic (5aec4d50 submitted 2026-10-22 11:06:58 UTC; e51b9f4f submitted 11:15:53; its resubmission 2d868daa submitted 11:17:33) each ended canceled with 0 shots, no start time and status message 'Cancel requested from perceval', and qpu:belenos usage held at 25.2255 free credits before and after every job. A concurrent agent session holding the same token, preparing an unrelated qpu:ascella submission, sent the three cancel requests through the qd_cancel_job tool of the Quandela MCP server at 11:15:22, 11:16:17 and 11:23:44 UTC to empty the token's queue; the submitting collector sent none. The block therefore returned no data.
+  Boundary: An operational record of three canceled jobs: no device measurement, no setting response and no statement about Belenos availability follows from them. The cancel source is read from the other session's local transcript, which the repository does not retain; the service records only that a client requested the cancel.
+  Evidence: [results.json](../../results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1/results.json), [results.json](../../results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json), [results.json](../../results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json), [bdsc-qualification-case.md](../runbooks/bdsc-qualification-case.md).
+  Acquisitions: qd-qpu-belenos-bdsc-diagnostic-block1-job1-canceled, qd-qpu-belenos-bdsc-diagnostic-block1-job2-canceled, qd-qpu-belenos-bdsc-diagnostic-block1-job2-retry-canceled.
 
 ## Open claims
 

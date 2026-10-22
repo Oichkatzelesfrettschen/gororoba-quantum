@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (98 established, 45 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (98 established, 46 exploratory, 4 open, 9 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -212,12 +212,15 @@ acquisition of every provider:
 | [order-batch-05](results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [order-batch-06](results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [order-batch-07](results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07) | Quantum Inspire | quaternion operator order, paired-channel output and contemporaneous readout references | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1](results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
+| [2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
+| [2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 1.08 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-22T07:18:20+00:00 lists 316 jobs with 6469632 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 41 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 44 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents
