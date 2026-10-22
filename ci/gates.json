@@ -3796,7 +3796,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-campaign-retention && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-submission-deadline && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test",
    "name": "core-594",
    "seconds": 4.0,
    "tier": "pr"

@@ -22,7 +22,7 @@ import unittest
 from pathlib import Path
 from types import ModuleType
 from typing import Any
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import qi_platform as platform
 
@@ -144,7 +144,7 @@ class FakeClient:
             return [copy.deepcopy(self.batch)]
         raise AssertionError(f"unexpected mock paginated GET {path} {params}")
 
-    def post(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
+    def post(self, path: str, body: dict[str, Any], *, execution_deadline: float | None = None) -> dict[str, Any]:
         if not (self.case_dir / "submission-state.json").is_file():
             raise AssertionError("remote creation happened without a retained submission guard")
         self.calls.append(("POST", path))
@@ -215,7 +215,7 @@ class PreflightClient:
             return []
         raise PreflightReached(path)
 
-    def post(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
+    def post(self, path: str, body: dict[str, Any], *, execution_deadline: float | None = None) -> dict[str, Any]:
         raise AssertionError("a preflight check created a remote resource")
 
 
@@ -477,6 +477,54 @@ class RetentionChecks(unittest.TestCase):
                 platform.submit(self.case_dir, 7, "approved")
         self.assertFalse((self.case_dir / "submission-state.json").exists())
         self.assertFalse((self.case_dir / "submission.json").exists())
+
+    def test_submission_deadline_covers_lock_wait_provider_preflight_and_state_sync(self) -> None:
+        for times, state_expected in (((11.0,), False), ((1.0, 11.0), False), ((1.0, 2.0, 11.0), True)):
+            with self.subTest(times=times):
+                client = FakeClient(self.case_dir)
+                with (
+                    patch.object(platform, "Client", return_value=client),
+                    patch.object(platform.time, "monotonic", side_effect=times),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, "deadline"):
+                        platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+                self.assertTrue(all(method == "GET" for method, _ in client.calls))
+                self.assertEqual((self.case_dir / "submission-state.json").exists(), state_expected)
+                (self.case_dir / "submission-state.json").unlink(missing_ok=True)
+
+    def test_submission_deadline_requires_a_finite_value(self) -> None:
+        for deadline in (float("nan"), float("inf"), -float("inf")):
+            with (
+                self.subTest(deadline=deadline),
+                patch.object(platform, "Client", side_effect=AssertionError("invalid deadline reached service")),
+            ):
+                with self.assertRaisesRegex(ValueError, "finite"):
+                    platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=deadline)
+
+    def test_refresh_expiry_blocks_initial_dispatch_and_unauthorized_retry(self) -> None:
+        for retry in (False, True):
+            with self.subTest(retry=retry):
+                client = platform.Client.__new__(platform.Client)
+                client.expires = 10000 if retry else 0
+                session = Mock()
+                session.request.return_value.status_code = 401
+                client.session = session
+                clock = [1.0]
+
+                def refresh(clock: list[float] = clock) -> None:
+                    clock[0] = 11.0
+
+                def current_time(clock: list[float] = clock) -> float:
+                    return clock[0]
+
+                with (
+                    patch.object(platform.time, "time", return_value=100.0),
+                    patch.object(platform.time, "monotonic", side_effect=current_time),
+                    patch.object(client, "refresh", side_effect=refresh),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, "request initiation"):
+                        client.post("/projects", {}, execution_deadline=10.0)
+                self.assertEqual(session.request.call_count, int(retry))
 
     def test_success_and_historical_receipts_block_repeats(self) -> None:
         client = FakeClient(self.case_dir)

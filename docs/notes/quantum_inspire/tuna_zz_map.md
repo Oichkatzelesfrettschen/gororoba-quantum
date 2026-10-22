@@ -16,13 +16,22 @@ directories contains a `cases.json` compatible with `qi_platform.py` and
 the exact cQASM payloads with SHA-256 digests. The complete analysis is in
 `scripts/qi_zz_map_analysis.py`.
 
-The unsubmitted source-binding successor is
+The retained campaign-retention source-binding successor is
 [`zz-map-tuna17-campaign-retention/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-campaign-retention/plan.json).
 The successor binds the campaign-retention submission guards in `scripts/qi_platform.py`.
 All 416 cQASM payloads and scientific settings match the frozen proposal above; the
 submission-source digest and the case hashes that bind that digest change. Gate `core-594`
-replays the successor. The original proposal retains its recorded bytes, and the
+previously replayed that successor. The original proposal retains its recorded bytes, and the
 acquisition recommendation below also applies to the successor.
+
+The active unsubmitted source-binding successor is
+[`zz-map-tuna17-submission-deadline/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-submission-deadline/plan.json).
+The successor binds the submission deadline guards, including the check after
+token refresh immediately before the first resource HTTP request begins.
+The deadline bounds request initiation; network and server latency determine
+when the service creates a resource. All 416 cQASM payloads and scientific
+settings match both retained proposals. Gate `core-594` replays the active
+successor. Both earlier proposals retain their recorded bytes.
 
 ## Acquisition decision after the later Tuna-17 results
 
@@ -364,7 +373,7 @@ From the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-campaign-retention
+"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-submission-deadline
 "$PYTHON" scripts/qi_zz_map.py --self-test
 ```
 

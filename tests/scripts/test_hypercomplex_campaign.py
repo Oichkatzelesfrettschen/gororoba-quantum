@@ -97,6 +97,31 @@ def test_pacing_wait_cannot_replace_approved_manifest(tmp_path, monkeypatch) -> 
         execute(tmp_path, "approved fixture", approved, 60)
 
 
+def test_campaign_passes_deadline_and_retains_preflight_refusal(tmp_path, monkeypatch) -> None:
+    import hypercomplex_campaign
+    import qi_platform
+
+    write_files(tmp_path, qi_cases(16))
+    approved = campaign_plan(tmp_path)["plan_sha256"]
+    monkeypatch.setattr(hypercomplex_campaign.time, "monotonic", lambda: 100.0)
+    monkeypatch.setattr(qi_platform, "Client", lambda: object())
+    monkeypatch.setattr(qi_platform, "hardware_pause_left", lambda client: 0)
+
+    def expired(batch, backend, approval, *, expected_cases_sha256, execution_deadline):
+        if execution_deadline != 160.0:
+            raise RuntimeError("the submission must receive the campaign's absolute deadline")
+        raise TimeoutError("execution deadline expired")
+
+    monkeypatch.setattr(qi_platform, "submit", expired)
+    with pytest.raises(TimeoutError, match="deadline"):
+        execute(tmp_path, "approved fixture", approved, 60)
+    batch = sorted(tmp_path.glob("*/cases.json"))[0].parent
+    intent = json.loads((batch / "execution-intent.json").read_text())
+    refusal = json.loads((batch / "preflight-refusal.json").read_text())
+    if refusal != {**intent, "schema": "qi-campaign-refusal-v1", "phase": "preflight-refused"}:
+        raise RuntimeError("deadline preflight refusal must retain the exact intent binding")
+
+
 def test_measured_wave_requires_retained_shot_order(tmp_path, monkeypatch) -> None:
     import hypercomplex_campaign
 
