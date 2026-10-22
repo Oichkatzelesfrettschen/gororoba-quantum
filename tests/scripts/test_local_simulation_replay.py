@@ -4,10 +4,27 @@ import copy
 import json
 import subprocess
 from pathlib import Path
+from typing import Any
 
 import local_simulation_replay
 import pytest
 from local_simulation_replay import check_photonic, check_probabilities, check_qi, load
+
+
+def retained_live_payload() -> dict[str, Any]:
+    return {
+        "rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"],
+        "default_compiled": {
+            row["case"]: row["compiled"]
+            for row in load("validated-terminal-unitary-compiler-crosscheck/qi.json")["rows"]
+        },
+        "simulations": [
+            {field: row["simulations"][kind][field] for field in ("counts", "state")}
+            for directory, _, _ in local_simulation_replay.QI_BUNDLES
+            for row in load(directory + "/qi.json")["rows"]
+            for kind in ("source", "compiled")
+        ],
+    }
 
 
 def test_photonic_replay_rejects_changed_probability() -> None:
@@ -97,14 +114,8 @@ def test_retained_histogram_rejects_impossible_readout_reference() -> None:
 def test_live_replay_checks_default_writer_histograms(monkeypatch: pytest.MonkeyPatch) -> None:
     import qi_stack
 
-    simulations = [
-        {field: row["simulations"][kind][field] for field in ("counts", "state")}
-        for directory, _, _ in local_simulation_replay.QI_BUNDLES
-        for row in load(directory + "/qi.json")["rows"]
-        for kind in ("source", "compiled")
-    ]
-    simulations[0]["counts"] = {"11": 1024}
-    payload = {"rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"], "simulations": simulations}
+    payload = retained_live_payload()
+    payload["simulations"][0]["counts"] = {"11": 1024}
     monkeypatch.setattr(qi_stack, "live", lambda *args: True)
     monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
     with pytest.raises(ValueError, match="seeded counts or states"):
@@ -114,14 +125,8 @@ def test_live_replay_checks_default_writer_histograms(monkeypatch: pytest.Monkey
 def test_live_replay_checks_default_writer_states(monkeypatch: pytest.MonkeyPatch) -> None:
     import qi_stack
 
-    simulations = [
-        {field: row["simulations"][kind][field] for field in ("counts", "state")}
-        for directory, _, _ in local_simulation_replay.QI_BUNDLES
-        for row in load(directory + "/qi.json")["rows"]
-        for kind in ("source", "compiled")
-    ]
-    simulations[0]["state"] = {"00": [0.0, 1.0]}
-    payload = {"rows": load("fullprecision-compiler-crosscheck/qi.json")["rows"], "simulations": simulations}
+    payload = retained_live_payload()
+    payload["simulations"][0]["state"] = {"00": [0.0, 1.0]}
     monkeypatch.setattr(qi_stack, "live", lambda *args: True)
     monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
     with pytest.raises(ValueError, match="seeded counts or states"):
@@ -134,3 +139,25 @@ def test_synthetic_photonic_counts_replay_the_recorded_seed() -> None:
     row["simulated_counts"][1] += 1
     with pytest.raises(ValueError, match="seeded sampler"):
         check_photonic(row)
+
+
+def test_live_replay_compares_ordinary_default_compiler(monkeypatch: pytest.MonkeyPatch) -> None:
+    import qi_stack
+
+    payload = retained_live_payload()
+    first_case = next(iter(payload["default_compiled"]))
+    payload["default_compiled"][first_case] += "// changed default compiler\n"
+    monkeypatch.setattr(qi_stack, "live", lambda *args: True)
+    monkeypatch.setattr(qi_stack, "run", lambda *args: json.dumps(payload))
+    with pytest.raises(ValueError, match="default-compiler output"):
+        local_simulation_replay.live_qi()
+
+
+@pytest.mark.parametrize("reported", [0.0, float("nan")])
+def test_complete_operator_output_rejects_lowered_or_nonfinite_residual(reported: float) -> None:
+    row = copy.deepcopy(load("physical-photonic-compiler-crosscheck/photonic.json")["rows"][0])
+    outputs = load("optical-operator-replay.json")["rows"]
+    actual = next(output for output in outputs if (output["case"], output["index"]) == (row["case"], row["index"]))
+    row["full_operator_max_error"] = reported
+    with pytest.raises(ValueError, match="full-operator maximum"):
+        local_simulation_replay.check_optical_operator((row, actual))

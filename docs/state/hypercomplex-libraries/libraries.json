@@ -2431,6 +2431,7 @@
     "scripts/hypercomplex_photonic_cases.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/local_optical_operator_replay.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
@@ -10092,6 +10093,20 @@
    "sys",
    "typing"
   ],
+  "scripts/local_optical_operator_replay.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
   "scripts/local_photonic_compiler_crosscheck.py": [
    "__future__",
    "argparse",
@@ -10126,6 +10141,7 @@
    "parallel",
    "pathlib",
    "qi_stack",
+   "qi_toolchain_check",
    "qxelarator",
    "subprocess",
    "sys",

@@ -159,6 +159,27 @@ def check_optical_sources(record: dict[str, Any]) -> None:
         raise ValueError("frozen optical source-hash denominator or digest differs")
 
 
+def check_optical_operator(arguments: tuple[dict[str, Any], dict[str, Any]]) -> None:
+    import numpy as np
+
+    retained, output = arguments
+    manifest = json.loads((ROOT / retained["case"] / "cases.json").read_text())
+    setting = manifest["settings"][retained["index"]]
+    expected = np.asarray(setting["operator"]["real"]) + 1j * np.asarray(setting["operator"]["imaginary"])
+    actual = np.asarray(output["actual_operator"]["real"]) + 1j * np.asarray(output["actual_operator"]["imaginary"])
+    if actual.shape != expected.shape or not np.isfinite(actual).all() or not np.isfinite(expected).all():
+        raise ValueError("retained complete optical operator has invalid shape or entries")
+    error = float(np.max(np.abs(actual - expected)))
+    recorded = retained["full_operator_max_error"]
+    if (
+        not math.isfinite(error)
+        or not math.isfinite(recorded)
+        or not 0 <= error < 1e-9
+        or abs(error - recorded) > max(math.ulp(error), math.ulp(recorded))
+    ):
+        raise ValueError("retained full-operator maximum differs from its complete optical output")
+
+
 def check() -> None:
     if load("artifacts.json")["sha256"] != inventory():
         raise ValueError("local simulation file set or bytes differ from artifact inventory")
@@ -180,6 +201,17 @@ def check() -> None:
         raise ValueError("physical photonic setting denominator differs")
     ordered_map(check_photonic, rows, min_items=1)
     check_optical_sources(optical)
+    operators = load("optical-operator-replay.json")
+    outputs = {(row["case"], row["index"]): row for row in operators["rows"]}
+    if len(operators["rows"]) != 128 or set(outputs) != expected:
+        raise ValueError("complete optical operator denominator differs")
+    if operators["source_sha256"] != optical["source_sha256"] or operators["retained_photonic_sha256"] != sha(
+        BUNDLE / "physical-photonic-compiler-crosscheck/photonic.json"
+    ):
+        raise ValueError("complete optical operators differ from their retained source identities")
+    if operators["producer_sha256"] != sha(BUNDLE / "optical-operator-replay-producer.py"):
+        raise ValueError("complete optical operator producer identity differs")
+    ordered_map(check_optical_operator, [(row, outputs[(row["case"], row["index"])]) for row in rows], min_items=1)
     for directory, precise, terminal in QI_BUNDLES:
         record = load(directory + "/qi.json")
         if record["seed"] != 20261022 or record["shots"] != 1024:
@@ -226,6 +258,15 @@ def qi_simulation(arguments: tuple[str, str | None]) -> dict[str, Any]:
     }
 
 
+def qi_default_compile(case: str) -> str:
+    from local_photonic_compiler_crosscheck import qi_warning_policy
+
+    qi_warning_policy()
+    from qi_toolchain_check import compile_circuit, compiler_configs
+
+    return compile_circuit((ROOT / case).read_text(), compiler_configs()["tuna_17"])
+
+
 def live_qi() -> None:
     from qi_stack import live, run
 
@@ -236,25 +277,35 @@ import json,sys
 sys.path[:0] = ['scripts', 'gororoba_quantum']
 from pathlib import Path
 from local_photonic_compiler_crosscheck import qi_case
-from local_simulation_replay import QI_BUNDLES, load, qi_simulation
+from local_simulation_replay import QI_BUNDLES, load, qi_default_compile, qi_simulation
 from parallel import ordered_map
 inputs = []
 root = Path('results/quantum_inspire/runs/tuna17-quaternion-order-noise')
 for manifest in sorted(root.glob('order-batch-*/cases.json')):
     cases = json.loads(manifest.read_text())['circuits']
     inputs.extend((str(manifest.parent), case | {'_full_precision': True}) for case in cases)
+case_paths = [row['case'] for row in load('fullprecision-compiler-crosscheck/qi.json')['rows']]
+default_compiled = dict(zip(case_paths, ordered_map(qi_default_compile, case_paths, min_items=1), strict=True))
 simulation_inputs = []
-for directory, _, terminal in QI_BUNDLES:
+for directory, precise, terminal in QI_BUNDLES:
     for row in load(directory + '/qi.json')['rows']:
+        if not precise and default_compiled[row['case']] != row['compiled']:
+            raise ValueError('default compiler differs from retained code: ' + row['case'])
         for kind, code in [('source', Path(row['case']).read_text()), ('compiled', row['compiled'])]:
             probe = row['simulations'][kind]['unitary_probe'] if terminal else None
             simulation_inputs.append((code, probe))
 print(json.dumps({'rows': ordered_map(qi_case, inputs, min_items=1),
+                 'default_compiled': default_compiled,
                  'simulations': ordered_map(qi_simulation, simulation_inputs, min_items=1)}))
 """
     actual = json.loads(run(["-B", "-W", "error", "-c", code]))
     if actual["rows"] != load("fullprecision-compiler-crosscheck/qi.json")["rows"]:
         raise ValueError("live pinned QI replay differs from retained full-precision evidence")
+    for directory, precise, _ in QI_BUNDLES:
+        if not precise and any(
+            actual["default_compiled"][row["case"]] != row["compiled"] for row in load(directory + "/qi.json")["rows"]
+        ):
+            raise ValueError("live default-compiler output differs from retained compiled programs")
     expected_simulations = [
         {field: row["simulations"][kind][field] for field in ("counts", "state")}
         for directory, _, _ in QI_BUNDLES
