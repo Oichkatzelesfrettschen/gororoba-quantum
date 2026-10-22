@@ -266,8 +266,14 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         with OPENER.open(call, timeout=60) as response:
             answer = response.read(RESULT_LIMIT + 1)
     except urllib.error.HTTPError as error:
-        detail = error.read(500).decode("utf-8", errors="replace")
-        error.close()
+        try:
+            detail = error.read(500).decode("utf-8", errors="replace")
+        except (OSError, http.client.HTTPException) as interrupted:
+            raise UnansweredError(
+                f"{method} {route}: HTTP {error.code} response interrupted: {interrupted!r}"
+            ) from None
+        finally:
+            error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
         if method.upper() not in {"GET", "HEAD", "OPTIONS"} and (error.code == 408 or error.code >= 500):
             raise UnansweredError(f"{method} {route}: HTTP {error.code}; remote mutation outcome is unknown") from None

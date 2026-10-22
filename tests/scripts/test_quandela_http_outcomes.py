@@ -1,5 +1,6 @@
 """Gateway failures cannot certify that a remote mutation had no effect."""
 
+import http.client
 import io
 import json
 import urllib.error
@@ -60,3 +61,20 @@ def test_job_gateway_failure_keeps_checkpoint_and_blocks_duplicate_post(
         qd.submit(tmp_path, "qpu:ascella", "synthetic approval; provider access stubbed", 1.1, 180, 1)
     if attempts != ["POST"]:
         raise AssertionError(f"duplicate submission crossed the HTTP boundary: {attempts}")
+
+
+def test_interrupted_http_error_body_remains_unanswered(monkeypatch: pytest.MonkeyPatch) -> None:
+    class InterruptedBody(io.BytesIO):
+        def read(self, size: int | None = -1) -> bytes:
+            raise http.client.IncompleteRead(b"partial error body")
+
+    stream = InterruptedBody()
+
+    def fail(*args, **kwargs):
+        raise urllib.error.HTTPError("https://example.invalid/api/jobs", 503, "gateway", {}, stream)
+
+    monkeypatch.setattr(qd.OPENER, "open", fail)
+    with pytest.raises(qd.UnansweredError):
+        qd.request("GET", "/api/jobs/offline/status", auth=False)
+    if not stream.closed:
+        raise AssertionError("the interrupted HTTP error response remained open")
