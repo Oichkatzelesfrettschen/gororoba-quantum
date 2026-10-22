@@ -109,6 +109,7 @@ import qiskit_aer  # noqa: E402
 from qiskit import QuantumCircuit, qpy  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
+import law_encoding  # noqa: E402
 import packing  # noqa: E402
 import parallel  # noqa: E402
 
@@ -163,7 +164,7 @@ def measured_members(
     recorded: dict[str, list[float]] = {}
     for collection in data if isinstance(data, list) else [data]:
         for name, replicas in (collection.get("measured") or {}).items():
-            measured[name] = [np.asarray(r, dtype=float) for r in replicas]
+            measured[name] = [np.asarray(law_encoding.dense(r), dtype=float) for r in replicas]
         executed.update(collection.get("executed") or {})
         recorded.update(collection.get("tvd_measured_to_replayed") or {})
     return measured, executed, recorded

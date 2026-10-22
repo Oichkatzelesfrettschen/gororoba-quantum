@@ -1,17 +1,19 @@
 name: ci
 
+# The nightly run executes every gate of both tiers with --ledger-audit on
+# main; a pull request runs the pr tier and its affected full gates on the
+# PR head before merge (ci/AGENTS.md), so the workflow carries no
+# pull_request or push trigger. The event branches below keep their
+# pull_request and push forms for a later trigger.
 on:
-  pull_request:
-  push:
-    branches: [main]
   schedule:
     - cron: "17 9 * * *"
   workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.event_name }}-${{ github.ref }}
-  # A newer tree replaces stale checks on the same ref. Nightly and manual
-  # runs retain the exhaustive selection; push runs select affected replays.
+  # A newer run replaces a stale one on the same ref; nightly and manual runs
+  # retain the exhaustive selection.
   cancel-in-progress: true
 
 env:

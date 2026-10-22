@@ -23,6 +23,8 @@ from typing import Any
 
 from qiskit import QuantumCircuit, qpy
 
+import law_encoding
+
 CASE_FILENAME = "UNAPPROVED_CASE.md"
 FAMILIES = {
     "et-row",
@@ -1062,11 +1064,13 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
             member = _identifier(term["member"], "observable member")
             _require(member in members, "observable member is absent from the execution groups")
             _require(term["sign"] in (-1, 1), "observable sign must be -1 or +1")
-            coefficients = [_number(value, "score coefficient") for value in term["values"]]
+            coefficients = [_number(value, "score coefficient") for value in law_encoding.dense(term["values"])]
             _require(
-                len(coefficients) == len(members[member]["ideal"]), "score labels differ from the member ideal law"
+                len(coefficients) == len(law_encoding.dense(members[member]["ideal"])),
+                "score labels differ from the member ideal law",
             )
-            lines.append(f"- `{member}`: sign {term['sign']:+d}, labeled score vector `{json.dumps(coefficients)}`.")
+            shown = coefficients if isinstance(term["values"], list) else term["values"]
+            lines.append(f"- `{member}`: sign {term['sign']:+d}, labeled score vector `{json.dumps(shown)}`.")
         exact = record.get("exact_model")
         model_sentence = (
             f"The noise model predicts {_format_number(endpoint['predicted_value'])} from the exact "
@@ -1229,7 +1233,9 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
             f"{', '.join(f'{weight:+.6g}' for weight in weights)} | {shots[bound['pub_name']]} | {declared:.6g} | "
             f"{allowance:.6g} | {declared + allowance:.6g} | {_format_number(bound['falsifier_tail'])} |"
         )
-    ideals = {member["name"]: member["ideal"] for group in record["groups"] for member in group["members"]}
+    ideals = {
+        member["name"]: law_encoding.dense(member["ideal"]) for group in record["groups"] for member in group["members"]
+    }
     by_pub: dict[str, dict[str, tuple[tuple[float, ...], ...]]] = {}
     for pub in record["execution_pubs"]:
         for component in pub["components"]:
@@ -1240,7 +1246,8 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
         ObservableContract(
             **{key: value for key, value in contract.items() if key != "terms"},
             terms=tuple(
-                ObservableTerm(term["member"], tuple(term["values"]), term["sign"]) for term in contract["terms"]
+                ObservableTerm(term["member"], tuple(law_encoding.dense(term["values"])), term["sign"])
+                for term in contract["terms"]
             ),
         )
         for contract in record["observable_contracts"]
@@ -2120,12 +2127,15 @@ def _render(
     for group in record["groups"]:
         for member in group["members"]:
             name = _identifier(member["name"], "member")
-            ideal = [_number(value, "ideal probability") for value in member["ideal"]]
+            ideal = [_number(value, "ideal probability") for value in law_encoding.dense(member["ideal"])]
             _require(
                 all(0 <= value <= 1 for value in ideal) and math.isclose(sum(ideal), 1.0, abs_tol=1e-9),
                 "invalid ideal law",
             )
-            lines.append(f"| {name} | `{json.dumps(ideal)}` |")
+            # A wide law prints in its stored form (law_encoding), which
+            # expands to the same labeled array.
+            shown = ideal if isinstance(member["ideal"], list) else member["ideal"]
+            lines.append(f"| {name} | `{json.dumps(shown)}` |")
     # The transpiler routes a template layout; replica placement then maps each
     # replica onto the physical qubits that execute, which the last column names.
     lines.extend(

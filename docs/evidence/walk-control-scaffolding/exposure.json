@@ -17667,6 +17667,82 @@
     }
    },
    "run": "results/live/2026-10-20T031212.175942Z"
+  },
+  {
+   "groups": [
+    {
+     "backend": "ibm_marrakesh",
+     "flagged": {},
+     "group": "n21_orbit_rca",
+     "replicas": [
+      [
+       46,
+       47,
+       48,
+       57
+      ]
+     ]
+    }
+   ],
+   "member_kinds": {
+    "n#_spectator_segmented_xy_d#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 23
+    },
+    "n#_spectator_segmented_xy_d#_pre#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 2
+    },
+    "n#_spectator_segmented_z_d#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 23
+    }
+   },
+   "run": "results/live/2026-10-21T043156.858484Z"
+  },
+  {
+   "groups": [
+    {
+     "backend": "ibm_fez",
+     "flagged": {},
+     "group": "n21_orbit_rca",
+     "replicas": [
+      [
+       136,
+       142,
+       143,
+       144
+      ]
+     ]
+    }
+   ],
+   "member_kinds": {
+    "n#_spectator_segmented_xy_d#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 23
+    },
+    "n#_spectator_segmented_xy_d#_pre#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 2
+    },
+    "n#_spectator_segmented_z_d#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 23
+    }
+   },
+   "run": "results/live/2026-10-21T064222.721454Z"
   }
  ],
  "schema": "scaffolding-exposure-v1",

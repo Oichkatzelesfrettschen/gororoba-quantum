@@ -22,6 +22,7 @@ from typing import Any
 import numpy as np
 from qiskit.exceptions import QiskitError
 
+import law_encoding
 import local_compute
 import n21_exact_planning
 import parallel
@@ -112,6 +113,15 @@ def scripts_closure(entry: Path, directories: tuple[Path, ...] = (SCRIPTS_DIR,))
 def ramsey_analyzer_closure() -> dict[str, Any]:
     """Per-file sha256 of the analyzer's scripts/ closure and the sha256 of that map's canonical JSON."""
     return analyzer_closure(RAMSEY_ANALYZER)
+
+
+def observable_contract_records(contracts: Any) -> list[dict[str, Any]]:
+    """The observable contracts as record.json stores them, each term's score values through law_encoding."""
+    records = json.loads(json.dumps([asdict(contract) for contract in contracts]))
+    for record in records:
+        for term in record["terms"]:
+            term["values"] = law_encoding.encode(term["values"])
+    return records
 
 
 def segmented_analyzer_closure() -> dict[str, Any]:
@@ -1651,7 +1661,7 @@ def prepare(
     metadata = {
         "family_configuration": configuration,
         **({"et_calibrated_design": et_screens[retained]} if args.family == "et-row" else {}),
-        "observable_contracts": json.loads(json.dumps([asdict(contract) for contract in contracts])),
+        "observable_contracts": observable_contract_records(contracts),
         "optimization": result.as_dict()
         | {
             "retained_candidate": retained,
@@ -1769,7 +1779,8 @@ def measured_family(
         ObservableContract(
             **{key: value for key, value in contract.items() if key != "terms"},
             terms=tuple(
-                ObservableTerm(term["member"], tuple(term["values"]), term["sign"]) for term in contract["terms"]
+                ObservableTerm(term["member"], tuple(law_encoding.dense(term["values"])), term["sign"])
+                for term in contract["terms"]
             ),
         )
         for contract in contracts
