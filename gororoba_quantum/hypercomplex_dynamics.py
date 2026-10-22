@@ -6,10 +6,20 @@ import math
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
+from numpy.typing import NDArray
 from scipy.linalg import expm
+
+from parallel import ordered_map
 
 if TYPE_CHECKING:
     from hypercomplex_operators import ComplexMatrix
+
+
+def _site_dissipator_diagonal(parameters: tuple[int, int, float]) -> NDArray[np.float64]:
+    size, site, rate = parameters
+    projector = np.zeros(size)
+    projector[2 * site : 2 * site + 2] = 1
+    return rate * (np.kron(projector, projector) - 0.5 * np.tile(projector, size) - 0.5 * np.repeat(projector, size))
 
 
 def dephase_evolve(density: ComplexMatrix, generator: ComplexMatrix, time: float, rate: float) -> ComplexMatrix:
@@ -29,12 +39,10 @@ def dephase_evolve(density: ComplexMatrix, generator: ComplexMatrix, time: float
         raise ValueError("the density must be positive with trace one")
     identity = np.eye(size)
     liouvillian = np.kron(identity, generator) - np.kron(generator.T, identity)
-    for site in range(size // 2):
-        projector = np.zeros((size, size))
-        projector[2 * site, 2 * site] = projector[2 * site + 1, 2 * site + 1] = 1
-        liouvillian += rate * (
-            np.kron(projector, projector) - 0.5 * np.kron(identity, projector) - 0.5 * np.kron(projector, identity)
-        )
+    parameters = [(size, site, rate) for site in range(size // 2)]
+    diagonal_indices = np.diag_indices(size * size)
+    for dissipator in ordered_map(_site_dissipator_diagonal, parameters, min_items=1):
+        liouvillian[diagonal_indices] += dissipator
     return np.asarray((expm(time * liouvillian) @ density.reshape(-1, order="F")).reshape(size, size, order="F"))
 
 
