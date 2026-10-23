@@ -541,8 +541,11 @@ not pool across calibration changes merely because both batches completed.
 The four jobs of the approved crossed diagnostic completed: block 1 on
 2026-10-22 (c8d90a80, ef06045d) and block 2 on 2026-10-23 (a5a0d2cf, after
 the first submission waited 7.6 hours and ended canceled before its start,
-and 33499aec), 960000 samples each. The matched check found block 2 job 1's
-returned circuits identical to block 1 job 2's before job 2 went in. The
+and 33499aec), 960000 samples each, 40000 per iteration with 39959 to 40000
+eligible one-click trials. Block 2 job 1 was collected at 08:13:05 UTC and
+job 2 submitted at 08:13:30 UTC; no receipt of the matched check from that
+interval is retained, and `--matched-check` reproduces the equality of block
+2 job 1's returned circuits with block 1 job 2's on the retained runs. The
 resubmission continued past a stop condition with no amendment retained
 before it ([protocol deviation](../../runbooks/bdsc-qualification-case.md#protocol-deviation-of-2026-10-23-block-2-job-1-was-resubmitted)),
 so the readout's rule is the preregistered one and its reading is
@@ -566,8 +569,9 @@ if the service reconstructs or correlates the returned counts.
 - **Support-conditioned rerun (no branch reads it).** On selected clicks over
   on-support clicks the matched requests' changes are homogeneous about their
   class means (45.8 on 45, p 0.44), so the instance-specific part of the
-  block change lives in the clicks outside the target support, the dilution
-  of unselected mode 5. A common on-support shift remains: the
+  block change lives in the aggregate fraction of clicks outside each
+  setting's target support (129355 such clicks over the 96 iterations, 42068
+  of them in mode 5), not in one mode. A common on-support shift remains: the
   superpositions moved by -0.0048 (z -7.7). The template test stays resolved.
 - **Calibration shift.** The g basis state moved by +0.0035 between blocks
   (z 11.6); f moved by +0.0003 (z 2.3) and the superpositions by -0.0015
@@ -580,14 +584,16 @@ if the service reconstructs or correlates the returned counts.
   interaction stays resolved (2406 on 24 raw, 1941 on 24 support-conditioned),
   so the state-specific seed effect stands apart from job identity.
 - **Residuals.** All 32 sum-rule residuals lie beyond the 0.02 margin,
-  between -0.14 and -0.24, with no position trend inside a job (rank
-  correlations -0.13 to +0.36, p >= 0.17).
+  between -0.14 and -0.24.
+- **Position in the job.** The rank correlation of each superposition's
+  deviation from r-hat with its position in the job reads -0.13 to +0.36
+  (p >= 0.17): a position trend is unresolved, not excluded.
 
 The next amendment therefore starts from stationarity: a design whose
 contrasts compare matched requests within one acquisition window, measures
-the off-support fraction per iteration as a calibrated nuisance and carries
-the common on-support shift of the superpositions as its own term, before any
-confirmation reads a fixed effect.
+the aggregate off-support fraction per iteration as a calibrated nuisance,
+and carries the common on-support shift of the superpositions as its own
+term, before any confirmation reads a fixed effect.
 
 ## Research grounding
 
