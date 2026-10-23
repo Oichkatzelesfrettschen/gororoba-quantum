@@ -208,6 +208,13 @@ of its own.
 
 ## Explorer plan, credits and notebooks
 
+The [22 October token-usage and API audit](../../evidence/provider-api-audit/README.md) distinguishes
+free-credit consumption from purchased-credit consumption and from an unavailable remaining balance.
+Its Belenos simulator rows consume free credits despite the zero per-shot tariff. The report preserves
+the disagreement between public availability and the detailed Belenos calibration status, and leaves
+unreadable per-job/notebook offer fees unknown. Historical plan and catalogue observations below retain
+their own source dates; they are neither a live balance nor an execution authorization.
+
 The account holds the free Explorer offer. Its plan page reads: low job
 priority, one running job at a time, one waiting job at a time, at most
 5 minutes per job, the embedded Jupyter notebook, the free simulator and
@@ -520,9 +527,10 @@ Gates core-500 (`capture_qd_docs.py --check`), core-501 (its
 (`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
 docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
-`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
-retained run but the qpu:belenos mesh runs, which core-537 replays on the
-full tier), core-509 (its `--self-test`), core-510
+`--self-test`), core-508 (`qd_box_kite_analysis.py --check --runs-under
+results/quandela/runs` over every retained run whose case schema is a
+box-kite or Belenos mesh case, but the qpu:belenos mesh runs, which core-537
+replays on the full tier; the BDSC runs belong to the bdsc gates), core-509 (its `--self-test`), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
 `--check-rca` replay of the leakage record), core-512 (its
 `--self-test`), core-515 (full tier, `--self-test-rule`: the decision
