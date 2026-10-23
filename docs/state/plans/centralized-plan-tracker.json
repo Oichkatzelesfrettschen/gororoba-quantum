@@ -1,0 +1,49 @@
+{
+  "schema": "work-plan-v1",
+  "id": "centralized-plan-tracker",
+  "kind": "implementation",
+  "summary": "Implement the planning ledger, reconcile all discovered sources, and integrate the reviewed tracker.",
+  "sources": [
+    "docs/runbooks/plan-tracker.md",
+    "docs/evidence/plan-reconciliation/sources/d987c765de99311b68ad020732b703b8e67d302210915b25b32e1f2843879f67.txt"
+  ],
+  "state": "active",
+  "scope": "Tracker commands, full cross-worktree reconciliation, validation and reviewed integration.",
+  "owner": "centralized-plan-tracker implementation",
+  "next_action": "Complete repository gates and current-head Codex review, then merge and synchronize main.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The user approved full reconciliation across all registered worktrees and CLI plus JSON authoring."
+  },
+  "steps": [
+    {
+      "id": "validate-tracker-and-migration",
+      "action": "Run tracker regressions and verify the complete inventory mapping.",
+      "acceptance": "All tracker tests, source mappings, generated views and provenance checks pass.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Tracker regressions, style, types, generated views and both migration denominators pass.",
+          "observed_at": "2026-10-23T18:21:48.069613+00:00",
+          "revision": "56a96a355c6fcf49e834f35058e762ec64a18a2b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/tracker-validation.json",
+              "sha256": "9f6c64526046744c296997c52fd302d04d912701e20e8b1d03ff04a1311b20c7"
+            }
+          ],
+          "scope_sha256": "9dc4d3533c73bc5c90c1892c20387874f56192bfc926469319e8e1d7a7cc5e2d"
+        }
+      ]
+    },
+    {
+      "id": "review-and-integrate",
+      "action": "Complete repository gates, Codex reviews and merge.",
+      "acceptance": "Current-head review and gates admit the merge; canonical main contains it.",
+      "state": "doing",
+      "depends_on": [
+        "validate-tracker-and-migration"
+      ]
+    }
+  ]
+}

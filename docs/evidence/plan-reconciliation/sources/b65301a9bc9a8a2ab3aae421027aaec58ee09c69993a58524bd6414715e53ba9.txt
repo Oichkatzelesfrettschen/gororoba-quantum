@@ -1,0 +1,152 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/n21-window-sweep-report.md
+
+# n21-orbit-rca window sweep: report
+
+Branch `n21/orbit-window-sweep`. Nothing pushed, no QPU submission, no live_run.py dry run.
+
+## Commits
+
+- `0ea46dc` n21-orbit-rca: add the window_delay_long pair and qubit-2 spectator Ramsey arms
+  (qpe_diagnostics, diagnostic_experiments, qpu_planning, qpu_planning_contracts, qpu_cases)
+- `ffed52e` n21_orbit_rca: add the window_delay_ramp and spectator_window_dephasing contracts
+  (analyzer, self-tests, QPU_OPTIMIZATION.md numbers)
+- `75c7a39` n21_orbit_rca: select spectator members by name and gate their contract alone
+- `aecde9d` qpu_cases: describe the window sweep only for records that carry it (plus a mocked
+  spectator_counts bit-order check)
+
+## What changed
+
+- `qpe_diagnostics`: variant `window_delay_long` (control idles `2 * window_delay_dt`, same barriers),
+  in `N21_ORBIT_SWEEP_VARIANTS`. `N21_ORBIT_VARIANTS` itself is unchanged. New builder
+  `n21_spectator_ramsey(kind, quadrature, measure_dt, init_herald)` and its law `n21_spectator_law`.
+  Logical qubit 2 starts in |+>. A barrier opens the bracket, then the control is measured into
+  clbit 0 (or, for reset_only, idles `measure_dt`), then reset, then a barrier closes the bracket.
+  Qubit 2 is read in X (h) or Y (sdg, h) into clbit 1. Ideal laws over control + 2*q2: X [1,0,0,0],
+  Y [1/2,0,1/2,0]. With a herald, the members carry the same herald register and lift. `_verify`
+  covers the plain and heralded spectators; their reset_only twins skip the window-bracket check,
+  since no measurement opens a window there.
+- `diagnostic_experiments.n21_orbit_rca_group(..., window_sweep=False)`: `window_sweep` adds the long
+  pair and members `n21_spectator_{measured,reset_only}_{x,y}`, all dynamic, giving one group and one
+  job. `family_contracts` adds a directional endpoint for `window_delay_long` and precision-only
+  endpoints `n21_spectator_*_one` on the qubit-2 bit. All endpoints share `alpha / (variants +
+  spectators)`. `record_groups` reads `window_sweep` with a False default.
+- Planner: `family_candidates` builds with `window_sweep=True` and records `"window_sweep": true` in
+  the family configuration. `qpu_planning.orbit_sites` restricts `window_controls` to orbit arms,
+  because a reset_only arm resets before any measurement and would raise there. `_control_windows`
+  preserves the sweep flag on resize. Contract fixtures were updated: 14 arms, the long delay
+  equals 2x, the spectator readout/reset/idle structure is checked, the twins take the flag, and the
+  herald summary has 14*4 keys.
+- `qpu_cases`: a case-text paragraph describes the new arms, emitted only when the record's family
+  configuration carries `window_sweep` (n21-orbit-feedback and older n21-orbit-rca cases unchanged).
+- Analyzer (`scripts/n21_orbit_rca.py`):
+  - `ORBIT_VARIANTS` gains `window_delay_long`, and `CONTRACTS` has five entries, so
+    `CONTRACT_ALPHA = 0.01`.
+  - `is_orbit` filters `window_roles`, `measured_pairs` and `herald_counts`/`herald_report` (via
+    `select`). `raw_pubs` keeps binding every PUB.
+  - New `magnitude_decline`, which implements `window_delay_ramp`.
+  - New `spectator_visibility`, `spectator_contract` (`spectator_window_dephasing`),
+    `spectator_counts` and `spectator_margin`.
+  - `between_arm_report` adds `spectator_herald` and `spectator_counts`.
+
+## Decisions where the spec and code conflicted
+
+1. **Configuration flag instead of an unconditional group.**
+   - `record_groups` rebuilds retained records (live_run collect, local_member_cz_conformance
+     core-289).
+   - The new arms are behind `window_sweep`, absent = False, so retained eight-member records rebuild
+     unchanged.
+2. **Measure duration reuses `window_delay_dt`.** No new configuration key was added.
+   `window_durations` already sets `window_delay_dt` to the routed control's calibrated measure
+   duration (rounded to granularity). The case text states this.
+3. **Herald margin direction.**
+   - Both new contracts pass on a significant decrease, so subtracting the margin, as the spec says,
+     would make a pass easier.
+   - Instead, the margin is added against the pass: pass iff `upper + margin < 0`.
+   - A planted check shows that a ramp which passes at margin 0 fails at a margin of 1.01 x |upper|.
+4. **Spectator herald.**
+   - `HERALD_SENSITIVITY` is derived for the orbit laws, so the orbit herald admission reads orbit
+     members only, as the spec asks.
+   - The spectator members get their own `herald_report` (`spectator_herald`).
+   - The spectator margin is 2 x the qubit-2 bit's simultaneous spread upper limit. An excitation
+     maps |+> to |->, which scales R by 1 - 2 eps.
+   - A refused or unevaluable spectator herald refuses only `spectator_window_dephasing`.
+5. **`is_orbit` = "not a spectator member".** An earlier version listed the orbit variants and broke
+   the n21-orbit-feedback replay core-443 (members `n21_orbit_feedback`/`no_feedback`). The version
+   that names the spectators fixed it.
+6. **Alpha moves to 0.05/5 = 0.01.**
+   - MDE is now 0.01905 (was 0.01786) and B is 0.001361 (was 0.001276) at 27,648 shots; the 7B phase
+     is 0.0095 rad.
+   - Docstrings and QPU_OPTIMIZATION.md were updated.
+   - N21_ORBIT_RCA.md's forecast table ("alpha 0.0167 each") is historical and was left as written.
+
+## Self-tests (in `--self-check`, gate core-192; no gates.json edit needed)
+
+- **Static detuning:** ramp fails, window_delay floor passes, spectator fails.
+- **Monotonic dephasing** (window_t2 0, 0.2, 0.4): ramp passes.
+- **Qubit-2 readout dephasing** (R 0.8 vs 1.0): spectator passes.
+- **Step** (0, 0.3, 0.3): ramp fails and window_delay < nominal, because contrast_floor fails.
+- **Herald margin:** a margin above the upper limit turns a passing ramp into a failure.
+- **Missing members:** a run without spectator members reads not_evaluable.
+- **Name consistency:** the analyzer's orbit/spectator names agree with the planned 14-member group.
+- **Base family:** `_check_between_arm`'s base family passes all five contracts.
+
+## Gates (GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096, GOROROBA_WORKERS=4)
+
+Baseline before edits: 17 pass. core-289, core-408 and core-409 exit 127 on this host. The
+qiskit-2.5 replay runtime is unresolved (pydantic 2.14.1 vs pin 2.13.5, no REPLAY_PYTHON). This is
+pre-existing and was not run after the change either.
+
+After the final commit:
+
+- **PASS:** core-001 and core-002 (ruff check/format), core-039 (mypy), core-092 (qpe_diagnostics),
+  core-094 (qpu_planning_contracts full), core-192 (--self-check), core-193 (patch_characterization),
+  core-263, core-445 (--init-herald), core-446 (--window-bracket), core-459 (--self-test-herald),
+  core-495 (201757 patch-window replay), core-524, core-549 (--submit-reuse), core-570
+  (--submit-reuse-herald).
+- **Retained replays:** core-443 (080216 `--check`) and core-447 (083417 `--check`) regenerate.
+- **Reruns after `75c7a39`:** core-039, core-443, core-192, core-459, core-524, core-002, core-447
+  and core-001. The other passes are from `ffed52e`. The last commit changes only the analyzer's name
+  filter and spectator gating, plus the `math.hypot` call in diagnostic_experiments.
+
+## CI-equivalent selection on the final commit `aecde9d`
+
+`ci/run_gates.py --changed-files <git diff --name-only cef80a4> --tier full` selected 402 gates:
+375 pass, 27 fail. Every failure is pre-existing or environmental:
+- 18 exit 127: the qiskit-2.5 replay runtime is unresolved on this host (pydantic 2.14.1 vs pin
+  2.13.5, no REPLAY_PYTHON). Gates: core-242, 301, 278, 336, 409, 304, 282, 313, 288, 490, 011,
+  walk-extract, 281, 408, 010, 273, 340, 200.
+- 9 fail identically on a detached worktree of the base commit cef80a4: sources-163, 160, 143,
+  134, 131, 137, 140, 127 (math-evidence byte replays on this host's stack) and core-265
+  (check_gate_inputs worker-count test). That base worktree has since been removed.
+This includes qpu_cases.py --check (core gate at qpu_cases.py), which passes.
+
+## Adversarial review (review-work-critically, in-turn)
+
+Fixed findings:
+- Spectator-herald refusal gated all five contracts. Now it gates only the spectator contract.
+- spectator_margin read `bits` on an unevaluable herald. It now returns 0 there, and the contract is
+  refused.
+- is_orbit broke n21-orbit-feedback replays.
+- The qpu_cases sentence was unconditional.
+- spectator_counts bit order was untested. A mocked payload now pins it.
+
+No reachable defect remains that I could ground.
+
+## Notes for the orchestrator
+
+- Every new n21-orbit-rca plan carries `window_sweep: true` and 14 members, with no opt-out flag. A
+  dry-run record approved before this branch refuses (`approval_required`) against a fresh plan, so
+  run a new dry run.
+- The analyzer sha256 changed. A written case naming the old digest is refused by
+  `--expected-analyzer-sha256`.
+
+## Open issues
+
+- No run-directory test drives spectator members end to end. That path covers spectator_counts on
+  raw PUBs, the spectator herald admission, and window_roles skipping them. The orchestrator's
+  live_run dry run and a synthetic record would cover it.
+- The spectator herald admits against `herald_bound`, the orbit threshold. Protection comes from the
+  margin.
+- core-289/408/409 need a REPLAY_PYTHON holding ci/requirements-replay.txt to run locally.
+- live_run.py dry run is not run (orchestrator).

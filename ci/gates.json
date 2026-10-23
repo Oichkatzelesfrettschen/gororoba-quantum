@@ -3831,7 +3831,9 @@
    "name": "core-633",
    "seconds": 2.0,
    "tier": "pr",
-   "requires": ["qi"]
+   "requires": [
+    "qi"
+   ]
   },
   {
    "suite": "core",
@@ -3848,7 +3850,9 @@
    "name": "core-653",
    "seconds": 14.0,
    "tier": "pr",
-   "requires": ["qi"]
+   "requires": [
+    "qi"
+   ]
   },
   {
    "suite": "core",
@@ -3880,6 +3884,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
    "name": "core-667",
    "seconds": 15.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check",
+   "name": "core-plan-tracker",
+   "seconds": 1.0,
    "tier": "pr"
   }
  ],

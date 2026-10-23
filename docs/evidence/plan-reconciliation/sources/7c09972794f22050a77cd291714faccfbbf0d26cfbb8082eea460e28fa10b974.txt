@@ -1,0 +1,76 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/tuna-boxkite-stages.md
+
+# tuna-boxkite-stages: box-kite Tuna-17 T0 depth ladder, then T1, coherence and walks
+
+Owner session: boxkite-quantum-main. Branch: research/box-kite-case-generator
+(case dirs box_kite_tuna_t0, _t1, _coherence, _walk, _twins_qx).
+Device: Tuna-17, 10 batches, 30 jobs, about 3 min execution, about 45 min
+wall. Approval: not requested (a relayed approval from another session does
+not count; the owner answers here).
+
+## Finding
+
+The census settles the algebra; the hardware measures how much predicted
+contrast survives on a stated layout. The previous plan (44 batches) spent
+most batches on questions the census already answers.
+
+## Reachability
+
+experiment-program.md 4(g) as rewritten by boxkite-generator; cases go
+through `qi_platform.py submit` (3 circuits per batch, one queued batch
+account-wide, 120 s pause, QX dry run first).
+
+## Design
+
+Layout: exclusions {0, 5, 6, 7, 9}, q15 avoided, pairs M = {(1,4), (10,13),
+(12,14)} (maximal induced matching, confirmed by ibmquantum-12), selectors
+q1, q10, q12; walks on star 11 {8, 13, 14} and path 8-11-13. Each batch:
+witness + readout-0 + readout-1.
+
+| stage | batches | shots | content |
+|---|---|---|---|
+| T0 | 3 | 16384 | reduced LCU of edge (1,10)(4,15), depths 1/5/9 CZ, 3x3 Latin square depth x pair, both y_sign values present at every depth |
+| T1 | 2 | 4096 | opposite edge (1,10)(4,15), its twist (4,10)(1,15) (census twists check before T1), strut (1,10)(2,9), each at y_sign +-1 |
+| coherence | 2 | 4096 | X and Y on d for a bright edge and a strut, plus reference |
+| walks | 3 | 4096 | (2,11,3) 6 CNOT star 11; (2,3,10) 4 CNOT path 8-11-13; omit-last-block control; each plus reference |
+
+Per batch: identical bytes on local qxelarator, relabeled twin on remote
+QX (witness circuits only), submit, collect, checks (16384/4096 shots,
+readout-0 P1 <= 0.10 and readout-1 P1 >= 0.80 on used qubits, reference
+P(selector = 0) >= 0.7, digests equal cases.json, queue empty), 120 s
+pause.
+
+## Acceptance and falsifier
+
+T0: pooled depth-1 contrast with its 99% upper bound below 0.5 ends the
+Tuna program; fitted r outside [0.87, 0.97] at 99% resizes T1-walks before
+they run. T1: D > +0.4 same, < -0.4 opposite, |D| < 0.2 strut; any
+misclassified item refutes the layout's separation estimate. Walks:
+sign(<Z_c>) opposite omega at |z| > 3, or control |<Z_c>| > 0.1 + 3 sigma.
+
+## Shared files and dependencies
+
+Needs boxkite-generator (cases), tuna-pre-t0 (fresh readout), the QX twin
+dry run, and the owner's two decisions here: the identical-bytes plus twin
+dry-run rule, and the T0 approval line (T1-walks approved separately after
+T0). research_state, usage.json snapshot, toolchain record per landed run.
+
+## Effort and agents
+
+Orchestrator only (submissions never delegated).
+
+## Out of scope
+
+Full Design B and full-encoding coherence on Tuna (below the 0.10 floor).
+
+T0 as generated: y_sign -1 on the pair whose index equals the batch, so
+every depth, pair and batch holds one dark and two bright replicas; C(n) =
+mean bright corrected P minus mean dark corrected P (cancels a common
+additive shift); accepted confound: a pair x depth interaction absorbed
+into r. T1 twist pair confirmed from census kites[2].twists[0]. T1 caveat:
+D compares one pair across two batches, so batch drift enters D and only
+the strut detects it. Witness qubits observed: T0/T1/coherence
+{1,4,10,12,13,14}, walks {1,4,8,11,13,14}; gates H, S, Sdag, Z, X, CZ only.
+
+State: cases generated; needs analyze/replay, tuna-pre-t0, and owner approval.

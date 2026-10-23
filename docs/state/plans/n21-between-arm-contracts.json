@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "n21-between-arm-contracts",
+  "kind": "implementation",
+  "summary": "69: n21-orbit-rca preregisters between-arm contracts after barrier-equalized windows",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/f1455a2270c77a74a26bec4d1bdcd85e3dbbd5c898ab387eb3e2fad06153c422.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-253.json"
+  ],
+  "state": "inbox",
+  "scope": "69: n21-orbit-rca preregisters between-arm contracts after barrier-equalized windows",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #253 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-253-integration",
+      "action": "Verify the recorded integration state of PR #253.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "1e5bd02bdbaff3f7c7ab070e45e3090e7c249728af478236e3a027ffb9a70e25",
+          "result": "PR #253 merged as 8c9106089fff212044951e49996b9a8508bad8c9; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-253.json",
+              "sha256": "081f25ff8af381fb4eaec67051ef33ec1124687616f46d9a5ad89c5878d01eb6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- **Prediction:** core-446 passes for every member with the barrier, and fails on `nominal_unbarriered`. The dry run plans the family with an unchanged CZ count per member: a barrier adds no CZ, though routing may change depth. - **Falsifiers:** - core-446 finds a work-qubit gate after the control's measurement in a barriered member, meaning the transpiler crosses the barrier; - the dry run's routed CZ count rises by more than 5 percent against the retained plan, meaning the barrier costs fidelity the design must state. - **The issue's falsifier proper**, identical window_roles couplings on hardware, needs one approved IBM run of the barriered family. The plan writes that case, with seconds estimated from the dry run, and stops for the owner's approval. IBM time is reserved, so it is parked, not run.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quandela-setup-residuals",
+  "kind": "implementation",
+  "summary": "Quandela software: installation, configuration and verification",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/1cbddd49a9118e4eae7e37c5a3a82af4c2a11d54fff7d410bb838552104a4269.txt",
+    "docs/notes/quandela/setup-verification.md"
+  ],
+  "state": "inbox",
+  "scope": "Quandela software: installation, configuration and verification",
+  "next_action": "Audit token-directory denial configuration.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Verify secret-file access boundaries and actual server responses while keeping tokens out of every retained artifact."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Audit token-directory denial configuration.",
+      "acceptance": "Verify secret-file access boundaries and actual server responses while keeping tokens out of every retained artifact.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Exercise the installed Codex server through read-only catalogue calls.",
+      "acceptance": "Verify secret-file access boundaries and actual server responses while keeping tokens out of every retained artifact.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "number": 204,
+  "title": "live_run: one group admission predicate for dry run and submit",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T15:16:19Z",
+  "closed_at": "2026-10-17T15:16:19Z",
+  "merge_commit_sha": "2860b437601bff87b3e6d3957148bb7d79b7ea19",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/204",
+  "merge_ancestor_of_canonical_head": true
+}

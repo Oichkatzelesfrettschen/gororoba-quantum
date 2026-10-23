@@ -1,0 +1,78 @@
+{
+  "schema": "work-plan-v1",
+  "id": "rank-locus-salvage-and-curved-pieces",
+  "kind": "investigation",
+  "summary": "pr206-f4-r1-restart: PR #206 disposition, F4 computation 3, R1 item 3 (D_(5,12))",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/e24778a1178fd19e691bd47ff8bce6b172b2fab866b825abeb5812e26ad06a6d.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-285.json",
+    "docs/evidence/plan-reconciliation/observations/pr-292.json"
+  ],
+  "state": "inbox",
+  "scope": "pr206-f4-r1-restart: PR #206 disposition, F4 computation 3, R1 item 3 (D_(5,12))",
+  "next_action": "Reconcile the unmerged PR206 and merged salvage PR285.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR292 integrates the counterexample; a refuted candidate does not close the general local-dimension question."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-285-integration",
+      "action": "Verify the recorded integration state of PR #285.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "e69faf5955885c3dd9526fe736ed94de9d812b82bf793835014fb0b02a9e4462",
+          "result": "PR #285 merged as 707b6306e4a066c864a2cc70c2b72fbc05777f8a; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-285.json",
+              "sha256": "436ec9b7e61f59d8694a3a8f4c26d5e2e427b5b3038c75a12cc13458b9a19505"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-292-integration",
+      "action": "Verify the recorded integration state of PR #292.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "438f7f0f643f2719b0bbe1bccdd64dcbc378a07ece9775faf95a802792682738",
+          "result": "PR #292 merged as 61735bea85b47ee38465c38725de4e70a2878d7f; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-292.json",
+              "sha256": "43589eb14bf05b7af25a90741d8d5197668858c0e5c404b13bc168bcdc40cea8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Reconcile the unmerged PR206 and merged salvage PR285.",
+      "acceptance": "PR292 integrates the counterexample; a refuted candidate does not close the general local-dimension question.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Retain the exact counterexample to the composite-turn parameterization.",
+      "acceptance": "PR292 integrates the counterexample; a refuted candidate does not close the general local-dimension question.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Continue the curved-germ obligation in the local-germ plan.",
+      "acceptance": "PR292 integrates the counterexample; a refuted candidate does not close the general local-dimension question.",
+      "state": "todo"
+    }
+  ]
+}

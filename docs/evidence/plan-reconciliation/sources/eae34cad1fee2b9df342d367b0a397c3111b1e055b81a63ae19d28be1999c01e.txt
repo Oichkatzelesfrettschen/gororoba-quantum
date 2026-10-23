@@ -1,0 +1,80 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-072.md
+
+# #72: n21_orbit_rca binds raw PUBs to the submission manifest and searches static-only basins
+
+Owner session: ibmquantum-fe. Branch (planned): rca/n21-orbit-manifest-binding-static-basins.
+Scoping facts: docs/local/plans/scoping-n21-orbit-rca-fe.md.
+
+## Finding
+
+Observed (scripts/n21_orbit_rca.py on main 99ea45f):
+
+1. **Item 1: manifest binding.** raw_pubs (L214-233) accepts a run whose collect.json and raw tree came from another run with the same PUB count. It checks:
+   - the single job key of collect.json[0]["jobs"] (`(job,) = jobs`, L217);
+   - index.json's job_id and file list against that ledger (L222);
+   - each file's sha256 (L226-228);
+   - positional pub_index (L229).
+
+   It never reads record.json["submission"]["jobs"][0], the submission manifest, which carries job_id, the member order and pubs[i].name (for example ibm_fez_dynamic_pub_01) with pubs[i].components[].member.
+2. **Item 2: static-only basin.** joint_quasistatic_fit (L475-554) seeds the full mean-plus-spread model from 4 grid seeds times spreads {0.0, 0.2} (L526-536). The static-only refit (L538-544) is then one `minimize` started from the winner's means with spread bounds (0, 0). A static model whose optimum lies in another periodic basin of the multi-microsecond exposure is never reached, so static_detuning_only_deviance (L552) can be overstated.
+3. **No retained number moves.** Every retained run records the joint fit as skipped (results/live/2026-10-13T083417.634585Z/rca-mechanism-fit.json: "window state is not a branch phase on the work bit for 1").
+4. **No gate covers either path.** core-192 runs `--self-check` on synthetic counts and never calls raw_pubs or joint_quasistatic_fit.
+
+## Reachability
+
+- **Item 1.** Reached through the documented CLI `n21_orbit_rca.py RUN_DIR`, with a run directory the program family itself writes (record.json, collect.json and raw/ from live_run.py --collect). A copied collect.json and raw tree is a hand-assembled directory, at the edge of the documented domain. Binding the run to its own record closes a provenance gap that the retained-run audit (inventory_retained_runs.py) relies on, so this plan fixes it.
+- **Item 2.** Reached through the default analysis path whenever the joint fit runs, that is, on a run with more than one resolved pair (L805). It is reachable only after #69 and #71 make window couplings resolvable.
+
+## Design
+
+1. **raw_pubs(run_dir, collect, record) binds four facts** and fails with the first mismatch:
+   - collect's single job id equals record["submission"]["jobs"][0]["job_id"];
+   - raw/<job_id>/index.json names the same job;
+   - the raw PUB count equals len(manifest pubs);
+   - each raw PUB's pub name, from collect's pub_timing keys and the raw metadata, equals the manifest's pubs[i].name in order.
+
+   The member list of each PUB comes from manifest components, not from position.
+2. **joint_quasistatic_fit runs the static-only refit from every grid seed** of the full fit (the same 4 seeds, spread 0), and keeps the lowest deviance. The work goes through parallel.ordered_map over seeds, which returns what the serial loop returns.
+3. **Self-check additions (core-192 keeps its name and command):**
+   - (a) a synthetic run directory whose collect.json job id differs from submission.jobs is rejected;
+   - (b) one with permuted pub names is rejected;
+   - (c) a synthetic two-basin static model, whose single-start refit from the full winner lands in the higher basin, now reaches the lower one.
+4. **New gate core-443:** `n21_orbit_rca.py --check RUN_DIR` on the two retained runs (2026-10-13T083417 and 2026-10-13T080216), normal and `-O`.
+   - It re-derives rca-mechanism-fit.json offline from the archived raw files, using the readout values that file records (`--readout`), so CI needs no IBM service.
+   - It requires byte equality.
+   - It needs a `--check` mode that reads the provenance label from the retained file rather than relabeling.
+
+## Acceptance and falsifier
+
+- **Prediction:** both retained rca-mechanism-fit.json files regenerate byte-identically. Neither run reaches the joint fit, and both bind to their manifests.
+- **Falsifiers:**
+  - the job-id-swapped synthetic run is accepted;
+  - the grid-seeded static-only refit on the synthetic two-basin case returns a deviance higher than the best seed's;
+  - a retained run fails manifest binding, which would mean the retained archive itself is inconsistent and needs its own RCA.
+- **Commands:**
+  - `"$PYTHON" -W error scripts/n21_orbit_rca.py --self-check`
+  - the core-443 commands
+  - ruff, format and mypy, through core-001, core-002 and core-039.
+
+## Shared files and dependencies
+
+- scripts/n21_orbit_rca.py is shared with #71 and #69. This item lands first, and the other two branch from it.
+- ci/gates.json (core-443).
+- results/live/N21_ORBIT_RCA.md does not change.
+- No hardware or Kaggle use. Regeneration reads only retained files.
+
+## Effort and agents
+
+- Small to medium, about 2 h.
+- One sonnet agent writes the self-check cases; review and gates stay in session.
+
+## Out of scope
+
+- Multi-job runs: raw_pubs keeps its single-job requirement (L217). A multi-job orbit run would need a manifest walk over jobs and is a follow-up once one exists.
+
+## Outcome (PR #208)
+
+- Main's own code already regenerated 083417's retained fit differently: the file predated the current mechanism list (family-wise thresholds 7.48 against 10.00), and 080216 carried the control_readout schema. Both files were regenerated from their raw archives; the claim numbers in hw-n21-orbit-phase are unchanged.
+- The byte-equality design was replaced by a structural comparison with floats within 1e-6 relative (`differences`), since L-BFGS-B rounds differently under another BLAS.
+- Regeneration of 083417 needed 456 s; the cached `_embed` index map (bit-identical) and pooled pair fits bring it to 19.9 s at 12 workers and 77 s serial, so 083417 takes two pr-tier gates (core-447 normal, core-448 -O) and 080216 takes core-443.

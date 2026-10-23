@@ -1,0 +1,24 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-approved-order-retry",
+  "kind": "experiment",
+  "summary": "Ascella approved order retry",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/70a425132362aff0c42a1e630e55f24aa9610c29c4493e6d2e648d4ff30f3eaf.txt"
+  ],
+  "state": "inbox",
+  "scope": "Ascella approved order retry",
+  "next_action": "Reconcile the single approved retry against predecessor failure, queue state and a submission receipt.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The retained branch contains preflight artifacts; execution needs the exact approved-case and actual submission identities."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Reconcile the single approved retry against predecessor failure, queue state and a submission receipt.",
+      "acceptance": "The retained branch contains preflight artifacts; execution needs the exact approved-case and actual submission identities.",
+      "state": "todo"
+    }
+  ]
+}

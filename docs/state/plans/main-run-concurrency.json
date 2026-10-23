@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "main-run-concurrency",
+  "kind": "implementation",
+  "summary": "main-ci: main push runs cancel each other",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/0f1305b94d121745128894baa781d1da1e344c23de9ecfb936a7153403714f6b.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-199.json"
+  ],
+  "state": "inbox",
+  "scope": "main-ci: main push runs cancel each other",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #199 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-199-integration",
+      "action": "Verify the recorded integration state of PR #199.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "72bf34ee401dda8c45985a3435d0e1bb7f380a2fddd242a300043d5815411f8d",
+          "result": "PR #199 merged as 10f3a6eae172a39cfae10bc651011fa46f87f874; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-199.json",
+              "sha256": "33f728e8de3c0a71e7b84c921e3380aad6a4187fafaf3aa0de7ecc8a964d883e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Prediction: after the change merges, two main pushes landing within ten minutes produce a first run that ends `success` or `failure` (never `cancelled`) and a second run that starts after it. Check with `gh api \"repos/Oichkatzelesfrettschen/gororoba-quantum/actions/runs?branch=main&event=push&per_page=4\" --jq '.workflow_runs[] | \"\\(.head_sha[0:7]) \\(.status) \\(.conclusion)\"'`. A main run ending `cancelled` by a push falsifies the design. A pull request push that leaves its previous run running falsifies the expression.",
+      "state": "todo"
+    }
+  ]
+}

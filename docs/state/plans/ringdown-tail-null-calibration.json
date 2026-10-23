@@ -1,0 +1,66 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ringdown-tail-null-calibration",
+  "kind": "implementation",
+  "summary": "183: qi_readout_ringdown: calibrate the scanned-T tail statistic under its null",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/3483159f8f82e25b87cf34f473c1b09b69fa8c5430f32ff29fe6d22e59b577fa.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-217.json",
+    "docs/evidence/plan-reconciliation/observations/pr-218.json"
+  ],
+  "state": "inbox",
+  "scope": "183: qi_readout_ringdown: calibrate the scanned-T tail statistic under its null",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #218 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-217-integration",
+      "action": "Verify the recorded integration state of PR #217.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "e38d79b96e4e0d40c27169d48ba9b3358609a2f859b3750d239f4ac1bbfadbec",
+          "result": "PR #217 merged as 4e2e7fb87f9230a3687f341dfa4fb638e379708a; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-217.json",
+              "sha256": "c1232d2b3b00221bc33442a3e6c100363370a311b08c32bc3ab7859602883853"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-218-integration",
+      "action": "Verify the recorded integration state of PR #218.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "b506d7d93a895b366a0889b72df909b622cbef143be50abc546c9b0d9fff40fd",
+          "result": "PR #218 merged as bbb55cbfc679cfa68ad0696fb41165d752bd6ca4; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-218.json",
+              "sha256": "c29ab9649c16904c912bd33eb479fbdb07841ed54aad9b83b6af44a9292c1706"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Prediction, fixed now: the empirical null 0.999 quantile is above 13.82 for every series-P target. Falsifier: a quantile at or below 13.82 within its interval on the series-P weight patterns -- then the threshold was already conservative and the record says so. Commands: core-436/437 normal and -O, core-386 unchanged, ruff, mypy.",
+      "state": "todo"
+    }
+  ]
+}

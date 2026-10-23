@@ -1,0 +1,67 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/tuna-walsh.md
+
+# tuna-walsh: cubic Walsh exemplars (1,16) and (9,18) in one Tuna-17 batch
+
+Owner session: boxkite-quantum-main (handed over by ibmquantum-12).
+Branch: tuna/bipartite-walsh-and-lcu-packing (6fc0af4, DRAFT doc
+docs/notes/quantum_inspire/tuna17-bipartite-designs.md; report
+docs/local/REPORT-tuna-bipartite-designs.md). Device: Tuna-17, 1 batch.
+Approval: the owner chose "Minimal Tuna case" in ibmquantum-12 for design;
+submission approval has to be given here.
+
+## Finding
+
+Task H4 (cubic Walsh classes) needs a spectral comparison of two exemplars
+whose factorized circuits cost 94-99 routed CZ on Kingston. ibmquantum-12
+established by truth table against `predict.associator_phase`: (1,16) has
+phase OR(x1,x2,x3) (K = 11/32), (9,18) is in class abc + bd (K = 5/32);
+under |+>^n input the classes differ by one CZ added to a fixed CCZ on a
+4-qubit path, about 5 vs 6 CZ. Those CZ counts and the block layout came
+from uncommitted scratch searches -- unverified here.
+
+## Reachability
+
+A Tuna-17 case through qi_platform.py submit; the H4 question is about the
+classes' spectra under real noise.
+
+## Design
+
+1. Generator `scripts/qi_walsh_exemplar_cases.py`: phases from
+   predict.associator_phase (never recomputed), the CCZ(+CZ) path
+   construction re-derived by an exhaustive search inside the generator
+   (gated), blocks (1|2,4,8,12) with (10,13,11,14) or (13,11,14,16) checked
+   against the exclusion set and coupler graph.
+2. Batch: C1 high class on block X, low on Y; C2 the same with blocks
+   swapped (separates class from block inside one calibration). The
+   measure-X-measure readout fold is not used (no run has tested a shared
+   mid-circuit/final assignment matrix, and QX keeps only the last
+   outcome). Open choice, decided before the approval request:
+   (a) C3 = readout-1 on all 17 qubits, with readout-0 taken from the
+   pre-T0 batch if both run within one calibration window -- one batch; or
+   (b) a second batch holding readout-0 and readout-1 -- two batches.
+   Default (b) unless tuna-pre-t0 runs immediately before.
+3. Shot count from a collision-estimator variance target, noise prediction
+   from the retained device context and the T0 retention r once measured,
+   falsifier fixed before submission.
+4. Gates core-428 (--check) and core-429 (--self-test).
+
+## Acceptance and falsifier
+
+Defined by step 3 before any approval request; the case states the
+predicted K difference after noise and the separation it needs.
+
+## Shared files and dependencies
+
+Reuses the Tuna dialect and readout circuits of boxkite-generator, so it
+starts after that lands. T0's r improves the noise prediction (optional).
+
+## Effort and agents
+
+Medium; one sonnet agent after boxkite-generator lands.
+
+## Out of scope
+
+The IBM Heron version of H4 (RES-IBM, IBM reserved).
+
+State: scoping.

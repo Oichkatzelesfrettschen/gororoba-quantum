@@ -1,0 +1,89 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/n21-overlap-split.md
+
+# n21-orbit-rca: readout-overlap split and spectator decomposition
+
+Branch `n21/orbit-window-sweep` (worktree `~/worktrees/IBMQuantum/n21/orbit-window-sweep`), head c2191b6.
+Read first: root AGENTS.md (gates, voice, S101 no asserts, parallel.py, ruff with
+`--target-version py313`), results/live/N21_ORBIT_RCA.md (last two sections),
+docs/local/plans/n21-window-sweep.md and its report (the previous family change, same pattern).
+
+## Questions and the arms that answer them
+
+1. Did a work-work CZ overlapping the control's readout cause the 2026-10-13T083417 contrast
+   loss? Under `--pin-layout ibm_fez:142,136,143,144` the bracketed nominal arm differs from
+   083417's program only in that one CZ(136,143) moves from before the control's measurement
+   to after its reset (the barrier). Arm A = bracketed nominal pair (existing members
+   `n21_orbit_nominal_{feedback,no_feedback}`); arm B = the same pair WITHOUT the window
+   barriers (`n21_orbit_unbracketed_{feedback,no_feedback}`), i.e. the n21-orbit-feedback
+   circuit, carrying the herald when init_herald is on.
+2. Why does qubit 143 (logical qubit 2) read Ramsey visibility 0.59 against T2-predicted 0.96?
+   `reset` on Heron r2 is a readout plus conditional flip (AGENTS.md, Heron execution facts),
+   so the existing reset_only arm still drives the control's readout. New spectator kinds:
+   - `immediate`: H on control and qubit 2, barrier, then qubit 2 read in X/Y at once (no
+     window; control untouched after H). Prep/SPAM/herald-ringdown floor.
+   - `idle`: as reset_only but the control idles measure_dt + reset_dt (both from the
+     control's calibrated Target durations, as window durations already are) with NO reset.
+   - `reset_only`: existing.
+   Each in quadratures x and y. Ideal laws follow n21_spectator_law's construction: control
+   bit reads nothing (clbit 0 unwritten -> 0) for immediate/idle/reset_only; qubit 2 X -> 0,
+   Y -> 1/2 each. Extend n21_spectator_law and N21_SPECTATOR_KINDS accordingly.
+
+## Family configuration
+
+A new configuration flag `overlap_split` (CLI `--overlap-split`, n21-orbit-rca only, recorded
+in the policy settings ONLY when set, like init_herald and pin_layout in qpu_planning.settings,
+and replayed by qpu_cases into the command and a one-or-two-sentence case text). With it the
+group holds exactly these 10 members in this order: nominal pair, unbracketed pair,
+spectator immediate_x/y, idle_x/y, reset_only_x/y. It is mutually exclusive with window_sweep
+(the planner sets window_sweep today unconditionally for n21-orbit-rca: with overlap_split it
+must not). Without the flag every byte of existing groups, records and replays is unchanged;
+retained 151959/083417/201757 `--check` replays must still regenerate byte for byte.
+`--overlap-split` requires `--pin-layout` (parser error otherwise): the question needs 083417's
+roles.
+
+## Analyzer (scripts/n21_orbit_rca.py)
+
+- Orbit member selection must accept the unbracketed variant; the window-bracket gate
+  (core-446, qpe_diagnostics.window_bracket_violations) exempts `_unbracketed_` members by
+  name, and that gate gains a check that the unbracketed arm DOES hold a work operation in
+  the window (as the n21-orbit-feedback negative control does).
+- Contracts are preregistered from the members present (CONTRACT_ALPHA = FAMILY_ALPHA / number
+  of contracts present). With overlap_split:
+  - `window_overlap_loss`: one-sided, unbracketed magnitude < bracketed nominal magnitude
+    (contrast_floor machinery, herald_margin subtracted). Pass = overlap causes loss.
+  - `spectator_readout_dephasing`: visibility reset_only < idle (delta method, as
+    spectator_contract). Pass = control readout dephases qubit 2.
+  - `spectator_idle_dephasing`: visibility idle < immediate. Pass = intrinsic idle dephasing.
+  - Report `spectator_immediate_visibility` descriptively against the ideal 1.
+- Self-tests (extend --self-check): plant (a) overlap truth: B magnitude 0.55 x A -> overlap
+  passes; (b) no-overlap truth -> fails; (c) readout-dephasing truth (reset_only 0.6, idle 0.97,
+  immediate 0.98) -> readout passes, idle fails; (d) intrinsic truth (idle 0.6, reset_only 0.6,
+  immediate 0.98) -> idle passes, readout fails; (e) prep-floor truth (all 0.6) -> both fail.
+- Existing window_sweep contracts and replays unchanged.
+
+## Planner / contracts
+
+- diagnostic_experiments / qpu_planning build the split group from the configuration; family
+  contracts: directional endpoint for the B-vs-A pair, precision-only for spectators.
+- qpu_planning_contracts: a `--overlap-split` contract on FakeFez with the pin: 10 members, the
+  unbracketed arms hold a window operation, bracketed do not, settings carry overlap_split only
+  when set, parser rejects --overlap-split without --pin-layout. Register it in ci/gates.json
+  as a new pr-tier gate (next free core number after 592) and any full-gate inputs.
+
+## Acceptance
+
+- `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 GOROROBA_WORKERS=4`
+  with `C=$HOME/.cache/gororoba-quantum` and `$C/ci-py3147/bin/python`:
+  `ci/pinned_tool.py ruff check gororoba_quantum scripts ci`,
+  `ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel`
+  (NEVER run ruff format without --target-version py313; format only files you changed),
+  `ci/pinned_tool.py mypy gororoba_quantum scripts ci`,
+  `ci/run_gates.py --gates core-446,core-445,core-592,<new>,<n21_orbit_rca gates> --replay-python $C/replay-py3147/bin/python`.
+- core-408/409 (census) are known red pending another PR; leave the census alone.
+
+## Constraints
+
+NO QPU submission, NO live_run.py dry run, no push, no network. Focused commits with
+`Assisted-by: Claude Code (claude-opus-5-5)`. Never rm -rf (trash-put). Spawn no subagents.
+Write the report to docs/local/plans/n21-overlap-split-report.md.
