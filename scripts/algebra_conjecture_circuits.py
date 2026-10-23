@@ -11,7 +11,9 @@ import argparse
 import hashlib
 import json
 import math
+import platform
 import sys
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any
 
@@ -56,6 +58,33 @@ def bank() -> list[dict[str, Any]]:
                 "expected": {"0": float(commuting), "1": float(not commuting)},
             }
         )
+    dephased = QuantumCircuit(2, 2)
+    dephased.h(0)
+    dephased.measure(0, 1)
+    dephased.x(0)
+    dephased.cx(0, 1)
+    dephased.cz(0, 1)
+    dephased.x(0)
+    dephased.cz(0, 1)
+    dephased.cx(0, 1)
+    dephased.h(0)
+    dephased.measure(0, 0)
+    cases.append(
+        {
+            "name": "order-dephased",
+            "family": "order",
+            "circuit": dephased,
+            "expected": {"00": 0.25, "01": 0.25, "10": 0.25, "11": 0.25},
+        }
+    )
+    for sequence in ("xz", "zx"):
+        fixed = QuantumCircuit(1, 1)
+        for gate in sequence:
+            getattr(fixed, gate)(0)
+        fixed.measure(0, 0)
+        cases.append(
+            {"name": f"order-fixed-{sequence}", "family": "order", "circuit": fixed, "expected": {"0": 0.0, "1": 1.0}}
+        )
     for steps in (1, 2, 4):
         circuit = QuantumCircuit(1, steps)
         for step in range(steps):
@@ -77,6 +106,34 @@ def bank() -> list[dict[str, Any]]:
                 "expected": expected,
             }
         )
+    unmeasured = QuantumCircuit(1, 1)
+    reset = QuantumCircuit(1, 4)
+    for step in range(4):
+        unmeasured.ry(math.pi / 8, 0)
+        reset.ry(math.pi / 8, 0)
+        reset.measure(0, step)
+        reset.reset(0)
+    unmeasured.measure(0, 0)
+    cases.append(
+        {
+            "name": "measurement-unmeasured-4",
+            "family": "measurement",
+            "circuit": unmeasured,
+            "expected": {"0": 0.5, "1": 0.5},
+        }
+    )
+    cases.append(
+        {
+            "name": "measurement-reset-4",
+            "family": "measurement",
+            "circuit": reset,
+            "expected": {
+                format(bits, "04b"): math.sin(math.pi / 16) ** (2 * bits.bit_count())
+                * math.cos(math.pi / 16) ** (2 * (4 - bits.bit_count()))
+                for bits in range(16)
+            },
+        }
+    )
     circuit = QuantumCircuit(2, 2)
     circuit.h(0)
     circuit.cry(2 * math.pi / 3, 0, 1)
@@ -123,17 +180,22 @@ def probabilities(circuit: QuantumCircuit) -> dict[str, float]:
         qubits = [circuit.find_bit(bit).index for bit in instruction.qubits]
         if operation.name == "barrier":
             continue
-        if operation.name != "measure":
+        if operation.name not in ("measure", "reset"):
             branches = [(state.evolve(operation, qargs=qubits), classical) for state, classical in branches]
             continue
-        clbit = circuit.find_bit(instruction.clbits[0]).index
+        clbit = circuit.find_bit(instruction.clbits[0]).index if operation.name == "measure" else None
         divided = []
         for state, classical in branches:
             for value in (0, 1):
                 data = state.data.copy()
                 mask = ((np.arange(len(data)) >> qubits[0]) & 1) != value
                 data[mask] = 0
-                divided.append((Statevector(data), (classical & ~(1 << clbit)) | (value << clbit)))
+                if clbit is None:
+                    if value:
+                        data = data[np.arange(len(data)) ^ (1 << qubits[0])]
+                    divided.append((Statevector(data), classical))
+                else:
+                    divided.append((Statevector(data), (classical & ~(1 << clbit)) | (value << clbit)))
         branches = divided
     result: dict[str, float] = {}
     for state, classical in branches:
@@ -183,6 +245,12 @@ def main() -> int:
                 {
                     "schema": "algebra-conjecture-circuits-v1",
                     "evidence_class": "circuit-conformance check",
+                    "versions": {
+                        "python": platform.python_version(),
+                        "qiskit": version("qiskit"),
+                        "numpy": version("numpy"),
+                    },
+                    "producer_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                     "cases": checked,
                     "boundary": (
                         "Logical basis compilation; fresh physical routing, timing, costs "

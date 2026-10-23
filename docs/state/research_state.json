@@ -8568,7 +8568,7 @@
       "evidence": [
         {
           "path": "docs/evidence/algebra-device-conjectures/result.json",
-          "sha256": "2db8fb037c97760b2409f073fc7bc1a6d63e65f5a4a0fcd84e53efce398785cc"
+          "sha256": "e5bf389e76c02815e0f353b604157a60ba88a4c05deea52e876ca09b30014214"
         }
       ],
       "gates": {
@@ -8587,7 +8587,7 @@
       "supersedes": [],
       "superseded_by": null,
       "id": "algebra-device-logical-instrument-bank",
-      "statement": "Twelve logical circuits implement Design B dark/bright/quadrature controls, commuting/anticommuting controlled order, one/two/four-step measurement sequences, a heralded contraction and dimension-8/16/32 associator spectra; complete branch enumeration agrees with their declared laws within 1e-10 after portable-basis compilation.",
+      "statement": "Seventeen logical circuits implement Design B dark/bright/quadrature controls, coherent/dephased/fixed-order controls, one/two/four-step measurement sequences with unmeasured and reset references, a heralded contraction and dimension-8/16/32 associator spectra; complete branch enumeration agrees with their declared laws within 1e-10 after portable-basis compilation.",
       "evidence_class": "circuit-conformance check",
       "status": "established",
       "boundary": "Finite numerical conformance without sampled jobs. Portable CX/RZ/SX/X compilation establishes neither native hardware routing nor a scheduler, cost or acquisition result.",

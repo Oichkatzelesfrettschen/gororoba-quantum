@@ -34,3 +34,18 @@ def test_repeated_measurement_keeps_each_intermediate_bit() -> None:
     row = next(row for row in implementation().bank() if row["name"] == "measurement-fixed-evolution-4")
     if row["circuit"].num_clbits != 4 or row["circuit"].count_ops().get("measure") != 4:
         raise AssertionError("intermediate outcomes were overwritten")
+
+
+def test_bank_includes_dephased_fixed_and_unmeasured_reset_controls() -> None:
+    module = implementation()
+    cases = {row["name"]: row for row in module.bank()}
+    for name in (
+        "order-dephased",
+        "order-fixed-xz",
+        "order-fixed-zx",
+        "measurement-unmeasured-4",
+        "measurement-reset-4",
+    ):
+        if name not in cases:
+            raise AssertionError(f"missing logical control: {name}")
+        module.check_case(cases[name])

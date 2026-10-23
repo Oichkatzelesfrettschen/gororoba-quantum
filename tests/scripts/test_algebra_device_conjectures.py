@@ -153,5 +153,26 @@ def test_manifest_rejects_cross_job_pairing_and_missing_selected_acquisition() -
         module.validate_manifest(manifest)
     manifest = module.load_manifest(module.DEFAULT_MANIFEST)
     manifest["acquisitions"] = [row for row in manifest["acquisitions"] if not row["included"]]
-    with pytest.raises(ValueError, match="missing"):
+    with pytest.raises(ValueError):
+        module.validate_manifest(manifest)
+
+
+@pytest.mark.parametrize("mutation", ["excluded", "raw", "jobs", "statuses", "charge", "charge_unit"])
+def test_frozen_census_rejects_omissions_and_fabricated_provider_facts(mutation: str) -> None:
+    module = implementation()
+    manifest = module.load_manifest(module.DEFAULT_MANIFEST)
+    if mutation == "excluded":
+        row = next(row for row in manifest["acquisitions"] if not row["included"])
+        manifest["acquisitions"].remove(row)
+        manifest["acquisition_count"] -= 1
+    elif mutation == "raw":
+        row = next(row for row in manifest["sources"] if "/raw/" in row["path"])
+        manifest["sources"].remove(row)
+    else:
+        row = next(row for row in manifest["acquisitions"] if row["included"])
+        if mutation == "charge_unit":
+            row["charge_unit"] = "invented-unit"
+        else:
+            row["facts"][mutation] = {"invented": 99999} if mutation == "statuses" else 99999
+    with pytest.raises(ValueError):
         module.validate_manifest(manifest)

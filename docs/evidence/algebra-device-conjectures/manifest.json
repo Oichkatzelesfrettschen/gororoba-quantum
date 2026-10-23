@@ -6756,9 +6756,15 @@
     "results/live/state-prep-control-parameters.json",
     "scripts/algebra_conjecture_circuits.py",
     "gororoba_quantum/designs.py",
-    "gororoba_quantum/select_lcu.py"
+    "gororoba_quantum/select_lcu.py",
+    "requirements.txt",
+    "ci/requirements-ci.txt"
   ],
-  "base_commit": "2f1394a032fc0f9ecd8ab6cf142526af9892f075",
+  "base_commit": "5d5c8e42a90e19c846fcd64c274e2ad03522784b",
+  "census": {
+    "path": "docs/evidence/algebra-device-conjectures/census.json",
+    "sha256": "324c438224a853413f2e059ec7593de6211372bc87d3074454fa9415b0a55710"
+  },
   "claims": [
     {
       "acquisitions": [],
@@ -7583,8 +7589,12 @@
       "sha256": "df79abbe8b03a33e503e273ca62bc67f9303241e04c4ec8aa2a1b0aec93ecb05"
     },
     {
+      "path": "ci/requirements-ci.txt",
+      "sha256": "77f9f2981d01ae43f7026db295a35bdb93cf04f6733ec0797f02fc354de913a7"
+    },
+    {
       "path": "docs/design/hypercomplex-operator-evidence.md",
-      "sha256": "5d479a47bd03c3197e480eabb41c5eb50800ba8d9671f4eaa66b4a26064b780a"
+      "sha256": "ca7ae7db75543f6b858f427f154ab2851ff1324e6448eb10ae3c44ebfb81f314"
     },
     {
       "path": "docs/design/iqm-garnet-kernel-cancellation-probe.md",
@@ -7697,6 +7707,10 @@
     {
       "path": "gororoba_quantum/select_lcu.py",
       "sha256": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816"
     },
     {
       "path": "results/iqm/cases/kernel-cancellation-probe/prediction.json",
@@ -12844,7 +12858,7 @@
     },
     {
       "path": "scripts/algebra_conjecture_circuits.py",
-      "sha256": "4d9e1c56e96776944691c2bd726ee664799403eb337187d582a46d04d3deedff"
+      "sha256": "17de0123582ad7720aa2f52a08a537ac2554a6fb5bbc2f68943e5932cac580db"
     },
     {
       "path": "scripts/iqm_probe_audit.py",

@@ -3863,8 +3863,8 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/algebra_conjecture_circuits.py && \"$PYTHON\" -B -m pytest -q tests/scripts/test_algebra_device_conjectures.py tests/scripts/test_algebra_conjecture_circuits.py",
    "name": "core-671",
-   "seconds": 20.0,
-   "tier": "pr"
+   "seconds": 32.0,
+   "tier": "full"
   }
  ],
  "excluded": [

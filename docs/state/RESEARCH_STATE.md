@@ -910,7 +910,7 @@ circuit and charges the account ledger's change.
   Boundary: The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.
   Evidence: [result.json](../evidence/algebra-device-conjectures/result.json), [hypercomplex-operator-evidence.md](../design/hypercomplex-operator-evidence.md).
   Gates: replayed by core-670; active code regression checked by core-671.
-- **algebra-device-logical-instrument-bank** (circuit-conformance check, implementation). Twelve logical circuits implement Design B dark/bright/quadrature controls, commuting/anticommuting controlled order, one/two/four-step measurement sequences, a heralded contraction and dimension-8/16/32 associator spectra; complete branch enumeration agrees with their declared laws within 1e-10 after portable-basis compilation.
+- **algebra-device-logical-instrument-bank** (circuit-conformance check, implementation). Seventeen logical circuits implement Design B dark/bright/quadrature controls, coherent/dephased/fixed-order controls, one/two/four-step measurement sequences with unmeasured and reset references, a heralded contraction and dimension-8/16/32 associator spectra; complete branch enumeration agrees with their declared laws within 1e-10 after portable-basis compilation.
   Boundary: Finite numerical conformance without sampled jobs. Portable CX/RZ/SX/X compilation establishes neither native hardware routing nor a scheduler, cost or acquisition result.
   Evidence: [hypercomplex-operator-evidence.md](../design/hypercomplex-operator-evidence.md).
   Gates: replayed by core-671.

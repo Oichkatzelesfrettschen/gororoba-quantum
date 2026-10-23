@@ -99,7 +99,8 @@ The [conjecture bundle](../evidence/algebra-device-conjectures/README.md) accoun
 twelve algebra/device extensions. Its frozen manifest names each proposal, falsifier, disposition, selected claim and
 acquisition exclusion. The registry remains the authority for claims and acquisitions; the bundle is a derived view.
 `scripts/algebra_device_conjectures.py --freeze` explicitly refreshes that view through the existing offline provider
-adapters. Ordinary replay verifies the frozen source hashes and selected registry entries. New acquisitions outside the
+adapters. Ordinary replay verifies the separately bound census, exact source inventory, selected registry entries,
+and every frozen acquisition fact and native unit through those same offline adapters. New acquisitions outside the
 frozen census enter a later snapshot, rather than silently expanding a retrospective test family.
 
 The evidence chain is algebra, observable, complete quantum instrument, compiled circuit, emulator control, hardware
@@ -144,9 +145,9 @@ checked independently and require no unsupported citation.
 
 ### Logical circuit bank
 
-`scripts/algebra_conjecture_circuits.py` builds twelve complete logical instruments from the existing circuit builders:
-dark/bright/quadrature Design B, commuting/anticommuting controlled order, repeated-measurement sequences with 1/2/4
-steps at fixed total rotation, a contraction with both herald outcomes, and associator spectra at dimensions 8/16/32.
+`scripts/algebra_conjecture_circuits.py` builds seventeen complete logical instruments from the existing circuit builders:
+dark/bright/quadrature Design B, coherent/dephased/fixed-order controls, repeated-measurement sequences with 1/2/4
+steps at fixed total rotation with unmeasured and measurement/reset references, a contraction with both herald outcomes, and associator spectra at dimensions 8/16/32.
 The checker compiles to CX/RZ/SX/X, enumerates every measurement branch without sampling, and compares full output laws
 within `1e-10`. Repeated-measurement circuits retain each outcome in a different classical bit. The dimension spectra
 are independently predicted from the exact sign table and its Walsh transform.

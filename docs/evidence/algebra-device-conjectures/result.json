@@ -8242,9 +8242,9 @@
       ]
     }
   },
-  "frozen_base": "2f1394a032fc0f9ecd8ab6cf142526af9892f075",
-  "manifest_sha256": "d28fb130f1c1b72126b582b80006d52467f50907f89681c637a428380e0e798d",
-  "producer_sha256": "a798685a241283d70870dbadd4bfb41a93c8b5be9b7fde6a38bd82bb49165910",
+  "frozen_base": "5d5c8e42a90e19c846fcd64c274e2ad03522784b",
+  "manifest_sha256": "6d22c3ab3c2fb2d759c40fbb4e1e9daae676ec354f3ae9b13eb792f54cabf74e",
+  "producer_sha256": "9667a98c1c9fb9d3ca7b4be20f6c63babb4812c2602c33259fcf757478b08bcc",
   "proposals": [
     {
       "boundary": "Equal depth alone leaves routing and readout confounded.",
@@ -8483,5 +8483,9 @@
     }
   ],
   "schema": "algebra-device-conjectures-v1",
-  "statistical_policy": "Historical decisions retain their preregistered rules; new comparisons are descriptive. No new p-values are inferred from summary records."
+  "statistical_policy": "Historical decisions retain their preregistered rules; new comparisons are descriptive. No new p-values are inferred from summary records.",
+  "versions": {
+    "python": "3.14.7",
+    "sympy": "1.14.0"
+  }
 }

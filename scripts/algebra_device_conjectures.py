@@ -14,8 +14,10 @@ import argparse
 import hashlib
 import json
 import math
+import platform
 import subprocess
 import sys
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any
 
@@ -57,7 +59,7 @@ def load_manifest(path: Path) -> dict[str, Any]:
     return dict(value)
 
 
-def freeze_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
+def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, Any]:
     """Explicitly refresh the frozen inventory through the existing offline provider adapters."""
     import research_state
 
@@ -98,6 +100,18 @@ def freeze_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
         "acquisition_count": len(acquisitions),
         "sources": [{"path": path, "sha256": digest(local_path(path))} for path in sorted(paths)],
     }
+    census_path = local_path(census_path.resolve().relative_to(ROOT.resolve()).as_posix())
+    census_path.write_text(
+        encode(
+            {
+                "schema": "algebra-device-census-v1",
+                "base_commit": manifest["base_commit"],
+                "acquisitions": acquisitions,
+                "sources": manifest["sources"],
+            }
+        )
+    )
+    manifest["census"] = {"path": census_path.relative_to(ROOT).as_posix(), "sha256": digest(census_path)}
     return manifest
 
 
@@ -118,6 +132,14 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
         set(manifest["selected_claim_ids"]) == {claim["id"] for claim in manifest["claims"]}, "claim selection differs"
     )
     ordered_map(_verify_source, manifest["sources"], min_items=1)
+    _verify_source(manifest["census"])
+    census = json.loads(local_path(manifest["census"]["path"]).read_text())
+    require(
+        census["schema"] == "algebra-device-census-v1" and census["base_commit"] == manifest["base_commit"],
+        "frozen census identity differs",
+    )
+    require(census["sources"] == manifest["sources"], "frozen raw/source inventory differs")
+    require(census["acquisitions"] == manifest["acquisitions"], "frozen acquisition census or facts differ")
     source_paths = {source["path"] for source in manifest["sources"]}
     registry = json.loads((ROOT / "docs/state/research_state.json").read_text())
     current_claims = {claim["id"]: claim for claim in registry["claims"]}
@@ -147,6 +169,22 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
             "unknown register semantics",
         )
     require(manifest["acquisition_count"] == len(manifest["acquisitions"]), "frozen acquisition denominator differs")
+    # Adapters read retained records only. Re-deriving facts prevents a
+    # self-consistent but invented census from becoming a provider observation.
+    import research_state
+
+    providers = {name: adapter() for name, adapter in research_state.PROVIDERS.items()}
+    facts = {name: provider.runs() for name, provider in providers.items()}
+    for acquisition in manifest["acquisitions"]:
+        record = acquisition["record"]
+        require(
+            facts[record["provider"]].get(record["run"]) == acquisition["facts"],
+            f"adapter facts differ: {record['id']}",
+        )
+        require(
+            providers[record["provider"]].charge_unit == acquisition["charge_unit"],
+            f"adapter charge unit differs: {record['id']}",
+        )
 
 
 def filter_state(operator: Any, state: Any) -> dict[str, Any]:
@@ -455,6 +493,7 @@ def synthesis(manifest: dict[str, Any]) -> dict[str, Any]:
         "schema": SCHEMA,
         "manifest_sha256": hashlib.sha256(encode(manifest).encode()).hexdigest(),
         "producer_sha256": digest(Path(__file__)),
+        "versions": {"python": platform.python_version(), "sympy": version("sympy")},
         "frozen_base": manifest["base_commit"],
         "acquisitions": manifest["acquisitions"],
         "proposals": manifest["proposals"],
@@ -526,7 +565,9 @@ def main() -> int:
     )
     args = parser.parse_args()
     if args.freeze:
-        args.manifest.write_text(encode(freeze_manifest(load_manifest(args.manifest))))
+        args.manifest.write_text(
+            encode(freeze_manifest(load_manifest(args.manifest), args.manifest.with_name("census.json")))
+        )
         print("frozen manifest refreshed; regenerate derived outputs explicitly")
         return 0
     result = synthesis(load_manifest(args.manifest))
