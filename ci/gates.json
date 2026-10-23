@@ -3907,7 +3907,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_probe_audit.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_probe_audit.py --check results/iqm/signed_kernel_probe_audit.json",
    "name": "core-640",
    "seconds": 35.0,
-   "tier": "pr"
+   "tier": "full"
   },
   {
    "suite": "core",

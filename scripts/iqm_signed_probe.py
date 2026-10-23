@@ -246,6 +246,11 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     arms: dict[float, list[int]] = {}
     runs = []
+    if len({run_dir.resolve() for run_dir in run_dirs}) != len(run_dirs):
+        raise ValueError("a run directory is named twice; each acquisition counts once")
+    jobs = [json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job_id"] for run_dir in run_dirs]
+    if len(set(jobs)) != len(jobs):
+        raise ValueError("two run directories hold one job; each acquisition counts once")
     for run_dir in sorted(run_dirs):
         facts = iqm_jobs.run_facts(run_dir)
         submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
