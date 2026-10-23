@@ -27,6 +27,21 @@ two-blade zero divisors of cd_core.sedenion_zero_divisor_corpus to the
 lattice and certifies every unit and boundary point invertible through
 cd_core.left_mult_determinant_exact.
 
+The identification block certifies the groups without an external algebra
+system. The boundary is the signed support of the arc matrix W, right
+multiplication by e_1 + ... + e_{n-1}, and W is checked to be a skew
+conference matrix through dimension 128; the left and right multiplications by
+the imaginary sum are checked against the doubling block recurrence that
+proves the conference property in every dimension. In dimensions 4 and 8 W is
+signed-permutation equivalent to the Paley matrix of q = 3, 7; read through
+that equivalence each symmetry permutes the projective line over F_q by a map
+of PSL(2, q), and a lift of those maps to SL(2, q) that is a bijective
+homomorphism certifies the isomorphism. In dimension 16 the group permutes the
+eight doubling pairs {a, a + 8} through PGL(2, 7) with kernel {+-1}, and its
+derived subgroup lifts to SL(2, 7) the same way. The commutant of each group
+and the e_0 stabilizer's agreement with the table's own permutation
+automorphisms complete the record.
+
 Usage: "$PYTHON" scripts/cd_star_lattice.py (--write PATH | --check PATH)
 """
 
@@ -46,11 +61,14 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_sign, left_mult_determinant_exact, sedenion_zero_divisor_corpus  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
-SCHEMA = "cd-star-lattice-census-v1"
+SCHEMA = "cd-star-lattice-census-v2"
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
 RECORD = ROOT / "docs/evidence/cd-star-lattice/census.json"
 TUNA17_TYPE_ID = 7
 CD_DIMENSIONS = (2, 4, 8, 16)
+CONFERENCE_DIMENSIONS = (2, 4, 8, 16, 32, 64, 128)
+# Dimensions whose arc matrix is the Paley matrix of the prime q = n - 1.
+PALEY_PRIMES = {4: 3, 8: 7}
 # Tuna-17 qubit -> lattice point of S_2: Q8 at the origin, the weight-4
 # ancillas at distance 1, the boundary ancillas Q0, Q6, Q10, Q16 at the unit
 # multiples of 1 + 2i.
@@ -64,6 +82,8 @@ DISTANCE_SEARCH_WEIGHT = 3
 Point = tuple[int, ...]
 SignedUnit = tuple[int, int]
 SignedPermutation = tuple[SignedUnit, ...]
+Matrix = list[list[int]]
+Mobius = tuple[int, int, int, int]
 
 
 class CensusError(RuntimeError):
@@ -444,6 +464,456 @@ def _signed_image(g: SignedPermutation, p: Point) -> list[int]:
     return image
 
 
+def arc_matrix(n: int) -> Matrix:
+    """W[a XOR b][a] = cd_sign(n, a, b), b >= 1: right multiplication by e_1 + ... + e_{n-1}; B_n is its signed support.
+
+    A signed permutation maps the boundary arcs onto themselves exactly when it commutes with W, so the boundary group
+    is the signed-permutation centralizer of W.
+    """
+    matrix = [[0] * n for _ in range(n)]
+    for a in range(n):
+        for b in range(1, n):
+            matrix[a ^ b][a] = cd_sign(n, a, b)
+    return matrix
+
+
+def left_matrix(n: int) -> Matrix:
+    """L[a XOR b][a] = cd_sign(n, b, a), b >= 1: left multiplication by e_1 + ... + e_{n-1}."""
+    matrix = [[0] * n for _ in range(n)]
+    for a in range(n):
+        for b in range(1, n):
+            matrix[a ^ b][a] = cd_sign(n, b, a)
+    return matrix
+
+
+def doubling_blocks(n: int) -> tuple[Matrix, Matrix]:
+    """Right and left multiplication by s' = (s, 1 + s) in dimension 2n, assembled from L, R and conjugation C at n.
+
+    The doubling (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)) gives R' = [[R, L - I], [I + L, -R]] and
+    L' = [[L, -(I + R) C], [(I + L) C, R]], the block recurrence of the conference-matrix induction in
+    docs/notes/topics/cd-star-lattice-tower.md.
+    """
+    right, left = arc_matrix(n), left_matrix(n)
+    conj = [1] + [-1] * (n - 1)
+    eye = [[int(i == j) for j in range(n)] for i in range(n)]
+    big_right = [[0] * (2 * n) for _ in range(2 * n)]
+    big_left = [[0] * (2 * n) for _ in range(2 * n)]
+    for i in range(n):
+        for j in range(n):
+            big_right[i][j] = right[i][j]
+            big_right[i][n + j] = left[i][j] - eye[i][j]
+            big_right[n + i][j] = eye[i][j] + left[i][j]
+            big_right[n + i][n + j] = -right[i][j]
+            big_left[i][j] = left[i][j]
+            big_left[i][n + j] = -(eye[i][j] + right[i][j]) * conj[j]
+            big_left[n + i][j] = (eye[i][j] + left[i][j]) * conj[j]
+            big_left[n + i][n + j] = right[i][j]
+    return big_right, big_left
+
+
+def _gram_row_holds(task: tuple[Matrix, int]) -> bool:
+    columns, a = task
+    n = len(columns)
+    return all(
+        sum(x * y for x, y in zip(columns[a], columns[b], strict=True)) == (n - 1 if a == b else 0) for b in range(a, n)
+    )
+
+
+def is_skew_conference(matrix: Matrix) -> bool:
+    """Zero diagonal, W^T = -W and W^T W = (n - 1) I, so I + W is a skew Hadamard matrix.
+
+    The Gram rows run through ordered_map, one task per column a against columns a..n-1.
+    """
+    n = len(matrix)
+    columns = [[matrix[row][column] for row in range(n)] for column in range(n)]
+    skew = all(matrix[i][j] == -matrix[j][i] for i in range(n) for j in range(n))
+    return skew and all(ordered_map(_gram_row_holds, [(columns, a) for a in range(n)], min_items=1))
+
+
+def paley_matrix(q: int) -> Matrix:
+    """Skew conference matrix of order q + 1 for a prime q = 3 mod 4, indexed by the projective line over F_q.
+
+    Index 0 is infinity and index x + 1 is x; entry (x, y) is the quadratic character of y - x.
+    """
+    squares = {x * x % q for x in range(1, q)}
+    matrix = [[0] * (q + 1) for _ in range(q + 1)]
+    for x in range(q):
+        matrix[0][x + 1] = 1
+        matrix[x + 1][0] = -1
+        for y in range(q):
+            if (y - x) % q:
+                matrix[x + 1][y + 1] = 1 if (y - x) % q in squares else -1
+    return matrix
+
+
+def _equivalence_branch(task: tuple[Matrix, Matrix, int, int]) -> list[SignedPermutation]:
+    source, target, root, root_sign = task
+    n = len(source)
+    found: list[SignedPermutation] = []
+
+    def extend(partial: list[SignedUnit]) -> None:
+        i = len(partial)
+        if i == n:
+            found.append(tuple(partial))
+            return
+        used = {t for t, _ in partial}
+        for t in range(n):
+            if t in used:
+                continue
+            for s in (1, -1):
+                if all(target[t][tj] * s * sj == source[i][j] for j, (tj, sj) in enumerate(partial)):
+                    partial.append((t, s))
+                    extend(partial)
+                    partial.pop()
+
+    if target[root][root] == source[0][0]:
+        extend([(root, root_sign)])
+    return found
+
+
+def signed_equivalences(source: Matrix, target: Matrix) -> list[SignedPermutation]:
+    """Signed permutations i -> (t_i, s_i) with target[t_i][t_j] s_i s_j = source[i][j]: P source P^T = target.
+
+    One branch per image (t, s) of axis 0 runs through ordered_map, in the order t, then sign +1 before -1.
+    """
+    roots = [(source, target, t, s) for t in range(len(source)) for s in (1, -1)]
+    return [g for branch in ordered_map(_equivalence_branch, roots, min_items=1) for g in branch]
+
+
+def mobius_image(q: int, m: Mobius, p: int) -> int:
+    """x -> (a x + b) / (c x + d) on the projective line, with 0 for infinity and x + 1 for x."""
+    a, b, c, d = m
+    numerator, denominator = (a, c) if p == 0 else ((a * (p - 1) + b) % q, (c * (p - 1) + d) % q)
+    return 0 if denominator % q == 0 else numerator * pow(denominator, -1, q) % q + 1
+
+
+def mobius_classes(q: int) -> dict[tuple[int, ...], bool]:
+    """Every map of PGL(2, q) on the projective line, keyed by its image tuple; True when ad - bc is a square (PSL)."""
+    squares = {x * x % q for x in range(1, q)}
+    table: dict[tuple[int, ...], bool] = {}
+    for a, b, c, d in itertools.product(range(q), repeat=4):
+        m = (a, b, c, d)
+        det = (a * d - b * c) % q
+        if det:
+            table[tuple(mobius_image(q, m, p) for p in range(q + 1))] = det in squares
+    return table
+
+
+def sl2_lifts(q: int) -> dict[tuple[int, ...], list[Mobius]]:
+    """The two matrices +-M of SL(2, q) over each map of PSL(2, q)."""
+    lifts: dict[tuple[int, ...], list[Mobius]] = {}
+    for a, b, c, d in itertools.product(range(q), repeat=4):
+        m = (a, b, c, d)
+        if (a * d - b * c) % q == 1:
+            lifts.setdefault(tuple(mobius_image(q, m, p) for p in range(q + 1)), []).append(m)
+    return lifts
+
+
+def matmul2(q: int, x: Mobius, y: Mobius) -> Mobius:
+    return (
+        (x[0] * y[0] + x[1] * y[2]) % q,
+        (x[0] * y[1] + x[1] * y[3]) % q,
+        (x[2] * y[0] + x[3] * y[2]) % q,
+        (x[2] * y[1] + x[3] * y[3]) % q,
+    )
+
+
+def inverse(g: SignedPermutation) -> SignedPermutation:
+    table: list[SignedUnit] = [(0, 1)] * len(g)
+    for axis, (image, sign) in enumerate(g):
+        table[image] = (axis, sign)
+    return tuple(table)
+
+
+def closure(generators: list[SignedPermutation], n: int) -> set[SignedPermutation]:
+    identity = tuple((axis, 1) for axis in range(n))
+    span, frontier = {identity}, [identity]
+    while frontier:
+        h = frontier.pop()
+        for g in generators:
+            x = compose(g, h)
+            if x not in span:
+                span.add(x)
+                frontier.append(x)
+    return span
+
+
+def generating_set(group: list[SignedPermutation]) -> list[SignedPermutation]:
+    """Greedy generators in list order: each one lies outside the span of those before it."""
+    n = len(group[0])
+    generators: list[SignedPermutation] = []
+    span = closure([], n)
+    for g in group:
+        if g not in span:
+            generators.append(g)
+            span = closure(generators, n)
+    return generators
+
+
+def is_isomorphic_to_sl2(
+    group: list[SignedPermutation], line: dict[SignedPermutation, tuple[int, ...]], q: int
+) -> bool:
+    """Search a homomorphism to SL(2, q) that lifts each element's projective-line map, and test it for bijectivity.
+
+    Each generator takes one of the two lifts +-M of its line map; a choice is a homomorphism when the Cayley-graph
+    walk assigns every element one matrix, and an isomorphism when the matrices are distinct and |group| = |SL(2, q)|.
+    Every element's matrix must also lie over its own line map, so the certificate binds the recorded line action.
+    """
+    lifts = sl2_lifts(q)
+    if len(group) != q * (q * q - 1) or any(line[g] not in lifts for g in group):
+        return False
+    generators = generating_set(group)
+    identity = tuple((axis, 1) for axis in range(len(group[0])))
+    for choice in itertools.product((0, 1), repeat=len(generators)):
+        images = [lifts[line[g]][c] for g, c in zip(generators, choice, strict=True)]
+        phi: dict[SignedPermutation, Mobius] = {identity: (1, 0, 0, 1)}
+        frontier, consistent = [identity], True
+        while frontier and consistent:
+            h = frontier.pop()
+            for g, m in zip(generators, images, strict=True):
+                x, value = compose(g, h), matmul2(q, m, phi[h])
+                if x not in phi:
+                    phi[x] = value
+                    frontier.append(x)
+                elif phi[x] != value:
+                    consistent = False
+                    break
+        if (
+            consistent
+            and len(phi) == len(group)
+            and len(set(phi.values())) == len(group)
+            and all(phi[g] in lifts[line[g]] for g in group)
+        ):
+            return True
+    return False
+
+
+def _orbit_sums_of_row(task: tuple[list[SignedPermutation], int]) -> list[dict[tuple[int, int], int]]:
+    group, i = task
+    n = len(group[0])
+    sums = []
+    for j in range(n):
+        total: Counter[tuple[int, int]] = Counter()
+        for g in group:
+            (gi, si), (gj, sj) = g[i], g[j]
+            total[(gi, gj)] += si * sj
+        sums.append(dict(total))
+    return sums
+
+
+def commutant_basis(n: int, group: list[SignedPermutation]) -> list[Matrix]:
+    """Integer basis of the matrices commuting with every group element: the nonzero orbit sums of the units E_ij.
+
+    The orbit sums of each row i of units run through ordered_map; the deduplication walks them in (i, j) order.
+    """
+    rows = ordered_map(_orbit_sums_of_row, [(group, i) for i in range(n)], min_items=1)
+    seen: set[tuple[int, int]] = set()
+    basis: list[Matrix] = []
+    for i, j in itertools.product(range(n), repeat=2):
+        if (i, j) in seen:
+            continue
+        total = rows[i][j]
+        seen |= set(total)
+        if any(total.values()):
+            scale = max(abs(v) for v in total.values())
+            matrix = [[0] * n for _ in range(n)]
+            for (row, column), value in total.items():
+                matrix[row][column] = value // scale
+            basis.append(matrix)
+    return basis
+
+
+def matmul(x: Matrix, y: Matrix) -> Matrix:
+    n = len(x)
+    return [[sum(x[i][k] * y[k][j] for k in range(n)) for j in range(n)] for i in range(n)]
+
+
+def scalar_value(matrix: Matrix) -> int | None:
+    n = len(matrix)
+    value = matrix[0][0]
+    return value if all(matrix[i][j] == (value if i == j else 0) for i in range(n) for j in range(n)) else None
+
+
+def commutant_facts(n: int, group: list[SignedPermutation]) -> dict[str, Any]:
+    """The commutant's dimension and basis squares; in dimension 16 the quaternion relations it carries."""
+    basis = commutant_basis(n, group)
+    squares = [scalar_value(matmul(b, b)) for b in basis]
+    values = [s for s in squares if s is not None]
+    require(len(values) == len(basis), f"a commutant basis element of dimension {n} squares to a non-scalar")
+    facts: dict[str, Any] = {"dimension": len(basis), "basis_squares": sorted(values)}
+    if n == 16:
+        right_e8 = [[0] * n for _ in range(n)]
+        for a in range(n):
+            right_e8[a ^ 8][a] = cd_sign(n, a, 8)
+        negated = [[-v for v in row] for row in right_e8]
+        sevens = [b for b, s in zip(basis, values, strict=True) if s == -7]
+        facts["right_multiplication_by_e8_in_basis"] = right_e8 in basis or negated in basis
+        facts["e8_anticommutes_with_square_minus_7"] = bool(sevens) and all(
+            matmul(b, right_e8) == [[-v for v in row] for row in matmul(right_e8, b)] for b in sevens
+        )
+    return facts
+
+
+def _table_automorphism_branch(task: tuple[int, int]) -> list[SignedPermutation]:
+    n, first = task
+    bits = n.bit_length() - 1
+    sign = [[cd_sign(n, a, b) for b in range(n)] for a in range(n)]
+    found = []
+    rest = [image for image in range(1, n) if image != first]
+    for tail in itertools.permutations(rest, bits - 1):
+        images = (first, *tail)
+        f = [0] * n
+        for x in range(1, n):
+            f[x] = f[x & (x - 1)] ^ images[(x & -x).bit_length() - 1]
+        if len(set(f)) == n and all(sign[f[a]][f[b]] == sign[a][b] for a in range(n) for b in range(n)):
+            found.append(tuple((image, 1) for image in f))
+    return found
+
+
+def table_automorphisms(n: int) -> set[SignedPermutation]:
+    """Unsigned XOR-linear index permutations that preserve cd_sign: the basis table's permutation automorphisms.
+
+    One branch per image of e_1 runs through ordered_map.
+    """
+    branches = ordered_map(_table_automorphism_branch, [(n, first) for first in range(1, n)], min_items=1)
+    return {g for branch in branches for g in branch}
+
+
+def is_xor_linear(g: SignedPermutation) -> bool:
+    n = len(g)
+    return all(g[a ^ b][0] == g[a][0] ^ g[b][0] for a in range(n) for b in range(n))
+
+
+def line_action(
+    group: list[SignedPermutation], equivalence: SignedPermutation
+) -> dict[SignedPermutation, tuple[int, ...]]:
+    """Each element's permutation of the projective line, read through an equivalence that sends axis i to point t_i."""
+    position = [t for t, _ in equivalence]
+    line: dict[SignedPermutation, tuple[int, ...]] = {}
+    for g in group:
+        image = [0] * len(g)
+        for axis, (target, _) in enumerate(g):
+            image[position[axis]] = position[target]
+        line[g] = tuple(image)
+    return line
+
+
+def paley_facts(n: int, q: int, group: list[SignedPermutation]) -> dict[str, Any]:
+    """W_n against the Paley matrix of q = n - 1: equivalences, projective-line action and SL(2, q) certificate."""
+    w, paley = arc_matrix(n), paley_matrix(q)
+    equivalences = signed_equivalences(w, paley)
+    require(bool(equivalences), f"the dimension-{n} arc matrix is not equivalent to the Paley matrix of q = {q}")
+    classes = mobius_classes(q)
+    line = line_action(group, equivalences[0])
+    identity_line = tuple(range(n))
+    return {
+        "paley_prime": q,
+        "equivalences_to_paley": len(equivalences),
+        "paley_automorphisms": len(signed_equivalences(paley, paley)),
+        "line_maps_in_psl2": all(classes.get(image) is True for image in line.values()),
+        "line_action_kernel": sum(1 for image in line.values() if image == identity_line),
+        "isomorphic_to_sl2_by_lift": is_isomorphic_to_sl2(group, line, q),
+    }
+
+
+def doubling_pair_labels(
+    pair_image: dict[SignedPermutation, tuple[int, ...]], generators: list[SignedPermutation], q: int
+) -> tuple[int, ...]:
+    """First labeling of the doubling pairs by projective-line points that makes every generator a Moebius map."""
+    classes = mobius_classes(q)
+    for labels in itertools.permutations(range(q + 1)):
+        position = {label: pair for pair, label in enumerate(labels)}
+        if all(tuple(labels[pair_image[g][position[p]]] for p in range(q + 1)) in classes for g in generators):
+            return labels
+    raise CensusError(f"no labeling of the doubling pairs by the projective line over F_{q} makes the group Moebius")
+
+
+def _pair_orbits_from(task: tuple[list[SignedPermutation], int]) -> list[set[frozenset[int]]]:
+    group, a = task
+    n = len(group[0])
+    return [{frozenset((g[a][0], g[b][0])) for g in group} for b in range(a + 1, n)]
+
+
+def sedenion_identification(group: list[SignedPermutation]) -> dict[str, Any]:
+    """G_16 on the eight doubling pairs {a, a + 8}: PGL(2, 7) image, kernel and derived subgroup SL(2, 7)."""
+    n, q = 16, 7
+    half = n // 2
+    for g in group:
+        require(all(g[a][0] % half == g[a + half][0] % half for a in range(half)), "an element splits a doubling pair")
+    pair_image = {g: tuple(g[k][0] % half for k in range(half)) for g in group}
+    generators = generating_set(group)
+    labels = doubling_pair_labels(pair_image, generators, q)
+    position = {label: pair for pair, label in enumerate(labels)}
+    line = {g: tuple(labels[pair_image[g][position[p]]] for p in range(half)) for g in group}
+    classes = mobius_classes(q)
+    identity_line = tuple(range(half))
+    commutators = [compose(compose(g, h), compose(inverse(g), inverse(h))) for g in group for h in generators]
+    derived = sorted(closure(generating_set(list(dict.fromkeys(commutators))), n))
+    psl_preimage = {g for g in group if classes.get(line[g]) is True}
+    derived_orbits: list[list[int]] = []
+    for a in range(n):
+        if not any(a in orbit for orbit in derived_orbits):
+            derived_orbits.append(sorted({g[a][0] for g in derived}))
+    orbit_rows = ordered_map(_pair_orbits_from, [(group, a) for a in range(n)], min_items=1)
+    pair_orbits: list[int] = []
+    covered: set[frozenset[int]] = set()
+    for a, row in enumerate(orbit_rows):
+        for b, orbit in zip(range(a + 1, n), row, strict=True):
+            if frozenset((a, b)) not in covered:
+                covered |= orbit
+                pair_orbits.append(len(orbit))
+    return {
+        "doubling_pair_maps_in_pgl2_7": all(image in classes for image in line.values()),
+        "doubling_pair_image_order": len(set(line.values())),
+        "doubling_pair_kernel": sum(1 for image in line.values() if image == identity_line),
+        "derived_subgroup_order": len(derived),
+        "derived_subgroup_is_psl2_7_preimage": set(derived) == psl_preimage,
+        "derived_isomorphic_to_sl2_7_by_lift": is_isomorphic_to_sl2(derived, line, q),
+        "derived_index_orbits": derived_orbits,
+        "index_pair_orbit_sizes": sorted(pair_orbits),
+    }
+
+
+def _element_checks(task: tuple[Matrix, SignedPermutation]) -> tuple[bool, bool]:
+    """Whether one signed permutation commutes with W, and whether its index map is XOR-linear."""
+    w, g = task
+    n = len(g)
+    commutes = all(w[g[i][0]][g[j][0]] * g[i][1] * g[j][1] == w[i][j] for i in range(n) for j in range(n))
+    return commutes, is_xor_linear(g)
+
+
+def identification_facts(groups: dict[int, list[SignedPermutation]]) -> dict[str, Any]:
+    """Arc-matrix, Paley, commutant and table-automorphism facts that identify the boundary groups."""
+    facts: dict[str, Any] = {
+        "arc_matrix_skew_conference": {str(n): is_skew_conference(arc_matrix(n)) for n in CONFERENCE_DIMENSIONS},
+        "doubling_blocks_match_cd_sign": {
+            str(n): doubling_blocks(n // 2) == (arc_matrix(n), left_matrix(n)) for n in CONFERENCE_DIMENSIONS[1:]
+        },
+    }
+    element_checks: dict[int, list[tuple[bool, bool]]] = {}
+    for n, group in groups.items():
+        w = arc_matrix(n)
+        element_checks[n] = ordered_map(_element_checks, [(w, g) for g in group], min_items=1)
+        require(
+            all(commutes for commutes, _ in element_checks[n]),
+            f"a dimension-{n} boundary symmetry fails to commute with the arc matrix",
+        )
+    for n in (4, 8, 16):
+        group = groups[n]
+        stabilizer_of_e0 = {g for g in group if g[0] == (0, 1)}
+        entry: dict[str, Any] = {
+            "commutant": commutant_facts(n, group),
+            "stabilizer_of_e0_equals_table_automorphisms": stabilizer_of_e0 == table_automorphisms(n),
+            "xor_linear_elements": sum(1 for _, linear in element_checks[n] if linear),
+        }
+        if n in PALEY_PRIMES:
+            entry["paley"] = paley_facts(n, PALEY_PRIMES[n], group)
+        else:
+            entry["doubling_pairs"] = sedenion_identification(group)
+        facts[str(n)] = entry
+    return facts
+
+
 def dimension_facts(n: int, boundary: set[Point], search_codes: bool) -> tuple[dict[str, Any], list[SignedPermutation]]:
     points = ball(n) | boundary
     require(len(points) == 4 * n * n + 1, f"S_{n} holds {len(points)} points, not 4n^2 + 1")
@@ -461,13 +931,15 @@ def dimension_facts(n: int, boundary: set[Point], search_codes: bool) -> tuple[d
 
 def build() -> dict[str, Any]:
     record: dict[str, Any] = {"schema": SCHEMA, "tuna17": tuna17_binding(), "cayley_dickson": []}
+    groups: dict[int, list[SignedPermutation]] = {}
     for n in CD_DIMENSIONS:
         boundary = cd_boundary(n)
-        facts, group = dimension_facts(n, boundary, search_codes=n == 2)
+        facts, groups[n] = dimension_facts(n, boundary, search_codes=n == 2)
         facts["left_unit_closure"] = left_unit_closure(n, boundary)
         if n == 16:
-            facts["sedenion_zero_divisors"] = sedenion_facts(boundary, group)
+            facts["sedenion_zero_divisors"] = sedenion_facts(boundary, groups[n])
         record["cayley_dickson"].append(facts)
+    record["identification"] = identification_facts(groups)
     tetrahedral, _ = dimension_facts(3, tetrahedral_boundary(), search_codes=True)
     tetrahedral["octahedron_selections"] = octahedron_selections()
     record["tetrahedral_3d"] = tetrahedral
