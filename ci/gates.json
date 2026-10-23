@@ -3898,7 +3898,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_probe.py check results/iqm/cases/signed-kernel-probe",
    "name": "core-638",
-   "seconds": 50.0,
+   "seconds": 15.0,
    "tier": "full"
   },
   {

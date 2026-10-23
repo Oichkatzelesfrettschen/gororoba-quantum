@@ -46,6 +46,7 @@ from iqm_jobs import CASE_SCHEMA, dump  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
 import signed_kernel_probe as skp  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 CASE = "signed-kernel-probe"
 QC = "garnet"
@@ -124,32 +125,46 @@ def to_iqm(bound: QuantumCircuit, name: str, qubits: list[str]) -> dict[str, Any
     return {"name": name, "instructions": instructions}
 
 
+def seed_trial(item: tuple[int, str]) -> tuple[float, int, int, QuantumCircuit]:
+    """One transpiler seed's compile and its predicted visibility at SELECT_T: (visibility, seed, cz, compile)."""
+    seed, calibration_dir = item
+    calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
+    target, coupling = target_of(calibration)
+    compiled = transpile(
+        skp.matched_signed_probe(),
+        basis_gates=["r", "cz"],
+        coupling_map=coupling,
+        optimization_level=3,
+        seed_transpiler=seed,
+    )
+    plus = predict(compiled, SELECT_T, calibration, target, SELECTION_SHOTS)
+    odd = (plus - predict(compiled, -SELECT_T, calibration, target, SELECTION_SHOTS)) / 2
+    return odd / law(SELECT_T), seed, compiled.count_ops().get("cz", 0), compiled
+
+
+def arm_prediction(item: tuple[float, str, QuantumCircuit]) -> float:
+    t, calibration_dir, compiled = item
+    calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
+    target, _ = target_of(calibration)
+    return predict(compiled, t, calibration, target)
+
+
 def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     calibration = iqm_sim.Calibration.from_directory(calibration_dir)
-    target, coupling = target_of(calibration)
     best: tuple[float, int, QuantumCircuit] | None = None
     seeds = []
-    for seed in SEEDS:
-        compiled = transpile(
-            skp.matched_signed_probe(),
-            basis_gates=["r", "cz"],
-            coupling_map=coupling,
-            optimization_level=3,
-            seed_transpiler=seed,
-        )
-        plus = predict(compiled, SELECT_T, calibration, target, SELECTION_SHOTS)
-        odd = (plus - predict(compiled, -SELECT_T, calibration, target, SELECTION_SHOTS)) / 2
-        visibility = odd / law(SELECT_T)
-        seeds.append({"seed": seed, "cz": compiled.count_ops().get("cz", 0), "visibility": round(visibility, 4)})
+    # Seeds compile and predict independently; ordered_map returns them in seed order, so the first
+    # seed of the largest visibility wins as in a serial loop.
+    for visibility, seed, cz, compiled in ordered_map(seed_trial, [(seed, str(calibration_dir)) for seed in SEEDS]):
+        seeds.append({"seed": seed, "cz": cz, "visibility": round(visibility, 4)})
         if best is None or visibility > best[0]:
             best = (visibility, seed, compiled)
     if best is None:
         raise ValueError("no transpiler seed compiled")
     _, seed, compiled = best
-    arms = []
-    for t in (STRONG_T, -STRONG_T, WEAK_T, -WEAK_T):
-        z = predict(compiled, t, calibration, target)
-        arms.append({"t": t, "law": law(t), "predicted_z": z})
+    ts = (STRONG_T, -STRONG_T, WEAK_T, -WEAK_T)
+    predicted = ordered_map(arm_prediction, [(t, str(calibration_dir), compiled) for t in ts])
+    arms = [{"t": t, "law": law(t), "predicted_z": z} for t, z in zip(ts, predicted, strict=True)]
     files: dict[str, str] = {}
     names = []
     for t, copies in ((STRONG_T, 1), (-STRONG_T, 1), (WEAK_T, WEAK_COPIES), (-WEAK_T, WEAK_COPIES)):
