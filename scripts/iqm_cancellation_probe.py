@@ -362,7 +362,12 @@ def fetch_calibration(calibration_dir: Path) -> None:
         if status != 200:
             raise ValueError(f"GET {path} answered {status}")
         fetched[name] = data
-    # Both files land only after both reads succeed, each through one rename.
+    architecture = json.loads(fetched["dynamic-quantum-architecture.json"])
+    metrics = json.loads(fetched["metrics.json"])
+    if architecture["calibration_set_id"] != identity or metrics.get("describes_id") != identity:
+        raise ValueError(f"the fetched architecture and metrics do not both describe set {identity}")
+    # Both files land only after both reads succeed and agree, each through one rename;
+    # iqm_sim.Calibration.load refuses a directory whose two files describe different sets.
     for name, data in fetched.items():
         write_atomic(calibration_dir / name, data)
 
@@ -622,6 +627,10 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     import iqm_jobs
 
+    # The case is one job, and its drift cancellation is formed inside it; a second acquisition would pool
+    # two runs' baselines into one contrast, so the analysis reads exactly one run.
+    if len(run_dirs) != 1:
+        raise ValueError(f"the case is one job; the analysis reads one run, not {len(run_dirs)}")
     counts: dict[str, tuple[int, int]] = {}
     runs = []
     prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
