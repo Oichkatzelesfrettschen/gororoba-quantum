@@ -251,6 +251,19 @@ def measurement_sequence(cosine: Any, sine: Any, count: int) -> dict[str, Any]:
     }
 
 
+def _measurement_row(count: int) -> dict[str, Any]:
+    return {
+        "steps": count,
+        "cosine": "3/5",
+        "sine": "4/5",
+        **{key: str(value) for key, value in measurement_sequence(Rational(3, 5), Rational(4, 5), count).items()},
+    }
+
+
+def _verify_projector(projector: Any) -> None:
+    require(projector * projector == projector and projector.T == projector, "sector projector failed")
+
+
 def project_shots(shots: list[str], width: int, indices: list[int]) -> list[tuple[int, ...]]:
     """Read explicit rightmost-bit indices; caller supplies the provider's register map."""
     require(type(width) is int and width > 0, "register width must be positive")
@@ -307,6 +320,11 @@ def _recovery_law(task: tuple[Any, Any, Any, bool]) -> bool:
     return bool(recovery * error * encoding == (encoding if matched else zeros(8, 2)))
 
 
+def _recovery_operator(task: tuple[Any, Any]) -> Any:
+    projector, error = task
+    return projector * error.H
+
+
 def _code_control() -> dict[str, Any]:
     encoding = zeros(8, 2)
     encoding[0, 0] = encoding[7, 1] = 1
@@ -319,7 +337,7 @@ def _code_control() -> dict[str, Any]:
     ]
     corrects = all(ordered_map(_kl_scalar, [(encoding, first, second) for first in errors for second in errors]))
     code_projector = encoding * encoding.H
-    recoveries = [code_projector * error.H for error in errors]
+    recoveries = ordered_map(_recovery_operator, [(code_projector, error) for error in errors], min_items=1)
     complete = sum((recovery.H * recovery for recovery in recoveries), zeros(8)) == eye(8)
     recovery_law = all(
         ordered_map(
@@ -352,28 +370,37 @@ def strings(matrix: Any) -> list[list[str]]:
     return [[str(simplify(value)) for value in row] for row in matrix.tolist()]
 
 
-def _bell_kernel_selection(effect: Any) -> dict[str, Any]:
-    """Trace the measured half of a Bell pair; the remote basis is dark/bright."""
+def _bell_basis(task: tuple[Any, str, tuple[Any, Any]]) -> tuple[str, list[str]]:
+    effect, basis, projectors = task
     bell = Matrix([1, 0, 0, 1]) / sqrt(2)
     density = bell * bell.H
+    remote_sum = zeros(2)
+    selector_rates = []
+    for projector in projectors:
+        instrument = kronecker_product(eye(2), projector)
+        branch = instrument * density * instrument.H
+        probability = branch.trace()
+        require(probability == Rational(1, 2), "Bell outcome probability differs")
+        remote = Matrix(
+            2, 2, lambda row, column, state=branch: sum(state[2 * row + bit, 2 * column + bit] for bit in (0, 1))
+        )
+        remote_sum += remote
+        selector_rates.append(str((effect * remote).trace() / probability))
+    require(remote_sum == eye(2) / 2, "unconditional remote ensemble changed")
+    return f"remote_{basis}_selector_success", selector_rates
+
+
+def _bell_kernel_selection(effect: Any) -> dict[str, Any]:
+    """Trace the measured half of a Bell pair; the remote basis is dark/bright."""
     plus = Matrix([[1, 1], [1, 1]]) / 2
     minus = Matrix([[1, -1], [-1, 1]]) / 2
-    results: dict[str, Any] = {}
-    for basis, projectors in (("z", (Matrix.diag(1, 0), Matrix.diag(0, 1))), ("x", (plus, minus))):
-        remote_sum = zeros(2)
-        selector_rates = []
-        for projector in projectors:
-            instrument = kronecker_product(eye(2), projector)
-            branch = instrument * density * instrument.H
-            probability = branch.trace()
-            require(probability == Rational(1, 2), "Bell outcome probability differs")
-            remote = Matrix(
-                2, 2, lambda row, column, state=branch: sum(state[2 * row + bit, 2 * column + bit] for bit in (0, 1))
-            )
-            remote_sum += remote
-            selector_rates.append(str((effect * remote).trace() / probability))
-        require(remote_sum == eye(2) / 2, "unconditional remote ensemble changed")
-        results[f"remote_{basis}_selector_success"] = selector_rates
+    results: dict[str, Any] = dict(
+        ordered_map(
+            _bell_basis,
+            [(effect, "z", (Matrix.diag(1, 0), Matrix.diag(0, 1))), (effect, "x", (plus, minus))],
+            min_items=1,
+        )
+    )
     results["remote_selector_unconditional"] = str((effect * eye(2) / 2).trace())
     results["remote_unconditional"] = strings(eye(2) / 2)
     return results
@@ -396,8 +423,7 @@ def exact_families() -> dict[str, Any]:
         gram * (gram - 2 * identity) / 8,
     ]
     require(sum(projectors, zeros(16)) == identity, "sector resolution failed")
-    for projector in projectors:
-        require(projector * projector == projector and projector.T == projector, "sector projector failed")
+    ordered_map(_verify_projector, projectors, min_items=1)
     require(gram * (gram - 2 * identity) * (gram - 4 * identity) == zeros(16), "sector polynomial failed")
     require(left * Matrix(dark) == zeros(16, 1), "kernel witness failed")
     x_gate, z_gate = Matrix([[0, 1], [1, 0]]), Matrix.diag(1, -1)
@@ -474,18 +500,7 @@ def exact_families() -> dict[str, Any]:
             "sedenion_logical_qubits": 4,
             "one_9_1_3_block_dimension": 2,
         },
-        "measurement": [
-            {
-                "steps": count,
-                "cosine": "3/5",
-                "sine": "4/5",
-                **{
-                    key: str(value)
-                    for key, value in measurement_sequence(Rational(3, 5), Rational(4, 5), count).items()
-                },
-            }
-            for count in (1, 2, 4, 8)
-        ],
+        "measurement": ordered_map(_measurement_row, [1, 2, 4, 8], min_items=1),
         "measurement_fixed_total": {
             "unmeasured_survival": str(
                 (Matrix([[Rational(3, 5), -Rational(4, 5)], [Rational(4, 5), Rational(3, 5)]]) ** 2)[0, 0] ** 2
