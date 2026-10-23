@@ -8,7 +8,9 @@ inventory, never here: [requirements.txt](../requirements.txt) (runtime),
 Qiskit 2.5.2 replays), and the build host's Arch packages in
 [python-stack.md](notes/build_host/python-stack.md). The
 [library register](state/hypercomplex-libraries/libraries.md) lists every
-distribution with its role and every tracked file that imports it; gate
+distribution with its role, and its sibling
+[libraries.json](state/hypercomplex-libraries/libraries.json) records each
+tracked file that imports it (`imported_by`); gate
 core-630 compares it with a fresh AST scan of `gororoba_quantum/`,
 `scripts/`, `ci/` and `kaggle_kernel/`, so a new import in those trees
 enters the register in the same change.
@@ -18,7 +20,7 @@ enters the register in the same change.
 | Interpreter | Runs | Authority |
 | --- | --- | --- |
 | `$PYTHON`, exported | every script, gate and dry run | [AGENTS.md](../AGENTS.md) "Layout and gates" |
-| `--replay-python` or `REPLAY_PYTHON` | gates marked `"runtime": "qiskit-2.5"`; without it they exit 127 | [ci/AGENTS.md](../ci/AGENTS.md) |
+| `--replay-python` or `REPLAY_PYTHON` | gates marked `"runtime": "qiskit-2.5"`; with neither, the running interpreter serves when it holds every replay pin, and an unresolved runtime exits 127 | [ci/AGENTS.md](../ci/AGENTS.md) |
 | `QI_PYTHON` (Python 3.13) | Quantum Inspire SDK, qxelarator, cQASM, OpenSquirrel | [quantum_inspire/README.md](notes/quantum_inspire/README.md) |
 | `OQ_PYTHON` | Open Quantum SDK | [open_quantum/README.md](notes/open_quantum/README.md) |
 | `QD_PYTHON` | the Quandela MCP server; Perceval itself runs on `$PYTHON` | [quandela/README.md](notes/quandela/README.md) |
@@ -27,8 +29,10 @@ enters the register in the same change.
 
 Every interpreter starts with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, which the Qiskit Rust
-and Aer OpenMP extensions need. Gates run with `-B -W error`, and many also
-under `-O`, so a check raises explicitly instead of using `assert`.
+and Aer OpenMP extensions need. Each gate's flags are the ones its command
+in [ci/gates.json](../ci/gates.json) spells out; most pass `-B -W error` and
+many also run under `-O`, so a check raises explicitly instead of using
+`assert`.
 
 ## Libraries by job
 
@@ -39,10 +43,10 @@ under `-O`, so a check raises explicitly instead of using `assert`.
 | Least squares, decompositions, statistics, sparse | scipy | `lstsq` or pivoted QR, never normal equations; `scipy.sparse` for structured systems | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#least-squares-and-conditioning) |
 | Exact rank modulo p, rational null spaces | python-flint through `scripts/exact_rank.py` | every rank or nullity certificate | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#exact-backends) |
 | Symbolic algebra, exact matrices | sympy, as `DomainMatrix` for integer products | polynomial identities and charts | same section |
-| Arbitrary precision | mpmath | refining a float result past float64 rounding; `eigsy` on L^T L where `svd_r` fails on repeated singular values | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#precision) |
+| Arbitrary precision | mpmath | refining a float estimate past float64 rounding | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#precision) |
 | p-adic and finite-field arithmetic | pyadic, galois | rational reconstruction, F_p linear algebra beyond FLINT | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#runtime-packages) |
-| Circuits and transpilation | qiskit | every circuit; the live Target is the timing authority | [ibm_heron_platform.md](notes/ibm_heron_platform.md) |
-| Noise simulation | qiskit-aer, CPU or the host's CUDA build | 14 qubits or fewer on Kaggle; larger runs are decision-gated | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [substrates.md](notes/kaggle/substrates.md) |
+| Gate-model circuits and transpilation | qiskit | IBM and other Qiskit-compatible circuits; the live Target is the timing authority. Provider-native circuits (Perceval, cQASM) follow their provider guides | [ibm_heron_platform.md](notes/ibm_heron_platform.md) |
+| Noise simulation | qiskit-aer, CPU or the host's CUDA build | 14 qubits or fewer on Kaggle; 15 qubits only through an approved case naming the substrate; 16 or more go to IBM hardware through an approved case | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [substrates.md](notes/kaggle/substrates.md) |
 | IBM hardware | qiskit-ibm-runtime, client-side `executor_sampler` | `--submit` after an approved case | [qpu-submission.md](notes/ibm_quantum/qpu-submission.md) |
 | Layout and graph search | rustworkx | replica placement (`vf2_mapping`) | `gororoba_quantum/` |
 | Batched density-matrix sweeps | jax | error-scale sweeps in `jax_bridge` on CPU | [jax-bridge-structure-report.md](notes/kaggle/jax-bridge-structure-report.md) |
@@ -77,13 +81,16 @@ Climb in this order and stop at the first rung that meets the budget.
    generator draw every input first, in the generator's order, and then map,
    so pooled and serial runs write the same bytes. The pool spawns, so an
    entry script calls it only under `if __name__ == "__main__":` and runs
-   from a file rather than stdin. The pool pins BLAS and OpenMP to one
-   thread per worker.
-5. **Move exact work to FLINT.** `nmod_mat.rank` and `nullspace` modulo a
-   word-size prime replace Python elimination; a structured sparse system
-   compresses through a `scipy.sparse` product before elimination. A
-   modulo-p rank bounds the rational rank from below, and a certificate
-   checks its kernel vectors in Python integers.
+   from a file rather than stdin. The pool sets each unset BLAS and OpenMP
+   thread variable to one for its workers and keeps a value the caller
+   exported, which can oversubscribe native threads.
+5. **Move exact work to FLINT.** `scripts/exact_rank.py` gives
+   `rank_mod` (FLINT `nmod_mat`, a rank modulo a word-size prime, which
+   bounds the rational rank from below) and `rational_kernel` (FLINT
+   `fmpq_mat` reduced row echelon form, a rational null space). A finite-field
+   null space certifies nothing over the rationals; the certifying caller,
+   such as `d_locus_nullity.nullity`, checks each rational kernel vector in
+   Python integers.
 6. **Use an accelerator only where a run qualified it.** The host's CUDA Aer
    build and Kaggle GPUs serve the circuits their notes measured; small
    dynamic circuits stay on CPU ([substrates.md](notes/kaggle/substrates.md)).
@@ -92,7 +99,10 @@ Climb in this order and stop at the first rung that meets the budget.
 
 ## Correctness rules
 
-- Seed every generator and record the seed; a replay reproduces bytes.
+- Seed every generator and record the seed. Byte replay also needs the
+  pinned generator algorithm and dependency versions and a gate that
+  compares bytes: NumPy's seeded `Generator.binomial` changed between
+  releases (`scripts/atlas_fringe_amplitudes.py`).
 - float64 suffices wherever sampling sets the error. An exact claim uses
   exact arithmetic, and extended precision only refines a float estimate.
 - Float tolerances decide nothing about rank, nullity or local dimension.
