@@ -5,7 +5,7 @@ document that owns the rule. Versions live in the pin files and the
 inventory, never here: [requirements.txt](../requirements.txt) (runtime),
 [ci/requirements-ci.txt](../ci/requirements-ci.txt) (gate tools),
 [ci/requirements-replay.txt](../ci/requirements-replay.txt) (historical
-Qiskit 2.5.2 replays), and the build host's Arch packages in
+Qiskit replays), and the build host's Arch packages in
 [python-stack.md](notes/build_host/python-stack.md). The
 [library register](state/hypercomplex-libraries/libraries.md) lists every
 distribution with its role, and its sibling
@@ -54,7 +54,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 | Photonic circuits | perceval, exqalibur | Quandela runs and their simulations | [quandela/README.md](notes/quandela/README.md) |
 | Hypercomplex cross-checks | hypercomplex, hyprat, octonion and the other packages in the register | a declared map onto `cd_core`, checked on every basis pair | [packages/README.md](notes/packages/README.md) |
 | Audits that need SageMath | sage | build-host audits whose retained output a pinned gate checks | [rank_locus_rotation_composite](evidence/rank_locus_rotation_composite/README.md#symmetry) |
-| Plots | matplotlib | measured figures only; mock outcomes never enter them | [AGENTS.md](../AGENTS.md) "Layout and gates" |
+| Plots | matplotlib | measured figures, and exact or prospective model figures labeled as such; mock outcomes never enter either | [AGENTS.md](../AGENTS.md) "Layout and gates" |
 | Tests | pytest, pytest-xdist | the behavioral suite | [ci/AGENTS.md](../ci/AGENTS.md) |
 | Thread accounting | threadpoolctl | recording the BLAS and OpenMP runtimes a gate used | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#parallelism-and-blas-threads) |
 | Provider MCP servers | mcp | `scripts/*_mcp_server.py` | provider guides |
