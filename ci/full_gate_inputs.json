@@ -452,6 +452,9 @@
     ],
     "core-638": [
       "results/iqm/cases/signed-kernel-probe/**"
+    ],
+    "core-642": [
+      "results/iqm/cases/kernel-cancellation-probe/**"
     ]
   }
 }

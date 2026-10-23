@@ -3912,6 +3912,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/kernel_cancellation.py --check && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py --self-test",
+   "name": "core-641",
+   "seconds": 30.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py check results/iqm/cases/kernel-cancellation-probe",
+   "name": "core-642",
+   "seconds": 30.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd",
    "name": "core-606",
    "seconds": 7.7,
