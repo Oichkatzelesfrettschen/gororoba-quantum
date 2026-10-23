@@ -28,7 +28,14 @@ publish() {
 	git -C "$res" add -A results/quandela
 	if ! git -C "$res" diff --cached --quiet; then
 		git -C "$res" commit -q -m "quandela: $(basename "$schedule" .json) state after workflow run $run_id"
-		git -C "$res" push -q origin "HEAD:refs/heads/$branch"
+		# A commit pushed to the data branch during a long collection (a registry
+		# edit) rejects this push; the scheduler's paths stay disjoint from such
+		# edits, so one rebase onto the remote tip publishes the checkpoint.
+		if ! git -C "$res" push -q origin "HEAD:refs/heads/$branch"; then
+			git -C "$res" fetch -q origin "refs/heads/$branch"
+			git -C "$res" rebase -q FETCH_HEAD
+			git -C "$res" push -q origin "HEAD:refs/heads/$branch"
+		fi
 	fi
 }
 

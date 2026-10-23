@@ -76,6 +76,12 @@ jobs:
           set -eu
           "$BASE_PYTHON" -m venv "$PINS_VENV"
           PYTHON="$PINS_VENV/bin/python" sh ci/install_pins.sh
+      - name: Save the pinned environment
+        if: steps.pins-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.PINS_VENV }}
+          key: ${{ steps.pins-cache.outputs.cache-primary-key }}
       - name: Use the pinned environment
         run: |
           echo "PYTHON=$PINS_VENV/bin/python" >> "$GITHUB_ENV"

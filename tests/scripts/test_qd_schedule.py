@@ -21,12 +21,17 @@ def sha(path: Path) -> str:
 
 @pytest.fixture
 def tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    # The work directory is a sibling of the checkout, as RUNNER_TEMP is on a hosted runner.
+    (tmp_path / "work").mkdir()
+    tmp_path = tmp_path / "repo"
     monkeypatch.setattr(qs, "ROOT", tmp_path)
     monkeypatch.setattr(qs, "SCHEDULES", tmp_path / "results/quandela/schedules")
     monkeypatch.setattr(qs, "RUNS", tmp_path / "results/quandela/runs")
     monkeypatch.setattr(qs, "CASES", tmp_path / "results/quandela/cases")
-    (tmp_path / "scripts").mkdir()
-    (tmp_path / "scripts/check_ok.py").write_text("import sys\nsys.exit(0)\n")
+    (tmp_path / "scripts").mkdir(parents=True)
+    (tmp_path / "scripts/check_ok.py").write_text(
+        "import pathlib, sys\nsys.exit(0 if pathlib.Path(sys.argv[-1]).exists() else 3)\n"
+    )
     (tmp_path / "scripts/check_no.py").write_text("import sys\nprint('stop condition')\nsys.exit(4)\n")
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/case.md").write_text("written case\n")
@@ -90,8 +95,19 @@ class Provider:
         self.submit_error: str | None = None
         self.submitted: list[Path] = []
         self.ready = True
-        for name in ("plan", "submit", "recover", "collect", "snapshot"):
+        self.status = "available"
+        self.busy = 0
+        for name in ("plan", "submit", "recover", "collect", "snapshot", "explorer_row", "get", "availability"):
             monkeypatch.setattr(qs.qd, name, getattr(self, name))
+
+    def explorer_row(self, platform: str) -> dict[str, Any]:
+        return {"name": platform, "status": self.status}
+
+    def get(self, route: str) -> dict[str, Any]:
+        return {"status": self.status}
+
+    def availability(self) -> dict[str, int]:
+        return {"num_concurrent_jobs": self.busy, "num_jobs_in_queue": 0}
 
     def plan(self, case_dir: Path, *args: Any) -> dict[str, Any]:
         if self.plan_error:
@@ -121,7 +137,7 @@ class Provider:
 
 
 def step(path: Path, now: float, run_id: str = "1.1", plan_only: bool = False) -> dict[str, Any]:
-    return qs.step(qs.load(path), run_id, now + 3600, qs.ROOT / "work", plan_only, clock=lambda: now)
+    return qs.step(qs.load(path), run_id, now + 3600, qs.ROOT.parent / "work", plan_only, clock=lambda: now)
 
 
 def test_load_refuses_each_unsafe_schedule(tree: Path) -> None:
@@ -226,18 +242,15 @@ def test_an_intent_from_another_workflow_run_reads_interrupted(tree: Path, monke
         raise AssertionError(stopped)
 
 
-def test_a_run_directory_without_an_intent_stops_the_schedule(tree: Path, monkeypatch) -> None:
-    path = schedule(tree)
-    provider = Provider(monkeypatch)
-    (tree / "results/quandela/runs/2026-10-31T120000Z-qpu_belenos-demo-j1").mkdir()
-    (tree / "results/quandela/runs/2026-10-31T120000Z-qpu_belenos-demo-j1-repeat").mkdir()
-    stopped = step(path, T0)
-    if (
-        stopped["state"] != "foreign"
-        or stopped["run"] != "2026-10-31T120000Z-qpu_belenos-demo-j1"
-        or provider.submitted
-    ):
-        raise AssertionError(stopped)
+def test_only_the_exact_run_name_counts_as_already_in_use(tree: Path, monkeypatch) -> None:
+    runs = tree / "results/quandela/runs"
+    (runs / "2026-10-31T120000Z-qpu_belenos-demo-j1-repeat").mkdir()
+    Provider(monkeypatch)
+    if step(schedule(tree), T0)["outcome"] != "prepared":
+        raise AssertionError("a longer run name blocked the job")
+    (runs / "2026-10-31T120000Z-qpu_belenos-demo-j2").mkdir()
+    with pytest.raises(qs.ScheduleError):
+        qs.load(schedule(tree))
 
 
 def test_plan_only_reports_the_digest_and_writes_nothing(tree: Path, monkeypatch) -> None:
@@ -265,3 +278,64 @@ def test_body_digest_equals_across_the_two_retained_runs_of_one_frozen_request()
         raise AssertionError("the digest does not isolate the frozen request")
     if qs.body_digest({**first, "payload": None}) == qs.body_digest(first):
         raise AssertionError("the digest ignores the payload")
+
+
+@pytest.mark.parametrize(("field", "value"), [("status", "calibration"), ("busy", 1)])
+def test_a_platform_in_calibration_or_a_busy_token_waits_without_a_hold(tree: Path, monkeypatch, field, value) -> None:
+    path = schedule(tree)
+    provider = Provider(monkeypatch)
+    setattr(provider, field, value)
+    waiting = step(path, T0)
+    if waiting["outcome"] != "wait" or any((tree / "results/quandela/runs").iterdir()):
+        raise AssertionError(waiting)
+    if (tree / "results/quandela/schedules/demo/j1.hold.json").exists():
+        raise AssertionError("a passing condition held the job")
+    setattr(provider, field, "available" if field == "status" else 0)
+    if step(path, T0 + 900)["outcome"] != "prepared":
+        raise AssertionError("the job did not start once the platform was ready")
+
+
+def test_a_job_past_its_latest_start_holds(tree: Path, monkeypatch) -> None:
+    path = schedule(tree, job0_latest_start="2026-11-01T13:00:00Z")
+    Provider(monkeypatch)
+    if step(path, T0 + 3601)["stage"] != "latest_start":
+        raise AssertionError("a late job started")
+
+
+@pytest.mark.parametrize("run", ["../../../scripts", "2026-11-01T120000Z-qpu_belenos-demo-j2"])
+def test_an_intent_naming_another_directory_is_refused(tree: Path, monkeypatch, run) -> None:
+    path = schedule(tree)
+    Provider(monkeypatch)
+    branch = tree.parent / "branch"
+    qs.write(
+        branch / "results/quandela/schedules/demo/j1.intent.json",
+        {"schema": qs.INTENT_SCHEMA, "schedule": "demo", "key": "j1", "run": run, "run_id": "1.1"},
+    )
+    (branch / "scripts").mkdir()
+    (branch / "scripts/check_ok.py").write_text("import sys\nsys.exit(0)\n")
+    with pytest.raises(qs.ScheduleError):
+        qs.sync(qs.load(path), branch, tree)
+    if "exists()" not in (tree / "scripts/check_ok.py").read_text():
+        raise AssertionError("the data branch replaced a script")
+    qs.write(
+        tree / "results/quandela/schedules/demo/j1.intent.json",
+        qs.read(branch / "results/quandela/schedules/demo/j1.intent.json"),
+    )
+    with pytest.raises(qs.ScheduleError):
+        step(path, T0)
+
+
+def test_sync_refuses_a_symbolic_link_on_the_data_branch(tree: Path, monkeypatch) -> None:
+    path = schedule(tree)
+    branch = tree.parent / "branch"
+    (branch / "results/quandela/schedules/demo").mkdir(parents=True)
+    (branch / "results/quandela/schedules/demo/link").symlink_to(tree / "scripts")
+    with pytest.raises(qs.ScheduleError):
+        qs.sync(qs.load(path), branch, tree)
+
+
+def test_an_enabled_schedule_refuses_a_run_name_already_in_use(tree: Path) -> None:
+    (tree / "results/quandela/runs/2026-10-31T120000Z-qpu_belenos-demo-j2").mkdir()
+    with pytest.raises(qs.ScheduleError):
+        qs.load(schedule(tree))
+    qs.load(schedule(tree, enabled=False))

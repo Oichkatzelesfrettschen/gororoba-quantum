@@ -27,8 +27,9 @@ The scheduler's state lives beside the schedule in results/quandela/schedules/NA
   collected run; outcome failed stops the schedule.
 
 Jobs run strictly in order, one per step: a held, failed or interrupted job
-stops every later one, and a run directory carrying a job's run_name without
-an intent stops the schedule too.
+stops every later one. A due job waits, staging nothing, while the platform
+reads a status the job does not admit or the token has a running or queued
+job; a job past its optional latest_start holds.
 
 Subcommands:
 
@@ -37,8 +38,8 @@ Subcommands:
   references, ceilings within max_total_credits, input digests equal to the
   tree, check commands that name an existing script under scripts/ with only
   the {plan} and {run} placeholders, snapshot directories under
-  results/quandela/, and a pinned body_sha256 on every job of an enabled
-  schedule.
+  results/quandela/, and on every job of an enabled schedule a pinned
+  body_sha256 and a run_name no run directory carries without an intent.
 - list prints the enabled schedules, one path per line.
 - status SCHEDULE (offline) prints each job's state.
 - pin SCHEDULE (network, read-only) plans every job and writes its body_sha256.
@@ -188,6 +189,13 @@ def load(path: Path) -> dict[str, Any]:
         require(pinned is None or (isinstance(pinned, str) and DIGEST.fullmatch(pinned) is not None), f"{where}: body")
         require(pinned is not None or not schedule["enabled"], f"{where}: an enabled schedule needs body_sha256")
         require(isinstance(job.get("not_before"), str) and UTC.fullmatch(job["not_before"]), f"{where}: not_before")
+        latest = job.get("latest_start")
+        require(latest is None or (isinstance(latest, str) and UTC.fullmatch(latest)), f"{where}: latest_start")
+        if schedule["enabled"] and not (SCHEDULES / name / f"{key}.intent.json").exists():
+            present = named_runs(RUNS, run_name)
+            require(
+                not present, f"{where}: {present[0].name if present else ''} carries the run_name without an intent"
+            )
         after = job.get("after")
         if after is not None:
             require(isinstance(after, dict) and after.get("key") in keys, f"{where}: after must name an earlier job")
@@ -220,6 +228,28 @@ def named_runs(runs: Path, run_name: str) -> list[Path]:
     return [p for p in sorted(runs.iterdir()) if p.is_dir() and (m := RUN.fullmatch(p.name)) and m[1] == run_name]
 
 
+def intent_run(schedule: dict[str, Any], job: dict[str, Any], path: Path) -> str:
+    """The run directory name an intent on the data branch names, refused unless it is this job's own.
+
+    The data branch is written by every tick and readable by anyone who can
+    push to it, so a name outside results/quandela/runs/ would let sync copy
+    branch content over the code a later step runs with the token.
+    """
+    intent = read(path)
+    run = intent.get("run") if isinstance(intent, dict) else None
+    match = RUN.fullmatch(run) if isinstance(run, str) else None
+    require(
+        intent.get("schema") == INTENT_SCHEMA
+        and intent.get("schedule") == schedule["name"]
+        and intent.get("key") == job["key"]
+        and match is not None
+        and match[1] == job["run_name"]
+        and isinstance(intent.get("run_id"), str),
+        f"{path.name} does not name a run of {schedule['name']}/{job['key']}",
+    )
+    return str(run)
+
+
 def job_state(
     schedule: dict[str, Any], job: dict[str, Any], run_id: str, root: Path | None = None
 ) -> tuple[str, Path | None]:
@@ -232,11 +262,12 @@ def job_state(
     if not intent_path.exists():
         present = named_runs(runs, job["run_name"])
         return ("foreign", present[0]) if present else ("pending", None)
-    intent = read(intent_path)
-    run = runs / intent["run"]
+    run = runs / intent_run(schedule, job, intent_path)
     receipt_path = states / f"{job['key']}.receipt.json"
     if receipt_path.exists():
-        return read(receipt_path)["outcome"], run
+        outcome = read(receipt_path).get("outcome")
+        require(outcome in ("passed", "failed"), f"{receipt_path.name}: outcome {outcome!r}")
+        return str(outcome), run
     if not run.is_dir():
         return "interrupted", run
     if (run / "results.json").exists():
@@ -245,7 +276,7 @@ def job_state(
         return "submitted", run
     if (run / "submission-state.json").exists():
         return ("posted" if read(run / "submission-state.json").get("phase") == "posted" else "interrupted"), run
-    if (run / "job-body.json").exists() or intent["run_id"] != run_id:
+    if (run / "job-body.json").exists() or read(intent_path)["run_id"] != run_id:
         return "interrupted", run
     return "prepared", run
 
@@ -270,7 +301,8 @@ def due_time(schedule: dict[str, Any], job: dict[str, Any], root: Path | None = 
 
 def run_check(argv: list[str], value: Path) -> tuple[int, str]:
     """A case check from the schedule, run from the checkout with this interpreter."""
-    args = [str(value.relative_to(ROOT)) if a in PLACEHOLDERS else a for a in argv]
+    # The plan lies in the runner's scratch directory outside the checkout; the run lies inside it.
+    args = [str(value) if a == "{plan}" else str(value.relative_to(ROOT)) if a == "{run}" else a for a in argv]
     done = subprocess.run(
         [sys.executable, "-B", str(ROOT / argv[0]), *args[1:]],
         cwd=ROOT,
@@ -315,6 +347,26 @@ def hold(schedule: dict[str, Any], job: dict[str, Any], run_id: str, stage: str,
     }
     write(state_dir(schedule) / f"{job['key']}.hold.json", record)
     return {"outcome": "stop", "key": job["key"], "state": "held", "stage": stage, "reason": reason[-TAIL:]}
+
+
+def not_ready(schedule: dict[str, Any], job: dict[str, Any]) -> str:
+    """Why the platform or the token cannot take the job now, or empty; a passing condition, never a hold.
+
+    A platform in calibration or a token busy with another job is a reason to
+    wait, while a plan refusal after these reads is a stop condition of the case.
+    """
+    statuses = ("available", *job["admit_statuses"])
+    platform = schedule["platform"]
+    explorer = qd.explorer_row(platform)["status"]
+    if explorer not in statuses:
+        return f"{platform} is {explorer}"
+    processor = qd.get(qd.platform_route(platform)).get("status")
+    if processor not in statuses:
+        return f"{platform} processor is {processor}"
+    counters = qd.availability()
+    if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
+        return f"the token has a running or queued job: {counters}"
+    return ""
 
 
 def prepare(schedule: dict[str, Any], job: dict[str, Any], run_id: str, work: Path, now: float) -> dict[str, Any]:
@@ -438,9 +490,15 @@ def step(
         if run is not None and state == "prepared":
             return send(schedule, job, run, run_id)
         start = due_time(schedule, job)
+        latest = job.get("latest_start")
+        if latest is not None and clock() > utc(latest):
+            return hold(schedule, job, run_id, "latest_start", f"no start before {latest}")
         if clock() < start:
             when = datetime.datetime.fromtimestamp(start, datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
             return {"outcome": "wait", "key": job["key"], "state": state, "not_before": when}
+        busy = not_ready(schedule, job)
+        if busy:
+            return {"outcome": "wait", "key": job["key"], "state": state, "reason": busy}
         return prepare(schedule, job, run_id, work, clock())
     return {"outcome": "done"}
 
@@ -452,12 +510,14 @@ def sync(schedule: dict[str, Any], source: Path, target: Path) -> list[str]:
     for job in schedule["jobs"]:
         intent = states / f"{job['key']}.intent.json"
         if intent.exists():
-            paths.append(RUNS.relative_to(ROOT) / read(intent)["run"])
+            paths.append(RUNS.relative_to(ROOT) / intent_run(schedule, job, intent))
         if job.get("snapshot_out") is not None:
             paths.append(Path(job["snapshot_out"]))
     copied = []
     for relative in paths:
         if (source / relative).is_dir():
+            links = [p for p in (source / relative).rglob("*") if p.is_symlink()]
+            require(not links and not (source / relative).is_symlink(), f"{relative} carries a symbolic link")
             shutil.copytree(source / relative, target / relative, dirs_exist_ok=True)
             copied.append(str(relative))
         elif (target / relative).is_dir():
