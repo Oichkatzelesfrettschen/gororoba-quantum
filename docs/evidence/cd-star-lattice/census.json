@@ -264,7 +264,114 @@
       }
     }
   ],
-  "schema": "cd-star-lattice-census-v1",
+  "identification": {
+    "16": {
+      "commutant": {
+        "basis_squares": [
+          -7,
+          -7,
+          -1,
+          1
+        ],
+        "dimension": 4,
+        "e8_anticommutes_with_square_minus_7": true,
+        "right_multiplication_by_e8_in_basis": true
+      },
+      "doubling_pairs": {
+        "derived_index_orbits": [
+          [
+            0,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        ],
+        "derived_isomorphic_to_sl2_7_by_lift": true,
+        "derived_subgroup_is_psl2_7_preimage": true,
+        "derived_subgroup_order": 336,
+        "doubling_pair_image_order": 336,
+        "doubling_pair_kernel": 2,
+        "doubling_pair_maps_in_pgl2_7": true,
+        "index_pair_orbit_sizes": [
+          8,
+          56,
+          56
+        ]
+      },
+      "stabilizer_of_e0_equals_table_automorphisms": true,
+      "xor_linear_elements": 42
+    },
+    "4": {
+      "commutant": {
+        "basis_squares": [
+          -3,
+          1
+        ],
+        "dimension": 2
+      },
+      "paley": {
+        "equivalences_to_paley": 24,
+        "isomorphic_to_sl2_by_lift": true,
+        "line_action_kernel": 2,
+        "line_maps_in_psl2": true,
+        "paley_automorphisms": 24,
+        "paley_prime": 3
+      },
+      "stabilizer_of_e0_equals_table_automorphisms": true,
+      "xor_linear_elements": 6
+    },
+    "8": {
+      "commutant": {
+        "basis_squares": [
+          -7,
+          1
+        ],
+        "dimension": 2
+      },
+      "paley": {
+        "equivalences_to_paley": 336,
+        "isomorphic_to_sl2_by_lift": true,
+        "line_action_kernel": 2,
+        "line_maps_in_psl2": true,
+        "paley_automorphisms": 336,
+        "paley_prime": 7
+      },
+      "stabilizer_of_e0_equals_table_automorphisms": true,
+      "xor_linear_elements": 42
+    },
+    "arc_matrix_skew_conference": {
+      "128": true,
+      "16": true,
+      "2": true,
+      "32": true,
+      "4": true,
+      "64": true,
+      "8": true
+    },
+    "doubling_blocks_match_cd_sign": {
+      "128": true,
+      "16": true,
+      "32": true,
+      "4": true,
+      "64": true,
+      "8": true
+    }
+  },
+  "schema": "cd-star-lattice-census-v2",
   "tetrahedral_3d": {
     "boundary_points": 12,
     "boundary_symmetry": {

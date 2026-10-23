@@ -65,7 +65,7 @@ RECORD_CHECKS = (
     ),
     ("scripts/cd_two_blade_blocks.py", ".", "--check docs/evidence/box_kite_census/two_blade_blocks.json", 5),
     ("scripts/bdsc_diagnostic.py", ".", "--check", 5),
-    ("scripts/cd_star_lattice.py", ".", "--check docs/evidence/cd-star-lattice/census.json", 5),
+    ("scripts/cd_star_lattice.py", ".", "--check docs/evidence/cd-star-lattice/census.json", 6),
     ("scripts/box_kite_follow_design.py", ".", "--check docs/evidence/box_kite_follow_design/design.json", 5),
     ("scripts/bdsc_ascella_control.py", ".", "--check", 5),
     ("scripts/bdsc_pauli.py", ".", "--check docs/evidence/bdsc/pauli/pauli_form.json", 5),

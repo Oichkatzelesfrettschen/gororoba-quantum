@@ -5681,6 +5681,7 @@
     "scripts/axis_tilt_substrate_split.py",
     "scripts/bdsc_diagnostic.py",
     "scripts/bdsc_forensics.py",
+    "scripts/bdsc_stationarity.py",
     "scripts/bdsc_stray_mode_veto.py",
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
@@ -9105,6 +9106,20 @@
    "numpy",
    "parallel",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/bdsc_stationarity.py": [
+   "__future__",
+   "argparse",
+   "bdsc_diagnostic",
+   "bdsc_stray_mode_veto",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qd_platform",
+   "scipy",
    "sys",
    "typing"
   ],
