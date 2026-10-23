@@ -28,6 +28,7 @@ EVENTS_PER_ITERATION = 8192
 COEFFICIENT_TOLERANCE = 0.05
 MUTATION_DARK_TOLERANCE = 0.05
 SIGN_EVEN_TWIST = 0.2
+WEAK_SIGN_EVEN_TWIST = 0.05
 
 
 def check_point(angles: tuple[float, float]) -> dict[str, float]:
@@ -157,6 +158,22 @@ def report() -> dict[str, Any]:
     ]
     if not rejected:
         raise ValueError("the expanded endpoint family does not reject the sign-even counterexample")
+    # The weak twist must separate the two decisions: some interval excludes the exact ideal 0, yet every interval
+    # lies inside the coefficient tolerance, so a detectable deviation alone never fails tolerance-conformance.
+    weak_bright = 0.5 * (1 + WEAK_SIGN_EVEN_TWIST**2)
+    weak_even = 1j * WEAK_SIGN_EVEN_TWIST * complex_ideal
+    weak_coefficients = transform @ np.column_stack((weak_even.real, weak_even.imag))
+    weak_upper = np.abs(weak_coefficients) + sign_even_radii[:, None]
+    weak_excluded = [
+        {"row": row, "basis": basis_name, "value": float(weak_coefficients[index, column])}
+        for column, row in enumerate(("X", "Y"))
+        for index, basis_name in enumerate(("constant", "cos(2 theta)", "sin(2 theta)", "cos(4 theta)", "sin(4 theta)"))
+        if abs(weak_coefficients[index, column]) > sign_even_radii[index]
+    ]
+    if np.min(1 - weak_bright - dark_ideal) < 0:
+        raise ValueError("the weak sign-even case is not a positive state")
+    if not weak_excluded or np.max(weak_upper) > COEFFICIENT_TOLERANCE:
+        raise ValueError("the weak sign-even case does not separate exact-ideal exclusion from tolerance-conformance")
     return {
         "evidence_class": "exact identities and local matrix computation; artwork is theoretical",
         "operator_sha256": hashlib.sha256(
@@ -196,6 +213,13 @@ def report() -> dict[str, Any]:
             "maximum_sign_even_magnitude": float(np.max(np.abs(sign_even))),
             "sign_even_coefficients": even_coefficients.T.tolist(),
             "rejected_at_expected_counts": rejected,
+        },
+        "weak_sign_even_case": {
+            "twist": WEAK_SIGN_EVEN_TWIST,
+            "sign_even_coefficients": weak_coefficients.T.tolist(),
+            "ideal_excluded_at_expected_counts": weak_excluded,
+            "maximum_interval_magnitude": float(np.max(weak_upper)),
+            "disposition": "exact ideal excluded; coefficient-tolerance conformance supported",
         },
         "pilot_dark_counts": [
             {

@@ -199,5 +199,43 @@
     "matplotlib": "3.11.2",
     "numpy": "2.5.4",
     "sympy": "1.14.0"
+  },
+  "weak_sign_even_case": {
+    "disposition": "exact ideal excluded; coefficient-tolerance conformance supported",
+    "ideal_excluded_at_expected_counts": [
+      {
+        "basis": "sin(2 theta)",
+        "row": "X",
+        "value": -0.024999999999999998
+      },
+      {
+        "basis": "constant",
+        "row": "Y",
+        "value": 0.025000000000000005
+      },
+      {
+        "basis": "cos(2 theta)",
+        "row": "Y",
+        "value": -0.025
+      }
+    ],
+    "maximum_interval_magnitude": 0.039485103333016754,
+    "sign_even_coefficients": [
+      [
+        3.2130011196882396e-18,
+        -1.865171589536413e-18,
+        -0.024999999999999998,
+        -5.841846479980405e-19,
+        2.269607915709054e-18
+      ],
+      [
+        0.025000000000000005,
+        -0.025,
+        -6.037866073762998e-18,
+        1.537305469809032e-18,
+        3.648414385457151e-18
+      ]
+    ],
+    "twist": 0.05
   }
 }

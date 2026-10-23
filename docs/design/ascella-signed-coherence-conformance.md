@@ -342,7 +342,14 @@ coefficient tolerance. The sign-even counterexample is a required negative
 control: at expected counts its coefficients `X_even` sine 2-theta `=-0.1`,
 `Y_even` constant `=0.1` and `Y_even` cosine 2-theta `=-0.1` have intervals
 wholly outside the tolerance, so the family falsifies it, and replay.py raises
-if it would not. The mutation dark tolerance is 0.05, fixed
+if it would not. A weak twist of 0.05 is a second, separate case with the
+opposite registered disposition: its coefficients of magnitude 0.025 have
+intervals such as `[0.010515, 0.039485]`, which exclude the exact ideal zero
+and lie wholly inside the tolerance. It is reported as "exact ideal excluded;
+coefficient-tolerance conformance supported", and replay.py raises if the two
+decisions stop separating. Both dispositions come from expected counts and the
+declared radius formula; they are not measured rejection probabilities. The
+mutation dark tolerance is 0.05, fixed
 before acquisition. A probability lies in `[0, 1]`, so the endpoint's interval
 is intersected with `[0, 1]` before any decision; closure qualifies when the
 upper bound `min(1, D_mut + r)` is at most 0.05, and fails when the lower bound

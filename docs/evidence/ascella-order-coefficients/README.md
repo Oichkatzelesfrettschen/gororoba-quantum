@@ -17,7 +17,8 @@ sign-specific radii, the
 pointwise envelope of the 0.05 coefficient tolerance, the projected
 simultaneous X/Y radius at each planned angle, and the equal-contrast and
 sign-even counterexamples, checking the latter for positivity and for
-rejection by the sign-even endpoints at expected counts. [derivation.json](derivation.json) records residuals,
+rejection by the sign-even endpoints at expected counts, and a weak 0.05 twist
+whose intervals exclude the exact ideal yet stay inside the coefficient tolerance. [derivation.json](derivation.json) records residuals,
 source and pilot-analysis digests, tool versions and the pilot's dark counts.
 The pilot counts come from the retained analysis; the curve is theoretical.
 
