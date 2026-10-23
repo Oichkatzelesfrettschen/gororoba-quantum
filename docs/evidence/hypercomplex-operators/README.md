@@ -30,8 +30,10 @@ Replay the retained measured figure from the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check
+"$PYTHON" -B -W error docs/evidence/hypercomplex-operators/tuna-order-figure-replay.py
 ```
+
+The [replay](tuna-order-figure-replay.py) runs the unchanged producer into a temporary directory and compares decoded pixels, PNG text chunks and every metadata field except `png_sha256`, which it binds to the retained figure file. Pillow deflates PNG through the system `libz.so.1`, and zlib-ng and zlib 1.3.1 encode identical pixels into different bytes, so the producer's own `--check` byte comparison holds only on a host whose libz wrote the retained figure.
 
 Gate `core-630` replays both the active algebra certificate and the measured figure. The source gates `sources-120`, `sources-121` and `sources-122` cover the retained producer with lint, formatting and type checks.
 

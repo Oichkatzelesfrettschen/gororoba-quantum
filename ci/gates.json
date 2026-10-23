@@ -3976,7 +3976,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check --summary results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json --output docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.png && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-figure-replay.py && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
    "name": "core-630",
    "seconds": 13.0,
    "tier": "pr"
