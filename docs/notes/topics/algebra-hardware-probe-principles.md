@@ -50,10 +50,10 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 ### F3. Garnet carries the zero-divisor sign (hardware, preregistered)
 
 - **Outcome: established, nothing falsified.** On set `68b0f1d0` (37 CZ,
-  1.50 credits) the kernel odd part read -0.0695 +- 0.0087 at phi = 0.1
+  1.50 credits) the kernel odd part read -0.0699 +- 0.0087 at phi = 0.1
   (z -8.0) and -0.178 +- 0.009 at phi = 0.3 (z -20.1); the bright odd part
   read -0.016 +- 0.009, within a standard error of its modeled -0.008; the
-  sine-law contrast read z 0.74 and the even-part decomposition z 0.37.
+  sine-law contrast read z 0.78 and the even-part decomposition z 0.33.
   Visibility 0.36 +- 0.05 against the model's 0.48.
 - **Evidence.** `iqm-garnet-kernel-cancellation`,
   [analysis](../../../results/iqm/kernel_cancellation_probe_analysis.json).

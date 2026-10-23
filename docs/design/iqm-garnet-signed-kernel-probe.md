@@ -196,11 +196,13 @@ trains on QB6 and QB11 in a second job:
 | case | blocks | circuits x shots | ceiling | modeled D(t): calibration / with QB11 +2.7 % | planned z at V = 0.206 |
 |---|---|---|---|---|---|
 | `signed-kernel-null-retest`, \|t\| = 0.25 | 2 | 16 x 20000 + 10 x 4000 | 7.50 credits | +0.0095 / +0.0059 | 4.8 |
-| `signed-kernel-weak-resolve`, \|t\| = 0.05 | 16 | 128 x 20000 (two jobs) + 10 x 4000 | 43.50 credits | +0.0021 / +0.0010 | 3.0 |
 
 The decision at each nonzero |t| reads D(t): resolved three standard errors
-above zero, falsified three below, unresolved between. The weak resolve
-exceeds the account's 24.00 credits. The re-test decides whether Garnet's
+above zero, falsified three below, unresolved between. A |t| = 0.05
+resolve sized at V = 0.206 took 16 blocks (128 circuits, 43.50 credits); at
+the re-test's measured 0.058 it needs about 202 blocks, some 1600 circuits
+and 515 credits, against 0.85 standard errors at 16 blocks, so it is not
+built. The re-test decides whether Garnet's
 |t| = 0.25 sign survives the null subtraction: the model's visibility after
 it is 0.05 to 0.09, under which D(0.25) stays within two standard errors
 (0.0047), while the retained run's 0.206 puts it near 4.8. cases.json binds each case's
