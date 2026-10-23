@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "static-group-submit-admission",
+  "kind": "implementation",
+  "summary": "76: live_run: dry run admits a static group the submit revalidation rejects as mixed",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/ee40344e9f5c9e10939766eeb59df329f776fd1df19f3c02eb829b16b1d60c6d.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-204.json"
+  ],
+  "state": "inbox",
+  "scope": "76: live_run: dry run admits a static group the submit revalidation rejects as mixed",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #204 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-204-integration",
+      "action": "Verify the recorded integration state of PR #204.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "bd4da6f1fe71968add9aae6a0d433eb85c62a5df85b22cfe43da7cdb5a879c36",
+          "result": "PR #204 merged as 2860b437601bff87b3e6d3957148bb7d79b7ea19; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-204.json",
+              "sha256": "d8ed5972001f4f10da0d77dfabd771c6c04deb2fad7266e92e61d9fbf6590193"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- Reproduction at 4aaea17 shows the admitting path; prediction: the planned record lists `patch_static` as static while one member has an operation after a measure. - On the fixed branch the new contract passes and the falsifier (a measure-then-gate member in a static group yields a planned record) fails to occur. If main already refuses, the change is the contract alone, and the issue closes citing the commit that fixed it. - A submit-free `live_run.py` dry run of the patch-window family writes a record; `core-094` and the live_run gates pass.",
+      "state": "todo"
+    }
+  ]
+}

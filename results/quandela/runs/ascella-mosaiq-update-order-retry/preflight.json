@@ -1,0 +1,91 @@
+{
+ "admitted_statuses": [
+  "available"
+ ],
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "023cc4d6489019bc8d58ae50d11bab36968a109ec760c2271db0f90ab4310a79",
+ "case": "ascella-mosaiq-update-order-retry",
+ "cases_sha256": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
+ "credit_ceiling": 1.016384,
+ "estimated_credits": 1.016384,
+ "estimated_shots": 65536,
+ "expected_seconds": 180.0,
+ "max_credits": 1.016384,
+ "max_samples": 65536,
+ "max_shots": 131072,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   364.0,
+   406.0,
+   346.0,
+   96.0,
+   143.0,
+   461.0,
+   222.0,
+   682.0,
+   3248.0,
+   4340.0,
+   5736.0,
+   722.0
+  ],
+  "HOM (%)": 87.1,
+  "g2 (%)": 1.9
+ },
+ "platform": "qpu:ascella",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Ascella QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "qpu:ascella",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-16": {
+    "availability": 89.72
+   },
+   "2026-10-17": {
+    "availability": 89.79
+   },
+   "2026-10-18": {
+    "availability": 89.83
+   },
+   "2026-10-19": {
+    "availability": 89.93
+   },
+   "2026-10-20": {
+    "availability": 89.97
+   },
+   "2026-10-21": {
+    "availability": 89.4
+   },
+   "2026-10-22": {
+    "availability": 89.83
+   },
+   "2026-10-23": {
+    "availability": 90.3
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

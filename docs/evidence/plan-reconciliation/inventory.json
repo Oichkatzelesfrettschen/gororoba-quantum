@@ -1,0 +1,4123 @@
+{
+  "schema": "plan-inventory-v1",
+  "worktrees": [
+    {
+      "id": "2b98a2e9adfab041",
+      "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+      "branch": "main",
+      "dirty": true,
+      "index_sha256": "8d2ce1cd365d04d821956a3c323ea41c8ceb836fd28ced232478fe83201f3877",
+      "candidates": 92
+    },
+    {
+      "id": "ed5498d4b8d56aec",
+      "revision": "865f4d950e487757a7f38ae1b32bfc8e9ee8f072",
+      "branch": "fix/provider-api-billing-research-design",
+      "dirty": false,
+      "index_sha256": "8359eda178c5cb1f25bcaf76c3a5ea903448191d9454a4316560d7ab4b70450d",
+      "candidates": 40
+    },
+    {
+      "id": "d3db96feded36c05",
+      "revision": "e1d95d9d8af8d2715013758ff37cccc56a7066eb",
+      "branch": "feature/algebra-device-conjecture-evidence",
+      "dirty": true,
+      "index_sha256": "a398c20f12a9a4ee7f87c383fbef5e5ca02921068919b599fd0b28fd5d9af304",
+      "candidates": 45
+    },
+    {
+      "id": "a5c1cf98351c21f0",
+      "revision": "f68fb7a4b16b9dde76e9d8633f43ff9fa8af6a36",
+      "branch": "run/ascella-approved-order-retry",
+      "dirty": true,
+      "index_sha256": "738a5c6620b20301d89b156802623ff7ed3d2b6b036d3e448fba0c204db9fd96",
+      "candidates": 42
+    },
+    {
+      "id": "076873746403e07f",
+      "revision": "8e06605820d4fc2988f463de1e49605078c5b106",
+      "branch": "docs/ascella-deployment-local-replay",
+      "dirty": false,
+      "index_sha256": "e8a4151ef73bdba5a62703fc6a7f5c134df681ef935ea97dc0c8b3b81dfafd2f",
+      "candidates": 45
+    },
+    {
+      "id": "d795dc815fbe6cf7",
+      "revision": "2829616d4a50566a2072a0ede9f88c3474ebe567",
+      "branch": "fix/ascella-input-routing-pilot",
+      "dirty": false,
+      "index_sha256": "d7d4efe96e47613efbd8fb7819e8e1f9422a56412d3833e685556fae6f9c5514",
+      "candidates": 39
+    },
+    {
+      "id": "181f82d8482ba790",
+      "revision": "7084a667351f6ffa41de6f85d2cad5560eb23dc0",
+      "branch": "quandela/bdsc-mode5-veto-amendment",
+      "dirty": false,
+      "index_sha256": "a0ba06ea755022b4aee78a4ef10831b11b237fc4daf55f82f3fe26dffbea0c8f",
+      "candidates": 45
+    },
+    {
+      "id": "32c0be4d2a7ad7c8",
+      "revision": "dbe5c199d85daee1955a412836d80c01e6529ed6",
+      "branch": "fix/bdsc-principal-angle-evidence",
+      "dirty": false,
+      "index_sha256": "1f1f83bfc132e4c0840a0be01c7238326f055db49c9aa3faad0862d5f9014daf",
+      "candidates": 36
+    },
+    {
+      "id": "d3c4960ae8011cee",
+      "revision": "2f1394a032fc0f9ecd8ab6cf142526af9892f075",
+      "branch": "cd-star-lattice/group-identification",
+      "dirty": true,
+      "index_sha256": "3b0a63d23ef0265d256c9debc70e331a4114783f449918322e6922ad48f8390a",
+      "candidates": 45
+    },
+    {
+      "id": "3b6bb97a6a218073",
+      "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+      "branch": "feature/centralized-plan-tracker",
+      "dirty": true,
+      "index_sha256": "b28f44bd1947b6370696320eb4b38b0afe7d6ff9e902f177dbc944117054748e",
+      "candidates": 46
+    },
+    {
+      "id": "d4b2de3d28d71dcf",
+      "revision": "6ca991a0e339cf3d8bed5dd3d45d7888272a8a82",
+      "branch": "HEAD",
+      "dirty": false,
+      "index_sha256": "338c609d841c77beea227c7b4e44ccfc8c66a41da0c5d442156f2a2f5349a9c6",
+      "candidates": 36
+    },
+    {
+      "id": "1fe5f2e90160ee40",
+      "revision": "0695c9b7f325b7857b909df8f581e448b2c173c3",
+      "branch": "docs/hypercomplex-foundational-source-review",
+      "dirty": false,
+      "index_sha256": "3750241fd38f26a1fa182fc256b1d29cfadd9b3c8760530644a38f70ac8d1813",
+      "candidates": 36
+    },
+    {
+      "id": "44d566aa71b24348",
+      "revision": "a8a5995a3c8d481f600e76e3542823ef198e9fcf",
+      "branch": "feature/hypercomplex-library-execution-manifests",
+      "dirty": false,
+      "index_sha256": "2736c7cb05b295773c3ba51a530a6923ea68ea72fe944b6bb3cfb19605412d68",
+      "candidates": 36
+    },
+    {
+      "id": "961c9cf27cb58ccf",
+      "revision": "925793c7f27054fd2ab4074b0305401796b17441",
+      "branch": "review/hypercomplex-library-import-coverage",
+      "dirty": false,
+      "index_sha256": "b8f56c5a34d755478f937bfaf4144f69165825b5f59b61056a75dbb335a2b8d5",
+      "candidates": 36
+    },
+    {
+      "id": "609a456beb27f773",
+      "revision": "0ca5e17894d4db18761bb0cbcc58e4b761653f8b",
+      "branch": "fix/hypercomplex-library-source-coverage",
+      "dirty": false,
+      "index_sha256": "8013e2905fecc6d227566f3c11db656c07fdf637a02b196f0dcdd6ee56af92e8",
+      "candidates": 36
+    },
+    {
+      "id": "e745fc36a5621946",
+      "revision": "51949f964a5601cbf6273c0d70020b3cecaa07c0",
+      "branch": "fix/iqm-train-fit-closed-form",
+      "dirty": false,
+      "index_sha256": "d0fc96600480b525d33008a5d6f7e68719284caffcf56b0e55f7e0846d01b644",
+      "candidates": 45
+    },
+    {
+      "id": "201d902b9c0777c7",
+      "revision": "bcc30e8553a5191ccc9010ba5a9de2378d32e69c",
+      "branch": "fix/numerical-model-pytest-regressions",
+      "dirty": false,
+      "index_sha256": "51fcdf1ec94a04f624fbb814adc8f97c94a7c0ca91272e5d728cf52083da46cb",
+      "candidates": 36
+    },
+    {
+      "id": "ce2d1f97a9088b39",
+      "revision": "8a5ed819743ba7131cbb5917b763bd97625e6388",
+      "branch": "math/rank-locus-padic-hensel",
+      "dirty": false,
+      "index_sha256": "333e4d9d39ed4f809a6ea45fcda3eb73cfedbfa8ef8c3ad576a71bb3a4dbfcbc",
+      "candidates": 45
+    },
+    {
+      "id": "51629796d206933e",
+      "revision": "881fbe9aec00c55a95836754b7c8b4f29741e652",
+      "branch": "fix/qi-proposal-submission-source-binding",
+      "dirty": false,
+      "index_sha256": "b6e45d6946b19d1581111a77a60307c085e60f054d793137887bb7ef3cfcc55f",
+      "candidates": 36
+    },
+    {
+      "id": "7e19482ca6a95aa0",
+      "revision": "d14f02f3fe92d1a9a978fcdb4abf7b547b6f274f",
+      "branch": "docs/quandela-validation-evidence-retention",
+      "dirty": false,
+      "index_sha256": "1229e08b7837430f084d6b90da5daf77d1849d99b5916d3e228b5ac3eef7e07a",
+      "candidates": 41
+    },
+    {
+      "id": "dd79f1821965c2fe",
+      "revision": "a1caedb0e1b6f7f06b790bc179004daeca3c77b6",
+      "branch": "fix/quantum-campaign-deadline-recovery",
+      "dirty": false,
+      "index_sha256": "27ba72f976220c5ce616fbbd561821242490081aa371cd55f25a7eecd6964755",
+      "candidates": 36
+    },
+    {
+      "id": "305f5f1b27c78381",
+      "revision": "e6b595bc1a7092e625cf08cf7091606a868c9b70",
+      "branch": "fix/quantum-campaign-submission-deadline",
+      "dirty": false,
+      "index_sha256": "356d051e63d61d62e6b26cbd2e7ba9ff7c2cb678c736ebfbf6527977c905da47",
+      "candidates": 36
+    },
+    {
+      "id": "9ff1566d4c2ec2c3",
+      "revision": "e95ef3f4bd396a7a854bb7b6ee681f429bc75876",
+      "branch": "fix/quantum-inspire-rejected-request-recovery",
+      "dirty": false,
+      "index_sha256": "5f3580a82b911ced470682c6cca68742f0772543477fb91146ba989182ab3e1f",
+      "candidates": 36
+    },
+    {
+      "id": "dd5582d195c2b985",
+      "revision": "673e9609b8af103ec02e61fc99231933a403e627",
+      "branch": "fix/quantum-proposal-rejection-source-bindings",
+      "dirty": false,
+      "index_sha256": "41fbc69a965c58dc96506eace2127be57550008af4fb16d85dfa111228e622c1",
+      "candidates": 36
+    },
+    {
+      "id": "2704fa93de2e6f35",
+      "revision": "befafe723f6e9a28b79217dc6ec4a399434474be",
+      "branch": "fix/quaternion-dephasing-pool",
+      "dirty": false,
+      "index_sha256": "388991e34614e1fbcde41f0780cee2515c063c67ed066338daedc4a97215498b",
+      "candidates": 36
+    },
+    {
+      "id": "2878464fe7d4ec4f",
+      "revision": "7eb25f6a68d2d545807c040292790269e34b1932",
+      "branch": "fix/qx-proposal-submission-source-binding",
+      "dirty": false,
+      "index_sha256": "9b7b1d56b77950e0a4b2e25be3861939a274be9df2472b5b6b4138781a8f2ed5",
+      "candidates": 36
+    },
+    {
+      "id": "a54ed7fab6489aff",
+      "revision": "921d40ebb968ab60650b6384ba7c6419932eaf2e",
+      "branch": "fix/research-state-regression-gates",
+      "dirty": false,
+      "index_sha256": "a542dd0e2c4fb2a8d8b973bda672e10d17c76add8f6c6b4754cdefa06c795eae",
+      "candidates": 36
+    },
+    {
+      "id": "30e05c9c860b9be1",
+      "revision": "b495dde29cc43d1cbd009f1564d10cb2400e799e",
+      "branch": "ci/split-behavioral-pytest-gates",
+      "dirty": true,
+      "index_sha256": "5c7ea35c7b4262b9a6065f2a78ed290408cab65ba0e7345bf3b84025dd483bb2",
+      "candidates": 45
+    },
+    {
+      "id": "e1a40d98a2a33586",
+      "revision": "e6f352d8a89c63ee7cc5c8b4797872fab480ae73",
+      "branch": "fix/submitted-circuit-audit-successor",
+      "dirty": false,
+      "index_sha256": "36a977d50b0dbfee2ebd89bb88b77da7a424c78537e62cb88d28426ac551c932",
+      "candidates": 36
+    },
+    {
+      "id": "e8d519986ff51b29",
+      "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+      "branch": "HEAD",
+      "dirty": false,
+      "index_sha256": "8d2ce1cd365d04d821956a3c323ea41c8ceb836fd28ced232478fe83201f3877",
+      "candidates": 45
+    },
+    {
+      "id": "9a854846f98edab5",
+      "revision": "a92b3a568388d8a3d362a5a89c7d8a3684f5e41f",
+      "branch": "HEAD",
+      "dirty": false,
+      "index_sha256": "a0ba06ea755022b4aee78a4ef10831b11b237fc4daf55f82f3fe26dffbea0c8f",
+      "candidates": 45
+    }
+  ],
+  "sources": [
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "357b967ef841e86c0d94e6d781a22ce12ef6289f03fc256d0eb1540edcf719bd",
+      "bytes": 32047,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "3b6bb97a6a218073",
+        "e8d519986ff51b29"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/357b967ef841e86c0d94e6d781a22ce12ef6289f03fc256d0eb1540edcf719bd.txt",
+      "retained_sha256": "0a73518c55916088ee6956849d46b31befcbdeb29563e8a39fde5aff503809c7",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md",
+      "sha256": "a981f09979a5dca580f725ad59368bd687d4d63e5ffeda5098844d7505cfcbac",
+      "bytes": 13901,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/a981f09979a5dca580f725ad59368bd687d4d63e5ffeda5098844d7505cfcbac.txt",
+      "retained_sha256": "f5c162eb4c6f469e9cbe30104ada7f76edc5761c6d768869090a32c02e93800f",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "quandela-qualification-cases"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "docs/archive/handoffs/handoff-notes.md",
+      "sha256": "f4a331e2fb56ccaa42f29fe1a1e4e1e464e3d0e2669998300a01314d620d8055",
+      "bytes": 20558,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f4a331e2fb56ccaa42f29fe1a1e4e1e464e3d0e2669998300a01314d620d8055.txt",
+      "retained_sha256": "667d901353541ff462702a34a98c37344feac4c9e3e40924f31e04a4f178d369",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "research-evidence-roadmap"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "d3a73cb1ec72e49e2d90b64ab3f5434b4d87705c7834dbafd15841f6af8dea1a",
+      "bytes": 25298,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/d3a73cb1ec72e49e2d90b64ab3f5434b4d87705c7834dbafd15841f6af8dea1a.txt",
+      "retained_sha256": "ebcaf718515efa5f342cc60f22c6513ae11a3909649d7f03904f6d0408a869b6",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ascella-instrument-readiness-and-packed-tests"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-qualification.md",
+      "sha256": "892ad48738400c328b759e849369dc02d99053c8d130e583e0c488954a615b15",
+      "bytes": 28756,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/892ad48738400c328b759e849369dc02d99053c8d130e583e0c488954a615b15.txt",
+      "retained_sha256": "02de91c3ae1a229f218b37c7bc17acb03df09a5abaee9e93b60f49edcd8553a1",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "bdsc-qualification"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-tuna17-pauli-pilot.md",
+      "sha256": "bd4e0b8bd1a2b64957e1a73f0c8c0fbe8d452ced9e5e83666692cdd2fd2109ff",
+      "bytes": 16899,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/bd4e0b8bd1a2b64957e1a73f0c8c0fbe8d452ced9e5e83666692cdd2fd2109ff.txt",
+      "retained_sha256": "06c2cf4df0be9318b17353b55e6bef43cb3d892565cbceb79fabbe918158bca1",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "bdsc-tuna17-pauli-pilot"
+      ]
+    },
+    {
+      "path": "docs/design/et-rows.md",
+      "sha256": "e5657fcad0adee0ba5dc0724659c02d9bde21c59170b9002474ef2e7e705884b",
+      "bytes": 6101,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e5657fcad0adee0ba5dc0724659c02d9bde21c59170b9002474ef2e7e705884b.txt",
+      "retained_sha256": "5d2d66135d98a4c3acad7b45c17c83a8ce432c7d015a78b81a64504e2b84a90f",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "et-rows"
+      ]
+    },
+    {
+      "path": "docs/design/factoring-notes.md",
+      "sha256": "41299d76a521291aa57702856706c05bae933457f0b983c8d036f2348a762ae9",
+      "bytes": 30766,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/41299d76a521291aa57702856706c05bae933457f0b983c8d036f2348a762ae9.txt",
+      "retained_sha256": "e6506cb607bbb0fcd663510bbf43918221486d98d8d57e42d6e84a558632c642",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Reference or retained validation material; its sections describe mechanisms rather than an independent work commitment."
+    },
+    {
+      "path": "docs/design/hybrid-shor.md",
+      "sha256": "f29deebccca539e8e8b45b0c6d31d942b726c2e3d33e10df9a7a8d3d5dfe2d4e",
+      "bytes": 49557,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f29deebccca539e8e8b45b0c6d31d942b726c2e3d33e10df9a7a8d3d5dfe2d4e.txt",
+      "retained_sha256": "6b79e4813d729996da6f3de79e093359ad8bba30fa3904e5c6eaf037abe86b5b",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hybrid-shor-architecture"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "ff01741780cbdd783060a45e5b051a0b04f2aa5a32f2761f1e0dd1dd2a26abfe",
+      "bytes": 12381,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "1fe5f2e90160ee40",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ff01741780cbdd783060a45e5b051a0b04f2aa5a32f2761f1e0dd1dd2a26abfe.txt",
+      "retained_sha256": "daa4e7ec3496e283cf88283452604e60a45017719c394206f929c6cda58ad298",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-evidence"
+      ]
+    },
+    {
+      "path": "docs/design/iqm-garnet-kernel-cancellation-probe.md",
+      "sha256": "4b1fd70bd550c034c62685e92b4e705fa9995ee40e3a12d744c287c29678be6c",
+      "bytes": 10913,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/4b1fd70bd550c034c62685e92b4e705fa9995ee40e3a12d744c287c29678be6c.txt",
+      "retained_sha256": "4a7decdce93fa5f4cce085ca4c2dbd148af498af1dcebe42113bf62c81e611db",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "iqm-garnet-kernel-cancellation-probe"
+      ]
+    },
+    {
+      "path": "docs/design/iqm-garnet-signed-kernel-probe.md",
+      "sha256": "4258ffad6bfc3325f0ab5a84148e681f72576b7509a2adda1492ad05f1769b6a",
+      "bytes": 13382,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/4258ffad6bfc3325f0ab5a84148e681f72576b7509a2adda1492ad05f1769b6a.txt",
+      "retained_sha256": "aabc69d4573bb82e810d4e92c51c5cdba681548acd311fab375c635778a2dc57",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "iqm-garnet-signed-kernel-probe"
+      ]
+    },
+    {
+      "path": "docs/design/iqm-garnet-timing-pilot.md",
+      "sha256": "50abc323b1260ee2f77fa93feb00ee41ba9691efdc4482ef712595469ba7ec88",
+      "bytes": 6296,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/50abc323b1260ee2f77fa93feb00ee41ba9691efdc4482ef712595469ba7ec88.txt",
+      "retained_sha256": "639908b8121bfb515b6981fdde38d876f815adcc3c1d13e5e8753255aa1a98c6",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "iqm-garnet-timing-pilot"
+      ]
+    },
+    {
+      "path": "docs/design/numpy-validation.md",
+      "sha256": "32bb090ba2b8fe1beeb0c94e7f4133884d7406a0f18a6c5317a8219f51630c89",
+      "bytes": 3984,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/32bb090ba2b8fe1beeb0c94e7f4133884d7406a0f18a6c5317a8219f51630c89.txt",
+      "retained_sha256": "86bd81b345cb6af0472434ca532e8064ca5dc2646bceffea55e10431eeae1774",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Reference or retained validation material; its sections describe mechanisms rather than an independent work commitment."
+    },
+    {
+      "path": "docs/design/packed-pauli-response-current-balance.md",
+      "sha256": "bd8abdb6d731bd308ec849cb2c36bab7d2b3c2ab3c93f636873098a68e88c9d2",
+      "bytes": 10665,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/bd8abdb6d731bd308ec849cb2c36bab7d2b3c2ab3c93f636873098a68e88c9d2.txt",
+      "retained_sha256": "42c0262d02f9d63243f4af6f2cbeaa07cbe1e077dcf12d6f12e59ae080e10f44",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "packed-pauli-response-admission"
+      ]
+    },
+    {
+      "path": "docs/design/provider-api-billing-research-plan.md",
+      "sha256": "3947915f4440fbd7a35752de1fd4766abf02e12f72e475b77a085890635209bd",
+      "bytes": 4953,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/3947915f4440fbd7a35752de1fd4766abf02e12f72e475b77a085890635209bd.txt",
+      "retained_sha256": "7c47fc9fe61075b478adefc6f331be9278bc977e2a194680cc12bb5351f33c91",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "provider-api-billing-repair"
+      ]
+    },
+    {
+      "path": "docs/design/tuna-order-pilot-adversarial-admission.md",
+      "sha256": "689008d67b98c9b8b9c07d95014e7b0b3a1b4c52ae1bcc52b2acd7992b0ed5a1",
+      "bytes": 6623,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/689008d67b98c9b8b9c07d95014e7b0b3a1b4c52ae1bcc52b2acd7992b0ed5a1.txt",
+      "retained_sha256": "08ca932a617e111adda22816c688dd415c95be1d042c16d9f540f36e9a984766",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-order-pilot-adversarial-admission"
+      ]
+    },
+    {
+      "path": "docs/design/tuna17-zero-divisor-matched-response.md",
+      "sha256": "d804d61de41841adc234cce2f92adc6fae1a37ae9845437406588a8ae78b3165",
+      "bytes": 5713,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/d804d61de41841adc234cce2f92adc6fae1a37ae9845437406588a8ae78b3165.txt",
+      "retained_sha256": "80d2ef33dacf3681039a5c7ca1180a6d67f6af1b826f58cae7a5cae7bdea08d5",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna17-zero-divisor-matched-response"
+      ]
+    },
+    {
+      "path": "docs/local/plans/README.md",
+      "sha256": "556552ce9ddb9abbbfbf84421f4935731b33b4d1514be3d5a6df6449258bb6a9",
+      "bytes": 9336,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/556552ce9ddb9abbbfbf84421f4935731b33b4d1514be3d5a6df6449258bb6a9.txt",
+      "retained_sha256": "a0851550512ea19fcf975b1d1b5274851fa5729e67d8d90a2ff06230c87791d1",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "ibm-historical-research-queue"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/TEMPLATE.md",
+      "sha256": "8ff0ea1566f902b6abdc91af70077d83a9645de60193a579a68fe386b4ac0545",
+      "bytes": 1178,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/8ff0ea1566f902b6abdc91af70077d83a9645de60193a579a68fe386b4ac0545.txt",
+      "retained_sha256": "fac91d8b9f0cda5dbec38035c38277dbaf99de7525da776f4bf8981bb348cffe",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "template",
+      "plans": [],
+      "note": "Template is procedure, not a work commitment."
+    },
+    {
+      "path": "docs/local/plans/aer-gpu-stack.md",
+      "sha256": "f6f781ba372f8c318aaea54ca3a0e255195f019b893276d9aa2cd8abedd70ac5",
+      "bytes": 10356,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f6f781ba372f8c318aaea54ca3a0e255195f019b893276d9aa2cd8abedd70ac5.txt",
+      "retained_sha256": "482b0ab783fc8c46719e239af5b36379f894c04628ce385dfe194e8861995ac9",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "aer-gpu-stack-qualification"
+      ]
+    },
+    {
+      "path": "docs/local/plans/boxkite-generator.md",
+      "sha256": "7c1dfe9689ede8ef3148f92d890bd5d82ccf858fdd4cace1092b7b7191c3a2c4",
+      "bytes": 4315,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/7c1dfe9689ede8ef3148f92d890bd5d82ccf858fdd4cace1092b7b7191c3a2c4.txt",
+      "retained_sha256": "6eb8c7953a86804063ba3ecd4a1742e23d2e5b23ee09efd65eebd37844915530",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "box-kite-case-generation"
+      ]
+    },
+    {
+      "path": "docs/local/plans/boxkite-kaggle-sweep.md",
+      "sha256": "3f19580e8f6988f8b70e39b93bfb0439a2dbb9af11e89d66204c333d4847851e",
+      "bytes": 2672,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/3f19580e8f6988f8b70e39b93bfb0439a2dbb9af11e89d66204c333d4847851e.txt",
+      "retained_sha256": "92b563c1d4ee9622b9ee655cdd87c95dda452245dad9d7f9ebfe560f94eb4119",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "box-kite-exhaustive-emulator-sweep"
+      ]
+    },
+    {
+      "path": "docs/local/plans/boxkite-research-program.md",
+      "sha256": "207f68dbe011cba26752a96dbe6ce3202c37d4c44144f3dace803bbe7ad9157f",
+      "bytes": 6180,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/207f68dbe011cba26752a96dbe6ce3202c37d4c44144f3dace803bbe7ad9157f.txt",
+      "retained_sha256": "d43f9d1f72cf1515a599c00315e0c16abb5da80acf28b9b44767b46a6e682796",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "box-kite-mathematical-followups"
+      ]
+    },
+    {
+      "path": "docs/local/plans/cd-star-lattice-groups.md",
+      "sha256": "80b4a1243b663c518f287e6617e821c8343669b0a029b7e13fa79e2e8ab557fb",
+      "bytes": 4811,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/80b4a1243b663c518f287e6617e821c8343669b0a029b7e13fa79e2e8ab557fb.txt",
+      "retained_sha256": "69ad70dfa0c1f3974439aec8da6db8ac32f351773acb938664a5df78ecd7258a",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "star-lattice-group-identification"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/cd-star-lattice-groups/g32.json",
+      "sha256": "d2024a24d2e070886b69b65e333edf1001c1f540c5429ce6c3d31d50b990235c",
+      "bytes": 167328,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/d2024a24d2e070886b69b65e333edf1001c1f540c5429ce6c3d31d50b990235c.txt",
+      "retained_sha256": "200fb78ccbb4b96d317ae9bb8d2a0b0ce5350b78c6f56070c5e3c3a2dfee31a4",
+      "normalization": "Home-directory and email redaction; trailing whitespace normalized.",
+      "disposition": "supporting",
+      "plans": [
+        "star-lattice-group-identification"
+      ],
+      "note": "GAP/Sage replay output supports group identification; this JSON is data rather than an independent plan."
+    },
+    {
+      "path": "docs/local/plans/cd-star-lattice-groups/groups.json",
+      "sha256": "96e8a4bf2c3018c5ba775b78a98920b58653b710daca459254665a489326b215",
+      "bytes": 191863,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/96e8a4bf2c3018c5ba775b78a98920b58653b710daca459254665a489326b215.txt",
+      "retained_sha256": "221da42fa26f41f5a167fb98613053762a4ff511128da416ab9e9b00219a338c",
+      "normalization": "Home-directory and email redaction; trailing whitespace normalized.",
+      "disposition": "supporting",
+      "plans": [
+        "star-lattice-group-identification"
+      ],
+      "note": "GAP/Sage replay output supports group identification; this JSON is data rather than an independent plan."
+    },
+    {
+      "path": "docs/local/plans/ci-ledger-review.md",
+      "sha256": "25d543b408a02479ed3b87c6774b6984d06c8a901cb2b7ad2a4b0c81772c37d5",
+      "bytes": 7022,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/25d543b408a02479ed3b87c6774b6984d06c8a901cb2b7ad2a4b0c81772c37d5.txt",
+      "retained_sha256": "8bd29bbca5d5c2435b5386010e3f1afe883236d65d6db9dde68ec7f3fb9b1b71",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "ci-read-set-ledger"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/ci-read-set-ledger-report.md",
+      "sha256": "5f47b522dbd94e90da933a0927af6b3e78ed78ca5609954f54ef3cc90e6966fc",
+      "bytes": 8404,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/5f47b522dbd94e90da933a0927af6b3e78ed78ca5609954f54ef3cc90e6966fc.txt",
+      "retained_sha256": "870631bfd31842575f5bf628cbc8bf9944cf1e0f3cf1a6a41813beb810fe6d88",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "ci-read-set-ledger"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/ci-read-set-ledger.md",
+      "sha256": "1b7dece9956f1813a3bc8aeaa846ca8d86ebdf918ba4ffdc814b8a2185440ca7",
+      "bytes": 6832,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/1b7dece9956f1813a3bc8aeaa846ca8d86ebdf918ba4ffdc814b8a2185440ca7.txt",
+      "retained_sha256": "f89e650e13a5f9a40ba50472d97f68582f2695eb25fecd6cb960c3fa418ea96c",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ci-read-set-ledger"
+      ]
+    },
+    {
+      "path": "docs/local/plans/closeout-shards.md",
+      "sha256": "ab517521a72fa090929c23b8c41344321f6d770c12c12e8fb7bc800d124ecb17",
+      "bytes": 987,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ab517521a72fa090929c23b8c41344321f6d770c12c12e8fb7bc800d124ecb17.txt",
+      "retained_sha256": "0f3c25e708c58fd564d2ded7c316a400447a149cec669082538037489e4f0658",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "kaggle-ci-shard-retirement"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-062.md",
+      "sha256": "63f74f941d1e336c7f1f5ba81865caca41fbfbcce01a52016e42295b38ec4a56",
+      "bytes": 10408,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/63f74f941d1e336c7f1f5ba81865caca41fbfbcce01a52016e42295b38ec4a56.txt",
+      "retained_sha256": "958e1e19ab9802135235207206ae2fb39da9e793cf6e73331223720fb85c0401",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "generated-dataset-verification"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-064.md",
+      "sha256": "f66e337264a991ac6728300698fd1aa58dde8557133eacf949193e19a1feb374",
+      "bytes": 13143,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f66e337264a991ac6728300698fd1aa58dde8557133eacf949193e19a1feb374.txt",
+      "retained_sha256": "162405cf4829e7819281c3ca06ffe456d3da19fab82ce3ab11c01e1bd0138ee9",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "rocq-proof-change-replay"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-069-init-herald.md",
+      "sha256": "17795704893b9291222931824f7358da9be38e6a7bd2cd84b92bf2c19d312e3e",
+      "bytes": 5303,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/17795704893b9291222931824f7358da9be38e6a7bd2cd84b92bf2c19d312e3e.txt",
+      "retained_sha256": "a14e0695a85a4a355ccdadc127dd9b94b1c8479d8162a066b9c7651cb84ad1ba",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "n21-initialization-herald"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-069.md",
+      "sha256": "f1455a2270c77a74a26bec4d1bdcd85e3dbbd5c898ab387eb3e2fad06153c422",
+      "bytes": 5806,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f1455a2270c77a74a26bec4d1bdcd85e3dbbd5c898ab387eb3e2fad06153c422.txt",
+      "retained_sha256": "61dee24055b64c0d63280a3135512a7fd7cd1dba267e5c276c6d77958aaf5204",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "n21-between-arm-contracts"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-070.md",
+      "sha256": "58c17d11db05362c8adf0ee3a31e9e9bb1d1c792c908f675e29c494cc07cfce0",
+      "bytes": 2196,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/58c17d11db05362c8adf0ee3a31e9e9bb1d1c792c908f675e29c494cc07cfce0.txt",
+      "retained_sha256": "82e5549f16694bd5585b83a1fb76b3843507ec4f94d97a8a1aa550bbf5c09c51",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "routed-control-timing"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-071-agent-report.md",
+      "sha256": "77260d8b3ada86af72138ff139b49ff891c3746817cc60fdf6b92a8b9bb09598",
+      "bytes": 5518,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/77260d8b3ada86af72138ff139b49ff891c3746817cc60fdf6b92a8b9bb09598.txt",
+      "retained_sha256": "a4192c5c50984e315c1442b1037da73a9069b3e9b16ff9d68adce7980501c9f0",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "n21-exact-isa-exposure"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/issue-071.md",
+      "sha256": "41486f73ea721eeb59220324c33ddff8ef55db98d29bcb2b648e378c522d8ee7",
+      "bytes": 6798,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/41486f73ea721eeb59220324c33ddff8ef55db98d29bcb2b648e378c522d8ee7.txt",
+      "retained_sha256": "3f8e508b4012feb52e22a84c64dca1f3fae9455b40b09b067ddcadf31755e82d",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "n21-exact-isa-exposure"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-072.md",
+      "sha256": "eae34cad1fee2b9df342d367b0a397c3111b1e055b81a63ae19d28be1999c01e",
+      "bytes": 5982,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/eae34cad1fee2b9df342d367b0a397c3111b1e055b81a63ae19d28be1999c01e.txt",
+      "retained_sha256": "722f5f1e5bbc6a3af0d38d4de44d5954bb40b4710231c221986bd3f9aa986eef",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "n21-pub-manifest-binding"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-074.md",
+      "sha256": "276177078ffcc8d0531dcc1ef98128150cf029d8ccd6f9973bc411c6ccd62c71",
+      "bytes": 4050,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/276177078ffcc8d0531dcc1ef98128150cf029d8ccd6f9973bc411c6ccd62c71.txt",
+      "retained_sha256": "c94bb5532cad9e3c0e4cde60280da3f242bc68c220a151e7ab5fe73340c5dede",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "patch-window-calibration-binding"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-076.md",
+      "sha256": "ee40344e9f5c9e10939766eeb59df329f776fd1df19f3c02eb829b16b1d60c6d",
+      "bytes": 3889,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ee40344e9f5c9e10939766eeb59df329f776fd1df19f3c02eb829b16b1d60c6d.txt",
+      "retained_sha256": "4c9b413a8f5133728fbb2009414d10213db9c2d528a524a21184dc7e459dc8a7",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "static-group-submit-admission"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-131.md",
+      "sha256": "945d44c9516a3294cd5b8a988e7c3c47a1e0c9d879f3126b66e30086af2ea20d",
+      "bytes": 14067,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/945d44c9516a3294cd5b8a988e7c3c47a1e0c9d879f3126b66e30086af2ea20d.txt",
+      "retained_sha256": "6f87d0e20315b20c8b45a9014f983953a5a9d08377cd3b6d92395f27153699ab",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "dynamic-cz-conformance"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-154.md",
+      "sha256": "45a7c101a7b7db0c05bae02f2ae508d4dd43dd7488ea98832475e3292077a404",
+      "bytes": 1926,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/45a7c101a7b7db0c05bae02f2ae508d4dd43dd7488ea98832475e3292077a404.txt",
+      "retained_sha256": "3d3c295a8924f8c15aeb12994b8ddbb1cac2b7fbf482a35206d751869d2e7ebd",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quantum-inspire-transaction-binding"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-161.md",
+      "sha256": "5769a3a875f4cda1ca263cd119e7baf6766bb3887b8090d69ef2af6ec573defe",
+      "bytes": 7976,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/5769a3a875f4cda1ca263cd119e7baf6766bb3887b8090d69ef2af6ec573defe.txt",
+      "retained_sha256": "c15a7b0b3c454b7e678f45d21b428e8f6ad2cffa41e348c60a5faec80b84469c",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "atlas-componentwise-roundoff"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-168.md",
+      "sha256": "f5833573ddd45c14a1c4ce283b345eb6cfc96ae2f1ac7ad275112957c6663d5e",
+      "bytes": 4960,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f5833573ddd45c14a1c4ce283b345eb6cfc96ae2f1ac7ad275112957c6663d5e.txt",
+      "retained_sha256": "6ec41cb6b6a9be58d8cbbd6242e2d2fd25b5573e5a7c7a077cdd1d9953626e77",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "kaggle-kernel-owner-retention"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-182.md",
+      "sha256": "e7c70d67f1b13a635fe2075202d0f9832422c28a906a724b3d7158430a5df02e",
+      "bytes": 4805,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e7c70d67f1b13a635fe2075202d0f9832422c28a906a724b3d7158430a5df02e.txt",
+      "retained_sha256": "aea1f44f027119172bfea992b0cf5c09885fb82ad058e876510737df0f8275ca",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ringdown-readout-uncertainty"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-183.md",
+      "sha256": "3483159f8f82e25b87cf34f473c1b09b69fa8c5430f32ff29fe6d22e59b577fa",
+      "bytes": 3950,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/3483159f8f82e25b87cf34f473c1b09b69fa8c5430f32ff29fe6d22e59b577fa.txt",
+      "retained_sha256": "494d6a73f0ad90d39ee0fb97920e172f857388fc6a246bbf9db4c23f4018e6e0",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ringdown-tail-null-calibration"
+      ]
+    },
+    {
+      "path": "docs/local/plans/main-ci.md",
+      "sha256": "0f1305b94d121745128894baa781d1da1e344c23de9ecfb936a7153403714f6b",
+      "bytes": 2746,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/0f1305b94d121745128894baa781d1da1e344c23de9ecfb936a7153403714f6b.txt",
+      "retained_sha256": "430f22707adbcc1547e45ab18bd05de9848f980961d7d54006c520fb44bf1315",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "main-run-concurrency"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-overlap-split-report.md",
+      "sha256": "faa132f9655ed580b14f07f3545176847cd222be12d30a9e279c145962d46241",
+      "bytes": 12700,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/faa132f9655ed580b14f07f3545176847cd222be12d30a9e279c145962d46241.txt",
+      "retained_sha256": "6c67b5aef6cbc48fea8e4075e0e3a3c1a3c380de92e695b2b6c716da9b595592",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "n21-readout-overlap-split"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/n21-overlap-split-review.md",
+      "sha256": "f07c1fe1f78060ee94178861350e12066e908a9dcc489c6708d6aa6c7b88873f",
+      "bytes": 5277,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f07c1fe1f78060ee94178861350e12066e908a9dcc489c6708d6aa6c7b88873f.txt",
+      "retained_sha256": "ddb8f3f955815b6ca4fcb29c098c6e2f4eb479c5797f8546a4cff0822303d6c3",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "n21-readout-overlap-split"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/n21-overlap-split.md",
+      "sha256": "2d475581f39af79a166695755fd2448ba0478fd6502ae22c221bd0e5450f348d",
+      "bytes": 5817,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/2d475581f39af79a166695755fd2448ba0478fd6502ae22c221bd0e5450f348d.txt",
+      "retained_sha256": "0b392d326c15fa07e740d538e9b6bcca76d787b974cbbf0e833d4a983ff3b92f",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "n21-readout-overlap-split"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-prepush-review.md",
+      "sha256": "cf8d81e1e9ff6268e43bd3de78bb38b865d1a5e6c8150223fc9c859106abf427",
+      "bytes": 3565,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/cf8d81e1e9ff6268e43bd3de78bb38b865d1a5e6c8150223fc9c859106abf427.txt",
+      "retained_sha256": "3c4d5a6a8e76866e70a2332b4a0e922f0f55f90b34b274960494a9ecbd055804",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "n21-window-sweep"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/n21-rep-delay.md",
+      "sha256": "5c5427f3584ba9e230d6c272cd989858a9905a1640894ba6b230d92c1c42f9b6",
+      "bytes": 5637,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/5c5427f3584ba9e230d6c272cd989858a9905a1640894ba6b230d92c1c42f9b6.txt",
+      "retained_sha256": "b0c1896654373de6c77b146ae963f5c88c5f9e990b0bed5abafe2e4410570be2",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "n21-state-preparation-delay"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-window-sweep-report.md",
+      "sha256": "b65301a9bc9a8a2ab3aae421027aaec58ee09c69993a58524bd6414715e53ba9",
+      "bytes": 9342,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/b65301a9bc9a8a2ab3aae421027aaec58ee09c69993a58524bd6414715e53ba9.txt",
+      "retained_sha256": "e4f6691f704b8ef1ae81cb770e3b47356b06f09c60e69907dfb87743b5fbedc8",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "n21-window-sweep"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/n21-window-sweep.md",
+      "sha256": "ec8aff527a579550b12e45334a967243a0b086d360b39b2b78c4b7477bff5905",
+      "bytes": 4781,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ec8aff527a579550b12e45334a967243a0b086d360b39b2b78c4b7477bff5905.txt",
+      "retained_sha256": "b867d2d569ef38cd4f7dc97056aefd99e960268a59b3ddf911f7f766a7618ac1",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "n21-window-sweep"
+      ]
+    },
+    {
+      "path": "docs/local/plans/open-gororoba-higher-d-survey.md",
+      "sha256": "7a46cf4fb480b3e35d168d5d527c7d5197cfc67a958730f9005ba6cd75bbfeea",
+      "bytes": 14756,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/7a46cf4fb480b3e35d168d5d527c7d5197cfc67a958730f9005ba6cd75bbfeea.txt",
+      "retained_sha256": "dc3e6225fa7bed39d9324399b93f9d4bd26414b844cc6823a447d51c929764b2",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "rank-locus-global-classification"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/pr-184.md",
+      "sha256": "a7efb29c832bdff75f4d30117a0dff6b9c40f8f203ba4150fc1c8ff8bb5d6163",
+      "bytes": 3512,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/a7efb29c832bdff75f4d30117a0dff6b9c40f8f203ba4150fc1c8ff8bb5d6163.txt",
+      "retained_sha256": "d28ac22ea187479bbdcb99b6d557af6d55dbeda9e123d1a11af4a4d79b177616",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "backend-identity-records"
+      ]
+    },
+    {
+      "path": "docs/local/plans/pr206-f4-r1-restart.md",
+      "sha256": "e24778a1178fd19e691bd47ff8bce6b172b2fab866b825abeb5812e26ad06a6d",
+      "bytes": 8253,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e24778a1178fd19e691bd47ff8bce6b172b2fab866b825abeb5812e26ad06a6d.txt",
+      "retained_sha256": "919ca2f1153fd925527ae3991e743ca4e796a85c72db4ef67c337d6c16dea5f2",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "rank-locus-salvage-and-curved-pieces"
+      ]
+    },
+    {
+      "path": "docs/local/plans/quandela-photonic-cases.md",
+      "sha256": "1f8117cc508cc13c9a3e450ebe8a2faba1937ce3a6672b8d355b2b61105fdffd",
+      "bytes": 16826,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/1f8117cc508cc13c9a3e450ebe8a2faba1937ce3a6672b8d355b2b61105fdffd.txt",
+      "retained_sha256": "5b5754c69fc93426df349733d57a2bb7d41486834edf716dadad3b45b5b3cc76",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-historical-photonic-cases"
+      ]
+    },
+    {
+      "path": "docs/local/plans/research-ibm-parked.md",
+      "sha256": "99f3ab3d885c74448b8c520eea92f5b921dc35ea2e825088b6ab05416162b40b",
+      "bytes": 1714,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/99f3ab3d885c74448b8c520eea92f5b921dc35ea2e825088b6ab05416162b40b.txt",
+      "retained_sha256": "a5639518edb422308f09955ee6ca8d96a5ded50f0e4ba7d2d544a404a17e8da8",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ibm-historical-research-queue"
+      ]
+    },
+    {
+      "path": "docs/local/plans/scoping-n21-orbit-rca-fe.md",
+      "sha256": "50a56c726904f75921a4685a090fd385bb1cf43a9fa1ac739030e02017d00b96",
+      "bytes": 13603,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/50a56c726904f75921a4685a090fd385bb1cf43a9fa1ac739030e02017d00b96.txt",
+      "retained_sha256": "b406e12e960ecacd5391b8af51438813765b77ba2ed4dc5f4dbd487b1b4468ef",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes. Trailing line whitespace normalized.",
+      "disposition": "supporting",
+      "plans": [
+        "n21-between-arm-contracts"
+      ],
+      "note": "Historical context; current work state belongs to the linked plan."
+    },
+    {
+      "path": "docs/local/plans/tuna-boxkite-stages.md",
+      "sha256": "7c09972794f22050a77cd291714faccfbbf0d26cfbb8082eea460e28fa10b974",
+      "bytes": 3496,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/7c09972794f22050a77cd291714faccfbbf0d26cfbb8082eea460e28fa10b974.txt",
+      "retained_sha256": "32009fc1a7853d57e420879797516175599866d4e085f40d39f7fda0089d80e5",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-box-kite-depth-ladder"
+      ]
+    },
+    {
+      "path": "docs/local/plans/tuna-pre-t0.md",
+      "sha256": "ef277fc0d1cba09f01ff6313c83baf2414bef24b0e96d8182ad5eed31e325130",
+      "bytes": 2870,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ef277fc0d1cba09f01ff6313c83baf2414bef24b0e96d8182ad5eed31e325130.txt",
+      "retained_sha256": "13ffa786b3d3d6bf6b3f82eb89a9286c63ab7cceb974ddced2f609183459b90d",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-readout-discriminator"
+      ]
+    },
+    {
+      "path": "docs/local/plans/tuna-ringdown-series-q.md",
+      "sha256": "e128fd4681d8a4d3e4cf65125eaa05ead2c9638047c69af00d52493a7dbbdafa",
+      "bytes": 2588,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e128fd4681d8a4d3e4cf65125eaa05ead2c9638047c69af00d52493a7dbbdafa.txt",
+      "retained_sha256": "2d76de78ec5dd6472ca953735c1f5ea119ced03ee1fdd65d5981268d5d21e150",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-ringdown-series-analysis"
+      ]
+    },
+    {
+      "path": "docs/local/plans/tuna-walsh.md",
+      "sha256": "e257c08994a82c68d820e49d3d98df3ae384dd4e51e41fa9ed85eed1b3ec74de",
+      "bytes": 2803,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e257c08994a82c68d820e49d3d98df3ae384dd4e51e41fa9ed85eed1b3ec74de.txt",
+      "retained_sha256": "c29720a3a3bf156f97574e24ace3ab2351d391cfb1a4a630dc8969fbfe36ae8e",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-walsh-context"
+      ]
+    },
+    {
+      "path": "docs/notes/box_kites/experiment-program.md",
+      "sha256": "7c2b13b6e4d82f02ca12ee5281a25a4dcada0b47f1e7713624655bdc89b27e34",
+      "bytes": 54356,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/7c2b13b6e4d82f02ca12ee5281a25a4dcada0b47f1e7713624655bdc89b27e34.txt",
+      "retained_sha256": "0c6cf6ea6be363e1180d2c67fd0701daaaa6c1aff802fb8ea2196a8997db4783",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "box-kite-experiment-program"
+      ]
+    },
+    {
+      "path": "docs/notes/formal_evidence_dependencies.md",
+      "sha256": "4eb2f2730c25578febc964de839ab4ac5982af6a35048b67a46f0924361023ce",
+      "bytes": 24977,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/4eb2f2730c25578febc964de839ab4ac5982af6a35048b67a46f0924361023ce.txt",
+      "retained_sha256": "0cbf763480773e9bac372ce9e38376267b6063d4348e7a6721beff45cb82d871",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "formal-evidence-dependencies"
+      ]
+    },
+    {
+      "path": "docs/notes/handbacks/repository_reconciliation_2026-10-17.md",
+      "sha256": "f3a2f331cfc59d3f8c4846302eb7f1f2a19e61d8d2c504d163b843dc6d4ad9c0",
+      "bytes": 94309,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f3a2f331cfc59d3f8c4846302eb7f1f2a19e61d8d2c504d163b843dc6d4ad9c0.txt",
+      "retained_sha256": "79432e43903c000110bf4fc2a0a9c223591471065c5c6e40895188b46dbe7f53",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "research-evidence-roadmap"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "docs/notes/patch_window_staged_plan.md",
+      "sha256": "95aaee993cb29932e70e272728c4dc19c31a34f7d916a2e7e6dd96aa4a43c4cf",
+      "bytes": 6702,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/95aaee993cb29932e70e272728c4dc19c31a34f7d916a2e7e6dd96aa4a43c4cf.txt",
+      "retained_sha256": "bdaad2ea3a63d9aa5123aad7070f97f3dafc7a63869de81315ea6cc0017acd50",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "patch-window-validation"
+      ]
+    },
+    {
+      "path": "docs/notes/qiskit-ecosystem-install-plan.md",
+      "sha256": "16049a3fb4c12f00a9a9ce691841032e398b001e1188183c33d088532733b8bc",
+      "bytes": 5978,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/16049a3fb4c12f00a9a9ce691841032e398b001e1188183c33d088532733b8bc.txt",
+      "retained_sha256": "27a6e30e0336c1d7f37f74156b18cd0cb36a18af8e24d61326d074f4f79de842",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "qiskit-ecosystem-conditional-installation"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "9a2b9260eddf1ab4e192c45cfbb94d3ceefc164b9fe71fcb4d54dc884c75f3e0",
+      "bytes": 38317,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/9a2b9260eddf1ab4e192c45cfbb94d3ceefc164b9fe71fcb4d54dc884c75f3e0.txt",
+      "retained_sha256": "5335a4632f1f362142f94f7c011d3e05dedfc5653b1ac5f61a94610cd9b88d85",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Explorer plan names the subscription; provider qualification is tracked separately."
+    },
+    {
+      "path": "docs/notes/quandela/calibration.md",
+      "sha256": "89a433e118214af79a80ca4ca0247ad429ec83cde27fef43975588bc312e078f",
+      "bytes": 14421,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/89a433e118214af79a80ca4ca0247ad429ec83cde27fef43975588bc312e078f.txt",
+      "retained_sha256": "8bfc820feb9b93d13cf2aa1309ac540232bbdc207e4da017cb47225166486f3d",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-calibration-residuals"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/setup-verification.md",
+      "sha256": "1cbddd49a9118e4eae7e37c5a3a82af4c2a11d54fff7d410bb838552104a4269",
+      "bytes": 10540,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/1cbddd49a9118e4eae7e37c5a3a82af4c2a11d54fff7d410bb838552104a4269.txt",
+      "retained_sha256": "a7ac9c1adc1f8905b975e190da70da491343f691668a1c8e0352c68ef25ab5cc",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-setup-residuals"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/strategy.md",
+      "sha256": "b32eeb89bdc23c950ab183c19fd961496484fedbae5282895fe3af3661d898b7",
+      "bytes": 81989,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/b32eeb89bdc23c950ab183c19fd961496484fedbae5282895fe3af3661d898b7.txt",
+      "retained_sha256": "2c509b510c4ca5041b3018b146c4a8c91663a7e349bf6a2a522968fa0ee17abd",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-load-history-discrimination"
+      ]
+    },
+    {
+      "path": "docs/notes/quantum_inspire/cqasm.md",
+      "sha256": "e837833ea1c702ff7ebbd9bf697fb0262b46f695c3e1101c36d631d7bb2e0340",
+      "bytes": 22335,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e837833ea1c702ff7ebbd9bf697fb0262b46f695c3e1101c36d631d7bb2e0340.txt",
+      "retained_sha256": "129f873883c0ca0792fb6dc2baf423d4d40044724f31e555aeb4f381ab397d7e",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Reference or retained validation material; its sections describe mechanisms rather than an independent work commitment."
+    },
+    {
+      "path": "docs/notes/quantum_inspire/tuna-17-run-design.md",
+      "sha256": "ae9ef495e877289317bad4eab1cf17cb1c9fd2c84a33823210fdd3bb88c00796",
+      "bytes": 24703,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ae9ef495e877289317bad4eab1cf17cb1c9fd2c84a33823210fdd3bb88c00796.txt",
+      "retained_sha256": "556026a7fe9d6a4b25c9f52ba5d509efb15c9c1b577707e4879aeaf3407968a5",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-readout-context-followups"
+      ]
+    },
+    {
+      "path": "docs/notes/rank_locus_two_dimension_gap.md",
+      "sha256": "f0aa837510b0ec472a1ade574927a90d850349226a7c965ad2644ec8aaee91f4",
+      "bytes": 14315,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f0aa837510b0ec472a1ade574927a90d850349226a7c965ad2644ec8aaee91f4.txt",
+      "retained_sha256": "dc882a366e55bdd7e3254f27ee38b58310b1fb76836e9c9dd95e13a71e37c9d2",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "rank-locus-local-germ"
+      ]
+    },
+    {
+      "path": "docs/notes/singular_sector_dynamics.md",
+      "sha256": "a6e6d14ab42398baebda9b8ccb6c01210ffc63d32863d5208cff47f3b9bfd95e",
+      "bytes": 16992,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/a6e6d14ab42398baebda9b8ccb6c01210ffc63d32863d5208cff47f3b9bfd95e.txt",
+      "retained_sha256": "6aac841f80867f2e9fe19927a128b200cf588daf456cae50eace430d212aaa0e",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "singular-sector-dynamics"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/box-kites/README.md",
+      "sha256": "fc06387632905f98ecaf724f9c52316314351b625373f9e394b2ee19257d2e72",
+      "bytes": 1049,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/fc06387632905f98ecaf724f9c52316314351b625373f9e394b2ee19257d2e72.txt",
+      "retained_sha256": "1dce2a8c5df6272d442bd2d9a7930d6c63348dc43717e747515316a8b1f11d72",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "box-kite-experiment-program"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "docs/notes/topics/box-kites/inventory-quantum-inspire-backends.md",
+      "sha256": "2228c3c61c50f3daeae7fa5977582b0daafae50576313b178734c07b2bbbd062",
+      "bytes": 6875,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/2228c3c61c50f3daeae7fa5977582b0daafae50576313b178734c07b2bbbd062.txt",
+      "retained_sha256": "e8a8894eeaad917df713e07171c753796d6a91a01324c1101deb7a0def35f4ec",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Reference or retained validation material; its sections describe mechanisms rather than an independent work commitment."
+    },
+    {
+      "path": "docs/notes/topics/cd-star-lattice-tower.md",
+      "sha256": "cf293f4078bcd02b0783df5fc1c6f9a1456f1aa58e53a22a18d489424f40189c",
+      "bytes": 8394,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/cf293f4078bcd02b0783df5fc1c6f9a1456f1aa58e53a22a18d489424f40189c.txt",
+      "retained_sha256": "37b25669e9e920d42471107f17253ee257632ba9d4169f796ec5a597947e3fcd",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "star-lattice-group-identification"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/open_gororoba_survey_deep_notes.md",
+      "sha256": "e3ffb32d965cca8cdccac99effa055da31034356bd3f47b111d6b9deadb2ddb2",
+      "bytes": 54064,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e3ffb32d965cca8cdccac99effa055da31034356bd3f47b111d6b9deadb2ddb2.txt",
+      "retained_sha256": "06345e2f9b7d4dbca44a2317b322dccea3486af989ac6e6a6daad1d0871b196a",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "rank-locus-global-classification"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "5e68ee0f20d3b831ded56849234897d011a8efdee925aa7c0c0915f85bdb0bfe",
+      "bytes": 14448,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "076873746403e07f",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/5e68ee0f20d3b831ded56849234897d011a8efdee925aa7c0c0915f85bdb0bfe.txt",
+      "retained_sha256": "2b2403f8a7d319d8dfeb8b79099ef7cc3acb96f3900627597a85e021430c382f",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-qualification-cases"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "511c275717c29a42492714ac3a5af97a7c3a5d5151bcc9c951c46d2249b97134",
+      "bytes": 9235,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/511c275717c29a42492714ac3a5af97a7c3a5d5151bcc9c951c46d2249b97134.txt",
+      "retained_sha256": "8d56205a73714e7cb5d77c811042aa03effb403a8345b36833f6072ee171b67a",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-cases"
+      ]
+    },
+    {
+      "path": "gororoba_quantum/CLAIM_BOUNDARIES.md",
+      "sha256": "1bf8d5e04d2376afd37946461d199806224262570ecaf228d707acc26e425b65",
+      "bytes": 20100,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/1bf8d5e04d2376afd37946461d199806224262570ecaf228d707acc26e425b65.txt",
+      "retained_sha256": "dc35e7839894822258d5dc3405673112705db2e785984fd367e349ee4889c6e6",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Reference or retained validation material; its sections describe mechanisms rather than an independent work commitment."
+    },
+    {
+      "path": "gororoba_quantum/HARDWARE_PLAN.md",
+      "sha256": "3dddb9c67efd0c13d5308a059d61f73d062e367ecd715ccfc5dc1c13a1a758be",
+      "bytes": 20272,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/3dddb9c67efd0c13d5308a059d61f73d062e367ecd715ccfc5dc1c13a1a758be.txt",
+      "retained_sha256": "ab9fbd029b8ba56ca20b83fc7a23df897b503cd258008fd9e62f0c5760c90363",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hardware-design-contracts"
+      ]
+    },
+    {
+      "path": "gororoba_quantum/QPU_EXECUTION_ROADMAP.md",
+      "sha256": "d2e1bdac6af743cfcd51d40a9c636b963cfd075ca3b0495ea2b1b2605e37350e",
+      "bytes": 26913,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/d2e1bdac6af743cfcd51d40a9c636b963cfd075ca3b0495ea2b1b2605e37350e.txt",
+      "retained_sha256": "cf74a2a98c7a111a52b10ad05d8f7d7e904999df28454a48fc208230309da141",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "qpu-execution-roadmap"
+      ]
+    },
+    {
+      "path": "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md",
+      "sha256": "7247a9bf1d1ac6d1376ff09f068cbed1250ce0a8be4a5ad7ac5728c1a419aa5c",
+      "bytes": 22194,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/7247a9bf1d1ac6d1376ff09f068cbed1250ce0a8be4a5ad7ac5728c1a419aa5c.txt",
+      "retained_sha256": "b9f5b06795f0d9d332d98eaf6a8d272325b61e1a0a48b97db2493e0784c1d42e",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "rank-locus-global-classification"
+      ]
+    },
+    {
+      "path": "plans/QUANTUM_DISPATCH.md",
+      "sha256": "5e5a11d806029ca63fd3829cc931253970955717d682f4e0fed6ce8aa5e50c6c",
+      "bytes": 7606,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/5e5a11d806029ca63fd3829cc931253970955717d682f4e0fed6ce8aa5e50c6c.txt",
+      "retained_sha256": "58df10d227d654a90e9afc8859fd1896c20107ed6a6138dce019ef548e2ec48b",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "legacy-quantum-dispatch"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "plans/quantum_dispatch.json",
+      "sha256": "193b4d180c21cabb6d0da0ad6a2ff76d590301da1b1667d8288fe15ed7163d51",
+      "bytes": 91589,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/193b4d180c21cabb6d0da0ad6a2ff76d590301da1b1667d8288fe15ed7163d51.txt",
+      "retained_sha256": "6cc7a4971c37c91d9501a0df563938c14bfbdabb60f34c8eda868f5f7de1530c",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "legacy-quantum-dispatch"
+      ]
+    },
+    {
+      "path": "plans/reviews/coherence-case-science-review.md",
+      "sha256": "58d2ad872f717f94571bdc54e968c35e7d91d1d9c4a5eee25ade315aa79acd33",
+      "bytes": 13027,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/58d2ad872f717f94571bdc54e968c35e7d91d1d9c4a5eee25ade315aa79acd33.txt",
+      "retained_sha256": "e2089969ac5eecbc38e22e2a70fd616e56e6fa03bea5de994ab7032085ba670c",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "legacy-quantum-dispatch"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "plans/reviews/coherence-case-submission-review.md",
+      "sha256": "1c1c0f22628c6ddbddf402236671f61d81913262b5388a37a7b3ac5e3e54472e",
+      "bytes": 14512,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "d3db96feded36c05",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "181f82d8482ba790",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586",
+        "e8d519986ff51b29",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/1c1c0f22628c6ddbddf402236671f61d81913262b5388a37a7b3ac5e3e54472e.txt",
+      "retained_sha256": "b73647337b35d3bd98ea48bfef9b951588a7990a1b10192b59275e7d682755f4",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "supporting",
+      "plans": [
+        "legacy-quantum-dispatch"
+      ],
+      "note": "Supporting or historical view of the named canonical workstream."
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "f83a05c3060c056b8421304c694697d9a0a82c8a4f43d86251dd52b4e512064c",
+      "bytes": 31395,
+      "worktrees": [
+        "ed5498d4b8d56aec"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/f83a05c3060c056b8421304c694697d9a0a82c8a4f43d86251dd52b4e512064c.txt",
+      "retained_sha256": "8ab659351ebf293e36d8e39bd6aa471d7ff36aad6c23987b814ba1ab030d60b1",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/notes/box_kites/experiment-program.md",
+      "sha256": "c7538ad2dac374f80a719b958633bd2085d6625aab821f1bf8f54b667aefc9f3",
+      "bytes": 54214,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/c7538ad2dac374f80a719b958633bd2085d6625aab821f1bf8f54b667aefc9f3.txt",
+      "retained_sha256": "df0516d47ce9583efd7009473512e5b731b949acb4c9c25ae2c057943b11617c",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "box-kite-experiment-program"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "cacd4fddd2632d8234c73a817fc3463b920739c898d1586da798d3a042dc5613",
+      "bytes": 36938,
+      "worktrees": [
+        "ed5498d4b8d56aec"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/cacd4fddd2632d8234c73a817fc3463b920739c898d1586da798d3a042dc5613.txt",
+      "retained_sha256": "0a317143c2473f6cddedc2b4d879a750390680bc66d159799f7d8c3424ef5ec6",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Explorer plan names the subscription; provider qualification is tracked separately."
+    },
+    {
+      "path": "docs/notes/quandela/strategy.md",
+      "sha256": "fd744e109c2c90eb656f2219560b856388cc177ee60d133dcc557ef72f644718",
+      "bytes": 81900,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/fd744e109c2c90eb656f2219560b856388cc177ee60d133dcc557ef72f644718.txt",
+      "retained_sha256": "ed3741d3a6759706b97030bd52c2dcc32657bf3eeb2dd795cec510594d90e2b4",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-load-history-discrimination"
+      ]
+    },
+    {
+      "path": "docs/notes/quantum_inspire/tuna-17-run-design.md",
+      "sha256": "1a1ebe3fca25bb990e29f58701e445c020f6a67110217c5ed4e556a334f136b5",
+      "bytes": 24655,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/1a1ebe3fca25bb990e29f58701e445c020f6a67110217c5ed4e556a334f136b5.txt",
+      "retained_sha256": "c015a4b3d0f17c2f9c04a1b2f1e1410afc6ae425e139d08716546e4dc4e57068",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-readout-context-followups"
+      ]
+    },
+    {
+      "path": "docs/notes/rank_locus_two_dimension_gap.md",
+      "sha256": "c5c788748841744816b64765569ed06f2650f5c8d35a32ef6a8c54b9c23ef01d",
+      "bytes": 12684,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/c5c788748841744816b64765569ed06f2650f5c8d35a32ef6a8c54b9c23ef01d.txt",
+      "retained_sha256": "ccaaeab95cd4b8f000e7e3d6e48a53a8b07c719a280c38b7b3e0f554d26f0d53",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "rank-locus-local-germ"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "e71a2ac6aa2f3844b96023a09b41e4012e9cc3b899f58804709211feb3a0b7fb",
+      "bytes": 13734,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "7e19482ca6a95aa0"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/e71a2ac6aa2f3844b96023a09b41e4012e9cc3b899f58804709211feb3a0b7fb.txt",
+      "retained_sha256": "c261d4de56ff2ffb6023c0bb6cf288dda8978c18d411bdf8e49e1f15e3343396",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-qualification-cases"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "89a9946404fe4152de3b150423dd18eecebee408647ff83b966d676283183f48",
+      "bytes": 8935,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "201d902b9c0777c7",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "a54ed7fab6489aff"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/89a9946404fe4152de3b150423dd18eecebee408647ff83b966d676283183f48.txt",
+      "retained_sha256": "eec23182bbe8901fcc5955ac74d0766a5fcd61c726d30c981ce18eea752ddcec",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-cases"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "da54048c2a2503f86ad376a413f26b4ce07f8cc1871c1c75075f17667d41eb71",
+      "bytes": 32474,
+      "worktrees": [
+        "d3db96feded36c05"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/da54048c2a2503f86ad376a413f26b4ce07f8cc1871c1c75075f17667d41eb71.txt",
+      "retained_sha256": "d7fffec4ce107c052adbd1ba60ff7dd5cb729d29f876d3cde001256484e2c625",
+      "normalization": "Home-directory and email redaction; trailing whitespace normalized.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ],
+      "note": "New branch revision of the already classified roadmap; scientific state remains registry-owned."
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "377508629fcd1d2bbbd3a842302240dd12549841a1e179171d5a4d6741570309",
+      "bytes": 25052,
+      "worktrees": [
+        "d3db96feded36c05"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/377508629fcd1d2bbbd3a842302240dd12549841a1e179171d5a4d6741570309.txt",
+      "retained_sha256": "a633a6cd7b4f72d01101ad2ea68881b3dd8ed2bde45517b35a22c43e3bd3a75c",
+      "normalization": "Home-directory and email redaction; trailing whitespace normalized.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-evidence"
+      ],
+      "note": "New branch revision of the counterbalanced replication design; retained acquisition remains distinct."
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "b1432c5148202ff1569208d3a3b194738321b5826b62b3570a1cdc6544a97311",
+      "bytes": 31395,
+      "worktrees": [
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/b1432c5148202ff1569208d3a3b194738321b5826b62b3570a1cdc6544a97311.txt",
+      "retained_sha256": "cf46acdaeb4a33b1b4a830fd29728c53abeac5c1d50985580908715638584f02",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-approved-order-retry.md",
+      "sha256": "70a425132362aff0c42a1e630e55f24aa9610c29c4493e6d2e648d4ff30f3eaf",
+      "bytes": 5186,
+      "worktrees": [
+        "a5c1cf98351c21f0"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/70a425132362aff0c42a1e630e55f24aa9610c29c4493e6d2e648d4ff30f3eaf.txt",
+      "retained_sha256": "e13552ac3b5e588fdbf74b5488aaa1b28e692018215c8c87aaa98f216b5ff979",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ascella-approved-order-retry"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "beb6fd6b4c6a03036fb868a09dac1ef8a054fe780ccbf4facd6dc042b31f7a82",
+      "bytes": 23041,
+      "worktrees": [
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/beb6fd6b4c6a03036fb868a09dac1ef8a054fe780ccbf4facd6dc042b31f7a82.txt",
+      "retained_sha256": "3c70c3412aa5b6ddc91645dc0566af35098e37930589e434229c8739e1ea82a9",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ascella-instrument-readiness-and-packed-tests"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "0ccf02e6a097b4cb9d06820b15d7e90c4adfd7762a4586355721bc13431955e7",
+      "bytes": 38071,
+      "worktrees": [
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/0ccf02e6a097b4cb9d06820b15d7e90c4adfd7762a4586355721bc13431955e7.txt",
+      "retained_sha256": "eef1139c3e1854511a901d4b87a103b3cbc493a42d39902f6cae2a9544bc8313",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Explorer plan names the subscription; provider qualification is tracked separately."
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "deb7c98fc00ebf0b66ffe14298c729341f0e8dfa6bc28f34c0c2b69da5350a04",
+      "bytes": 32047,
+      "worktrees": [
+        "076873746403e07f",
+        "181f82d8482ba790",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/deb7c98fc00ebf0b66ffe14298c729341f0e8dfa6bc28f34c0c2b69da5350a04.txt",
+      "retained_sha256": "06b7c25243d7d23469fd6d060f02d4842bbbb0072d6df8e89af5abc65c25e09b",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "5b2e255b34554ea58300839278a770a03051df0290fbae2176f1aaba98c22e51",
+      "bytes": 26449,
+      "worktrees": [
+        "076873746403e07f"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/5b2e255b34554ea58300839278a770a03051df0290fbae2176f1aaba98c22e51.txt",
+      "retained_sha256": "0c2e05bcdd9cdc510fc2ddf4a2353b09ab935c5c76eab0589a815b5c0c45a308",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ascella-instrument-readiness-and-packed-tests"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "ecb22c935426ff3b3642be5e8cd29e02e5016b5ad5842ea3942a34235fcd8ce2",
+      "bytes": 31365,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ecb22c935426ff3b3642be5e8cd29e02e5016b5ad5842ea3942a34235fcd8ce2.txt",
+      "retained_sha256": "009ad2db9e9683c3aff2a3ec5ee5c288c8da0f3cda39216f64a89753a46aef80",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "4dd15b30ddda2cac38ebd1d22830a7681556a5ca851140dcaab1e1043dfcd90b",
+      "bytes": 20308,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/4dd15b30ddda2cac38ebd1d22830a7681556a5ca851140dcaab1e1043dfcd90b.txt",
+      "retained_sha256": "4d0bc2aa08fc1cac0cc77f5abee1e5f61d25b2f435343e89505edaa24f02425e",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "ascella-instrument-readiness-and-packed-tests"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-tuna17-pauli-pilot.md",
+      "sha256": "9e520387c58cffd40a05fb12a863e263a73aa7a4c6971d6fcb469b6c28602b4f",
+      "bytes": 13414,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/9e520387c58cffd40a05fb12a863e263a73aa7a4c6971d6fcb469b6c28602b4f.txt",
+      "retained_sha256": "81bb16d69fb4d0a364ad7adf1b73843f2b0448a2393f56dd1b1325628a353064",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "bdsc-tuna17-pauli-pilot"
+      ]
+    },
+    {
+      "path": "docs/design/tuna17-zero-divisor-matched-response.md",
+      "sha256": "042a4bbf074ced3f5896c1876443d84f2969bf67dfb211174908ed2b441674bc",
+      "bytes": 5478,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/042a4bbf074ced3f5896c1876443d84f2969bf67dfb211174908ed2b441674bc.txt",
+      "retained_sha256": "bc6fab9f830360a387b5a6145e9476bd2e26fe0632178042e745e35e05149bfa",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna17-zero-divisor-matched-response"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "b4ec53840e10e0f0c1fb8e285deb32223bee6acab432700f63d7618c145b0b56",
+      "bytes": 36461,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/b4ec53840e10e0f0c1fb8e285deb32223bee6acab432700f63d7618c145b0b56.txt",
+      "retained_sha256": "d1e10e552e4fa2ec6a63795cd99fd7b11917bc3ccc1cf7c0976991bb2a19c50d",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Explorer plan names the subscription; provider qualification is tracked separately."
+    },
+    {
+      "path": "docs/notes/quantum_inspire/tuna-17-run-design.md",
+      "sha256": "64357e46c9f1992cb8a49fdf65ab21fd3d55fae4c5cee6207ae433d6023053c7",
+      "bytes": 24400,
+      "worktrees": [
+        "d795dc815fbe6cf7",
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/64357e46c9f1992cb8a49fdf65ab21fd3d55fae4c5cee6207ae433d6023053c7.txt",
+      "retained_sha256": "3f479334d5c76439d81af58ce49b573de5c9dbed0b34b7aaf4845de550ba1883",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "tuna-readout-context-followups"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-qualification.md",
+      "sha256": "d5cbef1d5f929621a41864201f0ac766fa68dc33d1a8ecca195d22c9fa0ace54",
+      "bytes": 35147,
+      "worktrees": [
+        "181f82d8482ba790",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/d5cbef1d5f929621a41864201f0ac766fa68dc33d1a8ecca195d22c9fa0ace54.txt",
+      "retained_sha256": "5403691b53d06ce3ccc6920fceea30cdf501621bc241ca6e48728a57490d1588",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "bdsc-qualification"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "7854aaa5bf28fa318b2fb19812e67f3fbfecd480d82d41931b286e4858efe4c5",
+      "bytes": 19851,
+      "worktrees": [
+        "181f82d8482ba790",
+        "9a854846f98edab5"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/7854aaa5bf28fa318b2fb19812e67f3fbfecd480d82d41931b286e4858efe4c5.txt",
+      "retained_sha256": "4607a1722d51b3d7a52295bd43f231e2ac8378b39ee287fb7c38723ddf6911f5",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-qualification-cases"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "278e6a3ab3fb65aee2762c079c6686958ba89429bed3491da96525bb41d80ade",
+      "bytes": 31018,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/278e6a3ab3fb65aee2762c079c6686958ba89429bed3491da96525bb41d80ade.txt",
+      "retained_sha256": "c7744a57a25665b19241c0bc4f560dc5595302581ee5fe1914d37826b087c4ce",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-qualification.md",
+      "sha256": "6155adcbaf83a2eb8932012708b92b400b87dff855678c89b29288c9a211ea5a",
+      "bytes": 21184,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/6155adcbaf83a2eb8932012708b92b400b87dff855678c89b29288c9a211ea5a.txt",
+      "retained_sha256": "522b5e3d5e70f582eb805997223caef323d01efaa62f7500d78b58fa332547db",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "bdsc-qualification"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "1b5cedecdfb72aaa61e7cd5e4ffe044f53495dcedce87650d2413c426c997162",
+      "bytes": 9744,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/1b5cedecdfb72aaa61e7cd5e4ffe044f53495dcedce87650d2413c426c997162.txt",
+      "retained_sha256": "1ad4f715a0349fba3984a62dad6c5c2adf49f70126f3441eead682aaf2492202",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-evidence"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "819e39828c32df1d8207b3a6afb075f5c4d4cfa0254f397841b053d8513d2d91",
+      "bytes": 36338,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/819e39828c32df1d8207b3a6afb075f5c4d4cfa0254f397841b053d8513d2d91.txt",
+      "retained_sha256": "5b5bc3797c9cc1945b7beb350206142406ec819d2918025a7f401283459cb4d2",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "reference",
+      "plans": [],
+      "note": "Explorer plan names the subscription; provider qualification is tracked separately."
+    },
+    {
+      "path": "docs/notes/quandela/strategy.md",
+      "sha256": "265eb56f1e5819ddaafe17c25e836d4cc15ee21f37c241987c38d967ce4715a4",
+      "bytes": 80037,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/265eb56f1e5819ddaafe17c25e836d4cc15ee21f37c241987c38d967ce4715a4.txt",
+      "retained_sha256": "4b3da10b234bc45305a1ca136cd0e33b03cf07ecef786f463572637342b59e85",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-load-history-discrimination"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "d42a999a12961403c2630d00c665255c6c276633e60f2ccefe80445fb40423fd",
+      "bytes": 5176,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/d42a999a12961403c2630d00c665255c6c276633e60f2ccefe80445fb40423fd.txt",
+      "retained_sha256": "2e3df4296eb513f81156f26195c1732afdaf7bea3e284fd300d7b3496e5fb1f0",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-qualification-cases"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "4d3d4649691b0e34049d5fa656b6094457d4f39e4851edbefbd449df74e5ec6b",
+      "bytes": 7141,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "e1a40d98a2a33586"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/4d3d4649691b0e34049d5fa656b6094457d4f39e4851edbefbd449df74e5ec6b.txt",
+      "retained_sha256": "f28eb9960bc2c3b331959b875f532efaebe538b8ffede74ecf4be557d7e3d518",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-cases"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "432b7f9475aa68e93697907fa79c6fe13dc78efb3a5ce4cc9c36c8028c4021bd",
+      "bytes": 31218,
+      "worktrees": [
+        "d3c4960ae8011cee",
+        "e745fc36a5621946",
+        "30e05c9c860b9be1"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/432b7f9475aa68e93697907fa79c6fe13dc78efb3a5ce4cc9c36c8028c4021bd.txt",
+      "retained_sha256": "a79c01b02d44cf746ab397d0dff5bafefed0878c1c5ec5b8af1899e0eac26497",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/cd-star-lattice-tower.md",
+      "sha256": "a5e748b15e2277e32caa4a8bfd8de9ed5a666ca5a58640f699420ffdc72a20b2",
+      "bytes": 12113,
+      "worktrees": [
+        "d3c4960ae8011cee"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/a5e748b15e2277e32caa4a8bfd8de9ed5a666ca5a58640f699420ffdc72a20b2.txt",
+      "retained_sha256": "dc1d088a852ebf5d98b7afd046f51bda9ed4c49526cf244b80daed2986328027",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "star-lattice-group-identification"
+      ]
+    },
+    {
+      "path": "docs/runbooks/plan-tracker.md",
+      "sha256": "d987c765de99311b68ad020732b703b8e67d302210915b25b32e1f2843879f67",
+      "bytes": 6115,
+      "worktrees": [
+        "3b6bb97a6a218073"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/d987c765de99311b68ad020732b703b8e67d302210915b25b32e1f2843879f67.txt",
+      "retained_sha256": "e01ad2d63d09da7f1e9bae37de1b00d7c72c123e7cdd6f19076fa2de94628687",
+      "normalization": "Home-directory and email redaction; trailing whitespace normalized.",
+      "disposition": "supporting",
+      "plans": [
+        "centralized-plan-tracker"
+      ],
+      "note": "Operator interface for the implementation workstream."
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "990c147e3d0632b5d1760dbea2e12f108d3f7f304b0775b8be91d8ebfe266077",
+      "bytes": 31018,
+      "worktrees": [
+        "d4b2de3d28d71dcf"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/990c147e3d0632b5d1760dbea2e12f108d3f7f304b0775b8be91d8ebfe266077.txt",
+      "retained_sha256": "717d580e19c258bb65c9818fb99b14c6afd7924a29fb97f4a3723dc97c2ed001",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "2e05c7a4d4ca3e0657a29faa6f4fdabc8f91acf04d6a44abe9ee330f7ebb7eba",
+      "bytes": 11637,
+      "worktrees": [
+        "d4b2de3d28d71dcf"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/2e05c7a4d4ca3e0657a29faa6f4fdabc8f91acf04d6a44abe9ee330f7ebb7eba.txt",
+      "retained_sha256": "d28308f9990f8af50f65447d16f50037e392aaea806c2a6fc859d9252506c2df",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-evidence"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "aa4d60887da5525218e71ddc02a882f0d2de008dd867f9fc1d26f159666874f2",
+      "bytes": 7151,
+      "worktrees": [
+        "d4b2de3d28d71dcf",
+        "2704fa93de2e6f35"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/aa4d60887da5525218e71ddc02a882f0d2de008dd867f9fc1d26f159666874f2.txt",
+      "retained_sha256": "d8d66bb69c84f94284dca489a441a4e9e694dbf4a9f2413a44b88ca578f4966a",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-cases"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "3584075d9c8778282db443e68af0899ecf5fc34f5a36c5e68f7e97a7c2d5cfc1",
+      "bytes": 31018,
+      "worktrees": [
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/3584075d9c8778282db443e68af0899ecf5fc34f5a36c5e68f7e97a7c2d5cfc1.txt",
+      "retained_sha256": "0c28d5c17ae13078a56c4670a67cd11d73c746970495134ed42208f8db156274",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "cfbadb3929b575837655712d7fb998081a1674f3f7a5189382eb4e87dbd15f08",
+      "bytes": 11536,
+      "worktrees": [
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/cfbadb3929b575837655712d7fb998081a1674f3f7a5189382eb4e87dbd15f08.txt",
+      "retained_sha256": "a646058db10770b45e3bc6ce7830fdc43b22359b35658bd557f0f2102149fc67",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "quandela-qualification-cases"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "ae32741ff97306dd4a52285fc59dcd6e7c91a587a25a77ef36a514205048b886",
+      "bytes": 8302,
+      "worktrees": [
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "dd79f1821965c2fe",
+        "2878464fe7d4ec4f"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/ae32741ff97306dd4a52285fc59dcd6e7c91a587a25a77ef36a514205048b886.txt",
+      "retained_sha256": "76077fad7b586c818fb9e0a83513d81986053c7755c894d06a4f6a0e0b351cb1",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-cases"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "972f638ef786f3aa82263369d7137be91632456413530e7600832ce662005823",
+      "bytes": 11918,
+      "worktrees": [
+        "44d566aa71b24348"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/972f638ef786f3aa82263369d7137be91632456413530e7600832ce662005823.txt",
+      "retained_sha256": "70dff1503160ae3f3fe6a4c7edadb2b05340ad5353578dc97955ab8fad895090",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-evidence"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "2970bf82496c3686ad78587813ad132494a961e57a734b78f6caf157858c9af8",
+      "bytes": 31218,
+      "worktrees": [
+        "ce2d1f97a9088b39"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/2970bf82496c3686ad78587813ad132494a961e57a734b78f6caf157858c9af8.txt",
+      "retained_sha256": "9f7bba39997a0cd2a876106ba7b9ecb44fde5fafc31ccbab9b5cae85bdfd48d5",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "research-evidence-roadmap"
+      ]
+    },
+    {
+      "path": "docs/notes/rank_locus_two_dimension_gap.md",
+      "sha256": "efb1cae6084a888f8ecf015ccaa7fe00755c68660902dbc93c1fa11354d57691",
+      "bytes": 17685,
+      "worktrees": [
+        "ce2d1f97a9088b39"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/efb1cae6084a888f8ecf015ccaa7fe00755c68660902dbc93c1fa11354d57691.txt",
+      "retained_sha256": "08e995ccd3475e7a2014111cab6fc66c41ada0dc8db0fd4b57cad11cede2a554",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "rank-locus-local-germ"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "dfdc7dccbeec36a06b9a3c064a2905d441a66f65eb2347466a46e3314f810978",
+      "bytes": 11912,
+      "worktrees": [
+        "dd79f1821965c2fe"
+      ],
+      "retained": "docs/evidence/plan-reconciliation/sources/dfdc7dccbeec36a06b9a3c064a2905d441a66f65eb2347466a46e3314f810978.txt",
+      "retained_sha256": "6d6544de37c455494ac0e55543093f016e093449c1364da25ce6631d055e1d2b",
+      "normalization": "Home-directory prefixes and email addresses redacted; original SHA-256 identifies original bytes.",
+      "disposition": "plan",
+      "plans": [
+        "hypercomplex-operator-evidence"
+      ]
+    }
+  ],
+  "legacy_tasks": [
+    {
+      "id": "central-owner-map",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Every active lane has an owner.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:owners; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "central-ledger",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Two bounded files and DAG validate.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:coordination_files; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "central-release-control",
+      "reported_status": "in_progress",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Goals close or explicit gates receive disposition.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:authority; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "historical-qpu-inventory",
+      "reported_status": "complete",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Independent owner verifies all three jobs.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:historical_qpu; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-review",
+      "reported_status": "complete",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Named head reviewed; findings closed.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-main-merge",
+      "reported_status": "complete",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Main contains verified merge/tree.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-canonical-containment",
+      "reported_status": "complete",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Canonical merge and outputs match.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-cleanup",
+      "reported_status": "complete",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Residue merged, idle and recoverable.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "source-review",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Named head clean; checks pass.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:sources; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "source-main-merge",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Protected merge/tree match main.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:sources; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "source-canonical-containment",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Merge and sixteen originals retained.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:sources; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "source-cache-cleanup",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Safe cleanup retains sixteen originals.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:sources; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "source-completion-handoff",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Review/merge/containment/cleanup close.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:sources; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-review-fixes",
+      "reported_status": "complete",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Reachable findings fixed; checks pass.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-final-review",
+      "reported_status": "complete",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Selected review clean; checks/threads close.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-main-integration",
+      "reported_status": "complete",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Main contains all reviewed merges.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "canonical-sync",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Ancestry matches; owner changes survive.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:canonical_sync; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-backend-availability",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "All three fresh coherent snapshots retained; selected backend eligible; exclusions explicit.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:backend_availability; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "maintenance-eligibility-contract-diagnosis",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Contract and rejection bind findings.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:maintenance; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-final-source-calibration-budget-admission",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Exact case matches; cap/reserve hold.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-acquisition",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Accepted IDs bind one-use ceiling.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-collection",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Readers verify raw/schedule/calibration.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-qualified-decision",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Valid data qualifies; withheld holds static.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "static-family-admission",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Both keyed family states close independently; held family stays held.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "static-acquisition",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Both keyed family states close independently; held family stays held.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "immutable-static-collection",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Readers verify job/PUB/shot identities.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "measured-classification-render",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Frozen tests bind residuals/uncertainty.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-charge-settlement",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Charges settle before reservation release.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:budget; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "reviewed-evidence-publication",
+      "reported_status": "waiting_dependency",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Head review admits raw/analysis/charges.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-final-sync",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Canonical ancestry/evidence match.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:canonical_sync; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-retention-handoff",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Campaign closes; nine old dirs retained.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-final-review-publication",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Proof/Rust review and checks close.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-reviewed-merge",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Protected main contains clean head.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-canonical-sync",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Canonical sources and assumptions match.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-cleanup-handoff",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Containment and safe cleanup close.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "schur-final-review-publication",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Finite Schur review/checks close.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port_schur; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "schur-reviewed-merge",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Protected main contains clean head.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port_schur; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "schur-canonical-sync",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Reviewed finite artifacts match.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port_schur; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "schur-cleanup-handoff",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Safe cleanup and final receipts arrive.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port_schur; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "adviser-handoff",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Handoff names scope/residuals.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:adviser; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "qpu-audit-final-case",
+      "reported_status": "complete",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Bounded audit names release residuals.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:qpu_audit; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "bridge-authority-audit",
+      "reported_status": "complete",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Proof and executor scopes separated.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:bridge; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "bridge-three-job-map",
+      "reported_status": "complete",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "All job identities map to campaigns.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:bridge; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "bridge-app-attachment-reconcile",
+      "reported_status": "deferred",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Central authorizes bounded disposition.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:bridge_attachment; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "followup-worldline-oracle",
+      "reported_status": "deferred",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Independent MC question centrally scoped.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:research_frontier; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "followup-experiment-claim-link",
+      "reported_status": "deferred",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Source-bound repair centrally scoped.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:research_frontier; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-active-build-manifest",
+      "reported_status": "in_progress",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "A fresh build activates exactly the intended source-bound manifest.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-minimal-modulus-width",
+      "reported_status": "in_progress",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Supported smallest modulus uses a valid register width; focused tests pass.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-proof-object-source-correspondence",
+      "reported_status": "in_progress",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "Thirteen-target determinism/review passes before fixed-denominator mutation.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "port-repair-publication",
+      "reported_status": "waiting_dependency",
+      "successor": "companion-repository-proof-integration",
+      "completion_gate": "New source/head/receipt identities verified; both current-head reviews requested.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:port, snapshot:port_schur; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-kernel-limit-design",
+      "reported_status": "in_progress",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Operator/rank/projector/limit contracts and exact source ownership fixed.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-kernel-limit-certificate",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Replay rejects wrong rank/limit/inclusion and preserves exact witness scope.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-kernel-limit-review",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Independent mathematical/software review and required checks qualify current head.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-kernel-limit-integration",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "The single geometry PR merges only after kernel-limit and complete finite circle/incidence/ordinary-embedding review, passing required checks and resolved current-head Copilot findings.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-kernel-limit-containment",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Canonical contains merge and preserves concurrent execution records.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-kernel-limit-cleanup",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Owned evidence retained; named residue absent and final handback received.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-neighborhood-attachments",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Explicit real-domain coverage and exact maps/compatibility identities.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-global-topology",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Covering strata/gluing model and integral chains, not sampled graph/Betti agreement.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-all-dimensional-classification",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "All claimed stages/domains covered or precise counterexample and restricted result.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-rocq-run-result-release",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Approved campaign lossless collection and preregistered adjudication complete, or direct human release; proof validity independent.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-inventory-contract-reconciliation",
+      "reported_status": "complete",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Independent static reads reconcile planner, validator, tests and both callers; test execution belongs to the implementation owner.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:correction_inventory_repair; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-inventory-regression-design",
+      "reported_status": "complete",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Production plan/submit, generic-family parity and rejected-refresh/eligibility regression obligations enumerated.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:correction_inventory_repair; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-inventory-caller-repair",
+      "reported_status": "in_progress",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:correction_inventory_repair; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-inventory-source-gates",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:correction_inventory_repair; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-inventory-reviewed-integration",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:correction_inventory_repair; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "correction-inventory-case-renewal",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:correction_inventory_repair; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "pre-run-participant-pr-roster",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Eight owners, finite pre-run deliverables, named active/completed/terminal children and planned/known PRs have explicit coverage; final live idle/review/merge observations remain separately gated.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "central-endpoint-replay-production",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Owned replay/result/provenance/checksums pass normal and optimized checks, strict typing and lint within the declared output bound.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:endpoint_information; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "central-endpoint-replay-review",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Reviewer verifies normalized mathematics and preserved original audit identities; actionable findings close.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:endpoint_information; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "central-coordination-research-publication",
+      "reported_status": "in_progress",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Exact source head, required gates and complete PR references are retained.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "central-coordination-research-integration",
+      "reported_status": "waiting_dependency",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Copilot reviewed head, resolved threads, checks, merge, retained evidence and owned cleanup verify.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-circle-attachment-real-coverage",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "All-real polynomial identities cover the declared affine slice and explicit quotient maps identify the attachment image.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-circle-attachment-topology",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Explicit homeomorphism/cellular or equivalent proof supports only the named attachment-image space.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-circle-attachment-review",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Independent review verifies real coverage, sign-quotient trivialization, attachment image, full slice incidence and ordinary all-stage induction; current-head Copilot and required checks qualify the single finite PR.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-circle-attachment-containment",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Merged attachment evidence survives canonical sync; owner and children finish their bounded scope.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "participating-pr-copilot-merge-receipt",
+      "reported_status": "waiting_dependency",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Every roster PR has a head-bound Copilot review, resolved reachable findings, passing required checks and verified reviewed merge.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "participants-completion-idle-receipt",
+      "reported_status": "waiting_dependency",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Every named specialist owner and every participating child completes the declared finite pre-run work and is idle. Central completes all production/review/integration first, then performs only bounded receipt/handoff work; executor verifies central idle after handoff before physical admission.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "central-final-pre-run-handoff",
+      "reported_status": "waiting_dependency",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Executor receives central acceptance and independently confirms coordinator/other participants idle immediately before fresh final physical admission.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-slice-incidence-topology",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "Exact fiber identities and continuous apex/radial transport prove the declared incidence retract onto S11, independently of attachment-image topology.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "geometry-ordinary-all-stage-embedding",
+      "reported_status": "waiting_dependency",
+      "successor": "rank-locus-global-classification",
+      "completion_gate": "The induction covers every claimed ordinary higher embedding under explicit Cayley-Dickson conventions; finite replay through dimension256 corroborates only those instances.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:geometry_resumed; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "campaign-preregistered-adjudication-receipt",
+      "reported_status": "waiting_dependency",
+      "successor": "qpu-execution-roadmap",
+      "completion_gate": "Approved campaign lossless collection plus preregistered adjudication is complete for the named acquired families; withheld data or missing promised acquisitions hold the workflow receipt.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:campaign; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "execution-atlas-score-recovery",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Original assignment/files/error boundary and retained outputs identified; every assigned deliverable closed by verified parent or resumed-child evidence; child terminal/idle status retained honestly.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    },
+    {
+      "id": "execution-placement-review-recovery",
+      "reported_status": "complete",
+      "successor": "research-evidence-roadmap",
+      "completion_gate": "Original assignment/files/error boundary and retained outputs identified; every assigned deliverable closed by verified parent or resumed-child evidence; child terminal/idle status retained honestly.",
+      "disposition": "historical-obligation-mapped",
+      "finding": "Historical snapshot reference snapshot:final_execution_roster; current evidence and next work belong to the successor. Historical submission and reviewer instructions are inactive."
+    }
+  ],
+  "observed_at": "2026-10-23T18:03:36.732812+00:00",
+  "canonical_revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+  "scope": "Follow-up complete scan includes the ignored local JSON discovery fix and concurrent source revisions; initial denominator remains independently retained.",
+  "predecessor_inventory": "initial-inventory.json"
+}

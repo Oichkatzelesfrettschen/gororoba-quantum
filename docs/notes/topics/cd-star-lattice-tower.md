@@ -18,7 +18,7 @@ group through dimension 128.
 [scripts/cd_star_lattice.py](../../../scripts/cd_star_lattice.py) computes
 every number below from `cd_core.cd_sign`; the retained record is
 [census.json](../../evidence/cd-star-lattice/census.json), replayed by gate
-core-665 and described in its [README](../../evidence/cd-star-lattice/README.md).
+`core-record-check-05` (`tests/test_cli_record_checks.py`) and described in its [README](../../evidence/cd-star-lattice/README.md).
 Tags: [P] source statement; [E] exact finite computation, where a group
 order comes from an exhaustive search (the census backtracker through
 n = 16, cross-checked by nauty) and an isomorphism from an explicit

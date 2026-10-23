@@ -1,0 +1,55 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-070.md
+
+# #70: qpu_planning.window_durations: use the routed control's measure and reset durations
+
+Owner session: ibmquantum-12. Branch (planned): none; verification and issue close only.
+
+## Finding
+
+The issue (filed 2026-10-13) describes window_durations taking the
+backend-wide maximum measure and reset durations. Observed on main
+(66eacb6): `gororoba_quantum/qpu_planning.py:144` takes an optional
+`controls` list and, when given, reads only those qubits' measure and reset
+durations (`sites = [table.get((qubit,)) for qubit in controls]`); the
+backend-wide maximum remains only as the pre-routing bound
+(`qpu_planning.py:522`, comment at 516-517). Commits 8fb817c ("size N=21
+window arms from the routed control's measure and reset") and 4bd1e47 ("take
+N=21 window durations from the mid-circuit measure and reset site"), both
+2026-10-16, made the change. `qpu_planning_contracts.py:205-275` builds a
+heterogeneous Target (qubit 113 slowed threefold, excluded from placement,
+and a slowed terminal-readout qubit) and requires the routed windows to equal
+the control's own durations, not the bound.
+
+## Reachability
+
+Reached through `live_run.py --family n21-orbit-rca` dry runs and submits on
+any backend whose measure or reset durations differ by qubit; the fixture
+covers that domain. Retained Heron r2 Targets are uniform (Fez 1660/1684 ns,
+Kingston 2180/2212 ns), so no retained record differs.
+
+## Design
+
+No code change. Run the contract gate, then close the issue with a reply
+naming 8fb817c, 4bd1e47 and the contract lines.
+
+## Acceptance and falsifier
+
+`ci/run_gates.py` for core-094 (full tier; `qpu_planning_contracts.py`) passes
+on main. Prediction: pass. Falsifier: the gate fails, or a mutation that
+returns `max(table.values())` for routed controls still passes (then the
+contract is blind and the issue stays open with a contract fix).
+
+## Shared files and dependencies
+
+None written. No hardware or Kaggle use.
+
+## Effort and agents
+
+About 15 minutes, no agent.
+
+## Out of scope
+
+The issue's own falsifier ("any supported backend has more than one
+duration") is a live-Target question; `scripts/heron_target_snapshot.py`
+refreshes it and core-254/255 recompute per-backend facts.

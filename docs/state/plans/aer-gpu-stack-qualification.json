@@ -1,0 +1,108 @@
+{
+  "schema": "work-plan-v1",
+  "id": "aer-gpu-stack-qualification",
+  "kind": "implementation",
+  "summary": "aer-gpu-stack: Aer GPU configuration, the GPU ghost benchmark, and a Kaggle GPU Aer build",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/f6f781ba372f8c318aaea54ca3a0e255195f019b893276d9aa2cd8abedd70ac5.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-246.json",
+    "docs/evidence/plan-reconciliation/observations/pr-252.json",
+    "docs/evidence/plan-reconciliation/observations/pr-259.json",
+    "docs/evidence/plan-reconciliation/observations/pr-260.json"
+  ],
+  "state": "inbox",
+  "scope": "aer-gpu-stack: Aer GPU configuration, the GPU ghost benchmark, and a Kaggle GPU Aer build",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #260 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-246-integration",
+      "action": "Verify the recorded integration state of PR #246.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "029430b58a2a42a56db8342216a7e075dfa68dedab5094fe3a45378d0a19e7d5",
+          "result": "PR #246 merged as e7f30b94c91de6c5a5ec118627862aa15f957594; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-246.json",
+              "sha256": "85606a31042f1f8d03c7007c36d7bab3ed0bb8e2e8f72fa8fd656c6b3667724b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-252-integration",
+      "action": "Verify the recorded integration state of PR #252.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "de44f2b44d50923b403bd2f0ff748639af0fb1860175b46ae00d476758d5253b",
+          "result": "PR #252 merged as d2ceb3f8e36b7dca5d89af68512c80d890552c31; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-252.json",
+              "sha256": "cf1b6c1a8449d617cc55b2bcd81118679417db90af196cb38af8e540215f0e5e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-259-integration",
+      "action": "Verify the recorded integration state of PR #259.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "fb9e9552a93b51c955494d9b18441e45ec080adf4ddf2f82ba7f4f32376c5721",
+          "result": "PR #259 merged as 258c80082a748214082d238d023c585813d52bff; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-259.json",
+              "sha256": "374902e94d204e40d56fe40601f05b9aa5c757d84bf744ee0f26f6a96d3a2c29"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-260-integration",
+      "action": "Verify the recorded integration state of PR #260.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "6346e3f6834e15d17a057fd555bd8b1dfd8471615c0ac50bd3324c44277490cc",
+          "result": "PR #260 merged as 04f707d149f5de4a19ca98d120ee8a4ef50f3631; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-260.json",
+              "sha256": "e173bdf380298e172e4a34f673d457f25cf92e235296552461b10096db8603d1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- **G1.** - Prediction: the T4 `gpu_statevector_custatevec` rows report `cuStateVec_enable` true, with `tvd_to_cpu_statevector` inside `sampling_scale`. - Falsifier: a `failed` row whose stderr_tail reads \"does not support cuStateVec\". The cu11 wheel's library then did not load. - The batched default must beat unbatched at 7 and 10 static qubits on the T4, as on the host. A T4 ratio below 1 at 7 qubits would make the default wrong for Kaggle. - **#68.** - Prediction: torch CUDA and numpy laws agree within 1e-10 at complex128. The GPU wall time stays export-bound, with export above 50 percent of wall. - Falsifier: a law difference above 1e-8, or a best (c, r) that differs from the Aer parts. - **cu13 wheel.** - Prediction: it imports on the T4 and reports `cuStateVec_enable` true. Its seeded GPU counts equal the cu11 wheel's for statevector without cuStateVec. - Falsifier: an import or `CUDA driver version is insufficient` failure on the 13.0 driver. That would rule out a 13.4-built wheel, and the build would move to a CUDA 12.x toolchain.",
+      "state": "todo"
+    }
+  ]
+}

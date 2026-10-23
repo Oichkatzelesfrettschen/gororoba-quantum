@@ -1,0 +1,11 @@
+{
+  "number": 196,
+  "title": "patch_window_analysis: withhold cross-job comparisons that span calibrations",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T15:04:06Z",
+  "closed_at": "2026-10-17T15:04:06Z",
+  "merge_commit_sha": "3105aa915ca032db97c8914ed25354cc3893cda3",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/196",
+  "merge_ancestor_of_canonical_head": true
+}

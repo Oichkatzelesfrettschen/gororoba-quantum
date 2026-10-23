@@ -1,0 +1,160 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-161.md
+
+# #161: atlas_coherent_families: componentwise vs normwise least-squares roundoff in --check
+
+Owner session: ibmquantum-fc. Branch (planned): atlas/coherent-families-componentwise-roundoff-probe.
+
+## Finding
+
+`compare()` (scripts/atlas_coherent_families.py:1098) admits, inside a model
+entry, `max(CHECK_TOLERANCE = 1.5e-6, max(CHECK_RELATIVE, eps * kappa^2) * |value|)`
+per value. kappa is the retained `fold_condition_max` for FOLD_DERIVED_KEYS
+outputs and the full-design `condition` for the rest (lines 1116-1121).
+`lsq_roundoff_scaling()` (line 1074) measures the drift normwise, against
+max|x| of a synthetic 12 x 6 design. Componentwise and normwise therefore
+differ for small components.
+
+Read from the code and README (observed):
+- Fez lane 4 `axis_tilt_plus_mean` has full condition 7.0e4 and worst fold
+  4.4e5. Its parameters run from 675.7 down to 0.002391.
+
+Computed from those numbers (inferred):
+- The normwise bound for the full fit is eps * kappa^2 * max|x|
+  = 2.22e-16 * 4.9e9 * 675.7 = 7.3e-4 absolute.
+- The 0.002391 component is held to the 1.5e-6 floor, about 490 times
+  tighter than that normwise bound.
+
+Recorded in docs/evidence/atlas_coherent_families/README.md:118-148:
+- The AOCL host, CI OpenBLAS and Kaggle recomputes reproduce every parameter
+  to six decimals.
+- Five resimulated contrasts move by 1 to 3e-6.
+
+So the per-value rule holds empirically on three substrates, but no
+measurement bounds any single component's sensitivity on the lane's own
+design. The issue's falsifier: a supported substrate moves a small component
+or a near-zero prediction past its per-value bound.
+
+## Reachability
+
+`--check` is the documented interface (core-329, full tier, 363 s). A new
+BLAS build is the documented path: CI pins numpy, the build host uses AOCL,
+and Kaggle has its own image. A false failure from a new substrate would turn
+main's full run red. A false pass is the opposite risk, which the issue's
+model-wide alternative would create (0.029 absolute slack). Reachable, with no
+defect observed yet; the work turns an empirical margin into a measured one.
+
+## Design
+
+1. Add `component_drift(design, data, trials, seed)`. It perturbs the lane's
+   own design by eps * ||A||_2 normwise noise, the same law as
+   `lsq_roundoff_scaling`, and returns the per-component max |dx_i| for the
+   full fit and for every leave-one-out fold. Predictions get the same
+   treatment: |d(design_held @ fit)|.
+2. `fit_models` (line 598) already holds each plan's `design` and offsets.
+   Under `--check`, a `--roundoff-probe` pass computes `component_drift` per
+   identified model.
+3. The check requires each retained value's tolerance to exceed SAFETY times
+   its measured drift (SAFETY = 10, stated before measuring). It reports the
+   smallest margin per model.
+4. Phase 1 is measurement, on the build host, with no code merged. Run the
+   probe on all Fez and Kingston lanes; Fez lane 4 is the worst case.
+5. Branch on the result:
+   - (a) Every component has margin >= 10 under the current per-value rule:
+     keep the rule. Fold the probe into `--check` as an assertion, and retain
+     the per-model margins in the evidence README.
+   - (b) Any component falls short: replace that value's tolerance with
+     `max(per-value rule, SAFETY * measured drift)`, computed from the
+     retained design, so the bound becomes component-specific as the issue
+     proposes.
+6. Self-test (core-325): extend `lsq_roundoff_scaling` to return per-component
+   drift. Assert that a component four decades below max|x| drifts above the
+   per-value rule's relative share on the synthetic design. That pins the
+   normwise/componentwise distinction this fix rests on.
+7. Trials: the designs are at most edges x 6, so 200 trials x 8 folds is
+   milliseconds per model. Models run through `parallel.ordered_map` only if a
+   measurement shows the probe above about 1 s per lane; otherwise serial is
+   cheaper than pool start-up.
+8. New gate core-460 (pr tier): `--check --runs ibm_fez --lanes 4 --edges N`
+   with the probe on a reduced case, provided it measures under 120 s on the
+   2-vCPU runner. Otherwise the probe stays inside full-tier core-329.
+
+## Acceptance and falsifier
+
+- Prediction, stated before measuring: every Fez and Kingston component has
+  measured eps-perturbation drift at least 10x below its current per-value
+  tolerance. The floor of 1.5e-6 dominates small components, and BLAS-level
+  backward error is about eps.
+- Falsifier of the current rule: any component with drift above tolerance / 10.
+  That selects path (b).
+- Falsifier of the probe: the CI OpenBLAS recompute moves a value by more
+  than its measured drift times 10, which would mean BLAS differences are not
+  eps-sized backward perturbations of the design.
+- Commands:
+  - `"$PYTHON" scripts/atlas_coherent_families.py --self-test` (normal and -O)
+  - `--check docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4`
+  - core-334 cmp unchanged, since result.json bytes do not change.
+
+## Shared files and dependencies
+
+- ci/gates.json: core-325 and core-329 commands, plus new core-460.
+- docs/evidence/atlas_coherent_families/README.md.
+- No Kaggle or hardware use. CI replay: the probe is deterministic under a
+  fixed seed, but BLAS-dependent, so it asserts margins, not bytes.
+- Blocks nothing; waits for nothing.
+
+## Effort and agents
+
+Medium. Phase 1 measurement takes about 1 h, and I run it myself. Phase 2
+code plus self-test takes about 2 h, with one sonnet agent at most for the
+gate-timing measurement.
+
+## Out of scope
+
+Re-deriving fits under a different solver (QR vs SVD lstsq), and the
+contrast resimulation's own Aer roundoff, which the probe does not model
+(the 1-3e-6 contrast moves stay under the floor).
+
+## Phase 1 result (measured 2026-10-17, lane 4 Fez and Kingston)
+
+These measurements supersede the eps-SAFETY assertion in Design steps 3 and
+5. That assertion measures a perturbation about 1585 times smaller than the
+real difference between substrates.
+
+Setup:
+- Build host: AOCL numpy 2.5.4.
+- CI replica: a uv venv, Python 3.14.7, with requirements.txt pins and
+  scipy-openblas 0.3.34.
+- Probes, kept outside the tree: a frame-inspecting lstsq capture, and a
+  wrapper around compare() that records tolerance / |retained - fresh|.
+
+Parameter solves (388):
+- eps-perturbation worst component margin: 1640 (axis_tilt_plus_mean full fit).
+- The AOCL and OpenBLAS designs differ by at most 3.5e-13 relative normwise
+  (about 1585 eps; median 1.3e-14).
+- Each solve scaled by its own design difference: worst margin 30.6.
+- Actual AOCL vs OpenBLAS solves: worst margin 75.6.
+- Constructed worst pairing (the largest design difference applied to the
+  thinnest solve): about 1.0. This is a residual, not a measurement.
+
+The gate's own comparison against retained result.json (the Kaggle output),
+3438 numbers:
+- AOCL: 4 differ. Worst margin is 95 on Fez `axis_tilt_plus_mean`
+  `contrast.predicted_log_ratio[1]`.
+- OpenBLAS: 7 differ. Worst margin is **2.95** on Kingston
+  `axis_tilt_plus_mean` `contrast.predicted_log_ratio[0]`: retained -0.060228,
+  one-unit move, tolerance 2.95e-6. Next come margins of 31.7 to 67.8 on Fez
+  contrast outputs.
+- Every parameter reproduces exactly on both substrates.
+
+Reading: the falsifier is partly met. A near-zero resimulated contrast
+prediction sits under 10x margin on the CI substrate. Its per-value tolerance
+covers a one-unit rounding flip but not the three-unit moves that OpenBLAS
+produced on other contrasts (README:123-125). Path (b) applies to the contrast
+block only. Parameters keep the per-value rule, at margins of 1640 or more.
+
+Open design choice for (b), to settle before code:
+- Per-output-vector normwise scaling for the contrast block: eps * kappa^2 *
+  max|vector|, matching the normwise form of the lstsq bound.
+- Or perturbation-measured sensitivity of each prediction to its parameters,
+  which needs re-simulation, the cost core-329 already carries.

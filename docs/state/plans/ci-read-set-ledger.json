@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ci-read-set-ledger",
+  "kind": "implementation",
+  "summary": "CI: skip gates by their traced read set; plan shards from measured time",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/1b7dece9956f1813a3bc8aeaa846ca8d86ebdf918ba4ffdc814b8a2185440ca7.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-309.json"
+  ],
+  "state": "inbox",
+  "scope": "CI: skip gates by their traced read set; plan shards from measured time",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #309 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-309-integration",
+      "action": "Verify the recorded integration state of PR #309.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "ca9693a7ed829a11fbcff22e45472c644c17e92f13d7a2b7045038a691790c29",
+          "result": "PR #309 merged as 95d5c3c4778242a05d9b24f9035e557b12527ff5; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-309.json",
+              "sha256": "51e11b52c7feb345066255c115a658304f7e66158113ccb99b2a5630e1fc1b22"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, `C=$HOME/.cache/gororoba-quantum`: ruff check / ruff format --target-version py313 (changed files only) / mypy via ci/pinned_tool.py; `$C/ci-py3147/bin/python ci/gate_ledger.py --self-test`; a local two-pass demonstration: run `ci/run_gates.py --tier pr --ledger-out L` then `--ledger L` and show which gates skip, and that touching one input re-runs exactly its gates; measure the tracer's overhead on core-445 and core-597. Constraints: no push, no network beyond none, no QPU, no subagents, never rm -rf (trash-put), no asserts, commits with `Assisted-by: Claude Code (claude-opus-5-5)`. Report to docs/local/plans/ci-read-set-ledger-report.md.",
+      "state": "todo"
+    }
+  ]
+}

@@ -25,7 +25,7 @@ status column means "recomputed". Two authorities carry the recomputations:
 
 - The retained census, [scripts/box_kite_census.py](../../../../scripts/box_kite_census.py)
   with its record [docs/evidence/box_kite_census/census.json](../../../evidence/box_kite_census/census.json)
-  (gate core-372 and gate `core-self-test-05` (`tests/test_cli_self_tests.py`)), built on cd_core alone. Every 16D box-kite fact the
+  (gate `core-record-check-02` (`tests/test_cli_record_checks.py`) and gate `core-self-test-05` (`tests/test_cli_self_tests.py`)), built on cd_core alone. Every 16D box-kite fact the
   experiment program uses comes from it; the table "Recomputation authority" below
   names the census field for each row.
 - An exploratory scratch recomputation that is not retained. It reimplemented the

@@ -1,0 +1,168 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/n21-overlap-split-report.md
+
+# n21-orbit-rca overlap split: report
+
+Branch `n21/orbit-window-sweep`, base c2191b6. Nothing was pushed, nothing was submitted to a QPU, no live_run.py dry run was made, no network was used, and no subagents were spawned. The census JSON was not touched.
+
+## Commits
+
+- `76cb59f` qpe_diagnostics: add the immediate and idle qubit-2 spectator kinds
+- `9cb6fbb` n21-orbit-rca: plan the overlap split behind --overlap-split (diagnostic_experiments, qpu_planning, live_run, qpu_cases, qpu_planning_contracts, ci/gates.json core-593)
+- `b77746f` n21_orbit_rca: evaluate the overlap-split contracts from the members present (analyzer, QPU_OPTIMIZATION.md)
+- this report
+
+## What changed
+
+**qpe_diagnostics**
+- `N21_SPECTATOR_KINDS` stays `(measured, reset_only)`, so window-sweep groups keep their bytes.
+- New `N21_SPECTATOR_SPLIT_KINDS = (immediate, idle, reset_only)` and `N21_SPECTATOR_BUILDABLE`.
+- `n21_spectator_ramsey` takes `reset_dt`:
+  - `idle` idles the control `measure_dt + reset_dt` inside the bracket, with no reset.
+  - `immediate` reads qubit 2 right after the barrier that follows its preparation.
+- The laws: the control bit reads 0 for every kind except measured.
+- `_verify` covers all eight kinds x quadratures.
+
+**diagnostic_experiments**
+- `n21_orbit_rca_group(..., overlap_split=False, reset_dt=None)` builds the 10 members in the spec's order. The unbracketed pair is variant `nominal_unbarriered`, named `n21_orbit_unbracketed_*`.
+- `overlap_split` raises beside `window_sweep` and requires a positive `reset_dt`.
+- `n21_orbit_variants`, `n21_spectator_kinds` and `n21_spectator_members` take the flag.
+- `family_contracts`:
+  - one directional endpoint each for the nominal and unbracketed pairs;
+  - one precision-only endpoint per spectator;
+  - share = alpha / 8.
+- `record_groups` reads `overlap_split` and `reset_dt`.
+
+**qpu_planning**
+- `settings` adds `overlap_split` only when it is set.
+- New `reset_window_dt`, which uses the same sites and rounding as `window_durations` (refactored into `_longest_window_dt`, same values).
+- The planner builds the split instead of the sweep when the flag is set.
+- `_control_windows(..., reset_bound)` resizes `reset_dt` per control, and its early return compares `reset_dt` too.
+- The configuration records `overlap_split: true` and `reset_dt`, and omits `window_sweep`.
+
+**live_run**
+- New `--overlap-split` flag.
+- Parser errors on another family, or when `--pin-layout` is missing.
+
+**qpu_cases**
+- Emits `--overlap-split` (validated as True-only).
+- Adds a one-sentence case paragraph, only when the configuration carries the flag.
+
+**qpu_planning_contracts**
+- `--window-bracket` (core-446) now also plans a pinned split on FakeFez:
+  - unbracketed arms must hold a work operation in the window;
+  - bracketed arms must not;
+  - spectators are exempt.
+- New `--overlap-split` contract, gate core-593 (pr tier). It checks:
+  - the 10 names in order;
+  - the configuration;
+  - the policy key only when set;
+  - the idle delay equals `window_delay_dt + reset_dt` on the control;
+  - the immediate arm has no delay;
+  - `record_groups` rebuild and `family_contracts` (8 at 0.05/8);
+  - qpu_cases command and case text, both with and without the flag;
+  - the ValueError beside window_sweep;
+  - both parser refusals.
+- The unbracketed premise holds on FakeFez under 142,136,143,144: the unbracketed arms compile with a work operation inside the window.
+
+**Analyzer**
+- `is_orbit` is now a prefix test on `n21_spectator_`. This is equivalent on every retained record.
+- New `SPLIT_SPECTATOR_*` and `ALL_SPECTATOR_MEMBERS`.
+- `overlap_split(names)` detects the configuration from the members present; `contract_names` and `contract_alpha` follow from it. Window sweep stays at 0.05/5 (`CONTRACT_ALPHA` unchanged); the split uses 0.05/3.
+- `split_admissibility` reads the nominal pair through `admissibility(roles, ("nominal",))`, requires the unbracketed pair to be present, and lists it under `exempt`.
+- New `spectator_decline`, `immediate_visibility` (descriptive, ideal 1) and `overlap_contract_results`.
+- `spectator_counts` accepts either kind set.
+- `not_admissible`, `contract_gate` and `herald_refusal` take the contract names.
+- In `between_arm_report`:
+  - the alpha block follows the configuration;
+  - a refused spectator herald refuses the `spectator_*` contracts;
+  - a split reports `spectator_immediate_visibility` in place of `spectator_branch_phase`.
+- The analyzer sha256 changed.
+
+## Decisions where the spec and code conflicted
+
+1. **Immediate and idle spectators get a terminal control reset.** As written they are static circuits, and the planner refused the group: "one result group mixes static and dynamic circuits". A barrier and then a control reset after qubit 2's readout makes them dynamic, so the group stays one job. The ideal law is unchanged, and qubit 2 is read before the reset. Alternatives were a separate static group or requiring `--init-herald` (the herald already makes them dynamic).
+2. **Direction of `window_overlap_loss`.** "contrast_floor machinery, herald_margin subtracted" tests reaching the reference, but the pass is "B < A". I used `magnitude_decline(unbracketed, nominal)` with the margin counting against the pass, the same resolution as decision 3 of the window-sweep report.
+3. **Self-test (c) at 65536 shots contradicts itself.** At that depth and phase 0, idle 0.97 vs immediate 0.98 is about 8 sigma, so `spectator_idle_dephasing` would pass. The spectator truths are planted at 4096 shots, a plan tier, and phase pi/4. There 0.01 is below the minimum detectable difference (SE about 0.016) and 0.37 is far above it. The overlap truths use the 65536-shot depth.
+4. **`N21_SPECTATOR_KINDS` was not extended in place.** That would have changed the window-sweep groups. A split-kinds tuple carries the new kinds.
+5. **The unbracketed coupling gates nothing.** The magnitude removes the work phase, and a CZ in the window can legitimately change the coupling. A planted roles test shows that a missing unbracketed pair is not admissible, and a differing or unresolved one is admissible.
+
+## Commands and results
+
+Run with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 GOROROBA_WORKERS=4`, interpreter `$C/ci-py3147/bin/python`, `C=$HOME/.cache/gororoba-quantum`.
+
+- Baseline before edits: `ci/run_gates.py --gates core-092,105,192,443,445,446,447,459,495,592,094 --replay-python $C/replay-py3147/bin/python` gave 11/11 PASS.
+- `scripts/n21_orbit_rca.py --self-check` PASS. Truths read:
+  - overlap pass; no_overlap fail;
+  - readout_dephasing: readout pass, idle fail;
+  - intrinsic: readout fail, idle pass;
+  - preparation floor: both fail.
+- `qpu_planning_contracts.py --overlap-split`: first FAIL (the static/dynamic mix, decision 1), then PASS.
+- `ci/pinned_tool.py ruff format --target-version py313` on the 7 changed .py files: unchanged.
+- `ci/pinned_tool.py ruff check gororoba_quantum scripts ci`: one E501, fixed, then all checks passed.
+- `ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel`: 286 files already formatted.
+- `ci/pinned_tool.py mypy gororoba_quantum scripts ci`: no issues in 275 files.
+- `ci/run_gates.py --gates core-092,105,192,443,445,446,447,459,495,592,593,094,549,570,524,263,193 --replay-python ...` gave 17/17 PASS. This covers the 083417 (core-447), 080216 (core-443) and 201757 (core-495) replays and the qpu_cases check (core-105).
+- `ci/run_gates.py --changed-files <diff vs c2191b6> --replay-python ...` (after the last code change, before QPU_OPTIMIZATION.md was the only edit left) gave 492 passed, 4 failed:
+  - core-408 and core-409: census, known red, left alone.
+  - core-289 (census conformance `--check`) and core-265 (check_run_gates timing test) also fail identically on a detached base worktree at c2191b6. That worktree was made with `git worktree add` and removed with `git worktree remove`.
+
+## Open items
+
+- No end-to-end run directory drives `between_arm_report` on split members (raw PUBs, herald, `window_roles` on unbracketed arms). The contract functions and admissibility are tested on planted inputs only.
+- A live_run dry run with `--overlap-split --pin-layout ibm_fez:142,136,143,144` is owed to the orchestrator.
+- Any written case naming the old analyzer sha256 is refused by `--expected-analyzer-sha256`.
+
+## Revision: barrier test on window_delay
+
+Commits `8c70e9a` (planner, circuits, case text, contracts) and `ad53b4d` (analyzer, QPU_OPTIMIZATION.md), on top of 47349bc and ed7bd08.
+
+- **Members:** `--overlap-split` now plans 12 members:
+  - the bracketed nominal pair;
+  - the bracketed window_delay pair;
+  - `n21_orbit_window_delay_unbracketed_*`, which is new qpe_diagnostics variant `window_delay_unbarriered`: window_delay without either barrier, herald kept;
+  - the six spectators.
+- **Configuration:** records `overlap_arm: window_delay` and `orbit_gate_counts` (routed CZ and sx counts per orbit arm). On FakeFez with the pin, the unbracketed arm holds 43 CZ / 77 sx against 44 CZ / 79 sx for the bracketed arm.
+- **Legacy split:** a configuration without `overlap_arm` (the retained 2026-10-19T165053 dry run) still rebuilds the earlier ten-member nominal split through record_groups. Its census rows are therefore unchanged by this revision.
+- **Case text:**
+  - states the one-CZ resynthesis, with counts, and that it biases against an overlap pass, so a fail reads as unresolved;
+  - states that a pass shows overlap costs magnitude on this calibration, not that overlap caused 083417's loss;
+  - says the work-qubit gates overlap the "measure-plus-reset span under the backend scheduler".
+- **Analyzer:** four contracts at 0.05/4:
+  - `window_delay_pinned_loss`: bracketed window_delay below nominal;
+  - `window_overlap_loss`: unbracketed window_delay below bracketed window_delay;
+  - `spectator_readout_dephasing`;
+  - `spectator_idle_dephasing`, described as loss across an unrecorded-control idle (T2* plus unrecorded ZZ).
+  - All use magnitude_decline or spectator_decline, with the margin counting against a pass.
+  - Admissibility reads both bracketed pairs.
+- **Planner endpoints:** family_contracts has 9 endpoints at 0.05/9.
+- **Self-check additions:** the pinned-loss truth, an overlap truth relative to window_delay, a missing-window_delay admissibility refusal, and a combined family that reads pinned pass, overlap fail, readout pass, idle fail.
+- **core-593 additions:** 12 names, overlap_arm, gate counts equal to the routed ISA, window_delay_dt idles in both window_delay kinds, 9 endpoints, the legacy rebuild, and the case-text clauses.
+- **core-446:** now checks the unbracketed window_delay arm, which holds a window operation.
+
+Commands:
+- `n21_orbit_rca.py --self-check`: PASS.
+- `qpe_diagnostics.py`: PASS.
+- `qpu_planning_contracts.py --overlap-split`: PASS.
+- ruff format `--target-version py313` on the 6 changed .py files: unchanged.
+- ruff check: passes.
+- ruff format `--check`: 289 formatted.
+- mypy: 278 files clean.
+- `run_gates.py --gates core-092,105,192,443,445,446,447,459,495,592,593,094,549,570,524,001,002,039 --replay-python replay-py3147`: 18/18 PASS.
+- The changed-files selection was not rerun after the revision.
+
+## Pre-push review fixes
+
+- **Contracts follow the record's shape:** `record_shape` reads plain, sweep or split from the members.
+  - plain: `window_delay_phase_slope`, `extra_readout_contrast` and `window_echo_restoration` at 0.05/3; admissibility runs over `PLAIN_VARIANTS`, without `window_delay_long`.
+  - sweep: five contracts at 0.05/5.
+  - split: four contracts at 0.05/4.
+  - `--self-check` reads the members of 2026-10-18T062500 as plain and plants a plain family. All three of its contracts pass at the 0.05/3 quantile.
+- **Herald bound:** `magnitude_mde`, `herald_bound` and `herald_report` take the shape's alpha.
+  - `--self-test-herald` now expects the plain three-contract refusal for the retained 083417 run, a plain record.
+- **Census `--write`:** requires exactly one `qiskit==` pin and says so when it is missing.
+- **overlap_arm comments:** the comments and docstrings describe the ten-member nominal configuration.
+- **Commands:** run with `ci/run_gates.py --replay-python replay-py3147`.
+  - Main run: 15 of 16 passed: core-001, 002, 039, 092, 105, 192, 443, 447, 495, 592, 593, 446, 408, 409, 289. core-459 failed twice (a mock signature, then the plain contract set). After both fixes, core-459, 192, 001, 002, 039, 443 and 447 passed, 7 of 7.
+  - The census gates core-408, 409 and 289 pass, so the census was not regenerated.
+  - ruff format (py313) on the 4 changed files reformatted 1 file. ruff check, the format check and mypy are clean.

@@ -1,0 +1,35 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/closeout-shards.md
+
+# closeout-shards: Kaggle PR-tier CI-shard replica on main
+
+Owner session: boxkite-quantum-main. Branch: main. Device: Kaggle CPU,
+6 kernels (five run concurrently).
+
+## Finding
+
+The owner's rule: the CI-shard replica runs once at session close-out on
+main after all merges (`kaggle_run.py shards --tier pr --count 6`), on
+Kaggle CPU in place of the build host.
+
+## Design
+
+After every other plan's PR has merged or been parked: pull main, run
+`"$PYTHON" scripts/kaggle_run.py shards --tier pr --count 6` for main's
+head, collect, compare each shard's failures with main's GitHub run.
+
+## Acceptance and falsifier
+
+All six shards green and matching GitHub; a Kaggle-only failure is a
+host-dependent result and becomes an issue.
+
+## Shared files and dependencies
+
+Waits for every other row. Coordinate with the main-ci plan (ibmquantum-e5),
+which fixes cancel-in-progress so GitHub completes a full main run.
+
+## Effort and agents
+
+Small; orchestrator.
+
+State: waits for every other row.

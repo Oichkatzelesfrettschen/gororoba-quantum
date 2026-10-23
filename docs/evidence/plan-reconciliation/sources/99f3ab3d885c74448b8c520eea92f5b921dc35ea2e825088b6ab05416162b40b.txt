@@ -1,0 +1,33 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/research-ibm-parked.md
+
+# research-ibm-parked: IBM-bound research held while QPU minutes stay reserved
+
+Owner session: boxkite-quantum-main (design only). Device: IBM Heron r2,
+reserved -- no submissions and no approval requests.
+
+## Items
+
+| id | item | what can proceed now | blocked part |
+|---|---|---|---|
+| H2 | n21-feedback-encoded feasible design: covariance-bound note (H2a), replica floor below 0.9 with a stated reason (H2b), CovarianceBound in qpu_planning (H2c), model-shot run for the simulation allowance (H2d, needs owner OK on Kaggle cost), fresh dry run and written case (H2e) | H2a-H2c as code and notes; H2e dry run | submission |
+| H4 | cubic Walsh classes on Heron (five-qubit spectral comparison) | superseded for now by tuna-walsh (Tuna-17, 5-6 CZ) | IBM case |
+| H5 | held conditional Ramsey records | PR #191 retires the Kingston conditional Ramsey cases (owner of #191 to confirm); this row closes when #191 lands | -- |
+| F3 | split conjugators: GL(5,2) distance table for the N=21 encoding | owned by ibmquantum-12 (row n21-gl52, agent running); removed from this plan | -- |
+| F4 | R1 gap: the 2-dimensional deficit at non-zero-divisor families | all of it (local); #191 plans the A_5 rank locus, so coordinate with its owner | -- |
+| R1 | rank-stratum topology roadmap items 3-8 | long horizon, local | -- |
+
+## Design
+
+Each item that proceeds gets its own plan file when its owner session picks
+it up after scope freeze; this session takes H2a-H2c first (local). H5 and F4 wait on #191's owner.
+
+## Acceptance and falsifier
+
+Per item; none submits.
+
+## Effort and agents
+
+One agent at a time from this session's two, after the Tuna items.
+
+State: parked (IBM reserved); H2a-H2c ready after the Tuna items.

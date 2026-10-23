@@ -21,7 +21,7 @@ paths, timestamps or worker counts, so pooled and serial
 "$PYTHON" -B -W error scripts/cd_star_lattice.py --check docs/evidence/cd-star-lattice/census.json
 ```
 
-Gate core-665 runs it: `--check` recomputes the census and requires byte
+Gate `core-record-check-05` (`tests/test_cli_record_checks.py`) runs it: `--check` recomputes the census and requires byte
 equality with the canonical JSON (sorted keys, indent 2).
 `tests/scripts/test_cd_star_lattice.py`, in the behavioral suite, holds the
 contracts and their planted defects: swapped Tuna-17 coordinates fail the

@@ -1,0 +1,116 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/aer-gpu-stack.md
+
+> 2026-10-17: #68 landed as PR #246 (merge e7f30b9, branch and worktree removed). The sweep is CPU-bound; GPU buys nothing (docs/evidence/ghost_error_scale_branching/README.md). Open: cu13 Kaggle wheel (core-442); the CPU-kernel sweep command in that README has not run.
+
+# aer-gpu-stack: Aer GPU configuration, the GPU ghost benchmark, and a Kaggle GPU Aer build
+
+Owner session: ibmquantum-fe. Branches:
+- sim/aer-gpu-configuration (G1), pushed, no PR yet;
+- sim/ghost-branching-gpu, pushed at 990e266, with local merges up to 6cd65d0;
+- planned: kaggle/aer-gpu-cu13-wheel.
+
+## Finding
+
+Observed:
+
+1. **#189 merged at 99ea45f.** The host python-qiskit-aer-cuda 0.17.2-2 links libcustatevec.so.1 and libcutensornet.so.2 (readelf NEEDED). `noise_simulator(custatevec=True)` reports `cuStateVec_enable` true.
+2. **G1 is reconciled with main and #189.**
+   - noise_simulator batches GPU shots by default up to 10 active qubits. Feed-forward circuits run unbatched (SnapshotSimulator.run), and shot branching is never enabled.
+   - `custatevec=True` turns the batched default off.
+   - G1 adds `GOROROBA_AER_CUSTATEVEC=1` (calibration_snapshot.aer_custatevec), so an entry that takes its device from aer_device() runs on libcustatevec.
+   - Measured on the 4070 Ti: cuStateVec engages on density_matrix as well as statevector, with seeded counts equal to the plain GPU path at 8, 12 and 14 qubits.
+   - core-367, core-279 and the seeded-count CPU gates pass.
+3. **T4 probe returned no rows.** Kaggle kernel gororoba-aer-gpu-config, version 1, pushed at befa671 with `--timeout 5400`, reached CANCEL_ACKNOWLEDGED at the timeout (10:08Z). It returned environment.json, hypercomplex.json and pip.txt: cuquantum-cu11 24.8.0, custatevec-cu11 1.6.0.post1 and cutensor-cu11 2.2.0 installed, driver CUDA 13.0. It returned no probe row.
+   - Cause (kaggle_kernel/kernel_main.py run_entry): the kernel runs the entry with `capture_output=True` and copies changed repository files only after the entry exits. A kernel cut off at `--timeout` therefore loses the entry's stdout and its `--out` file under the repository copy.
+   - Cost: the host probe spent 2,862 s inside rows on 12 CPUs. The T4 host has 4 CPUs, so the probe's contention rule reruns rows whose load exceeds 4, and its 30 s idle wait applies to each of 74 rows. That overran 5400 s.
+   - 1.5 h of GPU quota went with no data.
+4. **#68 ghost estimator on GPU** (sim/ghost-branching-gpu merged with G1):
+   - core-363 passed in 35.7 s and core-364 in 4.1 s.
+   - `--runs all --engine torch --device cuda --dtype complex128` took 58.7 s wall for 15 runs (1 skipped), all 50 grid points each. Phases summed: prepare 10.6 s, export 41.4 s, evolve 1.3 s, sample 1.1 s. Export runs in the CPU pool, so it is the bound.
+   - One Aer grid point (run 2026-10-11T152922, 29 replicas of 2 to 6 active qubits, 118,784 shots, density matrix):
+
+     | Configuration | Seconds | Mean TVD at (1, 1) |
+     |---|---|---|
+     | CPU, 12 threads | 70.5 | 0.10227 |
+     | GPU + cuStateVec | 501.8 (7.1x slower) | 0.10227 (equal) |
+
+   - Narrow dynamic circuits run one shot at a time on the GPU executor, so Aer on the GPU loses here. The GPU gain on this workload comes from torch exact branching.
+5. **Kaggle's GPU Aer.** qiskit-aer-gpu-cu11 0.17.2 is the only GPU wheel that installs on the image's Python 3.13. It is built against CUDA 11.8, while the T4 image's driver reports CUDA 13.0 and its torch is 2.11.0+cu128 (docs/notes/kaggle/substrates.md).
+
+Inferred, not measured: an Aer 0.17.2 wheel built from the host recipe (docs/notes/build_host/recipes/) as cu13, for sm_75 plus sm_89, would run on the T4 under CUDA minor-version compatibility. It would also load libcustatevec through a cuquantum cu13 wheel (custatevec-cu13 1.15.0 is on PyPI).
+
+## Reachability
+
+- **noise_simulator's GPU defaults** reach every entry run with `GOROROBA_AER_DEVICE=GPU`: `ci/run_gates.py --device GPU`, Kaggle GPU kernels, and local runs.
+- **The ghost estimator** reaches the user through its documented CLI (`--engine torch --device cuda`).
+- **A Kaggle GPU Aer build** reaches every `push --machine NvidiaTeslaT4`.
+
+## Design
+
+1. **G1 (sim/aer-gpu-configuration).**
+   - kernel_main.run_entry streams the entry's stdout and stderr into /kaggle/working/output/stdout.txt and stderr.txt as they arrive (Popen with file handles, PYTHONUNBUFFERED=1). /kaggle/working/output is the directory a cancelled kernel still returns. The kernel keeps its tail print and the post-exit repository diff copy. A contract in `kaggle_run.py self-test` (core-280) runs a stub entry that prints, writes its `--out` under /kaggle/working/output, and is killed; it requires both to be present.
+   - The probe's T4 push writes `--out /kaggle/working/output/aer_gpu_probe.json`. The probe rewrites that file after every row, so a timed-out kernel keeps every finished row.
+   - Rerun with `--timeout 10800` (3 h of the 28.3 h left), or with `--workloads toy,n21` first and width second if the owner wants the quota spent in two sessions.
+   - Collect the T4 kernel and retain it under results/kaggle/.
+   - Add a gate core-440: `aer_gpu_probe.py --check` on the retained T4 record, in normal and `-O` mode.
+   - Rerun `scripts/inventory_retained_runs.py` so the new directory declares no QPU execution.
+   - Add a T4 section to docs/evidence/aer_gpu_configuration/README.md: batched against unbatched, the cuStateVec row, two GPUs.
+   - Open the PR against main with a 2-round Codex cap.
+2. **#68 benchmark (sim/ghost-branching-gpu, rebased by merge onto main after G1).** Retain docs/evidence/ghost_error_scale_branching/gpu_benchmark.json. It holds:
+   - the torch CUDA complex128 run over all runs, plus complex64 as a separate row only if its laws agree with complex128 within 1e-6 TV;
+   - the numpy reference at GOROROBA_WORKERS=12;
+   - the Aer pilot rows above, repeated on a quiet host;
+   - per phase: seconds, `uptime` and nvidia-smi readings at start and end, and the versions (torch with its CUDA, driver, numpy, qiskit-aer 0.17.2-2, cuquantum 26.09).
+
+   Correctness: the torch laws match numpy (max abs difference), and `--compare-parts` agrees with the retained Aer parts a, b and c. Gate core-441 re-derives the record's derived fields from its raw timings and laws (`--check-benchmark`), normal and `-O`.
+
+   The same entry runs on a Kaggle T4 through `kaggle_run.py push --machine NvidiaTeslaT4 --timeout`, because the image carries torch 2.11.0+cu128. The plan pushes it once so the record holds a T4 row next to the host row.
+3. **Kaggle GPU Aer build (kaggle/aer-gpu-cu13-wheel).**
+   - Build a qiskit-aer 0.17.2 wheel for Python 3.13 with `AER_THRUST_BACKEND=CUDA`, `AER_CUDA_ARCH="7.5 8.9"` and `AER_ENABLE_CUQUANTUM=ON`, from the retained recipe and Aer's CONTRIBUTING GPU-build section. The libcustatevec and cuTENSOR it needs come from the PyPI cu13 wheels rather than /usr.
+   - Retain the wheel as a Kaggle dataset with its sha256.
+   - `scripts/kaggle_run.py` gains a pin set that installs it in place of qiskit-aer-gpu-cu11.
+   - Gate core-442 runs `kaggle_run.py self-test` over the new pin set; the existing core-280 and core-290 cover bundling.
+   - Measure it with the same T4 probe against the cu11 wheel, on equal seeded counts.
+
+## Acceptance and falsifier
+
+- **G1.**
+  - Prediction: the T4 `gpu_statevector_custatevec` rows report `cuStateVec_enable` true, with `tvd_to_cpu_statevector` inside `sampling_scale`.
+  - Falsifier: a `failed` row whose stderr_tail reads "does not support cuStateVec". The cu11 wheel's library then did not load.
+  - The batched default must beat unbatched at 7 and 10 static qubits on the T4, as on the host. A T4 ratio below 1 at 7 qubits would make the default wrong for Kaggle.
+- **#68.**
+  - Prediction: torch CUDA and numpy laws agree within 1e-10 at complex128. The GPU wall time stays export-bound, with export above 50 percent of wall.
+  - Falsifier: a law difference above 1e-8, or a best (c, r) that differs from the Aer parts.
+- **cu13 wheel.**
+  - Prediction: it imports on the T4 and reports `cuStateVec_enable` true. Its seeded GPU counts equal the cu11 wheel's for statevector without cuStateVec.
+  - Falsifier: an import or `CUDA driver version is insufficient` failure on the 13.0 driver. That would rule out a 13.4-built wheel, and the build would move to a CUDA 12.x toolchain.
+
+## Shared files and dependencies
+
+- ci/gates.json (core-440 to core-442).
+- gororoba_quantum/calibration_snapshot.py: other items that touch noise_simulator reconcile against G1.
+- AGENTS.md (root and gororoba_quantum), "Simulation on Kaggle" and the stack table. The heron-execution-facts section stays identical in both files (core-250).
+- docs/notes/kaggle/custatevec.md and substrates.md.
+- Kaggle GPU quota: 29.78 h left at 08:38Z. The T4 probe uses at most 1.5 h; the #68 T4 row and the wheel probe each need under 1 h.
+- The wheel build runs on the host at nice 19 with six jobs, and runs while no gate is active.
+
+## Effort and agents
+
+- G1: about 1 h after collection, done in session.
+- #68 record and gate: about 2 h, one sonnet agent for `--check-benchmark`.
+- cu13 wheel: about 3 h, mostly build time. One opus agent for the build recipe, reviewed in session.
+- At most two agents at once.
+
+## Out of scope
+
+- tensor_network on the GPU (CUTENSORNET_STATUS_INTERNAL_ERROR on about every second run): its own RCA.
+- A clean-tree rebuild of the host package: an owner-scheduled host action.
+- openblas removal: owner decision.
+
+## Outcome (2026-10-18)
+
+- cu13 wheel: PR #259 merged 258c800 (core-442); PR #260 merged 04f707d. T4 run results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config, 0.85 GPU h, 35 rows, both T4s, cuStateVec true. The driver falsifier did not fire.
+- The count prediction failed in part: all 15 GPU density-matrix rows equal cu11's seeded counts (1 to 14 percent faster), while only 4 of 16 statevector rows match. Seeded statevector trajectories are build-specific; width rows keep only hashes, so distribution agreement stays untested.
+- Build tree moved to ${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/aer-gpu-cu13 (wheel and SHA256SUMS intact); PR #260 makes that the recipe default and indexes gate selection from git's file list, after an ignored in-tree build stalled core-265 for 45 min.
+- CPU sweep: PR #252 merged d2ceb3f (core-453).

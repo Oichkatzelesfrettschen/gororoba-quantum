@@ -12,7 +12,7 @@ services"). Dates in this note date the measurements they cite.
 The census settles the algebra. `scripts/box_kite_census.py` derives every
 box-kite fact and every ideal probability below from `cd_core.cd_sign`, and
 retains them in [census.json](../../evidence/box_kite_census/census.json)
-(gate core-372 and gate `core-self-test-05` (`tests/test_cli_self_tests.py`)). A field cited as `census:x.y` is a path into
+(gate `core-record-check-02` (`tests/test_cli_record_checks.py`) and gate `core-self-test-05` (`tests/test_cli_self_tests.py`)). A field cited as `census:x.y` is a path into
 that record. A hardware run never adds algebraic evidence: the signs in every
 circuit are compiled from cd_core, so a run measures whether a stated
 implementation reproduces the census prediction.

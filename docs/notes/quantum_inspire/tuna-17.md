@@ -206,7 +206,7 @@ fitted 2.6 s per job plus 0.53 ms per shot, no published calibration) and the
 box-kite follow series built on it: seven batches whose readout pairs bracket
 fifteen packed witnesses, sized from T0's r, the readout drift across the T0
 batches and the coupler-ZZ map (`docs/evidence/box_kite_follow_design/design.json`,
-gate core-439 and gate `core-self-test-09` (`tests/test_cli_self_tests.py`)). The series ran on 2026-10-17 from 23:08Z to
+gate `core-record-check-05` (`tests/test_cli_record_checks.py`) and gate `core-self-test-09` (`tests/test_cli_self_tests.py`)). The series ran on 2026-10-17 from 23:08Z to
 23:29Z with every preregistered decision as the census predicts: all six
 classification rows, twist equality at |z| at most 2.44 in all four
 crossovers, every depth-1 X coherence sign and both walk signs. Its results

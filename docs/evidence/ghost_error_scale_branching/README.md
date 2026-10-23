@@ -15,7 +15,7 @@ applies per shot and evolves it on numpy or torch. The Aer sweep
 | core-363 | `--self-test`, normal and `-O` | (a) the analytic feed-forward law; (b) static laws equal jax_bridge's within 1e-12; (c) static diagonals equal Aer's `save_density_matrix` within 1e-9; (d) dynamic laws pass a G test against 200,000 Aer density-matrix shots at (1, 1) and (12, 3); (e) rescaled CZ superoperators equal freshly scaled noise models; (f) normalization; (g) torch complex128 equals numpy within 1e-12; (h) the restricted snapshot gives the full 156-qubit snapshot's laws exactly; (i) `error_superop` equals qiskit's SuperOp on every error those exports convert |
 | core-364 | `--replay reduced.json` | the reduced case (run 2026-10-11T152922 at the grid corners) byte for byte |
 | core-444 | `--check-converter` | `branch_dm.error_superop` equals `from_superop(SuperOp(error.to_quantumchannel()).data)` on all 1306 local errors the sweep of the 15 audited runs converts, across 11 snapshots; the largest entry gap is 1.4e-80 |
-| core-441 | `ghost_branching_benchmark.py --check`, normal and `-O` | each benchmark record's derived fields from its raw rows, complex128 laws within 1e-10 of numpy, and process and split rows whose records equal the in-process complex128 row |
+| `core-record-check-05` (`tests/test_cli_record_checks.py`) | `ghost_branching_benchmark.py --check` | each benchmark record's derived fields from its raw rows, complex128 laws within 1e-10 of numpy, and process and split rows whose records equal the in-process complex128 row |
 
 Behaviors these contracts fix:
 

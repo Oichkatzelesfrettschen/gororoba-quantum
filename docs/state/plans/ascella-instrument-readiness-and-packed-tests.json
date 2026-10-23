@@ -1,0 +1,31 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-instrument-readiness-and-packed-tests",
+  "kind": "experiment",
+  "summary": "Ascella instrument readiness and packed tests",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/d3a73cb1ec72e49e2d90b64ab3f5434b4d87705c7834dbafd15841f6af8dea1a.txt",
+    "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+  ],
+  "state": "inbox",
+  "scope": "Ascella instrument readiness and packed tests",
+  "next_action": "Qualify current provider readiness after zero-sample failures.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Retain native admission, independent uncertainty and a fresh written case; the previous five-job ceiling is consumed."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Qualify current provider readiness after zero-sample failures.",
+      "acceptance": "Retain native admission, independent uncertainty and a fresh written case; the previous five-job ceiling is consumed.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Design crossed predecessor, target, order and static controls.",
+      "acceptance": "Retain native admission, independent uncertainty and a fresh written case; the previous five-job ceiling is consumed.",
+      "state": "todo"
+    }
+  ]
+}

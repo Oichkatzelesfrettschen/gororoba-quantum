@@ -284,7 +284,19 @@ of them. The manual procedure remains the local replay.
 **Behavioral suite.** Gate core-615 runs `pytest -n auto --dist loadgroup`
 over tests/ in one process pool, so each worker imports the repository modules
 once; issue #291 carries the migration plan and its falsifier, a planted
-mutant per moved contract. A test exercises a contract on a small fixed input
+mutant per moved contract. core-615 ignores the paths its sibling gates
+`core-behavior-NN` run, each a list of test modules or directories sized
+under the 30 s pr budget, or a full gate for a test whose single node
+exceeds it (core-behavior-03, the segmented-sweep fits);
+tests/ci/test_behavioral_gates.py requires every ignored path on exactly one
+sibling and no module on two gates, so a new test module runs on core-615
+until a measurement moves it. tests/test_cli_self_tests.py and
+tests/test_cli_record_checks.py call scripts' `--self-test` and `--check`
+modes in process through each script's `main`, in groups that gates
+`core-self-test-NN` and `core-record-check-NN` run one each
+(tests/ci/test_self_test_gates.py); a check a research-state claim cites, or
+whose gate name a script or retained file carries, or whose gate declares a
+`runtime` or `requires`, keeps its own gate. A test exercises a contract on a small fixed input
 and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
 only the pinned xdist plugin loads, and a run writes nothing inside the
 checkout. tests/conftest.py sizes the pool by `parallel.workers()` and runs

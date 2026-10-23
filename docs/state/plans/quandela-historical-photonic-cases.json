@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quandela-historical-photonic-cases",
+  "kind": "implementation",
+  "summary": "Quandela photonic cases: zero-divisor dilation and associator-sign interferometer",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/1f8117cc508cc13c9a3e450ebe8a2faba1937ce3a6672b8d355b2b61105fdffd.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-226.json"
+  ],
+  "state": "inbox",
+  "scope": "Quandela photonic cases: zero-divisor dilation and associator-sign interferometer",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #226 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-226-integration",
+      "action": "Verify the recorded integration state of PR #226.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "7c8288781b88f033391ab012c9fb1d8e2780a2c5aa97c18bb53fbebbc81de993",
+          "result": "PR #226 merged as fcee40d29388cf24f0c593bead91f28ebb9bd9fa; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-226.json",
+              "sha256": "40362714ffbe5059d65bad0191aeb577b9843d259c448339d59b3bc53e9be801"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Compare the named implementation, retained analysis or acquisition, and follow-up boundaries with the captured source.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "bdsc-qualification",
+  "kind": "experiment",
+  "summary": "Belenos dark-subspace certificate: provider qualification",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/892ad48738400c328b759e849369dc02d99053c8d130e583e0c488954a615b15.txt",
+    "docs/design/bdsc-qualification.md"
+  ],
+  "state": "inbox",
+  "scope": "Belenos dark-subspace certificate: provider qualification",
+  "next_action": "Qualify stationarity under the stray-detector veto.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Keep the original falsified premise and the three retired second-epoch jobs distinct from the fresh six-job proposal."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Qualify stationarity under the stray-detector veto.",
+      "acceptance": "Keep the original falsified premise and the three retired second-epoch jobs distinct from the fresh six-job proposal.",
+      "state": "todo"
+    }
+  ]
+}

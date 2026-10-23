@@ -1,0 +1,59 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-071-agent-report.md
+
+# #71 delegate report (opus), worktree rca/n21-orbit-piecewise-window-exposure
+
+Retained here because the harness refused the delegate's own write. Uncommitted diff: scripts/n21_orbit_rca.py +635/-13; regenerated fits in agent-out/.
+
+## Finding
+
+The plan's prediction is falsified on 083417: piecewise and single-gap exposures fit equally. The work-only pulses split off only about 35 dt (qubit 136) and 7 dt (qubit 143); both exposure sets fit the no_feedback members. The "joint probe fits neither sign" failure is cleared by the exact compiled-ISA evaluator, not by segmentation, so the plan's inferred cause was wrong.
+
+One static detuning per window qubit, evaluated through the archived circuit, takes G2 from 166.7 to about 26 on 19 dof (goodness-of-fit p about 0.13).
+
+083417 (8 members, 24 cells), exact-ISA models:
+
+| model | G2 | dof | rates (rad/us) 136, 143, 144 |
+|---|---|---|---|
+| no detuning | 166.74 | 22 | -- |
+| single gap | 26.63 | 19 | +0.159, 0.870, 0.082 |
+| piecewise | 26.01 | 19 | -0.157, -3.263, 0.083 |
+
+- LR against no detuning: 140.1 (single gap) and 140.7 (piecewise) on 3 added parameters; chi2 p-values are nominal only, since the rates are periodic and multimodal and Wilks' conditions fail.
+- Piecewise minus single gap: dG2 = -0.62 at 0 added parameters, so no likelihood-ratio test between them exists; piecewise is lower in both shared basins by 0.15 and 0.75, far below chi2(1) at 0.99 = 6.63.
+- Per pair G2 (piecewise / single gap): nominal 3.61 / 3.26, window_delay 4.83 / 5.92, extra_readout 11.64 / 11.63, window_echo 5.93 / 5.81.
+- no_feedback members, G2 on 3 cells each (piecewise / single gap): nominal 2.41 / 2.33, window_delay 1.04 / 1.30, extra_readout 6.73 / 6.94.
+- Cross-refine: each model restarted from the other's winner lands higher (piecewise 26.48, single gap 26.76). 160 random starts reached 26.48 and 26.63; the seeded search reaches 26.01 and 26.63.
+
+080216 (2 members, 6 cells): both models G2 = 1.80 on 1 dof, no detuning 65.42 on 4 dof; 5 parameters against 6 cells support no fit-quality claim and leave the rates unidentified.
+
+Segments, nominal_feedback window 1426 to 2394 dt (control 142 excluded): 136 [1373, 2335], [2381, 2416]; 143 [1419, 2335], [2393, 2400]; 144 [1194, 2606]. Every single-gap interval lies inside the piecewise set on both runs.
+
+## Simulator choice
+
+Aer cannot be rebuilt offline: noise_model_calibration is a timestamp only, placed_qubit_calibration holds T1, T2 and readout without gate errors, and collect.json, raw metadata and job_metrics carry no calibration. CompiledLaw evaluates the archived ISA exactly as a density matrix on its active wires (4 here): fixed gates fused between insertions, exact branches through measure, reset and if_else, rz(rate x duration) inserted after the pulse count _probed uses, round1 depolarizing every active wire at the first measurement and round2 at the second, the mid assignment flip on the recorded bit before the if_else, end rates on later measurements.
+
+Validation on the 8 members of 083417: zero rates and nuisances reproduce ideal_compiled_probabilities (CompileLaw enforces it on every compile); a single rotation at each single-gap start equals _probed to 5e-16; against distribution() at round1 = 0.1 the laws differ by up to 0.0085 (nominal, window_delay), 0.014 and 0.025 (extra_readout) and 0 (window_echo), from nuisance placement, so the block never compares against joint_quasistatic_fit.
+
+## Deviations from the plan
+
+1. dt offline: dt_source reads family_configuration.dt_seconds, then docs/evidence/heron_platform/targets.json, then the live Target, and records the source; dt_seconds wraps it.
+2. Window: from the control's first measure play to its first later play that is neither measure nor reset; an overlapping interval enters whole, and the single gap's intervals always enter.
+3. No per-interval logical state: the exact evaluator makes it unnecessary.
+4. window_segments accepts measure as a one-pulse instruction on non-control wires (synthetic schedule only).
+5. Coupling probe at a point with every rate nonzero (a probe at zero misses 143, which acts only with 136 in feedback members).
+6. Search: grid at no more than a quarter period per qubit, odd counts, cap 32768; grid evaluated at the no-detuning nuisances; L-BFGS-B from 0 plus the 12 lowest grid points of each model. Half-period spacing with 6 seeds gave 75.4 and 56.3.
+7. Schema: top-level schema_version "n21-orbit-rca-mechanism-fit-v2" beside the piecewise block.
+8. ci/gates.json not edited.
+
+## Self-check contracts (core-192) and mutations
+
+Synthetic schedule: 3 qubits, 2 members closing at 820 and 1150 dt, qubit 1 plays a work-only sx at 200 dt. (a) segments exact; (b) piecewise law at planted rates equals an explicitly rotated circuit within 1e-9; (c) piecewise and single-gap laws differ by TV at least 0.1 (0.131, 0.288); (d) feed-forward flip law; (e) planted rates recovered within 0.01 rad/us. Mutations: single-gap segments fail (a), then (b), then (c); first insertion only fails (b), (c), (e); mid flip after if_else fails (d); no grid seeds fails (e).
+
+## Runtimes (nice 19, OMP_NUM_THREADS=1)
+
+083417: 4 workers 1:57 wall, 337 s CPU, 510 MB; serial 339 s. 080216: 4 workers 0:28; serial 62 s.
+
+## Unresolved
+
+Fitted rates are not identified: 143 has basins within about 1 G2 near 0.87, -0.74, 2.8, 4.4 and -3.26, and 136's sign flips between the two optima. Deviances, LR statistics and segment tables are the robust content. N21_ORBIT_RCA.md needs the tables.
