@@ -1,0 +1,23 @@
+{
+  "schema": "work-plan-v1",
+  "id": "hypercomplex-operator-cases",
+  "kind": "investigation",
+  "summary": "Hypercomplex operator cases",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/511c275717c29a42492714ac3a5af97a7c3a5d5151bcc9c951c46d2249b97134.txt",
+    "docs/runbooks/hypercomplex-operator-cases.md"
+  ],
+  "state": "closed",
+  "scope": "Hypercomplex operator cases",
+  "next_action": "Resolve the outstanding obligations against the retained source and current evidence.",
+  "reconciliation": {
+    "status": "historical",
+    "note": "Use each exact approved case and its recorded disposition."
+  },
+  "steps": [],
+  "disposition": "superseded",
+  "resolution": "Frozen run cases support the operator-evidence workstream and grant no fresh authority.",
+  "superseded_by": [
+    "hypercomplex-operator-evidence"
+  ]
+}

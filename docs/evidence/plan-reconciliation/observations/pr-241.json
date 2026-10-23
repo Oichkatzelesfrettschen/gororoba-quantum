@@ -1,0 +1,11 @@
+{
+  "number": 241,
+  "title": "kaggle_run: drop the CI shard replica subcommands",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T01:59:13Z",
+  "closed_at": "2026-10-18T01:59:13Z",
+  "merge_commit_sha": "0687f144f438135ebd698ec56b6c1e9f4c091f65",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/241",
+  "merge_ancestor_of_canonical_head": true
+}

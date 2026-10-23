@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "rank-locus-local-germ",
+  "kind": "investigation",
+  "summary": "The two-dimension gap of the A_5 rank loci and the route to item 3",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/f0aa837510b0ec472a1ade574927a90d850349226a7c965ad2644ec8aaee91f4.txt",
+    "docs/notes/rank_locus_two_dimension_gap.md"
+  ],
+  "state": "inbox",
+  "scope": "The two-dimension gap of the A_5 rank loci and the route to item 3",
+  "next_action": "Prove exact ideal membership or construct a local curved parameterization.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The seeded finite-field and p-adic lifts through order63 leave the general germ and exact dimension unresolved."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Prove exact ideal membership or construct a local curved parameterization.",
+      "acceptance": "The seeded finite-field and p-adic lifts through order63 leave the general germ and exact dimension unresolved.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/boxkite-generator.md
+
+# boxkite-generator: box-kite case generator and program rewritten to the reduced remote budget
+
+Owner session: boxkite-quantum-main. Branch: research/box-kite-case-generator
+(origin cb8c5a5; main merged locally; opus agent rewriting now).
+
+## Finding
+
+The generator (cb8c5a5) emits family (a) exhaustively for remote QX: 848
+circuits in 284 batches, and the program plans 44 Tuna-17 batches (132
+jobs, 16384 shots, about 23 min execution, 3 h wall). Remote QX is an ideal
+state-vector emulator, and `verify_circuit` already state-vector-checks
+every emitted .cq, so a remote run adds only the platform compile path
+(parser, bit order, gate set, angle grid). The owner (2026-10-17) fixed the
+rule: remote backends run smoke sets and device questions; exhaustive ideal
+emulation runs on Kaggle CPU.
+
+## Reachability
+
+`scripts/box_kite_cases.py --write/--check/--self-test` and the case
+directories under results/quantum_inspire/cases/ that `qi_platform.py
+submit` consumes; docs/notes/box_kites/experiment-program.md drives every
+later submission.
+
+## Design (agent brief, in priority order)
+
+1. Run the three checks skipped at the last shutdown (-O --check, serial vs
+   pooled, retention under -O).
+2. Family (a) remote QX smoke set: one replica per gate pattern (full: edge
+   dark, edge bright, strut, x_sign -1, y_sign -1, cross-kite, non-kite,
+   negative fixture; reduced: edge dark and bright with local-Z SELECT,
+   strut with Sdag-CNOT-S SELECT, cross control), about 10 circuits in at
+   most 4 batches; the 1133 old files are replaced.
+3. Kaggle sweep entry (see boxkite-kaggle-sweep.md).
+4. Tuna-17 series, 10 batches (see tuna-boxkite-stages.md), tuna dialect,
+   twin() for witness circuits only.
+5. Gates core-420..core-427 (--check, --self-test, normal and -O), the
+   toolchain record regenerated for the new cases (core-368).
+6. Program rewrite: sections 1, 4(a)-(g), 5 budget, 6, 7.
+7. If budget remains: (d1)-(d3), (e) smoke + sweep, Ry ladder R0-R9.
+
+## Acceptance and falsifier
+
+Every generated batch passes check_qi_platform_retention.py; --check is
+byte-equal in normal, -O and GOROROBA_WORKERS=1; each smoke circuit
+reproduces its census row by state vector. Orchestrator review of the diff,
+then the QI/registry pr gates and ruff/mypy locally. Falsifier: a smoke
+circuit whose state-vector marginal differs from census P, or a Tuna
+circuit off the pi/36 grid or using an excluded qubit.
+
+## Shared files and dependencies
+
+- docs/evidence/quantum_inspire/toolchain_check.json (core-368): every new
+  case circuit changes it; regenerate under $QI_PYTHON after main merges.
+- scripts/check_qi_platform_retention.py, scripts/kaggle_run.py (pin
+  group for qxelarator): other sessions touch kaggle_run.py (ghost
+  provenance #193); reconcile by hand.
+- ci/gates.json core-420..core-427.
+
+## Effort and agents
+
+Large; one opus agent (running). Orchestrator reviews, pushes, opens the PR
+(new PR: 2 Codex rounds).
+
+## Out of scope
+
+Any submission (separate plans, each with the owner's approval here).
+
+## Result (agent commits 22502d5..f3ea238, local, under orchestrator review)
+
+| case dir | backend | batches | circuits | shots/circuit |
+|---|---|---|---|---|
+| box_kite_a_qx (smoke) | QX | 2 | 6 (15 replicas) | 2048 |
+| box_kite_de_qx (smoke) | QX | 2 | 4 (7 replicas) | 2048 |
+| box_kite_tuna_twins_qx | QX | 4 | 10 (witness twins only) | 2048 |
+| box_kite_tuna_t0 / t1 / coherence / walk | Tuna-17 | 3 / 2 / 2 / 3 | 30 jobs (10 witness, 20 readout) | 16384 / 4096 |
+| box_kite_ry_ladder, box_kite_ry_smoke | Ry | 1, 2 | 3, 6 | 1024 |
+
+Gates core-420 (--check), core-421 (--self-test, 44 mutations), core-422
+(sweep --self-test, 18 mutations), normal and -O; core-423 reserved for the
+sweep replay. Toolchain record regenerated (227 circuits, 0 failing).
+Owner decisions raised by the agent: smoke set 6 circuits (sign variants
+added on edges so a dropped Z shows); Ry ladder cut to R1, R2, R9 (the
+retained ry_probe run already settles R3, R7, R8); OpenSquirrel prints
+compiled Rz at 8 digits, so the toolchain record flags QX full Design B and
+(d)/(e) as changed -- unknown whether the platform executes source or
+compiled text. Not built: `analyze`/replay for the Tuna and Ry stages
+(needed before the first collection).
+
+State: implemented; orchestrator review and local gates running.

@@ -1,0 +1,63 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/tuna-ringdown-series-q.md
+
+# tuna-ringdown-series-q: Tuna-17 readout ring-down series Q analysis and registration
+
+Owner session: boxkite-quantum-main. Branch: qi/readout-ringdown-series-q
+(pushed at a210350). Worktree ~/worktrees/IBMQuantum/qi/readout-ringdown-series-q.
+
+## Finding
+
+Series Q (Q-batch-00..08 plus Q-recal-053951) was retained without its
+preregistered analysis, replay gate, ledger coverage or registry entries.
+
+## Reachability
+
+`qi_readout_ringdown_cases.py --analyze` (documented CLI); research_state's
+quantum_inspire adapter (core-270/271) requires every retained job in the
+ledger and every acquisition registered.
+
+## Design (implemented, reviewed)
+
+- 9bbffa9 analysis `results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json`
+  (sha256 ca2f6f74...e9602); preregistered verdict "not detected": 7 of 9
+  targets usable (Q7 0.091, Q8 0.212 below the 0.3 floor), tails on Q9,
+  Q14, Q15 (3 of 7, below 50 percent), no static offset; only Q9 fits H2
+  (chi2 6.95 on 3 dof); Q15 visibility 1.28-1.46 (stale batch-00
+  calibration).
+- core-430 replays it (a210350 renumbered it from core-390, which belongs to
+  ghost/error-scale-provenance-self-test).
+- 48a7355 adds Q-recal-053951 to READOUT_RUNS (the only post-batch-00 run
+  with a readout pair) and regenerates the device context.
+- 9ac3485 read-only ledger snapshot covering jobs 1527460-1527462.
+- d80a6d1 five acquisitions, claim qi-tuna17-readout-ringdown-Q, re-pin of
+  qi-tuna17-register-and-readout-state, docs/notes/quantum_inspire/tuna-17.md
+  (lessons learned), experiments.md series-Q table.
+
+## Acceptance and falsifier
+
+Agent ran 23 QI/registry pr gates (pass) and core-430 after the renumber;
+orchestrator reran research_state --check (113 claims, 80 acquisitions) and
+a hygiene scan (ASCII, no home paths, no session names). Not run: full
+core-039 mypy and the pr tier outside the QI filter -- CI covers them.
+
+## Shared files and dependencies
+
+- research_state.json + rendered README/roadmap/RESEARCH_STATE, also edited
+  by #192: second to land takes main's version and reruns `--write`.
+- device context + its digest pin: regenerate, never hunk-merge.
+- usage.json/catalogue.json: re-snapshot only if the branch's own jobs go
+  missing after a main merge (AGENTS.md "Records").
+- Blocks #182 and #183 (same script, series-Q record).
+
+## Effort and agents
+
+Done (one sonnet agent). Remaining: open the PR at scope freeze, Codex
+(new PR: 2 rounds), merge.
+
+## Out of scope
+
+#182 (calibration uncertainty) and #183 (null calibration of the tail
+threshold) -- their own plans.
+
+State: implemented, PR at scope freeze.

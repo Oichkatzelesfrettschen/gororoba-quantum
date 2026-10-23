@@ -1,0 +1,216 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-064.md
+
+# ISSUE 64: path-filtered CI job that replays the pinned Rocq 9.2 proofs
+
+Owner session: ibmquantum-e5. Branch (planned): ci/rocq-replay-pinned-toolchain-job.
+
+## Finding
+
+Observed. docs/evidence/c881_exhaustive/replay_rocq.sh requires
+GOROROBA_ROOT (line 9), checks `"$ROCQ" --version` against toolchain.txt
+(lines 12-16; content "The Rocq Prover, version 9.2" / "compiled with OCaml
+5.5.0"), verifies SHA256SUMS and source_hashes.sha256, compiles GF2Algebra.v,
+C881_GF2CubicMinDegree.v and assumptions.v with `-w @all`, runs `rocq check`,
+and compares four outputs byte for byte (about 33 s). ci/gates.json:2893-2909
+lists it under "excluded" with reason "needs the Rocq toolchain"; the same
+array holds stiefel_witness/replay_rocq.sh. ci.yml has a single job (gates).
+AGENTS.md:126-129 states "hosted CI supplies no pinned Rocq toolchain" and
+asks for a manual replay on proof changes. The sibling bundles are the same
+shape: formal_certificates/replay_rocq.sh (needs no open_gororoba),
+folding_proofs/replay_rocq.sh (GOROROBA_ROOT; sources pinned at 7d95d228,
+stdout compared with rocq_replay.log), stiefel_witness/replay_rocq.sh
+(GOROROBA_ROOT; one file, C1474_FuelAdequacy.v), and the AGENTS.md TargetFlipN21
+procedure (proofs/TargetFlipN21.v).
+
+Observed. scripts/rocq_kaggle_replay.py already orchestrates all five replays
+(REPLAYS tuple line 49, `--folding`, TargetFlipN21 at lines 85-97, retained-log
+comparison for folding) after building Rocq 9.2.0 on OCaml 5.5.0 with opam
+(OCAML line 44, ROCQ_PACKAGES line 45, build_toolchain lines 77-95). Its
+retained runs (docs/evidence/rocq_kaggle_replay/result.json, 7d95d228)
+measured: OCaml switch 324 s, rocq-runtime/core/stdlib 543 s, formal_certificates 121 s,
+c881_exhaustive 33 s, stiefel_witness 541 s, folding_proofs 57 s, TargetFlipN21 43 s,
+clone 25 s. Cold total about 28 min; replays alone about 13 min (795 s).
+
+Observed (skopeo/docker manifest, network read, 2026-10-17). The official
+image rocq/rocq-prover:9.2 (digest sha256:33926fb3757b2b560c3844157bd64173a26b6d338a256be1ae5eec8df2019025,
+built 2026-08-28) sets COMPILER=4.14.2+flambda, ROCQ_VERSION=9.2.0 and
+ROCQ_STDLIB_VERSION=9.1.0. Its tag list for 9.x carries OCaml 4.14 variants only
+(9.2-ocaml-4.14-flambda, 9.2-native-ocaml-4.14, ...); tags for OCaml 5.x do not
+exist (manifest inspect: no such manifest for 9.2-ocaml-5.5, -5.4, -5.3).
+
+Observed hazard. docs/evidence/c881_exhaustive/replay_rocq.sh:41 runs
+`if rg -n '[Ww]arning:' ...; then exit 1; fi`. Where `rg` is absent the
+condition is false (exit 127 inside `if`), so the warning check passes
+silently. rocq_kaggle_replay.py:SYSTEM_PACKAGES (line 46) installs no
+ripgrep; whether the Kaggle image carries rg is not known (not run), so the
+retained Kaggle pass may have skipped that check. The CI job installs
+ripgrep and asserts `command -v rg`.
+
+## Reachability
+
+Reached through a CI lane: any pull request that edits proofs/,
+docs/evidence/{c881_exhaustive,formal_certificates,folding_proofs,stiefel_witness},
+the pin file or the replay script. A proof edit that no longer compiles under
+Rocq 9.2, or a receipt edited without regenerating the compiler output,
+passes every current gate: the pr tier checks receipt bytes and sha256 ledgers
+(sources suite, gates.json:1503-1519) and never invokes the compiler. The
+manual AGENTS.md replay is the only defense, and it is a human step. Severity:
+medium for proof-bearing PRs, none for the other changes.
+
+## Design
+
+Decision: one path-filtered job `rocq-replay`, outside the gate shards, using
+opam with a pinned switch and an actions cache, calling
+scripts/rocq_kaggle_replay.py in a new mode. Rocq 9.2 on OCaml 5.5.0 is the
+only toolchain the four bundles and the receipts were derived under.
+
+Install routes compared.
+1. Official image rocq/rocq-prover at a pinned digest: pull is fast (about 1
+   min, inferred) and the digest pins exactly, but the image compiles with OCaml
+   4.14.2 and ships rocq-stdlib 9.1.0. `rocq --version` would print
+   "compiled with OCaml 4.14.2", so all four replay scripts exit 1 at their
+   version check (c881 line 13). Moving to it means rewriting four
+   toolchain.txt files and four SHA256SUMS and re-deriving every receipt
+   under a different compiler and stdlib. Rejected.
+2. opam on the runner with ocaml/setup-ocaml (action pinned by commit sha) and
+   an actions/cache of the switch: builds the same artifact the Kaggle runs
+   retained (ocaml-base-compiler.5.5.0, rocq-runtime/core/stdlib 9.2.0).
+   Cold about 14-15 min (324 s + 543 s measured on a Kaggle CPU kernel; a
+   GitHub runner is inferred to be within a factor of 1.5); warm restore
+   about 1-2 min (inferred; the switch size is not measured). Chosen. Pinning:
+   action sha, compiler 5.5.0, the three Rocq packages at 9.2.0, and the
+   opam-repository commit (setup-ocaml `opam-repositories` input) recorded in
+   `ci/rocq_opam_repository.pin`, chosen at implementation as the commit the
+   first cold build resolves, with `opam list --installed` printed into the
+   job log and uploaded. `rocq --version` against toolchain.txt is the final
+   authority and the scripts enforce it.
+3. Own image built once from the rocq_kaggle_replay.py recipe, pushed to GHCR
+   and pulled by digest: about 1 min per run, exact pin, but adds an
+   out-of-tree artifact, a build workflow and registry permissions. Listed as
+   a follow-up if the warm opam job proves too slow.
+4. Build from source each run without cache: 15 min on every filtered PR.
+   Rejected.
+
+Bundles covered, one job: formal_certificates, c881_exhaustive, folding_proofs,
+stiefel_witness, TargetFlipN21. folding_proofs, c881 and Stiefel bind
+open_gororoba bytes; commit 7d95d228db6be8a5b2f613430f04f2385d6ae48a satisfies
+all of them (observed: folding hashes 0 of 22 bad at 7d95d228 and 1 bad at
+b977e43f; c881 and stiefel hashes hold at both). The job reads the pin file
+issue-062 creates (ci/open_gororoba.pin) and fetches with ci/fetch_open_gororoba.sh
+over paths proofs, crates/algebra_analysis/src,
+crates/algebra_experimental/src/sedenion_subalgebras,
+crates/cd_kernel/src/cayley_dickson (the directories source_hashes.sha256 of
+folding_proofs lists).
+
+Changes:
+1. scripts/rocq_kaggle_replay.py: add `--rocq PATH` (skip build_toolchain and
+   the version-record steps that need opam; the `rocq --version` equality with
+   toolchain.txt stays), `--gororoba-root DIR` (skip the clone; require the
+   checkout HEAD to equal `--gororoba-commit`), `--only NAME...` (default all).
+   Retained result.json files are unchanged bytes (gate core-292 compares them
+   with the Kaggle outputs), because the default mode is the old behavior.
+   Docstring first line updated to name both hosts.
+2. `.github/workflows/ci.yml`: new job `rocq-replay`, timeout-minutes 60.
+   Trigger rule: a `changes` job computes `git diff --name-only` against the PR
+   base (no third-party action) and sets output `rocq=true` when a path matches
+   `proofs/**`, `docs/evidence/{c881_exhaustive,formal_certificates,folding_proofs,stiefel_witness,rocq_kaggle_replay}/**`,
+   `scripts/rocq_kaggle_replay.py`, `ci/open_gororoba.pin`, `ci/rocq_opam_repository.pin`
+   or `.github/workflows/ci.yml`; push to main uses the same diff against the
+   previous sha, schedule and workflow_dispatch force `rocq=true`. The job has
+   `if: needs.changes.outputs.rocq == 'true'`. Steps: checkout; apt install
+   ripgrep and assert `command -v rg`; setup-ocaml (5.5.0, cache on);
+   `opam install rocq-runtime.9.2.0 rocq-core.9.2.0 rocq-stdlib.9.2.0` (no-op on a
+   cache hit); fetch open_gororoba; `python3 scripts/rocq_kaggle_replay.py
+   --rocq "$(opam var bin)/rocq" --gororoba-root "$RUNNER_TEMP/open_gororoba"
+   --gororoba-commit "$(cat ci/open_gororoba.pin)" --folding --out "$RUNNER_TEMP/rocq_replay.json"`;
+   `if: always()` step prints the JSON tails and uploads it plus `opam list`.
+3. `ci/gates.json`: core-403 = `"$PYTHON" -B -W error ci/check_rocq_ci_pins.py`
+   (new, stdlib: the workflow's compiler and package strings, the constants
+   OCAML and ROCQ_PACKAGES of rocq_kaggle_replay.py, the four toolchain.txt
+   files and the two pin files agree; the path list in the workflow equals the
+   directories of the four bundles), core-404 = its `--self-test` (mutated
+   fixtures fail), tier pr. core-405 is reserved for the optional hardening
+   below. The two Rocq entries of "excluded" change their reason to "runs in
+   the ci.yml job rocq-replay on proof paths".
+4. AGENTS.md: replace the sentence at line 129 ("hosted CI supplies no pinned
+   Rocq toolchain") with the job description and keep the manual procedure as
+   the local fallback; docs/evidence/rocq_kaggle_replay/README.md gains one
+   paragraph naming the CI host.
+
+Reporting in the shard model. `rocq-replay` is a separate job, not a
+gates.json entry: run_gates.py shards run on the python pin stack with a
+longest-first assignment of measured seconds, and a 15-min toolchain install
+plus 13-min replay would unbalance every shard. The job name appears as its
+own check on the PR. A gates.json entry with a new tier ("proof") would need
+run_gates.py tier plumbing, an opam environment on every shard runner or a
+dedicated shard, and a conditional that run_gates.py does not model; rejected
+as larger and weaker.
+
+Path filter and required checks. Main is unprotected (observed: branch
+protection 404), so no check is required today and a skipped job blocks
+nothing. The design still filters at job level (`if:` on a job) instead of
+workflow level (`on.pull_request.paths`): a workflow-level filter leaves a
+required check "Pending" forever on unrelated PRs if protection is ever
+enabled, while a skipped job reports success. The `changes` job always runs
+and is the only candidate for a required check. AGENTS.md's merge rule
+("every shard is green and threads resolved") gains "and the rocq-replay job
+when it ran".
+
+Wall time on a filtered PR: warm about 1-2 min restore + 13 min replays
+(Stiefel 541 s dominates) = about 15 min; cold about 28 min; nightly
+schedule runs it every night to keep the cache alive (actions caches expire
+after 7 days without access) and to catch toolchain drift.
+
+## Acceptance and falsifier
+
+Local, before push:
+- `"$PYTHON" -B -W error ci/check_rocq_ci_pins.py` and `--self-test`: prediction exit 0.
+- `python3 scripts/rocq_kaggle_replay.py --rocq "$ROCQ" --gororoba-root "$GOROROBA_ROOT" --gororoba-commit 7d95d228db6be8a5b2f613430f04f2385d6ae48a --only c881_exhaustive --out "$S/out.json"` on the build host's pinned Rocq: prediction `{"c881_exhaustive": 0}`, about 35 s; `--only formal_certificates c881_exhaustive` about 155 s.
+- `shellcheck -S error` on any new shell, `ruff`, `mypy`: clean.
+- core-292 still passes (retained result*.json untouched).
+CI: first run on the PR (the workflow file itself is in the filter) is cold;
+prediction: green in 25-35 min, `rocq_replay.json` "passed": true, every
+returncode 0, no warning_lines. Second run (a trivial touch under
+proofs/): cache hit, 13-17 min.
+
+Falsifiers. (a) The first cold run fails the version check: the opam
+solver resolved a Rocq that prints a different banner; pin opam-repository
+at the commit the Kaggle result used and compare `opam list`. (b) A replay fails
+on GitHub's runner that passed on Kaggle: receipt bytes are
+host-dependent, which is a finding to record and not to paper over. (c) Cache
+restore exceeds 5 min or the switch exceeds the 10 GB cache budget: fall back to
+route 3. (d) Mutation check: append a Lemma with a `Admitted.` to
+proofs/FoldAverageDescent.v on a scratch branch; the job must go red at
+formal_certificates.
+
+## Shared files and dependencies
+
+- Waits for issue-062's ci/open_gororoba.pin and ci/fetch_open_gororoba.sh
+  (or creates them if it lands first).
+- .github/workflows/ci.yml (issue-062 adds a job; this adds `changes` and
+  `rocq-replay`), ci/gates.json "excluded" array and gate tail,
+  AGENTS.md (lines 126-129 and the Layout paragraph).
+- scripts/rocq_kaggle_replay.py: not touched by other plans in the current
+  list; confirm with the owner of any Kaggle replay item.
+- No hardware and no Kaggle run; GitHub Actions minutes only (about 15-30 min
+  per filtered PR). Network: github.com, opam repository, GitHub caches,
+  from the runner.
+
+## Effort and agents
+
+Medium: about 250 lines (workflow 90, replay script flags 50, pin checker 90,
+gates and docs 20), plus one or two CI iterations to settle the opam pin.
+One session. A sonnet agent can write ci/check_rocq_ci_pins.py and its
+self-test; the workflow and the opam pin stay with the orchestrator because
+the first cold run decides them. The cold run costs one CI round of about 30 min.
+
+## Out of scope
+
+- Own GHCR image (route 3) and a Rocq upgrade to a compiler the official image carries.
+- Replacing `rg` with `grep` in c881_exhaustive/replay_rocq.sh:41; that file is
+  bound by its SHA256SUMS and README, so the edit regenerates the ledger.
+  The CI job asserts rg instead (core-405 may check the assertion text).
+- Parallelizing the replays across matrix legs (Stiefel 541 s alone sets the
+  floor of a split job at about 10 min).
+- Tracking open_gororoba HEAD or Rocq releases beyond the pins.

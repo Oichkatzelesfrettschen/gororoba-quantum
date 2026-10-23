@@ -1,0 +1,80 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/open-gororoba-higher-d-survey.md
+
+# open_gororoba higher-dimensional structures survey
+
+Read-only survey of ~/Github/open_gororoba (OG) and docs/ (IBM); counts from code, tests and registry text, nothing built or run.
+
+0. D=32 count-convention table
+- 210: top-level cross-pair assessors, 15x14.
+- 294: all planes, 7x12 + 15x14.
+- 588: signed two-blades, 294x2 (IBM box_kites/inventory-monographs.md B2; OG emanation test comment says "588 ZDs").
+- 924: cross-pair edges, 8x84 + 7x36 (data/csv/cd_motif_edges_32d.csv has 925 lines).
+- 1848: DMZ cells, 2x924 = 8x168 + 7x72.
+- 2520: signed ZD edges (IBM B2).
+- 5040: EXACT_ALTERNATOR_COUNTS[32]. It also equals the IBM signed zero-product total 168x4 + 168x8 + 252x12 (local/plans/quandela-photonic-cases.md). Different invariants with the same value; possible conflation.
+- 3654: data/csv/pathion_zd_edges.csv rows over 1260 node ids. Not reconciled with 2520 or 588 (registry PC-0096).
+- 39060: Wilmot Z_2, never reconciled with any census.
+- 15960: IBM associator-defect N(32). Equals the D=64 DMZ total.
+No file states a total box-kite count at D=32. DMZ/24 gives 77 (8x7 + 7x3); this is my inference from the effective_bk_count field. strut_spectroscopy.rs:102 trip_count_two_step gives the per-ET maximum (7 at N=5).
+
+1. Motif census (exact integer)
+- Code: crates/algebra_analysis/src/boxkites.rs MotifComponent :286, motif_components_for_cross_assessors :529, motif_components_for_all_planes :545. boxkites/cross_assessors.rs cross_assessors :29, diagonal_zero_products_exact :53 (uses cd_kernel/src/cayley_dickson/signs.rs:59 cd_basis_mul_sign_iter, integer sums). Spectra (MotifComponent::spectrum :391) and crystal_bands.rs :72/:84/:102/:149 are floating point.
+- Tests in boxkites/tests.rs: :593 D=32 summary (ignored); :657/:664/:673 D=64: 31 components of 30 nodes, edge classes 84x8, 228x7, 276x7, 420x9 (15-partite), 7980 edges; :731/:752 D=128: 63 components of 62 nodes, 65100 edges, classes (180,9),(516,8),(756,7),(948,7),(1092,7),(1284,7),(1524,8),(1860,10); :807 D=256: 127 components of 126 nodes (IBM open_gororoba_survey_deep_notes.md section 5.1 lists 16 classes, total 523404 edges); :951 K2 count = 3+log2(D) for D=16..128; :968 no octahedra beyond D=16; :7033 test_zd_plane_components_all_dims (294 planes at D=32, 1518 at D=64 = 7x24+15x28+31x30; not ignored); :7096 each D=32 component is the ET of S=(lo^hi)-16, heptacross iff S<=8 (ignored).
+- Claims/data: C-443, C-444, C-557, C-1342 (D/2-1 components of D/2-2 nodes), C-1341, C-1715..C-1718. Laws C-485 (regimes = D/16+1) and C-486 (E_max = C(D/2-2,2)-(D/4-1), E_min = 3D/2-12). CSVs: data/csv/cd_motif_{components,nodes,edges}_{32,64,128}d.csv, cd_motif_components_256d.csv, cd_motif_summary_by_dim.csv (D=16,32 only), zd_motif_invariants.csv (D>=64), zd_crystal_bands_degeneracies_32d.csv (eigenvalues -4(7), -2(69), 0(105), 2(14), 6(7), 12(8)). C-1256 flat-band fraction 0.5 tested at crystal_bands.rs:315.
+- GF(2)/PG structure: projective_geometry.rs :113 pg_from_cd_dim, :877 find_minimum_separating_degree, :988 verify_pg_correspondence. C-444 (components biject with PG(n-2,2) points), C-448 ("Pathion cubic anomaly", degree 3 needed at D=32), C-480, C-445 (Refuted). Rocq proofs/verified/C881_GF2CubicMinDegree.v.
+- Face-sign census (face_sign_census.rs:113): D=32 has 2408 triangles (C-481): 1050 TwoSameOneOpp, 350 AllOpposite, 252 AllSame, 756 OneSameTwoOpp (test tests.rs:1370, ignored). D=64: 48328 (C-482). D=128: 821128 (C-484). D=256: 13348104 (C-488). D=512: C-495. Laws C-483, C-487, C-492.
+- Imbalance (imbalance.rs:60): 0.000/0.307/0.377/0.388/0.385/0.381/0.378 for D=16..1024; D=32 b1=729 with 224 imbalanced (C-523, C-529; test :6999, not ignored).
+- Paper: de Marrais math/0011260 for the D=16 base; the D=32 census is the project's own, with Moreno q-alg/9710013 and Wilmot 2505.11747 as context.
+
+2. Emanation tables, sand mandalas, strut constants
+Sand mandalas are the S=9..15 ETs: sparse, 72 of 168 cells filled, 3 effective box-kites. These emanation tests are not ignored.
+- Construction: emanation/table_builder.rs emanation_table :35, sand_mandala_pattern :110, carry_bit_overflow_cells :174, et_period_doubling :224, et_block_similarity :263. cdp.rs:45 cdp_signed_product (integer; cross-checked against cd_basis_mul_sign at D=32 and 64, tests.rs:579/:598). strutted_et.rs generate_tone_row :56, create_strutted_et :180. K=2^(N-1)-2; total_possible = K(K-2): 168 at N=5, 840 at N=6, 3720 at N=7.
+- strut_spectroscopy.rs: :43 et_sparsity_spectroscopy, :70 et_regimes, :89 trip_count (Trip_N=(2^N-1)(2^N-2)/6: 35/155/651/2667 for N=4..7), :102 two-step, :116 is_sky_strut (S>8 and not a power of 2), :166 classify_strut, :182. N=5: 15 struts = 4 generator (1,2,4,8) + 4 mandala (3,5,6,7) + 7 sky. N=6: 31 struts = 5 generator + 4 mandala + 22 sky. N=5 DMZ 168 for S=1..8, 72 for S=9..15 (tests.rs:928); N=6 840 (S=1..8,16), 456 (9..15), 168 (17..24), 552 (25..31) (:949); N=7 as in the summary (:1000). All DMZ counts are divisible by 24.
+- Recursion: regime_address.rs :32/:59/:101/:144 (regime count 2^(N-4), hide/fill, row degree 12 at N=5, N=6 sky core 168). skybox.rs:66 (G x G grid, G=2^(N-1), 2G structural empties, 4(G-2) label cells). theorem11.rs:52. balloon_ride.rs:75 (S=15: 72, 456; fill 72/168 then 456/840). spectroscopy_bands.rs:110. meta_fractal.rs: verify_regime_doubling :38, verify_four_corners :62 (test only asserts fraction>0), eco_echo_probe :128 (21 SS diagrams, 84 meta-nodes; counts only). algebraic_dynamics.rs:1143 extract_skybox_invariants and :1367 experiment C; gororoba_cli_algebra/src/bin/sky_limit_set.rs runs it (C-477).
+- D=32 extras: three_viziers.rs:101 vizier_xor_audit: VZ1, VZ2, VZ3 hold for all 15 components, VZ2 value G=16 (tests.rs:2486..2536). fano_duality.rs:105 hjelmslev_net: D=32 is PG(3,2) with 15 points and 35 lines; D=64 is PG(4,2) with 31 points and 155 lines (tests.rs:386/394). fano_duality.rs:144 spectral_census: 15 fingerprints of 14 nodes (tests.rs:418).
+- Claims/papers: C-468..C-478, C-1135. de Marrais math/0603281 (Presto), 0704.0026 (Placeholder II, meta-fractals), 0704.0112 (Placeholder III, recipe theory); "Flying Higher" is unpublished. Transcriptions: docs/external_sources/DE_MARRAIS_*.md ("168 fillable cells" FLYING_HIGHER:84, "72 of 168" :85, "210 Assessors in 15 ensembles" :64).
+
+3. Twist products, lanyards, tray-racks, quincunx
+D=16 only: tray_racks.rs:50/:105, twist_transitions.rs:44/:196 (21 transitions = 7 box-kites x 3 tray-racks; PSL(2,7) "Twisted Sisters" graph), quincunx.rs:39/:108/:125 (6 paths, 120 strings per kite), lanyard*.rs, delta_transition.rs, brocade.rs. The Ren-Zhao twist function (gororoba_algebra/src/construction/twist.rs:12) is an unrelated sense of "twist"; Bales 1602.02843 (IBM notes) is a third.
+
+4. Skybox / meta-fractal / Rule 0/1/2 / nanotube / spectrograph
+Skybox and meta-fractal are in section 2. Rule 0/1/2 (inherited, generator, swap trips) appear only in data_core mirrors of the de Marrais docs (crates/data_core/src/registry_mirrors/docs_external_sources_de_marrais_presto_digitization.rs:34-45, ..._placeholder_i.rs:116); production_rules.rs:58/:143/:266 rules 1-3 are a different, D=16 thing. "Nanotube" appears only in crates/materials_data/data/crystal/crystal_structures.toml:4250 (unrelated). "Spectrograph" appears only as prose at DE_MARRAIS_PRESTO_DIGITIZATION.md:1755.
+
+5. Zero-divisor and associator counts
+- Alternators: crates/algebra_experimental/src/cd_tower_violations.rs: BOX_KITE_VIOLATION_COUNTS :58 (hardcoded; D=32 is 26_880 with the dubious "31 box-kites" comment); EXACT_ALTERNATOR_COUNTS :86 (336, 5040, 52080, 468720, 3968496, 32644080, 264779760, 2132832240, 17121206256, 137204187120, 1098572333040 for D=16..16384). Exact enumeration: enumerate_violation_count :147, _fast :259, _tiled :441. Claims C-1107, C-1146, C-1724.
+- Wilmot (arXiv 2505.11747v3): crates/wilmot_2025/src/zero_divisors.rs:18 Z_m=N(N-1)(N-3)(N-7)/16 giving 0, 1260, 39060 (octonions, sedenions, pathions). tower_counting.rs: triads 35/455/4495/39711; associative triads 7/35/155/651. triad_classification.rs:101 count_triad_types uses f64 with atol, tested at D=8 and 16 only.
+- Rocq: proofs/theories/PathionZDGraph.v (22/294/15; sizes transcribed from Rust, not kernel-checked; cites "Placeholder III, math/0703745"). M3IsAssociatorPathion.v (2730 ordered triples, 210 XOR-zero). WilmotPathionRetraction.v is the sedenion retraction (35+252+168=455, C-1508).
+- IBM: notes/cd_associator_defect_census.md gives N(D)=(D-2)(D-4)(D+6)/2, i.e. 168/1848/15960 at D=8/16/32; box_kites/inventory-monographs.md row A17 repeats "15960 of 29791".
+
+6. Annihilator strata, Moreno, BCDI, Reggiani, Cawagas
+- Exact certificates: crates/algebra_analysis/src/exact_annihilator.rs multiplication_matrix_exact :58, annihilator_certificate :287 (BigRational), nullity() :216, a5_scalar_orbit_point :407 (e1+e10 at D=32 has rank 24, nullity 8; all 84 sedenion assessor diagonals have rank 12). crates/algebra_analysis/tests/motif_exact_rank.rs:82, output data/output/audit/claim-family-evidence-adjudication/motif-exact-rank.toml: nullity N/2 for all 243 components at D=16..256 (C-1718, Provisional).
+- IBM strata: results/hw_estimate/annihilator_strata.json and gororoba_quantum/annihilator_strata.py: 930 two-term elements at D=32 with nullity 0/4/8/12/16 counts 342/168/168/252/0. notes/cayley_dickson_sparse_census.md repeats the table. notes/dimension32_skew_schur_charts.md states D=32 nullities 4, 8, 12 or 16, and covers Koebisu 2608.08232 and Zhilina 2608.26893/2608.28176.
+- Float or other: crates/moreno_1997/src/lib.rs (arXiv q-alg/9710013) is f64 SVD with fixtures at D=8 and 16 only (:674/:683). gororoba_algebra/src/analysis/annihilators.rs :36 BDI bound 2^n-4n+4, :52 Moreno bound 2^n-4, :16 SVD on only the first 10 find_zero_divisors results; it cites "Annihilators of zero divisors... (2005)" while the bibliography has BDI as "Large annihilators...", math/0511691. crates/algebra_analysis/src/reggiani.rs (arXiv 2411.18881): 84 standard ZDs, nullity 4/4 (data/csv/reggiani_annihilator_nullity_distribution.csv), D=16 only.
+- BCDI: proofs/theories/AlternatorTraceExclusion.v (C-1627) proves only the "easy half" of Question 9.2 (the 2^n-4 case), with BCDI hypotheses as premises. Question 9.2 is in IBM notes/0905.2987.md (BCDI "Eigentheory", arXiv 0905.2987): dim Eig_1 conjectured never 2^n-12 or 2^n-4. proofs/theories/C1543_MorMod4Bound.v has examples at dims 16..128. IBM also holds math-0702075.md (BCDI II) and math-0511691.md (BDI).
+- Cawagas: no code in OG crates. reports/literature_canonical_gap_matrix_2026_02_14.toml:687 lists "Subalgebra Structure of the Trigintaduonions" (arXiv 0907.2047, D=32) as downloaded and extracted; the 2004 sedenion paper is listed but not downloaded.
+- Sign-block determinants: OG hits are codebook/coupling.rs:42-44 (signed coupling det) and exact_annihilator.rs pivot minors (scale^24 for e1+e10). IBM has notes/annihilator_determinant_line.md and Koebisu 2608.08232.
+
+7. Other D=32 data
+crates/algebra_experimental/src/higher_cd_control.rs:29 pathion32. Output data/results/higher_cd/pathion_control/ (210 assessor columns, 465 edges, 2 components, degree 0..30, mean 29.0625, Laplacian eigenvalue 31 multiplicity 30) matches K_31 plus an isolated vertex: a control lane (C-1506: rank 1, singular value 2.03), not a ZD census. data/results/higher_cd/pathion_resonance/ and crates/pathion_ellip/ are physics-mapping lanes. data/csv/64D_Pathion_Adjacency_Matrix.csv is legacy (C-044, C-536 Superseded).
+
+8. #[ignore] status
+Ignored: test_motif_census_32d_summary and _64d/_128d/_256d, test_generic_face_sign_census_dim32 and _dim64, test_motif_census_32d_strut_tables_match_de_marrais, test_special_heptacross_identity_dim32. Not ignored: test_zd_plane_components_all_dims, test_no_octahedra_beyond_16d, test_compute_imbalance_ratio_dim32, and the emanation tests at tests.rs:386, :418, :928, :949, :1000, :2486.
+
+9. Photonic, boson-sampling, permanent
+OG has none; hits are word collisions. crates/optics_core is classical TCMT and Clifford polarization; multi_resonator.rs (C-616) maps D=16 box-kites to 7 uncoupled resonators. crates/quantum_core/src/qec_boxkite.rs and gororoba_cli_quantum/src/bin/qec-boxkite-sweep.rs are sedenion-only scaffolds. IBM local/plans/quandela-photonic-cases.md is the only photonic encoding of CD products: Cases A and B are 18-mode and 16-mode single-photon dilation and associator-sign circuits; the box-kite family uses 4-mode 1-photon rows with 16 distinct 2x2 blocks; D=32 would need 34 or more modes, so it is a local census record only.
+
+10. IBM docs: de Marrais and Quandela
+- De Marrais: notes/math-0403113.md (pages 1-3 only; PDF in local_source_cache, git-ignored), notes/box_kites/ (experiment-program.md, inventory-open-gororoba.md, inventory-monographs.md, inventory-repository.md, HANDOFF-case-generator.md), evidence/box_kite_census/ (D=16 only), notes/open_gororoba_survey.md, open_gororoba_survey_deep_notes.md (section 5 ladder, 5.5 emanation tables), open_gororoba_handoff.md, open_gororoba_folding_proofs.md, INDEX.md:278, README.md:65.
+- Monograph claims on D>=32: inventory-monographs.md section 1b (B1..B9) and discrepancies D3, D10. Its recomputation finds the monograph component-size law fails at D=32 and 64 (signed sizes 7x24 + 15x28).
+- Quandela/photonic: no dedicated best-practices note. Beyond README.md: notes/quandela/quickstart.md, perceval/getting_started.md, perceval/notebooks/Remote_Computation_Tutorial.md, perceval/reference/runtime/* (including error_mitigation/index.md), guide/user-guide/04-compilation.md, api/, pypi/, offer/ JSON; evidence/quandela/catalogue.json (Ascella and Belenos snapshot); local/plans/quandela-photonic-cases.md (also Belenos limits and costs); scripts/qd_platform.py, qd_mcp_server.py, capture_qd_docs.py. Related photonic-physics notes: 1602.01624, 1604.04950, 1607.01648, 1111.4147, 1909.04408.
+
+11. arXiv id inconsistencies
+- emanation/strut_spectroscopy.rs cites 0704.0026 for the Trip-Count Two-Step and 0704.0112 for skybox; the bibliography gives 0704.0026 = Placeholder II (meta-fractals), 0704.0112 = Placeholder III, 0704.1012 = "Marriage of Nothing and All".
+- PathionZDGraph.v cites math/0703745 as Placeholder III; the bibliography says it is a revision of Placeholder I.
+- registry/bibliography.toml:3962 mislabels the 42 Assessors as math/0604092; the correct id is math/0011260.
+- OG emanation docs and the book page name a single-file emanation.rs; it is now a 30-file directory.
+
+## Cross-check (this session)
+
+scripts/cd_two_blade_blocks.py: signed two-blade zero products 336 / 5040 / 52080 at D = 16 / 32 / 64 equal the annihilator_strata nullity sums and OG EXACT_ALTERNATOR_COUNTS[16, 32, 64]; three independent computations agree.

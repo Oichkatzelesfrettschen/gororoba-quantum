@@ -1,0 +1,77 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/pr-184.md
+
+# PR #184: live_run: record backend_version and processor_type in every run record
+
+Owner session: ibmquantum-12 (adopted from a closed session). Branch: records/backend-identity-in-run-records (head 79ce8e1, 19 files, +328/-23).
+
+## Finding
+
+The PR records backend identity (backend_version, processor_type from
+`backend.configuration()`) as data in run records, collect.json, snapshots,
+simulation records and Kaggle submissions, outside the approval comparison.
+Codex round 1 is complete (summary head 79ce8e1) with three open P2 threads,
+read in full with `scripts/codex_review_status.sh 184`:
+
+1. live_run.py:4615 -- a job whose `job.result()` raises (ERROR, CANCELLED)
+   is checkpointed before the identity assignment, so its collect.json entry
+   lacks backend_version and processor_type.
+2. live_run.py:3123 -- an identity-only change between planning and submit
+   leaves `unchanged_since_planning` true, so the submitted record keeps the
+   planning-time identity in `backends`, `system_inventory` and group
+   entries.
+3. scripts/kaggle_run.py:430 -- `build_shard_kernel` writes
+   `kaggle-ci-shard-v1` submissions without `aer_device` or snapshot
+   identity.
+
+The PR body lists contracts not run locally: correction_planning_contracts,
+qpu_planning_contracts, local_member_cz_conformance, n21 `--check`.
+
+## Reachability
+
+All three threads are reachable through documented interfaces: `--collect`
+on a failed or cancelled job (1), an approved `--submit` after a backend
+version bump (2), `kaggle_run.py shards` (3). Each gets a fix.
+
+## Design
+
+Merge main into the branch first (main moved past 06:04Z, several merges).
+Then: (1) initialize the configuration identity when `job_out` is created
+and augment with execution-start versions when timing exists; (2) keep
+identity out of the approval comparison but copy the fresh identity into
+the record's provenance fields before submission on both the reselected and
+unchanged paths; (3) add the same fields to the shard submission path and
+its self-test. Contract additions in runtime_contracts.py for (1) and (2).
+Gates: existing ones; a new one only if a new check script appears
+(core-497).
+
+## Acceptance and falsifier
+
+- The four contracts the PR did not run, plus runtime_contracts and the
+  kaggle_run shard self-test, pass locally (normal and -O where the gate
+  runs both); the pr-tier CI replica on Kaggle CPU at session close.
+- A submit-free `live_run.py` dry run writes a `planned` record carrying
+  both fields (AGENTS.md rule for live_run changes).
+- Falsifiers: a contract that cancels a job and finds its collect entry
+  without identity; a contract that bumps backend_version between plan and
+  submit and finds the planning version in the submitted record.
+- Codex round 2 (the last under the two-round cap for new PRs), then merge
+  when every thread is resolved and CI is green.
+
+## Shared files and dependencies
+
+gororoba_quantum/live_run.py (also n21/usage-time-minimization and #76),
+runtime_contracts.py, scripts/kaggle_run.py, AGENTS.md (byte-checked
+sections: rerun ci/check_agents_sections.py). Order in this session: #184
+first (it is nearly done and smaller), then the n21 branch merges main and
+reconciles, then #76. A dry run reads live calibration only; no submission.
+
+## Effort and agents
+
+Half a day; one opus agent with the orchestrator reviewing, inside the
+session's two-agent limit.
+
+## Out of scope
+
+The Quantum Inspire submission.json identity (the PR body defers it to a
+separate change on qi_platform.py).

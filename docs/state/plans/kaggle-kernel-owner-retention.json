@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "kaggle-kernel-owner-retention",
+  "kind": "implementation",
+  "summary": "168: Retained Kaggle records carry the kernel owner in their kernel slug",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/f5833573ddd45c14a1c4ce283b345eb6cfc96ae2f1ac7ad275112957c6663d5e.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-205.json"
+  ],
+  "state": "inbox",
+  "scope": "168: Retained Kaggle records carry the kernel owner in their kernel slug",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #205 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-205-integration",
+      "action": "Verify the recorded integration state of PR #205.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "e217cad8875cdb8683ae076632af732d482ff2d5af63d0117d986b484a53ac35",
+          "result": "PR #205 merged as 29c67ca4a2bb11cbc75f72ade281ea19c058f55e; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-205.json",
+              "sha256": "adcb8255095d68bdae8ccd4beae09135bc00adff97c025063a1d8c93669e8517"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- Path A: the AGENTS.md Records sentence lands through a PR, and the #168 reply names the boundary. No gate depends on that section. - Path B: - `kaggle_run.py self-test` builds a kernel whose submission.json and collect.json carry no owner and whose `owner_sha256` matches. - A real `push --smoke` then `collect` on Kaggle fetches the right version. This is the issue's falsifier. - verify passes on old and new records. - Prediction: collect resolves the version through `username()` plus the slug. - Falsifier: collect under a different Kaggle account fetches a kernel or fails silently instead of refusing on the hash.",
+      "state": "todo"
+    }
+  ]
+}

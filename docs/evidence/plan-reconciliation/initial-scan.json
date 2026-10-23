@@ -1,0 +1,2322 @@
+{
+  "schema": "plan-inventory-v1",
+  "worktrees": [
+    {
+      "id": "2b98a2e9adfab041",
+      "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+      "branch": "main",
+      "dirty": true,
+      "candidates": 90
+    },
+    {
+      "id": "ed5498d4b8d56aec",
+      "revision": "865f4d950e487757a7f38ae1b32bfc8e9ee8f072",
+      "branch": "fix/provider-api-billing-research-design",
+      "dirty": false,
+      "candidates": 40
+    },
+    {
+      "id": "a99376705c1dcf39",
+      "revision": "222301737274e80a4c7a59a9d9a16f73e44937a8",
+      "branch": "feature/algebra-device-conjecture-evidence",
+      "dirty": true,
+      "candidates": 45
+    },
+    {
+      "id": "a5c1cf98351c21f0",
+      "revision": "f68fb7a4b16b9dde76e9d8633f43ff9fa8af6a36",
+      "branch": "run/ascella-approved-order-retry",
+      "dirty": true,
+      "candidates": 42
+    },
+    {
+      "id": "076873746403e07f",
+      "revision": "8e06605820d4fc2988f463de1e49605078c5b106",
+      "branch": "docs/ascella-deployment-local-replay",
+      "dirty": false,
+      "candidates": 45
+    },
+    {
+      "id": "d795dc815fbe6cf7",
+      "revision": "2829616d4a50566a2072a0ede9f88c3474ebe567",
+      "branch": "fix/ascella-input-routing-pilot",
+      "dirty": false,
+      "candidates": 39
+    },
+    {
+      "id": "fec63abe21edb3b1",
+      "revision": "74ed5cb6fec25caf5d37b9a26a01b8a3edd97390",
+      "branch": "quandela/bdsc-mode5-veto-amendment",
+      "dirty": true,
+      "candidates": 45
+    },
+    {
+      "id": "32c0be4d2a7ad7c8",
+      "revision": "dbe5c199d85daee1955a412836d80c01e6529ed6",
+      "branch": "fix/bdsc-principal-angle-evidence",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "d3c4960ae8011cee",
+      "revision": "2f1394a032fc0f9ecd8ab6cf142526af9892f075",
+      "branch": "cd-star-lattice/group-identification",
+      "dirty": true,
+      "candidates": 45
+    },
+    {
+      "id": "3b6bb97a6a218073",
+      "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+      "branch": "feature/centralized-plan-tracker",
+      "dirty": true,
+      "candidates": 45
+    },
+    {
+      "id": "d4b2de3d28d71dcf",
+      "revision": "6ca991a0e339cf3d8bed5dd3d45d7888272a8a82",
+      "branch": "HEAD",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "1fe5f2e90160ee40",
+      "revision": "0695c9b7f325b7857b909df8f581e448b2c173c3",
+      "branch": "docs/hypercomplex-foundational-source-review",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "44d566aa71b24348",
+      "revision": "a8a5995a3c8d481f600e76e3542823ef198e9fcf",
+      "branch": "feature/hypercomplex-library-execution-manifests",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "961c9cf27cb58ccf",
+      "revision": "925793c7f27054fd2ab4074b0305401796b17441",
+      "branch": "review/hypercomplex-library-import-coverage",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "609a456beb27f773",
+      "revision": "0ca5e17894d4db18761bb0cbcc58e4b761653f8b",
+      "branch": "fix/hypercomplex-library-source-coverage",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "e745fc36a5621946",
+      "revision": "51949f964a5601cbf6273c0d70020b3cecaa07c0",
+      "branch": "fix/iqm-train-fit-closed-form",
+      "dirty": false,
+      "candidates": 45
+    },
+    {
+      "id": "201d902b9c0777c7",
+      "revision": "bcc30e8553a5191ccc9010ba5a9de2378d32e69c",
+      "branch": "fix/numerical-model-pytest-regressions",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "ce2d1f97a9088b39",
+      "revision": "8a5ed819743ba7131cbb5917b763bd97625e6388",
+      "branch": "math/rank-locus-padic-hensel",
+      "dirty": false,
+      "candidates": 45
+    },
+    {
+      "id": "51629796d206933e",
+      "revision": "881fbe9aec00c55a95836754b7c8b4f29741e652",
+      "branch": "fix/qi-proposal-submission-source-binding",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "7e19482ca6a95aa0",
+      "revision": "d14f02f3fe92d1a9a978fcdb4abf7b547b6f274f",
+      "branch": "docs/quandela-validation-evidence-retention",
+      "dirty": false,
+      "candidates": 41
+    },
+    {
+      "id": "dd79f1821965c2fe",
+      "revision": "a1caedb0e1b6f7f06b790bc179004daeca3c77b6",
+      "branch": "fix/quantum-campaign-deadline-recovery",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "305f5f1b27c78381",
+      "revision": "e6b595bc1a7092e625cf08cf7091606a868c9b70",
+      "branch": "fix/quantum-campaign-submission-deadline",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "9ff1566d4c2ec2c3",
+      "revision": "e95ef3f4bd396a7a854bb7b6ee681f429bc75876",
+      "branch": "fix/quantum-inspire-rejected-request-recovery",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "dd5582d195c2b985",
+      "revision": "673e9609b8af103ec02e61fc99231933a403e627",
+      "branch": "fix/quantum-proposal-rejection-source-bindings",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "2704fa93de2e6f35",
+      "revision": "befafe723f6e9a28b79217dc6ec4a399434474be",
+      "branch": "fix/quaternion-dephasing-pool",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "2878464fe7d4ec4f",
+      "revision": "7eb25f6a68d2d545807c040292790269e34b1932",
+      "branch": "fix/qx-proposal-submission-source-binding",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "a54ed7fab6489aff",
+      "revision": "921d40ebb968ab60650b6384ba7c6419932eaf2e",
+      "branch": "fix/research-state-regression-gates",
+      "dirty": false,
+      "candidates": 36
+    },
+    {
+      "id": "30e05c9c860b9be1",
+      "revision": "b495dde29cc43d1cbd009f1564d10cb2400e799e",
+      "branch": "ci/split-behavioral-pytest-gates",
+      "dirty": false,
+      "candidates": 45
+    },
+    {
+      "id": "e1a40d98a2a33586",
+      "revision": "e6f352d8a89c63ee7cc5c8b4797872fab480ae73",
+      "branch": "fix/submitted-circuit-audit-successor",
+      "dirty": false,
+      "candidates": 36
+    }
+  ],
+  "sources": [
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "357b967ef841e86c0d94e6d781a22ce12ef6289f03fc256d0eb1540edcf719bd",
+      "bytes": 32047,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "3b6bb97a6a218073"
+      ]
+    },
+    {
+      "path": "docs/archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md",
+      "sha256": "a981f09979a5dca580f725ad59368bd687d4d63e5ffeda5098844d7505cfcbac",
+      "bytes": 13901,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/archive/handoffs/handoff-notes.md",
+      "sha256": "f4a331e2fb56ccaa42f29fe1a1e4e1e464e3d0e2669998300a01314d620d8055",
+      "bytes": 20558,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "d3a73cb1ec72e49e2d90b64ab3f5434b4d87705c7834dbafd15841f6af8dea1a",
+      "bytes": 25298,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-qualification.md",
+      "sha256": "892ad48738400c328b759e849369dc02d99053c8d130e583e0c488954a615b15",
+      "bytes": 28756,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-tuna17-pauli-pilot.md",
+      "sha256": "bd4e0b8bd1a2b64957e1a73f0c8c0fbe8d452ced9e5e83666692cdd2fd2109ff",
+      "bytes": 16899,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/et-rows.md",
+      "sha256": "e5657fcad0adee0ba5dc0724659c02d9bde21c59170b9002474ef2e7e705884b",
+      "bytes": 6101,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/factoring-notes.md",
+      "sha256": "41299d76a521291aa57702856706c05bae933457f0b983c8d036f2348a762ae9",
+      "bytes": 30766,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/hybrid-shor.md",
+      "sha256": "f29deebccca539e8e8b45b0c6d31d942b726c2e3d33e10df9a7a8d3d5dfe2d4e",
+      "bytes": 49557,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "ff01741780cbdd783060a45e5b051a0b04f2aa5a32f2761f1e0dd1dd2a26abfe",
+      "bytes": 12381,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "1fe5f2e90160ee40",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/iqm-garnet-kernel-cancellation-probe.md",
+      "sha256": "4b1fd70bd550c034c62685e92b4e705fa9995ee40e3a12d744c287c29678be6c",
+      "bytes": 10913,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/iqm-garnet-signed-kernel-probe.md",
+      "sha256": "4258ffad6bfc3325f0ab5a84148e681f72576b7509a2adda1492ad05f1769b6a",
+      "bytes": 13382,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/iqm-garnet-timing-pilot.md",
+      "sha256": "50abc323b1260ee2f77fa93feb00ee41ba9691efdc4482ef712595469ba7ec88",
+      "bytes": 6296,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/numpy-validation.md",
+      "sha256": "32bb090ba2b8fe1beeb0c94e7f4133884d7406a0f18a6c5317a8219f51630c89",
+      "bytes": 3984,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/packed-pauli-response-current-balance.md",
+      "sha256": "bd8abdb6d731bd308ec849cb2c36bab7d2b3c2ab3c93f636873098a68e88c9d2",
+      "bytes": 10665,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/provider-api-billing-research-plan.md",
+      "sha256": "3947915f4440fbd7a35752de1fd4766abf02e12f72e475b77a085890635209bd",
+      "bytes": 4953,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/design/tuna-order-pilot-adversarial-admission.md",
+      "sha256": "689008d67b98c9b8b9c07d95014e7b0b3a1b4c52ae1bcc52b2acd7992b0ed5a1",
+      "bytes": 6623,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/tuna17-zero-divisor-matched-response.md",
+      "sha256": "d804d61de41841adc234cce2f92adc6fae1a37ae9845437406588a8ae78b3165",
+      "bytes": 5713,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/local/plans/README.md",
+      "sha256": "556552ce9ddb9abbbfbf84421f4935731b33b4d1514be3d5a6df6449258bb6a9",
+      "bytes": 9336,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/TEMPLATE.md",
+      "sha256": "8ff0ea1566f902b6abdc91af70077d83a9645de60193a579a68fe386b4ac0545",
+      "bytes": 1178,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/aer-gpu-stack.md",
+      "sha256": "f6f781ba372f8c318aaea54ca3a0e255195f019b893276d9aa2cd8abedd70ac5",
+      "bytes": 10356,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/boxkite-generator.md",
+      "sha256": "7c1dfe9689ede8ef3148f92d890bd5d82ccf858fdd4cace1092b7b7191c3a2c4",
+      "bytes": 4315,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/boxkite-kaggle-sweep.md",
+      "sha256": "3f19580e8f6988f8b70e39b93bfb0439a2dbb9af11e89d66204c333d4847851e",
+      "bytes": 2672,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/boxkite-research-program.md",
+      "sha256": "207f68dbe011cba26752a96dbe6ce3202c37d4c44144f3dace803bbe7ad9157f",
+      "bytes": 6180,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/cd-star-lattice-groups.md",
+      "sha256": "80b4a1243b663c518f287e6617e821c8343669b0a029b7e13fa79e2e8ab557fb",
+      "bytes": 4811,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/ci-ledger-review.md",
+      "sha256": "25d543b408a02479ed3b87c6774b6984d06c8a901cb2b7ad2a4b0c81772c37d5",
+      "bytes": 7022,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/ci-read-set-ledger-report.md",
+      "sha256": "5f47b522dbd94e90da933a0927af6b3e78ed78ca5609954f54ef3cc90e6966fc",
+      "bytes": 8404,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/ci-read-set-ledger.md",
+      "sha256": "1b7dece9956f1813a3bc8aeaa846ca8d86ebdf918ba4ffdc814b8a2185440ca7",
+      "bytes": 6832,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/closeout-shards.md",
+      "sha256": "ab517521a72fa090929c23b8c41344321f6d770c12c12e8fb7bc800d124ecb17",
+      "bytes": 987,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-062.md",
+      "sha256": "63f74f941d1e336c7f1f5ba81865caca41fbfbcce01a52016e42295b38ec4a56",
+      "bytes": 10408,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-064.md",
+      "sha256": "f66e337264a991ac6728300698fd1aa58dde8557133eacf949193e19a1feb374",
+      "bytes": 13143,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-069-init-herald.md",
+      "sha256": "17795704893b9291222931824f7358da9be38e6a7bd2cd84b92bf2c19d312e3e",
+      "bytes": 5303,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-069.md",
+      "sha256": "f1455a2270c77a74a26bec4d1bdcd85e3dbbd5c898ab387eb3e2fad06153c422",
+      "bytes": 5806,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-070.md",
+      "sha256": "58c17d11db05362c8adf0ee3a31e9e9bb1d1c792c908f675e29c494cc07cfce0",
+      "bytes": 2196,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-071-agent-report.md",
+      "sha256": "77260d8b3ada86af72138ff139b49ff891c3746817cc60fdf6b92a8b9bb09598",
+      "bytes": 5518,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-071.md",
+      "sha256": "41486f73ea721eeb59220324c33ddff8ef55db98d29bcb2b648e378c522d8ee7",
+      "bytes": 6798,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-072.md",
+      "sha256": "eae34cad1fee2b9df342d367b0a397c3111b1e055b81a63ae19d28be1999c01e",
+      "bytes": 5982,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-074.md",
+      "sha256": "276177078ffcc8d0531dcc1ef98128150cf029d8ccd6f9973bc411c6ccd62c71",
+      "bytes": 4050,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-076.md",
+      "sha256": "ee40344e9f5c9e10939766eeb59df329f776fd1df19f3c02eb829b16b1d60c6d",
+      "bytes": 3889,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-131.md",
+      "sha256": "945d44c9516a3294cd5b8a988e7c3c47a1e0c9d879f3126b66e30086af2ea20d",
+      "bytes": 14067,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-154.md",
+      "sha256": "45a7c101a7b7db0c05bae02f2ae508d4dd43dd7488ea98832475e3292077a404",
+      "bytes": 1926,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-161.md",
+      "sha256": "5769a3a875f4cda1ca263cd119e7baf6766bb3887b8090d69ef2af6ec573defe",
+      "bytes": 7976,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-168.md",
+      "sha256": "f5833573ddd45c14a1c4ce283b345eb6cfc96ae2f1ac7ad275112957c6663d5e",
+      "bytes": 4960,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-182.md",
+      "sha256": "e7c70d67f1b13a635fe2075202d0f9832422c28a906a724b3d7158430a5df02e",
+      "bytes": 4805,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/issue-183.md",
+      "sha256": "3483159f8f82e25b87cf34f473c1b09b69fa8c5430f32ff29fe6d22e59b577fa",
+      "bytes": 3950,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/main-ci.md",
+      "sha256": "0f1305b94d121745128894baa781d1da1e344c23de9ecfb936a7153403714f6b",
+      "bytes": 2746,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-overlap-split-report.md",
+      "sha256": "faa132f9655ed580b14f07f3545176847cd222be12d30a9e279c145962d46241",
+      "bytes": 12700,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-overlap-split-review.md",
+      "sha256": "f07c1fe1f78060ee94178861350e12066e908a9dcc489c6708d6aa6c7b88873f",
+      "bytes": 5277,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-overlap-split.md",
+      "sha256": "2d475581f39af79a166695755fd2448ba0478fd6502ae22c221bd0e5450f348d",
+      "bytes": 5817,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-prepush-review.md",
+      "sha256": "cf8d81e1e9ff6268e43bd3de78bb38b865d1a5e6c8150223fc9c859106abf427",
+      "bytes": 3565,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-rep-delay.md",
+      "sha256": "5c5427f3584ba9e230d6c272cd989858a9905a1640894ba6b230d92c1c42f9b6",
+      "bytes": 5637,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-window-sweep-report.md",
+      "sha256": "b65301a9bc9a8a2ab3aae421027aaec58ee09c69993a58524bd6414715e53ba9",
+      "bytes": 9342,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/n21-window-sweep.md",
+      "sha256": "ec8aff527a579550b12e45334a967243a0b086d360b39b2b78c4b7477bff5905",
+      "bytes": 4781,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/open-gororoba-higher-d-survey.md",
+      "sha256": "7a46cf4fb480b3e35d168d5d527c7d5197cfc67a958730f9005ba6cd75bbfeea",
+      "bytes": 14756,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/pr-184.md",
+      "sha256": "a7efb29c832bdff75f4d30117a0dff6b9c40f8f203ba4150fc1c8ff8bb5d6163",
+      "bytes": 3512,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/pr206-f4-r1-restart.md",
+      "sha256": "e24778a1178fd19e691bd47ff8bce6b172b2fab866b825abeb5812e26ad06a6d",
+      "bytes": 8253,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/quandela-photonic-cases.md",
+      "sha256": "1f8117cc508cc13c9a3e450ebe8a2faba1937ce3a6672b8d355b2b61105fdffd",
+      "bytes": 16826,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/research-ibm-parked.md",
+      "sha256": "99f3ab3d885c74448b8c520eea92f5b921dc35ea2e825088b6ab05416162b40b",
+      "bytes": 1714,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/scoping-n21-orbit-rca-fe.md",
+      "sha256": "50a56c726904f75921a4685a090fd385bb1cf43a9fa1ac739030e02017d00b96",
+      "bytes": 13603,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/tuna-boxkite-stages.md",
+      "sha256": "7c09972794f22050a77cd291714faccfbbf0d26cfbb8082eea460e28fa10b974",
+      "bytes": 3496,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/tuna-pre-t0.md",
+      "sha256": "ef277fc0d1cba09f01ff6313c83baf2414bef24b0e96d8182ad5eed31e325130",
+      "bytes": 2870,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/tuna-ringdown-series-q.md",
+      "sha256": "e128fd4681d8a4d3e4cf65125eaa05ead2c9638047c69af00d52493a7dbbdafa",
+      "bytes": 2588,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/local/plans/tuna-walsh.md",
+      "sha256": "e257c08994a82c68d820e49d3d98df3ae384dd4e51e41fa9ed85eed1b3ec74de",
+      "bytes": 2803,
+      "worktrees": [
+        "2b98a2e9adfab041"
+      ]
+    },
+    {
+      "path": "docs/notes/box_kites/experiment-program.md",
+      "sha256": "7c2b13b6e4d82f02ca12ee5281a25a4dcada0b47f1e7713624655bdc89b27e34",
+      "bytes": 54356,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/notes/formal_evidence_dependencies.md",
+      "sha256": "4eb2f2730c25578febc964de839ab4ac5982af6a35048b67a46f0924361023ce",
+      "bytes": 24977,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/handbacks/repository_reconciliation_2026-10-17.md",
+      "sha256": "f3a2f331cfc59d3f8c4846302eb7f1f2a19e61d8d2c504d163b843dc6d4ad9c0",
+      "bytes": 94309,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/patch_window_staged_plan.md",
+      "sha256": "95aaee993cb29932e70e272728c4dc19c31a34f7d916a2e7e6dd96aa4a43c4cf",
+      "bytes": 6702,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/qiskit-ecosystem-install-plan.md",
+      "sha256": "16049a3fb4c12f00a9a9ce691841032e398b001e1188183c33d088532733b8bc",
+      "bytes": 5978,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "9a2b9260eddf1ab4e192c45cfbb94d3ceefc164b9fe71fcb4d54dc884c75f3e0",
+      "bytes": 38317,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/calibration.md",
+      "sha256": "89a433e118214af79a80ca4ca0247ad429ec83cde27fef43975588bc312e078f",
+      "bytes": 14421,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/setup-verification.md",
+      "sha256": "1cbddd49a9118e4eae7e37c5a3a82af4c2a11d54fff7d410bb838552104a4269",
+      "bytes": 10540,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/strategy.md",
+      "sha256": "b32eeb89bdc23c950ab183c19fd961496484fedbae5282895fe3af3661d898b7",
+      "bytes": 81989,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/notes/quantum_inspire/cqasm.md",
+      "sha256": "e837833ea1c702ff7ebbd9bf697fb0262b46f695c3e1101c36d631d7bb2e0340",
+      "bytes": 22335,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/quantum_inspire/tuna-17-run-design.md",
+      "sha256": "ae9ef495e877289317bad4eab1cf17cb1c9fd2c84a33823210fdd3bb88c00796",
+      "bytes": 24703,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/notes/rank_locus_two_dimension_gap.md",
+      "sha256": "f0aa837510b0ec472a1ade574927a90d850349226a7c965ad2644ec8aaee91f4",
+      "bytes": 14315,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/notes/singular_sector_dynamics.md",
+      "sha256": "a6e6d14ab42398baebda9b8ccb6c01210ffc63d32863d5208cff47f3b9bfd95e",
+      "bytes": 16992,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/box-kites/README.md",
+      "sha256": "fc06387632905f98ecaf724f9c52316314351b625373f9e394b2ee19257d2e72",
+      "bytes": 1049,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/box-kites/inventory-quantum-inspire-backends.md",
+      "sha256": "2228c3c61c50f3daeae7fa5977582b0daafae50576313b178734c07b2bbbd062",
+      "bytes": 6875,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/cd-star-lattice-tower.md",
+      "sha256": "cf293f4078bcd02b0783df5fc1c6f9a1456f1aa58e53a22a18d489424f40189c",
+      "bytes": 8394,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "fec63abe21edb3b1",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/open_gororoba_survey_deep_notes.md",
+      "sha256": "e3ffb32d965cca8cdccac99effa055da31034356bd3f47b111d6b9deadb2ddb2",
+      "bytes": 54064,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "5e68ee0f20d3b831ded56849234897d011a8efdee925aa7c0c0915f85bdb0bfe",
+      "bytes": 14448,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "076873746403e07f",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "511c275717c29a42492714ac3a5af97a7c3a5d5151bcc9c951c46d2249b97134",
+      "bytes": 9235,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "e745fc36a5621946",
+        "ce2d1f97a9088b39",
+        "7e19482ca6a95aa0",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "gororoba_quantum/CLAIM_BOUNDARIES.md",
+      "sha256": "1bf8d5e04d2376afd37946461d199806224262570ecaf228d707acc26e425b65",
+      "bytes": 20100,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "gororoba_quantum/HARDWARE_PLAN.md",
+      "sha256": "3dddb9c67efd0c13d5308a059d61f73d062e367ecd715ccfc5dc1c13a1a758be",
+      "bytes": 20272,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "gororoba_quantum/QPU_EXECUTION_ROADMAP.md",
+      "sha256": "d2e1bdac6af743cfcd51d40a9c636b963cfd075ca3b0495ea2b1b2605e37350e",
+      "bytes": 26913,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md",
+      "sha256": "7247a9bf1d1ac6d1376ff09f068cbed1250ce0a8be4a5ad7ac5728c1a419aa5c",
+      "bytes": 22194,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "plans/QUANTUM_DISPATCH.md",
+      "sha256": "5e5a11d806029ca63fd3829cc931253970955717d682f4e0fed6ce8aa5e50c6c",
+      "bytes": 7606,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "plans/quantum_dispatch.json",
+      "sha256": "193b4d180c21cabb6d0da0ad6a2ff76d590301da1b1667d8288fe15ed7163d51",
+      "bytes": 91589,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "plans/reviews/coherence-case-science-review.md",
+      "sha256": "58d2ad872f717f94571bdc54e968c35e7d91d1d9c4a5eee25ade315aa79acd33",
+      "bytes": 13027,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "plans/reviews/coherence-case-submission-review.md",
+      "sha256": "1c1c0f22628c6ddbddf402236671f61d81913262b5388a37a7b3ac5e3e54472e",
+      "bytes": 14512,
+      "worktrees": [
+        "2b98a2e9adfab041",
+        "ed5498d4b8d56aec",
+        "a99376705c1dcf39",
+        "a5c1cf98351c21f0",
+        "076873746403e07f",
+        "d795dc815fbe6cf7",
+        "fec63abe21edb3b1",
+        "32c0be4d2a7ad7c8",
+        "d3c4960ae8011cee",
+        "3b6bb97a6a218073",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "e745fc36a5621946",
+        "201d902b9c0777c7",
+        "ce2d1f97a9088b39",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "30e05c9c860b9be1",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "f83a05c3060c056b8421304c694697d9a0a82c8a4f43d86251dd52b4e512064c",
+      "bytes": 31395,
+      "worktrees": [
+        "ed5498d4b8d56aec"
+      ]
+    },
+    {
+      "path": "docs/notes/box_kites/experiment-program.md",
+      "sha256": "c7538ad2dac374f80a719b958633bd2085d6625aab821f1bf8f54b667aefc9f3",
+      "bytes": 54214,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "cacd4fddd2632d8234c73a817fc3463b920739c898d1586da798d3a042dc5613",
+      "bytes": 36938,
+      "worktrees": [
+        "ed5498d4b8d56aec"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/strategy.md",
+      "sha256": "fd744e109c2c90eb656f2219560b856388cc177ee60d133dcc557ef72f644718",
+      "bytes": 81900,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff"
+      ]
+    },
+    {
+      "path": "docs/notes/quantum_inspire/tuna-17-run-design.md",
+      "sha256": "1a1ebe3fca25bb990e29f58701e445c020f6a67110217c5ed4e556a334f136b5",
+      "bytes": 24655,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ]
+    },
+    {
+      "path": "docs/notes/rank_locus_two_dimension_gap.md",
+      "sha256": "c5c788748841744816b64765569ed06f2650f5c8d35a32ef6a8c54b9c23ef01d",
+      "bytes": 12684,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "7e19482ca6a95aa0",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "e71a2ac6aa2f3844b96023a09b41e4012e9cc3b899f58804709211feb3a0b7fb",
+      "bytes": 13734,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "a5c1cf98351c21f0",
+        "d795dc815fbe6cf7",
+        "7e19482ca6a95aa0"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "89a9946404fe4152de3b150423dd18eecebee408647ff83b966d676283183f48",
+      "bytes": 8935,
+      "worktrees": [
+        "ed5498d4b8d56aec",
+        "201d902b9c0777c7",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "a54ed7fab6489aff"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "ca7ae7db75543f6b858f427f154ab2851ff1324e6448eb10ae3c44ebfb81f314",
+      "bytes": 24662,
+      "worktrees": [
+        "a99376705c1dcf39"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "b1432c5148202ff1569208d3a3b194738321b5826b62b3570a1cdc6544a97311",
+      "bytes": 31395,
+      "worktrees": [
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-approved-order-retry.md",
+      "sha256": "70a425132362aff0c42a1e630e55f24aa9610c29c4493e6d2e648d4ff30f3eaf",
+      "bytes": 5186,
+      "worktrees": [
+        "a5c1cf98351c21f0"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "beb6fd6b4c6a03036fb868a09dac1ef8a054fe780ccbf4facd6dc042b31f7a82",
+      "bytes": 23041,
+      "worktrees": [
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "0ccf02e6a097b4cb9d06820b15d7e90c4adfd7762a4586355721bc13431955e7",
+      "bytes": 38071,
+      "worktrees": [
+        "a5c1cf98351c21f0",
+        "7e19482ca6a95aa0"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "deb7c98fc00ebf0b66ffe14298c729341f0e8dfa6bc28f34c0c2b69da5350a04",
+      "bytes": 32047,
+      "worktrees": [
+        "076873746403e07f",
+        "fec63abe21edb3b1"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "5b2e255b34554ea58300839278a770a03051df0290fbae2176f1aaba98c22e51",
+      "bytes": 26449,
+      "worktrees": [
+        "076873746403e07f"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "ecb22c935426ff3b3642be5e8cd29e02e5016b5ad5842ea3942a34235fcd8ce2",
+      "bytes": 31365,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ]
+    },
+    {
+      "path": "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+      "sha256": "4dd15b30ddda2cac38ebd1d22830a7681556a5ca851140dcaab1e1043dfcd90b",
+      "bytes": 20308,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-tuna17-pauli-pilot.md",
+      "sha256": "9e520387c58cffd40a05fb12a863e263a73aa7a4c6971d6fcb469b6c28602b4f",
+      "bytes": 13414,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ]
+    },
+    {
+      "path": "docs/design/tuna17-zero-divisor-matched-response.md",
+      "sha256": "042a4bbf074ced3f5896c1876443d84f2969bf67dfb211174908ed2b441674bc",
+      "bytes": 5478,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "b4ec53840e10e0f0c1fb8e285deb32223bee6acab432700f63d7618c145b0b56",
+      "bytes": 36461,
+      "worktrees": [
+        "d795dc815fbe6cf7"
+      ]
+    },
+    {
+      "path": "docs/notes/quantum_inspire/tuna-17-run-design.md",
+      "sha256": "64357e46c9f1992cb8a49fdf65ab21fd3d55fae4c5cee6207ae433d6023053c7",
+      "bytes": 24400,
+      "worktrees": [
+        "d795dc815fbe6cf7",
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-qualification.md",
+      "sha256": "d5cbef1d5f929621a41864201f0ac766fa68dc33d1a8ecca195d22c9fa0ace54",
+      "bytes": 35147,
+      "worktrees": [
+        "fec63abe21edb3b1"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "7854aaa5bf28fa318b2fb19812e67f3fbfecd480d82d41931b286e4858efe4c5",
+      "bytes": 19851,
+      "worktrees": [
+        "fec63abe21edb3b1"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "278e6a3ab3fb65aee2762c079c6686958ba89429bed3491da96525bb41d80ade",
+      "bytes": 31018,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/bdsc-qualification.md",
+      "sha256": "6155adcbaf83a2eb8932012708b92b400b87dff855678c89b29288c9a211ea5a",
+      "bytes": 21184,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "1b5cedecdfb72aaa61e7cd5e4ffe044f53495dcedce87650d2413c426c997162",
+      "bytes": 9744,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/README.md",
+      "sha256": "819e39828c32df1d8207b3a6afb075f5c4d4cfa0254f397841b053d8513d2d91",
+      "bytes": 36338,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "51629796d206933e",
+        "dd79f1821965c2fe",
+        "305f5f1b27c78381",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2704fa93de2e6f35",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/notes/quandela/strategy.md",
+      "sha256": "265eb56f1e5819ddaafe17c25e836d4cc15ee21f37c241987c38d967ce4715a4",
+      "bytes": 80037,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "d42a999a12961403c2630d00c665255c6c276633e60f2ccefe80445fb40423fd",
+      "bytes": 5176,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "d4b2de3d28d71dcf",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "2704fa93de2e6f35",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "4d3d4649691b0e34049d5fa656b6094457d4f39e4851edbefbd449df74e5ec6b",
+      "bytes": 7141,
+      "worktrees": [
+        "32c0be4d2a7ad7c8",
+        "51629796d206933e",
+        "305f5f1b27c78381",
+        "e1a40d98a2a33586"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "432b7f9475aa68e93697907fa79c6fe13dc78efb3a5ce4cc9c36c8028c4021bd",
+      "bytes": 31218,
+      "worktrees": [
+        "d3c4960ae8011cee",
+        "e745fc36a5621946",
+        "30e05c9c860b9be1"
+      ]
+    },
+    {
+      "path": "docs/notes/topics/cd-star-lattice-tower.md",
+      "sha256": "a5e748b15e2277e32caa4a8bfd8de9ed5a666ca5a58640f699420ffdc72a20b2",
+      "bytes": 12113,
+      "worktrees": [
+        "d3c4960ae8011cee"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "990c147e3d0632b5d1760dbea2e12f108d3f7f304b0775b8be91d8ebfe266077",
+      "bytes": 31018,
+      "worktrees": [
+        "d4b2de3d28d71dcf"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "2e05c7a4d4ca3e0657a29faa6f4fdabc8f91acf04d6a44abe9ee330f7ebb7eba",
+      "bytes": 11637,
+      "worktrees": [
+        "d4b2de3d28d71dcf"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "aa4d60887da5525218e71ddc02a882f0d2de008dd867f9fc1d26f159666874f2",
+      "bytes": 7151,
+      "worktrees": [
+        "d4b2de3d28d71dcf",
+        "2704fa93de2e6f35"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "3584075d9c8778282db443e68af0899ecf5fc34f5a36c5e68f7e97a7c2d5cfc1",
+      "bytes": 31018,
+      "worktrees": [
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff"
+      ]
+    },
+    {
+      "path": "docs/runbooks/bdsc-qualification-case.md",
+      "sha256": "cfbadb3929b575837655712d7fb998081a1674f3f7a5189382eb4e87dbd15f08",
+      "bytes": 11536,
+      "worktrees": [
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "201d902b9c0777c7",
+        "dd79f1821965c2fe",
+        "9ff1566d4c2ec2c3",
+        "dd5582d195c2b985",
+        "2878464fe7d4ec4f",
+        "a54ed7fab6489aff"
+      ]
+    },
+    {
+      "path": "docs/runbooks/hypercomplex-operator-cases.md",
+      "sha256": "ae32741ff97306dd4a52285fc59dcd6e7c91a587a25a77ef36a514205048b886",
+      "bytes": 8302,
+      "worktrees": [
+        "1fe5f2e90160ee40",
+        "44d566aa71b24348",
+        "961c9cf27cb58ccf",
+        "609a456beb27f773",
+        "dd79f1821965c2fe",
+        "2878464fe7d4ec4f"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "972f638ef786f3aa82263369d7137be91632456413530e7600832ce662005823",
+      "bytes": 11918,
+      "worktrees": [
+        "44d566aa71b24348"
+      ]
+    },
+    {
+      "path": "docs/RESEARCH_ROADMAP.md",
+      "sha256": "2970bf82496c3686ad78587813ad132494a961e57a734b78f6caf157858c9af8",
+      "bytes": 31218,
+      "worktrees": [
+        "ce2d1f97a9088b39"
+      ]
+    },
+    {
+      "path": "docs/notes/rank_locus_two_dimension_gap.md",
+      "sha256": "efb1cae6084a888f8ecf015ccaa7fe00755c68660902dbc93c1fa11354d57691",
+      "bytes": 17685,
+      "worktrees": [
+        "ce2d1f97a9088b39"
+      ]
+    },
+    {
+      "path": "docs/design/hypercomplex-operator-evidence.md",
+      "sha256": "dfdc7dccbeec36a06b9a3c064a2905d441a66f65eb2347466a46e3314f810978",
+      "bytes": 11912,
+      "worktrees": [
+        "dd79f1821965c2fe"
+      ]
+    }
+  ]
+}

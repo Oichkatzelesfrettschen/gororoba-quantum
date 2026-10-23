@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "companion-repository-proof-integration",
+  "kind": "coordination",
+  "summary": "Reconcile proof and bridge obligations recorded for the companion repository.",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/193b4d180c21cabb6d0da0ad6a2ff76d590301da1b1667d8288fe15ed7163d51.txt",
+    "plans/quantum_dispatch.json"
+  ],
+  "state": "inbox",
+  "scope": "External repository obligations in the historical dispatch.",
+  "next_action": "Verify the companion repository PRs, source identities and retained proof receipts in their own repository.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The planning inventory covers IBMQuantum worktrees; companion repository implementation and app state were not revalidated."
+  },
+  "steps": [
+    {
+      "id": "resolve-next-obligation",
+      "action": "Verify the companion repository PRs, source identities and retained proof receipts in their own repository.",
+      "acceptance": "Retain the resulting evidence or explicit unresolved boundary in the cited workstream; scientific claims and execution approvals keep their existing authorities.",
+      "state": "todo"
+    }
+  ]
+}

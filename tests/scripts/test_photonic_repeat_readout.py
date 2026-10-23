@@ -67,3 +67,23 @@ def test_reported_single_photon_condition_excludes_a_bunched_two_photon_state() 
         raise RuntimeError("reported photon number one must exclude a two-photon state in one or two modes")
     if row["mode_counts"] != [8, 2] or row["mode_probabilities"] != [0.8, 0.2]:
         raise RuntimeError("occupied-mode count cannot replace the reported single-photon denominator")
+
+
+@pytest.mark.parametrize("mutation", ["reordered", "parameters", "seed"])
+def test_ascella_readout_rejects_misattributed_iterations(mutation: str) -> None:
+    import copy
+    import json
+    import runpy
+    from pathlib import Path
+
+    directory = Path(__file__).resolve().parents[2] / "results/quandela/runs/ascella-mosaiq-update-order-retry"
+    analyzer = runpy.run_path(str(directory / "analysis.py"))
+    settings = json.loads((directory / "cases.json").read_text())["settings"]
+    entries = json.loads((directory / "results.json").read_text())["iterations"]
+    paired = copy.deepcopy(entries[1] if mutation == "reordered" else entries[0])
+    if mutation == "parameters":
+        paired["iteration"]["circuit_params"]["x0"] += 0.25
+    elif mutation == "seed":
+        paired["iteration"]["compilation_seed"] += 1
+    with pytest.raises(ValueError, match="paired manifest setting"):
+        analyzer["observation"]((settings[0], paired))

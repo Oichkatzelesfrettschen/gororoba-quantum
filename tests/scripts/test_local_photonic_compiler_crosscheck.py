@@ -1,12 +1,19 @@
 """Protect the boundary between terminal measurement samples and unitary probabilities."""
 
 import json
+import stat
 from pathlib import Path
 from types import SimpleNamespace
 
 import local_photonic_compiler_crosscheck
 import pytest
 from local_photonic_compiler_crosscheck import photonic, terminal_unitary
+
+
+def test_local_photonic_crosscheck_shell_wrapper_is_owner_executable() -> None:
+    wrapper = local_photonic_compiler_crosscheck.ROOT / "scripts/local_photonic_compiler_crosscheck.sh"
+    if not wrapper.stat().st_mode & stat.S_IXUSR:
+        raise RuntimeError(f"the local simulation wrapper must be executable by its owner: {wrapper}")
 
 
 @pytest.mark.parametrize("missing", ["all", "manifest", "case"])

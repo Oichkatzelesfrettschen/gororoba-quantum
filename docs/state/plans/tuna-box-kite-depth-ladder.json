@@ -1,0 +1,87 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-box-kite-depth-ladder",
+  "kind": "implementation",
+  "summary": "tuna-boxkite-stages: box-kite Tuna-17 T0 depth ladder, then T1, coherence and walks",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/7c09972794f22050a77cd291714faccfbbf0d26cfbb8082eea460e28fa10b974.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-236.json",
+    "docs/evidence/plan-reconciliation/observations/pr-239.json",
+    "docs/evidence/plan-reconciliation/observations/pr-242.json"
+  ],
+  "state": "inbox",
+  "scope": "tuna-boxkite-stages: box-kite Tuna-17 T0 depth ladder, then T1, coherence and walks",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #242 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-236-integration",
+      "action": "Verify the recorded integration state of PR #236.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "f5c3293203f6104da5f0604f6187642c48786ab7cbf0aa14d3c47ea907c299dd",
+          "result": "PR #236 merged as 53936bd0aefdcd235eb16e8633af9f2bc3cbf115; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-236.json",
+              "sha256": "a6aefed3fd9ae5c5e0fc81bc6f91b7b8184226c3b041e2980c1559e7e0bd28a1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-239-integration",
+      "action": "Verify the recorded integration state of PR #239.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "e7817d222311943dc787ded76d5774b20c3ceaa1c4eba58a577f5dff431d60b7",
+          "result": "PR #239 merged as 5c285fcb41a113594e5c549905d12b3c7fd1b463; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-239.json",
+              "sha256": "9388682c1150c753da2ecfd61b5df4e50038b1e1fa2cf29f1242900ff6030fd5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-242-integration",
+      "action": "Verify the recorded integration state of PR #242.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "0fc0b243ef92cdaf8427bf6ed8967bb5fc4342e96e3ebdab900354e91892d4c7",
+          "result": "PR #242 merged as 316275f05603b855ece4c2250400649f656bb124; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-242.json",
+              "sha256": "8dbdc8818c7d729641d614700bf120c989918070732d47032818a32cb8fdfb92"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "T0: pooled depth-1 contrast with its 99% upper bound below 0.5 ends the Tuna program; fitted r outside [0.87, 0.97] at 99% resizes T1-walks before they run. T1: D > +0.4 same, < -0.4 opposite, |D| < 0.2 strut; any misclassified item refutes the layout's separation estimate. Walks: sign(<Z_c>) opposite omega at |z| > 3, or control |<Z_c>| > 0.1 + 3 sigma.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "work-plan-v1",
+  "id": "routed-control-timing",
+  "kind": "implementation",
+  "summary": "70: qpu_planning.window_durations: use the routed control's measure and reset durations",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/58c17d11db05362c8adf0ee3a31e9e9bb1d1c792c908f675e29c494cc07cfce0.txt"
+  ],
+  "state": "inbox",
+  "scope": "70: qpu_planning.window_durations: use the routed control's measure and reset durations",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Source variants compared; historical assertions retain their source boundary. Current obligation-level validation needs the linked evidence."
+  },
+  "steps": [
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "`ci/run_gates.py` for core-094 (full tier; `qpu_planning_contracts.py`) passes on main. Prediction: pass. Falsifier: the gate fails, or a mutation that returns `max(table.values())` for routed controls still passes (then the contract is blind and the issue stays open with a contract fix).",
+      "state": "todo"
+    }
+  ]
+}
