@@ -23,7 +23,7 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 | [platform-facts.md](platform-facts.md) | every fact the knowledge-base capture establishes, each with its source: per-backend constraints, retired backends, calibration, maintenance, account rules, tooling |
 | [tuna-17.md](tuna-17.md) | Tuna-17 result registers, the retained record of its readout drift, the readout ring-down verdicts and the runner and account rules the series established |
 | [experiments.md](experiments.md) | the Tuna-17 spectator-drive, teleportation and zero-divisor runs, their analyses and the Kingston-noise comparison |
-| [mcp.md](mcp.md) | the `quantum-inspire` MCP server: tools, permissions, registration |
+| [mcp.md](mcp.md) | the `quantum-inspire` MCP server: tools, permissions, registration and [public Grafana status and calibration dashboards](mcp.md#public-performance-dashboards) |
 | [cqasm.md](cqasm.md) | a working cQASM 3.0 reference with per-backend support |
 | [knowledge-base.md](knowledge-base.md) | a digest of every captured page, its link audit and the reconciled contradictions between pages, API and runs |
 | [citing.md](citing.md) | how to cite Quantum Inspire, its backends and tools, with BibTeX from registration records |

@@ -425,7 +425,7 @@ sixteen settings whose returned meshes respond differently to each class.
 4. The first decision rule crowned the best of twelve fixed models, so a
    data set no model explains still named a class. Resolved: magnitude
    scans, an absolute fit criterion and the preregistered "no class fits"
-   outcome, held by core-512 on three synthetic truths (phase noise 0.6 off
+   outcome, held by the `qd_belenos_mesh.py --self-test` of gate `core-self-test-08` (`tests/test_cli_self_tests.py`) on three synthetic truths (phase noise 0.6 off
    the fixed grid, misroute 0.3 plus noise 0.3, and an out-of-family
    distribution) and by core-513 on the static class.
 

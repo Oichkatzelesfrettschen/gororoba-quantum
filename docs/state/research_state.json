@@ -1346,6 +1346,62 @@
       "question": "repeat acquisition (epoch 2, job tc-def-e2) of the target-complement state pair under the provider's default mitigation, sent before any recalibration since the first acquisition was documented: does the live path at collector revision f1dc1c0 submit the requested policy and retain the result, and how far do the twelve settings move from the first acquisition?"
     },
     {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block1-job1-canceled",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the first job of block 1 (`b1-j1`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block1-job2-canceled",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block1-job2-retry-canceled",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the resubmission of the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block1-job1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the first job of block 1 (`b1-j1`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block1-job2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the second job of block 1 (`b1-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block2-job1-canceled",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-22T170900Z-qpu_belenos-bdsc_diagnostic-b2-j1",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the first job of block 2 (`b2-j1`), first submission, of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block2-job1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the first job of block 2 (`b2-j1`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-diagnostic-block2-job2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2",
+      "family": "BDSC crossed diagnostic on qpu:belenos",
+      "question": "the second job of block 2 (`b2-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
       "id": "qi-qx-bdsc-pauli-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
@@ -8031,6 +8087,137 @@
       "related_claims": [
         "iqm-garnet-signed-kernel-probe"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-diagnostic-block1-canceled-before-start",
+      "statement": "The first three qpu:belenos submissions of block 1 of the approved crossed BDSC diagnostic (job 5aec4d50 submitted 2026-10-22 11:06:58 UTC; e51b9f4f submitted 11:15:53; e51b9f4f's resubmission 2d868daa submitted 11:17:33) each ended canceled with 0 shots, no start time and status message 'Cancel requested from perceval', and qpu:belenos usage held at 25.2255 free credits in every usage report the receipts retain. The two later submissions departed from the frozen protocol: the first job's collection at 11:15:35 already met the case's stop conditions (fewer than 40000 samples, no compiled circuit), which end the four-job sequence. None of the three runs enters the diagnostic readout; block 1 was rerun from its first job under the owner's fresh approval, 'jobs approved.', given after this record was reported.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "An operational record: no device measurement, setting response or statement about Belenos availability follows from these runs. The service records only that a client requested each cancel; which client sent it is outside the retained evidence.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1/results.json",
+          "sha256": "1b91d28b561e4e5c11406f48826614cf8bdea4b69235dac7914861752000b784"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json",
+          "sha256": "a84806d3d833913d6818ee673d980bda0171664440494cca51d2ed0fa58af251"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json",
+          "sha256": "d85148dda4ec4e52f00587d93fba2ba3eac51b58de4b39ad8167faf5012a398e"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job1-canceled",
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job2-canceled",
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job2-retry-canceled"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-diagnostic-block1-collected",
+      "statement": "Block 1 of the approved crossed BDSC diagnostic on qpu:belenos completed: job c8d90a80 (submitted 2026-10-22 16:00:38 UTC) and job ef06045d (submitted 16:03:56 UTC, started after job 1 ended) each returned all 24 iterations with 960000 samples in total and 164 s of execution, with no partial result. Block 2 and the readout follow under the same approval; the preregistered readout over all four jobs carries the diagnostic's inference.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A collection record of two of the four jobs: no setting response, contrast or mechanism is read before the preregistered readout over both blocks.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1/results.json",
+          "sha256": "c40a31367fd3394a7d746198ac4d350c06497da242875076138f0bbea7011377"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2/results.json",
+          "sha256": "d38ccaa083658ff030d2076e93f92ffb6e14c764b7e61e4ca1dc2bf05bd5c8af"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job1",
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job2"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-diagnostic-block2-cancel-and-resubmission",
+      "statement": "The first submission of block 2 job 1 (4058ce4e, created 2026-10-22 17:09 UTC) held 0 shots with no start time until its collection at 00:46 UTC on 2026-10-23, 7.6 hours later, which recorded status canceled, 0 shots and status message 'Cancel requested from perceval'. Its resubmission (a5a0d2cf) and block 2 job 2 (33499aec) each returned all 24 iterations with 960000 samples in 164 s and 171 s, and block 2 job 2 was submitted at 08:13:30 UTC, 25 s after block 2 job 1's collection; no receipt of the matched check from that interval is retained, and --matched-check reproduces the equality of block 2 job 1's returned circuits with block 1 job 2's on the retained runs.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "An operational record of one canceled and two completed jobs. The resubmission continued past a stop condition of the frozen case with no amendment retained before it (the runbook's protocol deviation of 2026-10-23), so the readout over the four completed jobs is descriptive.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-22T170900Z-qpu_belenos-bdsc_diagnostic-b2-j1/results.json",
+          "sha256": "52a89968dfa01a313077475ef79f9c95388e49e0054b944c23ca6e4233673e3d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1/results.json",
+          "sha256": "18075c0b57b81dfceec1289cb56a0164e61a269de4d2396726faa2c30070bf5c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2/results.json",
+          "sha256": "a2e248abb626d5f1927eec356686618168bdcf477e4249e5ff4de90aa8550e63"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-diagnostic-block2-job1-canceled",
+        "qd-qpu-belenos-bdsc-diagnostic-block2-job1",
+        "qd-qpu-belenos-bdsc-diagnostic-block2-job2"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-diagnostic-readout",
+      "statement": "The readout of the four completed jobs, by the preregistered rule, of the crossed BDSC diagnostic on qpu:belenos (96 instances: six target-complement states x two templates x four QRNG seeds x two blocks, 40000 samples per iteration with 39959 to 40000 eligible one-click trials, empty mitigation) selects the stationarity branch: matched requests changed between the blocks beyond their class means (heterogeneity statistic 553 on 45 degrees of freedom) while all 48 matched pairs returned identical compiled circuits and no instance leaked. Outside the branch rule, the support-conditioned rerun finds the matched changes homogeneous about their class means (45.8 on 45), so the instance-specific change lives in the aggregate fraction of clicks outside each setting's target support, while the superpositions keep a common on-support shift of -0.0048 (z -7.7); the g basis state shifted by +0.0035 (z 11.6); the seed effect on the superpositions is state-specific in both readings and stays so among seed slots that share a job (2406 on 24 raw, 1941 on 24 support-conditioned); and all 32 sum-rule residuals lie beyond the 0.02 margin, between -0.14 and -0.24.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One device, two blocks a day apart, read descriptively: block 2 was resubmitted past a stop condition with no amendment retained before it (the runbook's protocol deviation of 2026-10-23). Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance and uncorrected observations unresolved. Identical returned circuits show one nominal model; attributing the change to the device rather than the compiler holds only if a returned circuit describes the configuration that ran, which the contract leaves unresolved. The branch names the next amendment, stationarity and provider calibration before any fixed-effect confirmation, which reruns under that amendment; it makes no certification decision, and physical_perf ratios stay an uninterpreted provider diagnostic.",
+      "evidence": [
+        {
+          "path": "results/quandela/bdsc_diagnostic_readout.json",
+          "sha256": "6e2f94f9b5918641553ce898679cdb0a85ca98ec00a69755c72c60232fb1b688"
+        }
+      ],
+      "documents": [
+        "docs/runbooks/bdsc-qualification-case.md",
+        "scripts/bdsc_diagnostic.py"
+      ],
+      "gates": {
+        "core-647": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job1",
+        "qd-qpu-belenos-bdsc-diagnostic-block1-job2",
+        "qd-qpu-belenos-bdsc-diagnostic-block2-job1",
+        "qd-qpu-belenos-bdsc-diagnostic-block2-job2"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },

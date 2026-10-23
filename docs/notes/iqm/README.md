@@ -471,8 +471,7 @@ unchanged ISA ([os-4.7.md](os-4.7.md)). iqm-client 36.0.0 transpiled for all
 three QPUs on 2026-10-19, with Garnet and Sirius still on 49.0.3. The
 all-49.0.3 baseline is [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
-Gates core-588 (`capture_iqm_docs.py --check`), core-589 (its
-`--self-test`), core-590 (`iqm_platform.py check docs/evidence/iqm --agents
-docs/notes/iqm/README.md`, which also holds the MCP tool set) and
-core-591 (its `--self-test`, the two-phase refresh on a stubbed transport
-included).
+Gates core-588 (`capture_iqm_docs.py --check`) and core-590 (`iqm_platform.py check docs/evidence/iqm --agents
+docs/notes/iqm/README.md`, which also holds the MCP tool set) and the
+`--self-test` of both scripts in gates `core-self-test-06` and `core-self-test-07` (`tests/test_cli_self_tests.py`) (the two-phase
+refresh on a stubbed transport included).

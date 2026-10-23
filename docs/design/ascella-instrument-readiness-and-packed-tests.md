@@ -108,8 +108,11 @@ two platform parameters: `final_mode_number` and the legacy
 `use_photon_recycling`. Neither interface documents a hardware configuration
 write or an input-port instrument map.
 
-Perceval 1.3.1's `PlatformSpecs.parameters` describes the advertised
-parameters as the supported `RemoteComputer.set_parameters()` keys.
+Perceval 1.3.1 exposes platform parameters through
+`RemoteComputer.parameters = {...}`, inherited from `AComputer`.
+`PlatformSpecs.parameters` contains a stale reference to
+`RemoteComputer.set_parameters()`: that method belongs to the legacy
+`RemoteProcessor` interface and is absent from `RemoteComputer`.
 `RemoteComputer.prepare_payload()` serializes the computation, mitigation
 request, platform parameters and custom noise. `RPCBasedCommunicationLayer.send()`
 serializes that payload and creates the Cloud job. Those client operations
@@ -118,6 +121,10 @@ The [vendor compilation guide](../notes/quandela/guide/user-guide/04-compilation
 documents input-state routing, unitary transpilation and detection setup;
 pre-compilation reuses `computed_input` and `computed_circuit`, rather than
 provisioning physical source channels.
+
+The [refreshed API and client audit](../evidence/quandela/input-port-api-audit/README.md#input-map-and-client-contract-refresh)
+corrects the compilation example's metadata extraction and sampler binding.
+Those client documentation repairs do not provision the instrument map.
 
 The provider-configuration hypothesis predicts that an operator inspecting
 Ascella's deployed configuration will find a missing physical input-port map.
