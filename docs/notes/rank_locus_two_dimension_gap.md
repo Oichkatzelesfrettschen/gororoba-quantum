@@ -181,7 +181,7 @@ and is never evidence of the gap.
    L_y has rank above 32 - k at seeded rational points y of T(x), computed
    over the rationals with FLINT
    ([evidence](../evidence/rank_locus_tangent_linearity/README.md),
-   `scripts/rank_locus_tangent_linearity.py`, gate core-663): rank 32 at
+   `scripts/rank_locus_tangent_linearity.py`, gates core-663 and core-664): rank 32 at
    every nullity-4, -8 and -12 witness and 20 at the nullity-16 ones. T(x)
    is therefore never inside the closed rank cone
    R_k = {y : rank L_y <= 32 - k}, and the cone over a piece of D_(5,k) of
@@ -192,8 +192,9 @@ and is never evidence of the gap.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
-regenerating its retained result and `--self-test` rejecting a corrupted
-nullity, frame or coefficient, in normal and `-O` modes. The registry
+regenerating its retained result; computations 1, 2, 3 and 5 also run
+`--self-test`, which rejects a corrupted nullity, frame, coefficient or
+rank in normal and `-O` modes. The registry
 carries the question as the open claim `a5-nonzero-divisor-two-dimension-gap`
 and promotes it only through a retained certificate.
 

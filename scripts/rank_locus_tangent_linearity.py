@@ -21,11 +21,13 @@ rank 32 - k refute nothing and leave inclusion for an exact proof.
 Usage:
     "$PYTHON" scripts/rank_locus_tangent_linearity.py --out docs/evidence/rank_locus_tangent_linearity/result.json
     "$PYTHON" scripts/rank_locus_tangent_linearity.py --check docs/evidence/rank_locus_tangent_linearity/result.json
+    "$PYTHON" scripts/rank_locus_tangent_linearity.py --self-test
 """
 
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import random
 import sys
@@ -127,16 +129,65 @@ def measure() -> dict[str, Any]:
     }
 
 
+def verdicts(record: dict[str, Any], fresh: dict[str, Any]) -> list[str]:
+    """Fields that differ from the fresh measurement, and rows whose own fields disagree with each other."""
+    found = [key for key in sorted(record.keys() | fresh.keys()) if key != "rows" and record.get(key) != fresh.get(key)]
+    rows = record.get("rows", [])
+    if len(rows) != len(fresh["rows"]):
+        return [*found, "rows"]
+    for row, expected in zip(rows, fresh["rows"], strict=True):
+        label = f"witness {expected['witness']}"
+        found += [f"{label} {key}" for key in sorted(row.keys() | expected.keys()) if row.get(key) != expected.get(key)]
+        ranks, weights = row.get("sample_ranks", []), row.get("sample_weights", [])
+        if row.get("cone_rank_bound") != DIM - row.get("nullity", -1):
+            found.append(f"{label} cone bound is not 32 minus the nullity")
+        if len(ranks) != SAMPLES or len(weights) != SAMPLES:
+            found.append(f"{label} sample count")
+        elif row.get("sample_refutes_tangent_inside_cone") != (max(ranks) > row.get("cone_rank_bound", DIM)):
+            found.append(f"{label} refutation flag disagrees with its ranks")
+        if any(len(w) != row.get("tangent_dimension") or max(map(abs, w)) > COEFFICIENT_BOUND for w in weights):
+            found.append(f"{label} weight vector outside the tangent dimension or coefficient bound")
+    return found
+
+
+def self_test() -> str:
+    """Corrupted ranks, flags, weights, nullities, tangent dimensions and sample counts are each rejected."""
+    record = measure()
+    if verdicts(record, record):
+        raise SystemExit(f"rank_locus_tangent_linearity: the honest record fails: {verdicts(record, record)}")
+    mutations = {
+        "rank 20 at a nullity-8 witness": lambda r: r["rows"][3]["sample_ranks"].__setitem__(0, 20),
+        "refutation flag false": lambda r: r["rows"][5].__setitem__("sample_refutes_tangent_inside_cone", False),
+        "weight changed": lambda r: r["rows"][0]["sample_weights"][2].__setitem__(1, COEFFICIENT_BOUND + 1),
+        "nullity shifted by 4": lambda r: r["rows"][4].__setitem__("nullity", r["rows"][4]["nullity"] - 4),
+        "tangent dimension shifted by 1": lambda r: r["rows"][4].__setitem__(
+            "tangent_dimension", r["rows"][4]["tangent_dimension"] - 1
+        ),
+        "sample dropped": lambda r: r["rows"][6]["sample_ranks"].pop(),
+        "witness dropped": lambda r: r["rows"].pop(),
+        "schema changed": lambda r: r.__setitem__("schema", "rank-locus-tangent-linearity-v1"),
+    }
+    for label, change in mutations.items():
+        bad = copy.deepcopy(record)
+        change(bad)
+        if not verdicts(bad, record):
+            raise SystemExit(f"rank_locus_tangent_linearity: the {label} mutation passes")
+    return f"{len(mutations)} corruptions rejected"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--out", type=Path)
     mode.add_argument("--check", type=Path)
+    mode.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.self_test:
+        print(f"rank_locus_tangent_linearity self-test: {self_test()}")
+        return 0
     data = measure()
     if arguments.check is not None:
-        retained = json.loads(arguments.check.read_text())
-        differing = sorted(key for key in retained.keys() | data.keys() if retained.get(key) != data.get(key))
+        differing = verdicts(json.loads(arguments.check.read_text()), data)
         if differing:
             raise SystemExit(f"rank_locus_tangent_linearity: {differing} differ from {arguments.check}")
     else:

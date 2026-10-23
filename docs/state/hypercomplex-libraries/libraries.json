@@ -11385,6 +11385,7 @@
    "__future__",
    "argparse",
    "cd_core",
+   "copy",
    "flint",
    "fractions",
    "json",

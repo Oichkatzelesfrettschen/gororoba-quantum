@@ -4609,7 +4609,8 @@
         "docs/notes/rank_locus_two_dimension_gap.md"
       ],
       "gates": {
-        "core-663": "replay"
+        "core-663": "replay",
+        "core-664": "admission"
       },
       "acquisitions": [],
       "assumptions": [],
