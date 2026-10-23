@@ -149,6 +149,10 @@ Binding rules for circuit and hardware work, before the notes open:
 - A sign register needs `|->` for phase kickback; `|0>` records a which-path
   label.
 - Certify every zero-divisor pair with `cd_core` before circuit work.
+- A hardware probe of an algebraic property passes the mutation test (the
+  ideal observable changes when the property is removed), lists its +-
+  arms +, -, -, + and decides against a null arm
+  ([Hardware probes](docs/notes/algebra_circuit_rules.md#hardware-probes)).
   `gororoba_quantum/cd_core.py` is the specification, and a package result
   enters evidence only through a declared map onto it, checked on every basis
   pair.

@@ -1,0 +1,144 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.5707963267948966,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "c"
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "amp-QB6-3"
+}

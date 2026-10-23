@@ -1,0 +1,42 @@
+{
+ "blocks": 16,
+ "calibration_set": "68b0f1d0-b410-450f-aed7-b709f22412c1",
+ "cz": 199,
+ "model": "iqm_sim depolarizing PRX and CZ, herald-conditioned readout, ALAP idle T1/T2, exact density matrix; coherent adds relative over-rotations",
+ "parts": {
+  "calibration": {
+   "d_t": 0.002098656392037438,
+   "odd_0": 0.013611983411807683,
+   "odd_t": 0.01571063980384512
+  },
+  "coherent": {
+   "d_t": 0.0010084650722650274,
+   "odd_0": 0.007960284596249423,
+   "odd_t": 0.00896874966851445
+  }
+ },
+ "planning": {
+  "ceiling_credits_garnet": 43.5,
+  "expected_d_t": 0.00502439024390244,
+  "expected_z": 3.0052406496459416,
+  "retention": 0.559,
+  "se_d_t": 0.001671876175538349,
+  "visibility": 0.206
+ },
+ "seed": 2,
+ "t": 0.05,
+ "z": {
+  "calibration": {
+   "+0.00": 0.05806591377589353,
+   "+0.05": 0.0601740322419089,
+   "-0.00": 0.03084194695227816,
+   "-0.05": 0.028752752634218653
+  },
+  "coherent": {
+   "+0.00": 0.045306556157597336,
+   "+0.05": 0.04625332522425538,
+   "-0.00": 0.02938598696509849,
+   "-0.05": 0.028315825887226483
+  }
+ }
+}
