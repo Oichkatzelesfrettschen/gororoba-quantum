@@ -59,6 +59,12 @@ def load_manifest(path: Path) -> dict[str, Any]:
     return dict(value)
 
 
+def _provider_facts(name: str) -> tuple[str, Any]:
+    import research_state
+
+    return name, research_state.PROVIDERS[name]().runs()
+
+
 def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, Any]:
     """Explicitly refresh the frozen inventory through the existing offline provider adapters."""
     import research_state
@@ -69,7 +75,7 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, An
     require({claim["id"] for claim in claims} == selected, "selected claim is absent")
     acquired = {identity for claim in claims for identity in claim["acquisitions"]}
     providers = {name: adapter() for name, adapter in research_state.PROVIDERS.items()}
-    facts = {name: provider.runs() for name, provider in providers.items()}
+    facts = dict(ordered_map(_provider_facts, list(providers), min_items=1))
     acquisitions = []
     paths = set(manifest["additional_sources"])
     for claim in claims:
@@ -181,7 +187,7 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
     import research_state
 
     providers = {name: adapter() for name, adapter in research_state.PROVIDERS.items()}
-    facts = {name: provider.runs() for name, provider in providers.items()}
+    facts = dict(ordered_map(_provider_facts, list(providers), min_items=1))
     for acquisition in manifest["acquisitions"]:
         record = acquisition["record"]
         require(
@@ -264,6 +270,12 @@ def _verify_projector(projector: Any) -> None:
     require(projector * projector == projector and projector.T == projector, "sector projector failed")
 
 
+def _project_shot(task: tuple[str, int, list[int]]) -> tuple[int, ...]:
+    shot, width, indices = task
+    require(isinstance(shot, str) and len(shot) == width and set(shot) <= {"0", "1"}, "malformed shot register")
+    return tuple(int(shot[-1 - index]) for index in indices)
+
+
 def project_shots(shots: list[str], width: int, indices: list[int]) -> list[tuple[int, ...]]:
     """Read explicit rightmost-bit indices; caller supplies the provider's register map."""
     require(type(width) is int and width > 0, "register width must be positive")
@@ -273,11 +285,7 @@ def project_shots(shots: list[str], width: int, indices: list[int]) -> list[tupl
         and all(type(index) is int and 0 <= index < width for index in indices),
         "invalid register indices",
     )
-    require(
-        all(isinstance(shot, str) and len(shot) == width and set(shot) <= {"0", "1"} for shot in shots),
-        "malformed shot register",
-    )
-    return [tuple(int(shot[-1 - index]) for index in indices) for shot in shots]
+    return ordered_map(_project_shot, [(shot, width, indices) for shot in shots], min_items=1)
 
 
 def holm(probabilities: list[float], alpha: float = 0.05) -> list[bool]:
