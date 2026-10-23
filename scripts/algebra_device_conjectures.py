@@ -579,7 +579,8 @@ def render(result: dict[str, Any]) -> str:
         "Primary identity checks and reading scopes: "
         "[instrument sources](../../notes/papers/operational-instrument-sources.md).",
         "",
-        f"Frozen base: `{result['frozen_base']}`. Manifest digest: `{result['manifest_sha256']}`.",
+        f"Checkout HEAD at freeze: `{result['frozen_base']}`. Input bytes are bound individually by the manifest.",
+        f"Manifest digest: `{result['manifest_sha256']}`.",
         "",
         f"Acquisitions accounted for: {len(result['acquisitions'])}; "
         f"selected: {sum(row['included'] for row in result['acquisitions'])}.",

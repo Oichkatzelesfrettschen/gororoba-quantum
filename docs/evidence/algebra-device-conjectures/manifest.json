@@ -6761,10 +6761,10 @@
     "ci/requirements-ci.txt",
     "docs/notes/papers/operational-instrument-sources.md"
   ],
-  "base_commit": "bbc6759b83e885a5b20cb361aa1aea9861f2d942",
+  "base_commit": "691853bd8549ff2eea00f39a4a03f80493908c76",
   "census": {
     "path": "docs/evidence/algebra-device-conjectures/census.json",
-    "sha256": "6649222c99df89e1670d3e3d197b41a869b559c98ed198e51ed60783483e7c80"
+    "sha256": "19bd229bb8a032b99c953fa3096764c8c840879b01a66daa74b9a75f30a67959"
   },
   "claims": [
     {

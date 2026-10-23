@@ -6737,7 +6737,7 @@
       }
     }
   ],
-  "base_commit": "bbc6759b83e885a5b20cb361aa1aea9861f2d942",
+  "base_commit": "691853bd8549ff2eea00f39a4a03f80493908c76",
   "schema": "algebra-device-census-v1",
   "sources": [
     {
