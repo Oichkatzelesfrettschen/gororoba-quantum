@@ -24,6 +24,10 @@ from parallel import ordered_map  # noqa: E402
 
 def observation(task: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
     setting, entry = task
+    iteration = entry.get("iteration", {})
+    for field in ("circuit_params", "compilation_seed"):
+        if json.dumps(iteration.get(field), sort_keys=True) != json.dumps(setting[field], sort_keys=True):
+            raise ValueError(f"Returned {field} differs from the paired manifest setting")
     counts = [0] * 4
     vacuum = multiple = 0
     for state, count in entry["counts"].items():
