@@ -464,9 +464,9 @@ def fit_train(
     """
 
     def solve(eps: float) -> tuple[float, tuple[float, float]]:
-        # The 2 x 2 normal equations solve in closed form with sum() and math, whose IEEE arithmetic is
-        # exactly rounded; a BLAS matrix product or a LAPACK solve rounds by its build and CPU kernel, so
-        # the retained analysis would replay only under the library that wrote it.
+        # The 2 x 2 normal equations solve by Cramer's rule in Python floats. A BLAS product or LAPACK solve
+        # rounds by its build and CPU kernel, so the byte-replayed analysis (ci/runner_image_records.json)
+        # depends only on the libm and Python build that the runner image fixes.
         design, target, weight = [], [], []
         for n, (z, se, _) in zip(lengths, rows, strict=True):
             s = math.sin(n * math.pi / 2 * eps)
