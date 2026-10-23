@@ -83,7 +83,9 @@ p-adic rows to it.
 - At x0 the Bouligand cone is A15 union B17
   ([nullity_twelve_local_geometry](../../notes/nullity_twelve_local_geometry.md)),
   of dimension 17 at unit norm against the tangent bound 21.
-  - H is nonzero there at order 2 in every direction.
+  - H is nonzero there at order 2 along all four seeded generic directions
+    of the table. The order-2 term vanishes on A15 union B17, and the
+    higher-order controls below are directions inside it.
   - At scale 2 the same 32 entries carry the same leading digits at valuation
     4, so the valuation measures the homogeneous order.
 - Two higher-order controls at x0 exercise both routes above order 2, where
@@ -113,8 +115,9 @@ p-adic rows to it.
   series zero. It does bound how P could fail:
   - P would have to have order at least 64 along every drawn direction;
   - or a leading form P_m with m below 64 would have to vanish at a uniformly
-    drawn w modulo p, which happens with probability at most m / p by the
-    Schwartz-Zippel lemma, about 3e-8 per direction;
+    drawn w modulo p, which happens with probability at most m / (p - 1) by
+    the Schwartz-Zippel lemma over the weight set F_p^*, about 3e-8 per
+    direction;
   - or P_m would have to vanish identically modulo p for both primes.
 - An exact proof would need one of the following, and neither is available:
   - Vanishing beyond deg(M closure) times deg(H). By the Bezout bound that is

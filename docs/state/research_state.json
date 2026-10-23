@@ -4881,7 +4881,7 @@
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",
-      "boundary": "Exact residues modulo p^12 and modulo p at the recorded seeded directions, whose weight vectors the record carries. A zero residue bounds the order of the obstruction series along the drawn direction from below and admits no local dimension: the series could still be nonzero with order 64 or more, or with a leading form that vanishes modulo both primes or at the drawn weights, which a leading form nonzero modulo p does with probability at most 64/p per direction. A nonzero residue at a gap witness would have refuted a5-nonzero-divisor-two-dimension-gap exactly, and none occurred. The p-adic route is recomputed where pyadic imports, and CI holds its retained rows to the recomputed series route.",
+      "boundary": "Exact residues modulo p^12 and modulo p at the recorded seeded directions, whose weight vectors the record carries. A zero residue bounds the order of the obstruction series along the drawn direction from below and admits no local dimension: the series could still be nonzero with order 64 or more, or with a leading form that vanishes modulo both primes or at the drawn weights, which a leading form nonzero modulo p does with probability at most 64/(p - 1) per direction, with weights drawn from F_p^*. A nonzero residue at a gap witness would have refuted a5-nonzero-divisor-two-dimension-gap exactly, and none occurred. The p-adic route is recomputed where pyadic imports, and CI holds its retained rows to the recomputed series route.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_padic_lift/result.json",

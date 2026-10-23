@@ -238,7 +238,8 @@ and is never evidence of the gap.
      - A toy germ reads order 5.
    - The result points one way, but it admits nothing. A nonzero P of
      order below 64 would escape a drawn direction with probability at most
-     64 / p, about 3e-8, unless its leading form vanished modulo both
+     64 / (p - 1), about 3e-8, with weights drawn from F_p^*, unless its
+     leading form vanished modulo both
      primes.
    - Closing the gap exactly needs one of three things:
      - an ideal-membership certificate h H = sum a_i G_i with h(x) nonzero;

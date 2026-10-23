@@ -40,8 +40,9 @@ Falsifier, stated before the run: one nonzero excess entry in either route at a 
 P is not zero there, refuting a5-nonzero-divisor-two-dimension-gap at that witness and placing
 its local dimension at most one above its family. Excess entries that vanish to O(p^N) and
 O(t^order) at every sample admit nothing: they bound the order of P from below along the drawn
-directions. If P had order m below the series order with a leading form P_m nonzero modulo p, a
-uniformly drawn w would miss it with probability at most m / p by the Schwartz-Zippel lemma.
+directions. The weights are drawn uniformly from F_p^* = {1, ..., p - 1}, so if P had order m below
+the series order with a leading form P_m nonzero modulo p, a drawn w would miss it with probability
+at most m / (p - 1) by the Schwartz-Zippel lemma over that set.
 
 Usage:
     "$PYTHON" scripts/rank_locus_padic_lift.py --out docs/evidence/rank_locus_padic_lift/result.json
@@ -89,6 +90,8 @@ X0_WITNESS = 29
 SMOOTH_CONTROLS = ("zd-axis", "zd-zd-locus", "zd-zd-generic")
 GAP_FAMILIES = ("nonzd-axis", "zd-nonzd-locus", "zd-nonzd-generic", "nonzd-nonzd-locus")
 X0_FAMILY = "x0-two-piece-cone"
+# The pyadic release the retained p-adic rows were computed with (scripts/kaggle_run.py PIN_GROUPS).
+PYADIC_VERSION = "0.3.0"
 X0_ORDER = 2
 CONTROL_PLANES = ("A15", "A15 intersect B17")
 RETAINED = ROOT / "docs/evidence/rank_locus_padic_lift/result.json"
@@ -587,6 +590,13 @@ def consistency(record: dict[str, Any]) -> list[str]:
     return found
 
 
+def padic_declaration(record: dict[str, Any]) -> list[str]:
+    """A retained record must carry p-adic rows from the pinned pyadic release."""
+    if record.get("versions", {}).get("pyadic") == PYADIC_VERSION:
+        return []
+    return [f"versions: the retained p-adic rows are not from pyadic {PYADIC_VERSION}"]
+
+
 def verdicts(record: dict[str, Any], fresh: dict[str, Any]) -> list[str]:
     """Fields that differ from the fresh measurement, plus every consistency failure of the record."""
     padic_fresh = not fresh["versions"]["pyadic"].startswith("not run")
@@ -643,6 +653,12 @@ def self_test() -> str:
     planes = [control.get("plane") for control in retained.get("higher_order_controls", [])]
     _require(planes == list(CONTROL_PLANES), f"the retained record carries controls {planes}")
     _require(not consistency(retained), f"the retained record fails: {consistency(retained)}")
+    _require(not padic_declaration(retained), "the retained record does not declare the pinned pyadic release")
+    stripped = copy.deepcopy(retained)
+    stripped["versions"]["pyadic"] = "not run: pyadic does not import"
+    for row in stripped["rows"]:
+        row["padic"] = []
+    _require(bool(padic_declaration(stripped)), "a record with its p-adic rows stripped passes")
     retained_mutations: dict[str, Callable[[dict[str, Any]], Any]] = {
         "control order 2": lambda r: r["higher_order_controls"][0]["series"].__setitem__("order", 2),
         "control read zero": lambda r: r["higher_order_controls"][1]["series"].__setitem__("order", None),
@@ -689,7 +705,7 @@ def self_test() -> str:
         change(bad)
         if not verdicts(bad, record):
             raise SystemExit(f"rank_locus_padic_lift: the {label} mutation passes")
-    total = len(mutations) + len(retained_mutations)
+    total = len(mutations) + len(retained_mutations) + 1
     if not has_padic:
         return f"{total} corruptions rejected; p-adic route and toy not run: pyadic does not import"
     toy = toy_order()
@@ -709,7 +725,12 @@ def main() -> int:
         return 0
     data = measure()
     if arguments.check is not None:
-        differing = verdicts(json.loads(arguments.check.read_text()), data)
+        retained = json.loads(arguments.check.read_text())
+        differing = verdicts(retained, data)
+        # Without pyadic the retained p-adic rows are held to the fresh series route, which
+        # consistency() does only for a record that declares the pinned pyadic release.
+        if data["versions"]["pyadic"].startswith("not run"):
+            differing += padic_declaration(retained)
         if differing:
             raise SystemExit(f"rank_locus_padic_lift: {differing} differ from {arguments.check}")
     else:
