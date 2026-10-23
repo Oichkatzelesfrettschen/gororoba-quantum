@@ -150,19 +150,30 @@ The case ran once under the owner's approval on calibration set
 
 | contrast | odd part | z | model | decision |
 |---|---|---|---|---|
-| kernel, phi = 0.1 | -0.0695 +- 0.0087 | -8.0 | -0.0945 | H1 sign resolved |
+| kernel, phi = 0.1 | -0.0699 +- 0.0087 | -8.0 | -0.0945 | H1 sign resolved |
 | kernel, phi = 0.3 | -0.178 +- 0.009 | -20.1 | -0.269 | H1 sign resolved |
-| bright, phi = 0.1 | -0.016 +- 0.009 | H2 z -0.93 against the modeled -0.008 | -0.008 | no artifact |
+| bright, phi = 0.1 | -0.016 +- 0.009 | H2 z -0.92 against the modeled -0.008 | -0.008 | no artifact |
 
-- H3 sine law: odd(0.3) - 2.84 odd(0.1) = +0.020 +- 0.026 (z 0.74), so the
+- H3 sine law: odd(0.3) - 2.84 odd(0.1) = +0.021 +- 0.026 (z 0.78), so the
   response follows -sin(2 phi).
 - H4 even part: +0.050 measured against +0.046 decomposed, of which +0.038
-  is readout and idle relaxation and -0.001 is QB11's coherent term (z 0.37).
+  is readout and idle relaxation and -0.001 is QB11's coherent term (z 0.33).
 - H5 trains: QB11 over-rotates by +0.15 +- 0.07 % and QB12 by
   -0.20 +- 0.06 % (chi-square 5.1 and 1.1 on 3 degrees of freedom); both
   fits pass, so H4 was evaluated.
 - Visibility 0.36 +- 0.05 against the model's 0.48, through measured
   readout errors of (0.004, 0.013) on QB12 and (0.008, 0.027) on QB11.
+
+The analysis weights the two copies of each arm equally, so the +, -, -, +
+order cancels a linear drift whatever shots heralding keeps per copy, and
+fits each qubit's readout jointly with its trains, the calibration pi pulse
+carrying the same over-rotation; both corrections moved every reading by at
+most 0.05 standard errors from the first analysis. The prediction schedules
+idle relaxation as late as possible, as its model field states, while IQM's
+pulse builder defaults to as soon as possible: scheduled ASAP the model's
+relaxation even part rises from +0.038 to +0.066 and its bright odd part
+from -0.008 to -0.013, which would move H4 to about z -2.5 and H2 to
+z -0.3, with no decision changed ([issue #386](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/386)).
 
 No preregistered hypothesis is falsified, and Garnet carries the
 zero-divisor sign of the certified kernel at both angles. QB11's measured
