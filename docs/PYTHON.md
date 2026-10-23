@@ -19,7 +19,7 @@ enters the register in the same change.
 
 | Interpreter | Runs | Authority |
 | --- | --- | --- |
-| `$PYTHON`, exported | every script, gate and dry run | [AGENTS.md](../AGENTS.md) "Layout and gates" |
+| `$PYTHON`, exported | default-stack scripts, gates and dry runs; a provider-dependent script or gate half runs under its provider interpreter below | [AGENTS.md](../AGENTS.md) "Layout and gates" |
 | `--replay-python` or `REPLAY_PYTHON` | gates marked `"runtime": "qiskit-2.5"`; with neither, the running interpreter serves when it holds every replay pin, and an unresolved runtime exits 127 | [ci/AGENTS.md](../ci/AGENTS.md) |
 | `QI_PYTHON` (Python 3.13) | Quantum Inspire SDK, qxelarator, cQASM, OpenSquirrel | [quantum_inspire/README.md](notes/quantum_inspire/README.md) |
 | `OQ_PYTHON` | Open Quantum SDK | [open_quantum/README.md](notes/open_quantum/README.md) |
@@ -47,7 +47,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 | p-adic and finite-field arithmetic | pyadic, galois | rational reconstruction, F_p linear algebra beyond FLINT | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#runtime-packages) |
 | Gate-model circuits and transpilation | qiskit | IBM and other Qiskit-compatible circuits; the live Target is the timing authority. Provider-native circuits (Perceval, cQASM) follow their provider guides | [ibm_heron_platform.md](notes/ibm_heron_platform.md) |
 | Noise simulation | qiskit-aer, CPU or the host's CUDA build | 14 qubits or fewer on Kaggle; 15 qubits only through an approved case naming the substrate; 16 or more go to IBM hardware through an approved case | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [substrates.md](notes/kaggle/substrates.md) |
-| IBM hardware | qiskit-ibm-runtime, client-side `executor_sampler` | `--submit` after an approved case | [qpu-submission.md](notes/ibm_quantum/qpu-submission.md) |
+| IBM hardware | qiskit-ibm-runtime, client-side `executor_sampler` | `--submit` only after an approved case; `--collect`, `--preserve-raw`, calibration reads and transpilation need no approval | [qpu-submission.md](notes/ibm_quantum/qpu-submission.md) |
 | Layout and graph search | rustworkx | replica placement (`vf2_mapping`) | `gororoba_quantum/` |
 | Batched density-matrix sweeps | jax | error-scale sweeps in `jax_bridge` on CPU | [jax-bridge-structure-report.md](notes/kaggle/jax-bridge-structure-report.md) |
 | Tensor networks, contraction order | quimb, cotengra, opt_einsum | networks beyond a few tensors | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#vectorization-in-numpy) |
@@ -95,7 +95,9 @@ Climb in this order and stop at the first rung that meets the budget.
    build and Kaggle GPUs serve the circuits their notes measured; small
    dynamic circuits stay on CPU ([substrates.md](notes/kaggle/substrates.md)).
 7. **Shard.** A pooled, batched run that still exceeds one host's budget
-   shards to Kaggle CPU sessions by item range.
+   shards to Kaggle CPU sessions by item range, once the user has approved
+   the written case every simulator job and notebook session needs
+   ([AGENTS.md](../AGENTS.md) "Hardware services").
 
 ## Correctness rules
 
@@ -110,6 +112,6 @@ Climb in this order and stop at the first rung that meets the budget.
   a direction along which the residual vanishes to high order passes
   uncorrected; such a test needs a scale where that order exceeds the
   tolerance, or extended precision.
-- Run ruff and mypy through `ci/pinned_tool.py` on every touched file.
+- Run ruff and mypy through `ci/pinned_tool.py` on every touched Python file, and mypy over gate core-039's scope when a change alters a signature another module imports.
 - Record the versions a result depends on inside the result.
 - Mock outcomes (`--native-dry-run`) never enter an analysis or a figure.
