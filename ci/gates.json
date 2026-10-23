@@ -2651,6 +2651,15 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_nullity12_refinement.py --check docs/evidence/rank_locus_nullity12_refinement/result.json",
+   "name": "core-662",
+   "seconds": 245.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test",
    "name": "core-528",
    "seconds": 1.7,

@@ -2103,7 +2103,9 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/rank_locus_nullity12_refinement.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": []
   },
@@ -2455,6 +2457,7 @@
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
+    "scripts/rank_locus_nullity12_refinement.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -11025,6 +11028,21 @@
    "sys",
    "typing"
   ],
+  "scripts/rank_locus_nullity12_refinement.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "fractions",
+   "json",
+   "math",
+   "mpmath",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sys",
+   "typing"
+  ],
   "scripts/rank_locus_rotation_composite.py": [
    "__future__",
    "algebra_package_tables",
@@ -11511,6 +11529,9 @@
   ],
   "mcp": [
    "mcp"
+  ],
+  "mpmath": [
+   "mpmath"
   ],
   "networkx": [],
   "numpy": [
