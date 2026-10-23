@@ -164,6 +164,37 @@ methodological contribution is their use as a finite hardware discrimination
 protocol and an evidence-bearing visualization; a literature novelty claim
 requires a separate prior-art comparison.
 
+## Extract a nuisance model from the mathematics itself
+
+The vector coefficients also distinguish a restricted common phase rotation
+from deformation of the mathematical response. Let `r=(x,y)` and suppose the
+whole measured response obeys `r_measured=eta R(delta) r_ideal`, with one
+angle-independent attenuation eta and one real planar rotation R(delta).
+Write vector coefficients `A0=(x0,y0)`, `Ac=(xc1,yc1)` and `As=(xs1,ys1)`.
+The model requires
+
+\[
+A_c=-A_0,\qquad A_s=J_2 A_0,\qquad
+J_2=\begin{pmatrix}0&-1\\1&0\end{pmatrix}.
+\]
+
+Consequently `A0 dot As=0`, `norm(A0)=norm(As)=eta/2`, and
+`det(A0,As)=eta^2/4`. A common rotation changes the orientation but preserves
+these relations. Conjugation reflects the curve and reverses the determinant.
+Unequal quadrature attenuation generally violates the equal-norm condition;
+a theta-dependent distortion can populate the second harmonic. A diagonal
+mixture gives eta=0, where the inferred orientation becomes undefined.
+
+This is calibration through the scientific coefficients: the same acquisition
+tests whether a two-parameter response model explains the departure. The
+inferred `eta=2 norm(A0)` and `delta=atan2(y0,x0)` describe that model; they do
+not identify a unique physical decoherence rate or instrument phase. Retain
+raw coefficients and use the same simultaneous confidence set to test model
+relations. Model fitting never silently corrects the preregistered ideal-model
+comparison. A general real-linear mixing of the two quadratures can mimic
+other effects; the restricted model earns acceptance through its constraints,
+rather than by fitting an arbitrary map to five points.
+
 ## Questions, competing models and falsifiers
 
 | Scientific question | Competing prediction | Registered observation that distinguishes it |

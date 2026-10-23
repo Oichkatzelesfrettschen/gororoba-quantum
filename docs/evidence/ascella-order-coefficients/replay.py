@@ -52,6 +52,20 @@ def report() -> dict[str, Any]:
         "dark_coherence_link": sp.simplify(horizontal - 2 * dark),
         "quadrature_dark_link": sp.trigsimp(vertical**2 - 2 * dark * (1 - 2 * dark)),
     }
+    attenuation, rotation = sp.symbols("attenuation rotation", real=True)
+    constant_vector = attenuation * sp.Matrix([sp.cos(rotation), sp.sin(rotation)]) / 2
+    sine_vector = attenuation * sp.Matrix([-sp.sin(rotation), sp.cos(rotation)]) / 2
+    identities.update(
+        {
+            "rotated_coefficient_orthogonality": sp.simplify(constant_vector.dot(sine_vector)),
+            "rotated_coefficient_equal_norm": sp.simplify(
+                constant_vector.dot(constant_vector) - sine_vector.dot(sine_vector)
+            ),
+            "rotated_coefficient_orientation": sp.trigsimp(
+                sp.Matrix.hstack(constant_vector, sine_vector).det() - attenuation**2 / 4
+            ),
+        }
+    )
     if any(value != 0 for value in identities.values()):
         raise ValueError("an exact coefficient identity fails")
     angles = [(index * math.pi / 5, sign * math.pi / 4) for index in range(5) for sign in (-1, 1)]

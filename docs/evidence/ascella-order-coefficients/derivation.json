@@ -38,7 +38,10 @@
   "exact_zero_residuals": {
     "coherence_circle": "0",
     "dark_coherence_link": "0",
-    "quadrature_dark_link": "0"
+    "quadrature_dark_link": "0",
+    "rotated_coefficient_equal_norm": "0",
+    "rotated_coefficient_orientation": "0",
+    "rotated_coefficient_orthogonality": "0"
   },
   "hoeffding_radii_at_8192": {
     "analyzer_coefficients": [
