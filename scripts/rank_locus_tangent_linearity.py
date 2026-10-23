@@ -6,8 +6,10 @@ R_k = {y : rank L_y <= 32 - k}, which contains the cone S_k over the unit stratu
 (rank_locus_local_dimension). A piece of D_(5,k) through x of dimension dim T(x) - 1 spans a cone
 of dimension dim T(x) inside R_k whose tangent space at x lies in T(x); if that cone were linear it
 would equal T(x), so T(x) would lie inside R_k. The script computes U, V and a basis of T(x) over
-the rationals with FLINT (exact_rank.rational_kernel), draws seeded integer combinations y of that
-basis, records their weights, and evaluates the exact rank of L_y at each.
+the rationals with FLINT through rank_locus_gap_directions.verified_kernel, which checks every basis
+vector against its integer equations and pins each kernel size by a rank modulo a prime. It draws
+seeded integer combinations y of that basis, records their weights, and evaluates the exact rank of
+L_y at each.
 
 Falsifier, stated before the run: one sample with rank L_y > 32 - k is an exact certificate that
 T(x) is not inside R_k, so the cone over a piece of the tangent-bound dimension through x, if one
@@ -25,7 +27,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import random
 import sys
 from fractions import Fraction
@@ -37,7 +38,7 @@ import flint
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
-from exact_rank import rational_kernel  # noqa: E402
+from rank_locus_gap_directions import verified_kernel  # noqa: E402
 from rank_locus_local_dimension import witnesses  # noqa: E402
 
 import parallel  # noqa: E402
@@ -57,15 +58,6 @@ def left(y: list[Fraction]) -> list[list[Fraction]]:
     return [[y[k ^ j] * SIGNS[k ^ j][j] for j in range(DIM)] for k in range(DIM)]
 
 
-def integral(rows: list[list[Fraction]]) -> list[list[int]]:
-    """Each row scaled by the least common multiple of its denominators, which keeps its null space."""
-    out = []
-    for row in rows:
-        scale = math.lcm(*(value.denominator for value in row))
-        out.append([int(value * scale) for value in row])
-    return out
-
-
 def fmpq(rows: list[list[Fraction]]) -> flint.fmpq_mat:
     return flint.fmpq_mat([[flint.fmpq(value.numerator, value.denominator) for value in row] for row in rows])
 
@@ -76,8 +68,8 @@ def transpose(rows: list[list[Fraction]]) -> list[list[Fraction]]:
 
 def tangent_basis(x: list[Fraction]) -> tuple[int, list[list[Fraction]]]:
     lx = left(x)
-    right = rational_kernel(integral(lx))
-    left_null = rational_kernel(integral(transpose(lx)))
+    right = verified_kernel(lx, DIM)
+    left_null = verified_kernel(transpose(lx), DIM)
     u = fmpq(left_null)
     v = fmpq(transpose(right))
     rows: list[list[Fraction]] = [[] for _ in range(len(left_null) * len(right))]
@@ -85,7 +77,7 @@ def tangent_basis(x: list[Fraction]) -> tuple[int, list[list[Fraction]]]:
         block = u * fmpq(left([Fraction(int(i == m)) for i in range(DIM)])) * v
         for index, value in enumerate(block.entries()):
             rows[index].append(Fraction(int(value.p), int(value.q)))
-    return len(right), rational_kernel(integral(rows))
+    return len(right), verified_kernel(rows, DIM)
 
 
 def witness_basis(row: dict[str, Any]) -> tuple[int, list[list[Fraction]]]:

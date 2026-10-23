@@ -6,7 +6,8 @@ the complete record. At each of the 29 witnesses of
 [rank_locus_local_dimension](../rank_locus_local_dimension/README.md) the
 script computes the left and right null spaces U, V of L_x and a basis of the
 tangent bound T(x) = {y : U^T L_y V = 0} over the rationals with FLINT
-(`exact_rank.rational_kernel`), then the exact rank of L_y at six seeded
+(`rank_locus_gap_directions.verified_kernel`, which checks each basis
+vector against its integer equations), then the exact rank of L_y at six seeded
 integer combinations y of that basis, weights in [-50, 50]; the record
 carries every weight vector beside its rank.
 
