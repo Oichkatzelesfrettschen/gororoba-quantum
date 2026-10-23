@@ -213,8 +213,11 @@ and is never evidence of the gap.
    - Set the free coordinates to x_f + p w.
    - Hensel's lemma then lifts the dependent ones to a true point of
      M(Z_p), known to O(p^N) with no rounding.
-   - H there is exact to O(p^N). Its valuation is the order m of P along w,
-     and its leading digit is P_m(w) mod p.
+   - H there is exact to O(p^N). When P_m(w) is a p-adic unit, where m is
+     the order of P along w, and m < N, its valuation is m and its leading
+     digit is P_m(w) mod p. Otherwise the valuation runs higher, so a zero
+     to O(p^N) bounds the valuation, and the order only through the
+     Schwartz-Zippel argument below.
 
    The real refinement of computation 4 could not make that step, because
    closeness to a rank-20 matrix places no locus point nearby.

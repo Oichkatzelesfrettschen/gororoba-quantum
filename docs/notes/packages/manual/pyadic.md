@@ -136,8 +136,10 @@ germ M that independent equations G cut out at a point x.
 - Modified Newton steps with the Jacobian inverse at x lift the dependent coordinates until G is
   `O(p^N)`.
 - Hensel's lemma places a true point of `M(Z_p)` within `p^-N`, so H there is exact to `O(p^N)`.
-- Its valuation is the order of H along M in the direction w, and its leading digit is the
-  leading form at w modulo p (EXAMPLES 3).
+- When the leading form of H along M is a p-adic unit at w and its order m lies below N, the
+  valuation is m and the leading digit is that form at w modulo p (EXAMPLES 3). A unit Jacobian
+  guarantees the lift, not this equality: `H|M = 7 u^5` at `u = 7` has order 5 and is zero
+  modulo `7^6`. Without the unit hypothesis the valuation only bounds the order from above.
 - A zero to `O(p^N)` bounds that order from below and proves nothing beyond it.
 - The script reads every value as a digit string modulo `p^N`, never through `==` between
   values of different precision, and cross-checks the digits against the same lift over

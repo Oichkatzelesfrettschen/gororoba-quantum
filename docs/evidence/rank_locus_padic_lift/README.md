@@ -44,8 +44,10 @@ along seeded directions.
   - The pivot block, the Jacobian minor and every coordinate of x are units or
     integers modulo p, so Hensel's lemma puts a true point of M(Z_p) within
     p^-12 of the lift.
-  - H there is known exactly to O(p^12). Its valuation is s m, and its leading
-    digits are P_m(w) mod p, where m is the order of P along w.
+  - H there is known exactly to O(p^12). With m the order of P along w, its
+    valuation is s m and its leading digits are P_m(w) mod p when P_m(w) is a
+    p-adic unit and s m < 12. Otherwise the valuation is larger, and a zero
+    to O(p^12) bounds only the valuation.
 - **Series (python-flint `nmod_mat`).**
   - The same lift runs over F_p[[t]] / t^64 with y_f = x_f + t w, solved order
     by order.

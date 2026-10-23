@@ -18,9 +18,12 @@ Two routes evaluate P exactly along seeded directions w of the free coordinates.
   Newton steps with the Jacobian inverse at x lift the dependent coordinates until G vanishes to
   O(p^N). Hensel's lemma makes that point agree to O(p^N) with a true point of M(Z_p), because the
   pivot block and the Jacobian minor are units modulo p, so H at it is known exactly to O(p^N).
-  Its valuation is s m, where m is the order of P along w, and its leading digit is P_m(w) mod p.
+  With m the order of P along w, its valuation is s m and its leading digit P_m(w) mod p when P_m(w)
+  is a p-adic unit and s m < N; otherwise the valuation exceeds s m, and a zero to O(p^N) bounds only
+  the valuation.
 - series (python-flint nmod_mat): the same lift over F_p[[t]] / t^order with y_f = x_f + t w,
-  solved order by order. The first nonzero coefficient of H(t) is P_m(w) mod p at t^m.
+  solved order by order. The first coefficient of H(t) nonzero modulo p sits at the first order m'
+  whose P_m'(w) is nonzero modulo p, so the series route bounds the order of P after reduction mod p.
 The routes share only the exact chart (R, C, G, d and the Jacobian inverse), and the record
 requires the p-adic valuation and leading digits at scale 1 to equal the series order and
 coefficients, and at scale 2 to double the valuation with the same digits.
@@ -544,6 +547,8 @@ def route_agreement(label: str, first: dict[str, Any], padic: list[dict[str, Any
             found.append(f"{label} p-adic valuation {valuation} at scale {entry.get('scale')}, series wants {want}")
         elif valuation is not None and entry.get("leading") != first.get("leading"):
             found.append(f"{label} p-adic leading digits differ from the series coefficients")
+        elif valuation is None and entry.get("leading") != []:
+            found.append(f"{label} p-adic zero carries leading digits")
         if entry.get("absolute_precision", -1) < digits:
             found.append(f"{label} p-adic absolute precision below {digits} digits")
         if entry.get("prime") != PRIMES[0] or entry.get("prime") != first.get("prime"):
@@ -662,6 +667,7 @@ def self_test() -> str:
     retained_mutations: dict[str, Callable[[dict[str, Any]], Any]] = {
         "control order 2": lambda r: r["higher_order_controls"][0]["series"].__setitem__("order", 2),
         "control read zero": lambda r: r["higher_order_controls"][1]["series"].__setitem__("order", None),
+        "zero row with digits": lambda r: r["rows"][5]["padic"][0].__setitem__("leading", [[0, 1]]),
     }
     if not retained["versions"]["pyadic"].startswith("not run"):
         retained_mutations |= {
@@ -734,6 +740,12 @@ def main() -> int:
         if differing:
             raise SystemExit(f"rank_locus_padic_lift: {differing} differ from {arguments.check}")
     else:
+        # A record without the p-adic route would replace the two-route evidence with one that
+        # --check rejects, so --out runs only where the pinned pyadic release imports.
+        _require(
+            data["versions"]["pyadic"] == PYADIC_VERSION,
+            f"--out needs pyadic {PYADIC_VERSION}; found {data['versions']['pyadic']}",
+        )
         arguments.out.parent.mkdir(parents=True, exist_ok=True)
         arguments.out.write_text(json.dumps(data, indent=1, sort_keys=True) + "\n")
     for row in data["rows"]:
