@@ -556,6 +556,14 @@ diagnostic.
 - **Reported only.**
   - The raw block change of the mode-5 share against the change of the
     plan-time and post-collection dark-count rates.
+  - The mode-5 share against a prediction fixed before submission. The
+    plan of 2026-10-23 reads mode 5 at 49520.9 counts/s, against 3137.7 and
+    1847.5 before the diagnostic's blocks; every other mode reads at most
+    130.6. The retained block-mean shares give 4.06e-6 to 4.59e-6 of the
+    one-click samples per count/s, so a share that tracks the plan-time
+    rate reads 0.20 to 0.23. A share near the retained 0.007 to 0.016
+    means the plan-time figure does not track the acquired dark clicks.
+    Either outcome is reported and decides nothing.
   - The perf-exposure diagnostic, and the mode-5 share against each job's
     recorded duration per sample, an acquisition exposure that does not
     rest on the unconfirmed physical_perf timing model.
