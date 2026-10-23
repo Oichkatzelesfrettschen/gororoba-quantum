@@ -67,6 +67,7 @@ from iqm_signed_probe import (  # noqa: E402
     target_of,
     to_iqm,
 )
+from qi_readout_ringdown_cases import fsum_rows, libm_map  # noqa: E402
 
 import kernel_cancellation as kc  # noqa: E402
 from parallel import ordered_map  # noqa: E402
@@ -93,6 +94,7 @@ AMPLIFY_K = (0, 1, 2, 3)
 # 1.23 rad < pi/2, so -sin(N pi/2 eps) is monotonic in eps for every train and no alias enters; a minimum
 # at the edge of the range marks the train as outside the model.
 EPS_RANGE = 0.06
+TRAIN_GRID = tuple(EPS_RANGE * (i / 1500 - 1) for i in range(3001))
 # Distinct prx angles below this differ only by float rounding of one compile.
 ANGLE_TOLERANCE = 1e-9
 STEP = 1e-4
@@ -445,6 +447,72 @@ def decide(value: float, se: float) -> str:
     return "resolved" if value / se <= -Z_RESOLVE else "falsified" if value / se >= Z_RESOLVE else "unresolved"
 
 
+Train = tuple[list[int], list[tuple[float, float, int]], tuple[float, float, int], tuple[float, float, int]]
+
+
+def train_readings(train: Train, eps: float) -> tuple[list[tuple[float, float]], list[float], list[float]]:
+    """The design rows (a0, a1), targets and weights of a train's six readings at eps."""
+    lengths, rows, ro0, ro1 = train
+    design, target, weight = [], [], []
+    for n, (z, se, _) in zip(lengths, rows, strict=True):
+        s = math.sin(n * math.pi / 2 * eps)
+        design.append((s - 1, s + 1))
+        target.append(z + s)
+        weight.append(1 / se**2)
+    c = math.cos(math.pi * eps)
+    design += [(-2.0, 0.0), (c - 1, c + 1)]
+    target += [ro0[0] - 1, ro1[0] + c]
+    weight += [1 / ro0[1] ** 2, 1 / ro1[1] ** 2]
+    return design, target, weight
+
+
+def train_solve(train: Train, eps: float) -> tuple[float, tuple[float, float]]:
+    """The profiled chi-square at eps and its readout errors (e01, e10).
+
+    The 2 x 2 normal equations solve by Cramer's rule in Python floats. A BLAS product or LAPACK solve
+    rounds by its build and CPU kernel, so the byte-replayed analysis (ci/runner_image_records.json)
+    depends only on the libm and Python build that the runner image fixes.
+    """
+    design, target, weight = train_readings(train, eps)
+    s00 = sum(w * a0 * a0 for w, (a0, _) in zip(weight, design, strict=True))
+    s01 = sum(w * a0 * a1 for w, (a0, a1) in zip(weight, design, strict=True))
+    s11 = sum(w * a1 * a1 for w, (_, a1) in zip(weight, design, strict=True))
+    t0 = sum(w * a0 * y for w, (a0, _), y in zip(weight, design, target, strict=True))
+    t1 = sum(w * a1 * y for w, (_, a1), y in zip(weight, design, target, strict=True))
+    det = s00 * s11 - s01 * s01
+    e01, e10 = (s11 * t0 - s01 * t1) / det, (s00 * t1 - s01 * t0) / det
+    residual = sum(w * (y - a0 * e01 - a1 * e10) ** 2 for w, (a0, a1), y in zip(weight, design, target, strict=True))
+    return residual, (e01, e10)
+
+
+def train_profile(train: Train, grid: list[float]) -> np.ndarray:
+    """train_solve(train, eps)[0] for every eps of grid, bit for bit.
+
+    The readings at each grid point come from train_readings itself, so sin and cos stay the libm calls of
+    the scalar path; the products keep its association, fsum_rows repeats builtin sum()'s Neumaier update,
+    each square goes through math.pow as Python's ** does, and every other operation is an elementwise
+    IEEE operation ([vectorized-fits.md](docs/runbooks/vectorized-fits.md)). The self-test compares the
+    profile with the scalar chi-square by float.hex.
+    """
+    readings = [train_readings(train, eps) for eps in grid]
+    a0 = [np.array([design[k][0] for design, _, _ in readings]) for k in range(len(readings[0][0]))]
+    a1 = [np.array([design[k][1] for design, _, _ in readings]) for k in range(len(readings[0][0]))]
+    y = [np.array([target[k] for _, target, _ in readings]) for k in range(len(readings[0][1]))]
+    weight = readings[0][2]
+    s00 = fsum_rows([w * p * p for w, p in zip(weight, a0, strict=True)])
+    s01 = fsum_rows([w * p * q for w, p, q in zip(weight, a0, a1, strict=True)])
+    s11 = fsum_rows([w * q * q for w, q in zip(weight, a1, strict=True)])
+    t0 = fsum_rows([w * p * v for w, p, v in zip(weight, a0, y, strict=True)])
+    t1 = fsum_rows([w * q * v for w, q, v in zip(weight, a1, y, strict=True)])
+    det = s00 * s11 - s01 * s01
+    if (det == 0).any():
+        raise ZeroDivisionError("float division by zero")
+    e01, e10 = (s11 * t0 - s01 * t1) / det, (s00 * t1 - s01 * t0) / det
+    return fsum_rows(
+        [w * libm_map(math.pow, v - p * e01 - q * e10, 2.0) for w, p, q, v in zip(weight, a0, a1, y, strict=True)]
+    )
+
+
 def fit_train(
     lengths: list[int],
     rows: list[tuple[float, float, int]],
@@ -462,42 +530,17 @@ def fit_train(
     A minimum on the range's edge or a non-positive curvature means the trains lie outside the model; the
     fit then returns an infinite chi-square, which H5 rejects.
     """
-
-    def solve(eps: float) -> tuple[float, tuple[float, float]]:
-        # The 2 x 2 normal equations solve by Cramer's rule in Python floats. A BLAS product or LAPACK solve
-        # rounds by its build and CPU kernel, so the byte-replayed analysis (ci/runner_image_records.json)
-        # depends only on the libm and Python build that the runner image fixes.
-        design, target, weight = [], [], []
-        for n, (z, se, _) in zip(lengths, rows, strict=True):
-            s = math.sin(n * math.pi / 2 * eps)
-            design.append((s - 1, s + 1))
-            target.append(z + s)
-            weight.append(1 / se**2)
-        c = math.cos(math.pi * eps)
-        design += [(-2.0, 0.0), (c - 1, c + 1)]
-        target += [ro0[0] - 1, ro1[0] + c]
-        weight += [1 / ro0[1] ** 2, 1 / ro1[1] ** 2]
-        s00 = sum(w * a0 * a0 for w, (a0, _) in zip(weight, design, strict=True))
-        s01 = sum(w * a0 * a1 for w, (a0, a1) in zip(weight, design, strict=True))
-        s11 = sum(w * a1 * a1 for w, (_, a1) in zip(weight, design, strict=True))
-        t0 = sum(w * a0 * y for w, (a0, _), y in zip(weight, design, target, strict=True))
-        t1 = sum(w * a1 * y for w, (_, a1), y in zip(weight, design, target, strict=True))
-        det = s00 * s11 - s01 * s01
-        e01, e10 = (s11 * t0 - s01 * t1) / det, (s00 * t1 - s01 * t0) / det
-        residual = sum(
-            w * (y - a0 * e01 - a1 * e10) ** 2 for w, (a0, a1), y in zip(weight, design, target, strict=True)
-        )
-        return residual, (e01, e10)
+    train = (lengths, rows, ro0, ro1)
 
     def chi2(eps: float) -> float:
-        return solve(eps)[0]
+        return train_solve(train, eps)[0]
 
-    grid = [EPS_RANGE * (i / 1500 - 1) for i in range(3001)]
-    best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
-    if best in (0, len(grid) - 1):
-        errors = solve(grid[best])[1]
-        return grid[best], math.inf, math.inf, float(errors[0]), float(errors[1])
-    low, high = grid[max(best - 1, 0)], grid[min(best + 1, len(grid) - 1)]
+    # np.argmin returns the first index of the minimum, as min(range(...), key=chi2) does.
+    best = int(np.argmin(train_profile(train, list(TRAIN_GRID))))
+    if best in (0, len(TRAIN_GRID) - 1):
+        errors = train_solve(train, TRAIN_GRID[best])[1]
+        return TRAIN_GRID[best], math.inf, math.inf, float(errors[0]), float(errors[1])
+    low, high = TRAIN_GRID[best - 1], TRAIN_GRID[best + 1]
     ratio = (math.sqrt(5) - 1) / 2
     for _ in range(100):
         a_, b_ = high - ratio * (high - low), low + ratio * (high - low)
@@ -505,7 +548,7 @@ def fit_train(
     eps = (low + high) / 2
     step = 1e-4
     curvature = (chi2(eps + step) - 2 * chi2(eps) + chi2(eps - step)) / step**2
-    errors = solve(eps)[1]
+    errors = train_solve(train, eps)[1]
     if not curvature > 0:
         return eps, math.inf, math.inf, float(errors[0]), float(errors[1])
     return eps, math.sqrt(2 / curvature), chi2(eps), float(errors[0]), float(errors[1])
@@ -791,6 +834,20 @@ def self_test() -> str:
     if evaluate(control_merged, prediction)["h4_coherent_even"]["evaluated"]:
         raise RuntimeError("a failed control train left H4 evaluated")
     reversed_ = evaluate(sample(z, files, control, True, 2), prediction)
+    # The batched grid profile equals the scalar chi-square at every grid point of every train fitted above.
+    for counts in (sample(z, files, control, False, 1), shifted, merged, control_merged):
+        for q in [*prediction["theta_qubits"], control]:
+            train = (
+                [4 * k + 1 for k in AMPLIFY_K],
+                [z_of(counts, f"amp-{q}-{k}") for k in AMPLIFY_K],
+                z_of(counts, f"ro0-{q}"),
+                z_of(counts, f"ro1-{q}"),
+            )
+            profile = train_profile(train, list(TRAIN_GRID)).tolist()
+            scalar = [train_solve(train, eps)[0] for eps in TRAIN_GRID]
+            differ = sum(a.hex() != b.hex() for a, b in zip(profile, scalar, strict=True))
+            if differ:
+                raise RuntimeError(f"{q}: the batched profile differs from the scalar chi-square at {differ} points")
     if "falsified" not in reversed_["h1_zero_divisor_sign"].values():
         raise RuntimeError(f"a reversed sign reads {reversed_['h1_zero_divisor_sign']}")
     return (

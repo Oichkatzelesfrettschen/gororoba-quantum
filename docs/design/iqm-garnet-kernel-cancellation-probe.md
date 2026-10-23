@@ -145,8 +145,11 @@ credits.
 The case ran once under the owner's approval on calibration set
 `68b0f1d0`, which the server confirms it compiled against: 27 circuits,
 92196 shots kept by heralding, runtime 2.23 s, billed 3 s, 1.50 credits
-([analysis](../../results/iqm/kernel_cancellation_probe_analysis.json), claim
-`iqm-garnet-kernel-cancellation`, replayed by gate `core-641`).
+([analysis](../../results/iqm/kernel_cancellation_probe_analysis-runner-image.json), claim
+`iqm-garnet-kernel-cancellation`, replayed by gate `core-641` in the runner image's
+userland). The [first analysis](../../results/iqm/kernel_cancellation_probe_analysis.json),
+written under the build host's system numpy, stays retained; its values differ from the
+replay's by at most 1.5e-11 and every decision is the same.
 
 | contrast | odd part | z | model | decision |
 |---|---|---|---|---|

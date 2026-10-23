@@ -1431,7 +1431,7 @@
    "mean": -0.001525772722433979,
    "se": 0.0006109250544242955,
    "z": -2.497479373917295,
-   "p_value": 0.012507974143691597,
+   "p_value": 0.0125079741436916,
    "reading": "inconclusive"
   },
   "f": {
@@ -1439,7 +1439,7 @@
    "mean": 0.00029190517295155983,
    "se": 0.00012623807462182652,
    "z": 2.3123386016938627,
-   "p_value": 0.02075903100863963,
+   "p_value": 0.020759031008639635,
    "reading": "inconclusive"
   },
   "g": {
@@ -1447,7 +1447,7 @@
    "mean": 0.0034581015016633197,
    "se": 0.0002976305176092105,
    "z": 11.618773267746066,
-   "p_value": 3.3085268068421474e-31,
+   "p_value": 3.308526806842147e-31,
    "reading": "resolved"
   }
  },
@@ -1529,7 +1529,7 @@
   "block_change": {
    "statistic": 553.2686385870899,
    "df": 45,
-   "p_value": 1.0426269422492095e-88,
+   "p_value": 1.042626942249209e-88,
    "reading": "resolved"
   },
   "seed_basis": {
@@ -1563,13 +1563,13 @@
    "reading": "resolved"
   },
   "seed_common_within_job": {
-   "statistic": 369.25751507363515,
+   "statistic": 369.25751507363526,
    "df": 8,
-   "p_value": 6.991524262034278e-75,
+   "p_value": 6.991524262033876e-75,
    "reading": "resolved"
   },
   "seed_interaction_within_job": {
-   "statistic": 2405.56084985545,
+   "statistic": 2405.5608498554498,
    "df": 24,
    "p_value": 0.0,
    "reading": "resolved"
@@ -1577,7 +1577,7 @@
   "template": {
    "statistic": 250.7475093527803,
    "df": 12,
-   "p_value": 9.555415993668783e-47,
+   "p_value": 9.555415993668781e-47,
    "reading": "resolved"
   }
  },
@@ -2043,25 +2043,25 @@
    "residual_seed": {
     "statistic": 1343.071400767766,
     "df": 24,
-    "p_value": 7.23631164089726e-269,
+    "p_value": 7.236311640897262e-269,
     "reading": "resolved"
    },
    "seed_common": {
-    "statistic": 951.4324239049258,
+    "statistic": 951.4324239049249,
     "df": 12,
-    "p_value": 5.142943446859011e-196,
+    "p_value": 5.142943446861354e-196,
     "reading": "resolved"
    },
    "seed_interaction": {
-    "statistic": 4423.98711026532,
+    "statistic": 4423.9871102653215,
     "df": 36,
     "p_value": 0.0,
     "reading": "resolved"
    },
    "seed_common_within_job": {
-    "statistic": 408.0853440819073,
+    "statistic": 408.0853440819071,
     "df": 8,
-    "p_value": 3.489844346836627e-83,
+    "p_value": 3.489844346836927e-83,
     "reading": "resolved"
    },
    "seed_interaction_within_job": {
@@ -2073,7 +2073,7 @@
    "template": {
     "statistic": 44.38082809037289,
     "df": 12,
-    "p_value": 1.3150443907262602e-05,
+    "p_value": 1.3150443907262604e-05,
     "reading": "resolved"
    }
   },
@@ -2094,7 +2094,7 @@
     "mean": -0.0048252970227724585,
     "se": 0.0006244652219733295,
     "z": -7.727086878472383,
-    "p_value": 1.1003555371352916e-14,
+    "p_value": 1.100355537135292e-14,
     "reading": "resolved"
    },
    "f": {

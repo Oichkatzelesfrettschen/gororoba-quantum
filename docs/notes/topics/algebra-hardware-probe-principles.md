@@ -56,7 +56,7 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
   sine-law contrast read z 0.78 and the even-part decomposition z 0.33.
   Visibility 0.36 +- 0.05 against the model's 0.48.
 - **Evidence.** `iqm-garnet-kernel-cancellation`,
-  [analysis](../../../results/iqm/kernel_cancellation_probe_analysis.json).
+  [analysis](../../../results/iqm/kernel_cancellation_probe_analysis-runner-image.json).
 - **Boundary.** cd_core already settles the property exactly; the run shows
   the device realizes the compiled sign table at first order.
 
