@@ -3961,7 +3961,8 @@
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_rotation_composite.py",
-    "scripts/rank_locus_second_order.py"
+    "scripts/rank_locus_second_order.py",
+    "scripts/rank_locus_tangent_linearity.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -11377,6 +11378,22 @@
    "rank_locus_local_dimension",
    "skew_schur_charts",
    "sympy",
+   "sys",
+   "typing"
+  ],
+  "scripts/rank_locus_tangent_linearity.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "copy",
+   "flint",
+   "fractions",
+   "json",
+   "parallel",
+   "pathlib",
+   "random",
+   "rank_locus_gap_directions",
+   "rank_locus_local_dimension",
    "sys",
    "typing"
   ],
