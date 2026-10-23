@@ -3896,6 +3896,42 @@
       "superseded_by": null
     },
     {
+      "id": "hw-atlas-coherent-families",
+      "statement": "On the executed Fez and Kingston ripple atlas circuits at IBM's executed pulse times, six coherent error families (frame detuning, CZ conditional phase, static ZZ in the partner-in-0 and symmetric frames, SX amplitude and axis tilt) fitted one at a time to the edge fringe phase offsets of all 14 lanes leave every lane except two (Fez lane 5 with axis tilt, Kingston lane 2 with detuning and with partner-in-0 ZZ) above 1.5 times its leave-one-out noise floor under every single family, the lowest ratio per lane ranging from 1.68 to 3.70, so no single family accounts for the offsets; partner-in-0 ZZ scores below the symmetric frame on 13 of 14 lanes in the linear fit and on all 14 resimulated, by a median factor of 2.4, and is the best single family on 7 lanes (detuning on 4, axis tilt on 3), while SX amplitude beats the lane mean on none.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inferred from one run per backend; the best single family per lane is an after-the-fact selection among six, and the lane-4 ranking of the evidence README selects among eighteen models, so no family is confirmed, and a confirming test scores one named model on lanes it was not selected on. Each Kingston lane excludes two edges that span a calibration identity change. The partner-in-0 frame is physical if IBM calibrates each qubit frequency with its neighbors in |0>, which no repository source states; conditional Ramsey with the partner in |0> (proposed-conditional-ramsey-hamiltonian) measures the frame directly. On lane 4 the edge-to-edge contrast deficit stays at 2 to 2.5 times its floor under every phase-fitted model.",
+      "evidence": [
+        {
+          "path": "docs/evidence/atlas_coherent_families/result.json",
+          "sha256": "73e7ca24f89b57716316afe69945d5b0db2431aa5129ad578a0c22a9ecc21645"
+        },
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/atlas_coherent_families/README.md",
+        "docs/notes/topics/coherent-error-families-report.md"
+      ],
+      "gates": {
+        "core-329": "replay",
+        "core-661": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas",
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-atlas-frame-detuning"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "design-c-cubic-noise-separation",
       "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the compiled factorized dim-32 Design C circuit (about 123-128 CZ) keeps the two spectral classes apart at 20,000 shots: collision estimates 0.1807-0.2534 for the 234 pairs of ideal K = 11/32 and 0.0933-0.1135 for the 126 pairs of ideal K = 5/32; the Reed-Muller and CCZ normal-form references keep about 86 percent of the ideal gap.",
       "domain": "implementation",
