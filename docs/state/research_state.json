@@ -2,6 +2,69 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-native-input-map-recheck",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-native-input-map-recheck",
+      "family": "native input-map readiness after observed calibration status",
+      "question": "Does the native-mesh single-photon readiness request execute after Ascella returns from an observed calibration status to available?"
+    },
+    {
+      "id": "qd-belenos-order-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-order-repeat-block-0",
+      "family": "photonic order matched repeats",
+      "question": "What conditional mode frequencies and matched-request changes appear across three repeats of all eight order settings?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-0",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the seventeen wave times, five free references and two representative controls in the first repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-1",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the second repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-2",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the third repeat block?"
+    },
+    {
+      "id": "qd-belenos-transform-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-transform-repeat-block-0",
+      "family": "photonic Fourier matched repeats",
+      "question": "What mode frequencies and matched-request changes appear across three repeats of all eight Fourier and reference settings?"
+    },
+    {
+      "id": "qd-ascella-order-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-hypercomplex-order-pilot",
+      "family": "photonic quaternion order pilot",
+      "question": "Does the approved eight-setting order template execute and provide mesh conformance, loss and drift observations on Ascella?"
+    },
+    {
+      "id": "qd-ascella-static-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-static-input-readiness",
+      "family": "static native coupler readiness",
+      "question": "Does a static single-computation H coupler with connected source zero and twelve outputs avoid the input-port failure of template iterators?"
+    },
+    {
+      "id": "qd-ascella-calibrated-mesh-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-calibrated-mesh-input-readiness",
+      "family": "calibrated native mesh readiness",
+      "question": "Does a numerically bound circuit matching Ascella's published calibrated architecture execute through the documented compatible-circuit path?"
+    },
+    {
       "id": "kingston-mod15-pilot",
       "provider": "ibm",
       "run": "results/live/2026-10-11T152922.787095Z",
@@ -1438,6 +1501,63 @@
     }
   ],
   "claims": [
+    {
+      "id": "belenos-operator-repeat-counts-and-compilation-boundary",
+      "statement": "The approved five-job Belenos programme completed 120 settings with 983040 returned samples in 724 execution seconds, charged 5.081920 credits. The descriptive reported-single-photon readout excludes and retains 350 outcomes whose total reported occupation is zero or greater than one. The 120 matched-repeat pair comparisons have maximum conditional total variation 0.036181 and identical returned compiled-circuit bytes within every matched pair. Returned compiled intensity distributions differ from requested ideal distributions by at most 0.000210 total variation. The imaginary-superposition Fourier control on representative zero instead gives measured-versus-compiled total variation from 0.996336 to 0.997313 across its three repeats, while its measured-versus-preceding-compiled distance is 0.030785 to 0.034049.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Conditional frequencies given reported total occupation one, and decoded numerical metadata from these five jobs. The historical JSON's one-click label denotes that occupation-sum selection; the mixed threshold/quasi-PNR documentation does not establish a uniform physical-click model. The records establish a compilation-metadata/measurement mismatch, rather than which applied-control or result-association mechanism caused it. Fixed request ordering confounds a setting-specific response with a preceding-setting effect. The analysis supplies neither calibrated uncertainty coverage, absolute transmission, process tomography nor fundamental quaternionic-physics evidence. A newly ordered intervention requires its own approved case.",
+      "evidence": [
+        {"path": "results/hypercomplex/belenos-repeat-readout.json", "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"},
+        {"path": "results/hypercomplex/belenos-compilation-measurement-audit.json", "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"},
+        {"path": "results/hypercomplex/belenos-repeat-readout-pooled.json", "sha256": "3f5ff8f59afe020a9f84112a6a124876b6227069f08088ea08f3236b6e0f5c27"},
+        {"path": "results/hypercomplex/belenos-compilation-measurement-audit-pooled.json", "sha256": "bdc25d02692cc080a2f90a9adc1cb5062916510c13912d0123f977ffeeede3d7"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {"core-651": "replay"},
+      "acquisitions": ["qd-belenos-order-repeat", "qd-belenos-wave-repeat-0", "qd-belenos-wave-repeat-1", "qd-belenos-wave-repeat-2", "qd-belenos-transform-repeat"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-native-input-map-error-after-status-transition",
+      "statement": "A native-mesh readiness recheck after an observed Ascella calibration-to-available status transition and changed published performance figures again returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero reported credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One descriptive recheck submitted after the static readiness stopping rule had fired, without a recorded explicit override. The stopping-rule adjudication classifies this submission as a protocol deviation, rather than preregistered adherence. The observed public status transition was insufficient to restore this sampling path. The instrument's private configuration and internal worker control flow remain unobserved.",
+      "evidence": [{"path": "results/quandela/runs/ascella-native-input-map-recheck/results.json", "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"}],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-native-input-map-recheck"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-input-port-failure-across-payloads",
+      "statement": "The eight-setting order iterator, static twelve-mode H coupler and static twelve-mode calibrated native mesh each failed after one execution second with zero shots and zero samples and the same missing hardware_info.circuit_input_ports diagnostic. Their collected token-usage deltas report zero credit debit. The failures span generic iterated, generic static and architecture-compatible static requests on connected input zero.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Three sampling requests under their recorded platform snapshots. The native-mesh request followed the static readiness stopping rule without a recorded explicit override; the stopping-rule adjudication classifies it as a protocol deviation. Its result is descriptive rather than evidence of preregistered adherence. The observations reject static payload class and native-architecture compatibility as sufficient remedies on the tested paths. They provide neither measured operator probabilities nor an exhaustive statement about every command or future configuration. The deployment's instrument map and private worker implementation remain unobserved.",
+      "evidence": [
+        {"path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json", "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"},
+        {"path": "results/quandela/runs/ascella-static-input-readiness/results.json", "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"},
+        {"path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json", "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-order-input-readiness", "qd-ascella-static-input-readiness", "qd-ascella-calibrated-mesh-input-readiness"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "proposed-tuna17-zero-divisor-matched-response",
       "statement": "Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.",
@@ -6845,6 +6965,10 @@
         {
           "path": "results/live/2026-10-20T031212.175942Z/beat-model.json",
           "sha256": "421f49223d75f670e1a0f2f76cab97e013dc5049a3799f0813565e6ce8aa0ec4"
+        },
+        {
+          "path": "results/live/2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json",
+          "sha256": "4652b9cf84a3c17a1047fa8e15fd60dc66b0054282cc180c25d7280e037e9960"
         }
       ],
       "documents": [
@@ -6867,19 +6991,19 @@
     },
     {
       "id": "hw-n21-q143-segmented-lines",
-      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
+      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10063 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5350 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
+      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 759d82d74c57 (correcting closure 6d59d710eb61's unconverged fits) and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
       "evidence": [
         {
-          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
+          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json",
+          "sha256": "7eab64e4a10dfe16f4261cbab15a5138a14f1d7afd1faf9a3d5f842eac9a94e2"
         },
         {
-          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
-          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
+          "path": "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json",
+          "sha256": "66f4ab5295eba9c6304a9efb797caf66d902f8f49459ac9e675ee195f0ade9f7"
         },
         {
           "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
@@ -6905,15 +7029,15 @@
     },
     {
       "id": "hw-n21-q47-segmented-baseline",
-      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
+      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.105 second line at alias cell 0 (df -12.9 kHz, the next cell worse by 317 in NLL), T1 81 us and T2* 60 us from the static fit.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
+      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 759d82d74c57, whose preconditioned fit corrects closure 6d59d710eb61's cell -2 and T2* 52 us (decay times left at their starts).",
       "evidence": [
         {
-          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
+          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-759d82d74c57.json",
+          "sha256": "2dcfaf7ddac2b3ece092ba1ca4e7ffa16bdb99c0f386edabc16c14ea6ba82128"
         },
         {
           "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",
