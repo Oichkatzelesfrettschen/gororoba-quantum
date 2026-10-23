@@ -3,7 +3,7 @@
 A test calls ``main`` with sys.argv set to ``SCRIPT --self-test`` and the working directory the
 script runs from, which is the code path of ``"$PYTHON" -W error SCRIPT --self-test``; the module
 imports once per gate process instead of once per interpreter. ``main``'s result follows the entry point
-``SystemExit(main())``: None or 0 passes, and any other value or SystemExit code fails, as it fails
+``SystemExit(main())``: None or an integer 0 passes, and any other value or SystemExit code fails, as it fails
 the interpreter. A self-test that a claim in docs/state/research_state.json cites, or whose command
 carries more than ``--self-test``, stays on its own gate in ci/gates.json, as do
 scripts/aer_blocking_probe.py (core-452) and gororoba_quantum/parallel.py (core-520), whose gate
@@ -88,5 +88,6 @@ def test_self_test(script: str, cwd: str, group: int, monkeypatch: pytest.Monkey
         result = main(["--self-test"]) if inspect.signature(main).parameters else main()
     except SystemExit as exit_:
         result = exit_.code
-    if result not in (None, 0):
+    # The interpreter exits 0 only for a None or integer-zero code (bool is an int); 0.0 or a string exits 1.
+    if not (result is None or (isinstance(result, int) and result == 0)):
         raise AssertionError(f"{script} --self-test exited with {result!r}")
