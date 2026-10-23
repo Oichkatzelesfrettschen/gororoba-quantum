@@ -22,8 +22,7 @@ Gates:
 | gate | command |
 | --- | --- |
 | core-494 | `"$PYTHON" scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json`, normal and `-O` |
-| core-497 | `"$PYTHON" scripts/wheel_zero_divisors.py --self-test`, normal and `-O` |
-| core-498 | `"$PYTHON" gaussian_wheel.py --self-test` from `gororoba_quantum/`, normal and `-O` |
+| core-615 | `scripts/wheel_zero_divisors.py --self-test` and `gororoba_quantum/gaussian_wheel.py --self-test` through `tests/test_cli_self_tests.py`, normal and `-O` |
 
 `--check` recomputes every field and compares the rendered JSON byte for
 byte. The one exception is `pyadic_cross_check`. `--out` writes it when

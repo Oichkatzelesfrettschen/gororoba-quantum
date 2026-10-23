@@ -91,11 +91,11 @@ row or a column; it never requires rerunning the whole grid.
 
 | Interface | Setting or rule | Removes | Gate |
 |---|---|---|---|
-| `ghost_calibrations.py --add` | indexes only the audited jobs `index.json` lacks, read-only IBM reads plus the export check against live_run's channels | a full calibration re-export | core-560 |
-| `ghost_run.py --merge RESULT` | ghosts the (run, snapshot) pairs RESULT lacks, one pair per `parallel.ordered_map` item; a run whose inputs changed (`stale`) is ghosted again in full and its replaced entry's sha256 recorded | the full replay of every retained run | core-561 |
+| `ghost_calibrations.py --add` | indexes only the audited jobs `index.json` lacks, read-only IBM reads plus the export check against live_run's channels | a full calibration re-export | core-615 |
+| `ghost_run.py --merge RESULT` | ghosts the (run, snapshot) pairs RESULT lacks, one pair per `parallel.ordered_map` item; a run whose inputs changed (`stale`) is ghosted again in full and its replaced entry's sha256 recorded | the full replay of every retained run | core-615 |
 | `ghost_run.py --provenance RESULT BASE` | RESULT without its `merged` runs and pairs equals the kernel's BASE minus the runs a merge replaced, each removed only after its BASE entry matches the sha256 the merge recorded | trust in a merged file the kernel never wrote | core-293 |
 | `ghost_run.py --check --runs ...,merged` | replays the execution-snapshot ghost of every run a merge added, bit for bit on the merge's Aer device | an unreplayed merged run | core-287 |
-| exact law at `EXACT_MIN_SHOTS` or more | a member with a dynamic replica whose every circuit `dynamic_density.structural_refusal` accepts draws from the restricted law and a PCG64 multinomial at the position's Aer seed; a refused circuit (a delay, nested or unsupported control flow, a measurement or reset inside a body) keeps its member on Aer at per-shot cost | per-shot density-matrix evolution of a 100,000-shot PUB | core-561 |
+| exact law at `EXACT_MIN_SHOTS` or more | a member with a dynamic replica whose every circuit `dynamic_density.structural_refusal` accepts draws from the restricted law and a PCG64 multinomial at the position's Aer seed; a refused circuit (a delay, nested or unsupported control flow, a measurement or reset inside a body) keeps its member on Aer at per-shot cost | per-shot density-matrix evolution of a 100,000-shot PUB | core-615 |
 | `max_parallel_experiments=0` (`PARALLEL_EXPERIMENTS`) | Aer runs one call's experiments in parallel | serial members of one snapshot | core-287 |
 
 Measured on the build host: five 2026-10-18 Kingston runs and one new

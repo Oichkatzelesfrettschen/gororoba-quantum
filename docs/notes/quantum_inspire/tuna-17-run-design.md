@@ -9,7 +9,7 @@ documentation, the API and the retained runs establish about that cost, and
 how the box-kite follow series (`scripts/box_kite_cases.py`, `FOLLOW_PLAN`)
 spends it. `docs/evidence/box_kite_follow_design/design.json` recomputes every
 measured number below from retained records (`scripts/box_kite_follow_design.py`,
-gates core-439 and core-440).
+gate core-439 and the behavioral suite (`tests/test_cli_self_tests.py`)).
 
 ## Platform configuration
 

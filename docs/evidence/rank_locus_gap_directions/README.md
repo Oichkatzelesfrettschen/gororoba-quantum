@@ -136,6 +136,6 @@ family). The damage covers:
 - a wrong dim T_1;
 - an altered projection rank.
 
-The gates are core-551 (`--check`) and core-552 (`--self-test`), each in
-normal and `-O` mode. Each mode runs in about 5 s serially, and `parallel.py`
+Gate core-551 runs `--check` and the behavioral suite (`tests/test_cli_self_tests.py`)
+runs `--self-test`, each in normal and `-O` mode. Each mode runs in about 5 s serially, and `parallel.py`
 spreads the witnesses over the available CPUs.

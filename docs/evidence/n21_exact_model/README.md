@@ -52,8 +52,8 @@ noise model's; a hardware discrepancy is outside what this comparison tests.
 
 `crosscheck.json` compares `dynamic_density.probabilities` with Aer's own
 law on the same restricted circuits and snapshot, computed without sampling
-any outcome probability (`scripts/n21_exact_crosscheck.py`, gates core-487
-`--check` and core-488 `--self-test`). AerSimulator with
+any outcome probability (`scripts/n21_exact_crosscheck.py`, gate core-487
+`--check`; the behavioral suite (`tests/test_cli_self_tests.py`) runs `--self-test`). AerSimulator with
 `method="density_matrix"` applies every channel as a superoperator, and a
 `save_density_matrix(conditional=True)` before the mid-circuit measure and at
 the end returns the exact state behind each recorded-memory key. qiskit-aer

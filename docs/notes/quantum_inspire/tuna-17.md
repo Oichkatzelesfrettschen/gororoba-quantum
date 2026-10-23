@@ -146,8 +146,8 @@ circuits read every replica exactly. C(1) lies above its preregistered
 
 The retained raw lists are in time order, and that order carries a line at
 the 50 Hz grid frequency (`scripts/qi_shot_record_line.py`,
-`results/quantum_inspire/tuna_17_shot_record_line.json`, gates core-426 and
-core-427; claim `qi-tuna17-shot-record-50hz-line`).
+`results/quantum_inspire/tuna_17_shot_record_line.json`, gate core-426 and
+the behavioral suite (`tests/test_cli_self_tests.py`); claim `qi-tuna17-shot-record-50hz-line`).
 
 - A band scan at 0.019 to 0.021 cycles per shot finds it in 72 of 159
   Tuna-17 jobs and in none of 113 QX jobs. On Tuna-17 it is absent from
@@ -206,7 +206,7 @@ fitted 2.6 s per job plus 0.53 ms per shot, no published calibration) and the
 box-kite follow series built on it: seven batches whose readout pairs bracket
 fifteen packed witnesses, sized from T0's r, the readout drift across the T0
 batches and the coupler-ZZ map (`docs/evidence/box_kite_follow_design/design.json`,
-gates core-439 and core-440). The series ran on 2026-10-17 from 23:08Z to
+gate core-439 and the behavioral suite (`tests/test_cli_self_tests.py`)). The series ran on 2026-10-17 from 23:08Z to
 23:29Z with every preregistered decision as the census predicts: all six
 classification rows, twist equality at |z| at most 2.44 in all four
 crossovers, every depth-1 X coherence sign and both walk signs. Its results

@@ -53,7 +53,7 @@ and is never evidence of the gap.
 
    **Outcome.** The prediction holds at all 12 witnesses
    ([evidence](../evidence/rank_locus_gap_directions/README.md),
-   `scripts/rank_locus_gap_directions.py`, gates core-551 and core-552).
+   `scripts/rank_locus_gap_directions.py`, gate core-551 and the behavioral suite (`tests/test_cli_self_tests.py`)).
    - T_F is built from exact curve velocities inside each family:
      octonion-derivation flows, scalings, fiber lines and projection
      curves.

@@ -98,8 +98,8 @@ headers, concatenates their runs in argument order and requires the
 regeneration of the merged part to equal `part_b.json` byte for byte. Both
 kernel sets sample under the fixed seed 20261016, so the identity shows that
 part b reproduces across sessions and commits; it is one deterministic
-computation run twice, not two independent samples. Gate core-389
-(`--self-test`) drives the merge on synthetic shards and requires swapped or
+computation run twice, not two independent samples. The
+`--self-test`, run by the behavioral suite (`tests/test_cli_self_tests.py`), drives the merge on synthetic shards and requires swapped or
 missing shards, a differing header and a reserialized part to fail.
 The `bundle` digests in each run's `submission.json` record the files each
 kernel carried. Gate core-339 is the recomputation gate: it runs
