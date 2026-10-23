@@ -298,7 +298,7 @@ def submit(
     suffix = f"-{qc.replace(':', '_')}-{case['case']}-{job}"
     run_dir = runs / f"{stamp or now_stamp()}{suffix}"
     if dry:
-        refuse_earlier(runs, suffix, job, qc)
+        refuse_earlier(runs, suffix, job, qc, cases_sha256)
         body = body_of(case_dir, row, qc)
         print(
             f"{run_dir.name}: dry, {len(body['circuits'])} circuits x {body['shots']} shots, "
@@ -317,7 +317,7 @@ def submit(
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             raise PlatformError(f"another submission holds {runs}") from None
-        refuse_earlier(runs, suffix, job, qc)
+        refuse_earlier(runs, suffix, job, qc, cases_sha256)
         return post_job(case_dir, run_dir, job, qc, approval, approved_sha256, max_credits, price, client)
     finally:
         os.close(fd)
@@ -330,12 +330,17 @@ def write_atomic(path: Path, data: bytes) -> None:
     os.replace(temporary, path)
 
 
-def refuse_earlier(runs: Path, suffix: str, job: str, qc: str) -> None:
-    """One live run directory per quantum computer, case and job: an earlier one, even without
-    submission.json, may stand for a job already on the server, which the job list settles before
-    anything is resent. A run whose collected results.json reports a failed or cancelled job that
+def refuse_earlier(runs: Path, suffix: str, job: str, qc: str, cases_sha256: str) -> None:
+    """One live run directory per quantum computer, case, job and cases.json digest: an earlier one,
+    even without submission.json, may stand for a job already on the server, which the job list settles
+    before anything is resent. A rebuilt case carries another digest, so it is another approved artifact
+    and takes its own run; a run whose collected results.json reports a failed or cancelled job that
     billed no seconds leaves the job free to resubmit."""
-    earlier = [run for run in sorted(runs.glob(f"*{suffix}")) if not settled_unrun(run)]
+    earlier = [
+        run
+        for run in sorted(runs.glob(f"*{suffix}"))
+        if run_digest(run) in (cases_sha256, None) and not settled_unrun(run)
+    ]
     if earlier:
         raise PlatformError(f"{job} on {qc} already has {earlier[0].name}; collect it or settle it first")
 
@@ -348,6 +353,12 @@ def settled_unrun(run_dir: Path) -> bool:
     billed = float((results.get("metrics") or {}).get("billed_seconds") or 0.0)
     # IQM can bill a failed or cancelled job; one that billed seconds ran and stays the job's run.
     return results.get("status") in ("failed", "cancelled") and billed == 0.0
+
+
+def run_digest(run_dir: Path) -> str | None:
+    """The cases.json digest a run directory copied, or None where the copy is missing."""
+    copied = run_dir / "cases.json"
+    return sha256(copied.read_bytes()) if copied.exists() else None
 
 
 def post_job(
@@ -807,6 +818,23 @@ def self_test() -> str:
         if list(runs.glob("*-garnet_mock-*")):
             raise RuntimeError("a refused POST left its run directory")
         mock = submit(case, job, "garnet:mock", "approved", approved, 5, client, runs, "s2")
+        refused(lambda: submit(case, job, "garnet:mock", "approved", approved, 5, client, runs, "s2b"), "already has")
+        rebuilt = root / "rebuilt" / PILOT
+        shutil.copytree(case, rebuilt)
+        manifest = json.loads((rebuilt / "cases.json").read_text(encoding="utf-8"))
+        manifest["question"] += " (rebuilt)"
+        (rebuilt / "cases.json").write_text(dump(manifest), encoding="utf-8")
+        submit(
+            rebuilt,
+            job,
+            "garnet:mock",
+            "approved",
+            sha256((rebuilt / "cases.json").read_bytes()),
+            5,
+            client,
+            runs,
+            "s2c",
+        )
         if not mock.name.endswith("-garnet_mock-timing-pilot-" + job):
             raise RuntimeError(f"the mock run is named {mock.name}")
         holder = os.open(run, os.O_RDONLY)

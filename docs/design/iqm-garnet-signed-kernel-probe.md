@@ -142,10 +142,15 @@ measured <Z> with respect to each coherent error of the compile
 | QB7 residual Z after CZ | 0.00 | -0.22 |
 
 Readout alone predicts an even part of +0.031 (heralded QB7 errors 0.003 and
-0.034), so the measured -0.022 and -0.012 put the circuit's own shift near
--0.05, which a +0.6 % QB11 amplitude error produces; randomized benchmarking
-sees that error at about 1e-5 infidelity, which is why the depolarizing model
-predicted +0.029. Every odd-part derivative vanishes at t = 0 and scales with
+0.034), so the measured -0.022 and -0.012 put the circuit's own shift at
+-0.055 +- 0.007 and -0.045 +- 0.003. The derivatives above belong to the
+noiseless circuit; the device damps a coherent shift by the visibility
+V = 0.21 as it damps the odd part, so QB11's over-rotation alone would have to
+be 3.7 +- 1.1 % (|t| = 0.25) or 2.7 +- 0.7 % (|t| = 0.05). A 2.7 % error on a
+pi/2 pulse costs about 3e-4 of infidelity, of the order of QB11's measured
+randomized-benchmarking infidelity of 5e-4: the depolarizing model predicted
++0.029 because it keeps an error's infidelity and drops its first-order,
+signed effect on the reading. Every odd-part derivative vanishes at t = 0 and scales with
 the signed amplitude a0 = sqrt(|t|/(2 + |t|)), not with t, so a coherent
 error never fakes a sign at t = 0 but adds a term proportional to a0 that
 carries the sign of t: odd(t) = sign(t) (V a0^2 + K a0). The measured ratio
