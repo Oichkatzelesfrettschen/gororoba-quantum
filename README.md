@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (113 established, 54 exploratory, 3 open, 10 proposed, 7 superseded, 11 withdrawn) with its evidence class,
+registered claim (113 established, 58 exploratory, 3 open, 10 proposed, 7 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -229,9 +229,12 @@ acquisition of every provider:
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1](results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
 | [ascella-hypercomplex-order-pilot](results/quandela/runs/ascella-hypercomplex-order-pilot) | Quandela Cloud | photonic quaternion order pilot | qpu:ascella | 1 | 8 | error | 0.0 credits |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [ascella-static-input-readiness](results/quandela/runs/ascella-static-input-readiness) | Quandela Cloud | static native coupler readiness | qpu:ascella | 1 | 1 | error | 0.0 credits |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
@@ -244,6 +247,9 @@ acquisition of every provider:
 | [belenos-wave-repeat-block-2](results/quandela/runs/belenos-wave-repeat-block-2) | Quandela Cloud | photonic wave matched repeats | qpu:belenos | 1 | 24 | completed | 1.016384 credits |
 | [belenos-transform-repeat-block-0](results/quandela/runs/belenos-transform-repeat-block-0) | Quandela Cloud | photonic Fourier matched repeats | qpu:belenos | 1 | 24 | completed | 1.016384 credits |
 | [ascella-native-input-map-recheck](results/quandela/runs/ascella-native-input-map-recheck) | Quandela Cloud | native input-map readiness after observed calibration status | qpu:ascella | 1 | 1 | error | 0.0 credits |
+| [2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1](results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits |
+| [2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2](results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits |
+| [2026-10-22T170900Z-qpu_belenos-bdsc_diagnostic-b2-j1](results/quandela/runs/2026-10-22T170900Z-qpu_belenos-bdsc_diagnostic-b2-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | canceled | 0.0 credits |
 | [2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive](results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive) | IQM Resonance | IQM timing pilot | garnet:mock | 1 | 1 | completed | 0.0 credits |
 | [2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive](results/iqm/runs/2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive) | IQM Resonance | IQM timing pilot | garnet:mock | 1 | 1 | completed | 0.0 credits |
 | [2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive](results/iqm/runs/2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive) | IQM Resonance | IQM timing pilot | garnet:mock | 1 | 20 | completed | 0.0 credits |
@@ -269,12 +275,14 @@ acquisition of every provider:
 | [2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation](results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet | 1 | 27 | completed | 1.5 credits |
 | [2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0](results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 16 | completed | 5.0 credits |
 | [2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate](results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 10 | completed | 0.5 credits |
+| [2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1](results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits |
+| [2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2](results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs with 7438336 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 51 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 59 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 24 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
