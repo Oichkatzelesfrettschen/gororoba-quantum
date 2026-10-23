@@ -41,16 +41,13 @@ from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit, transpile
-from qiskit.circuit.library import RGate
-from qiskit_aer import AerSimulator
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_sim  # noqa: E402
-from iqm_cancellation_probe import decide, fetch_calibration, measure, prx, train, z_of  # noqa: E402
+from iqm_cancellation_probe import decide, exact_z, fetch_calibration, measure, prx, read, train, z_of  # noqa: E402
 from iqm_jobs import CASE_SCHEMA, ceiling_credits, dump  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
-from iqm_signed_probe import relaxation as relaxation_pass  # noqa: E402
 from iqm_signed_probe import target_of, to_iqm  # noqa: E402
 
 import signed_kernel_probe as skp  # noqa: E402
@@ -72,8 +69,6 @@ SHOT_SECONDS = 0.000031
 RETENTION = 0.559
 VISIBILITY = 0.206
 Z_RESOLVE = 3.0
-PREDICTION_SHOTS = 400000
-PREDICTION_SEED = 20261023
 # QB11's over-rotation the retained even offsets imply once the visibility damps them, used for the
 # coherent-augmented prediction (docs/design/iqm-garnet-signed-kernel-probe.md, adversarial audit).
 COHERENT = {"QB11": 0.027}
@@ -131,22 +126,12 @@ def arms(t: float, blocks: int) -> list[tuple[str, float, bool]]:
 
 
 def predict(item: tuple[float, bool, str, dict[str, float]]) -> float:
-    """<Z> of QB7 under calibration noise, ALAP idle relaxation and optional relative over-rotations."""
+    """<Z> of QB7 as read, exact under the calibration's gate noise, ALAP idle relaxation and
+    herald-conditioned readout, with optional relative over-rotations (iqm_cancellation_probe.exact_z)."""
     t, negative, calibration_dir, over = item
     calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
-    target, _ = target_of(calibration)
-    bound = bind(compile_probe(Path(calibration_dir)), t, negative)
-    for i, instruction in enumerate(bound.data):
-        if instruction.operation.name == "r":
-            qubit = calibration.qubits[bound.find_bit(instruction.qubits[0]).index]
-            if qubit in over:
-                angle, phase = (float(p) for p in instruction.operation.params)
-                bound.data[i] = instruction.replace(operation=RGate(angle * (1 + over[qubit]), phase))
-    scheduled = transpile(bound, target=target, optimization_level=0, scheduling_method="alap")
-    noisy = relaxation_pass(calibration)(scheduled)
-    simulator = AerSimulator(noise_model=calibration.noise_model(), seed_simulator=PREDICTION_SEED)
-    counts = simulator.run(noisy, shots=PREDICTION_SHOTS).result().get_counts()
-    return sum((1 if key[-1] == "0" else -1) * n for key, n in counts.items()) / PREDICTION_SHOTS
+    circuit = to_iqm(bind(compile_probe(Path(calibration_dir)), t, negative), "arm", calibration.qubits)
+    return read(exact_z((circuit, calibration_dir, over)), *calibration.readout(CONTROL, heralded=True))
 
 
 def split(names: list[str]) -> list[list[str]]:
@@ -220,7 +205,8 @@ def build_from(calibration_dir: Path, case: str) -> tuple[dict[str, str], dict[s
             "ceiling_credits_garnet": credits,
         },
         "model": (
-            "iqm_sim depolarizing PRX and CZ, readout errors, ALAP idle T1/T2; coherent adds relative over-rotations"
+            "iqm_sim depolarizing PRX and CZ, herald-conditioned readout, ALAP idle T1/T2, exact density matrix; "
+            "coherent adds relative over-rotations"
         ),
     }
     files["cases.json"] = dump(
