@@ -1797,8 +1797,14 @@ def charged(
     if before is not None and after is not None and same_month and after >= before and one_job:
         return round(after - before, 6)
     # A job canceled before its start time holds no execution; every retained one left the usage total unchanged.
+    # Shots read from a returned result (shots) count as execution even when the status omits them.
     status = collected.get("status") or {}
-    if status.get("status") == "canceled" and status.get("start_time") is None and not status.get("shots"):
+    if (
+        status.get("status") == "canceled"
+        and status.get("start_time") is None
+        and not status.get("shots")
+        and not shots
+    ):
         return 0.0
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
@@ -1850,9 +1856,14 @@ def charge_self_test() -> None:
     for start, want in ((None, 0.0), (1792667218.0, 1.01)):
         status = {"status": "canceled", "start_time": start, "shots": 0}
         collected = {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status}
-        got = charged(submission, collected, 10000)
+        got = charged(submission, collected, 0 if start is None else 10000)
         if got != want:
             raise SystemExit(f"self-test: charged() read {got} for a job canceled with start {start}, not {want}")
+    # A canceled job whose status omits start and shots but whose result returned shots keeps the billing rule.
+    status = {"status": "canceled", "start_time": None}
+    got = charged(submission, {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status}, 10000)
+    if got != 1.01:
+        raise SystemExit(f"self-test: charged() read {got} for a canceled job that returned 10000 shots, not 1.01")
 
 
 def seed_self_test() -> None:

@@ -538,10 +538,13 @@ not pool across calibration changes merely because both batches completed.
 
 The four jobs of the approved crossed diagnostic completed: block 1 on
 2026-10-22 (c8d90a80, ef06045d) and block 2 on 2026-10-23 (a5a0d2cf, after
-the first submission waited 7.6 hours and was canceled on the owner's
-instruction, and 33499aec), 960000 samples each. The matched check found block
-2 job 1's returned circuits identical to block 1 job 2's before job 2 went in.
-The preregistered readout
+the first submission waited 7.6 hours and ended canceled before its start,
+and 33499aec), 960000 samples each. The matched check found block 2 job 1's
+returned circuits identical to block 1 job 2's before job 2 went in. The
+resubmission continued past a stop condition with no amendment retained
+before it ([protocol deviation](../../runbooks/bdsc-qualification-case.md#protocol-deviation-of-2026-10-23-block-2-job-1-was-resubmitted)),
+so the readout's rule is the preregistered one and its reading is
+descriptive. The readout
 ([bdsc_diagnostic_readout.json](../../../results/quandela/bdsc_diagnostic_readout.json),
 claim `qd-belenos-bdsc-diagnostic-readout`, gate `core-647`) selects the
 **stationarity** branch:

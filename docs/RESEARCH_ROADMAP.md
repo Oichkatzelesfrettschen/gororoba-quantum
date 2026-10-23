@@ -57,7 +57,7 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(113 established, 55 exploratory, 3 open, 10 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
+(112 established, 56 exploratory, 3 open, 10 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **proposed-tuna17-zero-divisor-matched-response** (proposed, proposed experiment). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.

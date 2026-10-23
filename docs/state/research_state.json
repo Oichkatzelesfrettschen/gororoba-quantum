@@ -7988,11 +7988,11 @@
     },
     {
       "id": "qd-belenos-bdsc-diagnostic-block2-cancel-and-resubmission",
-      "statement": "The first submission of block 2 job 1 (4058ce4e, 2026-10-22 17:09 UTC) waited in the qpu:belenos queue for 7.6 hours with 0 shots and was canceled on the owner's instruction at 00:45 UTC on 2026-10-23, so the token's single queue slot would not block a qpu:ascella submission; it ended canceled with 0 shots and status message 'Cancel requested from perceval'. Its resubmission (a5a0d2cf) and block 2 job 2 (33499aec) each returned all 24 iterations with 960000 samples in 164 s and 171 s, and the matched check found block 2 job 1's returned circuits identical to block 1 job 2's before job 2 was submitted.",
+      "statement": "The first submission of block 2 job 1 (4058ce4e, created 2026-10-22 17:09 UTC) held 0 shots with no start time until its collection at 00:46 UTC on 2026-10-23, 7.6 hours later, which recorded status canceled, 0 shots and status message 'Cancel requested from perceval'. Its resubmission (a5a0d2cf) and block 2 job 2 (33499aec) each returned all 24 iterations with 960000 samples in 164 s and 171 s, and the matched check found block 2 job 1's returned circuits identical to block 1 job 2's before job 2 was submitted.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "An operational record of one canceled and two completed jobs; the preregistered readout over the four completed jobs carries the inference.",
+      "boundary": "An operational record of one canceled and two completed jobs. The resubmission continued past a stop condition of the frozen case with no amendment retained before it (the runbook's protocol deviation of 2026-10-23), so the readout over the four completed jobs is descriptive.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-22T170900Z-qpu_belenos-bdsc_diagnostic-b2-j1/results.json",
@@ -8023,11 +8023,11 @@
     },
     {
       "id": "qd-belenos-bdsc-diagnostic-readout",
-      "statement": "The preregistered readout of the four completed jobs of the crossed BDSC diagnostic on qpu:belenos (96 instances: six target-complement states x two templates x four QRNG seeds x two blocks, 40000 eligible trials each, empty mitigation) selects the stationarity branch: matched requests changed between the blocks beyond their class means (heterogeneity statistic 553 on 45 degrees of freedom, p 1e-88) while all 48 matched pairs returned identical compiled circuits and no instance leaked, so the change is the device's, not the compiler's. Outside the branch rule, the support-conditioned rerun finds the block change consistent with none (45.8 on 45, p 0.44), so it lives in the clicks outside the target support; the g basis state shifted by +0.0035 (z 11.6); seed effects on the superpositions are resolved and state-specific in both readings; and all 32 sum-rule residuals lie beyond the 0.02 margin, between -0.14 and -0.24.",
+      "statement": "The readout of the four completed jobs, by the preregistered rule, of the crossed BDSC diagnostic on qpu:belenos (96 instances: six target-complement states x two templates x four QRNG seeds x two blocks, 40000 eligible trials each, empty mitigation) selects the stationarity branch: matched requests changed between the blocks beyond their class means (heterogeneity statistic 553 on 45 degrees of freedom, p 1e-88) while all 48 matched pairs returned identical compiled circuits and no instance leaked, so the change is the device's, not the compiler's. Outside the branch rule, the support-conditioned rerun finds the block change consistent with none (45.8 on 45, p 0.44), so it lives in the clicks outside the target support; the g basis state shifted by +0.0035 (z 11.6); seed effects on the superpositions are resolved and state-specific in both readings; and all 32 sum-rule residuals lie beyond the 0.02 margin, between -0.14 and -0.24.",
       "domain": "hardware",
-      "evidence_class": "preregistered hardware inference",
-      "status": "established",
-      "boundary": "One device, two blocks a day apart. The branch names the next amendment, stationarity and provider calibration before any fixed-effect confirmation; it makes no certification decision, and physical_perf ratios stay an uninterpreted provider diagnostic.",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One device, two blocks a day apart, read descriptively: block 2 was resubmitted past a stop condition with no amendment retained before it (the runbook's protocol deviation of 2026-10-23). The branch names the next amendment, stationarity and provider calibration before any fixed-effect confirmation, which reruns under that amendment; it makes no certification decision, and physical_perf ratios stay an uninterpreted provider diagnostic.",
       "evidence": [
         {
           "path": "results/quandela/bdsc_diagnostic_readout.json",

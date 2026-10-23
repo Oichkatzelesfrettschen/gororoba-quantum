@@ -227,3 +227,15 @@ runs inside one job.
 
 No certification decision is available from this case or from the
 retained runs.
+
+## Protocol deviation of 2026-10-23: block 2 job 1 was resubmitted
+
+The first submission of `b2-j1` (4058ce4e) ended canceled before its start
+time with 0 samples, an iteration count below the frozen n, and the stop
+conditions above then hold every remaining setting unsent. The case instead
+resubmitted `b2-j1` (a5a0d2cf) and, after the matched check passed, sent
+`b2-j2` (33499aec), with no amendment retained before the resubmission. The
+canceled attempt returned no outcome, so no viewed result chose the
+continuation, but the continuation lies outside the frozen protocol: the
+readout of the four completed jobs is a descriptive reading, and a
+confirmation of any of its findings runs under a new amendment.
