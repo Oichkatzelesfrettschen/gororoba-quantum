@@ -605,15 +605,16 @@ target support. Each run receipt lists it with the largest dark-count rate:
   modes together changed by +0.0002 (SD 0.0026).
 - **Dark-rate tracking.** The block-mean share fell from 0.0144 to 0.0075.
   The ratio, 0.52, is near the dark-rate ratio of 0.59.
-- **Fixed-rate law unresolved.** A fixed dark rate D over a perf-limited
-  acquisition time makes the share rise with D / physical_perf. Within
-  block 1 it rises with 1 / physical_perf (rank correlation 0.39, p 0.006);
-  within block 2 it does not (-0.13, p 0.37); pooled on D / physical_perf it
-  reads 0.19 (p 0.06).
+- **Perf-exposure diagnostic.** If acquisition time scaled as
+  1 / physical_perf, a fixed dark rate D would make the share rise with
+  D / physical_perf. That timing model is unconfirmed
+  ([strategy.md](strategy.md)), so the ranks decide nothing: 0.39 (p 0.006)
+  within block 1, -0.13 (p 0.37) within block 2, and 0.19 (p 0.06) pooled.
 - **Coincidence test.** Coincident trials (one mode-5 click beside exactly
   one other click) carry the same selected fraction as the other eligible
-  trials (47.7 on 66 degrees of freedom, p 0.96), as a state-independent
-  dark click predicts.
+  trials, as a state-independent dark click predicts. The statistic reads
+  47.7 over 66 instances, with a p-value of 0.40 from its conditional
+  hypergeometric null.
 - **Position trend.** The share falls with position in two of the four
   jobs (rank correlation -0.49 and -0.47, p 0.016 and 0.020).
 - **Veto result.** With the veto, the matched-change heterogeneity falls from

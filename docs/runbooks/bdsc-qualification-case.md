@@ -272,9 +272,10 @@ groups and drawn order of the committed manifests under
 | S2 | `b2-j1` | `b2-j2` | first execution starts at least one hour after S1's last execution ends |
 
 Each block runs every (template, seed) group once, and a group that runs as
-job 1 in S1 runs as job 2 in S2. A pure job-slot effect therefore cancels in
-the common superposition shift and appears as the group-by-block interaction
-the design reads.
+job 1 in S1 runs as job 2 in S2. A job-slot effect that is additive and the
+same for every group cancels in the common superposition shift. The
+group-by-block contrast confounds a slot effect with a group-specific change
+between the windows, and the design reports it as confounded.
 
 **Readout.** It reads every test on two eligible sets:
 
@@ -282,8 +283,8 @@ the design reads.
   rule.
 - *Secondary:* mode-5 one-click samples subtracted from the eligible count.
 
-The primary falsifier, the coincidence test, the common-shift and slot-effect
-readings and the reported-only quantities are the design's.
+The primary falsifier, the coincidence test with its conditional calibration,
+the common-shift reading and the reported-only quantities are the design's.
 
 ### Order of the stationarity case
 
@@ -295,8 +296,8 @@ readings and the reported-only quantities are the design's.
    parameters, order and the empty mitigation list.
 2. **Plan.** `qd_platform.py plan` passes on each directory for qpu:belenos
    with `--admit-status running`. The receipt's `perfs_at_plan` holds a
-   dark-count rate for each of the 24 modes, and mode 5 reads the largest of
-   every unselected, off-support mode.
+   dark-count rate for each of the 24 modes, and mode 5 reads above every one
+   of the other 23.
 3. **Written case.** It restates the plan output: about 1.08 credits and
    176 s per job, 4.32 credits and about 705 s in all. It also states the
    stop conditions below and the reading of each outcome. Wait for
@@ -320,8 +321,8 @@ readings and the reported-only quantities are the design's.
 Execution stops, and the remaining jobs stay unsent, when any of these holds:
 
 - `qd_platform.py plan` refuses the platform;
-- an unselected, off-support mode other than mode 5 reads the largest
-  plan-time dark-count rate;
+- any of the other 23 modes, selected or on-support included, reads a
+  plan-time dark-count rate at or above mode 5's;
 - a retained job body differs from the empty mitigation list, or a result
   is not an integer BSCount;
 - a job fails, an iteration returns fewer than 40000 samples, or the

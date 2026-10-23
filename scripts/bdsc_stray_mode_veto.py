@@ -94,6 +94,8 @@ def collect() -> tuple[
         dark[manifest["job"]] = {
             "stray": rates[STRAY],
             "largest_other": max(r for m, r in enumerate(rates) if m != STRAY),
+            "duration_seconds": float(result["data"]["duration"]),
+            "samples": sum(iteration["samples"] for iteration in result["iterations"]),
         }
         selected = set(manifest["selected_modes"])
         require(STRAY not in selected, f"{run}: the stray mode is selected")
@@ -123,27 +125,51 @@ def collect() -> tuple[
     return observed, {"subtract": subtract, "detector_absent": absent}, stray, dark
 
 
+COINCIDENCE_SEED = 20261023
+COINCIDENCE_REPLICATES = 100000
+
+
 def coincidence_test(subtract: dict[int, dict[str, Any]], absent: dict[int, dict[str, Any]]) -> dict[str, Any]:
     """The paired falsifier of the dark-click reading: coincident trials against the subtract-eligible trials.
 
     The detector-absent eligible set is the subtract set plus the coincident trials (one stray click beside exactly
-    one other click), two disjoint trial sets of one iteration. A state-independent dark click leaves the selected
-    fraction of the coincident trials equal to that of the subtract set, so per instance
-    z = (p_c - p_s) / sqrt(p (1 - p) (1 / c + 1 / n)) with the pooled p, and the sum of z^2 over the instances with
-    c > 0 and 0 < p < 1 is chi-square on their count; a resolved reading (p < 0.01) rejects the dark-click reading.
+    one other click), two disjoint trial sets of one iteration. A state-independent dark click makes the coincident
+    trials an exchangeable subset of the instance's detector-absent trials, so conditional on each instance's margins
+    (n subtract trials, c coincident trials, m selected in all) the coincident selected count is hypergeometric. Per
+    instance z = (p_c - p_s) / sqrt(p (1 - p) (1 / c + 1 / n)) with the pooled p; T is the sum of z^2 over the
+    instances with c > 0 and 0 < p < 1. Coincident counts are as small as one, so T is calibrated by its conditional
+    null, COINCIDENCE_REPLICATES independent hypergeometric draws per instance from a seeded generator, and its
+    p-value is (1 + #{T* >= T}) / (1 + replicates); a resolved reading (p < 0.01) rejects the dark-click reading. The
+    chi-square tail on the instance count is reported beside it and decides nothing.
     """
-    statistic, terms = 0.0, 0
-    for index, item in subtract.items():
-        n, s = item["eligible"], item["selected"]
+    rng = np.random.default_rng(COINCIDENCE_SEED)
+    observed = 0.0
+    null = np.zeros(COINCIDENCE_REPLICATES)
+    terms = 0
+    for index in sorted(subtract):
+        n, s = subtract[index]["eligible"], subtract[index]["selected"]
         c = absent[index]["eligible"] - n
         k = absent[index]["selected"] - s
-        pooled = (s + k) / (n + c)
+        m = s + k
+        pooled = m / (n + c)
         if c == 0 or pooled in (0.0, 1.0):
             continue
-        statistic += (k / c - s / n) ** 2 / (pooled * (1 - pooled) * (1 / c + 1 / n))
+        scale = pooled * (1 - pooled) * (1 / c + 1 / n)
+        observed += (k / c - s / n) ** 2 / scale
+        draws = rng.hypergeometric(m, n + c - m, c, size=COINCIDENCE_REPLICATES)
+        null += (draws / c - (m - draws) / n) ** 2 / scale
         terms += 1
-    p_value = float(chi2.sf(statistic, terms))
-    return {"statistic": statistic, "df": terms, "p_value": p_value, "reading": diag.reading(p_value)}
+    exceed = int(np.count_nonzero(null >= observed * (1 - 1e-12)))
+    p_value = (1 + exceed) / (1 + COINCIDENCE_REPLICATES)
+    return {
+        "statistic": observed,
+        "instances": terms,
+        "replicates": COINCIDENCE_REPLICATES,
+        "seed": COINCIDENCE_SEED,
+        "p_value": p_value,
+        "reading": diag.reading(p_value),
+        "chi_square_reference_p_value": float(chi2.sf(observed, terms)),
+    }
 
 
 def summary(read: dict[str, Any]) -> dict[str, Any]:
@@ -179,7 +205,11 @@ def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any]) -> dict
     per_job = {
         job: {
             "share_mean": float(np.mean([s["share"] for s in stray.values() if s["job"] == job])),
-            "dark_counts_at_plan": rates,
+            "dark_counts_at_plan": {"stray": rates["stray"], "largest_other": rates["largest_other"]},
+            "duration_seconds": rates["duration_seconds"],
+            # A detector live for the whole job duration would put D * duration stray clicks among the job's samples;
+            # the retained shares lie far below it, so the stray detector is not live for the whole duration.
+            "ungated_stray_share_bound": rates["stray"] * rates["duration_seconds"] / rates["samples"],
         }
         for job, rates in sorted(dark.items())
     }
@@ -187,14 +217,15 @@ def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any]) -> dict
     dark_per_block = {str(b): float(np.mean([dark[f"b{b}-j{j}"]["stray"] for j in (1, 2)])) for b in diag.BLOCKS}
     shares = [s["share"] for s in stray.values()]
 
-    # A fixed dark-count rate D over an iteration whose acquisition time scales as 1 / physical_perf makes the stray
-    # share rise with D / physical_perf; the plan-time D differs between the blocks, so the law is read on that
-    # predictor pooled and on 1 / physical_perf within each block, where one plan-time D holds.
+    # Conditional diagnostic only: if acquisition time scaled as 1 / physical_perf, a fixed dark-count rate D would
+    # make the stray share rise with D / physical_perf. docs/notes/quandela/strategy.md records that timing model as
+    # unconfirmed and physical_perf as moving with the sample budget, so no reading is drawn from these ranks.
     def rank(pairs: list[tuple[float, float]]) -> dict[str, Any]:
         rho, p_value = spearmanr([x for x, _ in pairs], [y for _, y in pairs])
         return {"n": len(pairs), "rho": float(rho), "p_value": float(p_value)}
 
     fixed_rate = {
+        "model": "conditional on the unconfirmed physical_perf timing model; reported, no reading",
         "dark_over_perf_pooled": rank([(dark[s["job"]]["stray"] / s["perf"], s["share"]) for s in stray.values()]),
         "inverse_perf_by_block": {
             str(b): rank([(1 / s["perf"], s["share"]) for s in stray.values() if s["job"].startswith(f"b{b}")])
@@ -217,7 +248,7 @@ def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any]) -> dict
             "other_outside_sd": float(np.std(others)),
         },
         "position": position,
-        "fixed_rate_law": fixed_rate,
+        "perf_exposure_diagnostic": fixed_rate,
         "reference_se_of_share": math.sqrt(float(np.mean(shares)) * (1 - float(np.mean(shares))) / diag.TRIALS),
     }
 

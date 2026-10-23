@@ -42,5 +42,5 @@ def test_coincidence_test_reads_a_state_correlated_stray_click() -> None:
     if veto.coincidence_test(subtract, same)["statistic"] != 0.0:
         raise AssertionError("equal fractions read a difference")
     read = veto.coincidence_test(subtract, shifted)
-    if read["df"] != 2 or read["reading"] != "resolved":
+    if read["instances"] != 2 or read["reading"] != "resolved":
         raise AssertionError(read)

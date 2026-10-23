@@ -1,9 +1,12 @@
 {
  "coincidence_test": {
-  "df": 66,
-  "p_value": 0.956675768495251,
+  "chi_square_reference_p_value": 0.956675768495251,
+  "instances": 66,
+  "p_value": 0.4008359916400836,
   "reading": "consistent",
-  "statistic": 47.67035738344962
+  "replicates": 100000,
+  "seed": 20261023,
+  "statistic": 47.67035738344963
  },
  "definitions": {
   "detector_absent": "the stray detector is removed from every pattern before the one-click rule",
@@ -81,7 +84,52 @@
    "dark_counts_at_plan": 0.5888070879943909,
    "share": 0.5198577388566269
   },
-  "fixed_rate_law": {
+  "matched_change": {
+   "n": 48,
+   "other_outside_mean": 0.0001521361956564134,
+   "other_outside_sd": 0.002598751636181754,
+   "stray_mean": -0.006924591180679677,
+   "stray_sd": 0.01188909615320655
+  },
+  "per_job": {
+   "b1-j1": {
+    "dark_counts_at_plan": {
+     "largest_other": 80.9,
+     "stray": 3137.7
+    },
+    "duration_seconds": 164.0,
+    "share_mean": 0.012344087663984838,
+    "ungated_stray_share_bound": 0.53602375
+   },
+   "b1-j2": {
+    "dark_counts_at_plan": {
+     "largest_other": 80.9,
+     "stray": 3137.7
+    },
+    "duration_seconds": 164.0,
+    "share_mean": 0.016499826904959783,
+    "ungated_stray_share_bound": 0.53602375
+   },
+   "b2-j1": {
+    "dark_counts_at_plan": {
+     "largest_other": 77.6,
+     "stray": 1847.5
+    },
+    "duration_seconds": 164.0,
+    "share_mean": 0.00781280979292112,
+    "ungated_stray_share_bound": 0.3156145833333333
+   },
+   "b2-j2": {
+    "dark_counts_at_plan": {
+     "largest_other": 77.6,
+     "stray": 1847.5
+    },
+    "duration_seconds": 171.0,
+    "share_mean": 0.007181922414664151,
+    "ungated_stray_share_bound": 0.3290859375
+   }
+  },
+  "perf_exposure_diagnostic": {
    "dark_over_perf_pooled": {
     "n": 96,
     "p_value": 0.06315598427366616,
@@ -98,44 +146,8 @@
      "p_value": 0.3747166884787375,
      "rho": -0.1310247503256622
     }
-   }
-  },
-  "matched_change": {
-   "n": 48,
-   "other_outside_mean": 0.0001521361956564134,
-   "other_outside_sd": 0.002598751636181754,
-   "stray_mean": -0.006924591180679677,
-   "stray_sd": 0.01188909615320655
-  },
-  "per_job": {
-   "b1-j1": {
-    "dark_counts_at_plan": {
-     "largest_other": 80.9,
-     "stray": 3137.7
-    },
-    "share_mean": 0.012344087663984838
    },
-   "b1-j2": {
-    "dark_counts_at_plan": {
-     "largest_other": 80.9,
-     "stray": 3137.7
-    },
-    "share_mean": 0.016499826904959783
-   },
-   "b2-j1": {
-    "dark_counts_at_plan": {
-     "largest_other": 77.6,
-     "stray": 1847.5
-    },
-    "share_mean": 0.00781280979292112
-   },
-   "b2-j2": {
-    "dark_counts_at_plan": {
-     "largest_other": 77.6,
-     "stray": 1847.5
-    },
-    "share_mean": 0.007181922414664151
-   }
+   "model": "conditional on the unconfirmed physical_perf timing model; reported, no reading"
   },
   "position": {
    "b1-j1": {

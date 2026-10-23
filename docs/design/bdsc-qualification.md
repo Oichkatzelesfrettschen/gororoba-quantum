@@ -439,12 +439,14 @@ block 2, while every other mode read at most 80.9.
 - **Job-level spread.** The two block-1 jobs share one plan-time reading,
   yet their mean shares differ (0.0123 and 0.0165). A plan-time figure does
   not resolve job-level variation.
-- **The fixed-rate law is unresolved.** A fixed rate D over an acquisition
-  time set by physical_perf makes the share rise with D / physical_perf.
-  - Within block 1, which has one plan-time D, the share rises with
-    1 / physical_perf (rank correlation 0.39, p 0.006).
-  - Within block 2 it does not (-0.13, p 0.37).
-  - Pooled on D / physical_perf, the rank correlation is 0.19 (p 0.06).
+- **Perf-exposure diagnostic (no reading).** If acquisition time scaled as
+  1 / physical_perf, a fixed dark rate D would make the share rise with
+  D / physical_perf. [strategy.md](../notes/quandela/strategy.md) records
+  that timing model as unconfirmed, and physical_perf moves with the sample
+  budget, so these ranks are reported and decide nothing:
+  - within block 1, 0.39 (p 0.006) on 1 / physical_perf;
+  - within block 2, -0.13 (p 0.37);
+  - pooled on D / physical_perf, 0.19 (p 0.06).
 - **Veto result.** With mode 5 vetoed, the heterogeneity of the matched
   changes about their class means falls from 553 to 58.0 on 45 degrees of
   freedom (p 0.09).
@@ -486,29 +488,40 @@ click. The two sets of trials are disjoint within each iteration.
   trials and pooled fraction p,
   z = (p_c - p_s) / sqrt(p (1 - p) (1 / c + 1 / n)), where p_c and p_s are
   the selected fractions of the two sets.
-- *Pooling.* The sum of z^2 over every instance with c > 0 and 0 < p < 1
-  is read as chi-square on the number of such instances. It is one
-  statistic, so it needs no multiplicity correction.
+- *Pooling.* T is the sum of z^2 over every instance with c > 0 and
+  0 < p < 1. It is one statistic, so it needs no multiplicity correction.
+- *Calibration.* Coincident counts are as small as one, so a chi-square
+  tail does not calibrate T. Under a state-independent dark click, the
+  coincident trials are an exchangeable subset of the instance's trials.
+  Conditional on each instance's margins, the coincident selected count is
+  therefore hypergeometric. The p-value is (1 + #{T* >= T}) / (1 + R) over
+  R = 100000 seeded draws of that conditional null (seed 20261023). The
+  chi-square tail is reported beside it and decides nothing.
 - *Decision.* A resolved reading (p < 0.01) means mode-5 clicks correlate
   with the prepared state and rejects the dark-click reading.
-- *Retained data.* It reads 47.7 on 66 degrees of freedom (p 0.96),
-  consistent.
+- *Retained data.* T reads 47.7 over 66 instances: conditional p 0.40,
+  consistent (the chi-square reference reads 0.96).
 
-The veto names mode 5 by number, so the case stops if any other unselected,
-off-support mode reads the largest plan-time dark-count rate.
+The veto names mode 5 by number. The case stops unless mode 5 reads a
+plan-time dark-count rate above every one of the other 23 modes, selected
+and on-support ones included: a hotter detector would stay inside both veto
+estimators.
 
-**A two-block repeat with balanced slots separates a time change from a
-slot effect.** The diagnostic's two blocks run both (template, seed) groups
-of each job pair, with job 1's groups of block 1 running as job 2 of
-block 2 at matched positions.
+**A two-block repeat with crossed slots.** Each (template, seed) group runs
+in one job slot per block, and the groups of block 1's job 1 run as block
+2's job 2 at matched positions (and the reverse).
 
-- *Common shift.* Every block holds each group once in each job slot, so a
-  pure job-slot effect cancels in the class-mean shift of the
-  superpositions. That shift therefore reads a change between the two
-  acquisition windows: a time or block effect.
-- *Slot effect.* A slot effect appears as a group-by-block interaction: the
-  class-mean change of the groups that moved from job 1 to job 2, minus
-  that of the groups that moved the other way.
+- *Common shift.* Half the groups move from job 1 to job 2 and half the
+  other way. A job-slot effect that adds the same amount to every group
+  therefore cancels in the class-mean shift of the superpositions, and that
+  shift reads a change between the two acquisition windows. A slot effect
+  that differs between groups does not cancel, so this reading assumes an
+  additive, group-independent slot effect.
+- *Group-by-block contrast.* No group runs in both slots within a block, so
+  the class-mean change of the groups that moved from job 1 to job 2, minus
+  that of the groups that moved the other way, is confounded: either a slot
+  effect or a group-specific change between the windows. It is reported as
+  that confounded contrast and decides nothing.
 
 The stationarity case resubmits the diagnostic's four frozen requests
 exactly, with the same seeds, parameters, groups and drawn order, so it
@@ -534,12 +547,14 @@ diagnostic.
 - **Common shift.** The superposition class-mean change S1 to S2, with its
   z, read as a window effect. Whether it repeats the retained -0.0044 in
   sign is reported and decides nothing.
-- **Slot effect.** The group-by-block interaction of the superposition
-  changes, as a z test.
+- **Group-by-block contrast.** Reported with its z as a slot or
+  group-specific window effect, confounded by design.
 - **Reported only.**
   - The raw block change of the mode-5 share against the change of the
     plan-time and post-collection dark-count rates.
-  - The fixed-rate law within each block.
+  - The perf-exposure diagnostic, and the mode-5 share against each job's
+    recorded duration per sample, an acquisition exposure that does not
+    rest on the unconfirmed physical_perf timing model.
   - The position trend of the mode-5 share in each job. Two diagnostic jobs
     read rank correlations of -0.49 and -0.47.
   - Whether the seed-by-state interaction reproduces at fixed seeds.
