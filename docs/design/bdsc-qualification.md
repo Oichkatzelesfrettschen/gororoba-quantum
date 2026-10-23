@@ -559,11 +559,17 @@ diagnostic.
   - The mode-5 share against a prediction fixed before submission. The
     plan of 2026-10-23 reads mode 5 at 49520.9 counts/s, against 3137.7 and
     1847.5 before the diagnostic's blocks; every other mode reads at most
-    130.6. The retained block-mean shares give 4.06e-6 to 4.59e-6 of the
-    one-click samples per count/s, so a share that tracks the plan-time
-    rate reads 0.20 to 0.23. A share near the retained 0.007 to 0.016
-    means the plan-time figure does not track the acquired dark clicks.
-    Either outcome is reported and decides nothing.
+    130.6. The share is d / (d + g) for a mode-5 click rate d beside the
+    genuine one-click rate g, so a rate-tracking source scales the odds
+    s / (1 - s) with the plan-time rate. The retained block-mean shares
+    (0.0144 at 3137.7, 0.0075 at 1847.5) then predict 0.17 to 0.19. A share
+    near the retained 0.007 to 0.016 means the plan-time figure does not
+    track the acquired dark clicks. Either outcome is reported and decides
+    nothing.
+  - At that share about 0.81 of each iteration's samples stay eligible
+    under the primary veto, so the primary's power against the retained
+    residual sits somewhat below the projection's 0.72, which assumed
+    every sample eligible.
   - The perf-exposure diagnostic, and the mode-5 share against each job's
     recorded duration per sample, an acquisition exposure that does not
     rest on the unconfirmed physical_perf timing model.
