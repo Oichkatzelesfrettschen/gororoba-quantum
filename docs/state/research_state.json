@@ -1540,6 +1540,13 @@
       "run": "results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation",
       "family": "IQM kernel cancellation probe",
       "question": "Does the garnet:mock pipeline accept the 25-circuit kernel cancellation job rebuilt on Garnet's live calibration, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-kernel-cancellation-readout",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation",
+      "family": "IQM kernel cancellation probe",
+      "question": "Does the garnet:mock pipeline accept the 27-circuit kernel cancellation job with a readout calibration for every measured qubit, and what does it estimate?"
     }
   ],
   "claims": [
@@ -7584,7 +7591,7 @@
     },
     {
       "id": "iqm-garnet-mock-kernel-cancellation",
-      "statement": "garnet:mock refused the kernel cancellation job while Garnet's calibration set 9069c4ef was pinned for every quantum computer ('Calibration set not found', 0.00 credits); with the set pinned for Garnet alone it accepted all 21 circuits (37-CZ probe arms, readout calibration and 1- to 41-pulse prx trains) under heralding_mode zeros and one active-reset cycle, compiled against its own set f04fe114, estimated 2.80 s for 21 circuits x 4000 shots and charged 0.00 credits. The case rebuilt on Garnet's live set 68b0f1d0 (25 circuits, cases.json f8c814d1) ran on garnet:mock with an estimate of 3.01 s and 0.00 credits.",
+      "statement": "garnet:mock refused the kernel cancellation job while Garnet's calibration set 9069c4ef was pinned for every quantum computer ('Calibration set not found', 0.00 credits); with the set pinned for Garnet alone it accepted all 21 circuits (37-CZ probe arms, readout calibration and 1- to 41-pulse prx trains) under heralding_mode zeros and one active-reset cycle, compiled against its own set f04fe114, estimated 2.80 s for 21 circuits x 4000 shots and charged 0.00 credits. The case rebuilt on Garnet's live set 68b0f1d0 (25 circuits, cases.json f8c814d1) ran on garnet:mock with an estimate of 3.01 s and 0.00 credits, and its 27-circuit successor with a readout calibration for every measured qubit (cases.json b3a9e166) with 3.09 s and 0.00 credits.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -7601,6 +7608,10 @@
         {
           "path": "results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json",
           "sha256": "6bf7b9b56aa40b0717dc04e461382540320b164ebbf53beaa4048c5359348d95"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json",
+          "sha256": "e5db51191f66a964090f7b9506b14e973fb2e103c23a08ea2509ab96baaadc16"
         }
       ],
       "documents": [
@@ -7610,7 +7621,8 @@
       "acquisitions": [
         "iqm-garnet-mock-kernel-cancellation-pinned",
         "iqm-garnet-mock-kernel-cancellation",
-        "iqm-garnet-mock-kernel-cancellation-live"
+        "iqm-garnet-mock-kernel-cancellation-live",
+        "iqm-garnet-mock-kernel-cancellation-readout"
       ],
       "assumptions": [],
       "depends_on": [],

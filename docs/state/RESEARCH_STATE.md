@@ -32,7 +32,7 @@ The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 41 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 15 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 16 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -259,6 +259,7 @@ circuit and charges the account ledger's change.
 | [2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 21 | failed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
 | [2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 21 | completed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
 | [2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 25 | completed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
+| [2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 27 | completed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -480,6 +481,7 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-mock-kernel-cancellation-pinned** (2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation, 0 billed seconds): Does the garnet:mock pipeline accept the kernel cancellation job with Garnet's calibration set pinned for every quantum computer?
 - **iqm-garnet-mock-kernel-cancellation** (2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation, 1 billed seconds): Does the garnet:mock pipeline accept the kernel cancellation job of 21 circuits with heralding, active reset and amplification trains, and what does it estimate?
 - **iqm-garnet-mock-kernel-cancellation-live** (2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation, 1 billed seconds): Does the garnet:mock pipeline accept the 25-circuit kernel cancellation job rebuilt on Garnet's live calibration, and what does it estimate?
+- **iqm-garnet-mock-kernel-cancellation-readout** (2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation, 1 billed seconds): Does the garnet:mock pipeline accept the 27-circuit kernel cancellation job with a readout calibration for every measured qubit, and what does it estimate?
 
 ## Established claims
 
@@ -1292,10 +1294,10 @@ circuit and charges the account ledger's change.
   Boundary: The mock's bits are random, so its kept fraction says nothing about Garnet's heralding retention.
   Evidence: [results.json](../../results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong/results.json), [results.json](../../results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak/results.json), [iqm-garnet-signed-kernel-probe.md](../design/iqm-garnet-signed-kernel-probe.md).
   Acquisitions: iqm-garnet-mock-signed-kernel-probe-strong, iqm-garnet-mock-signed-kernel-probe-weak.
-- **iqm-garnet-mock-kernel-cancellation** (exploratory reanalysis, hardware). garnet:mock refused the kernel cancellation job while Garnet's calibration set 9069c4ef was pinned for every quantum computer ('Calibration set not found', 0.00 credits); with the set pinned for Garnet alone it accepted all 21 circuits (37-CZ probe arms, readout calibration and 1- to 41-pulse prx trains) under heralding_mode zeros and one active-reset cycle, compiled against its own set f04fe114, estimated 2.80 s for 21 circuits x 4000 shots and charged 0.00 credits. The case rebuilt on Garnet's live set 68b0f1d0 (25 circuits, cases.json f8c814d1) ran on garnet:mock with an estimate of 3.01 s and 0.00 credits.
+- **iqm-garnet-mock-kernel-cancellation** (exploratory reanalysis, hardware). garnet:mock refused the kernel cancellation job while Garnet's calibration set 9069c4ef was pinned for every quantum computer ('Calibration set not found', 0.00 credits); with the set pinned for Garnet alone it accepted all 21 circuits (37-CZ probe arms, readout calibration and 1- to 41-pulse prx trains) under heralding_mode zeros and one active-reset cycle, compiled against its own set f04fe114, estimated 2.80 s for 21 circuits x 4000 shots and charged 0.00 credits. The case rebuilt on Garnet's live set 68b0f1d0 (25 circuits, cases.json f8c814d1) ran on garnet:mock with an estimate of 3.01 s and 0.00 credits, and its 27-circuit successor with a readout calibration for every measured qubit (cases.json b3a9e166) with 3.09 s and 0.00 credits.
   Boundary: The mock's bits are random, so the run tests acceptance, schema and the runtime estimate, not the probe's physics; it does not show whether the server plays consecutive prx pulses separately.
-  Evidence: [results.json](../../results/iqm/runs/2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [iqm-garnet-kernel-cancellation-probe.md](../design/iqm-garnet-kernel-cancellation-probe.md).
-  Acquisitions: iqm-garnet-mock-kernel-cancellation-pinned, iqm-garnet-mock-kernel-cancellation, iqm-garnet-mock-kernel-cancellation-live.
+  Evidence: [results.json](../../results/iqm/runs/2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [iqm-garnet-kernel-cancellation-probe.md](../design/iqm-garnet-kernel-cancellation-probe.md).
+  Acquisitions: iqm-garnet-mock-kernel-cancellation-pinned, iqm-garnet-mock-kernel-cancellation, iqm-garnet-mock-kernel-cancellation-live, iqm-garnet-mock-kernel-cancellation-readout.
 
 ## Open claims
 

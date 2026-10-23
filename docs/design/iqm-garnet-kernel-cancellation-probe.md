@@ -35,7 +35,7 @@ copy (set `68b0f1d0`, read 2026-10-23 after `9069c4ef` retired) and compiles
 the probe onto Garnet's calibrated couplers (transpiler seed 1 of 24, the
 fewest CZ): 37 CZ on QB6, QB7, QB11, QB12 and QB17, control QB12, the
 selector angle on QB11. `check` rebuilds the case offline from that copy
-(gate `core-642`). One job of 25 circuits x 4000 shots, active reset one
+(gate `core-642`). One job of 27 circuits x 4000 shots, active reset one
 cycle, all-zeros heralding, the calibration set pinned for Garnet alone:
 
 | circuits | purpose |
@@ -44,7 +44,7 @@ cycle, all-zeros heralding, the calibration set pinned for Garnet alone:
 | kernel phi = +0.3, -0.3, -0.3, +0.3 | sine law, drift cancels likewise |
 | kernel phi = 0, twice | crossing |
 | bright phi = +0.1, -0.1, -0.1, +0.1 and 0 | control |
-| QB12 bare measure, QB12 pi then measure | readout calibration of the control |
+| bare measure and pi then measure, on QB12 and on QB11 | readout calibration of every measured qubit |
 | 4k + 1 prx(pi/2), k = 0 to 3, on QB11 and on QB12 | relative over-rotation eps |
 
 **Coherent response.** On this compile the first-order response of the
@@ -68,7 +68,10 @@ near 2.7 +- 0.7 % once the device's visibility damping is counted
 ([audit](iqm-garnet-signed-kernel-probe.md#adversarial-audit)), under the
 retired set `9069c4ef`. A 41-pulse train would wrap that error past 1.7 rad,
 so the trains stop at 13 pulses (under 0.7 rad at 3 %) and the analysis fits
--sin(N pi/2 eps) itself rather than its linearization. Garnet recalibrates
+-sin(N pi/2 eps) itself rather than its linearization, through each train
+qubit's own readout calibration, over |eps| <= 0.06, where every train
+turns through less than pi/2 and so admits no alias; a minimum on that edge
+counts as a train outside the model. Garnet recalibrates
 its pulses with each set, so QB11's error under `68b0f1d0` is a fresh
 measurement and the 2.7 % is a comparison, not a prediction the case tests.
 
@@ -93,7 +96,9 @@ measurement and the 2.7 % is a comparison, not a prediction the case tests.
   merged pulses or a non-stationary error and suspends H4.
 
 The analysis lists every falsified hypothesis; an odd part within three
-standard errors of zero leaves H1 unresolved, never falsified.
+standard errors of zero leaves H1 unresolved, never falsified. It reads
+Garnet runs of this case alone, one cases.json digest at a time, each
+compiled against the prediction's calibration set; mock runs never enter.
 
 **Prediction** (scripts/iqm_sim.py noise from set `68b0f1d0` with ALAP idle
 T1/T2 relaxation, 200000 shots per circuit): kernel odd part -0.094 at
@@ -104,7 +109,8 @@ carries no coherent error.
 
 **Model device.** The self-test draws counts from the exact coherent model of
 each circuit at visibility 0.6 with QB11 over-rotated by 2.7 % and QB12 by
--0.3 %: it resolves H1 at both angles, falsifies no hypothesis and recovers
+-0.3 %, the control reading with errors (0.01, 0.03) and QB11 with
+(0.05, 0.12): it resolves H1 at both angles, falsifies no hypothesis and recovers
 both over-rotations from the trains; it falsifies H1 when the kernel's sign
 is reversed, falsifies H4 when the kernel arms carry an even shift of -0.05
 that over-rotation does not explain, leaves H1 unresolved with H3 defined
@@ -114,13 +120,14 @@ their pulse count.
 **Mock runs.** garnet:mock refused the first submission ('Calibration set
 not found', 0 credits), since the case then pinned Garnet's set for every
 QC; the set is now pinned per QC. The second run accepted a 21-circuit
-build (estimate 2.80 s). The third ran the current 25-circuit bytes
-(cases.json sha256 `f8c814d1...`), compiled against the mock's own set,
-estimated 3.01 s and charged 0.00 credits; mock bits are random. A dry
-submission to Garnet passed every refusal.
+build (estimate 2.80 s) and the third a 25-circuit build (3.01 s). The
+fourth ran the current 27-circuit bytes (cases.json sha256 `b3a9e166...`),
+compiled against the mock's own set, estimated 3.09 s and charged 0.00
+credits; mock bits are random. A dry submission to Garnet passed every
+refusal.
 
-**Cost.** Expected 3.10 s of shots at an upper 31 us per heralded shot (the
-slope of the two heralded Garnet jobs), ceiling ceil(1.60 + 3.10) x 0.50 =
+**Cost.** Expected 3.35 s of shots at an upper 31 us per heralded shot (the
+slope of the two heralded Garnet jobs), ceiling ceil(1.60 + 3.35) x 0.50 =
 2.50 credits, recorded in cases.json as the approved ceiling for Garnet; the
 mock's estimate puts the likely bill at ceil(3.0) x 0.50 = 1.50 to 2.00
 credits.
