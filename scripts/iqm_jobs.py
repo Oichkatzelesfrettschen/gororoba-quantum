@@ -571,6 +571,13 @@ def p1_of(run_dir: Path) -> dict[str, dict[str, float]]:
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     """H1-H4 of the reset and billing pilot from its retained runs (mock and hardware)."""
     runs = []
+    if len({run_dir.resolve() for run_dir in run_dirs}) != len(run_dirs):
+        raise PlatformError("a run directory is named twice; each acquisition counts once")
+    identities = [
+        json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job_id"] for run_dir in run_dirs
+    ]
+    if len(set(identities)) != len(identities):
+        raise PlatformError("two run directories hold one job; each acquisition counts once")
     for run_dir in sorted(run_dirs):
         facts = run_facts(run_dir)
         submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))

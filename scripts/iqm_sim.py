@@ -33,10 +33,15 @@ from qiskit.circuit.library import RGate
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError, depolarizing_error
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 EVIDENCE = ROOT / "docs/evidence/iqm/qc"
 PRX_FIELD = "metrics.rb.prx.drag_crf_sx.{q}.fidelity:par=d2"
 READOUT_FIELD = "metrics.ssro.measure.constant.{q}.{kind}"
+# Error rates conditioned on an all-zeros herald measurement, the readout a heralded job's kept shots see.
+HERALD_SUFFIX = ":herald=measure.constant"
 
 
 class Calibration:
@@ -67,23 +72,25 @@ class Calibration:
                 if fidelity is not None:
                     self.cz[frozenset((a, b))] = fidelity
 
-    def readout(self, qubit: str) -> tuple[float, float]:
-        """(P(read 1 | 0), P(read 0 | 1))."""
+    def readout(self, qubit: str, heralded: bool = False) -> tuple[float, float]:
+        """(P(read 1 | 0), P(read 0 | 1)), unheralded or conditioned on an all-zeros herald."""
+        suffix = HERALD_SUFFIX if heralded else ""
         return (
-            self.values[READOUT_FIELD.format(q=qubit, kind="error_0_to_1")],
-            self.values[READOUT_FIELD.format(q=qubit, kind="error_1_to_0")],
+            self.values[READOUT_FIELD.format(q=qubit, kind="error_0_to_1") + suffix],
+            self.values[READOUT_FIELD.format(q=qubit, kind="error_1_to_0") + suffix],
         )
 
     def prx_p(self, qubit: str) -> float:
         return 2 * (1 - self.values[PRX_FIELD.format(q=qubit)])
 
-    def noise_model(self) -> NoiseModel:
+    def noise_model(self, heralded: bool = False) -> NoiseModel:
+        """Depolarizing PRX and CZ and readout error; heralded selects the herald-conditioned readout."""
         model = NoiseModel(basis_gates=["r", "cz"])
         for n, qubit in enumerate(self.qubits):
             if PRX_FIELD.format(q=qubit) in self.values:
                 model.add_quantum_error(depolarizing_error(self.prx_p(qubit), 1), "r", [n])
             if READOUT_FIELD.format(q=qubit, kind="error_0_to_1") in self.values:
-                e01, e10 = self.readout(qubit)
+                e01, e10 = self.readout(qubit, heralded)
                 model.add_readout_error(ReadoutError([[1 - e01, e01], [e10, 1 - e10]]), [n])
         for pair, fidelity in self.cz.items():
             a, b = sorted(pair, key=self.qubits.index)
@@ -134,30 +141,45 @@ def exact_single(circuit: dict[str, Any], calibration: Calibration) -> float | N
     return excited * (1 - e10) + (1 - excited) * e01
 
 
-def run_case(case_dir: Path, qc: str, seed: int) -> list[dict[str, Any]]:
+def simulate_circuit(item: tuple[str, str, int, int, str, str, bool]) -> dict[str, Any]:
+    """One circuit of a case: sampled P(1) per measured qubit and the exact single-qubit value."""
+    case_dir, qc, seed, shots, job, file, heralded = item
     calibration = Calibration(qc)
-    simulator = AerSimulator(noise_model=calibration.noise_model(), seed_simulator=seed)
+    circuit = json.loads((Path(case_dir) / file).read_text(encoding="utf-8"))
+    qiskit_circuit, bits = to_qiskit(circuit, calibration)
+    simulator = AerSimulator(noise_model=calibration.noise_model(heralded), seed_simulator=seed)
+    counts = simulator.run(qiskit_circuit, shots=shots).result().get_counts()
+    p1 = {}
+    for n, (key, qubit) in enumerate(bits):
+        ones = sum(c for s, c in counts.items() if s[::-1][n] == "1")
+        p1[f"{key}:{qubit}"] = ones / shots
+    return {
+        "job": job,
+        "circuit": circuit["name"],
+        "shots": shots,
+        "p1": p1,
+        "exact_p1": exact_single(circuit, calibration),
+    }
+
+
+def run_case(case_dir: Path, qc: str, seed: int) -> list[dict[str, Any]]:
+    """Every circuit of a case, in the case's order, each with its own simulator at the given seed; a
+    heralded job reads the herald-conditioned readout."""
     case = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
-    rows = []
-    for job in case["jobs"]:
-        for entry in job["circuits"]:
-            circuit = json.loads((case_dir / entry["file"]).read_text(encoding="utf-8"))
-            qiskit_circuit, bits = to_qiskit(circuit, calibration)
-            counts = simulator.run(qiskit_circuit, shots=job["shots"]).result().get_counts()
-            p1 = {}
-            for n, (key, qubit) in enumerate(bits):
-                ones = sum(c for s, c in counts.items() if s[::-1][n] == "1")
-                p1[f"{key}:{qubit}"] = ones / job["shots"]
-            rows.append(
-                {
-                    "job": job["job"],
-                    "circuit": circuit["name"],
-                    "shots": job["shots"],
-                    "p1": p1,
-                    "exact_p1": exact_single(circuit, calibration),
-                }
-            )
-    return rows
+    items = [
+        (
+            str(case_dir),
+            qc,
+            seed,
+            job["shots"],
+            job["job"],
+            entry["file"],
+            job["options"].get("heralding_mode") == "zeros",
+        )
+        for job in case["jobs"]
+        for entry in job["circuits"]
+    ]
+    return ordered_map(simulate_circuit, items)
 
 
 def self_test() -> str:
@@ -183,6 +205,8 @@ def self_test() -> str:
     e01 = calibration.readout("QB1")[0]
     if abs(counts.get("1", 0) / shots - e01) > 5 * math.sqrt(e01 * (1 - e01) / shots) + 1e-9:
         raise RuntimeError("a bare measure does not read the calibrated P(1 | 0)")
+    if calibration.readout("QB1", heralded=True) == calibration.readout("QB1"):
+        raise RuntimeError("the herald-conditioned readout of QB1 equals the unheralded one")
     far = sorted(calibration.qubits, key=lambda q: -int(q[2:]))[0]
     if frozenset(("QB1", far)) in calibration.cz:
         raise RuntimeError("the test pair is a coupler")
