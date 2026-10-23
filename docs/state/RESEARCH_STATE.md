@@ -41,7 +41,7 @@ circuit and charges the account ledger's change.
 | [2026-10-12T055624.091217Z](../../results/live/2026-10-12T055624.091217Z) | IBM Quantum | folded-QPE intervention ladder | ibm_kingston | 2 | 16 | DONE | 40 s | hw-folded-qpe-ladder, hw-charge-prediction-residuals, hw-ghost-calibration-replay |
 | [2026-10-13T020454.599853Z](../../results/live/2026-10-13T020454.599853Z) | IBM Quantum | folded correction | ibm_kingston | 1 | 4 | DONE | 11 s | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation, hw-ghost-calibration-replay |
 | [2026-10-13T022433.333775Z](../../results/live/2026-10-13T022433.333775Z) | IBM Quantum | folded correction | ibm_kingston | 1 | 4 | DONE | 11 s | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation, hw-ghost-calibration-replay |
-| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | IBM Quantum | ripple box-kite atlas | ibm_fez | 2 | 146 | DONE | 66 s | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-atlas-frame-detuning, hw-ghost-calibration-replay, walk-scaffold-single-channel-exclusion |
+| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | IBM Quantum | ripple box-kite atlas | ibm_fez | 2 | 146 | DONE | 66 s | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-atlas-frame-detuning, hw-atlas-coherent-families, hw-ghost-calibration-replay, walk-scaffold-single-channel-exclusion |
 | [2026-10-13T032011.664435Z](../../results/live/2026-10-13T032011.664435Z) | IBM Quantum | rank sectors | ibm_fez | 2 | 36 | DONE | 31 s | hw-fez-rank-sectors, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-charge-prediction-residuals, hw-ghost-calibration-replay |
 | [kingston-wide-control-result](../../results/live/kingston-wide-control-result) | IBM Quantum | wide Ramsey and carpet control | ibm_kingston | 1 | 2 | DONE | 2 s | hw-wide-control |
 | [2026-10-13T080216.451663Z](../../results/live/2026-10-13T080216.451663Z) | IBM Quantum | N=21 orbit feed-forward | ibm_fez | 1 | 2 | DONE | 4 s | hw-n21-orbit-phase, hw-idle-detuning-scale, hw-ghost-calibration-replay |
@@ -49,7 +49,7 @@ circuit and charges the account ledger's change.
 | [2026-10-13T201757.782152Z](../../results/live/2026-10-13T201757.782152Z) | IBM Quantum | patch-window Ramsey characterization | ibm_fez | 3 | 46 | DONE | 25 s | hw-patch-window-nondetection, hw-ghost-calibration-replay |
 | [2026-10-15T030748.903241Z](../../results/live/2026-10-15T030748.903241Z) | IBM Quantum | branch-signed coherence window | ibm_kingston | 2 | 15 | DONE | 13 s | hw-coherence-window, hw-coherence-idle-rotation, hw-idle-detuning-scale, hw-ghost-calibration-replay |
 | [2026-10-15T030903.235380Z](../../results/live/2026-10-15T030903.235380Z) | IBM Quantum | rank sectors | ibm_kingston | 2 | 36 | DONE | 31 s | hw-kingston-rank-transfer, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-corner-explains-weak-lane, hw-ghost-calibration-replay |
-| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | IBM Quantum | ripple box-kite atlas | ibm_kingston | 2 | 146 | DONE | 66 s | hw-kingston-ripple-transfer, hw-corner-explains-weak-lane, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-ghost-calibration-replay, walk-scaffold-single-channel-exclusion |
+| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | IBM Quantum | ripple box-kite atlas | ibm_kingston | 2 | 146 | DONE | 66 s | hw-kingston-ripple-transfer, hw-corner-explains-weak-lane, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-atlas-coherent-families, hw-ghost-calibration-replay, walk-scaffold-single-channel-exclusion |
 | [2026-10-15T070847.644554Z](../../results/live/2026-10-15T070847.644554Z) | IBM Quantum | corner qubit baseline | ibm_kingston | 1 | 7 | DONE | 4 s | hw-corner-readout-fault, hw-corner-explains-weak-lane, hw-corner-fault-predates-discovery, hw-ghost-calibration-replay |
 | [2026-10-15T070853.550532Z](../../results/live/2026-10-15T070853.550532Z) | IBM Quantum | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | DONE | 10 s | hw-zero-divisor-floor, hw-idle-detuning-scale, hw-ghost-calibration-replay |
 | [2026-10-16T211635Z-QXsinglenodesimulator](../../results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator) | Quantum Inspire | spectator-drive additivity and transported-pair teleportation, ideal reference | QXsinglenodesimulator | 5 | 5 | completed | 0 ledger change | qi-tuna17-neighbor-drive-phase, qi-tuna17-transported-pair-teleport, qi-tuna17-shot-record-50hz-line |
@@ -482,12 +482,19 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-044.
   Depends on: sedenion-determinant-membership.
 - **cd-associator-census** (mathematical claim, algebra). The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).
-  Boundary: The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.
+  Boundary: Real basis triples under the cd_core.cd_sign convention; the moving-pair spectrum is the separate claim cd-moving-pair-walsh-proof.
   Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); real basis triples.
   Evidence: [census.json](../evidence/cd_associator_defect_census/census.json), [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
   Gates: replayed by core-212, sources-215.
   Related claims: cd-moving-pair-walsh-proof.
+- **cd-moving-pair-walsh-proof** (mathematical claim, algebra). For every D = 2^n >= 16, omega(D/2+1, D/4+3, k) = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; the pair has algebraic degree n - 2, and for D >= 32 Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 (at D = 16 support 4, amplitude 1/2, nonlinearity 4).
+  Boundary: Theorem 5 and its corollary in the census note prove the formula from the certified associator lifting (Lemma 3) and the fixed-pair parity law (Theorem 4); the census checks the formula, both lifting steps and every spectral law from 16 to 4096. No proof assistant has checked the argument.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
+  Gates: replayed by core-212, sources-215.
+  Depends on: cd-associator-census.
 - **singular-sector-split** (mathematical claim, algebra). (L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.
   Boundary: Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.
   Proof origin: repository-written.
@@ -507,6 +514,17 @@ circuit and charges the account ledger's change.
   Boundary: Known theorems reproduced on sampled exact points: the certificate covers its 1000 pairs only, decomposes neither D_(5,8) nor D_(5,12), and says nothing about ZD_12(A_5) outside H_5^perp or the bracket-axis limits.
   Evidence: [result.json](../evidence/d_locus_nullity/result.json), [README.md](../evidence/d_locus_nullity/README.md), [math-0702075.md](../notes/math-0702075.md).
   Gates: replayed by core-323, core-324.
+- **a5-stiefel-pfaffian-reduction** (mathematical claim, algebra). For pure a, b in A_4, L_(a,b)^2 is the real form of (L_a + i R_b)(L_a - i R_b) and L_a + i R_b is complex skew-symmetric, so |det L_(a,b)| = |Pf(L_a + i R_b)|^4; every A_5 Stiefel element is a zero divisor exactly when the degree-8 polynomial Pf(L_a + i R_b) vanishes on a dense subset of the Stiefel set.
+  Boundary: Written proof from Moreno's Theorem 2.3, which gate core-660 checks exactly on every e_i and e_i + e_j of the 30 pure coordinates (an identity of degree 2); the density step uses lower semicontinuity of rank. It reduces the A_5 question and does not decide it.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); Moreno math/0512517 Theorem 2.3: L_(a,b)^2 = [[A, -S], [S, A]] for pure a, b.
+  Evidence: [pfaffian-identity.json](../evidence/moreno_stiefel/pfaffian-identity.json), [README.md](../evidence/moreno_stiefel/README.md), [math-0512517.md](../notes/math-0512517.md).
+  Gates: replayed by core-660.
+- **a5-stiefel-pfaffian-identity-test** (exact finite certificate, algebra). At 96 seeded points of the A_5 Stiefel variety over F_p, 48 for each of the two largest primes p = 1 mod 4 below 2^61, drawn through the isotropic parametrization z = a + i b, z' = a - i b, rank(L_a + i R_b) = 14 and rank L_(a,b) = 28 modulo p, so Pf(L_a + i R_b) = 0; 16 A_6 Stiefel controls read full ranks 32 and 64 and 16 non-Stiefel A_5 controls read 16 and 32.
+  Boundary: Exact modulo-p ranks at the recorded points only. By Schwartz-Zippel a Pfaffian whose restriction is nonzero modulo p vanishes at one uniform point with probability at most 26/p, so the record makes a generic counterexample improbable without proving universality; the draws are pseudorandom and a modulo-p rank bounds the rational rank from below only.
+  Evidence: [pfaffian-identity.json](../evidence/moreno_stiefel/pfaffian-identity.json), [README.md](../evidence/moreno_stiefel/README.md).
+  Gates: replayed by core-660.
+  Depends on: a5-stiefel-pfaffian-reduction.
 - **a6-stiefel-witness** (exact finite certificate, algebra). The retained integer A_6 Stiefel element (pure halves, a.b = 0, |a|^2 = |b|^2 = 62) has an invertible left multiplication: det L_v is 810824905836647058 modulo 2^61 - 1 and 486680426 modulo 10^9 + 7, so not every A_6 Stiefel element is a zero divisor.
   Boundary: One witness; the 24 Cayley-transform and 7 other integer elements are further full-rank points of the same family.
   Evidence: [nullity.json](../evidence/moreno_stiefel/nullity.json), [README.md](../evidence/moreno_stiefel/README.md).
@@ -1110,6 +1128,12 @@ circuit and charges the account ledger's change.
   Evidence: [measured-ripple.json](../../results/ripple/measured-ripple.json), [result.json](../evidence/atlas_detuning_map/result.json), [README.md](../evidence/atlas_detuning_map/README.md).
   Gates: replayed by core-285.
   Acquisitions: fez-ripple-atlas.
+- **hw-atlas-coherent-families** (exploratory reanalysis, hardware). On the executed Fez and Kingston ripple atlas circuits at IBM's executed pulse times, six coherent error families (frame detuning, CZ conditional phase, static ZZ in the partner-in-0 and symmetric frames, SX amplitude and axis tilt) fitted one at a time to the edge fringe phase offsets of all 14 lanes leave every lane except two (Fez lane 5 with axis tilt, Kingston lane 2 with detuning and with partner-in-0 ZZ) above 1.5 times its leave-one-out noise floor under every single family, the lowest ratio per lane ranging from 1.68 to 3.70, so no single family accounts for the offsets; partner-in-0 ZZ scores below the symmetric frame on 13 of 14 lanes in the linear fit and on all 14 resimulated, by a median factor of 2.4, and is the best single family on 7 lanes (detuning on 4, axis tilt on 3), while SX amplitude beats the lane mean on none.
+  Boundary: Inferred from one run per backend; the best single family per lane is an after-the-fact selection among six, and the lane-4 ranking of the evidence README selects among eighteen models, so no family is confirmed, and a confirming test scores one named model on lanes it was not selected on. Each Kingston lane excludes two edges that span a calibration identity change. The partner-in-0 frame is physical if IBM calibrates each qubit frequency with its neighbors in |0>, which no repository source states; conditional Ramsey with the partner in |0> (proposed-conditional-ramsey-hamiltonian) measures the frame directly. On lane 4 the edge-to-edge contrast deficit stays at 2 to 2.5 times its floor under every phase-fitted model.
+  Evidence: [result.json](../evidence/atlas_coherent_families/result.json), [measured-ripple.json](../../results/ripple/measured-ripple.json), [README.md](../evidence/atlas_coherent_families/README.md), [coherent-error-families-report.md](../notes/topics/coherent-error-families-report.md).
+  Gates: replayed by core-329, core-661.
+  Acquisitions: fez-ripple-atlas, kingston-ripple-atlas.
+  Depends on: hw-atlas-frame-detuning.
 - **hw-ghost-calibration-replay** (exploratory reanalysis, hardware). Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs. Five 2026-10-18 Kingston runs and one further Kingston snapshot, added by an incremental merge, widen the calibration spread to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), and the exact-law n21 members and the 149-member control runs reproduce their recorded replays within 0.0027 TV. A second merge adds ten 2026-10-18 to 2026-10-20 runs and six snapshots: the four init-control runs whose every job ended in ERROR are skipped, and the six that returned shots reproduce their recorded replays within 0.0056 TV, their predicted distance moving by at most 0.008 TV across calibrations. A third merge adds the two 2026-10-21 segmented sweeps and two snapshots: both reproduce their recorded replays within 0.011 TV, and their distances to hardware (0.509 and 0.451 TV) stay near the one-line model's limit, which no readout factor closes (part_f).
   Boundary: Calibration identity explains little of the mismatch; whether the model underestimates noise is not settled (today's CZ error is higher on 9 of the 13 kernel runs that play CZ, while readout changes correlate with the opposite sign), and an error-scale sweep per run is the test.
   Evidence: [result.json](../evidence/ghost_runs/result.json), [report.json](../evidence/ghost_runs/report.json), [qpu-job-retention-audit.json](../../results/live/qpu-job-retention-audit.json), [collect.json](../../results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json), [README.md](../evidence/ghost_runs/README.md).
@@ -1265,18 +1289,12 @@ circuit and charges the account ledger's change.
 
 ## Open claims
 
-- **cd-moving-pair-walsh-proof** (mathematical claim, algebra). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.
-  Boundary: Exhaustively checked from 32 to 4096; a proof is outstanding.
-  Proof origin: unproved-open.
-  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
-  Evidence: [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
-  Depends on: cd-associator-census.
 - **a5-stiefel-universal** (mathematical claim, algebra). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.
-  Boundary: The 32 exact points support it and prove nothing beyond themselves.
+  Boundary: The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.
   Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [math-0512517.md](../notes/math-0512517.md).
-  Depends on: a5-stiefel-selected-nullity.
+  Depends on: a5-stiefel-selected-nullity, a5-stiefel-pfaffian-reduction, a5-stiefel-pfaffian-identity-test.
 - **dimension32-global-topology** (mathematical claim, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
   Boundary: Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.
   Proof origin: unproved-open.

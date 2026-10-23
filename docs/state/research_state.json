@@ -1631,7 +1631,7 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.",
+      "boundary": "Real basis triples under the cd_core.cd_sign convention; the moving-pair spectrum is the separate claim cd-moving-pair-walsh-proof.",
       "evidence": [
         {
           "path": "docs/evidence/cd_associator_defect_census/census.json",
@@ -1660,16 +1660,19 @@
     },
     {
       "id": "cd-moving-pair-walsh-proof",
-      "statement": "The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.",
+      "statement": "For every D = 2^n >= 16, omega(D/2+1, D/4+3, k) = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; the pair has algebraic degree n - 2, and for D >= 32 Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 (at D = 16 support 4, amplitude 1/2, nonlinearity 4).",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
-      "status": "open",
-      "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
+      "status": "established",
+      "boundary": "Theorem 5 and its corollary in the census note prove the formula from the certified associator lifting (Lemma 3) and the fixed-pair parity law (Theorem 4); the census checks the formula, both lifting steps and every spectral law from 16 to 4096. No proof assistant has checked the argument.",
       "evidence": [],
       "documents": [
         "docs/notes/topics/cd_associator_defect_census.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-212": "replay",
+        "sources-215": "replay"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -1679,7 +1682,7 @@
       ],
       "supersedes": [],
       "superseded_by": null,
-      "proof_origin": "unproved-open"
+      "proof_origin": "repository-written"
     },
     {
       "id": "singular-sector-split",
@@ -1785,12 +1788,69 @@
       "superseded_by": null
     },
     {
+      "id": "a5-stiefel-pfaffian-reduction",
+      "statement": "For pure a, b in A_4, L_(a,b)^2 is the real form of (L_a + i R_b)(L_a - i R_b) and L_a + i R_b is complex skew-symmetric, so |det L_(a,b)| = |Pf(L_a + i R_b)|^4; every A_5 Stiefel element is a zero divisor exactly when the degree-8 polynomial Pf(L_a + i R_b) vanishes on a dense subset of the Stiefel set.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof from Moreno's Theorem 2.3, which gate core-660 checks exactly on every e_i and e_i + e_j of the 30 pure coordinates (an identity of degree 2); the density step uses lower semicontinuity of rank. It reduces the A_5 question and does not decide it.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md",
+        "docs/notes/math-0512517.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Moreno math/0512517 Theorem 2.3: L_(a,b)^2 = [[A, -S], [S, A]] for pure a, b"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-stiefel-pfaffian-identity-test",
+      "statement": "At 96 seeded points of the A_5 Stiefel variety over F_p, 48 for each of the two largest primes p = 1 mod 4 below 2^61, drawn through the isotropic parametrization z = a + i b, z' = a - i b, rank(L_a + i R_b) = 14 and rank L_(a,b) = 28 modulo p, so Pf(L_a + i R_b) = 0; 16 A_6 Stiefel controls read full ranks 32 and 64 and 16 non-Stiefel A_5 controls read 16 and 32.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact modulo-p ranks at the recorded points only. By Schwartz-Zippel a Pfaffian whose restriction is nonzero modulo p vanishes at one uniform point with probability at most 26/p, so the record makes a generic counterexample improbable without proving universality; the draws are pseudorandom and a modulo-p rank bounds the rational rank from below only.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "a5-stiefel-pfaffian-reduction"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-stiefel-universal",
       "statement": "Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The 32 exact points support it and prove nothing beyond themselves.",
+      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
       "evidence": [],
       "documents": [
         "docs/notes/math-0512517.md"
@@ -1801,7 +1861,9 @@
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
       ],
       "depends_on": [
-        "a5-stiefel-selected-nullity"
+        "a5-stiefel-selected-nullity",
+        "a5-stiefel-pfaffian-reduction",
+        "a5-stiefel-pfaffian-identity-test"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -3892,6 +3954,42 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-atlas-coherent-families",
+      "statement": "On the executed Fez and Kingston ripple atlas circuits at IBM's executed pulse times, six coherent error families (frame detuning, CZ conditional phase, static ZZ in the partner-in-0 and symmetric frames, SX amplitude and axis tilt) fitted one at a time to the edge fringe phase offsets of all 14 lanes leave every lane except two (Fez lane 5 with axis tilt, Kingston lane 2 with detuning and with partner-in-0 ZZ) above 1.5 times its leave-one-out noise floor under every single family, the lowest ratio per lane ranging from 1.68 to 3.70, so no single family accounts for the offsets; partner-in-0 ZZ scores below the symmetric frame on 13 of 14 lanes in the linear fit and on all 14 resimulated, by a median factor of 2.4, and is the best single family on 7 lanes (detuning on 4, axis tilt on 3), while SX amplitude beats the lane mean on none.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inferred from one run per backend; the best single family per lane is an after-the-fact selection among six, and the lane-4 ranking of the evidence README selects among eighteen models, so no family is confirmed, and a confirming test scores one named model on lanes it was not selected on. Each Kingston lane excludes two edges that span a calibration identity change. The partner-in-0 frame is physical if IBM calibrates each qubit frequency with its neighbors in |0>, which no repository source states; conditional Ramsey with the partner in |0> (proposed-conditional-ramsey-hamiltonian) measures the frame directly. On lane 4 the edge-to-edge contrast deficit stays at 2 to 2.5 times its floor under every phase-fitted model.",
+      "evidence": [
+        {
+          "path": "docs/evidence/atlas_coherent_families/result.json",
+          "sha256": "73e7ca24f89b57716316afe69945d5b0db2431aa5129ad578a0c22a9ecc21645"
+        },
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/atlas_coherent_families/README.md",
+        "docs/notes/topics/coherent-error-families-report.md"
+      ],
+      "gates": {
+        "core-329": "replay",
+        "core-661": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas",
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-atlas-frame-detuning"
+      ],
       "supersedes": [],
       "superseded_by": null
     },

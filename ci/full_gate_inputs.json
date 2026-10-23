@@ -62,6 +62,14 @@
       "results/live/2026-10-13T025444.603480Z/**",
       "results/live/2026-10-15T031229.371738Z/**"
     ],
+    "core-661": [
+      "docs/evidence/atlas_coherent_families/**",
+      "docs/evidence/atlas_detuning_map/**",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
     "core-360": [
       "docs/evidence/atlas_coherent_families/**",
       "docs/evidence/atlas_detuning_map/**",

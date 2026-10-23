@@ -16,7 +16,7 @@ they said when read.
 | `changelog/iqm-client-36.0.0.md` | the CHANGELOG of the iqm-client 36.0.0 sdist (`--changelog`) |
 | `constraints-iqm-qccsw-4.7.0.txt` | IQM's client constraints for IQM OS 4.7.0 plus the integration pins |
 | `hardware-pre-4.7.md` | the pre-upgrade specifications of all six targets, from the 06:08Z snapshot at commit 2009f0f |
-| `os-4.7-emerald.md` | what IQM OS 4.7 changed on Emerald: versions, `measure_012`, API, settings, calibration, client |
+| `os-4.7.md` | what IQM OS 4.7 changed on Emerald, Garnet and Sirius: versions, `measure_012`, API, settings, calibration, client |
 | `python-stack.md`, `python-stack-versions.json` | every distribution installed in the client stack, with version, license, imports and requirements |
 | `../../evidence/iqm/` | the account snapshot: server, per-QC records, configuration artifacts, calibration sets, metrics, the update feed, `hardware.json` (`scripts/iqm_platform.py snapshot`) |
 
@@ -62,16 +62,13 @@ The dashboard's update feed (`server/notifications.json`, created
   `strategy="NONE"` and runs without readout twirling; REMWorkflow reports
   the QPU job ids it submitted.
 
-The retained snapshot was read at 2026-10-19T15:58Z, after Emerald's
-window: Emerald and emerald:mock report IQM station control 50.0.0, Garnet,
-Sirius and their mocks 49.0.3, and the server 3.0.1. What Emerald's upgrade
-changed, measured against the 06:08Z baseline, is in
-[os-4.7-emerald.md](os-4.7-emerald.md): a `measure_012` three-state readout,
-the job route `sweep_results_streaming`, a `flat_width` field on Slepian
-pulses and 398 new settings parameters, with the native ISA, limits and
-prices unchanged. The baseline's specifications are in
-[hardware-pre-4.7.md](hardware-pre-4.7.md). A snapshot after
-2026-10-21T16:00Z records Garnet and Sirius on 4.7.
+The retained snapshot was read at 2026-10-22T20:48Z, after both windows:
+all three QPUs and their mocks report IQM station control 50.0.0 under
+IQM Server 3.0.1. What the upgrade changed is in [os-4.7.md](os-4.7.md): a
+`measure_012` three-state readout, the job route `sweep_results_streaming`,
+a `flat_width` field on Slepian pulses and new settings parameters, with the
+native ISA, limits and prices unchanged. The baseline's specifications are
+in [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
 ## Account and credential
 
@@ -169,10 +166,10 @@ the mutations `inviteAccountMembers`, `resendAccountInvitation`,
 |---|---|---|---|---|---|---|---|---|---|---|
 | IQM Emerald (`emerald`) | qpu | M216_F0W102525_H03_F08 (M216, H03) | 54 | - | 90 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_012 (constant), measure_fidelity (shelved_constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 30000 | 0.75 | 2400.00 per PT1H | 50.0.0 |
 | IQM Emerald (mock) (`emerald:mock`) | mock | M160_W0_H01_Z99 (M160, H01) | 54 | - | 90 | cc_prx (prx_composite), cz (tgss), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_gaussian), reset_wait (reset_wait) | 200000 / 1000 / 10000 | 0.00 | - | 50.0.0 |
-| IQM Garnet (`garnet`) | qpu | M194_F0W2114_P08_B15 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_fidelity (constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 10000 | 0.50 | 1800.00 per PT1H | 49.0.3 |
-| IQM Garnet (mock) (`garnet:mock`) | mock | M194_W0_P08_Z99 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), prx (drag_crf), reset_wait (reset_wait) | 20000 / 500 / 10000 | 0.00 | - | 49.0.3 |
-| IQM Sirius (`sirius`) | qpu | M186_F0W2259_ND1_O12 (M186, ND1) | 16 | COMPR1 | 24 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 75000 | 0.30 | 1080.00 per PT1H | 49.0.3 |
-| IQM Sirius (mock) (`sirius:mock`) | mock | M186_W0_ND1_Z99 (M186, ND1) | 24 | COMPR1 | 24 | cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), reset_wait (reset_wait) | 20000 / 200 / 20000 | 0.67 | - | 49.0.3 |
+| IQM Garnet (`garnet`) | qpu | M194_F0W2114_P08_B15 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 10000 | 0.50 | 1800.00 per PT1H | 50.0.0 |
+| IQM Garnet (mock) (`garnet:mock`) | mock | M194_W0_P08_Z99 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_crf), reset_wait (reset_wait) | 20000 / 500 / 10000 | 0.00 | - | 50.0.0 |
+| IQM Sirius (`sirius`) | qpu | M186_F0W2259_ND1_O12 (M186, ND1) | 16 | COMPR1 | 24 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 75000 | 0.30 | 1080.00 per PT1H | 50.0.0 |
+| IQM Sirius (mock) (`sirius:mock`) | mock | M186_W0_ND1_Z99 (M186, ND1) | 24 | COMPR1 | 24 | cz (crf_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), reset_wait (reset_wait) | 20000 / 200 / 20000 | 0.67 | - | 50.0.0 |
 
 Account: PERSONAL with 30.00 credits expiring 2026-11-01T00:00:00+00:00; IQM Server 3.0.1.20261019072700, API v1; token scopes job_execution.
 <!-- iqm-facts:end -->
@@ -190,14 +187,15 @@ Medians of the default calibration sets read at the snapshot:
 
 | QC | T1 | T2 (Ramsey) | T2 echo | PRX RB fidelity | readout fidelity | CZ IRB fidelity | PRX | CZ | measure |
 |---|---|---|---|---|---|---|---|---|---|
-| Emerald | 49 us | 15 us | 38 us | 0.99968 | 0.98845 | 0.99728 | 24 ns | 40 ns | 360 ns |
-| Garnet | 42 us | 9 us | 22 us | 0.99934 | 0.97945 | 0.99425 | 16 ns | 40 ns | 480 ns |
-| Sirius | 26 us | 10 us | 24 us | 0.99902 | 0.98335 | 0.97400 | 40 ns | 104 ns | 400 ns |
+| Emerald | 49 us | 15 us | 39 us | 0.99967 | 0.9879 | 0.99722 | 24 ns | 40 ns | 360 ns |
+| Garnet | 39 us | 9 us | 22 us | 0.99930 | 0.9804 | 0.99407 | 16 ns | 40 ns | 480 ns |
+| Sirius | 28 us | 10 us | 23 us | 0.99880 | 0.9820 | 0.97090 | 40 ns | 104 ns | 400 ns |
 
 - **Emerald**: Crystal 54, chip M216 variant H03 (`M216_F0W102525_H03_F08`),
   station MX07_Aphrodite_CD3. 54 qubits on a square lattice, 90 tunable
   couplers, 8 probe lines, 214 launchers. Drive frequencies 3.802 to
-  4.207 GHz, readout 5.101 to 6.053 GHz; T1 8.6 to 82 us. CZ is calibrated
+  4.207 GHz, readout 5.101 to 6.053 GHz; per-qubit T1 fits span 2.9 us to
+  2.0 ms. CZ is calibrated
   on 85 of the 90 couplings: `slepian_crf` on 83 and `crf_acstarkcrf` on
   QB44-QB50 and QB50-QB51. The DQA override map also names QB49-QB50 and
   QB54-QB50, which no CZ implementation lists as a locus, so the transpiler
@@ -206,13 +204,14 @@ Medians of the default calibration sets read at the snapshot:
   shelves the excited state to level 2 first. Since station control 50.0.0
   it also offers `measure_012` (`constant`), a three-state readout, on QB43
   alone (all 54 qubits of emerald:mock). Weakest operational loci: CZ
-  QB43-QB35 0.950, QB44-QB50 0.966 and QB50-QB51 0.967; readout QB10 0.899
-  and QB6 0.921.
+  QB43-QB35 0.941, QB50-QB51 0.964 and QB16-QB8 0.976; readout QB6 0.925
+  and QB35 0.961.
 - **Garnet**: chip M194 variant P08 (`M194_F0W2114_P08_B15`), "Apollo
   station in XLD10.S1". 20 qubits, 30 couplers, 3 probe lines. Drive 4.488
-  to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 15 to 57 us. CZ
-  `slepian_crf` on all 30 pairs; QB10's four couplings are its weakest
-  (0.988 to 0.990). `measure` also offers `fast_constant`.
+  to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 16 to 67 us. CZ
+  `slepian_crf` on all 30 pairs; QB15's couplings are its weakest, QB19-QB15
+  0.886 and QB14-QB15 0.942, and QB15 also reads out worst (0.893).
+  `measure` also offers `fast_constant`.
 - **Sirius**: star architecture, chip M186 variant ND1
   (`M186_F0W2259_ND1_O12`), station Charon. 16 operational qubits (the
   static architecture names 24, of which 16 carry PRX), all coupled to one
@@ -221,8 +220,8 @@ Medians of the default calibration sets read at the snapshot:
   QB10), and MOVE swaps a qubit's 0-1 occupation with the resonator's, so a
   two-qubit gate between qubits is MOVE, CZ, MOVE. Its quality metrics
   include `move_ncz_move` IRB, `xy_move_cz_move` Clifford RB and a
-  16-qubit GHZ population and coherence bound. CZ to COMPR1 median 0.974,
-  weakest QB11 0.923.
+  16-qubit GHZ population and coherence bound. CZ to COMPR1 median 0.971,
+  weakest QB11 0.943.
 - **AWG channels** that drive and flux the qubits sample at 2 GS/s with an
   8-sample (Emerald, Garnet) or 16-sample (Sirius) instruction granularity,
   so every pulse duration is a multiple of 4 ns or 8 ns; Sirius also lists a
@@ -387,14 +386,12 @@ library.
 2026-10-19 and for Garnet and Sirius on 2026-10-21, with downtime from 02:00
 to about 15:00 UTC. The client pins already match it (iqm-client 36.0.0,
 final RZ gates kept by default, Pulla folded into IQMClient,
-`submit_circuit_job`). The retained snapshot (2026-10-19T15:58Z) holds
-Emerald and emerald:mock at station control 50.0.0 and Garnet, Sirius and
-their mocks at 49.0.3, under IQM Server 3.0.1; Emerald gained `measure_012`
-and the job route `sweep_results_streaming` with an unchanged ISA
-([os-4.7-emerald.md](os-4.7-emerald.md)), and iqm-client
-36.0.0 transpiles for all three QPUs. The all-49.0.3 baseline is
-[hardware-pre-4.7.md](hardware-pre-4.7.md); a snapshot after
-the second window records Garnet and Sirius.
+`submit_circuit_job`). The retained snapshot (2026-10-22T20:48Z) holds all
+three QPUs and their mocks at station control 50.0.0 under IQM Server 3.0.1;
+each gained `measure_012` and the job route `sweep_results_streaming` with an
+unchanged ISA ([os-4.7.md](os-4.7.md)). iqm-client 36.0.0 transpiled for all
+three QPUs on 2026-10-19, with Garnet and Sirius still on 49.0.3. The
+all-49.0.3 baseline is [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
 Gates core-588 (`capture_iqm_docs.py --check`), core-589 (its
 `--self-test`), core-590 (`iqm_platform.py check docs/evidence/iqm --agents
