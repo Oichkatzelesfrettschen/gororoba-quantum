@@ -209,6 +209,7 @@ def build_from(calibration_dir: Path, case: str) -> tuple[dict[str, str], dict[s
             "coherent adds relative over-rotations"
         ),
     }
+    files["prediction.json"] = dump(prediction)
     files["cases.json"] = dump(
         {
             "schema": CASE_SCHEMA,
@@ -220,9 +221,10 @@ def build_from(calibration_dir: Path, case: str) -> tuple[dict[str, str], dict[s
             "ideal": {f"{size:+.2f}": law(size) for size in (t, -t, 0.0)},
             "qcs": QCS,
             "jobs": jobs,
+            # The approval digest of cases.json covers the prediction the analysis decides against.
+            "prediction_sha256": sha256(files["prediction.json"].encode()),
         }
     )
-    files["prediction.json"] = dump(prediction)
     return files, prediction
 
 
@@ -285,6 +287,10 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     digests = {sha256((run_dir / "cases.json").read_bytes()) for run_dir in run_dirs}
     if len(digests) != 1:
         raise ValueError(f"the runs copy {len(digests)} different cases.json; one analysis reads one case")
+    bound = json.loads((sorted(run_dirs)[0] / "cases.json").read_text(encoding="utf-8")).get("prediction_sha256")
+    for run_dir in run_dirs:
+        if sha256((run_dir / "prediction.json").read_bytes()) != bound:
+            raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
     counts: dict[str, tuple[int, int]] = {}
     runs = []
     for run_dir in sorted(run_dirs):
@@ -332,7 +338,10 @@ def self_test() -> str:
         files, prediction = build_from(iqm_sim.EVIDENCE / QC / "calibration", case)
         if prediction["cz"] != 199:
             raise RuntimeError(f"{case}: the recompile has {prediction['cz']} CZ, not the retained probe's 199")
-        jobs = json.loads(files["cases.json"])["jobs"]
+        manifest = json.loads(files["cases.json"])
+        if manifest["prediction_sha256"] != sha256(files["prediction.json"].encode()):
+            raise RuntimeError(f"{case}: cases.json does not bind the prediction it was built with")
+        jobs = manifest["jobs"]
         if any(len(job["circuits"]) > MAX_CIRCUITS for job in jobs):
             raise RuntimeError(f"{case}: a job exceeds {MAX_CIRCUITS} circuits")
         names = [Path(c["file"]).stem for job in jobs for c in job["circuits"] if Path(c["file"]).stem.startswith("t")]

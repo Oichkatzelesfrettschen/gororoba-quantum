@@ -1631,6 +1631,20 @@
       "run": "results/iqm/runs/2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate",
       "family": "IQM signed kernel probe",
       "question": "Does the garnet:mock pipeline accept the null re-test's readout and prx-train job, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest-probe-bound",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T065815Z-garnet_mock-signed-kernel-null-retest-probe-0",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's probe job once cases.json binds its exact prediction?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest-calibrate-bound",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T065821Z-garnet_mock-signed-kernel-null-retest-calibrate",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's calibration job once cases.json binds its exact prediction?"
     }
   ],
   "claims": [
@@ -7902,7 +7916,7 @@
     },
     {
       "id": "iqm-garnet-mock-signed-null-retest",
-      "statement": "garnet:mock accepted both jobs of the signed kernel null re-test (16 heralded 199-CZ circuits x 20000 shots and 10 readout and prx-train circuits x 4000), estimated 13.2 s and 2.04 s, and charged 0.00 credits.",
+      "statement": "garnet:mock accepted both jobs of the signed kernel null re-test (16 heralded 199-CZ circuits x 20000 shots and 10 readout and prx-train circuits x 4000), estimated 13.2 s and 2.04 s, and charged 0.00 credits, both before and after cases.json bound its exact prediction (cases.json ece7a3f2).",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -7915,6 +7929,14 @@
         {
           "path": "results/iqm/runs/2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate/results.json",
           "sha256": "e1e330491915f5c9bd10653022602b49dc3a8acd125aa492e470855d8be0b185"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T065815Z-garnet_mock-signed-kernel-null-retest-probe-0/results.json",
+          "sha256": "83fc9213cdf43adcdfba3d6f8313aafc23196209637650f5faf01d077a5b89ab"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T065821Z-garnet_mock-signed-kernel-null-retest-calibrate/results.json",
+          "sha256": "f9f04c2e1b23fca774cf22a72d625626021056b405812bcee9116869428bedff"
         }
       ],
       "documents": [
@@ -7923,7 +7945,9 @@
       "gates": {},
       "acquisitions": [
         "iqm-garnet-mock-signed-null-retest-probe",
-        "iqm-garnet-mock-signed-null-retest-calibrate"
+        "iqm-garnet-mock-signed-null-retest-calibrate",
+        "iqm-garnet-mock-signed-null-retest-probe-bound",
+        "iqm-garnet-mock-signed-null-retest-calibrate-bound"
       ],
       "assumptions": [],
       "depends_on": [],
@@ -7932,7 +7956,7 @@
     },
     {
       "id": "proposed-signed-null-retest",
-      "statement": "On Garnet (calibration set 68b0f1d0, the retained 199-CZ compile) the null-controlled re-test reads D(0.25) = odd(0.25) - odd(0) over two +, -, -, + blocks at |t| = 0.25 and at t = 0: the retained +0.022 at |t| = 0.25 carries the sign of t only if D(0.25) lies three standard errors above zero. The calibration model predicts an odd part of +0.014 at t = 0 and D(0.25) = +0.0092 (+0.0059 with a 2.7 % QB11 over-rotation), so a model-like device leaves D(0.25) unresolved at the planned standard error of 0.0047, while the retained visibility of 0.206 puts it near 4.8 standard errors. The |t| = 0.05 resolve needs 16 blocks (ceiling 43.5 credits).",
+      "statement": "On Garnet (calibration set 68b0f1d0, the retained 199-CZ compile) the null-controlled re-test reads D(0.25) = odd(0.25) - odd(0) over two +, -, -, + blocks at |t| = 0.25 and at t = 0: the retained +0.022 at |t| = 0.25 carries the sign of t only if D(0.25) lies three standard errors above zero. The calibration model (exact, herald-conditioned readout) predicts an odd part of +0.0136 at t = 0 and D(0.25) = +0.0095 (+0.0059 with a 2.7 % QB11 over-rotation), so a model-like device leaves D(0.25) unresolved at the planned standard error of 0.0047, while the retained visibility of 0.206 puts it near 4.8 standard errors. The |t| = 0.05 resolve needs 16 blocks (ceiling 43.5 credits).",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",

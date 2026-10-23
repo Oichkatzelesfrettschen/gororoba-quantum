@@ -175,14 +175,15 @@ the small-|t| odd part were outside the model by construction.
 
 ## Null-controlled follow-up
 
-The calibration model gives the signed probe an odd part of +0.0141 at
-t = 0 (second seed +0.0135; gate depolarizing alone +0.0144, idle relaxation
-alone +0.0308), where the ideal is zero and every first-order coherent error
-leaves it zero: the +0 and -0 circuits differ in their rotation angles, so
-incoherent noise acts on them differently. That null offset carries most of
-the modeled odd part at |t| = 0.05 (+0.0159), and subtracting it,
-D(t) = odd(t) - odd(0), leaves +0.0019 at |t| = 0.05 and +0.0092 at
-|t| = 0.25, whose ratio (0.21) matches the linear law's 0.22: the
+The calibration model gives the signed probe an odd part of +0.0136 at
+t = 0 (exact density matrix, herald-conditioned readout, set `68b0f1d0`),
+where the ideal is zero and every first-order coherent error leaves it zero:
+the +0 and -0 circuits differ in their rotation angles, so incoherent noise
+acts on them differently. Sampled runs split it by channel (gate
+depolarizing alone about +0.014, idle relaxation alone about +0.031). That
+null offset carries most of the modeled odd part at |t| = 0.05 (+0.0157), and
+subtracting it, D(t) = odd(t) - odd(0), leaves +0.0021 at |t| = 0.05 and
++0.0095 at |t| = 0.25, whose ratio 0.221 matches the linear law's 0.222: the
 simulator's apparent small-|t| departure was this additive offset. The
 retained Garnet run had no t = 0 arm, so its +0.022 at |t| = 0.25 may hold
 an offset of the same size.
@@ -194,16 +195,18 @@ trains on QB6 and QB11 in a second job:
 
 | case | blocks | circuits x shots | ceiling | modeled D(t): calibration / with QB11 +2.7 % | planned z at V = 0.206 |
 |---|---|---|---|---|---|
-| `signed-kernel-null-retest`, \|t\| = 0.25 | 2 | 16 x 20000 + 10 x 4000 | 7.50 credits | +0.0092 / +0.0059 | 4.8 |
-| `signed-kernel-weak-resolve`, \|t\| = 0.05 | 16 | 128 x 20000 (two jobs) + 10 x 4000 | 43.50 credits | +0.0019 / +0.0009 | 3.0 |
+| `signed-kernel-null-retest`, \|t\| = 0.25 | 2 | 16 x 20000 + 10 x 4000 | 7.50 credits | +0.0095 / +0.0059 | 4.8 |
+| `signed-kernel-weak-resolve`, \|t\| = 0.05 | 16 | 128 x 20000 (two jobs) + 10 x 4000 | 43.50 credits | +0.0021 / +0.0010 | 3.0 |
 
 The decision at each nonzero |t| reads D(t): resolved three standard errors
 above zero, falsified three below, unresolved between. The weak resolve
 exceeds the account's 24.00 credits. The re-test decides whether Garnet's
 |t| = 0.25 sign survives the null subtraction: the model's visibility after
-it is 0.05 to 0.08, under which D(0.25) stays within two standard errors
-(0.0047), while the retained run's 0.206 puts it near 4.8. garnet:mock ran
-both re-test jobs (estimates 13.2 s and 2.04 s, 0.00 credits); its chip
+it is 0.05 to 0.09, under which D(0.25) stays within two standard errors
+(0.0047), while the retained run's 0.206 puts it near 4.8. cases.json binds each case's
+exact prediction by digest, and garnet:mock ran both re-test jobs of the
+current bytes (cases.json `ece7a3f2...`; estimates 13.2 s and 2.04 s,
+0.00 credits); its chip
 model ran 1.5 times Garnet's estimate on the retained probe, whose measured
 24.6 us per heralded shot puts the probe job near 9.5 s against its 12 s
 ceiling.
