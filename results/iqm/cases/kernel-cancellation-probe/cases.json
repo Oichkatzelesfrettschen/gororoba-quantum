@@ -93,36 +93,44 @@
      "sha256": "268366a4880e8cc138da6125440b17a7c92e5ff564346445bbcda09796fdde25"
     },
     {
-     "file": "circuits/amp-QB11-5.json",
-     "sha256": "01f01f6ea9edb408912fa8a1de78c6e9ffe41f75078aaeac058b07ba4cf2c474"
+     "file": "circuits/amp-QB11-1.json",
+     "sha256": "a37cda727854bab51f321e906c9f0988c878bd87c53df6a6567e8d0a0d34e30f"
     },
     {
-     "file": "circuits/amp-QB11-10.json",
-     "sha256": "ab74453199e338eeeaf8ccf954327d5c0c915fd308daeffcef55beff0505c7fd"
+     "file": "circuits/amp-QB11-2.json",
+     "sha256": "51994bc74a782b1956cf9034b86433e5bb6287bbb022862f5b500b53b73aa3d3"
+    },
+    {
+     "file": "circuits/amp-QB11-3.json",
+     "sha256": "bf096f166f05e96bea7f9d9ad5370a17e52ea4fe584f281f707ae1deca54a373"
     },
     {
      "file": "circuits/amp-QB12-0.json",
      "sha256": "973de182176f6bf6c9c3976da15e4db99dc8554981b4725fbc57e79f8d0b43bf"
     },
     {
-     "file": "circuits/amp-QB12-5.json",
-     "sha256": "e88470399a661e44d25d0c453d938313f05051404f8ed9d35d8459c20e73d87f"
+     "file": "circuits/amp-QB12-1.json",
+     "sha256": "117dd98e09b0cfebd605c7cd69202757270dc92a1c8be77c48e01b3202da1bc9"
     },
     {
-     "file": "circuits/amp-QB12-10.json",
-     "sha256": "9b520c3e71cddad42d66c448ee1ee3742452d9d725347c6d54261be4dbae47b5"
+     "file": "circuits/amp-QB12-2.json",
+     "sha256": "8633e56dbc76f7b8b75a54eea7bfb7721d74f8b94611adf603a168928faaddac"
+    },
+    {
+     "file": "circuits/amp-QB12-3.json",
+     "sha256": "277a5fdb6fda70ca90c69c1a55311005bb17033ea69e020c832124600a75f6a1"
     }
    ],
-   "expected_seconds": 1.969,
+   "expected_seconds": 3.1,
    "job": "cancellation",
    "max_credits": {
-    "garnet": 2.0,
+    "garnet": 2.5,
     "garnet:mock": 0.0
    },
    "options": {
     "active_reset_cycles": 1,
     "calibration_set_id": {
-     "garnet": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d"
+     "garnet": "68b0f1d0-b410-450f-aed7-b709f22412c1"
     },
     "heralding_mode": "zeros"
    },

@@ -10,7 +10,8 @@ sedenion kernel vector u = (e4 - e15)/sqrt2 of L(e1 + e10) and as 1 for the brig
 - bright arms phi = +-0.1 (+, -, -, +) and phi = 0, whose odd part is zero for every visibility;
 - readout calibration of the control qubit (a bare measure and a pi pulse then measure);
 - amplification trains of 4k + 1 prx(pi/2) pulses, k in AMPLIFY_K, on the qubit whose prx angles
-  carry theta and on the control: <Z> = -sin((4k + 1)(pi/2) eps) for a relative over-rotation eps.
+  carry theta and on the control: <Z> = -sin((4k + 1)(pi/2) eps) for a relative over-rotation eps,
+  fitted directly rather than linearized.
 
 On the compile, scripts/iqm_probe_audit.py's first-order response puts every coherent error except the
 theta qubit's over-rotation at zero in both parts; that over-rotation scales the odd part by 1 + O(eps)
@@ -29,11 +30,14 @@ Preregistered decisions (Z_RESOLVE standard errors):
   r = 1 - e01 - e10 from the readout calibration, R the prediction's incoherent even part net of its
   modeled readout (idle relaxation, which is not unital), V the visibility from the phi = 0.1 odd
   part, eps from the theta qubit's trains.
-- H5 amplification: the trains' <Z> is linear in 4k + 1 (the server plays each pulse); a slope ratio
-  outside Z_RESOLVE standard errors marks pulse merging, and H4 is then not evaluated.
+- H5 amplification: the trains' <Z> follows -sin((4k + 1)(pi/2) eps) (the server plays each pulse); a
+  residual chi-square above the one-sided Z_RESOLVE tail of three degrees of freedom marks pulse merging
+  or a non-stationary error, and H4 is then not evaluated.
 
-Usage: "$PYTHON" scripts/iqm_cancellation_probe.py (build DIR | check DIR | analyze RUN_DIR... --out FILE
-       [--replay] | --self-test)
+Usage: "$PYTHON" scripts/iqm_cancellation_probe.py (build DIR [--live] | check DIR | analyze RUN_DIR...
+       --out FILE [--replay] | --self-test)
+build --live reads Garnet's current default calibration set (IQM_TOKENS_FILE, read-only) into DIR/calibration;
+check rebuilds offline from that copy.
 """
 
 from __future__ import annotations
@@ -68,20 +72,38 @@ SHOTS = 4000
 # Garnet's price per second; the build records each QC's ceiling in cases.json, which submit enforces.
 PRICE = {"garnet": 0.5, "garnet:mock": 0.0}
 JOB_SECONDS = 1.6
-# The heralded 199-CZ probe ran 21.4 us per requested shot beyond the fixed job cost; shorter circuits
-# run faster, so this bounds the schedule from above.
-SHOT_SECONDS = 0.0000214
+# The two heralded Garnet probe jobs (40000 and 200000 requested shots, runtimes 1.59 s and 6.52 s)
+# differ by 31 us per requested shot; the shorter circuits here run faster, so this bounds the schedule.
+SHOT_SECONDS = 0.000031
 OPTIONS: dict[str, Any] = {"heralding_mode": "zeros", "active_reset_cycles": 1}
 CALIBRATION_FILES = ("metrics.json", "dynamic-quantum-architecture.json")
 PREDICTION_SHOTS = 200000
 PREDICTION_SEED = 20261023
-AMPLIFY_K = (0, 5, 10)
+# Train lengths 4k + 1 = 1, 5, 9, 13 keep the accumulated rotation under 0.7 rad up to a 3 % over-rotation,
+# the size the signed probe's even offsets put on QB11.
+AMPLIFY_K = (0, 1, 2, 3)
 STEP = 1e-4
 Z_RESOLVE = 3.0
-# H5 marks a train non-linear above the chi-square quantile whose upper tail equals the one-sided
-# Z_RESOLVE normal tail; with three train lengths the residual has two degrees of freedom, whose
-# survival function is exp(-x/2).
-H5_CHI2_CUTOFF = -2 * math.log(0.5 * math.erfc(Z_RESOLVE / math.sqrt(2)))
+
+
+def chi2_survival_3(x: float) -> float:
+    """Upper tail of the chi-square law with three degrees of freedom."""
+    return math.erfc(math.sqrt(x / 2)) + math.sqrt(2 * x / math.pi) * math.exp(-x / 2)
+
+
+def chi2_cutoff_3(tail: float) -> float:
+    low, high = 0.0, 100.0
+    for _ in range(200):
+        middle = (low + high) / 2
+        low, high = (middle, high) if chi2_survival_3(middle) > tail else (low, middle)
+    return (low + high) / 2
+
+
+# H5 marks a train inconsistent with -sin(N pi/2 eps) above the chi-square quantile whose upper tail
+# equals the one-sided Z_RESOLVE normal tail; four train lengths and one fitted eps leave three degrees
+# of freedom.
+H5_CHI2_CUTOFF = chi2_cutoff_3(0.5 * math.erfc(Z_RESOLVE / math.sqrt(2)))
+EPS_RANGE = 0.15
 SYNTHETIC_VISIBILITY = 0.6
 SYNTHETIC_READOUT = (0.01, 0.03)
 # (name, bright, phi) in list order: +, -, -, + for each contrast.
@@ -241,12 +263,35 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     return files, prediction
 
 
-def write(directory: Path) -> None:
+def fetch_calibration(calibration_dir: Path) -> None:
+    """Garnet's current default calibration set: its architecture and metrics, read by the set's id."""
+    from iqm_platform import API, Client, read_tokens, tokens_path
+
+    client = Client(read_tokens(tokens_path())["access_token"])
+    status, body = client.get(f"{API}/calibration-sets/{QC}/default")
+    if status != 200:
+        raise ValueError(f"GET the default calibration set answered {status}")
+    identity = json.loads(body)["observation_set_id"]
+    for name, suffix in (
+        ("dynamic-quantum-architecture.json", "dynamic-quantum-architecture"),
+        ("metrics.json", "metrics"),
+    ):
+        status, data = client.get(f"{API}/calibration-sets/{QC}/{identity}/{suffix}")
+        if status != 200:
+            raise ValueError(f"GET {suffix} of {identity} answered {status}")
+        (calibration_dir / name).write_bytes(data)
+
+
+def write(directory: Path, live: bool = False) -> None:
+    """Build the case; --live reads Garnet's current calibration, otherwise the retained snapshot's copy."""
     calibration_dir = directory / "calibration"
     calibration_dir.mkdir(parents=True, exist_ok=True)
-    source = iqm_sim.EVIDENCE / QC / "calibration"
-    for name in CALIBRATION_FILES:
-        shutil.copyfile(source / name, calibration_dir / name)
+    if live:
+        fetch_calibration(calibration_dir)
+    else:
+        source = iqm_sim.EVIDENCE / QC / "calibration"
+        for name in CALIBRATION_FILES:
+            shutil.copyfile(source / name, calibration_dir / name)
     files, prediction = build_from(calibration_dir)
     for rel, text in files.items():
         path = directory / rel
@@ -286,6 +331,35 @@ def z_of(counts: dict[str, tuple[int, int]], *names: str) -> tuple[float, float,
 
 def decide(value: float, se: float) -> str:
     return "resolved" if value / se <= -Z_RESOLVE else "falsified" if value / se >= Z_RESOLVE else "unresolved"
+
+
+def fit_train(
+    lengths: list[int], rows: list[tuple[float, float, int]], e01: float, e10: float
+) -> tuple[float, float, float]:
+    """Weighted least squares of r(-sin(N pi/2 eps)) + (e10 - e01) on the trains' <Z>: (eps, se, chi2).
+
+    A grid over |eps| <= EPS_RANGE brackets the minimum, a golden-section search refines it, and the
+    standard error comes from the chi-square's second derivative, se = sqrt(2 / chi2'').
+    """
+    r, offset = 1 - e01 - e10, e10 - e01
+
+    def chi2(eps: float) -> float:
+        return sum(
+            ((z - (offset - r * math.sin(n * math.pi / 2 * eps))) / se) ** 2
+            for n, (z, se, _) in zip(lengths, rows, strict=True)
+        )
+
+    grid = [EPS_RANGE * (i / 1500 - 1) for i in range(3001)]
+    best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
+    low, high = grid[max(best - 1, 0)], grid[min(best + 1, len(grid) - 1)]
+    ratio = (math.sqrt(5) - 1) / 2
+    for _ in range(100):
+        a, b = high - ratio * (high - low), low + ratio * (high - low)
+        low, high = (low, b) if chi2(a) < chi2(b) else (a, high)
+    eps = (low + high) / 2
+    step = 1e-4
+    curvature = (chi2(eps + step) - 2 * chi2(eps) + chi2(eps - step)) / step**2
+    return eps, math.sqrt(2 / curvature), chi2(eps)
 
 
 def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> dict[str, Any]:
@@ -338,18 +412,12 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
     }
     amplify: dict[str, Any] = {}
     for qubit in [*prediction["theta_qubits"], prediction["control"]]:
-        xs = np.array([4 * k + 1 for k in AMPLIFY_K], dtype=float)
         rows = [z_of(counts, f"amp-{qubit}-{k}") for k in AMPLIFY_K]
-        # Readout maps <Z>_true to r <Z> + (e10 - e01); invert it, then -sin(N pi/2 eps) ~ -N (pi/2) eps.
-        ys = np.array([(z - (e10 - e01)) / r for z, _, _ in rows])
-        ws = np.array([(r / se) ** 2 for _, se, _ in rows])
-        slope = float(np.sum(ws * xs * ys) / np.sum(ws * xs * xs))
-        slope_se = float(1 / math.sqrt(np.sum(ws * xs * xs)))
-        residual = float(np.sum(ws * (ys - slope * xs) ** 2))
+        eps, eps_se, residual = fit_train([4 * k + 1 for k in AMPLIFY_K], rows, e01, e10)
         amplify[qubit] = {
             "z": [z for z, _, _ in rows],
-            "eps": -slope / (math.pi / 2),
-            "eps_se": slope_se / (math.pi / 2),
+            "eps": eps,
+            "eps_se": eps_se,
             "chi2": residual,
             "dof": len(AMPLIFY_K) - 1,
             "linear": residual <= H5_CHI2_CUTOFF,
@@ -492,7 +560,7 @@ def self_test() -> str:
             ideal = Register(circuit["instructions"]).z(circuit["instructions"], {})
             if abs(ideal - kc.law(phi, bright)) > 1e-9:
                 raise RuntimeError(f"{name} reads {ideal} noiselessly, not {kc.law(phi, bright)}")
-    eps = {q: 0.006 for q in prediction["theta_qubits"]}
+    eps = {q: 0.027 for q in prediction["theta_qubits"]}
     z = prediction["z"]
     relaxation = (sum(z[n] for n in ("k+0.1a", "k+0.1b", "k-0.1a", "k-0.1b")) / 4 - (z["ro0"] + z["ro1"]) / 2) / (
         (z["ro0"] - z["ro1"]) / 2
@@ -524,6 +592,13 @@ def self_test() -> str:
         null["h3_sine_law"]["z"]
     ):
         raise RuntimeError(f"a null device reads {null['h1_zero_divisor_sign']}, H3 {null['h3_sine_law']}")
+    # Merged pulses read every train like the longest one: H5 rejects the sine law and suspends H4.
+    merged = dict(shifted)
+    for q in prediction["theta_qubits"]:
+        for k in AMPLIFY_K:
+            merged[f"amp-{q}-{k}"] = shifted[f"amp-{q}-{AMPLIFY_K[-1]}"]
+    if evaluate(merged, prediction)["h4_coherent_even"]["evaluated"]:
+        raise RuntimeError("trains that ignore their pulse count left H4 evaluated")
     reversed_ = evaluate(synthetic(files, eps, True, 2, relaxation), prediction)
     if "falsified" not in reversed_["h1_zero_divisor_sign"].values():
         raise RuntimeError(f"a reversed sign reads {reversed_['h1_zero_divisor_sign']}")
@@ -538,7 +613,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--self-test", action="store_true")
     sub = parser.add_subparsers(dest="command")
-    sub.add_parser("build").add_argument("directory", type=Path)
+    bd = sub.add_parser("build")
+    bd.add_argument("directory", type=Path)
+    bd.add_argument("--live", action="store_true", help="read Garnet's current calibration (network, read-only)")
     sub.add_parser("check").add_argument("directory", type=Path)
     an = sub.add_parser("analyze")
     an.add_argument("run_dirs", type=Path, nargs="+")
@@ -548,7 +625,7 @@ def main() -> int:
     if args.self_test:
         print(self_test())
     elif args.command == "build":
-        write(args.directory)
+        write(args.directory, args.live)
     elif args.command == "check":
         check(args.directory)
     elif args.command == "analyze":

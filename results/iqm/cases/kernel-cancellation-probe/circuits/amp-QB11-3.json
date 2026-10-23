@@ -6,7 +6,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -16,7 +16,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -26,7 +26,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -36,7 +36,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -46,7 +46,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -56,7 +56,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -66,7 +66,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -76,7 +76,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -86,7 +86,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -96,7 +96,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -106,7 +106,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -116,7 +116,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -126,87 +126,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.5707963267948966,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -215,10 +135,10 @@
     "key": "c"
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "measure"
   }
  ],
- "name": "amp-QB12-5"
+ "name": "amp-QB11-3"
 }
