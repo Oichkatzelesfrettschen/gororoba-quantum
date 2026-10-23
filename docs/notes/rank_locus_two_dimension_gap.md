@@ -183,8 +183,9 @@ and is never evidence of the gap.
    ([evidence](../evidence/rank_locus_tangent_linearity/README.md),
    `scripts/rank_locus_tangent_linearity.py`, gate core-663): rank 32 at
    every nullity-4, -8 and -12 witness and 20 at the nullity-16 ones. T(x)
-   is therefore never a linear piece of D_(5,k), and a piece of the
-   tangent-bound dimension, if one exists, is curved. The nullity-16
+   is therefore never inside the closed rank cone
+   R_k = {y : rank L_y <= 32 - k}, and the cone over a piece of D_(5,k) of
+   the tangent-bound dimension, if one exists, is curved. The nullity-16
    witnesses, whose local dimension equals the tangent bound on the curved
    zero-divisor cone, fail the test as well, so it excludes only a linear
    piece.
