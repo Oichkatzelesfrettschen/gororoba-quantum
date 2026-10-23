@@ -1,0 +1,54 @@
+{
+  "schema": "plan-tracker-validation-v1",
+  "revision": "56a96a355c6fcf49e834f35058e762ec64a18a2b",
+  "observed_at": "2026-10-23T18:21:48.069613+00:00",
+  "checks": {
+    "pytest": "25 passed",
+    "ruff": "passed",
+    "mypy": "4 files passed",
+    "inventory": "67 records; current and predecessor denominators passed",
+    "markdown_links": "486 files passed"
+  },
+  "source_sha256": {
+    "scripts/plan_records.py": "7238d645e4f38e664e9869ed6ed02ca790fb2347f0f2eecff01da2a934d78580",
+    "scripts/plan_inventory.py": "e180304b90ccc76313de62b9f0bc004593698f17b86a395b28509164238180fe",
+    "scripts/plan_tracker.py": "12c700969358b59310b209bfcc4055b9451d6b0757a5d54bd4282606962bf44c",
+    "tests/scripts/test_plan_tracker.py": "ddec2a170a0dde062e58a69e98f28f6a049a122da3f2eba3cccd258841c0d210"
+  },
+  "retrieval": [
+    {
+      "arguments": [
+        "scripts/plan_tracker.py",
+        "list",
+        "--json"
+      ],
+      "seconds": 0.8012,
+      "output_bytes": 31813
+    },
+    {
+      "arguments": [
+        "scripts/plan_tracker.py",
+        "search",
+        "calibration",
+        "--json"
+      ],
+      "seconds": 0.6906,
+      "output_bytes": 13457
+    },
+    {
+      "arguments": [
+        "scripts/plan_tracker.py",
+        "show",
+        "bdsc-tuna17-pauli-pilot",
+        "--json"
+      ],
+      "seconds": 0.6684,
+      "output_bytes": 3191
+    }
+  ],
+  "entrance_bytes": 1402,
+  "limits": [
+    "Measurements cover CLI retrieval on this host; human resumption usability remains unmeasured.",
+    "Repository-wide gates and hosted review remain pending."
+  ]
+}

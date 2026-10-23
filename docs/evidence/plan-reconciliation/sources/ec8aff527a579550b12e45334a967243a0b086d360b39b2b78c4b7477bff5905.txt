@@ -1,0 +1,83 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/n21-window-sweep.md
+
+# n21-orbit-rca: delay sweep and qubit-143 window Ramsey
+
+Branch `n21/orbit-window-sweep` (worktree `~/worktrees/IBMQuantum/n21/orbit-window-sweep`).
+Read first: root AGENTS.md (gates, voice, S101, parallel.py), results/live/N21_ORBIT_RCA.md
+(section "Contract forecast on the pre-barrier run"), results/live/PATCH_WINDOW_FINDINGS.md.
+
+## Goal
+
+Add two arm sets to the `n21-orbit-rca` family, in the SAME `n21_orbit_rca` Group
+(one layout, one dynamic job; static and dynamic circuits must never share a group):
+
+1. **Delay sweep.** A second window_delay length. Today `window_delay` idles the
+   control `window_delay_dt` (415 dt, one readout) after reset. Add variant
+   `window_delay_long` idling `2 * window_delay_dt`, feedback and no_feedback
+   members, same barriers. Discriminates a monotonic decoherence ramp (magnitude
+   keeps falling) from a one-time post-reset step (flat beyond the first delay).
+2. **Qubit-143 window Ramsey.** Four-qubit members on the same logical qubits as the
+   orbit (control 0, work-for-1 1, work-for-4 2 = physical 143, work-for-16 3):
+   logical qubit 2 in |+> (H), others |0>; barrier; control measured into a bit then
+   reset (as the orbit window does), with a work-side idle equal to the orbit's
+   window bracket; barrier; read qubit 2 in X or Y (Y: sdg then h). Reference:
+   `reset_only` with the control's measurement replaced by a delay of the calibrated
+   measure duration (see patch_characterization.measurement_window for the exact
+   pattern and naming). Members: measured_x, measured_y, reset_only_x,
+   reset_only_y. These are dynamic (mid-circuit measure/reset), so they belong in the
+   dynamic job. Their ideal laws: X -> qubit-2 bit 0 with probability 1; Y -> 1/2.
+   If init_herald is on, they carry the same herald register and lifting as the
+   orbit members.
+
+## Analyzer (scripts/n21_orbit_rca.py)
+
+- Every function that iterates group members (window_roles, measured_pairs,
+  raw_pubs carried check, admissibility, herald paths, summarize) must select the
+  orbit members by name and skip the Ramsey members; ORBIT_VARIANTS gains
+  `window_delay_long`.
+- New preregistered contract `window_delay_ramp`: one-sided test that the
+  window_delay_long magnitude lies below the window_delay magnitude (contrast_floor
+  machinery or equivalent delta-method test, herald_margin subtracted as for the
+  other magnitude contracts). Pass = monotonic ramp; fail = consistent with a step.
+- New preregistered contract `spectator_window_dephasing`: from the four Ramsey
+  members, visibility R = hypot(<X>, <Y>) measured vs reset_only; one-sided test that
+  R_measured < R_reset_only (delta method on the binomial counts).
+- CONTRACTS grows to five; CONTRACT_ALPHA = FAMILY_ALPHA / len(CONTRACTS) follows.
+- Self-tests (extend self_check / self_test_herald pattern): plant (a) static
+  detuning truth: magnitudes flat, ramp fails, spectator fails; (b) monotonic
+  dephasing truth: ramp passes; (c) 143 readout-dephasing truth: spectator passes;
+  (d) step truth: ramp fails while delay magnitude < nominal. Each must reach the
+  expected verdict.
+
+## Planner / case
+
+- diagnostic_experiments.n21_orbit_rca_group builds the new members; family_contracts
+  for n21-orbit-rca covers the new orbit pair with a directional endpoint like the
+  others and gives the Ramsey members precision-only (no directional) contracts so
+  power admission does not demand an effect on them. Keep the alpha split consistent
+  with the comment there.
+- Any configuration value the members need (measure duration in dt) comes from the
+  calibration the way window_delay_dt and echo_half_dt do (grep live_run.py and
+  qpu_cases.py for window_delay_dt); record it in the family configuration and in
+  qpu_cases case text.
+- qpu_cases.py: the case text describes the new arms in one or two sentences.
+
+## Gates and acceptance
+
+- Existing n21_orbit_rca and qpu_planning gates in ci/gates.json must pass; add the
+  new self-tests to an existing or new gate (declare full-gate inputs in
+  ci/full_gate_inputs.json by hand if full tier).
+- `python3 ci/pinned_tool.py ruff check gororoba_quantum scripts ci` and
+  `ruff format --check`, and `python3 ci/pinned_tool.py mypy` clean.
+- Retained 083417/201757 replays (`--check`) must still regenerate byte for byte.
+- Run with GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096. Use
+  `GOROROBA_WORKERS=4` for local runs.
+
+## Constraints
+
+- NO QPU submission, NO live_run.py dry run (the orchestrator runs it), no push, no
+  network except none. Commit on the branch in focused commits with
+  `Assisted-by: Claude Code (claude-opus-5-5)` trailer. Never rm -rf (trash-put).
+  Spawn no subagents. Write a short report of what changed and what was run with
+  results to docs/local/plans/n21-window-sweep-report.md.

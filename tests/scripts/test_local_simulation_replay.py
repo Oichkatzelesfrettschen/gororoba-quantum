@@ -3,12 +3,101 @@
 import copy
 import json
 import subprocess
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any
 
 import local_simulation_replay
 import pytest
 from local_simulation_replay import check_photonic, check_probabilities, check_qi, load
+
+FOLLOWON_RECORDS = (
+    "cqasm-fullprecision-compiler-crosscheck/qi.json",
+    "photonic-compiler-crosscheck-perceval-1-3-1/qi.json",
+    "photonic-compiler-crosscheck-perceval-1-3-1/photonic.json",
+)
+
+
+def skip_unchanged_numerical_replays(monkeypatch: pytest.MonkeyPatch) -> None:
+    unchanged = {check_qi, check_photonic, local_simulation_replay.check_optical_operator}
+
+    def bounded_map(function: Callable[[Any], Any], arguments: Iterable[Any], **kwargs: Any) -> list[Any]:
+        return [] if function in unchanged else [function(argument) for argument in arguments]
+
+    monkeypatch.setattr(local_simulation_replay, "ordered_map", bounded_map)
+
+
+@pytest.mark.parametrize("record_name", FOLLOWON_RECORDS)
+@pytest.mark.parametrize("mutation", ["missing_row", "seeded_counts", "producer", "count_type"])
+def test_followon_replay_rejects_changed_evidence(
+    record_name: str, mutation: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    skip_unchanged_numerical_replays(monkeypatch)
+    original_load = local_simulation_replay.load
+
+    def altered_load(name: str) -> dict[str, Any]:
+        record = original_load(name)
+        if name != record_name:
+            return record
+        if mutation == "missing_row":
+            record["rows"].pop()
+        elif mutation == "producer":
+            record["runner_sha256"] = "0" * 64
+        elif name.endswith("photonic.json"):
+            counts = record["rows"][0]["simulated_counts"]
+            if mutation == "count_type":
+                index = next(index for index, count in enumerate(counts) if count == 0)
+                counts[index] = False
+            else:
+                counts[0] -= 1
+                counts[1] += 1
+        else:
+            row = next(row for row in record["rows"] if len(row["simulations"]["source"]["counts"]) > 1)
+            counts = row["simulations"]["source"]["counts"]
+            first, second = list(counts)[:2]
+            if mutation == "count_type":
+                counts[first] = float(counts[first])
+            else:
+                counts[first] -= 1
+                counts[second] += 1
+        return record
+
+    monkeypatch.setattr(local_simulation_replay, "load", altered_load)
+    with pytest.raises(ValueError, match="denominator|scientific payload|producer identity"):
+        local_simulation_replay.check()
+
+
+def test_followon_fullprecision_replay_binds_exporter(monkeypatch: pytest.MonkeyPatch) -> None:
+    skip_unchanged_numerical_replays(monkeypatch)
+    original_load = local_simulation_replay.load
+
+    def altered_load(name: str) -> dict[str, Any]:
+        record = original_load(name)
+        if name == FOLLOWON_RECORDS[0]:
+            record["exporter"]["sha256"] = "0" * 64
+        return record
+
+    monkeypatch.setattr(local_simulation_replay, "load", altered_load)
+    with pytest.raises(ValueError, match="exporter identity"):
+        local_simulation_replay.check()
+
+
+@pytest.mark.parametrize("record_name", FOLLOWON_RECORDS)
+def test_followon_replay_keeps_reported_timing_separate(record_name: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    skip_unchanged_numerical_replays(monkeypatch)
+    original_load = local_simulation_replay.load
+
+    def altered_load(name: str) -> dict[str, Any]:
+        record = original_load(name)
+        if name == record_name:
+            record["elapsed_seconds"] += 1
+            for row in record["rows"]:
+                if "seconds" in row:
+                    row["seconds"] += 1
+        return record
+
+    monkeypatch.setattr(local_simulation_replay, "load", altered_load)
+    local_simulation_replay.check()
 
 
 def retained_live_payload() -> dict[str, Any]:

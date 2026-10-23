@@ -50,6 +50,15 @@ experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 `proofs/`, a replay bundle or its receipts follows the Rocq replay of
 [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
 
+## Work planning
+
+[docs/state/plans.md](docs/state/plans.md) is the planning entry point. JSON records own work status;
+Markdown views are generated. Capture ideas cheaply, then record scope, owner, next action and checkable
+steps before committing work. Update records when scope changes, work pauses or an obligation closes.
+Completion requires scope-bound receipts; scientific claims and provider approvals keep their existing
+authorities. Reconcile JSON conflicts by hand, regenerate views and run `scripts/plan_tracker.py check`.
+The [operator procedure](docs/runbooks/plan-tracker.md) documents commands and shared-checkout locking.
+
 ## Source library and research replay
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
@@ -209,6 +218,11 @@ build-host Python stack in
   [docs/notes/ibm_quantum/qpu-submission.md](docs/notes/ibm_quantum/qpu-submission.md).
 
 ## Hardware services
+
+Future acquisition decision statements and job-specific cancellation authority
+follow [the evidence-closure procedure](docs/runbooks/evidence-closure.md).
+An account-wide queue grants no authority to cancel another worker's job.
+The derived closure snapshot is a view; it never replaces the research registry.
 
 Each provider guide holds the environment, credential handling, MCP
 registration, backend table, limits, gates and run procedure; the live provider

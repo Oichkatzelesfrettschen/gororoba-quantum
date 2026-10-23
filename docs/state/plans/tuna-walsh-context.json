@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-walsh-context",
+  "kind": "implementation",
+  "summary": "tuna-walsh: cubic Walsh exemplars (1,16) and (9,18) in one Tuna-17 batch",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/e257c08994a82c68d820e49d3d98df3ae384dd4e51e41fa9ed85eed1b3ec74de.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-269.json"
+  ],
+  "state": "inbox",
+  "scope": "tuna-walsh: cubic Walsh exemplars (1,16) and (9,18) in one Tuna-17 batch",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #269 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-269-integration",
+      "action": "Verify the recorded integration state of PR #269.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "44107ca5ed71c4efec0e305bc1979ae91f918888cc271cc344a7adedd21de129",
+          "result": "PR #269 merged as 3ab52b7d2e965bf1c6dc16d56f34da7ed7b1f4eb; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-269.json",
+              "sha256": "87e8c864f9fa44db84cea14f5d95c7b7e8ff5e404e86cd647140a3bc266471cf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Defined by step 3 before any approval request; the case states the predicted K difference after noise and the separation it needs.",
+      "state": "todo"
+    }
+  ]
+}

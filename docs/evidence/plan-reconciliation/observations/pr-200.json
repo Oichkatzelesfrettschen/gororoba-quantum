@@ -1,0 +1,11 @@
+{
+  "number": 200,
+  "title": "ci: run verify.py over a pinned open_gororoba checkout with CSVs rebuilt from registry records",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T13:43:34Z",
+  "closed_at": "2026-10-17T13:43:34Z",
+  "merge_commit_sha": "cb0ef66df11ad7bde93f5aaf40b09d86c409496b",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/200",
+  "merge_ancestor_of_canonical_head": true
+}

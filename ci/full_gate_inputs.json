@@ -476,6 +476,9 @@
     ],
     "core-644": [
       "results/iqm/cases/signed-kernel-null-retest/**"
+    ],
+    "core-666": [
+      "docs/evidence/evidence-closure/**"
     ]
   }
 }

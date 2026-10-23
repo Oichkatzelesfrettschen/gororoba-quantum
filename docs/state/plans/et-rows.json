@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "et-rows",
+  "kind": "experiment",
+  "summary": "ET-row device experiment",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/e5657fcad0adee0ba5dc0724659c02d9bde21c59170b9002474ef2e7e705884b.txt",
+    "docs/design/et-rows.md"
+  ],
+  "state": "inbox",
+  "scope": "ET-row device experiment",
+  "next_action": "Redesign inference and allocation to satisfy calibration and time budgets.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "D32 compiled but failed admission; D64 and D128 require their own native and budget qualification."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Redesign inference and allocation to satisfy calibration and time budgets.",
+      "acceptance": "D32 compiled but failed admission; D64 and D128 require their own native and budget qualification.",
+      "state": "todo"
+    }
+  ]
+}

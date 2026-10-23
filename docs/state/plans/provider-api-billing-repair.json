@@ -1,0 +1,46 @@
+{
+  "schema": "work-plan-v1",
+  "id": "provider-api-billing-repair",
+  "kind": "investigation",
+  "summary": "Provider API, billing and research-design implementation plan",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/3947915f4440fbd7a35752de1fd4766abf02e12f72e475b77a085890635209bd.txt",
+    "docs/design/provider-api-billing-research-plan.md",
+    "docs/evidence/plan-reconciliation/observations/pr-367.json"
+  ],
+  "state": "inbox",
+  "scope": "Provider API, billing and research-design implementation plan",
+  "next_action": "Reconcile the original validation and canonical-synchronization obligations; PR367 merge is verified.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #367 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-367-integration",
+      "action": "Verify the recorded integration state of PR #367.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "1f4f5c277f7f80c435297c2d121999f010f9c41a5a5f7b88097cf0731f52f165",
+          "result": "PR #367 merged as 4971aba18cfef526f961ff94e5df2a03386f4691; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-367.json",
+              "sha256": "0278ace7a2752a3266088d5629f227f08ba73d9d588146e39b42ba0e28bb65a8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-validation-and-sync",
+      "action": "Locate validation and canonical-synchronization receipts for the original acceptance cases.",
+      "acceptance": "Bind each validation result to the merged implementation; distinguish merge ancestry from dirty-checkout preservation.",
+      "state": "todo"
+    }
+  ]
+}

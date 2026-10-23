@@ -1,0 +1,61 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/main-ci.md
+
+# main-ci: main push runs cancel each other
+
+Owner session: ibmquantum-e5. Branch (planned): ci/main-runs-complete-under-concurrency.
+
+## Finding
+
+.github/workflows/ci.yml:11-13 sets `concurrency: group: ci-${{ github.ref }}`
+with `cancel-in-progress: true` for every event. A push to main therefore
+cancels the full-tier run of the previous main commit. Observed on
+2026-10-17 through `gh api repos/.../actions/runs?branch=main&event=push`:
+the run on 8d5f038 (39008362959) failed on core-368 and core-387, and the
+next three push runs, abe071a (39016886993), c0306fb (39017974013) and
+66eacb6 (39018106962), each ended `cancelled` when the next merge landed
+within the 10-minute shard 4 (core-329, about 540 s). Main has no completed
+full-tier run after the red one. Full-tier gates (core-289 at 120 s,
+core-329) run only on main pushes, the nightly schedule and manual runs, so
+a cancelled run hides a full-tier regression.
+
+## Reachability
+
+Every merge to main reaches it; concurrent sessions merge several PRs within
+ten minutes as a matter of course.
+
+## Design
+
+Set `cancel-in-progress: ${{ github.event_name == 'pull_request' }}`. GitHub
+keeps one running and one pending run per concurrency group: a pull-request
+push still cancels its own stale run, while a main push lets the running
+full-tier run finish and waits as the pending run; a later main push replaces
+only the pending one. Every started main run completes, and the newest main
+commit is always the next one verified. The nightly schedule shares the main
+group and queues the same way. No gate, script or record changes.
+
+## Acceptance and falsifier
+
+Prediction: after the change merges, two main pushes landing within ten
+minutes produce a first run that ends `success` or `failure` (never
+`cancelled`) and a second run that starts after it. Check with
+`gh api "repos/Oichkatzelesfrettschen/gororoba-quantum/actions/runs?branch=main&event=push&per_page=4" --jq '.workflow_runs[] | "\(.head_sha[0:7]) \(.status) \(.conclusion)"'`.
+A main run ending `cancelled` by a push falsifies the design. A pull
+request push that leaves its previous run running falsifies the expression.
+
+## Shared files and dependencies
+
+.github/workflows/ci.yml only; no other plan edits it (issue #64's
+path-filtered Rocq job adds a job to the same file, so the second of the two
+PRs reconciles the hunk). No hardware or Kaggle use.
+
+## Effort and agents
+
+One line and its comment; no agent.
+
+## Out of scope
+
+Running the full tier on pull requests (a 10-minute merge gate) and
+batching merges; ci/premerge_gates.py (PR #190) already covers the fast
+record gates on the merge result. The memory note main-ci-cancel-in-progress
+recorded this fix as awaiting the user; the plan asks for that decision.

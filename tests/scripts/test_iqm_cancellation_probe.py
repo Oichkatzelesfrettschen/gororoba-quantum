@@ -8,7 +8,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 RUN = ROOT / "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation"
-ANALYSIS = ROOT / "results/iqm/kernel_cancellation_probe_analysis.json"
+ANALYSIS = ROOT / "results/iqm/kernel_cancellation_probe_analysis-runner-image.json"
 
 
 def test_kernel_law_and_sign_mutations() -> None:

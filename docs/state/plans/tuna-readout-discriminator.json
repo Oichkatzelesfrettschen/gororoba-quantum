@@ -1,0 +1,24 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-readout-discriminator",
+  "kind": "implementation",
+  "summary": "tuna-pre-t0: Tuna-17 readout refresh and Q0/Q6 double-X discriminator, one batch",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/ef277fc0d1cba09f01ff6313c83baf2414bef24b0e96d8182ad5eed31e325130.txt"
+  ],
+  "state": "inbox",
+  "scope": "tuna-pre-t0: Tuna-17 readout refresh and Q0/Q6 double-X discriminator, one batch",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Source variants compared; historical assertions retain their source boundary. Current obligation-level validation needs the linked evidence."
+  },
+  "steps": [
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Precondition (from #192): the batch's own readout pair still shows the fault, Q0 P(1|1) < 0.7 and Q6 P(1|1) < 0.3; otherwise the double-X result is reported as fault-recovered and not read against the predictions. Decision fixed now: Q0 P(1|XX) above 0.5 and Q6 above 0.25 favor under-rotation; both below 0.1 favor misassignment; anything else is unresolved. Stop rule for T0: any qubit of M or of the walk star with readout-1 below 0.80 or readout-0 above 0.10 re-plans the layout first.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "number": 199,
+  "title": "ci: cancel superseded runs only on pull requests",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T13:28:09Z",
+  "closed_at": "2026-10-17T13:28:09Z",
+  "merge_commit_sha": "10f3a6eae172a39cfae10bc651011fa46f87f874",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/199",
+  "merge_ancestor_of_canonical_head": true
+}

@@ -1,0 +1,103 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/ci-read-set-ledger.md
+
+# CI: skip gates by their traced read set; plan shards from measured time
+
+Branch `ci/fast-parallel-gates` (worktree `~/worktrees/IBMQuantum/ci/fast-parallel-gates`), off
+main e9e4152 plus aaaf5ce. Read first: root AGENTS.md "Layout and gates" and "Gate cost", ci/run_gates.py,
+ci/gate_inputs.py, ci/premerge_gates.py (cache_key), ci/full_gate_inputs.json, .github/workflows/ci.yml.
+
+## Baseline (PR run 39297159948, 500 gates, 6 shards of 4 CPUs)
+
+Shard walls 376-1071 s plus ~95 s setup each (checkout 13, setup-python 9, pins 34, replay venv 37);
+sum of gate wall 8893 s, CPU 12271 s. 34 gates over 60 s hold 55 percent. A ci/gates.json or pin
+change selects every gate today. Manifest `seconds` misestimate badly (core-597 300 vs 468 measured,
+core-513 250 vs 445, core-582 450 vs 262). Target: PR wall <= 8 min on GitHub-hosted 4-CPU runners.
+
+## 1. Read-set tracer (ci/read_trace/sitecustomize.py)
+
+Probe result (all three interpreters: ci 3.14.7, replay 3.14.7, QI 3.13.15): `sys.addaudithook` sees
+`open` for data files, module sources and their `.pyc`, `os.listdir`, `os.scandir`, `glob.glob`,
+spawn-pool children (PYTHONPATH inherits the sitecustomize), and `subprocess.Popen`.
+
+- Enabled only when `GOROROBA_READ_TRACE=<dir>` is set; each process appends to `<dir>/<pid>.tsv`
+  line-buffered as each new path is seen (pool workers killed by SIGTERM never run atexit).
+- Hook body: one frozenset/dict membership test on the hot path, return immediately otherwise.
+- Records, for paths inside the repository root only: files opened for reading (a `.pyc` maps back to
+  its source with importlib.util.source_from_cache; a pyc without a source is recorded as itself),
+  directories listed or scanned, glob patterns. Paths outside the repo (stdlib, site-packages) are
+  covered by the interpreter key instead.
+- Marks the process UNTRACEABLE on: opening a repo file for writing/appending/creating (mode
+  contains w, a, x or +), subprocess.Popen / os.posix_spawn / os.exec* of a program other than a
+  Python interpreter that will also be traced (a `$PYTHON` child without -I inherits the hook and
+  stays traceable; any `-I` or `-E` child, any non-Python program, is untraceable).
+- The runner (not the hook) marks a gate untraceable when its shell command runs anything other than
+  `"$PYTHON"` invocations joined by `&&` (sha256sum, cmp, pipes, git, rocq, shellcheck, ruff via
+  pinned_tool counts as untraceable unless pinned_tool's children are traced Python).
+
+## 2. Ledger and skip rule (ci/gate_ledger.py, wired into run_gates.py)
+
+- Gate key = sha256 over: gate cmd, cwd, runtime, workers, the interpreter identity premerge_gates
+  already computes (factor `cache_key`'s interpreter/distribution/environment part into a shared
+  function in ci/ and use it from both), plus the traced read set's content: each file's sha256, each
+  listed directory's sorted entry names, each glob pattern's sorted matches.
+- After a PASS with a traceable run, the ledger stores {gate name: {key, read set}}. Failures and
+  untraceable runs store nothing.
+- `run_gates.py --ledger PATH`: before running a gate, recompute its key from the stored read set; when
+  the stored key equals the recomputed key the gate is reported SKIP (cached pass) and not run.
+  `--ledger-out PATH` writes the merged ledger of this run. Nightly runs omit `--ledger` (run all)
+  and add `--ledger-audit PATH`, listing every gate the ledger would have skipped whose fresh result
+  differs (catches reads the hook cannot see, e.g. C extensions opening files).
+- Changed-path selection stays as the first filter; the ledger is the second. The ci/gates.json
+  "select every gate" rule is replaced: a gate whose manifest entry is unchanged and whose key matches
+  skips; a pin change still reruns everything through the interpreter key.
+
+## 3. Shard planning from measured time
+
+- Keep a retained `ci/gate_timings.json` (name -> measured wall and CPU seconds, workers) produced by
+  merging the shards' timing artifacts of a main run (a small script `ci/merge_gate_timings.py`, with
+  `--check` so CI verifies the file parses and names only existing gates). run_gates `assign` uses the
+  measured CPU-slot seconds when present, the manifest estimate otherwise.
+- PR shard count: raise from 6 to 12 if the account's concurrent-job limit allows (free plan: 20);
+  pick the count that minimizes max shard wall + setup under the measured timings, record the choice.
+
+## 4. Workflow wiring (.github/workflows/ci.yml)
+
+- Cache the pinned wheels and the replay venv: actions/cache keyed on hashFiles of
+  requirements.txt, ci/requirements-ci.txt, ci/requirements-replay.txt and the Python version; target
+  setup under 40 s per shard.
+- Ledger: each shard restores `gate-ledger-` (restore-keys prefix; key includes github.sha) from main,
+  runs with `--ledger`, uploads its ledger-out; a final `ledger` job merges them; only push-to-main and
+  nightly call actions/cache/save, so PR runs cannot poison main's ledger.
+- Nightly: no --ledger, with --ledger-audit, and fails when the audit lists a differing result.
+
+## 5. Self-tests (ci/gate_ledger.py --self-test, new gate)
+
+Plant one case per read kind, each must flip SKIP to RUN after the edit: a plain open, an import of a
+repo module, a pyc-only read, a glob that gains a file, a listdir that gains a file, a read inside a
+spawn-pool child. Each of these must make the gate untraceable (never skipped): an `-I` child, a
+non-Python command, a write inside the repo. Plus: a key change on cmd edit, on interpreter-identity
+change, and nothing stored on failure.
+
+## 6. AGENTS.md
+
+Rewrite the "CI and dependency-pin changes select every gate" sentence and the Gate-cost bullet
+"Skip a gate only on evidence that its inputs are unchanged" to describe the ledger, the tracer's
+untraceable rules and the nightly audit. Keep AGENTS.md wording mechanism-first, no history.
+
+## Floor
+
+core-597 (468 s on 4 workers) and core-513 (445 s single-thread) each exceed the budget alone when
+their inputs change; report them, and say whether parallel.py can split them by item range (do not
+change their science).
+
+## Acceptance
+
+`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, `C=$HOME/.cache/gororoba-quantum`:
+ruff check / ruff format --target-version py313 (changed files only) / mypy via ci/pinned_tool.py;
+`$C/ci-py3147/bin/python ci/gate_ledger.py --self-test`; a local two-pass demonstration: run
+`ci/run_gates.py --tier pr --ledger-out L` then `--ledger L` and show which gates skip, and that
+touching one input re-runs exactly its gates; measure the tracer's overhead on core-445 and core-597.
+Constraints: no push, no network beyond none, no QPU, no subagents, never rm -rf (trash-put), no
+asserts, commits with `Assisted-by: Claude Code (claude-opus-5-5)`. Report to
+docs/local/plans/ci-read-set-ledger-report.md.

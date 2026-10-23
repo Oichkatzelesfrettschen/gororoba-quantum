@@ -1,0 +1,97 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/README.md
+
+# Work plans for the open items
+
+One plan per open item, written by the session that owns it, in this
+directory (docs/local is untracked and shared by every session on the build
+host). A plan is complete when every section of TEMPLATE.md is filled from
+the code, the issue and the retained evidence. Implementation starts after
+every listed item has a complete plan, and then each session works its own
+items in isolation, with at most two subagents (haiku, sonnet or opus, by an
+explicit `model`) running at any one time.
+
+## Gate-number ranges
+
+Each session takes new gate names from its own range, so parallel PRs never
+claim the same name. Names already on main or on a pushed branch stay as
+they are (core-389 and core-390 belong to #193, ghost/error-scale-provenance-self-test;
+#192 moved its gate to core-400).
+
+| session | range |
+|---|---|
+| ibmquantum-e5 | core-400 to core-419 |
+| boxkite-quantum-main | core-420 to core-439 |
+| ibmquantum-fe | core-440 to core-459 |
+| ibmquantum-fc | core-460 to core-479 |
+| ibmquantum-12 | core-480 to core-499 |
+| quandela-cloud (branch quandela/perceval-cloud-catalogue) | core-500 to core-519 |
+| ibmquantum-12 (second range) | core-520 to core-539 |
+| quandela form-mesh bridge (branch quandela/belenos-form-mesh-bridge) | core-540 to core-549 |
+| ibmquantum-12 (sources suite) | sources-251 to sources-259 |
+| boxkite-quantum-main (second range) | core-550 to core-569 |
+| ibmquantum-fe (second range) | core-570 to core-589 |
+
+## Scope freeze
+
+The scoping round closed on 2026-10-17 with every row planned, held or done
+and every user decision answered. Each session now builds its own rows in
+isolation, at most two subagents at a time, merging each PR when its Codex
+review is clean (or capped with every reachable thread answered), its CI is
+green and `"$PYTHON" ci/premerge_gates.py BRANCH` exits 0.
+
+## Items
+
+Owner column: proposed until the session confirms; a session that already
+holds related work claims it and the table follows.
+
+| item | title | proposed owner | plan | state |
+|---|---|---|---|---|
+| main-ci | main push runs cancel each other (cancel-in-progress), no completed full run since 8d5f038 | ibmquantum-e5 | main-ci.md | done: merged #199 (10f3a6e); falsifier: no main run ends cancelled by a later main push |
+| #62 | ci: run verify.py against a generated open_gororoba dataset | ibmquantum-e5 | issue-062.md | done: merged #200 (cb0ef66), closes #62 |
+| #64 | ci: run the C881 Rocq certificate replay on proof changes | ibmquantum-e5 | issue-064.md | done: merged #201 (fd6b2e6), closes #64; cold opam build plus replay 9 m 48 s |
+| #131 | conformance: audit dynamic point-mass members for undeclared CZ | ibmquantum-e5 | issue-131.md | done: merged #202 (35db769), closes #131; 24 declared, PR-tier census core-409 |
+| #154 | research_state: bind collected QI transaction rows to usage.json rows | boxkite-quantum-main | issue-154.md | done (closed with the evidence reply) |
+| #182 | qi_readout_ringdown: propagate readout-calibration uncertainty into phase and rate errors | boxkite-quantum-main | issue-182.md | planned (core-434/435) |
+| #183 | qi_readout_ringdown: calibrate the scanned-T tail statistic under its null | boxkite-quantum-main | issue-183.md | planned (core-436/437; after #182 and series Q) |
+| #69 | n21-orbit-rca: preregistered between-arm contracts after barrier-equalized windows | ibmquantum-fe | issue-069.md | local done: PR #253 merged 8c91060 (core-446, window bracket, between-arm contracts, dry run 2026-10-18T062500.711287Z, WINDOW_BRACKET_CASE.md); IBM falsifier run parked (QPU minutes reserved, case unapproved); issue stays open |
+| #71 | n21_orbit_rca: piecewise window exposure across intervening scheduled pulses | ibmquantum-fe | issue-071.md | merged #212 at 67a0dd8 (prediction falsified: exact-ISA evaluator, not segmentation, resolves the probe; core-192 pr, core-443/449/447/448 full; core-444/445 unused) |
+| #72 | n21_orbit_rca: bind raw PUBs to the submission manifest and search static-only basins | ibmquantum-fe | issue-072.md | merged #208 at ec403fc (core-192, core-443, core-447, core-448; both retained fits regenerated) |
+| #161 | atlas_coherent_families: componentwise vs normwise least-squares roundoff in --check | ibmquantum-fc | issue-161.md | done: PR #207 merged (03f6e46), issue closed |
+| #168 | Retained Kaggle records carry the kernel owner in their kernel slug | ibmquantum-fc | issue-168.md | done: path A, PR #205 merged, issue closed |
+| #70 | qpu_planning.window_durations: use the routed control's measure and reset durations | ibmquantum-12 | issue-070.md | done: closed after core-094 passed and a mutation that ignores the routed control failed it |
+| #74 | patch_window_analysis: gate cross-job comparisons on a shared calibration | ibmquantum-12 | issue-074.md | done: merged #196 (3105aa9) |
+| #76 | live_run: dry run admits a static group the submit revalidation rejects as mixed | ibmquantum-12 | issue-076.md | done: merged #204 (2860b43) |
+| tuna-ringdown-series-q | Tuna-17 ring-down series Q analysis, core-430, registry, Tuna-17 lessons note | boxkite-quantum-main | tuna-ringdown-series-q.md | implemented; qi/readout-ringdown-series-q a210350 pushed, PR at scope freeze |
+| boxkite-generator | box-kite generator and program rewritten to smoke-remote and Kaggle-exhaustive | boxkite-quantum-main | boxkite-generator.md | implemented; research/box-kite-case-generator 5778749 pushed, main merged; PR at scope freeze |
+| boxkite-kaggle-sweep | 848-circuit family (a) on Kaggle CPU through qxelarator, with a replay gate | boxkite-quantum-main | boxkite-kaggle-sweep.md | ready (scripts/box_kite_qx_sweep.py, about 1 h CPU kernel); push at scope freeze |
+| tuna-pre-t0 | Tuna-17 readout refresh and the Q0/Q6 double-X discriminator (from #192), one batch | boxkite-quantum-main | tuna-pre-t0.md | planned; user approval pending |
+| tuna-boxkite-stages | box-kite T0 (3 batches), then T1, coherence and walks (7) | boxkite-quantum-main | tuna-boxkite-stages.md | planned; user approval pending |
+| quandela-cloud | Quandela Cloud account, Perceval packages, captured docs, MCP server | quandela-cloud | (none; scoped in session) | done: merged #216 (45687fe), core-500 to core-503; merged #226 (fcee40d) runner + photonic box-kite cases + D=16/32/64 block census (core-504 to core-507); next: approved S1 sim:belenos case (needs per-job price) |
+| tuna-walsh | cubic Walsh exemplars (1,16)/(9,18), folded into boxkite-research-program step 3 (3 Tuna batches with the readout-context circuits) | boxkite-quantum-main | boxkite-research-program.md | planned, awaiting build approval |
+| research-ibm-parked | H2/H4/H5/F3/F4/R1 IBM-bound research | boxkite-quantum-main | research-ibm-parked.md | H2 done by another session's Kingston run; H5 closed by #191; F4/R1 moved to boxkite-research-program steps 2, 5, 6 |
+| boxkite-research-program | ladder line-phase bins, A_5 gap directions, Walsh + readout-context Tuna series, A_5 second order, D_(5,12) | boxkite-quantum-main | boxkite-research-program.md | steps 1-5 done (#270 #269 #277 merged); step 6 continues in pr206-f4-r1-restart |
+| pr206-f4-r1-restart | #206 split/salvage/close, F4 computation 3 (15-dim piece through {a, 0}), D_(5,12) pieces | boxkite-quantum-main | pr206-f4-r1-restart.md | planned, A0 decision pending |
+| closeout-shards | Kaggle PR-tier shard replica on main after all merges | boxkite-quantum-main | closeout-shards.md | waits for every row |
+| n21-usage-time | n21 feedback-encoded IBM usage minimization and covariance bounds (H2a-H2c), core-480-489 | ibmquantum-12 | (session-held) | done: merged #195 (934db60) |
+| n21-gl52 | GL(5,2) distance table and split conjugators, core-490-494 | ibmquantum-12 | (session-held) | done: PR #194 merged (968817b) |
+| pr-184 | live_run records backend_version and processor_type; three P2 threads | ibmquantum-12 | pr-184.md | done: merged #184 (6c4f98a) |
+| aer-gpu-stack | #68 landed as PR #246 (merge e7f30b9); CPU sweep PR #252 merged d2ceb3f (core-453); cu13 wheel PR #259 merged 258c800 (core-442, T4 run 2026-10-18T072718Z); fix PR #260 merged 04f707d (git-file gate index, out-of-tree build, work-tree lock, recipe-labeled images) | ibmquantum-fe | aer-gpu-stack.md | #68 done: sweep CPU-bound (T4 numpy 34.9 s, torch c128 39.3 s, split 0.994), route = Kaggle CPU or build host; gates core-363/364/441/444 |
+
+Open PRs and their drivers (#174, #191 and #194 merged): #184 (records/backend-identity-in-run-records, adopted by
+ibmquantum-12, plan pr-184.md, lands before its n21 usage branch and #76), #191 (merged a282c9e), #195 (ibmquantum-12), #193 (ibmquantum-fc), ibmquantum-e5's PRs are all merged: #190, #192, #199, #200, #201, #202, #203.
+
+## Shared files
+
+Several items write the same files; the plan names each one it touches so
+the second PR to land knows to reconcile:
+
+- ci/gates.json: every item that adds a gate (names from the ranges above).
+- docs/state/research_state.json and its rendered README, roadmap and
+  RESEARCH_STATE sections: reconcile by taking main's version and rerunning
+  `"$PYTHON" scripts/research_state.py --write`.
+- live_run.py and experiments.py: a change also gets a dry run under
+  results/live/ (AGENTS.md).
+
+Before merging, run `"$PYTHON" ci/premerge_gates.py BRANCH` (PR #190) once it
+is on main.
