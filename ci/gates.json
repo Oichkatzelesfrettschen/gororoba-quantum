@@ -1567,7 +1567,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error ci/runner_image_records.py check",
-   "name": "core-634",
+   "name": "core-635",
    "seconds": 0.3,
    "tier": "pr"
   },
