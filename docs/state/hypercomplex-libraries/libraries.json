@@ -9277,6 +9277,18 @@
    "sys",
    "time"
   ],
+  "scripts/cd_star_lattice.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/cd_two_blade_blocks.py": [
    "__future__",
    "argparse",
