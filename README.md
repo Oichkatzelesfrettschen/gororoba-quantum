@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (106 established, 49 exploratory, 3 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (106 established, 50 exploratory, 3 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -244,12 +244,13 @@ acquisition of every provider:
 | [belenos-wave-repeat-block-2](results/quandela/runs/belenos-wave-repeat-block-2) | Quandela Cloud | photonic wave matched repeats | qpu:belenos | 1 | 24 | completed | 1.016384 credits |
 | [belenos-transform-repeat-block-0](results/quandela/runs/belenos-transform-repeat-block-0) | Quandela Cloud | photonic Fourier matched repeats | qpu:belenos | 1 | 24 | completed | 1.016384 credits |
 | [ascella-native-input-map-recheck](results/quandela/runs/ascella-native-input-map-recheck) | Quandela Cloud | native input-map readiness after observed calibration status | qpu:ascella | 1 | 1 | error | 0.0 credits |
+| [ascella-approved-order-pilot-retry](results/quandela/runs/ascella-approved-order-pilot-retry) | Quandela Cloud | authorized photonic order instrument recovery retry | qpu:ascella | 1 | 8 | error | 0.0 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs with 7438336 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 50 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 51 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents
