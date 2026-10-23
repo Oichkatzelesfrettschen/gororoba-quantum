@@ -57,21 +57,23 @@ from qiskit_aer import AerSimulator
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_sim  # noqa: E402
-from iqm_jobs import CASE_SCHEMA, dump  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, ceiling_credits, dump, write_atomic  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 from iqm_probe_audit import Register  # noqa: E402
-from iqm_signed_probe import relaxation, target_of, to_iqm  # noqa: E402
+from iqm_signed_probe import relaxation as relaxation_pass  # noqa: E402
+from iqm_signed_probe import target_of, to_iqm  # noqa: E402
 
 import kernel_cancellation as kc  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 CASE = "kernel-cancellation-probe"
 QC = "garnet"
 QCS = ["garnet:mock", "garnet"]
 SEEDS = range(24)
 SHOTS = 4000
-# Garnet's price per second; the build records each QC's ceiling in cases.json, which submit enforces.
+# Garnet's price per second; the build records each QC's ceiling in cases.json, which submit enforces
+# through the same iqm_jobs.ceiling_credits.
 PRICE = {"garnet": 0.5, "garnet:mock": 0.0}
-JOB_SECONDS = 1.6
 # The two heralded Garnet probe jobs (40000 and 200000 requested shots, runtimes 1.59 s and 6.52 s)
 # differ by 31 us per requested shot; the shorter circuits here run faster, so this bounds the schedule.
 SHOT_SECONDS = 0.000031
@@ -82,6 +84,12 @@ PREDICTION_SEED = 20261023
 # Train lengths 4k + 1 = 1, 5, 9, 13 keep the accumulated rotation under 0.7 rad up to a 3 % over-rotation,
 # the size the signed probe's even offsets put on QB11.
 AMPLIFY_K = (0, 1, 2, 3)
+# The fit searches |eps| <= EPS_RANGE, where the 13-pulse train turns through at most 13 (pi/2) 0.06 =
+# 1.23 rad < pi/2, so -sin(N pi/2 eps) is monotonic in eps for every train and no alias enters; a minimum
+# at the edge of the range marks the train as outside the model.
+EPS_RANGE = 0.06
+# Distinct prx angles below this differ only by float rounding of one compile.
+ANGLE_TOLERANCE = 1e-9
 STEP = 1e-4
 Z_RESOLVE = 3.0
 
@@ -103,9 +111,9 @@ def chi2_cutoff_3(tail: float) -> float:
 # equals the one-sided Z_RESOLVE normal tail; four train lengths and one fitted eps leave three degrees
 # of freedom.
 H5_CHI2_CUTOFF = chi2_cutoff_3(0.5 * math.erfc(Z_RESOLVE / math.sqrt(2)))
-EPS_RANGE = 0.15
 SYNTHETIC_VISIBILITY = 0.6
-SYNTHETIC_READOUT = (0.01, 0.03)
+# (e01, e10) of the model device: the control and every other qubit differ, as Garnet's do.
+SYNTHETIC_READOUT = {"control": (0.01, 0.03), "other": (0.05, 0.12)}
 # (name, bright, phi) in list order: +, -, -, + for each contrast.
 PROBE_ARMS = (
     ("k+0.1a", False, 0.1),
@@ -138,20 +146,26 @@ def train(qubit: str, k: int) -> list[dict[str, Any]]:
     return [prx(qubit, math.pi / 2) for _ in range(4 * k + 1)] + [measure(qubit)]
 
 
-def compile_probe(calibration: iqm_sim.Calibration) -> tuple[int, Any, list[dict[str, Any]]]:
+def compile_seed(item: tuple[int, str]) -> tuple[int, int, Any]:
+    """One transpiler seed's compile onto the calibration's couplers: (seed, cz, compile)."""
+    seed, calibration_dir = item
+    _, coupling = target_of(iqm_sim.Calibration.from_directory(Path(calibration_dir)))
+    compiled = transpile(
+        kc.cancellation_probe(),
+        basis_gates=["r", "cz"],
+        coupling_map=coupling,
+        optimization_level=3,
+        seed_transpiler=seed,
+    )
+    return seed, compiled.count_ops().get("cz", 0), compiled
+
+
+def compile_probe(calibration_dir: Path) -> tuple[int, Any, list[dict[str, Any]]]:
     """The seed with the fewest CZ (lowest seed on a tie); kernel and bright bind the same compile."""
-    _, coupling = target_of(calibration)
     best = None
     seeds = []
-    for seed in SEEDS:
-        compiled = transpile(
-            kc.cancellation_probe(),
-            basis_gates=["r", "cz"],
-            coupling_map=coupling,
-            optimization_level=3,
-            seed_transpiler=seed,
-        )
-        cz = compiled.count_ops().get("cz", 0)
+    # ordered_map returns the seeds in order, so the lowest seed wins a tie as in a serial loop.
+    for seed, cz, compiled in ordered_map(compile_seed, [(seed, str(calibration_dir)) for seed in SEEDS]):
         seeds.append({"seed": seed, "cz": cz})
         if best is None or cz < best[1]:
             best = (seed, cz, compiled)
@@ -172,7 +186,12 @@ def theta_qubits(compiled: Any, calibration: iqm_sim.Calibration) -> list[str]:
     b = bind(compiled, -0.1, calibration, "b")["instructions"]
     if [(op["name"], op["locus"]) for op in a] != [(op["name"], op["locus"]) for op in b]:
         raise ValueError("the +phi and -phi compiles differ in structure")
-    moved = {x["locus"][0] for x, y in zip(a, b, strict=True) if x["name"] == "prx" and x["args"] != y["args"]}
+    # Only an angle that moves with theta tilts the selector; a phase that moves is a frame change.
+    moved = {
+        x["locus"][0]
+        for x, y in zip(a, b, strict=True)
+        if x["name"] == "prx" and abs(x["args"]["angle"] - y["args"]["angle"]) > ANGLE_TOLERANCE
+    }
     return sorted(moved, key=lambda q: int(q[2:]))
 
 
@@ -187,11 +206,14 @@ def response(instructions_by_phi: dict[float, list[dict[str, Any]]], qubit: str)
     return {"odd": (grad[0.1] - grad[-0.1]) / 2, "even": (grad[0.1] + grad[-0.1]) / 2}
 
 
-def predict(circuit: dict[str, Any], calibration: iqm_sim.Calibration, target: Any) -> float:
+def predict(item: tuple[dict[str, Any], str]) -> float:
     """<Z> of the measured qubit under calibration noise and ALAP idle relaxation."""
+    circuit, calibration_dir = item
+    calibration = iqm_sim.Calibration.from_directory(Path(calibration_dir))
+    target, _ = target_of(calibration)
     qiskit_circuit, _ = iqm_sim.to_qiskit(circuit, calibration)
     scheduled = transpile(qiskit_circuit, target=target, optimization_level=0, scheduling_method="alap")
-    noisy = relaxation(calibration)(scheduled)
+    noisy = relaxation_pass(calibration)(scheduled)
     simulator = AerSimulator(noise_model=calibration.noise_model(), seed_simulator=PREDICTION_SEED)
     counts = simulator.run(noisy, shots=PREDICTION_SHOTS).result().get_counts()
     ones = sum(n for key, n in counts.items() if key[-1] == "1")
@@ -200,8 +222,7 @@ def predict(circuit: dict[str, Any], calibration: iqm_sim.Calibration, target: A
 
 def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     calibration = iqm_sim.Calibration.from_directory(calibration_dir)
-    target, _ = target_of(calibration)
-    seed, compiled, seeds = compile_probe(calibration)
+    seed, compiled, seeds = compile_probe(calibration_dir)
     tilted = theta_qubits(compiled, calibration)
     circuits: list[tuple[str, dict[str, Any]]] = []
     for name, bright, phi in PROBE_ARMS:
@@ -209,8 +230,13 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
     control = next(op["locus"][0] for op in circuits[0][1]["instructions"] if op["name"] == "measure")
     if any(next(op["locus"][0] for op in c["instructions"] if op["name"] == "measure") != control for _, c in circuits):
         raise ValueError("the kernel and bright compiles measure different qubits")
-    circuits.append(("ro0", {"name": "ro0", "instructions": [measure(control)]}))
-    circuits.append(("ro1", {"name": "ro1", "instructions": [prx(control, math.pi), measure(control)]}))
+    # Every measured qubit gets its own readout calibration: the trains read the theta qubits, whose
+    # readout errors differ from the control's.
+    for qubit in [control, *tilted]:
+        circuits.append((f"ro0-{qubit}", {"name": f"ro0-{qubit}", "instructions": [measure(qubit)]}))
+        circuits.append(
+            (f"ro1-{qubit}", {"name": f"ro1-{qubit}", "instructions": [prx(qubit, math.pi), measure(qubit)]})
+        )
     for qubit in [*tilted, control]:
         for k in AMPLIFY_K:
             name = f"amp-{qubit}-{k}"
@@ -220,7 +246,7 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         files[f"circuits/{name}.json"] = dump(circuit)
     kernel_ops = {phi: bind(compiled, phi, calibration, "r")["instructions"] for phi in (0.1, -0.1)}
     expected = round(len(circuits) * SHOTS * SHOT_SECONDS, 3)
-    ceiling = {qc: math.ceil(JOB_SECONDS + expected) * price for qc, price in PRICE.items()}
+    ceiling = {qc: ceiling_credits(expected, price) for qc, price in PRICE.items()}
     job = {
         "job": "cancellation",
         "circuits": [
@@ -241,7 +267,13 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         "physical_qubits": used,
         "control": control,
         "theta_qubits": tilted,
-        "z": {name: predict(circuit, calibration, target) for name, circuit in circuits},
+        "z": dict(
+            zip(
+                [name for name, _ in circuits],
+                ordered_map(predict, [(circuit, str(calibration_dir)) for _, circuit in circuits]),
+                strict=True,
+            )
+        ),
         "response": {q: response(kernel_ops, q) for q in tilted},
         "model": "iqm_sim depolarizing PRX and CZ, readout errors, ALAP idle T1/T2; coherent response first order",
     }
@@ -265,21 +297,22 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
 
 def fetch_calibration(calibration_dir: Path) -> None:
     """Garnet's current default calibration set: its architecture and metrics, read by the set's id."""
-    from iqm_platform import API, Client, read_tokens, tokens_path
+    from iqm_platform import Client, calibration_paths, default_calibration_path, read_tokens, tokens_path
 
     client = Client(read_tokens(tokens_path())["access_token"])
-    status, body = client.get(f"{API}/calibration-sets/{QC}/default")
+    status, body = client.get(default_calibration_path(QC))
     if status != 200:
         raise ValueError(f"GET the default calibration set answered {status}")
     identity = json.loads(body)["observation_set_id"]
-    for name, suffix in (
-        ("dynamic-quantum-architecture.json", "dynamic-quantum-architecture"),
-        ("metrics.json", "metrics"),
-    ):
-        status, data = client.get(f"{API}/calibration-sets/{QC}/{identity}/{suffix}")
+    fetched = {}
+    for name, path in calibration_paths(QC, identity).items():
+        status, data = client.get(path)
         if status != 200:
-            raise ValueError(f"GET {suffix} of {identity} answered {status}")
-        (calibration_dir / name).write_bytes(data)
+            raise ValueError(f"GET {path} answered {status}")
+        fetched[name] = data
+    # Both files land only after both reads succeed, each through one rename.
+    for name, data in fetched.items():
+        write_atomic(calibration_dir / name, data)
 
 
 def write(directory: Path, live: bool = False) -> None:
@@ -323,8 +356,11 @@ def tally(names: list[str], measured: list[dict[str, Any]]) -> dict[str, tuple[i
 
 
 def z_of(counts: dict[str, tuple[int, int]], *names: str) -> tuple[float, float, int]:
+    """<Z>, its standard error and the kept shots; circuits whose shots heralding removed carry no weight."""
     ones = sum(counts[n][0] for n in names)
     n = sum(counts[n][1] for n in names)
+    if n == 0:
+        return 0.0, math.inf, 0
     z = 1 - 2 * ones / n
     return z, math.sqrt(max(1 - z * z, 1.0 / n) / n), n
 
@@ -339,7 +375,9 @@ def fit_train(
     """Weighted least squares of r(-sin(N pi/2 eps)) + (e10 - e01) on the trains' <Z>: (eps, se, chi2).
 
     A grid over |eps| <= EPS_RANGE brackets the minimum, a golden-section search refines it, and the
-    standard error comes from the chi-square's second derivative, se = sqrt(2 / chi2'').
+    standard error comes from the chi-square's second derivative, se = sqrt(2 / chi2''). A minimum on the
+    range's edge or a non-positive curvature means the trains lie outside the model; the fit then
+    returns an infinite chi-square, which H5 rejects.
     """
     r, offset = 1 - e01 - e10, e10 - e01
 
@@ -351,6 +389,8 @@ def fit_train(
 
     grid = [EPS_RANGE * (i / 1500 - 1) for i in range(3001)]
     best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
+    if best in (0, len(grid) - 1):
+        return grid[best], math.inf, math.inf
     low, high = grid[max(best - 1, 0)], grid[min(best + 1, len(grid) - 1)]
     ratio = (math.sqrt(5) - 1) / 2
     for _ in range(100):
@@ -359,6 +399,8 @@ def fit_train(
     eps = (low + high) / 2
     step = 1e-4
     curvature = (chi2(eps + step) - 2 * chi2(eps) + chi2(eps - step)) / step**2
+    if not curvature > 0:
+        return eps, math.inf, math.inf
     return eps, math.sqrt(2 / curvature), chi2(eps)
 
 
@@ -381,14 +423,18 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         }
     k1, k3, b1 = contrast["kernel 0.1"], contrast["kernel 0.3"], contrast["bright 0.1"]
     model = prediction["z"]
-    model_offset = (model["ro0"] + model["ro1"]) / 2
-    model_scale = (model["ro0"] - model["ro1"]) / 2
+    control = prediction["control"]
+    model_offset = (model[f"ro0-{control}"] + model[f"ro1-{control}"]) / 2
+    model_scale = (model[f"ro0-{control}"] - model[f"ro1-{control}"]) / 2
     # Each modeled <Z> is sampled at PREDICTION_SHOTS; a mean over four circuits carries this error.
     model_se = 1 / math.sqrt(4 * PREDICTION_SHOTS)
-    ro0, ro1 = z_of(counts, "ro0"), z_of(counts, "ro1")
-    e01, e10 = (1 - ro0[0]) / 2, (1 + ro1[0]) / 2
+    readout = {}
+    for qubit in [control, *prediction["theta_qubits"]]:
+        ro0, ro1 = z_of(counts, f"ro0-{qubit}"), z_of(counts, f"ro1-{qubit}")
+        readout[qubit] = {"e01": (1 - ro0[0]) / 2, "e10": (1 + ro1[0]) / 2, "offset_se": math.hypot(ro0[1], ro1[1]) / 2}
+    e01, e10 = readout[control]["e01"], readout[control]["e10"]
     r = 1 - e01 - e10
-    offset_se = math.hypot(ro0[1], ro1[1]) / 2
+    offset_se = readout[control]["offset_se"]
     h1 = {phi: decide(c["odd"], c["se"]) for phi, c in (("0.1", k1), ("0.3", k3))}
     # Idle relaxation is not unital and gives the bright vector an odd part of its own; H2 tests the
     # departure from the modeled one, rescaled from the modeled to the measured readout.
@@ -411,9 +457,10 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         "falsified": abs(k3["odd"] - sine * k1["odd"]) / h3_se >= Z_RESOLVE,
     }
     amplify: dict[str, Any] = {}
-    for qubit in [*prediction["theta_qubits"], prediction["control"]]:
+    for qubit in [*prediction["theta_qubits"], control]:
         rows = [z_of(counts, f"amp-{qubit}-{k}") for k in AMPLIFY_K]
-        eps, eps_se, residual = fit_train([4 * k + 1 for k in AMPLIFY_K], rows, e01, e10)
+        own = readout[qubit]
+        eps, eps_se, residual = fit_train([4 * k + 1 for k in AMPLIFY_K], rows, own["e01"], own["e10"])
         amplify[qubit] = {
             "z": [z for z, _, _ in rows],
             "eps": eps,
@@ -431,8 +478,8 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
             sum((prediction["response"][q]["even"] * amplify[q]["eps_se"]) ** 2 for q in prediction["theta_qubits"])
         )
         model_even = (model["k+0.1a"] + model["k+0.1b"] + model["k-0.1a"] + model["k-0.1b"]) / 4
-        relaxation = (model_even - model_offset) / model_scale
-        predicted = (e10 - e01) + r * relaxation + r * visibility * shift
+        relaxation_even = (model_even - model_offset) / model_scale
+        predicted = (e10 - e01) + r * relaxation_even + r * visibility * shift
         se = math.sqrt(
             k1["se"] ** 2
             + offset_se**2
@@ -443,7 +490,7 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         h4.update(
             {
                 "predicted_even": predicted,
-                "relaxation_even": r * relaxation,
+                "relaxation_even": r * relaxation_even,
                 "coherent_even": r * visibility * shift,
                 "measured_even": k1["even"],
                 "se": se,
@@ -468,7 +515,7 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         "h3_sine_law": h3,
         "h4_coherent_even": h4,
         "h5_amplification": amplify,
-        "readout": {"e01": e01, "e10": e10, "scale": r},
+        "readout": {q: {"e01": v["e01"], "e10": v["e10"]} for q, v in readout.items()},
         "visibility": visibility,
         "visibility_se": visibility_se,
         "crossing": z_of(counts, "k0a", "k0b")[:2],
@@ -481,6 +528,10 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     counts: dict[str, tuple[int, int]] = {}
     runs = []
+    prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
+    digests = {sha256((run_dir / "cases.json").read_bytes()) for run_dir in run_dirs}
+    if len(digests) != 1:
+        raise ValueError(f"the runs copy {len(digests)} different cases.json; one analysis reads one case")
     if len({run_dir.resolve() for run_dir in run_dirs}) != len(run_dirs):
         raise ValueError("a run directory is named twice; each acquisition counts once")
     jobs = [json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job_id"] for run_dir in run_dirs]
@@ -491,7 +542,18 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
         record = json.loads((run_dir / "raw/job.json").read_bytes())
         case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
-        row = [r for r in case["jobs"] if r["job"] == submission["job"]][0]
+        # Mock outcomes never enter the analysis, and every run must compile against the predicted set.
+        if submission["qc"] != QC:
+            raise ValueError(f"{run_dir}: ran on {submission['qc']}; the analysis reads {QC} runs only")
+        compiled_set = record["compilation"]["calibration_set_id"]
+        if compiled_set != prediction["calibration_set"]:
+            raise ValueError(
+                f"{run_dir}: compiled against {compiled_set}, not the predicted {prediction['calibration_set']}"
+            )
+        rows = [r for r in case["jobs"] if r["job"] == submission["job"]]
+        if case.get("case") != CASE or len(rows) != 1:
+            raise ValueError(f"{run_dir}: holds no {CASE} job named {submission['job']}")
+        row = rows[0]
         names = [Path(entry["file"]).stem for entry in row["circuits"]]
         for name, (ones, n) in tally(names, json.loads((run_dir / "raw/measurements.json").read_bytes())).items():
             before = counts.get(name, (0, 0))
@@ -507,7 +569,6 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
                 "charge": facts["charge"],
             }
         )
-    prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
     return {
         "schema": "iqm-cancellation-probe-analysis-v1",
         "runs": runs,
@@ -517,14 +578,14 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
 
 def synthetic(
-    files: dict[str, str], eps: dict[str, float], reverse: bool, seed: int, relaxation: float
+    files: dict[str, str], eps: dict[str, float], reverse: bool, seed: int, relaxation_even: float, control: str
 ) -> dict[str, tuple[int, int]]:
     """Binomial counts of a model device: each circuit's exact <Z> under relative over-rotations eps,
     probe arms at visibility SYNTHETIC_VISIBILITY with the kernel arms shifted by the relaxation even
     part, readout errors SYNTHETIC_READOUT; reverse swaps the +phi and -phi kernel readings, the device
     whose zero-divisor sign is opposite."""
-    e01, e10 = SYNTHETIC_READOUT
     z: dict[str, float] = {}
+    measured: dict[str, str] = {}
     for rel, text in files.items():
         if rel.startswith("circuits/"):
             circuit = json.loads(text)
@@ -533,7 +594,8 @@ def synthetic(
             name = Path(rel).stem
             value = register.z(circuit["instructions"], errors)
             z[name] = SYNTHETIC_VISIBILITY * value if name[0] in "kb" else value
-            z[name] += relaxation if name[0] == "k" else 0.0
+            z[name] += relaxation_even if name[0] == "k" else 0.0
+            measured[name] = next(op["locus"][0] for op in circuit["instructions"] if op["name"] == "measure")
     if reverse:
         for name in [n for n in z if n.startswith("k+")]:
             twin = "k-" + name[2:]
@@ -541,6 +603,7 @@ def synthetic(
     rng = np.random.default_rng(seed)
     counts = {}
     for name, value in z.items():
+        e01, e10 = SYNTHETIC_READOUT["control" if measured[name] == control else "other"]
         p1 = (1 - ((1 - e01 - e10) * value + (e10 - e01))) / 2
         counts[name] = (int(rng.binomial(SHOTS, p1)), SHOTS)
     return counts
@@ -562,11 +625,13 @@ def self_test() -> str:
                 raise RuntimeError(f"{name} reads {ideal} noiselessly, not {kc.law(phi, bright)}")
     eps = {q: 0.027 for q in prediction["theta_qubits"]}
     z = prediction["z"]
-    relaxation = (sum(z[n] for n in ("k+0.1a", "k+0.1b", "k-0.1a", "k-0.1b")) / 4 - (z["ro0"] + z["ro1"]) / 2) / (
-        (z["ro0"] - z["ro1"]) / 2
+    control = prediction["control"]
+    ro0, ro1 = z[f"ro0-{control}"], z[f"ro1-{control}"]
+    relaxation_even = (sum(z[n] for n in ("k+0.1a", "k+0.1b", "k-0.1a", "k-0.1b")) / 4 - (ro0 + ro1) / 2) / (
+        (ro0 - ro1) / 2
     )
     eps[prediction["control"]] = -0.003
-    honest = evaluate(synthetic(files, eps, False, 1, relaxation), prediction)
+    honest = evaluate(synthetic(files, eps, False, 1, relaxation_even, control), prediction)
     if honest["h1_zero_divisor_sign"] != {"0.1": "resolved", "0.3": "resolved"} or honest["falsified_hypotheses"]:
         raise RuntimeError(
             f"an honest device reads {honest['h1_zero_divisor_sign']}, falsifies {honest['falsified_hypotheses']}"
@@ -578,7 +643,7 @@ def self_test() -> str:
     if not honest["h4_coherent_even"]["evaluated"] or honest["h4_coherent_even"]["falsified"]:
         raise RuntimeError(f"the coherent even offset is mispredicted: {honest['h4_coherent_even']}")
     # An even shift the over-rotation does not carry (leakage read as 1, say) must falsify H4.
-    shifted = synthetic(files, eps, False, 3, relaxation)
+    shifted = synthetic(files, eps, False, 3, relaxation_even, control)
     for name in [n for n in shifted if n.startswith("k")]:
         ones, n = shifted[name]
         shifted[name] = (ones + int(0.025 * n), n)
@@ -599,7 +664,7 @@ def self_test() -> str:
             merged[f"amp-{q}-{k}"] = shifted[f"amp-{q}-{AMPLIFY_K[-1]}"]
     if evaluate(merged, prediction)["h4_coherent_even"]["evaluated"]:
         raise RuntimeError("trains that ignore their pulse count left H4 evaluated")
-    reversed_ = evaluate(synthetic(files, eps, True, 2, relaxation), prediction)
+    reversed_ = evaluate(synthetic(files, eps, True, 2, relaxation_even, control), prediction)
     if "falsified" not in reversed_["h1_zero_divisor_sign"].values():
         raise RuntimeError(f"a reversed sign reads {reversed_['h1_zero_divisor_sign']}")
     return (

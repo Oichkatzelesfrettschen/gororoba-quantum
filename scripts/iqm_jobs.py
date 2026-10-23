@@ -212,6 +212,11 @@ def check_case(directory: Path) -> None:
             raise PlatformError(f"{directory}/{rel} differs from the build")
 
 
+def ceiling_credits(expected_seconds: float, price: float, fixed: float = JOB_SECONDS) -> float:
+    """The credits a job may bill: IQM bills ceil(runtime), bounded by the shot schedule plus the fixed cost."""
+    return math.ceil(fixed + expected_seconds) * price
+
+
 def load_job(case_dir: Path, job: str) -> tuple[dict[str, Any], dict[str, Any], str]:
     raw = (case_dir / "cases.json").read_bytes()
     case = json.loads(raw)
@@ -284,7 +289,7 @@ def submit(
     # schedule, ran from 0.63 s below to 1.50 s above the runtime of the retained Garnet jobs
     # (results/iqm/*_analysis.json), so the ceiling adds JOB_SECONDS to the case's expected seconds.
     fixed = 0.0 if case["case"] in FIXED_COST_IN_EXPECTED else JOB_SECONDS
-    ceiling = math.ceil(fixed + row["expected_seconds"]) * price
+    ceiling = ceiling_credits(row["expected_seconds"], price, fixed)
     # A charged job spends what the approved cases.json records for its quantum computer, so the digest
     # covers the credit limit and the command line only repeats it.
     approved = row.get("max_credits", {}).get(qc)
@@ -349,10 +354,14 @@ def settled_unrun(run_dir: Path) -> bool:
     retained = run_dir / "results.json"
     if not retained.exists():
         return False
-    results = json.loads(retained.read_text(encoding="utf-8"))
-    billed = float((results.get("metrics") or {}).get("billed_seconds") or 0.0)
-    # IQM can bill a failed or cancelled job; one that billed seconds ran and stays the job's run.
-    return results.get("status") in ("failed", "cancelled") and billed == 0.0
+    try:
+        results = json.loads(retained.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise PlatformError(f"{retained} is not readable JSON: {error}") from None
+    # IQM can bill a failed or cancelled job, and a record without billed_seconds says nothing either way,
+    # so only an explicit zero frees the job.
+    metrics = results.get("metrics") or {}
+    return results.get("status") in ("failed", "cancelled") and metrics.get("billed_seconds") in (0, 0.0)
 
 
 def run_digest(run_dir: Path) -> str | None:
@@ -884,6 +893,20 @@ def self_test() -> str:
         again = submit(case, "j1-1x1000-passive", "garnet", "approved", approved, 5, client, runs, "s3b")
         if collect(again, client, poll=0)["status"] != "completed":
             raise RuntimeError("the resubmission after a collected failure did not complete")
+        # Only an explicit zero of billed seconds frees a failed job; an empty metrics record does not.
+        probe = root / "settled"
+        probe.mkdir()
+        for record, freed in (
+            ({"status": "failed", "metrics": {}}, False),
+            ({"status": "failed", "metrics": {"billed_seconds": 0.0}}, True),
+            ({"status": "cancelled", "metrics": {"billed_seconds": 1.0}}, False),
+            ({"status": "completed", "metrics": {"billed_seconds": 0.0}}, False),
+        ):
+            (probe / "results.json").write_text(dump(record))
+            if settled_unrun(probe) != freed:
+                raise RuntimeError(f"settled_unrun reads {record} as {not freed}")
+        (probe / "results.json").write_text("{")
+        refused(lambda: settled_unrun(probe), "not readable JSON")
         # A failure that billed seconds ran on the device, so its job stays taken.
         state["fail"], state["failed_billed"] = True, 2.0
         billed_failure = submit(case, "j1-1x1000-passive", "garnet:mock", "approved", approved, 5, client, runs, "s3c")

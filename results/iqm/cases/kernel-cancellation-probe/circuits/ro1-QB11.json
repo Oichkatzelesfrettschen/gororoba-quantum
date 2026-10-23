@@ -6,7 +6,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "prx"
   },
@@ -15,10 +15,10 @@
     "key": "c"
    },
    "locus": [
-    "QB12"
+    "QB11"
    ],
    "name": "measure"
   }
  ],
- "name": "ro1"
+ "name": "ro1-QB11"
 }

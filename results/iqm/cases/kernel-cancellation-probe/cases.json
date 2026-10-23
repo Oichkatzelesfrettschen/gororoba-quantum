@@ -81,12 +81,20 @@
      "sha256": "9f8ed2ad83872585d9830f255f9223ace17aaf7976b0e41ab54d28d99be640a6"
     },
     {
-     "file": "circuits/ro0.json",
-     "sha256": "bc9d6fdb4f19293394af4b5ab06d35edcd7929118866827280464b587328b064"
+     "file": "circuits/ro0-QB12.json",
+     "sha256": "d81cdceb729dc5777e650f0ac422f9bd3415c0981c7e686dfb8a74cae3d6127b"
     },
     {
-     "file": "circuits/ro1.json",
-     "sha256": "16371d90a8bc7a7a96ba0ed13dfd623eb41ab77fc481b6657707faf718564fb2"
+     "file": "circuits/ro1-QB12.json",
+     "sha256": "25a47bb7321fc9f7312a6dc63e604532b191f85465cbfd1c05c18253dbfd93eb"
+    },
+    {
+     "file": "circuits/ro0-QB11.json",
+     "sha256": "a0968edd2294a24a7abdc1bc5ba2012d74dfbbd04f4231f7fde410005ff2c9ec"
+    },
+    {
+     "file": "circuits/ro1-QB11.json",
+     "sha256": "df53fb76e68b6d2a98e00c9b309b38c088b9daf3407f24bd535e7e756aa1aaec"
     },
     {
      "file": "circuits/amp-QB11-0.json",
@@ -121,7 +129,7 @@
      "sha256": "277a5fdb6fda70ca90c69c1a55311005bb17033ea69e020c832124600a75f6a1"
     }
    ],
-   "expected_seconds": 3.1,
+   "expected_seconds": 3.348,
    "job": "cancellation",
    "max_credits": {
     "garnet": 2.5,
