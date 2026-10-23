@@ -210,6 +210,11 @@ build-host Python stack in
 
 ## Hardware services
 
+Future acquisition decision statements and job-specific cancellation authority
+follow [the evidence-closure procedure](docs/runbooks/evidence-closure.md).
+An account-wide queue grants no authority to cancel another worker's job.
+The derived closure snapshot is a view; it never replaces the research registry.
+
 Each provider guide holds the environment, credential handling, MCP
 registration, backend table, limits, gates and run procedure; the live provider
 pages stay the authority because they change. Tokens and keys live outside every
