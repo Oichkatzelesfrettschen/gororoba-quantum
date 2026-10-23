@@ -21,6 +21,9 @@ env:
   # Qiskit 2.6 Rust TLS plus late-loaded Aer OpenMP need reserved loader capacity.
   GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
   OPENBLAS_NUM_THREADS: "1"
+  # Kernel sets of fitted-value byte replays; ci/run_gates.py sets the same.
+  OPENBLAS_CORETYPE: Haswell
+  NPY_DISABLE_CPU_FEATURES: X86_V4 AVX512_ICL AVX512_SPR
   OMP_NUM_THREADS: "1"
   MKL_NUM_THREADS: "1"
   BLIS_NUM_THREADS: "1"
@@ -140,6 +143,12 @@ jobs:
           --ledger-out ${{ runner.temp }}/gate-ledger.json
           --timings ${{ runner.temp }}/gate-timings.json
           --shard ${{ matrix.shard }}/12
+      # GitHub assigns each shard's CPU, AVX-512 or not; a shard on an avx512f
+      # CPU replays every byte-replay gate under the numpy dispatch cap, and one
+      # without avx512f reports the check as not run.
+      - name: AVX-512 byte replays
+        if: success() || failure()
+        run: sh ci/avx512_replay.sh
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
         if: always()

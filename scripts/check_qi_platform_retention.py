@@ -1432,7 +1432,14 @@ class RetentionChecks(unittest.TestCase):
                 module.qi_submit_case(str(self.case_dir), 7, "fixture approval")
             self.assertEqual(client.calls, before)
         self.assertEqual(self.output.getvalue(), "")
-        self.assertEqual(len(module.server.tools), 11)
+        self.assertEqual(len(module.server.tools), 13)
+
+    def test_mcp_performance_outage_is_a_tool_error(self) -> None:
+        module = mcp_with_stubs()
+        failing = Mock(side_effect=module.monitoring_query.__globals__["MonitoringError"]("every query failed"))
+        with patch.object(module, "monitoring_query", failing), self.assertRaisesRegex(FakeToolError, "every query"):
+            module.qi_performance_query("tuna-17", 3)
+        failing.assert_called_once_with("tuna-17", 3, 6.0)
 
     def test_mcp_compile_rejects_unknown_backend_before_remote_creation(self) -> None:
         module = mcp_with_stubs()

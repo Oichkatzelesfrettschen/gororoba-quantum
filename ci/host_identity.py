@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 # Gates read these to choose a device, toolchain, live or replay path, thread
-# count or warning policy, so each one's value enters the identity.
+# count, SIMD dispatch or warning policy, so each one's value enters the identity.
 KEY_PREFIXES = (
     "GOROROBA_",
     "QI_",
@@ -34,6 +34,7 @@ KEY_PREFIXES = (
     "BLIS_",
     "VECLIB_",
     "NUMEXPR_",
+    "NPY_",
     "RAYON_",
     "MYPY",
     "MPL",

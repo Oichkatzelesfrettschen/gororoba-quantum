@@ -1,0 +1,85 @@
+{
+ "backends": [
+  {
+   "active": true,
+   "modality": "Trapped-ion",
+   "name": "IBEX Q1",
+   "per_shot_private": 0.0282,
+   "per_shot_public": 0.0141,
+   "per_task_private": 0.36,
+   "per_task_public": 0.18,
+   "provider_name": "AQT",
+   "short_code": "aqt:ibex-q1"
+  },
+  {
+   "active": true,
+   "modality": "Trapped-ion",
+   "name": "Forte-1",
+   "per_shot_private": 0.096,
+   "per_shot_public": 0.048,
+   "per_task_private": 0.36,
+   "per_task_public": 0.18,
+   "provider_name": "IonQ",
+   "short_code": "ionq:forte-1"
+  },
+  {
+   "active": true,
+   "modality": "Trapped-ion",
+   "name": "Forte Enterprise",
+   "per_shot_private": 0.096,
+   "per_shot_public": 0.048,
+   "per_task_private": 0.36,
+   "per_task_public": 0.18,
+   "provider_name": "IonQ",
+   "short_code": "ionq:forte-ent"
+  },
+  {
+   "active": true,
+   "modality": "Superconducting",
+   "name": "Emerald",
+   "per_shot_private": 0.00192,
+   "per_shot_public": 0.00096,
+   "per_task_private": 0.36,
+   "per_task_public": 0.18,
+   "provider_name": "IQM",
+   "short_code": "iqm:emerald"
+  },
+  {
+   "active": true,
+   "modality": "Superconducting",
+   "name": "Garnet",
+   "per_shot_private": 0.00174,
+   "per_shot_public": 0.00087,
+   "per_task_private": 0.36,
+   "per_task_public": 0.18,
+   "provider_name": "IQM",
+   "short_code": "iqm:garnet"
+  },
+  {
+   "active": true,
+   "modality": "Superconducting",
+   "name": "Cepheus-1-108Q",
+   "per_shot_private": 0.00051,
+   "per_shot_public": 0.000255,
+   "per_task_private": 0.36,
+   "per_task_public": 0.18,
+   "provider_name": "Rigetti",
+   "short_code": "rigetti:cepheus-1-108q"
+  }
+ ],
+ "cost_model": "per_task + shots * per_shot, before any queue-priority increase",
+ "credit_to_usd_rate": {
+  "matches": [],
+  "nearest_statement": "Claim $50 of free compute every 90 days (25 Spark Credits)",
+  "published": false
+ },
+ "html_sha256": "0e1edf9041fb364d7e3c1e9cc0e778f9e0a5b131d27976d8fb5bd546632a801a",
+ "queue_priority_surcharge": {
+  "published_in_page": false,
+  "source": "authenticated POST /v1/pricing/estimate with backend_class_id and shots; the quote lists execution plans, each with a price and queue_priorities carrying price_increase, all in credits"
+ },
+ "retrieved_utc": "2026-10-22T20:54:20.749823+00:00",
+ "schema": "oq-pricing-v1",
+ "source": "https://www.openquantum.com/pricing",
+ "units": "USD equivalent: All prices shown in USD equivalent are for reference; actual deduction uses your Spark or Full Credits."
+}

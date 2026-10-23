@@ -257,6 +257,19 @@ Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
 credits of this account buy 40 s on Emerald, 60 s on Garnet or 100 s on
 Sirius, and expire 2026-11-01.
 
+The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
+on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
+sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
+Client-side transpilation does not establish zero server compilation. Circuit batching can amortize
+compilation and rounding, but reset/readout/repetition time, failure exposure and acquisition ordering
+also constrain a useful batch. Request rate-limit units are separate from compute credits.
+
+The live limits are 100 circuits/job, 20000 shots/circuit and 2000000 executions/job for these QPUs.
+Those are structural ceilings rather than an affordable acquisition. The
+[current-balance case](../../design/packed-pauli-response-current-balance.md) reserves six IQM credits
+and compares maximal connected-cell layouts without assuming independent replicas. Slot prices exceed
+the current balance; the token's `job_execution` scope also leaves booking unavailable.
+
 ## Installation
 
 The client stack is the Arch package `iqm-resonance-stack` 4.7.0, from
@@ -330,14 +343,23 @@ and Codex approves the read tools; `iqm_cancel_job` asks every time.
 `iqm_platform.py check` holds the tool set and annotations. The server
 submits nothing and books no timeslot.
 
+Dictionary GET responses retain `_observation` with the exact request path and subsecond UTC start/end
+times. The interval belongs to that GET, rather than the calibration's creation timestamp or an atomic
+multi-tool snapshot. `iqm_architecture(alias, calibration_set_id=None)` resolves the default identity before
+reading the architecture. Pass the returned `calibration_set_id` to `iqm_metrics` or back to architecture
+to keep related reads on one set; returned identity mismatches raise MCP errors. Default resolution can
+change between separate tool calls, so callers must pass the identity for a coherent comparison.
+The server rebuilds the SDK settings model after import to resolve its lifespan forward reference before
+settings sources inspect it; the strict warning-as-error import regression exercises that path.
+
 | tool | reads |
 |---|---|
 | `iqm_quantum_computers` | every QC: alias, status, health, queue, station control version |
 | `iqm_quantum_computer` | one QC: limits, pricing, description |
 | `iqm_queue_availability` | pay-as-you-go windows |
 | `iqm_timeslots` | timeslots |
-| `iqm_architecture` | dynamic quantum architecture of the default calibration set |
-| `iqm_metrics` | quality metrics, optionally one locus |
+| `iqm_architecture` | dynamic architecture of an explicit or resolved-default calibration identity |
+| `iqm_metrics` | metrics of an explicit or resolved-default identity, optionally one locus |
 | `iqm_artifact` | a configuration artifact |
 | `iqm_credit` | account type, balance, expiry |
 | `iqm_tokens` | token scopes and expiries |
