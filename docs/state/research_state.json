@@ -8308,6 +8308,10 @@
         {
           "path": "results/quandela/bdsc_stray_mode_veto.json",
           "sha256": "b07ee5641127937c046079d5fb70992eaf3ead5bccaeda77c2e362bc81b3348a"
+        },
+        {
+          "path": "results/quandela/bdsc_stray_mode_veto-runner-image.json",
+          "sha256": "71ffdf79b0abc071ef1b99218133d16ef72e54e0b8de20aa2ac3e2700db8cefd"
         }
       ],
       "documents": [
@@ -8662,6 +8666,75 @@
       "related_claims": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "domain": "implementation",
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "algebra-device-operational-falsifiers",
+      "statement": "Exact finite controls certify real-left normality at dimensions 2 through 64, the 4/8/4 sedenion Gram sectors, complete filter probability accounting, distinct order and associator references, phase and remote-ensemble invariance, finite embeddings and error-set-specific correction.",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
+      "evidence": [
+        {
+          "path": "docs/evidence/algebra-device-conjectures/result.json",
+          "sha256": "a7575c1822ec7b7ec8c60cf7c81c9e604a01ae7e1960baa066d5bae1cb1a1b0d"
+        }
+      ],
+      "gates": {
+        "core-670": "replay",
+        "core-671": "regression"
+      }
+    },
+    {
+      "domain": "implementation",
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "algebra-device-logical-instrument-bank",
+      "statement": "Seventeen logical circuits implement Design B dark/bright/quadrature controls, coherent/dephased/fixed-order controls, one/two/four-step measurement sequences with unmeasured and reset references, a heralded contraction and dimension-8/16/32 associator spectra; complete branch enumeration agrees with their declared laws within 1e-10 after portable-basis compilation.",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Finite numerical conformance without sampled jobs. Portable CX/RZ/SX/X compilation establishes neither native hardware routing nor a scheduler, cost or acquisition result.",
+      "evidence": [],
+      "gates": {
+        "core-671": "replay"
+      }
+    },
+    {
+      "domain": "implementation",
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "algebra-device-operational-falsifiers",
+        "algebra-device-logical-instrument-bank"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "proposed-algebra-device-controlled-extensions",
+      "statement": "Operational case contracts pair algebra-specific response, singular-sector dynamics, coherent selection, sequential measurement and effective nonunitarity with property-removing mutations, unconditional accounting and prospective calibration controls.",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Logical instruments and exact models are available. Fresh physical scheduling, block-level covariance and power, provider-specific costs and separate approval precede acquisition; squeezing, protected topology and quantum-code benefit remain capability- or definition-gated.",
+      "evidence": [],
+      "gates": {
+        "core-671": "admission"
+      }
     }
   ]
 }

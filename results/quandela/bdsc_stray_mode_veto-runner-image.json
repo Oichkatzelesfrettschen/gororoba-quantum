@@ -1,0 +1,281 @@
+{
+ "coincidence_test": {
+  "chi_square_reference_p_value": 0.956675768495251,
+  "instances": 66,
+  "p_value": 0.4008359916400836,
+  "reading": "consistent",
+  "replicates": 100000,
+  "seed": 20261023,
+  "statistic": 47.67035738344963
+ },
+ "definitions": {
+  "detector_absent": "the stray detector is removed from every pattern before the one-click rule",
+  "subtract": "one-click samples in the stray mode leave the eligible count"
+ },
+ "raw": {
+  "block_change": {
+   "df": 45,
+   "p_value": 1.0426269422492095e-88,
+   "reading": "resolved",
+   "statistic": 553.2686385870899
+  },
+  "branch": "stationarity",
+  "calibration_shift": {
+   "f": {
+    "mean": 0.00029190517295155983,
+    "n": 8,
+    "p_value": 0.02075903100863963,
+    "reading": "inconclusive",
+    "se": 0.00012623807462182652,
+    "z": 2.3123386016938627
+   },
+   "g": {
+    "mean": 0.0034581015016633197,
+    "n": 8,
+    "p_value": 3.3085268068421474e-31,
+    "reading": "resolved",
+    "se": 0.0002976305176092105,
+    "z": 11.618773267746066
+   },
+   "superposition": {
+    "mean": -0.001525772722433979,
+    "n": 32,
+    "p_value": 0.012507974143691597,
+    "reading": "inconclusive",
+    "se": 0.0006109250544242955,
+    "z": -2.497479373917295
+   }
+  },
+  "readings": {
+   "block_change": "resolved",
+   "residual_seed": "resolved",
+   "seed_basis": "resolved",
+   "seed_common": "resolved",
+   "seed_common_within_job": "resolved",
+   "seed_interaction": "resolved",
+   "seed_interaction_within_job": "resolved",
+   "seed_superposition": "resolved",
+   "template": "resolved"
+  },
+  "residuals_beyond_margin": 32
+ },
+ "runs": [
+  {
+   "results_sha256": "c40a31367fd3394a7d746198ac4d350c06497da242875076138f0bbea7011377",
+   "run": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1"
+  },
+  {
+   "results_sha256": "d38ccaa083658ff030d2076e93f92ffb6e14c764b7e61e4ca1dc2bf05bd5c8af",
+   "run": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2"
+  },
+  {
+   "results_sha256": "18075c0b57b81dfceec1289cb56a0164e61a269de4d2396726faa2c30070bf5c",
+   "run": "results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1"
+  },
+  {
+   "results_sha256": "a2e248abb626d5f1927eec356686618168bdcf477e4249e5ff4de90aa8550e63",
+   "run": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2"
+  }
+ ],
+ "schema": "bdsc-stray-mode-veto-v1",
+ "status": "exploratory: the veto was chosen after the diagnostic's outcomes were seen",
+ "stray": {
+  "block_ratio": {
+   "dark_counts_at_plan": 0.5888070879943909,
+   "share": 0.5198577388566269
+  },
+  "matched_change": {
+   "n": 48,
+   "other_outside_mean": 0.0001521361956564134,
+   "other_outside_sd": 0.002598751636181754,
+   "stray_mean": -0.006924591180679677,
+   "stray_sd": 0.01188909615320655
+  },
+  "per_job": {
+   "b1-j1": {
+    "dark_counts_at_plan": {
+     "largest_other": 80.9,
+     "stray": 3137.7
+    },
+    "duration_seconds": 164.0,
+    "share_mean": 0.012344087663984838,
+    "ungated_stray_share_bound": 0.53602375
+   },
+   "b1-j2": {
+    "dark_counts_at_plan": {
+     "largest_other": 80.9,
+     "stray": 3137.7
+    },
+    "duration_seconds": 164.0,
+    "share_mean": 0.016499826904959783,
+    "ungated_stray_share_bound": 0.53602375
+   },
+   "b2-j1": {
+    "dark_counts_at_plan": {
+     "largest_other": 77.6,
+     "stray": 1847.5
+    },
+    "duration_seconds": 164.0,
+    "share_mean": 0.00781280979292112,
+    "ungated_stray_share_bound": 0.3156145833333333
+   },
+   "b2-j2": {
+    "dark_counts_at_plan": {
+     "largest_other": 77.6,
+     "stray": 1847.5
+    },
+    "duration_seconds": 171.0,
+    "share_mean": 0.007181922414664151,
+    "ungated_stray_share_bound": 0.3290859375
+   }
+  },
+  "perf_exposure_diagnostic": {
+   "dark_over_perf_pooled": {
+    "n": 96,
+    "p_value": 0.06315598427366616,
+    "rho": 0.19039609332609878
+   },
+   "inverse_perf_by_block": {
+    "1": {
+     "n": 48,
+     "p_value": 0.005891613842590519,
+     "rho": 0.39177160225792446
+    },
+    "2": {
+     "n": 48,
+     "p_value": 0.37471668847873735,
+     "rho": -0.1310247503256622
+    }
+   },
+   "model": "conditional on the unconfirmed physical_perf timing model; reported, no reading"
+  },
+  "position": {
+   "b1-j1": {
+    "n": 24,
+    "p_value": 0.8180937896030709,
+    "rho": 0.049565217391304345
+   },
+   "b1-j2": {
+    "n": 24,
+    "p_value": 0.016026057350818943,
+    "rho": -0.4860869565217391
+   },
+   "b2-j1": {
+    "n": 24,
+    "p_value": 0.019822625417352607,
+    "rho": -0.4721739130434783
+   },
+   "b2-j2": {
+    "n": 24,
+    "p_value": 0.5009827163280625,
+    "rho": -0.1443478260869565
+   }
+  },
+  "reference_se_of_share": 0.0005205657381561583,
+  "share_mean_per_block": {
+   "1": 0.014421957284472311,
+   "2": 0.007497366103792635
+  },
+  "share_range": [
+   0.0014506527937571908,
+   0.05170299557045972
+  ]
+ },
+ "stray_mode": 5,
+ "vetoed": {
+  "detector_absent": {
+   "block_change": {
+    "df": 45,
+    "p_value": 0.09189800628055911,
+    "reading": "consistent",
+    "statistic": 58.038523257870686
+   },
+   "branch": "seed-interaction",
+   "calibration_shift": {
+    "f": {
+     "mean": 0.0002732934374670081,
+     "n": 8,
+     "p_value": 0.03241922296418978,
+     "reading": "inconclusive",
+     "se": 0.0001277547872981871,
+     "z": 2.1392031034353756
+    },
+    "g": {
+     "mean": -0.0007141698531280327,
+     "n": 8,
+     "p_value": 0.00027918402370829865,
+     "reading": "resolved",
+     "se": 0.00019653060415260708,
+     "z": -3.6338862143499844
+    },
+    "superposition": {
+     "mean": -0.0044359306606776144,
+     "n": 32,
+     "p_value": 5.623879719908146e-13,
+     "reading": "resolved",
+     "se": 0.000615306412528745,
+     "z": -7.209303479297613
+    }
+   },
+   "readings": {
+    "block_change": "consistent",
+    "residual_seed": "resolved",
+    "seed_basis": "resolved",
+    "seed_common": "resolved",
+    "seed_common_within_job": "resolved",
+    "seed_interaction": "resolved",
+    "seed_interaction_within_job": "resolved",
+    "seed_superposition": "resolved",
+    "template": "resolved"
+   },
+   "residuals_beyond_margin": 32
+  },
+  "subtract": {
+   "block_change": {
+    "df": 45,
+    "p_value": 0.09269557416898166,
+    "reading": "consistent",
+    "statistic": 57.98438410998025
+   },
+   "branch": "seed-interaction",
+   "calibration_shift": {
+    "f": {
+     "mean": 0.000273093027852953,
+     "n": 8,
+     "p_value": 0.0325614295525821,
+     "reading": "inconclusive",
+     "se": 0.00012776582431590466,
+     "z": 2.137449739123685
+    },
+    "g": {
+     "mean": -0.0007138752359715858,
+     "n": 8,
+     "p_value": 0.00028102418472956357,
+     "reading": "resolved",
+     "se": 0.00019654117609382174,
+     "z": -3.632191737932856
+    },
+    "superposition": {
+     "mean": -0.004433797234124849,
+     "n": 32,
+     "p_value": 5.776379751082897e-13,
+     "reading": "resolved",
+     "se": 0.0006153215461189454,
+     "z": -7.205658995837875
+    }
+   },
+   "readings": {
+    "block_change": "consistent",
+    "residual_seed": "resolved",
+    "seed_basis": "resolved",
+    "seed_common": "resolved",
+    "seed_common_within_job": "resolved",
+    "seed_interaction": "resolved",
+    "seed_interaction_within_job": "resolved",
+    "seed_superposition": "resolved",
+    "template": "resolved"
+   },
+   "residuals_beyond_margin": 32
+  }
+ }
+}
