@@ -636,12 +636,18 @@ class IqmRuns:
 
     def runs(self) -> dict[str, dict[str, Any]]:
         facts = {}
+        # One IQM job is one acquisition: a copy of a run directory would count its job and charge twice.
+        owners: dict[str, str] = {}
         for directory in self.directories:
             try:
                 run = iqm_jobs.run_facts(directory)
-            except (iqm_jobs.PlatformError, OSError, KeyError) as error:
+                job = json.loads((directory / "submission.json").read_text(encoding="utf-8"))["job_id"]
+            except (iqm_jobs.PlatformError, OSError, KeyError, ValueError) as error:
                 raise ValueError(str(error)) from None
-            facts[directory.relative_to(ROOT).as_posix()] = {**run, "statuses": Counter(run["statuses"])}
+            name = directory.relative_to(ROOT).as_posix()
+            require(job not in owners, f"IQM job {job} is retained by both {owners.get(job)} and {name}")
+            owners[job] = name
+            facts[name] = {**run, "statuses": Counter(run["statuses"])}
         return facts
 
     def account_line(self) -> str:

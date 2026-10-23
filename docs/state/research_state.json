@@ -7698,7 +7698,7 @@
     },
     {
       "id": "signed-overlap-kernel-independence",
-      "statement": "In the sedenions (cd_core) the signed dilation overlap <L_e2 u|(L_e1 + L_e10 + t L_e2) u>/(2 + |t|) equals t/(2 + |t|) for every real unit vector u, in the kernel of L(e1 + e10) or not: the certified kernel vector (e4 - e15)/sqrt2, the bright vector (e4 + e15)/sqrt2, e4 and a seeded random vector all read it, and on the kernel support {e4, e15} all 1000 seeded replacement sign tables leave it unchanged. The zero-divisor property is instead the eigenvalue -1 of K = L_e1^T L_e10 on u (K swaps e4 and e15, and its -1 eigenspace is four-dimensional): the cancellation observable cos^2(theta) <w|L_e1 u> + sin^2(theta) <w|L_e10 u> with w = L_e1 u reads cos(2 theta) for the kernel vector and 1 for the bright vector, and one flipped L_e10 sign at e4 or e15, or 755 of the 1000 sign tables, removes its zero at theta = pi/4.",
+      "statement": "In the sedenions (cd_core) the signed dilation overlap <L_e2 u|(L_e1 + L_e10 + t L_e2) u>/(2 + |t|) equals t/(2 + |t|) for every real unit vector u, in the kernel of L(e1 + e10) or not, because L_e2 is orthogonal and L_e2^T L_e1 and L_e2^T L_e10 are antisymmetric (exact integer identities); as checks, the certified kernel vector (e4 - e15)/sqrt2, the bright vector (e4 + e15)/sqrt2, e4 and a seeded random vector all read it, and on the kernel support {e4, e15} all 1000 seeded replacement sign tables leave it unchanged. The zero-divisor property is instead the eigenvalue -1 of K = L_e1^T L_e10 on u (K swaps e4 and e15, and its -1 eigenspace is four-dimensional): the cancellation observable cos^2(theta) <w|L_e1 u> + sin^2(theta) <w|L_e10 u> with w = L_e1 u reads cos(2 theta) for the kernel vector and 1 for the bright vector, and one flipped L_e10 sign at e4 or e15, or 755 of the 1000 sign tables, removes its zero at theta = pi/4.",
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",
@@ -7706,7 +7706,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
         }
       ],
       "documents": [
@@ -7735,7 +7735,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
         }
       ],
       "documents": [
@@ -7761,7 +7761,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
         }
       ],
       "documents": [
