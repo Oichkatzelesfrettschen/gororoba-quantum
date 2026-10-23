@@ -9,7 +9,7 @@ upgrade window, while every station still reported IQM station control
 records beside it), retained in the tree through commit 2009f0f and readable
 with `git show 2009f0f:docs/evidence/iqm/hardware.json`; the retained
 directory now holds the later snapshot that
-[os-4.7-emerald.md](os-4.7-emerald.md) compares. Quality figures belong to the default calibration sets
+[os-4.7.md](os-4.7.md) compares. Quality figures belong to the default calibration sets
 of that morning and change with every calibration; structure, limits and
 prices change with releases. A post-upgrade snapshot compared against this
 one measures what IQM OS 4.7 changed.

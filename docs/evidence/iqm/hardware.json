@@ -12,7 +12,7 @@
       "version": "v1"
     }
   ],
-  "captured_at": "2026-10-19T15:58:36Z",
+  "captured_at": "2026-10-22T20:48:34Z",
   "quantum_computers": [
     {
       "alias": "emerald",
@@ -24,7 +24,7 @@
         }
       ],
       "backend_type": "qpu",
-      "calibration_set_id": "51194779-d109-4536-ba98-b9346dac2b35",
+      "calibration_set_id": "3a1a9ad0-0c98-49db-8cf5-7623d13729f4",
       "chip_components": {
         "launcher": 214,
         "probe_line": 8,
@@ -472,1145 +472,1145 @@
       "mask_set": "M216",
       "medians": {
         "cz_duration_s": 4e-08,
-        "cz_irb_fidelity": 0.99728,
+        "cz_irb_fidelity": 0.997219,
         "measure_duration_s": 3.6e-07,
         "prx_duration_s": 2.4e-08,
-        "prx_fidelity": 0.999684,
-        "readout_fidelity": 0.98845,
-        "t1_s": 4.88154e-05,
-        "t2_echo_s": 3.84499e-05,
-        "t2_s": 1.49208e-05
+        "prx_fidelity": 0.999673,
+        "readout_fidelity": 0.9879,
+        "t1_s": 4.89641e-05,
+        "t2_echo_s": 3.92692e-05,
+        "t2_s": 1.47766e-05
       },
-      "metrics_created": "2026-10-19T13:44:23.095584Z",
+      "metrics_created": "2026-10-22T05:28:38.322722Z",
       "per_pair": {
         "QB11__QB10": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9979246502484675,
+          "cz_irb_fidelity": 0.9970632472960016,
           "implementation": "slepian_crf"
         },
         "QB11__QB12": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9984337995593492,
+          "cz_irb_fidelity": 0.9984959355064988,
           "implementation": "slepian_crf"
         },
         "QB11__QB19": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9826092385022024,
+          "cz_irb_fidelity": 0.9808619347169076,
           "implementation": "slepian_crf"
         },
         "QB11__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9974523887463196,
+          "cz_irb_fidelity": 0.9975981005666846,
           "implementation": "slepian_crf"
         },
         "QB13__QB12": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9886869434798492,
+          "cz_irb_fidelity": 0.9868315851216762,
           "implementation": "slepian_crf"
         },
         "QB13__QB14": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9970514212948508,
+          "cz_irb_fidelity": 0.9969873406651804,
           "implementation": "slepian_crf"
         },
         "QB13__QB21": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.996679956598904,
+          "cz_irb_fidelity": 0.9956723679516012,
           "implementation": "slepian_crf"
         },
         "QB13__QB7": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9963737076025068,
+          "cz_irb_fidelity": 0.9966475451790948,
           "implementation": "slepian_crf"
         },
         "QB16__QB15": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9983135553546816,
+          "cz_irb_fidelity": 0.9982499601015956,
           "implementation": "slepian_crf"
         },
         "QB16__QB17": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9965923097971494,
+          "cz_irb_fidelity": 0.9964844299120332,
           "implementation": "slepian_crf"
         },
         "QB16__QB24": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.99773617768116,
+          "cz_irb_fidelity": 0.9984896064706856,
           "implementation": "slepian_crf"
         },
         "QB16__QB8": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9816140612522366,
+          "cz_irb_fidelity": 0.9764496137673946,
           "implementation": "slepian_crf"
         },
         "QB18__QB10": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9977173875609942,
+          "cz_irb_fidelity": 0.9980278364056494,
           "implementation": "slepian_crf"
         },
         "QB18__QB17": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.99539296043828,
+          "cz_irb_fidelity": 0.9953606242642729,
           "implementation": "slepian_crf"
         },
         "QB18__QB19": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9823199219207434,
+          "cz_irb_fidelity": 0.981964765062464,
           "implementation": "slepian_crf"
         },
         "QB18__QB26": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.997829619457196,
+          "cz_irb_fidelity": 0.9973541660388108,
           "implementation": "slepian_crf"
         },
         "QB1__QB2": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9979377861331202,
+          "cz_irb_fidelity": 0.997607394567088,
           "implementation": "slepian_crf"
         },
         "QB1__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9970550691245292,
+          "cz_irb_fidelity": 0.9979817113683952,
           "implementation": "slepian_crf"
         },
         "QB20__QB12": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9962107703157302,
+          "cz_irb_fidelity": 0.9971437582894768,
           "implementation": "slepian_crf"
         },
         "QB20__QB19": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9800409701738718,
+          "cz_irb_fidelity": 0.9811569433932932,
           "implementation": "slepian_crf"
         },
         "QB20__QB21": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9964148262736502,
+          "cz_irb_fidelity": 0.9973048759889162,
           "implementation": "slepian_crf"
         },
         "QB20__QB28": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9981488207044888,
+          "cz_irb_fidelity": 0.998464362023442,
           "implementation": "slepian_crf"
         },
         "QB22__QB14": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9947450235881636,
+          "cz_irb_fidelity": 0.9947819920999832,
           "implementation": "slepian_crf"
         },
         "QB22__QB21": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9926771810290972,
+          "cz_irb_fidelity": 0.9933938101375552,
           "implementation": "slepian_crf"
         },
         "QB22__QB30": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9978439248928216,
+          "cz_irb_fidelity": 0.9975229566849524,
           "implementation": "slepian_crf"
         },
         "QB23__QB24": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9814311476266492,
+          "cz_irb_fidelity": 0.9835492288222571,
           "implementation": "slepian_crf"
         },
         "QB25__QB17": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9982262248620366,
+          "cz_irb_fidelity": 0.9981529846531784,
           "implementation": "slepian_crf"
         },
         "QB25__QB24": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9985585995418778,
+          "cz_irb_fidelity": 0.9981793530718,
           "implementation": "slepian_crf"
         },
         "QB25__QB26": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9973339577205664,
+          "cz_irb_fidelity": 0.9975037505394532,
           "implementation": "slepian_crf"
         },
         "QB25__QB33": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9981560026041848,
+          "cz_irb_fidelity": 0.9981338126501252,
           "implementation": "slepian_crf"
         },
         "QB27__QB19": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9778741977342724,
+          "cz_irb_fidelity": 0.9805092395196524,
           "implementation": "slepian_crf"
         },
         "QB27__QB26": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9982153089528016,
+          "cz_irb_fidelity": 0.9979848412396096,
           "implementation": "slepian_crf"
         },
         "QB27__QB28": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9970372415646782,
+          "cz_irb_fidelity": 0.9962689250723228,
           "implementation": "slepian_crf"
         },
         "QB27__QB35": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9927391944156988,
+          "cz_irb_fidelity": 0.9876699306573112,
           "implementation": "slepian_crf"
         },
         "QB29__QB21": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.997527210197842,
+          "cz_irb_fidelity": 0.9978505704726278,
           "implementation": "slepian_crf"
         },
         "QB29__QB28": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.994188467766692,
+          "cz_irb_fidelity": 0.994577819706967,
           "implementation": "slepian_crf"
         },
         "QB29__QB30": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9973917619664976,
+          "cz_irb_fidelity": 0.9980824411161484,
           "implementation": "slepian_crf"
         },
         "QB29__QB37": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9922543864513672,
+          "cz_irb_fidelity": 0.9917732229141584,
           "implementation": "slepian_crf"
         },
         "QB31__QB30": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.99824468246827,
+          "cz_irb_fidelity": 0.9986563634521338,
           "implementation": "slepian_crf"
         },
         "QB31__QB39": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9977364858768076,
+          "cz_irb_fidelity": 0.9972191327565878,
           "implementation": "slepian_crf"
         },
         "QB32__QB33": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9964512444878054,
+          "cz_irb_fidelity": 0.9972776229913428,
           "implementation": "slepian_crf"
         },
         "QB32__QB40": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9987969559473406,
+          "cz_irb_fidelity": 0.9988534753719776,
           "implementation": "slepian_crf"
         },
         "QB34__QB26": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9973240801134644,
+          "cz_irb_fidelity": 0.997335043729386,
           "implementation": "slepian_crf"
         },
         "QB34__QB33": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9910881219478956,
+          "cz_irb_fidelity": 0.9923142092491748,
           "implementation": "slepian_crf"
         },
         "QB34__QB35": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9940423810693162,
+          "cz_irb_fidelity": 0.9905875164336216,
           "implementation": "slepian_crf"
         },
         "QB34__QB42": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9984027437316876,
+          "cz_irb_fidelity": 0.9981939025512868,
           "implementation": "slepian_crf"
         },
         "QB36__QB28": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9980901042072788,
+          "cz_irb_fidelity": 0.9987147828615732,
           "implementation": "slepian_crf"
         },
         "QB36__QB35": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9932300898528836,
+          "cz_irb_fidelity": 0.988687857715088,
           "implementation": "slepian_crf"
         },
         "QB36__QB37": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9971948173430832,
+          "cz_irb_fidelity": 0.9968364912474638,
           "implementation": "slepian_crf"
         },
         "QB36__QB44": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9955197095063004,
+          "cz_irb_fidelity": 0.9952380153214192,
           "implementation": "slepian_crf"
         },
         "QB38__QB30": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9938042635214424,
+          "cz_irb_fidelity": 0.9819125222475196,
           "implementation": "slepian_crf"
         },
         "QB38__QB37": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9858880928593612,
+          "cz_irb_fidelity": 0.9855551976109824,
           "implementation": "slepian_crf"
         },
         "QB38__QB39": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9983043500201976,
+          "cz_irb_fidelity": 0.9976539876745087,
           "implementation": "slepian_crf"
         },
         "QB38__QB46": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.998217440900282,
+          "cz_irb_fidelity": 0.998214511690657,
           "implementation": "slepian_crf"
         },
         "QB41__QB33": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9970504833760686,
+          "cz_irb_fidelity": 0.997469447295467,
           "implementation": "slepian_crf"
         },
         "QB41__QB40": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9963091651037748,
+          "cz_irb_fidelity": 0.9953787828251884,
           "implementation": "slepian_crf"
         },
         "QB41__QB42": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9981282994758868,
+          "cz_irb_fidelity": 0.9983900853577686,
           "implementation": "slepian_crf"
         },
         "QB41__QB47": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9940051709067572,
+          "cz_irb_fidelity": 0.9945099269230296,
           "implementation": "slepian_crf"
         },
         "QB43__QB35": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9502884103872792,
+          "cz_irb_fidelity": 0.9408233519498012,
           "implementation": "slepian_crf"
         },
         "QB43__QB42": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9938909912094324,
+          "cz_irb_fidelity": 0.9930319326060671,
           "implementation": "slepian_crf"
         },
         "QB43__QB44": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9977644535876596,
+          "cz_irb_fidelity": 0.9977161122037178,
           "implementation": "slepian_crf"
         },
         "QB43__QB49": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9916901550092884,
+          "cz_irb_fidelity": 0.9910002390384548,
           "implementation": "slepian_crf"
         },
         "QB44__QB50": {
           "cz_duration_s": 6e-08,
-          "cz_irb_fidelity": 0.9661600962971688,
+          "cz_irb_fidelity": 0.977744522736076,
           "implementation": "crf_acstarkcrf"
         },
         "QB45__QB37": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9972799860735292,
+          "cz_irb_fidelity": 0.9975886347522064,
           "implementation": "slepian_crf"
         },
         "QB45__QB44": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9978394630954106,
+          "cz_irb_fidelity": 0.9983300304724864,
           "implementation": "slepian_crf"
         },
         "QB45__QB46": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.998495553626984,
+          "cz_irb_fidelity": 0.99860891534171,
           "implementation": "slepian_crf"
         },
         "QB45__QB51": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9988464749873616,
+          "cz_irb_fidelity": 0.9985482996195054,
           "implementation": "slepian_crf"
         },
         "QB48__QB42": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9982843464745196,
+          "cz_irb_fidelity": 0.9979991840243466,
           "implementation": "slepian_crf"
         },
         "QB48__QB47": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9986151453348056,
+          "cz_irb_fidelity": 0.9984026891235064,
           "implementation": "slepian_crf"
         },
         "QB48__QB49": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9974390130152035,
+          "cz_irb_fidelity": 0.9970252186421532,
           "implementation": "slepian_crf"
         },
         "QB48__QB52": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9921458538507336,
+          "cz_irb_fidelity": 0.9931068245401662,
           "implementation": "slepian_crf"
         },
         "QB4__QB10": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9941463577244734,
+          "cz_irb_fidelity": 0.993815845324919,
           "implementation": "slepian_crf"
         },
         "QB4__QB3": {
           "cz_duration_s": 4.8e-08,
-          "cz_irb_fidelity": 0.9973826164870654,
+          "cz_irb_fidelity": 0.9976938971322244,
           "implementation": "slepian_crf"
         },
         "QB4__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.998026583748831,
+          "cz_irb_fidelity": 0.9975915999151476,
           "implementation": "slepian_crf"
         },
         "QB50__QB51": {
           "cz_duration_s": 6e-08,
-          "cz_irb_fidelity": 0.967492940541349,
+          "cz_irb_fidelity": 0.9638051240569556,
           "implementation": "crf_acstarkcrf"
         },
         "QB53__QB49": {
           "cz_duration_s": 5.6e-08,
-          "cz_irb_fidelity": 0.9982290702336448,
+          "cz_irb_fidelity": 0.9978807123979376,
           "implementation": "slepian_crf"
         },
         "QB53__QB52": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9981008612461856,
+          "cz_irb_fidelity": 0.99837644505703,
           "implementation": "slepian_crf"
         },
         "QB53__QB54": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9981077029915338,
+          "cz_irb_fidelity": 0.997729328260975,
           "implementation": "slepian_crf"
         },
         "QB6__QB12": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9922554529098466,
+          "cz_irb_fidelity": 0.9922021090069838,
           "implementation": "slepian_crf"
         },
         "QB6__QB2": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9867617575673912,
+          "cz_irb_fidelity": 0.9872091745766362,
           "implementation": "slepian_crf"
         },
         "QB6__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9977711809751584,
+          "cz_irb_fidelity": 0.9976094936207928,
           "implementation": "slepian_crf"
         },
         "QB9__QB10": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.997728978853016,
+          "cz_irb_fidelity": 0.9914471789391632,
           "implementation": "slepian_crf"
         },
         "QB9__QB17": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.99790180065397,
+          "cz_irb_fidelity": 0.9978939168336426,
           "implementation": "slepian_crf"
         },
         "QB9__QB3": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9943734813368672,
+          "cz_irb_fidelity": 0.9952268565264428,
           "implementation": "slepian_crf"
         },
         "QB9__QB8": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9976197719464432,
+          "cz_irb_fidelity": 0.9971342010708368,
           "implementation": "slepian_crf"
         }
       },
       "per_qubit": {
         "QB1": {
-          "drive_frequency_hz": 4009727456.908051,
+          "drive_frequency_hz": 4009664789.361922,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997355746389776,
-          "readout_error_0_to_1": 0.0062,
-          "readout_error_1_to_0": 0.0126,
-          "readout_fidelity": 0.9906,
+          "prx_fidelity": 0.999637730832078,
+          "readout_error_0_to_1": 0.002,
+          "readout_error_1_to_0": 0.012,
+          "readout_fidelity": 0.993,
           "readout_frequency_hz": 5169966666.666667,
-          "t1_s": 4.411024428212784e-05,
-          "t2_echo_s": 3.6521298175455414e-05,
-          "t2_s": 1.8595548120179928e-05
+          "t1_s": 2.6431254358258216e-05,
+          "t2_echo_s": 2.9864280837050183e-05,
+          "t2_s": 1.7311877262892582e-05
         },
         "QB10": {
-          "drive_frequency_hz": 3960774711.004804,
+          "drive_frequency_hz": 3960621605.687511,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999691126529098,
-          "readout_error_0_to_1": 0.0286,
-          "readout_error_1_to_0": 0.1726,
-          "readout_fidelity": 0.8994,
+          "prx_fidelity": 0.9996460308645686,
+          "readout_error_0_to_1": 0.0144,
+          "readout_error_1_to_0": 0.0168,
+          "readout_fidelity": 0.9844,
           "readout_frequency_hz": 5824666666.666667,
-          "t1_s": 6.640744572723319e-05,
-          "t2_echo_s": 8.547075939068868e-05,
-          "t2_s": 5.991814874796676e-05
+          "t1_s": 6.668256322477599e-05,
+          "t2_echo_s": 7.918112166451524e-05,
+          "t2_s": 7.143696691309408e-05
         },
         "QB11": {
-          "drive_frequency_hz": 4090497055.9987206,
+          "drive_frequency_hz": 4090481885.377971,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997608714738128,
-          "readout_error_0_to_1": 0.0038,
-          "readout_error_1_to_0": 0.0108,
-          "readout_fidelity": 0.9927,
+          "prx_fidelity": 0.9997163619312924,
+          "readout_error_0_to_1": 0.0066,
+          "readout_error_1_to_0": 0.0104,
+          "readout_fidelity": 0.9915,
           "readout_frequency_hz": 5442166666.666667,
-          "t1_s": 4.749849537324931e-05,
-          "t2_echo_s": 3.823098542242227e-05,
-          "t2_s": 1.553487020452035e-05
+          "t1_s": 4.36336543543797e-05,
+          "t2_echo_s": 3.889879544872873e-05,
+          "t2_s": 1.5283038678248995e-05
         },
         "QB12": {
-          "drive_frequency_hz": 3941189252.011988,
+          "drive_frequency_hz": 3941178948.546832,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999690685551476,
-          "readout_error_0_to_1": 0.0066,
-          "readout_error_1_to_0": 0.0152,
-          "readout_fidelity": 0.9891,
+          "prx_fidelity": 0.9997427170687048,
+          "readout_error_0_to_1": 0.0148,
+          "readout_error_1_to_0": 0.015,
+          "readout_fidelity": 0.9851,
           "readout_frequency_hz": 5718866666.666667,
-          "t1_s": 2.9288092938846768e-05,
-          "t2_echo_s": 3.770680910514771e-05,
-          "t2_s": 1.613808151669621e-05
+          "t1_s": 3.622681189610266e-05,
+          "t2_echo_s": 3.97953405568322e-05,
+          "t2_s": 1.7089278300273263e-05
         },
         "QB13": {
-          "drive_frequency_hz": 4039070382.477091,
+          "drive_frequency_hz": 4039041634.787573,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9977227184337474,
-          "readout_error_0_to_1": 0.0032,
-          "readout_error_1_to_0": 0.0532,
-          "readout_fidelity": 0.9718,
+          "prx_fidelity": 0.997755373040214,
+          "readout_error_0_to_1": 0.0034,
+          "readout_error_1_to_0": 0.0582,
+          "readout_fidelity": 0.9692,
           "readout_frequency_hz": 5248600000.0,
-          "t1_s": 1.275515851158993e-05,
-          "t2_echo_s": 6.880014736451737e-06,
-          "t2_s": 5.399065290985077e-06
+          "t1_s": 8.893696057914975e-06,
+          "t2_echo_s": 6.203922786370167e-06,
+          "t2_s": 6.3667618648788555e-06
         },
         "QB14": {
-          "drive_frequency_hz": 3808832629.0433464,
+          "drive_frequency_hz": 3808792539.635464,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999708302880319,
-          "readout_error_0_to_1": 0.0106,
-          "readout_error_1_to_0": 0.0124,
-          "readout_fidelity": 0.9885,
+          "prx_fidelity": 0.9997351065416352,
+          "readout_error_0_to_1": 0.0112,
+          "readout_error_1_to_0": 0.028,
+          "readout_fidelity": 0.9804,
           "readout_frequency_hz": 6038133333.333333,
-          "t1_s": 7.250399771641187e-05,
-          "t2_echo_s": 5.1481412258412355e-05,
-          "t2_s": 1.4690972394929832e-05
+          "t1_s": 5.1665477552777305e-05,
+          "t2_echo_s": 4.492604310075125e-05,
+          "t2_s": 1.3196701695408684e-05
         },
         "QB15": {
-          "drive_frequency_hz": 3880272103.1297784,
+          "drive_frequency_hz": 3880280892.69344,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997619208382444,
-          "readout_error_0_to_1": 0.008,
-          "readout_error_1_to_0": 0.0104,
-          "readout_fidelity": 0.9908,
+          "prx_fidelity": 0.9997887199764232,
+          "readout_error_0_to_1": 0.0056,
+          "readout_error_1_to_0": 0.0136,
+          "readout_fidelity": 0.9904,
           "readout_frequency_hz": 6016066666.666667,
-          "t1_s": 3.4737381176439265e-05,
-          "t2_echo_s": 5.401358729496324e-05,
-          "t2_s": 1.993333199568829e-05
+          "t1_s": 5.0647025600474274e-05,
+          "t2_echo_s": 6.113626887774332e-05,
+          "t2_s": 2.4344802903680075e-05
         },
         "QB16": {
-          "drive_frequency_hz": 3961791103.149169,
+          "drive_frequency_hz": 3961696333.0882144,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999637494454444,
-          "readout_error_0_to_1": 0.0032,
-          "readout_error_1_to_0": 0.011,
-          "readout_fidelity": 0.9929,
+          "prx_fidelity": 0.9995581145967598,
+          "readout_error_0_to_1": 0.0042,
+          "readout_error_1_to_0": 0.0104,
+          "readout_fidelity": 0.9927,
           "readout_frequency_hz": 5116366666.666667,
-          "t1_s": 3.605513305743903e-05,
-          "t2_echo_s": 1.7630202525698396e-05,
-          "t2_s": 8.5832756976643e-06
+          "t1_s": 4.418168338256412e-05,
+          "t2_echo_s": 1.6986304962896685e-05,
+          "t2_s": 8.682567397665865e-06
         },
         "QB17": {
-          "drive_frequency_hz": 3911552856.3547273,
+          "drive_frequency_hz": 3911530190.8639913,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.99965158262609,
-          "readout_error_0_to_1": 0.0036,
-          "readout_error_1_to_0": 0.0094,
-          "readout_fidelity": 0.9935,
+          "prx_fidelity": 0.9995883925417408,
+          "readout_error_0_to_1": 0.0084,
+          "readout_error_1_to_0": 0.0128,
+          "readout_fidelity": 0.9894,
           "readout_frequency_hz": 5283633333.333333,
-          "t1_s": 5.270973358424581e-05,
-          "t2_echo_s": 4.394199293619339e-05,
-          "t2_s": 1.823289365363983e-05
+          "t1_s": 6.433675555322349e-05,
+          "t2_echo_s": 4.8017140800747185e-05,
+          "t2_s": 1.9875281902582287e-05
         },
         "QB18": {
-          "drive_frequency_hz": 4097372246.840532,
+          "drive_frequency_hz": 4097348190.388025,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997265845380144,
-          "readout_error_0_to_1": 0.0044,
-          "readout_error_1_to_0": 0.011,
-          "readout_fidelity": 0.9923,
+          "prx_fidelity": 0.9991348325244542,
+          "readout_error_0_to_1": 0.0046,
+          "readout_error_1_to_0": 0.0286,
+          "readout_fidelity": 0.9834,
           "readout_frequency_hz": 5664600000.0,
-          "t1_s": 4.562327995617553e-05,
-          "t2_echo_s": 3.907881773964611e-05,
-          "t2_s": 1.4695871166456475e-05
+          "t1_s": 4.491881861986464e-05,
+          "t2_echo_s": 3.998263954595761e-05,
+          "t2_s": 1.238268030992755e-05
         },
         "QB19": {
-          "drive_frequency_hz": 3900622990.488275,
+          "drive_frequency_hz": 3900606797.155587,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9966792648093048,
-          "readout_error_0_to_1": 0.004,
-          "readout_error_1_to_0": 0.031,
-          "readout_fidelity": 0.9825,
+          "prx_fidelity": 0.9961947054652754,
+          "readout_error_0_to_1": 0.0058,
+          "readout_error_1_to_0": 0.0238,
+          "readout_fidelity": 0.9852,
           "readout_frequency_hz": 5581933333.333333,
-          "t1_s": 1.6278902711721494e-05,
-          "t2_echo_s": 2.777613687941518e-05,
-          "t2_s": 1.559383679397186e-05
+          "t1_s": 4.7490316204113275e-05,
+          "t2_echo_s": 4.7760817344417235e-05,
+          "t2_s": 1.793038519197394e-05
         },
         "QB2": {
-          "drive_frequency_hz": 3830893914.1058207,
+          "drive_frequency_hz": 3830875878.347677,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996210892818984,
-          "readout_error_0_to_1": 0.002,
-          "readout_error_1_to_0": 0.0128,
-          "readout_fidelity": 0.9926,
+          "prx_fidelity": 0.9996552681814744,
+          "readout_error_0_to_1": 0.0032,
+          "readout_error_1_to_0": 0.017,
+          "readout_fidelity": 0.9899,
           "readout_frequency_hz": 6052742000.0,
-          "t1_s": 3.2847107126431206e-05,
-          "t2_echo_s": 3.7462769906325625e-05,
-          "t2_s": 1.5145637206546867e-05
+          "t1_s": 3.1827891498260256e-05,
+          "t2_echo_s": 3.5777461970013194e-05,
+          "t2_s": 1.553210718108625e-05
         },
         "QB20": {
-          "drive_frequency_hz": 4020717324.7494054,
+          "drive_frequency_hz": 4020668921.241634,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996703375197382,
-          "readout_error_0_to_1": 0.0082,
-          "readout_error_1_to_0": 0.011,
-          "readout_fidelity": 0.9904,
+          "prx_fidelity": 0.9997083643943953,
+          "readout_error_0_to_1": 0.0076,
+          "readout_error_1_to_0": 0.0104,
+          "readout_fidelity": 0.991,
           "readout_frequency_hz": 5427266666.666667,
-          "t1_s": 5.8760436830703635e-05,
-          "t2_echo_s": 2.8625092929984208e-05,
-          "t2_s": 1.3523959376659328e-05
+          "t1_s": 5.077137747212745e-05,
+          "t2_echo_s": 3.2640125606837335e-05,
+          "t2_s": 1.395237300251722e-05
         },
         "QB21": {
-          "drive_frequency_hz": 3821098111.439418,
+          "drive_frequency_hz": 3821078573.4145913,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997371600458266,
-          "readout_error_0_to_1": 0.0066,
-          "readout_error_1_to_0": 0.0114,
-          "readout_fidelity": 0.991,
+          "prx_fidelity": 0.9997114884372788,
+          "readout_error_0_to_1": 0.012,
+          "readout_error_1_to_0": 0.0144,
+          "readout_fidelity": 0.9868,
           "readout_frequency_hz": 5880119333.333333,
-          "t1_s": 6.192288281924287e-05,
-          "t2_echo_s": 4.595223183966111e-05,
-          "t2_s": 1.4504731372496931e-05
+          "t1_s": 6.579829865739917e-05,
+          "t2_echo_s": 4.638395058604738e-05,
+          "t2_s": 1.605864117614459e-05
         },
         "QB22": {
-          "drive_frequency_hz": 3880459588.78654,
+          "drive_frequency_hz": 3880418566.315871,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9995050434837452,
-          "readout_error_0_to_1": 0.0078,
-          "readout_error_1_to_0": 0.023,
-          "readout_fidelity": 0.9846,
+          "prx_fidelity": 0.9996708732865834,
+          "readout_error_0_to_1": 0.0096,
+          "readout_error_1_to_0": 0.019,
+          "readout_fidelity": 0.9857,
           "readout_frequency_hz": 5117000000.0,
-          "t1_s": 3.1220864216872763e-05,
-          "t2_echo_s": 2.8555517963881377e-05,
-          "t2_s": 1.2676482056370168e-05
+          "t1_s": 5.195240296362211e-05,
+          "t2_echo_s": 3.3211666578444024e-05,
+          "t2_s": 1.4226914117896845e-05
         },
         "QB23": {
-          "drive_frequency_hz": 4124879451.477574,
+          "drive_frequency_hz": 4124864801.922369,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997758662606704,
-          "readout_error_0_to_1": 0.0058,
-          "readout_error_1_to_0": 0.0302,
-          "readout_fidelity": 0.982,
+          "prx_fidelity": 0.9997474524839344,
+          "readout_error_0_to_1": 0.0038,
+          "readout_error_1_to_0": 0.0314,
+          "readout_fidelity": 0.9824,
           "readout_frequency_hz": 5854947500.0,
-          "t1_s": 4.77218640718368e-05,
-          "t2_echo_s": 4.89305877469031e-05,
-          "t2_s": 2.5977803738258808e-05
+          "t1_s": 0.002023987085005468,
+          "t2_echo_s": 6.580438009244011e-06,
+          "t2_s": 2.341301115977788e-05
         },
         "QB24": {
-          "drive_frequency_hz": 3890381879.744942,
+          "drive_frequency_hz": 3890355230.566569,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997669865169352,
-          "readout_error_0_to_1": 0.0176,
-          "readout_error_1_to_0": 0.0204,
-          "readout_fidelity": 0.981,
+          "prx_fidelity": 0.9997545642805874,
+          "readout_error_0_to_1": 0.0104,
+          "readout_error_1_to_0": 0.0188,
+          "readout_fidelity": 0.9854,
           "readout_frequency_hz": 5694626111.111112,
-          "t1_s": 6.464280129254514e-05,
-          "t2_echo_s": 6.0753274684026046e-05,
-          "t2_s": 1.3864090987833095e-05
+          "t1_s": 7.965497357044855e-05,
+          "t2_echo_s": 5.284231874113096e-05,
+          "t2_s": 1.4776622723655694e-05
         },
         "QB25": {
-          "drive_frequency_hz": 4020565052.4246945,
+          "drive_frequency_hz": 4020523436.3773704,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997576831496772,
-          "readout_error_0_to_1": 0.0054,
-          "readout_error_1_to_0": 0.0132,
-          "readout_fidelity": 0.9907,
+          "prx_fidelity": 0.9993907113596732,
+          "readout_error_0_to_1": 0.004,
+          "readout_error_1_to_0": 0.0246,
+          "readout_fidelity": 0.9857,
           "readout_frequency_hz": 5566866666.666667,
-          "t1_s": 4.9154913358371734e-05,
-          "t2_echo_s": 3.552010073933228e-05,
-          "t2_s": 2.067593507377451e-05
+          "t1_s": 2.788595692784343e-05,
+          "t2_echo_s": 2.4757160532228366e-05,
+          "t2_s": 1.2730576227020538e-05
         },
         "QB26": {
-          "drive_frequency_hz": 3811328281.096281,
+          "drive_frequency_hz": 3811298424.901698,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996876551459888,
-          "readout_error_0_to_1": 0.0142,
+          "prx_fidelity": 0.9997581568933483,
+          "readout_error_0_to_1": 0.0164,
           "readout_error_1_to_0": 0.0148,
-          "readout_fidelity": 0.9855,
+          "readout_fidelity": 0.9844,
           "readout_frequency_hz": 5436333333.333333,
-          "t1_s": 7.942813846940738e-05,
-          "t2_echo_s": 3.6671674690999265e-05,
-          "t2_s": 1.1209291118897574e-05
+          "t1_s": 6.0265739690602775e-05,
+          "t2_echo_s": 3.7744707335696474e-05,
+          "t2_s": 1.1797663746638876e-05
         },
         "QB27": {
-          "drive_frequency_hz": 3969937117.9456663,
+          "drive_frequency_hz": 3969885985.7831025,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997958196379853,
-          "readout_error_0_to_1": 0.0054,
-          "readout_error_1_to_0": 0.007,
-          "readout_fidelity": 0.9938,
+          "prx_fidelity": 0.9997835277270428,
+          "readout_error_0_to_1": 0.0124,
+          "readout_error_1_to_0": 0.0122,
+          "readout_fidelity": 0.9877,
           "readout_frequency_hz": 5584700000.0,
-          "t1_s": 7.599751820179416e-05,
-          "t2_echo_s": 3.0790382175826144e-05,
-          "t2_s": 1.1695126486605036e-05
+          "t1_s": 5.670056255703337e-05,
+          "t2_echo_s": 2.75596592287209e-05,
+          "t2_s": 1.1446012369395752e-05
         },
         "QB28": {
-          "drive_frequency_hz": 3886678199.289347,
+          "drive_frequency_hz": 3886637558.8712826,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996818862981788,
-          "readout_error_0_to_1": 0.0114,
-          "readout_error_1_to_0": 0.0156,
-          "readout_fidelity": 0.9865,
+          "prx_fidelity": 0.9997834066737986,
+          "readout_error_0_to_1": 0.0084,
+          "readout_error_1_to_0": 0.0158,
+          "readout_fidelity": 0.9879,
           "readout_frequency_hz": 5727845583.333333,
-          "t1_s": 5.385187432226344e-05,
-          "t2_echo_s": 3.802627048805934e-05,
-          "t2_s": 7.323875705571459e-06
+          "t1_s": 6.224529485409142e-05,
+          "t2_echo_s": 4.28831548040579e-05,
+          "t2_s": 8.642354348426982e-06
         },
         "QB29": {
-          "drive_frequency_hz": 3950968561.192592,
+          "drive_frequency_hz": 3950918211.8015633,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997161638972129,
-          "readout_error_0_to_1": 0.0104,
-          "readout_error_1_to_0": 0.0102,
+          "prx_fidelity": 0.9997469469831252,
+          "readout_error_0_to_1": 0.008,
+          "readout_error_1_to_0": 0.0126,
           "readout_fidelity": 0.9897,
           "readout_frequency_hz": 5415900000.0,
-          "t1_s": 5.557846070245104e-05,
-          "t2_echo_s": 3.392392010746249e-05,
-          "t2_s": 1.4487582662776196e-05
+          "t1_s": 5.693712115415637e-05,
+          "t2_echo_s": 2.9215437186480655e-05,
+          "t2_s": 1.380975437517206e-05
         },
         "QB3": {
-          "drive_frequency_hz": 3901391015.35045,
+          "drive_frequency_hz": 3901366272.633531,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997360122710992,
-          "readout_error_0_to_1": 0.0164,
-          "readout_error_1_to_0": 0.0188,
-          "readout_fidelity": 0.9824,
+          "prx_fidelity": 0.9997671614728344,
+          "readout_error_0_to_1": 0.0142,
+          "readout_error_1_to_0": 0.0214,
+          "readout_fidelity": 0.9822,
           "readout_frequency_hz": 5146866666.666667,
-          "t1_s": 3.987078131052225e-05,
-          "t2_echo_s": 6.575509792556941e-05,
-          "t2_s": 3.613752680652376e-05
+          "t1_s": 4.397797220559908e-05,
+          "t2_echo_s": 7.362855924148212e-05,
+          "t2_s": 4.633873106664835e-05
         },
         "QB30": {
-          "drive_frequency_hz": 3997597164.5360737,
+          "drive_frequency_hz": 3997613933.6967945,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996067505659872,
-          "readout_error_0_to_1": 0.0052,
-          "readout_error_1_to_0": 0.01,
-          "readout_fidelity": 0.9924,
+          "prx_fidelity": 0.9996190958488584,
+          "readout_error_0_to_1": 0.0034,
+          "readout_error_1_to_0": 0.0106,
+          "readout_fidelity": 0.993,
           "readout_frequency_hz": 5254166666.666667,
-          "t1_s": 5.2253560286291486e-05,
-          "t2_echo_s": 5.800716913461357e-05,
-          "t2_s": 4.917438594528885e-05
+          "t1_s": 4.768891203309954e-05,
+          "t2_echo_s": 6.324129377267712e-05,
+          "t2_s": 4.9942220034095454e-05
         },
         "QB31": {
-          "drive_frequency_hz": 4080547134.008252,
+          "drive_frequency_hz": 4080532614.298697,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996584949230154,
-          "readout_error_0_to_1": 0.024,
-          "readout_error_1_to_0": 0.016,
-          "readout_fidelity": 0.98,
+          "prx_fidelity": 0.9996653424863288,
+          "readout_error_0_to_1": 0.0038,
+          "readout_error_1_to_0": 0.0114,
+          "readout_fidelity": 0.9924,
           "readout_frequency_hz": 5130900000.0,
-          "t1_s": 6.210270669732037e-05,
-          "t2_echo_s": 4.329528199877743e-05,
-          "t2_s": 1.6037005318059455e-05
+          "t1_s": 5.8159703697453346e-05,
+          "t2_echo_s": 3.963962680957182e-05,
+          "t2_s": 1.5648637284368035e-05
         },
         "QB32": {
-          "drive_frequency_hz": 3986469137.243545,
+          "drive_frequency_hz": 3986489119.896282,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997261252820604,
-          "readout_error_0_to_1": 0.0126,
-          "readout_error_1_to_0": 0.0116,
-          "readout_fidelity": 0.9879,
+          "prx_fidelity": 0.999734980919714,
+          "readout_error_0_to_1": 0.0146,
+          "readout_error_1_to_0": 0.016,
+          "readout_fidelity": 0.9847,
           "readout_frequency_hz": 5267500000.0,
-          "t1_s": 6.3774592455288e-05,
-          "t2_echo_s": 4.158926783382938e-05,
-          "t2_s": 2.1272396346812865e-05
+          "t1_s": 5.53137911336799e-05,
+          "t2_echo_s": 4.7337865452155414e-05,
+          "t2_s": 2.355975951869036e-05
         },
         "QB33": {
-          "drive_frequency_hz": 3879329466.2775674,
+          "drive_frequency_hz": 3879316102.2193666,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996835920377124,
-          "readout_error_0_to_1": 0.0102,
-          "readout_error_1_to_0": 0.0216,
-          "readout_fidelity": 0.9841,
+          "prx_fidelity": 0.999736130646356,
+          "readout_error_0_to_1": 0.0182,
+          "readout_error_1_to_0": 0.0234,
+          "readout_fidelity": 0.9792,
           "readout_frequency_hz": 5425068666.666667,
-          "t1_s": 5.71856220207909e-05,
-          "t2_echo_s": 4.354037446658813e-05,
-          "t2_s": 7.078929357828342e-06
+          "t1_s": 8.331683632000613e-05,
+          "t2_echo_s": 5.03070692186677e-05,
+          "t2_s": 8.127520337731024e-06
         },
         "QB34": {
-          "drive_frequency_hz": 4120506253.2765,
+          "drive_frequency_hz": 4120499970.5506225,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997785040196594,
-          "readout_error_0_to_1": 0.0078,
-          "readout_error_1_to_0": 0.0108,
-          "readout_fidelity": 0.9907,
+          "prx_fidelity": 0.9997207459018476,
+          "readout_error_0_to_1": 0.0098,
+          "readout_error_1_to_0": 0.0134,
+          "readout_fidelity": 0.9884,
           "readout_frequency_hz": 5562566666.666667,
-          "t1_s": 6.260352276969863e-05,
-          "t2_echo_s": 1.8696227985087625e-05,
-          "t2_s": 7.914180633636549e-06
+          "t1_s": 6.745127110863115e-05,
+          "t2_echo_s": 1.5619888693988754e-05,
+          "t2_s": 8.230996124751379e-06
         },
         "QB35": {
-          "drive_frequency_hz": 3933412644.281233,
+          "drive_frequency_hz": 3933376731.6492105,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.995419730201194,
-          "readout_error_0_to_1": 0.0016,
-          "readout_error_1_to_0": 0.0524,
-          "readout_fidelity": 0.973,
+          "prx_fidelity": 0.9930583383011812,
+          "readout_error_0_to_1": 0.0018,
+          "readout_error_1_to_0": 0.0762,
+          "readout_fidelity": 0.961,
           "readout_frequency_hz": 5722513333.333334,
-          "t1_s": 8.631210081252452e-06,
-          "t2_echo_s": 5.37979541690871e-06,
-          "t2_s": 4.299807666574692e-06
+          "t1_s": 2.902447662366227e-06,
+          "t2_echo_s": 2.1489095142039336e-06,
+          "t2_s": null
         },
         "QB36": {
-          "drive_frequency_hz": 3808328191.103303,
+          "drive_frequency_hz": 3808308049.137085,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997684398277245,
-          "readout_error_0_to_1": 0.0098,
-          "readout_error_1_to_0": 0.0192,
-          "readout_fidelity": 0.9855,
+          "prx_fidelity": 0.9997444111206792,
+          "readout_error_0_to_1": 0.0082,
+          "readout_error_1_to_0": 0.0138,
+          "readout_fidelity": 0.989,
           "readout_frequency_hz": 5712328222.222222,
-          "t1_s": 4.620993968189388e-05,
-          "t2_echo_s": 2.3144494545429396e-05,
-          "t2_s": 7.976657704233218e-06
+          "t1_s": 5.704800519153176e-05,
+          "t2_echo_s": 2.295377639136059e-05,
+          "t2_s": 7.88225578078587e-06
         },
         "QB37": {
-          "drive_frequency_hz": 3900992463.8857665,
+          "drive_frequency_hz": 3900980908.5972857,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9979020541513236,
-          "readout_error_0_to_1": 0.0128,
-          "readout_error_1_to_0": 0.0154,
-          "readout_fidelity": 0.9859,
+          "prx_fidelity": 0.9974842517366308,
+          "readout_error_0_to_1": 0.0052,
+          "readout_error_1_to_0": 0.0168,
+          "readout_fidelity": 0.989,
           "readout_frequency_hz": 5549266666.666667,
-          "t1_s": 4.084499225457385e-05,
-          "t2_echo_s": 4.303707763866481e-05,
-          "t2_s": 1.6688306439751412e-05
+          "t1_s": 1.888106437083728e-05,
+          "t2_echo_s": 2.2076274769878383e-05,
+          "t2_s": 1.4243087546142293e-05
         },
         "QB38": {
-          "drive_frequency_hz": 3926002547.771356,
+          "drive_frequency_hz": 3925923528.606608,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996142463182957,
-          "readout_error_0_to_1": 0.01,
-          "readout_error_1_to_0": 0.0178,
-          "readout_fidelity": 0.9861,
+          "prx_fidelity": 0.9996580829966584,
+          "readout_error_0_to_1": 0.0038,
+          "readout_error_1_to_0": 0.0204,
+          "readout_fidelity": 0.9879,
           "readout_frequency_hz": 6015009041.666667,
-          "t1_s": 4.6776678530296376e-05,
-          "t2_echo_s": 1.832913705761149e-05,
-          "t2_s": 8.925921360606686e-06
+          "t1_s": 5.217616988916546e-05,
+          "t2_echo_s": 1.8929814956299423e-05,
+          "t2_s": 9.279348813116351e-06
         },
         "QB39": {
-          "drive_frequency_hz": 4004490113.755041,
+          "drive_frequency_hz": 4004476056.9287176,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996760345773984,
-          "readout_error_0_to_1": 0.0026,
-          "readout_error_1_to_0": 0.0092,
-          "readout_fidelity": 0.9941,
+          "prx_fidelity": 0.9997299752078452,
+          "readout_error_0_to_1": 0.0038,
+          "readout_error_1_to_0": 0.0114,
+          "readout_fidelity": 0.9924,
           "readout_frequency_hz": 5295766666.666667,
-          "t1_s": 3.681042303695493e-05,
-          "t2_echo_s": 5.299697150693804e-05,
-          "t2_s": 3.109837644023903e-05
+          "t1_s": 4.370530807971108e-05,
+          "t2_echo_s": 5.7727153823221574e-05,
+          "t2_s": 3.360905234448698e-05
         },
         "QB4": {
-          "drive_frequency_hz": 4060305708.0003786,
+          "drive_frequency_hz": 4060242194.300821,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999665490989428,
-          "readout_error_0_to_1": 0.005,
-          "readout_error_1_to_0": 0.0134,
-          "readout_fidelity": 0.9908,
+          "prx_fidelity": 0.9996668299920132,
+          "readout_error_0_to_1": 0.0018,
+          "readout_error_1_to_0": 0.0106,
+          "readout_fidelity": 0.9938,
           "readout_frequency_hz": 5988233333.333333,
-          "t1_s": 4.555642297774467e-05,
-          "t2_echo_s": 2.748315742536633e-05,
-          "t2_s": 1.3119813403057407e-05
+          "t1_s": 4.6340957609185206e-05,
+          "t2_echo_s": 2.8876812671026267e-05,
+          "t2_s": 1.2835331456338738e-05
         },
         "QB40": {
-          "drive_frequency_hz": 3869935999.244106,
+          "drive_frequency_hz": 3869902764.331968,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996347837377962,
-          "readout_error_0_to_1": 0.0034,
-          "readout_error_1_to_0": 0.0132,
-          "readout_fidelity": 0.9917,
+          "prx_fidelity": 0.9996927254048136,
+          "readout_error_0_to_1": 0.0048,
+          "readout_error_1_to_0": 0.0092,
+          "readout_fidelity": 0.993,
           "readout_frequency_hz": 5126300000.0,
-          "t1_s": 4.07217709905842e-05,
-          "t2_echo_s": 4.1992521920004143e-05,
-          "t2_s": 1.4432149244729924e-05
+          "t1_s": 4.184732521643882e-05,
+          "t2_echo_s": 4.364189988772664e-05,
+          "t2_s": 1.5391195478685822e-05
         },
         "QB41": {
-          "drive_frequency_hz": 3802419473.671783,
+          "drive_frequency_hz": 3802406622.3383336,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999656772191626,
-          "readout_error_0_to_1": 0.0076,
-          "readout_error_1_to_0": 0.0156,
-          "readout_fidelity": 0.9884,
+          "prx_fidelity": 0.9996674220622505,
+          "readout_error_0_to_1": 0.0122,
+          "readout_error_1_to_0": 0.0164,
+          "readout_fidelity": 0.9857,
           "readout_frequency_hz": 5981666666.666667,
-          "t1_s": 4.8475900318311994e-05,
-          "t2_echo_s": 5.527946394649815e-06,
-          "t2_s": 2.4067172957502157e-06
+          "t1_s": 5.867777464932161e-05,
+          "t2_echo_s": 5.537051788587042e-06,
+          "t2_s": 2.4225531621139658e-06
         },
         "QB42": {
-          "drive_frequency_hz": 3919285794.307405,
+          "drive_frequency_hz": 3919255938.425513,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997819081405218,
-          "readout_error_0_to_1": 0.0122,
-          "readout_error_1_to_0": 0.0212,
-          "readout_fidelity": 0.9833,
+          "prx_fidelity": 0.9997458102648996,
+          "readout_error_0_to_1": 0.0092,
+          "readout_error_1_to_0": 0.0192,
+          "readout_fidelity": 0.9858,
           "readout_frequency_hz": 5844833333.333333,
-          "t1_s": 6.407000427562307e-05,
-          "t2_echo_s": 5.1406194243929056e-05,
-          "t2_s": 1.5891805351490815e-05
+          "t1_s": 4.7645715609613784e-05,
+          "t2_echo_s": 4.5491128697349925e-05,
+          "t2_s": 1.617607845067848e-05
         },
         "QB43": {
-          "drive_frequency_hz": 4106431808.484379,
+          "drive_frequency_hz": 4106392897.8578568,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997184482911916,
-          "readout_error_0_to_1": 0.0058,
-          "readout_error_1_to_0": 0.0134,
-          "readout_fidelity": 0.9904,
+          "prx_fidelity": 0.999751268650151,
+          "readout_error_0_to_1": 0.0036,
+          "readout_error_1_to_0": 0.012,
+          "readout_fidelity": 0.9922,
           "readout_frequency_hz": 5421133333.333333,
-          "t1_s": 4.657456578582659e-05,
-          "t2_echo_s": 2.442461903786388e-05,
-          "t2_s": 9.827078458111264e-06
+          "t1_s": 5.185797794570066e-05,
+          "t2_echo_s": 2.00680870174272e-05,
+          "t2_s": 1.0047717845909684e-05
         },
         "QB44": {
-          "drive_frequency_hz": 4042672179.7312465,
+          "drive_frequency_hz": 4042668398.7239017,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9992402733992009,
-          "readout_error_0_to_1": 0.011,
-          "readout_error_1_to_0": 0.0368,
-          "readout_fidelity": 0.9761,
+          "prx_fidelity": 0.9989041648294444,
+          "readout_error_0_to_1": 0.007,
+          "readout_error_1_to_0": 0.0178,
+          "readout_fidelity": 0.9876,
           "readout_frequency_hz": 5565533333.333333,
-          "t1_s": 5.6131815995946914e-05,
-          "t2_echo_s": 7.435384601501176e-05,
-          "t2_s": 3.427661231913135e-05
+          "t1_s": 4.841865757536249e-05,
+          "t2_echo_s": 5.281732729964698e-05,
+          "t2_s": 1.3572317633458742e-05
         },
         "QB45": {
-          "drive_frequency_hz": 4160287056.161489,
+          "drive_frequency_hz": 4160296821.279232,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997873500379444,
-          "readout_error_0_to_1": 0.0084,
-          "readout_error_1_to_0": 0.0126,
-          "readout_fidelity": 0.9895,
+          "prx_fidelity": 0.999737349508972,
+          "readout_error_0_to_1": 0.0214,
+          "readout_error_1_to_0": 0.0142,
+          "readout_fidelity": 0.9822,
           "readout_frequency_hz": 5850900000.0,
-          "t1_s": 5.956774433728219e-05,
-          "t2_echo_s": 3.4279128673202655e-05,
-          "t2_s": 1.2173215981906064e-05
+          "t1_s": 4.1839542998557275e-05,
+          "t2_echo_s": 3.0264783816892312e-05,
+          "t2_s": 1.2646916719518123e-05
         },
         "QB46": {
-          "drive_frequency_hz": 3955677469.0870466,
+          "drive_frequency_hz": 3955663751.8274536,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999478192215758,
-          "readout_error_0_to_1": 0.0136,
-          "readout_error_1_to_0": 0.0202,
-          "readout_fidelity": 0.9831,
+          "prx_fidelity": 0.9994331688814088,
+          "readout_error_0_to_1": 0.0128,
+          "readout_error_1_to_0": 0.019,
+          "readout_fidelity": 0.9841,
           "readout_frequency_hz": 5475733333.333333,
-          "t1_s": 4.089484751734365e-05,
-          "t2_echo_s": 3.8668881180403144e-05,
-          "t2_s": 3.168707293554959e-05
+          "t1_s": 3.888049380630925e-05,
+          "t2_echo_s": 3.612954738930631e-05,
+          "t2_s": 2.766941505521203e-05
         },
         "QB47": {
-          "drive_frequency_hz": 3899751211.583587,
+          "drive_frequency_hz": 3899715911.684284,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997319415265232,
-          "readout_error_0_to_1": 0.0206,
-          "readout_error_1_to_0": 0.0164,
-          "readout_fidelity": 0.9815,
+          "prx_fidelity": 0.999676084210398,
+          "readout_error_0_to_1": 0.0052,
+          "readout_error_1_to_0": 0.0078,
+          "readout_fidelity": 0.9935,
           "readout_frequency_hz": 5100633333.333333,
-          "t1_s": 8.1500136285724e-05,
-          "t2_echo_s": 5.779655784480884e-05,
-          "t2_s": 1.4552779782928276e-05
+          "t1_s": 7.622978856512221e-05,
+          "t2_echo_s": 6.054567071790153e-05,
+          "t2_s": 1.6812097946024756e-05
         },
         "QB48": {
-          "drive_frequency_hz": 3813241869.644421,
+          "drive_frequency_hz": 3813211727.3416433,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9997366749122156,
-          "readout_error_0_to_1": 0.0088,
-          "readout_error_1_to_0": 0.016,
-          "readout_fidelity": 0.9876,
+          "prx_fidelity": 0.999642660675402,
+          "readout_error_0_to_1": 0.0126,
+          "readout_error_1_to_0": 0.022,
+          "readout_fidelity": 0.9827,
           "readout_frequency_hz": 5226566666.666667,
-          "t1_s": 6.480459946802905e-05,
-          "t2_echo_s": 1.616037689684762e-05,
-          "t2_s": 6.014780768369464e-06
+          "t1_s": 5.238538589349692e-05,
+          "t2_echo_s": 1.613766015579892e-05,
+          "t2_s": 5.681062187532671e-06
         },
         "QB49": {
-          "drive_frequency_hz": 3884485972.594561,
+          "drive_frequency_hz": 3884458839.3646336,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996289484729336,
-          "readout_error_0_to_1": 0.0064,
-          "readout_error_1_to_0": 0.02,
-          "readout_fidelity": 0.9868,
+          "prx_fidelity": 0.9995004347362024,
+          "readout_error_0_to_1": 0.0136,
+          "readout_error_1_to_0": 0.0218,
+          "readout_fidelity": 0.9823,
           "readout_frequency_hz": 5863200000.0,
-          "t1_s": 5.17647154456904e-05,
-          "t2_echo_s": 5.679445428883048e-05,
-          "t2_s": 1.679566957557335e-05
+          "t1_s": 3.407693973298203e-05,
+          "t2_echo_s": 3.805077432213908e-05,
+          "t2_s": 1.435209021974179e-05
         },
         "QB5": {
-          "drive_frequency_hz": 3869535075.744035,
+          "drive_frequency_hz": 3869480751.981036,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996981555721242,
-          "readout_error_0_to_1": 0.0104,
-          "readout_error_1_to_0": 0.0146,
-          "readout_fidelity": 0.9875,
+          "prx_fidelity": 0.9997211054680424,
+          "readout_error_0_to_1": 0.0074,
+          "readout_error_1_to_0": 0.0144,
+          "readout_fidelity": 0.9891,
           "readout_frequency_hz": 5289600000.0,
-          "t1_s": 3.6534103555089145e-05,
-          "t2_echo_s": 4.0480186431433624e-05,
-          "t2_s": 2.4010798998464995e-05
+          "t1_s": 3.616801881487769e-05,
+          "t2_echo_s": 4.0161877470116875e-05,
+          "t2_s": 2.4287226748783608e-05
         },
         "QB50": {
-          "drive_frequency_hz": 4207104202.764386,
+          "drive_frequency_hz": 4207117000.640206,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999702551937358,
-          "readout_error_0_to_1": 0.0048,
-          "readout_error_1_to_0": 0.0106,
-          "readout_fidelity": 0.9923,
+          "prx_fidelity": 0.9997731822719232,
+          "readout_error_0_to_1": 0.0072,
+          "readout_error_1_to_0": 0.0096,
+          "readout_fidelity": 0.9916,
           "readout_frequency_hz": 5708735333.333334,
-          "t1_s": 4.186220425547592e-05,
-          "t2_echo_s": 5.574604458526756e-05,
-          "t2_s": 4.148187479999677e-05
+          "t1_s": 5.7352945035139095e-05,
+          "t2_echo_s": 4.141351224878563e-05,
+          "t2_s": 5.9060379259630856e-05
         },
         "QB51": {
-          "drive_frequency_hz": 4047317584.2424006,
+          "drive_frequency_hz": 4047313355.231417,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9995666987651876,
-          "readout_error_0_to_1": 0.0048,
-          "readout_error_1_to_0": 0.0122,
-          "readout_fidelity": 0.9915,
+          "prx_fidelity": 0.9994876759117688,
+          "readout_error_0_to_1": 0.0022,
+          "readout_error_1_to_0": 0.011,
+          "readout_fidelity": 0.9934,
           "readout_frequency_hz": 5628266666.666667,
-          "t1_s": 5.083285508195542e-05,
-          "t2_echo_s": 5.9282403861925353e-05,
-          "t2_s": 2.919278171572189e-05
+          "t1_s": 3.6091002446717535e-05,
+          "t2_echo_s": 4.679698311885014e-05,
+          "t2_s": 2.6917845211044772e-05
         },
         "QB52": {
-          "drive_frequency_hz": 4092162182.192042,
+          "drive_frequency_hz": 4092145594.831875,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996838184138396,
-          "readout_error_0_to_1": 0.0006,
-          "readout_error_1_to_0": 0.0082,
-          "readout_fidelity": 0.9956,
+          "prx_fidelity": 0.9997880622328132,
+          "readout_error_0_to_1": 0.005,
+          "readout_error_1_to_0": 0.0098,
+          "readout_fidelity": 0.9926,
           "readout_frequency_hz": 6005534888.888889,
-          "t1_s": 8.911308522136319e-06,
-          "t2_echo_s": 1.1485640293416302e-05,
-          "t2_s": 1.778865152793733e-05
+          "t1_s": 7.77266715491792e-05,
+          "t2_echo_s": 6.694746559577323e-05,
+          "t2_s": 2.33540609255707e-05
         },
         "QB53": {
-          "drive_frequency_hz": 3999718221.820275,
+          "drive_frequency_hz": 3999682083.3162975,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9993839877682744,
-          "readout_error_0_to_1": 0.0124,
-          "readout_error_1_to_0": 0.026,
-          "readout_fidelity": 0.9808,
+          "prx_fidelity": 0.9994703328516964,
+          "readout_error_0_to_1": 0.0066,
+          "readout_error_1_to_0": 0.0144,
+          "readout_fidelity": 0.9895,
           "readout_frequency_hz": 6003500000.0,
-          "t1_s": 6.275133456916353e-05,
-          "t2_echo_s": 3.141791171122468e-05,
-          "t2_s": 1.626663620995698e-05
+          "t1_s": 6.21550707799889e-05,
+          "t2_echo_s": 3.047389123845571e-05,
+          "t2_s": 1.6995057265797202e-05
         },
         "QB54": {
-          "drive_frequency_hz": 3851145360.563664,
+          "drive_frequency_hz": 3851135250.745384,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9995149391706576,
-          "readout_error_0_to_1": 0.0094,
-          "readout_error_1_to_0": 0.0138,
-          "readout_fidelity": 0.9884,
+          "prx_fidelity": 0.99970429609401,
+          "readout_error_0_to_1": 0.0114,
+          "readout_error_1_to_0": 0.0186,
+          "readout_fidelity": 0.985,
           "readout_frequency_hz": 5795297250.0,
-          "t1_s": 7.066022643959702e-05,
-          "t2_echo_s": 4.268328711772971e-05,
-          "t2_s": 1.4289759752041234e-05
+          "t1_s": 3.046033370774073e-05,
+          "t2_echo_s": 4.481522411964068e-05,
+          "t2_s": 1.50322647310756e-05
         },
         "QB6": {
-          "drive_frequency_hz": 4011466172.6792665,
+          "drive_frequency_hz": 4011374501.103154,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9989779577417548,
-          "readout_error_0_to_1": 0.0216,
-          "readout_error_1_to_0": 0.1356,
-          "readout_fidelity": 0.9214,
+          "prx_fidelity": 0.9989725829637152,
+          "readout_error_0_to_1": 0.0292,
+          "readout_error_1_to_0": 0.1214,
+          "readout_fidelity": 0.9247,
           "readout_frequency_hz": 5882733333.333333,
-          "t1_s": 4.417863602928411e-05,
-          "t2_echo_s": 2.462011406317924e-05,
-          "t2_s": 9.743050021588476e-06
+          "t1_s": 4.2863004486555895e-05,
+          "t2_echo_s": 1.885701326234709e-05,
+          "t2_s": 8.407731212739754e-06
         },
         "QB7": {
-          "drive_frequency_hz": 3930950234.1143856,
+          "drive_frequency_hz": 3930963741.003886,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9992376173739578,
-          "readout_error_0_to_1": 0.0022,
-          "readout_error_1_to_0": 0.0114,
-          "readout_fidelity": 0.9932,
+          "prx_fidelity": 0.9994335445670846,
+          "readout_error_0_to_1": 0.0048,
+          "readout_error_1_to_0": 0.012,
+          "readout_fidelity": 0.9916,
           "readout_frequency_hz": 5146233333.333333,
-          "t1_s": 5.734152351055312e-05,
-          "t2_echo_s": 5.6338931954428155e-05,
-          "t2_s": 1.9374890672498335e-05
+          "t1_s": 4.442925501173381e-05,
+          "t2_echo_s": 5.262486903925545e-05,
+          "t2_s": 1.376111983936629e-05
         },
         "QB8": {
-          "drive_frequency_hz": 3881010741.7319345,
+          "drive_frequency_hz": 3881026881.549686,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.9996950333164236,
+          "prx_fidelity": 0.9996177595113634,
           "readout_error_0_to_1": 0.0062,
-          "readout_error_1_to_0": 0.0114,
-          "readout_fidelity": 0.9912,
+          "readout_error_1_to_0": 0.0138,
+          "readout_fidelity": 0.99,
           "readout_frequency_hz": 5292433333.333333,
-          "t1_s": 5.245844549058202e-05,
-          "t2_echo_s": 6.332626485884342e-05,
-          "t2_s": 3.999406038179493e-05
+          "t1_s": 4.3948059261085175e-05,
+          "t2_echo_s": 6.851976348450901e-05,
+          "t2_s": 2.6254722979579195e-05
         },
         "QB9": {
-          "drive_frequency_hz": 4021292788.637419,
+          "drive_frequency_hz": 4021219404.523071,
           "measure_duration_s": 3.6e-07,
           "prx_duration_s": 2.4e-08,
-          "prx_fidelity": 0.999495922147879,
-          "readout_error_0_to_1": 0.004,
-          "readout_error_1_to_0": 0.0172,
-          "readout_fidelity": 0.9894,
+          "prx_fidelity": 0.9995941397185528,
+          "readout_error_0_to_1": 0.0094,
+          "readout_error_1_to_0": 0.0146,
+          "readout_fidelity": 0.988,
           "readout_frequency_hz": 5489533333.333333,
-          "t1_s": 3.6432608051837226e-05,
-          "t2_echo_s": 2.105174907420614e-05,
-          "t2_s": 9.982487538401349e-06
+          "t1_s": 4.950944412531251e-05,
+          "t2_echo_s": 2.862359691109463e-05,
+          "t2_s": 1.166992258316537e-05
         }
       },
       "pricing": {
@@ -3257,7 +3257,7 @@
         }
       ],
       "backend_type": "qpu",
-      "calibration_set_id": "04b7af66-cc83-4e7d-bfaa-28236f5ef1b4",
+      "calibration_set_id": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
       "chip_components": {
         "launcher": 76,
         "probe_line": 3,
@@ -3413,6 +3413,13 @@
           },
           "overrides": {}
         },
+        "measure_012": {
+          "default": "constant",
+          "loci": {
+            "constant": 5
+          },
+          "overrides": {}
+        },
         "measure_fidelity": {
           "default": "constant",
           "loci": {
@@ -3452,428 +3459,428 @@
       "mask_set": "M194",
       "medians": {
         "cz_duration_s": 4e-08,
-        "cz_irb_fidelity": 0.99425,
+        "cz_irb_fidelity": 0.994073,
         "measure_duration_s": 4.8e-07,
         "prx_duration_s": 1.6e-08,
-        "prx_fidelity": 0.999342,
-        "readout_fidelity": 0.97945,
-        "t1_s": 4.2123e-05,
-        "t2_echo_s": 2.23221e-05,
-        "t2_s": 8.94948e-06
+        "prx_fidelity": 0.999302,
+        "readout_fidelity": 0.9804,
+        "t1_s": 3.94533e-05,
+        "t2_echo_s": 2.16408e-05,
+        "t2_s": 9.29754e-06
       },
-      "metrics_created": "2026-10-19T02:29:00.136273Z",
+      "metrics_created": "2026-10-22T16:38:53.058396Z",
       "per_pair": {
         "QB10__QB11": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9919221954323034,
+          "cz_irb_fidelity": 0.9937352509779024,
           "implementation": "slepian_crf"
         },
         "QB10__QB15": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9883829415738584,
+          "cz_irb_fidelity": 0.992559971555888,
           "implementation": "slepian_crf"
         },
         "QB10__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9901972720519442,
+          "cz_irb_fidelity": 0.9919904392832162,
           "implementation": "slepian_crf"
         },
         "QB10__QB9": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9890265735279,
+          "cz_irb_fidelity": 0.9894306030928453,
           "implementation": "slepian_crf"
         },
         "QB12__QB11": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9990879705467772,
+          "cz_irb_fidelity": 0.999453545073947,
           "implementation": "slepian_crf"
         },
         "QB12__QB17": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9983812021444513,
+          "cz_irb_fidelity": 0.9987212064543058,
           "implementation": "slepian_crf"
         },
         "QB12__QB7": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9973000451111173,
+          "cz_irb_fidelity": 0.9990663946997392,
           "implementation": "slepian_crf"
         },
         "QB14__QB13": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9939385061137632,
+          "cz_irb_fidelity": 0.9969915456563848,
           "implementation": "slepian_crf"
         },
         "QB14__QB15": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9953082376838368,
+          "cz_irb_fidelity": 0.941974177752765,
           "implementation": "slepian_crf"
         },
         "QB14__QB18": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9955651148875216,
+          "cz_irb_fidelity": 0.9924534443895964,
           "implementation": "slepian_crf"
         },
         "QB14__QB9": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9973518281595636,
+          "cz_irb_fidelity": 0.9976890391627674,
           "implementation": "slepian_crf"
         },
         "QB16__QB11": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9953499191929496,
+          "cz_irb_fidelity": 0.99604142729151,
           "implementation": "slepian_crf"
         },
         "QB16__QB15": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9949396186445386,
+          "cz_irb_fidelity": 0.9883765900669064,
           "implementation": "slepian_crf"
         },
         "QB16__QB17": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9948728004716612,
+          "cz_irb_fidelity": 0.9956025488493984,
           "implementation": "slepian_crf"
         },
         "QB16__QB20": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9950201572336348,
+          "cz_irb_fidelity": 0.9940039643604328,
           "implementation": "slepian_crf"
         },
         "QB19__QB15": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9945605558318134,
+          "cz_irb_fidelity": 0.886270875124526,
           "implementation": "slepian_crf"
         },
         "QB19__QB18": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9966222592296504,
+          "cz_irb_fidelity": 0.991945584869338,
           "implementation": "slepian_crf"
         },
         "QB19__QB20": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9972447264077684,
+          "cz_irb_fidelity": 0.9900205879379104,
           "implementation": "slepian_crf"
         },
         "QB2__QB1": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.993873517157539,
+          "cz_irb_fidelity": 0.9960708094960956,
           "implementation": "slepian_crf"
         },
         "QB2__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9905716757810752,
+          "cz_irb_fidelity": 0.9961612047335012,
           "implementation": "slepian_crf"
         },
         "QB4__QB1": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.991343840891356,
+          "cz_irb_fidelity": 0.9956132816601504,
           "implementation": "slepian_crf"
         },
         "QB4__QB3": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9933196278530584,
+          "cz_irb_fidelity": 0.9939606283997712,
           "implementation": "slepian_crf"
         },
         "QB4__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9956381641780911,
+          "cz_irb_fidelity": 0.9950270441458402,
           "implementation": "slepian_crf"
         },
         "QB4__QB9": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9928005126614406,
+          "cz_irb_fidelity": 0.9941427504313388,
           "implementation": "slepian_crf"
         },
         "QB6__QB11": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9931881690947496,
+          "cz_irb_fidelity": 0.9932936933988832,
           "implementation": "slepian_crf"
         },
         "QB6__QB5": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9918979875720408,
+          "cz_irb_fidelity": 0.9926315853873436,
           "implementation": "slepian_crf"
         },
         "QB6__QB7": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9905523682590768,
+          "cz_irb_fidelity": 0.9901562216423548,
           "implementation": "slepian_crf"
         },
         "QB8__QB13": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.993744153282534,
+          "cz_irb_fidelity": 0.9966802902651948,
           "implementation": "slepian_crf"
         },
         "QB8__QB3": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.9948184431459683,
+          "cz_irb_fidelity": 0.9956109771464524,
           "implementation": "slepian_crf"
         },
         "QB8__QB9": {
           "cz_duration_s": 4e-08,
-          "cz_irb_fidelity": 0.993191937375596,
+          "cz_irb_fidelity": 0.9963965962937203,
           "implementation": "slepian_crf"
         }
       },
       "per_qubit": {
         "QB1": {
-          "drive_frequency_hz": 4599165486.484323,
+          "drive_frequency_hz": 4599109959.127699,
           "measure_duration_s": 3.64e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9992339893574164,
-          "readout_error_0_to_1": 0.0079,
-          "readout_error_1_to_0": 0.0166,
-          "readout_fidelity": 0.98775,
+          "prx_fidelity": 0.9991049783726198,
+          "readout_error_0_to_1": 0.0046,
+          "readout_error_1_to_0": 0.0174,
+          "readout_fidelity": 0.989,
           "readout_frequency_hz": 5061707465.831242,
-          "t1_s": 2.4296416220596382e-05,
-          "t2_echo_s": 1.969651805502648e-05,
-          "t2_s": 1.003885686648605e-05
+          "t1_s": 2.4693507327814167e-05,
+          "t2_echo_s": 1.8778270813951687e-05,
+          "t2_s": 1.0291930844800032e-05
         },
         "QB10": {
-          "drive_frequency_hz": 4770177679.804445,
+          "drive_frequency_hz": 4770207179.06006,
           "measure_duration_s": 3.16e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9994163428945192,
-          "readout_error_0_to_1": 0.0087,
-          "readout_error_1_to_0": 0.0167,
-          "readout_fidelity": 0.9873,
+          "prx_fidelity": 0.9992946615484176,
+          "readout_error_0_to_1": 0.0134,
+          "readout_error_1_to_0": 0.0272,
+          "readout_fidelity": 0.9797,
           "readout_frequency_hz": 5563896723.460951,
-          "t1_s": 2.9892021630290967e-05,
-          "t2_echo_s": 2.323403932692744e-05,
-          "t2_s": 1.0586360814608904e-05
+          "t1_s": 4.707475090103787e-05,
+          "t2_echo_s": 2.6886733580316497e-05,
+          "t2_s": 9.350225123504437e-06
         },
         "QB11": {
-          "drive_frequency_hz": 4502773862.485882,
+          "drive_frequency_hz": 4502773237.141576,
           "measure_duration_s": 4.84e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9994603340989726,
-          "readout_error_0_to_1": 0.0171,
-          "readout_error_1_to_0": 0.025,
-          "readout_fidelity": 0.97895,
+          "prx_fidelity": 0.999504147826491,
+          "readout_error_0_to_1": 0.0106,
+          "readout_error_1_to_0": 0.0228,
+          "readout_fidelity": 0.9833,
           "readout_frequency_hz": 5710828996.284409,
-          "t1_s": 4.453194558596329e-05,
-          "t2_echo_s": 2.4777571918598983e-05,
-          "t2_s": 1.127920852256021e-05
+          "t1_s": 5.204781455898779e-05,
+          "t2_echo_s": 2.591260501869508e-05,
+          "t2_s": 1.1121328612270622e-05
         },
         "QB12": {
-          "drive_frequency_hz": 4692007343.985403,
+          "drive_frequency_hz": 4691952087.349868,
           "measure_duration_s": 4.92e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9978098093704262,
-          "readout_error_0_to_1": 0.0134,
-          "readout_error_1_to_0": 0.0158,
-          "readout_fidelity": 0.9854,
+          "prx_fidelity": 0.9977676591322208,
+          "readout_error_0_to_1": 0.0162,
+          "readout_error_1_to_0": 0.0134,
+          "readout_fidelity": 0.9852,
           "readout_frequency_hz": 6030160617.21407,
-          "t1_s": 5.738482192458948e-05,
-          "t2_echo_s": 3.29380264633626e-05,
-          "t2_s": 1.4572558910626082e-05
+          "t1_s": 6.721047270576974e-05,
+          "t2_echo_s": 3.474855207405663e-05,
+          "t2_s": 1.3981249673133454e-05
         },
         "QB13": {
-          "drive_frequency_hz": 4506918716.170579,
+          "drive_frequency_hz": 4506965400.015181,
           "measure_duration_s": 2.04e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9981701450991264,
-          "readout_error_0_to_1": 0.019,
-          "readout_error_1_to_0": 0.0401,
-          "readout_fidelity": 0.97045,
+          "prx_fidelity": 0.999403266216811,
+          "readout_error_0_to_1": 0.0188,
+          "readout_error_1_to_0": 0.0214,
+          "readout_fidelity": 0.9799,
           "readout_frequency_hz": 5315230698.188228,
-          "t1_s": 4.860284278417026e-05,
-          "t2_echo_s": 2.4290419825525872e-05,
-          "t2_s": 7.396464866211192e-06
+          "t1_s": 4.632081396430661e-05,
+          "t2_echo_s": 2.7874369629897753e-05,
+          "t2_s": 1.1619232886843026e-05
         },
         "QB14": {
-          "drive_frequency_hz": 4630583261.35801,
+          "drive_frequency_hz": 4630644415.758658,
           "measure_duration_s": 4.2e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.999630614359513,
-          "readout_error_0_to_1": 0.0215,
-          "readout_error_1_to_0": 0.0142,
-          "readout_fidelity": 0.98215,
+          "prx_fidelity": 0.9996443237159208,
+          "readout_error_0_to_1": 0.0146,
+          "readout_error_1_to_0": 0.0126,
+          "readout_fidelity": 0.9864,
           "readout_frequency_hz": 5475451857.745372,
-          "t1_s": 5.02044310562941e-05,
-          "t2_echo_s": 2.2617641973916495e-05,
-          "t2_s": 7.909876885317672e-06
+          "t1_s": 4.712296781166944e-05,
+          "t2_echo_s": 2.120308064122357e-05,
+          "t2_s": 7.690451883946456e-06
         },
         "QB15": {
-          "drive_frequency_hz": 4516016994.106858,
+          "drive_frequency_hz": 4516243963.289622,
           "measure_duration_s": 4.92e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.99913609130379,
-          "readout_error_0_to_1": 0.0086,
-          "readout_error_1_to_0": 0.0477,
-          "readout_fidelity": 0.97185,
+          "prx_fidelity": 0.9827941458175232,
+          "readout_error_0_to_1": 0.0772,
+          "readout_error_1_to_0": 0.1362,
+          "readout_fidelity": 0.8933,
           "readout_frequency_hz": 5868415479.917027,
-          "t1_s": 2.0203228848256564e-05,
-          "t2_echo_s": 3.109828712700306e-05,
-          "t2_s": 1.1328544845864649e-05
+          "t1_s": 5.171156537548072e-05,
+          "t2_echo_s": 3.253099588143217e-05,
+          "t2_s": 2.466127341036303e-06
         },
         "QB16": {
-          "drive_frequency_hz": 4623326620.997782,
+          "drive_frequency_hz": 4623306301.78714,
           "measure_duration_s": 5.56e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9994538184333064,
-          "readout_error_0_to_1": 0.0135,
-          "readout_error_1_to_0": 0.023,
-          "readout_fidelity": 0.98175,
+          "prx_fidelity": 0.9995780943905562,
+          "readout_error_0_to_1": 0.0118,
+          "readout_error_1_to_0": 0.0188,
+          "readout_fidelity": 0.9847,
           "readout_frequency_hz": 6041559998.112407,
-          "t1_s": 4.337898181405673e-05,
-          "t2_echo_s": 1.962603430062881e-05,
-          "t2_s": 7.804732269724622e-06
+          "t1_s": 3.1325699710643764e-05,
+          "t2_echo_s": 2.0396648613036445e-05,
+          "t2_s": 8.078704488250393e-06
         },
         "QB17": {
-          "drive_frequency_hz": 4499173862.808438,
+          "drive_frequency_hz": 4499184031.994073,
           "measure_duration_s": 4.2e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.999500523352238,
-          "readout_error_0_to_1": 0.0105,
-          "readout_error_1_to_0": 0.0168,
-          "readout_fidelity": 0.98635,
+          "prx_fidelity": 0.9996247114572168,
+          "readout_error_0_to_1": 0.0096,
+          "readout_error_1_to_0": 0.013,
+          "readout_fidelity": 0.9887,
           "readout_frequency_hz": 5919655127.130638,
-          "t1_s": 4.503521286226594e-05,
-          "t2_echo_s": 2.994568952871814e-05,
-          "t2_s": 1.3761105359487894e-05
+          "t1_s": 3.021594818936848e-05,
+          "t2_echo_s": 2.8524367513200323e-05,
+          "t2_s": 1.3814541787277468e-05
         },
         "QB18": {
-          "drive_frequency_hz": 4488359666.79608,
+          "drive_frequency_hz": 4488308108.505261,
           "measure_duration_s": 3.16e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.999153397601082,
-          "readout_error_0_to_1": 0.0087,
-          "readout_error_1_to_0": 0.063,
-          "readout_fidelity": 0.96415,
+          "prx_fidelity": 0.9982013357179093,
+          "readout_error_0_to_1": 0.0054,
+          "readout_error_1_to_0": 0.0434,
+          "readout_fidelity": 0.9756,
           "readout_frequency_hz": 5704768982.666673,
-          "t1_s": 1.52874899548617e-05,
-          "t2_echo_s": 1.4080933926227715e-05,
-          "t2_s": 4.863478641906985e-06
+          "t1_s": 1.6269251867713747e-05,
+          "t2_echo_s": 1.1171834482905796e-05,
+          "t2_s": 5.185544884077604e-06
         },
         "QB19": {
-          "drive_frequency_hz": 4644177041.176576,
+          "drive_frequency_hz": 4644162659.826361,
           "measure_duration_s": 5.24e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9996405361806382,
-          "readout_error_0_to_1": 0.0309,
-          "readout_error_1_to_0": 0.0211,
-          "readout_fidelity": 0.974,
+          "prx_fidelity": 0.999424145478577,
+          "readout_error_0_to_1": 0.0272,
+          "readout_error_1_to_0": 0.0296,
+          "readout_fidelity": 0.9716,
           "readout_frequency_hz": 6098293564.088476,
-          "t1_s": 4.15410947757448e-05,
-          "t2_echo_s": 2.468643765798813e-05,
-          "t2_s": 9.347197420467024e-06
+          "t1_s": 3.713798874669348e-05,
+          "t2_echo_s": 2.2337497412406335e-05,
+          "t2_s": 8.524735594437945e-06
         },
         "QB2": {
-          "drive_frequency_hz": 4629970225.647496,
+          "drive_frequency_hz": 4630019456.199465,
           "measure_duration_s": 5.56e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9993481232644332,
-          "readout_error_0_to_1": 0.0099,
-          "readout_error_1_to_0": 0.0329,
-          "readout_fidelity": 0.9786,
+          "prx_fidelity": 0.99940396574472,
+          "readout_error_0_to_1": 0.0076,
+          "readout_error_1_to_0": 0.021,
+          "readout_fidelity": 0.9857,
           "readout_frequency_hz": 5205667612.9009495,
-          "t1_s": 3.141259155817765e-05,
-          "t2_echo_s": 1.6470167679867712e-05,
-          "t2_s": 5.75328377098527e-06
+          "t1_s": 1.813542518101151e-05,
+          "t2_echo_s": 1.5188740621251348e-05,
+          "t2_s": 6.981849250493808e-06
         },
         "QB20": {
-          "drive_frequency_hz": 4516317677.017214,
+          "drive_frequency_hz": 4516345023.644998,
           "measure_duration_s": 5.24e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9996738770392228,
-          "readout_error_0_to_1": 0.0163,
-          "readout_error_1_to_0": 0.0122,
-          "readout_fidelity": 0.98575,
+          "prx_fidelity": 0.998698464015009,
+          "readout_error_0_to_1": 0.013,
+          "readout_error_1_to_0": 0.05,
+          "readout_fidelity": 0.9685,
           "readout_frequency_hz": 5958220973.05489,
-          "t1_s": 4.576788038932424e-05,
-          "t2_echo_s": 4.7712518537318146e-05,
-          "t2_s": 3.497058018485498e-05
+          "t1_s": 3.215055725170899e-05,
+          "t2_echo_s": 2.8424059635744423e-05,
+          "t2_s": 6.207111351462547e-06
         },
         "QB3": {
-          "drive_frequency_hz": 4524552488.213108,
+          "drive_frequency_hz": 4524533518.717578,
           "measure_duration_s": 4.44e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9991953691778536,
-          "readout_error_0_to_1": 0.0125,
-          "readout_error_1_to_0": 0.0391,
-          "readout_fidelity": 0.9742,
+          "prx_fidelity": 0.9992713592745052,
+          "readout_error_0_to_1": 0.0124,
+          "readout_error_1_to_0": 0.026,
+          "readout_fidelity": 0.9808,
           "readout_frequency_hz": 5093774273.035248,
-          "t1_s": 2.1549575637870415e-05,
-          "t2_echo_s": 1.843944698662464e-05,
-          "t2_s": 8.801166297719945e-06
+          "t1_s": 2.189565602473604e-05,
+          "t2_echo_s": 1.6552144392531945e-05,
+          "t2_s": 1.080670191410974e-05
         },
         "QB4": {
-          "drive_frequency_hz": 4717369617.145762,
+          "drive_frequency_hz": 4717335381.644026,
           "measure_duration_s": 2.68e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9991704542546532,
-          "readout_error_0_to_1": 0.0054,
-          "readout_error_1_to_0": 0.0145,
-          "readout_fidelity": 0.99005,
+          "prx_fidelity": 0.9992873315478252,
+          "readout_error_0_to_1": 0.0094,
+          "readout_error_1_to_0": 0.015,
+          "readout_fidelity": 0.9878,
           "readout_frequency_hz": 5209362865.617502,
-          "t1_s": 2.710801184954693e-05,
-          "t2_echo_s": 1.5886511291673716e-05,
-          "t2_s": 8.047004860943912e-06
+          "t1_s": 2.472053144576552e-05,
+          "t2_echo_s": 1.665558971897616e-05,
+          "t2_s": 9.392362883563751e-06
         },
         "QB5": {
-          "drive_frequency_hz": 4510439380.082114,
+          "drive_frequency_hz": 4510434387.31372,
           "measure_duration_s": 5.56e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9994045672733854,
-          "readout_error_0_to_1": 0.0116,
-          "readout_error_1_to_0": 0.0348,
-          "readout_fidelity": 0.9768,
+          "prx_fidelity": 0.9994873324824424,
+          "readout_error_0_to_1": 0.0126,
+          "readout_error_1_to_0": 0.022,
+          "readout_fidelity": 0.9827,
           "readout_frequency_hz": 5389053637.705765,
-          "t1_s": 5.3822444706317385e-05,
-          "t2_echo_s": 2.0821281513911584e-05,
-          "t2_s": 9.023865538801162e-06
+          "t1_s": 4.972105645022788e-05,
+          "t2_echo_s": 2.0625062958569476e-05,
+          "t2_s": 9.244859251500426e-06
         },
         "QB6": {
-          "drive_frequency_hz": 4661258428.930748,
+          "drive_frequency_hz": 4661275514.583517,
           "measure_duration_s": 4.12e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.999337764362424,
-          "readout_error_0_to_1": 0.0162,
-          "readout_error_1_to_0": 0.0201,
-          "readout_fidelity": 0.98185,
+          "prx_fidelity": 0.9993100017245058,
+          "readout_error_0_to_1": 0.022,
+          "readout_error_1_to_0": 0.024,
+          "readout_fidelity": 0.977,
           "readout_frequency_hz": 5537599474.688548,
-          "t1_s": 5.0068547112481725e-05,
-          "t2_echo_s": 2.2026584605564376e-05,
-          "t2_s": 8.875100046983965e-06
+          "t1_s": 5.7481307637687854e-05,
+          "t2_echo_s": 2.2078616021442378e-05,
+          "t2_s": 6.134534907974161e-06
         },
         "QB7": {
-          "drive_frequency_hz": 4511856445.247719,
+          "drive_frequency_hz": 4511846151.045749,
           "measure_duration_s": 5.56e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9972077337506164,
-          "readout_error_0_to_1": 0.0084,
-          "readout_error_1_to_0": 0.0317,
-          "readout_fidelity": 0.97995,
+          "prx_fidelity": 0.997717637122908,
+          "readout_error_0_to_1": 0.0148,
+          "readout_error_1_to_0": 0.0448,
+          "readout_fidelity": 0.9702,
           "readout_frequency_hz": 5717808640.920819,
-          "t1_s": 3.357250509575638e-05,
-          "t2_echo_s": 1.9126981150635207e-05,
-          "t2_s": 8.090946145040274e-06
+          "t1_s": 4.9339423613555024e-05,
+          "t2_echo_s": 1.8934429195629732e-05,
+          "t2_s": 9.511624144468584e-06
         },
         "QB8": {
-          "drive_frequency_hz": 4645354072.020091,
+          "drive_frequency_hz": 4645341417.173223,
           "measure_duration_s": 4.76e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.9993458337758832,
-          "readout_error_0_to_1": 0.0066,
-          "readout_error_1_to_0": 0.044,
-          "readout_fidelity": 0.9747,
+          "prx_fidelity": 0.9995147867165493,
+          "readout_error_0_to_1": 0.0052,
+          "readout_error_1_to_0": 0.0348,
+          "readout_fidelity": 0.98,
           "readout_frequency_hz": 5110576986.388726,
-          "t1_s": 1.81577748543028e-05,
-          "t2_echo_s": 1.7645768354771834e-05,
-          "t2_s": 8.08784208063004e-06
+          "t1_s": 2.9460865646083852e-05,
+          "t2_echo_s": 1.956279507829275e-05,
+          "t2_s": 8.443754400178996e-06
         },
         "QB9": {
-          "drive_frequency_hz": 4534714059.201823,
+          "drive_frequency_hz": 4534656961.688573,
           "measure_duration_s": 5.08e-07,
           "prx_duration_s": 1.6e-08,
-          "prx_fidelity": 0.999326264315327,
-          "readout_error_0_to_1": 0.0156,
-          "readout_error_1_to_0": 0.03,
-          "readout_fidelity": 0.9772,
+          "prx_fidelity": 0.9992773342941028,
+          "readout_error_0_to_1": 0.0174,
+          "readout_error_1_to_0": 0.0316,
+          "readout_fidelity": 0.9755,
           "readout_frequency_hz": 5397059304.797302,
-          "t1_s": 4.270488673396854e-05,
-          "t2_echo_s": 2.5172559163676704e-05,
-          "t2_s": 1.2059951313835186e-05
+          "t1_s": 4.176852162068006e-05,
+          "t2_echo_s": 2.3948268209735073e-05,
+          "t2_s": 1.1742428549341684e-05
         }
       },
       "pricing": {
@@ -3886,7 +3893,7 @@
       "pulla_enabled": true,
       "qubits": 20,
       "static_architecture_qubits": 20,
-      "station_control_version": "49.0.3",
+      "station_control_version": "50.0.0",
       "station_label": "Apollo station in XLD10.S1",
       "variant": "P08"
     },
@@ -3900,7 +3907,7 @@
         }
       ],
       "backend_type": "mock",
-      "calibration_set_id": "59916545-8c4e-482b-8852-e67fbf917647",
+      "calibration_set_id": "f04fe114-002f-46bd-8fa4-2a577ff56501",
       "chip_components": {
         "launcher": 76,
         "probe_line": 3,
@@ -4055,6 +4062,13 @@
           },
           "overrides": {}
         },
+        "measure_012": {
+          "default": "constant",
+          "loci": {
+            "constant": 20
+          },
+          "overrides": {}
+        },
         "measure_fidelity": {
           "default": "constant",
           "loci": {
@@ -4099,7 +4113,7 @@
         "t2_echo_s": 1.5e-05,
         "t2_s": 1e-05
       },
-      "metrics_created": "2026-09-09T02:49:04.409639Z",
+      "metrics_created": "2026-10-21T03:02:50.324391Z",
       "per_pair": {
         "QB10__QB11": {
           "cz_duration_s": 8e-08,
@@ -4520,7 +4534,7 @@
       "pulla_enabled": false,
       "qubits": 20,
       "static_architecture_qubits": 20,
-      "station_control_version": "49.0.3",
+      "station_control_version": "50.0.0",
       "station_label": "Mocked Olympus v2 station - Crystal 20 P08",
       "variant": "P08"
     },
@@ -4544,7 +4558,7 @@
         }
       ],
       "backend_type": "qpu",
-      "calibration_set_id": "53d7843b-5634-4091-b27c-09c2b3acf9e4",
+      "calibration_set_id": "10fb5570-79c7-4eaa-b092-1ad089af0328",
       "chip_components": {
         "computational_resonator": 1,
         "launcher": 78,
@@ -4682,6 +4696,13 @@
           },
           "overrides": {}
         },
+        "measure_012": {
+          "default": "constant",
+          "loci": {
+            "constant": 7
+          },
+          "overrides": {}
+        },
         "measure_fidelity": {
           "default": "constant",
           "loci": {
@@ -4728,306 +4749,306 @@
       "mask_set": "M186",
       "medians": {
         "cz_duration_s": 1.04e-07,
-        "cz_irb_fidelity": 0.973999,
+        "cz_irb_fidelity": 0.970898,
         "measure_duration_s": 4e-07,
         "prx_duration_s": 4e-08,
-        "prx_fidelity": 0.999016,
-        "readout_fidelity": 0.98335,
-        "t1_s": 2.63855e-05,
-        "t2_echo_s": 2.44486e-05,
-        "t2_s": 9.77987e-06
+        "prx_fidelity": 0.998795,
+        "readout_fidelity": 0.982,
+        "t1_s": 2.8335e-05,
+        "t2_echo_s": 2.26059e-05,
+        "t2_s": 1.046e-05
       },
-      "metrics_created": "2026-10-19T05:44:59.161034Z",
+      "metrics_created": "2026-10-22T05:48:48.255375Z",
       "per_pair": {
         "QB10__COMPR1": {
           "cz_duration_s": 8e-08,
-          "cz_irb_fidelity": 0.9750653538149792,
+          "cz_irb_fidelity": 0.9751174489104988,
           "implementation": "tgss"
         },
         "QB11__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9226207665380188,
+          "cz_irb_fidelity": 0.9427259676550136,
           "implementation": "crf_crf"
         },
         "QB13__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9730998970394498,
+          "cz_irb_fidelity": 0.9702728428245188,
           "implementation": "crf_crf"
         },
         "QB15__COMPR1": {
           "cz_duration_s": 1.12e-07,
-          "cz_irb_fidelity": 0.973809996329034,
+          "cz_irb_fidelity": 0.9650281956161488,
           "implementation": "crf_crf"
         },
         "QB17__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9729689022047306,
+          "cz_irb_fidelity": 0.968823557053834,
           "implementation": "crf_crf"
         },
         "QB19__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9724859472095028,
+          "cz_irb_fidelity": 0.9695295774887432,
           "implementation": "crf_crf"
         },
         "QB1__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9745974954015592,
+          "cz_irb_fidelity": 0.9716440420183916,
           "implementation": "crf_crf"
         },
         "QB20__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9812007222977924,
+          "cz_irb_fidelity": 0.9772480401122348,
           "implementation": "crf_crf"
         },
         "QB21__COMPR1": {
           "cz_duration_s": 1.36e-07,
-          "cz_irb_fidelity": 0.9649544737027104,
+          "cz_irb_fidelity": 0.9637936964015242,
           "implementation": "crf_crf"
         },
         "QB23__COMPR1": {
           "cz_duration_s": 1.12e-07,
-          "cz_irb_fidelity": 0.9714660651675916,
+          "cz_irb_fidelity": 0.9632784844667286,
           "implementation": "crf_crf"
         },
         "QB2__COMPR1": {
           "cz_duration_s": 8.000000000000001e-08,
-          "cz_irb_fidelity": 0.9684339380573144,
+          "cz_irb_fidelity": 0.9682316967585634,
           "implementation": "tgss"
         },
         "QB3__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9741880824902934,
+          "cz_irb_fidelity": 0.971607106202096,
           "implementation": "crf_crf"
         },
         "QB4__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.976480622004692,
+          "cz_irb_fidelity": 0.97152401157266,
           "implementation": "crf_crf"
         },
         "QB5__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.978980476982405,
+          "cz_irb_fidelity": 0.9757487148687882,
           "implementation": "crf_crf"
         },
         "QB8__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9791832138223228,
+          "cz_irb_fidelity": 0.9819060714095104,
           "implementation": "crf_crf"
         },
         "QB9__COMPR1": {
           "cz_duration_s": 1.04e-07,
-          "cz_irb_fidelity": 0.9799734000495628,
+          "cz_irb_fidelity": 0.9778754845028934,
           "implementation": "crf_crf"
         }
       },
       "per_qubit": {
         "QB1": {
-          "drive_frequency_hz": 4725480619.716968,
+          "drive_frequency_hz": 4725493631.472175,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9988671441625808,
-          "readout_error_0_to_1": 0.0094,
-          "readout_error_1_to_0": 0.0211,
-          "readout_fidelity": 0.98475,
+          "prx_fidelity": 0.99786850743192,
+          "readout_error_0_to_1": 0.0082,
+          "readout_error_1_to_0": 0.0234,
+          "readout_fidelity": 0.9842,
           "readout_frequency_hz": 5482022222.222222,
-          "t1_s": 2.663620718766701e-05,
-          "t2_echo_s": 2.200693729631173e-05,
-          "t2_s": 1.5433311836542363e-05
+          "t1_s": 2.8425409742791908e-05,
+          "t2_echo_s": 2.151951943800238e-05,
+          "t2_s": 1.5311149455535705e-05
         },
         "QB10": {
-          "drive_frequency_hz": 4485263472.328069,
+          "drive_frequency_hz": 4485295778.826794,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.998506634262994,
-          "readout_error_0_to_1": 0.006,
-          "readout_error_1_to_0": 0.0223,
-          "readout_fidelity": 0.98585,
+          "prx_fidelity": 0.9986409987060928,
+          "readout_error_0_to_1": 0.0072,
+          "readout_error_1_to_0": 0.0288,
+          "readout_fidelity": 0.982,
           "readout_frequency_hz": 5091944444.444445,
-          "t1_s": 1.8842588020118715e-05,
-          "t2_echo_s": 2.0044782721828365e-05,
-          "t2_s": 5.4376251711618055e-06
+          "t1_s": 2.4786290092092332e-05,
+          "t2_echo_s": 2.1802970954030213e-05,
+          "t2_s": 6.0495141399507335e-06
         },
         "QB11": {
-          "drive_frequency_hz": 4585384621.939826,
+          "drive_frequency_hz": 4585393780.425832,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9991116788836516,
-          "readout_error_0_to_1": 0.0028,
-          "readout_error_1_to_0": 0.0217,
-          "readout_fidelity": 0.98775,
+          "prx_fidelity": 0.9991180566444384,
+          "readout_error_0_to_1": 0.0086,
+          "readout_error_1_to_0": 0.0256,
+          "readout_fidelity": 0.9829,
           "readout_frequency_hz": 5228988888.888888,
-          "t1_s": 2.4736739918332884e-05,
-          "t2_echo_s": 2.6932597239016616e-05,
-          "t2_s": 1.504761610691523e-05
+          "t1_s": 2.832998254019687e-05,
+          "t2_echo_s": 3.4522959040162076e-05,
+          "t2_s": 1.68061654387557e-05
         },
         "QB13": {
-          "drive_frequency_hz": 4446408747.481104,
+          "drive_frequency_hz": 4446437915.657323,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9986858073165568,
-          "readout_error_0_to_1": 0.0119,
-          "readout_error_1_to_0": 0.0242,
-          "readout_fidelity": 0.98195,
+          "prx_fidelity": 0.9987358862447928,
+          "readout_error_0_to_1": 0.0076,
+          "readout_error_1_to_0": 0.0228,
+          "readout_fidelity": 0.9848,
           "readout_frequency_hz": 5368955555.555555,
-          "t1_s": 1.957347975145804e-05,
-          "t2_echo_s": 9.132561970706396e-06,
-          "t2_s": 2.5907933673195034e-06
+          "t1_s": 2.6468869812446676e-05,
+          "t2_echo_s": 9.14942315836789e-06,
+          "t2_s": 2.7435233013852994e-06
         },
         "QB15": {
-          "drive_frequency_hz": 4704248350.429077,
+          "drive_frequency_hz": 4704228879.381521,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9991619987543368,
-          "readout_error_0_to_1": 0.0056,
-          "readout_error_1_to_0": 0.0191,
-          "readout_fidelity": 0.98765,
+          "prx_fidelity": 0.9988542823203111,
+          "readout_error_0_to_1": 0.0058,
+          "readout_error_1_to_0": 0.023,
+          "readout_fidelity": 0.9856,
           "readout_frequency_hz": 5518888888.888889,
-          "t1_s": 2.510007874895309e-05,
-          "t2_echo_s": 3.2621453053044846e-05,
-          "t2_s": 2.2363389939118876e-05
+          "t1_s": 1.5482785755661768e-05,
+          "t2_echo_s": 2.120128797388788e-05,
+          "t2_s": 1.592138105524039e-05
         },
         "QB17": {
-          "drive_frequency_hz": 4625885557.304372,
+          "drive_frequency_hz": 4625873371.881124,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9985787603904572,
-          "readout_error_0_to_1": 0.0132,
-          "readout_error_1_to_0": 0.0244,
-          "readout_fidelity": 0.9812,
+          "prx_fidelity": 0.9988714272155986,
+          "readout_error_0_to_1": 0.0108,
+          "readout_error_1_to_0": 0.0254,
+          "readout_fidelity": 0.9819,
           "readout_frequency_hz": 5672688888.888889,
-          "t1_s": 4.669192495656257e-05,
-          "t2_echo_s": 1.8535574283173565e-05,
-          "t2_s": 3.281776973491733e-06
+          "t1_s": 5.007725377534267e-05,
+          "t2_echo_s": 1.91351217555404e-05,
+          "t2_s": 3.397231842247534e-06
         },
         "QB19": {
-          "drive_frequency_hz": 4650543981.556829,
+          "drive_frequency_hz": 4650531964.915487,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9991612893129064,
-          "readout_error_0_to_1": 0.0082,
-          "readout_error_1_to_0": 0.0349,
-          "readout_fidelity": 0.97845,
+          "prx_fidelity": 0.9990852588073056,
+          "readout_error_0_to_1": 0.01,
+          "readout_error_1_to_0": 0.0334,
+          "readout_fidelity": 0.9783,
           "readout_frequency_hz": 5826555555.555555,
-          "t1_s": 3.015600847297071e-05,
-          "t2_echo_s": 2.68901846344751e-05,
-          "t2_s": 6.737475132062481e-06
+          "t1_s": 2.986392106054519e-05,
+          "t2_echo_s": 2.6411379285787956e-05,
+          "t2_s": 6.817024699936589e-06
         },
         "QB2": {
-          "drive_frequency_hz": 4490065188.546569,
+          "drive_frequency_hz": 4490091615.946532,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9975557997187896,
-          "readout_error_0_to_1": 0.0055,
-          "readout_error_1_to_0": 0.0358,
-          "readout_fidelity": 0.97935,
+          "prx_fidelity": 0.9970910002097,
+          "readout_error_0_to_1": 0.0018,
+          "readout_error_1_to_0": 0.036,
+          "readout_fidelity": 0.9811,
           "readout_frequency_hz": 6054033333.333333,
-          "t1_s": 2.5939743708754665e-05,
-          "t2_echo_s": 4.221191646851994e-05,
-          "t2_s": 2.0356094283821435e-05
+          "t1_s": 1.1199377259655528e-05,
+          "t2_echo_s": 2.34088446073527e-05,
+          "t2_s": 1.5915093406552766e-05
         },
         "QB20": {
-          "drive_frequency_hz": 4541971079.512613,
+          "drive_frequency_hz": 4541945306.8865795,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.999338281207068,
-          "readout_error_0_to_1": 0.0142,
-          "readout_error_1_to_0": 0.023,
-          "readout_fidelity": 0.9814,
+          "prx_fidelity": 0.999163156622454,
+          "readout_error_0_to_1": 0.0178,
+          "readout_error_1_to_0": 0.0262,
+          "readout_fidelity": 0.978,
           "readout_frequency_hz": 5820844444.444445,
-          "t1_s": 2.6134860861533284e-05,
-          "t2_echo_s": 3.4841937133406304e-05,
-          "t2_s": 2.5674026410991048e-05
+          "t1_s": 2.834000224903862e-05,
+          "t2_echo_s": 3.7728318192962506e-05,
+          "t2_s": 2.7725922666532993e-05
         },
         "QB21": {
-          "drive_frequency_hz": 4692077661.107289,
+          "drive_frequency_hz": 4692083377.562579,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.998970193528726,
-          "readout_error_0_to_1": 0.0062,
-          "readout_error_1_to_0": 0.0201,
-          "readout_fidelity": 0.98685,
+          "prx_fidelity": 0.9987999626017552,
+          "readout_error_0_to_1": 0.0098,
+          "readout_error_1_to_0": 0.0262,
+          "readout_fidelity": 0.982,
           "readout_frequency_hz": 5977088888.888888,
-          "t1_s": 2.733467067716257e-05,
-          "t2_echo_s": 2.84677245945876e-05,
-          "t2_s": 9.789736122925411e-06
+          "t1_s": 3.4225679248378076e-05,
+          "t2_echo_s": 3.9581644607700814e-05,
+          "t2_s": 1.095343825710013e-05
         },
         "QB23": {
-          "drive_frequency_hz": 4640373517.59214,
+          "drive_frequency_hz": 4640365504.688103,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9990762061817194,
-          "readout_error_0_to_1": 0.0189,
-          "readout_error_1_to_0": 0.0294,
-          "readout_fidelity": 0.97585,
+          "prx_fidelity": 0.9986257601599636,
+          "readout_error_0_to_1": 0.0148,
+          "readout_error_1_to_0": 0.0278,
+          "readout_fidelity": 0.9787,
           "readout_frequency_hz": 6130688888.888889,
-          "t1_s": 3.635663691344468e-05,
-          "t2_echo_s": 2.898306713892865e-05,
-          "t2_s": 2.617627828355409e-05
+          "t1_s": 2.4347047091143697e-05,
+          "t2_echo_s": 2.4954689702487825e-05,
+          "t2_s": 2.199449932285275e-05
         },
         "QB3": {
-          "drive_frequency_hz": 4643662274.250446,
+          "drive_frequency_hz": 4643637802.932329,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9987977078826132,
-          "readout_error_0_to_1": 0.0068,
-          "readout_error_1_to_0": 0.0176,
-          "readout_fidelity": 0.9878,
+          "prx_fidelity": 0.9987909815086085,
+          "readout_error_0_to_1": 0.0176,
+          "readout_error_1_to_0": 0.0216,
+          "readout_fidelity": 0.9804,
           "readout_frequency_hz": 5361033333.333333,
-          "t1_s": 3.321531546765679e-05,
-          "t2_echo_s": 1.0024542221635288e-05,
-          "t2_s": 4.856845997520761e-06
+          "t1_s": 3.379820789260784e-05,
+          "t2_echo_s": 1.0145501433710889e-05,
+          "t2_s": 4.915486792993954e-06
         },
         "QB4": {
-          "drive_frequency_hz": 4548451797.59814,
+          "drive_frequency_hz": 4548460401.539298,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9992592628112186,
-          "readout_error_0_to_1": 0.0137,
-          "readout_error_1_to_0": 0.0224,
-          "readout_fidelity": 0.98195,
+          "prx_fidelity": 0.9993455064128998,
+          "readout_error_0_to_1": 0.0074,
+          "readout_error_1_to_0": 0.0234,
+          "readout_fidelity": 0.9846,
           "readout_frequency_hz": 5929833333.333333,
-          "t1_s": 2.954635475326987e-05,
-          "t2_echo_s": 2.85779259674611e-05,
-          "t2_s": 1.7344359353396813e-05
+          "t1_s": 3.121314480506493e-05,
+          "t2_echo_s": 2.6329116834521165e-05,
+          "t2_s": 1.616472185897882e-05
         },
         "QB5": {
-          "drive_frequency_hz": 4593347043.848379,
+          "drive_frequency_hz": 4593355721.503913,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9992537215910848,
-          "readout_error_0_to_1": 0.006,
-          "readout_error_1_to_0": 0.0212,
-          "readout_fidelity": 0.9864,
+          "prx_fidelity": 0.9993505733985713,
+          "readout_error_0_to_1": 0.0094,
+          "readout_error_1_to_0": 0.0248,
+          "readout_fidelity": 0.9829,
           "readout_frequency_hz": 5208233333.333333,
-          "t1_s": 1.5722907231461376e-05,
-          "t2_echo_s": 1.610905814079543e-05,
-          "t2_s": 9.770010101972384e-06
+          "t1_s": 2.326613090243152e-05,
+          "t2_echo_s": 1.7026547208823253e-05,
+          "t2_s": 9.966628878244756e-06
         },
         "QB8": {
-          "drive_frequency_hz": 4492283261.554694,
+          "drive_frequency_hz": 4492307398.401064,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9985261600299032,
-          "readout_error_0_to_1": 0.0079,
-          "readout_error_1_to_0": 0.0336,
-          "readout_fidelity": 0.97925,
+          "prx_fidelity": 0.9985690691711704,
+          "readout_error_0_to_1": 0.0072,
+          "readout_error_1_to_0": 0.0312,
+          "readout_fidelity": 0.9808,
           "readout_frequency_hz": 5647577777.777778,
-          "t1_s": 2.444369545719075e-05,
-          "t2_echo_s": 2.2003341304594693e-05,
-          "t2_s": 7.210460854859359e-06
+          "t1_s": 3.641611255312264e-05,
+          "t2_echo_s": 2.3856704292027364e-05,
+          "t2_s": 7.87836502548621e-06
         },
         "QB9": {
-          "drive_frequency_hz": 4553647268.899978,
+          "drive_frequency_hz": 4553660884.209352,
           "measure_duration_s": 4e-07,
           "prx_duration_s": 4e-08,
-          "prx_fidelity": 0.9990612078354244,
-          "readout_error_0_to_1": 0.0057,
-          "readout_error_1_to_0": 0.0181,
-          "readout_fidelity": 0.9881,
+          "prx_fidelity": 0.9983232352582156,
+          "readout_error_0_to_1": 0.0048,
+          "readout_error_1_to_0": 0.0244,
+          "readout_fidelity": 0.9854,
           "readout_frequency_hz": 5077633333.333334,
-          "t1_s": 3.5557134957198925e-05,
-          "t2_echo_s": 1.5402156637419116e-05,
-          "t2_s": 3.3921887355639747e-06
+          "t1_s": 2.0261333100967705e-05,
+          "t2_echo_s": 1.3667294892331469e-05,
+          "t2_s": 3.619864944911634e-06
         }
       },
       "pricing": {
@@ -5040,7 +5061,7 @@
       "pulla_enabled": true,
       "qubits": 16,
       "static_architecture_qubits": 24,
-      "station_control_version": "49.0.3",
+      "station_control_version": "50.0.0",
       "station_label": "Charon, a 24Donis in MX03.S1",
       "variant": "ND1"
     },
@@ -5059,7 +5080,7 @@
         }
       ],
       "backend_type": "mock",
-      "calibration_set_id": "bd66eda7-69c0-4559-bed2-012f6d4d6405",
+      "calibration_set_id": "eccb62ea-29f5-429a-b134-ee6c7f449176",
       "chip_components": {
         "computational_resonator": 1,
         "launcher": 78,
@@ -5186,6 +5207,13 @@
           },
           "overrides": {}
         },
+        "measure_012": {
+          "default": "constant",
+          "loci": {
+            "constant": 24
+          },
+          "overrides": {}
+        },
         "measure_fidelity": {
           "default": "constant",
           "loci": {
@@ -5234,7 +5262,7 @@
         "t2_echo_s": 1.5e-05,
         "t2_s": 1e-05
       },
-      "metrics_created": "2026-09-21T05:16:55.995341Z",
+      "metrics_created": "2026-10-21T03:02:50.746897Z",
       "per_pair": {
         "QB10__COMPR1": {
           "cz_duration_s": 8e-08,
@@ -5677,7 +5705,7 @@
       "pulla_enabled": false,
       "qubits": 24,
       "static_architecture_qubits": 24,
-      "station_control_version": "49.0.3",
+      "station_control_version": "50.0.0",
       "station_label": "Mocked ZI station - Star 24 ND1",
       "variant": "ND1"
     }

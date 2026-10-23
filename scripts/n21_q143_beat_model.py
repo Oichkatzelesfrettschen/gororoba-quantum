@@ -134,6 +134,12 @@ def names(model: str) -> tuple[str, ...]:
     return COMMON + SPECIFIC[model]
 
 
+# The static weight a of the heavier line sits in [1/2, 1]. A profile point
+# whose fit lands on a = 1 gives the second line zero weight, so df drops
+# out of its likelihood exactly and every such point is the one-line fit.
+LINE_WEIGHT_MAX = 1.0
+
+
 def bounds(model: str, data: Data) -> list[tuple[float | None, float | None]]:
     """Search bounds of a model's parameters.
 
@@ -151,7 +157,7 @@ def bounds(model: str, data: Data) -> list[tuple[float | None, float | None]]:
     ]
     specific: dict[str, list[tuple[float | None, float | None]]] = {
         "single": [(None, None)],
-        "static": [(0.5, 1.0), (None, None), (None, None)],
+        "static": [(0.5, LINE_WEIGHT_MAX), (None, None), (None, None)],
         "telegraph": [(0.5, 1.0), (None, None), (None, None), RATE_BOUNDS],
         "tls": [(0.5, 1.0), (None, None), (None, None), (0.0, 10.0)],
     }
@@ -588,15 +594,34 @@ def profile_static(data: Data, t_us: float = 120.0) -> list[tuple[float, float, 
 
 
 def local_minima(profile: list[tuple[float, float, list[float]]]) -> list[int]:
-    """Indices of the periodic profile's strict local minima, lowest NLL first."""
-    values = [row[1] for row in profile]
-    size = len(values)
+    """The periodic profile's local minima, lowest NLL first.
+
+    Consecutive points fitted at a = LINE_WEIGHT_MAX share one df-free
+    likelihood, so they form one run at their least NLL, represented by the
+    run's middle index; every other point is its own run. A run lower than
+    the run before it and no higher than the run after it is a minimum, so
+    of two adjacent runs at one NLL the first stands for both.
+    """
+    weight = names("static").index("a")
+    size = len(profile)
+    single = [float(row[2][weight]) == LINE_WEIGHT_MAX for row in profile]
+    if all(single):
+        return [0]
+    first = single.index(False)
+    runs: list[list[int]] = []
+    for step in range(size):
+        index = (first + step) % size
+        if single[index] and runs and single[runs[-1][-1]]:
+            runs[-1].append(index)
+        else:
+            runs.append([index])
+    values = [min(profile[index][1] for index in run) for run in runs]
     found = [
-        index
-        for index in range(size)
-        if values[index] < values[index - 1] and values[index] <= values[(index + 1) % size]
+        (values[k], runs[k][len(runs[k]) // 2])
+        for k in range(len(runs))
+        if values[k] < values[k - 1] and values[k] <= values[(k + 1) % len(runs)]
     ]
-    return sorted(found, key=lambda index: values[index])
+    return [index for _value, index in sorted(found)]
 
 
 def fold(value: float) -> float:
@@ -1110,8 +1135,42 @@ class ExpectedLLR:
         window = item[5] if len(item) > 5 else None
         expected = asimov(truth_model, np.array(truth), design)
         own = negative_log_likelihood(np.array(truth), truth_model, expected)
+        if window is not None and DF_INDEX in window:
+            starts = [*starts, *window_starts(alternative, starts[0], expected, window[DF_INDEX])]
         best, _params = Refit()((alternative, expected, starts, window))
         return max(best - own, 0.0)
+
+
+A_INDEX = 5
+DF_INDEX = 7
+WINDOW_A = (0.55, 0.7, 0.85, 0.95)
+WINDOW_KEEP = 3
+
+
+def window_starts(model: str, start: list[float], data: Data, window: tuple[float, float]) -> list[list[float]]:
+    """The WINDOW_KEEP best (df, a) lattice points of a df window at a start's other parameters.
+
+    One dominant line and two nearly equal lines are separate NLL basins
+    inside one alias window, so a descent from the window's center lands in
+    either. The df lattice spaces the window at a quarter period of the
+    longest delay, and each df bin keeps its best line weight from WINDOW_A.
+    """
+    low, high = window
+    bins = math.ceil((high - low) * 4.0 * float(np.max(data.times)))
+    rows = []
+    for k in range(bins):
+        best: tuple[float, list[float]] | None = None
+        for weight in WINDOW_A:
+            trial = list(start)
+            trial[DF_INDEX] = low + (k + 0.5) * (high - low) / bins
+            trial[A_INDEX] = weight
+            value = negative_log_likelihood(np.array(trial), model, data)
+            if best is None or value < best[0]:
+                best = (value, trial)
+        if best is not None:
+            rows.append(best)
+    rows.sort(key=lambda row: row[0])
+    return [trial for _value, trial in rows[:WINDOW_KEEP]]
 
 
 def billed_seconds(members: list[tuple[str, int]], shots: int, base_dt: int) -> dict[str, float]:

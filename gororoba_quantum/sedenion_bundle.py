@@ -19,7 +19,7 @@ from itertools import product
 import numpy as np
 
 import parallel
-from cd_core import cd_multiply, cd_sign, sedenion_zero_divisor_corpus
+from cd_core import cd_multiply, cd_multiply_exact, cd_sign, sedenion_zero_divisor_corpus
 
 # Fixed 8- and 16-coordinate products accumulate at most 256 signed terms.
 # This budget exceeds that accumulation error while keeping invalid bases out.
@@ -235,12 +235,7 @@ def right_fiber_action(first: object, second: object, partner: object, quaternio
 
 
 def _exact_product(first: ExactVector, second: ExactVector) -> ExactVector:
-    dimension = len(first)
-    result = [Fraction(0)] * dimension
-    for left_index, left_value in enumerate(first):
-        for right_index, right_value in enumerate(second):
-            result[left_index ^ right_index] += left_value * right_value * cd_sign(dimension, left_index, right_index)
-    return tuple(result)
+    return cd_multiply_exact(len(first), first, second)
 
 
 def _exact_inner(first: ExactVector, second: ExactVector) -> Fraction:

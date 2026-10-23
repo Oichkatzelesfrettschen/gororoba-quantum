@@ -63,7 +63,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from boolean_anf import anf_degree  # noqa: E402
-from cd_core import cd_multiply, cd_sign, left_mult_matrix, sedenion_zero_divisor_corpus  # noqa: E402
+from cd_core import cd_multiply_exact, cd_sign, left_mult_matrix_exact, sedenion_zero_divisor_corpus  # noqa: E402
 from predict import associator_phase  # noqa: E402
 
 WALK_PAIRS = {
@@ -372,9 +372,9 @@ def gram_moment_embedding() -> dict[str, object]:
                 continue
             norm_squared = sum(x * x for x in a)
             conj = [a[0], *(-x for x in a[1:])]
-            left = _integer(left_mult_matrix(d, [float(x) for x in a]))
+            left = [[int(value) for value in row] for row in left_mult_matrix_exact(d, a)]
             right = _integer(right_mult_matrix(d, [float(x) for x in a]))
-            big = _integer(left_mult_matrix(2 * d, [float(x) for x in a] + [0.0] * d))
+            big = [[int(value) for value in row] for row in left_mult_matrix_exact(2 * d, a + [0] * d)]
             require(
                 all(big[i][j] == left[i][j] and big[d + i][d + j] == right[i][j] for i in range(d) for j in range(d)),
                 "diag(L_a, R_a)",
@@ -383,7 +383,7 @@ def gram_moment_embedding() -> dict[str, object]:
                 not any(big[i][d + j] or big[d + i][j] for i in range(d) for j in range(d)),
                 "the embedding operator is block diagonal",
             )
-            transpose_left = _integer(left_mult_matrix(d, [float(x) for x in conj]))
+            transpose_left = [[int(value) for value in row] for row in left_mult_matrix_exact(d, conj)]
             require(all(transpose_left[i][j] == left[j][i] for i in range(d) for j in range(d)), "L_conj(a) = L_a^T")
             flip = [1] + [-1] * (d - 1)
             require(
@@ -502,12 +502,12 @@ def left_multiplication_products() -> dict[str, object]:
     # have disjoint supports, so they span the whole four-dimensional kernel.
     partners = sorted((k, el, s) for i, j, t, k, el, s in corpus if (i, j, t) == (1, 10, 1))
     require(partners == [(4, 15, -1), (5, 14, 1), (6, 13, -1), (7, 12, 1)], f"partners of e1 + e10: {partners}")
-    element = [0.0] * 16
-    element[1] = element[10] = 1.0
+    element = [0] * 16
+    element[1] = element[10] = 1
     for k, el, s in partners:
-        partner = [0.0] * 16
-        partner[k], partner[el] = 1.0, float(s)
-        require(not any(cd_multiply(16, element, partner)), f"(e1 + e10)(e{k} {s:+d} e{el}) is not zero")
+        partner = [0] * 16
+        partner[k], partner[el] = 1, s
+        require(not any(cd_multiply_exact(16, element, partner)), f"(e1 + e10)(e{k} {s:+d} e{el}) is not zero")
     degrees = {}
     for dim in (4, 8, 16, 32):
         n = dim.bit_length() - 1

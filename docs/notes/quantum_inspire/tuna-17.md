@@ -49,8 +49,10 @@ only to the interval between two retained runs.
   between runs).
 - The platform's "calibrating" and "benchmarking" states hold queued jobs
   (observed through the hardware status read; the states are not retained, so
-  no record carries their durations). The account-wide pause in
-  `qi_platform.py submit` leaves room for them between batches.
+  no record carries their durations). The platform schedules them itself,
+  and a job that meets one waits ([site/faq.md](site/faq.md), "automated
+  tuning program"); the account-wide pause in `qi_platform.py submit` paces
+  the account and is not needed for them.
 
 - The fault cleared by the afternoon. The box-kite pre-T0 batch (jobs
   finished 15:38Z, after the platform benchmarking the operator observed at
@@ -110,8 +112,8 @@ exempted qubit until the exemption reached that check.
   before that rule, such as an MCP server, holds stale tokens and restarts
   after `qi login`.
 - Sessions that share the account alternate hardware batches at Ramsey-pair
-  boundaries, and the account-wide pause (`HARDWARE_PAUSE_SECONDS`) gives
-  the platform room to calibrate between batches. Series P and Q calibrate
+  boundaries, paced by the account-wide pause (`HARDWARE_PAUSE_SECONDS`,
+  [usage.md](usage.md#pause-escalation)). Series P and Q calibrate
   readout once per series, in batch-00 and in separate recalibration runs;
   batches Q-05 to Q-08 hold Ramsey arms only, so readout drift after the
   last calibration enters their correction unseen, as the stale Q15
@@ -144,8 +146,8 @@ circuits read every replica exactly. C(1) lies above its preregistered
 
 The retained raw lists are in time order, and that order carries a line at
 the 50 Hz grid frequency (`scripts/qi_shot_record_line.py`,
-`results/quantum_inspire/tuna_17_shot_record_line.json`, gates core-426 and
-core-427; claim `qi-tuna17-shot-record-50hz-line`).
+`results/quantum_inspire/tuna_17_shot_record_line.json`, gate core-426 and
+gate `core-self-test-09` (`tests/test_cli_self_tests.py`); claim `qi-tuna17-shot-record-50hz-line`).
 
 - A band scan at 0.019 to 0.021 cycles per shot finds it in 72 of 159
   Tuna-17 jobs and in none of 113 QX jobs. On Tuna-17 it is absent from
@@ -204,7 +206,7 @@ fitted 2.6 s per job plus 0.53 ms per shot, no published calibration) and the
 box-kite follow series built on it: seven batches whose readout pairs bracket
 fifteen packed witnesses, sized from T0's r, the readout drift across the T0
 batches and the coupler-ZZ map (`docs/evidence/box_kite_follow_design/design.json`,
-gates core-439 and core-440). The series ran on 2026-10-17 from 23:08Z to
+gate core-439 and gate `core-self-test-09` (`tests/test_cli_self_tests.py`)). The series ran on 2026-10-17 from 23:08Z to
 23:29Z with every preregistered decision as the census predicts: all six
 classification rows, twist equality at |z| at most 2.44 in all four
 crossovers, every depth-1 X coherence sign and both walk signs. Its results

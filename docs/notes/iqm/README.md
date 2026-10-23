@@ -16,7 +16,7 @@ they said when read.
 | `changelog/iqm-client-36.0.0.md` | the CHANGELOG of the iqm-client 36.0.0 sdist (`--changelog`) |
 | `constraints-iqm-qccsw-4.7.0.txt` | IQM's client constraints for IQM OS 4.7.0 plus the integration pins |
 | `hardware-pre-4.7.md` | the pre-upgrade specifications of all six targets, from the 06:08Z snapshot at commit 2009f0f |
-| `os-4.7-emerald.md` | what IQM OS 4.7 changed on Emerald: versions, `measure_012`, API, settings, calibration, client |
+| `os-4.7.md` | what IQM OS 4.7 changed on Emerald, Garnet and Sirius: versions, `measure_012`, API, settings, calibration, client |
 | `python-stack.md`, `python-stack-versions.json` | every distribution installed in the client stack, with version, license, imports and requirements |
 | `../../evidence/iqm/` | the account snapshot: server, per-QC records, configuration artifacts, calibration sets, metrics, the update feed, `hardware.json` (`scripts/iqm_platform.py snapshot`) |
 
@@ -62,16 +62,13 @@ The dashboard's update feed (`server/notifications.json`, created
   `strategy="NONE"` and runs without readout twirling; REMWorkflow reports
   the QPU job ids it submitted.
 
-The retained snapshot was read at 2026-10-19T15:58Z, after Emerald's
-window: Emerald and emerald:mock report IQM station control 50.0.0, Garnet,
-Sirius and their mocks 49.0.3, and the server 3.0.1. What Emerald's upgrade
-changed, measured against the 06:08Z baseline, is in
-[os-4.7-emerald.md](os-4.7-emerald.md): a `measure_012` three-state readout,
-the job route `sweep_results_streaming`, a `flat_width` field on Slepian
-pulses and 398 new settings parameters, with the native ISA, limits and
-prices unchanged. The baseline's specifications are in
-[hardware-pre-4.7.md](hardware-pre-4.7.md). A snapshot after
-2026-10-21T16:00Z records Garnet and Sirius on 4.7.
+The retained snapshot was read at 2026-10-22T20:48Z, after both windows:
+all three QPUs and their mocks report IQM station control 50.0.0 under
+IQM Server 3.0.1. What the upgrade changed is in [os-4.7.md](os-4.7.md): a
+`measure_012` three-state readout, the job route `sweep_results_streaming`,
+a `flat_width` field on Slepian pulses and new settings parameters, with the
+native ISA, limits and prices unchanged. The baseline's specifications are
+in [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
 ## Account and credential
 
@@ -169,10 +166,10 @@ the mutations `inviteAccountMembers`, `resendAccountInvitation`,
 |---|---|---|---|---|---|---|---|---|---|---|
 | IQM Emerald (`emerald`) | qpu | M216_F0W102525_H03_F08 (M216, H03) | 54 | - | 90 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_012 (constant), measure_fidelity (shelved_constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 30000 | 0.75 | 2400.00 per PT1H | 50.0.0 |
 | IQM Emerald (mock) (`emerald:mock`) | mock | M160_W0_H01_Z99 (M160, H01) | 54 | - | 90 | cc_prx (prx_composite), cz (tgss), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_gaussian), reset_wait (reset_wait) | 200000 / 1000 / 10000 | 0.00 | - | 50.0.0 |
-| IQM Garnet (`garnet`) | qpu | M194_F0W2114_P08_B15 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_fidelity (constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 10000 | 0.50 | 1800.00 per PT1H | 49.0.3 |
-| IQM Garnet (mock) (`garnet:mock`) | mock | M194_W0_P08_Z99 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), prx (drag_crf), reset_wait (reset_wait) | 20000 / 500 / 10000 | 0.00 | - | 49.0.3 |
-| IQM Sirius (`sirius`) | qpu | M186_F0W2259_ND1_O12 (M186, ND1) | 16 | COMPR1 | 24 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 75000 | 0.30 | 1080.00 per PT1H | 49.0.3 |
-| IQM Sirius (mock) (`sirius:mock`) | mock | M186_W0_ND1_Z99 (M186, ND1) | 24 | COMPR1 | 24 | cz (crf_crf), measure (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), reset_wait (reset_wait) | 20000 / 200 / 20000 | 0.67 | - | 49.0.3 |
+| IQM Garnet (`garnet`) | qpu | M194_F0W2114_P08_B15 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (slepian_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_crf_sx), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 10000 | 0.50 | 1800.00 per PT1H | 50.0.0 |
+| IQM Garnet (mock) (`garnet:mock`) | mock | M194_W0_P08_Z99 (M194, P08) | 20 | - | 30 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), prx (drag_crf), reset_wait (reset_wait) | 20000 / 500 / 10000 | 0.00 | - | 50.0.0 |
+| IQM Sirius (`sirius`) | qpu | M186_F0W2259_ND1_O12 (M186, ND1) | 16 | COMPR1 | 24 | cc_prx (prx_composite), cz (crf_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), prx_12 (modulated_drag_crf), reset_wait (reset_wait) | 20000 / 100 / 75000 | 0.30 | 1080.00 per PT1H | 50.0.0 |
+| IQM Sirius (mock) (`sirius:mock`) | mock | M186_W0_ND1_Z99 (M186, ND1) | 24 | COMPR1 | 24 | cz (crf_crf), measure (constant), measure_012 (constant), measure_fidelity (constant), move (crf_crf), prx (drag_crf), reset_wait (reset_wait) | 20000 / 200 / 20000 | 0.67 | - | 50.0.0 |
 
 Account: PERSONAL with 30.00 credits expiring 2026-11-01T00:00:00+00:00; IQM Server 3.0.1.20261019072700, API v1; token scopes job_execution.
 <!-- iqm-facts:end -->
@@ -190,14 +187,15 @@ Medians of the default calibration sets read at the snapshot:
 
 | QC | T1 | T2 (Ramsey) | T2 echo | PRX RB fidelity | readout fidelity | CZ IRB fidelity | PRX | CZ | measure |
 |---|---|---|---|---|---|---|---|---|---|
-| Emerald | 49 us | 15 us | 38 us | 0.99968 | 0.98845 | 0.99728 | 24 ns | 40 ns | 360 ns |
-| Garnet | 42 us | 9 us | 22 us | 0.99934 | 0.97945 | 0.99425 | 16 ns | 40 ns | 480 ns |
-| Sirius | 26 us | 10 us | 24 us | 0.99902 | 0.98335 | 0.97400 | 40 ns | 104 ns | 400 ns |
+| Emerald | 49 us | 15 us | 39 us | 0.99967 | 0.9879 | 0.99722 | 24 ns | 40 ns | 360 ns |
+| Garnet | 39 us | 9 us | 22 us | 0.99930 | 0.9804 | 0.99407 | 16 ns | 40 ns | 480 ns |
+| Sirius | 28 us | 10 us | 23 us | 0.99880 | 0.9820 | 0.97090 | 40 ns | 104 ns | 400 ns |
 
 - **Emerald**: Crystal 54, chip M216 variant H03 (`M216_F0W102525_H03_F08`),
   station MX07_Aphrodite_CD3. 54 qubits on a square lattice, 90 tunable
   couplers, 8 probe lines, 214 launchers. Drive frequencies 3.802 to
-  4.207 GHz, readout 5.101 to 6.053 GHz; T1 8.6 to 82 us. CZ is calibrated
+  4.207 GHz, readout 5.101 to 6.053 GHz; per-qubit T1 fits span 2.9 us to
+  2.0 ms. CZ is calibrated
   on 85 of the 90 couplings: `slepian_crf` on 83 and `crf_acstarkcrf` on
   QB44-QB50 and QB50-QB51. The DQA override map also names QB49-QB50 and
   QB54-QB50, which no CZ implementation lists as a locus, so the transpiler
@@ -206,13 +204,14 @@ Medians of the default calibration sets read at the snapshot:
   shelves the excited state to level 2 first. Since station control 50.0.0
   it also offers `measure_012` (`constant`), a three-state readout, on QB43
   alone (all 54 qubits of emerald:mock). Weakest operational loci: CZ
-  QB43-QB35 0.950, QB44-QB50 0.966 and QB50-QB51 0.967; readout QB10 0.899
-  and QB6 0.921.
+  QB43-QB35 0.941, QB50-QB51 0.964 and QB16-QB8 0.976; readout QB6 0.925
+  and QB35 0.961.
 - **Garnet**: chip M194 variant P08 (`M194_F0W2114_P08_B15`), "Apollo
   station in XLD10.S1". 20 qubits, 30 couplers, 3 probe lines. Drive 4.488
-  to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 15 to 57 us. CZ
-  `slepian_crf` on all 30 pairs; QB10's four couplings are its weakest
-  (0.988 to 0.990). `measure` also offers `fast_constant`.
+  to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 16 to 67 us. CZ
+  `slepian_crf` on all 30 pairs; QB15's couplings are its weakest, QB19-QB15
+  0.886 and QB14-QB15 0.942, and QB15 also reads out worst (0.893).
+  `measure` also offers `fast_constant`.
 - **Sirius**: star architecture, chip M186 variant ND1
   (`M186_F0W2259_ND1_O12`), station Charon. 16 operational qubits (the
   static architecture names 24, of which 16 carry PRX), all coupled to one
@@ -221,8 +220,8 @@ Medians of the default calibration sets read at the snapshot:
   QB10), and MOVE swaps a qubit's 0-1 occupation with the resonator's, so a
   two-qubit gate between qubits is MOVE, CZ, MOVE. Its quality metrics
   include `move_ncz_move` IRB, `xy_move_cz_move` Clifford RB and a
-  16-qubit GHZ population and coherence bound. CZ to COMPR1 median 0.974,
-  weakest QB11 0.923.
+  16-qubit GHZ population and coherence bound. CZ to COMPR1 median 0.971,
+  weakest QB11 0.943.
 - **AWG channels** that drive and flux the qubits sample at 2 GS/s with an
   8-sample (Emerald, Garnet) or 16-sample (Sirius) instruction granularity,
   so every pulse duration is a multiple of 4 ns or 8 ns; Sirius also lists a
@@ -259,6 +258,19 @@ Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
 2400.00 (Emerald), 1800.00 (Garnet) or 1080.00 (Sirius) credits. The 30.00
 credits of this account buy 40 s on Emerald, 60 s on Garnet or 100 s on
 Sirius, and expire 2026-11-01.
+
+The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
+on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
+sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
+Client-side transpilation does not establish zero server compilation. Circuit batching can amortize
+compilation and rounding, but reset/readout/repetition time, failure exposure and acquisition ordering
+also constrain a useful batch. Request rate-limit units are separate from compute credits.
+
+The live limits are 100 circuits/job, 20000 shots/circuit and 2000000 executions/job for these QPUs.
+Those are structural ceilings rather than an affordable acquisition. The
+[current-balance case](../../design/packed-pauli-response-current-balance.md) reserves six IQM credits
+and compares maximal connected-cell layouts without assuming independent replicas. Slot prices exceed
+the current balance; the token's `job_execution` scope also leaves booking unavailable.
 
 ## Installation
 
@@ -333,14 +345,23 @@ and Codex approves the read tools; `iqm_cancel_job` asks every time.
 `iqm_platform.py check` holds the tool set and annotations. The server
 submits nothing and books no timeslot.
 
+Dictionary GET responses retain `_observation` with the exact request path and subsecond UTC start/end
+times. The interval belongs to that GET, rather than the calibration's creation timestamp or an atomic
+multi-tool snapshot. `iqm_architecture(alias, calibration_set_id=None)` resolves the default identity before
+reading the architecture. Pass the returned `calibration_set_id` to `iqm_metrics` or back to architecture
+to keep related reads on one set; returned identity mismatches raise MCP errors. Default resolution can
+change between separate tool calls, so callers must pass the identity for a coherent comparison.
+The server rebuilds the SDK settings model after import to resolve its lifespan forward reference before
+settings sources inspect it; the strict warning-as-error import regression exercises that path.
+
 | tool | reads |
 |---|---|
 | `iqm_quantum_computers` | every QC: alias, status, health, queue, station control version |
 | `iqm_quantum_computer` | one QC: limits, pricing, description |
 | `iqm_queue_availability` | pay-as-you-go windows |
 | `iqm_timeslots` | timeslots |
-| `iqm_architecture` | dynamic quantum architecture of the default calibration set |
-| `iqm_metrics` | quality metrics, optionally one locus |
+| `iqm_architecture` | dynamic architecture of an explicit or resolved-default calibration identity |
+| `iqm_metrics` | metrics of an explicit or resolved-default identity, optionally one locus |
 | `iqm_artifact` | a configuration artifact |
 | `iqm_credit` | account type, balance, expiry |
 | `iqm_tokens` | token scopes and expiries |
@@ -356,6 +377,70 @@ QC, shots, circuits, the expected billed seconds and credits, and the
 calibration set it was planned against. The MCP server submits nothing. A
 simulation of 14 qubits or fewer still runs on Kaggle or the build host.
 
+`scripts/iqm_jobs.py` is the submission path: `build` and `check` write and
+regenerate a case, `submit` posts one job of it to `/api/v1/jobs/{qc}/circuit`
+only for the approved cases.json digest, an online and healthy QC and the
+credit ceiling that cases.json records for that QC (`max_credits`, which the
+command line repeats), after an exclusive `submission-state.json`, and
+`collect` keeps the job record and the measurements and counts artifacts byte
+for byte under a lock on the run directory. `--dry` runs every refusal and
+sends nothing. One run directory is admitted per quantum computer, case, job
+and cases.json digest, so a rebuilt case takes its own mock run. The timing,
+reset-billing and signed-probe cases predate `max_credits`; their retained
+bytes stay as approved, so a charged resubmission of them refuses and a rerun
+goes through a new case. The first case is the
+[Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
+later cases from measured billing.
+
+## What the Garnet runs measured
+
+Facts a Garnet case design starts from, each with the record that carries it:
+
+- **Billing.** Garnet bills ceil(runtime) per job, not ceil(estimate); the
+  estimate is a fixed 1.60 s plus each shot's schedule and bounded runtime
+  within -0.63 s to +1.50 s on the retained jobs, so a ceiling adds 1.60 s to
+  a case's shot schedule ([timing pilot](../../design/iqm-garnet-timing-pilot.md)).
+  The job body carries no runtime or credit cap, which IQM does not offer, so
+  `max_credits` bounds the predicted bill; a runtime beyond the expected
+  schedule plus 1.60 s bills more, and a case sizes its shot schedule from an
+  upper per-shot time and the free mock twin's estimate.
+  Extra circuits cost no time beyond their shots, so replicas, randomized
+  compilations and readout calibrations belong in the same job.
+- **Reset.** One active-reset cycle shortens a shot from 316 us to 37.5 us
+  and leaves QB1 6.8 % excited against 0.65 % passive; all-zeros heralding
+  removes that excitation and returns only kept shots, 55.9 % on the
+  seven-qubit probe, with no top-up. A heralded job's runtime exceeded its
+  estimate by 0.63 s.
+- **Coherent error dominates first-order observables.** An observable read
+  near the equator of the measured qubit (an interference or Hadamard-test
+  readout) moves at first order with gate over-rotation, axis error,
+  residual Z after CZ and CZ conditional phase, which randomized
+  benchmarking sees at second order. The 199-CZ signed probe read even
+  offsets of -0.022 and -0.012 against +0.029 from the calibration-built
+  depolarizing and relaxation model; its readout alone predicts +0.031
+  (heralded QB7 errors 0.003 and 0.034), so the circuit moved the reading by
+  about -0.045. Through the calibration noise model the even part's
+  response to each stationary coherent error is 5 to 10 % of the noiseless
+  one (QB11 over-rotation -0.43 per unit against -8.0), so QB11 alone would
+  need a 10.5 % over-rotation, three times what its randomized-benchmarking
+  infidelity allows, and all 29 error terms aligned at that bound reach
+  only 0.032: the offset lies outside the stationary coherent model, and
+  leakage read as 1, crosstalk and readout under heralding are untested
+  ([coherent response](../../design/iqm-garnet-signed-kernel-probe.md#adversarial-audit)).
+  A prediction from `scripts/iqm_sim.py` therefore bounds incoherent loss
+  and readout only; a case that reads a first-order observable measures the
+  coherent errors of its own qubits in the same job (error-amplifying
+  repetitions) or randomizes them.
+- **Batch order.** A job's circuits run under one calibration, so the arms
+  of a +-parameter contrast interleave in the circuit list (+, -, -, +)
+  rather than block, keeping drift along the batch out of the odd part.
+- **Calibration lifetime.** Set `9069c4ef` served from the snapshot of
+  2026-10-22T20:48Z to at least 2026-10-23T00:50Z, so a case planned
+  against it and pinned with `calibration_set_id` pools with its jobs.
+- **Readout.** `measure_012` (three-state readout) is offered on QB1, QB3,
+  QB7, QB9 and QB14; the Qiskit Target omits it, so a leakage readout goes
+  through the circuit JSON directly.
+
 ## Gates and snapshot state
 
 CI never imports the stack: its gates read retained JSON with the standard
@@ -365,17 +450,14 @@ library.
 2026-10-19 and for Garnet and Sirius on 2026-10-21, with downtime from 02:00
 to about 15:00 UTC. The client pins already match it (iqm-client 36.0.0,
 final RZ gates kept by default, Pulla folded into IQMClient,
-`submit_circuit_job`). The retained snapshot (2026-10-19T15:58Z) holds
-Emerald and emerald:mock at station control 50.0.0 and Garnet, Sirius and
-their mocks at 49.0.3, under IQM Server 3.0.1; Emerald gained `measure_012`
-and the job route `sweep_results_streaming` with an unchanged ISA
-([os-4.7-emerald.md](os-4.7-emerald.md)), and iqm-client
-36.0.0 transpiles for all three QPUs. The all-49.0.3 baseline is
-[hardware-pre-4.7.md](hardware-pre-4.7.md); a snapshot after
-the second window records Garnet and Sirius.
+`submit_circuit_job`). The retained snapshot (2026-10-22T20:48Z) holds all
+three QPUs and their mocks at station control 50.0.0 under IQM Server 3.0.1;
+each gained `measure_012` and the job route `sweep_results_streaming` with an
+unchanged ISA ([os-4.7.md](os-4.7.md)). iqm-client 36.0.0 transpiled for all
+three QPUs on 2026-10-19, with Garnet and Sirius still on 49.0.3. The
+all-49.0.3 baseline is [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
-Gates core-588 (`capture_iqm_docs.py --check`), core-589 (its
-`--self-test`), core-590 (`iqm_platform.py check docs/evidence/iqm --agents
-docs/notes/iqm/README.md`, which also holds the MCP tool set) and
-core-591 (its `--self-test`, the two-phase refresh on a stubbed transport
-included).
+Gates core-588 (`capture_iqm_docs.py --check`) and core-590 (`iqm_platform.py check docs/evidence/iqm --agents
+docs/notes/iqm/README.md`, which also holds the MCP tool set) and the
+`--self-test` of both scripts in gates `core-self-test-06` and `core-self-test-07` (`tests/test_cli_self_tests.py`) (the two-phase
+refresh on a stubbed transport included).

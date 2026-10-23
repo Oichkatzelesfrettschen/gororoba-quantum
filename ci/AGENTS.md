@@ -117,7 +117,20 @@ The runner expands `runtime_contracts.CONTRACT_CASES` into independently sharded
 cases. CPU slots cover outer gates and inner process pools together: ordinary
 gates reserve one slot, while manifest `"workers": "all"` gates reserve the
 detected allocation. Native BLAS, OpenMP, Rayon and Qiskit subprocess defaults
-stay at one inside each slot. `parallel.default_threads()` and `workers()`
+stay at one inside each slot. `OPENBLAS_CORETYPE` defaults to Haswell and
+`NPY_DISABLE_CPU_FEATURES` caps numpy's dispatch at x86-64-v3, the kernel sets
+every runner and build host executes, so a fitted value rounds one way on all
+of them given one libm and Python build. A record a gate byte-replays is
+written in the runner's userland through `ci/runner_image.sh` (podman), which
+supplies both, and `ci/runner_image_records.json` binds it to that image and
+its pins (`ci/runner_image_records.py add`; gate core-635 checks the ledger).
+`ci/replay_check.py` compares such a record with a fresh run bit for bit,
+skipping only the paths that name the analyzer (core-613, core-617).
+Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs
+every such replay gate on an `avx512f` CPU and reports not run, exit 0, on any
+other; each CI gate shard runs it, since GitHub assigns runner CPUs of both
+kinds.
+`parallel.default_threads()` and `workers()`
 share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
 receive one slot through a child-only initializer, so nested maps and simulator
 defaults stay within the outer allocation. Timings retain wall time, user/system CPU time,
@@ -128,10 +141,23 @@ recompile retained historical evidence under an interpreter holding every pin
 of `ci/requirements-replay.txt`: `ci/run_gates.py --replay-python PATH` (also
 accepted by `ci/premerge_gates.py`), else `REPLAY_PYTHON`, verified against
 those pins in a `-I` subprocess. With neither, the running interpreter serves
-when it holds every pin, as the build host's Arch stack does, and the runner
-prints the choice before the first gate; an unresolved runtime's gates exit
-127 with the differing versions. CI installs that isolated environment only
-for shards whose plan requires it and passes it as `REPLAY_PYTHON`.
+when it holds every pin, then the host environment below. Current-runtime
+gates take an explicit `$PYTHON` as named, else the running interpreter when
+it holds every pin of requirements.txt and ci/requirements-ci.txt, else the
+host environment. The runner prints each choice before the first gate, and a
+selection with an unresolved runtime runs no gate and exits 2 naming the
+differing versions; premerge refuses the same way, since such gates fail on
+both trees and read as shared failures that hide a gate the branch breaks.
+CI installs the replay environment only for shards whose plan requires it
+and passes it as `REPLAY_PYTHON`.
+
+**Host environments.** A system interpreter drifts from the pins as the host
+upgrades packages, so local runs use `sh ci/build_host_envs.sh`, which builds
+`ci-py3.14.7` (requirements.txt and ci/requirements-ci.txt) and
+`replay-py3.14.7` (ci/requirements-replay.txt) under
+`${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/` on the Python of ci.yml's
+setup-python step, through ci/install_pins.sh as CI does. `pins.HOST_ENVS`
+names them, and a rerun repairs a venv whose packages drifted.
 `GOROROBA_PINS_REQUIRED=1`, set workflow-wide in ci.yml, turns every version
 fallback into a failure: the replay interpreter must be named, ruff and mypy
 must be installed at their pins, and `ibm_runtime_options_inventory.py
@@ -263,7 +289,11 @@ and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
 only the pinned xdist plugin loads, and a run writes nothing inside the
 checkout. tests/conftest.py sizes the pool by `parallel.workers()` and runs
 each test process in one slot. A test module imports a ci/ module by bare
-name; a moved `--self-test` body leaves the module's CLI. The suite starts git
+name; a moved `--self-test` body leaves the module's CLI. A unittest suite
+that lives beside the code it checks joins `SUITES` in
+tests/test_unittest_suites.py, which runs it in place with its own directory
+on sys.path, and its single-script gate leaves ci/gates.json unless a claim in
+docs/state/research_state.json cites that gate. The suite starts git
 and child interpreters, so the gate ledger never skips it.
 
 **Gate cost.**

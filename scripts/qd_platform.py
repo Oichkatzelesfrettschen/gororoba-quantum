@@ -203,7 +203,7 @@ class RefusedError(PlatformError):
 
 
 class UnansweredError(PlatformError):
-    """The request reached no answer: the connection failed or timed out."""
+    """The request lacks a usable acknowledgment that establishes its outcome."""
 
 
 # Statuses a read may outlive: the service's own timeouts, throttling and gateway or upstream failures.
@@ -213,8 +213,8 @@ TRANSIENT_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
 def transient(error: PlatformError) -> bool:
     """A failed read worth repeating: a transient HTTP status, or no answer at all (network or timeout).
 
-    Any other failure (a missing token, an answer that is not JSON) recurs on
-    every attempt, so it raises at once.
+    A missing token and other local configuration failures raise at once.
+    A malformed or oversized response remains retryable for reads alone.
     """
     if isinstance(error, RefusedError):
         return error.code in TRANSIENT_STATUSES
@@ -264,11 +264,19 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
     call = urllib.request.Request(API + route, data=data, headers=headers, method=method)
     try:
         with OPENER.open(call, timeout=60) as response:
-            answer = response.read()
+            answer = response.read(RESULT_LIMIT + 1)
     except urllib.error.HTTPError as error:
-        detail = error.read()[:500].decode("utf-8", errors="replace")
-        error.close()
+        try:
+            detail = error.read(500).decode("utf-8", errors="replace")
+        except (OSError, http.client.HTTPException) as interrupted:
+            raise UnansweredError(
+                f"{method} {route}: HTTP {error.code} response interrupted: {interrupted!r}"
+            ) from None
+        finally:
+            error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
+        if method.upper() not in {"GET", "HEAD", "OPTIONS"} and (error.code == 408 or error.code >= 500):
+            raise UnansweredError(f"{method} {route}: HTTP {error.code}; remote mutation outcome is unknown") from None
         raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
     # HTTPError subclasses URLError and is caught above. urlopen wraps only
     # connection setup in URLError; a connection dropped while the answer is
@@ -277,12 +285,14 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
     # is neither), and is unanswered as well.
     except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
         raise UnansweredError(f"{method} {route}: {error!r}") from None
+    if len(answer) > RESULT_LIMIT:
+        raise UnansweredError(f"{method} {route}: answer exceeds the {RESULT_LIMIT}-byte response limit")
     if raw:
         return answer
     try:
         return json.loads(answer) if answer else None
-    except json.JSONDecodeError:
-        raise PlatformError(f"{method} {route}: answer is not JSON: {answer[:200]!r}") from None
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        raise UnansweredError(f"{method} {route}: answer is not usable JSON") from None
 
 
 def get(route: str, auth: bool = True) -> Any:
@@ -479,6 +489,7 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
         "mcp.server",
         "mcp.server.fastmcp",
         "mcp.server.fastmcp.exceptions",
+        "mcp.server.fastmcp.server",
         "mcp.server.stdio",
         "mcp.types",
         "pydantic",
@@ -486,8 +497,10 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
     modules = {name: ModuleType(name) for name in names}
     modules["mcp.server.fastmcp"].FastMCP = ToolRecorder  # type: ignore[attr-defined]
     modules["mcp.server.fastmcp.exceptions"].ToolError = RuntimeError  # type: ignore[attr-defined]
+    modules["mcp.server.fastmcp.server"].Settings = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.server.stdio"].stdio_server = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.types"].ToolAnnotations = dict  # type: ignore[attr-defined]
+    modules["mcp.types"].Tool = MagicMock()  # type: ignore[attr-defined]
     modules["pydantic"].Field = MagicMock()  # type: ignore[attr-defined]
     spec = importlib.util.spec_from_file_location("qd_mcp_surface", server)
     if spec is None or spec.loader is None:
@@ -737,8 +750,9 @@ def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tu
             deviation = float(numpy.max(numpy.abs(actual - matrix)))
             if deviation > 1e-9:
                 raise PlatformError(f"{setting['name']}: the template misses its full operator by {deviation:.2e}")
-        for parameter in parameters.values():
-            parameter.reset()
+        if iteration_form(manifest) != "single":
+            for parameter in parameters.values():
+                parameter.reset()
     built = pcvl.Experiment(chip)
     built.with_input(pcvl.BasicState(circuit["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
@@ -932,10 +946,16 @@ def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str)
 
     live = mesh.decode(architecture_blob(processor, platform))
     spec = circuit["architecture"]
-    if [p for k, _, p in live if k == "ps"] != spec["symbols"] or [[m, p[0]] for k, m, p in live if k == "bs"] != spec[
-        "couplers"
-    ]:
+    if (
+        any(p[1:] != (0.0, 0.0, 0.0, 0.0) for k, _, p in live if k == "bs")
+        or [p for k, _, p in live if k == "ps"] != spec["symbols"]
+        or [[m, p[0]] for k, m, p in live if k == "bs"] != spec["couplers"]
+    ):
         raise PlatformError("the live architecture differs from the case: regenerate the mesh case after recalibration")
+    if "ops" in circuit:
+        operations = [[kind.upper(), mode, index] for index, (kind, mode, _) in enumerate(live)]
+        if operations != circuit["ops"]:
+            raise PlatformError("the live architecture operation sequence differs from the case's native template")
 
 
 def live_architecture(processor: dict[str, Any], platform: str) -> None:
@@ -1023,7 +1043,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     computer.mitigations = None if policy is None else []
     form = iteration_form(manifest)
     mesh = manifest.get("gate_form") == "mesh"
-    template = form == "template"
+    template = manifest.get("gate_form") == "template"
     if mesh:
         built, settings = mesh_experiment(manifest, circuit)
     elif template:
@@ -1187,7 +1207,7 @@ def plan(
         message = hom_warning(platform, perfs, block_photons(circuit), case_dir.name)
         if message is not None:
             print(message, file=sys.stderr)
-    if manifest.get("gate_form") == "mesh":
+    if manifest.get("gate_form") == "mesh" or "architecture" in circuit:
         live_mesh(processor, circuit, platform)
     if "seeded_from" in manifest:
         live_architecture(processor, platform)
@@ -1556,6 +1576,15 @@ def result_summary(
             raise PlatformError("the result carries no serialized counts")
         return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
     else:
+        if not complete and not inner["results"].startswith(":PCVL:"):
+            return {
+                "shots": shots,
+                "partial": True,
+                "counts": {},
+                "samples": 0,
+                "error": inner["results"][:2000],
+                "result_fields": scalar_tree({key: value for key, value in inner.items() if key != "results"}),
+            }
         counts = parse_counts(inner["results"])
     # An iterated answer's top-level shots is one iteration's max_shots; each
     # entry reports the shots it used, and their sum is what the job consumed.
@@ -1632,6 +1661,22 @@ def run_facts(directory: Path) -> dict[str, Any]:
         raise PlatformError(f"{owner}: results.json names another job or schema")
     if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
         raise PlatformError(f"{owner}: results.json carries {carried}")
+    returned = collected.get("data", {}).get("payload")
+    if (
+        manifest.get("schema") == "qd-hypercomplex-cases-v1"
+        and "logical_modes" in manifest
+        and collected.get("status", {}).get("status") == "completed"
+        and not isinstance(returned, dict)
+    ):
+        raise PlatformError(f"{owner}: completed full-output acquisition lacks its returned payload")
+    if isinstance(returned, dict):
+        echoed = dict(returned)
+        # The worker adds its version to the payload; the sent fields retain
+        # their exact JSON structures, including compilation parameters.
+        if "pcvl_version" not in body["payload"]:
+            echoed.pop("pcvl_version", None)
+        if echoed != body["payload"]:
+            raise PlatformError(f"{owner}: returned payload differs from job-body.json")
     status = collected["status"]["status"]
     if status not in TERMINAL:
         raise PlatformError(f"{owner}: job status {status} is not terminal")

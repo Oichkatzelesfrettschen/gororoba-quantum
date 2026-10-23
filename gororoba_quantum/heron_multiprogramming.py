@@ -42,7 +42,7 @@ from qiskit.circuit import Clbit, Parameter, Qubit
 from qiskit.transpiler import CouplingMap
 
 from boolean_anf import quadratic_polar_rank
-from cd_core import basis, cd_multiply, triple_sign
+from cd_core import cd_multiply_exact, triple_sign
 from designs import design_c_associator_spectrum, lcu_witness, left_mult_gate
 
 HERON_BASIS = ("cz", "rz", "sx", "x")
@@ -700,22 +700,22 @@ def lcu_zero_product_witness(
     """Design B's fixed-operand LCU for x = (e_i + e_j)/sqrt2 on y = (e_k + sign e_l)/sqrt2.
 
     designs.lcu_witness builds the circuit with phase 0 for sign +1 and pi for
-    sign -1. cd_core.cd_multiply certifies the pair: the circuit metadata
+    sign -1. cd_core.cd_multiply_exact certifies the pair: the circuit metadata
     carries P(s = 0) = ||x y||^2 / 2, which is 0 for the default dark pair
     (e1 + e10)(e4 - e15) = 0 and 1 for its bright control at sign +1.
     """
     if sign not in (1, -1):
         raise ValueError(f"sign must be +1 or -1, got {sign}")
     (i, j), (k, el) = a_pair, b_pair
-    x = [u + v for u, v in zip(basis(16, i, 1 / math.sqrt(2)), basis(16, j, 1 / math.sqrt(2)), strict=True)]
-    y = [u + v for u, v in zip(basis(16, k, 1 / math.sqrt(2)), basis(16, el, sign / math.sqrt(2)), strict=True)]
-    product = cd_multiply(16, x, y)
+    x = [int(index == i) + int(index == j) for index in range(16)]
+    y = [int(index == k) + sign * int(index == el) for index in range(16)]
+    product = cd_multiply_exact(16, x, y)
     qc = lcu_witness(a_pair, b_pair, 0.0 if sign > 0 else math.pi)
     qc.metadata = {
         "a_pair": list(a_pair),
         "b_pair": list(b_pair),
         "sign": sign,
-        "p_success": sum(c * c for c in product) / 2,
+        "p_success": float(sum(c * c for c in product) / 8),
     }
     return qc
 

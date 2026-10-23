@@ -1,0 +1,946 @@
+{
+  "versions": {
+    "opensquirrel": "0.9.1",
+    "libqasm": "1.2.1",
+    "qxelarator": "0.10.0"
+  },
+  "rows": [
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/order-i0-j0-representative0.cq",
+      "sha256": "ef707b0cb286d3c4a7b56dc6f0408d437145d8b649d0c84f3032e043334a6df8",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/order-i0-j0-representative1.cq",
+      "sha256": "84b0089bab222156e1dcb1544ac3e03e3b3044f401c617444103b1913fc531dd",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nRy(-1.5707963) q[0]\nRz(0.78539816) q[0]\nCZ q[0], q[1]\nRz(2.3561945) q[0]\nRy(1.5707963) q[0]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "01": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "01": [
+              -6.162975822039156e-33,
+              -1.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "01": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "01": [
+              2.3314050409631058e-17,
+              -1.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 4.440892098500626e-16,
+        "compiled": 4.440892098500626e-16
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/order-i0-j1-representative0.cq",
+      "sha256": "19f6d074e6327e3098066782c71541467baab7f2895a262a2b09538d873d92ef",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nRy(-1.5707963) q[0]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 496,
+            "01": 528
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 496,
+            "01": 528
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.4999999999999999,
+        "compiled": 0.4999999999999999
+      },
+      "passed": false
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/order-i0-j1-representative1.cq",
+      "sha256": "d0b56c24020cc001d6e5f07d580a0ff72016bd1c2bc049ff03a7ac75b4423d62",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nRy(-1.5707963) q[0]\nRz(0.78539816) q[0]\nCZ q[0], q[1]\nRz(2.3561945) q[0]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 496,
+            "01": 528
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              7.850462293418873e-17,
+              -0.9999999999999997
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 496,
+            "01": 528
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              -3.2051033303072965e-09,
+              -1.0000000000000002
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.4999999999999998,
+        "compiled": 0.5000000000000006
+      },
+      "passed": false
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/order-i1-j0-representative0.cq",
+      "sha256": "d4d4073b1c1a2a0fe94dc8034ad42ea046435ae47c385fb006b8baa28f3946ac",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nRz(-1.5707963) q[0]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              0.7071067811865476,
+              0.7071067811865475
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              0.707106790659974,
+              0.707106771713121
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/order-i1-j0-representative1.cq",
+      "sha256": "1260b0787c25f63d78fab5e26b534eb91e985f12ec75492ef3dd64b5165334d7",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nRy(-1.5707963) q[0]\nRz(0.78539816) q[0]\nCZ q[0], q[1]\nRz(0.78539816) q[0]\nRx(1.5707963) q[0]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "01": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "01": [
+              -0.7071067811865475,
+              -0.7071067811865475
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "01": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "01": [
+              -0.7071067811865474,
+              -0.7071067811865476
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 2.220446049250313e-16,
+        "compiled": 1.1102230246251565e-16
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/order-i1-j1-representative0.cq",
+      "sha256": "72612aa06e79bbe70dd89ce766bb340ea1b89db361622a86e3fb831fb3228d75",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nRz(-0.78539816) q[0]\nRy(0.95993109) q[0]\nRz(2.6179939) q[0]\nRx(-1.3962634) q[1]\nCZ q[0], q[1]\nRz(-1.5707963) q[0]\nRy(3.1415927) q[0]\nRz(1.5707963) q[1]\nRy(1.0471976) q[1]\nCZ q[0], q[1]\nRy(0.61086524) q[0]\nRx(0.78539816) q[0]\nRy(-1.3962634) q[1]\nRz(1.5707963) q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 497,
+            "01": 269,
+            "11": 258
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              -0.7088336766204351,
+              0.705375657992786
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 497,
+            "01": 269,
+            "11": 258
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              -0.7088336766333586,
+              0.7053756579798001
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.49918360882402313,
+        "compiled": 0.49918360882402446
+      },
+      "passed": false
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/readout-0.cq",
+      "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "00": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/readout-1.cq",
+      "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nX q[0]\nX q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "11": 1024
+          },
+          "shots_done": 1024,
+          "state": {
+            "11": [
+              1.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.0,
+        "compiled": 0.0
+      },
+      "passed": true
+    },
+    {
+      "case": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/order-i1-j1-representative1.cq",
+      "sha256": "fa29fe0ea38783e639025bb657878eaa120ea25f29c9fd5d2267819e6f2441a3",
+      "source_errors": [],
+      "compiled_errors": [],
+      "compiled": "version 3.0\n\nqubit[2] q\nbit[2] b\n\nRy(-1.5707963) q[0]\nRz(-2.3561945) q[0]\nRz(-1.5707963) q[1]\nRy(-0.78539816) q[1]\nCZ q[0], q[1]\nRz(-1.5707963) q[0]\nRy(2.3561945) q[0]\nRz(1.5707963) q[1]\nRy(1.5707963) q[1]\nCZ q[0], q[1]\nRy(2.3561945) q[0]\nRz(1.5707963) q[0]\nRz(-1.5707963) q[1]\nRy(-1.5707963) q[1]\nbarrier q[0]\nbarrier q[1]\nb[0] = measure q[0]\nb[1] = measure q[1]\n",
+      "simulations": {
+        "source": {
+          "counts": {
+            "00": 248,
+            "01": 528,
+            "10": 248
+          },
+          "shots_done": 1024,
+          "state": {
+            "10": [
+              0.7071067811865475,
+              0.7071067811865476
+            ]
+          }
+        },
+        "compiled": {
+          "counts": {
+            "00": 248,
+            "01": 528,
+            "10": 248
+          },
+          "shots_done": 1024,
+          "state": {
+            "10": [
+              0.7071067658950926,
+              0.7071067964780021
+            ]
+          }
+        }
+      },
+      "native_probability_errors": {
+        "source": 0.7500000000000001,
+        "compiled": 0.7500000000000001
+      },
+      "passed": false
+    }
+  ],
+  "schema": "local-photonic-compiler-simulation-v1",
+  "python": "3.13.15",
+  "runner_sha256": "72b357a9aac53fa515b668ec733f20b011cf78ff0f9a63e2e3429c0b6799d482",
+  "seed": 20261022,
+  "shots": 1024,
+  "elapsed_seconds": 0.42812385997967795,
+  "evidence_class": "local noiseless simulation; sampled counts are simulated",
+  "authorization": "User approved additive background simulation on this machine while Ascella waits",
+  "boundary": "Mathematical and compiler checks; hardware loss, drift and device conformance remain unmeasured",
+  "dialects": {
+    "cQASM": "3.0 through libqasm and OpenSquirrel",
+    "OpenQASM": "absent from the selected frozen cases"
+  }
+}

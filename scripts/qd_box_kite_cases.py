@@ -47,7 +47,7 @@ one on M alone. The census Design B rows reach 14 of the 16 sign matrices;
 the other two arise from two-label pairs outside those rows (an assessor
 against the (S, 8) plane of its label, two planes on one side of 8), so
 each missing configuration carries the first sedenion witness pair whose
-cd_core block it is, certified by cd_multiply. Every two-label two-blade
+cd_core block it is, certified by cd_multiply_exact. Every two-label two-blade
 product of any dimension then maps to one circuit of the family
 (scripts/cd_two_blade_blocks.py checks that through D = 64).
 
@@ -98,7 +98,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from box_kite_cases import CENSUS, Row, census_rows, load_census, pair_phases, two_label, validate_census  # noqa: E402
 
 import parallel  # noqa: E402
-from cd_core import cd_multiply, cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
+from cd_core import cd_multiply_exact, cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
 
 SCHEMA = "qd-box-kite-cases-v1"
 CIRCUIT_SCHEMA = "qd-circuit-v1"
@@ -319,12 +319,12 @@ def one_hot_block(t: int) -> Matrix:
 
 
 def certify_one_hot(t: int) -> Fraction:
-    """||x y||^2 / 2 through cd_core.cd_multiply, required to be 0 for the corpus pair and 1 for its control."""
-    x = [0.0] * DIM
-    y = [0.0] * DIM
-    x[ONE_HOT_X[0]] = x[ONE_HOT_X[1]] = 1.0
-    y[ONE_HOT_Y[0]], y[ONE_HOT_Y[1]] = 1.0, float(t)
-    product = cd_multiply(DIM, x, y)
+    """||x y||^2 / 2 through cd_core.cd_multiply_exact, required to be 0 for the corpus pair and 1 for its control."""
+    x = [0] * DIM
+    y = [0] * DIM
+    x[ONE_HOT_X[0]] = x[ONE_HOT_X[1]] = 1
+    y[ONE_HOT_Y[0]], y[ONE_HOT_Y[1]] = 1, t
+    product = cd_multiply_exact(DIM, x, y)
     require(all(c == int(c) for c in product), "the one-hot product left the integers")
     norm = Fraction(sum(int(c) ** 2 for c in product), 4)
     zero = (ONE_HOT_X[0], ONE_HOT_X[1], 1, ONE_HOT_Y[0], ONE_HOT_Y[1], t) in _corpus()
@@ -344,7 +344,7 @@ def all_blocks() -> list[tuple[tuple[int, int], tuple[int, int]]]:
 
 
 def witness(m: tuple[tuple[int, int], tuple[int, int]], t: int) -> list[int]:
-    """The first sedenion two-label pair [i, j, s, k, l, t] whose cd_core sign block is m, certified by cd_multiply.
+    """Find the first two-label pair [i, j, s, k, l, t] with sign block m, using cd_multiply_exact.
 
     The search runs over labels X, then planes {i, i^X} x {k, k^X} and s in
     (+1, -1); the product of e_i + s e_j and e_k + t e_l must equal
@@ -367,18 +367,20 @@ def witness(m: tuple[tuple[int, int], tuple[int, int]], t: int) -> list[int]:
 
 
 def certify_witness(name: str, w: list[int], m: list[list[int]]) -> None:
-    """The witness pair's cd_core sign block equals m and its cd_multiply product equals c0, c1 on its labels."""
+    """The witness pair's cd_core sign block equals m and its cd_multiply_exact product equals c0, c1 on its labels."""
     i, j, s, k, el, t = w
     require(i ^ j == k ^ el, f"{name}: witness {w} is not a two-label pair")
     block = [[cd_sign(DIM, i, k), s * cd_sign(DIM, j, el)], [s * cd_sign(DIM, j, k), cd_sign(DIM, i, el)]]
     require(block == m, f"{name}: witness {w} carries the sign block {block}, not {m}")
-    x = [0.0] * DIM
-    y = [0.0] * DIM
-    x[i], x[j], y[k], y[el] = 1.0, float(s), 1.0, float(t)
-    want = [0.0] * DIM
+    x = [0] * DIM
+    y = [0] * DIM
+    x[i], x[j], y[k], y[el] = 1, s, 1, t
+    want = [0] * DIM
     want[i ^ k] += m[0][0] + t * m[0][1]
     want[i ^ el] += m[1][0] + t * m[1][1]
-    require(cd_multiply(DIM, x, y) == want, f"{name}: cd_core product of witness {w} differs from its block")
+    require(
+        cd_multiply_exact(DIM, x, y) == tuple(want), f"{name}: cd_core product of witness {w} differs from its block"
+    )
 
 
 def configurations(census: dict[str, Any]) -> list[dict[str, Any]]:

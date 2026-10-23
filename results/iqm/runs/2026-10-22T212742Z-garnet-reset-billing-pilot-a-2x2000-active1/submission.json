@@ -1,0 +1,17 @@
+{
+ "approval": "Approve, run now",
+ "body_sha256": "a6eca66c06e8a09636f96a454207653492b7e2d5e920183f6b05f7d08fecee14",
+ "cases_sha256": "7e8a7c631148374af26973e2cff057a64cf3bad4bce3268fe30f2e597d35083d",
+ "credit_before": {
+  "currentBalance": "29.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 1.635,
+ "job": "a-2x2000-active1",
+ "job_id": "01a16583-43fc-75e5-82b0-5b192921a4c5",
+ "max_credits": 1.5,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-22T21:27:43Z"
+}

@@ -1,6 +1,76 @@
 {
-  "schema": "research-state-v1",
+  "schema": "research-state-v2",
   "acquisitions": [
+    {
+      "id": "qd-ascella-approved-order-pilot-retry",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-approved-order-pilot-retry",
+      "family": "authorized photonic order instrument recovery retry",
+      "question": "Does the unchanged approved eight-setting order pilot execute after Ascella reports available and provide positive samples for device conformance analysis?"
+    },
+    {
+      "id": "qd-ascella-native-input-map-recheck",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-native-input-map-recheck",
+      "family": "native input-map readiness after observed calibration status",
+      "question": "Does the native-mesh single-photon readiness request execute after Ascella returns from an observed calibration status to available?"
+    },
+    {
+      "id": "qd-belenos-order-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-order-repeat-block-0",
+      "family": "photonic order matched repeats",
+      "question": "What conditional mode frequencies and matched-request changes appear across three repeats of all eight order settings?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-0",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the seventeen wave times, five free references and two representative controls in the first repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-1",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the second repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-2",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the third repeat block?"
+    },
+    {
+      "id": "qd-belenos-transform-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-transform-repeat-block-0",
+      "family": "photonic Fourier matched repeats",
+      "question": "What mode frequencies and matched-request changes appear across three repeats of all eight Fourier and reference settings?"
+    },
+    {
+      "id": "qd-ascella-order-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-hypercomplex-order-pilot",
+      "family": "photonic quaternion order pilot",
+      "question": "Does the approved eight-setting order template execute and provide mesh conformance, loss and drift observations on Ascella?"
+    },
+    {
+      "id": "qd-ascella-static-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-static-input-readiness",
+      "family": "static native coupler readiness",
+      "question": "Does a static single-computation H coupler with connected source zero and twelve outputs avoid the input-port failure of template iterators?"
+    },
+    {
+      "id": "qd-ascella-calibrated-mesh-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-calibrated-mesh-input-readiness",
+      "family": "calibrated native mesh readiness",
+      "question": "Does a numerically bound circuit matching Ascella's published calibrated architecture execute through the documented compatible-circuit path?"
+    },
     {
       "id": "kingston-mod15-pilot",
       "provider": "ibm",
@@ -1330,16 +1400,411 @@
       "run": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2",
       "family": "BDSC crossed diagnostic on qpu:belenos",
       "question": "the second job of block 2 (`b2-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 00 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 01 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 02 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 03 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 04 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 05 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 06 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 07 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 08 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 09 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 10 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 11 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 12 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13",
+      "family": "BDSC four-qubit local Pauli readout, QX emulator twin",
+      "question": "Does the hosted QX emulator return the preregistered exact outcomes of every BDSC Pauli readout circuit of batch 13 of the twin series, whose 10-qubit circuits repeat each Tuna-17 patch's gate sequence on relabeled emulator qubits, so those per-patch gate sequences are semantically clean?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 00 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 01 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 02 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 03 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 04 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 05 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 06 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 07 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08",
+      "family": "BDSC four-qubit local Pauli readout on Tuna-17",
+      "question": "Batch 08 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j1-1x1000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j1-1x1000-passive under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j2-1x4000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j2-1x4000-passive under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j3-20x200-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j3-20x200-passive under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j4-1x4000-active1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211622Z-garnet_mock-timing-pilot-j4-1x4000-active1",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j4-1x4000-active1 under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-reset-billing-p-2x2000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive",
+      "family": "IQM reset-billing pilot",
+      "question": "Does p-2x2000-passive on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-mock-reset-billing-a-2x2000-active1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1",
+      "family": "IQM reset-billing pilot",
+      "question": "Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-reset-billing-p-2x2000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive",
+      "family": "IQM reset-billing pilot",
+      "question": "Does p-2x2000-passive on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-reset-billing-a-2x2000-active1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1",
+      "family": "IQM reset-billing pilot",
+      "question": "Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-kernel-probe-strong",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the strong job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-kernel-probe-weak",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the weak job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?"
+    },
+    {
+      "id": "iqm-garnet-signed-kernel-probe-strong",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong",
+      "family": "IQM signed kernel probe",
+      "question": "Does the strong job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?"
+    },
+    {
+      "id": "iqm-garnet-signed-kernel-probe-weak",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak",
+      "family": "IQM signed kernel probe",
+      "question": "Does the weak job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?"
     }
   ],
   "claims": [
     {
+      "id": "ascella-approved-order-retry-input-map-error",
+      "statement": "The explicitly authorized retry of the unchanged eight-setting Ascella order pilot returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero token-reported credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One explicitly reauthorized retry, submitted after both live platform status records reported available and token occupancy was empty. The manifest and resource caps match the approval. The error triggered the stopping rule. The acquisition supplies an instrument-readiness observation; operator probabilities, hardware loss and drift remain unmeasured. The private deployed input map and worker control flow remain unobserved.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/ascella-approved-order-pilot-retry/results.json",
+          "sha256": "de9fbceb6fd5b6bebccc9d623739c7e950eb23f3179d8e78c044ce3c5ffcbdc8"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+        "results/quandela/runs/ascella-approved-order-pilot-retry/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-approved-order-pilot-retry"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "belenos-operator-repeat-counts-and-compilation-boundary",
+      "statement": "The approved five-job Belenos programme completed 120 settings with 983040 returned samples in 724 execution seconds, charged 5.081920 credits. The descriptive reported-single-photon readout excludes and retains 350 outcomes whose total reported occupation is zero or greater than one. The 120 matched-repeat pair comparisons have maximum conditional total variation 0.036181 and identical returned compiled-circuit bytes within every matched pair. Returned compiled intensity distributions differ from requested ideal distributions by at most 0.000210 total variation. The imaginary-superposition Fourier control on representative zero instead gives measured-versus-compiled total variation from 0.996336 to 0.997313 across its three repeats, while its measured-versus-preceding-compiled distance is 0.030785 to 0.034049.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Conditional frequencies given reported total occupation one, and decoded numerical metadata from these five jobs. The historical JSON's one-click label denotes that occupation-sum selection; the mixed threshold/quasi-PNR documentation does not establish a uniform physical-click model. The records establish a compilation-metadata/measurement mismatch, rather than which applied-control or result-association mechanism caused it. Fixed request ordering confounds a setting-specific response with a preceding-setting effect. The analysis supplies neither calibrated uncertainty coverage, absolute transmission, process tomography nor fundamental quaternionic-physics evidence. A newly ordered intervention requires its own approved case.",
+      "evidence": [
+        {"path": "results/hypercomplex/belenos-repeat-readout.json", "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"},
+        {"path": "results/hypercomplex/belenos-compilation-measurement-audit.json", "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"},
+        {"path": "results/hypercomplex/belenos-repeat-readout-pooled.json", "sha256": "3f5ff8f59afe020a9f84112a6a124876b6227069f08088ea08f3236b6e0f5c27"},
+        {"path": "results/hypercomplex/belenos-compilation-measurement-audit-pooled.json", "sha256": "bdc25d02692cc080a2f90a9adc1cb5062916510c13912d0123f977ffeeede3d7"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {"core-651": "replay"},
+      "acquisitions": ["qd-belenos-order-repeat", "qd-belenos-wave-repeat-0", "qd-belenos-wave-repeat-1", "qd-belenos-wave-repeat-2", "qd-belenos-transform-repeat"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-native-input-map-error-after-status-transition",
+      "statement": "A native-mesh readiness recheck after an observed Ascella calibration-to-available status transition and changed published performance figures again returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero reported credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One descriptive recheck submitted after the static readiness stopping rule had fired, without a recorded explicit override. The stopping-rule adjudication classifies this submission as a protocol deviation, rather than preregistered adherence. The observed public status transition was insufficient to restore this sampling path. The instrument's private configuration and internal worker control flow remain unobserved.",
+      "evidence": [{"path": "results/quandela/runs/ascella-native-input-map-recheck/results.json", "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"}],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-native-input-map-recheck"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-input-port-failure-across-payloads",
+      "statement": "The eight-setting order iterator, static twelve-mode H coupler and static twelve-mode calibrated native mesh each failed after one execution second with zero shots and zero samples and the same missing hardware_info.circuit_input_ports diagnostic. Their collected token-usage deltas report zero credit debit. The failures span generic iterated, generic static and architecture-compatible static requests on connected input zero.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Three sampling requests under their recorded platform snapshots. The native-mesh request followed the static readiness stopping rule without a recorded explicit override; the stopping-rule adjudication classifies it as a protocol deviation. Its result is descriptive rather than evidence of preregistered adherence. The observations reject static payload class and native-architecture compatibility as sufficient remedies on the tested paths. They provide neither measured operator probabilities nor an exhaustive statement about every command or future configuration. The deployment's instrument map and private worker implementation remain unobserved.",
+      "evidence": [
+        {"path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json", "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"},
+        {"path": "results/quandela/runs/ascella-static-input-readiness/results.json", "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"},
+        {"path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json", "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-order-input-readiness", "qd-ascella-static-input-readiness", "qd-ascella-calibrated-mesh-input-readiness"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-tuna17-zero-divisor-matched-response",
+      "statement": "Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.",
+      "evidence": [],
+      "documents": ["docs/design/tuna17-zero-divisor-matched-response.md"],
+      "gates": {"core-632": "replay", "core-633": "replay"},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "sedenion-determinant-membership",
+      "statement": "For every real sedenion v=(x0+u,x8+w), det L_v=(s+A+B)^4 [s^2+2s(A+B)+(A-B)^2+4 gamma^2]^2, with s=x0^2+x8^2, A=||u||^2, B=||w||^2 and gamma=<u,w>. A nonzero v is a zero divisor exactly when s=0, A=B and gamma=0.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "proof_origin": "external-source",
+      "evidence": [],
+      "acquisitions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "gates": {},
+      "boundary": "The determinant factorization is Theorem 3.7 of Koebisu version 2, a preprint; Biss-Dugger-Isaksen supplies the membership and annihilator foundation. A finite rational replay validates the implementation separately from the all-real source argument.",
+      "documents": [
+        "docs/notes/papers/2512.13002.md",
+        "docs/notes/math-0511691.md",
+        "docs/notes/algebra_circuit_rules.md"
+      ],
+      "assumptions": [
+        "Real standard sedenions under cd_core's doubling and ordered basis",
+        "u and w are imaginary octonions; v is nonzero for zero-divisor membership"
+      ],
+      "related_claims": [
+        "sedenion-determinant-exact-replay"
+      ]
+    },
+    {
+      "id": "sedenion-determinant-exact-replay",
+      "statement": "Exact left-matrix determinants match D1^4 D2^2 on 300 seeded integer vectors, 100 seeded rational vectors, e0+e9, e1+e9 and e1+e10. The controls have determinants 256, 256 and 0, and removal of 4 gamma^2 fails on e1+e9.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "evidence": [],
+      "acquisitions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "boundary": "403 rational fixtures at seed 20261011 validate the evaluator; the replay establishes facts only on those fixtures. The all-real identity comes from the separate mathematical claim.",
+      "documents": [
+        "docs/notes/algebra_circuit_rules.md"
+      ],
+      "gates": {
+        "core-044": "replay"
+      },
+      "assumptions": [
+        "int or Fraction coordinates in exactly 16 dimensions"
+      ],
+      "depends_on": [
+        "sedenion-determinant-membership"
+      ]
+    },
+    {
       "id": "cd-associator-census",
       "statement": "The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.",
+      "boundary": "Real basis triples under the cd_core.cd_sign convention; the moving-pair spectrum is the separate claim cd-moving-pair-walsh-proof.",
       "evidence": [
         {
           "path": "docs/evidence/cd_associator_defect_census/census.json",
@@ -1360,20 +1825,27 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written",
+      "related_claims": [
+        "cd-moving-pair-walsh-proof"
+      ]
     },
     {
       "id": "cd-moving-pair-walsh-proof",
-      "statement": "The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.",
+      "statement": "For every D = 2^n >= 16, omega(D/2+1, D/4+3, k) = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; the pair has algebraic degree n - 2, and for D >= 32 Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 (at D = 16 support 4, amplitude 1/2, nonlinearity 4).",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
-      "status": "open",
-      "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Theorem 5 and its corollary in the census note prove the formula from the certified associator lifting (Lemma 3) and the fixed-pair parity law (Theorem 4); the census checks the formula, both lifting steps and every spectral law from 16 to 4096. No proof assistant has checked the argument.",
       "evidence": [],
       "documents": [
         "docs/notes/topics/cd_associator_defect_census.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-212": "replay",
+        "sources-215": "replay"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -1382,13 +1854,14 @@
         "cd-associator-census"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "singular-sector-split",
       "statement": "(L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.",
       "evidence": [],
@@ -1407,7 +1880,8 @@
         "cd-associator-census"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "hpp-fixed-degree-refutation",
@@ -1487,12 +1961,69 @@
       "superseded_by": null
     },
     {
-      "id": "a5-stiefel-universal",
-      "statement": "Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5).",
+      "id": "a5-stiefel-pfaffian-reduction",
+      "statement": "For pure a, b in A_4, L_(a,b)^2 is the real form of (L_a + i R_b)(L_a - i R_b) and L_a + i R_b is complex skew-symmetric, so |det L_(a,b)| = |Pf(L_a + i R_b)|^4; every A_5 Stiefel element is a zero divisor exactly when the degree-8 polynomial Pf(L_a + i R_b) vanishes on a dense subset of the Stiefel set.",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof from Moreno's Theorem 2.3, which gate core-660 checks exactly on every e_i and e_i + e_j of the 30 pure coordinates (an identity of degree 2); the density step uses lower semicontinuity of rank. It reduces the A_5 question and does not decide it.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md",
+        "docs/notes/math-0512517.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Moreno math/0512517 Theorem 2.3: L_(a,b)^2 = [[A, -S], [S, A]] for pure a, b"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-stiefel-pfaffian-identity-test",
+      "statement": "At 96 seeded points of the A_5 Stiefel variety over F_p, 48 for each of the two largest primes p = 1 mod 4 below 2^61, drawn through the isotropic parametrization z = a + i b, z' = a - i b, rank(L_a + i R_b) = 14 and rank L_(a,b) = 28 modulo p, so Pf(L_a + i R_b) = 0; 16 A_6 Stiefel controls read full ranks 32 and 64 and 16 non-Stiefel A_5 controls read 16 and 32.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact modulo-p ranks at the recorded points only. By Schwartz-Zippel a Pfaffian whose restriction is nonzero modulo p vanishes at one uniform point with probability at most 26/p, so the record makes a generic counterexample improbable without proving universality; the draws are pseudorandom and a modulo-p rank bounds the rational rank from below only.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "a5-stiefel-pfaffian-reduction"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a5-stiefel-universal",
+      "statement": "Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The 32 exact points support it and prove nothing beyond themselves.",
+      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
       "evidence": [],
       "documents": [
         "docs/notes/math-0512517.md"
@@ -1503,10 +2034,13 @@
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
       ],
       "depends_on": [
-        "a5-stiefel-selected-nullity"
+        "a5-stiefel-selected-nullity",
+        "a5-stiefel-pfaffian-reduction",
+        "a5-stiefel-pfaffian-identity-test"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
     },
     {
       "id": "a6-stiefel-witness",
@@ -1537,12 +2071,13 @@
       "id": "a6-stiefel-generic-invertibility",
       "statement": "On V = V_2(R^31), the unit orthogonal pure pairs (a, b) in (Im A_5)^2, L_(a,b) is invertible on an open, dense, full-measure subset; the zero-divisor Stiefel elements form a closed measure-zero semialgebraic subset of dimension at most 58.",
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Written proof, not machine-checked; the exceptional subset's exact dimension, components and geometry, and the A_5 question, remain open.",
       "evidence": [],
       "documents": [
-        "docs/notes/math-0512517.md"
+        "docs/notes/math-0512517.md",
+        "docs/notes/stiefel_generic_invertibility.md"
       ],
       "gates": {},
       "acquisitions": [],
@@ -1557,13 +2092,14 @@
         "a6-stiefel-witness-rocq"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "four-support-topology",
       "statement": "On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.",
       "evidence": [
@@ -1607,13 +2143,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "nullity-twelve-cone",
       "statement": "At the doubly-pure center e1 + e18 of dimension 32 and norm squared two, the Bouligand cone of the nullity-12 locus is A15 union B17, with a 13-dimensional intersection.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "One selected center; neighborhood branches, links, attachments and other centers remain open.",
       "evidence": [
@@ -1638,13 +2175,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "principal-skew-atlas",
       "statement": "Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element, with exact refinement and overlap identities gluing the kernel incidence across changing ranks; an all-stage proof gives 2^(n-1) - 1 domains for every n >= 2.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "A cover with gluing maps; smooth subdivisions, closure links and a finite attachment model are still needed for global invariants.",
       "evidence": [
@@ -1667,13 +2205,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "kernel-limit-slice",
       "statement": "The complete real three-coefficient affine slice has nullities 0, 8 and 12 with global cone kernel frames and actual mapping cylinders; its total incidence retracts onto S11 and the attachment image is S3*(S1 x S3); ordinary embedding extends this to every higher stage.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The named slice only; unrestricted rank loci and frontier coverage remain open.",
       "evidence": [
@@ -1697,13 +2236,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "determinant-line-trivial",
       "statement": "The top exterior power of the annihilator bundle is trivial over every full constant-rank locus at every stage; Pfaffian volume factors give determinant-one transitions and zero first integral Chern class.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Higher characteristic classes and bundle isomorphism types remain open.",
       "evidence": [
@@ -1727,13 +2267,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "dimension32-global-topology",
       "statement": "A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "open",
       "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
       "evidence": [],
@@ -1753,7 +2294,8 @@
         "nullity-twelve-cone"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
     },
     {
       "id": "sedenion-g2-bundle",
@@ -1779,7 +2321,7 @@
       "id": "rank-predicates-and-charts",
       "statement": "For D = 2^n, n >= 2, the trace/Newton polynomials E_j of B = L_x^T L_x decide the rank of L_x for every real x, and general pivot charts supply exact kernel frames, transition maps, cocycles and Gram data.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Membership formulas, not a classification of components, smooth strata or bundle isomorphism classes.",
       "evidence": [],
@@ -1798,13 +2340,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "restricted-path-topology",
       "statement": "The certified path has generic nullity 4 and exceptional nullities 8, 12 and 16, and its incidence space has homotopy type S7 v S11 v S15 v S4 v S4, with the stated integral homology, trivial torsion and vanishing positive-degree cup products.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The restricted path space only; the full pair space has further directions and attachments.",
       "evidence": [],
@@ -1824,7 +2367,8 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "local-schur-fixtures",
@@ -1856,7 +2400,7 @@
       "id": "dimension32-skew-schur-charts",
       "statement": "Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain with nonzero reduced ranks and complete kernel lifts, inverse coordinates and sphere metrics; written all-real block identities give the local incidence homeomorphism.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "A pair of exact paths with one initial tangent shows different nearby ranks, so linearization bounds rank only; nonlinear rank geometry and attachments remain open.",
       "evidence": [
@@ -1879,7 +2423,8 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "schur-acceleration-certificates",
@@ -1965,7 +2510,7 @@
       "id": "projective-kernel-frontiers",
       "statement": "Finite frame saturation recovers the leading kernel plane of every admitted polynomial path, and an all-stage quotient theorem rebuilds the full pair space from tautological sphere spaces over all real frontier graphs.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "Graph-closure computation, smooth subdivisions and quotient cell maps remain open; the theorem supplies no homology table.",
       "evidence": [
@@ -1989,13 +2534,14 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "real-circle-frontier-graph",
       "statement": "The named cone-slice frontier graph is a smooth cylinder with a trace inverse, and labelled integral contractions certify the unit-partner evaluation map and its cohomology pullbacks.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "boundary": "The named slice; ambient rank domains need their own positive-domain and coverage proofs.",
       "evidence": [
@@ -2019,7 +2565,8 @@
       ],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "c881-exhaustive-rocq",
@@ -2838,7 +3385,7 @@
       "domain": "implementation",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "Priced against direct counting before any hardware case; no universal speedup follows.",
+      "boundary": "Priced against direct counting before any hardware case; no universal speedup follows. The signed overlap holds for every unit vector u (signed-overlap-kernel-independence); only the dark probability depends on u lying in the kernel.",
       "evidence": [],
       "documents": [],
       "gates": {},
@@ -3362,7 +3909,7 @@
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
       ],
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "evidence": [],
       "documents": [
@@ -3375,7 +3922,8 @@
       "acquisitions": [],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "id": "cd-associator-phase-degree",
@@ -3386,7 +3934,7 @@
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
       ],
       "domain": "algebra",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "established",
       "evidence": [],
       "documents": [
@@ -3399,7 +3947,8 @@
       "acquisitions": [],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "repository-written"
     },
     {
       "evidence": [
@@ -3578,6 +4127,42 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-atlas-coherent-families",
+      "statement": "On the executed Fez and Kingston ripple atlas circuits at IBM's executed pulse times, six coherent error families (frame detuning, CZ conditional phase, static ZZ in the partner-in-0 and symmetric frames, SX amplitude and axis tilt) fitted one at a time to the edge fringe phase offsets of all 14 lanes leave every lane except two (Fez lane 5 with axis tilt, Kingston lane 2 with detuning and with partner-in-0 ZZ) above 1.5 times its leave-one-out noise floor under every single family, the lowest ratio per lane ranging from 1.68 to 3.70, so no single family accounts for the offsets; partner-in-0 ZZ scores below the symmetric frame on 13 of 14 lanes in the linear fit and on all 14 resimulated, by a median factor of 2.4, and is the best single family on 7 lanes (detuning on 4, axis tilt on 3), while SX amplitude beats the lane mean on none.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inferred from one run per backend; the best single family per lane is an after-the-fact selection among six, and the lane-4 ranking of the evidence README selects among eighteen models, so no family is confirmed, and a confirming test scores one named model on lanes it was not selected on. Each Kingston lane excludes two edges that span a calibration identity change. The partner-in-0 frame is physical if IBM calibrates each qubit frequency with its neighbors in |0>, which no repository source states; conditional Ramsey with the partner in |0> (proposed-conditional-ramsey-hamiltonian) measures the frame directly. On lane 4 the edge-to-edge contrast deficit stays at 2 to 2.5 times its floor under every phase-fitted model.",
+      "evidence": [
+        {
+          "path": "docs/evidence/atlas_coherent_families/result.json",
+          "sha256": "73e7ca24f89b57716316afe69945d5b0db2431aa5129ad578a0c22a9ecc21645"
+        },
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/atlas_coherent_families/README.md",
+        "docs/notes/topics/coherent-error-families-report.md"
+      ],
+      "gates": {
+        "core-329": "replay",
+        "core-661": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas",
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-atlas-frame-detuning"
+      ],
       "supersedes": [],
       "superseded_by": null
     },
@@ -4070,12 +4655,65 @@
       "superseded_by": null
     },
     {
+      "id": "a5-nullity12-gap-extended-precision",
+      "statement": "At the three nonzd-axis witnesses {e_p, 0} of D_(5,12), 12 seeded near-rank-20 points found by alternating projection from starts at scales 0.03 and 0.003 and refined at 110 digits to sigma_21/sigma_1 < 1e-40 keep their float64 relative distance from the {a, 0} family cone (4.28e-4 to 2.47e-2) at three significant digits while lying 1.51e-3 to 2.68e-2 from the witness, and 64-perturbation float64 clouds at scale 1e-2 span 16 directions.",
+      "domain": "algebra",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Floating and extended-precision arithmetic at seed 20261023, 110 digits, float tolerance 1e-14, cloud scale 1e-2. A refined point has L_y within 1e-40 of a rank-20 matrix that need not be a left multiplication; the rank-20 cone meets span{L_e} far from transversally, so no error bound places an exact point of D_(5,12) near it, and the record establishes neither membership, nor that the family fails to exhaust D_(5,12), nor a local dimension. A 16-direction span bounds the local dimension from above only. An exact parameterized piece or local equations remain the admission route.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_nullity12_refinement/result.json",
+          "sha256": "7f3ef3ee4ffe1cfd11c3a31ea78357c4a16b60836553fc5c1efae74940ac55c1"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_nullity12_refinement/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
+      ],
+      "gates": {
+        "core-662": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a5-tangent-bound-not-linear",
+      "statement": "At all 29 witnesses of the A_5 rank-locus families, the tangent bound T(x) = {y : U^T L_y V = 0} is not inside the closed rank cone R_k = {y : rank L_y <= 32 - k} that contains the cone over D_(5,k): L_y has exact rational rank 32 at six seeded rational points of T(x), integer combinations of a rational basis, at every nullity-4, -8 and -12 witness and rank 20 at the three nullity-16 zero-divisor-axis witnesses, above the cone bound 32 - k.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact ranks over the rationals at the recorded points; one point of rank above 32 - k certifies that T(x) is not inside R_k, and the record carries every weight vector, so the certificate is independent of the generator that drew them. The result excludes only a piece whose cone is linear of the tangent-bound dimension: the zero-divisor-axis witnesses, whose local dimension equals the tangent bound on a curved cone, fail the test as well, so a curved piece stays possible.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_tangent_linearity/result.json",
+          "sha256": "89f64258076513861d7b0e1a5c55e531bd2d927c6c0dd95304eb50ff314a05cc"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_tangent_linearity/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
+      ],
+      "gates": {
+        "core-663": "replay",
+        "core-664": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-nonzero-divisor-two-dimension-gap",
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
-      "evidence_class": "mathematical theorem",
+      "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -4111,7 +4749,8 @@
         "nullity-twelve-cone"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
     },
     {
       "id": "qi-tuna17-zero-divisor-common-response",
@@ -6419,7 +7058,7 @@
     },
     {
       "id": "qi-tuna17-effective-idle-zz-map",
-      "statement": "A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. Under the current 120-second hardware pause policy, the series requires at least 16560 seconds of interbatch pauses. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission.",
+      "statement": "A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. The hardware pause ladder puts its interbatch pauses between 4140 seconds at the 30-second first step and 16560 seconds at the 120-second ceiling. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
@@ -6591,6 +7230,10 @@
         {
           "path": "results/live/2026-10-20T031212.175942Z/beat-model.json",
           "sha256": "421f49223d75f670e1a0f2f76cab97e013dc5049a3799f0813565e6ce8aa0ec4"
+        },
+        {
+          "path": "results/live/2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json",
+          "sha256": "4652b9cf84a3c17a1047fa8e15fd60dc66b0054282cc180c25d7280e037e9960"
         }
       ],
       "documents": [
@@ -6613,19 +7256,19 @@
     },
     {
       "id": "hw-n21-q143-segmented-lines",
-      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
+      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10063 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5350 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
+      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 759d82d74c57 (correcting closure 6d59d710eb61's unconverged fits) and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
       "evidence": [
         {
-          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
+          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json",
+          "sha256": "7eab64e4a10dfe16f4261cbab15a5138a14f1d7afd1faf9a3d5f842eac9a94e2"
         },
         {
-          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
-          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
+          "path": "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json",
+          "sha256": "66f4ab5295eba9c6304a9efb797caf66d902f8f49459ac9e675ee195f0ade9f7"
         },
         {
           "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
@@ -6651,15 +7294,15 @@
     },
     {
       "id": "hw-n21-q47-segmented-baseline",
-      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
+      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.105 second line at alias cell 0 (df -12.9 kHz, the next cell worse by 317 in NLL), T1 81 us and T2* 60 us from the static fit.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
+      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 759d82d74c57, whose preconditioned fit corrects closure 6d59d710eb61's cell -2 and T2* 52 us (decay times left at their starts).",
       "evidence": [
         {
-          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
+          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-759d82d74c57.json",
+          "sha256": "2dcfaf7ddac2b3ece092ba1ca4e7ffa16bdb99c0f386edabc16c14ea6ba82128"
         },
         {
           "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",
@@ -6963,6 +7606,318 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-bdsc-pauli-twin-control",
+      "statement": "The hosted QX emulator returned the preregistered exact outcomes of all 41 BDSC Pauli readout circuits of the twin series (14 batches, 2048 shots each, completed 2026-10-22 10:35 to 10:41 UTC, 0 credits): every kernel+bright-1 pair residual and middle or sector residual is within its preregistered bound, and the matched quadrature phase is 0.0039, 0.0029 and -0.0181 rad (standard error 0.0156) on the three patches, consistent with zero. The control verdict passes with no miss, so each Tuna-17 patch's gate sequence, which the case builder requires the twin to repeat on relabeled qubits, is semantically clean before it reaches Tuna-17.",
+      "domain": "hardware",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Noiseless emulator semantics of the twin's 10-qubit circuits, which pack two relabeled patches each; the 17-qubit Tuna-17 files, their physical qubit indices and their three-patch composition are not executed by this control, and it carries no device noise, readout or calibration behavior. The retained analysis was written by the Quantum Inspire interpreter and is bound by sha256 in every Tuna-17 series-gate.json, so its replay accepts float rounding within 1e-12 relative.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/bdsc_pauli_qx_analysis.json",
+          "sha256": "e42fbbf88430ba13928a7509e0ae4437dcfe44471054deb5f6008c7c3af60151"
+        },
+        {
+          "path": "results/quantum_inspire/cases/bdsc_pauli_qx/cases.json",
+          "sha256": "684b95833f01b384e4dbbd4749bd825d1bbf56828ad501006a95a37c0ddba185"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-tuna17-pauli-pilot.md",
+        "docs/runbooks/bdsc-tuna17-pauli-pilot.md"
+      ],
+      "gates": {
+        "core-634": "replay",
+        "core-627": "admission",
+        "core-626": "freshness"
+      },
+      "acquisitions": [
+        "qi-qx-bdsc-pauli-batch-00",
+        "qi-qx-bdsc-pauli-batch-01",
+        "qi-qx-bdsc-pauli-batch-02",
+        "qi-qx-bdsc-pauli-batch-03",
+        "qi-qx-bdsc-pauli-batch-04",
+        "qi-qx-bdsc-pauli-batch-05",
+        "qi-qx-bdsc-pauli-batch-06",
+        "qi-qx-bdsc-pauli-batch-07",
+        "qi-qx-bdsc-pauli-batch-08",
+        "qi-qx-bdsc-pauli-batch-09",
+        "qi-qx-bdsc-pauli-batch-10",
+        "qi-qx-bdsc-pauli-batch-11",
+        "qi-qx-bdsc-pauli-batch-12",
+        "qi-qx-bdsc-pauli-batch-13"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-bdsc-pauli-pilot-drift-stop",
+      "statement": "The preregistered Tuna-17 pilot of the BDSC target effect (27 circuits in 9 batches of 3, 32768 shots each, all completed, 540.8 s of execution, 0 credits, created 2026-10-22 10:42 UTC and finished 11:49 UTC) ended with its bracket drift stop fired: the readout-1 reference's P(0|1) on qubit 1 moved from 0.0735 in batch 06 to 0.0453 in batch 08, a change of 0.0283 against the 0.02 stop. The batch-00 assignment stop stayed clear, and the drift between consecutive references stayed at or below 0.0187 through batch 07. Under the preregistered rule a fired stop withholds every score, pair chi-square, phase and mitigated estimate, so the series makes no endpoint decision.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The registered decision is the stop itself. The backend reported calibrating at 11:32 UTC, between batches 06 and 08, which fits a recalibration as the cause of the drift but is not established by any retained probe. No witness score, branch phase or device qualification follows from these acquisitions, and nothing here bears on any Belenos measurement.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json",
+          "sha256": "66f97da8b77d5753fb0883b183c10b38c5d283bc6aae8133a79325d639ea28cc"
+        },
+        {
+          "path": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/cases.json",
+          "sha256": "04f57aaeb7654c2a9562b3b1e389a37ac2373f1a9a1c05e1e67929791dd9f2c9"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-tuna17-pauli-pilot.md",
+        "docs/runbooks/bdsc-tuna17-pauli-pilot.md"
+      ],
+      "gates": {
+        "core-634": "replay",
+        "core-627": "admission",
+        "core-626": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-bdsc-pauli-batch-00",
+        "qi-tuna17-bdsc-pauli-batch-01",
+        "qi-tuna17-bdsc-pauli-batch-02",
+        "qi-tuna17-bdsc-pauli-batch-03",
+        "qi-tuna17-bdsc-pauli-batch-04",
+        "qi-tuna17-bdsc-pauli-batch-05",
+        "qi-tuna17-bdsc-pauli-batch-06",
+        "qi-tuna17-bdsc-pauli-batch-07",
+        "qi-tuna17-bdsc-pauli-batch-08"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-qx-bdsc-pauli-twin-control"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-reset-billing-pilot",
+      "statement": "On IQM Garnet (station control 50.0.0, calibration set 9069c4ef), two jobs of X and a bare measure on QB1 at 2000 shots each billed ceil(runtime), not ceil(the compiler's execution runtime estimate): 2 s for a 1.306 s runtime under passive reset and 1 s for 0.205 s under active_reset_cycles 1, against estimates of 2.804 s and 1.617 s, 1.50 credits in all. The estimates follow 1.60 s per job plus each shot's schedule within 0.02 s. Execution took 316 us per shot under passive reset and 37.5 us under active reset. Active reset left the bare measure at P(1) 0.0680 against 0.0065 under passive reset (difference 0.0615, z 10.4), so one active-reset cycle does not keep QB1's initialization. The passive job read X at 0.9705 and the bare measure at 0.0065, within three standard errors of the calibration-built predictions 0.9817 and 0.0046 (z -2.96 and +1.06).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One qubit (QB1), one calibration set and one active-reset setting (one cycle); billing is the service's rule on 2026-10-22. The excess bare-measure P(1) under active reset is not separated into residual excitation and reset-induced readout error. The H4 bare-measure prediction in the design document was the simulator's 2000-shot sample 0.003; the decision uses the exact unheralded P(1|0) 0.0046. The garnet:mock jobs fix the estimate model only; their measurement data are random bits.",
+      "evidence": [
+        {
+          "path": "results/iqm/reset_billing_pilot_analysis.json",
+          "sha256": "edf61eb24a4ec4086852f5287f9185381f55cda2bc87744aa52b3870d6321ee0"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-timing-pilot.md",
+        "docs/notes/iqm/README.md"
+      ],
+      "gates": {
+        "core-639": "replay",
+        "core-636": "regression"
+      },
+      "acquisitions": [
+        "iqm-garnet-mock-reset-billing-p-2x2000-passive",
+        "iqm-garnet-mock-reset-billing-a-2x2000-active1",
+        "iqm-garnet-reset-billing-p-2x2000-passive",
+        "iqm-garnet-reset-billing-a-2x2000-active1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-runtime-estimate",
+      "statement": "The garnet:mock pipeline estimated 2.007 s for one circuit of 1000 shots, 3.227 s for one circuit of 4000 shots and for twenty circuits of 200 shots, and 1.635 s for 4000 shots with active_reset_cycles 1: a fixed 1.60 s per job plus 0.407 ms per passive-reset shot (the mock calibration's 400 us reset_wait, 1.2 us readout and 5 us end delay), no cost per extra circuit, and about 9 us per active-reset shot. Each job charged 0.00 credits, and the mock returned random bits (P(1) 0.48 to 0.51 for an X).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Mock estimates under the mock's own calibration; the hardware estimate, runtime and billing are the reset and billing pilot's.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive/results.json",
+          "sha256": "79807f0fa9ddfcdfe2b6cb27dca40250206c83cfbe3e4fccc2c88f501d7095ec"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive/results.json",
+          "sha256": "a261c0326da0d5dd0fcbbdaaa868353558d778ab9122aab57b645ef5048aaaec"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive/results.json",
+          "sha256": "b70a497e645d3b6fc9a152955942f490eb249a6234581296da80d964f17e5467"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-22T211622Z-garnet_mock-timing-pilot-j4-1x4000-active1/results.json",
+          "sha256": "f3b38c995046b1c29b7d20124e6c9944b0d7b668064c5bbfb5097fc061356300"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-timing-pilot.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-timing-j1-1x1000-passive",
+        "iqm-garnet-mock-timing-j2-1x4000-passive",
+        "iqm-garnet-mock-timing-j3-20x200-passive",
+        "iqm-garnet-mock-timing-j4-1x4000-active1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-heralded-probe",
+      "statement": "The garnet:mock pipeline accepted both jobs of the signed kernel probe case (cases.json dd9cdf84) with heralding_mode zeros and active_reset_cycles 1, estimated 3.05 s for 2 circuits x 20000 shots and 8.86 s for 10 circuits x 20000, charged 0.00 credits, and returned 4918 to 5068 shots per circuit: the server returns only the heralded shots and does not top up the request.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock's bits are random, so its kept fraction says nothing about Garnet's heralding retention.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong/results.json",
+          "sha256": "27f107a4a2f8e6247181d9a9ea438dc1b8d105c1cf9e21b16c38fe547a06c212"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak/results.json",
+          "sha256": "ed44ad34fcc551fbee75a96a5f16647606c0d731f3abab9d309766b4151bd35a"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-signed-kernel-probe-strong",
+        "iqm-garnet-mock-signed-kernel-probe-weak"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-signed-kernel-probe",
+      "statement": "On IQM Garnet (calibration set 9069c4ef, 199 CZ on QB6, QB7, QB10, QB11, QB12, QB16 and QB17, one active-reset cycle with all-zeros heralding keeping 55.9 % of shots), the structure-matched signed probe of the certified sedenion kernel u = (e4 - e15)/sqrt2 of L(e1+e10) read the odd part (Z(t) - Z(-t))/2 of its control at +0.0220 +- 0.0067 for |t| = 0.25 (z 3.29, the sign of t resolved) and +0.0058 +- 0.0030 for |t| = 0.05 (z 1.94, unresolved), so the dilation overlap Re<v|B(t)|u> = t/(2 + |t|) is not falsified and the device carries its sign at |t| = 0.25. Both odd parts fit one visibility, V = 0.206 +- 0.054 times t/(2 + |t|) (chi-square 0.08, 1 dof), and the even offsets read -0.022 and -0.012. The jobs charged 4.50 credits.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2. The signed overlap equals t/(2 + |t|) for every unit vector u (signed-overlap-kernel-independence), so the run establishes that Garnet carries a relative pi phase on the signed branch through this compile, not a property of the sedenion kernel. Coherent gate errors add an odd term proportional to sqrt(|t|/(2 + |t|)) (iqm-garnet-signed-probe-coherent-response), so the single-visibility fit does not separate the linear law from that term: the measured ratio odd(0.05)/odd(0.25) = 0.26 +- 0.16 lies between the linear 0.22 and the amplitude scaling 0.47. The strong job lists its +t circuit before its -t circuit and the weak job its five +t circuits before its five -t circuits, so a reading that depends on batch position enters the odd part: a device with no signed response and a -0.044 shift on the second circuit reproduces the strong arm's +0.022, and the sign at |t| = 0.25 is resolved only under the assumption that position does not move the reading.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_analysis.json",
+          "sha256": "b86605792c697b62e46b42a7e79cf902862333c01061574708f7255aec109cc2"
+        },
+        {
+          "path": "results/iqm/cases/signed-kernel-probe/prediction.json",
+          "sha256": "77eb2246d7f9dd84a274a428ca096f4e0b4d03fdd76e84f1ef358c7a88f702e0"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "gororoba_quantum/signed_kernel_probe.py"
+      ],
+      "gates": {
+        "core-637": "replay",
+        "core-638": "freshness"
+      },
+      "acquisitions": [
+        "iqm-garnet-signed-kernel-probe-strong",
+        "iqm-garnet-signed-kernel-probe-weak"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "iqm-garnet-reset-billing-pilot"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "signed-overlap-kernel-independence",
+      "statement": "In the sedenions (cd_core) the signed dilation overlap <L_e2 u|(L_e1 + L_e10 + t L_e2) u>/(2 + |t|) equals t/(2 + |t|) for every real unit vector u, in the kernel of L(e1 + e10) or not, because L_e2 is orthogonal and L_e2^T L_e1 and L_e2^T L_e10 are antisymmetric (exact integer identities); as checks, the certified kernel vector (e4 - e15)/sqrt2, the bright vector (e4 + e15)/sqrt2, e4 and a seeded random vector all read it, and on the kernel support {e4, e15} all 1000 seeded replacement sign tables leave it unchanged. The zero-divisor property is instead the eigenvalue -1 of K = L_e1^T L_e10 on u (K swaps e4 and e15, and its -1 eigenspace is four-dimensional): the cancellation observable cos^2(theta) <w|L_e1 u> + sin^2(theta) <w|L_e10 u> with w = L_e1 u reads cos(2 theta) for the kernel vector and 1 for the bright vector, and one flipped L_e10 sign at e4 or e15, or 755 of the 1000 sign tables, removes its zero at theta = pi/4.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact arithmetic over the listed vectors and the seeded sign tables; it says nothing about a device, and a hardware reading of the cancellation observable needs its own approved case.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_audit.json",
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_probe_audit.py"
+      ],
+      "gates": {
+        "core-640": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "related_claims": [
+        "proposed-signed-kernel-probe"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "cd-sign-cocycle-degree",
+      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree max(1, n - 1) in q maximized over the left factor p. Octonion left multiplication is therefore at most a degree-2 phase, implementable with CZ and Z gates, and sedenion left multiplication reaches a degree-3 phase.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Enumerated for n <= 6; the closed form beyond n = 6 is a conjecture this certificate does not prove. Degree bounds the order of the multi-controlled phases a sign diagonal needs, not the routed CZ count on a lattice.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_audit.json",
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_probe_audit.py"
+      ],
+      "gates": {
+        "core-640": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-signed-probe-coherent-response",
+      "statement": "On the retained Garnet compile of the signed kernel probe (transpiler seed 2, 199 CZ on seven qubits), the first-order response of the measured <Z> on QB7 to coherent gate errors (prx over-rotation and axis error per qubit, residual Z after each CZ per qubit, CZ conditional phase per coupler) vanishes in the odd part at t = 0 for every error and grows with the signed amplitude sqrt(|t|/(2 + |t|)), not with t: the QB6 over-rotation coefficient per unit amplitude is -7.1, -6.9 and -6.2 at |t| = 0.01, 0.05 and 0.25. The even part responds at first order, led by QB11 over-rotation (-8.0 per unit relative over-rotation at |t| = 0.05), residual Z on QB11 (-1.56) and QB12 over-rotation (+1.15), Through the calibration noise model (exact density-matrix probabilities, each error inserted after scheduling) every response shrinks to 5 to 10 % of its noiseless size, unevenly (QB11 over-rotation -0.43, QB12 over-rotation +0.002): QB11 alone would need a 10.5 % over-rotation, three times the 3.5 % its randomized-benchmarking infidelity allows, and all 29 terms aligned at that bound move the even part by at most 0.032, short of the measured circuit-level -0.045.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "First-order derivatives of the compiled circuit, noiseless and through the calibration noise model, under a stationary error model (one relative over-rotation and one axis error per qubit, one residual Z per qubit after CZ, one conditional phase per coupler); angle-dependent, time-dependent and crosstalk errors and leakage lie outside it, and the noisy derivatives inherit the calibration model, whose even part the device contradicts. The device's coherent error magnitudes are unmeasured.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_audit.json",
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_probe_audit.py"
+      ],
+      "gates": {
+        "core-640": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "iqm-garnet-signed-kernel-probe"
+      ],
       "supersedes": [],
       "superseded_by": null
     },

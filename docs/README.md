@@ -20,12 +20,42 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
 | IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
+| Local simulator cross-check | full-output photonic probabilities and precision-preserving cQASM export | [simulation evidence](../results/local-simulation/README.md), [complete optical outputs](../results/local-simulation/optical-operator-replay.json) |
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
+| Python | interpreters, library roles, optimization ladder | [PYTHON.md](PYTHON.md) |
 | CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
 | State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
 
 ## Start here by task
+
+Selected zero-divisor hardware witnesses have retained acquisitions on
+[IBM Kingston](../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md) and
+[Tuna-17](notes/quantum_inspire/experiments.md). The
+[hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
+The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
+native execution limits, billing units and MCP observations. The
+[current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
+density interventions and a separately labeled trapped-ion qualification; every generated program remains
+unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
+tracks the audit and integration gates.
+The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
+the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
+
+The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
+and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
+The checksum-bound historical README and replay keep their bytes. The active source ledgers
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-contracts) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-contracts) bind the validated
+`cd_core.py` source and preserve every other identity in their historical `SHA256SUMS` files.
+
+The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
+retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
+with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
+The [determinant-contract successor](../results/live/rank-sector-endpoint-decomposition-determinant-contracts.json)
+also binds the extended `rank_polynomials.py`; its scientific fields remain identical.
 
 | Task | Read in order |
 |---|---|
@@ -33,7 +63,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Quantum Inspire run | [README](notes/quantum_inspire/README.md), [usage.md](notes/quantum_inspire/usage.md), [tuna-17-run-design.md](notes/quantum_inspire/tuna-17-run-design.md) |
 | Open Quantum run | [README](notes/open_quantum/README.md), `scripts/oq_platform.py` estimate |
 | Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) |
-| IQM run | [README](notes/iqm/README.md), [os-4.7-emerald.md](notes/iqm/os-4.7-emerald.md) |
+| IQM run | [README](notes/iqm/README.md), [os-4.7.md](notes/iqm/os-4.7.md) |
 | Simulation and Kaggle | [README](notes/kaggle/README.md), [substrates.md](notes/kaggle/substrates.md), [gpu-runbook.md](notes/kaggle/gpu-runbook.md) |
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
@@ -93,6 +123,8 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
+| [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
+| [design/iqm-garnet-signed-kernel-probe.md](design/iqm-garnet-signed-kernel-probe.md) | signed sedenion kernel probe on IQM Garnet: odd dilation overlap, heralded active reset, prediction |
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
