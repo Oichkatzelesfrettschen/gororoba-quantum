@@ -74,25 +74,26 @@
  },
  "falsified_hypotheses": [],
  "h1_zero_divisor_sign": {
-  "matched pi/36": {
+  "pi/12": "no matched bright control",
+  "post_hoc_matched pi/36": {
    "decision": "withheld: protocol deviation",
    "kernel_minus_bright": -0.184814453125,
    "se": 0.010858286330914358
   },
-  "nominal_against_zero": {
+  "preregistered_against_zero": {
    "pi/12": "resolved",
-   "pi/36": "resolved"
-  },
-  "pi/12": "no matched bright control"
+   "pi/36": "withheld: protocol deviation"
+  }
  },
  "h2_bright_z": 0.0,
  "h3_sine_law": {
   "contrast": 0.037767243132291295,
-  "decision": "withheld: protocol deviation",
+  "decision": "withheld: no bright control at pi/12; protocol deviation",
   "law": 2.879385241571817,
   "se": 0.032698989635347765,
   "z": 1.1549972507855326
  },
+ "position_assumption": "the two batches of a contrast carry the same within-batch position effect",
  "protocol_deviations": [
   "bright pi/36",
   "kernel pi/36"

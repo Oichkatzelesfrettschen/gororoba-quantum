@@ -290,9 +290,9 @@ def evaluate(
     Each contrast reads its own batch pair: its arms, and the readout-0 and readout-1 circuits of those two
     batches, since a batch boundary is a calibration boundary. executed maps "batch/file" to the provider's
     start time; a contrast whose arms did not run +, -, -, + in time order is flagged, because the platform
-    runs each circuit as its own job in an order of its own. H1 decides the kernel against the matched
-    bright control where one exists (the double difference kernel minus bright at the same phi); the kernel
-    read against zero is kept as the nominal reading.
+    runs each circuit as its own job in an order of its own. H1 decides the kernel against zero, as the
+    manifests preregister it; the double difference kernel minus bright at the same phi is reported beside
+    it as a post hoc adjudication. H3 is reported and never decided, since no bright control runs at pi/12.
     """
     control = manifest["control"]
 
@@ -364,16 +364,19 @@ def evaluate(
     matched_se = math.hypot(k1["se_corrected"], b1["se_corrected"])
     # A test is decided only on contrasts whose executed order held the design (principle P10); one that
     # reads an unbalanced contrast is withheld and enters no falsification.
-    h1_valid = k1["balanced"] and b1["balanced"]
-    h2_valid = b1["balanced"]
-    h3_valid = k1["balanced"] and k3["balanced"]
-    h1_decision = decide(matched, matched_se) if h1_valid else "withheld: protocol deviation"
+    withheld = "withheld: protocol deviation"
+    nominal = {
+        label: decide(c["odd"], c["se"]) if c["balanced"] else withheld for label, c in (("pi/36", k1), ("pi/12", k3))
+    }
+    # The manifests preregister H1 as the kernel odd part against zero. The matched difference kernel minus
+    # bright was chosen after the bright control falsified H2, so it is a post hoc adjudication and enters
+    # no preregistered falsification.
+    matched_decision = decide(matched, matched_se) if k1["balanced"] and b1["balanced"] else withheld
     falsified = [
         name
         for name, hit in (
-            ("H1", h1_decision == "falsified"),
-            ("H2", h2_valid and abs(b1["odd"] / b1["se"]) >= Z_RESOLVE),
-            ("H3", h3_valid and abs(h3 / h3_se) >= Z_RESOLVE),
+            ("H1", "falsified" in nominal.values()),
+            ("H2", b1["balanced"] and abs(b1["odd"] / b1["se"]) >= Z_RESOLVE),
         )
         if hit
     ]
@@ -384,11 +387,18 @@ def evaluate(
             "e10_batches": e10s,
             "factor_spread": factor_spread,
         },
+        # A contrast's four arms span two batches, so its +, -, -, + balance cancels a position effect inside a
+        # batch only when the two batches carry the same one; the decisions hold under that assumption.
+        "position_assumption": "the two batches of a contrast carry the same within-batch position effect",
         "contrasts": contrasts,
         "h1_zero_divisor_sign": {
-            "matched pi/36": {"kernel_minus_bright": matched, "se": matched_se, "decision": h1_decision},
+            "preregistered_against_zero": nominal,
+            "post_hoc_matched pi/36": {
+                "kernel_minus_bright": matched,
+                "se": matched_se,
+                "decision": matched_decision,
+            },
             "pi/12": "no matched bright control",
-            "nominal_against_zero": {"pi/36": decide(k1["odd"], k1["se"]), "pi/12": decide(k3["odd"], k3["se"])},
         },
         "h2_bright_z": b1["odd"] / b1["se"],
         "h3_sine_law": {
@@ -396,7 +406,10 @@ def evaluate(
             "contrast": h3,
             "se": h3_se,
             "z": h3 / h3_se,
-            "decision": "decided" if h3_valid else "withheld: protocol deviation",
+            # The series measures the bright control at pi/36 only, and Tuna-17 shows a kernel-independent signed
+            # response there, so an angle-dependent artifact at pi/12 can move the contrast: H3 is never decided.
+            "decision": "withheld: no bright control at pi/12"
+            + ("" if k1["balanced"] and k3["balanced"] else "; protocol deviation"),
         },
         "visibility": k1["odd_corrected"] / -math.sin(math.pi / 18),
         "protocol_deviations": [label for label, c in contrasts.items() if not c["balanced"]],
@@ -421,6 +434,18 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
             raise ValueError(f"{run_dir}/cases.json describes a different series")
         results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
         jobs = {job["file"]: job["job"] for job in results["jobs"]}
+        # The submission receipt binds the case, each circuit's bytes and its provider job.
+        receipt = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+        if receipt["cases_sha256"] != hashlib.sha256((run_dir / "cases.json").read_bytes()).hexdigest():
+            raise ValueError(f"{run_dir}/cases.json is not the case its submission receipt binds")
+        submitted = {job["file"]: job for job in receipt["jobs"]}
+        if sorted(submitted) != sorted(row["file"] for row in cases["circuits"]) or sorted(jobs) != sorted(submitted):
+            raise ValueError(f"{run_dir}: the receipt, the case and the results name different circuits")
+        for name, job in submitted.items():
+            if hashlib.sha256((run_dir / name).read_bytes()).hexdigest() != job["sha256"]:
+                raise ValueError(f"{run_dir}/{name} is not the circuit the receipt submitted")
+            if jobs[name]["id"] != job["job"]:
+                raise ValueError(f"{run_dir}/{name}: results carry job {jobs[name]['id']}, the receipt {job['job']}")
         if any(job["status"] != "completed" for job in jobs.values()):
             raise ValueError(f"{run_dir}: a job did not complete")
         batch = cases["batch"]
@@ -493,7 +518,13 @@ def self_test() -> str:
         return shots
 
     honest = evaluate(device(0.3, False, 0.0), manifest)
-    if honest["h1_zero_divisor_sign"]["matched pi/36"]["decision"] != "resolved" or honest["falsified_hypotheses"]:
+    h1 = honest["h1_zero_divisor_sign"]
+    if (
+        h1["post_hoc_matched pi/36"]["decision"] != "resolved"
+        or set(h1["preregistered_against_zero"].values()) != {"resolved"}
+        or honest["falsified_hypotheses"]
+        or not honest["h3_sine_law"]["decision"].startswith("withheld")
+    ):
         raise RuntimeError(f"an honest device reads {honest}")
     if "H1" not in evaluate(device(0.3, True, 0.0), manifest)["falsified_hypotheses"]:
         raise RuntimeError("a reversed sign left H1 standing")
@@ -501,7 +532,10 @@ def self_test() -> str:
         raise RuntimeError("a bright odd part of 0.05 left H2 standing")
     # A kernel-independent artifact on every arm resolves the nominal reading and leaves the matched one open.
     shared = evaluate(device(0.0, False, -0.05, artifact_on_kernel=True), manifest)["h1_zero_divisor_sign"]
-    if shared["nominal_against_zero"]["pi/36"] != "resolved" or shared["matched pi/36"]["decision"] != "unresolved":
+    if (
+        shared["preregistered_against_zero"]["pi/36"] != "resolved"
+        or shared["post_hoc_matched pi/36"]["decision"] != "unresolved"
+    ):
         raise RuntimeError(f"a shared artifact reads {shared}")
     # An executed order of +, -, +, - is a protocol deviation the analysis names.
     keys = [rel for rel in files if rel.endswith(".cq")]
@@ -514,15 +548,20 @@ def self_test() -> str:
     deviated = evaluate(device(0.3, True, 0.0), manifest, swapped)
     if "kernel pi/36" not in deviated["protocol_deviations"]:
         raise RuntimeError("an executed +, -, +, - order was not flagged")
-    # A deviation withholds the tests that read the contrast: a reversed sign then falsifies nothing.
-    if deviated["falsified_hypotheses"] or not deviated["h1_zero_divisor_sign"]["matched pi/36"]["decision"].startswith(
-        "withheld"
+    # A deviation withholds the tests that read the contrast; the balanced pi/12 contrast still decides H1.
+    deviated_h1 = deviated["h1_zero_divisor_sign"]
+    if (
+        not deviated_h1["preregistered_against_zero"]["pi/36"].startswith("withheld")
+        or not deviated_h1["post_hoc_matched pi/36"]["decision"].startswith("withheld")
+        or deviated_h1["preregistered_against_zero"]["pi/12"] != "falsified"
+        or deviated["falsified_hypotheses"] != ["H1"]
     ):
-        raise RuntimeError(f"a deviated contrast entered a decision: {deviated['falsified_hypotheses']}")
+        raise RuntimeError(f"a deviated contrast entered a decision: {deviated_h1}")
     return (
         f"qi cancellation: region {manifest['region']} seed {manifest['seed']} {manifest['cz']} CZ, control "
-        f"q[{control}], {len(angles)} Rz on the pi/36 grid; an honest device resolves the matched H1, a reversed "
-        "sign falsifies it, a shared artifact leaves it unresolved, a bright artifact falsifies H2, an unbalanced "
+        f"q[{control}], {len(angles)} Rz on the pi/36 grid; an honest device resolves H1 and the post hoc "
+        "matched difference, a reversed sign falsifies H1, a shared artifact leaves the matched difference "
+        "unresolved, a bright artifact falsifies H2, an unbalanced "
         "executed order is flagged"
     )
 

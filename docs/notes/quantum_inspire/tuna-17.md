@@ -225,9 +225,11 @@ q14 with every rotation on the pi/36 grid, six batches of three circuits at
 16384 shots, each batch submitted to collected in about four minutes. The
 control q8 read e01 0.030 and e10 0.022. The bright vector, whose ideal odd
 part is zero, carried a signed response of -0.0167 +- 0.0039, as large as
-the kernel's -0.0222 at phi = pi/36, so a Tuna-17 contrast decides on its
-difference from a matched control
-([principles](../topics/algebra-hardware-probe-principles.md)). The kernel's
+the kernel's -0.0222 at phi = pi/36, so a Tuna-17 case preregisters its
+decision on the difference from a matched control
+([principles](../topics/algebra-hardware-probe-principles.md)); this
+series preregistered the kernel against zero, so its matched difference is a
+post hoc reading. The kernel's
 odd part implies a visibility of 0.134 through its batch pair's readout,
 against Garnet's 0.36 at 37 CZ. A three-circuit batch holds one readout
 reference, so a pair reads e01 in one batch and e10 in the other and neither

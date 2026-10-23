@@ -8260,7 +8260,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/kernel_cancellation_qx_analysis.json",
-          "sha256": "ec3b332006cce12b8093f5a3f63dbf713b5438afb36cba3adadc5f21c535faee"
+          "sha256": "ec7c460bc5f7c0a4f97a5e4c9f07a6ed458b6b5b153b4e8287bab9764a62ccc1"
         }
       ],
       "documents": [
@@ -8285,15 +8285,15 @@
     },
     {
       "id": "qi-tuna17-kernel-cancellation",
-      "statement": "On Tuna-17 (region 4, 8, 11, 12, 14, 45 CZ, every rotation on the pi/36 grid, 32768 shots per arm over two batches), the kernel cancellation probe read kernel odd parts of -0.0222 +- 0.0039 at phi = pi/36 and -0.0547 +- 0.0039 at pi/12, but the bright vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3): the preregistered H2 is falsified, the probe carries a signed response that does not depend on the kernel, and the readout-corrected kernel-minus-bright difference at pi/36, -0.0056 +- 0.0058 (z -0.97), the analysis's H1 decision, leaves the zero-divisor sign unresolved on this device. The sine-law test is withheld, since its pi/12 contrast ran out of order; each contrast is corrected by its own batch pair's readout (q8 errors 0.029 to 0.031 and 0.020 to 0.024).",
+      "statement": "On Tuna-17 (region 4, 8, 11, 12, 14, 45 CZ, every rotation on the pi/36 grid, 32768 shots per arm over two batches), the kernel cancellation probe read kernel odd parts of -0.0222 +- 0.0039 at phi = pi/36 and -0.0547 +- 0.0039 at pi/12, but the bright vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3): the preregistered H2 is falsified and the probe carries a signed response that does not depend on the kernel. The preregistered H1, the kernel against zero, resolves at pi/36 and is withheld at pi/12, whose contrast ran out of order; with H2 falsified, that resolution does not establish the zero-divisor sign. The sine-law test is withheld, since the series measures no bright control at pi/12.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "Six batches, each its own calibration context, pooled in pairs; one region and a bright arm at phi = pi/36 only, so the artifact at pi/12 is unmeasured. The platform runs each circuit as its own job in an order of its own: the provider start times show the pi/36 kernel and bright contrasts executed +, -, -, + as preregistered and the pi/12 kernel contrast +, -, +, -, a protocol deviation the analysis names, so drift is not cancelled in the pi/12 reading; its mechanism (the non-unital relaxation that gives the bright arm a small odd part in the Garnet model is the candidate) is untested on Tuna-17, which has no retained noise model. H1's nominal resolutions measured the kernel against zero, not against the bright control, and do not establish the sign.",
+      "boundary": "Six batches, each its own calibration context, pooled in pairs; one region and a bright arm at phi = pi/36 only, so the artifact at pi/12 is unmeasured. The platform runs each circuit as its own job in an order of its own: the provider start times show the pi/36 kernel and bright contrasts executed +, -, -, + as preregistered and the pi/12 kernel contrast +, -, +, -, a protocol deviation the analysis names. The bright response's mechanism (the non-unital relaxation that gives the bright arm a small odd part in the Garnet model, or a position effect that differs between a contrast's two batches) is untested on Tuna-17, which has no retained noise model.",
       "evidence": [
         {
           "path": "results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json",
-          "sha256": "be7bc47749c47959bc93db1e2921d8d7deb3f4a547efeb0bb67aeb34dd82cf5b"
+          "sha256": "5fccd3912e3ac895510dea9cd8588528656137c5638f10b6eae840f0f531dad4"
         }
       ],
       "documents": [
@@ -8312,12 +8312,54 @@
         "qi-tuna17-kernel-cancellation-batch-04",
         "qi-tuna17-kernel-cancellation-batch-05"
       ],
-      "assumptions": [],
+      "assumptions": [
+        "the two batches of a contrast carry the same within-batch position effect, so the +, -, -, + balance across them cancels it",
+        "a batch's readout assignment factor equals its batch pair's, whose two references sit in different batches; the spread of the series' readout references enters the corrected errors"
+      ],
       "depends_on": [],
       "related_claims": [
         "iqm-garnet-kernel-cancellation",
         "qi-qx-kernel-cancellation-twin"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation-matched-post-hoc",
+      "statement": "A post hoc adjudication of the Tuna-17 kernel cancellation series, chosen after the bright control falsified H2: the readout-corrected kernel-minus-bright difference at phi = pi/36 reads -0.0056 +- 0.0058 (z -0.97), so the zero-divisor sign stays unresolved on this device once the kernel-independent signed response is subtracted.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Selected after viewing the bright control, against the manifests' preregistered H1 of the kernel against zero; it holds under the main claim's position and readout assumptions, and a matched decision needs a case that preregisters it.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json",
+          "sha256": "5fccd3912e3ac895510dea9cd8588528656137c5638f10b6eae840f0f531dad4"
+        }
+      ],
+      "documents": [
+        "scripts/qi_cancellation_cases.py",
+        "docs/notes/quantum_inspire/tuna-17.md"
+      ],
+      "gates": {
+        "core-645": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-kernel-cancellation-batch-00",
+        "qi-tuna17-kernel-cancellation-batch-01",
+        "qi-tuna17-kernel-cancellation-batch-02",
+        "qi-tuna17-kernel-cancellation-batch-03",
+        "qi-tuna17-kernel-cancellation-batch-04",
+        "qi-tuna17-kernel-cancellation-batch-05"
+      ],
+      "assumptions": [
+        "the two batches of a contrast carry the same within-batch position effect, so the +, -, -, + balance across them cancels it",
+        "a batch's readout assignment factor equals its batch pair's, whose two references sit in different batches; the spread of the series' readout references enters the corrected errors"
+      ],
+      "depends_on": [
+        "qi-tuna17-kernel-cancellation"
+      ],
+      "related_claims": [],
       "supersedes": [],
       "superseded_by": null
     }

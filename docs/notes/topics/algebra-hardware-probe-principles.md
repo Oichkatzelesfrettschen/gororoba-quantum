@@ -168,11 +168,18 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 - **Outcome: H2 falsified; no kernel-specific sign on Tuna-17.** The bright
   vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3).
   The kernel read -0.0222 +- 0.0039 at pi/36 and -0.0547 +- 0.0039 at pi/12,
-  so H1 resolved nominally, but the kernel-minus-bright difference at pi/36,
-  each contrast corrected for its own batch pair's readout, is
-  -0.0056 +- 0.0058 (z -0.97); if the artifact scales like sin(2 phi), the
-  pi/12 difference is about z -0.6. The sine-law test is withheld because
-  its pi/12 contrast ran out of order (below).
+  so the preregistered H1, the kernel against zero, resolved at pi/36. A
+  post hoc adjudication chosen after the bright control failed, the
+  kernel-minus-bright difference at pi/36 with each contrast corrected for
+  its own batch pair's readout, is -0.0056 +- 0.0058 (z -0.97); if the
+  artifact scales like sin(2 phi), the pi/12 difference is about z -0.6.
+  The sine-law test is withheld, since the series measures no bright
+  control at pi/12 and its pi/12 contrast also ran out of order (below).
+- **Assumptions.** A contrast's four arms span two batches, so its
+  +, -, -, + balance cancels a position effect inside a batch only when
+  both batches carry the same one, and each batch pair reads its two
+  readout references in different batches. A position effect that differs
+  between the two batches is a second candidate for the bright response.
 - **The same test on Garnet.** Kernel minus bright at phi = 0.1 is
   -0.0538 +- 0.0124 (z -4.3), and at 0.3 under the same scaling
   -0.132 +- 0.026 (z -5.0): Garnet's zero-divisor sign survives the
@@ -180,7 +187,8 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 - **Open.** The artifact's mechanism; the non-unital relaxation that gives
   the bright arm -0.008 in the Garnet model is the candidate, untested on
   Tuna-17, which has no retained noise model.
-- **Evidence.** `qi-tuna17-kernel-cancellation`,
+- **Evidence.** `qi-tuna17-kernel-cancellation` and the post hoc
+  `qi-tuna17-kernel-cancellation-matched-post-hoc`,
   [analysis](../../../results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json).
 - **Principle P9.** Decide a kernel property on the double difference
   kernel minus control, with the control run at every parameter value the
