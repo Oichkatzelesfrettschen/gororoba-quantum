@@ -157,9 +157,11 @@ def apply(g: SignedPermutation, unit: SignedUnit) -> SignedUnit:
     return image, sign * unit[1]
 
 
-def stabilizer(n: int, boundary: set[Point]) -> list[SignedPermutation]:
-    """Signed permutations of the axes that map the boundary arcs onto themselves, by backtracking over axes."""
-    arcs = boundary_arcs(boundary)
+def _stabilizer_branch(
+    task: tuple[int, frozenset[tuple[SignedUnit, SignedUnit]], SignedUnit],
+) -> list[SignedPermutation]:
+    """The stabilizer elements that send axis 0 to the root image, by backtracking over the remaining axes."""
+    n, arcs, root = task
     by_axes: dict[tuple[int, int], list[tuple[SignedUnit, SignedUnit]]] = {}
     for tail, head in arcs:
         by_axes.setdefault((max(tail[0], head[0]), min(tail[0], head[0])), []).append((tail, head))
@@ -184,8 +186,19 @@ def stabilizer(n: int, boundary: set[Point]) -> list[SignedPermutation]:
                     extend(partial, used | {image})
                 partial.pop()
 
-    extend([], set())
+    extend([root], {root[0]})
     return found
+
+
+def stabilizer(n: int, boundary: set[Point]) -> list[SignedPermutation]:
+    """Signed permutations of the axes that map the boundary arcs onto themselves.
+
+    Axis 0 carries no constraint of its own, so each of its 2n signed images roots an independent search;
+    the roots run through ordered_map in the order image, then sign +1 before -1.
+    """
+    arcs = frozenset(boundary_arcs(boundary))
+    roots = [(n, arcs, (image, sign)) for image in range(n) for sign in (1, -1)]
+    return [g for branch in ordered_map(_stabilizer_branch, roots, min_items=1) for g in branch]
 
 
 def compose(g: SignedPermutation, h: SignedPermutation) -> SignedPermutation:

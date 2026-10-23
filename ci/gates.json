@@ -3040,8 +3040,8 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/cd_star_lattice.py --check docs/evidence/cd-star-lattice/census.json",
-   "name": "core-663",
-   "seconds": 18.0,
+   "name": "core-665",
+   "seconds": 2.7,
    "tier": "pr"
   },
   {
