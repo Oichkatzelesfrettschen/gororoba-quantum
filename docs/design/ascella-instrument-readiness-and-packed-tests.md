@@ -223,8 +223,24 @@ All five approved jobs completed on 22 October 2026:
 The [conditional readout](../../results/hypercomplex/belenos-repeat-readout-pooled.json)
 binds every case, circuit, submission, sent body, result and raw result by
 digest. All requested parameter echoes and compilation seeds match. Of the
-983040 returned samples, 350 are vacuum or multiple-click outcomes and remain
-explicitly excluded from the one-click denominator. The 120 matched-repeat
+983040 returned samples, 350 have reported total occupation zero or greater
+than one and remain excluded from the reported single-photon denominator.
+The retained JSON's historical `one-click` wording and
+`multiple_click_samples` field name refer to that occupation-sum selection,
+rather than a reconstruction of physical detector clicks. A reported state
+with two photons in one mode remains outside that denominator.
+
+The [provider catalogue](../evidence/quandela/catalogue.json) records both a
+generic `threshold` spec and Belenos documentation stating that some detectors
+distinguish one-photon from n-photon states; its simulator documentation says
+threshold or quasi-PNR detectors follow the QPU configuration.
+The [retained hardware literature](../notes/quandela/literature.md) describes
+photon-number-resolving modes 0 through 15, including mode 5, where one wave
+acquisition reports a two-photon state. Occupied-mode count and reported
+photon number therefore define different observable selections. The retained
+analysis uses the latter; its raw state counts preserve multiplicity.
+
+The 120 matched-repeat
 pair comparisons have maximum conditional total variation 0.036181. Every
 matched pair carries identical returned compiled-circuit bytes; physical
 heater states and calibration-event identity remain unobserved.
