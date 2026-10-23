@@ -1562,6 +1562,18 @@
    "p_value": 0.0,
    "reading": "resolved"
   },
+  "seed_common_within_job": {
+   "statistic": 369.25751507363526,
+   "df": 8,
+   "p_value": 6.991524262033876e-75,
+   "reading": "resolved"
+  },
+  "seed_interaction_within_job": {
+   "statistic": 2405.5608498554498,
+   "df": 24,
+   "p_value": 0.0,
+   "reading": "resolved"
+  },
   "template": {
    "statistic": 250.7475093527803,
    "df": 12,
@@ -1576,6 +1588,8 @@
   "residual_seed": "resolved",
   "seed_common": "resolved",
   "seed_interaction": "resolved",
+  "seed_common_within_job": "resolved",
+  "seed_interaction_within_job": "resolved",
   "template": "resolved"
  },
  "aliasing": {
@@ -2044,6 +2058,18 @@
     "p_value": 0.0,
     "reading": "resolved"
    },
+   "seed_common_within_job": {
+    "statistic": 408.0853440819071,
+    "df": 8,
+    "p_value": 3.489844346836927e-83,
+    "reading": "resolved"
+   },
+   "seed_interaction_within_job": {
+    "statistic": 1941.116594572672,
+    "df": 24,
+    "p_value": 0.0,
+    "reading": "resolved"
+   },
    "template": {
     "statistic": 44.38082809037289,
     "df": 12,
@@ -2058,6 +2084,8 @@
    "residual_seed": "resolved",
    "seed_common": "resolved",
    "seed_interaction": "resolved",
+   "seed_common_within_job": "resolved",
+   "seed_interaction_within_job": "resolved",
    "template": "resolved"
   },
   "calibration_shift": {

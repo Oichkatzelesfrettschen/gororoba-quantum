@@ -547,34 +547,44 @@ so the readout's rule is the preregistered one and its reading is
 descriptive. The readout
 ([bdsc_diagnostic_readout.json](../../../results/quandela/bdsc_diagnostic_readout.json),
 claim `qd-belenos-bdsc-diagnostic-readout`, gate `core-647`) selects the
-**stationarity** branch:
+**stationarity** branch. Its standard errors and p-values are reference
+values under independent Bernoulli trials: the provider contract leaves count
+provenance and uncorrected observations unresolved, so they are uncalibrated
+if the service reconstructs or correlates the returned counts.
 
 - **Branch reading.** Matched requests changed between the blocks beyond
   their class means (heterogeneity 553 on 45 degrees of freedom, p 1e-88),
   while all 48 matched pairs returned identical compiled circuits and no
-  instance leaked, so the change belongs to the device between the two days,
-  not to the compiler. The branch's disposition: address stationarity and
+  instance leaked. The provider contract leaves returned-circuit semantics
+  unresolved, so identical returns show that the service reported one
+  nominal model; the change belongs to the device rather than the compiler
+  only if a returned circuit describes the configuration that ran. The branch's disposition: address stationarity and
   provider calibration before any fixed-effect confirmation.
 - **Support-conditioned rerun (no branch reads it).** On selected clicks over
-  on-support clicks the block change is consistent with none (45.8 on 45,
-  p 0.44): the block-to-block movement lives in the clicks outside the
-  target support, the dilution of unselected mode 5, not in the on-support
-  response. The template test stays resolved.
+  on-support clicks the matched requests' changes are homogeneous about their
+  class means (45.8 on 45, p 0.44), so the instance-specific part of the
+  block change lives in the clicks outside the target support, the dilution
+  of unselected mode 5. A common on-support shift remains: the
+  superpositions moved by -0.0048 (z -7.7). The template test stays resolved.
 - **Calibration shift.** The g basis state moved by +0.0035 between blocks
   (z 11.6); f moved by +0.0003 (z 2.3) and the superpositions by -0.0015
   (z -2.5), both inconclusive.
 - **Seeds.** Seed dispersion of the superpositions is resolved and
   state-specific in both readings (seed interaction 5542 on 36 raw, 4424 on
-  36 support-conditioned), so a seed selection would not transfer across
-  states.
+  36 support-conditioned). Within a block and template the seed slots split
+  between the two jobs, so that statistic also carries a state-dependent
+  change between jobs; restricted to seed slots that share a job, the
+  interaction stays resolved (2406 on 24 raw, 1941 on 24 support-conditioned),
+  so the state-specific seed effect stands apart from job identity.
 - **Residuals.** All 32 sum-rule residuals lie beyond the 0.02 margin,
   between -0.14 and -0.24, with no position trend inside a job (rank
   correlations -0.13 to +0.36, p >= 0.17).
 
 The next amendment therefore starts from stationarity: a design whose
-contrasts compare matched requests within one acquisition window, or that
-measures the off-support fraction per iteration as a calibrated nuisance,
-before any confirmation reads a fixed effect.
+contrasts compare matched requests within one acquisition window, measures
+the off-support fraction per iteration as a calibrated nuisance and carries
+the common on-support shift of the superpositions as its own term, before any
+confirmation reads a fixed effect.
 
 ## Research grounding
 
