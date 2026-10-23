@@ -281,46 +281,76 @@ def bit(shot: str, qubit: int) -> int:
     return int(shot[len(shot) - 1 - qubit])
 
 
-def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str, Any]:
-    """H1-H3 from per-file shot lists of one series; manifest is any batch's cases.json."""
+def evaluate(
+    shots: dict[str, list[str]], manifest: dict[str, Any], executed: dict[str, str] | None = None
+) -> dict[str, Any]:
+    """H1-H3 from shot lists keyed by "batch/file" of one series; manifest is any batch's cases.json.
+
+    Each contrast reads its own batch pair: its arms, and the readout-0 and readout-1 circuits of those two
+    batches, since a batch boundary is a calibration boundary. executed maps "batch/file" to the provider's
+    start time; a contrast whose arms did not run +, -, -, + in time order is flagged, because the platform
+    runs each circuit as its own job in an order of its own. H1 decides the kernel against the matched
+    bright control where one exists (the double difference kernel minus bright at the same phi); the kernel
+    read against zero is kept as the nominal reading.
+    """
     control = manifest["control"]
 
-    def z_of(files: list[str]) -> tuple[float, float, int]:
-        bits = [bit(s, control) for f in files for s in shots[f]]
-        n = len(bits)
-        if n == 0:
+    def z_of(keys: list[str]) -> tuple[float, float, int]:
+        """Equal-weight mean <Z> of the circuits, its standard error and the shots."""
+        rows = []
+        for key in keys:
+            bits = [bit(shot, control) for shot in shots[key]]
+            n = len(bits)
+            z = 1 - 2 * sum(bits) / n
+            rows.append((z, math.sqrt(max(1 - z * z, 1.0 / n) / n), n))
+        if not rows:
             return 0.0, math.inf, 0
-        z = 1 - 2 * sum(bits) / n
-        return z, math.sqrt(max(1 - z * z, 1.0 / n) / n), n
+        return (
+            sum(r[0] for r in rows) / len(rows),
+            math.sqrt(sum(r[1] ** 2 for r in rows)) / len(rows),
+            sum(r[2] for r in rows),
+        )
 
     contrasts: dict[str, dict[str, Any]] = {}
-    for label in ("kernel pi/36", "kernel pi/12", "bright pi/36"):
-        files = [f for f in shots if f.startswith(("k", "b")) and manifest_contrast(f) == label]
-        plus = [f for f in files if f[1] == "+"]
-        minus = [f for f in files if f[1] == "-"]
+    for label in sorted({contrast for _, contrast, *_ in BATCHES}):
+        pair = [batch for batch, contrast, *_ in BATCHES if contrast == label]
+        arms = [key for key in shots if key.split("/")[0] in pair and not key.split("/")[1].startswith("readout")]
+        plus = [key for key in arms if key.split("/")[1][1] == "+"]
+        minus = [key for key in arms if key.split("/")[1][1] == "-"]
         (zp, sp, np_), (zm, sm, nm) = z_of(plus), z_of(minus)
+        ro0 = z_of([key for key in shots if key.split("/")[0] in pair and key.endswith("readout-0.cq")])
+        ro1 = z_of([key for key in shots if key.split("/")[0] in pair and key.endswith("readout-1.cq")])
+        order = None
+        if executed is not None:
+            signs = [key.split("/")[1][1] for key in sorted(arms, key=lambda k: executed[k])]
+            order = "".join(signs)
         contrasts[label] = {
+            "batches": pair,
             "z_plus": zp,
             "z_minus": zm,
             "kept": [np_, nm],
             "odd": (zp - zm) / 2,
             "se": math.hypot(sp, sm) / 2,
+            "readout": {"e01": (1 - ro0[0]) / 2, "e10": (1 + ro1[0]) / 2},
+            "executed_order": order,
+            "balanced": order in (None, "+--+", "-++-"),
         }
 
-    def decide(c: dict[str, Any]) -> str:
-        r = c["odd"] / c["se"]
+    def decide(value: float, se: float) -> str:
+        r = value / se
         return "resolved" if r <= -Z_RESOLVE else "falsified" if r >= Z_RESOLVE else "unresolved"
 
     k1, k3, b1 = contrasts["kernel pi/36"], contrasts["kernel pi/12"], contrasts["bright pi/36"]
     sine = math.sin(math.pi / 6) / math.sin(math.pi / 18)
     h3_se = math.hypot(k3["se"], sine * k1["se"])
     h3 = k3["odd"] - sine * k1["odd"]
-    ro0, ro1 = z_of([f for f in shots if f == "readout-0.cq"]), z_of([f for f in shots if f == "readout-1.cq"])
-    e01, e10 = (1 - ro0[0]) / 2, (1 + ro1[0]) / 2
+    matched = k1["odd"] - b1["odd"]
+    matched_se = math.hypot(k1["se"], b1["se"])
+    r1 = 1 - k1["readout"]["e01"] - k1["readout"]["e10"]
     falsified = [
         name
         for name, hit in (
-            ("H1", "falsified" in (decide(k1), decide(k3))),
+            ("H1", decide(matched, matched_se) == "falsified"),
             ("H2", abs(b1["odd"] / b1["se"]) >= Z_RESOLVE),
             ("H3", abs(h3 / h3_se) >= Z_RESOLVE),
         )
@@ -328,20 +358,30 @@ def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str,
     ]
     return {
         "contrasts": contrasts,
-        "h1_zero_divisor_sign": {"pi/36": decide(k1), "pi/12": decide(k3)},
+        "h1_zero_divisor_sign": {
+            "matched pi/36": {
+                "kernel_minus_bright": matched,
+                "se": matched_se,
+                "decision": decide(matched, matched_se),
+            },
+            "pi/12": "no matched bright control",
+            "nominal_against_zero": {"pi/36": decide(k1["odd"], k1["se"]), "pi/12": decide(k3["odd"], k3["se"])},
+        },
         "h2_bright_z": b1["odd"] / b1["se"],
         "h3_sine_law": {"law": sine, "contrast": h3, "se": h3_se, "z": h3 / h3_se},
-        "readout": {"e01": e01, "e10": e10},
-        "visibility": k1["odd"] / (-math.sin(math.pi / 18) * (1 - e01 - e10)),
+        "visibility": k1["odd"] / (-math.sin(math.pi / 18) * r1),
+        "protocol_deviations": [label for label, c in contrasts.items() if not c["balanced"]],
         "falsified_hypotheses": falsified,
     }
 
 
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     """H1-H3 of one series from its collected batch run directories: every batch of the series once, one
-    backend, one shared design; readout shots pool across the batches."""
+    backend, one shared design, every circuit's full shot list; the provider's start times give the
+    executed order."""
     shared: dict[str, Any] | None = None
     shots: dict[str, list[str]] = {}
+    executed: dict[str, str] = {}
     batches = []
     for run_dir in sorted(run_dirs):
         cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
@@ -351,24 +391,30 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         elif fields != shared:
             raise ValueError(f"{run_dir}/cases.json describes a different series")
         results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
-        if any(job["job"]["status"] != "completed" for job in results["jobs"]):
+        jobs = {job["file"]: job["job"] for job in results["jobs"]}
+        if any(job["status"] != "completed" for job in jobs.values()):
             raise ValueError(f"{run_dir}: a job did not complete")
-        batches.append(cases["batch"])
+        batch = cases["batch"]
+        if batch in batches:
+            raise ValueError(f"{run_dir}: batch {batch} appears twice")
+        batches.append(batch)
         for row in cases["circuits"]:
             listed = json.loads((run_dir / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
-            if row["kind"] == "arm" and row["file"] in shots:
-                raise ValueError(f"{run_dir}: arm {row['file']} appears in two batches")
-            shots.setdefault(row["file"], []).extend(listed)
+            if len(listed) != cases["shots"]:
+                raise ValueError(f"{run_dir}/{row['file']}: {len(listed)} shots, not the requested {cases['shots']}")
+            key = f"{batch}/{row['file']}"
+            shots[key] = listed
+            executed[key] = jobs[row["file"]]["queued_at"]
     expected = sorted(batch for batch, *_ in BATCHES)
     if sorted(batches) != expected:
         raise ValueError(f"the runs hold batches {sorted(batches)}, not {expected}")
     if shared is None:
         raise ValueError("a series needs its run directories")
     return {
-        "schema": "qi-kernel-cancellation-analysis-v1",
+        "schema": "qi-kernel-cancellation-analysis-v2",
         "backend": shared["backend"],
         "batches": len(batches),
-        **evaluate(shots, shared),
+        **evaluate(shots, shared, executed),
     }
 
 
@@ -395,7 +441,9 @@ def self_test() -> str:
     rng = np.random.default_rng(20261023)
     control = manifest["control"]
 
-    def device(v: float, reverse: bool, bright_odd: float) -> dict[str, list[str]]:
+    def device(v: float, reverse: bool, artifact: float, artifact_on_kernel: bool = False) -> dict[str, list[str]]:
+        """Shots keyed by "batch/file": each arm at visibility v times its ideal <Z>, a signed artifact on the
+        bright arms (and on the kernel arms when artifact_on_kernel), through readout (0.01, 0.03)."""
         shots: dict[str, list[str]] = {}
         for rel in files:
             if not rel.endswith(".cq"):
@@ -408,24 +456,39 @@ def self_test() -> str:
                     r for r in json.loads(files[rel.split("/")[0] + "/cases.json"])["circuits"] if r["file"] == name
                 )
                 z = v * row["ideal_z"] * (-1 if reverse and name[0] == "k" else 1)
-                z += bright_odd * (1 if name[1] == "+" else -1) if name[0] == "b" else 0.0
+                if name[0] == "b" or artifact_on_kernel:
+                    z += artifact * (1 if name[1] == "+" else -1)
             p1 = (1 - (0.94 * z + 0.02)) / 2
             ones = rng.binomial(1, p1, SHOTS)
-            shots.setdefault(name, [])
-            shots[name] += [("1" if o else "0") + "0" * control for o in ones]
+            shots[rel] = [("1" if o else "0") + "0" * control for o in ones]
         return shots
 
     honest = evaluate(device(0.3, False, 0.0), manifest)
-    if honest["h1_zero_divisor_sign"] != {"pi/36": "resolved", "pi/12": "resolved"} or honest["falsified_hypotheses"]:
+    if honest["h1_zero_divisor_sign"]["matched pi/36"]["decision"] != "resolved" or honest["falsified_hypotheses"]:
         raise RuntimeError(f"an honest device reads {honest}")
     if "H1" not in evaluate(device(0.3, True, 0.0), manifest)["falsified_hypotheses"]:
         raise RuntimeError("a reversed sign left H1 standing")
     if "H2" not in evaluate(device(0.3, False, 0.05), manifest)["falsified_hypotheses"]:
         raise RuntimeError("a bright odd part of 0.05 left H2 standing")
+    # A kernel-independent artifact on every arm resolves the nominal reading and leaves the matched one open.
+    shared = evaluate(device(0.0, False, -0.05, artifact_on_kernel=True), manifest)["h1_zero_divisor_sign"]
+    if shared["nominal_against_zero"]["pi/36"] != "resolved" or shared["matched pi/36"]["decision"] != "unresolved":
+        raise RuntimeError(f"a shared artifact reads {shared}")
+    # An executed order of +, -, +, - is a protocol deviation the analysis names.
+    keys = [rel for rel in files if rel.endswith(".cq")]
+    stamps = {rel: f"2026-01-01T00:{n:02d}:00" for n, rel in enumerate(keys)}
+    swapped = dict(stamps)
+    plus, minus = "batch-01/k+pi_36-011.cq", "batch-01/k-pi_36-010.cq"
+    swapped[plus], swapped[minus] = stamps[minus], stamps[plus]
+    if evaluate(device(0.3, False, 0.0), manifest, stamps)["protocol_deviations"]:
+        raise RuntimeError("the listed order was flagged")
+    if "kernel pi/36" not in evaluate(device(0.3, False, 0.0), manifest, swapped)["protocol_deviations"]:
+        raise RuntimeError("an executed +, -, +, - order was not flagged")
     return (
         f"qi cancellation: region {manifest['region']} seed {manifest['seed']} {manifest['cz']} CZ, control "
-        f"q[{control}], {len(angles)} Rz on the pi/36 grid; an honest device resolves H1, a reversed sign "
-        "falsifies H1, a bright artifact falsifies H2"
+        f"q[{control}], {len(angles)} Rz on the pi/36 grid; an honest device resolves the matched H1, a reversed "
+        "sign falsifies it, a shared artifact leaves it unresolved, a bright artifact falsifies H2, an unbalanced "
+        "executed order is flagged"
     )
 
 

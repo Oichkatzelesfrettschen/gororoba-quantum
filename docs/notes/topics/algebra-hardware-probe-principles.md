@@ -185,6 +185,16 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
   kernel runs; a kernel read against zero cannot tell the property from a
   signed artifact the circuit shares with its control.
 
+- **Executed order.** Quantum Inspire runs each circuit of a batch as its
+  own job in an order of its own: the provider start times show the pi/36
+  kernel and bright contrasts executed +, -, -, + as listed and the pi/12
+  kernel contrast +, -, +, -, so that reading carries a protocol deviation
+  the analysis names.
+- **Principle P10.** On a platform that runs circuits as separate jobs, read
+  the executed order from the provider's timestamps and decide only on
+  contrasts whose executed order holds the design; the listed order is a
+  request.
+
 ### F12. Engineering invariants the runs forced (tooling)
 
 - A free mock twin refuses a job pinned to the QPU's calibration set
@@ -206,8 +216,10 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 3. P7 first-order immunity: no additive coherent term in the odd part.
 4. P9 double difference: decide on kernel minus control, the control at
    every parameter value.
-5. P8 device grid: every rotation on the target's angle grid, verified.
-6. P3 interleaving: +, -, -, + within one calibration.
-7. P4 null arm: decide on odd(t) - odd(0).
-8. P5 and P6 coherent parameters: response through the noise model, and the
+5. P10 executed order: verify the order the platform ran, not the order
+   listed.
+6. P8 device grid: every rotation on the target's angle grid, verified.
+7. P3 interleaving: +, -, -, + within one calibration.
+8. P4 null arm: decide on odd(t) - odd(0).
+9. P5 and P6 coherent parameters: response through the noise model, and the
    parameters it depends on measured in the same job.

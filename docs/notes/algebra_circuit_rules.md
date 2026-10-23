@@ -228,6 +228,10 @@ derives each one from the run that forced it.
   kernel runs: on Tuna-17 the bright vector carried a signed response of
   -0.017 (z -4.3) and the kernel's difference from it was z -1.0, while
   Garnet's was z -4.3.
+- Read the executed order of a contrast's arms from the provider's
+  timestamps where the platform runs each circuit as its own job (Quantum
+  Inspire), and decide only on contrasts whose executed order holds the
+  design: Tuna-17 ran one listed +, -, -, + contrast as +, -, +, -.
 - Set every continuous parameter on the target's angle grid (Tuna: pi/36)
   and refuse an emitted rotation off it; compile at a setting that keeps
   Clifford+T phases exact (`scripts/qi_cancellation_cases.py`).
