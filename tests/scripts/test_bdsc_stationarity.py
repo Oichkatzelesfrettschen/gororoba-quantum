@@ -60,6 +60,23 @@ def test_excess_variance_recovers_zero_and_an_injected_variance() -> None:
         raise AssertionError(read)
 
 
+def test_calibration_contrast_changes_read_a_common_shift_per_class() -> None:
+    indices = [i["index"] for i in st.diag.instances() if i["job"] == "b1-j1"]
+    before = {i: {"selected": 40000, "eligible": 100000, "circuit_sha256": "a"} for i in indices}
+    after = {i: {"selected": 41000, "eligible": 100000, "circuit_sha256": "a"} for i in indices}
+    changes = st.instance_changes(before, after)
+    if len(changes) != 24 or not all(abs(c["change"] - 0.01) < 1e-12 for c in changes):
+        raise AssertionError(changes)
+    shifts = st.class_shifts(changes)
+    if not all(abs(s["mean"] - 0.01) < 1e-12 and s["z"] > 3 for s in shifts.values()):
+        raise AssertionError(shifts)
+    try:
+        st.instance_changes(before, {i: after[i] for i in indices[1:]})
+    except ValueError:
+        return
+    raise AssertionError("runs with different instances pass")
+
+
 def test_group_by_block_reads_the_sign_of_a_slot_effect() -> None:
     first_job = {(i["template"], i["slot"]): i["job"] for i in st.diag.instances() if i["block"] == 1}
     changes = [

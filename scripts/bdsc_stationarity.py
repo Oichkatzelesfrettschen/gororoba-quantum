@@ -34,6 +34,7 @@ projected readings at 40000 and TRIALS samples.
   "$PYTHON" scripts/bdsc_stationarity.py --plan-check PLAN_JSON
   "$PYTHON" scripts/bdsc_stationarity.py --matched-check RUN_DIR
   "$PYTHON" scripts/bdsc_stationarity.py --readout RUN_DIR...
+  "$PYTHON" scripts/bdsc_stationarity.py --calibration-contrast BEFORE_RUN AFTER_RUN
 """
 
 from __future__ import annotations
@@ -573,6 +574,84 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
     }
 
 
+def instance_changes(before: dict[int, dict[str, Any]], after: dict[int, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Per-instance change of the selected fraction from one run of a request set to another run of the same set."""
+    require(before.keys() == after.keys(), "the two runs hold different instances")
+    labels = {i["index"]: i["label"] for i in diag.instances()}
+    out = []
+    for index in sorted(before):
+        first, second = before[index], after[index]
+        p1, p2 = first["selected"] / first["eligible"], second["selected"] / second["eligible"]
+        out.append(
+            {
+                "index": index,
+                "label": labels[index],
+                "change": p2 - p1,
+                "se": math.hypot(diag.reference_se(p1, first["eligible"]), diag.reference_se(p2, second["eligible"])),
+                "same_returned_circuit": first["circuit_sha256"] == second["circuit_sha256"],
+            }
+        )
+    return out
+
+
+def class_shifts(changes: list[dict[str, Any]]) -> dict[str, Any]:
+    """Inverse-variance mean change per class with its standard error and z."""
+    out = {}
+    for name in diag.CLASSES:
+        members = [c for c in changes if c["same_returned_circuit"] and diag.class_of(c["label"]) == name]
+        weights = [1 / c["se"] ** 2 for c in members]
+        mean = sum(w * c["change"] for w, c in zip(weights, members, strict=True)) / sum(weights)
+        se = 1 / math.sqrt(sum(weights))
+        out[name] = {"mean": mean, "se": se, "z": mean / se, "n": len(members)}
+    return out
+
+
+def calibration_contrast(before: Path, after: Path, validate: bool = True) -> dict[str, Any]:
+    """The b1-j1 requests read before and after the Belenos calibration, under the primary veto (reported only).
+
+    Both runs pass every integrity check of the readout. The contrast enters no frozen test: it reports the class
+    shifts and the per-class excess variance of the 24 matched changes, and the mode-5 share and plan-time dark-count
+    rates of both runs.
+    """
+    frozen = documents()
+    loaded = []
+    for run in (before, after):
+        manifest, result, submission = admit(run, validate, frozen)
+        require(manifest["job"] == "b1-j1", f"{run}: job {manifest['job']!r}, the contrast reads b1-j1 runs")
+        items = diag.observations(manifest, result, TRIALS)
+        _, absent, stray = veto.tallies(manifest, result, items)
+        rates = dark_rates(submission.get("perfs_at_plan") or {}, f"{run}: plan")
+        loaded.append((run, result, absent, stray, rates))
+    (run1, result1, absent1, stray1, rates1), (run2, result2, absent2, stray2, rates2) = loaded
+    require(
+        diag.utc(result1["data"]["start_time"]) < diag.utc(result2["data"]["start_time"]),
+        "the contrast reads the earlier run first",
+    )
+    changes = instance_changes(absent1, absent2)
+
+    def share(stray: dict[int, dict[str, Any]]) -> dict[str, float]:
+        values = [v["share"] for v in stray.values()]
+        return {"mean": float(np.mean(values)), "min": min(values), "max": max(values)}
+
+    return {
+        "schema": "bdsc-stationarity-calibration-contrast-v1",
+        "reading": "reported only: the same requests across one calibration; enters no frozen test",
+        "runs": [
+            {"run": rel(run), "results_sha256": sha256_bytes((run / "results.json").read_bytes())}
+            for run in (run1, run2)
+        ],
+        "returned_circuits_differing": sum(1 for c in changes if not c["same_returned_circuit"]),
+        "class_shifts": class_shifts(changes),
+        "excess_variance": excess_variance(changes),
+        "stray_share": {"before": share(stray1), "after": share(stray2)},
+        "plan_dark_counts": {
+            "before": {"stray": rates1[STRAY], "largest_other": max(r for m, r in enumerate(rates1) if m != STRAY)},
+            "after": {"stray": rates2[STRAY], "largest_other": max(r for m, r in enumerate(rates2) if m != STRAY)},
+        },
+        "changes": changes,
+    }
+
+
 def _projected_q(item: tuple[list[float], list[int], list[float], np.ndarray]) -> list[float]:
     """Heterogeneity Q of each replicate about its class means at fixed weights 1 / se^2 (scalar arithmetic).
 
@@ -664,6 +743,7 @@ def main() -> int:
     group.add_argument("--plan-check", type=Path, metavar="PLAN_JSON")
     group.add_argument("--matched-check", type=Path, metavar="RUN_DIR")
     group.add_argument("--readout", type=Path, nargs="+")
+    group.add_argument("--calibration-contrast", type=Path, nargs=2, metavar=("BEFORE_RUN", "AFTER_RUN"))
     args = parser.parse_args()
     if args.write:
         write()
@@ -678,6 +758,8 @@ def main() -> int:
         return plan_check(args.plan_check)
     elif args.matched_check:
         return run_matched_check(args.matched_check)
+    elif args.calibration_contrast:
+        print(json.dumps(calibration_contrast(*args.calibration_contrast), indent=1, sort_keys=True))
     else:
         print(json.dumps(readout(args.readout), indent=1, sort_keys=True))
     return 0
