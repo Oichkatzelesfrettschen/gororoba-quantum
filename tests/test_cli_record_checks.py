@@ -16,7 +16,7 @@ scripts/aer_blocking_probe.py keeps its gates for the reason tests/test_cli_self
 
 Each row names a group, and gate ``core-record-check-NN`` of ci/gates.json runs group NN alone with
 ``-k groupNN`` in one process. Gate core-615 skips this module; the groups pack each check's measured
-gate time to at most 25 s, under the 30 s pr wall budget of ci/AGENTS.md.
+gate time to at most 27 s, under the 30 s pr wall budget of ci/AGENTS.md.
 tests/ci/test_self_test_gates.py requires one gate per group and one group per gate.
 """
 
