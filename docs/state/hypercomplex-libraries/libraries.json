@@ -11444,6 +11444,8 @@
    "functools",
    "importlib",
    "json",
+   "math",
+   "nullity_twelve_locus",
    "parallel",
    "pathlib",
    "pyadic",
