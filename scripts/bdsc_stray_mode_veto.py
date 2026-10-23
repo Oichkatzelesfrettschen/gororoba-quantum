@@ -37,7 +37,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from scipy.stats import spearmanr
+from scipy.stats import chi2, spearmanr
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
@@ -123,6 +123,29 @@ def collect() -> tuple[
     return observed, {"subtract": subtract, "detector_absent": absent}, stray, dark
 
 
+def coincidence_test(subtract: dict[int, dict[str, Any]], absent: dict[int, dict[str, Any]]) -> dict[str, Any]:
+    """The paired falsifier of the dark-click reading: coincident trials against the subtract-eligible trials.
+
+    The detector-absent eligible set is the subtract set plus the coincident trials (one stray click beside exactly
+    one other click), two disjoint trial sets of one iteration. A state-independent dark click leaves the selected
+    fraction of the coincident trials equal to that of the subtract set, so per instance
+    z = (p_c - p_s) / sqrt(p (1 - p) (1 / c + 1 / n)) with the pooled p, and the sum of z^2 over the instances with
+    c > 0 and 0 < p < 1 is chi-square on their count; a resolved reading (p < 0.01) rejects the dark-click reading.
+    """
+    statistic, terms = 0.0, 0
+    for index, item in subtract.items():
+        n, s = item["eligible"], item["selected"]
+        c = absent[index]["eligible"] - n
+        k = absent[index]["selected"] - s
+        pooled = (s + k) / (n + c)
+        if c == 0 or pooled in (0.0, 1.0):
+            continue
+        statistic += (k / c - s / n) ** 2 / (pooled * (1 - pooled) * (1 / c + 1 / n))
+        terms += 1
+    p_value = float(chi2.sf(statistic, terms))
+    return {"statistic": statistic, "df": terms, "p_value": p_value, "reading": diag.reading(p_value)}
+
+
 def summary(read: dict[str, Any]) -> dict[str, Any]:
     return {
         "branch": read["branch"],
@@ -163,9 +186,21 @@ def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any]) -> dict
     # A dark-count rate that dominates the stray clicks scales the stray share with that rate between blocks.
     dark_per_block = {str(b): float(np.mean([dark[f"b{b}-j{j}"]["stray"] for j in (1, 2)])) for b in diag.BLOCKS}
     shares = [s["share"] for s in stray.values()]
-    # A fixed dark-count rate over an iteration whose acquisition time scales as 1 / physical_perf would make the
-    # stray share rise with 1 / physical_perf.
-    rho, p_value = spearmanr([1 / s["perf"] for s in stray.values()], shares)
+
+    # A fixed dark-count rate D over an iteration whose acquisition time scales as 1 / physical_perf makes the stray
+    # share rise with D / physical_perf; the plan-time D differs between the blocks, so the law is read on that
+    # predictor pooled and on 1 / physical_perf within each block, where one plan-time D holds.
+    def rank(pairs: list[tuple[float, float]]) -> dict[str, Any]:
+        rho, p_value = spearmanr([x for x, _ in pairs], [y for _, y in pairs])
+        return {"n": len(pairs), "rho": float(rho), "p_value": float(p_value)}
+
+    fixed_rate = {
+        "dark_over_perf_pooled": rank([(dark[s["job"]]["stray"] / s["perf"], s["share"]) for s in stray.values()]),
+        "inverse_perf_by_block": {
+            str(b): rank([(1 / s["perf"], s["share"]) for s in stray.values() if s["job"].startswith(f"b{b}")])
+            for b in diag.BLOCKS
+        },
+    }
     return {
         "share_range": [min(shares), max(shares)],
         "share_mean_per_block": per_block,
@@ -182,7 +217,7 @@ def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any]) -> dict
             "other_outside_sd": float(np.std(others)),
         },
         "position": position,
-        "inverse_perf": {"n": len(shares), "rho": float(rho), "p_value": float(p_value)},
+        "fixed_rate_law": fixed_rate,
         "reference_se_of_share": math.sqrt(float(np.mean(shares)) * (1 - float(np.mean(shares))) / diag.TRIALS),
     }
 
@@ -203,6 +238,7 @@ def build() -> dict[str, Any]:
         },
         "raw": summary(diag.analyse(observed)),
         "vetoed": {name: summary(diag.analyse(items)) for name, items in vetoed.items()},
+        "coincidence_test": coincidence_test(vetoed["subtract"], vetoed["detector_absent"]),
         "stray": stray_report(stray, dark),
     }
 

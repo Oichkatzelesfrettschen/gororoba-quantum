@@ -439,9 +439,12 @@ block 2, while every other mode read at most 80.9.
 - **Job-level spread.** The two block-1 jobs share one plan-time reading,
   yet their mean shares differ (0.0123 and 0.0165). A plan-time figure does
   not resolve job-level variation.
-- **The fixed-rate law fails.** A fixed rate over an acquisition time set by
-  physical_perf would make the share rise with 1 / physical_perf; it does
-  not (rank correlation 0.09, p 0.40).
+- **The fixed-rate law is unresolved.** A fixed rate D over an acquisition
+  time set by physical_perf makes the share rise with D / physical_perf.
+  - Within block 1, which has one plan-time D, the share rises with
+    1 / physical_perf (rank correlation 0.39, p 0.006).
+  - Within block 2 it does not (-0.13, p 0.37).
+  - Pooled on D / physical_perf, the rank correlation is 0.19 (p 0.06).
 - **Veto result.** With mode 5 vetoed, the heterogeneity of the matched
   changes about their class means falls from 553 to 58.0 on 45 degrees of
   freedom (p 0.09).
@@ -473,62 +476,80 @@ The estimators follow from that:
   on mode 5's rate, and it keeps the coincident trials.
 - *Secondary (`subtract`).* Mode-5 one-click samples leave the eligible
   count. It is reported beside the primary.
-- *Falsifier of the dark-click reading.* The two estimators differ in
-  expectation only when mode-5 clicks correlate with clicks elsewhere. A
-  primary-minus-secondary difference beyond its reference error falsifies
-  the dark-click reading.
-- *Stop condition.* The veto names mode 5 by number, so the case stops if
-  any other unselected, off-support mode reads the largest plan-time
-  dark-count rate.
 
-**A replicated block pair separates time from assignment.** In the
-diagnostic, block 2 differs from block 1 both in time (more than an hour)
-and in the job and position each group ran in, so a common shift between
-them cannot name its cause. The stationarity case therefore resubmits the
-frozen diagnostic requests exactly: the same compilation seeds, parameters,
-groups and drawn order. That needs no new QRNG read. It runs them in three
-blocks of two jobs:
+**The paired falsifier of the dark-click reading** is frozen as
+`coincidence_test`. The primary eligible set is the secondary set plus the
+coincident trials: patterns with one mode-5 click beside exactly one other
+click. The two sets of trials are disjoint within each iteration.
 
-| Block | Requests | Timing |
+- *Statistic.* For each instance, with c coincident trials, n secondary
+  trials and pooled fraction p,
+  z = (p_c - p_s) / sqrt(p (1 - p) (1 / c + 1 / n)), where p_c and p_s are
+  the selected fractions of the two sets.
+- *Pooling.* The sum of z^2 over every instance with c > 0 and 0 < p < 1
+  is read as chi-square on the number of such instances. It is one
+  statistic, so it needs no multiplicity correction.
+- *Decision.* A resolved reading (p < 0.01) means mode-5 clicks correlate
+  with the prepared state and rejects the dark-click reading.
+- *Retained data.* It reads 47.7 on 66 degrees of freedom (p 0.96),
+  consistent.
+
+The veto names mode 5 by number, so the case stops if any other unselected,
+off-support mode reads the largest plan-time dark-count rate.
+
+**A two-block repeat with balanced slots separates a time change from a
+slot effect.** The diagnostic's two blocks run both (template, seed) groups
+of each job pair, with job 1's groups of block 1 running as job 2 of
+block 2 at matched positions.
+
+- *Common shift.* Every block holds each group once in each job slot, so a
+  pure job-slot effect cancels in the class-mean shift of the
+  superpositions. That shift therefore reads a change between the two
+  acquisition windows: a time or block effect.
+- *Slot effect.* A slot effect appears as a group-by-block interaction: the
+  class-mean change of the groups that moved from job 1 to job 2, minus
+  that of the groups that moved the other way.
+
+The stationarity case resubmits the diagnostic's four frozen requests
+exactly, with the same seeds, parameters, groups and drawn order, so it
+needs no new QRNG read:
+
+| Block | Jobs | Timing |
 |---|---|---|
-| R1 | the diagnostic's block-1 manifests | first |
-| R2 | the diagnostic's block-2 manifests (job assignment swapped, positions matched) | submitted on R1's collection |
-| R3 | the diagnostic's block-1 manifests again | at least one hour after R2 ends |
+| S1 | `b1-j1`, then `b1-j2` | first |
+| S2 | `b2-j1`, then `b2-j2` | starts at least one hour after S1's last execution ends |
 
-The 2x2 reading of the common on-support superposition shift under the
-frozen veto:
+The case does not separate a slow drift from a step change between the two
+windows, and it makes no claim of stationarity within one window.
 
-| R1 to R2 (assignment, one window) | R1 to R3 (time, one assignment) | Reading |
-|---|---|---|
-| consistent | resolved | temporal drift |
-| resolved | consistent | assignment or position effect |
-| resolved | resolved | both components |
-| consistent | consistent | the retained shift does not reproduce |
-
+**Preregistered falsifiers and readings,** all under the primary veto.
 A test reads resolved at p < 0.01 and consistent at p >= 0.05, as in the
-diagnostic; an inconclusive cell leaves its row inconclusive.
+diagnostic.
 
-**Preregistered falsifiers.**
-
-- **Primary.** Under the frozen veto, the heterogeneity of the R1-to-R3
-  matched changes about their class means reads consistent. A resolved
-  reading falsifies the claim that mode 5 carried the instance-specific
-  drift.
-- **Secondary.** The raw R1-to-R3 change in the block-mean mode-5 share has
-  the sign of the change in plan-time dark rate. Its ratio is reported
-  against the dark-rate ratio as an estimate.
+- **Primary.** The heterogeneity of the S1-to-S2 matched changes about their
+  class means reads consistent. A resolved reading falsifies the claim that
+  mode 5 carried the instance-specific drift.
+- **Dark-click falsifier.** `coincidence_test` on all 96 instances, as
+  defined above.
+- **Common shift.** The superposition class-mean change S1 to S2, with its
+  z, read as a window effect. Whether it repeats the retained -0.0044 in
+  sign is reported and decides nothing.
+- **Slot effect.** The group-by-block interaction of the superposition
+  changes, as a z test.
 - **Reported only.**
-  - The 2x2 reading.
-  - The position trend of the mode-5 share in each job, against the drawn
-    order. Two diagnostic jobs read rank correlations of -0.49 and -0.47.
+  - The raw block change of the mode-5 share against the change of the
+    plan-time and post-collection dark-count rates.
+  - The fixed-rate law within each block.
+  - The position trend of the mode-5 share in each job. Two diagnostic jobs
+    read rank correlations of -0.49 and -0.47.
   - Whether the seed-by-state interaction reproduces at fixed seeds.
   - Whether each returned circuit equals its retained diagnostic
     counterpart.
 
 **Cost and limits.**
 
-- *Cost.* Six jobs at the diagnostic's billing rule (1.08 credits and about
-  176 s each) total 6.48 credits and about 1057 s. The written case restates
+- *Cost.* Four jobs at the diagnostic's billing rule (1.08 credits and about
+  176 s each) total 4.32 credits and about 705 s. The written case restates
   the live `qd_platform.py plan` figures.
 - *Error calibration.* Standard errors stay reference values under
   independent Bernoulli trials while the provider contract leaves count
@@ -557,7 +578,7 @@ levels and never share one "verified" label.
 | Complex controls are necessary for the error family | real bank against phase-sensitive controls | agreement on real inputs cannot exclude E_I |
 | A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
 | Per-compilation transfer response carries the superposition scatter | matched seeds across blocks and four seeds per state (diagnostic case) | a matched seed whose response shifts beyond counting puts the scatter in time, not compilation |
-| Dark clicks in output mode 5 carry the instance-specific block change | heterogeneity of R1-to-R3 matched changes with detector 5 removed (stationarity case) | a resolved reading rejects it; a primary-minus-secondary veto difference rejects the dark-click reading |
+| Dark clicks in output mode 5 carry the instance-specific block change | heterogeneity of S1-to-S2 matched changes with detector 5 removed (stationarity case) | a resolved reading rejects it; a resolved coincidence test rejects the dark-click reading |
 
 Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
 exploits target structure for efficiency once the trusted objects and the

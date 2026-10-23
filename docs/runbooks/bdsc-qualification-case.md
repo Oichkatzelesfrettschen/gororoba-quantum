@@ -261,16 +261,20 @@ middle-middle under both policies (`mm-def-e2`, `mm-none-e2`).
 - A confirmation is planned after the stationarity readout, as its own case,
   and it reuses none of them.
 
-**The case.** It resubmits the diagnostic's frozen requests exactly, in
-three blocks of two jobs. The requests keep the compilation seeds,
-parameters, groups and drawn order of the committed manifests under
+**The case.** It resubmits the diagnostic's four frozen requests exactly, in
+two blocks of two jobs. The requests keep the compilation seeds, parameters,
+groups and drawn order of the committed manifests under
 `results/quandela/cases/bdsc_diagnostic/`, so no new QRNG read is made.
 
 | Block | Job 1 requests | Job 2 requests | Timing |
 |---|---|---|---|
-| R1 | `b1-j1` | `b1-j2` | first |
-| R2 | `b2-j1` | `b2-j2` | first execution starts within 30 minutes of R1's last execution end |
-| R3 | `b1-j1` | `b1-j2` | first execution starts at least one hour after R2's last execution end |
+| S1 | `b1-j1` | `b1-j2` | first |
+| S2 | `b2-j1` | `b2-j2` | first execution starts at least one hour after S1's last execution ends |
+
+Each block runs every (template, seed) group once, and a group that runs as
+job 1 in S1 runs as job 2 in S2. A pure job-slot effect therefore cancels in
+the common superposition shift and appears as the group-by-block interaction
+the design reads.
 
 **Readout.** It reads every test on two eligible sets:
 
@@ -278,17 +282,14 @@ parameters, groups and drawn order of the committed manifests under
   rule.
 - *Secondary:* mode-5 one-click samples subtracted from the eligible count.
 
-The falsifiers, the 2x2 reading of the common superposition shift and the
-reported-only quantities are the design's. The R1-to-R2 contrast reads as
-within one window only when R2 meets its 30-minute start; otherwise the 2x2
-reading is withheld, and that contrast is reported as a further across-gap
-comparison.
+The primary falsifier, the coincidence test, the common-shift and slot-effect
+readings and the reported-only quantities are the design's.
 
 ### Order of the stationarity case
 
 1. **Build.** The case builder, `scripts/bdsc_stationarity.py`, follows this
-   amendment and builds the six run directories
-   under `results/quandela/cases/bdsc_stationarity/` from the diagnostic
+   amendment and builds the four run directories under
+   `results/quandela/cases/bdsc_stationarity/` from the diagnostic
    manifests. Each binds its source manifest's sha256 and the diagnostic's
    QRNG record. `--check` proves every request equals its source: seeds,
    parameters, order and the empty mitigation list.
@@ -297,7 +298,7 @@ comparison.
    dark-count rate for each of the 24 modes, and mode 5 reads the largest of
    every unselected, off-support mode.
 3. **Written case.** It restates the plan output: about 1.08 credits and
-   176 s per job, 6.48 credits and about 1057 s in all. It also states the
+   176 s per job, 4.32 credits and about 705 s in all. It also states the
    stop conditions below and the reading of each outcome. Wait for
    approval. No QRNG read is part of it.
 4. **Submission and checks.** Submit and collect each job in the order of
@@ -311,7 +312,7 @@ comparison.
    - record a fresh platform read of the dark-count rates beside the
      collected run.
 5. **Readout.** `scripts/bdsc_stationarity.py --readout RUN_DIR...` reads
-   the six runs. The runs enter `docs/state/research_state.json` with their
+   the four runs. The runs enter `docs/state/research_state.json` with their
    claim.
 
 ### Stop conditions of the stationarity case
@@ -328,8 +329,9 @@ Execution stops, and the remaining jobs stay unsent, when any of these holds:
   iteration's samples;
 - an iteration returns no compiled circuit or no positive `physical_perf`;
 - a returned-circuit hash differs from its retained counterpart;
-- a scheduled maintenance window overlaps the span from R1's first
-  execution to R3's last;
+- S2 would start within one hour of S1's last execution end;
+- a scheduled maintenance window overlaps the span from S1's first
+  execution to S2's last;
 - spent credits or seconds reach the approved ceiling.
 
 **Resubmission rule.** It closes the gap the protocol deviation of
@@ -341,6 +343,4 @@ Execution stops, and the remaining jobs stay unsent, when any of these holds:
 - A second cancellation of the same job stops the case.
 - So does any job that started and then failed, and any cancellation the
   case did not order.
-- A resubmission does not reset a block's timing rule. An R2 that misses its
-  30-minute start withholds the 2x2 reading, and an R3 that cannot keep the
-  span clear of a maintenance window stops the case.
+- A resubmission keeps every timing rule above.

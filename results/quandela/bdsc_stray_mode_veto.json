@@ -1,4 +1,10 @@
 {
+ "coincidence_test": {
+  "df": 66,
+  "p_value": 0.956675768495251,
+  "reading": "consistent",
+  "statistic": 47.67035738344962
+ },
  "definitions": {
   "detector_absent": "the stray detector is removed from every pattern before the one-click rule",
   "subtract": "one-click samples in the stray mode leave the eligible count"
@@ -75,10 +81,24 @@
    "dark_counts_at_plan": 0.5888070879943909,
    "share": 0.5198577388566269
   },
-  "inverse_perf": {
-   "n": 96,
-   "p_value": 0.3969990978264389,
-   "rho": 0.0874253933803581
+  "fixed_rate_law": {
+   "dark_over_perf_pooled": {
+    "n": 96,
+    "p_value": 0.06315598427366616,
+    "rho": 0.19039609332609878
+   },
+   "inverse_perf_by_block": {
+    "1": {
+     "n": 48,
+     "p_value": 0.005891613842590517,
+     "rho": 0.39177160225792446
+    },
+    "2": {
+     "n": 48,
+     "p_value": 0.3747166884787375,
+     "rho": -0.1310247503256622
+    }
+   }
   },
   "matched_change": {
    "n": 48,

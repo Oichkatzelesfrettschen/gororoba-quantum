@@ -605,9 +605,15 @@ target support. Each run receipt lists it with the largest dark-count rate:
   modes together changed by +0.0002 (SD 0.0026).
 - **Dark-rate tracking.** The block-mean share fell from 0.0144 to 0.0075.
   The ratio, 0.52, is near the dark-rate ratio of 0.59.
-- **Not a fixed-rate law.** The share does not track 1 / physical_perf (rank
-  correlation 0.09, p 0.40), so a fixed dark rate over a perf-limited
-  acquisition time does not explain it.
+- **Fixed-rate law unresolved.** A fixed dark rate D over a perf-limited
+  acquisition time makes the share rise with D / physical_perf. Within
+  block 1 it rises with 1 / physical_perf (rank correlation 0.39, p 0.006);
+  within block 2 it does not (-0.13, p 0.37); pooled on D / physical_perf it
+  reads 0.19 (p 0.06).
+- **Coincidence test.** Coincident trials (one mode-5 click beside exactly
+  one other click) carry the same selected fraction as the other eligible
+  trials (47.7 on 66 degrees of freedom, p 0.96), as a state-independent
+  dark click predicts.
 - **Position trend.** The share falls with position in two of the four
   jobs (rank correlation -0.49 and -0.47, p 0.016 and 0.020).
 - **Veto result.** With the veto, the matched-change heterogeneity falls from
@@ -616,14 +622,11 @@ target support. Each run receipt lists it with the largest dark-count rate:
   the detector from every pattern. The g shift becomes -0.0007 (z -3.6). The
   common superposition shift (-0.0044, z -7.2) and the seed effects remain.
 
-The veto was chosen after the outcomes were seen, so it is a hypothesis;
-the [stationarity case](../../design/bdsc-qualification.md#stationarity-under-a-stray-detector-veto)
-freezes it and tests it on new acquisitions.
-
+The veto was chosen after the outcomes were seen, so it is a hypothesis.
 The [stationarity amendment](../../runbooks/bdsc-qualification-case.md#amendment-of-2026-10-23-a-stationarity-case-under-a-frozen-stray-detector-veto)
-therefore freezes the veto, repeats the diagnostic's requests in three
-blocks to separate a temporal drift from an assignment effect in the common
-superposition shift, and reads no fixed effect before that case does.
+freezes it ([design](../../design/bdsc-qualification.md#stationarity-under-a-stray-detector-veto)),
+repeats the diagnostic's four requests in two blocks at least an hour
+apart, and reads no fixed effect before that case does.
 
 ## Research grounding
 
