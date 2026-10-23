@@ -1,0 +1,117 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "batches": 6,
+ "contrasts": {
+  "bright pi/36": {
+   "balanced": false,
+   "batches": [
+    "batch-04",
+    "batch-05"
+   ],
+   "executed_order": "+-+-",
+   "kept": [
+    4096,
+    4096
+   ],
+   "odd": 0.0,
+   "odd_corrected": 0.0,
+   "readout": {
+    "e01": 0.0,
+    "e10": 0.0,
+    "factor": 1.0
+   },
+   "se": 0.000244140625,
+   "se_corrected": 0.000244140625,
+   "z_minus": 1.0,
+   "z_plus": 1.0
+  },
+  "kernel pi/12": {
+   "balanced": true,
+   "batches": [
+    "batch-02",
+    "batch-03"
+   ],
+   "executed_order": "+--+",
+   "kept": [
+    4096,
+    4096
+   ],
+   "odd": -0.494384765625,
+   "odd_corrected": -0.494384765625,
+   "readout": {
+    "e01": 0.0,
+    "e10": 0.0,
+    "factor": 1.0
+   },
+   "se": 0.009602396995399758,
+   "se_corrected": 0.009602396995399758,
+   "z_minus": 0.48388671875,
+   "z_plus": -0.5048828125
+  },
+  "kernel pi/36": {
+   "balanced": false,
+   "batches": [
+    "batch-00",
+    "batch-01"
+   ],
+   "executed_order": "+-+-",
+   "kept": [
+    4096,
+    4096
+   ],
+   "odd": -0.184814453125,
+   "odd_corrected": -0.184814453125,
+   "readout": {
+    "e01": 0.0,
+    "e10": 0.0,
+    "factor": 1.0
+   },
+   "se": 0.010855541322262387,
+   "se_corrected": 0.010855541322262387,
+   "z_minus": 0.19287109375,
+   "z_plus": -0.1767578125
+  }
+ },
+ "falsified_hypotheses": [],
+ "h1_zero_divisor_sign": {
+  "pi/12": "no matched bright control",
+  "post_hoc_matched pi/36": {
+   "decision": "withheld: protocol deviation",
+   "kernel_minus_bright": -0.184814453125,
+   "se": 0.010858286330914358
+  },
+  "preregistered_against_zero": {
+   "pi/12": "resolved",
+   "pi/36": "withheld: protocol deviation"
+  }
+ },
+ "h2_bright_z": 0.0,
+ "h3_sine_law": {
+  "contrast": 0.037767243132291295,
+  "decision": "withheld: no bright control at pi/12; protocol deviation",
+  "law": 2.879385241571817,
+  "se": 0.032698989635347765,
+  "z": 1.1549972507855326
+ },
+ "position_assumption": "the two batches of a contrast carry the same within-batch position effect",
+ "protocol_deviations": [
+  "bright pi/36",
+  "kernel pi/36"
+ ],
+ "readout_assumption": {
+  "e01_batches": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "e10_batches": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "factor_spread": 0.0,
+  "statement": "a batch's assignment factor equals its pair's; the batch spread enters se_corrected"
+ },
+ "schema": "qi-kernel-cancellation-analysis-v2",
+ "visibility": 1.0643040175145828
+}

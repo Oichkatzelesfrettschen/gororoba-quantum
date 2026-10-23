@@ -1,7 +1,7 @@
 # Algebra hardware probes: first principles
 
 This note derives the design principles that the sedenion-kernel runs on IQM
-Garnet established or forced, each from a
+Garnet and Quantum Inspire Tuna-17 established or forced, each from a
 finding with its evidence, the conjecture it tested and the outcome. The
 binding rules that follow from them are stated in
 [algebra_circuit_rules.md](../algebra_circuit_rules.md#hardware-probes); this
@@ -145,7 +145,67 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 - **Consequence.** Octonion left multiplication is a quadratic phase (CZ
   and Z gates); sedenion left multiplication reaches degree 3 (CCZ).
 
-### F10. Engineering invariants the runs forced (tooling)
+### F10. Tuna quantizes rotations to pi/36; the design must live on that grid (device)
+
+- **Statement.** Tuna rounds every single-qubit rotation to a multiple of
+  pi/36. Clifford+T phases are multiples of pi/4 = 9 grid steps, so a
+  circuit whose only continuous rotation is set on the grid runs exactly;
+  the kernel cancellation probe sets phi = pi/36 and pi/12, where the
+  kernel reads -sin(pi/18) and -sin(pi/6). Qiskit's optimization level 2
+  resynthesizes two-qubit blocks into generic angles (12 off-grid rotations
+  on this compile); level 1 keeps every constant rotation a Clifford+T
+  phase. The QX twin read the ideal law within 1.03 and 0.58 standard errors.
+- **Evidence.** [qi_cancellation_cases.py](../../../scripts/qi_cancellation_cases.py)
+  (gates `core-645`, `core-646`): 1068 emitted Rz, all on the grid;
+  `qi-qx-kernel-cancellation-twin`.
+- **Principle P8.** Set every continuous parameter of a design on the
+  target's angle grid and refuse any emitted rotation off it; choose a
+  compiler setting that preserves the grid rather than trusting the
+  device's rounding.
+
+### F11. Tuna-17 shows a kernel-independent signed response; the control decides (hardware, preregistered)
+
+- **Outcome: H2 falsified; no kernel-specific sign on Tuna-17.** The bright
+  vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3).
+  The kernel read -0.0222 +- 0.0039 at pi/36 and -0.0547 +- 0.0039 at pi/12,
+  so the preregistered H1, the kernel against zero, resolved at pi/36. A
+  post hoc adjudication chosen after the bright control failed, the
+  kernel-minus-bright difference at pi/36 with each contrast corrected for
+  its own batch pair's readout, is -0.0056 +- 0.0058 (z -0.97); if the
+  artifact scales like sin(2 phi), the pi/12 difference is about z -0.6.
+  The sine-law test is withheld, since the series measures no bright
+  control at pi/12 and its pi/12 contrast also ran out of order (below).
+- **Assumptions.** A contrast's four arms span two batches, so its
+  +, -, -, + balance cancels a position effect inside a batch only when
+  both batches carry the same one, and each batch pair reads its two
+  readout references in different batches. A position effect that differs
+  between the two batches is a second candidate for the bright response.
+- **The same test on Garnet.** Kernel minus bright at phi = 0.1 is
+  -0.0538 +- 0.0124 (z -4.3), and at 0.3 under the same scaling
+  -0.132 +- 0.026 (z -5.0): Garnet's zero-divisor sign survives the
+  control.
+- **Open.** The artifact's mechanism; the non-unital relaxation that gives
+  the bright arm -0.008 in the Garnet model is the candidate, untested on
+  Tuna-17, which has no retained noise model.
+- **Evidence.** `qi-tuna17-kernel-cancellation` and the post hoc
+  `qi-tuna17-kernel-cancellation-matched-post-hoc`,
+  [analysis](../../../results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json).
+- **Principle P9.** Decide a kernel property on the double difference
+  kernel minus control, with the control run at every parameter value the
+  kernel runs; a kernel read against zero cannot tell the property from a
+  signed artifact the circuit shares with its control.
+
+- **Executed order.** Quantum Inspire runs each circuit of a batch as its
+  own job in an order of its own: the provider start times show the pi/36
+  kernel and bright contrasts executed +, -, -, + as listed and the pi/12
+  kernel contrast +, -, +, -, so that reading carries a protocol deviation
+  the analysis names.
+- **Principle P10.** On a platform that runs circuits as separate jobs, read
+  the executed order from the provider's timestamps and decide only on
+  contrasts whose executed order holds the design; the listed order is a
+  request.
+
+### F12. Engineering invariants the runs forced (tooling)
 
 - A free mock twin refuses a job pinned to the QPU's calibration set
   ("Calibration set not found"), so a case pins its set per quantum
@@ -164,7 +224,12 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 2. P2 eigen-observable: read the property as an operator eigenvalue on its
    reachable span.
 3. P7 first-order immunity: no additive coherent term in the odd part.
-4. P3 interleaving: +, -, -, + within one calibration.
-5. P4 null arm: decide on odd(t) - odd(0).
-6. P5 and P6 coherent parameters: response through the noise model, and the
+4. P9 double difference: decide on kernel minus control, the control at
+   every parameter value.
+5. P10 executed order: verify the order the platform ran, not the order
+   listed.
+6. P8 device grid: every rotation on the target's angle grid, verified.
+7. P3 interleaving: +, -, -, + within one calibration.
+8. P4 null arm: decide on odd(t) - odd(0).
+9. P5 and P6 coherent parameters: response through the noise model, and the
    parameters it depends on measured in the same job.

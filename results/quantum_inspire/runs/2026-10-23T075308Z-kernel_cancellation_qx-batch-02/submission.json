@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-23T07:53:15+00:00",
+ "approval": "SIM runs first then both, cancellation first. tuna-17 as well is back online for that run",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "cd00481fc0bc98a1b03fa03bdfb912d2e6df15ddbeec15a8e2adef1a9ca55cb0",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 883716,
+ "project": 782799,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "k+pi_12-020.cq",
+   "job": 1571874,
+   "sha256": "0ca9ca149c7ff3892c6c19207c4f9e8600a6ae2dd9509ff808a3e1aefd898234"
+  },
+  {
+   "file": "k-pi_12-021.cq",
+   "job": 1571875,
+   "sha256": "b8b0d7aaedea6012b9a980eb219384aecec2e5f0bd7bfd30a2819afefe200ba6"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1571881,
+   "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e"
+  }
+ ],
+ "submitted_utc": "2026-10-23T07:53:15+00:00"
+}

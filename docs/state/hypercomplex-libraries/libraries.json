@@ -2463,6 +2463,7 @@
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
@@ -4236,6 +4237,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_probe.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -10986,6 +10988,21 @@
    "sys",
    "tempfile",
    "time",
+   "typing"
+  ],
+  "scripts/qi_cancellation_cases.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "kernel_cancellation",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_zero_divisor_cases",
+   "qiskit",
+   "sys",
    "typing"
   ],
   "scripts/qi_coupler_zz_map.py": [
