@@ -313,7 +313,7 @@ the common-shift reading and the reported-only quantities are the design's.
 4. **Submission and checks.** Submit and collect each job in the order of
    the table. After each collection, and before the next submission:
    - confirm the diagnostic's integrity checks: the empty policy in the
-     retained body, an integer BSCount, 40000 samples per iteration, a
+     retained body, an integer BSCount, 100000 samples per iteration, a
      returned compiled circuit and a positive `physical_perf`;
    - run `scripts/bdsc_stationarity.py --matched-check RUN_DIR` against the
      retained diagnostic job of the same requests, which requires every
@@ -354,3 +354,38 @@ Execution stops, and the remaining jobs stay unsent, when any of these holds:
 - So does any job that started and then failed, and any cancellation the
   case did not order.
 - A resubmission keeps every timing rule above.
+
+### Calibration hold of the stationarity case
+
+This amendment was committed after b1-j1 ran and before any other job was
+sent. After b1-j1 was collected and checked, the b1-j2 plan read
+`qpu:belenos is calibration`. The plan step exits before `submit`, so
+nothing was sent. The run directory held only the copied request files and
+went to the trash.
+
+- **Hold.** A plan refused on a platform status other than available, with
+  nothing sent, holds the case rather than stopping it. The job is planned
+  again from a fresh run directory when `qd_platform.py plan` admits the
+  platform, and is submitted only when `--plan-check` passes on that fresh
+  plan. Every other stop condition is unchanged: a platform that never
+  returns, a mode at or above mode 5, or a maintenance-window overlap still
+  stops the case.
+- **Block 1 spans a calibration.** b1-j1 ran before the calibration, and
+  b1-j2 and both block 2 jobs run after it. A calibration effect therefore
+  enters only the matched changes of b1-j1's requests. The group-by-block
+  contrast (b1-j1's requests against b1-j2's) carries it as an additional
+  confound beside the slot crossing, and the primary's heterogeneity Q can
+  read it as between-request variation. The primary, the coincidence test
+  and the excess-variance estimates read as frozen, and the readout reports
+  that the b1-j1 pairs cross a calibration.
+- **Block definitions.** Both blocks keep their definitions. If the hold
+  runs long, block 1's internal span can exceed the one-hour gap between
+  blocks, and the readout states block 1's span next to the gap. The
+  one-hour rule still runs from b1-j2's execution end.
+- **Dark-count snapshots.** The snapshot taken after b1-j1 repeats the
+  b1-j1 plan-time reading in every mode: 49520.9 counts/s for mode 5 and at
+  most 130.6 for the others. The platform's figures change at calibration,
+  not per job, so each after-job snapshot records which calibration was
+  current. The b1-j2 plan's figures are the post-calibration reading, and
+  they give the share-against-dark-rate question its second point inside
+  the case.

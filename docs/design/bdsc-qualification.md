@@ -565,7 +565,13 @@ diagnostic.
     (0.0144 at 3137.7, 0.0075 at 1847.5) then predict 0.17 to 0.19. A share
     near the retained 0.007 to 0.016 means the plan-time figure does not
     track the acquired dark clicks. Either outcome is reported and decides
-    nothing.
+    nothing. Observed after the fact: b1-j1 read a mean mode-5 share of
+    0.093 across its 24 iterations, with a range of 0.019 to 0.276. The
+    mean lies between the two predictions, and the spread across settings
+    shows that a single job-level odds figure is the wrong form for the
+    prediction: the share depends on the setting's genuine one-click rate
+    g. About 0.91 of b1-j1's samples stayed eligible under the primary
+    veto, against the 0.81 the job-level prediction implied.
   - At that share about 0.81 of each iteration's samples stay eligible
     under the primary veto, so the primary's power against the retained
     residual sits somewhat below the projection's 0.72, which assumed
