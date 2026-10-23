@@ -312,12 +312,13 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2](results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2) | Quandela Cloud | BDSC crossed diagnostic on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.08 credits |
 | [2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04](results/quantum_inspire/runs/2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05](results/quantum_inspire/runs/2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [ascella-mosaiq-update-order-retry](results/quandela/runs/ascella-mosaiq-update-order-retry) | Quandela Cloud | photonic order sampling recovery after advertised deployment update | qpu:ascella | 1 | 8 | completed | 1.016384 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 59 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 60 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 24 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
