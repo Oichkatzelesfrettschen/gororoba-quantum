@@ -54,6 +54,10 @@
    "shots": 2000
   }
  ],
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
  "question": "Does Garnet bill ceil(its compiler estimate), does that estimate follow a fixed job cost plus each shot's schedule, does active reset run and keep initialization, and does the calibration-built simulator predict QB1?",
  "schema": "iqm-circuit-case-v1"
 }

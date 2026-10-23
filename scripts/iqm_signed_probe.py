@@ -60,7 +60,8 @@ SELECTION_SHOTS = 100000
 PREDICTION_SEED = 20261022
 # Measured on Garnet QB1 by the reset and billing pilot: 37.5 us of execution per active-reset shot.
 ACTIVE_SHOT_SECONDS = 0.0000375
-OPTIONS = {"heralding_mode": "zeros", "active_reset_cycles": 1}
+OPTIONS: dict[str, Any] = {"heralding_mode": "zeros", "active_reset_cycles": 1}
+QCS = ["garnet:mock", "garnet"]
 CALIBRATION_FILES = ("metrics.json", "dynamic-quantum-architecture.json")
 DURATIONS = {"r": 16e-9, "cz": 40e-9, "measure": 480e-9}
 
@@ -166,7 +167,8 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
                 "job": job,
                 "circuits": [{"file": rel, "sha256": sha256(files[rel].encode())} for rel in rels],
                 "shots": shots,
-                "options": OPTIONS,
+                # The job compiles against the calibration set the prediction was made from, or fails if it is gone.
+                "options": {**OPTIONS, "calibration_set_id": calibration.set_id},
                 "expected_seconds": round(len(rels) * shots * ACTIVE_SHOT_SECONDS, 3),
             }
         )
@@ -197,6 +199,7 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
                 "carry the sign of t, as Re<v|B(t)|u> = t/(2 + |t|) requires?"
             ),
             "ideal": {f"{t:+.2f}": law(t) for t in (STRONG_T, -STRONG_T, WEAK_T, -WEAK_T)},
+            "qcs": QCS,
             "jobs": jobs,
         }
     )

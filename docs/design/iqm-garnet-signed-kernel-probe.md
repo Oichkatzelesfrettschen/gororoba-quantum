@@ -27,12 +27,12 @@ never ran.
 
 `scripts/iqm_signed_probe.py build results/iqm/cases/signed-kernel-probe`
 compiles the probe, keeps a copy of the calibration it was planned against
-(set `9069c4ef`) and writes `cases.json` (sha256 `dd9cdf84...`) and
+(set `9069c4ef`) and writes `cases.json` (sha256 `31cd9df5...`) and
 `prediction.json`; gate `core-638` rebuilds it byte for byte from that copy.
 
 | job | arms | circuits x shots | options |
 |---|---|---|---|
-| `strong` | t = +0.25, -0.25 | 2 x 20000 | active reset 1 cycle, heralding zeros |
+| `strong` | t = +0.25, -0.25 | 2 x 20000 | active reset 1 cycle, heralding zeros, calibration set `9069c4ef` |
 | `weak` | t = +0.05, -0.05 | 10 x 20000 (5 copies per arm) | same |
 
 Each arm reads <Z> of control qubit 6. The odd part (Z(t) - Z(-t))/2
@@ -55,9 +55,16 @@ model has no coherent error, leakage or crosstalk. At a heralding retention
 of 0.6 the strong arms resolve +0.0296 at about 4.6 standard errors and the
 weak arms +0.0188 at about 6.5.
 
-**Cost.** Ceilings from the live price: 1.00 credit (strong, 1.5 s expected)
-and 4.00 credits (weak, 7.5 s expected) on Garnet. The free garnet:mock run
-accepted both jobs with heralding and active reset (estimates 3.05 s and
-8.86 s, 0.00 credits) and returned about a quarter of the requested shots,
-since the mock's random bits pass the herald at random; the server does not
-top up rejected shots.
+**Cost.** `submit` bounds each job by ceil(1.60 s + expected seconds) at the
+live price, since IQM bills ceil(runtime) with no job-side cap and its
+estimate (a fixed 1.60 s plus each shot's schedule) exceeded the runtime of
+every pilot job: 2.00 credits (strong, 1.5 s expected) and 5.00 credits
+(weak, 7.5 s expected) on Garnet. The job body pins calibration set
+`9069c4ef`, so the device compiles against the calibration the prediction
+used, or refuses the job once that set is retired. The case permits only
+garnet:mock and garnet. A free garnet:mock run of the previous case bytes
+(`dd9cdf84`, identical circuits without the pinned set) accepted both jobs
+with heralding and active reset (estimates 3.05 s and 8.86 s, 0.00 credits)
+and returned about a quarter of the requested shots, since the mock's random
+bits pass the herald at random; the server does not top up rejected
+shots.

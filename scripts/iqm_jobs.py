@@ -81,6 +81,8 @@ PILOT_JOBS = (
 # shortening a shot from its passive reset_wait to ACTIVE_SHOT_SECONDS. Each job reads X and a bare
 # measure on QB1, so the bare measure carries the initialization error each reset leaves.
 RESET_PILOT = "reset-billing-pilot"
+# The quantum computers an approved case may run on: its free mock twin and the QPU it was planned for.
+PILOT_QCS = ["garnet:mock", "garnet"]
 JOB_SECONDS = 1.6
 ACTIVE_SHOT_SECONDS = 0.0000087
 RESET_JOBS = (
@@ -138,6 +140,7 @@ def build_timing() -> dict[str, str]:
             "question": "What does IQM bill per job, per shot, per circuit and with active reset on Garnet?",
             "ideal": {"circuit": f"X on {PILOT_QUBIT}, then measure", "p1": 1.0},
             "shot_seconds_prior": SHOT_SECONDS,
+            "qcs": PILOT_QCS,
             "jobs": jobs,
         }
     )
@@ -170,6 +173,7 @@ def build_reset() -> dict[str, str]:
                 "active_shot_seconds": ACTIVE_SHOT_SECONDS,
                 "source": "garnet:mock execution_runtime_estimate_seconds of the timing pilot",
             },
+            "qcs": PILOT_QCS,
             "jobs": jobs,
         }
     )
@@ -225,6 +229,8 @@ def body_of(case_dir: Path, row: dict[str, Any]) -> dict[str, Any]:
     }
     if row["options"]["active_reset_cycles"] is not None:
         body["active_reset_cycles"] = row["options"]["active_reset_cycles"]
+    if row["options"].get("calibration_set_id"):
+        body["calibration_set_id"] = row["options"]["calibration_set_id"]
     return body
 
 
@@ -258,29 +264,73 @@ def submit(
         raise PlatformError("a submission carries the user's quoted approval")
     if cases_sha256 != approved_sha256:
         raise PlatformError(f"cases.json sha256 {cases_sha256} is not the approved {approved_sha256}")
+    if qc not in case.get("qcs", []):
+        raise PlatformError(f"{qc} is not among the case's approved quantum computers {case.get('qcs')}")
     record = get_json(client, f"{API}/quantum-computers/{qc}")
     if record.get("operational_status") != "online" or not record.get("health", {}).get("healthy"):
         raise PlatformError(f"{qc} is {record.get('operational_status')}, healthy {record.get('health')}")
     price = float(record["pricing"]["payg_price_per_second"])
-    ceiling = math.ceil(row["expected_seconds"]) * price
+    # IQM bills ceil(runtime) and offers no job-side cap. The garnet:mock and Garnet estimates add a fixed
+    # JOB_SECONDS to each shot's schedule and exceeded the measured runtime of every pilot job, so the
+    # ceiling carries that fixed cost on top of the case's expected seconds.
+    ceiling = math.ceil(JOB_SECONDS + row["expected_seconds"]) * price
     if ceiling > max_credits:
         raise PlatformError(f"{job} expects {ceiling:.2f} credits on {qc}, above the approved {max_credits}")
     suffix = f"-{qc.replace(':', '_')}-{case['case']}-{job}"
-    # One run directory per quantum computer, case and job: an earlier one, even without submission.json,
-    # may stand for a job already on the server, which the job list settles before anything is resent.
-    earlier = sorted(runs.glob(f"*{suffix}"))
-    if earlier:
-        raise PlatformError(f"{job} on {qc} already has {earlier[0].name}; collect it or settle it first")
     run_dir = runs / f"{stamp or now_stamp()}{suffix}"
     if dry:
+        refuse_earlier(runs, suffix, job, qc)
         body = body_of(case_dir, row)
         print(
             f"{run_dir.name}: dry, {len(body['circuits'])} circuits x {body['shots']} shots, "
             f"ceiling {ceiling:.2f} credits at {price} per second; nothing sent"
         )
         return run_dir
+    import fcntl
+
+    runs.mkdir(parents=True, exist_ok=True)
+    # The lock spans the duplicate check, the copy and the POST, so two submissions of one case never both pass.
+    fd = os.open(case_dir, os.O_RDONLY)
+    try:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise PlatformError(f"another submission holds {case_dir}") from None
+        refuse_earlier(runs, suffix, job, qc)
+        return post_job(case_dir, run_dir, job, qc, approval, approved_sha256, max_credits, price, client)
+    finally:
+        os.close(fd)
+
+
+def refuse_earlier(runs: Path, suffix: str, job: str, qc: str) -> None:
+    """One run directory per quantum computer, case and job: an earlier one, even without submission.json,
+    may stand for a job already on the server, which the job list settles before anything is resent."""
+    earlier = sorted(runs.glob(f"*{suffix}"))
+    if earlier:
+        raise PlatformError(f"{job} on {qc} already has {earlier[0].name}; collect it or settle it first")
+
+
+def post_job(
+    case_dir: Path,
+    run_dir: Path,
+    job: str,
+    qc: str,
+    approval: str,
+    approved_sha256: str,
+    max_credits: float,
+    price: float,
+    client: Client,
+) -> Path:
     before = credit(client)
     shutil.copytree(case_dir, run_dir)
+    # The copy is what gets sent, so it must carry the approved digest and its circuits their recorded ones.
+    try:
+        _, row, copied = load_job(run_dir, job)
+        if copied != approved_sha256:
+            raise PlatformError(f"the copied cases.json sha256 {copied} is not the approved {approved_sha256}")
+    except PlatformError:
+        shutil.rmtree(run_dir)
+        raise
     body = body_of(run_dir, row)
     encoded = json.dumps(body, sort_keys=True).encode()
     # The exclusive checkpoint precedes the POST: an existing one means the job may already be on the server.
@@ -302,7 +352,7 @@ def submit(
                 "job_id": reply["id"],
                 "qc": qc,
                 "job": job,
-                "cases_sha256": cases_sha256,
+                "cases_sha256": approved_sha256,
                 "body_sha256": sha256(encoded),
                 "approval": approval,
                 "max_credits": max_credits,
@@ -318,6 +368,15 @@ def submit(
 
 
 def collect(run_dir: Path, client: Client, poll: float = 5.0, timeout: float = 3600.0) -> dict[str, Any]:
+    """Collect a terminal job once; a run already collected keeps its first results.json, whose credit
+    delta a later collection would mix with every job charged since."""
+    retained = run_dir / "results.json"
+    if retained.exists():
+        results: dict[str, Any] = json.loads(retained.read_text(encoding="utf-8"))
+        for name, digest in results["raw_sha256"].items():
+            if sha256((run_dir / "raw" / name).read_bytes()) != digest:
+                raise PlatformError(f"{run_dir}/raw/{name} differs from its recorded sha256")
+        return results
     submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
     job_id = submission["job_id"]
     deadline = time.monotonic() + timeout
@@ -612,16 +671,40 @@ def self_test() -> str:
         job = "j2-1x4000-passive"
         refused(lambda: submit(case, job, "garnet", "", approved, 5, client, runs, "s0"), "quoted approval")
         refused(lambda: submit(case, job, "garnet", "approved", "0" * 64, 5, client, runs, "s0"), "not the approved")
+        refused(lambda: submit(case, job, "emerald", "approved", approved, 5, client, runs, "s0"), "approved quantum")
+        import fcntl
+
+        holder = os.open(case, os.O_RDONLY)
+        fcntl.flock(holder, fcntl.LOCK_EX)
+        try:
+            refused(lambda: submit(case, job, "garnet", "approved", approved, 5, client, runs, "s0"), "holds")
+        finally:
+            os.close(holder)
+        copy = shutil.copytree
+
+        def tampering_copy(src: Path, dst: Path, *args: Any, **kwargs: Any) -> Any:
+            out = copy(src, dst, *args, **kwargs)
+            if (Path(dst) / "cases.json").exists():
+                (Path(dst) / "circuits/j2-1x4000-passive-00.json").write_text("{}\n")
+            return out
+
+        shutil.copytree = tampering_copy  # type: ignore[assignment]
+        try:
+            refused(lambda: submit(case, job, "garnet", "approved", approved, 5, client, runs, "s0"), "differs")
+        finally:
+            shutil.copytree = copy
+        if state["posts"] or any(runs.glob("s0-*")):
+            raise RuntimeError("a tampered copy posted or kept its run directory")
         refused(
             lambda: submit(case, job, "garnet", "approved", approved, 0.5, client, runs, "s0"), "above the approved"
         )
         state["healthy"] = False
         refused(lambda: submit(case, job, "garnet", "approved", approved, 5, client, runs, "s0"), "healthy")
         state["healthy"] = True
-        if state["posts"] or runs.exists():
+        if state["posts"] or (runs.exists() and any(runs.iterdir())):
             raise RuntimeError("a refused submission posted or copied the case")
         submit(case, job, "garnet", "approved", approved, 5, client, runs, "s0", dry=True)
-        if state["posts"] or runs.exists():
+        if state["posts"] or (runs.exists() and any(runs.iterdir())):
             raise RuntimeError("a dry submission posted or copied the case")
         run = submit(case, job, "garnet", "approved", approved, 5, client, runs, "s1")
         # A rerun under a new stamp refuses, also once submission.json is gone and only the checkpoint is left.
@@ -662,7 +745,7 @@ def self_test() -> str:
         refused(lambda: run_facts(run), "differs from its recorded sha256")
         (run / "raw/measurements.json").write_bytes(kept)
         (run / "raw/job.json").write_text("{}")
-        refused(lambda: collect(run, client, poll=0), "retained with other bytes")
+        refused(lambda: collect(run, client, poll=0), "differs from its recorded sha256")
         state["fail"] = True
         failed = submit(case, "j1-1x1000-passive", "garnet", "approved", approved, 5, client, runs, "s3")
         results = collect(failed, client, poll=0)

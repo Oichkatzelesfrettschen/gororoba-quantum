@@ -22,6 +22,7 @@
    "job": "strong",
    "options": {
     "active_reset_cycles": 1,
+    "calibration_set_id": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
     "heralding_mode": "zeros"
    },
    "shots": 20000
@@ -73,10 +74,15 @@
    "job": "weak",
    "options": {
     "active_reset_cycles": 1,
+    "calibration_set_id": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
     "heralding_mode": "zeros"
    },
    "shots": 20000
   }
+ ],
+ "qcs": [
+  "garnet:mock",
+  "garnet"
  ],
  "question": "Is the dilation overlap of the perturbed sedenion kernel odd in t on Garnet: does (Z(t) - Z(-t))/2 carry the sign of t, as Re<v|B(t)|u> = t/(2 + |t|) requires?",
  "schema": "iqm-circuit-case-v1"

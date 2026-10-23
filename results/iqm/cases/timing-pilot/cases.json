@@ -142,6 +142,10 @@
    "shots": 4000
   }
  ],
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
  "question": "What does IQM bill per job, per shot, per circuit and with active reset on Garnet?",
  "schema": "iqm-circuit-case-v1",
  "shot_seconds_prior": 0.0003

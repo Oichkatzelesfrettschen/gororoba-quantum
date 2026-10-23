@@ -53,9 +53,10 @@ class Calibration:
     def load(self, folder: Path) -> None:
         metrics = json.loads((folder / "metrics.json").read_text(encoding="utf-8"))
         self.values = {o["dut_field"]: o["value"] for o in metrics["observations"] if not o.get("invalid")}
-        self.set_id = metrics.get("observation_set_id")
+        self.metrics_id = metrics.get("observation_set_id")
         architecture = json.loads((folder / "dynamic-quantum-architecture.json").read_text(encoding="utf-8"))
         self.qubits: list[str] = architecture["qubits"]
+        self.set_id: str = architecture["calibration_set_id"]
         cz = architecture["gates"]["cz"]
         self.cz: dict[frozenset[str], float] = {}
         for implementation, spec in cz["implementations"].items():

@@ -21,7 +21,7 @@
    "t": -0.05
   }
  ],
- "calibration_set": "a1f4d727-7b05-4947-9556-ab43aa955d36",
+ "calibration_set": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
  "chosen_seed": 2,
  "cz": 199,
  "model": "iqm_sim depolarizing PRX and CZ, readout errors, ALAP idle T1/T2; no coherent error, leakage or crosstalk",
