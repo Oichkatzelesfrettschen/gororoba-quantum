@@ -73,6 +73,7 @@ import math
 import sys
 from collections import Counter
 from collections.abc import Callable
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 from unittest import mock
@@ -3394,17 +3395,41 @@ class SlopeSum:
         return self.nominal(phi) - self.minima[0] + self.delay(self.ratio * phi) - self.minima[1]
 
 
-class RefineSlope:
-    """Bounded scalar minimum of the PhaseLaw slope sum within one grid step, and the exact sum there."""
+def slope_search_interval(span: float, ratio: Fraction) -> tuple[float, float, bool]:
+    """The nominal phases the slope search covers: (low, high, periodic).
 
-    def __init__(self, fast: SlopeSum, exact: SlopeSum, step: float, span: float) -> None:
-        self.fast, self.exact, self.step, self.span = fast, exact, step, span
+    With r = p / q in lowest terms, phi -> phi + 2 pi q shifts the nominal
+    phase by q turns and the window_delay phase by p turns, so the summed
+    profile repeats exactly with period 2 pi q. Its copies are one slope
+    class the data cannot tell apart, so the search covers [-pi q, pi q)
+    when the span reaches past it (periodic) and [-span, span] otherwise.
+    """
+    half = math.pi * ratio.denominator
+    if span >= half:
+        return -half, half, True
+    return -span, span, False
+
+
+class RefineSlope:
+    """Bounded scalar minimum of the PhaseLaw slope sum within one grid step, and the exact sum there.
+
+    On a periodic interval the step may cross its edge, and the refined
+    phase folds back into [low, high).
+    """
+
+    def __init__(self, fast: SlopeSum, exact: SlopeSum, step: float, interval: tuple[float, float, bool]) -> None:
+        self.fast, self.exact, self.step, self.interval = fast, exact, step, interval
 
     def __call__(self, center: float) -> tuple[float, float]:
         from scipy.optimize import minimize_scalar
 
-        bounds = (max(-self.span, center - self.step), min(self.span, center + self.step))
+        low, high, periodic = self.interval
+        bounds = (center - self.step, center + self.step)
+        if not periodic:
+            bounds = (max(low, bounds[0]), min(high, bounds[1]))
         phi = float(minimize_scalar(self.fast, bounds=bounds, method="bounded", options={"xatol": 1e-6}).x)
+        if periodic:
+            phi -= (high - low) * math.floor((phi - low) / (high - low))
         return self.exact(phi), phi
 
 
@@ -3452,7 +3477,10 @@ def phase_slope_contract(
     (PhaseProfile) is 2 pi periodic in its own phase, so every alias phi +
     2 pi k of the nominal phase is a distinct slope with its own window_delay
     prediction; |phi| <= EXPOSURE_RATE_BOUND (rad/us) times the nominal
-    exposure time bounds k. The statistic is the minimum over that range of
+    exposure time bounds k. The exposures are integer dt sums, so r is an
+    exact rational p / q, and slopes 2 pi q apart in phi predict both pairs
+    identically (slope_search_interval): the report names the class
+    representative in [-pi q, pi q) and its period. The statistic is the minimum over that range of
     [D_n(phi) - D_n,min] + [D_d(r phi) - D_d,min], two free phases against
     one free slope, so the contract passes when it lies within the
     one-parameter chi-square quantile at 1 - alpha. Both pairs' uncertainty
@@ -3482,26 +3510,31 @@ def phase_slope_contract(
             "status": "not_evaluable",
             "reason": f"the nominal pair's signed exposure {nominal_exposure:g} dt defines no phase slope",
         }
-    ratio = delay_exposure / nominal_exposure
+    exact_ratio = Fraction(delay_exposure) / Fraction(nominal_exposure)
+    ratio = float(exact_ratio)
     dt_us = dt * 1e6
     span = EXPOSURE_RATE_BOUND * abs(nominal_exposure) * dt_us
+    interval = slope_search_interval(span, exact_ratio)
+    low, high, periodic = interval
     step = 2 * math.pi / SLOPE_GRID / max(1.0, abs(ratio))
-    dense = np.linspace(-span, span, max(3, math.ceil(2 * span * SLOPE_DENSE_PER_STEP / step) + 1))
+    points = max(3, math.ceil((high - low) * SLOPE_DENSE_PER_STEP / step) + 1)
+    dense = np.linspace(low, high, points, endpoint=not periodic)
     summed = periodic_interpolant(profiles.values["nominal"], dense) + periodic_interpolant(
         profiles.values["window_delay"], ratio * dense
     )
+    size = len(dense)
     local = [
         index
-        for index in range(len(dense))
-        if (index == 0 or summed[index] <= summed[index - 1])
-        and (index == len(dense) - 1 or summed[index] <= summed[index + 1])
+        for index in range(size)
+        if (summed[index] <= summed[index - 1] if periodic or index > 0 else True)
+        and (summed[index] <= summed[(index + 1) % size] if periodic or index < size - 1 else True)
     ]
     centers = [float(dense[i]) for i in sorted(local, key=lambda i: (summed[i], i))[:SLOPE_CANDIDATES]]
     refine = RefineSlope(
         SlopeSum(profiles.fast["nominal"], profiles.fast["window_delay"], profiles.minima, ratio),
         SlopeSum(profiles.exact["nominal"], profiles.exact["window_delay"], profiles.minima, ratio),
         step,
-        span,
+        interval,
     )
     refined = parallel.ordered_map(refine, centers, min_items=2)
     statistic, phi = min(refined)
@@ -3520,6 +3553,7 @@ def phase_slope_contract(
         "window_delay_exposure_dt": delay_exposure,
         "exposure_ratio": ratio,
         "nominal_phase_bound": span,
+        "nominal_phase_period": high - low if periodic else None,
         "nominal_fit_phase": profiles.fits["nominal"]["parameters"]["phase_one"],
         "window_delay_fit_phase": profiles.fits["window_delay"]["parameters"]["phase_one"],
         "candidates": [{"nominal_phase": at, "statistic": value} for value, at in refined],
