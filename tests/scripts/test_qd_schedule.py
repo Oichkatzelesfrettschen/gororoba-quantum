@@ -33,6 +33,7 @@ def tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         "import pathlib, sys\nsys.exit(0 if pathlib.Path(sys.argv[-1]).exists() else 3)\n"
     )
     (tmp_path / "scripts/check_no.py").write_text("import sys\nprint('stop condition')\nsys.exit(4)\n")
+    (tmp_path / "scripts/check_silent.py").write_text("import sys\nsys.exit(1)\n")
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/case.md").write_text("written case\n")
     for key in ("j1", "j2"):
@@ -133,7 +134,8 @@ class Provider:
         return {}
 
     def snapshot(self, out: Path) -> None:
-        raise AssertionError("snapshot is not expected")
+        out.mkdir(parents=True, exist_ok=True)
+        print("8 Explorer platforms, 2 public platforms")
 
 
 def step(path: Path, now: float, run_id: str = "1.1", plan_only: bool = False) -> dict[str, Any]:
@@ -339,3 +341,33 @@ def test_an_enabled_schedule_refuses_a_run_name_already_in_use(tree: Path) -> No
     with pytest.raises(qs.ScheduleError):
         qs.load(schedule(tree))
     qs.load(schedule(tree, enabled=False))
+
+
+def test_a_silent_failing_plan_check_holds(tree: Path, monkeypatch) -> None:
+    path = schedule(tree, job0_plan_check=["scripts/check_silent.py", "{plan}"])
+    provider = Provider(monkeypatch)
+    held = step(path, T0)
+    if held.get("stage") != "plan_check" or step(path, T0)["state"] != "held" or provider.submitted:
+        raise AssertionError(held)
+
+
+def test_a_prepared_job_past_its_latest_start_holds_before_submit(tree: Path, monkeypatch) -> None:
+    path = schedule(tree, job0_latest_start="2026-11-01T12:00:01Z")
+    provider = Provider(monkeypatch)
+    if step(path, T0)["outcome"] != "prepared":
+        raise AssertionError("the job did not prepare inside its window")
+    held = step(path, T0 + 100)
+    if held.get("stage") != "latest_start" or provider.submitted or any((tree / "results/quandela/runs").iterdir()):
+        raise AssertionError(held)
+
+
+def test_the_snapshot_summary_stays_out_of_the_step_output(tree: Path, monkeypatch, capsys) -> None:
+    path = schedule(tree, job0_snapshot_out="results/quandela/demo_dark/after-j1")
+    Provider(monkeypatch)
+    for _ in range(4):
+        step(path, T0)
+    if "Explorer" in capsys.readouterr().out:
+        raise AssertionError("the snapshot printed to stdout")
+    receipt = qs.read(tree / "results/quandela/schedules/demo/j1.receipt.json")
+    if receipt["outcome"] != "passed" or receipt["snapshot"] != "results/quandela/demo_dark/after-j1":
+        raise AssertionError(receipt)

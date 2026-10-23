@@ -84,7 +84,7 @@ for schedule in $schedules; do
 			--work "$work")
 		printf '%s\n' "$out"
 		publish
-		outcome=$(printf '%s' "$out" | "$PYTHON" -c 'import json, sys; print(json.load(sys.stdin)["outcome"])')
+		outcome=$(printf '%s\n' "$out" | tail -n 1 | "$PYTHON" -c 'import json, sys; print(json.load(sys.stdin)["outcome"])')
 		case $outcome in continue | prepared) ;; *) break ;; esac
 	done
 	if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then

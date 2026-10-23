@@ -59,6 +59,7 @@ Usage: "$PYTHON" scripts/qd_schedule.py (check [SCHEDULE ...] | list | status SC
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime
 import hashlib
 import json
@@ -377,16 +378,19 @@ def prepare(schedule: dict[str, Any], job: dict[str, Any], run_id: str, work: Pa
     for file in INPUTS:
         shutil.copyfile(ROOT / job["case_dir"] / file, run / file)
         require(sha256_file(run / file) == job["inputs_sha256"][file], f"{job['key']}: {file} changed while copied")
-    stage, reason = "plan", ""
+    # The stage, not the reason text, decides the hold: a check may fail silently.
+    stage: str | None = None
+    reason = ""
     try:
         result = planned(schedule, job, run, work)
         if result["body_sha256"] != job["body_sha256"]:
             stage, reason = "body", f"plan body {result['body_sha256']} differs from the pinned {job['body_sha256']}"
         elif result["plan_check_code"] != 0:
-            stage, reason = "plan_check", result["plan_check_output"]
+            stage = "plan_check"
+            reason = f"exit {result['plan_check_code']}: {result['plan_check_output']}"
     except qd.PlatformError as error:
-        reason = str(error)
-    if reason:
+        stage, reason = "plan", str(error)
+    if stage is not None:
         shutil.rmtree(run)
         return hold(schedule, job, run_id, stage, reason)
     intent = {
@@ -401,8 +405,16 @@ def prepare(schedule: dict[str, Any], job: dict[str, Any], run_id: str, work: Pa
     return {"outcome": "prepared", "key": job["key"], "run": run.name}
 
 
-def send(schedule: dict[str, Any], job: dict[str, Any], run: Path, run_id: str) -> dict[str, Any]:
-    """Submit a run this workflow run prepared; a refusal before the checkpoint is a hold."""
+def send(schedule: dict[str, Any], job: dict[str, Any], run: Path, run_id: str, now: float) -> dict[str, Any]:
+    """Submit a run this workflow run prepared; a refusal before the checkpoint is a hold.
+
+    Planning and the intent's push take time, so latest_start is read again here.
+    """
+    latest = job.get("latest_start")
+    if latest is not None and now > utc(latest):
+        # The intent stays, so sync removes the pushed run directory from the results branch too.
+        shutil.rmtree(run)
+        return hold(schedule, job, run_id, "latest_start", f"no submit before {latest}")
     try:
         record = qd.submit(
             run,
@@ -428,7 +440,9 @@ def post(schedule: dict[str, Any], job: dict[str, Any], run: Path, run_id: str) 
     snapshot: str | None = None
     if code == 0 and job.get("snapshot_out") is not None:
         try:
-            qd.snapshot(ROOT / job["snapshot_out"])
+            # The step's stdout carries one JSON line; the snapshot's summary goes to stderr.
+            with contextlib.redirect_stdout(sys.stderr):
+                qd.snapshot(ROOT / job["snapshot_out"])
             snapshot = job["snapshot_out"]
         except qd.PlatformError as error:
             code, output = 1, f"snapshot: {error}"
@@ -488,7 +502,7 @@ def step(
         if run is not None and state == "collected":
             return post(schedule, job, run, run_id)
         if run is not None and state == "prepared":
-            return send(schedule, job, run, run_id)
+            return send(schedule, job, run, run_id, clock())
         start = due_time(schedule, job)
         latest = job.get("latest_start")
         if latest is not None and clock() > utc(latest):
