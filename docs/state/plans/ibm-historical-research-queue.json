@@ -1,0 +1,87 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ibm-historical-research-queue",
+  "kind": "implementation",
+  "summary": "research-ibm-parked: IBM-bound research held while QPU minutes stay reserved",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/99f3ab3d885c74448b8c520eea92f5b921dc35ea2e825088b6ab05416162b40b.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-195.json",
+    "docs/evidence/plan-reconciliation/observations/pr-194.json",
+    "docs/evidence/plan-reconciliation/observations/pr-191.json"
+  ],
+  "state": "inbox",
+  "scope": "research-ibm-parked: IBM-bound research held while QPU minutes stay reserved",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #191 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-195-integration",
+      "action": "Verify the recorded integration state of PR #195.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "4faad3f3a7a4ebc909f10bfd19a251b0d5f93ba1ac6f5ac103db838b0fe50e37",
+          "result": "PR #195 merged as 934db60efa4732f12b1c888db1a7c8006c5dec1d; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-195.json",
+              "sha256": "343854e8299230969f4908edc9addace56fef9e3b1b0098436ee5226fcb8995b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-194-integration",
+      "action": "Verify the recorded integration state of PR #194.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "ff1bbd14c703b798ff012d5f267ac315d98482cfe23bea29145aac81d1d3411a",
+          "result": "PR #194 merged as 968817bcca95bbbfd82d8e33e00f48527b73cc7d; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-194.json",
+              "sha256": "6c8695a1070b0fcc75809487a25fc78074c5e1b6858453ea31a41cdb6710674d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-191-integration",
+      "action": "Verify the recorded integration state of PR #191.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "891fe10a054c7b334be00124a73b70cd843182691057e42ba32cb51860176a51",
+          "result": "PR #191 merged as a282c9e9467de2779c1ef177f8f80ce516ca3fbc; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-191.json",
+              "sha256": "46a3b44080bcc19032d24e0ede165017f8e2b484316092822d103f0f44884c0c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Per item; none submits.",
+      "state": "todo"
+    }
+  ]
+}

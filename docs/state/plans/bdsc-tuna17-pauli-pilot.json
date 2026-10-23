@@ -1,0 +1,77 @@
+{
+  "schema": "work-plan-v1",
+  "id": "bdsc-tuna17-pauli-pilot",
+  "kind": "investigation",
+  "summary": "BDSC target effect on Tuna-17: four-qubit Pauli readout pilot",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/bd4e0b8bd1a2b64957e1a73f0c8c0fbe8d452ced9e5e83666692cdd2fd2109ff.txt",
+    "docs/design/bdsc-tuna17-pauli-pilot.md"
+  ],
+  "state": "closed",
+  "scope": "BDSC target effect on Tuna-17: four-qubit Pauli readout pilot",
+  "next_action": "Resolve the outstanding obligations against the retained source and current evidence.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Retained pilot completed 27 jobs; preregistered readout drift stop withholds endpoint inference."
+  },
+  "steps": [
+    {
+      "id": "verify-retained-acquisition-outcome",
+      "action": "Verify retained acquisition and analysis outcome identities.",
+      "acceptance": "The registered evidence exists with its recorded SHA-256; the outcome retains the stated scientific boundary.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "a247119385aefcbfd86d6136a66d2997e807f59c0119805cb66bdef40b39d939",
+          "result": "Retained pilot completed 27 jobs; preregistered readout drift stop withholds endpoint inference.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json",
+              "sha256": "66f97da8b77d5753fb0883b183c10b38c5d283bc6aae8133a79325d639ea28cc"
+            },
+            {
+              "ref": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/cases.json",
+              "sha256": "04f57aaeb7654c2a9562b3b1e389a37ac2373f1a9a1c05e1e67929791dd9f2c9"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "claims": [
+    "qi-tuna17-bdsc-pauli-pilot-drift-stop"
+  ],
+  "acquisitions": [
+    "qi-tuna17-bdsc-pauli-batch-00",
+    "qi-tuna17-bdsc-pauli-batch-01",
+    "qi-tuna17-bdsc-pauli-batch-02",
+    "qi-tuna17-bdsc-pauli-batch-03",
+    "qi-tuna17-bdsc-pauli-batch-04",
+    "qi-tuna17-bdsc-pauli-batch-05",
+    "qi-tuna17-bdsc-pauli-batch-06",
+    "qi-tuna17-bdsc-pauli-batch-07",
+    "qi-tuna17-bdsc-pauli-batch-08"
+  ],
+  "disposition": "completed",
+  "resolution": "Retained pilot completed 27 jobs; preregistered readout drift stop withholds endpoint inference.",
+  "receipts": [
+    {
+      "scope_sha256": "f42a972a151f6af4c5432a1b34951c81e38f36e3a47cbab89451b2150d62372e",
+      "result": "Retained pilot completed 27 jobs; preregistered readout drift stop withholds endpoint inference.",
+      "observed_at": "2026-10-23T18:03:36.732812+00:00",
+      "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+      "evidence": [
+        {
+          "ref": "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json",
+          "sha256": "66f97da8b77d5753fb0883b183c10b38c5d283bc6aae8133a79325d639ea28cc"
+        },
+        {
+          "ref": "results/quantum_inspire/cases/bdsc_pauli_tuna_17/cases.json",
+          "sha256": "04f57aaeb7654c2a9562b3b1e389a37ac2373f1a9a1c05e1e67929791dd9f2c9"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-074.md
+
+# #74: patch_window_analysis: gate cross-job comparisons on a shared calibration
+
+Owner session: ibmquantum-12. Branch (planned): patch-window/cross-job-calibration-gate.
+
+## Finding
+
+`scripts/patch_window_analysis.py:analyze` combines members from three jobs
+(dynamic 1024-shot window members, dynamic 4096-shot orbit, static 1024-shot
+Ramsey) in `orbit_between_context`, `reference_comparisons`
+(`*_measured_minus_reset_only_y`, `*_paired_minus_single_y`) and any
+condition pair a reader subtracts, without reading which calibration each
+member executed under. Observed: `collect.json[0].family_measurements[member]
+.execution` already carries `calibration` and
+`calibration_changed_during_shots` per member (written by
+`live_run.py:4136-4137`). In the only collected patch run,
+`results/live/2026-10-13T201757.782152Z` (jobs db794cmil99s73fnjlk0,
+db794dor1c5c738k1a50, db794hmr6oqs73871tbg), all 46 members read
+`2026-10-13T13:41:52-07:00` with no change during shots, so no retained
+number changes. Also observed: regenerating that run's `patch-analysis.json`
+with the current analyzer differs from the retained file (the retained bytes
+predate the `registered_endpoints` field, added in 7b6c37d); no gate
+regenerates it.
+
+## Reachability
+
+Reached by the documented collect flow: `live_run.py --collect` then
+`scripts/patch_window_analysis.py RUN_DIR --out`. A recalibration between
+two jobs of one patch run (Heron recalibrates roughly hourly; jobs of one
+run can execute apart) produces a mixed-calibration comparison today.
+
+## Design
+
+1. `_member_calibrations(run)`: read `family_measurements[*].execution`
+   from collect.json; map member to (calibration, changed_during_shots).
+   A missing stamp counts as unknown.
+2. Every derived comparison names its members; a helper
+   `_shared_calibration(members)` returns the common stamp or a withheld
+   reason (`stamps differ: A vs B`, `calibration changed during shots`,
+   `stamp unavailable`). Comparisons whose members span stamps are reported
+   as `{"withheld": reason, "members": [...]}` instead of a difference.
+   Within-condition fits keep their points but record the stamp set.
+3. Report top-level `calibrations`: stamp per job.
+4. `--self-check` gains the issue's falsifier: a synthetic run whose jobs
+   carry different stamps must withhold every cross-job comparison, and one
+   with a shared stamp must report it.
+5. Add `--check RUN_DIR FILE` that regenerates and byte-compares, then
+   regenerate `results/live/2026-10-13T201757.782152Z/patch-analysis.json`
+   and update its pins: the `research_state.json` evidence sha256 (then
+   `research_state.py --write`) and
+   `results/kaggle/datasets/gororoba-retained-runs.json` through its
+   producer. core-263 (viewer binding) reads `conditions` points, which do
+   not change; rerun it.
+6. Gates: core-495 (`--check` on the retained run, normal and `-O`); the
+   existing core-211/221 self-check gates carry the new mutation.
+
+## Acceptance and falsifier
+
+- `patch_window_analysis.py --self-check` (normal and -O) passes with the
+  mixed-stamp mutation; prediction: pass.
+- `--check results/live/2026-10-13T201757.782152Z
+  .../patch-analysis.json` passes after regeneration; prediction: every
+  numeric field equals the current analyzer's output and every comparison
+  reports the shared 13:41:52 stamp.
+- core-263, research_state `--check`/`--self-test` pass.
+- Falsifier (from the issue): a run whose jobs carry different stamps still
+  reports a cross-job difference.
+
+## Shared files and dependencies
+
+ci/gates.json (core-495); docs/state/research_state.json and its rendered
+sections (reconcile by main + `--write`);
+results/kaggle/datasets/gororoba-retained-runs.json. No live_run change, no
+hardware, no Kaggle.
+
+## Effort and agents
+
+Half a day; one sonnet agent, or done directly.
+
+## Out of scope
+
+The coherence-window and ripple analyzers have the same cross-job pattern;
+`scripts/calibration_scoped_family_analysis.py` already scopes ripple. A
+follow-up issue names coherence_window_analysis.py if it lacks the gate.

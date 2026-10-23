@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "box-kite-experiment-program",
+  "kind": "investigation",
+  "summary": "Box-kite experiment program: QX, Ry emulator and Tuna-17",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/7c2b13b6e4d82f02ca12ee5281a25a4dcada0b47f1e7713624655bdc89b27e34.txt",
+    "docs/notes/box_kites/experiment-program.md"
+  ],
+  "state": "inbox",
+  "scope": "Box-kite experiment program: QX, Ry emulator and Tuna-17",
+  "next_action": "Resolve the outstanding obligations against the retained source and current evidence.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Source variants compared; historical assertions retain their source boundary. Current obligation-level validation needs the linked evidence."
+  },
+  "steps": [
+    {
+      "id": "resolve-next-obligation",
+      "action": "Resolve the outstanding obligations against the retained source and current evidence.",
+      "acceptance": "Retain the resulting evidence or explicit unresolved boundary in the cited workstream; scientific claims and execution approvals keep their existing authorities.",
+      "state": "todo"
+    }
+  ]
+}

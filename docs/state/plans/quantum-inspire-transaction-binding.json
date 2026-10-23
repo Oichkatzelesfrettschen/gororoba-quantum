@@ -1,0 +1,24 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quantum-inspire-transaction-binding",
+  "kind": "implementation",
+  "summary": "154: research_state: bind collected QI transaction rows to usage.json rows",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/45a7c101a7b7db0c05bae02f2ae508d4dd43dd7488ea98832475e3292077a404.txt"
+  ],
+  "state": "inbox",
+  "scope": "154: research_state: bind collected QI transaction rows to usage.json rows",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Source variants compared; historical assertions retain their source boundary. Current obligation-level validation needs the linked evidence."
+  },
+  "steps": [
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Accepted: self-test passes on main and rejects each named mutation. The issue would reopen if a ledger snapshot with non-empty `transactions` (today 0 rows) passes a run whose row differs in any key field; the synthetic rows in `_qi_row_mutations` already exercise that path.",
+      "state": "todo"
+    }
+  ]
+}

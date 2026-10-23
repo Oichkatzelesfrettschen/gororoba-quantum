@@ -1,0 +1,11 @@
+{
+  "number": 309,
+  "title": "ci: skip gates by traced read set, plan shards from measured time",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-19T21:32:10Z",
+  "closed_at": "2026-10-19T21:32:10Z",
+  "merge_commit_sha": "95d5c3c4778242a05d9b24f9035e557b12527ff5",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/309",
+  "merge_ancestor_of_canonical_head": true
+}

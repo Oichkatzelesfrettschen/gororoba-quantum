@@ -1,0 +1,11 @@
+{
+  "number": 184,
+  "title": "live_run: record backend_version and processor_type in every run record",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T14:29:56Z",
+  "closed_at": "2026-10-17T14:29:56Z",
+  "merge_commit_sha": "6c4f98aee5a9629b730547ef565425e936fedbbd",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/184",
+  "merge_ancestor_of_canonical_head": true
+}

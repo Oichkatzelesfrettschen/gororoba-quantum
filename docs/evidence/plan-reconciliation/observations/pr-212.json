@@ -1,0 +1,11 @@
+{
+  "number": 212,
+  "title": "n21_orbit_rca: fit window exposure through the exact archived ISA, piecewise against the single gap",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T18:27:23Z",
+  "closed_at": "2026-10-17T18:27:24Z",
+  "merge_commit_sha": "67a0dd8522f021108c0d46f72f96236693f541ba",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/212",
+  "merge_ancestor_of_canonical_head": true
+}

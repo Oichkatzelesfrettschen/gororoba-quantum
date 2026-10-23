@@ -1,0 +1,114 @@
+{
+  "schema": "work-plan-v1",
+  "id": "box-kite-mathematical-followups",
+  "kind": "investigation",
+  "summary": "boxkite-research-program: Walsh exemplars, ladder follow-ups, the A_5 gap, D_(5,12)",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/207f68dbe011cba26752a96dbe6ce3202c37d4c44144f3dace803bbe7ad9157f.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-269.json",
+    "docs/evidence/plan-reconciliation/observations/pr-270.json",
+    "docs/evidence/plan-reconciliation/observations/pr-271.json",
+    "docs/evidence/plan-reconciliation/observations/pr-277.json"
+  ],
+  "state": "inbox",
+  "scope": "boxkite-research-program: Walsh exemplars, ladder follow-ups, the A_5 gap, D_(5,12)",
+  "next_action": "Reconcile the merged Walsh, ladder and second-order results.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Merged finite results retain their domain; unrestricted coverage remains open."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-269-integration",
+      "action": "Verify the recorded integration state of PR #269.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "5a4b259e7aeaec2ab51ad958a3fe00714c116b34a6a305358025e8e9f5cf9ac6",
+          "result": "PR #269 merged as 3ab52b7d2e965bf1c6dc16d56f34da7ed7b1f4eb; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-269.json",
+              "sha256": "87e8c864f9fa44db84cea14f5d95c7b7e8ff5e404e86cd647140a3bc266471cf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-270-integration",
+      "action": "Verify the recorded integration state of PR #270.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "aaa7002148a9b4e6670ca350721666feb315a751a5df829828bb65ad9fd8c0f4",
+          "result": "PR #270 merged as 5ea77f5b2b1468c87bd5509faa36d66e0f194c02; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-270.json",
+              "sha256": "7eb4bdec4522bd2183a3f7ef960502dbfb3e22191a094ff2ae71edd75f71e9bb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-271-integration",
+      "action": "Verify the recorded integration state of PR #271.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "c110b3d561e3d34b8d61604a8eee4efda6a38eb3dd6784084bd3b1995d47104e",
+          "result": "PR #271 merged as ccdca1da5b755a534c1292899f6fed014b37e58c; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-271.json",
+              "sha256": "8c014b8748dd694e8da153459d2f7f189fdfd8713650c5debbcf018e4f26f60a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-277-integration",
+      "action": "Verify the recorded integration state of PR #277.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "b0667a675fb2390e4c494c15e677354b6255564eb8accd738ae61d9d0090d241",
+          "result": "PR #277 merged as 13d00a29ea9b039c4ff5eeec3f1c7939d80f65ef; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-277.json",
+              "sha256": "5782534a25585d9d5069fae348e57ef8e4c185393e2e481cf86e4acbf5371ac7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Reconcile the merged Walsh, ladder and second-order results.",
+      "acceptance": "Merged finite results retain their domain; unrestricted coverage remains open.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Continue the remaining global rank-locus coverage obligation in its owned mathematical plan.",
+      "acceptance": "Merged finite results retain their domain; unrestricted coverage remains open.",
+      "state": "todo"
+    }
+  ]
+}

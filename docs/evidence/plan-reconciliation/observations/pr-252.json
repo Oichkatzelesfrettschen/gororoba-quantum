@@ -1,0 +1,11 @@
+{
+  "number": 252,
+  "title": "results: retain the Kaggle CPU sweep of the exact branching ghost estimator",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T08:44:37Z",
+  "closed_at": "2026-10-18T08:44:37Z",
+  "merge_commit_sha": "d2ceb3f8e36b7dca5d89af68512c80d890552c31",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/252",
+  "merge_ancestor_of_canonical_head": true
+}

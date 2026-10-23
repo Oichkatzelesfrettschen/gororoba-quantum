@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "qiskit-ecosystem-conditional-installation",
+  "kind": "implementation",
+  "summary": "Qiskit ecosystem install plan",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/16049a3fb4c12f00a9a9ce691841032e398b001e1188183c33d088532733b8bc.txt",
+    "docs/notes/qiskit-ecosystem-install-plan.md"
+  ],
+  "state": "inbox",
+  "scope": "Qiskit ecosystem install plan",
+  "next_action": "Identify actual consumers before optional installation.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Use recorded interpreter/package identities; installation and provider notebook execution have separate boundaries."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Identify actual consumers before optional installation.",
+      "acceptance": "Use recorded interpreter/package identities; installation and provider notebook execution have separate boundaries.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Repair cytoolz metadata against the installed distribution.",
+      "acceptance": "Use recorded interpreter/package identities; installation and provider notebook execution have separate boundaries.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Reconcile the retained Kaggle pin-group record.",
+      "acceptance": "Use recorded interpreter/package identities; installation and provider notebook execution have separate boundaries.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "number": 367,
+  "title": "fix: preserve provider API evidence and bound packed response pilots",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-22T21:52:28Z",
+  "closed_at": "2026-10-22T21:52:28Z",
+  "merge_commit_sha": "4971aba18cfef526f961ff94e5df2a03386f4691",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/367",
+  "merge_ancestor_of_canonical_head": true
+}

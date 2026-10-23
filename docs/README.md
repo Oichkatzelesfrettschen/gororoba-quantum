@@ -24,6 +24,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
 | Python | interpreters, library roles, optimization ladder | [PYTHON.md](PYTHON.md) |
 | CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
+| Planning | work records, next actions, blockers and completion receipts | [planning entrance](state/plans.md), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
@@ -40,7 +41,7 @@ native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
 density interventions and a separately labeled trapped-ion qualification; every generated program remains
 unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
-tracks the audit and integration gates.
+retains the historical checklist; the [planning catalogue](state/plan-catalogue.md) owns reconciled work status.
 The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
 the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
 

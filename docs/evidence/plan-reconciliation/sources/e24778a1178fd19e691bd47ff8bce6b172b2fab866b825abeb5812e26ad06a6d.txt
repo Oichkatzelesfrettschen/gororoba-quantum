@@ -1,0 +1,147 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/pr206-f4-r1-restart.md
+
+# pr206-f4-r1-restart: PR #206 disposition, F4 computation 3, R1 item 3 (D_(5,12))
+
+Owner session: boxkite-quantum-main (all Tuna-17 work). Task ids are the
+session task list's: #97 = F4, #51 = R1 items 3-8. GitHub #97 and #51 are
+unrelated closed PRs.
+
+## State at 2026-10-18
+
+- PR #206 (analysis/tuna-zz-map, 8b0c3e7): draft, mergeable_state dirty,
+  1128 files (1112 generated case files under results/quantum_inspire/cases/
+  zz_map_tuna_17 and zz_map_qx). Merge base 2860b43 (#204, 2026-10-17).
+  - Conflicts with main: README.md, docs/RESEARCH_ROADMAP.md,
+    docs/notes/quantum_inspire/experiments.md, docs/state/research_state.json.
+  - Its gates core-497..500 collide with main's core-497..500. Next free id
+    on main: core-563.
+  - docs/evidence/quantum_inspire/toolchain_check.json (core-368, whole-tree
+    record) auto-merges but must be regenerated over every case circuit.
+  - The Tuna case is 139 batches (3,407,872 shots, >= 4.6 h of pauses); the
+    PR body itself calls it an offline reference to revise before
+    acquisition. No acquisition is approved.
+  - docs/notes/handbacks/repository_reconciliation_2026-10-17.md is a dated
+    snapshot of open-PR statuses, stale on arrival.
+- F4 (#97): computations 1 and 2 merged (#277: order-2/3 test vacuous at all
+  12 witnesses). Open: computation 3 (docs/notes/rank_locus_two_dimension_gap.md
+  section 3). Known inputs: at the six nonzd-axis and nonzd-nonzd-locus
+  witnesses, rotating the upper half toward e_8 and the lower half toward
+  e_24 are exact curves keeping the nullity
+  (`scripts/rank_locus_second_order.py` rotation_curve, rotation_keeps_nullity).
+- R1 (#51): approved scope is the D_(5,12) step only (plan
+  boxkite-research-program.md step 6), gated on F4 computation 3.
+
+## A. PR #206: split, salvage, close (recommended)
+
+Decision A0 (owner): salvage-split (below) or close outright.
+
+A1. Worktree `~/worktrees/IBMQuantum/qi/zero-divisor-secondary-audit` from
+    origin/main.
+A2. `git checkout origin/analysis/tuna-zz-map -- scripts/qi_zero_divisor_secondary.py
+    results/quantum_inspire/secondary/` and the note paragraphs that cite them
+    (grep docs/notes/quantum_inspire/experiments.md on the branch for
+    `secondary`; reconcile by hand against main's text).
+A3. Gate entry: #206's core-497 command renamed core-563, `seconds`
+    measured; declare non-imported inputs in ci/full_gate_inputs.json.
+A4. Run: `--check results/quantum_inspire/secondary --self-test`, normal and
+    -O; `ci/pinned_tool.py ruff check`, `ruff format --check`, `mypy`.
+    Falsifier: --check fails to regenerate the retained JSON byte for byte
+    on main's raw shots.
+A5. Registry: does the audit change a claim (endpoint/midpoint and fixture
+    interpretations)? If yes, edit docs/state/research_state.json and
+    `scripts/research_state.py --write`; else no registry change.
+A6. Pre-push adversarial review of the diff, push, PR, Codex <= 2 rounds,
+    premerge_gates.py exit 0, merge.
+A7. ZZ map: no salvage of the 1112 case files. A later Tuna plan regenerates
+    a short reciprocal pilot (<= 3 batches, QX dry run, written case,
+    owner approval) from qi_zz_map.py; record the generator choice there.
+A8. `git push origin origin/analysis/tuna-zz-map:refs/heads/archive/tuna-zz-map`,
+    close #206 with a comment naming the salvage PR and the archive branch,
+    delete the remote analysis/tuna-zz-map.
+
+## B. F4 computation 3: a certified 15-dimensional piece through {a, 0}
+
+Target: nullity-12 local dimension at an {a, 0} witness (a not a zero
+divisor) equals the tangent bound 15 (positive) or a proof it is 13
+(negative). Positive is the cheaper route because both transverse curves
+are already exact.
+
+B1. Read: `scripts/rank_locus_local_dimension.py` (how the 13-dim family is
+    parameterized), `rank_locus_second_order.py` rotation_curve /
+    rotation_nodes / rotation_keeps_nullity, `gororoba_quantum/nullity_twelve_locus.py`
+    (A15 rational slice). Write down the 13-dim family map F(y) explicitly.
+B2. Candidate map Phi(y, s, t) = R_lower(t) R_upper(s) (F(y)), rational
+    half-angle parameters. Question to settle by reading code before writing
+    any: is the family an orbit of a nullity-preserving action (automorphism
+    group times scaling) that commutes with both rotations? If yes, nullity
+    along Phi reduces to the bivariate surface (s, t) at one witness. If no,
+    the certificate is multivariate (B4b).
+B3. Differential: exact rank of dPhi at (y0, 0, 0) over QQ with python-flint.
+    Expected 15 (13 family + e_8 + e_24). Falsifier: rank < 15 (the rotations
+    are tangent to the family), which ends the positive route.
+B4a. Equivariant case: certify rank(L_Phi(s,t)) <= 20 identically on the
+    bivariate surface by vanishing of all 21-minors at a tensor grid of
+    (deg_s + 1) x (deg_t + 1) nodes from the minors' degree bound (extend
+    rotation_nodes to two variables), plus one exhibited nonzero 20-minor
+    for "exactly 12 on an open set".
+B4b. Non-equivariant case: stop and write the case; a 15-variable
+    interpolation certificate is a separate design.
+B5. Script `scripts/rank_locus_attachment.py` (name by mechanism): one
+    certificate row per {a, 0} witness through parallel.py; `--check`
+    regenerates docs/evidence/rank_locus_attachment/result.json, `--self-test`
+    rejects a corrupted node, minor or frame; normal and -O. Gates core-564,
+    core-565.
+B6. Note: fill computation 3's Outcome in rank_locus_two_dimension_gap.md;
+    the nullity-8/4 families stay open unless the same map closes them
+    (try it, one row each, same script).
+B7. Registry: update claim a5-nonzero-divisor-two-dimension-gap (nullity 12
+    closed or not), render, PR, Codex, premerge, merge. Then mark task #97's
+    nullity-12 part done.
+
+## C. R1 item 3, first deliverable: D_(5,12) pieces
+
+Starts only after B7.
+
+C1. Inventory the four known pieces at nullity 12 with dimension and
+    certificate: B17 (published D-locus bundle), A15 (rational slice and
+    derivation flows), the {a, 0} piece (B's dimension), Proposition 8.2's
+    (i_4, e_p) points.
+C2. Pairwise incidences: A15 n B17 is 13-dim at e1+e18 (certified). Decide
+    {a, 0}-piece vs A15: same component (B's map lands in A15's closure) or
+    distinct; exact or not at all.
+C3. Covering: a covering argument that every real nullity-12 coefficient
+    vector lies in one listed piece. This is the open research step; write
+    the method choice before code (rank-stratum equations plus principal
+    atlas charts from principal_skew_atlas.py).
+C4. Gates core-566/567, note in gororoba_quantum/RANK_STRATUM_TOPOLOGY.md,
+    claim dimension32-global-topology updated for item 3 at nullity 12 only.
+
+## Untouched
+
+tuna/bipartite-walsh-and-lcu-packing (6fc0af4): Design B and the
+usable-graph analysis fold into the next Tuna note; the branch stays.
+Items 4-8 of R1 stay on the roadmap.
+
+## Execution record (2026-10-18)
+
+- A: salvage PR #285 (gate core-571; core-563..570 taken). #206 closed,
+  archive/tuna-zz-map = 8b0c3e7, remote analysis/tuna-zz-map deleted.
+- A7 generator choice: the next Tuna ZZ pilot is generated by
+  scripts/qi_zz_map.py from archive/tuna-zz-map, <= 3 batches, reciprocal.
+- B2 (Sage, docs/evidence/rank_locus_rotation_composite/audit.json): the
+  related triples of A_5 form an 18-dim algebra; their nullity-preserving
+  action has 13-dim orbits on the 14-dim family cone (8 at e_1). Only der(O)
+  and scaling commute with the separate half turns, so a product-of-turns
+  map would have needed 4 variables.
+- B3: rank dPhi = 16 on the cone at e_1, e_2, e_3 and a generic a. This says
+  nothing once the map leaves the locus.
+- B4: the composite map is refuted (rank 32 at sigma = 2, tau = 3 at x0);
+  one turn keeps nullity 12 only from family points with parallel octonion
+  halves. No grid was built: one exact node refutes the identity. The
+  tangent bound is 15 at generic family points, so the gap is a family
+  property. Branch math/rank-locus-attachment, gates core-585/586.
+- B5-B7 replaced: no certificate of 15; the nullity-12 question stays open.
+  Next routes: equations cutting out D_(5,12) near {e_i, 0} (higher-order
+  Schur complement), or a curve family that is not a product of half turns.
+  C stays blocked on B.

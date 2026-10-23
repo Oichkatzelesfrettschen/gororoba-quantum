@@ -1,0 +1,35 @@
+{
+  "schema": "work-plan-v1",
+  "id": "centralized-plan-tracker",
+  "kind": "implementation",
+  "summary": "Implement the planning ledger, reconcile all discovered sources, and integrate the reviewed tracker.",
+  "sources": [
+    "docs/runbooks/plan-tracker.md",
+    "docs/evidence/plan-reconciliation/sources/d987c765de99311b68ad020732b703b8e67d302210915b25b32e1f2843879f67.txt"
+  ],
+  "state": "active",
+  "scope": "Tracker commands, full cross-worktree reconciliation, validation and reviewed integration.",
+  "owner": "centralized-plan-tracker implementation",
+  "next_action": "Complete tracker tests and the source reconciliation audit.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The user approved full reconciliation across all registered worktrees and CLI plus JSON authoring."
+  },
+  "steps": [
+    {
+      "id": "validate-tracker-and-migration",
+      "action": "Run tracker regressions and verify the complete inventory mapping.",
+      "acceptance": "All tracker tests, source mappings, generated views and provenance checks pass.",
+      "state": "doing"
+    },
+    {
+      "id": "review-and-integrate",
+      "action": "Complete repository gates, Codex reviews and merge.",
+      "acceptance": "Current-head review and gates admit the merge; canonical main contains it.",
+      "state": "todo",
+      "depends_on": [
+        "validate-tracker-and-migration"
+      ]
+    }
+  ]
+}
