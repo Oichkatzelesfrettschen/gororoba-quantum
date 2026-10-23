@@ -403,6 +403,6 @@ an import count cannot stand in for that ledger.
 
 The [signed-coherence and order-conformance plan](ascella-signed-coherence-conformance.md)
 proposes one 64-iteration, twelve-output Ascella job after the retained sampling
-recovery. The plan adds signed quadrature analyzers, commuting mutations,
-coherent references and simultaneous decision rules within a 1.2-credit ceiling;
+recovery. The plan measures five-angle signed quadrature coefficients, their geometric
+identities and a commuting mutation within a 1.2-credit ceiling;
 its generated native request and submission admission remain prospective.

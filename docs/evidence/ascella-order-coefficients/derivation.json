@@ -1,0 +1,116 @@
+{
+  "coefficient_basis": [
+    "constant",
+    "cos(2 theta)",
+    "sin(2 theta)",
+    "cos(4 theta)",
+    "sin(4 theta)"
+  ],
+  "coefficient_rows": [
+    "X",
+    "Y",
+    "dark"
+  ],
+  "coefficients": [
+    [
+      0.5,
+      -0.5,
+      -9.71445146547012e-17,
+      5.551115123125783e-17,
+      2.7755575615628914e-17
+    ],
+    [
+      8.981892944681074e-18,
+      -4.163336342344337e-17,
+      0.4999999999999999,
+      -4.163336342344337e-17,
+      1.491862189340054e-16
+    ],
+    [
+      0.25,
+      -0.25,
+      -4.85722573273506e-17,
+      2.7755575615628914e-17,
+      1.3877787807814457e-17
+    ]
+  ],
+  "evidence_class": "exact identities and local matrix computation; artwork is theoretical",
+  "exact_zero_residuals": {
+    "coherence_circle": "0",
+    "dark_coherence_link": "0",
+    "quadrature_dark_link": "0"
+  },
+  "hoeffding_radii_at_8192": {
+    "analyzer_coefficients": [
+      0.009925814971157191,
+      0.014037222149816408,
+      0.014037222149816404,
+      0.014037222149816408,
+      0.01403722214981641
+    ],
+    "dark_coefficients": [
+      0.0049629074855785955,
+      0.007018611074908204,
+      0.007018611074908202,
+      0.007018611074908204,
+      0.007018611074908205
+    ],
+    "mutation": 0.02219479700759259
+  },
+  "maximum_residuals": {
+    "coherence_residual": 4.577566798522237e-16,
+    "dark_residual": 5.551115123125783e-16,
+    "purity_minor_residual": 2.220446049250313e-16,
+    "state_residual": 2.2887833992611187e-16
+  },
+  "numerical_points": 51,
+  "operator_sha256": "62e4b0afc94731465d3edbff81de6601309ad4eb969b67894bb4b2c02fb9a4fe",
+  "pilot_analysis_sha256": "2e62dd6661f849f47443cb26b2cec599ab7a45699dfecdd1fef0801543757d62",
+  "pilot_dark_counts": [
+    {
+      "dark": 10,
+      "eligible": 8192,
+      "name": "order-i0-j0-representative0"
+    },
+    {
+      "dark": 14,
+      "eligible": 8192,
+      "name": "order-i0-j0-representative1"
+    },
+    {
+      "dark": 10,
+      "eligible": 8188,
+      "name": "order-i0-j1-representative0"
+    },
+    {
+      "dark": 7,
+      "eligible": 8190,
+      "name": "order-i0-j1-representative1"
+    },
+    {
+      "dark": 2,
+      "eligible": 8192,
+      "name": "order-i1-j0-representative0"
+    },
+    {
+      "dark": 14,
+      "eligible": 8192,
+      "name": "order-i1-j0-representative1"
+    },
+    {
+      "dark": 2198,
+      "eligible": 8190,
+      "name": "order-i1-j1-representative0"
+    },
+    {
+      "dark": 2167,
+      "eligible": 8187,
+      "name": "order-i1-j1-representative1"
+    }
+  ],
+  "versions": {
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.4",
+    "sympy": "1.14.0"
+  }
+}
