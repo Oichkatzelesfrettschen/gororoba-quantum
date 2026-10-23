@@ -906,6 +906,14 @@ circuit and charges the account ledger's change.
   Evidence: [signed_kernel_probe_audit.json](../../results/iqm/signed_kernel_probe_audit.json), [iqm-garnet-signed-kernel-probe.md](../design/iqm-garnet-signed-kernel-probe.md), [iqm_probe_audit.py](../../scripts/iqm_probe_audit.py).
   Gates: replayed by core-640.
   Related claims: iqm-garnet-signed-kernel-probe.
+- **algebra-device-operational-falsifiers** (exact finite certificate, implementation). Exact finite controls certify real-left normality at dimensions 2 through 64, the 4/8/4 sedenion Gram sectors, complete filter probability accounting, distinct order and associator references, phase and remote-ensemble invariance, finite embeddings and error-set-specific correction.
+  Boundary: The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.
+  Evidence: [result.json](../evidence/algebra-device-conjectures/result.json), [hypercomplex-operator-evidence.md](../design/hypercomplex-operator-evidence.md).
+  Gates: replayed by core-670; active code regression checked by core-671.
+- **algebra-device-logical-instrument-bank** (circuit-conformance check, implementation). Twelve logical circuits implement Design B dark/bright/quadrature controls, commuting/anticommuting controlled order, one/two/four-step measurement sequences, a heralded contraction and dimension-8/16/32 associator spectra; complete branch enumeration agrees with their declared laws within 1e-10 after portable-basis compilation.
+  Boundary: Finite numerical conformance without sampled jobs. Portable CX/RZ/SX/X compilation establishes neither native hardware routing nor a scheduler, cost or acquisition result.
+  Evidence: [hypercomplex-operator-evidence.md](../design/hypercomplex-operator-evidence.md).
+  Gates: replayed by core-671.
 - **hw-mod15-pilot** (preregistered hardware inference, hardware). Hybrid Shor mod 15 factor yield 0.4971 [0.4726, 0.5216] against the exact uniform null 0.2969; packed replica 0 differs from its isolated reference by +0.0020 (Shor) and -0.0037 (folded QPE), both inside the 0.03 Newcombe equivalence margin.
   Boundary: The order-4 law is the same with and without the conditional phases, so the feed-forward is untested; the Hoeffding view leaves folded-QPE equivalence unresolved.
   Evidence: [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [adjudication-05b97e57a73f-seed20261011.json](../../results/live/2026-10-11T152922.787095Z/adjudication-05b97e57a73f-seed20261011.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
@@ -1504,6 +1512,11 @@ circuit and charges the account ledger's change.
 - **proposed-signed-kernel-probe** (proposed experiment, implementation). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order.
   Boundary: Priced against direct counting before any hardware case; no universal speedup follows. The signed overlap holds for every unit vector u (signed-overlap-kernel-independence); only the dark probability depends on u lying in the kernel.
   Depends on: algebra-circuit-fixtures.
+- **proposed-algebra-device-controlled-extensions** (proposed experiment, implementation). Operational case contracts pair algebra-specific response, singular-sector dynamics, coherent selection, sequential measurement and effective nonunitarity with property-removing mutations, unconditional accounting and prospective calibration controls.
+  Boundary: Logical instruments and exact models are available. Fresh physical scheduling, block-level covariance and power, provider-specific costs and separate approval precede acquisition; squeezing, protected topology and quantum-code benefit remain capability- or definition-gated.
+  Evidence: [hypercomplex-operator-evidence.md](../design/hypercomplex-operator-evidence.md).
+  Gates: replay failure paths checked by core-671.
+  Depends on: algebra-device-operational-falsifiers, algebra-device-logical-instrument-bank.
 - **proposed-tuna17-zero-divisor-matched-response** (proposed experiment, hardware). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
   Boundary: Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.
   Evidence: [tuna17-zero-divisor-matched-response.md](../design/tuna17-zero-divisor-matched-response.md).

@@ -3849,6 +3849,22 @@
    "seconds": 14.0,
    "tier": "pr",
    "requires": ["qi"]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures",
+   "name": "core-670",
+   "seconds": 12.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_conjecture_circuits.py && \"$PYTHON\" -B -m pytest -q tests/scripts/test_algebra_device_conjectures.py tests/scripts/test_algebra_conjecture_circuits.py",
+   "name": "core-671",
+   "seconds": 20.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

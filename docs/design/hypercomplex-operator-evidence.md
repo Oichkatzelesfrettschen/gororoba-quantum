@@ -92,3 +92,137 @@ preparation, compiled-circuit effects, readout and time-dependent drift confound
 representative differences establish neither ray invariance nor its violation. The
 [admission addendum](tuna-order-pilot-adversarial-admission.md) supplies the inference boundaries;
 additional wave, transform, packing or replication acquisitions retain separate approval cases.
+
+## Operational conjecture synthesis
+
+The [conjecture bundle](../evidence/algebra-device-conjectures/README.md) accounts for the ten retained-data proposals and
+twelve algebra/device extensions. Its frozen manifest names each proposal, falsifier, disposition, selected claim and
+acquisition exclusion. The registry remains the authority for claims and acquisitions; the bundle is a derived view.
+`scripts/algebra_device_conjectures.py --freeze` explicitly refreshes that view through the existing offline provider
+adapters. Ordinary replay verifies the frozen source hashes and selected registry entries. New acquisitions outside the
+frozen census enter a later snapshot, rather than silently expanding a retrospective test family.
+
+The evidence chain is algebra, observable, complete quantum instrument, compiled circuit, emulator control, hardware
+measurement and bounded inference. A property-removing mutation must change the ideal observable before a hardware
+response can test that property. The [probe principles](../notes/topics/algebra-hardware-probe-principles.md) derive
+the rule from the kernel-independent signed-overlap failure and the later bright-control measurements.
+
+### Executable boundaries
+
+The exact certificate covers the following bounded objects:
+
+- Every imaginary basis left operator in dimensions 2, 4, 8, 16, 32 and 64 is skew. For real coefficients,
+  `L_x = x_0 I + A`, `A^T = -A`, implies normality. The general adjoint identity belongs to
+  [BCDI Lemma 2.3](../notes/0905.2987.md); the finite check carries its own denominator.
+- The dimension-16 `e1+e10` Gram operator has projectors at eigenvalues 0, 2 and 4 with ranks 4, 8 and 4.
+  The dark vector `e4-e15` has zero product, while changing its relative sign gives squared product norm 8 before
+  input normalization. The [singular-sector derivation](../notes/singular_sector_dynamics.md) owns the general law.
+- A contraction `diag(1,1/2)` maps an equal input mixture to conditional populations 4/5 and 1/5 with success 5/8.
+  Its positive failure operator completes the instrument. A dark branch has probability zero and an undefined
+  conditional state; the report writes JSON null for that state.
+- The X/Z controlled-order witness reads -1; its incoherent control reads 0. The octonion associator encoding
+  at basis inputs 1, 2 and 4 reads -1, while the identity-input control reads +1. Matrix reparenthesization leaves
+  the operator product unchanged. These statements describe different observables.
+- Bell-pair conditional Z or X ensembles both average to the remote density `I/2`. A global phase cancels in a
+  density matrix; a phase on one reference branch produces `cos(phi)` in the control X observable.
+- `X+iZ` is a nonzero rank-one matrix with square zero and parity-time invariance under X and conjugation.
+  It is an explicit standard-complex exceptional-point control, separate from normal real left multiplication.
+- Exact rotation/dephasing instruments preserve total probability. The certificate separates fixed per-step
+  rotation from fixed total rotation, so conditioning and changed exposure cannot masquerade as a Zeno result.
+- All lower-algebra basis products agree under embeddings 8 into 16 and 16 into 32. An outside-support operand
+  changes the product. Padding alone changes neither those products nor physical register dimension.
+- The three-qubit repetition encoding satisfies the Knill-Laflamme scalar-compression condition for the identity
+  and single-X errors and fails the single-Z condition. This reference tests error-set specificity, rather than
+  claiming a sedenion code. The [star-lattice code](../notes/topics/cd-star-lattice-tower.md) is `[[9,1,3]]`:
+  one logical qubit. An arbitrary coherent sixteen-label register needs four logical qubits.
+
+The exact models are local derivations, not claims of publication priority. Existing source identities and reading
+scopes remain in [the source index](../INDEX.md). A new Crossref metadata retrieval for non-Hermitian, Zeno, error-code
+and continuous-variable references returned HTTP 429 during implementation; those candidate citations supply no
+evidence to this bundle. Broader literature/novelty conclusions remain unadmitted. The finite equations above are
+checked independently and require no unsupported citation.
+
+### Logical circuit bank
+
+`scripts/algebra_conjecture_circuits.py` builds twelve complete logical instruments from the existing circuit builders:
+dark/bright/quadrature Design B, commuting/anticommuting controlled order, repeated-measurement sequences with 1/2/4
+steps at fixed total rotation, a contraction with both herald outcomes, and associator spectra at dimensions 8/16/32.
+The checker compiles to CX/RZ/SX/X, enumerates every measurement branch without sampling, and compares full output laws
+within `1e-10`. Repeated-measurement circuits retain each outcome in a different classical bit. The dimension spectra
+are independently predicted from the exact sign table and its Walsh transform.
+
+These checks establish logical conformance. QASM export records logical depth and gate counts, with
+`hardware_admitted=false`. The CX basis is a portable compiler-check basis, rather than a claim about an IBM native
+instruction set. Physical routing, scheduler timing, angle quantization and backend-specific measurement semantics
+belong to the eventual provider case. Provider selection follows the repository's simulation and hardware routing rules.
+
+### Retrospective findings and identification limits
+
+The synthesis carries values directly from the retained producers and preserves their evidence classes:
+
+- Tuna-17 kernel cancellation rejects the bright null. Its readout-corrected kernel-minus-bright response at pi/36
+  is approximately -0.00561 with standard error 0.00580, an unresolved post-hoc contrast. The pi/12 acquisition has
+  an order deviation and lacks a matched bright arm.
+- Garnet resolves its registered kernel responses under its own compile, heralding, angles and calibration.
+  Its bright control was acquired at 0.1 only. A pooled cross-provider slope would conflate those differences.
+- The common-affine response analysis retains same-shot covariance and shared readout uncertainty. Its fixture
+  depth and regional selector differences remain confounds. Failure to reject does not establish the channel.
+- Kingston preparation controls depend on history, repetition delay, scheduler chunks and calibration. Their
+  producer's parameter bounds remain authoritative; a date-only regression cannot identify drift from those controls.
+- Ring-down and atlas claims retain their existing producer gates. Physical wait duration, simulator wall time,
+  provider execution duration and billed time remain distinct quantities.
+
+Scientific rejection is an accepted output. Historical preregistered decisions retain their original rules. New
+retrospective summaries remain exploratory and generate no fresh p-values from already aggregated records. A new
+finite test family uses Holm correction at family-wise alpha 0.05, with effect estimates and intervals. A false
+Holm decision means unresolved, rather than supported. Future equivalence claims require a frozen meaningful margin.
+
+### Prospective case contracts
+
+The following contracts define the next acquisition questions. Each requires a fresh, separately approved written
+case with circuit hashes, backend, shots, seconds and native credits. A logical case or retained budget never authorizes
+execution. The [existing matched-response case](tuna17-zero-divisor-matched-response.md) owns its nine-job proposal.
+
+| Family | Primary contrast and controls | Admission and stop rule |
+|---|---|---|
+| Matched algebra response | Existing six-cell residual and full covariance; dark, bright and same-support quadrature in both regions; shared readout controls | Freeze covariance construction before acquisition; require served order and qualified assignment inversion; withhold the endpoint on failed controls or reordered arms |
+| Kernel sign specificity | `(Z_kernel(+phi)-Z_kernel(-phi)-Z_bright(+phi)+Z_bright(-phi))/2`, with bright and null arms at every angle | Use verified +,-,-,+ execution blocks; retain each calibration context; refuse a sine-law endpoint where an angle lacks its bright arm |
+| Singular-sector dynamics | Compare dark/bright/intermediate populations against the source-derived dilation law; exact-synthesis versus product-formula and matched echo controls | A one-step experiment duplicates Design B; acquire only a contrast that resolves the intermediate-sector law within the compiled error budget |
+| Coherent selection | Coherent minus dephased-control response, plus fixed orders, commuting references and associator mutations | Require identical workspace at recombination and unconditional probability accounting; separate order dependence from the associator encoding |
+| Sequential measurement | Survival at fixed simulated evolution, with equal-elapsed-time unmeasured and measurement/reset controls | Resolve physical measurement and feedback overhead; preserve intermediate outcomes; postselection fraction is a co-primary accounting quantity |
+| Effective nonunitarity and dimension | Filter success plus conditional output; lower-subalgebra restriction versus explicit outside-support intervention | Require complete instruments, explicit embedding and mutation sensitivity; generic PT behavior alone supplies no algebra-specific hardware question |
+
+For a four-arm odd double difference with n independent shots per arm, each Z variance is at most 1, so contrast
+variance is at most `1/n`. A planning-only absolute effect of 0.05 at 80% power and a four-comparison, two-sided
+Bonferroni allocation requires `ceil((Phi^-1(1-0.05/8)+Phi^-1(0.8))^2/0.05^2)` shots per arm under that IID model.
+Bonferroni supplies a conservative power allocation for the Holm family. The final case must add measured readout
+and between-block variance before choosing shots; raw shot count cannot substitute for independent acquisition blocks.
+At least four independently timed balanced blocks are required to estimate a block component, and the case must
+justify the block model and its resulting power. A calibration change creates a new stratum rather than an assumed
+independent replicate. These unresolved device quantities keep the contracts at design status.
+
+The retained timing checker applies the 50 ns proposal against every backend's minimum recorded `measure_2` duration
+and dt. All three fail that necessary bound. A passing future bound would still require live gate, reset, feedback
+and alignment checks. The plan makes no 10-50 ns hardware measurement claim.
+
+Squeezing remains capability-gated pending bosonic preparation and quadrature readout, energy and truncation bounds.
+Torus protection remains definition-gated pending a transport invariant and perturbation model. Error-correction
+benefit requires adequate logical capacity, a named error set, syndrome schedule, decoder and resource-matched baseline.
+The [zero-divisor code falsification](../notes/topics/c5-zero-divisor-code-falsification.md) concerns a classical
+annihilator decoder; it neither proves nor refutes a separately specified quantum code.
+
+### Replay and integration
+
+Run with the repository's pinned current interpreter and exported `PYTHON`:
+
+```sh
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+"$PYTHON" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures
+"$PYTHON" -B -W error scripts/algebra_conjecture_circuits.py
+"$PYTHON" -B -m pytest -q tests/scripts/test_algebra_device_conjectures.py tests/scripts/test_algebra_conjecture_circuits.py
+```
+
+`--out DIR` writes derived outputs; ordinary `--check DIR` writes stdout only. The circuit command's optional
+`--out DIR` writes QASM and a conformance record. A deliberate new manifest snapshot uses `--freeze` followed by
+`--out`; inspect every changed source binding and acquisition before retaining the successor. New retained evidence
+gets a successor bundle rather than replacing a digest-bound historical result.
