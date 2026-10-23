@@ -316,32 +316,38 @@ counts; reported occupations do not establish photon-number resolution.
 
 At each angle, signed `x_k` and `y_k` use
 `(z1-z2-z3+z4)/4`; `q_k=(p1+p2+p3+p4)/4` averages direct signs.
-Retain direct sign contrast and sign-even analyzer components descriptively.
+The sign-even `x_k^e` and `y_k^e` use `(z1+z2+z3+z4)/4`; direct sign contrast
+stays descriptive.
 The mutation difference uses `(p1-p2-p3+p4)/2`, not division by four. The
 absolute mutation dark probability uses the two commuting arms,
 `D_mut=(p2+p3)/2`.
 
-The four-arm estimator returns `(z_+ - z_-)/2` under stable repeated arms, so a
-common sign-even error `b(theta)` in `z_+=f+b`, `z_-=-f+b` cancels from it. The
-primary analysis therefore covers the sign-odd X/Y coefficients and the
-sign-averaged dark coefficients. The replay's counterexample keeps all fifteen
-primary coefficients exactly ideal with sign-specific coherences
-`C_+=C(1+0.2i)` and `C_-=-C(1-0.2i)`. It is a positive state at every planned
-angle (`p0=0.52`, `p3=D`, `p1=0.48-D>=0.0277`), and its sign-even coherence
-reaches magnitude 0.1902. The sign-even X/Y responses and direct sign contrast
-are displayed beside the primary atlas and stay descriptive; "complete
-coefficient spectrum" always names those primary sequences.
+The sign-odd estimator returns `(z_+ - z_-)/2` under stable repeated arms, so a
+common sign-even error `b(theta)` in `z_+=f+b`, `z_-=-f+b` cancels from it, and
+the sign-even estimator `(z_+ + z_-)/2` returns `b`. The ideal response is
+`C_odd=C=(1-exp(-2i theta))/2` and `C_even=0`. The replay's counterexample,
+sign-specific coherences `C_+=C(1+0.2i)` and `C_-=-C(1-0.2i)`, keeps every
+sign-odd X/Y and dark coefficient exactly ideal and gives `C_even=0.2iC`:
+`X_even=-0.1 sin(2 theta)` and `Y_even=0.1-0.1 cos(2 theta)`. It is a positive
+state at every planned angle (`p0=0.52`, `p3=D`, `p1=0.48-D>=0.0277`), and its
+sign-even coherence reaches magnitude 0.1902. The primary analysis therefore
+covers the sign-odd and sign-even X/Y coefficients and the sign-averaged dark
+coefficients; "complete coefficient spectrum" names those 25 sequences.
 
-The 15 discrete coefficients, the mutation difference and the absolute
-mutation dark probability form 17 primary endpoints. Allocate family error
-0.01 equally: `alpha_j=0.01/17`. The mutation dark tolerance is 0.05, fixed
+The 15 sign-odd X/Y and dark coefficients, the 10 sign-even X/Y coefficients,
+the mutation difference and the absolute mutation dark probability form 27
+primary endpoints. Allocate family error 0.01 equally: `alpha_j=0.01/27`. Each
+sign-even coefficient has registered ideal value zero and the same 0.05
+coefficient tolerance. The sign-even counterexample is a required negative
+control: at expected counts its coefficients `X_even` sine 2-theta `=-0.1`,
+`Y_even` constant `=0.1` and `Y_even` cosine 2-theta `=-0.1` have intervals
+wholly outside the tolerance, so the family falsifies it, and replay.py raises
+if it would not. The mutation dark tolerance is 0.05, fixed
 before acquisition. A probability lies in `[0, 1]`, so the endpoint's interval
 is intersected with `[0, 1]` before any decision; closure qualifies when the
 upper bound `min(1, D_mut + r)` is at most 0.05, and fails when the lower bound
-exceeds 0.05. A perfectly closed mutation, `D_mut=0` with radius 0.01575, gives
-the clipped interval `[0, 0.01575]` and qualifies. Adding the ten sign-even X/Y coefficients would give 27
-endpoints and widen every radius by a factor of 1.0319 at unchanged cost; that
-expansion is an open decision of the plan's owner.
+exceeds 0.05. A perfectly closed mutation, `D_mut=0` with radius 0.01619, gives
+the clipped interval `[0, 0.01619]` and qualifies.
 For any linear endpoint with raw-iteration weights `c_i` and event range
 `[a_i,b_i]`, use
 
@@ -355,17 +361,33 @@ Analyzer events have range [-1,1]; direct dark events have range [0,1]. At
 
 | Endpoint type | Hoeffding radius |
 |---|---:|
-| X/Y constant coefficient | 0.009963024 |
-| X/Y sine or cosine coefficient | 0.014089844 |
-| Dark constant coefficient | 0.004981512 |
-| Dark sine or cosine coefficient | 0.007044922 |
-| Mutation difference | 0.022277999 |
-| Mutation dark probability | 0.015752924 |
+| X/Y constant coefficient, sign-odd or sign-even | 0.010242515 |
+| X/Y sine or cosine coefficient, sign-odd or sign-even | 0.014485103 |
+| Dark constant coefficient | 0.005121257 |
+| Dark sine or cosine coefficient | 0.007242552 |
+| Mutation difference | 0.022902959 |
+| Mutation dark probability | 0.016194838 |
 
-The 17-endpoint radii are the 16-endpoint radii times 1.0037487. Projecting
-the simultaneous coefficient box onto each sampled point bounds the signed
-X or Y value within 0.0381 at `theta=0` and 0.0474 at the other four angles;
-those are the widths the atlas draws.
+The sign-even weights differ from the sign-odd weights only in sign, so the
+two radii agree. The 27-endpoint radii are the 17-endpoint radii times
+`sqrt(log(5400)/log(3400))=1.0280528`. Keeping the 17-endpoint radii would take
+8,659 eligible events per iteration instead of 8,192, 5.69% more; the design
+keeps 8,192. Projecting the simultaneous coefficient box onto each sampled
+point bounds the signed X or Y value within 0.03921 at `theta=0` and 0.04873
+at the other four angles; those are the widths the atlas draws.
+
+A sign-specific response is `C_+=C_even+C_odd` or `C_-=C_even-C_odd`, so its
+reconstructed coefficient carries both radii, 0.020485 for a constant and
+0.028970 for a sine or cosine coefficient, and the two 0.05 coefficient
+tolerances allow it a worst-case deviation of 0.10. The sign-odd radii alone
+never bound a sign-specific response.
+
+An earlier revision of this plan registered 17 primary endpoints, the
+sign-odd and dark coefficients and the two mutation endpoints at
+`alpha_j=0.01/17`, with radii 0.009963024, 0.014089844, 0.004981512,
+0.007044922, 0.022277999 and 0.015752924 in the table's order; the sign-even
+coefficients stayed descriptive. That family is superseded planning and
+interprets no acquisition.
 
 Recompute using actual eligible counts. Independence of eligible observations
 and appropriate sampling/stopping assumptions underlie these bounds. Aggregate
@@ -415,7 +437,7 @@ curves explicitly carry the label THEORY ONLY.
    intensity-only picture loses. A ribbon width can encode dark probability,
    with units and a legend. Lines joining the five measured points indicate
    sampling order, not measured intermediate states.
-3. **Coefficient spectrum.** Show the 15 primary coefficients and intervals
+3. **Coefficient spectrum.** Show the 25 primary coefficients and intervals
    beside the exact rational predictions. Unintended coefficient support
    remains visible instead of being smoothed away for visual appeal.
 4. **Twelve output channels.** A companion probability strip retains every
@@ -431,7 +453,7 @@ It marks the origin as both the diagonal-mixture reference and the ideal point
 at `theta=0`; the origin alone never classifies a setting as incoherent, and
 the nonzero-angle coefficients carry that discrimination. Its error bars are
 the projected simultaneous radii above, and a separate panel draws the
-sign-even response the primary endpoints cancel.
+sign-even response, ideal zero, beside the counterexample's.
 
 An angle-index animation moves through separately prepared circuits. Its label
 states parameter sweep, not measured time evolution. Measured points, theoretical

@@ -2,14 +2,14 @@
   "schema": "work-plan-v1",
   "id": "ascella-signed-coherence-conformance",
   "kind": "experiment",
-  "summary": "Ascella signed-coherence coefficient acquisition: 64 settings, 17 primary endpoints, theory atlas and frozen native request",
+  "summary": "Ascella signed-coherence coefficient acquisition: 64 settings, 27 primary endpoints, theory atlas and frozen native request",
   "sources": [
     "docs/design/ascella-signed-coherence-conformance.md",
     "docs/evidence/ascella-order-coefficients/README.md",
     "docs/state/plans/ascella-approved-order-retry.json"
   ],
   "state": "planned",
-  "scope": "One 64-setting Ascella order-family job measuring sign-odd X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
+  "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
   "next_action": "Build the frozen 64-setting twelve-mode native request and replay it locally against the ideal case and both counterexamples.",
   "reconciliation": {
@@ -26,7 +26,7 @@
     {
       "id": "replay-request-locally",
       "action": "Replay the frozen request through the local SLOS backend and run the registered estimators on the ideal response, the equal-contrast mutation counterexample and the sign-even counterexample.",
-      "acceptance": "The ideal replay qualifies every primary endpoint; the equal-contrast counterexample fails mutation closure; the sign-even counterexample keeps all fifteen primary coefficients ideal while its descriptive sign-even response reaches the 0.19 magnitude replay.py records.",
+      "acceptance": "The ideal replay qualifies every primary endpoint; the equal-contrast counterexample fails mutation closure; the sign-even counterexample keeps all fifteen sign-odd and dark coefficients ideal and fails tolerance-conformance on the three sign-even coefficients replay.py names.",
       "state": "todo",
       "depends_on": [
         "freeze-native-request"

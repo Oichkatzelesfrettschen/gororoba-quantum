@@ -22,8 +22,8 @@ from hypercomplex_operators import order_interferometer  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 FAMILY_ALPHA = 0.01
-PRIMARY_ENDPOINTS = 17
-EXPANDED_ENDPOINTS = 27
+PRIMARY_ENDPOINTS = 27
+SUPERSEDED_ENDPOINTS = 17
 EVENTS_PER_ITERATION = 8192
 COEFFICIENT_TOLERANCE = 0.05
 MUTATION_DARK_TOLERANCE = 0.05
@@ -118,10 +118,16 @@ def report() -> dict[str, Any]:
     pilot_path = ROOT / "results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.json"
     pilot = json.loads(pilot_path.read_text())
     transform = np.linalg.inv(basis)
+    # Arms run phi = +pi/4, -pi/4, -pi/4, +pi/4: the sign-odd estimator is (z_+ - z_-)/2, the sign-even (z_+ + z_-)/2.
     analyzer_weights = np.kron(transform, np.array([[1, -1, -1, 1]]) / 4)
+    sign_even_weights = np.kron(transform, np.ones((1, 4)) / 4)
     direct_weights = np.kron(transform, np.ones((1, 4)) / 4)
     log_factor = 0.5 * math.log(2 / (FAMILY_ALPHA / PRIMARY_ENDPOINTS))
     analyzer_radii = np.sqrt(log_factor * np.sum(analyzer_weights**2, axis=1) * 4 / EVENTS_PER_ITERATION)
+    sign_even_radii = np.sqrt(log_factor * np.sum(sign_even_weights**2, axis=1) * 4 / EVENTS_PER_ITERATION)
+    radius_scale = math.sqrt(
+        math.log(2 * PRIMARY_ENDPOINTS / FAMILY_ALPHA) / math.log(2 * SUPERSEDED_ENDPOINTS / FAMILY_ALPHA)
+    )
     direct_radii = np.sqrt(log_factor * np.sum(direct_weights**2, axis=1) / EVENTS_PER_ITERATION)
     # Each sampled value is the basis row dotted with the coefficient vector, so a coefficient box of half-widths r
     # bounds the value at theta_k by sum_j |basis[k, j]| r_j.
@@ -139,6 +145,18 @@ def report() -> dict[str, Any]:
         raise ValueError("the sign-even counterexample changes the sign-odd projection")
     if np.min(remainder) < 0 or np.max(np.abs(np.abs(plus) ** 2 - 4 * bright * dark_ideal)) > 1e-12:
         raise ValueError("the sign-even counterexample is not a positive state")
+    sign_even = (plus + minus) / 2
+    even_coefficients = transform @ np.column_stack((sign_even.real, sign_even.imag))
+    # At expected counts an endpoint's interval is its value +- radius; the counterexample is a required negative
+    # control, so some sign-even interval must lie wholly outside the coefficient tolerance.
+    rejected = [
+        {"row": row, "basis": basis_name, "value": float(even_coefficients[index, column])}
+        for column, row in enumerate(("X", "Y"))
+        for index, basis_name in enumerate(("constant", "cos(2 theta)", "sin(2 theta)", "cos(4 theta)", "sin(4 theta)"))
+        if abs(even_coefficients[index, column]) - sign_even_radii[index] > COEFFICIENT_TOLERANCE
+    ]
+    if not rejected:
+        raise ValueError("the expanded endpoint family does not reject the sign-even counterexample")
     return {
         "evidence_class": "exact identities and local matrix computation; artwork is theoretical",
         "operator_sha256": hashlib.sha256(
@@ -154,14 +172,16 @@ def report() -> dict[str, Any]:
         "primary_endpoints": PRIMARY_ENDPOINTS,
         "hoeffding_radii_at_8192": {
             "analyzer_coefficients": analyzer_radii.tolist(),
+            "sign_even_analyzer_coefficients": sign_even_radii.tolist(),
             "dark_coefficients": direct_radii.tolist(),
             "mutation_difference": math.sqrt(log_factor / EVENTS_PER_ITERATION),
             "mutation_dark": math.sqrt(log_factor * 0.5 / EVENTS_PER_ITERATION),
         },
-        "radius_scale_from_16_endpoints": {
-            str(count): math.sqrt(math.log(2 * count / FAMILY_ALPHA) / math.log(2 * 16 / FAMILY_ALPHA))
-            for count in (PRIMARY_ENDPOINTS, EXPANDED_ENDPOINTS)
-        },
+        "superseded_endpoints": SUPERSEDED_ENDPOINTS,
+        "radius_scale_from_superseded_endpoints": radius_scale,
+        "events_per_iteration_for_superseded_radii": EVENTS_PER_ITERATION * radius_scale**2,
+        "sign_specific_coefficient_radii": (analyzer_radii + sign_even_radii).tolist(),
+        "sign_specific_coefficient_tolerance": 2 * COEFFICIENT_TOLERANCE,
         "pointwise_envelope_of_coefficient_tolerance": (COEFFICIENT_TOLERANCE * envelope.sum(axis=1)).tolist(),
         "simultaneous_xy_pointwise_radii": (envelope @ analyzer_radii).tolist(),
         "mutation": {
@@ -173,7 +193,9 @@ def report() -> dict[str, Any]:
             "twist": SIGN_EVEN_TWIST,
             "bright_population": bright,
             "minimum_remaining_population": float(np.min(remainder)),
-            "maximum_sign_even_magnitude": float(np.max(np.abs((plus + minus) / 2))),
+            "maximum_sign_even_magnitude": float(np.max(np.abs(sign_even))),
+            "sign_even_coefficients": even_coefficients.T.tolist(),
+            "rejected_at_expected_counts": rejected,
         },
         "pilot_dark_counts": [
             {
@@ -241,7 +263,7 @@ def render(destination: Path, radii: list[float]) -> None:
     panels[1].set(
         xlabel="theta / pi",
         ylabel="sign-even response",
-        title="Sign-even response the primary endpoints cancel",
+        title="Sign-even response: primary endpoints, ideal zero",
     )
     panels[1].legend(fontsize=7)
     panels[2].plot(theta / np.pi, horizontal, label="X: even in theta")

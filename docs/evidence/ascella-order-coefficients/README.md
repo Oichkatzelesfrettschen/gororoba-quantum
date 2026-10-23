@@ -11,18 +11,21 @@ complex-gain coefficients, cancellation of a common phase, and the rotated
 coefficient relations), compares source-state and coherence formulas with the
 repository operator at 51 points, and extracts all five discrete harmonic
 coefficients at each of five planned angles. It also computes the
-17-endpoint Hoeffding radii, their scale against 16 and 27 endpoints, the
+27-endpoint Hoeffding radii (sign-odd and sign-even X/Y, dark and mutation),
+their scale against the superseded 17-endpoint family, the reconstructed
+sign-specific radii, the
 pointwise envelope of the 0.05 coefficient tolerance, the projected
 simultaneous X/Y radius at each planned angle, and the equal-contrast and
-sign-even counterexamples, checking the latter for positivity. [derivation.json](derivation.json) records residuals,
+sign-even counterexamples, checking the latter for positivity and for
+rejection by the sign-even endpoints at expected counts. [derivation.json](derivation.json) records residuals,
 source and pilot-analysis digests, tool versions and the pilot's dark counts.
 The pilot counts come from the retained analysis; the curve is theoretical.
 
 ![Theoretical coefficient atlas](coefficient-atlas.svg)
 
 The four panels show the sign-odd coherence circle with angle labels,
-traversal direction and projected simultaneous radii; the sign-even response
-the primary endpoints cancel, with the replay's counterexample; the angle
+traversal direction and projected simultaneous radii; the sign-even response,
+a primary endpoint with ideal value zero, with the replay's counterexample; the angle
 harmonics; and the two coherence branches that direct intensity cannot
 distinguish. The black
 points mark planned angles; they are not measurements. The final measured

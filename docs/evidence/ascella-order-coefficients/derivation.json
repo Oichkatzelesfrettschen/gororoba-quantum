@@ -34,6 +34,7 @@
       5.551115123125783e-17
     ]
   ],
+  "events_per_iteration_for_superseded_radii": 8658.063774051381,
   "evidence_class": "exact identities and local matrix computation; artwork is theoretical",
   "exact_zero_residuals": {
     "coherence_circle": "0",
@@ -48,21 +49,28 @@
   },
   "hoeffding_radii_at_8192": {
     "analyzer_coefficients": [
-      0.009963024113926496,
-      0.014089843824165038,
-      0.014089843824165036,
-      0.014089843824165036,
-      0.014089843824165036
+      0.010242514792964008,
+      0.014485103333016752,
+      0.01448510333301675,
+      0.01448510333301675,
+      0.01448510333301675
     ],
     "dark_coefficients": [
-      0.004981512056963248,
-      0.007044921912082519,
-      0.007044921912082518,
-      0.007044921912082518,
-      0.007044921912082518
+      0.005121257396482004,
+      0.007242551666508376,
+      0.007242551666508375,
+      0.007242551666508375,
+      0.007242551666508375
     ],
-    "mutation_dark": 0.01575292429159431,
-    "mutation_difference": 0.02227799918020925
+    "mutation_dark": 0.016194837856867116,
+    "mutation_difference": 0.022902959337614704,
+    "sign_even_analyzer_coefficients": [
+      0.010242514792964008,
+      0.014485103333016752,
+      0.01448510333301675,
+      0.01448510333301675,
+      0.01448510333301675
+    ]
   },
   "maximum_residuals": {
     "coherence_residual": 4.577566798522237e-16,
@@ -130,24 +138,63 @@
     0.1828437878668761,
     0.18284378786687608
   ],
-  "primary_endpoints": 17,
-  "radius_scale_from_16_endpoints": {
-    "17": 1.0037487241982075,
-    "27": 1.0319066819930751
-  },
+  "primary_endpoints": 27,
+  "radius_scale_from_superseded_endpoints": 1.0280527956011702,
   "sign_even_counterexample": {
     "bright_population": 0.52,
     "maximum_sign_even_magnitude": 0.19021130325903077,
     "minimum_remaining_population": 0.027745751406263064,
+    "rejected_at_expected_counts": [
+      {
+        "basis": "sin(2 theta)",
+        "row": "X",
+        "value": -0.09999999999999999
+      },
+      {
+        "basis": "constant",
+        "row": "Y",
+        "value": 0.10000000000000002
+      },
+      {
+        "basis": "cos(2 theta)",
+        "row": "Y",
+        "value": -0.1
+      }
+    ],
+    "sign_even_coefficients": [
+      [
+        1.840311960187874e-17,
+        -1.096880244049759e-17,
+        -0.09999999999999999,
+        -7.84918458471962e-18,
+        2.5527044565341143e-18
+      ],
+      [
+        0.10000000000000002,
+        -0.1,
+        -2.4151464295051992e-17,
+        -7.896720246711005e-19,
+        2.1532551445735833e-17
+      ]
+    ],
     "twist": 0.2
   },
-  "simultaneous_xy_pointwise_radii": [
-    0.03814271176225657,
-    0.047397988595022374,
-    0.04739798859502238,
-    0.04739798859502239,
-    0.04739798859502238
+  "sign_specific_coefficient_radii": [
+    0.020485029585928016,
+    0.028970206666033504,
+    0.0289702066660335,
+    0.0289702066660335,
+    0.0289702066660335
   ],
+  "sign_specific_coefficient_tolerance": 0.1,
+  "simultaneous_xy_pointwise_radii": [
+    0.03921272145899751,
+    0.04872763468098515,
+    0.04872763468098515,
+    0.04872763468098515,
+    0.04872763468098514
+  ],
+  "superseded_endpoints": 17,
   "versions": {
     "matplotlib": "3.11.2",
     "numpy": "2.5.4",
