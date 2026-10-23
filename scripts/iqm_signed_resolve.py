@@ -291,6 +291,15 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     for run_dir in run_dirs:
         if sha256((run_dir / "prediction.json").read_bytes()) != bound:
             raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
+    submissions = [json.loads((run_dir / "submission.json").read_text(encoding="utf-8")) for run_dir in run_dirs]
+    identities = [submission["job_id"] for submission in submissions]
+    if len(set(identities)) != len(identities):
+        raise ValueError("two run directories hold one job; each acquisition counts once")
+    manifest = json.loads((sorted(run_dirs)[0] / "cases.json").read_text(encoding="utf-8"))
+    expected = sorted(job["job"] for job in manifest["jobs"])
+    supplied = sorted(submission["job"] for submission in submissions)
+    if supplied != expected:
+        raise ValueError(f"the analysis reads every job of the case once, {expected}, not {supplied}")
     counts: dict[str, tuple[int, int]] = {}
     runs = []
     for run_dir in sorted(run_dirs):
@@ -312,11 +321,29 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
             counts[name] = (ones + sum(bits), n + len(bits))
         runs.append({"run": run_dir.name, "job": submission["job"], "charge": facts["charge"]})
     probe = {n: v for n, v in counts.items() if n.startswith("t")}
+    result = evaluate(probe, prediction["t"])
     return {
         "schema": "iqm-signed-resolve-analysis-v1",
         "runs": runs,
-        **evaluate(probe, prediction["t"]),
+        **result,
+        "calibration": calibration_readings(counts, result["d_t"], prediction["t"]),
         "credits_charged": round(sum(r["charge"] for r in runs), 6),
+    }
+
+
+def calibration_readings(counts: dict[str, tuple[int, int]], d_t: float, t: float) -> dict[str, Any]:
+    """The calibration job's readings: QB7's readout errors and the visibility they correct, and each
+    train's <Z> by pulse count. The trained qubits carry no readout pair of their own in these cases, so
+    their over-rotation is not separated from their readout offset and is reported as raw readings."""
+    ro0, ro1 = z_of(counts, "ro0"), z_of(counts, "ro1")
+    e01, e10 = (1 - ro0[0]) / 2, (1 + ro1[0]) / 2
+    return {
+        "readout": {CONTROL: {"e01": e01, "e10": e10}},
+        "visibility_readout_corrected": d_t / (law(t) * (1 - e01 - e10)),
+        "trains": {
+            qubit: {str(4 * k + 1): z_of(counts, f"amp-{qubit}-{k}")[0] for k in AMPLIFY_K} for qubit in TRAIN_QUBITS
+        },
+        "trains_separable_from_readout": False,
     }
 
 

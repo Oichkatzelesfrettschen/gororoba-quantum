@@ -219,14 +219,15 @@ claim `iqm-garnet-signed-null-retest`, replayed by gate `core-643`).
 
 | arm | odd part | even part | kept shots per sign |
 |---|---|---|---|
-| \|t\| = 0.25 | +0.0089 +- 0.0031 | -0.0195 | 50263 / 50591 |
-| t = 0 | +0.0024 +- 0.0031 | -0.0175 | 50404 / 50433 |
+| \|t\| = 0.25 | +0.0090 +- 0.0031 | -0.0195 | 50263 / 50591 |
+| t = 0 | +0.0025 +- 0.0031 | -0.0175 | 50404 / 50433 |
 
 D(0.25) = +0.0065 +- 0.0045 (z 1.46) leaves the sign of t unresolved, and
 the visibility after the null subtraction, 0.058, sits inside the
-calibration model's 0.05 to 0.09. The measured null offset (+0.0024) is
+calibration model's 0.05 to 0.09. The measured null offset (+0.0025) is
 smaller than the modeled +0.0136. The original run's +0.022 at |t| = 0.25
-lies 2.0 standard errors above this run's +0.0089 at the same |t|; that run
+lies 1.8 standard errors (their combined error) above this run's +0.0090 at
+the same |t|; that run
 listed +t before -t and had no t = 0 arm, so a batch-position effect, a null
 offset and a fluctuation are not separated in it, and its sign-resolved
 reading is superseded. The negative even offsets reproduce (-0.0195 and

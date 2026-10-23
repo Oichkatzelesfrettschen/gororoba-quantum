@@ -90,8 +90,8 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 ### F6. The |t| = 0.25 sign does not survive the null control (hardware, preregistered)
 
 - **Outcome: the original claim is superseded.** On set `68b0f1d0`, in
-  balanced order with a t = 0 arm (5.50 credits): odd(0.25) = +0.0089 +-
-  0.0031, odd(0) = +0.0024 +- 0.0031, D(0.25) = +0.0065 +- 0.0045 (z 1.46),
+  balanced order with a t = 0 arm (5.50 credits): odd(0.25) = +0.0090 +-
+  0.0031, odd(0) = +0.0025 +- 0.0031, D(0.25) = +0.0065 +- 0.0045 (z 1.46),
   unresolved. The visibility after subtraction, 0.058, sits inside the
   model's 0.05 to 0.09; the original run implied 0.206.
 - **Evidence.** `iqm-garnet-signed-null-retest`, which supersedes

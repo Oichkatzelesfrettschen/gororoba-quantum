@@ -8090,15 +8090,15 @@
     },
     {
       "id": "iqm-garnet-signed-null-retest",
-      "statement": "On IQM Garnet (calibration set 68b0f1d0, the retained 199-CZ compile of the signed kernel probe, two +, -, -, + blocks at |t| = 0.25 and at t = 0, 20000 shots each, heralding keeping 50263 to 50591 shots per arm), the odd part (Z(t) - Z(-t))/2 of QB7 read +0.0089 +- 0.0031 at |t| = 0.25 and +0.0024 +- 0.0031 at t = 0, so D(0.25) = odd(0.25) - odd(0) = +0.0065 +- 0.0045 (z 1.46): unresolved under the preregistered three-standard-error decision. The visibility after the null subtraction is 0.058, inside the calibration model's 0.05 to 0.09 and a quarter of the 0.206 the original run implied; the even part read -0.0175 and -0.0195, reproducing the original run's negative offsets. The jobs charged 5.50 credits.",
+      "statement": "On IQM Garnet (calibration set 68b0f1d0, the retained 199-CZ compile of the signed kernel probe, two +, -, -, + blocks at |t| = 0.25 and at t = 0, 20000 shots each, heralding keeping 50263 to 50591 shots per arm), the odd part (Z(t) - Z(-t))/2 of QB7 read +0.0090 +- 0.0031 at |t| = 0.25 and +0.0025 +- 0.0031 at t = 0 (copies weighted equally), so D(0.25) = odd(0.25) - odd(0) = +0.0065 +- 0.0045 (z 1.46): unresolved under the preregistered three-standard-error decision. The visibility after the null subtraction is 0.058, inside the calibration model's 0.05 to 0.09 and a quarter of the 0.206 the original run implied; the even part read -0.0175 and -0.0195, reproducing the original run's negative offsets. The jobs charged 5.50 credits.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One calibration set. The observable is kernel-independent (signed-overlap-kernel-independence), so the re-test bounds the device's carried phase, not the sedenion kernel. The original run's +0.022 at |t| = 0.25 lies 2.0 standard errors above this run's +0.0089 at the same |t|; with that run's +t before -t order and no t = 0 arm, a batch-position effect, the null offset and a fluctuation are not separated.",
+      "boundary": "One calibration set. The observable is kernel-independent (signed-overlap-kernel-independence), so the re-test bounds the device's carried phase, not the sedenion kernel. The original run's +0.022 at |t| = 0.25 lies 1.8 standard errors (their combined error) above this run's +0.0090 at the same |t|; with that run's +t before -t order and no t = 0 arm, a batch-position effect, the null offset and a fluctuation are not separated.",
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_null_retest_analysis.json",
-          "sha256": "0b2563cb0c0d312e888c5f0ae7c51739bca5fa2c33e33ca065fddfdb74a9ce57"
+          "sha256": "493b3deb2129450cdc8b8b762e0ea1d84e6feaf88d97b0da1a89d6ff047727b9"
         },
         {
           "path": "results/iqm/cases/signed-kernel-null-retest/prediction.json",
