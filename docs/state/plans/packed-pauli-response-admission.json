@@ -1,0 +1,31 @@
+{
+  "schema": "work-plan-v1",
+  "id": "packed-pauli-response-admission",
+  "kind": "experiment",
+  "summary": "Packed Pauli response under current provider balances",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/bd8abdb6d731bd308ec849cb2c36bab7d2b3c2ab3c93f636873098a68e88c9d2.txt",
+    "docs/design/packed-pauli-response-current-balance.md"
+  ],
+  "state": "inbox",
+  "scope": "Packed Pauli response under current provider balances",
+  "next_action": "Qualify native compilation and obtain a circuit-free pricing observation where supported.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Logical cases remain unsubmitted; each provider retains its native budget unit and case-specific execution authority."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Qualify native compilation and obtain a circuit-free pricing observation where supported.",
+      "acceptance": "Logical cases remain unsubmitted; each provider retains its native budget unit and case-specific execution authority.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Design packed-versus-isolated equivalence and shared-shot covariance checks.",
+      "acceptance": "Logical cases remain unsubmitted; each provider retains its native budget unit and case-specific execution authority.",
+      "state": "todo"
+    }
+  ]
+}

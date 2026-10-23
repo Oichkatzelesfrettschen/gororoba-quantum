@@ -9,7 +9,7 @@ documentation, the API and the retained runs establish about that cost, and
 how the box-kite follow series (`scripts/box_kite_cases.py`, `FOLLOW_PLAN`)
 spends it. `docs/evidence/box_kite_follow_design/design.json` recomputes every
 measured number below from retained records (`scripts/box_kite_follow_design.py`,
-gate core-439 and gate `core-self-test-09` (`tests/test_cli_self_tests.py`)).
+gate `core-record-check-05` (`tests/test_cli_record_checks.py`) and gate `core-self-test-09` (`tests/test_cli_self_tests.py`)).
 
 ## Platform configuration
 
@@ -295,7 +295,7 @@ core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
 ladder estimators after cutting each job into 8 line-phase bins, bin 0 at the
 depth-9 selector's P1 peak, and tests the max(A1, A2) line statistic
 (`results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json`, gates
-core-433 and core-550). Both rules were chosen after the ladder data were
+`core-record-check-03` and core-550). Both rules were chosen after the ladder data were
 read, so the record is exploratory and binds a future run only. Its bootstrap
 stream, numpy seed [20261017, 2], differs from the ladder's.
 

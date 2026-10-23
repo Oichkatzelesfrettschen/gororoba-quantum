@@ -1,0 +1,69 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/boxkite-kaggle-sweep.md
+
+# boxkite-kaggle-sweep: exhaustive family (a) on a Kaggle CPU kernel with qxelarator
+
+Owner session: boxkite-quantum-main. Branch: research/box-kite-case-generator.
+
+## Finding
+
+The exhaustive 848-circuit (1010 P = 1/2 replicas, 2048 shots) check of
+family (a) leaves remote QX and needs a home: AGENTS.md routes simulations
+of 14 qubits or fewer to Kaggle, and a Kaggle result enters research state
+only through a CPU replay gate.
+
+## Reachability
+
+`kaggle_run.py push` (CPU machine, default) of the generator's sweep entry;
+the replay gate in CI.
+
+## Design
+
+- Sweep entry (built by the boxkite-generator agent): regenerate all 848
+  circuits in-process, run each cQASM text through qxelarator 0.10.0 at
+  2048 shots (seeded if qxelarator exposes a seed), write one record with
+  per-circuit sha256, census predictions per replica, counts and verdict
+  under the program's falsifier (any shot violating a deterministic row;
+  P = 1/2 rows within |z| < 4.5, Bonferroni over about 1010 rows at family
+  error 0.01).
+- kaggle_run.py gains a pin for qxelarator==0.10.0 for this entry.
+- Orchestrator pushes one CPU kernel, collects into results/kaggle/, and
+  adds the replay gate (stdlib + repo, no qxelarator) as core-426/core-427
+  with a self-test that rejects mutated counts.
+
+## Acceptance and falsifier
+
+Prediction: zero deterministic violations and every P = 1/2 row inside the
+bound (QX is exact). Falsifier: any violation refutes that circuit's
+emission, stops the family and blocks the QX smoke submission until
+explained.
+
+## Shared files and dependencies
+
+Needs boxkite-generator's sweep entry. results/kaggle/ retention; Kaggle CPU
+quota (one of five concurrent CPU sessions).
+
+## Effort and agents
+
+Small after the entry exists; orchestrator only.
+
+## Out of scope
+
+(d)/(e) sweeps until the generator builds them.
+
+Entry built: scripts/box_kite_qx_sweep.py (families a: 848 circuits, and
+de: 149 circuits). Push (CPU machine, no --ci-env: qxelarator wheels are
+cp313 only):
+
+    "$PYTHON" scripts/kaggle_run.py push --slug box-kite-qx-sweep --with qx-emulator \
+        --include docs/evidence/box_kite_census/census.json \
+        --include docs/evidence/quantum_inspire/catalogue.json \
+        --include results/quantum_inspire/coupler_zz_tuna_17_analysis.json \
+        scripts/box_kite_qx_sweep.py -- --run docs/evidence/box_kite_qx_sweep
+
+About 1 h (69 dense d2/d3 circuits at about 215 s each). The replay gate
+re-derives every verdict from retained counts and re-checks predictions by
+state vector (`--bind`); it does not resample, which is the owner's call
+for research-state entry (CI cannot install qxelarator).
+
+State: ready to push after review.

@@ -1,0 +1,23 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-order-pilot-adversarial-admission",
+  "kind": "investigation",
+  "summary": "Tuna-17 order pilot: adversarial admission",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/689008d67b98c9b8b9c07d95014e7b0b3a1b4c52ae1bcc52b2acd7992b0ed5a1.txt",
+    "docs/design/tuna-order-pilot-adversarial-admission.md"
+  ],
+  "state": "closed",
+  "scope": "Tuna-17 order pilot: adversarial admission",
+  "next_action": "Resolve the outstanding obligations against the retained source and current evidence.",
+  "reconciliation": {
+    "status": "historical",
+    "note": "Frozen admission text is retained as historical evidence."
+  },
+  "steps": [],
+  "disposition": "superseded",
+  "resolution": "Admission addendum belongs to the retained order pilot; successor design owns new replication.",
+  "superseded_by": [
+    "hypercomplex-operator-evidence"
+  ]
+}

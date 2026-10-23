@@ -1,0 +1,12 @@
+{
+  "schema": "plan-integration-observation-v1",
+  "observed_at": "2026-10-23T19:47:30.966033+00:00",
+  "pull_request": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/394",
+  "head_revision": "9e5256c807ad358fff5d5591cb8c60f736069fa0",
+  "merge_revision": "86fca7309f3c767900bbd39500476658f9451657",
+  "merged_at": "2026-10-23T19:46:35Z",
+  "canonical_revision": "86fca7309f3c767900bbd39500476658f9451657",
+  "review": "Two clean current-head Codex reviews preceded merge.",
+  "validation": "25 focused tests, Ruff, mypy, inventory checks and 241-gate premerge comparison passed.",
+  "gate_boundary": "The user waived further gates for this documentation session. The unfinished repository-wide gate run was stopped; it is not reported as passed."
+}

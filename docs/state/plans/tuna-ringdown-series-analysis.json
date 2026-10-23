@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-ringdown-series-analysis",
+  "kind": "implementation",
+  "summary": "tuna-ringdown-series-q: Tuna-17 readout ring-down series Q analysis and registration",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/e128fd4681d8a4d3e4cf65125eaa05ead2c9638047c69af00d52493a7dbbdafa.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-198.json"
+  ],
+  "state": "inbox",
+  "scope": "tuna-ringdown-series-q: Tuna-17 readout ring-down series Q analysis and registration",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #198 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-198-integration",
+      "action": "Verify the recorded integration state of PR #198.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "782fbad69478205ae2eb3060a546bb4508a594ad6e0bcb9bd2add9d798328bc8",
+          "result": "PR #198 merged as cc0361a21bda5f519c58e6566d12f1f3feaf7e9c; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-198.json",
+              "sha256": "a55ddc1cefb0dd6b9da03ec280730b1070bcb06c33c003d356b30a47b9296ec5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Agent ran 23 QI/registry pr gates (pass) and core-430 after the renumber; orchestrator reran research_state --check (113 claims, 80 acquisitions) and a hygiene scan (ASCII, no home paths, no session names). Not run: full core-039 mypy and the pr tier outside the QI filter -- CI covers them.",
+      "state": "todo"
+    }
+  ]
+}

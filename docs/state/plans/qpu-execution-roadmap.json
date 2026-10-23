@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "qpu-execution-roadmap",
+  "kind": "coordination",
+  "summary": "QPU execution and optimization roadmap",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/d2e1bdac6af743cfcd51d40a9c636b963cfd075ca3b0495ea2b1b2605e37350e.txt",
+    "gororoba_quantum/QPU_EXECUTION_ROADMAP.md"
+  ],
+  "state": "inbox",
+  "scope": "QPU execution and optimization roadmap",
+  "next_action": "Reconcile retained campaign acquisitions and original integration receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The legacy Copilot instruction is superseded by the current Codex-only policy; historical budgets and approvals confer no new execution authority."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Reconcile retained campaign acquisitions and original integration receipts.",
+      "acceptance": "The legacy Copilot instruction is superseded by the current Codex-only policy; historical budgets and approvals confer no new execution authority.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Qualify matched readout/routing crossover and correction-policy questions.",
+      "acceptance": "The legacy Copilot instruction is superseded by the current Codex-only policy; historical budgets and approvals confer no new execution authority.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Route N21 noise admission through its written case.",
+      "acceptance": "The legacy Copilot instruction is superseded by the current Codex-only policy; historical budgets and approvals confer no new execution authority.",
+      "state": "todo"
+    }
+  ]
+}

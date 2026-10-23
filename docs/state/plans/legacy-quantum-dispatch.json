@@ -1,0 +1,26 @@
+{
+  "schema": "work-plan-v1",
+  "id": "legacy-quantum-dispatch",
+  "kind": "coordination",
+  "summary": "Historical dispatch obligations and their current successor workstreams.",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/193b4d180c21cabb6d0da0ad6a2ff76d590301da1b1667d8288fe15ed7163d51.txt",
+    "plans/quantum_dispatch.json"
+  ],
+  "state": "closed",
+  "scope": "quantum_dispatch",
+  "next_action": "Consult the successor workstream for each archived dispatch obligation.",
+  "reconciliation": {
+    "status": "historical",
+    "note": "The October 12 dispatch is a historical cross-repository snapshot. Every task maps below; old owners, review policy and approval text confer no current authority."
+  },
+  "steps": [],
+  "disposition": "superseded",
+  "resolution": "Historical dispatch replaced by scoped work records; original source remains retained.",
+  "superseded_by": [
+    "companion-repository-proof-integration",
+    "qpu-execution-roadmap",
+    "rank-locus-global-classification",
+    "research-evidence-roadmap"
+  ]
+}

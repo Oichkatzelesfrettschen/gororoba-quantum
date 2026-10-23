@@ -12,7 +12,7 @@ Pauli sum:
 `scripts/bdsc_pauli.py` derives this from `cd_core.cd_sign` in exact integer
 arithmetic, checks it against `bdsc.ideal_effect()` and `bdsc.projector()`,
 and writes [pauli_form.json](../../evidence/bdsc/pauli/pauli_form.json); gate
-`core-625` replays the record against a fresh derivation.
+`core-record-check-05` (`tests/test_cli_record_checks.py`) replays the record against a fresh derivation.
 
 ## Local readout of the target
 

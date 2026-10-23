@@ -59,6 +59,7 @@ SLOW_FULL_GATES = (
     "core-282",
     "core-092",
     "core-304",
+    "core-behavior-03",
 )
 
 

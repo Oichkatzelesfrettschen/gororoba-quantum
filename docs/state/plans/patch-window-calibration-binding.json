@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "patch-window-calibration-binding",
+  "kind": "implementation",
+  "summary": "74: patch_window_analysis: gate cross-job comparisons on a shared calibration",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/276177078ffcc8d0531dcc1ef98128150cf029d8ccd6f9973bc411c6ccd62c71.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-196.json"
+  ],
+  "state": "inbox",
+  "scope": "74: patch_window_analysis: gate cross-job comparisons on a shared calibration",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #196 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-196-integration",
+      "action": "Verify the recorded integration state of PR #196.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "ddef4d5a89a0360fc5d2971ede7b80627ae930d75ce2bb0779180ba9edd74a35",
+          "result": "PR #196 merged as 3105aa915ca032db97c8914ed25354cc3893cda3; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-196.json",
+              "sha256": "0dd3a481eef1ab3caceb5705461d7357adac36bfb83b5a49955b9de52f4086a5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- `patch_window_analysis.py --self-check` (normal and -O) passes with the mixed-stamp mutation; prediction: pass. - `--check results/live/2026-10-13T201757.782152Z .../patch-analysis.json` passes after regeneration; prediction: every numeric field equals the current analyzer's output and every comparison reports the shared 13:41:52 stamp. - core-263, research_state `--check`/`--self-test` pass. - Falsifier (from the issue): a run whose jobs carry different stamps still reports a cross-job difference.",
+      "state": "todo"
+    }
+  ]
+}

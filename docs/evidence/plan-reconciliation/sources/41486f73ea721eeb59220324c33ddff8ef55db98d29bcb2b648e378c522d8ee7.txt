@@ -1,0 +1,79 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-071.md
+
+# #71: n21_orbit_rca models piecewise window exposure across intervening scheduled pulses
+
+Owner session: ibmquantum-fe. Branch (planned): rca/n21-orbit-piecewise-window-exposure, built on the #72 branch.
+Scoping facts: docs/local/plans/scoping-n21-orbit-rca-fe.md.
+
+## Finding
+
+Observed (scripts/n21_orbit_rca.py on main 99ea45f; run results/live/2026-10-13T083417.634585Z):
+
+1. **The model.** window_roles (L316-433) and signed_exposure (L436-461) give each work qubit one idle gap. The gap runs from the qubit's last pulse before the control's first measurement to its first later non-X pulse, and its coupling is read by a Z probe at the gap's start.
+2. **The retained run splits windows with work-only pulses.**
+   - In nominal_feedback, the control 142 measures at 1426 dt and resets at 1973 dt.
+   - sx and cz gates then run on work qubits 136 and 143 at 2335-2387 dt, before the control's post-reset h at 2394 dt.
+   - Qubit 144 is idle from 1194 to 2606 dt, so its single gap spans those gates.
+   - The windows of 136 and 143 end at 2335 dt, so their later idle segments are not modeled.
+   - The other members show the same pattern.
+3. **The joint fit is skipped on every retained run** (rca-mechanism-fit.json: "window state is not a branch phase on the work bit for 1").
+   - The no_feedback members report "a joint probe with qubit 136 fits neither relative sign of qubit 144".
+   - So the issue's deviance falsifier cannot run on retained data until the exposure model resolves those couplings. The single-gap model is the inferred cause of that unresolved probe, and this plan tests that inference.
+
+## Reachability
+
+The documented CLI `n21_orbit_rca.py RUN_DIR` reaches it on both retained runs. The mis-modeled exposure enters the exposure table in results/live/N21_ORBIT_RCA.md and the window couplings that rca-mechanism-fit.json records.
+
+## Design
+
+1. **window_segments(isa, scheduler_timing, member) returns, for every placed qubit, the ordered idle intervals** between scheduled pulses inside the control's measurement-to-feed-forward window. It reads the returned scheduler_timing exactly as window_roles reads it (`_plays`, `_probed`). Each interval carries [start_dt, end_dt] and the logical state the work register holds at its start, obtained by simulating the archived ISA prefix up to that instant.
+2. **piecewise_exposure simulates the archived ISA segment by segment.**
+   - It inserts rz(2 pi delta_q t) for every idle interval of every placed qubit, with t = interval length in seconds (dt_seconds).
+   - It runs under Aer on the restricted active qubits, at most 14 of them. The run uses `calibration_snapshot.noise_simulator` and the snapshot in force at the PUB's execution start.
+   - It returns the model's outcome law per member as a function of the detunings delta.
+3. **fit_piecewise fits one static detuning per placed qubit to the counts** of every member jointly, by deviance.
+   - Seeds come from a grid over each qubit's detuning period, as #72 seeds the static-only fit.
+   - Grid points map through parallel.ordered_map; the inputs are drawn before mapping, so pooled and serial runs give the same bytes.
+   - It reports the piecewise deviance next to the single-gap deviance on the same members. Where window_roles leaves a member unresolved, the piecewise fit still runs, because it needs no single-gap sign.
+4. **Output.** rca-mechanism-fit.json gains a `piecewise` block with segments, fitted detunings and deviances, keyed under a new schema version. results/live/N21_ORBIT_RCA.md gains the piecewise exposure table.
+5. **Gates:**
+   - core-444, `--self-check` additions: a synthetic schedule with a work-only pulse inside the window, where the piecewise and single-gap laws differ by a stated TV and the fit recovers the planted detunings within tolerance;
+   - core-445: `--check` replays both retained runs' piecewise blocks byte for byte, normal and `-O`.
+6. **Compute.** Seven or fewer active qubits per member, a few thousand simulator calls per fit. This fits Kaggle CPU or the host. The search runs on a Kaggle CPU kernel with `--ci-env` when it exceeds about 20 min on the host, and a reduced case replays on CI.
+
+## Acceptance and falsifier
+
+- **Prediction:** on 083417 the piecewise model resolves the no_feedback joint probe, which the single gap cannot. The piecewise deviance of the nominal family falls below the single-gap deviance by more than the model's added degrees of freedom (a likelihood-ratio test at p < 0.01).
+- **Falsifiers, as in the issue:**
+  - piecewise and single-gap exposures give equal joint-fit deviances on a run whose window holds a work-only pulse;
+  - the piecewise model also leaves the no_feedback probe unresolved. That would place the inconsistency outside window exposure, for example in readout or reset, and the finding would say so.
+- **Commands:** `--self-check`, core-444, core-445, core-192, core-443, and the lint gates.
+
+## Shared files and dependencies
+
+- scripts/n21_orbit_rca.py: after #72 and before #69.
+- results/live/N21_ORBIT_RCA.md and both rca-mechanism-fit.json files: their regeneration is part of this item.
+- ci/gates.json (core-444, core-445).
+- calibration_snapshot.noise_simulator: CPU path only, which the G1 change leaves at Aer's defaults.
+- No IBM time. Kaggle CPU only if the fit exceeds the host budget.
+
+## Effort and agents
+
+- Large, about 1 to 1.5 days.
+- One opus agent writes window_segments and piecewise_exposure; review, fit validation and gates stay in session. A second agent (sonnet) writes the synthetic self-check, within the two-agent limit.
+
+## Out of scope
+
+- Time-varying (non-static) detuning per segment: the quasistatic spread model already in joint_quasistatic_fit covers the slow part, and a per-segment drift model needs more than two retained runs to identify.
+- Crosstalk ZZ during the work-only gates: a separate mechanism with its own controls.
+
+## Outcome
+
+Merged as #212 at 67a0dd8 after two Codex rounds (round 2 clean), CI green and premerge_gates.py with 0 introduced failures.
+
+- Prediction falsified. On 083417 the piecewise exposure reaches G2 26.75 against the single gap's 27.29, both on 19 dof, and no detuning gives 180.96 on 22. The exact-ISA evaluator, not the segmentation, resolves the joint probe.
+- Codex round 1 found the positional measurement rule; measurements are now classified by wire role, which moved every 083417 deviance.
+- Host (AOCL) and CI (OpenBLAS) chose different grid seeds from rounding-level ties. grid_seeds now ranks at a 1e-6 deviance resolution, and the self-check carries a tilt contract.
+- A single-gap basin at 27.26 lies outside the seeded search.
+- Gates: core-192 on the pr tier. core-443 and core-449 (080216, 160 s and 169 s on CI) and core-447 and core-448 (083417) run on the full tier.

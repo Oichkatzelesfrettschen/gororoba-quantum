@@ -1,0 +1,62 @@
+{
+  "schema": "work-plan-v1",
+  "id": "iqm-garnet-signed-kernel-probe",
+  "kind": "experiment",
+  "summary": "Signed sedenion kernel probe on IQM Garnet",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/4258ffad6bfc3325f0ab5a84148e681f72576b7509a2adda1492ad05f1769b6a.txt",
+    "docs/design/iqm-garnet-signed-kernel-probe.md"
+  ],
+  "state": "paused",
+  "scope": "Signed sedenion kernel probe on IQM Garnet",
+  "next_action": "Determine whether a budget-admissible null-controlled follow-up can resolve the small response.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Preserve the completed null retest and unresolved response; the approximately515-credit proposal remains a separate unapproved expenditure."
+  },
+  "steps": [
+    {
+      "id": "verify-retained-acquisition-outcome",
+      "action": "Verify retained acquisition and analysis outcome identities.",
+      "acceptance": "The registered evidence exists with its recorded SHA-256; the outcome retains the stated scientific boundary.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "ad4ffb9e45e9e1c6bca5e42e625145e0c5baf23bcf8fe7de4eafdbadf0e0ab6d",
+          "result": "Retained null-controlled retest completed; the small response remains unresolved.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "results/iqm/signed_kernel_null_retest_analysis.json",
+              "sha256": "493b3deb2129450cdc8b8b762e0ea1d84e6feaf88d97b0da1a89d6ff047727b9"
+            },
+            {
+              "ref": "results/iqm/cases/signed-kernel-null-retest/prediction.json",
+              "sha256": "f35e68d346dedd1d707e83f7f100b9424e6f5e4f7bd7f1ba817c102828b54220"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Determine whether a budget-admissible null-controlled follow-up can resolve the small response.",
+      "acceptance": "Preserve the completed null retest and unresolved response; the approximately515-credit proposal remains a separate unapproved expenditure.",
+      "state": "todo"
+    }
+  ],
+  "claims": [
+    "iqm-garnet-signed-null-retest"
+  ],
+  "acquisitions": [
+    "iqm-garnet-signed-null-retest-probe",
+    "iqm-garnet-signed-null-retest-calibrate"
+  ],
+  "owner": "IQM experiment operator",
+  "pause": {
+    "last_result": "The retained null-controlled retest completed and left a small response unresolved.",
+    "next_action": "Determine whether a budget-admissible null-controlled follow-up can resolve the small response.",
+    "resume_when": "A scientifically discriminating case fits an explicitly approved independent IQM budget."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "work-plan-v1",
+  "id": "star-lattice-group-identification",
+  "kind": "implementation",
+  "summary": "Cayley-Dickson star lattices: Tuna-17 and its lifts to dimensions 3, 4, 8 and 16",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/cf293f4078bcd02b0783df5fc1c6f9a1456f1aa58e53a22a18d489424f40189c.txt",
+    "docs/notes/topics/cd-star-lattice-tower.md",
+    "docs/evidence/plan-reconciliation/sources/d2024a24d2e070886b69b65e333edf1001c1f540c5429ce6c3d31d50b990235c.txt",
+    "docs/evidence/plan-reconciliation/sources/96e8a4bf2c3018c5ba775b78a98920b58653b710daca459254665a489326b215.txt"
+  ],
+  "state": "inbox",
+  "scope": "Cayley-Dickson star lattices: Tuna-17 and its lifts to dimensions 3, 4, 8 and 16",
+  "next_action": "Review staged group-identification sources and evidence.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Bind working-file and staged content identities; a HEAD-only observation misses the stronger branch result."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Review staged group-identification sources and evidence.",
+      "acceptance": "Bind working-file and staged content identities; a HEAD-only observation misses the stronger branch result.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Integrate the reviewed branch and reconcile the main note.",
+      "acceptance": "Bind working-file and staged content identities; a HEAD-only observation misses the stronger branch result.",
+      "state": "todo"
+    }
+  ]
+}

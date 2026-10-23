@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quandela-qualification-cases",
+  "kind": "experiment",
+  "summary": "BDSC six-state qualification case",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/5e68ee0f20d3b831ded56849234897d011a8efdee925aa7c0c0915f85bdb0bfe.txt",
+    "docs/runbooks/bdsc-qualification-case.md"
+  ],
+  "state": "inbox",
+  "scope": "BDSC six-state qualification case",
+  "next_action": "Reconcile the branch stationarity-veto amendment and retired second-epoch jobs.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Any successor uses the fresh written-case approval; the operating runbook itself is not execution authority."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Reconcile the branch stationarity-veto amendment and retired second-epoch jobs.",
+      "acceptance": "Any successor uses the fresh written-case approval; the operating runbook itself is not execution authority.",
+      "state": "todo"
+    }
+  ]
+}

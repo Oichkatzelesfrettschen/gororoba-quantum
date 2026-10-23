@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ringdown-readout-uncertainty",
+  "kind": "implementation",
+  "summary": "182: qi_readout_ringdown: propagate readout-calibration uncertainty into phase and rate errors",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/e7c70d67f1b13a635fe2075202d0f9832422c28a906a724b3d7158430a5df02e.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-209.json"
+  ],
+  "state": "inbox",
+  "scope": "182: qi_readout_ringdown: propagate readout-calibration uncertainty into phase and rate errors",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #209 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-209-integration",
+      "action": "Verify the recorded integration state of PR #209.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "4639eb957add8d780ea576177e4c5dcdd1c64eca00917c1b1ae7876ef68e90d3",
+          "result": "PR #209 merged as 442db538e8d9fc29f279e98f914e99e8595335a0; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-209.json",
+              "sha256": "9e02fbdfd73757d182418852f9b685c552dddbd3b856316064774a798d7ec4d4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Prediction, fixed now: on series P Q6 the analytic calibrated delta SE exceeds the preregistered delta SE, and the bootstrap SE agrees with the analytic one within the bootstrap spread. Falsifiers: (a) on Q6 the bootstrap SE equals the preregistered SE within its spread -- then the calibration term is negligible, the record says so and the issue closes on that measurement; (b) the analytic and bootstrap SEs disagree beyond the spread -- the analytic propagation is wrong and does not ship. Commands: `\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity --check ...` normal and -O, the existing core-386/core-369 gates unchanged, ruff, mypy (core-039).",
+      "state": "todo"
+    }
+  ]
+}
