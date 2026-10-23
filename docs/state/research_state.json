@@ -6906,6 +6906,10 @@
         {
           "path": "results/live/2026-10-20T031212.175942Z/beat-model.json",
           "sha256": "421f49223d75f670e1a0f2f76cab97e013dc5049a3799f0813565e6ce8aa0ec4"
+        },
+        {
+          "path": "results/live/2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json",
+          "sha256": "4652b9cf84a3c17a1047fa8e15fd60dc66b0054282cc180c25d7280e037e9960"
         }
       ],
       "documents": [
@@ -6928,19 +6932,19 @@
     },
     {
       "id": "hw-n21-q143-segmented-lines",
-      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10060 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5342 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
+      "statement": "In the segmented coprime sweep of ibm_fez qubit 143 (48 PUBs x 1536 shots, six segments per shot, every member admitted on its returned schedule and heralds), the two lines are a classical mixture fixed within each shot: an exchange-coupled two-level system fits worse by 10063 in NLL, the Z arms carry no swap memory (18.3 against 42.3) and the 1250 dt herald pre-idle moves no quadrature (3.5 against 13.7). The splitting df = -90.2 kHz lies in alias cell 0, resolved by 5350 in NLL over the next cell, with weights 0.529 / 0.471. In shot order the line labels of the half-cycle delays correlate across columns 8.934 ms apart (the metered circuit execution time per shot) and decay as a two-state telegraph with switching time tau = 26.2 ms (moving-block bootstrap 2.5 to 97.5 percent 19.3 to 30.5 ms; dwell 56 and 50 ms; 28.3 ms at the chunk's wall period, an upper bound). The raw reads of the four whole-cycle delays up to 30.5 us correlate within 0.034 at lag 1 (standard error 0.026); at 8316 dt the raw correlation 0.090 equals that arm's own label correlation 0.089, the residual line separation at 33 us.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 6d59d710eb61 and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
+      "boundary": "The preregistered segmented-sweep.json refuses every member (the bound reader kept a barrier before INIT on the ibm_fez table); the verdicts come from the amended analyzer at closure 759d82d74c57 (correcting closure 6d59d710eb61's unconverged fits) and the switching time from a post hoc shot-order analysis, so neither confirms. The near-equal weights fixed over a shot fit charge-parity splitting, which a parity-resolved readout would test; a dispersively coupled two-level fluctuator switching in tens of ms predicts the same telegraph. Shot-to-shot correlation at 9.7 ms makes the per-shot Wald statistics anti-conservative; the non-rejections and the model and alias margins survive that.",
       "evidence": [
         {
-          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "60d9c33536b85bb8e489da27d044d04559e32896117ff525b0ac68600f575b9e"
+          "path": "results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json",
+          "sha256": "7eab64e4a10dfe16f4261cbab15a5138a14f1d7afd1faf9a3d5f842eac9a94e2"
         },
         {
-          "path": "results/live/2026-10-21T064222.721454Z/line-switching.json",
-          "sha256": "d834f17fc8b6809e5da3ef84306d67b5018a1c0f3ee384c71d9d030cb280655a"
+          "path": "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json",
+          "sha256": "66f4ab5295eba9c6304a9efb797caf66d902f8f49459ac9e675ee195f0ade9f7"
         },
         {
           "path": "results/live/2026-10-21T064222.721454Z/dense-sha256.json",
@@ -6966,15 +6970,15 @@
     },
     {
       "id": "hw-n21-q47-segmented-baseline",
-      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.048 second line at alias cell -2 (df -735 kHz), T1 81 us and T2* 52 us from the static fit.",
+      "statement": "The same segmented sweep on ibm_marrakesh qubit 47, a qubit with no recorded beat, admits every member and reads exchangeable segments (51.5 against 72.1), herald backaction (47.9 against 13.7) and Z memory (284 against 42.3), with a 0.105 second line at alias cell 0 (df -12.9 kHz, the next cell worse by 317 in NLL), T1 81 us and T2* 60 us from the static fit.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 6d59d710eb61.",
+      "boundary": "The owner approved moving the run to ibm_kingston or ibm_marrakesh before it was submitted, while ibm_fez held over 1,400 pending jobs, and the Marrakesh dry run pinned qubit 47 in place of 143; its alias lattice and priors come from qubit 143, so the second line and its cell read a weak structure through another qubit's priors. The verdicts come from the amended analyzer at closure 759d82d74c57, whose preconditioned fit corrects closure 6d59d710eb61's cell -2 and T2* 52 us (decay times left at their starts).",
       "evidence": [
         {
-          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json",
-          "sha256": "533313a89e6fa611cb7cb55aa62fe6ebf5cc289208101a1b83df81c40de9c711"
+          "path": "results/live/2026-10-21T043156.858484Z/segmented-sweep-759d82d74c57.json",
+          "sha256": "2dcfaf7ddac2b3ece092ba1ca4e7ffa16bdb99c0f386edabc16c14ea6ba82128"
         },
         {
           "path": "results/live/2026-10-21T043156.858484Z/dense-sha256.json",

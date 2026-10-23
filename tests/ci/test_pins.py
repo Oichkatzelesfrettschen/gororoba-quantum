@@ -50,7 +50,7 @@ def test_replay_resolution() -> None:
         raise AssertionError("an interpreter that cannot start reads as matching")
 
     def resolve(probe: list[str], explicit: str | None, environment: dict[str, str]) -> tuple[str | None, str]:
-        with patch.object(pins, "mismatches", lambda _python, _pins: list(probe)):
+        with patch.object(pins, "mismatches", lambda _python, _pins, _patches=None: list(probe)):
             return pins.resolve_replay("qiskit-2.5", explicit, environment, python)
 
     differing = ["qiskit 2.6.0 (pin 2.5.2)"]
@@ -77,6 +77,99 @@ def test_replay_resolution() -> None:
         chosen, reason = pins.resolve_replay("qiskit-2.5", python, {}, python, tree)
         if chosen is not None or "pip-package-that-is-absent" not in reason:
             raise AssertionError(f"a tree's own pins were not applied: {chosen} ({reason})")
+
+
+def test_installer_state_enters_the_comparison() -> None:
+    # ci/install_pins.sh installs its --no-deps pins and patches site-packages
+    # after the pin files; an interpreter without either differs from a built one.
+    if pins.installer_pins().get("mpmath") != "1.4.1":
+        raise AssertionError(f"install_pins.sh's --no-deps pins read {pins.installer_pins()}")
+    with TemporaryDirectory(prefix="ci-pins-patch-") as temporary:
+        tree = Path(temporary)
+        (tree / "ci" / "patches").mkdir(parents=True)
+        (tree / "ci" / "install_pins.sh").write_text(
+            '"$PYTHON" -m pip install --no-deps pip-package-that-is-absent==2.0\n'
+        )
+        (tree / "ci" / "patches" / "absent.patch").write_text(
+            "--- a/package-that-is-absent/module.py\n+++ b/package-that-is-absent/module.py\n@@ -1 +1 @@\n-old\n+new\n"
+        )
+        found = pins.environment_mismatches(sys.executable, {}, tree)
+        if found != ["pip-package-that-is-absent absent (pin 2.0)", "absent.patch not applied"]:
+            raise AssertionError(f"the installer state of a tree reads {found}")
+        # A host without the patch binary reports the patch unverified rather than raising.
+        run = pins.subprocess.run
+
+        def without_patch(argv: list[str], **options: Any) -> Any:
+            if argv[0] == "patch":
+                raise FileNotFoundError(2, "No such file or directory", "patch")
+            return run(argv, **options)
+
+        with patch.object(pins.subprocess, "run", without_patch):
+            found = pins.environment_mismatches(sys.executable, {}, tree)
+        if found[1:] != ["absent.patch could not be checked: [Errno 2] No such file or directory: 'patch'"]:
+            raise AssertionError(f"the installer state without the patch binary reads {found}")
+
+
+def test_host_environment_fallback() -> None:
+    # A drifted running interpreter falls back to the runtime's host
+    # environment when that holds every pin; neither names the build command.
+    python = sys.executable
+    differing = ["qiskit 2.5.2 (pin 2.6.0)"]
+    with TemporaryDirectory(prefix="ci-pins-cache-") as temporary:
+        cache = {"XDG_CACHE_HOME": temporary}
+        current_host = pins.host_env("current", cache)
+        replay_host = pins.host_env("qiskit-2.5", cache)
+        if current_host.parent.parent.name != f"ci-py{pins.PYTHON_VERSION}":
+            raise AssertionError(f"the current runtime's host environment is {current_host}")
+
+        def resolve(probe: dict[str, list[str]], environment: dict[str, str]) -> dict[str, tuple[str | None, str]]:
+            with patch.object(
+                pins, "mismatches", lambda candidate, _pins, _patches=None: list(probe.get(candidate, differing))
+            ):
+                return {
+                    "current": pins.resolve_current(environment, python),
+                    "replay": pins.resolve_replay("qiskit-2.5", None, environment, python),
+                }
+
+        absent = resolve({}, cache)
+        for runtime, (chosen, reason) in absent.items():
+            if chosen is not None or pins.BUILD_COMMAND not in reason:
+                raise AssertionError(f"{runtime} without a host environment chose {chosen} ({reason})")
+        for host in (current_host, replay_host):
+            host.parent.mkdir(parents=True)
+            host.write_text("")
+        built = resolve({str(current_host): [], str(replay_host): []}, cache)
+        if built["current"][0] != str(current_host) or built["replay"][0] != str(replay_host):
+            raise AssertionError(f"a host environment holding every pin was not chosen: {built}")
+        drifted = resolve({}, cache)
+        if any(chosen is not None for chosen, _reason in drifted.values()):
+            raise AssertionError(f"a host environment that differs from its pins was chosen: {drifted}")
+        running = resolve({python: []}, cache)
+        if running["current"][0] != python or running["replay"][0] != python:
+            raise AssertionError(f"a running interpreter holding every pin lost to the host environment: {running}")
+        strict = resolve({str(current_host): [], str(replay_host): []}, {**cache, **STRICT})
+        if any(chosen is not None for chosen, _reason in strict.values()):
+            raise AssertionError(f"{pins.PINS_REQUIRED}=1 took a host environment: {strict}")
+        named = resolve({}, {**cache, "PYTHON": "/named/python"})["current"]
+        if named[0] != "/named/python" or "runs as named" not in named[1]:
+            raise AssertionError(f"an explicit PYTHON was replaced: {named}")
+        refused = resolve({}, {**cache, **STRICT, "PYTHON": "/named/python"})["current"]
+        if refused[0] is not None:
+            raise AssertionError(f"{pins.PINS_REQUIRED}=1 ran a PYTHON that differs from its pins: {refused}")
+    with TemporaryDirectory(prefix="ci-pins-tree-") as temporary:
+        chosen, reason = pins.resolve_current({}, python, Path(temporary))
+        if chosen != python or "pins no current runtime" not in reason:
+            raise AssertionError(f"a tree without pin files verified {chosen} ({reason})")
+
+
+def test_host_environment_python_version() -> None:
+    # The host environments sit on the Python CI's setup-python installs.
+    workflow = (pins.ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    script = (pins.ROOT / "ci/build_host_envs.sh").read_text(encoding="utf-8")
+    if f'python-version: "{pins.PYTHON_VERSION}"' not in workflow:
+        raise AssertionError(f"ci.yml installs no Python {pins.PYTHON_VERSION}")
+    if f"python_version={pins.PYTHON_VERSION}\n" not in script:
+        raise AssertionError(f"ci/build_host_envs.sh builds on another Python than {pins.PYTHON_VERSION}")
 
 
 def test_pinned_tool() -> None:

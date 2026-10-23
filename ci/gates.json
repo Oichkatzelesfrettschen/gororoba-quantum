@@ -1468,9 +1468,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T170620.832658Z --check",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T170620.832658Z/between-arm.json --skip .analyzer_sha256 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T170620.832658Z --out {out}",
    "name": "core-613",
-   "seconds": 2.0,
+   "seconds": 4.3,
    "tier": "full"
   },
   {
@@ -1534,8 +1534,8 @@
    "cwd": ".",
    "workers": 1,
    "name": "core-617",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_q143_line_switching.py results/live/2026-10-21T064222.721454Z results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json --check",
-   "seconds": 10.0,
+   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json -- \"$PYTHON\" scripts/n21_q143_line_switching.py results/live/2026-10-21T064222.721454Z results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json --out {out}",
+   "seconds": 1.0,
    "tier": "pr"
   },
   {
@@ -1562,6 +1562,14 @@
    "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_model_choice_and_missing_degrees_of_freedom",
    "seconds": 3.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/runner_image_records.py check",
+   "name": "core-635",
+   "seconds": 0.3,
+   "tier": "pr"
   },
   {
    "suite": "core",

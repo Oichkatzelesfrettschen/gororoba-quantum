@@ -371,7 +371,12 @@ Everything in this section is descriptive: the models, the band and the
 design were chosen after the sweep was read, outside its preregistration.
 [beat-model.json](2026-10-20T031212.175942Z/beat-model.json) holds the
 analysis (scripts/n21_q143_beat_model.py; gate core-604 runs its planted
-self-check, core-605 regenerates the file byte for byte). The data are the
+self-check). beat-model.json overstated the follow-up design's worst alias
+pairs, whose alternatives stopped in one basin of their cell;
+[beat-model-9bd206ca42ea.json](2026-10-20T031212.175942Z/beat-model-9bd206ca42ea.json),
+written by the analyzer that refits each alternative from its cell's best
+(df, a) profile points, corrects them; it was written in the runner image and
+ci/runner_image_records.json binds its bytes. The data are the
 all-zero herald-selected counts of the 14 PUBs.
 
 **Signal and readout.** single, static and telegraph predict
@@ -504,8 +509,8 @@ drift separates the quadratures.
 | Design | Members x shots | Rule (s) | Worst alias-pair LLR (156 ordered pairs) | tls vs static, worst p | static vs tls, worst p | telegraph gamma 0.01 / 0.03 / 0.1 per us |
 |---|---|---|---|---|---|---|
 | run_lattice (reference) | 14 x 12288 | 16.2 | 0 | 0.10 (p = 0) | 0 (p = 0) | 2.0 / 15.0 / 88.8 |
-| dense: 0.252 us grid to 35.3 us, X Y | 282 x 512 | 15.1 | 4456 | 0.26 (p = 0) | 0 (p = 0) | 2.8 / 18.0 / 75.5 |
-| coprime_swap: 693 and 819 dt lattices, X Y Z, herald controls | 69 + 20 x 2048 | 18.5 | 1600 | 1032 (p = 1) | 950 (p = 1) | 1.7 / 11.2 / 46.2 |
+| dense: 0.252 us grid to 35.3 us, X Y | 282 x 512 | 15.1 | 4360 | 0.26 (p = 0) | 0 (p = 0) | 2.8 / 18.0 / 75.5 |
+| coprime_swap: 693 and 819 dt lattices, X Y Z, herald controls | 69 + 20 x 2048 | 18.5 | 1559 | 1032 (p = 1) | 950 (p = 1) | 1.7 / 11.2 / 46.2 |
 | coprime_swap_long: + 60 to 360 us | 81 + 20 x 2048 | 25.0 | 1775 | 4237 (p = 0.75) | 1634 (p = 0.75) | 3.4 / 14.2 / 46.4 |
 
 coprime_swap is the cheapest design with herald controls that reaches 50
@@ -515,7 +520,7 @@ complex band of 3.97 MHz), X and Y after the |+> preparation and Z after an
 X preparation, 2048 shots each. At p = 0 the Z swap separates tls from
 static by 31334 and 2607; even a TLS held excited (p = 1, no swap) stays
 separated by 1032 and 950 through the dissipative mixing. Its worst alias
-pair reads posterior odds 10^-695 at equal priors; Wald errors at the
+pair reads posterior odds 10^-677 at equal priors; Wald errors at the
 static fit are a +- 0.0037, df +- 0.14 kHz, T +- 5 us. A telegraph rate
 below about 0.03 per us stays undetected (LLR 11).
 
