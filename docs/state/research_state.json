@@ -4566,12 +4566,38 @@
       "superseded_by": null
     },
     {
+      "id": "a5-nullity12-gap-extended-precision",
+      "statement": "At the three nonzd-axis witnesses {e_p, 0} of D_(5,12), 12 seeded near-rank-20 points found by alternating projection from starts at scales 0.03 and 0.003 and refined at 110 digits to sigma_21/sigma_1 < 1e-40 keep their float64 relative distance from the {a, 0} family cone (4.28e-4 to 2.47e-2) at three significant digits while lying 1.51e-3 to 2.68e-2 from the witness, and 64-perturbation float64 clouds at scale 1e-2 span 16 directions.",
+      "domain": "algebra",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Floating and extended-precision arithmetic at seed 20261023, 110 digits, float tolerance 1e-14, cloud scale 1e-2. A refined point has L_y within 1e-40 of a rank-20 matrix that need not be a left multiplication; the rank-20 cone meets span{L_e} far from transversally, so no error bound places an exact point of D_(5,12) near it, and the record establishes neither membership, nor that the family fails to exhaust D_(5,12), nor a local dimension. A 16-direction span bounds the local dimension from above only. An exact parameterized piece or local equations remain the admission route.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_nullity12_refinement/result.json",
+          "sha256": "7f3ef3ee4ffe1cfd11c3a31ea78357c4a16b60836553fc5c1efae74940ac55c1"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_nullity12_refinement/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
+      ],
+      "gates": {
+        "core-662": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-nonzero-divisor-two-dimension-gap",
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
