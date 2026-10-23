@@ -1,0 +1,709 @@
+{
+ "analysis_sha256": "bb826a0b8c38fe3742f43504372e57d55835ced5375209911c618a759c023014",
+ "audit_manifest_sha256": "df2003ec26e3c39045f8e22161ab499ac03f2905fd7e6afc8fc89503e6cb1515",
+ "backend": "iqm:garnet",
+ "budget": {
+  "cost_admitted": false,
+  "maximum_planned_credits": 24,
+  "reserve_credits": 6,
+  "shared_open_quantum_balance_alternative": false
+ },
+ "cells": 5,
+ "circuits": [
+  {
+   "file": "circuit-000.qasm",
+   "kind": "reference",
+   "measurement_bits": 20,
+   "operations": {
+    "measure": 20
+   },
+   "qubits": 20,
+   "reference": 0,
+   "sha256": "d0f85d54f87e1290a9319fd014aed8777591af54fa73a248a03d4ce43edb417d"
+  },
+  {
+   "file": "circuit-001.qasm",
+   "kind": "reference",
+   "measurement_bits": 20,
+   "operations": {
+    "measure": 20,
+    "x": 20
+   },
+   "qubits": 20,
+   "reference": 1,
+   "sha256": "24b75a0d751ccce6443940e08d08e92b5c7840038232719a04157bc5a7d44651"
+  },
+  {
+   "dense": true,
+   "file": "circuit-002.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 0,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-003.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 0,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": false,
+   "file": "circuit-004.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 1,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-005.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 1,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": true,
+   "file": "circuit-006.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 2,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-007.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 2,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": false,
+   "file": "circuit-008.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 3,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-009.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 3,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": true,
+   "file": "circuit-010.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 4,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-011.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 4,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": false,
+   "file": "circuit-012.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 5,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-013.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 5,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-014.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 6,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-015.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 6,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": true,
+   "file": "circuit-016.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 7,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-017.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 7,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-018.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 8,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-019.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 8,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": false,
+   "file": "circuit-020.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 9,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-021.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 9,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-022.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 10,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-023.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 10,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-024.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 11,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-025.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 11,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-026.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 12,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-027.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 12,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": true,
+   "file": "circuit-028.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 13,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-029.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 13,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-030.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 14,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-031.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 14,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "dense": true,
+   "file": "circuit-032.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 10,
+    "h": 20,
+    "measure": 20,
+    "rz": 5,
+    "s": 5,
+    "sdg": 8,
+    "x": 15
+   },
+   "pair": 15,
+   "qubits": 20,
+   "sha256": "f562f867a99f699b793ebb3a166788bf1c5231147ddbaa72134521836f0b5f39"
+  },
+  {
+   "dense": false,
+   "file": "circuit-033.qasm",
+   "kind": "science",
+   "measurement_bits": 20,
+   "operations": {
+    "barrier": 1,
+    "cx": 8,
+    "h": 19,
+    "measure": 20,
+    "rz": 4,
+    "s": 4,
+    "sdg": 8,
+    "x": 12
+   },
+   "pair": 15,
+   "qubits": 20,
+   "sha256": "e66a32d4c4fa798749ec97a327830e26c02c0370efc804bf652f2c00cc8d4646"
+  },
+  {
+   "file": "circuit-034.qasm",
+   "kind": "reference",
+   "measurement_bits": 20,
+   "operations": {
+    "measure": 20
+   },
+   "qubits": 20,
+   "reference": 0,
+   "sha256": "d0f85d54f87e1290a9319fd014aed8777591af54fa73a248a03d4ce43edb417d"
+  },
+  {
+   "file": "circuit-035.qasm",
+   "kind": "reference",
+   "measurement_bits": 20,
+   "operations": {
+    "measure": 20,
+    "x": 20
+   },
+   "qubits": 20,
+   "reference": 1,
+   "sha256": "24b75a0d751ccce6443940e08d08e92b5c7840038232719a04157bc5a7d44651"
+  }
+ ],
+ "native_compilation_admitted": false,
+ "packing_sha256": "ce775c77bd726785a423f4a0ac13d3f4b5f7fe8317a443784d55ed7585665cb1",
+ "physical_map_to_be_applied_by_native_compiler": {
+  "0": "QB8",
+  "1": "QB4",
+  "10": "QB9",
+  "11": "QB14",
+  "12": "QB20",
+  "13": "QB18",
+  "14": "QB16",
+  "15": "QB19",
+  "16": "QB6",
+  "17": "QB2",
+  "18": "QB7",
+  "19": "QB5",
+  "2": "QB1",
+  "3": "QB3",
+  "4": "QB12",
+  "5": "QB10",
+  "6": "QB17",
+  "7": "QB11",
+  "8": "QB15",
+  "9": "QB13"
+ },
+ "primary_scope": "randomized density intervention",
+ "producer_sha256": "fbc88763cdfb3a43a3ac4e9c2deb02349128b9f6135ea4482a505e41bd3ae798",
+ "provider_execution_authorized": false,
+ "randomization_seed": 20261022,
+ "register_shots_are_independent_by_assumption_only": true,
+ "remaining_admission": [
+  "native map and gate conformance",
+  "execution ordering and timing",
+  "cost bound or exact quotes",
+  "result identity and raw joint outcomes",
+  "analysis and review",
+  "user approval"
+ ],
+ "schema": "packed-pauli-reference-proposal-v1",
+ "sentinel_cells": 4,
+ "shots_per_circuit": 2000,
+ "total_register_shots": 72000
+}

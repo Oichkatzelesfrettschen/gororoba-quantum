@@ -19,6 +19,7 @@ Usage: IQM_TOKENS_FILE=TOKENS.json /usr/bin/python3 -I scripts/iqm_mcp_server.py
 
 from __future__ import annotations
 
+import datetime
 import functools
 import json
 import sys
@@ -26,6 +27,7 @@ import urllib.parse
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Annotated, Any
+from uuid import UUID
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -33,6 +35,7 @@ import anyio  # noqa: E402
 from iqm_platform import API, Client, PlatformError, read_tokens, tokens_path  # noqa: E402
 from mcp.server.fastmcp import FastMCP  # noqa: E402
 from mcp.server.fastmcp.exceptions import ToolError  # noqa: E402
+from mcp.server.fastmcp.server import Settings  # noqa: E402
 from mcp.types import ToolAnnotations  # noqa: E402
 from pydantic import Field  # noqa: E402
 
@@ -65,6 +68,9 @@ Locus = Annotated[
     ),
 ]
 
+# Settings refers to FastMCP before that class is declared in the SDK module.
+# Resolve the forward reference after import and before settings sources inspect it.
+Settings.model_rebuild()
 server = FastMCP("iqm")
 
 
@@ -72,11 +78,36 @@ def client() -> Client:
     return Client(read_tokens(tokens_path())["access_token"])
 
 
+def utc_now() -> datetime.datetime:
+    return datetime.datetime.now(datetime.UTC)
+
+
 def get_json(path: str) -> Any:
+    started = utc_now().isoformat()
     status, body = client().get(path)
     if status != 200:
         raise PlatformError(f"GET {path} answered {status}: {body[:400]!r}")
-    return json.loads(body)
+    result = json.loads(body)
+    if isinstance(result, dict):
+        result["_observation"] = {
+            "request_started_utc": started,
+            "retrieved_utc": utc_now().isoformat(),
+            "path": path,
+        }
+    return result
+
+
+def calibrated_json(alias: str, kind: str, calibration_set_id: str | None) -> Any:
+    root = f"{API}/calibration-sets/{urllib.parse.quote(alias)}/"
+    identity = calibration_set_id
+    if identity is None:
+        identity = get_json(root + "default")["observation_set_id"]
+    identity = str(UUID(identity))
+    result = get_json(root + identity + "/" + kind)
+    actual = result["calibration_set_id"] if kind == "dynamic-quantum-architecture" else result["describes_id"]
+    if actual != identity:
+        raise PlatformError(f"{kind}: requested calibration {identity}, received {actual}")
+    return result
 
 
 def reported[**P, R](function: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
@@ -131,20 +162,18 @@ async def iqm_timeslots(alias: Alias) -> Any:
 
 @server.tool(annotations=READ)
 @reported
-async def iqm_architecture(alias: Alias) -> Any:
-    """Dynamic quantum architecture of the default calibration set: qubits, resonators, gates, loci, implementations."""
-    return await threaded(
-        lambda: get_json(f"{API}/calibration-sets/{urllib.parse.quote(alias)}/default/dynamic-quantum-architecture")
-    )
+async def iqm_architecture(alias: Alias, calibration_set_id: str | None = None) -> Any:
+    """Architecture of an explicit calibration identity, or the resolved default; reuse its identity for metrics."""
+    return await threaded(lambda: calibrated_json(alias, "dynamic-quantum-architecture", calibration_set_id))
 
 
 @server.tool(annotations=READ)
 @reported
-async def iqm_metrics(alias: Alias, locus: Locus = None) -> Any:
-    """Quality metrics of the default calibration set (T1, T2, RB and IRB fidelities, readout), optionally one locus."""
+async def iqm_metrics(alias: Alias, locus: Locus = None, calibration_set_id: str | None = None) -> Any:
+    """Metrics of an explicit calibration identity or resolved default, optionally restricted to one locus."""
 
     def read() -> Any:
-        document = get_json(f"{API}/calibration-sets/{urllib.parse.quote(alias)}/default/metrics")
+        document = calibrated_json(alias, "metrics", calibration_set_id)
         rows = document["observations"]
         if locus:
             rows = [
@@ -159,6 +188,7 @@ async def iqm_metrics(alias: Alias, locus: Locus = None) -> Any:
             "calibration_set_id": document["describes_id"],
             "dut_label": document["dut_label"],
             "created_timestamp": document["created_timestamp"],
+            "_observation": document["_observation"],
             "observations": [{k: row.get(k) for k in keep} for row in rows],
         }
 

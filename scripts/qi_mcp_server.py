@@ -15,6 +15,10 @@ qi_submit_case uses qi_platform.submit's durable submission guard and requires
 the user's approval text. The legacy raw-string qi_submit refuses execution
 and names the case-directory replacement.
 
+qi_performance_dashboard and qi_performance_query read QuTech's public
+Grafana dashboards (status, tuna-17, tuna-9, tuna-5, ry_emulator) through
+qi_monitoring.py, without the account.
+
 qi_run_local runs cQASM 3.0 on the local qxelarator state-vector emulator,
 bounded to LOCAL_MAX_QUBITS qubits and LOCAL_MAX_SHOTS shots.
 
@@ -34,6 +38,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from mcp.server.mcpserver import MCPServer  # noqa: E402
 from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 from mcp.types import ToolAnnotations  # noqa: E402
+from qi_monitoring import dashboard as monitoring_dashboard  # noqa: E402
+from qi_monitoring import query as monitoring_query  # noqa: E402
 from qi_platform import Client, PlatformError, declared_qubits, ledger, submit, utc_now  # noqa: E402
 
 LOCAL_MAX_QUBITS = 24
@@ -124,6 +130,24 @@ def qi_hardware_status() -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = client().pages("/backends")
     finished = utc_now().isoformat()
     return [dict(row, request_started_utc=started, retrieved_utc=finished) for row in rows]
+
+
+@server.tool(annotations=READ)
+@reported
+def qi_performance_dashboard(dashboard: str = "status") -> dict[str, Any]:
+    """QuTech's public monitoring dashboard: its data panels, value mappings and dated update notices.
+
+    dashboard is status, tuna-17, tuna-9, tuna-5 or ry_emulator. The read needs no account.
+    """
+    return monitoring_dashboard(dashboard)
+
+
+@server.tool(annotations=READ)
+@reported
+def qi_performance_query(dashboard: str, panel_id: int, hours: float = 6.0) -> dict[str, Any]:
+    """One public dashboard panel's series over the last hours: per-qubit T1, T2, readout, gate and Bell-state
+    error on a backend dashboard, backend-type status on status. A datasource outage raises with its error."""
+    return monitoring_query(dashboard, panel_id, hours)
 
 
 @server.tool(annotations=READ)
