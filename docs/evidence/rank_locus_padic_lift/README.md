@@ -1,9 +1,10 @@
 # Does the Schur-complement germ at a rank-locus witness carry the whole tangent bound?
 
 `result.json` is written by `scripts/rank_locus_padic_lift.py --out` and
-recomputed by `--check` (gate core-666, about a minute with pyadic and 15
-seconds without it), which compares the complete record. `--self-test` (gate
-core-667) rejects corrupted orders, digits, flags, charts and controls in
+recomputed by `--check` (gate core-668, about 45 seconds on the pinned stack,
+which lacks pyadic, and a few minutes with the p-adic route), which compares
+the complete record. `--self-test` (gate
+core-669) rejects corrupted orders, digits, flags, charts and controls in
 normal and `-O` modes, and reads order 5 from a toy germ whose obstruction
 starts there.
 
@@ -85,6 +86,22 @@ p-adic rows to it.
   - H is nonzero there at order 2 in every direction.
   - At scale 2 the same 32 entries carry the same leading digits at valuation
     4, so the valuation measures the homogeneous order.
+- Two higher-order controls at x0 exercise both routes above order 2, where
+  an obstruction at a gap witness would have to start, since orders 2 and 3
+  vanish identically there.
+  - `higher_order_controls` holds seeded integer velocities, one in A15 and
+    one in A15 intersect B17. They are built from the certified tangent basis
+    of `nullity_twelve_locus` and checked against the chart's linear
+    equations.
+  - The order-2 obstruction vanishes on both by the certificate.
+  - The A15 velocity reads order 3 in the series route, and valuations 3 and
+    6 at scales p and p^2.
+  - The intersection velocity reads order 4, and valuations 4 and 8.
+  - The digits agree between the routes in both cases.
+  - The p-adic route takes the exact integer velocity, because its residue
+    modulo p would leave an order-2 term divisible by p whose carry shifts
+    the next digit.
+  - A control that read zero or order 2 would stop the run.
 - A failed control stops the run.
 
 **Reading.**

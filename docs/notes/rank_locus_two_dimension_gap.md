@@ -221,7 +221,7 @@ and is never evidence of the gap.
 
    **Outcome.** The lift finds no obstruction at all 12 witnesses
    ([evidence](../evidence/rank_locus_padic_lift/README.md),
-   `scripts/rank_locus_padic_lift.py`, gates core-666 and core-667).
+   `scripts/rank_locus_padic_lift.py`, gates core-668 and core-669).
    - H vanishes to O(p^12) at the pyadic lift. It also vanishes through
      t^63 in an independent F_p[[t]] lift (FLINT `nmod_mat`) along four
      seeded directions per witness over two 31-bit primes.
@@ -231,6 +231,10 @@ and is never evidence of the gap.
      - x0 = e1 + e18 reads order 2 in both routes, with equal digits, and
        valuation 4 at scale p^2. Its cone A15 union B17 has unit dimension
        17 against the tangent bound 21.
+     - Seeded velocities at x0 inside A15 and inside A15 intersect B17,
+       where the order-2 obstruction vanishes, read orders 3 and 4 in both
+       routes with equal digits. Detection therefore holds at the order
+       where an obstruction at a gap witness would first appear.
      - A toy germ reads order 5.
    - The result points one way, but it admits nothing. A nonzero P of
      order below 64 would escape a drawn direction with probability at most

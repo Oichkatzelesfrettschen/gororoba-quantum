@@ -30,8 +30,10 @@ dimension equal to the tangent bound (rank_locus_local_dimension), so M is the g
 must vanish in both routes. At x0 = e1 + e18 the Bouligand cone of the nullity-12 locus is
 A15 union B17 (nullity_twelve_local_geometry.md), of dimension 17 at unit norm, below the tangent
 bound 21, so H must be nonzero there, with order 2 because the eight canonical quadrics
-(rank_locus_second_order) already obstruct. A failed control stops the run. The self-test adds
-a toy germ whose obstruction starts at order 5.
+(rank_locus_second_order) already obstruct. Seeded velocities at x0 inside A15 and inside
+A15 intersect B17, where that order-2 obstruction vanishes, must read a nonzero order above 2 in
+both routes, which exercises detection at the orders where a gap witness would first obstruct.
+A failed control stops the run. The self-test adds a toy germ whose obstruction starts at order 5.
 
 Falsifier, stated before the run: one nonzero excess entry in either route at a gap witness
 (nonzd-axis, zd-nonzd-locus, zd-nonzd-generic, nonzd-nonzd-locus) is an exact certificate that
@@ -57,6 +59,7 @@ import copy
 import functools
 import importlib.metadata
 import json
+import math
 import random
 import sys
 from collections.abc import Callable
@@ -87,6 +90,8 @@ SMOOTH_CONTROLS = ("zd-axis", "zd-zd-locus", "zd-zd-generic")
 GAP_FAMILIES = ("nonzd-axis", "zd-nonzd-locus", "zd-nonzd-generic", "nonzd-nonzd-locus")
 X0_FAMILY = "x0-two-piece-cone"
 X0_ORDER = 2
+CONTROL_PLANES = ("A15", "A15 intersect B17")
+RETAINED = ROOT / "docs/evidence/rank_locus_padic_lift/result.json"
 
 SIGNS = [[cd_sign(DIM, i, j) for j in range(DIM)] for i in range(DIM)]
 
@@ -205,6 +210,7 @@ def chart(row: dict[str, Any]) -> dict[str, Any]:
         "free": [m for m in range(DIM) if m not in dependent],
         "excess": [q for q in range(nullity * nullity) if q not in independent],
         "jacobian_inverse": fractions(minor.inv()),
+        "independent_rows": [jacobian[q] for q in independent],
         "tangent_dimension": tangent_dimension,
     }
 
@@ -410,7 +416,54 @@ def pyadic_version() -> str | None:
     return importlib.metadata.version("pyadic")
 
 
-def measure(row_ids: list[int] | None = None, order: int = SERIES_ORDER, digits: int = PADIC_DIGITS) -> dict[str, Any]:
+def control_directions(ch: dict[str, Any]) -> list[dict[str, Any]]:
+    """Seeded integer velocities at x0 inside A15 and inside A15 intersect B17.
+
+    nullity_twelve_locus certifies that the order-2 obstruction at x0 vanishes exactly on A15 union B17,
+    so along these velocities the first nonzero order of H is at least 3, and both routes must read it.
+    The velocity's free part enters the p-adic route as exact integers: its residue modulo p would leave
+    an order-2 term divisible by p, whose carry would shift the order-3 digit.
+    """
+    from nullity_twelve_locus import certify_nullity_twelve_locus
+
+    certificate = certify_nullity_twelve_locus()
+    basis = certificate.ambient_tangent_basis
+    a15, b17 = (set(plane.zero_coordinates) for plane in certificate.planes)
+    rng = random.Random(SEED + X0_WITNESS + 1000)
+    found = []
+    for plane, zero in zip(CONTROL_PLANES, (a15, a15 | b17), strict=True):
+        weights = [0 if i in zero else rng.randint(-9, 9) for i in range(len(basis[0]))]
+        velocity = [
+            sum((Fraction(basis[r][c]) * weights[c] for c in range(len(weights))), Fraction(0)) for r in range(DIM)
+        ]
+        scale = math.lcm(1, *(value.denominator for value in velocity))
+        integers = [int(value * scale) for value in velocity]
+        _require(
+            all(sum(row[m] * integers[m] for m in range(DIM)) == 0 for row in ch["independent_rows"]),
+            f"the {plane} control velocity is not in T(x0)",
+        )
+        found.append({"plane": plane, "tangent_weights": weights, "velocity": integers})
+    return found
+
+
+def higher_order_controls(ch: dict[str, Any], order: int, digits: int, padic: bool) -> list[dict[str, Any]]:
+    controls = control_directions(ch)
+    p = PRIMES[0]
+    free = [[c["velocity"][m] for m in ch["free"]] for c in controls]
+    series = parallel.ordered_map(series_lift, [(ch, p, [w % p for w in f], order) for f in free], min_items=2)
+    lifts: list[dict[str, Any]] = []
+    if padic:
+        items = [(ch, p, f, scale, digits) for f in free for scale in (1, 2)]
+        lifts = parallel.ordered_map(padic_lift, items, min_items=2)
+    return [
+        {**control, "series": s, "padic": lifts[2 * index : 2 * index + 2]}
+        for index, (control, s) in enumerate(zip(controls, series, strict=True))
+    ]
+
+
+def measure(
+    row_ids: list[int] | None = None, order: int = SERIES_ORDER, digits: int = PADIC_DIGITS, controls: bool = True
+) -> dict[str, Any]:
     rows = [row for row in all_rows() if row_ids is None or row["witness"] in row_ids]
     charts = parallel.ordered_map(chart, rows, min_items=2)
     weights = []
@@ -464,17 +517,51 @@ def measure(row_ids: list[int] | None = None, order: int = SERIES_ORDER, digits:
         "series_order": order,
         "padic_digits": digits,
         "rows": out,
+        "higher_order_controls": [],
         "versions": {"python-flint": flint.__version__, "pyadic": version or "not run: pyadic does not import"},
     }
+    if controls:
+        x0_chart = next(ch for ch in charts if ch["witness"] == X0_WITNESS)
+        record["higher_order_controls"] = higher_order_controls(x0_chart, order, digits, version is not None)
     problems = consistency(record)
     _require(not problems, f"the measurement is inconsistent: {problems}")
     return record
+
+
+def route_agreement(label: str, first: dict[str, Any], padic: list[dict[str, Any]], digits: int) -> list[str]:
+    """Each p-adic lift against the series sample of the same prime and direction."""
+    found = []
+    for entry in padic:
+        expected = first.get("order")
+        if expected is not None and expected * entry.get("scale", 0) >= digits:
+            expected = None
+        valuation = entry.get("valuation")
+        want = None if expected is None else expected * entry.get("scale", 0)
+        if valuation != want:
+            found.append(f"{label} p-adic valuation {valuation} at scale {entry.get('scale')}, series wants {want}")
+        elif valuation is not None and entry.get("leading") != first.get("leading"):
+            found.append(f"{label} p-adic leading digits differ from the series coefficients")
+        if entry.get("absolute_precision", -1) < digits:
+            found.append(f"{label} p-adic absolute precision below {digits} digits")
+        if entry.get("prime") != PRIMES[0] or entry.get("prime") != first.get("prime"):
+            found.append(f"{label} p-adic prime")
+    return found
 
 
 def consistency(record: dict[str, Any]) -> list[str]:
     """Controls, the two-route agreement and each row's internal arithmetic."""
     found = []
     digits = record.get("padic_digits", PADIC_DIGITS)
+    padic_run = not record.get("versions", {}).get("pyadic", "").startswith("not run")
+    for control in record.get("higher_order_controls", []):
+        label = f"{control.get('plane')} control"
+        order = control.get("series", {}).get("order")
+        if order is None or order <= X0_ORDER:
+            found.append(f"{label} reads order {order}, not above {X0_ORDER}")
+        if padic_run:
+            if [entry.get("scale") for entry in control.get("padic", [])] != [1, 2]:
+                found.append(f"{label} p-adic scales")
+            found += route_agreement(label, control.get("series", {}), control.get("padic", []), digits)
     for row in record.get("rows", []):
         label = f"witness {row.get('witness')}"
         series, padic = row.get("series", []), row.get("padic", [])
@@ -491,33 +578,19 @@ def consistency(record: dict[str, Any]) -> list[str]:
             found.append(f"{label} smooth control is obstructed")
         if row.get("role") == "obstructed control" and orders and set(orders) != {X0_ORDER}:
             found.append(f"{label} obstructed control has orders {orders}")
-        if record.get("versions", {}).get("pyadic", "").startswith("not run"):
+        if not padic_run:
             continue
-        first = series[0] if series else {}
         scales = [entry.get("scale") for entry in padic]
         if scales != ([1, 2] if row.get("obstructed") else [1]):
             found.append(f"{label} p-adic scales {scales}")
-        for entry in padic:
-            expected = first.get("order")
-            if expected is not None and expected * entry.get("scale", 0) >= digits:
-                expected = None
-            valuation = entry.get("valuation")
-            want = None if expected is None else expected * entry.get("scale", 0)
-            if valuation != want:
-                found.append(f"{label} p-adic valuation {valuation} at scale {entry.get('scale')}, series wants {want}")
-            elif valuation is not None and entry.get("leading") != first.get("leading"):
-                found.append(f"{label} p-adic leading digits differ from the series coefficients")
-            if entry.get("absolute_precision", -1) < digits:
-                found.append(f"{label} p-adic absolute precision below {digits} digits")
-            if entry.get("prime") != PRIMES[0] or entry.get("prime") != first.get("prime"):
-                found.append(f"{label} p-adic prime")
+        found += route_agreement(label, series[0] if series else {}, padic, digits)
     return found
 
 
 def verdicts(record: dict[str, Any], fresh: dict[str, Any]) -> list[str]:
     """Fields that differ from the fresh measurement, plus every consistency failure of the record."""
     padic_fresh = not fresh["versions"]["pyadic"].startswith("not run")
-    skip = {"rows", "versions"}
+    skip = {"rows", "versions", "higher_order_controls"}
     found = [
         key for key in sorted(record.keys() | fresh.keys()) if key not in skip and record.get(key) != fresh.get(key)
     ]
@@ -528,6 +601,15 @@ def verdicts(record: dict[str, Any], fresh: dict[str, Any]) -> list[str]:
         expected_versions.pop("pyadic", None)
     if versions != expected_versions:
         found.append("versions")
+    controls = record.get("higher_order_controls", [])
+    if len(controls) != len(fresh["higher_order_controls"]):
+        found.append("higher_order_controls")
+    else:
+        for control, expected in zip(controls, fresh["higher_order_controls"], strict=True):
+            keys = sorted(control.keys() | expected.keys())
+            if not padic_fresh:
+                keys = [key for key in keys if key != "padic"]
+            found += [f"{expected['plane']} control {key}" for key in keys if control.get(key) != expected.get(key)]
     rows = record.get("rows", [])
     if len(rows) != len(fresh["rows"]):
         return [*found, "rows"]
@@ -556,7 +638,29 @@ def toy_order() -> int | None:
 
 def self_test() -> str:
     """Corrupted orders, digits, flags, charts and controls are rejected; the toy obstruction reads order 5."""
-    record = measure([5, X0_WITNESS], order=6, digits=5)
+    record = measure([5, X0_WITNESS], order=6, digits=5, controls=False)
+    retained = json.loads(RETAINED.read_text())
+    planes = [control.get("plane") for control in retained.get("higher_order_controls", [])]
+    _require(planes == list(CONTROL_PLANES), f"the retained record carries controls {planes}")
+    _require(not consistency(retained), f"the retained record fails: {consistency(retained)}")
+    retained_mutations: dict[str, Callable[[dict[str, Any]], Any]] = {
+        "control order 2": lambda r: r["higher_order_controls"][0]["series"].__setitem__("order", 2),
+        "control read zero": lambda r: r["higher_order_controls"][1]["series"].__setitem__("order", None),
+    }
+    if not retained["versions"]["pyadic"].startswith("not run"):
+        retained_mutations |= {
+            "control valuation off its order": lambda r: r["higher_order_controls"][1]["padic"][1].__setitem__(
+                "valuation", 7
+            ),
+            "control digit changed": lambda r: r["higher_order_controls"][0]["padic"][0]["leading"][0].__setitem__(
+                1, 5
+            ),
+        }
+    for label, change in retained_mutations.items():
+        bad = copy.deepcopy(retained)
+        change(bad)
+        if not consistency(bad):
+            raise SystemExit(f"rank_locus_padic_lift: the retained {label} mutation passes")
     if verdicts(record, record):
         raise SystemExit(f"rank_locus_padic_lift: the honest record fails: {verdicts(record, record)}")
     has_padic = not record["versions"]["pyadic"].startswith("not run")
@@ -585,11 +689,12 @@ def self_test() -> str:
         change(bad)
         if not verdicts(bad, record):
             raise SystemExit(f"rank_locus_padic_lift: the {label} mutation passes")
+    total = len(mutations) + len(retained_mutations)
     if not has_padic:
-        return f"{len(mutations)} corruptions rejected; p-adic route and toy not run: pyadic does not import"
+        return f"{total} corruptions rejected; p-adic route and toy not run: pyadic does not import"
     toy = toy_order()
     _require(toy == 5, f"the toy obstruction reads order {toy}, not 5")
-    return f"{len(mutations)} corruptions rejected; toy obstruction at order 5"
+    return f"{total} corruptions rejected; toy obstruction at order 5"
 
 
 def main() -> int:
@@ -617,6 +722,9 @@ def main() -> int:
             f"dim T {row['tangent_dimension']:2d} "
             f"series orders {[s['order'] for s in row['series']]} p-adic [{padic}]"
         )
+    for control in data["higher_order_controls"]:
+        padic = ", ".join(f"s{e['scale']} v{e['valuation']}" for e in control["padic"])
+        print(f"x0 control {control['plane']:18s} series order {control['series']['order']} p-adic [{padic}]")
     return 0
 
 
