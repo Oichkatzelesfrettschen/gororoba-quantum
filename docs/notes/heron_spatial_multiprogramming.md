@@ -5,8 +5,8 @@ coupling map of the retained Target snapshot
 (`docs/evidence/heron_platform/targets.json`), composes one circuit per tile
 into one wide circuit, and computes duration and shot-rate arithmetic from
 Target values. `scripts/heron_spatial_multiprogramming.py` writes the audit
-`docs/evidence/heron_platform/spatial_multiprogramming_audit.json` (gates
-core-257 and core-258), and `gororoba_quantum/test_heron_multiprogramming.py`
+`docs/evidence/heron_platform/spatial_multiprogramming_audit.json` (gate
+core-257 and gate `core-self-test-08` (`tests/test_cli_self_tests.py`)), and `gororoba_quantum/test_heron_multiprogramming.py`
 holds the contracts (gate core-256). Nothing here schedules a circuit on a
 backend, submits a job, or measures a throughput; every number below is
 arithmetic on the snapshot or an assumption stated beside it.

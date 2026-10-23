@@ -8,7 +8,7 @@ that would decide it.
 ## Least squares and conditioning
 
 The [least-squares conditioning study](../../evidence/lsq_conditioning/README.md)
-(`scripts/lsq_conditioning_study.py`, gates core-489 and core-492) measures
+(`scripts/lsq_conditioning_study.py`, gate core-489 and gate `core-self-test-08` (`tests/test_cli_self_tests.py`)) measures
 2716 atlas fits against an exact `Fraction` solution and an independent
 p-adic solution.
 
@@ -75,7 +75,7 @@ p-adic solution.
   paths that agree (core-489's Fraction and p-adic solutions on all 2716
   designs) outrank any finite precision.
 - **A total arithmetic replaces divide-and-check.**
-  `gororoba_quantum/wheel_algebra.py` (core-493) implements the wheel of
+  `gororoba_quantum/wheel_algebra.py` (its `--self-test` in gate `core-self-test-08` (`tests/test_cli_self_tests.py`)) implements the wheel of
   fractions over Q: 1/0 is infinity and 0/0 is bottom, so elimination on a
   consistent singular symmetric positive semidefinite system (right side in
   the column space, as rank-deficient normal equations are) returns bottom
@@ -158,7 +158,7 @@ entrywise `Matrix` products, not to integer or rational arithmetic.
 
 - **Compute with FLINT, check the certificate without it.**
   `exact_rank.rational_kernel` reads the basis from the unique RREF, so it
-  returns the same `Fraction` vectors as Python elimination (gate core-528
+  returns the same `Fraction` vectors as Python elimination (the `exact_rank.py --self-test` of gate `core-self-test-09` (`tests/test_cli_self_tests.py`)
   compares the two on 254 matrices). `d_locus_nullity.nullity` verifies each
   kernel vector it certifies as integer dot products after lcm scaling; the
   rank modulo p still bounds the rational rank from below. The kernels that
