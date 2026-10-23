@@ -155,16 +155,17 @@ with L = R = 0. From C L = -R C and C R = -L C:
 So H1 to H3 hold at 2n with n - 1 replaced by 2n - 1. W_n = R, so
 W_n^T W_n = -W_n^2 = (n - 1) I and (I + W_n)(I + W_n)^T = n I for every n.
 The step proves LR = RL itself, so the argument does not depend on the
-flexibility of Cayley-Dickson algebras. `proofs/CdImaginarySumConference.v`
+flexibility of Cayley-Dickson algebras ([Schafer 1954](../papers/schafer-1954-cayley-dickson-flexible.md)),
+whose special case at s it reproves. `proofs/CdImaginarySumConference.v`
 checks the same induction in Rocq over integer coefficients, in element form:
 s (s x) = (x s) s = -(n - 1) x, s (x s) = (s x) s, and the skew and
 conference identities for the coordinate inner product.
 
 | Statement | Status |
 |---|---|
-| W_n is a skew conference matrix: W_n^T = -W_n and W_n^T W_n = (n - 1) I, so I + W_n is a skew Hadamard matrix | [R] for every n on the recursive pair tower ([proof bundle](../../evidence/cd-imaginary-sum-conference/README.md)); [E] that tower's products equal cd_sign through n = 64; [T] the induction below; [E] n = 2 to 128 |
-| I + W_16 is a Hadamard matrix of class 4 in McKay's list of order 16 (its transpose and the sedenion sign table lie in class 5, the transpose class), with 86016 automorphism pairs (P, Q), P (I + W) Q^T = I + W, counted with (-I, -I). G_n embeds as the pairs (P, P), of index 8, 64 and 128 at n = 4, 8, 16; at n = 32 and 64 the whole Hadamard automorphism group has order 2688, index 4 | [E] external Hadamard replay. A prediction that I + W_16 is the Sylvester class (line 1), recorded before the run, failed |
-| At n = 4 and 8, W_n is signed-permutation equivalent to the Paley matrix of q = 3 and 7, whose entry (x, y) on the projective line over F_q is the quadratic character of y - x; the equivalences number 24 and 336, the group orders | [E] |
+| W_n is a skew conference matrix: zero diagonal, entries +-1 off it, W_n^T = -W_n and W_n^T W_n = (n - 1) I, so I + W_n is a skew Hadamard matrix | [R] for every n: the skew and Gram identities of right multiplication by s on the recursive pair tower ([proof bundle](../../evidence/cd-imaginary-sum-conference/README.md)); [E] through n = 64: that tower's basis products are cd_sign(n, a, b) e_(a XOR b), which gives the zero diagonal, the +-1 entries and the match with W_n; [T] the induction below; [E] n = 2 to 128 on cd_sign |
+| I + W_16 lies in the class of line 4 of the retained [McKay](../papers/mckay-hadamard-matrices.md) list `had16.txt` (sha256 `67fb6f1a...0005c2f170`), under row and column permutations and negations; its transpose and the sedenion sign table lie in the class of line 5, so the two classes are a transpose pair. I + W_16 has 86016 automorphism pairs (P, Q), P (I + W) Q^T = I + W, counted with (-I, -I). G_n embeds as the pairs (P, P), of index 8, 64 and 128 at n = 4, 8, 16; at n = 32 and 64 the whole Hadamard automorphism group has order 2688, index 4 | [E] external Hadamard replay. A prediction that I + W_16 is the Sylvester class (line 1), recorded before the run, failed |
+| At n = 4 and 8, W_n is signed-permutation equivalent to the Paley matrix of q = 3 and 7, whose entry (x, y) on the projective line over F_q is the quadratic character of y - x; the equivalences number 24 and 336, the group orders | [E]. [P] Albuquerque and Majid, Proposition 5.2, build the quaternions and octonions from the bordered Paley matrix of q = 3 and 7 read as the cochain F(x, y); [I] that places the Paley structure in the sign cochain rather than in W_n ([note](../math-9802116.md#mapping-to-this-repository)) |
 | Read through that equivalence, each symmetry permutes the projective line by a map of PSL(2, q) with kernel {+-1}, and a lift of those maps to SL(2, q) is a bijective homomorphism: G_4 = SL(2, 3) and G_8 = SL(2, 7) | [E] explicit lift |
 | The octonion boundary is the quadratic-residue tournament mod 7, whose residues {1, 2, 4} form a line of the Fano plane | [I] |
 | G_16 preserves the eight doubling pairs {a, a + 8} and acts on them as PGL(2, 7) with kernel {+-1}; the preimage of PSL(2, 7) is the derived subgroup, which lifts to SL(2, 7) | [E] |
@@ -212,7 +213,7 @@ the lifts are geometries rather than codes [E] `check_types`.
 
 - A Rocq statement that the recursive tower's basis products equal a Rocq
   transcription of `cd_core.cd_sign` for every n; the bridge is an [E] check
-  through n = 64.
+  through n = 64 ([plan](../../state/plans/cd-tower-basis-sign-theorem.json)).
 - Rocq certificates for the finite group identifications, which need a
   verified complete enumeration of each centralizer, not only a checked
   isomorphism.

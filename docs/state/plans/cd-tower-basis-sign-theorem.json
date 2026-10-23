@@ -1,0 +1,47 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-tower-basis-sign-theorem",
+  "kind": "investigation",
+  "summary": "Prove in Rocq that the recursive pair tower's basis products are e_a e_b = sigma_k(a, b) e_(a XOR b) for a transcription sigma_k of cd_core.cd_sign, and derive the zero diagonal and +-1 entries of W_n.",
+  "sources": [
+    "proofs/CdImaginarySumConference.v",
+    "docs/evidence/cd-imaginary-sum-conference/README.md",
+    "docs/evidence/cd-imaginary-sum-conference/tower_bridge.py",
+    "gororoba_quantum/cd_core.py",
+    "docs/notes/topics/cd-star-lattice-tower.md"
+  ],
+  "state": "planned",
+  "scope": "proofs/CdImaginarySumConference.v proves the skew and Gram identities of right multiplication by the imaginary sum on the integer pair tower for every k. The standard-basis entries of that map, and their agreement with cd_core.cd_sign, are an exact finite check through n = 64 in tower_bridge.py. The investigation states and proves the entry theorem for every k; the Python bridge stays as the implementation check.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "Define the basis element e_a^(k) and a Fixpoint sigma k a b transcribing the four cases of cd_core.cd_sign, then attempt the basis-product lemma by induction on k.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Scope read from proofs/CdImaginarySumConference.v and tower_bridge.py; no step has started."
+  },
+  "steps": [
+    {
+      "id": "basis-product-lemma",
+      "action": "Define e_a^(k) for a < 2^k and sigma_k by the cd_sign recursion, and prove mul (e a) (e b) = scale (sigma k a b) (e (a XOR b)) for all a, b < 2^k by induction on k, under rocq-9.3 with -w @all and no axioms.",
+      "acceptance": "rocq compile succeeds; Print Assumptions on the lemma prints Closed under the global context. Stop condition: a counterexample cell from tower_bridge.py's transcription, or a case of the recursion that the induction cannot close, is recorded and ends the step.",
+      "state": "todo"
+    },
+    {
+      "id": "arc-matrix-entries",
+      "action": "Derive from the lemma that coord (mul (e a) s) (a XOR b) = sigma k a b for b != 0 and coord (mul (e a) s) a = 0, with s the tower's imaginary sum.",
+      "acceptance": "The two entry theorems compile closed under the global context and, with isum_conference, state W_n as a skew conference matrix in the standard basis for every k.",
+      "state": "todo",
+      "depends_on": [
+        "basis-product-lemma"
+      ]
+    },
+    {
+      "id": "sign-transcription-check",
+      "action": "Extend tower_bridge.py to compare the Rocq sigma transcription, mirrored in Python, with cd_core.cd_sign on every pair through n = 64, keeping the existing tower comparison.",
+      "acceptance": "tower_bridge.py exits 0 under its gate, and a flipped sign in the mirrored transcription makes it exit nonzero.",
+      "state": "todo",
+      "depends_on": [
+        "basis-product-lemma"
+      ]
+    }
+  ]
+}

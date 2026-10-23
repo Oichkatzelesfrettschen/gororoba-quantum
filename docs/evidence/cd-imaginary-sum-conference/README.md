@@ -1,11 +1,17 @@
 # Imaginary-sum conference proof
 
 [CdImaginarySumConference.v](../../../proofs/CdImaginarySumConference.v)
-proves, for every Cayley-Dickson dimension n = 2^k, that right multiplication
-by the imaginary sum s = e_1 + ... + e_(n-1) is a skew conference matrix. That
-matrix is the arc matrix W_n of the
+proves, for every Cayley-Dickson dimension n = 2^k, the skew and Gram
+identities of right multiplication by the imaginary sum s = e_1 + ... + e_(n-1)
+on the recursive pair tower over the integers. In the standard basis that map
+is the arc matrix W_n of the
 [star-lattice tower](../../notes/topics/cd-star-lattice-tower.md#the-boundary-as-a-paley-matrix),
-so I + W_n is a skew Hadamard matrix in every dimension.
+and the identities are W_n^T = -W_n and W_n^T W_n = (n - 1) I in every
+dimension. The remaining conference conditions, a zero diagonal and entries
++-1 off it, follow from the basis products e_a e_b = +-e_(a XOR b), which the
+bridge below checks against cd_sign through n = 64; the Rocq theorem for them
+is the open step of the
+[basis-sign plan](../../state/plans/cd-tower-basis-sign-theorem.json).
 
 | Theorem | Statement, for every k |
 | --- | --- |
