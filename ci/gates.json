@@ -3865,6 +3865,14 @@
    "name": "core-ascella-serialized-request-replay",
    "seconds": 12.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
+   "name": "core-666",
+   "seconds": 90.0,
+   "tier": "full"
   }
  ],
  "excluded": [
