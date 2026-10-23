@@ -111,7 +111,9 @@
    },
    "options": {
     "active_reset_cycles": 1,
-    "calibration_set_id": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
+    "calibration_set_id": {
+     "garnet": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d"
+    },
     "heralding_mode": "zeros"
    },
    "shots": 4000

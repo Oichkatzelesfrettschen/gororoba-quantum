@@ -200,7 +200,7 @@ def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
         ],
         "shots": SHOTS,
         # The job compiles against the calibration set the prediction was made from, or fails if it is gone.
-        "options": {**OPTIONS, "calibration_set_id": calibration.set_id},
+        "options": {**OPTIONS, "calibration_set_id": {QC: calibration.set_id}},
         "expected_seconds": expected,
         "max_credits": ceiling,
     }
