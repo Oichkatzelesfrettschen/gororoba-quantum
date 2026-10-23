@@ -7635,7 +7635,7 @@
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "No approved hardware case; the prediction carries no coherent error, and H4 rests on the model's relaxation even part and on QB11's over-rotation being the only first-order term of this compile under the audit's stationary error model; an angle-dependent QB11 error rescales the odd part by twice what its trains predict and leaves its sign.",
+      "boundary": "cd_core settles the zero-divisor property exactly, so a resolved H1 demonstrates that the device realizes the compiled sign table at first order rather than discovering an algebraic fact; the open questions are device physics (QB11's coherent error, the even-part decomposition, the response shape). No approved hardware case; the prediction carries no coherent error, and H4 rests on the model's relaxation even part and on QB11's over-rotation being the only first-order term of this compile under the audit's stationary error model; an angle-dependent QB11 error rescales the odd part by twice what its trains predict and leaves its sign.",
       "evidence": [],
       "documents": [
         "docs/design/iqm-garnet-kernel-cancellation-probe.md",

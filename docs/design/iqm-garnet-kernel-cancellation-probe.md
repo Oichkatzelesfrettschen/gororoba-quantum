@@ -6,7 +6,10 @@ is the eigenvector of K = L_e1^T L_e10 with eigenvalue -1; the bright vector
 Garnet reads an overlap that holds for every unit vector u
 ([audit](iqm-garnet-signed-kernel-probe.md#adversarial-audit)), so this case
 replaces it with an observable that carries the zero-divisor sign at first
-order.
+order. cd_core already settles the zero-divisor property exactly, so a
+resolved H1 demonstrates that Garnet realizes the compiled sign table at
+first order; what the run can find out is device physics: QB11's coherent
+error, the even-part decomposition and the shape of the response.
 
 ## Observable
 
