@@ -69,6 +69,16 @@ def test_arc_matrix_is_a_skew_conference_matrix_and_one_flipped_entry_breaks_it(
         raise AssertionError("is_skew_conference accepted a matrix with one flipped skew pair")
 
 
+def test_doubling_blocks_match_cd_sign_and_one_flipped_block_entry_does_not() -> None:
+    for n in (2, 4, 8, 16):
+        if lattice.doubling_blocks(n) != (lattice.arc_matrix(2 * n), lattice.left_matrix(2 * n)):
+            raise AssertionError(f"the block recurrence misses cd_sign at dimension {2 * n}")
+    right, left = lattice.doubling_blocks(8)
+    right[2][8 + 3] = -right[2][8 + 3]
+    if (right, left) == (lattice.arc_matrix(16), lattice.left_matrix(16)):
+        raise AssertionError("a flipped entry in the upper-right block still matched cd_sign")
+
+
 def test_octonion_arc_matrix_is_paley_equivalent_and_a_flipped_pair_is_not() -> None:
     paley = lattice.paley_matrix(7)
     if len(lattice.signed_equivalences(lattice.arc_matrix(8), paley)) != 336:

@@ -19,8 +19,11 @@ group through dimension 128.
 every number below from `cd_core.cd_sign`; the retained record is
 [census.json](../../evidence/cd-star-lattice/census.json), replayed by gate
 core-665 and described in its [README](../../evidence/cd-star-lattice/README.md).
-Tags: [P] source statement, [E] finite evidence, [T] proved here,
-[I] interpretation.
+Tags: [P] source statement; [E] exact finite computation, where a group
+order comes from an exhaustive search (the census backtracker through
+n = 16, cross-checked by nauty) and an isomorphism from an explicit
+certificate checked against that complete enumeration; [T] written proof
+argument, not machine-checked; [I] interpretation. No row is Rocq-checked.
 
 ## Construction
 
@@ -102,7 +105,7 @@ cell.
 |---|---|
 | The group acts transitively on the 2n signed units at every n of the tower; the stabilizer of e_0 has orders 1, 3, 21, 21 | [E] |
 | The octonion-to-sedenion step doubles the group without enlarging the stabilizer of e_0 | [E] 336 = 16 x 21, 672 = 32 x 21 |
-| The doubling stops at the sedenions: the signed-permutation centralizer of the boundary has order 672 at n = 32, 64 and 128, isomorphic to the n = 16 group, with n/16 orbits of 32 signed units | [E] external nauty replay; the e_0 orbit at n = 32 holds 32 of 64 signed units, so the action is no longer transitive |
+| The doubling stops at the sedenions: the signed-permutation centralizer of the boundary has order 672 at n = 32, 64 and 128, isomorphic to the n = 16 group, with n/16 orbits of 32 signed units | [E] external nauty replay, the only search above n = 16 (the census backtracker agrees at n = 32); the e_0 orbit at n = 32 holds 32 of 64 signed units, so the action is no longer transitive. A prediction of order 1344 at n = 32, recorded before the run, failed |
 | Left multiplication by units leaves B_n invariant in the associative algebras and fails from the octonions on, where the units form a Moufang loop | [E] closure counts; [T] associativity gives (u' u)(1 + 2w) = u'(u(1 + 2w)) |
 
 ## The boundary as a Paley matrix
@@ -114,15 +117,55 @@ A signed permutation maps B_n onto itself exactly when it commutes with W_n,
 so the symmetry group G_n is the signed-permutation centralizer of W_n [T].
 The `identification` block of the census carries the [E] cells.
 
+**Induction for the conference property.** Write A_n for the algebra of
+dimension n, x = (x1, x2) in A_n + A_n, and the product as cd_sign's four
+cases read it: (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)). The imaginary
+sum doubles as s' = (s, 1 + s), with s = 0 at n = 1. Let L and R be left and
+right multiplication by s on A_n and C conjugation, the diagonal matrix
+diag(1, -1, ..., -1). Expanding (x1, x2) s' and s' (x1, x2) gives
+
+    R' = [[R, L - I], [I + L, -R]],   L' = [[L, -(I + R) C], [(I + L) C, R]].
+
+The census checks both block forms against cd_sign at n = 4 to 128 [E]
+(`doubling_blocks_match_cd_sign`). Three facts hold at every n: C^2 = I and
+C^T = C; C L C = -R, because conjugation reverses products and conj(s) = -s;
+and L e_0 = R e_0 = s. The induction hypothesis at n is (H1) L^T = -L and
+R^T = -R, (H2) L^2 = R^2 = -(n - 1) I, (H3) LR = RL; at n = 1 all three hold
+with L = R = 0. From C L = -R C and C R = -L C:
+
+- Transposes. R'^T has blocks R^T, (I + L)^T, (L - I)^T, -R^T, which H1
+  turns into -R, I - L, -(I + L), R: R'^T = -R'. L'^T has diagonal -L, -R
+  and off-diagonal blocks C(I - L) = (I + R) C and -C(I - R) = -(I + L) C:
+  L'^T = -L'.
+- Squares. The diagonal blocks of R'^2 are R^2 + (L - I)(L + I) and
+  (L + I)(L - I) + R^2, both L^2 + R^2 - I = -(2n - 1) I by H2; the
+  off-diagonal blocks are +-(RL - LR) = 0 by H3. In L'^2, C(I + L)C = I - R
+  and C(I + R)C = I - L make the diagonal blocks L^2 - (I + R)(I - R) and
+  R^2 - (I + L)(I - L), again L^2 + R^2 - I; the off-diagonal blocks reduce
+  to (RL - LR) C = 0.
+- Commutation. The upper-left block of L'R' - R'L' is
+  (LR - RL) - ((I + R)(I - R) + L^2 - I) C = (R^2 - L^2) C = 0. The
+  lower-right block is (I + L)(C(L - I) + (I + R) C) = (I + L)(-RC - C + C
+  + RC) = 0. The off-diagonal blocks reduce by H2 and H3 to
+  Q (I + C) and Q' (I + C) with Q = R^2 + R - L - LR and
+  Q' = R + RL - L - L^2. I + C = 2 e_0 e_0^T, and
+  Q e_0 = Rs + s - s - Ls = (R^2 - L^2) e_0 = 0, likewise Q' e_0 = 0.
+
+So H1 to H3 hold at 2n with n - 1 replaced by 2n - 1. W_n = R, so
+W_n^T W_n = -W_n^2 = (n - 1) I and (I + W_n)(I + W_n)^T = n I for every n.
+The step proves LR = RL itself, so the argument does not depend on the
+flexibility of Cayley-Dickson algebras.
+
 | Statement | Status |
 |---|---|
-| W_n is a skew conference matrix: W_n^T = -W_n and W_n^T W_n = (n - 1) I, so I + W_n is a skew Hadamard matrix | [E] n = 2 to 128; no proof for every n |
+| W_n is a skew conference matrix: W_n^T = -W_n and W_n^T W_n = (n - 1) I, so I + W_n is a skew Hadamard matrix | [T] for every n, by the induction below; [E] n = 2 to 128 |
+| I + W_n is a Hadamard matrix of class 4 in McKay's list of order 16 (its transpose and the sedenion sign table lie in class 5, the transpose class), with 86016 automorphism pairs (P, Q), P (I + W) Q^T = I + W, counted with (-I, -I). G_n embeds as the pairs (P, P), of index 8, 64 and 128 at n = 4, 8, 16; at n = 32 and 64 the whole Hadamard automorphism group has order 2688, index 4 | [E] external Hadamard replay. A prediction that I + W_16 is the Sylvester class (line 1), recorded before the run, failed |
 | At n = 4 and 8, W_n is signed-permutation equivalent to the Paley matrix of q = 3 and 7, whose entry (x, y) on the projective line over F_q is the quadratic character of y - x; the equivalences number 24 and 336, the group orders | [E] |
 | Read through that equivalence, each symmetry permutes the projective line by a map of PSL(2, q) with kernel {+-1}, and a lift of those maps to SL(2, q) is a bijective homomorphism: G_4 = SL(2, 3) and G_8 = SL(2, 7) | [E] explicit lift |
 | The octonion boundary is the quadratic-residue tournament mod 7, whose residues {1, 2, 4} form a line of the Fano plane | [I] |
 | G_16 preserves the eight doubling pairs {a, a + 8} and acts on them as PGL(2, 7) with kernel {+-1}; the preimage of PSL(2, 7) is the derived subgroup, which lifts to SL(2, 7) | [E] |
 | G_16 has one involution, Sylow 2-subgroup Q32 and SmallGroup id (672, 1045): the double cover of PGL(2, 7) whose elements over PGL(2, 7) minus PSL(2, 7) include no involution | [E] the census certifies the involution count and the PGL(2, 7) quotient; GAP gives the id and Q32 in the external replay |
-| No Paley matrix has order 16, since 15 is no prime power. One has order 32 (q = 31), and W_32 is not equivalent to it: x -> x + 1 is a Paley automorphism of order 31, and 31 does not divide 672 | [T] |
+| No Paley matrix has order 16, since 15 is no prime power. One has order 32 (q = 31), and W_32 is not equivalent to it: x -> x + 1 is a Paley automorphism of order 31, and 31 does not divide 672 | [T] given the [E] order 672 at n = 32 |
 | The commutant of G_n is Q(sqrt -3) at n = 4 and Q(sqrt -7) at n = 8; at n = 16 it has basis 1, J, R, JR with J^2 = -7, R^2 = -1, JR = -RJ and R right multiplication by e_8, the quaternion algebra (-7, -1) over Q | [E]; (-7, -1) ramifies at 7 and infinity [T]: -7 is a square in Q_2 and -1 a non-residue mod 7 |
 | The stabilizer of e_0 equals the set of unsigned, XOR-linear index permutations that preserve cd_sign: 3, 21 and 21 elements at n = 4, 8, 16, the order-21 group being 7:3 | [E] |
 | 6, 42 and 42 elements have XOR-linear index maps, the stabilizer and its product with -1, so the lattice group meets the algebra's permutation automorphisms only there | [E] |
@@ -163,8 +206,9 @@ the lifts are geometries rather than codes [E] `check_types`.
 
 ## Open questions
 
-- A proof that W_n is a skew conference matrix for every n, by induction on
-  the cd_sign doubling recursion.
+- A Rocq formalization of the conference induction over a recursive tower
+  of pairs, and of the step from that tower's sign function to
+  `cd_core.cd_sign`, which stays an [E] check through n = 128.
 - Whether G_n has order 672 for every n >= 16, acting as G_16 on each block
   of 32 signed units; the nauty replay reaches n = 128.
 - A boundary rule that reads four-index sign relations and whose symmetry

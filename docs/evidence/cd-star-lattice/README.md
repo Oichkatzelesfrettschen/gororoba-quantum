@@ -7,9 +7,10 @@
 products, `sedenion_zero_divisor_corpus` and `left_mult_determinant_exact`
 for the sedenion zero divisors) and binds the dimension-2 lattice to the
 Tuna-17 couplers of [catalogue.json](../quantum_inspire/catalogue.json). The
-`identification` block certifies the boundary groups in plain Python: an
-explicit lift to SL(2, q) for the groups of dimensions 4 and 8, and the PGL(2, 7)
-action on doubling pairs for dimension 16.
+`identification` block identifies the boundary groups by exact finite
+computation in plain Python: an explicit lift to SL(2, q) for the groups of
+dimensions 4 and 8, and the PGL(2, 7) action on doubling pairs for dimension
+16, each checked against the complete group the backtracker enumerates.
 Values are integers, booleans and index lists; the record carries no floats,
 paths, timestamps or worker counts, so pooled and serial
 (`GOROROBA_WORKERS=1`) runs write the same bytes.
@@ -40,6 +41,7 @@ group's.
 | `cayley_dickson[3].sedenion_zero_divisors` | two-blade and corpus counts, unit and boundary zero divisors, the assessor-pair orbit and its 14 extra pairs |
 | `tetrahedral_3d` | the same fields for the tetrahedral boundary, plus `octahedron_selections` over all 4096 one-per-edge boundaries |
 | `identification.arc_matrix_skew_conference` | whether W_n, right multiplication by e_1 + ... + e_{n-1}, is a skew conference matrix, n = 2 to 128 |
+| `identification.doubling_blocks_match_cd_sign` | whether left and right multiplication by the imaginary sum at n equal the block recurrence assembled from dimension n/2, n = 4 to 128: the link from cd_sign to the written conference induction of the tower note |
 | `identification["4"]`, `["8"]` | commutant dimension and basis squares; e_0 stabilizer equal to the table's permutation automorphisms; XOR-linear element count; `paley`: equivalences of W_n to the Paley matrix of q = 3, 7, its automorphism count, projective-line maps in PSL(2, q), line-action kernel, and the SL(2, q) lift |
 | `identification["16"]` | the same commutant and stabilizer fields, the right multiplication by e_8 in the commutant; `doubling_pairs`: PGL(2, 7) image of order 336 with kernel {+-1}, derived subgroup equal to the PSL(2, 7) preimage and lifted to SL(2, 7), its two index orbits, and the orbit sizes of the 120 index pairs |
 
@@ -55,6 +57,17 @@ each order in the library, and the Sylow 2-subgroup, center, involution count
 and central quotient of the dimension-16 group. No gate runs it, because the
 gate images carry no SageMath; the census backtracker needs 417 s for n = 32
 on 32 workers, which keeps n >= 32 out of the gated record.
+
+[external/hadamard_replay.py](external/hadamard_replay.py) writes
+[external/hadamard_replay.txt](external/hadamard_replay.txt). It places
+I + W_16 and the sedenion sign table among the five equivalence classes of
+Hadamard matrices of order 16 in
+[external/mckay_had16.txt](external/mckay_had16.txt), Brendan McKay's list
+retained from https://users.cecs.anu.edu.au/~bdm/data/hadamard/had16.txt
+(sha256 `67fb6f1a36f6893fca541a85754329812b9b8b454b3438ec9b6fd00005c2f170`),
+and counts the Hadamard automorphism pairs of I + W_n for n = 4 to 64. Classes
+carry the file's line numbers; no source here maps them to Hall's or
+Sloane's labels.
 
 `boundary_symmetry` describes the group of signed permutation matrices that
 maps the boundary set onto itself: order, determinant counts, element-order

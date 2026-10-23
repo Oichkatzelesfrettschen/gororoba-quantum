@@ -30,7 +30,9 @@ cd_core.left_mult_determinant_exact.
 The identification block certifies the groups without an external algebra
 system. The boundary is the signed support of the arc matrix W, right
 multiplication by e_1 + ... + e_{n-1}, and W is checked to be a skew
-conference matrix through dimension 128. In dimensions 4 and 8 W is
+conference matrix through dimension 128; the left and right multiplications by
+the imaginary sum are checked against the doubling block recurrence that
+proves the conference property in every dimension. In dimensions 4 and 8 W is
 signed-permutation equivalent to the Paley matrix of q = 3, 7; read through
 that equivalence each symmetry permutes the projective line over F_q by a map
 of PSL(2, q), and a lift of those maps to SL(2, q) that is a bijective
@@ -475,6 +477,40 @@ def arc_matrix(n: int) -> Matrix:
     return matrix
 
 
+def left_matrix(n: int) -> Matrix:
+    """L[a XOR b][a] = cd_sign(n, b, a), b >= 1: left multiplication by e_1 + ... + e_{n-1}."""
+    matrix = [[0] * n for _ in range(n)]
+    for a in range(n):
+        for b in range(1, n):
+            matrix[a ^ b][a] = cd_sign(n, b, a)
+    return matrix
+
+
+def doubling_blocks(n: int) -> tuple[Matrix, Matrix]:
+    """Right and left multiplication by s' = (s, 1 + s) in dimension 2n, assembled from L, R and conjugation C at n.
+
+    The doubling (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)) gives R' = [[R, L - I], [I + L, -R]] and
+    L' = [[L, -(I + R) C], [(I + L) C, R]], the block recurrence of the conference-matrix induction in
+    docs/notes/topics/cd-star-lattice-tower.md.
+    """
+    right, left = arc_matrix(n), left_matrix(n)
+    conj = [1] + [-1] * (n - 1)
+    eye = [[int(i == j) for j in range(n)] for i in range(n)]
+    big_right = [[0] * (2 * n) for _ in range(2 * n)]
+    big_left = [[0] * (2 * n) for _ in range(2 * n)]
+    for i in range(n):
+        for j in range(n):
+            big_right[i][j] = right[i][j]
+            big_right[i][n + j] = left[i][j] - eye[i][j]
+            big_right[n + i][j] = eye[i][j] + left[i][j]
+            big_right[n + i][n + j] = -right[i][j]
+            big_left[i][j] = left[i][j]
+            big_left[i][n + j] = -(eye[i][j] + right[i][j]) * conj[j]
+            big_left[n + i][j] = (eye[i][j] + left[i][j]) * conj[j]
+            big_left[n + i][n + j] = right[i][j]
+    return big_right, big_left
+
+
 def is_skew_conference(matrix: Matrix) -> bool:
     """Zero diagonal, W^T = -W and W^T W = (n - 1) I, so I + W is a skew Hadamard matrix."""
     n = len(matrix)
@@ -793,7 +829,10 @@ def sedenion_identification(group: list[SignedPermutation]) -> dict[str, Any]:
 def identification_facts(groups: dict[int, list[SignedPermutation]]) -> dict[str, Any]:
     """Arc-matrix, Paley, commutant and table-automorphism facts that identify the boundary groups."""
     facts: dict[str, Any] = {
-        "arc_matrix_skew_conference": {str(n): is_skew_conference(arc_matrix(n)) for n in CONFERENCE_DIMENSIONS}
+        "arc_matrix_skew_conference": {str(n): is_skew_conference(arc_matrix(n)) for n in CONFERENCE_DIMENSIONS},
+        "doubling_blocks_match_cd_sign": {
+            str(n): doubling_blocks(n // 2) == (arc_matrix(n), left_matrix(n)) for n in CONFERENCE_DIMENSIONS[1:]
+        },
     }
     for n, group in groups.items():
         w = arc_matrix(n)
