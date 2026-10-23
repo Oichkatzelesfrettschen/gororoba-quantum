@@ -259,9 +259,31 @@ def render(destination: Path, radii: list[float]) -> None:
         destination.write_text("\n".join(line.rstrip() for line in destination.read_text().splitlines()) + "\n")
 
 
+def matches(retained: Any, fresh: Any) -> bool:
+    """Equal structure and values; floats agree within the replay's 1e-12 residual bound."""
+    if isinstance(retained, dict) and isinstance(fresh, dict):
+        return retained.keys() == fresh.keys() and all(matches(retained[k], fresh[k]) for k in retained)
+    if isinstance(retained, list) and isinstance(fresh, list):
+        return len(retained) == len(fresh) and all(matches(a, b) for a, b in zip(retained, fresh, strict=True))
+    if isinstance(retained, float) or isinstance(fresh, float):
+        return abs(retained - fresh) <= 1e-12
+    return bool(retained == fresh)
+
+
 if __name__ == "__main__":
     evidence = report()
     target = Path(__file__).resolve().parent
+    if "--check" in sys.argv:
+        retained = json.loads((target / "derivation.json").read_text())
+        # Tool versions describe the writing host; residuals are bounded by report() itself.
+        ignored = ("versions", "maximum_residuals")
+        if not matches(
+            {k: v for k, v in retained.items() if k not in ignored},
+            {k: v for k, v in evidence.items() if k not in ignored},
+        ):
+            raise SystemExit("derivation.json differs from the recomputed derivation")
+        print("derivation.json reproduces")
+        raise SystemExit(0)
     if "--write" in sys.argv:
         (target / "derivation.json").write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n")
         render(target / "coefficient-atlas.svg", evidence["simultaneous_xy_pointwise_radii"])

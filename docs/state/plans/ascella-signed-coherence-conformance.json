@@ -26,7 +26,7 @@
     {
       "id": "replay-request-locally",
       "action": "Replay the frozen request through the local SLOS backend and run the registered estimators on the ideal response, the equal-contrast mutation counterexample and the sign-even counterexample.",
-      "acceptance": "The ideal replay qualifies every primary endpoint; each counterexample fails exactly the endpoint the design names for it.",
+      "acceptance": "The ideal replay qualifies every primary endpoint; the equal-contrast counterexample fails mutation closure; the sign-even counterexample keeps all fifteen primary coefficients ideal while its descriptive sign-even response reaches the 0.19 magnitude replay.py records.",
       "state": "todo",
       "depends_on": [
         "freeze-native-request"

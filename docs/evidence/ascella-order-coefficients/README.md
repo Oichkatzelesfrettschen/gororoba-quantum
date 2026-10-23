@@ -36,7 +36,7 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" docs/evidence/ascella-order-coefficients/replay.py
 ```
 
-The default invocation recomputes and prints its checks without writing files.
+The default invocation recomputes and prints its checks without writing files. `--check` recomputes and requires the retained `derivation.json` to match, floats within 1e-12 and tool versions aside; gate sources-394 runs it.
 The `--write` option generates the report and SVG in the script directory;
 use a separate successor location for any later retained revision. Numerical
 residuals use an absolute 1e-12 bound. Exact identities must reduce to zero.

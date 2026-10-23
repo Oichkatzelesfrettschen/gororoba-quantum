@@ -970,6 +970,14 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/ascella-order-coefficients/replay.py --check",
+   "name": "sources-394",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_geometry/replay.py --check",
    "name": "sources-134",
    "seconds": 16.6,
