@@ -18,6 +18,13 @@ cumulative execution to 165.24 seconds.
 
 ## Retained results
 
+- [Serialized Ascella order replay](ascella-serialized-order-replay/replay.json)
+  executes the failed acquisition's actual serialized computation on SLOS and
+  Naive. Both local backends complete eight settings with 65,536 simulated
+  samples, and sixteen probability comparisons agree with the manifest
+  within 4.45e-16. Its adjacent `producer.py` supports `--check` and retains
+  source hashes. The hardware instrument layer is outside this replay.
+
 - `physical-photonic-compiler-crosscheck/photonic.json` retains 128 passing
   settings: 120 Belenos settings (three repeats of 40 order, wave, Fourier
   and control settings) on 24 physical modes and eight Ascella order

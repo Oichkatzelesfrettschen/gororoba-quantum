@@ -1,0 +1,342 @@
+{
+  "boundary": "Compiled meshes and performance fields are provider metadata. Four-output counts cannot measure full-output leakage, absolute calibrated loss, drift, or physical phase reconstruction.",
+  "conditioning": "Occupation sum one within the four returned modes of twelve-mode Ascella.",
+  "job_id": "889c0b21-6b14-473c-a81b-5ae90e244ea9",
+  "observations": [
+    {
+      "accepted_samples": 8192,
+      "compiled_conditional_probabilities": [
+        0.9999999912277686,
+        1.1379817688689234e-09,
+        5.438473046802976e-09,
+        2.195776506672047e-09
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 3.396151609592344e-07,
+      "compiled_vs_requested_tvd": 8.772231131994433e-09,
+      "counts": [
+        8173,
+        9,
+        6,
+        4
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.9976806640625,
+        0.0010986328125,
+        0.000732421875,
+        0.00048828125
+      ],
+      "measured_vs_compiled_tvd": 0.002319327165268646,
+      "measured_vs_requested_tvd": 0.002319335937499778,
+      "multiple_occupation_exclusions": 0,
+      "name": "order-i0-j0-representative0",
+      "provider_metadata": {
+        "global_perf": 0.020922873808837616,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.020922873808837616
+      },
+      "requested_probabilities": [
+        0.9999999999999996,
+        0.0,
+        5.004680467665246e-34,
+        0.0
+      ],
+      "vacuum_exclusions": 0
+    },
+    {
+      "accepted_samples": 8192,
+      "compiled_conditional_probabilities": [
+        3.719156074957323e-08,
+        0.9999998664160742,
+        1.535568412136873e-08,
+        8.103668089190892e-08
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 2.959670593436099e-07,
+      "compiled_vs_requested_tvd": 1.335839255643138e-07,
+      "counts": [
+        13,
+        8165,
+        14,
+        0
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.0015869140625,
+        0.9967041015625,
+        0.001708984375,
+        0.0
+      ],
+      "measured_vs_compiled_tvd": 0.0032958458902551052,
+      "measured_vs_requested_tvd": 0.003295898437499778,
+      "multiple_occupation_exclusions": 0,
+      "name": "order-i0-j0-representative1",
+      "provider_metadata": {
+        "global_perf": 0.020924379959322347,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.020924379959322347
+      },
+      "requested_probabilities": [
+        0.0,
+        0.9999999999999996,
+        0.0,
+        5.004680467665246e-34
+      ],
+      "vacuum_exclusions": 0
+    },
+    {
+      "accepted_samples": 8188,
+      "compiled_conditional_probabilities": [
+        0.5002981191260708,
+        0.4997018400925764,
+        2.084480333448518e-08,
+        1.9936549441376544e-08
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 1.9817793453492705e-07,
+      "compiled_vs_requested_tvd": 0.0002981599074235358,
+      "counts": [
+        3997,
+        4181,
+        4,
+        6
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.4881533952125061,
+        0.5106253053248656,
+        0.0004885197850512946,
+        0.0007327796775769418
+      ],
+      "measured_vs_compiled_tvd": 0.01214472391356468,
+      "measured_vs_requested_tvd": 0.011846604787493921,
+      "multiple_occupation_exclusions": 4,
+      "name": "order-i0-j1-representative0",
+      "provider_metadata": {
+        "global_perf": 0.020918948892597607,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.020918948892597607
+      },
+      "requested_probabilities": [
+        0.4999999999999999,
+        0.4999999999999998,
+        0.0,
+        5.286997409534849e-34
+      ],
+      "vacuum_exclusions": 0
+    },
+    {
+      "accepted_samples": 8190,
+      "compiled_conditional_probabilities": [
+        0.5000036748633547,
+        0.4999962163790706,
+        1.5765087186571742e-10,
+        1.085999237750805e-07
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 1.753798542538341e-07,
+      "compiled_vs_requested_tvd": 3.783620929443255e-06,
+      "counts": [
+        3866,
+        4317,
+        6,
+        1
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.472039072039072,
+        0.5271062271062271,
+        0.0007326007326007326,
+        0.0001221001221001221
+      ],
+      "measured_vs_compiled_tvd": 0.027964602824282713,
+      "measured_vs_requested_tvd": 0.027960927960927917,
+      "multiple_occupation_exclusions": 2,
+      "name": "order-i0-j1-representative1",
+      "provider_metadata": {
+        "global_perf": 0.02092156574419533,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.02092156574419533
+      },
+      "requested_probabilities": [
+        0.4999999999999998,
+        0.4999999999999999,
+        5.286997409534849e-34,
+        0.0
+      ],
+      "vacuum_exclusions": 0
+    },
+    {
+      "accepted_samples": 8192,
+      "compiled_conditional_probabilities": [
+        0.9999999912277686,
+        1.1379817688449546e-09,
+        5.4384730468397365e-09,
+        2.1957765066957584e-09
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 3.396151609592548e-07,
+      "compiled_vs_requested_tvd": 8.772231187523837e-09,
+      "counts": [
+        8188,
+        2,
+        1,
+        1
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.99951171875,
+        0.000244140625,
+        0.0001220703125,
+        0.0001220703125
+      ],
+      "measured_vs_compiled_tvd": 0.000488272477768646,
+      "measured_vs_requested_tvd": 0.00048828124999983347,
+      "multiple_occupation_exclusions": 0,
+      "name": "order-i1-j0-representative0",
+      "provider_metadata": {
+        "global_perf": 0.0209234897166113,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.0209234897166113
+      },
+      "requested_probabilities": [
+        0.9999999999999997,
+        0.0,
+        5.286997409534849e-34,
+        0.0
+      ],
+      "vacuum_exclusions": 0
+    },
+    {
+      "accepted_samples": 8192,
+      "compiled_conditional_probabilities": [
+        3.7191561147920324e-08,
+        0.9999998664160737,
+        1.5355684449829473e-08,
+        8.103668055423984e-08
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 2.9596706048733135e-07,
+      "compiled_vs_requested_tvd": 1.3358392603643892e-07,
+      "counts": [
+        19,
+        8159,
+        13,
+        1
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.0023193359375,
+        0.9959716796875,
+        0.0015869140625,
+        0.0001220703125
+      ],
+      "measured_vs_compiled_tvd": 0.004028186728573797,
+      "measured_vs_requested_tvd": 0.0040283203124998335,
+      "multiple_occupation_exclusions": 0,
+      "name": "order-i1-j0-representative1",
+      "provider_metadata": {
+        "global_perf": 0.020922062300090027,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.020922062300090027
+      },
+      "requested_probabilities": [
+        0.0,
+        0.9999999999999997,
+        0.0,
+        5.286997409534849e-34
+      ],
+      "vacuum_exclusions": 0
+    },
+    {
+      "accepted_samples": 8190,
+      "compiled_conditional_probabilities": [
+        0.4999728103074412,
+        0.2500125164565608,
+        8.735444911625738e-10,
+        0.25001467236245345
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 4.138571511919767e-07,
+      "compiled_vs_requested_tvd": 2.718969255887048e-05,
+      "counts": [
+        4132,
+        1860,
+        2,
+        2196
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.5045177045177045,
+        0.2271062271062271,
+        0.0002442002442002442,
+        0.2681318681318681
+      ],
+      "measured_vs_compiled_tvd": 0.02290628935033373,
+      "measured_vs_requested_tvd": 0.022893772893772965,
+      "multiple_occupation_exclusions": 2,
+      "name": "order-i1-j1-representative0",
+      "provider_metadata": {
+        "global_perf": 0.020918184418159815,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.020918184418159815
+      },
+      "requested_probabilities": [
+        0.4999999999999999,
+        0.2499999999999999,
+        1.5085506170550123e-34,
+        0.24999999999999983
+      ],
+      "vacuum_exclusions": 0
+    },
+    {
+      "accepted_samples": 8187,
+      "compiled_conditional_probabilities": [
+        0.24994454489303264,
+        0.5001404711355578,
+        0.24991496958999704,
+        1.4381412522593872e-08
+      ],
+      "compiled_metadata_probability_outside_returned_modes": 1.9905632259120995e-07,
+      "compiled_vs_requested_tvd": 0.0001404855169702488,
+      "counts": [
+        1929,
+        4091,
+        2163,
+        4
+      ],
+      "experiment_mesh_matches_circuit": true,
+      "measured_conditional_probabilities": [
+        0.23561744228655185,
+        0.4996946378404788,
+        0.2641993404177354,
+        0.0004885794552339074
+      ],
+      "measured_vs_compiled_tvd": 0.014772935901559784,
+      "measured_vs_requested_tvd": 0.014687919872969309,
+      "multiple_occupation_exclusions": 5,
+      "name": "order-i1-j1-representative1",
+      "provider_metadata": {
+        "global_perf": 0.020924688934643904,
+        "nb_shots_used": 8192,
+        "physical_perf": 0.020924688934643904
+      },
+      "requested_probabilities": [
+        0.2499999999999999,
+        0.4999999999999999,
+        0.24999999999999983,
+        1.5085506170550123e-34
+      ],
+      "vacuum_exclusions": 0
+    }
+  ],
+  "schema": "ascella-four-output-order-analysis-v1",
+  "source_sha256": {
+    "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py": "c82e50f42e11fb7cf7262b8ebc03d661e082e5ba5bb38ece1fe13263d7f3a478",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/cases.json": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/circuit.json": "f2e7ea115d91f962cb045e824d8d3f5c3da432fe0b812e0e58dfc7b23f7ac550",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/job-body.json": "64904ad6515baf5f929b0223ce2bc4934d19fdbb6a086d812c51c87ca42f9d7a",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/raw/result.json": "4530d655aec96fa886f6fad8b58705c98dd27d16e34f870e3ae29e6e6b96840d",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/results.json": "4cddad72140339137740a4d7ff21b9e983d010a416cf3d1075416af410242b2f",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/submission.json": "1340739279199891cbe8377a3a769ab6926ea46e81d3d55ba2e1193d6645cdf0",
+    "scripts/bdsc_certificate.py": "5dbcd027eb24a303ba5757e00b0123e846bc3c86dab70a24dc1ae1f98b197753",
+    "scripts/photonic_compilation_audit.py": "5cc7feaf0eae323ef6030767553d2d3843435df7fb0184014fc92a19b4c93492",
+    "scripts/qd_belenos_mesh.py": "225e5070a17f2d1114c3c0ef9a23422485da2bc184efd8cbe6e6b181c262392b",
+    "scripts/qd_platform.py": "28950b61be77ee18bcaa85285e1f57acbb8815d394ab75d6cb011d7b6bba38ec"
+  }
+}
