@@ -43,7 +43,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 | Least squares, decompositions, statistics, sparse | scipy | `lstsq` or pivoted QR, never normal equations; `scipy.sparse` for structured systems | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#least-squares-and-conditioning) |
 | Exact rank modulo p, rational null spaces | python-flint through `scripts/exact_rank.py` | every rank or nullity certificate | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#exact-backends) |
 | Symbolic algebra, exact matrices | sympy, as `DomainMatrix` for integer products; its ground types are FLINT on the pinned stack | polynomial identities and charts | same section |
-| Arbitrary precision | mpmath | refining a float estimate past float64 rounding | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#precision) |
+| Arbitrary precision | mpmath; python-flint `arb_mat` and `acb_mat` for ball arithmetic | refining a float estimate past float64 rounding. FLINT's `eig` returns rigorous enclosures and ran a 32 x 32 symmetric eigenproblem at 370 bits about 7 times faster than `mpmath.eigsy`; a cluster of near-equal eigenvalues widens its balls | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#precision) |
 | p-adic and finite-field arithmetic | pyadic, galois | rational reconstruction, F_p linear algebra beyond FLINT | [numerics_best_practice.md](notes/topics/numerics_best_practice.md#runtime-packages) |
 | Gate-model circuits and transpilation | qiskit | IBM and other Qiskit-compatible circuits; the live Target is the timing authority. Provider-native circuits (Perceval, cQASM) follow their provider guides | [ibm_heron_platform.md](notes/ibm_heron_platform.md) |
 | Noise simulation | qiskit-aer, CPU or the host's CUDA build | 14 qubits or fewer on Kaggle; 15 qubits only through an approved case naming the substrate; 16 or more go to IBM hardware through an approved case | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [substrates.md](notes/kaggle/substrates.md) |
@@ -109,6 +109,9 @@ Climb in this order and stop at the first rung that meets the budget.
   releases (`scripts/atlas_fringe_amplitudes.py`).
 - float64 suffices wherever sampling sets the error. An exact claim uses
   exact arithmetic, and extended precision only refines a float estimate.
+  A ball enclosure that excludes zero proves a minor nonzero and so bounds a
+  rank from below; no precision proves a value zero, so rank deficiency and
+  membership in a rank locus need exact arithmetic.
 - Float tolerances decide nothing about rank, nullity or local dimension.
   A floating projection stops once a residual falls under its tolerance, so
   a direction along which the residual vanishes to high order passes

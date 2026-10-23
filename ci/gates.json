@@ -1776,6 +1776,14 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_tangent_linearity.py --check docs/evidence/rank_locus_tangent_linearity/result.json",
+   "name": "core-663",
+   "seconds": 2.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qubit_baseline.py",
    "name": "core-268",

@@ -169,8 +169,7 @@ and is never evidence of the gap.
 4. **Extended-precision probe of the {a, 0} witnesses.** Near-rank-20
    points reached from seeded starts near each witness keep their distance
    from the family when refined at 110 digits to sigma_21/sigma_1 < 1e-40,
-   and a
-   perturbation cloud at scale 1e-2 spans 16 directions
+   and a perturbation cloud at scale 1e-2 spans 16 directions
    ([evidence](../evidence/rank_locus_nullity12_refinement/README.md),
    `scripts/rank_locus_nullity12_refinement.py`, gate core-662). A refined
    point is close to a rank-20 matrix, not provably close to a point of
@@ -178,6 +177,17 @@ and is never evidence of the gap.
    from transversally. The probe therefore decides nothing: the local
    dimension stays undecided between the family's and the tangent bound,
    and admission still needs an exact piece or local equations.
+5. **Exact linearity test of the tangent bound.** At all 29 witnesses,
+   L_y has rank above 32 - k at seeded integer points y of T(x), computed
+   over the rationals with FLINT
+   ([evidence](../evidence/rank_locus_tangent_linearity/README.md),
+   `scripts/rank_locus_tangent_linearity.py`, gate core-663): rank 32 at
+   every nullity-4, -8 and -12 witness and 20 at the nullity-16 ones. T(x)
+   is therefore never a linear piece of D_(5,k), and a piece of the
+   tangent-bound dimension, if one exists, is curved. The nullity-16
+   witnesses, whose local dimension equals the tangent bound on the curved
+   zero-divisor cone, fail the test as well, so it excludes only a linear
+   piece.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
@@ -196,7 +206,7 @@ admits on its own:
 
 | Item | First deliverable | Rests on | Admission |
 | --- | --- | --- | --- |
-| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the extended-precision probe (computation 4) places the {a, 0} family inside a 15-dimensional piece numerically, so the certified piece through an {a, 0} witness is the deliverable | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
+| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the extended-precision probe (computation 4) decides nothing and computation 5 excludes a linear piece, so a certified curved piece through an {a, 0} witness is the deliverable | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
 | 4. Regularity and links | smoothness of each D_(5,12) piece from independent local equations; the normal link at x0, where A15 and B17 meet in dimension 13 | item 3 for D_(5,12) | rank loci and smooth strata kept distinct |
 | 5. Kernel bundles | transition data of ker L_x over each smooth piece of D_(5,12) | item 4 | invariants computed; a classification needs its own sufficiency argument |
 | 6. Attachments | how partner spheres specialize across every admitted closure incidence of D_(5,12) | items 3 and 5 | attaching maps, not a frontier matrix |

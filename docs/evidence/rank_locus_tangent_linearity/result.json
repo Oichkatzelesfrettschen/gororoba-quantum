@@ -1,0 +1,475 @@
+{
+ "coefficient_bound": 50,
+ "rows": [
+  {
+   "family": "zd-axis",
+   "locus_rank": 16,
+   "nullity": 16,
+   "sample_ranks": [
+    20,
+    20,
+    20,
+    20,
+    20,
+    20
+   ],
+   "tangent_dimension": 12,
+   "tangent_inside_locus": false,
+   "witness": 0
+  },
+  {
+   "family": "nonzd-axis",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 1
+  },
+  {
+   "family": "zd-zd-locus",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 18,
+   "tangent_inside_locus": false,
+   "witness": 2
+  },
+  {
+   "family": "zd-zd-generic",
+   "locus_rank": 24,
+   "nullity": 8,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 24,
+   "tangent_inside_locus": false,
+   "witness": 3
+  },
+  {
+   "family": "zd-nonzd-locus",
+   "locus_rank": 24,
+   "nullity": 8,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 22,
+   "tangent_inside_locus": false,
+   "witness": 4
+  },
+  {
+   "family": "zd-nonzd-generic",
+   "locus_rank": 28,
+   "nullity": 4,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 28,
+   "tangent_inside_locus": false,
+   "witness": 5
+  },
+  {
+   "family": "nonzd-nonzd-locus",
+   "locus_rank": 28,
+   "nullity": 4,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 28,
+   "tangent_inside_locus": false,
+   "witness": 6
+  },
+  {
+   "family": "zd-axis",
+   "locus_rank": 16,
+   "nullity": 16,
+   "sample_ranks": [
+    20,
+    20,
+    20,
+    20,
+    20,
+    20
+   ],
+   "tangent_dimension": 12,
+   "tangent_inside_locus": false,
+   "witness": 7
+  },
+  {
+   "family": "nonzd-axis",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 8
+  },
+  {
+   "family": "zd-zd-locus",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 18,
+   "tangent_inside_locus": false,
+   "witness": 9
+  },
+  {
+   "family": "zd-zd-generic",
+   "locus_rank": 24,
+   "nullity": 8,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 24,
+   "tangent_inside_locus": false,
+   "witness": 10
+  },
+  {
+   "family": "zd-nonzd-locus",
+   "locus_rank": 24,
+   "nullity": 8,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 22,
+   "tangent_inside_locus": false,
+   "witness": 11
+  },
+  {
+   "family": "zd-nonzd-generic",
+   "locus_rank": 28,
+   "nullity": 4,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 28,
+   "tangent_inside_locus": false,
+   "witness": 12
+  },
+  {
+   "family": "nonzd-nonzd-locus",
+   "locus_rank": 28,
+   "nullity": 4,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 28,
+   "tangent_inside_locus": false,
+   "witness": 13
+  },
+  {
+   "family": "zd-axis",
+   "locus_rank": 16,
+   "nullity": 16,
+   "sample_ranks": [
+    20,
+    20,
+    20,
+    20,
+    20,
+    20
+   ],
+   "tangent_dimension": 12,
+   "tangent_inside_locus": false,
+   "witness": 14
+  },
+  {
+   "family": "nonzd-axis",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 15
+  },
+  {
+   "family": "zd-zd-locus",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 18,
+   "tangent_inside_locus": false,
+   "witness": 16
+  },
+  {
+   "family": "zd-zd-generic",
+   "locus_rank": 24,
+   "nullity": 8,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 24,
+   "tangent_inside_locus": false,
+   "witness": 17
+  },
+  {
+   "family": "zd-nonzd-locus",
+   "locus_rank": 24,
+   "nullity": 8,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 22,
+   "tangent_inside_locus": false,
+   "witness": 18
+  },
+  {
+   "family": "zd-nonzd-generic",
+   "locus_rank": 28,
+   "nullity": 4,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 28,
+   "tangent_inside_locus": false,
+   "witness": 19
+  },
+  {
+   "family": "nonzd-nonzd-locus",
+   "locus_rank": 28,
+   "nullity": 4,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 28,
+   "tangent_inside_locus": false,
+   "witness": 20
+  },
+  {
+   "family": "proposition-8.2",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 21
+  },
+  {
+   "family": "proposition-8.2",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 22
+  },
+  {
+   "family": "proposition-8.2",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 23
+  },
+  {
+   "family": "proposition-8.2",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 24
+  },
+  {
+   "family": "proposition-8.2",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 25
+  },
+  {
+   "family": "proposition-8.2",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 26
+  },
+  {
+   "family": "proposition-8.2",
+   "locus_rank": 20,
+   "nullity": 12,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 16,
+   "tangent_inside_locus": false,
+   "witness": 27
+  },
+  {
+   "family": "moreno-unequal-norm",
+   "locus_rank": 28,
+   "nullity": 4,
+   "sample_ranks": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+   ],
+   "tangent_dimension": 28,
+   "tangent_inside_locus": false,
+   "witness": 28
+  }
+ ],
+ "samples": 6,
+ "schema": "rank-locus-tangent-linearity-v1",
+ "seed": 20261023,
+ "versions": {
+  "python-flint": "0.9.0"
+ }
+}

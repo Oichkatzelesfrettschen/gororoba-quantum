@@ -4508,12 +4508,38 @@
       "superseded_by": null
     },
     {
+      "id": "a5-tangent-bound-not-linear",
+      "statement": "At all 29 witnesses of the A_5 rank-locus families, the tangent bound T(x) = {y : U^T L_y V = 0} is not inside D_(5,k): L_y has exact rational rank 32 at six seeded integer points of T(x) at every nullity-4, -8 and -12 witness and rank 20 at the three nullity-16 zero-divisor-axis witnesses, above the locus rank 32 - k.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact ranks over the rationals at the recorded points; one point of rank above 32 - k certifies that T(x) is not inside D_(5,k). The result excludes only a linear piece of the tangent-bound dimension: the zero-divisor-axis witnesses, whose local dimension equals the tangent bound on a curved cone, fail the test as well, so a curved piece stays possible.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_tangent_linearity/result.json",
+          "sha256": "09f74905624824eb75a87c7e98176bd6a7cb883cee8ec67c4b7bc05c6696d813"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_tangent_linearity/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
+      ],
+      "gates": {
+        "core-663": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-nonzero-divisor-two-dimension-gap",
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never itself inside D_(5,k), so a piece of the tangent-bound dimension through a witness would be curved.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
