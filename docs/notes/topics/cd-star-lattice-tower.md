@@ -7,7 +7,13 @@ in dimension n, and its boundary symmetry stays reflection-free in
 dimensions 2, 4, 8 and 16. Dimension 3, which carries no Cayley-Dickson
 algebra, loses the twist. In dimension 16 every sedenion two-blade zero
 divisor lies in the lattice's data shell, and the lattice's symmetry group
-mixes the 42 assessor planes with 14 invertible planes.
+mixes the 42 assessor planes with 14 invertible planes. The boundary is the
+sign pattern of right multiplication by the sum of the imaginary units, a
+skew conference matrix; in dimensions 4 and 8 it is the Paley quadratic-residue
+matrix of q = 3 and 7, so the symmetry groups are SL(2, 3) and SL(2, 7) acting
+on the projective line over F_q. In dimension 16, where no Paley matrix of
+order 16 exists, the group is a double cover of PGL(2, 7), and it stays that
+group through dimension 128.
 
 [scripts/cd_star_lattice.py](../../../scripts/cd_star_lattice.py) computes
 every number below from `cd_core.cd_sign`; the retained record is
@@ -74,16 +80,19 @@ reports for Tuna-17 ([backend table](../quantum_inspire/backends.md)) [E]:
 |---|---|---|---|---|---|---|---|
 | 2 | complex | 17 | 24 | 4 | C4 | yes | 16/16 |
 | 3 | none (tetrahedral rule) | 37 | 60 | 24 | 7 involutions, 8 of order 3, 8 of order 6 | no, 12 of 24 elements have determinant -1 | not defined |
-| 4 | quaternion | 65 | 112 | 24 | matches SL(2, 3), the binary tetrahedral group of the 24 Hurwitz units | yes | 192/192 |
-| 8 | octonion | 257 | 480 | 336 | matches SL(2, 7), the double cover of the Fano plane's group of order 168 | yes | 1120/1792 |
-| 16 | sedenion | 1025 | 1984 | 672 | one involution (-1), elements up to order 16; unidentified | yes | 7968/15360 |
+| 4 | quaternion | 65 | 112 | 24 | SL(2, 3) | yes | 192/192 |
+| 8 | octonion | 257 | 480 | 336 | SL(2, 7) | yes | 1120/1792 |
+| 16 | sedenion | 1025 | 1984 | 672 | 2.PGL(2, 7): one involution (-1), elements up to order 16 | yes | 7968/15360 |
 
 "Symmetry order" is the order of the group of signed permutation matrices
-that maps B_n onto itself, which is a subgroup of the graph's automorphism
-group; an exploratory networkx count gives full automorphism groups of
-orders 4, 24 and 24 at n = 2, 3, 4, equal to it, and no count at n = 8, 16
-exists. "Reflection-free" means no element has determinant -1. The group
-identifications rest on element-order profiles only. Left-unit closure
+that maps B_n onto itself. It equals the full automorphism group of the
+graph S_n at n = 2, 4, 8, 16: nauty returns orders 4, 24, 336 and 672
+([external replay](../../evidence/cd-star-lattice/README.md#external-replay)).
+"Reflection-free" means no element has determinant -1. The section below
+derives the group column; at n = 4 the column names the abstract group, and
+its action on R^4 differs from left multiplication by the 24 Hurwitz units
+(the commutant is Q(sqrt -3), where the Hurwitz action has a quaternion
+commutant). Left-unit closure
 counts the products u' p, u' = +-e_a, p in B_n, that stay in B_n; at n = 4
 those units generate the quaternion group of order 8, so left
 multiplication accounts for a subgroup of order 8 of the 24. [E] for every
@@ -93,7 +102,31 @@ cell.
 |---|---|
 | The group acts transitively on the 2n signed units at every n of the tower; the stabilizer of e_0 has orders 1, 3, 21, 21 | [E] |
 | The octonion-to-sedenion step doubles the group without enlarging the stabilizer of e_0 | [E] 336 = 16 x 21, 672 = 32 x 21 |
+| The doubling stops at the sedenions: the signed-permutation centralizer of the boundary has order 672 at n = 32, 64 and 128, isomorphic to the n = 16 group, with n/16 orbits of 32 signed units | [E] external nauty replay; the e_0 orbit at n = 32 holds 32 of 64 signed units, so the action is no longer transitive |
 | Left multiplication by units leaves B_n invariant in the associative algebras and fails from the octonions on, where the units form a Moufang loop | [E] closure counts; [T] associativity gives (u' u)(1 + 2w) = u'(u(1 + 2w)) |
+
+## The boundary as a Paley matrix
+
+The arc matrix W_n has W_n[a XOR b][a] = cd_sign(n, a, b) for b >= 1, so its
+column a is e_a s with s = e_1 + ... + e_{n-1}: W_n is right multiplication
+by s, and B_n is the set of points s' e_a + 2 s' W_n[a XOR b][a] e_{a XOR b}.
+A signed permutation maps B_n onto itself exactly when it commutes with W_n,
+so the symmetry group G_n is the signed-permutation centralizer of W_n [T].
+The `identification` block of the census carries the [E] cells.
+
+| Statement | Status |
+|---|---|
+| W_n is a skew conference matrix: W_n^T = -W_n and W_n^T W_n = (n - 1) I, so I + W_n is a skew Hadamard matrix | [E] n = 2 to 128; no proof for every n |
+| At n = 4 and 8, W_n is signed-permutation equivalent to the Paley matrix of q = 3 and 7, whose entry (x, y) on the projective line over F_q is the quadratic character of y - x; the equivalences number 24 and 336, the group orders | [E] |
+| Read through that equivalence, each symmetry permutes the projective line by a map of PSL(2, q) with kernel {+-1}, and a lift of those maps to SL(2, q) is a bijective homomorphism: G_4 = SL(2, 3) and G_8 = SL(2, 7) | [E] explicit lift |
+| The octonion boundary is the quadratic-residue tournament mod 7, whose residues {1, 2, 4} form a line of the Fano plane | [I] |
+| G_16 preserves the eight doubling pairs {a, a + 8} and acts on them as PGL(2, 7) with kernel {+-1}; the preimage of PSL(2, 7) is the derived subgroup, which lifts to SL(2, 7) | [E] |
+| G_16 has one involution, Sylow 2-subgroup Q32 and SmallGroup id (672, 1045): the double cover of PGL(2, 7) whose elements over PGL(2, 7) minus PSL(2, 7) include no involution | [E] the census certifies the involution count and the PGL(2, 7) quotient; GAP gives the id and Q32 in the external replay |
+| No Paley matrix has order 16, since 15 is no prime power. One has order 32 (q = 31), and W_32 is not equivalent to it: x -> x + 1 is a Paley automorphism of order 31, and 31 does not divide 672 | [T] |
+| The commutant of G_n is Q(sqrt -3) at n = 4 and Q(sqrt -7) at n = 8; at n = 16 it has basis 1, J, R, JR with J^2 = -7, R^2 = -1, JR = -RJ and R right multiplication by e_8, the quaternion algebra (-7, -1) over Q | [E]; (-7, -1) ramifies at 7 and infinity [T]: -7 is a square in Q_2 and -1 a non-residue mod 7 |
+| The stabilizer of e_0 equals the set of unsigned, XOR-linear index permutations that preserve cd_sign: 3, 21 and 21 elements at n = 4, 8, 16, the order-21 group being 7:3 | [E] |
+| 6, 42 and 42 elements have XOR-linear index maps, the stabilizer and its product with -1, so the lattice group meets the algebra's permutation automorphisms only there | [E] |
+| At n = 16 the 120 index pairs fall into orbits of 8 (the doubling pairs), 56 (the 42 assessors and 14 more) and 56; the derived subgroup's index orbits are {0, 9, ..., 15} and {1, ..., 8} | [E] |
 
 ## Dimension 3
 
@@ -130,8 +163,9 @@ the lifts are geometries rather than codes [E] `check_types`.
 
 ## Open questions
 
-- The identity of the order-672 group, and whether a presentation check
-  confirms the SL(2, 3) and SL(2, 7) matches.
-- The full graph automorphism groups at n = 8 and 16.
+- A proof that W_n is a skew conference matrix for every n, by induction on
+  the cd_sign doubling recursion.
+- Whether G_n has order 672 for every n >= 16, acting as G_16 on each block
+  of 32 signed units; the nauty replay reaches n = 128.
 - A boundary rule that reads four-index sign relations and whose symmetry
   preserves the box-kites.
