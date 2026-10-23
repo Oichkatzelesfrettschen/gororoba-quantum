@@ -19,7 +19,7 @@ floats, paths, timestamps or worker counts, so the pooled and serial
 "$PYTHON" -B -W error scripts/box_kite_census.py --self-test
 ```
 
-Gate core-372 runs `--check` and gate `core-self-test-05` (`tests/test_cli_self_tests.py`) runs `--self-test`. `--check` recomputes the census and requires byte equality
+Gate `core-record-check-02` (`tests/test_cli_record_checks.py`) runs `--check` and gate `core-self-test-05` (`tests/test_cli_self_tests.py`) runs `--self-test`. `--check` recomputes the census and requires byte equality
 with the canonical JSON (sorted keys, indent 1, ASCII). `--self-test` applies
 twenty mutations to the retained record (an edge sign type, a swapped strut,
 a dropped assessor, a Design B probability, a post-selected coherence, a face
@@ -145,5 +145,5 @@ they equal open_gororoba's `EXACT_ALTERNATOR_COUNTS` (336, 5040, 52080).
 The census Design B rows reach 14 of the 16 sign matrices; the other two
 occur on two-label pairs outside them. `--write` builds the
 hypercomplex-engine 0.5.0 standard tables and retains their sha256 beside
-cd_core's; gate core-506 (`--check`, cd_core only) and the `--self-test` of
+cd_core's; gate `core-record-check-05` (`--check`, cd_core only) and the `--self-test` of
 gate `core-self-test-02` (`tests/test_cli_self_tests.py`) require them equal.

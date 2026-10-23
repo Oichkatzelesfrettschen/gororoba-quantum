@@ -29,7 +29,7 @@ Tuna-17 for the device answer, QX for the ideal reference.
 
 `scripts/qi_crosstalk_teleport_cases.py --write results/quantum_inspire/cases`
 generates every backend's cQASM 3.0 from the catalogue topology; gate
-core-327 regenerates them byte for byte. Each backend is a series of
+`core-record-check-05` (`tests/test_cli_record_checks.py`) regenerates them byte for byte. Each backend is a series of
 `batch-NN/` cases of at most three circuits, each submittable on its own:
 batch-00 holds none, A and B, and batch-01 holds none, AB and teleport, so
 every phase shift subtracts the undriven reference measured in its own batch

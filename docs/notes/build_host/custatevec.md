@@ -85,7 +85,7 @@ libraries; `qiskit_aer.__file__` pointed into the extracted tree.
 - CPU seeded counts (noisy statevector, density_matrix, matrix_product_state,
   an if_else circuit, an ideal 12-qubit MPS circuit) have the same sha256
   digests as the installed Aer, in two repeated runs, for the OpenBLAS-linked
-  and the AOCL-linked build. Repository gates core-279 (seeded probe counts),
+  and the AOCL-linked build. Repository gates `core-record-check-01` (`tests/test_cli_record_checks.py`) (seeded probe counts),
   core-109, core-110, core-111 and the snapshot_laws gate core-302 pass on it.
 - GPU counts with and without cuStateVec have equal digests (noisy 20 and 26
   qubits, ideal, 1-qubit if_else).
@@ -113,7 +113,7 @@ With both packages installed by `pacman -U`, `noise_simulator(snapshot,
 the ibm_kingston snapshot's noise reports `metadata.cuStateVec_enable` true,
 and its 2000 seeded shots equal the `custatevec=False` counts outcome for
 outcome; `custatevec=True` with `batched_shots=True` raises ValueError. The
-seeded-count gates core-109, core-110, core-111, core-273, core-279,
+seeded-count gates core-109, core-110, core-111, core-273, `core-record-check-01`,
 core-287, core-288, core-302, core-304, core-311 and core-313 pass under
 `GOROROBA_AER_DEVICE=CPU` on the AOCL-linked module.
 
