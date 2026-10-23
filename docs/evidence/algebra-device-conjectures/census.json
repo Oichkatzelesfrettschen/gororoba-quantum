@@ -6814,11 +6814,11 @@
     },
     {
       "path": "docs/notes/quandela/README.md",
-      "sha256": "9a2b9260eddf1ab4e192c45cfbb94d3ceefc164b9fe71fcb4d54dc884c75f3e0"
+      "sha256": "3e85ef0bd016168f1574c671deb1ad0bd3158ffc9d7af603896866397d029895"
     },
     {
       "path": "docs/notes/quantum_inspire/experiments.md",
-      "sha256": "69501675dbf2c3e071ae850bfd679fd4c56d2511fe98b50c798cefec0149aece"
+      "sha256": "47dcdfea2a98687f5ecff2344adcee86edc885cfc092c8df33d7c0565ab91c62"
     },
     {
       "path": "docs/notes/quantum_inspire/qx-runs.md",
@@ -6826,7 +6826,7 @@
     },
     {
       "path": "docs/notes/quantum_inspire/tuna-17.md",
-      "sha256": "79c4cc5ad338a9b62df37dbe4baec6cd34523f9f0bc1c0752f269195f1ff5b20"
+      "sha256": "8ac4962f9bee0aba95064cf2519f3e179b494a70229159be1a24410363d6e7e1"
     },
     {
       "path": "docs/notes/singular_sector_dynamics.md",
@@ -6842,11 +6842,11 @@
     },
     {
       "path": "docs/notes/topics/cd-star-lattice-tower.md",
-      "sha256": "cf293f4078bcd02b0783df5fc1c6f9a1456f1aa58e53a22a18d489424f40189c"
+      "sha256": "71725dc971a3ef0e1ef63233a86eeabe667399bd6be644b8b4ca37fdf3c4b72d"
     },
     {
       "path": "docs/notes/topics/coherent-error-families-report.md",
-      "sha256": "00bae698a0cc2004cd20775aeeda8d500dc2ea32b2dd56ba8840ea4bf5c685f5"
+      "sha256": "14ed21bafd0d998ec2d1d6ef5cf0db432bf686782cd75524319c27740665438e"
     },
     {
       "path": "gororoba_quantum/cd_core.py",

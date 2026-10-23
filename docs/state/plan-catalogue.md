@@ -201,7 +201,7 @@ Work completion describes the recorded obligation. Scientific claims and provide
 ## Closed
 
 - **[algebra-device-conjecture-implementation](plans/algebra-device-conjecture-implementation.json)** (closed/completed; verified): Implement the source-bound conjecture screen and offline instrument falsifiers. [Context](../../docs/design/hypercomplex-operator-evidence.md).
-  Resolution: The offline implementation and focused validation are complete. PR 391 hosted checks and repository integration remain separate; provider acquisition requires separate approval.
+  Resolution: The offline implementation and focused validation are complete. PR 391 hosted checks and repository integration remain separate; provider acquisition requires separate approval. Historical receipt inputs changed; revalidation required.
 
 - **[bdsc-tuna17-pauli-pilot](plans/bdsc-tuna17-pauli-pilot.json)** (closed/completed; verified): BDSC target effect on Tuna-17: four-qubit Pauli readout pilot [Context](../../docs/evidence/plan-reconciliation/sources/bd4e0b8bd1a2b64957e1a73f0c8c0fbe8d452ced9e5e83666692cdd2fd2109ff.txt).
   Resolution: Retained pilot completed 27 jobs; preregistered readout drift stop withholds endpoint inference.

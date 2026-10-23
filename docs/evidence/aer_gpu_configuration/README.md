@@ -2,7 +2,7 @@
 
 `result.json` is `scripts/aer_gpu_probe.py` run on the build host (Ryzen 5
 5600X3D, 12 threads; RTX 4070 Ti, CUDA UMD 13.4; Arch python-qiskit-aer-cuda
-0.17.2-1, built with `-DAER_ENABLE_CUQUANTUM=OFF`). Gate core-367
+0.17.2-1, built with `-DAER_ENABLE_CUQUANTUM=OFF`). Gate `core-record-check-04` (`tests/test_cli_record_checks.py`)
 (`--check`) recomputes every derived value from the retained timings,
 samples and counts and replays the CPU readout-toy and lowering contracts.
 
@@ -78,7 +78,7 @@ Tesla T4s (15,360 MiB each, compute capability 7.5, driver 580.178.04) with
 `qiskit_aer`, cuquantum-cu11 24.8.0 (custatevec-cu11 1.6.0.post1). The
 preflight in `gpu_env.json` lists no failure, and both Bell runs report
 device GPU. Every GPU row reports device GPU, every cuStateVec row
-`cuStateVec_enable` true, and no row is contended. Gate core-450 runs
+`cuStateVec_enable` true, and no row is contended. Gate `core-record-check-04` runs
 `--check` on the record.
 
 ms per shot at 2048 shots:

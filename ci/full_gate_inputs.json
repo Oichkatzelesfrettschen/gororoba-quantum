@@ -486,6 +486,10 @@
       "requirements.txt",
       "tests/scripts/test_algebra_device_conjectures.py",
       "tests/scripts/test_algebra_conjecture_circuits.py"
+    ],
+    "core-behavior-03": [
+      "pyproject.toml",
+      "tests/conftest.py"
     ]
   }
 }
