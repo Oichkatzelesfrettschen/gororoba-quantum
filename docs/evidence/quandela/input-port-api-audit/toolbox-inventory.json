@@ -1,0 +1,318 @@
+{
+ "api_version": null,
+ "boundary": "schema traversal and operation classification; operation descriptions are not runtime evidence",
+ "local_references": [
+  "#/components/schemas/HTTPError",
+  "#/components/schemas/JobBytes",
+  "#/components/schemas/JobInts",
+  "#/components/schemas/QrngBytesOutput",
+  "#/components/schemas/QrngIntsOutput",
+  "#/components/schemas/ValidationError"
+ ],
+ "operations": [
+  {
+   "description": "",
+   "effect": "documented-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [],
+   "path": "/qt-openapi.json",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {}
+      }
+     },
+     "description": "Successful response"
+    }
+   },
+   "security": [],
+   "summary": "Get Qt Openapi Json"
+  },
+  {
+   "description": "Authenticate by `Cloud Job Token`",
+   "effect": "potentially-charged-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [
+    {
+     "description": "Count of the random bytes",
+     "in": "query",
+     "name": "count",
+     "required": true,
+     "schema": {
+      "type": "integer"
+     }
+    }
+   ],
+   "path": "/qt/qrng/bytes",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/QrngBytesOutput"
+       }
+      }
+     },
+     "description": "OK"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    },
+    "404": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Entropy Pool empty"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [
+    {
+     "BearerAuth": []
+    }
+   ],
+   "summary": "Entropy raw random bytes"
+  },
+  {
+   "description": "Authenticate by `Cloud Job Token`",
+   "effect": "potentially-charged-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [
+    {
+     "description": "Type of numbers: uint8(1 bit), uint16(2 bits), uint32(4 bits), uint64 (8 bits)",
+     "in": "query",
+     "name": "type",
+     "required": true,
+     "schema": {
+      "enum": [
+       "uint8",
+       "uint16",
+       "uint32",
+       "uint64"
+      ],
+      "type": "string"
+     }
+    },
+    {
+     "description": "Number of random bytes to generate",
+     "in": "query",
+     "name": "count",
+     "required": true,
+     "schema": {
+      "type": "integer"
+     }
+    }
+   ],
+   "path": "/qt/qrng/ints",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/QrngIntsOutput"
+       }
+      }
+     },
+     "description": "OK"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    },
+    "404": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Entropy Pool empty"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [
+    {
+     "BearerAuth": []
+    }
+   ],
+   "summary": "Entropy random numbers"
+  }
+ ],
+ "schema": "quandela-api-contract-inventory-v1",
+ "schemas": {
+  "HTTPError": {
+   "properties": {
+    "detail": {
+     "type": "object"
+    },
+    "error": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "JobBytes": {
+   "additionalProperties": false,
+   "properties": {
+    "bytes": {
+     "description": "Random bytes in base64"
+    },
+    "chsh": {
+     "description": "CHSH value (0 to 2 sqrt(2)",
+     "type": "number"
+    },
+    "id": {
+     "description": "Job ID in UUID format",
+     "type": "string"
+    },
+    "min_entropy": {
+     "description": "Minimum Entropy",
+     "type": "number"
+    }
+   },
+   "required": [
+    "chsh",
+    "id",
+    "min_entropy"
+   ],
+   "type": "object"
+  },
+  "JobInts": {
+   "additionalProperties": false,
+   "properties": {
+    "chsh": {
+     "description": "CHSH value (0 to 2 sqrt(2)",
+     "type": "number"
+    },
+    "id": {
+     "description": "Job ID in UUID format",
+     "type": "string"
+    },
+    "ints": {
+     "items": {
+      "type": "integer"
+     },
+     "type": "array"
+    },
+    "min_entropy": {
+     "description": "Minimum Entropy",
+     "type": "number"
+    }
+   },
+   "required": [
+    "chsh",
+    "id",
+    "min_entropy"
+   ],
+   "type": "object"
+  },
+  "QrngBytesOutput": {
+   "additionalProperties": false,
+   "properties": {
+    "jobs": {
+     "description": "Jobs used to generate random bytes",
+     "items": {
+      "$ref": "#/components/schemas/JobBytes"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "jobs"
+   ],
+   "type": "object"
+  },
+  "QrngIntsOutput": {
+   "additionalProperties": false,
+   "properties": {
+    "jobs": {
+     "description": "Jobs used to generate random ints",
+     "items": {
+      "$ref": "#/components/schemas/JobInts"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "jobs"
+   ],
+   "type": "object"
+  },
+  "ValidationError": {
+   "properties": {
+    "detail": {
+     "properties": {
+      "<location>": {
+       "properties": {
+        "<field_name>": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "type": "object"
+    },
+    "message": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  }
+ },
+ "security_schemes": {
+  "BearerAuth": {
+   "scheme": "bearer",
+   "type": "http"
+  }
+ },
+ "source_sha256": "a1fe41a393a997f6bd764f05043e7a6478fa295806c5aab0b733944896d2d279",
+ "source_url": "https://api.cloud.quandela.com/qt-openapi.json",
+ "unresolved_references": []
+}
