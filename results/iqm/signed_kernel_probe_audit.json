@@ -520,6 +520,11 @@
   "k_eigenvalue_on_bright": 1.0,
   "k_eigenvalue_on_kernel": -1.0,
   "k_minus_one_multiplicity": 4,
+  "matrix_identities": {
+   "l_e2_orthogonal": true,
+   "l_e2_t_l_e10_antisymmetric": true,
+   "l_e2_t_l_e1_antisymmetric": true
+  },
   "random_sign_tables": 1000,
   "signed_overlap": [
    {

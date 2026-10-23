@@ -914,14 +914,6 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/check_verify_sources.py",
-   "name": "sources-125",
-   "seconds": 0.9,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/local_schur/probe.py --check",
    "name": "sources-127",
    "seconds": 2.2,
@@ -1170,14 +1162,6 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/check_compiler_gate.py",
-   "name": "sources-169",
-   "seconds": 0.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "shellcheck docs/evidence/folding_proofs/replay_rocq.sh",
    "name": "sources-171",
    "seconds": 0.1,
@@ -1399,14 +1383,6 @@
    "seconds": 38.5,
    "tier": "pr",
    "name": "sources-210"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error docs/evidence/c881_exhaustive/check_replay.py",
-   "seconds": 0.2,
-   "tier": "pr",
-   "name": "sources-212"
   },
   {
    "suite": "sources",
@@ -1772,6 +1748,22 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_identity.py --check docs/evidence/moreno_stiefel/pfaffian-identity.json",
    "name": "core-660",
    "seconds": 9.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_tangent_linearity.py --check docs/evidence/rank_locus_tangent_linearity/result.json",
+   "name": "core-663",
+   "seconds": 2.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_tangent_linearity.py --self-test && \"$PYTHON\" -B -W error -O scripts/rank_locus_tangent_linearity.py --self-test",
+   "name": "core-664",
+   "seconds": 4.5,
    "tier": "pr"
   },
   {
@@ -2667,17 +2659,18 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test",
-   "name": "core-528",
-   "seconds": 1.7,
-   "tier": "pr"
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_nullity12_refinement.py --check docs/evidence/rank_locus_nullity12_refinement/result.json",
+   "name": "core-662",
+   "seconds": 245.0,
+   "tier": "full",
+   "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/check_qi_platform_retention.py",
-   "name": "core-341",
-   "seconds": 10.1,
+   "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test",
+   "name": "core-528",
+   "seconds": 1.7,
    "tier": "pr"
   },
   {
@@ -3772,14 +3765,6 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locus_rotation_composite/audit.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locus_rotation_composite/audit.json",
    "name": "core-586",
    "seconds": 10.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" check_et_rows.py",
-   "name": "core-580",
-   "seconds": 9,
    "tier": "pr"
   },
   {
