@@ -94,10 +94,13 @@ measurement and the 2.7 % is a comparison, not a prediction the case tests.
   of the even part in QB11's over-rotation (-0.75 per unit, against -1.54
   noiseless) times the trains' eps, rescaled likewise; its standard error
   carries the readout and train errors, the prediction being exact.
-- H5 amplification: the trains' <Z> follows -sin(N pi/2 eps) with the
-  readout applied; a residual chi-square above 15.6, the
-  three-degree-of-freedom quantile of the one-sided three-sigma tail, marks
-  merged pulses or a non-stationary error and suspends H4.
+- H5 amplification: each train qubit's four trains and its two readout
+  calibration circuits fit -sin(N pi/2 eps) jointly, with that qubit's
+  readout errors profiled out, so their finite shots reach eps and the
+  chi-square; a chi-square above 15.6, the three-degree-of-freedom quantile
+  of the one-sided three-sigma tail, marks merged pulses or a non-stationary
+  error, and a failed train on any qubit, the control's included, suspends
+  H4.
 
 The analysis lists every falsified hypothesis; an odd part within three
 standard errors of zero leaves H1 unresolved, never falsified. It reads
