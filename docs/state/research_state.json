@@ -1626,6 +1626,48 @@
       "question": "Does the garnet:mock pipeline accept the kernel cancellation case rebuilt with exact predictions bound into cases.json, and what does it estimate?"
     },
     {
+      "id": "iqm-garnet-mock-signed-null-retest-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T060642Z-garnet_mock-signed-kernel-null-retest-probe-0",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's 16 heralded probe circuits, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest-calibrate",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's readout and prx-train job, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest-probe-bound",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T065815Z-garnet_mock-signed-kernel-null-retest-probe-0",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's probe job once cases.json binds its exact prediction?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest-calibrate-bound",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T065821Z-garnet_mock-signed-kernel-null-retest-calibrate",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's calibration job once cases.json binds its exact prediction?"
+    },
+    {
+      "id": "iqm-garnet-signed-null-retest-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0",
+      "family": "IQM signed kernel probe",
+      "question": "Does the signed probe's odd part at |t| = 0.25 exceed its t = 0 null offset on Garnet in balanced order?"
+    },
+    {
+      "id": "iqm-garnet-signed-null-retest-calibrate",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate",
+      "family": "IQM signed kernel probe",
+      "question": "What are QB7's readout errors and QB6's and QB11's prx over-rotations alongside the null re-test?"
+    },
+    {
       "id": "iqm-garnet-kernel-cancellation",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
@@ -7793,7 +7835,7 @@
       "statement": "On IQM Garnet (calibration set 9069c4ef, 199 CZ on QB6, QB7, QB10, QB11, QB12, QB16 and QB17, one active-reset cycle with all-zeros heralding keeping 55.9 % of shots), the structure-matched signed probe of the certified sedenion kernel u = (e4 - e15)/sqrt2 of L(e1+e10) read the odd part (Z(t) - Z(-t))/2 of its control at +0.0220 +- 0.0067 for |t| = 0.25 (z 3.29, the sign of t resolved) and +0.0058 +- 0.0030 for |t| = 0.05 (z 1.94, unresolved), so the dilation overlap Re<v|B(t)|u> = t/(2 + |t|) is not falsified and the device carries its sign at |t| = 0.25. Both odd parts fit one visibility, V = 0.206 +- 0.054 times t/(2 + |t|) (chi-square 0.08, 1 dof), and the even offsets read -0.022 and -0.012. The jobs charged 4.50 credits.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
-      "status": "established",
+      "status": "superseded",
       "boundary": "One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2. The signed overlap equals t/(2 + |t|) for every unit vector u (signed-overlap-kernel-independence), so the run establishes that Garnet carries a relative pi phase on the signed branch through this compile, not a property of the sedenion kernel. Coherent gate errors add an odd term proportional to sqrt(|t|/(2 + |t|)) (iqm-garnet-signed-probe-coherent-response), so the single-visibility fit does not separate the linear law from that term: the measured ratio odd(0.05)/odd(0.25) = 0.26 +- 0.16 lies between the linear 0.22 and the amplitude scaling 0.47. The strong job lists its +t circuit before its -t circuit and the weak job its five +t circuits before its five -t circuits, so a reading that depends on batch position enters the odd part: a device with no signed response and a -0.044 shift on the second circuit reproduces the strong arm's +0.022, and the sign at |t| = 0.25 is resolved only under the assumption that position does not move the reading.",
       "evidence": [
         {
@@ -7822,7 +7864,7 @@
         "iqm-garnet-reset-billing-pilot"
       ],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": "iqm-garnet-signed-null-retest"
     },
     {
       "id": "signed-overlap-kernel-independence",
@@ -7855,7 +7897,7 @@
     },
     {
       "id": "cd-sign-cocycle-degree",
-      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree max(1, n - 1) in q maximized over the left factor p. Octonion left multiplication is therefore at most a degree-2 phase, implementable with CZ and Z gates, and sedenion left multiplication reaches a degree-3 phase.",
+      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree max(1, n - 1) in q maximized over the left factor p, which Theorem 1 of docs/notes/cd_phase_degree.md proves for every n (n - 1 for every nonzero p, n >= 2); the joint degree and the monomial counts are this certificate's addition. Octonion left multiplication is therefore at most a degree-2 phase, implementable with CZ and Z gates, and sedenion left multiplication reaches a degree-3 phase.",
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",
@@ -7901,7 +7943,8 @@
       },
       "acquisitions": [],
       "assumptions": [],
-      "depends_on": [
+      "depends_on": [],
+      "related_claims": [
         "iqm-garnet-signed-kernel-probe"
       ],
       "supersedes": [],
@@ -7978,6 +8021,112 @@
       ],
       "supersedes": [],
       "superseded_by": "iqm-garnet-kernel-cancellation"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest",
+      "statement": "garnet:mock accepted both jobs of the signed kernel null re-test (16 heralded 199-CZ circuits x 20000 shots and 10 readout and prx-train circuits x 4000), estimated 13.2 s and 2.04 s, and charged 0.00 credits, both before and after cases.json bound its exact prediction (cases.json ece7a3f2).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Mock bits are random; the mock's chip model estimated 1.5 times Garnet's own estimate on the retained probe, so its 13.2 s does not price a Garnet run.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-23T060642Z-garnet_mock-signed-kernel-null-retest-probe-0/results.json",
+          "sha256": "8c0b455b62a4ece325a3833875b5d265f895e8f5104d89983b795bc024eb5393"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate/results.json",
+          "sha256": "e1e330491915f5c9bd10653022602b49dc3a8acd125aa492e470855d8be0b185"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T065815Z-garnet_mock-signed-kernel-null-retest-probe-0/results.json",
+          "sha256": "83fc9213cdf43adcdfba3d6f8313aafc23196209637650f5faf01d077a5b89ab"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T065821Z-garnet_mock-signed-kernel-null-retest-calibrate/results.json",
+          "sha256": "f9f04c2e1b23fca774cf22a72d625626021056b405812bcee9116869428bedff"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-signed-null-retest-probe",
+        "iqm-garnet-mock-signed-null-retest-calibrate",
+        "iqm-garnet-mock-signed-null-retest-probe-bound",
+        "iqm-garnet-mock-signed-null-retest-calibrate-bound"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-signed-null-retest",
+      "statement": "On Garnet (calibration set 68b0f1d0, the retained 199-CZ compile) the null-controlled re-test reads D(0.25) = odd(0.25) - odd(0) over two +, -, -, + blocks at |t| = 0.25 and at t = 0: the retained +0.022 at |t| = 0.25 carries the sign of t only if D(0.25) lies three standard errors above zero. The calibration model (exact, herald-conditioned readout) predicts an odd part of +0.0136 at t = 0 and D(0.25) = +0.0095 (+0.0059 with a 2.7 % QB11 over-rotation), so a model-like device leaves D(0.25) unresolved at the planned standard error of 0.0047, while the retained visibility of 0.206 puts it near 4.8 standard errors. A |t| = 0.05 resolve sized at that visibility took 16 blocks (ceiling 43.5 credits); at the visibility the re-test then measured (0.058) it needs about 202 blocks and is not built.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "superseded",
+      "boundary": "No approved hardware case; the observable is kernel-independent (signed-overlap-kernel-independence), so the re-test measures the device's carried phase and its null offset, not the sedenion kernel.",
+      "evidence": [],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_signed_resolve.py"
+      ],
+      "gates": {
+        "core-643": "regression",
+        "core-644": "freshness"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "related_claims": [
+        "iqm-garnet-signed-kernel-probe",
+        "signed-overlap-kernel-independence"
+      ],
+      "supersedes": [],
+      "superseded_by": "iqm-garnet-signed-null-retest"
+    },
+    {
+      "id": "iqm-garnet-signed-null-retest",
+      "statement": "On IQM Garnet (calibration set 68b0f1d0, the retained 199-CZ compile of the signed kernel probe, two +, -, -, + blocks at |t| = 0.25 and at t = 0, 20000 shots each, heralding keeping 50263 to 50591 shots per arm), the odd part (Z(t) - Z(-t))/2 of QB7 read +0.0090 +- 0.0031 at |t| = 0.25 and +0.0025 +- 0.0031 at t = 0 (copies weighted equally), so D(0.25) = odd(0.25) - odd(0) = +0.0065 +- 0.0045 (z 1.46): unresolved under the preregistered three-standard-error decision. The visibility after the null subtraction is 0.058, inside the calibration model's 0.05 to 0.09 and a quarter of the 0.206 the original run implied; the even part read -0.0175 and -0.0195, reproducing the original run's negative offsets. The jobs charged 5.50 credits.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration set. The observable is kernel-independent (signed-overlap-kernel-independence), so the re-test bounds the device's carried phase, not the sedenion kernel. The original run's +0.022 at |t| = 0.25 lies 1.8 standard errors (their combined error) above this run's +0.0090 at the same |t|; with that run's +t before -t order and no t = 0 arm, a batch-position effect, the null offset and a fluctuation are not separated.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_null_retest_analysis.json",
+          "sha256": "493b3deb2129450cdc8b8b762e0ea1d84e6feaf88d97b0da1a89d6ff047727b9"
+        },
+        {
+          "path": "results/iqm/cases/signed-kernel-null-retest/prediction.json",
+          "sha256": "f35e68d346dedd1d707e83f7f100b9424e6f5e4f7bd7f1ba817c102828b54220"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_signed_resolve.py"
+      ],
+      "gates": {
+        "core-643": "replay",
+        "core-644": "freshness"
+      },
+      "acquisitions": [
+        "iqm-garnet-signed-null-retest-probe",
+        "iqm-garnet-signed-null-retest-calibrate"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "related_claims": [
+        "signed-overlap-kernel-independence"
+      ],
+      "supersedes": [
+        "proposed-signed-null-retest",
+        "iqm-garnet-signed-kernel-probe"
+      ],
+      "superseded_by": null
     },
     {
       "id": "iqm-garnet-kernel-cancellation",

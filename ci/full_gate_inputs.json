@@ -470,6 +470,9 @@
     ],
     "core-642": [
       "results/iqm/cases/kernel-cancellation-probe/**"
+    ],
+    "core-644": [
+      "results/iqm/cases/signed-kernel-null-retest/**"
     ]
   }
 }

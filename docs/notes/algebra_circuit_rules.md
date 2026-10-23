@@ -203,3 +203,37 @@ sedenion statement never rests on them.
 | python-kingdon | `kingdon` | 3.0.0 | Cl(0,2) identical at D = 4 | geometric algebra on numpy, sympy or torch from one code path | product `keys()` are blade bitmasks; imports anywidget |
 | python-galgebra | `galgebra` | 0.6.0 | Cl(0,2) identical at D = 4 | symbolic geometric algebra and calculus | a one-generator algebra needs coordinates; a scalar needs `sympy.S.One` |
 | python-hyprat | `hyprat` | 0.2.0 (GitHub tag) | identical at D = 8, 16 (measured to 32) at mu = -1; signs (-1, -1, +1) give the split octonions | exact rational Cayley-Dickson algebras with a doubling parameter, Hurwitz quaternions | `Hy.from_array(coeffs, signs=...)` names the algebra, lowest level first |
+
+## Hardware probes
+
+These rules bind every case that reads an algebraic property on hardware;
+[algebra-hardware-probe-principles.md](topics/algebra-hardware-probe-principles.md)
+derives each one from the run that forced it.
+
+- Run the mutation test before a case reaches hardware: replace the
+  property's input (the kernel vector by its bright partner, the sign table
+  by flipped or random signs) and require the ideal observable to change.
+  The signed overlap Re<L_e2 u|B(t)|u> = t/(2 + |t|) survives every such
+  mutation, because L_e2^T L_e1 and L_e2^T L_e10 are antisymmetric, so it
+  never tested the sedenion zero divisor.
+- Read a zero-product property as an eigenvalue: (L_e1 + L_e10) u = 0 is
+  the eigenvalue -1 of L_e1^T L_e10 on u, which a Hadamard test with an
+  L_e1 reference branch reads as cos(2 theta) against 1 for the bright
+  vector (`gororoba_quantum/kernel_cancellation.py`).
+- Choose an observable whose odd part takes no additive first-order term
+  from a coherent error of the compile; check it with the first-order
+  response of every coherent error (`scripts/iqm_probe_audit.py`).
+- List the arms of a +- contrast +, -, -, + within one calibration, and give
+  it a null arm where the ideal odd part vanishes: decide on
+  odd(t) - odd(0). A blocked order and a missing null arm let a position
+  effect and an incoherent offset pass for a signed response.
+- Derive a coherent-error response through the device's noise model before
+  scaling it to a measured offset; the noiseless derivative overstates it by
+  ten to twenty times on a 199-CZ compile. A depolarizing model built from
+  randomized-benchmarking fidelities drops an error's signed first-order
+  effect, so a case that reads a first-order observable measures the
+  coherent parameters it depends on in the same job, each through its own
+  readout calibration.
+- Bind the prediction an analysis decides against into the approved case
+  (its digest in cases.json), and exclude mock runs, other case bytes and
+  other calibration sets from the analysis.

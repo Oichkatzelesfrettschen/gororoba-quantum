@@ -1,0 +1,157 @@
+{
+ "case": "signed-kernel-null-retest",
+ "ideal": {
+  "+0.00": 0.0,
+  "+0.25": 0.1111111111111111,
+  "-0.25": -0.1111111111111111
+ },
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/t+0.25-00a.json",
+     "sha256": "8a4706c425c064cfe9711ec6596f75616757fd99333b7033278fd7c7d64ce57b"
+    },
+    {
+     "file": "circuits/t-0.25-00b.json",
+     "sha256": "80a76cc5ba3070827380a774713d21d5b071b2f8308eda1de0a4827bb623f640"
+    },
+    {
+     "file": "circuits/t-0.25-00c.json",
+     "sha256": "a1c6df9054916f6bd06c59d8e5ab202b7e89bbcf5c6dcf2d576e6afa7749aaa6"
+    },
+    {
+     "file": "circuits/t+0.25-00d.json",
+     "sha256": "b1c72528e06d792798f7e209ee5a4ed39f3939ba28c2e6600ebcfc1c28fdada9"
+    },
+    {
+     "file": "circuits/t+0.00-00a.json",
+     "sha256": "8877a9eb5a5ed96458c7d09c8a746b8412838ea792ec69fb25c428e7586a50ad"
+    },
+    {
+     "file": "circuits/t-0.00-00b.json",
+     "sha256": "1d6168461abd78280996e5c25134907ed19318445632b0b9a1abfcbdf08b1554"
+    },
+    {
+     "file": "circuits/t-0.00-00c.json",
+     "sha256": "7ff38399c6d9265e1a86b64319a785cbd3dd2482fbbcebe9d3e033783deefdf5"
+    },
+    {
+     "file": "circuits/t+0.00-00d.json",
+     "sha256": "d87a2043a01cd9a2de86b648d6e3fbcde5dcee38dc8c8fcd65446b161c8bb631"
+    },
+    {
+     "file": "circuits/t+0.25-01a.json",
+     "sha256": "e1b8d10db9f361488e5f68e77b713154f1fbe5a2b7c7094e72477a88fcb550c4"
+    },
+    {
+     "file": "circuits/t-0.25-01b.json",
+     "sha256": "8cc643a6a99ac92fc51b1929ee36cfb5c30ee82264cd02d3773a1647856fe695"
+    },
+    {
+     "file": "circuits/t-0.25-01c.json",
+     "sha256": "b25a1971b9bc297c757755546b601abb7e681026c0866c7a363ca3f3c72764d9"
+    },
+    {
+     "file": "circuits/t+0.25-01d.json",
+     "sha256": "1a2694548f0ff231c7962291c0ff38c174edca851bf26c22be07273fce25a4ca"
+    },
+    {
+     "file": "circuits/t+0.00-01a.json",
+     "sha256": "115e6954d4d549873a0408dbc374234bc2c74e23cf6a0be5f255161cdc45eba1"
+    },
+    {
+     "file": "circuits/t-0.00-01b.json",
+     "sha256": "f64b254464a87d7be2c4e97635eec421db77237914cf66abc6d09d9546f93946"
+    },
+    {
+     "file": "circuits/t-0.00-01c.json",
+     "sha256": "4607d6336627da488e79f1c26d9a104bd7af642c4d222054309b61b3e13ce648"
+    },
+    {
+     "file": "circuits/t+0.00-01d.json",
+     "sha256": "1ec508edf668dcd15f76be39c8b688e70952781f10b45b76fcbbb4a6408e374a"
+    }
+   ],
+   "expected_seconds": 9.92,
+   "job": "probe-0",
+   "max_credits": {
+    "garnet": 6.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "68b0f1d0-b410-450f-aed7-b709f22412c1"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 20000
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/ro0.json",
+     "sha256": "5403c262ff185bdab12657f4e26d303696a8ed7abec6aebf174b5bbfd8b59683"
+    },
+    {
+     "file": "circuits/ro1.json",
+     "sha256": "bef55c1b9d873431ff8ad9df3e5d377bf5d4559e30a59e84879c60d7ff83cbbe"
+    },
+    {
+     "file": "circuits/amp-QB6-0.json",
+     "sha256": "21f4a85b95f0c5ce61d9859e87320e267df8e4e7c2fde3ec61f1775cb22fe093"
+    },
+    {
+     "file": "circuits/amp-QB6-1.json",
+     "sha256": "364e795134ed43086404720b8ba423e0eede63312b0fed3000965bc9ec1df45b"
+    },
+    {
+     "file": "circuits/amp-QB6-2.json",
+     "sha256": "4eb095297aefd40798609e1e19e1fb5715882964171ef28f7e200fcd421e6872"
+    },
+    {
+     "file": "circuits/amp-QB6-3.json",
+     "sha256": "0a6b81f143612015e358e2469ce107674b83c51d2d4d77a01d38baccae8058ae"
+    },
+    {
+     "file": "circuits/amp-QB11-0.json",
+     "sha256": "268366a4880e8cc138da6125440b17a7c92e5ff564346445bbcda09796fdde25"
+    },
+    {
+     "file": "circuits/amp-QB11-1.json",
+     "sha256": "a37cda727854bab51f321e906c9f0988c878bd87c53df6a6567e8d0a0d34e30f"
+    },
+    {
+     "file": "circuits/amp-QB11-2.json",
+     "sha256": "51994bc74a782b1956cf9034b86433e5bb6287bbb022862f5b500b53b73aa3d3"
+    },
+    {
+     "file": "circuits/amp-QB11-3.json",
+     "sha256": "bf096f166f05e96bea7f9d9ad5370a17e52ea4fe584f281f707ae1deca54a373"
+    }
+   ],
+   "expected_seconds": 1.24,
+   "job": "calibrate",
+   "max_credits": {
+    "garnet": 1.5,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "68b0f1d0-b410-450f-aed7-b709f22412c1"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 4000
+  }
+ ],
+ "prediction_sha256": "f35e68d346dedd1d707e83f7f100b9424e6f5e4f7bd7f1ba817c102828b54220",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does Garnet's odd part of the signed kernel probe at |t| = 0.25 exceed its t = 0 null offset, D(t) = odd(t) - odd(0) > 0, with the +t and -t circuits in balanced order?",
+ "schema": "iqm-circuit-case-v1"
+}
