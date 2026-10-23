@@ -23,7 +23,8 @@ amplitude sqrt(|t|/(2 + |t|)) is zero, and grows with that amplitude rather than
 
 sign cocycle. e_p e_q = (-1)^f(p, q) e_(p xor q) in dimension 2^n, enumerated for n = 1 to 6; the
 algebraic normal form of f over the 2n index bits has degree max(2, n), and its degree in q, maximized
-over the left factor p, is max(1, n - 1): octonion left multiplication is at most a degree-2 phase (CZ
+over the left factor p, is max(1, n - 1) (Theorem 1 of docs/notes/cd_phase_degree.md proves n - 1 for
+every nonzero p): octonion left multiplication is at most a degree-2 phase (CZ
 and Z), sedenion left multiplication reaches degree 3. The closed form beyond n = 6 is unproved.
 
 Usage: "$PYTHON" scripts/iqm_probe_audit.py (--out FILE | --check FILE | --self-test)

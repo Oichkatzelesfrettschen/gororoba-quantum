@@ -427,6 +427,9 @@ Facts a Garnet case design starts from, each with the record that carries it:
   only 0.032: the offset lies outside the stationary coherent model, and
   leakage read as 1, crosstalk and readout under heralding are untested
   ([coherent response](../../design/iqm-garnet-signed-kernel-probe.md#adversarial-audit)).
+  The offsets reproduce under set `68b0f1d0` (-0.0195 and -0.0175), and the
+  kernel cancellation run measured QB11 over-rotating by only
+  +0.15 +- 0.07 % ([results](../../design/iqm-garnet-kernel-cancellation-probe.md#garnet-results-2026-10-23)).
   A prediction from `scripts/iqm_sim.py` therefore bounds incoherent loss
   and readout only; a case that reads a first-order observable measures the
   coherent errors of its own qubits in the same job (error-amplifying
@@ -435,8 +438,19 @@ Facts a Garnet case design starts from, each with the record that carries it:
   of a +-parameter contrast interleave in the circuit list (+, -, -, +)
   rather than block, keeping drift along the batch out of the odd part.
 - **Calibration lifetime.** Set `9069c4ef` served from the snapshot of
-  2026-10-22T20:48Z to at least 2026-10-23T00:50Z, so a case planned
-  against it and pinned with `calibration_set_id` pools with its jobs.
+  2026-10-22T20:48Z to at least 2026-10-23T00:50Z and was replaced by
+  2026-10-23T05:30Z; set `68b0f1d0` served from then to at least 07:33Z. A
+  case pinned with `calibration_set_id` pools only with jobs of its set, and
+  a retired set refuses the job, so a case built against the live set (the
+  `--live` builds) is rebuilt when the set changes.
+- **Visibility and depth.** The 37-CZ kernel cancellation probe kept a
+  visibility of 0.36 (model 0.48); the 199-CZ signed probe kept 0.058 once
+  its null offset is subtracted (model 0.05 to 0.09)
+  ([null re-test](../../design/iqm-garnet-signed-kernel-probe.md#null-re-test-results-2026-10-23)).
+- **Null offset.** On the 199-CZ compile the calibration model gives the
+  signed probe's odd part +0.0136 at t = 0, where the ideal is zero, because
+  the +0 and -0 circuits differ in their rotation angles; Garnet read
+  +0.0024 +- 0.0031 there.
 - **Readout.** `measure_012` (three-state readout) is offered on QB1, QB3,
   QB7, QB9 and QB14; the Qiskit Target omits it, so a leakage readout goes
   through the circuit JSON directly.
