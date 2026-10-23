@@ -261,10 +261,14 @@ middle-middle under both policies (`mm-def-e2`, `mm-none-e2`).
 - A confirmation is planned after the stationarity readout, as its own case,
   and it reuses none of them.
 
-**The case.** It resubmits the diagnostic's four frozen requests exactly, in
-two blocks of two jobs. The requests keep the compilation seeds, parameters,
-groups and drawn order of the committed manifests under
-`results/quandela/cases/bdsc_diagnostic/`, so no new QRNG read is made.
+**The case.** It repeats the diagnostic's four frozen requests in two
+blocks of two jobs. The requests keep the compilation seeds, parameters,
+groups, drawn order, circuit and empty mitigation list of the committed
+manifests under `results/quandela/cases/bdsc_diagnostic/`, so no new QRNG
+read is made. Each iteration takes 100000 samples instead of 40000, with
+max_shots 120000; the
+[design](../design/bdsc-qualification.md#stationarity-under-a-stray-detector-veto)
+states what that sample count lets the primary test resolve.
 
 | Block | Job 1 requests | Job 2 requests | Timing |
 |---|---|---|---|
@@ -288,30 +292,35 @@ the common-shift reading and the reported-only quantities are the design's.
 
 ### Order of the stationarity case
 
-1. **Build.** The case builder, `scripts/bdsc_stationarity.py`, follows this
-   amendment and builds the four run directories under
-   `results/quandela/cases/bdsc_stationarity/` from the diagnostic
-   manifests. Each binds its source manifest's sha256 and the diagnostic's
-   QRNG record. `--check` proves every request equals its source: seeds,
-   parameters, order and the empty mitigation list.
-2. **Plan.** `qd_platform.py plan` passes on each directory for qpu:belenos
-   with `--admit-status running`. The receipt's `perfs_at_plan` holds a
-   dark-count rate for each of the 24 modes, and mode 5 reads above every one
-   of the other 23.
-3. **Written case.** It restates the plan output: about 1.08 credits and
-   176 s per job, 4.32 credits and about 705 s in all. It also states the
+1. **Build.** `scripts/bdsc_stationarity.py --write` builds the four
+   request directories under `results/quandela/cases/bdsc_stationarity/`
+   and the case record
+   [case.json](../evidence/bdsc/stationarity/case.json) from the diagnostic
+   manifests. Each manifest binds its source manifest's sha256 and keeps
+   the diagnostic's QRNG binding. `--check` proves that every request
+   equals its source in every field except the family and the sample and
+   shot budgets.
+2. **Plan.** For each directory, `qd_platform.py plan DIR --platform
+   qpu:belenos --max-credits 1.12 --expected-seconds 213.6
+   --per-job-credits 1.0 --admit-status running > PLAN.json` passes, and
+   `scripts/bdsc_stationarity.py --plan-check PLAN.json` passes. That check
+   requires the receipt's `perfs_at_plan` to hold a dark-count rate for each
+   of the 24 modes, with mode 5 above every one of the other 23.
+3. **Written case.** It restates the plan output: 1.12 credits and about
+   214 s per job, 4.48 credits and about 854 s in all. It also states the
    stop conditions below and the reading of each outcome. Wait for
    approval. No QRNG read is part of it.
 4. **Submission and checks.** Submit and collect each job in the order of
    the table. After each collection, and before the next submission:
    - confirm the diagnostic's integrity checks: the empty policy in the
-     retained body, an integer BSCount, 40000 samples per iteration, a
+     retained body, an integer BSCount, 100000 samples per iteration, a
      returned compiled circuit and a positive `physical_perf`;
-   - run the matched check against the retained diagnostic job of the same
-     requests, which requires every returned-circuit hash to equal its
-     counterpart's;
-   - record a fresh platform read of the dark-count rates beside the
-     collected run.
+   - run `scripts/bdsc_stationarity.py --matched-check RUN_DIR` against the
+     retained diagnostic job of the same requests, which requires every
+     returned-circuit hash to equal its counterpart's;
+   - record a fresh platform read of the dark-count rates with
+     `qd_platform.py snapshot --out results/quandela/bdsc_stationarity_dark/after-JOB`,
+     which the readout reads beside the plan-time rate.
 5. **Readout.** `scripts/bdsc_stationarity.py --readout RUN_DIR...` reads
    the four runs. The runs enter `docs/state/research_state.json` with their
    claim.
@@ -325,7 +334,7 @@ Execution stops, and the remaining jobs stay unsent, when any of these holds:
   plan-time dark-count rate at or above mode 5's;
 - a retained job body differs from the empty mitigation list, or a result
   is not an integer BSCount;
-- a job fails, an iteration returns fewer than 40000 samples, or the
+- a job fails, an iteration returns fewer than 100000 samples, or the
   one-click rule (before the veto) excludes more than 0.01 of an
   iteration's samples;
 - an iteration returns no compiled circuit or no positive `physical_perf`;
@@ -345,3 +354,76 @@ Execution stops, and the remaining jobs stay unsent, when any of these holds:
 - So does any job that started and then failed, and any cancellation the
   case did not order.
 - A resubmission keeps every timing rule above.
+
+### Calibration hold of the stationarity case
+
+This amendment was committed after b1-j1 ran and before any other job was
+sent. After b1-j1 was collected and checked, the b1-j2 plan read
+`qpu:belenos is calibration`. The plan step exits before `submit`, so
+nothing was sent. The run directory held only the copied request files and
+went to the trash.
+
+- **Hold.** A plan refused on a platform status other than available, with
+  nothing sent, holds the case rather than stopping it. The job is planned
+  again from a fresh run directory when `qd_platform.py plan` admits the
+  platform, and is submitted only when `--plan-check` passes on that fresh
+  plan. Every other stop condition is unchanged: a platform that never
+  returns, a mode at or above mode 5, or a maintenance-window overlap still
+  stops the case.
+- **Block 1 spans a calibration.** b1-j1 ran before the calibration, and
+  b1-j2 and both block 2 jobs run after it. A calibration effect therefore
+  enters only the matched changes of b1-j1's requests. The group-by-block
+  contrast (b1-j1's requests against b1-j2's) carries it as an additional
+  confound beside the slot crossing, and the primary's heterogeneity Q can
+  read it as between-request variation. The primary, the coincidence test
+  and the excess-variance estimates read as frozen, and the readout reports
+  that the b1-j1 pairs cross a calibration.
+- **Block definitions.** Both blocks keep their definitions. If the hold
+  runs long, block 1's internal span can exceed the one-hour gap between
+  blocks, and the readout states block 1's span next to the gap. The
+  one-hour rule still runs from b1-j2's execution end.
+- **Dark-count snapshots.** The snapshot taken after b1-j1 repeats the
+  b1-j1 plan-time reading in every mode: 49520.9 counts/s for mode 5 and at
+  most 130.6 for the others. The platform's figures change at calibration,
+  not per job, so each after-job snapshot records which calibration was
+  current. The b1-j2 plan's figures are the post-calibration reading, and
+  they give the share-against-dark-rate question its second point inside
+  the case.
+
+**Post-calibration repeat of b1-j1.** The user approved a fifth job on
+2026-10-23, before any post-calibration submission: a repeat of b1-j1's
+requests after the calibration, so that block 1 sits inside one
+calibration. This amendment was committed before that job was sent.
+
+- **Requests.** The repeat submits the frozen
+  `results/quandela/cases/bdsc_stationarity/b1-j1/` directory unchanged,
+  from a fresh run directory. `admit()` accepts it byte for byte, and
+  `--matched-check` compares it with the retained diagnostic circuits as it
+  does every job.
+- **Order.** After the calibration, the repeat of b1-j1 runs first, then
+  b1-j2, then the one-hour gap, then b2-j1 and b2-j2. Each job is collected
+  and checked before the next is submitted, and the block timing rules run
+  from the repeat's and b1-j2's execution windows.
+- **Readout.** `--readout` takes the repeat as block 1's b1-j1 run beside
+  b1-j2, b2-j1 and b2-j2. All four runs then lie after the calibration, and
+  the primary, the coincidence test and the excess variance read as frozen.
+  The pre-calibration b1-j1 run is retained. It enters no frozen test, and
+  is reported only as a calibration contrast against the repeat: the same
+  24 requests, read across one calibration.
+- **Snapshots.** The snapshot taken after the pre-calibration b1-j1 run
+  lives at `results/quandela/bdsc_stationarity_dark/before-calibration-after-b1-j1/`.
+  The repeat writes `after-b1-j1/`, which the readout reads.
+- **Budget.** Five jobs at 1.12 credits and about 214 s each: 5.60 credits
+  and about 1068 s in all. That is the approved ceiling for the stop
+  condition on spent credits.
+- **Resubmission.** The resubmission rule and the hold above apply to the
+  repeat as to every other job.
+- **A later calibration.** The platform's dark-count figures change only at
+  calibration. A change in `perfs_at_plan` between consecutive jobs
+  therefore marks an intervening calibration, even when the status read
+  available at every plan. Such a calibration inside a block holds the case
+  and the case continues: the readout reports which matched pairs cross it,
+  and no further job runs, because 5.60 credits is the ceiling.
+- **A failed plan check stops the case.** After the calibration, mode 5 may
+  no longer be the hottest mode. A failed `--plan-check` is a frozen stop,
+  not a hold: the unsent run directory goes to the trash, and the case ends.

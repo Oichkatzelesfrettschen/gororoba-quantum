@@ -1,10 +1,27 @@
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import bdsc_stray_mode_veto as veto  # noqa: E402
+
+
+def test_successor_output_preserves_original_report(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    original = veto.OUT.read_bytes()
+    successor = tmp_path / "successor.json"
+    monkeypatch.setattr(veto, "build", lambda: {"successor": True})
+    monkeypatch.setattr(sys, "argv", ["bdsc_stray_mode_veto", "--write", "--out", str(successor)])
+    veto.main()
+    monkeypatch.setattr(sys, "argv", ["bdsc_stray_mode_veto", "--check", "--out", str(successor)])
+    veto.main()
+    if veto.OUT.read_bytes() != original:
+        raise AssertionError("successor output changed the retained report")
+    successor.write_text("{}\n")
+    with pytest.raises(ValueError, match="differs"):
+        veto.main()
 
 
 def pattern(*modes: int) -> str:

@@ -595,12 +595,17 @@ if the service reconstructs or correlates the returned counts.
 ### Stray-mode veto (exploratory)
 
 `scripts/bdsc_stray_mode_veto.py`
-([readout](../../../results/quandela/bdsc_stray_mode_veto.json), claim
+([runner-image readout](../../../results/quandela/bdsc_stray_mode_veto-runner-image.json), claim
 `qd-belenos-bdsc-stray-mode-veto`, gate `core-667`) reruns the diagnostic's
 analysis with output mode 5 vetoed. Mode 5 lies outside every selection and
 target support. Each run receipt lists it with the largest dark-count rate:
 3137.7 per second before block 1 and 1847.5 before block 2, against at most
 80.9 for every other mode.
+
+The [original readout](../../../results/quandela/bdsc_stray_mode_veto.json)
+retains its recorded bytes. The runner-image successor differs in twelve
+p-values' final floating-point digits; every statistic and decision agrees.
+Gate `core-667` replays the successor under the pinned runner userland.
 
 - **Matched changes.** The mode-5 share of one-click samples changed by
   -0.0069 (SD 0.0119) across the 48 matched instances. All other off-support

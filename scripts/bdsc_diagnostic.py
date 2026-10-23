@@ -915,6 +915,14 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
             require(index not in observed, f"{run}: instance {index} collected twice")
             observed[index] = item
     require(sorted(windows) == sorted(frozen), f"the readout needs every job; it holds {sorted(windows)}")
+    require_schedule(windows, collected, maintenance)
+    return with_support_conditioned(observed)
+
+
+def require_schedule(
+    windows: dict[str, tuple[float, float]], collected: dict[str, float], maintenance: set[tuple[float, float]]
+) -> None:
+    """The block timing rules on each job's execution window, collection time and the plan-time maintenance windows."""
     for block in BLOCKS:
         require(
             windows[f"b{block}-j1"][1] <= windows[f"b{block}-j2"][0],
@@ -933,7 +941,6 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
         not any(opens < span[1] and closes > span[0] for opens, closes in maintenance),
         "a scheduled maintenance window overlaps the acquisition",
     )
-    return with_support_conditioned(observed)
 
 
 def with_support_conditioned(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
@@ -966,8 +973,11 @@ def with_support_conditioned(observed: dict[int, dict[str, Any]]) -> dict[str, A
     return read
 
 
-def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, dict[str, Any]]:
+def observations(manifest: dict[str, Any], result: dict[str, Any], trials: int = TRIALS) -> dict[int, dict[str, Any]]:
     """Per-instance one-click tallies of one job, with seed, parameter, sample and eligibility checks.
+
+    trials is the frozen sample count of every iteration; a case that repeats these requests at another sample budget
+    passes its own.
 
     Each item also carries the iteration's physical_perf, the share of its one-click samples outside the target
     support (modes with column weight above forensics.SUPPORT_FLOOR) and its position in the job.
@@ -987,9 +997,9 @@ def observations(manifest: dict[str, Any], result: dict[str, Any]) -> dict[int, 
             f"{owner}: parameters",
         )
         require(ran.get("compilation_seed") == setting["compilation_seed"], f"{owner}: seed")
-        require(iteration.get("samples") == TRIALS, f"{owner}: samples")
+        require(iteration.get("samples") == trials, f"{owner}: samples")
         counted = bdsc_cases.tally(iteration["counts"], manifest["selected_modes"])
-        require(counted["eligible"] >= (1 - cert.ELIGIBLE_LOSS) * TRIALS, f"{owner}: eligible")
+        require(counted["eligible"] >= (1 - cert.ELIGIBLE_LOSS) * trials, f"{owner}: eligible")
         circuit = iteration.get("result_fields", {}).get("computed_circuit")
         require(isinstance(circuit, str), f"{owner}: no compiled circuit")
         perf = iteration.get("result_fields", {}).get("physical_perf")

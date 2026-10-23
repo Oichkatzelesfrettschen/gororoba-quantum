@@ -77,6 +77,50 @@ def detector_absent(counts: dict[str, int], selected: set[int], support: list[in
 DARK = "Dark counts (detection/s)"
 
 
+def tallies(
+    manifest: dict[str, Any], result: dict[str, Any], items: dict[int, dict[str, Any]]
+) -> tuple[dict[int, dict[str, Any]], dict[int, dict[str, Any]], dict[int, dict[str, Any]]]:
+    """(subtract, detector_absent, stray) tallies of one run's instances from its observations items."""
+    subtract: dict[int, dict[str, Any]] = {}
+    absent: dict[int, dict[str, Any]] = {}
+    stray: dict[int, dict[str, Any]] = {}
+    selected = set(manifest["selected_modes"])
+    require(STRAY not in selected, f"{manifest['job']}: the stray mode is selected")
+    for setting, iteration in zip(manifest["settings"], result["iterations"], strict=True):
+        index = setting["instance_index"]
+        weight = np.abs(diag.forensics.column(setting)) ** 2
+        support = [m for m in range(diag.cert.MODES) if weight[m] > diag.forensics.SUPPORT_FLOOR]
+        require(STRAY not in support, f"{manifest['job']}/{setting['name']}: the stray mode is on the target support")
+        per_mode, _, _ = diag.forensics.one_click(iteration["counts"], diag.cert.MODES)
+        item = items[index]
+        subtract[index] = {
+            **item,
+            "eligible": item["eligible"] - per_mode[STRAY],
+            "outside_share": 1 - item["on_support"] / (item["eligible"] - per_mode[STRAY]),
+        }
+        tally = detector_absent(iteration["counts"], selected, support)
+        absent[index] = {**item, **tally, "outside_share": 1 - tally["on_support"] / tally["eligible"]}
+        stray[index] = {
+            "job": manifest["job"],
+            "position": item["position"],
+            "share": per_mode[STRAY] / item["eligible"],
+            "perf": item["perf"],
+            "other_outside_share": (item["eligible"] - item["on_support"] - per_mode[STRAY]) / item["eligible"],
+        }
+    return subtract, absent, stray
+
+
+def job_dark(rates: list[float], result: dict[str, Any]) -> dict[str, Any]:
+    """The stray and largest other dark-count rate of one plan-time reading, with the job's duration and samples."""
+    require(len(rates) == diag.cert.MODES, "dark counts do not cover every mode")
+    return {
+        "stray": rates[STRAY],
+        "largest_other": max(r for m, r in enumerate(rates) if m != STRAY),
+        "duration_seconds": float(result["data"]["duration"]),
+        "samples": sum(iteration["samples"] for iteration in result["iterations"]),
+    }
+
+
 def collect() -> tuple[
     dict[int, dict[str, Any]], dict[str, dict[int, dict[str, Any]]], dict[int, dict[str, Any]], dict[str, Any]
 ]:
@@ -89,39 +133,13 @@ def collect() -> tuple[
     context: dict[str, Any] = {}
     for run in RUNS:
         manifest, result, submission = diag.admit_run(ROOT / run, True, context)
-        rates = submission["perfs_at_plan"][DARK]
-        require(len(rates) == diag.cert.MODES, f"{run}: dark counts do not cover every mode")
-        dark[manifest["job"]] = {
-            "stray": rates[STRAY],
-            "largest_other": max(r for m, r in enumerate(rates) if m != STRAY),
-            "duration_seconds": float(result["data"]["duration"]),
-            "samples": sum(iteration["samples"] for iteration in result["iterations"]),
-        }
-        selected = set(manifest["selected_modes"])
-        require(STRAY not in selected, f"{run}: the stray mode is selected")
+        dark[manifest["job"]] = job_dark(submission["perfs_at_plan"][DARK], result)
         items = diag.observations(manifest, result)
-        for setting, iteration in zip(manifest["settings"], result["iterations"], strict=True):
-            index = setting["instance_index"]
-            weight = np.abs(diag.forensics.column(setting)) ** 2
-            support = [m for m in range(diag.cert.MODES) if weight[m] > diag.forensics.SUPPORT_FLOOR]
-            require(STRAY not in support, f"{run}/{setting['name']}: the stray mode is on the target support")
-            per_mode, _, _ = diag.forensics.one_click(iteration["counts"], diag.cert.MODES)
-            item = items[index]
-            observed[index] = item
-            subtract[index] = {
-                **item,
-                "eligible": item["eligible"] - per_mode[STRAY],
-                "outside_share": 1 - item["on_support"] / (item["eligible"] - per_mode[STRAY]),
-            }
-            tally = detector_absent(iteration["counts"], selected, support)
-            absent[index] = {**item, **tally, "outside_share": 1 - tally["on_support"] / tally["eligible"]}
-            stray[index] = {
-                "job": manifest["job"],
-                "position": item["position"],
-                "share": per_mode[STRAY] / item["eligible"],
-                "perf": item["perf"],
-                "other_outside_share": (item["eligible"] - item["on_support"] - per_mode[STRAY]) / item["eligible"],
-            }
+        observed.update(items)
+        run_subtract, run_absent, run_stray = tallies(manifest, result, items)
+        subtract.update(run_subtract)
+        absent.update(run_absent)
+        stray.update(run_stray)
     return observed, {"subtract": subtract, "detector_absent": absent}, stray, dark
 
 
@@ -182,7 +200,7 @@ def summary(read: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any]) -> dict[str, Any]:
+def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any], trials: int = diag.TRIALS) -> dict[str, Any]:
     """The stray mode's share per job and block against its plan-time dark-count rate, its matched block change
     against the other off-support share, and its trends with position and with 1 / physical_perf."""
     items = diag.instances()
@@ -249,7 +267,7 @@ def stray_report(stray: dict[int, dict[str, Any]], dark: dict[str, Any]) -> dict
         },
         "position": position,
         "perf_exposure_diagnostic": fixed_rate,
-        "reference_se_of_share": math.sqrt(float(np.mean(shares)) * (1 - float(np.mean(shares))) / diag.TRIALS),
+        "reference_se_of_share": math.sqrt(float(np.mean(shares)) * (1 - float(np.mean(shares))) / trials),
     }
 
 
@@ -279,13 +297,14 @@ def main() -> int:
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--write", action="store_true")
     action.add_argument("--check", action="store_true")
+    parser.add_argument("--out", type=Path, default=OUT, help="report path; a successor preserves retained bytes")
     args = parser.parse_args()
     text = json.dumps(build(), indent=1, sort_keys=True) + "\n"
     if args.write:
-        OUT.write_text(text)
+        args.out.write_text(text)
     else:
-        require(OUT.is_file() and OUT.read_text() == text, f"{OUT.relative_to(ROOT)} differs; regenerate explicitly")
-    print(f"stray-mode veto: {OUT.relative_to(ROOT)}")
+        require(args.out.is_file() and args.out.read_text() == text, f"{args.out} differs; regenerate explicitly")
+    print(f"stray-mode veto: {args.out}")
     return 0
 
 

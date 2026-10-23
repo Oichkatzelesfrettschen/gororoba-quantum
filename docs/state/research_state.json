@@ -1409,6 +1409,41 @@
       "question": "the second job of block 2 (`b2-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
     },
     {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1-precalibration",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the first job of block 1 (`b1-j1`), run before a Belenos calibration and read only as the calibration contrast against its repeat of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the approved repeat of block 1's first job (`b1-j1`) after the Belenos calibration, read as block 1's b1-j1 of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the second job of block 1 (`b1-j2`) of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b2-j1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the first job of block 2 (`b2-j1`), at least one hour after block 1's last execution end of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b2-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the second job of block 2 (`b2-j2`) of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
       "id": "qi-qx-bdsc-pauli-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
@@ -4920,12 +4955,40 @@
       "superseded_by": null
     },
     {
+      "id": "a5-schur-germ-unobstructed",
+      "statement": "At the 12 non-zero-divisor gap witnesses of the A_5 rank-locus families, the 9 zero-divisor-family witnesses, the 7 Proposition 8.2 points and the Moreno point, the excess entries of the Schur complement of L_y vanish on the smooth germ of dimension dim T(x) cut out by its independent entries: to O(p^12) at a Hensel-lifted p-adic point (pyadic, p = 2147483647) and through t^63 along four seeded directions in F_p[[t]] (python-flint, p = 2147483647 and 2147483629). At x0 = e1 + e18, whose cone A15 union B17 lies below its tangent bound, they are nonzero at order 2 in both routes with equal leading digits, and at valuation 4 at scale p^2; along seeded velocities at x0 inside A15 and inside A15 intersect B17 they are nonzero at orders 3 and 4 in both routes with equal leading digits.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact residues modulo p^12 and modulo p at the recorded seeded directions, whose weight vectors the record carries. A zero residue bounds the order of the obstruction series along the drawn direction from below and admits no local dimension: the series could still be nonzero with order 64 or more, or with a leading form that vanishes modulo both primes or at the drawn weights, which a leading form nonzero modulo p does with probability at most 64/(p - 1) per direction, with weights drawn from F_p^*. A nonzero residue at a gap witness would have refuted a5-nonzero-divisor-two-dimension-gap exactly, and none occurred. The p-adic route is recomputed where pyadic imports, and CI holds its retained rows to the recomputed series route.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_padic_lift/result.json",
+          "sha256": "b1fca16c9d38d7f03f2476c4f5a640b5d0d00e12c6aef6a365697bff51f7c4e3"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_padic_lift/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md",
+        "docs/notes/packages/manual/pyadic.md"
+      ],
+      "gates": {
+        "core-668": "replay",
+        "core-669": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-nonzero-divisor-two-dimension-gap",
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved. Claim a5-schur-germ-unobstructed finds the excess Schur-complement equations vanishing through order 63 on the smooth germ of the tangent-bound dimension at all 12 witnesses, so the statement there is equivalent to their exact vanishing on that germ, which an ideal-membership certificate or an explicit parameterization of the germ would establish.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -8280,6 +8343,10 @@
         {
           "path": "results/quandela/bdsc_stray_mode_veto.json",
           "sha256": "b07ee5641127937c046079d5fb70992eaf3ead5bccaeda77c2e362bc81b3348a"
+        },
+        {
+          "path": "results/quandela/bdsc_stray_mode_veto-runner-image.json",
+          "sha256": "71ffdf79b0abc071ef1b99218133d16ef72e54e0b8de20aa2ac3e2700db8cefd"
         }
       ],
       "documents": [
@@ -8634,6 +8701,116 @@
       "related_claims": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-stationarity-readout",
+      "statement": "The preregistered stationarity case on qpu:belenos, four post-calibration jobs repeating the crossed BDSC diagnostic's frozen requests at 100000 samples per iteration with every returned circuit equal to its retained counterpart, reads its primary inconclusive under the frozen mode-5 detector_absent veto: the heterogeneity of matched block changes about their class means is 66.1 on 45 degrees of freedom (p 0.022; the subtract veto reads 65.0, p 0.027). The dark-click coincidence falsifier reads consistent (p 0.31), the superposition common shift reads +0.0003 (z 0.8) rather than repeating the retained -0.0044, and the superpositions keep an excess spread tau 0.0021 (interval 0.0009 to 0.0035) while f and g read none; the veto removes 0.999 of the superpositions' raw tau^2. Reported only: the mode-5 share fell from a block mean of 0.249 to 0.057 at a constant plan-time dark-count figure of 48440.3 counts/s, and the pre-calibration run of the b1-j1 requests against its repeat reads a superposition shift of -0.0017 (z -2.8) across the calibration.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One device and one calibration, two blocks about an hour apart; the case separates neither slow drift from a step change nor drift within a window. Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance unresolved. The calibration hold and the post-calibration repeat of b1-j1 were amendments committed before the jobs they govern; the pre-calibration b1-j1 run enters no frozen test. The plan-time dark-count figure is a platform reading, not an acquisition-time measurement, so the mode-5 mechanism stays a candidate. An inconclusive primary decides neither branch; it makes no certification decision.",
+      "evidence": [
+        {
+          "path": "results/quandela/bdsc_stationarity_calibration_contrast.json",
+          "sha256": "8481d6563c530bc315c82bcd19c108eacedfc8acac0a943b395ff582b3d5433b"
+        },
+        {
+          "path": "results/quandela/bdsc_stationarity_readout.json",
+          "sha256": "48a477b28a1dd8ce10e8a119ed33741d85987aab764fc8f0202694a4888f5d1e"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-qualification.md",
+        "docs/runbooks/bdsc-qualification-case.md",
+        "scripts/bdsc_stationarity.py"
+      ],
+      "gates": {
+        "core-675": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-stationarity-b1-j1-precalibration",
+        "qd-qpu-belenos-bdsc-stationarity-b1-j1",
+        "qd-qpu-belenos-bdsc-stationarity-b1-j2",
+        "qd-qpu-belenos-bdsc-stationarity-b2-j1",
+        "qd-qpu-belenos-bdsc-stationarity-b2-j2"
+      ],
+      "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qd-belenos-bdsc-stray-mode-veto",
+        "qd-belenos-bdsc-diagnostic-readout"
+      ],
+      "depends_on": []
+    },
+    {
+      "domain": "implementation",
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "algebra-device-operational-falsifiers",
+      "statement": "Exact finite controls certify real-left normality at dimensions 2 through 64, the 4/8/4 sedenion Gram sectors, complete filter probability accounting, distinct order and associator references, phase and remote-ensemble invariance, finite embeddings and error-set-specific correction.",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
+      "evidence": [
+        {
+          "path": "docs/evidence/algebra-device-conjectures/result.json",
+          "sha256": "a7575c1822ec7b7ec8c60cf7c81c9e604a01ae7e1960baa066d5bae1cb1a1b0d"
+        }
+      ],
+      "gates": {
+        "core-670": "replay",
+        "core-671": "regression"
+      }
+    },
+    {
+      "domain": "implementation",
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "algebra-device-logical-instrument-bank",
+      "statement": "Seventeen logical circuits implement Design B dark/bright/quadrature controls, coherent/dephased/fixed-order controls, one/two/four-step measurement sequences with unmeasured and reset references, a heralded contraction and dimension-8/16/32 associator spectra; complete branch enumeration agrees with their declared laws within 1e-10 after portable-basis compilation.",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Finite numerical conformance without sampled jobs. Portable CX/RZ/SX/X compilation establishes neither native hardware routing nor a scheduler, cost or acquisition result.",
+      "evidence": [],
+      "gates": {
+        "core-671": "replay"
+      }
+    },
+    {
+      "domain": "implementation",
+      "documents": [
+        "docs/design/hypercomplex-operator-evidence.md"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "algebra-device-operational-falsifiers",
+        "algebra-device-logical-instrument-bank"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "proposed-algebra-device-controlled-extensions",
+      "statement": "Operational case contracts pair algebra-specific response, singular-sector dynamics, coherent selection, sequential measurement and effective nonunitarity with property-removing mutations, unconditional accounting and prospective calibration controls.",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Logical instruments and exact models are available. Fresh physical scheduling, block-level covariance and power, provider-specific costs and separate approval precede acquisition; squeezing, protected topology and quantum-code benefit remain capability- or definition-gated.",
+      "evidence": [],
+      "gates": {
+        "core-671": "admission"
+      }
     }
   ]
 }

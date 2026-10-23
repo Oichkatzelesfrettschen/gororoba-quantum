@@ -1,0 +1,135 @@
+{
+  "boundary": "Six focused offline gates after p-adic main reconciliation; head-specific hosted validation remains pending.",
+  "checkout_head": "ba8bcc7e3dd1b068298cb435d03e173c42147e66",
+  "evidence_class": "implementation validation",
+  "gate_run": {
+    "cpu_capacity": 12,
+    "gates": [
+      {
+        "estimated_seconds": 13.0,
+        "name": "core-630",
+        "resources": {
+          "max_rss_kib": 106816,
+          "system_seconds": 0.471722,
+          "user_seconds": 8.919352,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 4.433095259999391,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 43.0,
+        "name": "core-668",
+        "resources": {
+          "max_rss_kib": 86316,
+          "system_seconds": 0.21734199999999998,
+          "user_seconds": 44.140041,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 13.85797759500565,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 16.0,
+        "name": "core-669",
+        "resources": {
+          "max_rss_kib": 40052,
+          "system_seconds": 0.187796,
+          "user_seconds": 4.076229,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 2.792907285998808,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 12.0,
+        "name": "core-670",
+        "resources": {
+          "max_rss_kib": 684480,
+          "system_seconds": 1.306546,
+          "user_seconds": 10.974573,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 6.325965608994011,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 53.0,
+        "name": "core-671",
+        "resources": {
+          "max_rss_kib": 1298352,
+          "system_seconds": 2.691309,
+          "user_seconds": 14.62374,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 14.396524707990466,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 1.0,
+        "name": "core-plan-tracker",
+        "resources": {
+          "max_rss_kib": 27096,
+          "system_seconds": 0.055177,
+          "user_seconds": 0.48122299999999996,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 0.2786685939936433,
+        "status": 0
+      }
+    ],
+    "ledger_audit_misses": [],
+    "schema": "gororoba-gate-timings-v1",
+    "shard": "0/1",
+    "shard_cpus": 4,
+    "skipped": [],
+    "wall_seconds": 14.397105879994342
+  },
+  "inputs": [
+    {
+      "path": "scripts/algebra_device_conjectures.py",
+      "sha256": "9c5c74b6c748ceeed4d2fc258b1fe72418ce19d78348312a7fdb95a29b356d4a"
+    },
+    {
+      "path": "scripts/algebra_conjecture_circuits.py",
+      "sha256": "ba8eedcd05d922f0bcc2a45a864fbba2b3a3f803fe78cc0c22acc90ea7311247"
+    },
+    {
+      "path": "docs/evidence/algebra-device-conjectures/manifest.json",
+      "sha256": "8892a94a820bb2a14a506154a4e5ac3588a7b05854496ea8e7183b0431a2672a"
+    },
+    {
+      "path": "docs/evidence/algebra-device-conjectures/result.json",
+      "sha256": "a7575c1822ec7b7ec8c60cf7c81c9e604a01ae7e1960baa066d5bae1cb1a1b0d"
+    },
+    {
+      "path": "docs/state/hypercomplex-libraries/libraries.json",
+      "sha256": "e9b6c683651224c96d79583f28de2d9973f4f9ccdafb515d7f9535bba3fbd866"
+    },
+    {
+      "path": "ci/gates.json",
+      "sha256": "f9ec53217fd101cae64ed37cbd56828b0b131e7cc3061c50d14c2ea24d2c20c8"
+    },
+    {
+      "path": "ci/full_gate_inputs.json",
+      "sha256": "c93266c870458fdf18892bf34e1ad4c8cffd2db7075f4c37b57b016f3a81ba6e"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "14ee36b6f1f748191cd08f3f85ddb3b248aea27a696b97dae2b7951c60c491d7"
+    }
+  ],
+  "observed_at": "2026-10-23T21:23:49.669976+00:00",
+  "predecessor": {
+    "ref": "docs/evidence/algebra-device-conjectures/focused-validation-split-gates.json",
+    "sha256": "fd20caf9cc2824cc01809e835eb2ddba4242e14bfd8607f44de03924828f9b95"
+  },
+  "python": "3.14.7",
+  "schema": "algebra-device-focused-validation-v1"
+}
