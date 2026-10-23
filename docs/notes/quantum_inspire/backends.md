@@ -168,7 +168,7 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   preserves unchanged-circuit compilation rows and includes 68 BDSC Pauli circuits (27 Tuna-17,
   41 QX twin) and the 832 pause-ladder ZZ-map successor circuits, for 4,511 current
   cases. Rebuilt paths receive rows bound to their new circuit bytes; the
-  historical records retain their original rows. Gate `core-record-check-05` (`tests/test_cli_record_checks.py`) checks the complete
+  historical records retain their original rows. Gate `core-368` checks the complete
   current case set through `scripts/qi_toolchain_check.py` and regenerates
   the successor under the pinned local QI
   interpreter. The original record keeps its bytes; compilation proves source

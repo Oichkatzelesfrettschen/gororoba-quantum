@@ -15,7 +15,7 @@ that produced the service-retrieval comparison; the snapshot is data rather than
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
 named files and the pinned Qiskit/runtime versions bound the replay; the provenance does not claim a complete
-transitive import closure. Both earlier comparisons retain their recorded bytes. Gate `core-record-check-05` (`tests/test_cli_record_checks.py`) checks the
+transitive import closure. Both earlier comparisons retain their recorded bytes. Gate `core-281` checks the
 complete successor and its predecessor chain on the historical `qiskit-2.5` replay runtime.
 
 Replay from the repository root with the interpreter qualified against `ci/requirements-replay.txt`:

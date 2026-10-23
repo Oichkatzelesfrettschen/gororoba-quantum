@@ -986,6 +986,11 @@
    "cpu_seconds": 37.19,
    "workers": 1
   },
+  "core-281": {
+   "wall_seconds": 2.75,
+   "cpu_seconds": 2.69,
+   "workers": 1
+  },
   "core-282": {
    "wall_seconds": 31.16,
    "cpu_seconds": 30.97,
@@ -1234,6 +1239,11 @@
   "core-364": {
    "wall_seconds": 6.11,
    "cpu_seconds": 6.01,
+   "workers": 1
+  },
+  "core-368": {
+   "wall_seconds": 0.63,
+   "cpu_seconds": 0.58,
    "workers": 1
   },
   "core-369": {

@@ -216,7 +216,7 @@ core-331 (`--replay` of every retained analysis.json), core-348 and core-330
 the coupler map, its QX dry run and the spectator split), core-362
 (`qi_readout_ringdown_cases.py` case regeneration with the post-readout
 tail and excitation conformance), core-369 (the replay of its QX dry-run
-analyses), `core-record-check-05` (`qi_toolchain_check.py --check`: the libqasm and
+analyses), core-368 (`qi_toolchain_check.py --check`: the libqasm and
 OpenSquirrel record names every current case circuit at its sha256, and
 under the stack the record regenerates byte for byte), core-527 and core-423
 (`box_kite_qx_sweep.py --replay --live N`: the sweep records replay, and

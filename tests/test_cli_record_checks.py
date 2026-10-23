@@ -8,7 +8,10 @@ or an integer 0 passes, and any other value or SystemExit code fails, as it fail
 A check stays on its own gate in ci/gates.json when a claim in docs/state/research_state.json cites
 that gate, when a script or a retained file names the gate (scripts/research_state.py --check, core-270;
 scripts/n21_exact_model_validation.py --check, core-485, named in retained case addenda), when it
-belongs to the sources suite, or when its command carries more than one script invocation.
+belongs to the sources suite, when its command carries more than one script invocation, or when its gate
+declares a runtime or a requirement (scripts/compare_submitted_circuits.py --check, core-281, recomputes QPY
+digests under the historical qiskit-2.5 runtime; scripts/qi_toolchain_check.py --check, core-368, needs the
+Quantum Inspire stack that `--requires qi` selects).
 scripts/aer_blocking_probe.py keeps its gates for the reason tests/test_cli_self_tests.py states.
 
 Each row names a group, and gate ``core-record-check-NN`` of ci/gates.json runs group NN alone with
@@ -58,16 +61,10 @@ RECORD_CHECKS = (
         "--check results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config/output/output/aer_gpu_probe.json"
         " --workloads toy,width --widths 7,10 --compare-counts"
         " results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json",
-        4,
+        3,
     ),
     ("scripts/cd_two_blade_blocks.py", ".", "--check docs/evidence/box_kite_census/two_blade_blocks.json", 5),
     ("scripts/bdsc_diagnostic.py", ".", "--check", 5),
-    (
-        "scripts/compare_submitted_circuits.py",
-        ".",
-        "--check --out docs/evidence/submitted_circuits/comparison-pooled-validation.json",
-        5,
-    ),
     ("scripts/cd_star_lattice.py", ".", "--check docs/evidence/cd-star-lattice/census.json", 5),
     ("scripts/box_kite_follow_design.py", ".", "--check docs/evidence/box_kite_follow_design/design.json", 5),
     ("scripts/bdsc_ascella_control.py", ".", "--check", 5),
@@ -81,7 +78,6 @@ RECORD_CHECKS = (
         " results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json",
         5,
     ),
-    ("scripts/qi_toolchain_check.py", ".", "--check", 5),
     ("scripts/capture_qi_docs.py", ".", "--check", 5),
     ("scripts/capture_qd_docs.py", ".", "--check", 5),
     ("scripts/qi_crosstalk_teleport_cases.py", ".", "--check results/quantum_inspire/cases", 5),

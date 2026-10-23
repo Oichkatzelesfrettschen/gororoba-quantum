@@ -120,7 +120,7 @@ sweep on the 84/84 pairs, and the CCZ normal form as a fidelity test of the
   their expected circuit in order, and every job's item count equals its
   audited `pub_count`, so no job carried client-side twirling and the
   service received exactly the circuits each record holds
-  (`docs/evidence/submitted_circuits/comparison.json`, gate `core-record-check-05` (`tests/test_cli_record_checks.py`)
+  (`docs/evidence/submitted_circuits/comparison.json`, gate core-281
   rechecks it offline). What the control electronics did with those
   circuits stays outside any record.
 - **VLF transmitter outages.** A calendar comparison of transmitter

@@ -295,7 +295,8 @@ tests/test_cli_record_checks.py call scripts' `--self-test` and `--check`
 modes in process through each script's `main`, in groups that gates
 `core-self-test-NN` and `core-record-check-NN` run one each
 (tests/ci/test_self_test_gates.py); a check a research-state claim cites, or
-whose gate name a script or retained file carries, keeps its own gate. A test exercises a contract on a small fixed input
+whose gate name a script or retained file carries, or whose gate declares a
+`runtime` or `requires`, keeps its own gate. A test exercises a contract on a small fixed input
 and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
 only the pinned xdist plugin loads, and a run writes nothing inside the
 checkout. tests/conftest.py sizes the pool by `parallel.workers()` and runs

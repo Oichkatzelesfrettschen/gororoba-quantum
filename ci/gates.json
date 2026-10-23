@@ -1822,7 +1822,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group03",
    "name": "core-record-check-03",
-   "seconds": 16.5,
+   "seconds": 21.8,
    "tier": "pr"
   },
   {
@@ -1830,7 +1830,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group04",
    "name": "core-record-check-04",
-   "seconds": 31.7,
+   "seconds": 26.4,
    "tier": "pr"
   },
   {
@@ -1838,7 +1838,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group05",
    "name": "core-record-check-05",
-   "seconds": 23.0,
+   "seconds": 19.6,
    "tier": "pr"
   },
   {
@@ -2175,6 +2175,15 @@
    "name": "core-293",
    "seconds": 1.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-pooled-validation.json",
+   "name": "core-281",
+   "seconds": 6.2,
+   "tier": "pr",
+   "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
@@ -2618,6 +2627,17 @@
    "name": "core-362",
    "seconds": 24.8,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_toolchain_check.py --check",
+   "name": "core-368",
+   "seconds": 0.1,
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ]
   },
   {
    "suite": "core",

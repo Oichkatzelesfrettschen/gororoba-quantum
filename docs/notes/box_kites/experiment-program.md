@@ -782,7 +782,7 @@ one-queued-batch caps), `qi_zero_divisor_cases.py` (`header`,
 `readout_circuits`, `catalogue_backends`, `EXCLUDED_QUBITS`, `TUNA17`),
 `select_lcu.sparse_pair_prep`, `scripts/check_qi_platform_retention.py`
 (every generated batch through submit's checks), the toolchain record of
-`scripts/qi_toolchain_check.py` (gate `core-record-check-05`; every box-kite Tuna circuit
+`scripts/qi_toolchain_check.py` (gate core-368; every box-kite Tuna circuit
 keeps its gate sequence, CZ count included, through the Tuna decomposition
 passes), and the research-state registration of retained runs.
 
