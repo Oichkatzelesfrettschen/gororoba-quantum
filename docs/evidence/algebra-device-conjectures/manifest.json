@@ -6764,7 +6764,7 @@
   "base_commit": "691853bd8549ff2eea00f39a4a03f80493908c76",
   "census": {
     "path": "docs/evidence/algebra-device-conjectures/census.json",
-    "sha256": "19bd229bb8a032b99c953fa3096764c8c840879b01a66daa74b9a75f30a67959"
+    "sha256": "fa751e7c7f537c4db4cc02d42f819281eeeb058552cf6c7523363d9800946c1a"
   },
   "claims": [
     {
@@ -12871,7 +12871,7 @@
     },
     {
       "path": "scripts/algebra_conjecture_circuits.py",
-      "sha256": "285b7c35d16900f5fedcfa94e718ade8bc7a87e41f9f4932d0a04573b7fbc163"
+      "sha256": "ba8eedcd05d922f0bcc2a45a864fbba2b3a3f803fe78cc0c22acc90ea7311247"
     },
     {
       "path": "scripts/iqm_probe_audit.py",

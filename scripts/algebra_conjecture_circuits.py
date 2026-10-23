@@ -28,18 +28,19 @@ from designs import design_c_associator_spectrum, lcu_witness  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 
-def bank() -> list[dict[str, Any]]:
-    cases = []
-    for name, phase, probability in (("dark", math.pi, 0.0), ("bright", 0.0, 1.0), ("quadrature", math.pi / 2, 0.5)):
-        cases.append(
-            {
-                "name": f"sector-{name}",
-                "family": "sector",
-                "circuit": lcu_witness((1, 10), (4, 15), phase),
-                "expected": {"0": probability, "1": 1 - probability},
-            }
-        )
-    for commuting in (True, False):
+def _build_case(task: tuple[str, Any]) -> dict[str, Any]:
+    """Construct one independent logical instrument before its conformance check."""
+    kind, parameter = task
+    if kind == "sector":
+        name, phase, probability = parameter
+        return {
+            "name": f"sector-{name}",
+            "family": "sector",
+            "circuit": lcu_witness((1, 10), (4, 15), phase),
+            "expected": {"0": probability, "1": 1 - probability},
+        }
+    if kind == "order":
+        commuting = parameter
         circuit = QuantumCircuit(2, 1)
         circuit.h(0)
         circuit.x(0)
@@ -50,42 +51,44 @@ def bank() -> list[dict[str, Any]]:
         circuit.cx(0, 1)
         circuit.h(0)
         circuit.measure(0, 0)
-        cases.append(
-            {
-                "name": "order-commuting" if commuting else "order-anticommuting",
-                "family": "order",
-                "circuit": circuit,
-                "expected": {"0": float(commuting), "1": float(not commuting)},
-            }
-        )
-    dephased = QuantumCircuit(2, 2)
-    dephased.h(0)
-    dephased.measure(0, 1)
-    dephased.x(0)
-    dephased.cx(0, 1)
-    dephased.cz(0, 1)
-    dephased.x(0)
-    dephased.cz(0, 1)
-    dephased.cx(0, 1)
-    dephased.h(0)
-    dephased.measure(0, 0)
-    cases.append(
-        {
+        return {
+            "name": "order-commuting" if commuting else "order-anticommuting",
+            "family": "order",
+            "circuit": circuit,
+            "expected": {"0": float(commuting), "1": float(not commuting)},
+        }
+    if kind == "dephased":
+        dephased = QuantumCircuit(2, 2)
+        dephased.h(0)
+        dephased.measure(0, 1)
+        dephased.x(0)
+        dephased.cx(0, 1)
+        dephased.cz(0, 1)
+        dephased.x(0)
+        dephased.cz(0, 1)
+        dephased.cx(0, 1)
+        dephased.h(0)
+        dephased.measure(0, 0)
+        return {
             "name": "order-dephased",
             "family": "order",
             "circuit": dephased,
             "expected": {"00": 0.25, "01": 0.25, "10": 0.25, "11": 0.25},
         }
-    )
-    for sequence in ("xz", "zx"):
+    if kind == "fixed":
+        sequence = parameter
         fixed = QuantumCircuit(1, 1)
         for gate in sequence:
             getattr(fixed, gate)(0)
         fixed.measure(0, 0)
-        cases.append(
-            {"name": f"order-fixed-{sequence}", "family": "order", "circuit": fixed, "expected": {"0": 0.0, "1": 1.0}}
-        )
-    for steps in (1, 2, 4):
+        return {
+            "name": f"order-fixed-{sequence}",
+            "family": "order",
+            "circuit": fixed,
+            "expected": {"0": 0.0, "1": 1.0},
+        }
+    if kind == "measurement":
+        steps = parameter
         circuit = QuantumCircuit(1, steps)
         for step in range(steps):
             circuit.ry(math.pi / (2 * steps), 0)
@@ -98,55 +101,42 @@ def bank() -> list[dict[str, Any]]:
                 probability *= (math.cos if previous == value else math.sin)(math.pi / (4 * steps)) ** 2
                 previous = value
             expected[format(bits, f"0{steps}b")] = probability
-        cases.append(
-            {
-                "name": f"measurement-fixed-evolution-{steps}",
-                "family": "measurement",
-                "circuit": circuit,
-                "expected": expected,
-            }
-        )
-    unmeasured = QuantumCircuit(1, 1)
-    reset = QuantumCircuit(1, 4)
-    for step in range(4):
-        unmeasured.ry(math.pi / 8, 0)
-        reset.ry(math.pi / 8, 0)
-        reset.measure(0, step)
-        reset.reset(0)
-    unmeasured.measure(0, 0)
-    cases.append(
-        {
-            "name": "measurement-unmeasured-4",
+        return {
+            "name": f"measurement-fixed-evolution-{steps}",
             "family": "measurement",
-            "circuit": unmeasured,
-            "expected": {"0": 0.5, "1": 0.5},
+            "circuit": circuit,
+            "expected": expected,
         }
-    )
-    cases.append(
-        {
-            "name": "measurement-reset-4",
-            "family": "measurement",
-            "circuit": reset,
-            "expected": {
+    if kind in ("unmeasured", "reset"):
+        circuit = QuantumCircuit(1, 4 if kind == "reset" else 1)
+        for step in range(4):
+            circuit.ry(math.pi / 8, 0)
+            if kind == "reset":
+                circuit.measure(0, step)
+                circuit.reset(0)
+        if kind == "unmeasured":
+            circuit.measure(0, 0)
+            expected = {"0": 0.5, "1": 0.5}
+        else:
+            expected = {
                 format(bits, "04b"): math.sin(math.pi / 16) ** (2 * bits.bit_count())
                 * math.cos(math.pi / 16) ** (2 * (4 - bits.bit_count()))
                 for bits in range(16)
-            },
-        }
-    )
-    circuit = QuantumCircuit(2, 2)
-    circuit.h(0)
-    circuit.cry(2 * math.pi / 3, 0, 1)
-    circuit.measure([0, 1], [0, 1])
-    cases.append(
-        {
+            }
+        return {"name": f"measurement-{kind}-4", "family": "measurement", "circuit": circuit, "expected": expected}
+    if kind == "contraction":
+        circuit = QuantumCircuit(2, 2)
+        circuit.h(0)
+        circuit.cry(2 * math.pi / 3, 0, 1)
+        circuit.measure([0, 1], [0, 1])
+        return {
             "name": "contraction-success-failure",
             "family": "instrument",
             "circuit": circuit,
             "expected": {"00": 0.5, "01": 0.125, "10": 0.0, "11": 0.375},
         }
-    )
-    for dimension in (8, 16, 32):
+    if kind == "dimension":
+        dimension = parameter
         signs = [
             cd_sign(dimension, 1, 2)
             * cd_sign(dimension, 3, index)
@@ -161,15 +151,36 @@ def bank() -> list[dict[str, Any]]:
             ** 2
             for index in range(dimension)
         }
-        cases.append(
-            {
-                "name": f"dimension-{dimension}-associator",
-                "family": "dimension",
-                "circuit": design_c_associator_spectrum(dimension, 1, 2),
-                "expected": expected,
-            }
-        )
-    return cases
+        return {
+            "name": f"dimension-{dimension}-associator",
+            "family": "dimension",
+            "circuit": design_c_associator_spectrum(dimension, 1, 2),
+            "expected": expected,
+        }
+    raise ValueError(f"unknown logical instrument family: {kind}")
+
+
+def bank() -> list[dict[str, Any]]:
+    tasks: list[tuple[str, Any]] = [
+        ("sector", ("dark", math.pi, 0.0)),
+        ("sector", ("bright", 0.0, 1.0)),
+        ("sector", ("quadrature", math.pi / 2, 0.5)),
+        ("order", True),
+        ("order", False),
+        ("dephased", None),
+        ("fixed", "xz"),
+        ("fixed", "zx"),
+        ("measurement", 1),
+        ("measurement", 2),
+        ("measurement", 4),
+        ("unmeasured", None),
+        ("reset", None),
+        ("contraction", None),
+        ("dimension", 8),
+        ("dimension", 16),
+        ("dimension", 32),
+    ]
+    return ordered_map(_build_case, tasks, min_items=1)
 
 
 def probabilities(circuit: QuantumCircuit) -> dict[str, float]:
