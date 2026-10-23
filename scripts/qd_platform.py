@@ -1796,7 +1796,7 @@ def charged(
     one_job = jobs_before is not None and jobs_after == jobs_before + 1
     if before is not None and after is not None and same_month and after >= before and one_job:
         return round(after - before, 6)
-    # A job canceled before its start time holds no execution; every retained one left the usage total unchanged.
+    # A job canceled before its start time ran nothing and is charged nothing (bdsc-acceptance-diagnostics.md).
     # Shots read from a returned result (shots) count as execution even when the status omits them.
     status = collected.get("status") or {}
     if (

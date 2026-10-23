@@ -496,10 +496,12 @@ first collection writes `raw/result.json` before it parses the answer or reads
 the job data and usage, so a later failure leaves the scientific bytes on
 disk and a rerun completes the record. A usage report that stays unreadable
 is recorded as `usage_absent`, and the charge falls back to the billing rule.
-A job canceled before its start time is charged 0 credits: every retained
-such job (the 2026-10-21 queue test and the three canceled diagnostic block-1
-submissions of 2026-10-22) left the usage total unchanged, while the billing
-rule would read the per-job price whenever another job shares its window.
+A job canceled before its start time, with no shots in its status or its
+returned result, is charged 0 credits: every retained such job (the
+2026-10-21 queue test and the three canceled diagnostic block-1 submissions
+of 2026-10-22) left the usage total unchanged, while the billing rule would
+read the per-job price whenever another job shares its window. A canceled
+job whose result returned shots keeps the billing rule.
 
 `result_summary` keeps every entry of a partial iterated answer at its
 position: a counted iteration as a completed job would, an iteration answered
@@ -558,8 +560,9 @@ if the service reconstructs or correlates the returned counts.
   instance leaked. The provider contract leaves returned-circuit semantics
   unresolved, so identical returns show that the service reported one
   nominal model; the change belongs to the device rather than the compiler
-  only if a returned circuit describes the configuration that ran. The branch's disposition: address stationarity and
-  provider calibration before any fixed-effect confirmation.
+  only if a returned circuit describes the configuration that ran. The
+  branch's disposition: address stationarity and provider calibration before
+  any fixed-effect confirmation.
 - **Support-conditioned rerun (no branch reads it).** On selected clicks over
   on-support clicks the matched requests' changes are homogeneous about their
   class means (45.8 on 45, p 0.44), so the instance-specific part of the
