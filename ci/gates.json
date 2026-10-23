@@ -914,14 +914,6 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/check_verify_sources.py",
-   "name": "sources-125",
-   "seconds": 0.9,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/local_schur/probe.py --check",
    "name": "sources-127",
    "seconds": 2.2,
@@ -1170,14 +1162,6 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/check_compiler_gate.py",
-   "name": "sources-169",
-   "seconds": 0.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "shellcheck docs/evidence/folding_proofs/replay_rocq.sh",
    "name": "sources-171",
    "seconds": 0.1,
@@ -1399,14 +1383,6 @@
    "seconds": 38.5,
    "tier": "pr",
    "name": "sources-210"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error docs/evidence/c881_exhaustive/check_replay.py",
-   "seconds": 0.2,
-   "tier": "pr",
-   "name": "sources-212"
   },
   {
    "suite": "sources",
@@ -2684,14 +2660,6 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/check_qi_platform_retention.py",
-   "name": "core-341",
-   "seconds": 10.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_coupler_zz_map.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_coupler_zz_map.py --conformance",
    "name": "core-332",
    "seconds": 2.5,
@@ -3786,14 +3754,6 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" check_et_rows.py",
-   "name": "core-580",
-   "seconds": 9,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" check_et_campaign.py",
    "name": "core-581",
    "seconds": 7,
@@ -3894,6 +3854,46 @@
    "name": "core-591",
    "seconds": 2.4,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/timing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/reset-billing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py analyze results/iqm/runs/2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive results/iqm/runs/2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1 results/iqm/runs/2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1 --out results/iqm/reset_billing_pilot_analysis.json --replay && \"$PYTHON\" -B -W error scripts/iqm_jobs.py --self-test",
+   "name": "core-639",
+   "seconds": 0.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_sim.py --self-test",
+   "name": "core-636",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_probe.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_probe.py analyze results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak --out results/iqm/signed_kernel_probe_analysis.json --replay",
+   "name": "core-637",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_probe.py check results/iqm/cases/signed-kernel-probe",
+   "name": "core-638",
+   "seconds": 15.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_probe_audit.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_probe_audit.py --check results/iqm/signed_kernel_probe_audit.json",
+   "name": "core-640",
+   "seconds": 60.0,
+   "tier": "full"
   },
   {
    "suite": "core",

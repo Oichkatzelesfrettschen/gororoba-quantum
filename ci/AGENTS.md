@@ -289,7 +289,11 @@ and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
 only the pinned xdist plugin loads, and a run writes nothing inside the
 checkout. tests/conftest.py sizes the pool by `parallel.workers()` and runs
 each test process in one slot. A test module imports a ci/ module by bare
-name; a moved `--self-test` body leaves the module's CLI. The suite starts git
+name; a moved `--self-test` body leaves the module's CLI. A unittest suite
+that lives beside the code it checks joins `SUITES` in
+tests/test_unittest_suites.py, which runs it in place with its own directory
+on sys.path, and its single-script gate leaves ci/gates.json unless a claim in
+docs/state/research_state.json cites that gate. The suite starts git
 and child interpreters, so the gate ledger never skips it.
 
 **Gate cost.**

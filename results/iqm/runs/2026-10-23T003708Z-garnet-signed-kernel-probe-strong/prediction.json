@@ -1,0 +1,91 @@
+{
+ "arms": [
+  {
+   "law": 0.1111111111111111,
+   "predicted_z": 0.058855,
+   "t": 0.25
+  },
+  {
+   "law": -0.1111111111111111,
+   "predicted_z": -0.00034,
+   "t": -0.25
+  },
+  {
+   "law": 0.02439024390243903,
+   "predicted_z": 0.04785,
+   "t": 0.05
+  },
+  {
+   "law": -0.02439024390243903,
+   "predicted_z": 0.01024,
+   "t": -0.05
+  }
+ ],
+ "calibration_set": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
+ "chosen_seed": 2,
+ "cz": 199,
+ "model": "iqm_sim depolarizing PRX and CZ, readout errors, ALAP idle T1/T2; no coherent error, leakage or crosstalk",
+ "odd": {
+  "0.05": {
+   "even_offset": 0.029044999999999998,
+   "law": 0.02439024390243903,
+   "predicted": 0.018805
+  },
+  "0.25": {
+   "even_offset": 0.0292575,
+   "law": 0.1111111111111111,
+   "predicted": 0.0295975
+  }
+ },
+ "physical_qubits": [
+  "QB10",
+  "QB11",
+  "QB12",
+  "QB16",
+  "QB17",
+  "QB6",
+  "QB7"
+ ],
+ "transpiler_seeds": [
+  {
+   "cz": 198,
+   "seed": 0,
+   "visibility": 0.1709
+  },
+  {
+   "cz": 212,
+   "seed": 1,
+   "visibility": 0.194
+  },
+  {
+   "cz": 199,
+   "seed": 2,
+   "visibility": 0.2661
+  },
+  {
+   "cz": 200,
+   "seed": 3,
+   "visibility": 0.1837
+  },
+  {
+   "cz": 215,
+   "seed": 4,
+   "visibility": 0.1177
+  },
+  {
+   "cz": 210,
+   "seed": 5,
+   "visibility": 0.249
+  },
+  {
+   "cz": 212,
+   "seed": 6,
+   "visibility": 0.143
+  },
+  {
+   "cz": 198,
+   "seed": 7,
+   "visibility": 0.2443
+  }
+ ]
+}
