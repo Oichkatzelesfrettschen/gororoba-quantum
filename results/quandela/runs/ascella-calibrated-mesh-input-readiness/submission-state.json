@@ -1,0 +1,162 @@
+{
+ "body_sha256": "256569ba3c4a15100c0b24a49c20561ed653aa55955e8f391ac268d6fca0f9da",
+ "cases_sha256": "c7251994e223a90bfb8ea0e859d0fa0487ba198afb1d695e23db2fb9e6159378",
+ "job_id": "763c39ea-5ebc-4c75-9d97-eea4d7a6edb9",
+ "phase": "posted",
+ "platform": "qpu:ascella",
+ "receipt": {
+  "admitted_statuses": [
+   "available"
+  ],
+  "approval": "User approved the Ascella submissions under development and requested maximal capability-grounded diagnostics and a documented client-path repair. Native-compatible readiness case: one static computation of the published Ascella 12-mode calibrated architecture, 132 Rx couplers and 126 zero-valued phases; one photon on connected input 0; explicit empty mitigation; 1024 samples and 2048 shots maximum; 300-second platform limit; 1.002048-credit ceiling. Tests the compilation-guide compatible/native-circuit path versus generic-circuit requests that failed in set_pic_input. Local unitary and live architecture checks pass before submission. The native path is a diagnostic hypothesis, not an assumed repair; stop this path if the instrument error recurs.",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "256569ba3c4a15100c0b24a49c20561ed653aa55955e8f391ac268d6fca0f9da",
+  "case": "ascella-calibrated-mesh-input-readiness",
+  "cases_sha256": "c7251994e223a90bfb8ea0e859d0fa0487ba198afb1d695e23db2fb9e6159378",
+  "credit_ceiling": 1.002048,
+  "estimated_credits": 1.001024,
+  "estimated_shots": 1024,
+  "expected_seconds": 300.0,
+  "max_credits": 1.002048,
+  "max_samples": 1024,
+  "max_shots": 2048,
+  "payload_version_basis": "declared",
+  "per_job_credits": 1.0,
+  "perfs_at_plan": {
+   "Clock (MHz)": 13.33,
+   "Dark counts (detection/s)": [
+    261.0,
+    200.0,
+    205.0,
+    107.0,
+    99.0,
+    275.0,
+    171.0,
+    323.0,
+    1232.0,
+    1570.0,
+    1925.0,
+    323.0
+   ],
+   "HOM (%)": 87.36,
+   "Transmission per mode (%)": {
+    "t_in": [
+     38.21,
+     0.0,
+     25.06,
+     0.0,
+     26.71,
+     0.0,
+     28.17,
+     0.0,
+     26.11,
+     0.0,
+     27.44,
+     0.0
+    ],
+    "t_out": [
+     108.08,
+     108.57,
+     101.96,
+     109.09,
+     107.81,
+     100.33,
+     95.25,
+     99.67,
+     90.68,
+     92.42,
+     77.13,
+     88.09
+    ]
+   },
+   "Transmittance (%)": 5.27,
+   "g2 (%)": 1.9
+  },
+  "platform": "qpu:ascella",
+  "platform_at_plan": {
+   "bookable": true,
+   "description": "Ascella QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "qpu:ascella",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 89.82
+    },
+    "2026-10-16": {
+     "availability": 89.72
+    },
+    "2026-10-17": {
+     "availability": 89.79
+    },
+    "2026-10-18": {
+     "availability": 89.83
+    },
+    "2026-10-19": {
+     "availability": 89.93
+    },
+    "2026-10-20": {
+     "availability": 89.97
+    },
+    "2026-10-21": {
+     "availability": 89.4
+    },
+    "2026-10-22": {
+     "availability": 90.38
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  "schema": "qd-submission-v1",
+  "status_at_plan": {
+   "explorer": "available",
+   "processor": "available"
+  },
+  "usage_before": [
+   {
+    "total_jobs": 46,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 3,
+      "free_credits": 0.0,
+      "nb_jobs": 3,
+      "platform_name": "qpu:ascella"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1128,
+      "free_credits": 16.0,
+      "nb_jobs": 17,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1869,
+      "free_credits": 25.225500000000004,
+      "nb_jobs": 26,
+      "platform_name": "qpu:belenos"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-10-22T11:37:05+00:00",
+ "submitted_utc": "2026-10-22T11:37:08+00:00"
+}

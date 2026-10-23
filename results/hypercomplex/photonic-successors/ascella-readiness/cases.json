@@ -1,0 +1,46 @@
+{
+ "schema": "qd-hypercomplex-cases-v1",
+ "family": "ascella-readiness",
+ "job": "static-coupler",
+ "platforms": [
+  "qpu:ascella"
+ ],
+ "command": "sample_count",
+ "gate_form": "native",
+ "iterations": 1,
+ "settings": [
+  {
+   "name": "static-coupler",
+   "compilation_seed": 0
+  }
+ ],
+ "compilation_seed": 0,
+ "mitigations": [],
+ "min_detected_photons": 1,
+ "max_samples": 1024,
+ "max_shots": 2048,
+ "max_duration": 180,
+ "preregistered": {
+  "primary": "terminal completed status and positive detected sample count",
+  "ideal_probabilities": [
+   0.5,
+   0.5,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "boundary": "instrument readiness of one static payload; iterator readiness remains untested",
+  "stop": "any instrument error or zero-sample result stops further Ascella submissions"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "1cf2b0da7c208bee7ba2f1b93fa0f69dae11d78effb62e0bfcb029722df28922"
+ }
+}

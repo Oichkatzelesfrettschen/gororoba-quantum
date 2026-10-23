@@ -89,9 +89,14 @@ def target_of(calibration: iqm_sim.Calibration) -> tuple[Target, CouplingMap]:
 
 
 def relaxation(calibration: iqm_sim.Calibration) -> RelaxationNoisePass:
-    t1 = [calibration.values.get(f"characterization.model.{q}.t1_time", 1.0) for q in calibration.qubits]
+    """Idle T1/T2 on every qubit from the calibration; T2 is capped at 2 T1, the physical bound."""
+    fields = [f"characterization.model.{q}.{kind}" for q in calibration.qubits for kind in ("t1_time", "t2_time")]
+    missing = [field for field in fields if field not in calibration.values]
+    if missing:
+        raise ValueError(f"the calibration lacks valid relaxation times: {missing}")
+    t1 = [calibration.values[f"characterization.model.{q}.t1_time"] for q in calibration.qubits]
     t2 = [
-        min(calibration.values.get(f"characterization.model.{q}.t2_time", 1.0), 2 * t1[n])
+        min(calibration.values[f"characterization.model.{q}.t2_time"], 2 * t1[n])
         for n, q in enumerate(calibration.qubits)
     ]
     return RelaxationNoisePass(t1s=t1, t2s=t2, dt=1e-9, op_types=[Delay])
@@ -261,6 +266,22 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     arms: dict[float, list[int]] = {}
     runs = []
+    prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
+    # The preregistered analysis reads one Garnet run of each job of one case, compiled against the
+    # calibration set the prediction was made from; mock outcomes never enter it.
+    digests = {sha256((run_dir / "cases.json").read_bytes()) for run_dir in run_dirs}
+    if len(digests) != 1:
+        raise ValueError(f"the runs copy {len(digests)} different cases.json; one analysis reads one case")
+    names = sorted(json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job"] for run_dir in run_dirs)
+    if names != ["strong", "weak"]:
+        raise ValueError(f"the analysis reads exactly one strong and one weak run, not {names}")
+    for run_dir in run_dirs:
+        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+        compiled = json.loads((run_dir / "raw/job.json").read_bytes())["compilation"]["calibration_set_id"]
+        if submission["qc"] != QC or compiled != prediction["calibration_set"]:
+            raise ValueError(
+                f"{run_dir}: ran on {submission['qc']} against {compiled}, not {QC} against the prediction's set"
+            )
     if len({run_dir.resolve() for run_dir in run_dirs}) != len(run_dirs):
         raise ValueError("a run directory is named twice; each acquisition counts once")
     jobs = [json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job_id"] for run_dir in run_dirs]

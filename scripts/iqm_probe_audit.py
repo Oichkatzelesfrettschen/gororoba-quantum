@@ -13,7 +13,9 @@ different law under any flip of the L_e10 signs at e4 or e15.
 
 coherent response. A coherent error moves <Z> of the measured qubit at first order, while randomized
 benchmarking sees it at second order, so the calibration's depolarizing fidelities bound neither the
-even offset nor the odd part. The response is the derivative of <Z> with respect to an over-rotation
+even offset nor the odd part. noisy_response repeats the derivatives through the calibration noise
+model (exact density-matrix probabilities, each error inserted after scheduling), where every response
+shrinks unevenly. The response is the derivative of <Z> with respect to an over-rotation
 (angle times 1 + eps) or axis error of every prx on a qubit, a residual Z rotation after every CZ on a
 qubit, and a conditional-phase error of every CZ on a coupler, by central differences on the retained
 compile restricted to its seven qubits. Every odd-part derivative vanishes at t = 0, where the signed
@@ -83,6 +85,15 @@ def cancellation(u: np.ndarray, theta: float, l1: np.ndarray, l10: np.ndarray) -
     return float(math.cos(theta) ** 2 * (w @ l1 @ u) + math.sin(theta) ** 2 * (w @ l10 @ u))
 
 
+def sign_table_trial(table: tuple[np.ndarray, np.ndarray, np.ndarray]) -> tuple[bool, bool]:
+    """(signed overlap unchanged, cancellation zero removed) for one replacement sign table on the kernel."""
+    a, b, c = table
+    kernel = unit(KERNEL)
+    invariant = abs(signed_overlap(kernel, 0.05, left(1, a), left(10, b), left(2, c)) - 0.05 / 2.05) < 1e-12
+    broken = abs(cancellation(kernel, math.pi / 4, left(1, a), left(10, b))) > 1e-12
+    return invariant, broken
+
+
 def kernel_independence() -> dict[str, Any]:
     rng = np.random.default_rng(20261023)
     l1, l10, l2 = left(1), left(10), left(2)
@@ -103,12 +114,11 @@ def kernel_independence() -> dict[str, Any]:
             }
         )
     tables = [tuple(rng.choice([-1.0, 1.0], size=DIM) for _ in range(3)) for _ in range(1000)]
+    # The tables are drawn in the generator's order first, then each is evaluated in the pool.
+    trials = ordered_map(sign_table_trial, tables)
     kernel = unit(KERNEL)
-    law = 0.05 / 2.05
-    signed_invariant = sum(
-        abs(signed_overlap(kernel, 0.05, left(1, a), left(10, b), left(2, c)) - law) < 1e-12 for a, b, c in tables
-    )
-    crossing_broken = sum(abs(cancellation(kernel, math.pi / 4, left(1, a), left(10, b))) > 1e-12 for a, b, _ in tables)
+    signed_invariant = sum(invariant for invariant, _ in trials)
+    crossing_broken = sum(broken for _, broken in trials)
     single_flips = [
         q
         for q in range(DIM)
@@ -289,12 +299,95 @@ def coherent_response() -> dict[str, Any]:
     }
 
 
+NOISY_STEP = 0.01
+
+
+def noisy_z(item: tuple[list[dict[str, Any]], tuple[str, Any], float]) -> float:
+    """Exact <Z> of the measured qubit of a retained circuit under the case's calibration noise model and
+    ALAP idle relaxation (iqm_sim, iqm_signed_probe.relaxation), with one coherent error of size value.
+
+    The error enters after scheduling, so the schedule and every noise channel stay those of the
+    unperturbed circuit: prx angles scale by 1 + value (over) or phases shift by value (axis), and a
+    noiseless conditional phase (cphase) or Z rotation on both qubits (zres) follows each CZ.
+    """
+    import iqm_signed_probe as probe
+    import iqm_sim
+    from qiskit import QuantumCircuit, transpile
+    from qiskit.circuit.library import CPhaseGate, RGate, RZGate
+    from qiskit_aer import AerSimulator
+
+    instructions, (kind, where), value = item
+    calibration = iqm_sim.Calibration.from_directory(CASE / "calibration")
+    target, _ = probe.target_of(calibration)
+    circuit, _ = iqm_sim.to_qiskit({"name": "arm", "instructions": instructions}, calibration)
+    scheduled = probe.relaxation(calibration)(
+        transpile(circuit, target=target, optimization_level=0, scheduling_method="alap")
+    )
+    index = {q: n for n, q in enumerate(calibration.qubits)}
+    out = QuantumCircuit(*scheduled.qregs, *scheduled.cregs)
+    measured = None
+    for item_ in scheduled.data:
+        op, qubits = item_.operation, [scheduled.find_bit(q).index for q in item_.qubits]
+        if op.name == "measure":
+            measured = qubits[0]
+            continue
+        if op.name == "r" and kind in ("over", "axis") and qubits[0] == index[where]:
+            angle, phase = (float(x) for x in op.params)
+            op = RGate(angle * (1 + value), phase) if kind == "over" else RGate(angle, phase + value)
+        out.append(op, [out.qubits[q] for q in qubits])
+        if op.name == "cz":
+            pair = sorted(calibration.qubits[q] for q in qubits)
+            if kind == "cphase" and pair == sorted(where):
+                out.append(CPhaseGate(value), [out.qubits[q] for q in qubits])
+            if kind == "zres" and where in pair:
+                target_qubit = qubits[0] if calibration.qubits[qubits[0]] == where else qubits[1]
+                out.append(RZGate(value), [out.qubits[target_qubit]])
+    if measured is None:
+        raise ValueError("the circuit measures no qubit")
+    out.save_probabilities([measured])
+    probabilities = AerSimulator(method="density_matrix", noise_model=calibration.noise_model()).run(out).result()
+    p = probabilities.data()["probabilities"]
+    return float(p[0] - p[1])
+
+
+def noisy_response() -> dict[str, Any]:
+    """Even- and odd-part derivatives through the calibration noise model, beside the noiseless ones."""
+    arms = {
+        key: json.loads((CASE / f"circuits/{name}.json").read_text(encoding="utf-8"))["instructions"]
+        for key, name in RETAINED.items()
+    }
+    register = Register(arms[(0.25, False)])
+    errors = [
+        (kind, register.qubits[w] if isinstance(w, int) else [register.qubits[i] for i in w])
+        for kind, w in register.errors()
+    ]
+    keys = list(arms)
+    items = [(arms[key], error, sign * NOISY_STEP) for error in errors for key in keys for sign in (1, -1)]
+    values = ordered_map(noisy_z, items)
+    rows: list[dict[str, Any]] = []
+    for n, (kind, where) in enumerate(errors):
+        block = values[n * 2 * len(keys) : (n + 1) * 2 * len(keys)]
+        g = {key: (block[2 * k] - block[2 * k + 1]) / (2 * NOISY_STEP) for k, key in enumerate(keys)}
+        label = f"{kind}:{where if isinstance(where, str) else '-'.join(where)}"
+        rows.append(
+            {
+                "error": label,
+                "even": {f"{t}": round((g[(t, False)] + g[(t, True)]) / 2, 6) for t in (0.05, 0.25)},
+                "odd": {f"{t}": round((g[(t, False)] - g[(t, True)]) / 2, 6) for t in (0.05, 0.25)},
+            }
+        )
+    rows.sort(key=lambda r: -abs(r["even"]["0.05"]))
+    architecture = json.loads((CASE / "calibration/dynamic-quantum-architecture.json").read_text(encoding="utf-8"))
+    return {"step": NOISY_STEP, "calibration_set": architecture["calibration_set_id"], "derivatives": rows}
+
+
 def audit() -> dict[str, Any]:
     return {
         "schema": "iqm-signed-probe-audit-v1",
         "kernel_independence": kernel_independence(),
         "sign_cocycle": cocycle(),
         "coherent_response": coherent_response(),
+        "noisy_response": noisy_response(),
     }
 
 

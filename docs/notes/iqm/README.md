@@ -419,12 +419,14 @@ Facts a Garnet case design starts from, each with the record that carries it:
   offsets of -0.022 and -0.012 against +0.029 from the calibration-built
   depolarizing and relaxation model; its readout alone predicts +0.031
   (heralded QB7 errors 0.003 and 0.034), so the circuit moved the reading by
-  about -0.045. The device damps a coherent shift by the probe's visibility
-  (0.21) as it damps the signal, so QB11 alone would need a 2.7 +- 0.7 %
-  amplitude error, whose infidelity (about 3e-4) is of the order of QB11's
-  randomized-benchmarking infidelity (5e-4): the depolarizing model drops
-  the error's first-order effect on the reading, not an error too small to
-  see ([coherent response](../../design/iqm-garnet-signed-kernel-probe.md#adversarial-audit)).
+  about -0.045. Through the calibration noise model the even part's
+  response to each stationary coherent error is 5 to 10 % of the noiseless
+  one (QB11 over-rotation -0.43 per unit against -8.0), so QB11 alone would
+  need a 10.5 % over-rotation, three times what its randomized-benchmarking
+  infidelity allows, and all 29 error terms aligned at that bound reach
+  only 0.032: the offset lies outside the stationary coherent model, and
+  leakage read as 1, crosstalk and readout under heralding are untested
+  ([coherent response](../../design/iqm-garnet-signed-kernel-probe.md#adversarial-audit)).
   A prediction from `scripts/iqm_sim.py` therefore bounds incoherent loss
   and readout only; a case that reads a first-order observable measures the
   coherent errors of its own qubits in the same job (error-amplifying

@@ -2,6 +2,69 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-native-input-map-recheck",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-native-input-map-recheck",
+      "family": "native input-map readiness after observed calibration status",
+      "question": "Does the native-mesh single-photon readiness request execute after Ascella returns from an observed calibration status to available?"
+    },
+    {
+      "id": "qd-belenos-order-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-order-repeat-block-0",
+      "family": "photonic order matched repeats",
+      "question": "What conditional mode frequencies and matched-request changes appear across three repeats of all eight order settings?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-0",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the seventeen wave times, five free references and two representative controls in the first repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-1",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the second repeat block?"
+    },
+    {
+      "id": "qd-belenos-wave-repeat-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-wave-repeat-block-2",
+      "family": "photonic wave matched repeats",
+      "question": "What mode frequencies appear at the matched wave and control settings in the third repeat block?"
+    },
+    {
+      "id": "qd-belenos-transform-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/belenos-transform-repeat-block-0",
+      "family": "photonic Fourier matched repeats",
+      "question": "What mode frequencies and matched-request changes appear across three repeats of all eight Fourier and reference settings?"
+    },
+    {
+      "id": "qd-ascella-order-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-hypercomplex-order-pilot",
+      "family": "photonic quaternion order pilot",
+      "question": "Does the approved eight-setting order template execute and provide mesh conformance, loss and drift observations on Ascella?"
+    },
+    {
+      "id": "qd-ascella-static-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-static-input-readiness",
+      "family": "static native coupler readiness",
+      "question": "Does a static single-computation H coupler with connected source zero and twelve outputs avoid the input-port failure of template iterators?"
+    },
+    {
+      "id": "qd-ascella-calibrated-mesh-input-readiness",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-calibrated-mesh-input-readiness",
+      "family": "calibrated native mesh readiness",
+      "question": "Does a numerically bound circuit matching Ascella's published calibrated architecture execute through the documented compatible-circuit path?"
+    },
+    {
       "id": "kingston-mod15-pilot",
       "provider": "ibm",
       "run": "results/live/2026-10-11T152922.787095Z",
@@ -1551,6 +1614,63 @@
   ],
   "claims": [
     {
+      "id": "belenos-operator-repeat-counts-and-compilation-boundary",
+      "statement": "The approved five-job Belenos programme completed 120 settings with 983040 returned samples in 724 execution seconds, charged 5.081920 credits. The descriptive reported-single-photon readout excludes and retains 350 outcomes whose total reported occupation is zero or greater than one. The 120 matched-repeat pair comparisons have maximum conditional total variation 0.036181 and identical returned compiled-circuit bytes within every matched pair. Returned compiled intensity distributions differ from requested ideal distributions by at most 0.000210 total variation. The imaginary-superposition Fourier control on representative zero instead gives measured-versus-compiled total variation from 0.996336 to 0.997313 across its three repeats, while its measured-versus-preceding-compiled distance is 0.030785 to 0.034049.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Conditional frequencies given reported total occupation one, and decoded numerical metadata from these five jobs. The historical JSON's one-click label denotes that occupation-sum selection; the mixed threshold/quasi-PNR documentation does not establish a uniform physical-click model. The records establish a compilation-metadata/measurement mismatch, rather than which applied-control or result-association mechanism caused it. Fixed request ordering confounds a setting-specific response with a preceding-setting effect. The analysis supplies neither calibrated uncertainty coverage, absolute transmission, process tomography nor fundamental quaternionic-physics evidence. A newly ordered intervention requires its own approved case.",
+      "evidence": [
+        {"path": "results/hypercomplex/belenos-repeat-readout.json", "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"},
+        {"path": "results/hypercomplex/belenos-compilation-measurement-audit.json", "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"},
+        {"path": "results/hypercomplex/belenos-repeat-readout-pooled.json", "sha256": "3f5ff8f59afe020a9f84112a6a124876b6227069f08088ea08f3236b6e0f5c27"},
+        {"path": "results/hypercomplex/belenos-compilation-measurement-audit-pooled.json", "sha256": "bdc25d02692cc080a2f90a9adc1cb5062916510c13912d0123f977ffeeede3d7"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {"core-651": "replay"},
+      "acquisitions": ["qd-belenos-order-repeat", "qd-belenos-wave-repeat-0", "qd-belenos-wave-repeat-1", "qd-belenos-wave-repeat-2", "qd-belenos-transform-repeat"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-native-input-map-error-after-status-transition",
+      "statement": "A native-mesh readiness recheck after an observed Ascella calibration-to-available status transition and changed published performance figures again returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero reported credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One descriptive recheck submitted after the static readiness stopping rule had fired, without a recorded explicit override. The stopping-rule adjudication classifies this submission as a protocol deviation, rather than preregistered adherence. The observed public status transition was insufficient to restore this sampling path. The instrument's private configuration and internal worker control flow remain unobserved.",
+      "evidence": [{"path": "results/quandela/runs/ascella-native-input-map-recheck/results.json", "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"}],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-native-input-map-recheck"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-input-port-failure-across-payloads",
+      "statement": "The eight-setting order iterator, static twelve-mode H coupler and static twelve-mode calibrated native mesh each failed after one execution second with zero shots and zero samples and the same missing hardware_info.circuit_input_ports diagnostic. Their collected token-usage deltas report zero credit debit. The failures span generic iterated, generic static and architecture-compatible static requests on connected input zero.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Three sampling requests under their recorded platform snapshots. The native-mesh request followed the static readiness stopping rule without a recorded explicit override; the stopping-rule adjudication classifies it as a protocol deviation. Its result is descriptive rather than evidence of preregistered adherence. The observations reject static payload class and native-architecture compatibility as sufficient remedies on the tested paths. They provide neither measured operator probabilities nor an exhaustive statement about every command or future configuration. The deployment's instrument map and private worker implementation remain unobserved.",
+      "evidence": [
+        {"path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json", "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"},
+        {"path": "results/quandela/runs/ascella-static-input-readiness/results.json", "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"},
+        {"path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json", "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"}
+      ],
+      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "gates": {},
+      "acquisitions": ["qd-ascella-order-input-readiness", "qd-ascella-static-input-readiness", "qd-ascella-calibrated-mesh-input-readiness"],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "proposed-tuna17-zero-divisor-matched-response",
       "statement": "Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.",
       "domain": "hardware",
@@ -1623,7 +1743,7 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.",
+      "boundary": "Real basis triples under the cd_core.cd_sign convention; the moving-pair spectrum is the separate claim cd-moving-pair-walsh-proof.",
       "evidence": [
         {
           "path": "docs/evidence/cd_associator_defect_census/census.json",
@@ -1652,16 +1772,19 @@
     },
     {
       "id": "cd-moving-pair-walsh-proof",
-      "statement": "The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.",
+      "statement": "For every D = 2^n >= 16, omega(D/2+1, D/4+3, k) = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; the pair has algebraic degree n - 2, and for D >= 32 Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 (at D = 16 support 4, amplitude 1/2, nonlinearity 4).",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
-      "status": "open",
-      "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
+      "status": "established",
+      "boundary": "Theorem 5 and its corollary in the census note prove the formula from the certified associator lifting (Lemma 3) and the fixed-pair parity law (Theorem 4); the census checks the formula, both lifting steps and every spectral law from 16 to 4096. No proof assistant has checked the argument.",
       "evidence": [],
       "documents": [
         "docs/notes/topics/cd_associator_defect_census.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-212": "replay",
+        "sources-215": "replay"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -1671,7 +1794,7 @@
       ],
       "supersedes": [],
       "superseded_by": null,
-      "proof_origin": "unproved-open"
+      "proof_origin": "repository-written"
     },
     {
       "id": "singular-sector-split",
@@ -1777,12 +1900,69 @@
       "superseded_by": null
     },
     {
+      "id": "a5-stiefel-pfaffian-reduction",
+      "statement": "For pure a, b in A_4, L_(a,b)^2 is the real form of (L_a + i R_b)(L_a - i R_b) and L_a + i R_b is complex skew-symmetric, so |det L_(a,b)| = |Pf(L_a + i R_b)|^4; every A_5 Stiefel element is a zero divisor exactly when the degree-8 polynomial Pf(L_a + i R_b) vanishes on a dense subset of the Stiefel set.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof from Moreno's Theorem 2.3, which gate core-660 checks exactly on every e_i and e_i + e_j of the 30 pure coordinates (an identity of degree 2); the density step uses lower semicontinuity of rank. It reduces the A_5 question and does not decide it.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md",
+        "docs/notes/math-0512517.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Moreno math/0512517 Theorem 2.3: L_(a,b)^2 = [[A, -S], [S, A]] for pure a, b"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-stiefel-pfaffian-identity-test",
+      "statement": "At 96 seeded points of the A_5 Stiefel variety over F_p, 48 for each of the two largest primes p = 1 mod 4 below 2^61, drawn through the isotropic parametrization z = a + i b, z' = a - i b, rank(L_a + i R_b) = 14 and rank L_(a,b) = 28 modulo p, so Pf(L_a + i R_b) = 0; 16 A_6 Stiefel controls read full ranks 32 and 64 and 16 non-Stiefel A_5 controls read 16 and 32.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact modulo-p ranks at the recorded points only. By Schwartz-Zippel a Pfaffian whose restriction is nonzero modulo p vanishes at one uniform point with probability at most 26/p, so the record makes a generic counterexample improbable without proving universality; the draws are pseudorandom and a modulo-p rank bounds the rational rank from below only.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/pfaffian-identity.json",
+          "sha256": "b92e238edae9e3467680301705d2d6dbbd20c4b4af5c16588b79d99fdd56be1e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": {
+        "core-660": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "a5-stiefel-pfaffian-reduction"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-stiefel-universal",
       "statement": "Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The 32 exact points support it and prove nothing beyond themselves.",
+      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
       "evidence": [],
       "documents": [
         "docs/notes/math-0512517.md"
@@ -1793,7 +1973,9 @@
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
       ],
       "depends_on": [
-        "a5-stiefel-selected-nullity"
+        "a5-stiefel-selected-nullity",
+        "a5-stiefel-pfaffian-reduction",
+        "a5-stiefel-pfaffian-identity-test"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -3884,6 +4066,42 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-atlas-coherent-families",
+      "statement": "On the executed Fez and Kingston ripple atlas circuits at IBM's executed pulse times, six coherent error families (frame detuning, CZ conditional phase, static ZZ in the partner-in-0 and symmetric frames, SX amplitude and axis tilt) fitted one at a time to the edge fringe phase offsets of all 14 lanes leave every lane except two (Fez lane 5 with axis tilt, Kingston lane 2 with detuning and with partner-in-0 ZZ) above 1.5 times its leave-one-out noise floor under every single family, the lowest ratio per lane ranging from 1.68 to 3.70, so no single family accounts for the offsets; partner-in-0 ZZ scores below the symmetric frame on 13 of 14 lanes in the linear fit and on all 14 resimulated, by a median factor of 2.4, and is the best single family on 7 lanes (detuning on 4, axis tilt on 3), while SX amplitude beats the lane mean on none.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inferred from one run per backend; the best single family per lane is an after-the-fact selection among six, and the lane-4 ranking of the evidence README selects among eighteen models, so no family is confirmed, and a confirming test scores one named model on lanes it was not selected on. Each Kingston lane excludes two edges that span a calibration identity change. The partner-in-0 frame is physical if IBM calibrates each qubit frequency with its neighbors in |0>, which no repository source states; conditional Ramsey with the partner in |0> (proposed-conditional-ramsey-hamiltonian) measures the frame directly. On lane 4 the edge-to-edge contrast deficit stays at 2 to 2.5 times its floor under every phase-fitted model.",
+      "evidence": [
+        {
+          "path": "docs/evidence/atlas_coherent_families/result.json",
+          "sha256": "73e7ca24f89b57716316afe69945d5b0db2431aa5129ad578a0c22a9ecc21645"
+        },
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/atlas_coherent_families/README.md",
+        "docs/notes/topics/coherent-error-families-report.md"
+      ],
+      "gates": {
+        "core-329": "replay",
+        "core-661": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas",
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-atlas-frame-detuning"
+      ],
       "supersedes": [],
       "superseded_by": null
     },
@@ -7516,7 +7734,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "b6b6d2abdc744dbe969424ba196fa02dc87ded6fdacae98356a8eff35318d1bc"
+          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
         }
       ],
       "documents": [
@@ -7545,7 +7763,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "b6b6d2abdc744dbe969424ba196fa02dc87ded6fdacae98356a8eff35318d1bc"
+          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
         }
       ],
       "documents": [
@@ -7563,15 +7781,15 @@
     },
     {
       "id": "iqm-garnet-signed-probe-coherent-response",
-      "statement": "On the retained Garnet compile of the signed kernel probe (transpiler seed 2, 199 CZ on seven qubits), the first-order response of the measured <Z> on QB7 to coherent gate errors (prx over-rotation and axis error per qubit, residual Z after each CZ per qubit, CZ conditional phase per coupler) vanishes in the odd part at t = 0 for every error and grows with the signed amplitude sqrt(|t|/(2 + |t|)), not with t: the QB6 over-rotation coefficient per unit amplitude is -7.1, -6.9 and -6.2 at |t| = 0.01, 0.05 and 0.25. The even part responds at first order, led by QB11 over-rotation (-8.0 per unit relative over-rotation at |t| = 0.05), residual Z on QB11 (-1.56) and QB12 over-rotation (+1.15), so, with the device damping a coherent shift by the probe's visibility of 0.21, QB11 alone would need a 2.7 +- 0.7 % amplitude error to move the even part by the measured -0.045, an error whose infidelity (about 3e-4) is of the order of QB11's randomized-benchmarking infidelity (5e-4).",
+      "statement": "On the retained Garnet compile of the signed kernel probe (transpiler seed 2, 199 CZ on seven qubits), the first-order response of the measured <Z> on QB7 to coherent gate errors (prx over-rotation and axis error per qubit, residual Z after each CZ per qubit, CZ conditional phase per coupler) vanishes in the odd part at t = 0 for every error and grows with the signed amplitude sqrt(|t|/(2 + |t|)), not with t: the QB6 over-rotation coefficient per unit amplitude is -7.1, -6.9 and -6.2 at |t| = 0.01, 0.05 and 0.25. The even part responds at first order, led by QB11 over-rotation (-8.0 per unit relative over-rotation at |t| = 0.05), residual Z on QB11 (-1.56) and QB12 over-rotation (+1.15), Through the calibration noise model (exact density-matrix probabilities, each error inserted after scheduling) every response shrinks to 5 to 10 % of its noiseless size, unevenly (QB11 over-rotation -0.43, QB12 over-rotation +0.002): QB11 alone would need a 10.5 % over-rotation, three times the 3.5 % its randomized-benchmarking infidelity allows, and all 29 terms aligned at that bound move the even part by at most 0.032, short of the measured circuit-level -0.045.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
-      "boundary": "First-order derivatives of the ideal compiled circuit under a stationary error model (one relative over-rotation and one axis error per qubit, one residual Z per qubit after CZ, one conditional phase per coupler); angle-dependent or time-dependent coherent errors lie outside it. The device's coherent error magnitudes are unmeasured, so attributing the measured even offsets to QB11 over-rotation is a candidate mechanism, not a fit. Amplitude damping, leakage and readout lie outside the model.",
+      "boundary": "First-order derivatives of the compiled circuit, noiseless and through the calibration noise model, under a stationary error model (one relative over-rotation and one axis error per qubit, one residual Z per qubit after CZ, one conditional phase per coupler); angle-dependent, time-dependent and crosstalk errors and leakage lie outside it, and the noisy derivatives inherit the calibration model, whose even part the device contradicts. The device's coherent error magnitudes are unmeasured.",
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "b6b6d2abdc744dbe969424ba196fa02dc87ded6fdacae98356a8eff35318d1bc"
+          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
         }
       ],
       "documents": [

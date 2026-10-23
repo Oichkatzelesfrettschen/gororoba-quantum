@@ -1,0 +1,154 @@
+{
+ "admitted_statuses": [
+  "available"
+ ],
+ "approval": "User approved Ascella order pilot only: one job, eight settings, 8192 detected samples and 16384 shots per setting maximum; 65536 samples and 131072 shots total; 180-second cap; 1.016384-credit ceiling under recorded tariff. Manifest SHA-256 1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa. Measures device photonic mesh conformance, loss and drift beyond local simulation. User instructed cancellation of queued Belenos jobs and execution on functional platform. Wave and transform jobs remain separate.",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "6ef2f85dd17dff09262766e03e2871dbd781d5ec3b1cae01c92c6be2b355dd05",
+ "case": "ascella-hypercomplex-order-pilot",
+ "cases_sha256": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
+ "credit_ceiling": 1.016384,
+ "estimated_credits": 1.016384,
+ "estimated_shots": 65536,
+ "expected_seconds": 180.0,
+ "job_id": "e6f2cc2d-e4f8-4b78-ad4a-d16dbf8e9f95",
+ "max_credits": 1.016384,
+ "max_samples": 65536,
+ "max_shots": 131072,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   261.0,
+   200.0,
+   205.0,
+   107.0,
+   99.0,
+   275.0,
+   171.0,
+   323.0,
+   1232.0,
+   1570.0,
+   1925.0,
+   323.0
+  ],
+  "HOM (%)": 87.36,
+  "Transmission per mode (%)": {
+   "t_in": [
+    38.21,
+    0.0,
+    25.06,
+    0.0,
+    26.71,
+    0.0,
+    28.17,
+    0.0,
+    26.11,
+    0.0,
+    27.44,
+    0.0
+   ],
+   "t_out": [
+    108.08,
+    108.57,
+    101.96,
+    109.09,
+    107.81,
+    100.33,
+    95.25,
+    99.67,
+    90.68,
+    92.42,
+    77.13,
+    88.09
+   ]
+  },
+  "Transmittance (%)": 5.27,
+  "g2 (%)": 1.9
+ },
+ "platform": "qpu:ascella",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Ascella QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "qpu:ascella",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-15": {
+    "availability": 89.82
+   },
+   "2026-10-16": {
+    "availability": 89.72
+   },
+   "2026-10-17": {
+    "availability": 89.79
+   },
+   "2026-10-18": {
+    "availability": 89.83
+   },
+   "2026-10-19": {
+    "availability": 89.93
+   },
+   "2026-10-20": {
+    "availability": 89.97
+   },
+   "2026-10-21": {
+    "availability": 89.4
+   },
+   "2026-10-22": {
+    "availability": 90.06
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "submitted_utc": "2026-10-22T11:16:40+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 43,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 1,
+     "free_credits": 0.0,
+     "nb_jobs": 1,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1869,
+     "free_credits": 25.225500000000004,
+     "nb_jobs": 25,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}
