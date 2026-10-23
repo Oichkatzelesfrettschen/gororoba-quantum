@@ -6761,10 +6761,10 @@
     "ci/requirements-ci.txt",
     "docs/notes/papers/operational-instrument-sources.md"
   ],
-  "base_commit": "057b7e633e6f9ca376328e6c016f964fbdac9b7b",
+  "base_commit": "bbc6759b83e885a5b20cb361aa1aea9861f2d942",
   "census": {
     "path": "docs/evidence/algebra-device-conjectures/census.json",
-    "sha256": "4c3333e66a5d9fb6d04249a65918df2e64ac08da6f47062a3ad3a5bc29e0eb3f"
+    "sha256": "6649222c99df89e1670d3e3d197b41a869b559c98ed198e51ed60783483e7c80"
   },
   "claims": [
     {
@@ -7178,6 +7178,10 @@
       "domain": "hardware",
       "evidence": [
         {
+          "path": "results/iqm/kernel_cancellation_probe_analysis-runner-image.json",
+          "sha256": "7ba917bf5b1284d9a0137a585a7f670eab3356932ffdd8823fe411ac4413cd62"
+        },
+        {
           "path": "results/iqm/kernel_cancellation_probe_analysis.json",
           "sha256": "945eda504ac3df592c37aeb8e5aa58da0f587efa511789de4a5f2f4c69527517"
         },
@@ -7295,7 +7299,7 @@
       "sampling_unit": "acquisition"
     },
     {
-      "boundary": "One compile and calibration. Bright is measured at 0.1 only; the larger-angle bright artifact is unmeasured. Angles and reset/heralding differ from Tuna.",
+      "boundary": "Deterministic runner-image reanalysis of the same raw acquisition; the historical report remains pinned. One compile and calibration. Bright is measured at 0.1 only; the larger-angle bright artifact is unmeasured. Angles and reset/heralding differ from Tuna.",
       "claim": "iqm-garnet-kernel-cancellation",
       "fields": [
         "contrasts",
@@ -7304,7 +7308,7 @@
         "h3_sine_law",
         "falsified_hypotheses"
       ],
-      "path": "results/iqm/kernel_cancellation_probe_analysis.json",
+      "path": "results/iqm/kernel_cancellation_probe_analysis-runner-image.json",
       "register_semantics": "provider-analyzer",
       "sampling_unit": "acquisition"
     },
@@ -7599,7 +7603,7 @@
     },
     {
       "path": "docs/design/iqm-garnet-kernel-cancellation-probe.md",
-      "sha256": "4b1fd70bd550c034c62685e92b4e705fa9995ee40e3a12d744c287c29678be6c"
+      "sha256": "cb11b8b707c5d7ed8a1a5deb4142a2b9d06e63c8ec32fa4c7bf2b961c3b7ba20"
     },
     {
       "path": "docs/design/iqm-garnet-signed-kernel-probe.md",
@@ -7679,7 +7683,7 @@
     },
     {
       "path": "docs/notes/topics/algebra-hardware-probe-principles.md",
-      "sha256": "bddcab766ad67139832514390c80905b122eb68c911c8d0b9847e9dba2f2b6a9"
+      "sha256": "ac4d8a300b75b78462803188562c8af6fe3559a1fcfd03e8da42485d31a16bb1"
     },
     {
       "path": "docs/notes/topics/c5-zero-divisor-code-falsification.md",
@@ -7720,6 +7724,10 @@
     {
       "path": "results/iqm/cases/kernel-cancellation-probe/prediction.json",
       "sha256": "6744df0803abe8b443d705e8a23d4213607d880ecdc682973c13f8618a6b8b2b"
+    },
+    {
+      "path": "results/iqm/kernel_cancellation_probe_analysis-runner-image.json",
+      "sha256": "7ba917bf5b1284d9a0137a585a7f670eab3356932ffdd8823fe411ac4413cd62"
     },
     {
       "path": "results/iqm/kernel_cancellation_probe_analysis.json",

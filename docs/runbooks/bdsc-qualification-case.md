@@ -239,3 +239,109 @@ canceled attempt returned no outcome, so no viewed result chose the
 continuation, but the continuation lies outside the frozen protocol: the
 readout of the four completed jobs is a descriptive reading, and a
 confirmation of any of its findings runs under a new amendment.
+
+## Amendment of 2026-10-23: a stationarity case under a frozen stray-detector veto
+
+The [stray-mode veto](../notes/quandela/bdsc-acceptance-diagnostics.md#stray-mode-veto-exploratory)
+places the diagnostic's instance-specific block change in output mode 5. That
+mode lies outside every selection and target support, and its plan-time
+dark-count rate is the largest of any mode. The veto was chosen after the
+outcomes were seen. This amendment freezes it, and its case tests it on new
+acquisitions
+([design](../design/bdsc-qualification.md#stationarity-under-a-stray-detector-veto)).
+It is written and committed before any job of that case is sent.
+
+**The held second-epoch jobs are retired.** The three jobs held since epoch
+1 are target-complement with an empty mitigation list (`tc-none-e2`) and
+middle-middle under both policies (`mm-def-e2`, `mm-none-e2`).
+
+- Their role as confirmation evidence lapsed with the suspended design.
+- Their one-compilation-per-setting requests carry neither the veto nor
+  matched seeds.
+- A confirmation is planned after the stationarity readout, as its own case,
+  and it reuses none of them.
+
+**The case.** It resubmits the diagnostic's four frozen requests exactly, in
+two blocks of two jobs. The requests keep the compilation seeds, parameters,
+groups and drawn order of the committed manifests under
+`results/quandela/cases/bdsc_diagnostic/`, so no new QRNG read is made.
+
+| Block | Job 1 requests | Job 2 requests | Timing |
+|---|---|---|---|
+| S1 | `b1-j1` | `b1-j2` | first |
+| S2 | `b2-j1` | `b2-j2` | first execution starts at least one hour after S1's last execution ends |
+
+Each block runs every (template, seed) group once, and a group that runs as
+job 1 in S1 runs as job 2 in S2. A job-slot effect that is additive and the
+same for every group cancels in the common superposition shift. The
+group-by-block contrast confounds a slot effect with a group-specific change
+between the windows, and the design reports it as confounded.
+
+**Readout.** It reads every test on two eligible sets:
+
+- *Primary:* detector 5 removed from every pattern before the one-click
+  rule.
+- *Secondary:* mode-5 one-click samples subtracted from the eligible count.
+
+The primary falsifier, the coincidence test with its conditional calibration,
+the common-shift reading and the reported-only quantities are the design's.
+
+### Order of the stationarity case
+
+1. **Build.** The case builder, `scripts/bdsc_stationarity.py`, follows this
+   amendment and builds the four run directories under
+   `results/quandela/cases/bdsc_stationarity/` from the diagnostic
+   manifests. Each binds its source manifest's sha256 and the diagnostic's
+   QRNG record. `--check` proves every request equals its source: seeds,
+   parameters, order and the empty mitigation list.
+2. **Plan.** `qd_platform.py plan` passes on each directory for qpu:belenos
+   with `--admit-status running`. The receipt's `perfs_at_plan` holds a
+   dark-count rate for each of the 24 modes, and mode 5 reads above every one
+   of the other 23.
+3. **Written case.** It restates the plan output: about 1.08 credits and
+   176 s per job, 4.32 credits and about 705 s in all. It also states the
+   stop conditions below and the reading of each outcome. Wait for
+   approval. No QRNG read is part of it.
+4. **Submission and checks.** Submit and collect each job in the order of
+   the table. After each collection, and before the next submission:
+   - confirm the diagnostic's integrity checks: the empty policy in the
+     retained body, an integer BSCount, 40000 samples per iteration, a
+     returned compiled circuit and a positive `physical_perf`;
+   - run the matched check against the retained diagnostic job of the same
+     requests, which requires every returned-circuit hash to equal its
+     counterpart's;
+   - record a fresh platform read of the dark-count rates beside the
+     collected run.
+5. **Readout.** `scripts/bdsc_stationarity.py --readout RUN_DIR...` reads
+   the four runs. The runs enter `docs/state/research_state.json` with their
+   claim.
+
+### Stop conditions of the stationarity case
+
+Execution stops, and the remaining jobs stay unsent, when any of these holds:
+
+- `qd_platform.py plan` refuses the platform;
+- any of the other 23 modes, selected or on-support included, reads a
+  plan-time dark-count rate at or above mode 5's;
+- a retained job body differs from the empty mitigation list, or a result
+  is not an integer BSCount;
+- a job fails, an iteration returns fewer than 40000 samples, or the
+  one-click rule (before the veto) excludes more than 0.01 of an
+  iteration's samples;
+- an iteration returns no compiled circuit or no positive `physical_perf`;
+- a returned-circuit hash differs from its retained counterpart;
+- S2 would start within one hour of S1's last execution end;
+- a scheduled maintenance window overlaps the span from S1's first
+  execution to S2's last;
+- spent credits or seconds reach the approved ceiling.
+
+**Resubmission rule.** It closes the gap the protocol deviation of
+2026-10-23 went through.
+
+- A job that ends canceled before its start time with 0 samples is
+  resubmitted once, unchanged, under this amendment, and its run directory
+  records the canceled attempt.
+- A second cancellation of the same job stops the case.
+- So does any job that started and then failed, and any cancellation the
+  case did not order.
+- A resubmission keeps every timing rule above.

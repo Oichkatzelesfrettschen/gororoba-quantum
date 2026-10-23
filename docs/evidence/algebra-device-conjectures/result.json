@@ -6853,7 +6853,7 @@
       "sampling_unit": "acquisition"
     },
     {
-      "boundary": "One compile and calibration. Bright is measured at 0.1 only; the larger-angle bright artifact is unmeasured. Angles and reset/heralding differ from Tuna.",
+      "boundary": "Deterministic runner-image reanalysis of the same raw acquisition; the historical report remains pinned. One compile and calibration. Bright is measured at 0.1 only; the larger-angle bright artifact is unmeasured. Angles and reset/heralding differ from Tuna.",
       "claim": "iqm-garnet-kernel-cancellation",
       "fields": [
         "contrasts",
@@ -6862,7 +6862,7 @@
         "h3_sine_law",
         "falsified_hypotheses"
       ],
-      "path": "results/iqm/kernel_cancellation_probe_analysis.json",
+      "path": "results/iqm/kernel_cancellation_probe_analysis-runner-image.json",
       "register_semantics": "provider-analyzer",
       "retained_values": {
         "contrasts": {
@@ -6906,9 +6906,9 @@
           "0.3": "resolved"
         },
         "h2_bright_control": {
-          "expected_odd": -0.008109374681222794,
+          "expected_odd": -0.008109374681218065,
           "falsified": false,
-          "z": -0.915775466086718
+          "z": -0.9157754660872586
         },
         "h3_sine_law": {
           "contrast": 0.020611769786599038,
@@ -8254,8 +8254,8 @@
       ]
     }
   },
-  "frozen_base": "057b7e633e6f9ca376328e6c016f964fbdac9b7b",
-  "manifest_sha256": "c74ea814d1954ef876704de9c66a24fcb173d8fccccad40d70c49544ed6a6c31",
+  "frozen_base": "bbc6759b83e885a5b20cb361aa1aea9861f2d942",
+  "manifest_sha256": "311d60146259cfc18f2f8a70a1e861da00d791de67241f3fea4f76022bd95758",
   "producer_sha256": "a6a3ec23fecb730f373ce445b327bfe6f6c368ebf03f3f8b79849e44d187fa47",
   "proposals": [
     {

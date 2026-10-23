@@ -3650,7 +3650,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/kernel_cancellation.py --check && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py analyze results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation --out results/iqm/kernel_cancellation_probe_analysis.json --replay",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/kernel_cancellation.py --check && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py analyze results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation --out results/iqm/kernel_cancellation_probe_analysis-runner-image.json --replay",
    "name": "core-641",
    "seconds": 30.0,
    "tier": "pr"
@@ -3722,7 +3722,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --readout results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1 results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2 results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1 results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2 | cmp - results/quandela/bdsc_diagnostic_readout.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --readout results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1 results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2 results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1 results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2 | cmp - results/quandela/bdsc_diagnostic_readout-runner-image.json",
    "name": "core-647",
    "seconds": 15.0,
    "tier": "pr"
@@ -3857,6 +3857,14 @@
    "name": "core-666",
    "seconds": 90.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
+   "name": "core-667",
+   "seconds": 15.0,
+   "tier": "pr"
   },
   {
    "suite": "core",

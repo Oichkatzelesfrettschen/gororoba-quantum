@@ -416,6 +416,164 @@ access mode. A confirmation sample count is frozen only after that, and it
 is planned over the number of independent compilations as well as trials
 per compilation.
 
+The diagnostic selected the stationarity branch, and the
+[stationarity case](#stationarity-under-a-stray-detector-veto) below is the
+next acquisition.
+
+## Stationarity under a stray-detector veto
+
+The crossed diagnostic selected the stationarity branch on its raw one-click
+fractions. Its exploratory reanalysis, `scripts/bdsc_stray_mode_veto.py`
+([readout](../../results/quandela/bdsc_stray_mode_veto.json), claim
+`qd-belenos-bdsc-stray-mode-veto`), places that change in one detector.
+Output mode 5 lies outside every selection and every target support of the
+case. Its dark-count rate in each run's receipt (`perfs_at_plan`) is the
+largest of any mode: 3137.7 per second before block 1 and 1847.5 before
+block 2, while every other mode read at most 80.9.
+
+- **Matched block changes.** Across the 48 matched instances, the mode-5
+  share of one-click samples changed by -0.0069 with an SD of 0.0119. All
+  other off-support modes together changed by +0.0002 with an SD of 0.0026.
+- **Dark-rate tracking.** The block-mean mode-5 share fell from 0.0144 to
+  0.0075. The ratio, 0.52, sits near the dark-rate ratio of 0.59.
+- **Job-level spread.** The two block-1 jobs share one plan-time reading,
+  yet their mean shares differ (0.0123 and 0.0165). A plan-time figure does
+  not resolve job-level variation.
+- **Perf-exposure diagnostic (no reading).** If acquisition time scaled as
+  1 / physical_perf, a fixed dark rate D would make the share rise with
+  D / physical_perf. [strategy.md](../notes/quandela/strategy.md) records
+  that timing model as unconfirmed, and physical_perf moves with the sample
+  budget, so these ranks are reported and decide nothing:
+  - within block 1, 0.39 (p 0.006) on 1 / physical_perf;
+  - within block 2, -0.13 (p 0.37);
+  - pooled on D / physical_perf, 0.19 (p 0.06).
+- **Veto result.** With mode 5 vetoed, the heterogeneity of the matched
+  changes about their class means falls from 553 to 58.0 on 45 degrees of
+  freedom (p 0.09).
+  - The two definitions below agree: 57.98 for subtracting mode-5 one-click
+    samples and 58.04 for removing the detector from every pattern.
+  - The g basis state's block shift reads -0.0007 (z -3.6) instead of
+    +0.0035.
+  - A common superposition shift of -0.0044 (z -7.2) remains, together with
+    the state-by-seed interaction.
+
+Contract C's loss-only identity assumes negligible dark counts, and mode 5
+violates that assumption. The veto was chosen after these outcomes were
+seen, on runs read descriptively, so it names a hypothesis that the
+stationarity case tests on new data.
+
+**The veto definition is frozen on physical grounds before new data.** A
+dark click is independent of the prepared state.
+
+- *Alone*, a dark click adds a mode-5 one-click sample to the denominator.
+  This is the additive bias.
+- *Coincident with a genuine click in mode m*, it turns that sample into a
+  two-click pattern. Every mode is thinned by the same factor, so the
+  conditional fractions stay unbiased.
+
+The estimators follow from that:
+
+- *Primary (`detector_absent`).* Detector 5 is removed from every detection
+  pattern before the one-click rule. The eligible set then does not depend
+  on mode 5's rate, and it keeps the coincident trials.
+- *Secondary (`subtract`).* Mode-5 one-click samples leave the eligible
+  count. It is reported beside the primary.
+
+**The paired falsifier of the dark-click reading** is frozen as
+`coincidence_test`. The primary eligible set is the secondary set plus the
+coincident trials: patterns with one mode-5 click beside exactly one other
+click. The two sets of trials are disjoint within each iteration.
+
+- *Statistic.* For each instance, with c coincident trials, n secondary
+  trials and pooled fraction p,
+  z = (p_c - p_s) / sqrt(p (1 - p) (1 / c + 1 / n)), where p_c and p_s are
+  the selected fractions of the two sets.
+- *Pooling.* T is the sum of z^2 over every instance with c > 0 and
+  0 < p < 1. It is one statistic, so it needs no multiplicity correction.
+- *Calibration.* Coincident counts are as small as one, so a chi-square
+  tail does not calibrate T. Under a state-independent dark click, the
+  coincident trials are an exchangeable subset of the instance's trials.
+  Conditional on each instance's margins, the coincident selected count is
+  therefore hypergeometric. The p-value is (1 + #{T* >= T}) / (1 + R) over
+  R = 100000 seeded draws of that conditional null (seed 20261023). The
+  chi-square tail is reported beside it and decides nothing.
+- *Decision.* A resolved reading (p < 0.01) means mode-5 clicks correlate
+  with the prepared state and rejects the dark-click reading.
+- *Retained data.* T reads 47.7 over 66 instances: conditional p 0.40,
+  consistent (the chi-square reference reads 0.96).
+
+The veto names mode 5 by number. The case stops unless mode 5 reads a
+plan-time dark-count rate above every one of the other 23 modes, selected
+and on-support ones included: a hotter detector would stay inside both veto
+estimators.
+
+**A two-block repeat with crossed slots.** Each (template, seed) group runs
+in one job slot per block, and the groups of block 1's job 1 run as block
+2's job 2 at matched positions (and the reverse).
+
+- *Common shift.* Half the groups move from job 1 to job 2 and half the
+  other way. A job-slot effect that adds the same amount to every group
+  therefore cancels in the class-mean shift of the superpositions, and that
+  shift reads a change between the two acquisition windows. A slot effect
+  that differs between groups does not cancel, so this reading assumes an
+  additive, group-independent slot effect.
+- *Group-by-block contrast.* No group runs in both slots within a block, so
+  the class-mean change of the groups that moved from job 1 to job 2, minus
+  that of the groups that moved the other way, is confounded: either a slot
+  effect or a group-specific change between the windows. It is reported as
+  that confounded contrast and decides nothing.
+
+The stationarity case resubmits the diagnostic's four frozen requests
+exactly, with the same seeds, parameters, groups and drawn order, so it
+needs no new QRNG read:
+
+| Block | Jobs | Timing |
+|---|---|---|
+| S1 | `b1-j1`, then `b1-j2` | first |
+| S2 | `b2-j1`, then `b2-j2` | starts at least one hour after S1's last execution ends |
+
+The case does not separate a slow drift from a step change between the two
+windows, and it makes no claim of stationarity within one window.
+
+**Preregistered falsifiers and readings,** all under the primary veto.
+A test reads resolved at p < 0.01 and consistent at p >= 0.05, as in the
+diagnostic.
+
+- **Primary.** The heterogeneity of the S1-to-S2 matched changes about their
+  class means reads consistent. A resolved reading falsifies the claim that
+  mode 5 carried the instance-specific drift.
+- **Dark-click falsifier.** `coincidence_test` on all 96 instances, as
+  defined above.
+- **Common shift.** The superposition class-mean change S1 to S2, with its
+  z, read as a window effect. Whether it repeats the retained -0.0044 in
+  sign is reported and decides nothing.
+- **Group-by-block contrast.** Reported with its z as a slot or
+  group-specific window effect, confounded by design.
+- **Reported only.**
+  - The raw block change of the mode-5 share against the change of the
+    plan-time and post-collection dark-count rates.
+  - The perf-exposure diagnostic, and the mode-5 share against each job's
+    recorded duration per sample, an acquisition exposure that does not
+    rest on the unconfirmed physical_perf timing model.
+  - The position trend of the mode-5 share in each job. Two diagnostic jobs
+    read rank correlations of -0.49 and -0.47.
+  - Whether the seed-by-state interaction reproduces at fixed seeds.
+  - Whether each returned circuit equals its retained diagnostic
+    counterpart.
+
+**Cost and limits.**
+
+- *Cost.* Four jobs at the diagnostic's billing rule (1.08 credits and about
+  176 s each) total 4.32 credits and about 705 s. The written case restates
+  the live `qd_platform.py plan` figures.
+- *Error calibration.* Standard errors stay reference values under
+  independent Bernoulli trials while the provider contract leaves count
+  provenance unresolved.
+- *Dark-rate timing.* The case records the platform's dark-count reading
+  after each collection as well as at plan time.
+- *Scope.* A consistent primary reading supports designing a veto-based
+  confirmation and certifies nothing.
+
 ## Conjecture ledger
 
 Each conjecture names the observable that tests it and what a result can and
@@ -435,6 +593,7 @@ levels and never share one "verified" label.
 | Complex controls are necessary for the error family | real bank against phase-sensitive controls | agreement on real inputs cannot exclude E_I |
 | A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
 | Per-compilation transfer response carries the superposition scatter | matched seeds across blocks and four seeds per state (diagnostic case) | a matched seed whose response shifts beyond counting puts the scatter in time, not compilation |
+| Dark clicks in output mode 5 carry the instance-specific block change | heterogeneity of S1-to-S2 matched changes with detector 5 removed (stationarity case) | a resolved reading rejects it; a resolved coincidence test rejects the dark-click reading |
 
 Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
 exploits target structure for efficiency once the trusted objects and the

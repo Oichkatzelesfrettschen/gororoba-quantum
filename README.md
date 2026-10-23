@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 21 |
-| exploratory reanalysis | exploratory | 59 |
+| exploratory reanalysis | exploratory | 60 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 4 |
 | mathematical claim | established | 18 |
