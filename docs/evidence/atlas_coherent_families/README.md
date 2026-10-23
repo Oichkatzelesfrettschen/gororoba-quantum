@@ -6,8 +6,8 @@ byte from `results/kaggle/2026-10-16T222749Z-gororoba-atlas-coherent-families`
 (gate core-334 compares the two). It fits the frame-detuning, CZ-phase,
 static-ZZ (two frames), SX-amplitude and axis-tilt families to the fringe
 phase offsets of all 14 lanes; gate core-329 recomputes lane 4 of both runs
-on CPU. The lane-4 tables below describe the gated case. The data are the
-Fez run `results/live/2026-10-13T025444.603480Z` (12 edges, qubits 50, 51,
+on CPU, and full-tier gate core-661 recomputes all 14 lanes. The lane-4
+tables below describe the core-329 case. The data are the Fez run `results/live/2026-10-13T025444.603480Z` (12 edges, qubits 50, 51,
 52, 58, 71) and the Kingston run `results/live/2026-10-15T031229.371738Z`
 (10 edges, qubits 138, 150-153; 2 edges span a calibration identity change
 and are excluded). The script docstring defines the observables, the
@@ -109,9 +109,12 @@ Leave-one-out phase RMS in rad of the lane mean and each single family
   `axis_tilt` on 3; `cz_phase` and `sx_amplitude` are never best, and
   `sx_amplitude` never beats the lane mean.
 - Two lanes reach the 1.5x-floor criterion with a single family (Fez lane 5
-  with `axis_tilt`, Kingston lane 2 with `zz`); the other twelve stay at 1.7
-  to 4.3 times their floor, so no single coherent family accounts for the
-  offsets.
+  with `axis_tilt`, Kingston lane 2 with `detuning` and with `zz`). On the
+  other twelve, every single family stays above it, the lowest ratio per lane
+  ranging from 1.68 to 3.70, so no single coherent family accounts for the
+  offsets. The ratio column above belongs to the family with the lowest
+  leave-one-out RMS, which on four lanes differs from the family with the
+  lowest ratio.
 - The selection over families is exploratory: the lowest score in a row is
   chosen after the fact.
 
