@@ -1,7 +1,7 @@
 # Local dimension of D_(5,12) at the {a, 0} witnesses: extended-precision probe
 
 `result.json` is written by `scripts/rank_locus_nullity12_refinement.py --out`
-and recomputed by `--check` (full-tier gate core-662, about 2 minutes on 12
+and recomputed by `--check` (full-tier gate core-662, 2 to 4 minutes on 12
 workers), which compares the complete record, its precision settings and
 versions included; distances and spectra are recorded at three significant
 digits.
@@ -30,14 +30,15 @@ the local dimension of the cone at x0 from above only, since several
 lower-dimensional branches through x0 can together span 16 directions; it
 excludes the family alone, whose cone spans 14.
 
-Reading: nullity-12 points off the family persist at 110 digits and
-accumulate at every witness, so the {a, 0} family is not the whole of
-D_(5,12) near x0. The falsifier was a refined distance below half its
-float64 value or a cloud span below 16; neither occurred. The record is
-numerical and certifies nothing. It leaves the unit-norm local dimension
-between 13, the family's, and 15, the tangent bound: points off the family
-exclude nothing below the bound, because they may lie on further branches
-through x0 of any dimension up to it, and the claim
+Reading: at both sampled scales, eps 0.03 and 0.003, near-rank-20 points
+off the family persist at 110 digits. The falsifier was a refined distance
+below half its float64 value or a cloud span below 16; neither occurred.
+A refined point has L_y within 1e-40 of a rank-20 matrix, and that matrix
+need not be a left multiplication: the rank-20 cone meets span{L_e} far from
+transversally, so no tolerance or error bound places an exact point of
+D_(5,12) near the refined one, and the record certifies neither membership
+nor a local dimension. It leaves the unit-norm local dimension between 13,
+the family's, and 15, the tangent bound, and the claim
 `a5-nonzero-divisor-two-dimension-gap` stays open until an exact
 parameterized piece or equations cutting out D_(5,12) near a witness decide
 it.

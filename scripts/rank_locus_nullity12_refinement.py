@@ -22,9 +22,12 @@ Falsifier, stated before the run: if D_(5,12) near x0 were the family alone, a
 refined landing point would move to the family, so a refined famdist below half
 its float64 value at any point, or a cloud span below 16, refutes the excess.
 
-The record is numerical evidence and certifies nothing: famdist and ranks come
-from floating and extended-precision arithmetic, and a certificate of the local
-dimension needs an exact parameterized piece or equations cutting out D_(5,12).
+The record is numerical evidence and certifies nothing. A refined point is a y
+whose L_y lies within 1e-40 (relative) of some rank-20 matrix, which need not be
+a left multiplication: the rank-20 cone meets span{L_e} far from transversally,
+so no stopping tolerance or error bound places an exact point of D_(5,12) near
+it. A certificate needs an exact parameterized piece or equations cutting out
+D_(5,12).
 
 Usage:
     "$PYTHON" scripts/rank_locus_nullity12_refinement.py --out docs/evidence/rank_locus_nullity12_refinement/result.json
@@ -160,7 +163,8 @@ def cloud_starts(witness: list[float], seed: int) -> list[list[float]]:
     return starts
 
 
-def cloud_spectrum(witness: list[float], landed: list[list[float]]) -> list[float]:
+def cloud_spectrum(item: tuple[list[float], list[list[float]]]) -> list[float]:
+    witness, landed = item
     y = np.array(witness)
     rows = [(np.array(z) - y) / CLOUD_ETA for z in landed]
     s = np.linalg.svd(np.array(rows), compute_uv=False)
@@ -197,10 +201,11 @@ def measure() -> dict[str, Any]:
     centers = anchors[:: len(EPSILONS) * 2]
     perturbed = [cloud_starts(center, SEED + row["witness"]) for center, row in zip(centers, rows, strict=True)]
     cloud_landed = parallel.ordered_map(project_point, [z for group in perturbed for z in group], min_items=2)
-    clouds = [
-        cloud_spectrum(center, cloud_landed[i * CLOUD_SAMPLES : (i + 1) * CLOUD_SAMPLES])
-        for i, center in enumerate(centers)
-    ]
+    clouds = parallel.ordered_map(
+        cloud_spectrum,
+        [(center, cloud_landed[i * CLOUD_SAMPLES : (i + 1) * CLOUD_SAMPLES]) for i, center in enumerate(centers)],
+        min_items=2,
+    )
     points = []
     for label, result in zip(labels, refined, strict=True):
         points.append(

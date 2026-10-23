@@ -166,17 +166,18 @@ and is never evidence of the gap.
      cut out D_(5,12) near {e_i, 0} (the centered Schur complement of
      computation 2 with its higher-order terms), or a curve family that is
      not a product of half turns.
-4. **Extended-precision probe of the {a, 0} witnesses.** Nullity-12 points
-   reached from seeded starts near each witness keep their distance from the
-   family when refined at 110 digits to sigma_21/sigma_1 < 1e-40, and a
+4. **Extended-precision probe of the {a, 0} witnesses.** Near-rank-20
+   points reached from seeded starts near each witness keep their distance
+   from the family when refined at 110 digits to sigma_21/sigma_1 < 1e-40,
+   and a
    perturbation cloud at scale 1e-2 spans 16 directions
    ([evidence](../evidence/rank_locus_nullity12_refinement/README.md),
-   `scripts/rank_locus_nullity12_refinement.py`, gate core-662). The
-   numerics show that the {a, 0} family is not the whole of D_(5,12) near a
-   nullity-12 witness. They leave the local dimension undecided between the
-   family's and the tangent bound, since the excess points and the span are
-   equally consistent with one 15-dimensional piece and with several smaller
-   branches; admission still needs an exact piece or local equations.
+   `scripts/rank_locus_nullity12_refinement.py`, gate core-662). A refined
+   point is close to a rank-20 matrix, not provably close to a point of
+   D_(5,12), because the rank-20 cone meets the left multiplications far
+   from transversally. The probe therefore decides nothing: the local
+   dimension stays undecided between the family's and the tangent bound,
+   and admission still needs an exact piece or local equations.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
