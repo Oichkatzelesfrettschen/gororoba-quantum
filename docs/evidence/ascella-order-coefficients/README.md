@@ -5,17 +5,26 @@ whether hardware preserves commutator/anticommutator interference. This bundle
 supplies local mathematical evidence and a theoretical artwork preview.
 It contains no new hardware acquisition.
 
-[replay.py](replay.py) checks exact trigonometric identities with SymPy,
-compares source-state and coherence formulas with the repository operator at
-51 points, and extracts all five discrete harmonic coefficients at each of
-five planned angles. [derivation.json](derivation.json) records residuals,
+[replay.py](replay.py) checks nine exact identities with SymPy (the coherence
+circle and its intensity links, the complex form `C=(1-exp(-2i theta))/2`, the
+complex-gain coefficients, cancellation of a common phase, and the rotated
+coefficient relations), compares source-state and coherence formulas with the
+repository operator at 51 points, and extracts all five discrete harmonic
+coefficients at each of five planned angles. It also computes the
+17-endpoint Hoeffding radii, their scale against 16 and 27 endpoints, the
+pointwise envelope of the 0.05 coefficient tolerance, the projected
+simultaneous X/Y radius at each planned angle, and the equal-contrast and
+sign-even counterexamples, checking the latter for positivity. [derivation.json](derivation.json) records residuals,
 source and pilot-analysis digests, tool versions and the pilot's dark counts.
 The pilot counts come from the retained analysis; the curve is theoretical.
 
 ![Theoretical coefficient atlas](coefficient-atlas.svg)
 
-The three panels show the signed coherence circles, angle harmonics and the
-two coherence branches that direct intensity cannot distinguish. The black
+The four panels show the sign-odd coherence circle with angle labels,
+traversal direction and projected simultaneous radii; the sign-even response
+the primary endpoints cancel, with the replay's counterexample; the angle
+harmonics; and the two coherence branches that direct intensity cannot
+distinguish. The black
 points mark planned angles; they are not measurements. The final measured
 artwork uses new retained counts and simultaneous uncertainty.
 

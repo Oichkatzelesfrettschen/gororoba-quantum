@@ -21,6 +21,14 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from hypercomplex_operators import order_interferometer  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
+FAMILY_ALPHA = 0.01
+PRIMARY_ENDPOINTS = 17
+EXPANDED_ENDPOINTS = 27
+EVENTS_PER_ITERATION = 8192
+COEFFICIENT_TOLERANCE = 0.05
+MUTATION_DARK_TOLERANCE = 0.05
+SIGN_EVEN_TWIST = 0.2
+
 
 def check_point(angles: tuple[float, float]) -> dict[str, float]:
     """Compare the repository matrix with its coefficient and coherence formulas."""
@@ -66,6 +74,30 @@ def report() -> dict[str, Any]:
             ),
         }
     )
+    gain_real, gain_imag, common_phase = sp.symbols("gain_real gain_imag common_phase", real=True)
+    gain = gain_real + sp.I * gain_imag
+    complex_coherence = horizontal + sp.I * vertical
+    identities.update(
+        {
+            "complex_coherence_form": sp.simplify(
+                sp.expand_complex(complex_coherence - (1 - sp.exp(-2 * sp.I * theta)) / 2)
+            ),
+            "gain_model_coefficients": sp.simplify(
+                sp.expand_complex(
+                    gain * complex_coherence
+                    - (gain / 2 - gain / 2 * sp.cos(2 * theta) + sp.I * gain / 2 * sp.sin(2 * theta))
+                )
+            ),
+            "common_phase_cancels": sp.simplify(
+                sp.expand_complex(
+                    2
+                    * sp.conjugate(sp.exp(sp.I * common_phase) * sp.cos(theta))
+                    * (sp.exp(sp.I * common_phase) * sp.I * sp.sin(theta))
+                    - 2 * sp.cos(theta) * sp.I * sp.sin(theta)
+                )
+            ),
+        }
+    )
     if any(value != 0 for value in identities.values()):
         raise ValueError("an exact coefficient identity fails")
     angles = [(index * math.pi / 5, sign * math.pi / 4) for index in range(5) for sign in (-1, 1)]
@@ -88,9 +120,25 @@ def report() -> dict[str, Any]:
     transform = np.linalg.inv(basis)
     analyzer_weights = np.kron(transform, np.array([[1, -1, -1, 1]]) / 4)
     direct_weights = np.kron(transform, np.ones((1, 4)) / 4)
-    log_factor = 0.5 * math.log(2 / (0.01 / 16))
-    analyzer_radii = np.sqrt(log_factor * np.sum(analyzer_weights**2, axis=1) * 4 / 8192)
-    direct_radii = np.sqrt(log_factor * np.sum(direct_weights**2, axis=1) / 8192)
+    log_factor = 0.5 * math.log(2 / (FAMILY_ALPHA / PRIMARY_ENDPOINTS))
+    analyzer_radii = np.sqrt(log_factor * np.sum(analyzer_weights**2, axis=1) * 4 / EVENTS_PER_ITERATION)
+    direct_radii = np.sqrt(log_factor * np.sum(direct_weights**2, axis=1) / EVENTS_PER_ITERATION)
+    # Each sampled value is the basis row dotted with the coefficient vector, so a coefficient box of half-widths r
+    # bounds the value at theta_k by sum_j |basis[k, j]| r_j.
+    envelope = np.abs(basis)
+    ideal_contrast = math.sin(math.pi / 5) ** 2 / 2
+    complex_ideal = np.sin(samples) ** 2 + 1j * np.sin(2 * samples) / 2
+    dark_ideal = np.sin(samples) ** 2 / 2
+    plus = complex_ideal * (1 + 1j * SIGN_EVEN_TWIST)
+    minus = -complex_ideal * (1 - 1j * SIGN_EVEN_TWIST)
+    # |C_+-|^2 = (1 + t^2) |C|^2 = 4 (1 + t^2) p0 p3 with ideal p0 = cos(pi/4)^2, so bright mode population
+    # (1 + t^2)/2 saturates the 0,3 positivity minor X^2 + Y^2 <= 4 p0 p3 and mode 1 takes the remainder.
+    bright = 0.5 * (1 + SIGN_EVEN_TWIST**2)
+    remainder = 1 - bright - dark_ideal
+    if np.max(np.abs((plus - minus) / 2 - complex_ideal)) > 1e-12:
+        raise ValueError("the sign-even counterexample changes the sign-odd projection")
+    if np.min(remainder) < 0 or np.max(np.abs(np.abs(plus) ** 2 - 4 * bright * dark_ideal)) > 1e-12:
+        raise ValueError("the sign-even counterexample is not a positive state")
     return {
         "evidence_class": "exact identities and local matrix computation; artwork is theoretical",
         "operator_sha256": hashlib.sha256(
@@ -103,10 +151,29 @@ def report() -> dict[str, Any]:
         "coefficient_basis": ["constant", "cos(2 theta)", "sin(2 theta)", "cos(4 theta)", "sin(4 theta)"],
         "coefficient_rows": ["X", "Y", "dark"],
         "coefficients": coefficients.tolist(),
+        "primary_endpoints": PRIMARY_ENDPOINTS,
         "hoeffding_radii_at_8192": {
             "analyzer_coefficients": analyzer_radii.tolist(),
             "dark_coefficients": direct_radii.tolist(),
-            "mutation": math.sqrt(log_factor / 8192),
+            "mutation_difference": math.sqrt(log_factor / EVENTS_PER_ITERATION),
+            "mutation_dark": math.sqrt(log_factor * 0.5 / EVENTS_PER_ITERATION),
+        },
+        "radius_scale_from_16_endpoints": {
+            str(count): math.sqrt(math.log(2 * count / FAMILY_ALPHA) / math.log(2 * 16 / FAMILY_ALPHA))
+            for count in (PRIMARY_ENDPOINTS, EXPANDED_ENDPOINTS)
+        },
+        "pointwise_envelope_of_coefficient_tolerance": (COEFFICIENT_TOLERANCE * envelope.sum(axis=1)).tolist(),
+        "simultaneous_xy_pointwise_radii": (envelope @ analyzer_radii).tolist(),
+        "mutation": {
+            "ideal_contrast": ideal_contrast,
+            "dark_tolerance": MUTATION_DARK_TOLERANCE,
+            "equal_contrast_counterexample": {"target_dark": ideal_contrast + 0.08, "mutation_dark": 0.08},
+        },
+        "sign_even_counterexample": {
+            "twist": SIGN_EVEN_TWIST,
+            "bright_population": bright,
+            "minimum_remaining_population": float(np.min(remainder)),
+            "maximum_sign_even_magnitude": float(np.max(np.abs((plus + minus) / 2))),
         },
         "pilot_dark_counts": [
             {
@@ -120,7 +187,7 @@ def report() -> dict[str, Any]:
     }
 
 
-def render(destination: Path) -> None:
+def render(destination: Path, radii: list[float]) -> None:
     """Draw predicted curves; hardware points require a separate retained rendering."""
     matplotlib.rcParams["svg.hashsalt"] = "ascella-order-coefficients"
     theta = np.linspace(0, np.pi, 513)
@@ -128,23 +195,62 @@ def render(destination: Path) -> None:
     vertical = np.sin(2 * theta) / 2
     dark = horizontal / 2
     sample_theta = np.arange(5) * np.pi / 5
-    figure, panels = plt.subplots(1, 3, figsize=(14, 4.7), layout="constrained")
+    sample_x = np.sin(sample_theta) ** 2
+    sample_y = np.sin(2 * sample_theta) / 2
+    figure, panels = plt.subplots(1, 4, figsize=(18, 4.9), layout="constrained")
     figure.suptitle("Order interference: coefficient atlas | THEORY ONLY", fontsize=16)
-    panels[0].scatter(horizontal, vertical, c=theta / np.pi, cmap="twilight", s=12)
-    panels[0].plot(-horizontal, -vertical, color="slateblue", alpha=0.6, label="negative phi")
-    panels[0].scatter(
-        np.sin(sample_theta) ** 2, np.sin(2 * sample_theta) / 2, color="black", s=22, label="planned angles"
+    traced = panels[0].scatter(horizontal, vertical, c=theta / np.pi, cmap="twilight", s=10)
+    figure.colorbar(traced, ax=panels[0], label="theta / pi", shrink=0.8)
+    for start_index in (64, 192, 320, 448):
+        panels[0].annotate(
+            "",
+            xy=(horizontal[start_index + 8], vertical[start_index + 8]),
+            xytext=(horizontal[start_index], vertical[start_index]),
+            arrowprops={"arrowstyle": "->", "color": "black"},
+        )
+        panels[0].annotate(
+            "",
+            xy=(horizontal[start_index + 8] - 0.06, -vertical[start_index + 8]),
+            xytext=(horizontal[start_index] - 0.06, -vertical[start_index]),
+            arrowprops={"arrowstyle": "->", "color": "slateblue"},
+        )
+    panels[0].plot(horizontal, -vertical, color="slateblue", alpha=0.6, label="conjugate: reversed traversal")
+    panels[0].errorbar(
+        sample_x,
+        sample_y,
+        xerr=radii,
+        yerr=radii,
+        fmt="o",
+        color="black",
+        markersize=4,
+        capsize=2,
+        label="planned angles, simultaneous X/Y radius",
     )
-    panels[0].scatter([0], [0], marker="x", color="red", s=65, label="diagonal mixture")
-    panels[0].set(xlabel="X coherence", ylabel="Y coherence", title="Signed coherence circles", aspect="equal")
-    panels[0].legend(fontsize=8)
-    panels[1].plot(theta / np.pi, horizontal, label="X: even in theta")
-    panels[1].plot(theta / np.pi, vertical, label="Y: odd in theta")
-    panels[1].plot(theta / np.pi, dark, label="dark probability")
-    panels[1].set(xlabel="theta / pi", ylabel="predicted response", title="Coefficient harmonics")
-    panels[1].legend(fontsize=8)
-    panels[2].plot(dark, vertical, color="teal")
-    panels[2].set(xlabel="dark probability", ylabel="Y coherence", title="Intensity hides the two branches")
+    for index, (x, y) in enumerate(zip(sample_x, sample_y, strict=True)):
+        panels[0].annotate(f"{index}pi/5", (x, y), textcoords="offset points", xytext=(6, 4), fontsize=7)
+    panels[0].scatter([0], [0], marker="x", color="red", s=65, label="diagonal mixture; also ideal at theta = 0")
+    panels[0].set(xlabel="X coherence", ylabel="Y coherence", title="Sign-odd coherence circle", aspect="equal")
+    panels[0].legend(fontsize=6, loc="center")
+    panels[1].plot(theta / np.pi, np.zeros_like(theta), color="gray", label="ideal sign-even X and Y")
+    panels[1].plot(
+        theta / np.pi, -0.2 * vertical, linestyle="--", color="darkorange", label="counterexample sign-even X"
+    )
+    panels[1].plot(
+        theta / np.pi, 0.2 * horizontal, linestyle=":", color="darkorange", label="counterexample sign-even Y"
+    )
+    panels[1].set(
+        xlabel="theta / pi",
+        ylabel="sign-even response",
+        title="Sign-even response the primary endpoints cancel",
+    )
+    panels[1].legend(fontsize=7)
+    panels[2].plot(theta / np.pi, horizontal, label="X: even in theta")
+    panels[2].plot(theta / np.pi, vertical, label="Y: odd in theta")
+    panels[2].plot(theta / np.pi, dark, label="dark probability")
+    panels[2].set(xlabel="theta / pi", ylabel="predicted response", title="Coefficient harmonics")
+    panels[2].legend(fontsize=7)
+    panels[3].plot(dark, vertical, color="teal")
+    panels[3].set(xlabel="dark probability", ylabel="Y coherence", title="Intensity hides the two branches")
     for panel in panels:
         panel.grid(alpha=0.2)
     figure.savefig(destination, metadata={"Date": None})
@@ -158,5 +264,5 @@ if __name__ == "__main__":
     target = Path(__file__).resolve().parent
     if "--write" in sys.argv:
         (target / "derivation.json").write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n")
-        render(target / "coefficient-atlas.svg")
+        render(target / "coefficient-atlas.svg", evidence["simultaneous_xy_pointwise_radii"])
     print(json.dumps(evidence, indent=2, sort_keys=True))

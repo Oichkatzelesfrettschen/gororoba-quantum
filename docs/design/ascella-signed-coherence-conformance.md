@@ -129,7 +129,12 @@ Three exact identities tie phase-sensitive data to intensity:
 y^2=2q(1-2q).
 \]
 
-The first locus is a circle. The final identity has two signed branches:
+In complex form, `C=X+iY=2 psi_0^* psi_3=(1-exp(-2i theta))/2`: the
+coherence between the bright mode 0 and the dark mode 3, relative to the mode-0
+reference amplitude. The first locus is a circle; the circle together with
+`x=2q` implies the third identity, so agreement with all three is one joint
+test rather than three independent confirmations. The final identity has two
+signed branches:
 intensity determines the magnitude of y under the ideal model but leaves its
 sign unresolved. The five planned angles sample both branches.
 
@@ -186,6 +191,16 @@ Unequal quadrature attenuation generally violates the equal-norm condition;
 a theta-dependent distortion can populate the second harmonic. A diagonal
 mixture gives eta=0, where the inferred orientation becomes undefined.
 
+In complex form the model is `C_measured=g C_ideal` with one complex gain
+`g=eta exp(i delta)`, whose coefficients are `C_0=g/2`, `C_c1=-g/2`,
+`C_s1=ig/2`. A global phase `psi -> exp(i gamma) psi` leaves `C` unchanged, so
+`delta` is a relative phase between modes 0 and 3, or a rotation of the
+quadrature reference. Uniform transmission loss scales every detected channel
+alike and cancels from the conditional probabilities, so `eta` is an
+attenuation of the measured coherence response (dephasing, unequal losses,
+analyzer visibility and compilation errors all contribute), not an optical
+transmission estimate.
+
 This is calibration through the scientific coefficients: the same acquisition
 tests whether a two-parameter response model explains the departure. The
 inferred `eta=2 norm(A0)` and `delta=atan2(y0,x0)` describe that model; they do
@@ -206,11 +221,22 @@ model with different constraints.
 | Does order interference retain signed off-diagonal coherence? | A bright/dark-dephased state has the same direct probabilities and X=Y=0. | A simultaneous interval for a predicted nonzero X/Y coefficient excludes zero, under the preparation/analyzer model. |
 | Does the response carry the correct orientation and theta parity? | Conjugation reverses Y; interchanging analyzers exchanges X and Y; sign erasure removes the signed response. | The complete X/Y coefficient vectors discriminate these specified alternatives at the sampled points. |
 | Does the commutator magnitude connect to its coherent cross-terms? | Unrelated or attenuated phase responses can preserve dark intensity while violating x=2q or the circle. | Propagate the joint coefficient confidence set into finite-grid identity residuals. Exclusion of zero rejects the exact joint model. |
-| Does a same-angle commuting mutation close the dark branch? | An order-insensitive response predicts equal target and mutation output. | The balanced target-minus-mutation interval excludes zero and is compared with its registered nonzero ideal. |
+| Does a same-angle commuting mutation change the dark probability by the predicted contrast? | An order-insensitive response predicts equal target and mutation output. | The balanced target-minus-mutation interval excludes zero and is compared with its registered nonzero ideal. |
+| Does the commuting mutation close the dark branch? | A contrast alone fixes neither probability: target 0.252746 with mutation 0.08 gives the same 0.172746 as target 0.172746 with mutation 0. | The absolute mutation-dark interval lies inside the registered near-zero tolerance. |
 | Does the device reproduce only the expected coefficient support? | Additional finite-grid components give nonzero cos(4 theta) or sin(4 theta). | Their simultaneous intervals exclude zero; conformance also uses the explicit coefficient tolerances below. |
 
 The hardware conjectures concern the combined preparation, compiled mesh,
-analyzers and conditional detection. The algebraic identities themselves are
+analyzers and conditional detection. The device receives the composite
+operators `U`, `H_X U` and `H_Y U`; a common software template fixes their
+shared structure, but compilation or hardware errors can depend on the whole
+programmed circuit, so the three readouts can carry different effective
+preparations. The operational result is conformance of the compiled circuit
+family, with the selected coherence inferred under the preparation/analyzer
+model. Where the service keeps the preparation controls fixed and varies only
+analyzer controls, the builder preserves that structure. The commuting
+mutation replaces generator `J` by `I`, which changes the programmed matrix as
+well as the order relation; it tests the encoded commutator response and does
+not certify the physical application order of two independent devices. The algebraic identities themselves are
 proved consequences of the stated operators. A mismatch rejects a hardware
 model or its assumptions; it does not refute a mathematical theorem.
 
@@ -238,6 +264,14 @@ Its target-minus-mutation dark prediction is
 
 Every entry starts from physical input mode 0, representative 0 and compilation
 seed 0. Embed the four-mode operator into twelve modes and return all twelve.
+The platform's `final_mode_number` defaults to the input-state width and drops
+states with a photon on an unused mode
+([platform record](../../results/quandela/runs/ascella-mosaiq-update-order-retry/platform-before-submission.json)),
+so a twelve-mode intended matrix is insufficient by itself. The serialized
+request carries a twelve-entry input occupation, a twelve-mode circuit, an
+effective output width of twelve, and returns twelve-mode occupations; eligible
+events outside the logical four-mode block stay in the denominator. The local
+replay of the frozen request checks each of these fields.
 Use `sample_count`, an explicit empty mitigation list and
 `min_detected_photons=1`. One common parameterized template implements the
 operator and analyzer choices. A builder validates every full unitary and
@@ -283,10 +317,28 @@ counts; reported occupations do not establish photon-number resolution.
 At each angle, signed `x_k` and `y_k` use
 `(z1-z2-z3+z4)/4`; `q_k=(p1+p2+p3+p4)/4` averages direct signs.
 Retain direct sign contrast and sign-even analyzer components descriptively.
-The mutation difference uses `(p1-p2-p3+p4)/2`, not division by four.
+The mutation difference uses `(p1-p2-p3+p4)/2`, not division by four. The
+absolute mutation dark probability uses the two commuting arms,
+`D_mut=(p2+p3)/2`.
 
-The 15 discrete coefficients plus the mutation difference form 16 primary
-endpoints. Allocate family error 0.01 equally: `alpha_j=0.01/16`.
+The four-arm estimator returns `(z_+ - z_-)/2` under stable repeated arms, so a
+common sign-even error `b(theta)` in `z_+=f+b`, `z_-=-f+b` cancels from it. The
+primary analysis therefore covers the sign-odd X/Y coefficients and the
+sign-averaged dark coefficients. The replay's counterexample keeps all fifteen
+primary coefficients exactly ideal with sign-specific coherences
+`C_+=C(1+0.2i)` and `C_-=-C(1-0.2i)`. It is a positive state at every planned
+angle (`p0=0.52`, `p3=D`, `p1=0.48-D>=0.0277`), and its sign-even coherence
+reaches magnitude 0.1902. The sign-even X/Y responses and direct sign contrast
+are displayed beside the primary atlas and stay descriptive; "complete
+coefficient spectrum" always names those primary sequences.
+
+The 15 discrete coefficients, the mutation difference and the absolute
+mutation dark probability form 17 primary endpoints. Allocate family error
+0.01 equally: `alpha_j=0.01/17`. The mutation dark tolerance is 0.05, fixed
+before acquisition; the endpoint qualifies closure when its whole interval
+lies in `[0, 0.05]`. Adding the ten sign-even X/Y coefficients would give 27
+endpoints and widen every radius by a factor of 1.0319 at unchanged cost; that
+expansion is an open decision of the plan's owner.
 For any linear endpoint with raw-iteration weights `c_i` and event range
 `[a_i,b_i]`, use
 
@@ -300,11 +352,17 @@ Analyzer events have range [-1,1]; direct dark events have range [0,1]. At
 
 | Endpoint type | Hoeffding radius |
 |---|---:|
-| X/Y constant coefficient | 0.009925815 |
-| X/Y sine or cosine coefficient | 0.014037222 |
-| Dark constant coefficient | 0.004962907 |
-| Dark sine or cosine coefficient | 0.007018611 |
-| Mutation difference | 0.022194797 |
+| X/Y constant coefficient | 0.009963024 |
+| X/Y sine or cosine coefficient | 0.014089844 |
+| Dark constant coefficient | 0.004981512 |
+| Dark sine or cosine coefficient | 0.007044922 |
+| Mutation difference | 0.022277999 |
+| Mutation dark probability | 0.015752924 |
+
+The 17-endpoint radii are the 16-endpoint radii times 1.0037487. Projecting
+the simultaneous coefficient box onto each sampled point bounds the signed
+X or Y value within 0.0381 at `theta=0` and 0.0474 at the other four angles;
+those are the widths the atlas draws.
 
 Recompute using actual eligible counts. Independence of eligible observations
 and appropriate sampling/stopping assumptions underlie these bounds. Aggregate
@@ -313,7 +371,11 @@ is unnecessary for the family union bound.
 
 The proposed engineering tolerance is absolute coefficient error at most 0.05,
 and absolute mutation-difference error at most 0.05. These are design choices,
-not vendor specifications. An interval wholly inside the allowed region
+not vendor specifications. A coefficient tolerance of 0.05 is not a pointwise
+tolerance: inverting the five-point transform, coefficient errors within 0.05
+allow a sampled value to move by up to 0.15 at `theta=0` and 0.18284 at the
+other angles, before physical constraints. Verdicts and artwork carry the
+words "coefficient tolerance". An interval wholly inside the allowed region
 qualifies that endpoint; a disjoint interval falsifies tolerance-conformance;
 overlap is inconclusive. Separately report whether an exact ideal or specified
 alternative lies outside its simultaneous interval. Excluding an exact ideal
@@ -350,12 +412,23 @@ curves explicitly carry the label THEORY ONLY.
    intensity-only picture loses. A ribbon width can encode dark probability,
    with units and a legend. Lines joining the five measured points indicate
    sampling order, not measured intermediate states.
-3. **Coefficient spectrum.** Show the 15 measured coefficients and intervals
+3. **Coefficient spectrum.** Show the 15 primary coefficients and intervals
    beside the exact rational predictions. Unintended coefficient support
    remains visible instead of being smoothed away for visual appeal.
 4. **Twelve output channels.** A companion probability strip retains every
    returned mode and the exclusion counts. It shows conditional redistribution,
-   rather than claiming calibrated absolute optical loss.
+   rather than claiming calibrated absolute optical loss. The twelve-mode dark
+   probability is `D_12=f_4 D_4`, with `f_4` the fraction of eligible events in
+   the logical four-mode block and `D_4` the pilot's four-output conditional;
+   the strip shows both, so a leakage change reads as a change in `f_4`.
+
+The theory preview carries angle labels, a colorbar and direction arrows for
+both traversals, since conjugation reverses the traversal of the same circle.
+It marks the origin as both the diagonal-mixture reference and the ideal point
+at `theta=0`; the origin alone never classifies a setting as incoherent, and
+the nonzero-angle coefficients carry that discrimination. Its error bars are
+the projected simultaneous radii above, and a separate panel draws the
+sign-even response the primary endpoints cancel.
 
 An angle-index animation moves through separately prepared circuits. Its label
 states parameter sweep, not measured time evolution. Measured points, theoretical

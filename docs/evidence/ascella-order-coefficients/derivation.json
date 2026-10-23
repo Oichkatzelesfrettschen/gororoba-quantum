@@ -13,31 +13,34 @@
   ],
   "coefficients": [
     [
-      0.5,
-      -0.5,
-      -9.71445146547012e-17,
-      5.551115123125783e-17,
-      2.7755575615628914e-17
-    ],
-    [
-      8.981892944681074e-18,
-      -4.163336342344337e-17,
       0.4999999999999999,
-      -4.163336342344337e-17,
-      1.491862189340054e-16
+      -0.5000000000000002,
+      -2.7755575615628914e-16,
+      -2.7755575615628914e-16,
+      1.1102230246251565e-16
     ],
     [
-      0.25,
-      -0.25,
-      -4.85722573273506e-17,
-      2.7755575615628914e-17,
-      1.3877787807814457e-17
+      0.0,
+      1.1310862329349138e-16,
+      0.49999999999999994,
+      -1.1327024753409878e-16,
+      -5.781242707064874e-17
+    ],
+    [
+      0.24999999999999994,
+      -0.2500000000000001,
+      -1.3877787807814457e-16,
+      -1.3877787807814457e-16,
+      5.551115123125783e-17
     ]
   ],
   "evidence_class": "exact identities and local matrix computation; artwork is theoretical",
   "exact_zero_residuals": {
     "coherence_circle": "0",
+    "common_phase_cancels": "0",
+    "complex_coherence_form": "0",
     "dark_coherence_link": "0",
+    "gain_model_coefficients": "0",
     "quadrature_dark_link": "0",
     "rotated_coefficient_equal_norm": "0",
     "rotated_coefficient_orientation": "0",
@@ -45,26 +48,35 @@
   },
   "hoeffding_radii_at_8192": {
     "analyzer_coefficients": [
-      0.009925814971157191,
-      0.014037222149816408,
-      0.014037222149816404,
-      0.014037222149816408,
-      0.01403722214981641
+      0.009963024113926496,
+      0.014089843824165038,
+      0.014089843824165036,
+      0.014089843824165036,
+      0.014089843824165036
     ],
     "dark_coefficients": [
-      0.0049629074855785955,
-      0.007018611074908204,
-      0.007018611074908202,
-      0.007018611074908204,
-      0.007018611074908205
+      0.004981512056963248,
+      0.007044921912082519,
+      0.007044921912082518,
+      0.007044921912082518,
+      0.007044921912082518
     ],
-    "mutation": 0.02219479700759259
+    "mutation_dark": 0.01575292429159431,
+    "mutation_difference": 0.02227799918020925
   },
   "maximum_residuals": {
     "coherence_residual": 4.577566798522237e-16,
     "dark_residual": 5.551115123125783e-16,
     "purity_minor_residual": 2.220446049250313e-16,
     "state_residual": 2.2887833992611187e-16
+  },
+  "mutation": {
+    "dark_tolerance": 0.05,
+    "equal_contrast_counterexample": {
+      "mutation_dark": 0.08,
+      "target_dark": 0.25274575140626315
+    },
+    "ideal_contrast": 0.17274575140626314
   },
   "numerical_points": 51,
   "operator_sha256": "62e4b0afc94731465d3edbff81de6601309ad4eb969b67894bb4b2c02fb9a4fe",
@@ -110,6 +122,31 @@
       "eligible": 8187,
       "name": "order-i1-j1-representative1"
     }
+  ],
+  "pointwise_envelope_of_coefficient_tolerance": [
+    0.15000000000000002,
+    0.1828437878668761,
+    0.1828437878668761,
+    0.1828437878668761,
+    0.18284378786687608
+  ],
+  "primary_endpoints": 17,
+  "radius_scale_from_16_endpoints": {
+    "17": 1.0037487241982075,
+    "27": 1.0319066819930751
+  },
+  "sign_even_counterexample": {
+    "bright_population": 0.52,
+    "maximum_sign_even_magnitude": 0.19021130325903077,
+    "minimum_remaining_population": 0.027745751406263064,
+    "twist": 0.2
+  },
+  "simultaneous_xy_pointwise_radii": [
+    0.03814271176225657,
+    0.047397988595022374,
+    0.04739798859502238,
+    0.04739798859502239,
+    0.04739798859502238
   ],
   "versions": {
     "matplotlib": "3.11.2",
