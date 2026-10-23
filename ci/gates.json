@@ -2848,6 +2848,15 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes all",
+   "name": "core-661",
+   "seconds": 833.7,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "cmp docs/evidence/atlas_coherent_families/result.json results/kaggle/2026-10-16T222749Z-gororoba-atlas-coherent-families/output/output/repo/results/kaggle_out/atlas_coherent_families.json",
    "name": "core-334",

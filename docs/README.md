@@ -62,7 +62,7 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | Quantum Inspire run | [README](notes/quantum_inspire/README.md), [usage.md](notes/quantum_inspire/usage.md), [tuna-17-run-design.md](notes/quantum_inspire/tuna-17-run-design.md) |
 | Open Quantum run | [README](notes/open_quantum/README.md), `scripts/oq_platform.py` estimate |
 | Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) |
-| IQM run | [README](notes/iqm/README.md), [os-4.7-emerald.md](notes/iqm/os-4.7-emerald.md) |
+| IQM run | [README](notes/iqm/README.md), [os-4.7.md](notes/iqm/os-4.7.md) |
 | Simulation and Kaggle | [README](notes/kaggle/README.md), [substrates.md](notes/kaggle/substrates.md), [gpu-runbook.md](notes/kaggle/gpu-runbook.md) |
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
