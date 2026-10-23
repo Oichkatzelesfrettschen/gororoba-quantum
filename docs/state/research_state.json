@@ -1547,6 +1547,20 @@
       "run": "results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation",
       "family": "IQM kernel cancellation probe",
       "question": "Does the garnet:mock pipeline accept the 27-circuit kernel cancellation job with a readout calibration for every measured qubit, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T060642Z-garnet_mock-signed-kernel-null-retest-probe-0",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's 16 heralded probe circuits, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest-calibrate",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the null re-test's readout and prx-train job, and what does it estimate?"
     }
   ],
   "claims": [
@@ -7652,6 +7666,62 @@
       "related_claims": [
         "signed-overlap-kernel-independence",
         "iqm-garnet-signed-probe-coherent-response"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-signed-null-retest",
+      "statement": "garnet:mock accepted both jobs of the signed kernel null re-test (16 heralded 199-CZ circuits x 20000 shots and 10 readout and prx-train circuits x 4000), estimated 13.2 s and 2.04 s, and charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Mock bits are random; the mock's chip model estimated 1.5 times Garnet's own estimate on the retained probe, so its 13.2 s does not price a Garnet run.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-23T060642Z-garnet_mock-signed-kernel-null-retest-probe-0/results.json",
+          "sha256": "8c0b455b62a4ece325a3833875b5d265f895e8f5104d89983b795bc024eb5393"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate/results.json",
+          "sha256": "e1e330491915f5c9bd10653022602b49dc3a8acd125aa492e470855d8be0b185"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-signed-null-retest-probe",
+        "iqm-garnet-mock-signed-null-retest-calibrate"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-signed-null-retest",
+      "statement": "On Garnet (calibration set 68b0f1d0, the retained 199-CZ compile) the null-controlled re-test reads D(0.25) = odd(0.25) - odd(0) over two +, -, -, + blocks at |t| = 0.25 and at t = 0: the retained +0.022 at |t| = 0.25 carries the sign of t only if D(0.25) lies three standard errors above zero. The calibration model predicts an odd part of +0.014 at t = 0 and D(0.25) = +0.0092 (+0.0059 with a 2.7 % QB11 over-rotation), so a model-like device leaves D(0.25) unresolved at the planned standard error of 0.0047, while the retained visibility of 0.206 puts it near 4.8 standard errors. The |t| = 0.05 resolve needs 16 blocks (ceiling 43.5 credits).",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "No approved hardware case; the observable is kernel-independent (signed-overlap-kernel-independence), so the re-test measures the device's carried phase and its null offset, not the sedenion kernel.",
+      "evidence": [],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_signed_resolve.py"
+      ],
+      "gates": {
+        "core-643": "regression",
+        "core-644": "freshness"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "related_claims": [
+        "iqm-garnet-signed-kernel-probe",
+        "signed-overlap-kernel-independence"
       ],
       "supersedes": [],
       "superseded_by": null

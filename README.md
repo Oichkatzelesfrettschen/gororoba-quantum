@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (107 established, 48 exploratory, 4 open, 11 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (107 established, 49 exploratory, 4 open, 12 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -251,6 +251,8 @@ acquisition of every provider:
 | [2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation](results/iqm/runs/2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 21 | completed | 0.0 credits |
 | [2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation](results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 25 | completed | 0.0 credits |
 | [2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation](results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 27 | completed | 0.0 credits |
+| [2026-10-23T060642Z-garnet_mock-signed-kernel-null-retest-probe-0](results/iqm/runs/2026-10-23T060642Z-garnet_mock-signed-kernel-null-retest-probe-0) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 16 | completed | 0.0 credits |
+| [2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate](results/iqm/runs/2026-10-23T060649Z-garnet_mock-signed-kernel-null-retest-calibrate) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 10 | completed | 0.0 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
@@ -258,7 +260,7 @@ The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 41 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 16 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 18 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
 
 ## Contents
