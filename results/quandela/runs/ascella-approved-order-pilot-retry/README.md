@@ -11,7 +11,8 @@ bounded watcher checked again every 30 seconds and submitted once after both
 live status records reported `available`, token occupancy was empty, and
 the original resource and cost checks passed. The
 [preflight](preflight.json) and [submission receipt](submission.json) record
-the live tariff, performance metadata, software versions and approval.
+the live shot price, recorded per-job tariff assumption, performance metadata,
+software versions and approval.
 
 | Observation | Result |
 |---|---|
