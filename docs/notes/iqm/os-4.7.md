@@ -65,7 +65,9 @@ prices unchanged:
 - **Pulse schema.** Both per-QC OpenAPIs gain the Slepian `flat_width`
   field. Garnet's calibration set carries it on all 30 `slepian_crf` CZ
   couplers at 0.0, the standard Slepian, as Emerald's does on its 83;
-  Sirius's CZ and MOVE use `crf_crf`, which has no such field.
+  Sirius's MOVE uses `crf_crf` on every locus and its CZ defaults to
+  `crf_crf` with `tgss` overrides on QB2-COMPR1 and QB10-COMPR1, and neither
+  implementation has the field.
 - **Settings.** Garnet's settings tree grows from 1117 to 1254 parameters
   (`voltage_range` 50, `max_fir_taps` and `max_iir_stages` 39 each,
   `calibration_pll_frequency`, `mixer_in_iq_gain_error` and
@@ -76,6 +78,12 @@ prices unchanged:
   `QB1__drive.awg.trigger_delay` 485 ns to 510 ns and
   `PL-1__readout.trigger_delay` 480 ns to 505 ns), a timing offset inside
   the control stack that leaves gate and readout durations unchanged.
+- **Configuration.** Garnet's configuration artifact raises
+  `instruments.qb_flux.init.tau_settle` and
+  `instruments.twpa_flux.init.tau_settle` from 0.1 s to 0.5 s, the settling
+  time after the flux sources initialize, and its controller defaults carry
+  the same +25 ns trigger delays; Sirius's configuration changes only its
+  id.
 - **Calibration.** Garnet's default set `9069c4ef` (metrics
   2026-10-22T16:38Z) replaces `04b7af66`: CZ IRB median 0.99425 to 0.99407,
   PRX 0.99934 to 0.99930, readout 0.97945 to 0.98040, T1 42 to 39 us. Sirius's
