@@ -169,7 +169,7 @@ requires a separate prior-art comparison.
 The vector coefficients also distinguish a restricted common phase rotation
 from deformation of the mathematical response. Let `r=(x,y)` and suppose the
 whole measured response obeys `r_measured=eta R(delta) r_ideal`, with one
-angle-independent attenuation eta and one real planar rotation R(delta).
+angle-independent attenuation `0 <= eta <= 1` and one real planar rotation R(delta).
 Write vector coefficients `A0=(x0,y0)`, `Ac=(xc1,yc1)` and `As=(xs1,ys1)`.
 The model requires
 
@@ -178,6 +178,7 @@ A_c=-A_0,\qquad A_s=J_2 A_0,\qquad
 J_2=\begin{pmatrix}0&-1\\1&0\end{pmatrix}.
 \]
 
+Both second-harmonic vector coefficients must also equal zero.
 Consequently `A0 dot As=0`, `norm(A0)=norm(As)=eta/2`, and
 `det(A0,As)=eta^2/4`. A common rotation changes the orientation but preserves
 these relations. Conjugation reflects the curve and reverses the determinant.
@@ -192,8 +193,11 @@ not identify a unique physical decoherence rate or instrument phase. Retain
 raw coefficients and use the same simultaneous confidence set to test model
 relations. Model fitting never silently corrects the preregistered ideal-model
 comparison. A general real-linear mixing of the two quadratures can mimic
-other effects; the restricted model earns acceptance through its constraints,
-rather than by fitting an arbitrary map to five points.
+other effects; the restricted model remains compatible when its constrained parameter set
+intersects the simultaneous confidence box. An empty intersection rejects it.
+Compatibility supplies neither a unique mechanism nor a tolerance-qualified
+model acceptance. Fitting an arbitrary map to five points supplies a different
+model with different constraints.
 
 ## Questions, competing models and falsifiers
 
