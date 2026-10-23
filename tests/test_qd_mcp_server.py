@@ -5,15 +5,11 @@ from __future__ import annotations
 
 import json
 import sys
-import warnings
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
-# The mcp import chain emits a pydantic-settings warning that -W error would raise.
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    import qd_mcp_server  # noqa: E402
+import qd_mcp_server  # noqa: E402
 
 ARCHITECTURE = {"chip": [1, 2, 3]}
 

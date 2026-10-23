@@ -391,11 +391,12 @@ def check_inventory_denominator(record: dict[str, Any], root: Path) -> None:
 
 
 def requirement_manifests(root: Path) -> list[Path]:
-    """The finite visible requirement-lock discovery surface, excluding hidden environments."""
+    """The tracked requirement-lock surface outside hidden directories; an untracked build tree's manifests stay out."""
+    tracked = subprocess.check_output(["git", "ls-files", "-z", "*requirements*.txt"], cwd=root).decode().split("\0")
     return [
-        path
-        for path in sorted(root.rglob("*requirements*.txt"))
-        if path.is_file() and not any(part.startswith(".") for part in path.relative_to(root).parts)
+        root / name
+        for name in sorted(tracked)
+        if name and (root / name).is_file() and not any(part.startswith(".") for part in Path(name).parts)
     ]
 
 

@@ -1,0 +1,19 @@
+{
+ "job_id": "4058ce4e-7892-4da4-9e86-7f78f5fa9777",
+ "observed_utc": "2026-10-22T20:16:35+00:00",
+ "platform": "qpu:belenos",
+ "run": "2026-10-22T170900Z-qpu_belenos-bdsc_diagnostic-b2-j1",
+ "status": {
+  "creation_datetime": 1792688958.25629,
+  "duration": null,
+  "failure_code": null,
+  "last_intermediate_results": null,
+  "msg": "ok",
+  "progress": null,
+  "progress_message": null,
+  "shots": 0,
+  "start_time": null,
+  "status": "waiting",
+  "status_message": null
+ }
+}
