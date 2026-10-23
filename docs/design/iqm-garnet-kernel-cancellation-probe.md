@@ -139,3 +139,35 @@ slope of the two heralded Garnet jobs), ceiling ceil(1.60 + 3.35) x 0.50 =
 2.50 credits, recorded in cases.json as the approved ceiling for Garnet; the
 mock's estimate puts the likely bill at ceil(3.0) x 0.50 = 1.50 to 2.00
 credits.
+
+## Garnet results (2026-10-23)
+
+The case ran once under the owner's approval on calibration set
+`68b0f1d0`, which the server confirms it compiled against: 27 circuits,
+92196 shots kept by heralding, runtime 2.23 s, billed 3 s, 1.50 credits
+([analysis](../../results/iqm/kernel_cancellation_probe_analysis.json), claim
+`iqm-garnet-kernel-cancellation`, replayed by gate `core-641`).
+
+| contrast | odd part | z | model | decision |
+|---|---|---|---|---|
+| kernel, phi = 0.1 | -0.0695 +- 0.0087 | -8.0 | -0.0945 | H1 sign resolved |
+| kernel, phi = 0.3 | -0.178 +- 0.009 | -20.1 | -0.269 | H1 sign resolved |
+| bright, phi = 0.1 | -0.016 +- 0.009 | H2 z -0.93 against the modeled -0.008 | -0.008 | no artifact |
+
+- H3 sine law: odd(0.3) - 2.84 odd(0.1) = +0.020 +- 0.026 (z 0.74), so the
+  response follows -sin(2 phi).
+- H4 even part: +0.050 measured against +0.046 decomposed, of which +0.038
+  is readout and idle relaxation and -0.001 is QB11's coherent term (z 0.37).
+- H5 trains: QB11 over-rotates by +0.15 +- 0.07 % and QB12 by
+  -0.20 +- 0.06 % (chi-square 5.1 and 1.1 on 3 degrees of freedom); both
+  fits pass, so H4 was evaluated.
+- Visibility 0.36 +- 0.05 against the model's 0.48, through measured
+  readout errors of (0.004, 0.013) on QB12 and (0.008, 0.027) on QB11.
+
+No preregistered hypothesis is falsified, and Garnet carries the
+zero-divisor sign of the certified kernel at both angles. QB11's measured
+over-rotation (set `68b0f1d0`) is 1/18 of the 2.7 % once proposed for the
+signed probe's even offsets and 1/70 of the 10.5 % the noise model would
+need (both reckoned under set `9069c4ef`); unless QB11's pulse amplitude
+changed that much between the two sets, a QB11 amplitude error does not
+explain those offsets.

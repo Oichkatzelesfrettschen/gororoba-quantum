@@ -1,0 +1,17 @@
+{
+ "approval": "SIM runs first then both, cancellation first.",
+ "body_sha256": "316472a4baafe140d5f3aa95b278e50b5c1475f1efb98ccda7c6d121d4e72090",
+ "cases_sha256": "19407dd2d263d2bfb98e95e54f09f874885f2d17fd872bdc0dd027ee8fa10fcb",
+ "credit_before": {
+  "currentBalance": "24.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 3.348,
+ "job": "cancellation",
+ "job_id": "01a167ac-58d4-74f0-96fe-9af62e1f1dfe",
+ "max_credits": 2.5,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-23T07:31:50Z"
+}
