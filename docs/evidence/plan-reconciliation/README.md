@@ -34,3 +34,6 @@ source hashes, target records and exact legacy-task coverage. The initial denomi
 It does not replay experiments or issue provider requests. The [operator procedure](../../runbooks/plan-tracker.md)
 defines future updates. The inventory covers a captured denominator; new work remains discoverable through
 explicit scans and source review.
+
+The [tracker integration observation](tracker-integration.json) records the merged revision, canonical sync,
+completed focused validation and the user-directed boundary on further gates.
