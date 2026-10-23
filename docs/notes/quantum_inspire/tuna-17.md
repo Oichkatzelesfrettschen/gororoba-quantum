@@ -215,3 +215,18 @@ against T0 seven and a half hours earlier (-0.209 on (12,14) at depth 9) and
 the context-dependent q13 readout error (claims
 `qi-tuna17-boxkite-follow-crossover` and
 `qi-tuna17-boxkite-follow-ladder-drift`).
+
+## Kernel cancellation probe
+
+The kernel cancellation series of 2026-10-23
+([qi_cancellation_cases.py](../../../scripts/qi_cancellation_cases.py), claim
+`qi-tuna17-kernel-cancellation`) ran a 45-CZ circuit on q4, q8, q11, q12 and
+q14 with every rotation on the pi/36 grid, six batches of three circuits at
+16384 shots, each batch submitted to collected in about four minutes. The
+control q8 read e01 0.030 and e10 0.022. The bright vector, whose ideal odd
+part is zero, carried a signed response of -0.0167 +- 0.0039, as large as
+the kernel's -0.0222 at phi = pi/36, so a Tuna-17 contrast decides on its
+difference from a matched control
+([principles](../topics/algebra-hardware-probe-principles.md)). The kernel's
+odd part implies a visibility of 0.135 through the measured readout,
+against Garnet's 0.36 at 37 CZ.

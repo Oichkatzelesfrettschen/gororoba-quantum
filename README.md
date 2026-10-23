@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (111 established, 53 exploratory, 3 open, 10 proposed, 7 superseded, 11 withdrawn) with its evidence class,
+registered claim (113 established, 53 exploratory, 3 open, 10 proposed, 7 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -268,10 +268,22 @@ acquisition of every provider:
 | [2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation](results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet | 1 | 27 | completed | 1.5 credits |
 | [2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0](results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 16 | completed | 5.0 credits |
 | [2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate](results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 10 | completed | 0.5 credits |
+| [2026-10-23T075103Z-kernel_cancellation_qx-batch-00](results/quantum_inspire/runs/2026-10-23T075103Z-kernel_cancellation_qx-batch-00) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T075235Z-kernel_cancellation_qx-batch-01](results/quantum_inspire/runs/2026-10-23T075235Z-kernel_cancellation_qx-batch-01) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T075308Z-kernel_cancellation_qx-batch-02](results/quantum_inspire/runs/2026-10-23T075308Z-kernel_cancellation_qx-batch-02) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T075342Z-kernel_cancellation_qx-batch-03](results/quantum_inspire/runs/2026-10-23T075342Z-kernel_cancellation_qx-batch-03) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T075417Z-kernel_cancellation_qx-batch-04](results/quantum_inspire/runs/2026-10-23T075417Z-kernel_cancellation_qx-batch-04) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T075450Z-kernel_cancellation_qx-batch-05](results/quantum_inspire/runs/2026-10-23T075450Z-kernel_cancellation_qx-batch-05) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T075543Z-kernel_cancellation_tuna_17-batch-00](results/quantum_inspire/runs/2026-10-23T075543Z-kernel_cancellation_tuna_17-batch-00) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T080006Z-kernel_cancellation_tuna_17-batch-01](results/quantum_inspire/runs/2026-10-23T080006Z-kernel_cancellation_tuna_17-batch-01) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T080624Z-kernel_cancellation_tuna_17-batch-02](results/quantum_inspire/runs/2026-10-23T080624Z-kernel_cancellation_tuna_17-batch-02) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T081101Z-kernel_cancellation_tuna_17-batch-03](results/quantum_inspire/runs/2026-10-23T081101Z-kernel_cancellation_tuna_17-batch-03) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04](results/quantum_inspire/runs/2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05](results/quantum_inspire/runs/2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs with 7438336 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 50 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 

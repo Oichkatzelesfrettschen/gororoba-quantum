@@ -1500,6 +1500,90 @@
       "question": "Batch 08 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
     },
     {
+      "id": "qi-qx-kernel-cancellation-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T075103Z-kernel_cancellation_qx-batch-00",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 00 of the QX twin kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-qx-kernel-cancellation-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T075235Z-kernel_cancellation_qx-batch-01",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 01 of the QX twin kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-qx-kernel-cancellation-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T075308Z-kernel_cancellation_qx-batch-02",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 02 of the QX twin kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-qx-kernel-cancellation-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T075342Z-kernel_cancellation_qx-batch-03",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 03 of the QX twin kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-qx-kernel-cancellation-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T075417Z-kernel_cancellation_qx-batch-04",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 04 of the QX twin kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-qx-kernel-cancellation-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T075450Z-kernel_cancellation_qx-batch-05",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 05 of the QX twin kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T075543Z-kernel_cancellation_tuna_17-batch-00",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 00 of the Tuna-17 kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T080006Z-kernel_cancellation_tuna_17-batch-01",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 01 of the Tuna-17 kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T080624Z-kernel_cancellation_tuna_17-batch-02",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 02 of the Tuna-17 kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T081101Z-kernel_cancellation_tuna_17-batch-03",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 03 of the Tuna-17 kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 04 of the Tuna-17 kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05",
+      "family": "sedenion kernel cancellation probe (pi/36 grid)",
+      "question": "Batch 05 of the Tuna-17 kernel cancellation series (region 4, 8, 11, 12, 14; 45 CZ; control q8): what do its two +-phi arms and its readout circuit read?"
+    },
+    {
       "id": "iqm-garnet-mock-timing-j1-1x1000-passive",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive",
@@ -8048,7 +8132,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One compile, one calibration set and two angles. cd_core already settles the zero-divisor property exactly, so the run demonstrates that Garnet realizes the compiled sign table at first order; the bright control and the sine law bound circuit artifacts, and the even part's agreement with readout plus relaxation leaves no room for the large coherent error the signed probe's offsets once suggested.",
+      "boundary": "One compile, one calibration set and two angles. The kernel-minus-bright double difference, the test the Tuna-17 run showed is needed, reads -0.0533 +- 0.0124 (z -4.3) at phi = 0.1, and -0.132 +- 0.026 (z -5.0) at 0.3 if the bright artifact scales like sin(2 phi), since the case ran the bright arm at phi = 0.1 only. cd_core already settles the zero-divisor property exactly, so the run demonstrates that Garnet realizes the compiled sign table at first order; the bright control and the sine law bound circuit artifacts, and the even part's agreement with readout plus relaxation leaves no room for the large coherent error the signed probe's offsets once suggested.",
       "evidence": [
         {
           "path": "results/iqm/kernel_cancellation_probe_analysis.json",
@@ -8078,6 +8162,77 @@
       "supersedes": [
         "proposed-kernel-cancellation-probe"
       ],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-kernel-cancellation-twin",
+      "statement": "On the QX emulator the 36-circuit twin of the Tuna-17 kernel cancellation series (the same compiled arms on register qubits 0-4, 2048 shots each) read the kernel odd parts -0.1848 +- 0.0109 at phi = pi/36 and -0.4944 +- 0.0096 at pi/12 against the ideal -0.1736 and -0.5000, within 1.03 and 0.58 standard errors, and the bright odd part exactly 0, so the platform executes the emitted cQASM as compiled.",
+      "domain": "hardware",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "An ideal emulator; it checks the emitted cQASM and the platform's handling of it, not device noise or the angle quantization of Tuna.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/kernel_cancellation_qx_analysis.json",
+          "sha256": "3bedde3382e3e51cec4088fb8148a010a9e5d1a16bbd5736af2fd088b1c3e38e"
+        }
+      ],
+      "documents": [
+        "scripts/qi_cancellation_cases.py",
+        "docs/notes/topics/algebra-hardware-probe-principles.md"
+      ],
+      "gates": {
+        "core-645": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-kernel-cancellation-batch-00",
+        "qi-qx-kernel-cancellation-batch-01",
+        "qi-qx-kernel-cancellation-batch-02",
+        "qi-qx-kernel-cancellation-batch-03",
+        "qi-qx-kernel-cancellation-batch-04",
+        "qi-qx-kernel-cancellation-batch-05"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-kernel-cancellation",
+      "statement": "On Tuna-17 (region 4, 8, 11, 12, 14, 45 CZ, every rotation on the pi/36 grid, 32768 shots per arm over two batches), the kernel cancellation probe read kernel odd parts of -0.0222 +- 0.0039 at phi = pi/36 and -0.0547 +- 0.0039 at pi/12, but the bright vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3): the preregistered H2 is falsified, the probe carries a signed response that does not depend on the kernel, and the kernel-minus-bright difference at pi/36, -0.0054 +- 0.0055 (z -1.0), leaves the zero-divisor sign unresolved on this device. The sine-law contrast read z 0.76 and the readout errors (0.030, 0.022).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one region and a bright arm at phi = pi/36 only, so the artifact at pi/12 is unmeasured; its mechanism (the non-unital relaxation that gives the bright arm a small odd part in the Garnet model is the candidate) is untested on Tuna-17, which has no retained noise model. H1's nominal resolutions measured the kernel against zero, not against the bright control, and do not establish the sign.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json",
+          "sha256": "c4e16490e167f876de001a9fabdd01e0979a5bfdeed75f1fba2d3e0c6e7cd3e4"
+        }
+      ],
+      "documents": [
+        "scripts/qi_cancellation_cases.py",
+        "docs/notes/topics/algebra-hardware-probe-principles.md"
+      ],
+      "gates": {
+        "core-645": "replay",
+        "core-646": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-kernel-cancellation-batch-00",
+        "qi-tuna17-kernel-cancellation-batch-01",
+        "qi-tuna17-kernel-cancellation-batch-02",
+        "qi-tuna17-kernel-cancellation-batch-03",
+        "qi-tuna17-kernel-cancellation-batch-04",
+        "qi-tuna17-kernel-cancellation-batch-05"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "related_claims": [
+        "iqm-garnet-kernel-cancellation",
+        "qi-qx-kernel-cancellation-twin"
+      ],
+      "supersedes": [],
       "superseded_by": null
     }
   ]

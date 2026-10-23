@@ -3961,7 +3961,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_cancellation_cases.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_cancellation_cases.py --self-test && \"$PYTHON\" -B -W error scripts/qi_cancellation_cases.py --analyze results/quantum_inspire/runs/2026-10-23T075103Z-kernel_cancellation_qx-batch-00 results/quantum_inspire/runs/2026-10-23T075235Z-kernel_cancellation_qx-batch-01 results/quantum_inspire/runs/2026-10-23T075308Z-kernel_cancellation_qx-batch-02 results/quantum_inspire/runs/2026-10-23T075342Z-kernel_cancellation_qx-batch-03 results/quantum_inspire/runs/2026-10-23T075417Z-kernel_cancellation_qx-batch-04 results/quantum_inspire/runs/2026-10-23T075450Z-kernel_cancellation_qx-batch-05 --out results/quantum_inspire/kernel_cancellation_qx_analysis.json --replay && \"$PYTHON\" -B -W error scripts/qi_cancellation_cases.py --analyze results/quantum_inspire/runs/2026-10-23T075543Z-kernel_cancellation_tuna_17-batch-00 results/quantum_inspire/runs/2026-10-23T080006Z-kernel_cancellation_tuna_17-batch-01 results/quantum_inspire/runs/2026-10-23T080624Z-kernel_cancellation_tuna_17-batch-02 results/quantum_inspire/runs/2026-10-23T081101Z-kernel_cancellation_tuna_17-batch-03 results/quantum_inspire/runs/2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04 results/quantum_inspire/runs/2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05 --out results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json --replay",
    "name": "core-645",
    "seconds": 20.0,
    "tier": "pr"

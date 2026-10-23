@@ -351,7 +351,7 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         elif fields != shared:
             raise ValueError(f"{run_dir}/cases.json describes a different series")
         results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
-        if any(job.get("status") != "completed" for job in results.get("jobs", [results])):
+        if any(job["job"]["status"] != "completed" for job in results["jobs"]):
             raise ValueError(f"{run_dir}: a job did not complete")
         batches.append(cases["batch"])
         for row in cases["circuits"]:

@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-23T08:07:05+00:00",
+ "approval": "SIM runs first then both, cancellation first. tuna-17 as well is back online for that run",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "54352c6306c8b8d4372b85d1d6122d40275461107fed5c7d0bfa92a35ca8e71e",
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "k+pi_12-020.cq",
+   "job": 1572038,
+   "sha256": "5d494b62e9fb71c7527d3fc4af602a7a68319c6043e772f3153d7dccd214b946"
+  },
+  {
+   "file": "k-pi_12-021.cq",
+   "job": 1572043,
+   "sha256": "7d3ac064f5b67b1524f938f04c4644d7cbfd04464aa54495c8f45956b77d1922"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1572044,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  }
+ ],
+ "project": 782837,
+ "batch_job": 883760,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-23T08:07:08+00:00",
+  "approval": "SIM runs first then both, cancellation first. tuna-17 as well is back online for that run",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "54352c6306c8b8d4372b85d1d6122d40275461107fed5c7d0bfa92a35ca8e71e",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 883760,
+  "project": 782837,
+  "shots": 16384,
+  "jobs": [
+   {
+    "file": "k+pi_12-020.cq",
+    "job": 1572038,
+    "sha256": "5d494b62e9fb71c7527d3fc4af602a7a68319c6043e772f3153d7dccd214b946"
+   },
+   {
+    "file": "k-pi_12-021.cq",
+    "job": 1572043,
+    "sha256": "7d3ac064f5b67b1524f938f04c4644d7cbfd04464aa54495c8f45956b77d1922"
+   },
+   {
+    "file": "readout-0.cq",
+    "job": 1572044,
+    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+   }
+  ],
+  "submitted_utc": "2026-10-23T08:07:08+00:00"
+ },
+ "confirmed_utc": "2026-10-23T08:07:08+00:00"
+}

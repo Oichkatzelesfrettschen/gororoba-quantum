@@ -223,6 +223,14 @@ derives each one from the run that forced it.
 - Choose an observable whose odd part takes no additive first-order term
   from a coherent error of the compile; check it with the first-order
   response of every coherent error (`scripts/iqm_probe_audit.py`).
+- Decide a kernel property on the double difference kernel minus control,
+  running the control (the bright vector) at every parameter value the
+  kernel runs: on Tuna-17 the bright vector carried a signed response of
+  -0.017 (z -4.3) and the kernel's difference from it was z -1.0, while
+  Garnet's was z -4.3.
+- Set every continuous parameter on the target's angle grid (Tuna: pi/36)
+  and refuse an emitted rotation off it; compile at a setting that keeps
+  Clifford+T phases exact (`scripts/qi_cancellation_cases.py`).
 - List the arms of a +- contrast +, -, -, + within one calibration, and give
   it a null arm where the ideal odd part vanishes: decide on
   odd(t) - odd(0). A blocked order and a missing null arm let a position

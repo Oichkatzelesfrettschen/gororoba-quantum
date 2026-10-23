@@ -1,0 +1,54 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "batches": 6,
+ "contrasts": {
+  "bright pi/36": {
+   "kept": [
+    4096,
+    4096
+   ],
+   "odd": 0.0,
+   "se": 0.00017263349150062197,
+   "z_minus": 1.0,
+   "z_plus": 1.0
+  },
+  "kernel pi/12": {
+   "kept": [
+    4096,
+    4096
+   ],
+   "odd": -0.494384765625,
+   "se": 0.009603170599479656,
+   "z_minus": 0.48388671875,
+   "z_plus": -0.5048828125
+  },
+  "kernel pi/36": {
+   "kept": [
+    4096,
+    4096
+   ],
+   "odd": -0.184814453125,
+   "se": 0.010857850097846625,
+   "z_minus": 0.19287109375,
+   "z_plus": -0.1767578125
+  }
+ },
+ "falsified_hypotheses": [],
+ "h1_zero_divisor_sign": {
+  "pi/12": "resolved",
+  "pi/36": "resolved"
+ },
+ "h2_bright_z": 0.0,
+ "h3_sine_law": {
+  "contrast": 0.037767243132291295,
+  "law": 2.879385241571817,
+  "se": 0.032705571583966815,
+  "z": 1.1547648092720035
+ },
+ "readout": {
+  "e01": 0.0,
+  "e10": 0.0
+ },
+ "schema": "qi-kernel-cancellation-analysis-v1",
+ "visibility": 1.0643040175145828
+}
