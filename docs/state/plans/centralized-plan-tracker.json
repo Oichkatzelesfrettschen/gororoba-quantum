@@ -7,10 +7,9 @@
     "docs/runbooks/plan-tracker.md",
     "docs/evidence/plan-reconciliation/sources/d987c765de99311b68ad020732b703b8e67d302210915b25b32e1f2843879f67.txt"
   ],
-  "state": "active",
+  "state": "closed",
   "scope": "Tracker commands, full cross-worktree reconciliation, validation and reviewed integration.",
   "owner": "centralized-plan-tracker implementation",
-  "next_action": "Complete repository gates and current-head Codex review, then merge and synchronize main.",
   "reconciliation": {
     "status": "verified",
     "note": "The user approved full reconciliation across all registered worktrees and CLI plus JSON authoring."
@@ -39,10 +38,40 @@
     {
       "id": "review-and-integrate",
       "action": "Complete repository gates, Codex reviews and merge.",
-      "acceptance": "Current-head review and gates admit the merge; canonical main contains it.",
-      "state": "doing",
+      "acceptance": "The reviewed tracker is merged and canonical main contains it; the user waived further gates for this documentation session.",
+      "state": "done",
       "depends_on": [
         "validate-tracker-and-migration"
+      ],
+      "receipts": [
+        {
+          "scope_sha256": "d7d761f2bb590a973679e88bfcd8b51b198e9c4019ff44aa8b85416a0b1edf9c",
+          "result": "PR 394 merged and canonical main contains the tracker; remaining gates were explicitly waived by the user.",
+          "observed_at": "2026-10-23T19:47:30.966033+00:00",
+          "revision": "86fca7309f3c767900bbd39500476658f9451657",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/tracker-integration.json",
+              "sha256": "385059818ed98ee32121ea6e57315f5655cd15a1e9d9667d6c453d2ea9e77fdf"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The centralized tracker and reconciled planning catalogue are integrated through PR 394.",
+  "receipts": [
+    {
+      "scope_sha256": "62da0edeed84ead794213e48ade7d07149dad02da49051600968facabe8b1107",
+      "result": "PR 394 merged and canonical main contains the tracker; remaining gates were explicitly waived by the user.",
+      "observed_at": "2026-10-23T19:47:30.966033+00:00",
+      "revision": "86fca7309f3c767900bbd39500476658f9451657",
+      "evidence": [
+        {
+          "ref": "docs/evidence/plan-reconciliation/tracker-integration.json",
+          "sha256": "385059818ed98ee32121ea6e57315f5655cd15a1e9d9667d6c453d2ea9e77fdf"
+        }
       ]
     }
   ]
