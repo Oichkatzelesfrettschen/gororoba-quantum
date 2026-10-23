@@ -3,7 +3,7 @@
 The user explicitly resumed the single authorized retry of the original
 eight-setting order pilot. Its manifest SHA-256 is
 `1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa`.
-The regular account `eirikr` (UID 1000) ran the acquisition without sudo.
+An unprivileged local account ran the acquisition without sudo.
 Private run directories used mode 700 and data files used mode 600.
 
 The read-only plan initially refused Ascella's `calibration` status. A
