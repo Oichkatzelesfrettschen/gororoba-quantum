@@ -534,6 +534,45 @@ configuration. Record actual readiness and an acquisition-time calibration
 identity. Preserve epoch 2 as a separate intervention/replication epoch; do
 not pool across calibration changes merely because both batches completed.
 
+## Crossed diagnostic result (2026-10-23)
+
+The four jobs of the approved crossed diagnostic completed: block 1 on
+2026-10-22 (c8d90a80, ef06045d) and block 2 on 2026-10-23 (a5a0d2cf, after
+the first submission waited 7.6 hours and was canceled on the owner's
+instruction, and 33499aec), 960000 samples each. The matched check found block
+2 job 1's returned circuits identical to block 1 job 2's before job 2 went in.
+The preregistered readout
+([bdsc_diagnostic_readout.json](../../../results/quandela/bdsc_diagnostic_readout.json),
+claim `qd-belenos-bdsc-diagnostic-readout`, gate `core-647`) selects the
+**stationarity** branch:
+
+- **Branch reading.** Matched requests changed between the blocks beyond
+  their class means (heterogeneity 553 on 45 degrees of freedom, p 1e-88),
+  while all 48 matched pairs returned identical compiled circuits and no
+  instance leaked, so the change belongs to the device between the two days,
+  not to the compiler. The branch's disposition: address stationarity and
+  provider calibration before any fixed-effect confirmation.
+- **Support-conditioned rerun (no branch reads it).** On selected clicks over
+  on-support clicks the block change is consistent with none (45.8 on 45,
+  p 0.44): the block-to-block movement lives in the clicks outside the
+  target support, the dilution of unselected mode 5, not in the on-support
+  response. The template test stays resolved.
+- **Calibration shift.** The g basis state moved by +0.0035 between blocks
+  (z 11.6); f moved by +0.0003 (z 2.3) and the superpositions by -0.0015
+  (z -2.5), both inconclusive.
+- **Seeds.** Seed dispersion of the superpositions is resolved and
+  state-specific in both readings (seed interaction 5542 on 36 raw, 4424 on
+  36 support-conditioned), so a seed selection would not transfer across
+  states.
+- **Residuals.** All 32 sum-rule residuals lie beyond the 0.02 margin,
+  between -0.14 and -0.24, with no position trend inside a job (rank
+  correlations -0.13 to +0.36, p >= 0.17).
+
+The next amendment therefore starts from stationarity: a design whose
+contrasts compare matched requests within one acquisition window, or that
+measures the off-support fraction per iteration as a calibrated nuisance,
+before any confirmation reads a fixed effect.
+
 ## Research grounding
 
 The canonical BDSC source map is [bdsc_sources.md](bdsc_sources.md).
