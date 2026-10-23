@@ -3764,6 +3764,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stationarity.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stationarity.py",
+   "name": "core-675",
+   "seconds": 25.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures",
    "name": "core-670",
    "seconds": 12.0,

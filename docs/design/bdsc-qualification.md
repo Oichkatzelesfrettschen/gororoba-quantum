@@ -523,9 +523,13 @@ in one job slot per block, and the groups of block 1's job 1 run as block
   effect or a group-specific change between the windows. It is reported as
   that confounded contrast and decides nothing.
 
-The stationarity case resubmits the diagnostic's four frozen requests
-exactly, with the same seeds, parameters, groups and drawn order, so it
-needs no new QRNG read:
+The stationarity case repeats the diagnostic's four frozen requests with
+the same seeds, parameters, groups, drawn order, circuit and empty
+mitigation list, so it needs no new QRNG read. Only the sample budget
+changes, from 40000 to 100000 samples per iteration, with max_shots 120000.
+`scripts/bdsc_stationarity.py --check` proves that every other field equals
+its source manifest
+([case.json](../evidence/bdsc/stationarity/case.json)):
 
 | Block | Jobs | Timing |
 |---|---|---|
@@ -552,6 +556,26 @@ diagnostic.
 - **Reported only.**
   - The raw block change of the mode-5 share against the change of the
     plan-time and post-collection dark-count rates.
+  - The mode-5 share against a prediction fixed before submission. The
+    plan of 2026-10-23 reads mode 5 at 49520.9 counts/s, against 3137.7 and
+    1847.5 before the diagnostic's blocks; every other mode reads at most
+    130.6. The share is d / (d + g) for a mode-5 click rate d beside the
+    genuine one-click rate g, so a rate-tracking source scales the odds
+    s / (1 - s) with the plan-time rate. The retained block-mean shares
+    (0.0144 at 3137.7, 0.0075 at 1847.5) then predict 0.17 to 0.19. A share
+    near the retained 0.007 to 0.016 means the plan-time figure does not
+    track the acquired dark clicks. Either outcome is reported and decides
+    nothing. Observed after the fact: b1-j1 read a mean mode-5 share of
+    0.093 across its 24 iterations, with a range of 0.019 to 0.276. The
+    mean lies between the two predictions, and the spread across settings
+    shows that a single job-level odds figure is the wrong form for the
+    prediction: the share depends on the setting's genuine one-click rate
+    g. About 0.91 of b1-j1's samples stayed eligible under the primary
+    veto, against the 0.81 the job-level prediction implied.
+  - At that share about 0.81 of each iteration's samples stay eligible
+    under the primary veto, so the primary's power against the retained
+    residual sits somewhat below the projection's 0.72, which assumed
+    every sample eligible.
   - The perf-exposure diagnostic, and the mode-5 share against each job's
     recorded duration per sample, an acquisition exposure that does not
     rest on the unconfirmed physical_perf timing model.
@@ -560,12 +584,82 @@ diagnostic.
   - Whether the seed-by-state interaction reproduces at fixed seeds.
   - Whether each returned circuit equals its retained diagnostic
     counterpart.
+  - The excess variance tau^2 of the matched changes per class
+    (superposition, f, g), raw and under each veto, by the Paule-Mandel
+    estimate with its Q-profile 95 % interval, and the share of the raw
+    tau^2 that the veto removes. A common tau^2 does not fit the classes:
+    the reference errors of f and g lie near 0.0005 and those of the
+    superpositions near 0.0035.
+
+**Sensitivity at 100000 samples.** The retained data fix what the primary
+test can see
+([retained replay](../../results/quandela/bdsc_stationarity_retained.json),
+rebuilt by `scripts/bdsc_stationarity.py --check`).
+
+- Under the primary veto the superposition class keeps tau = 0.0021
+  (interval to 0.0042), while f and g read tau^2 consistent with zero. The
+  veto removes 0.84 of the superpositions' raw tau^2 (lower bound 0.40) and
+  all of g's (lower bound 0.98).
+- A seeded projection (10000 replicates per scenario, seed 20261023) at
+  the retained reference errors scaled to 100000 samples gives the primary
+  these readings:
+  - with no residual (tau^2 = 0), consistent with probability 0.95;
+  - with the retained residual at its point estimate, resolved with
+    probability 0.72 (0.19 at 40000 samples).
+- A resolved primary therefore separates "mode 5 carried all of the
+  instance-specific change" from "a residual superposition change of about
+  0.002 remains". The per-class tau^2 states which of the two holds and how
+  much the veto removed. It is reported and decides nothing.
+
+**Readout of the stationarity case.** The four post-calibration runs (the
+repeat of b1-j1, b1-j2, b2-j1 and b2-j2, all 2400000 samples, every
+returned circuit equal to its retained counterpart) read as follows under
+the primary veto
+([readout](../../results/quandela/bdsc_stationarity_readout.json)):
+
+- **Primary.** The heterogeneity of the matched changes reads 66.1 on 45
+  degrees of freedom (p 0.022): inconclusive, between the resolved and
+  consistent thresholds. It neither falsifies nor supports the claim that
+  mode 5 carried all of the instance-specific drift. The secondary veto
+  (`subtract`) reads 65.0 (p 0.027).
+- **Dark-click falsifier.** Consistent (statistic 103.3, p 0.31).
+- **Common shift.** The superposition class-mean change reads +0.0003
+  (z 0.8), so the retained -0.0044 does not repeat in sign or size.
+- **Group-by-block contrast.** -0.0002 (z -0.2), confounded by design.
+- **Excess variance.** The superpositions keep tau = 0.0021 (Q-profile
+  interval from 0.0009 to 0.0035, Q 55.7 on 31, p 0.004), the size of the
+  retained residual the sensitivity projection assumed. f and g read tau^2
+  consistent with zero. The veto removes 0.999 of the superpositions' raw
+  tau^2 and all of g's.
+- **Mode-5 share.** Its block means read 0.249 and 0.057 while every plan
+  and post-collection reading held mode 5 at 48440.3 counts/s, so within one
+  calibration the share changed fourfold at a constant platform figure. The
+  plan-time dark-count rate does not track the acquired mode-5 clicks, and
+  the dark-click mechanism stays a candidate.
+
+The pre-calibration b1-j1 run enters only the calibration contrast against
+its repeat
+([contrast](../../results/quandela/bdsc_stationarity_calibration_contrast.json)):
+the same 24 requests, 0 returned circuits differing, read the superposition
+shift -0.0017 (z -2.8), g +0.0006 (z 3.0) and f -0.0001 (z -1.6), with the
+mean mode-5 share rising from 0.093 to 0.255 as the plan-time figure moved
+from 49520.9 to 48440.3 counts/s. It is reported and decides nothing.
 
 **Cost and limits.**
 
-- *Cost.* Four jobs at the diagnostic's billing rule (1.08 credits and about
-  176 s each) total 4.32 credits and about 705 s. The written case restates
-  the live `qd_platform.py plan` figures.
+- *Cost.* Each job bills 1 + 1e-6 x 120000 = 1.12 credits, and the four
+  total 4.48 credits. The post-calibration repeat of b1-j1 raises the case
+  to five jobs and 5.60 credits
+  ([calibration hold](../runbooks/bdsc-qualification-case.md#calibration-hold-of-the-stationarity-case)).
+  Every retained diagnostic iteration used exactly as
+  many shots as samples, so the 1.2 shot margin stops on samples.
+- *Duration.* The timing rule (6.3 s plus 26 us per sample per iteration)
+  predicts 213.6 s per job, 0.71 of the 300 s limit, and 854.4 s in all.
+  The rule is measured only up to 40000 samples per iteration, where the
+  four diagnostic jobs ran 164 to 171 s against 176.16 s predicted. A job
+  that exceeds its duration fails the samples stop condition and costs that
+  job's credits. The written case restates the live `qd_platform.py plan`
+  figures.
 - *Error calibration.* Standard errors stay reference values under
   independent Bernoulli trials while the provider contract leaves count
   provenance unresolved.
