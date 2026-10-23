@@ -8236,6 +8236,10 @@
         {
           "path": "results/quandela/bdsc_stray_mode_veto.json",
           "sha256": "b07ee5641127937c046079d5fb70992eaf3ead5bccaeda77c2e362bc81b3348a"
+        },
+        {
+          "path": "results/quandela/bdsc_stray_mode_veto-runner-image.json",
+          "sha256": "71ffdf79b0abc071ef1b99218133d16ef72e54e0b8de20aa2ac3e2700db8cefd"
         }
       ],
       "documents": [

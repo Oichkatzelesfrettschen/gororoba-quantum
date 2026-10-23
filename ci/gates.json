@@ -3861,7 +3861,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check --out results/quandela/bdsc_stray_mode_veto-runner-image.json && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
    "name": "core-667",
    "seconds": 15.0,
    "tier": "pr"
