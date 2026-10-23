@@ -614,7 +614,10 @@ rebuilt by `scripts/bdsc_stationarity.py --check`).
 **Cost and limits.**
 
 - *Cost.* Each job bills 1 + 1e-6 x 120000 = 1.12 credits, and the four
-  total 4.48 credits. Every retained diagnostic iteration used exactly as
+  total 4.48 credits. The post-calibration repeat of b1-j1 raises the case
+  to five jobs and 5.60 credits
+  ([calibration hold](../runbooks/bdsc-qualification-case.md#calibration-hold-of-the-stationarity-case)).
+  Every retained diagnostic iteration used exactly as
   many shots as samples, so the 1.2 shot margin stops on samples.
 - *Duration.* The timing rule (6.3 s plus 26 us per sample per iteration)
   predicts 213.6 s per job, 0.71 of the 300 s limit, and 854.4 s in all.

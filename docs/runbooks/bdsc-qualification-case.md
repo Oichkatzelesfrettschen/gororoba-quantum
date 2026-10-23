@@ -389,3 +389,41 @@ went to the trash.
   current. The b1-j2 plan's figures are the post-calibration reading, and
   they give the share-against-dark-rate question its second point inside
   the case.
+
+**Post-calibration repeat of b1-j1.** The user approved a fifth job on
+2026-10-23, before any post-calibration submission: a repeat of b1-j1's
+requests after the calibration, so that block 1 sits inside one
+calibration. This amendment was committed before that job was sent.
+
+- **Requests.** The repeat submits the frozen
+  `results/quandela/cases/bdsc_stationarity/b1-j1/` directory unchanged,
+  from a fresh run directory. `admit()` accepts it byte for byte, and
+  `--matched-check` compares it with the retained diagnostic circuits as it
+  does every job.
+- **Order.** After the calibration, the repeat of b1-j1 runs first, then
+  b1-j2, then the one-hour gap, then b2-j1 and b2-j2. Each job is collected
+  and checked before the next is submitted, and the block timing rules run
+  from the repeat's and b1-j2's execution windows.
+- **Readout.** `--readout` takes the repeat as block 1's b1-j1 run beside
+  b1-j2, b2-j1 and b2-j2. All four runs then lie after the calibration, and
+  the primary, the coincidence test and the excess variance read as frozen.
+  The pre-calibration b1-j1 run is retained. It enters no frozen test, and
+  is reported only as a calibration contrast against the repeat: the same
+  24 requests, read across one calibration.
+- **Snapshots.** The snapshot taken after the pre-calibration b1-j1 run
+  lives at `results/quandela/bdsc_stationarity_dark/before-calibration-after-b1-j1/`.
+  The repeat writes `after-b1-j1/`, which the readout reads.
+- **Budget.** Five jobs at 1.12 credits and about 214 s each: 5.60 credits
+  and about 1068 s in all. That is the approved ceiling for the stop
+  condition on spent credits.
+- **Resubmission.** The resubmission rule and the hold above apply to the
+  repeat as to every other job.
+- **A later calibration.** The platform's dark-count figures change only at
+  calibration. A change in `perfs_at_plan` between consecutive jobs
+  therefore marks an intervening calibration, even when the status read
+  available at every plan. Such a calibration inside a block holds the case
+  and the case continues: the readout reports which matched pairs cross it,
+  and no further job runs, because 5.60 credits is the ceiling.
+- **A failed plan check stops the case.** After the calibration, mode 5 may
+  no longer be the hottest mode. A failed `--plan-check` is a frozen stop,
+  not a hold: the unsent run directory goes to the trash, and the case ends.
