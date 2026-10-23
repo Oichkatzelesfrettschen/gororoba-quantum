@@ -141,6 +141,9 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
     require(census["sources"] == manifest["sources"], "frozen raw/source inventory differs")
     require(census["acquisitions"] == manifest["acquisitions"], "frozen acquisition census or facts differ")
     source_paths = {source["path"] for source in manifest["sources"]}
+    pin_path = "ci/open_gororoba.pin"
+    require(pin_path in source_paths, "companion pin source is unbound")
+    require(manifest["companion_pin"] == local_path(pin_path).read_text().strip(), "companion pin differs")
     registry = json.loads((ROOT / "docs/state/research_state.json").read_text())
     current_claims = {claim["id"]: claim for claim in registry["claims"]}
     current_acquisitions = {row["id"]: row for row in registry["acquisitions"]}
@@ -163,6 +166,10 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
     for comparison in manifest["comparisons"]:
         require(comparison["path"] in source_paths, "comparison source is unbound")
         require(comparison["claim"] in {claim["id"] for claim in manifest["claims"]}, "unknown comparison claim")
+        require(
+            comparison["path"] in {item["path"] for item in current_claims[comparison["claim"]]["evidence"]},
+            "comparison source is outside the named claim's evidence",
+        )
         require(comparison["sampling_unit"] == "acquisition", "cross-job shot pairing is forbidden")
         require(
             comparison["register_semantics"] in {"provider-analyzer", "classical-bit", "qubit-last-measurement"},
@@ -295,6 +302,11 @@ def _kl_scalar(task: tuple[Any, Any, Any]) -> bool:
     return bool(compressed == compressed[0, 0] * eye(encoding.cols))
 
 
+def _recovery_law(task: tuple[Any, Any, Any, bool]) -> bool:
+    encoding, recovery, error, matched = task
+    return bool(recovery * error * encoding == (encoding if matched else zeros(8, 2)))
+
+
 def _code_control() -> dict[str, Any]:
     encoding = zeros(8, 2)
     encoding[0, 0] = encoding[7, 1] = 1
@@ -306,10 +318,31 @@ def _code_control() -> dict[str, Any]:
         kronecker_product(eye(2), eye(2), flip),
     ]
     corrects = all(ordered_map(_kl_scalar, [(encoding, first, second) for first in errors for second in errors]))
+    code_projector = encoding * encoding.H
+    recoveries = [code_projector * error.H for error in errors]
+    complete = sum((recovery.H * recovery for recovery in recoveries), zeros(8)) == eye(8)
+    recovery_law = all(
+        ordered_map(
+            _recovery_law,
+            [
+                (encoding, recovery, error, recovery_index == error_index)
+                for recovery_index, recovery in enumerate(recoveries)
+                for error_index, error in enumerate(errors)
+            ],
+        )
+    )
     phase = kronecker_product(Matrix.diag(1, -1), eye(2), eye(2))
+    logical_plus = encoding * Matrix([[1, 1], [1, 1]]) * encoding.H / 2
+    logical_minus = encoding * Matrix([[1, -1], [-1, 1]]) * encoding.H / 2
+    phase_collision = (logical_plus + phase * logical_plus * phase.H) / 2 == (
+        logical_minus + phase * logical_minus * phase.H
+    ) / 2 and logical_plus != logical_minus
     return {
         "reference": "three-qubit repetition encoding; specified error sets only",
-        "corrects_single_x": corrects,
+        "corrects_single_x": bool(corrects and complete and recovery_law),
+        "recovery_complete": bool(complete),
+        "single_x_recovery_law": recovery_law,
+        "logical_phase_ensembles_collide": bool(phase_collision),
         "corrects_single_z": _kl_scalar((encoding, eye(8), phase)),
         "algebra_specific": False,
     }

@@ -210,6 +210,10 @@ def check_case(row: dict[str, Any]) -> dict[str, Any]:
     )
     measured = probabilities(circuit)
     expected = row["expected"]
+    if any(not math.isfinite(value) for value in (*measured.values(), *expected.values())):
+        raise ValueError(f"{row['name']}: probability laws must be finite")
+    if any(value < 0 or value > 1 for value in expected.values()) or abs(sum(expected.values()) - 1) > 1e-10:
+        raise ValueError(f"{row['name']}: expected law must be a normalized probability distribution")
     if abs(sum(measured.values()) - 1) > 1e-10 or any(
         abs(measured.get(key, 0) - expected.get(key, 0)) > 1e-10 for key in measured.keys() | expected.keys()
     ):

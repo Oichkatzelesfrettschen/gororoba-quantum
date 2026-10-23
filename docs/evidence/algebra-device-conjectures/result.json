@@ -8016,7 +8016,10 @@
       "algebra_specific": false,
       "corrects_single_x": true,
       "corrects_single_z": false,
-      "reference": "three-qubit repetition encoding; specified error sets only"
+      "logical_phase_ensembles_collide": true,
+      "recovery_complete": true,
+      "reference": "three-qubit repetition encoding; specified error sets only",
+      "single_x_recovery_law": true
     },
     "conditioning": {
       "conditional": [
@@ -8251,9 +8254,9 @@
       ]
     }
   },
-  "frozen_base": "e1d95d9d8af8d2715013758ff37cccc56a7066eb",
-  "manifest_sha256": "26283a2fdab74c9d9d0c54daad734c4ff613c505eb5c0da1c76e5437023aae55",
-  "producer_sha256": "7b80092372d236eb6b2d50560fb26202f8de87fa633aa4e08ad6556e76ac5221",
+  "frozen_base": "057b7e633e6f9ca376328e6c016f964fbdac9b7b",
+  "manifest_sha256": "c74ea814d1954ef876704de9c66a24fcb173d8fccccad40d70c49544ed6a6c31",
+  "producer_sha256": "a6a3ec23fecb730f373ce445b327bfe6f6c368ebf03f3f8b79849e44d187fa47",
   "proposals": [
     {
       "boundary": "Equal depth alone leaves routing and readout confounded.",

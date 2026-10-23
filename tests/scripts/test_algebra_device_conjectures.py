@@ -123,6 +123,8 @@ def test_global_phase_associator_and_code_error_set_have_distinct_controls() -> 
         raise AssertionError(facts["associator"])
     if not facts["code"]["corrects_single_x"] or facts["code"]["corrects_single_z"]:
         raise AssertionError(facts["code"])
+    if not facts["code"]["recovery_complete"] or not facts["code"]["logical_phase_ensembles_collide"]:
+        raise AssertionError(facts["code"])
 
 
 def test_bell_selection_changes_conditional_kernel_rate_and_preserves_unconditional_rate() -> None:
@@ -182,5 +184,17 @@ def test_frozen_census_rejects_omissions_and_fabricated_provider_facts(mutation:
             row["charge_unit"] = "invented-unit"
         else:
             row["facts"][mutation] = {"invented": 99999} if mutation == "statuses" else 99999
+    with pytest.raises(ValueError):
+        module.validate_manifest(manifest)
+
+
+@pytest.mark.parametrize("mutation", ["comparison_claim", "companion_pin"])
+def test_comparison_attribution_and_companion_pin_follow_their_bound_sources(mutation: str) -> None:
+    module = implementation()
+    manifest = module.load_manifest(module.DEFAULT_MANIFEST)
+    if mutation == "comparison_claim":
+        manifest["comparisons"][0]["claim"] = "iqm-garnet-kernel-cancellation"
+    else:
+        manifest["companion_pin"] = "0" * 40
     with pytest.raises(ValueError):
         module.validate_manifest(manifest)

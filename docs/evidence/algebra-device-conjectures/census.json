@@ -6737,7 +6737,7 @@
       }
     }
   ],
-  "base_commit": "e1d95d9d8af8d2715013758ff37cccc56a7066eb",
+  "base_commit": "057b7e633e6f9ca376328e6c016f964fbdac9b7b",
   "schema": "algebra-device-census-v1",
   "sources": [
     {
@@ -6750,7 +6750,7 @@
     },
     {
       "path": "docs/design/hypercomplex-operator-evidence.md",
-      "sha256": "377508629fcd1d2bbbd3a842302240dd12549841a1e179171d5a4d6741570309"
+      "sha256": "414ff58858af3a001a07a896506b7156975b6c226d45217e95882fb767dbd259"
     },
     {
       "path": "docs/design/iqm-garnet-kernel-cancellation-probe.md",
@@ -12018,7 +12018,7 @@
     },
     {
       "path": "scripts/algebra_conjecture_circuits.py",
-      "sha256": "17de0123582ad7720aa2f52a08a537ac2554a6fb5bbc2f68943e5932cac580db"
+      "sha256": "285b7c35d16900f5fedcfa94e718ade8bc7a87e41f9f4932d0a04573b7fbc163"
     },
     {
       "path": "scripts/iqm_probe_audit.py",

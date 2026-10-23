@@ -135,7 +135,10 @@ The exact certificate covers the following bounded objects:
 - All lower-algebra basis products agree under embeddings 8 into 16 and 16 into 32. An outside-support operand
   changes the product. Padding alone changes neither those products nor physical register dimension.
 - The three-qubit repetition encoding satisfies the Knill-Laflamme scalar-compression condition for the identity
-  and single-X errors and fails the single-Z condition. This reference tests error-set specificity, rather than
+  and single-X errors and fails the single-Z condition. Four explicit recovery Kraus operators sum to a
+  trace-preserving instrument and recover every specified error on the complete logical isometry. A random I/Z
+  channel maps distinct logical plus/minus states to the same density, giving a direct phase-error counterexample.
+  This reference tests error-set specificity, rather than
   claiming a sedenion code. The [star-lattice code](../notes/topics/cd-star-lattice-tower.md) is `[[9,1,3]]`:
   one logical qubit. An arbitrary coherent sixteen-label register needs four logical qubits.
 

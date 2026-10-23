@@ -6,6 +6,8 @@ import importlib
 import importlib.util
 from typing import Any
 
+import pytest
+
 
 def implementation() -> Any:
     if importlib.util.find_spec("algebra_conjecture_circuits") is None:
@@ -49,3 +51,11 @@ def test_bank_includes_dephased_fixed_and_unmeasured_reset_controls() -> None:
         if name not in cases:
             raise AssertionError(f"missing logical control: {name}")
         module.check_case(cases[name])
+
+
+def test_nonfinite_expected_law_cannot_pass_the_numerical_tolerance() -> None:
+    module = implementation()
+    case = next(row for row in module.bank() if row["name"] == "sector-dark")
+    case["expected"] = {"0": float("nan"), "1": 1.0}
+    with pytest.raises(ValueError, match="finite"):
+        module.check_case(case)
