@@ -3849,6 +3849,14 @@
    "seconds": 14.0,
    "tier": "pr",
    "requires": ["qi"]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
+   "name": "core-667",
+   "seconds": 15.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
