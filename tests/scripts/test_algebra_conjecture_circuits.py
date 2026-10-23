@@ -20,8 +20,7 @@ def test_case_bank_contains_source_derived_and_instrument_controls() -> None:
     bank = module.bank()
     if {row["family"] for row in bank} != {"sector", "order", "measurement", "instrument", "dimension"}:
         raise AssertionError("case families are incomplete")
-    for row in bank:
-        module.check_case(row)
+    module.ordered_map(module.check_case, bank, min_items=1)
 
 
 def test_heralded_filter_accounts_for_failure_without_conditioning_it_away() -> None:
@@ -41,16 +40,17 @@ def test_repeated_measurement_keeps_each_intermediate_bit() -> None:
 def test_bank_includes_dephased_fixed_and_unmeasured_reset_controls() -> None:
     module = implementation()
     cases = {row["name"]: row for row in module.bank()}
-    for name in (
+    controls = (
         "order-dephased",
         "order-fixed-xz",
         "order-fixed-zx",
         "measurement-unmeasured-4",
         "measurement-reset-4",
-    ):
+    )
+    for name in controls:
         if name not in cases:
             raise AssertionError(f"missing logical control: {name}")
-        module.check_case(cases[name])
+    module.ordered_map(module.check_case, [cases[name] for name in controls], min_items=1)
 
 
 def test_nonfinite_expected_law_cannot_pass_the_numerical_tolerance() -> None:
