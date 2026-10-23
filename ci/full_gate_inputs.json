@@ -474,13 +474,16 @@
     "core-644": [
       "results/iqm/cases/signed-kernel-null-retest/**"
     ],
+    "core-666": [
+      "docs/evidence/evidence-closure/**"
+    ],
     "core-671": [
-      "docs/evidence/algebra-device-conjectures/**",
-      "docs/state/research_state.json",
+      "docs/**",
       "results/**",
-      "docs/evidence/quantum_inspire/**",
-      "docs/evidence/quandela/**",
-      "docs/evidence/iqm/**",
+      "scripts/**",
+      "gororoba_quantum/**",
+      "ci/**",
+      "requirements.txt",
       "tests/scripts/test_algebra_device_conjectures.py",
       "tests/scripts/test_algebra_conjecture_circuits.py"
     ]

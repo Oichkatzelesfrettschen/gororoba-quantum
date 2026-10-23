@@ -1,0 +1,8 @@
+[
+  {"name": "main", "commit": "4e56b8097e8227c757cff80df30e6a7ccb285fb7"},
+  {"name": "tuna-pauli", "commit": "bba9586549c9e17900229dd74705936cdcd64bbf"},
+  {"name": "belenos-diagnostic", "commit": "404754d92e2467b4bf3667b29fc8115a63686bd6"},
+  {"name": "photonic-conformance", "commit": "bc797e7d562faf751e3eb1af0bb2f6d084ad4f86"},
+  {"name": "tuna-pauli-current-head", "commit": "2f9168052148f1dce851dabbffbe41bc277ba025"},
+  {"name": "photonic-conformance-current-head", "commit": "27e31f46554b99086cc8b0f235e7ce9d27967f0d"}
+]
