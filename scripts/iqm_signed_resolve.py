@@ -66,12 +66,14 @@ CALIBRATION_SHOTS = 4000
 MAX_CIRCUITS = 100
 # The two heralded Garnet probe jobs differ by 31 us per requested shot; this bounds the schedule.
 SHOT_SECONDS = 0.000031
-# Measured on the retained probe: heralding kept 55.9 % of shots and the pooled visibility was 0.206.
+# The approved case is sized on the original probe's heralding retention (55.9 % of shots) and pooled
+# visibility 0.206; the null re-test superseded that visibility with 0.058 (signed_kernel_null_retest_analysis.json).
 RETENTION = 0.559
 VISIBILITY = 0.206
 Z_RESOLVE = 3.0
-# QB11's over-rotation the retained even offsets imply once the visibility damps them, used for the
-# coherent-augmented prediction (docs/design/iqm-garnet-signed-kernel-probe.md, adversarial audit).
+# The coherent-augmented model of the approved prediction adds a 2.7 % QB11 over-rotation, an attribution of
+# the even offsets that the noise-model response withdraws (algebra-hardware-probe-principles.md, F7); it
+# stays an input of that retained prediction, and the cancellation run measured QB11 at +0.15 %.
 COHERENT = {"QB11": 0.027}
 CONTROL = "QB7"
 TRAIN_QUBITS = ("QB6", "QB11")
