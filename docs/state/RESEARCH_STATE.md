@@ -514,6 +514,17 @@ circuit and charges the account ledger's change.
   Boundary: Known theorems reproduced on sampled exact points: the certificate covers its 1000 pairs only, decomposes neither D_(5,8) nor D_(5,12), and says nothing about ZD_12(A_5) outside H_5^perp or the bracket-axis limits.
   Evidence: [result.json](../evidence/d_locus_nullity/result.json), [README.md](../evidence/d_locus_nullity/README.md), [math-0702075.md](../notes/math-0702075.md).
   Gates: replayed by core-323, core-324.
+- **a5-stiefel-pfaffian-reduction** (mathematical claim, algebra). For pure a, b in A_4, L_(a,b)^2 is the real form of (L_a + i R_b)(L_a - i R_b) and L_a + i R_b is complex skew-symmetric, so |det L_(a,b)| = |Pf(L_a + i R_b)|^4; every A_5 Stiefel element is a zero divisor exactly when the degree-8 polynomial Pf(L_a + i R_b) vanishes on a dense subset of the Stiefel set.
+  Boundary: Written proof from Moreno's Theorem 2.3, which gate core-660 checks exactly on every e_i and e_i + e_j of the 30 pure coordinates (an identity of degree 2); the density step uses lower semicontinuity of rank. It reduces the A_5 question and does not decide it.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); Moreno math/0512517 Theorem 2.3: L_(a,b)^2 = [[A, -S], [S, A]] for pure a, b.
+  Evidence: [pfaffian-identity.json](../evidence/moreno_stiefel/pfaffian-identity.json), [README.md](../evidence/moreno_stiefel/README.md), [math-0512517.md](../notes/math-0512517.md).
+  Gates: replayed by core-660.
+- **a5-stiefel-pfaffian-identity-test** (exact finite certificate, algebra). At 96 seeded points of the A_5 Stiefel variety over F_p, 48 for each of the two largest primes p = 1 mod 4 below 2^61, drawn through the isotropic parametrization z = a + i b, z' = a - i b, rank(L_a + i R_b) = 14 and rank L_(a,b) = 28 modulo p, so Pf(L_a + i R_b) = 0; 16 A_6 Stiefel controls read full ranks 32 and 64 and 16 non-Stiefel A_5 controls read 16 and 32.
+  Boundary: Exact modulo-p ranks at the recorded points only. By Schwartz-Zippel a Pfaffian whose restriction is nonzero modulo p vanishes at one uniform point with probability at most 26/p, so the record makes a generic counterexample improbable without proving universality; the draws are pseudorandom and a modulo-p rank bounds the rational rank from below only.
+  Evidence: [pfaffian-identity.json](../evidence/moreno_stiefel/pfaffian-identity.json), [README.md](../evidence/moreno_stiefel/README.md).
+  Gates: replayed by core-660.
+  Depends on: a5-stiefel-pfaffian-reduction.
 - **a6-stiefel-witness** (exact finite certificate, algebra). The retained integer A_6 Stiefel element (pure halves, a.b = 0, |a|^2 = |b|^2 = 62) has an invertible left multiplication: det L_v is 810824905836647058 modulo 2^61 - 1 and 486680426 modulo 10^9 + 7, so not every A_6 Stiefel element is a zero divisor.
   Boundary: One witness; the 24 Cayley-transform and 7 other integer elements are further full-rank points of the same family.
   Evidence: [nullity.json](../evidence/moreno_stiefel/nullity.json), [README.md](../evidence/moreno_stiefel/README.md).
@@ -1275,11 +1286,11 @@ circuit and charges the account ledger's change.
 ## Open claims
 
 - **a5-stiefel-universal** (mathematical claim, algebra). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.
-  Boundary: The 32 exact points support it and prove nothing beyond themselves.
+  Boundary: The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.
   Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [math-0512517.md](../notes/math-0512517.md).
-  Depends on: a5-stiefel-selected-nullity.
+  Depends on: a5-stiefel-selected-nullity, a5-stiefel-pfaffian-reduction, a5-stiefel-pfaffian-identity-test.
 - **dimension32-global-topology** (mathematical claim, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
   Boundary: Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.
   Proof origin: unproved-open.

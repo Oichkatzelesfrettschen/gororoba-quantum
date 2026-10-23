@@ -1768,6 +1768,14 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_identity.py --check docs/evidence/moreno_stiefel/pfaffian-identity.json",
+   "name": "core-660",
+   "seconds": 9.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qubit_baseline.py",
    "name": "core-268",

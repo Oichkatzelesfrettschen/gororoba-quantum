@@ -2476,6 +2476,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
     "scripts/tpu_probe.py",
     "scripts/walk_scaffold_channels.py"
@@ -11549,6 +11550,19 @@
    "scipy",
    "sys",
    "tempfile",
+   "typing"
+  ],
+  "scripts/stiefel_pfaffian_identity.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "json",
+   "moreno_stiefel_nullity",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "random",
+   "sys",
    "typing"
   ],
   "scripts/stiefel_witness_certificate.py": [
