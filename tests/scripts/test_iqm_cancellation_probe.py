@@ -26,7 +26,8 @@ def test_kernel_law_and_sign_mutations() -> None:
 def trains(eps: float, e01: float, e10: float, merged: bool = False) -> tuple:
     import iqm_cancellation_probe as probe
 
-    lengths = list(probe.AMPLIFY_K)
+    # A train of index k holds 4k + 1 pi/2 pulses (train()), the counts evaluate() fits.
+    lengths = [4 * k + 1 for k in probe.AMPLIFY_K]
     factor, offset = 1 - e01 - e10, e10 - e01
     n_read = [lengths[-1]] * len(lengths) if merged else lengths
     rows = [(factor * -math.sin(n * math.pi / 2 * eps) + offset, 1e-3, 4000) for n in n_read]
