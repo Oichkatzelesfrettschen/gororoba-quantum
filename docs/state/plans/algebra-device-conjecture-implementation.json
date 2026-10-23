@@ -24,13 +24,13 @@
       "receipts": [
         {
           "scope_sha256": "8b88315c1ecb9e8eb374760fab780ecae311d490034e648dbb037e85eaaa3c1b",
-          "result": "The source-bound replay and circuit gate passed before main reconciliation.",
-          "observed_at": "2026-10-23T20:12:13.767336+00:00",
-          "revision": "3314af235bfff2cfe577b5c3e7aef01f8de856dc",
+          "result": "The scoped obligation revalidated after split-gate reconciliation; all four focused gates passed.",
+          "observed_at": "2026-10-23T20:49:34.676726+00:00",
+          "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
           "evidence": [
             {
               "ref": "docs/evidence/algebra-device-conjectures/manifest.json",
-              "sha256": "23d4780dcb8fed40e6865a4ef6f15a71c0da84db3063a4c6e98523af458b7c5b"
+              "sha256": "8892a94a820bb2a14a506154a4e5ac3588a7b05854496ea8e7183b0431a2672a"
             }
           ]
         }
@@ -44,13 +44,13 @@
       "receipts": [
         {
           "scope_sha256": "8f4a834faafee4995f1373d76e397dc5da7e63db42a6b4fbe3dfacb4764c4fa8",
-          "result": "The source-bound replay and circuit gate passed before main reconciliation.",
-          "observed_at": "2026-10-23T20:12:13.767889+00:00",
-          "revision": "3314af235bfff2cfe577b5c3e7aef01f8de856dc",
+          "result": "The scoped obligation revalidated after split-gate reconciliation; all four focused gates passed.",
+          "observed_at": "2026-10-23T20:49:34.676726+00:00",
+          "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
           "evidence": [
             {
               "ref": "docs/evidence/algebra-device-conjectures/result.json",
-              "sha256": "cb5140698e1d85d252f997a1e2ff34610f28d46ce38741004c770aa3985d3535"
+              "sha256": "a7575c1822ec7b7ec8c60cf7c81c9e604a01ae7e1960baa066d5bae1cb1a1b0d"
             }
           ]
         }
@@ -64,13 +64,13 @@
       "receipts": [
         {
           "scope_sha256": "d712384cc0c45f263f37649a2d3b1d9f7bcf9c9856d531e7299d6b9f017a0d70",
-          "result": "All four focused gates passed on the combined tree after the tracked import projection was refreshed.",
-          "observed_at": "2026-10-23T20:13:31.212040+00:00",
-          "revision": "6585cc43394c8b8d0bc5ff57343ef18e30b55356",
+          "result": "The scoped obligation revalidated after split-gate reconciliation; all four focused gates passed.",
+          "observed_at": "2026-10-23T20:49:34.676726+00:00",
+          "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
           "evidence": [
             {
-              "ref": "docs/evidence/algebra-device-conjectures/focused-validation.json",
-              "sha256": "aed12a5dc08a1a532eac8239e2e21689e3c2ca6ac837755c86edd04024eed1df"
+              "ref": "docs/evidence/algebra-device-conjectures/focused-validation-split-gates.json",
+              "sha256": "fd20caf9cc2824cc01809e835eb2ddba4242e14bfd8607f44de03924828f9b95"
             }
           ]
         }
@@ -82,13 +82,13 @@
   "receipts": [
     {
       "scope_sha256": "a98da229385dfa7ca2169712767eea3ea385a2662d7b66b0d6aa945f0a731c69",
-      "result": "Source-bound proposal synthesis, exact/instrument controls and focused offline verification are complete within the recorded scope.",
-      "observed_at": "2026-10-23T20:13:31.212040+00:00",
-      "revision": "6585cc43394c8b8d0bc5ff57343ef18e30b55356",
+      "result": "The bounded offline implementation revalidated after split-gate reconciliation; hosted integration remains separate.",
+      "observed_at": "2026-10-23T20:49:34.676726+00:00",
+      "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
       "evidence": [
         {
-          "ref": "docs/evidence/algebra-device-conjectures/focused-validation.json",
-          "sha256": "aed12a5dc08a1a532eac8239e2e21689e3c2ca6ac837755c86edd04024eed1df"
+          "ref": "docs/evidence/algebra-device-conjectures/focused-validation-split-gates.json",
+          "sha256": "fd20caf9cc2824cc01809e835eb2ddba4242e14bfd8607f44de03924828f9b95"
         }
       ]
     }
