@@ -3772,6 +3772,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_schedule.py check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_qd_schedule.py && shellcheck -S error scripts/qd_schedule_tick.sh",
+   "name": "core-676",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures",
    "name": "core-670",
    "seconds": 12.0,

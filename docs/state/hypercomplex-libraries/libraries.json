@@ -2410,6 +2410,7 @@
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
     "scripts/bdsc_pauli.py",
+    "scripts/bdsc_stationarity.py",
     "scripts/bdsc_stray_mode_veto.py",
     "scripts/box_kite_analysis.py",
     "scripts/box_kite_cases.py",
@@ -3622,6 +3623,7 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/lsq_conditioning_study.py",
+    "scripts/rank_locus_padic_lift.py",
     "scripts/wheel_zero_divisors.py"
    ]
   },
@@ -3985,6 +3987,7 @@
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
+    "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/rank_locus_second_order.py",
     "scripts/rank_locus_tangent_linearity.py"
@@ -5721,6 +5724,7 @@
     "scripts/axis_tilt_substrate_split.py",
     "scripts/bdsc_diagnostic.py",
     "scripts/bdsc_forensics.py",
+    "scripts/bdsc_stationarity.py",
     "scripts/bdsc_stray_mode_veto.py",
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
@@ -9117,8 +9121,11 @@
    "hashlib",
    "json",
    "math",
+   "numpy",
+   "parallel",
    "pathlib",
    "qd_platform",
+   "qi_readout_ringdown_cases",
    "scipy",
    "sys",
    "typing"
@@ -11097,6 +11104,23 @@
    "unittest",
    "urllib",
    "zlib"
+  ],
+  "scripts/qd_schedule.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qd_platform",
+   "re",
+   "shutil",
+   "subprocess",
+   "sys",
+   "time",
+   "typing"
   ],
   "scripts/qet_two_qubit_reference.py": [
    "__future__",
