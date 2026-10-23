@@ -1728,11 +1728,83 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -n auto --dist loadgroup --durations=15 --ignore=tests/test_cli_self_tests.py tests",
    "name": "core-615",
    "seconds": 15.1,
    "tier": "pr",
    "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group01",
+   "name": "core-self-test-01",
+   "seconds": 28.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group02",
+   "name": "core-self-test-02",
+   "seconds": 25.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group03",
+   "name": "core-self-test-03",
+   "seconds": 24.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group04",
+   "name": "core-self-test-04",
+   "seconds": 25.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group05",
+   "name": "core-self-test-05",
+   "seconds": 24.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group06",
+   "name": "core-self-test-06",
+   "seconds": 24.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group07",
+   "name": "core-self-test-07",
+   "seconds": 24.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group08",
+   "name": "core-self-test-08",
+   "seconds": 24.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_self_tests.py -k group09",
+   "name": "core-self-test-09",
+   "seconds": 10.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
