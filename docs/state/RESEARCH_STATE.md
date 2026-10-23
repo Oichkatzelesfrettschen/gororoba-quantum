@@ -482,12 +482,19 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-044.
   Depends on: sedenion-determinant-membership.
 - **cd-associator-census** (mathematical claim, algebra). The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).
-  Boundary: The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.
+  Boundary: Real basis triples under the cd_core.cd_sign convention; the moving-pair spectrum is the separate claim cd-moving-pair-walsh-proof.
   Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); real basis triples.
   Evidence: [census.json](../evidence/cd_associator_defect_census/census.json), [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
   Gates: replayed by core-212, sources-215.
   Related claims: cd-moving-pair-walsh-proof.
+- **cd-moving-pair-walsh-proof** (mathematical claim, algebra). For every D = 2^n >= 16, omega(D/2+1, D/4+3, k) = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; the pair has algebraic degree n - 2, and for D >= 32 Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 (at D = 16 support 4, amplitude 1/2, nonlinearity 4).
+  Boundary: Theorem 5 and its corollary in the census note prove the formula from the certified associator lifting (Lemma 3) and the fixed-pair parity law (Theorem 4); the census checks the formula, both lifting steps and every spectral law from 16 to 4096. No proof assistant has checked the argument.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
+  Gates: replayed by core-212, sources-215.
+  Depends on: cd-associator-census.
 - **singular-sector-split** (mathematical claim, algebra). (L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.
   Boundary: Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.
   Proof origin: repository-written.
@@ -507,6 +514,17 @@ circuit and charges the account ledger's change.
   Boundary: Known theorems reproduced on sampled exact points: the certificate covers its 1000 pairs only, decomposes neither D_(5,8) nor D_(5,12), and says nothing about ZD_12(A_5) outside H_5^perp or the bracket-axis limits.
   Evidence: [result.json](../evidence/d_locus_nullity/result.json), [README.md](../evidence/d_locus_nullity/README.md), [math-0702075.md](../notes/math-0702075.md).
   Gates: replayed by core-323, core-324.
+- **a5-stiefel-pfaffian-reduction** (mathematical claim, algebra). For pure a, b in A_4, L_(a,b)^2 is the real form of (L_a + i R_b)(L_a - i R_b) and L_a + i R_b is complex skew-symmetric, so |det L_(a,b)| = |Pf(L_a + i R_b)|^4; every A_5 Stiefel element is a zero divisor exactly when the degree-8 polynomial Pf(L_a + i R_b) vanishes on a dense subset of the Stiefel set.
+  Boundary: Written proof from Moreno's Theorem 2.3, which gate core-660 checks exactly on every e_i and e_i + e_j of the 30 pure coordinates (an identity of degree 2); the density step uses lower semicontinuity of rank. It reduces the A_5 question and does not decide it.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); Moreno math/0512517 Theorem 2.3: L_(a,b)^2 = [[A, -S], [S, A]] for pure a, b.
+  Evidence: [pfaffian-identity.json](../evidence/moreno_stiefel/pfaffian-identity.json), [README.md](../evidence/moreno_stiefel/README.md), [math-0512517.md](../notes/math-0512517.md).
+  Gates: replayed by core-660.
+- **a5-stiefel-pfaffian-identity-test** (exact finite certificate, algebra). At 96 seeded points of the A_5 Stiefel variety over F_p, 48 for each of the two largest primes p = 1 mod 4 below 2^61, drawn through the isotropic parametrization z = a + i b, z' = a - i b, rank(L_a + i R_b) = 14 and rank L_(a,b) = 28 modulo p, so Pf(L_a + i R_b) = 0; 16 A_6 Stiefel controls read full ranks 32 and 64 and 16 non-Stiefel A_5 controls read 16 and 32.
+  Boundary: Exact modulo-p ranks at the recorded points only. By Schwartz-Zippel a Pfaffian whose restriction is nonzero modulo p vanishes at one uniform point with probability at most 26/p, so the record makes a generic counterexample improbable without proving universality; the draws are pseudorandom and a modulo-p rank bounds the rational rank from below only.
+  Evidence: [pfaffian-identity.json](../evidence/moreno_stiefel/pfaffian-identity.json), [README.md](../evidence/moreno_stiefel/README.md).
+  Gates: replayed by core-660.
+  Depends on: a5-stiefel-pfaffian-reduction.
 - **a6-stiefel-witness** (exact finite certificate, algebra). The retained integer A_6 Stiefel element (pure halves, a.b = 0, |a|^2 = |b|^2 = 62) has an invertible left multiplication: det L_v is 810824905836647058 modulo 2^61 - 1 and 486680426 modulo 10^9 + 7, so not every A_6 Stiefel element is a zero divisor.
   Boundary: One witness; the 24 Cayley-transform and 7 other integer elements are further full-rank points of the same family.
   Evidence: [nullity.json](../evidence/moreno_stiefel/nullity.json), [README.md](../evidence/moreno_stiefel/README.md).
@@ -538,6 +556,10 @@ circuit and charges the account ledger's change.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [normal_form.json](../evidence/ccz-reduction/normal_form.json), [cubic_core_certificates.json](../evidence/ccz-reduction/independent_package/cubic_core_certificates.json), [README.md](../evidence/ccz-reduction/README.md), [README.md](../evidence/simulation-notebook-audit/README.md), [RETENTION.md](../evidence/ccz-reduction/independent_package/RETENTION.md).
   Gates: replayed by core-278, core-284.
+- **a5-nullity12-gap-extended-precision** (numerical or stochastic simulation, algebra). At the three nonzd-axis witnesses {e_p, 0} of D_(5,12), 12 seeded near-rank-20 points found by alternating projection from starts at scales 0.03 and 0.003 and refined at 110 digits to sigma_21/sigma_1 < 1e-40 keep their float64 relative distance from the {a, 0} family cone (4.28e-4 to 2.47e-2) at three significant digits while lying 1.51e-3 to 2.68e-2 from the witness, and 64-perturbation float64 clouds at scale 1e-2 span 16 directions.
+  Boundary: Floating and extended-precision arithmetic at seed 20261023, 110 digits, float tolerance 1e-14, cloud scale 1e-2. A refined point has L_y within 1e-40 of a rank-20 matrix that need not be a left multiplication; the rank-20 cone meets span{L_e} far from transversally, so no error bound places an exact point of D_(5,12) near it, and the record establishes neither membership, nor that the family fails to exhaust D_(5,12), nor a local dimension. A 16-direction span bounds the local dimension from above only. An exact parameterized piece or local equations remain the admission route.
+  Evidence: [result.json](../evidence/rank_locus_nullity12_refinement/result.json), [README.md](../evidence/rank_locus_nullity12_refinement/README.md), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md).
+  Gates: replayed by core-662.
 - **algebra-hypercomplex-operator-witnesses** (exact finite certificate, algebra). The registered finite exact calculations give derivation dimension 14, chosen-octonion stabilizer dimension 8, occupation dimensions 1/3/3/1 and complex Clifford image dimension 64. The draft ladder pairing fails six stabilizer checks, while the aligned pairing passes all implemented checks. The even five-mode reference has vanishing recorded Standard Model anomaly sums.
   Boundary: Finite convention-bound algebra and a representation reference establish neither a unique Standard Model derivation nor its dynamics, a fundamental scalar field, or device performance.
   Assumptions: The registered cd_core multiplication convention and explicit encoding maps fix the finite basis calculations..
@@ -1267,18 +1289,12 @@ circuit and charges the account ledger's change.
 
 ## Open claims
 
-- **cd-moving-pair-walsh-proof** (mathematical claim, algebra). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.
-  Boundary: Exhaustively checked from 32 to 4096; a proof is outstanding.
-  Proof origin: unproved-open.
-  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
-  Evidence: [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
-  Depends on: cd-associator-census.
 - **a5-stiefel-universal** (mathematical claim, algebra). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.
-  Boundary: The 32 exact points support it and prove nothing beyond themselves.
+  Boundary: The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.
   Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [math-0512517.md](../notes/math-0512517.md).
-  Depends on: a5-stiefel-selected-nullity.
+  Depends on: a5-stiefel-selected-nullity, a5-stiefel-pfaffian-reduction, a5-stiefel-pfaffian-identity-test.
 - **dimension32-global-topology** (mathematical claim, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
   Boundary: Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.
   Proof origin: unproved-open.
@@ -1286,7 +1302,7 @@ circuit and charges the account ledger's change.
   Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md).
   Depends on: four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
 - **a5-nonzero-divisor-two-dimension-gap** (mathematical claim, geometry). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.
-  Boundary: The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.
+  Boundary: The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby.
   Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [result.json](../evidence/rank_locus_second_order/result.json), [result.json](../evidence/rank_locus_rotation_composite/result.json), [audit.json](../evidence/rank_locus_rotation_composite/audit.json), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md), [README.md](../evidence/rank_locus_local_dimension/README.md), [README.md](../evidence/rank_locus_second_order/README.md), [README.md](../evidence/rank_locus_rotation_composite/README.md).

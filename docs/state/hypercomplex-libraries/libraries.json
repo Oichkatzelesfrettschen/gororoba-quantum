@@ -2106,7 +2106,9 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/rank_locus_nullity12_refinement.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": []
   },
@@ -2469,6 +2471,7 @@
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
+    "scripts/rank_locus_nullity12_refinement.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -2476,6 +2479,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
     "scripts/tpu_probe.py",
     "scripts/walk_scaffold_channels.py"
@@ -11248,6 +11252,20 @@
    "sys",
    "typing"
   ],
+  "scripts/rank_locus_nullity12_refinement.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "fractions",
+   "json",
+   "mpmath",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sys",
+   "typing"
+  ],
   "scripts/rank_locus_rotation_composite.py": [
    "__future__",
    "algebra_package_tables",
@@ -11551,6 +11569,19 @@
    "tempfile",
    "typing"
   ],
+  "scripts/stiefel_pfaffian_identity.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "json",
+   "moreno_stiefel_nullity",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "random",
+   "sys",
+   "typing"
+  ],
   "scripts/stiefel_witness_certificate.py": [
    "__future__",
    "argparse",
@@ -11734,6 +11765,9 @@
   ],
   "mcp": [
    "mcp"
+  ],
+  "mpmath": [
+   "mpmath"
   ],
   "networkx": [
    "networkx"

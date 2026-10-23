@@ -57,12 +57,11 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(102 established, 49 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
+(106 established, 49 exploratory, 3 open, 10 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **proposed-tuna17-zero-divisor-matched-response** (proposed, proposed experiment). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
-- **cd-moving-pair-walsh-proof** (open, mathematical claim). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
-- **a5-stiefel-universal** (open, mathematical claim). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open. Depends on a5-stiefel-selected-nullity.
+- **a5-stiefel-universal** (open, mathematical claim). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open. Depends on a5-stiefel-selected-nullity, a5-stiefel-pfaffian-reduction, a5-stiefel-pfaffian-identity-test.
 - **dimension32-global-topology** (open, mathematical claim). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants. Depends on four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
 - **proposed-conditional-ramsey-hamiltonian** (proposed, proposed experiment). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model. Depends on hw-coherence-window.
 - **proposed-signed-kernel-probe** (proposed, proposed experiment). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order. Depends on algebra-circuit-fixtures.
