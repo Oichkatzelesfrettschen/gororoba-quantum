@@ -87,6 +87,13 @@ prices unchanged:
   100 circuits, 10000 instructions; Sirius 20000, 100, 75000), 0.50 and
   0.30 credits/s and the 1800.00 and 1080.00 credit timeslots.
 
+iqm-client 36.0.0 (iqm-resonance-stack 4.7.0, Qiskit 2.1.2) builds the
+Target of all three QPUs on 50.0.0 with `cz`, `delay`, `id`, `if_else`,
+`measure`, `r` and `reset`, and a Bell circuit transpiles at optimization
+level 3 to 3 `r`, 1 `cz` and 2 `measure`, Sirius adding 2 `move`, as on
+2026-10-19; the client authenticates with `token=` only while
+`IQM_TOKENS_FILE` is unset, since it refuses both sources together.
+
 The read-only MCP tools (`iqm_quantum_computer`, `iqm_architecture`,
 `iqm_metrics`, `iqm_queue_availability`, `iqm_timeslots`, `iqm_artifact`,
 `iqm_tokens`) answer for both QPUs on 50.0.0 with unchanged response shapes,
