@@ -1266,8 +1266,14 @@ def submit(
     expected_seconds: float,
     per_job_credits: float,
     admit_statuses: tuple[str, ...] = (),
+    verify: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
-    """Send one approved case as one job while holding the token's submit lock beside the token file."""
+    """Send one approved case as one job while holding the token's submit lock beside the token file.
+
+    verify receives the plan whose body is posted, before the checkpoint is
+    written, so a caller's own stop conditions bind the request actually sent;
+    a PlatformError from it refuses the submission with nothing written.
+    """
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
     if load_case(case_dir)[0].get("draft"):
@@ -1279,6 +1285,8 @@ def submit(
         if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
         checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits, admit_statuses)
+        if verify is not None:
+            verify(checked)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
         receipt = {
             "schema": SUBMISSION_SCHEMA,

@@ -138,6 +138,7 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
+| [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
 | [coherence-case-submission-review.md](../plans/reviews/coherence-case-submission-review.md) | coherence-window case, submission-path review |

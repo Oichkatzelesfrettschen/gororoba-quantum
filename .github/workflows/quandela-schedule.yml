@@ -1,0 +1,111 @@
+name: quandela-schedule
+
+# Steps every approved Quandela schedule on main (scripts/qd_schedule.py,
+# docs/runbooks/quandela-scheduled-runs.md). Every run shares one concurrency
+# group and none cancels another in progress: a tick cancelled between submit
+# and collect leaves a provider job without its record, and the token admits
+# one queued or running job at a time. The token lives only in the quandela
+# environment, whose deployment branches are restricted to main, so a workflow
+# file on any other branch cannot read it.
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: plan-only plans the next job read-only; run steps the schedule
+        type: choice
+        options: [plan-only, run]
+        default: plan-only
+      schedule:
+        description: one schedule path, or empty for every enabled schedule
+        required: false
+        default: ""
+
+concurrency:
+  group: quandela-account
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  PYTHON: python3
+  # Qiskit 2.6 Rust TLS plus late-loaded Aer OpenMP need reserved loader capacity.
+  GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
+  GOROROBA_PINS_REQUIRED: "1"
+
+jobs:
+  tick:
+    # The repository variable QUANDELA_SCHEDULE_ENABLED is the kill switch for
+    # every submitting tick; a plan-only dispatch reads and never submits.
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (vars.QUANDELA_SCHEDULE_ENABLED == 'true' ||
+        (github.event_name == 'workflow_dispatch' && inputs.mode == 'plan-only'))
+    runs-on: ubuntu-26.04
+    environment: quandela
+    # A hosted job ends at 6 h; qd_schedule_tick.sh stops collecting before
+    # DEADLINE, and the next tick resumes an uncollected job from its receipt.
+    timeout-minutes: 350
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      PINS_VENV: /home/runner/.cache/gororoba-ci/pins-venv
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        id: python
+        with:
+          python-version: "3.14.7"
+      # The key equals ci.yml's, so a tick reuses the gates' pinned environment;
+      # the body digest a schedule pins proves the runner's Perceval builds the
+      # same request as the planning host.
+      - name: Restore the pinned environment
+        id: pins-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.PINS_VENV }}
+          key: pins-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('requirements.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
+      - name: Install pinned dependencies
+        if: steps.pins-cache.outputs.cache-hit != 'true'
+        env:
+          BASE_PYTHON: ${{ steps.python.outputs.python-path }}
+        run: |
+          set -eu
+          "$BASE_PYTHON" -m venv "$PINS_VENV"
+          PYTHON="$PINS_VENV/bin/python" sh ci/install_pins.sh
+      - name: Save the pinned environment
+        if: steps.pins-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.PINS_VENV }}
+          key: ${{ steps.pins-cache.outputs.cache-primary-key }}
+      - name: Use the pinned environment
+        run: |
+          echo "PYTHON=$PINS_VENV/bin/python" >> "$GITHUB_ENV"
+          echo "$PINS_VENV/bin" >> "$GITHUB_PATH"
+      - name: Tick
+        env:
+          QUANDELA_TOKEN: ${{ secrets.QUANDELA_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          MODE: ${{ inputs.mode || 'run' }}
+          SCHEDULE: ${{ inputs.schedule }}
+        run: |
+          set -eu
+          if [ -z "$QUANDELA_TOKEN" ]; then
+            echo "::error::the quandela environment holds no QUANDELA_TOKEN secret"
+            exit 1
+          fi
+          umask 077
+          mkdir -p "$RUNNER_TEMP/qd-token"
+          printf '%s\n' "$QUANDELA_TOKEN" > "$RUNNER_TEMP/qd-token/token"
+          unset QUANDELA_TOKEN
+          umask 022
+          export QUANDELA_TOKEN_FILE="$RUNNER_TEMP/qd-token/token"
+          DEADLINE=$(( $(date +%s) + 330 * 60 ))
+          export DEADLINE
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          sh scripts/qd_schedule_tick.sh "$MODE" "$SCHEDULE"
