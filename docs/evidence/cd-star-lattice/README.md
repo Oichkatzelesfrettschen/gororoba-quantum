@@ -63,8 +63,9 @@ on 32 workers, which keeps n >= 32 out of the gated record.
 I + W_16 and the sedenion sign table among the five equivalence classes of
 Hadamard matrices of order 16 in
 [external/mckay_had16.txt](external/mckay_had16.txt), Brendan McKay's list
-retained from https://users.cecs.anu.edu.au/~bdm/data/hadamard/had16.txt
-(sha256 `67fb6f1a36f6893fca541a85754329812b9b8b454b3438ec9b6fd00005c2f170`),
+retained unmodified from https://users.cecs.anu.edu.au/~bdm/data/hadamard/had16.txt
+(sha256 `67fb6f1a36f6893fca541a85754329812b9b8b454b3438ec9b6fd00005c2f170`) under McKay's
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) grant for the collection's data files,
 and counts the Hadamard automorphism pairs of I + W_n for n = 4 to 64. Classes
 carry the file's line numbers; the [source note](../../notes/papers/mckay-hadamard-matrices.md)
 records the page's equivalence relation and that it maps no line to Hall's or
