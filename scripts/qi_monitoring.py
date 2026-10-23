@@ -58,13 +58,21 @@ def resolve(name: str, http: Any) -> str:
     """The access token the link service names for a dashboard; only a redirect ending at the token is one."""
     if name not in DASHBOARDS:
         raise ValueError(f"dashboard must be one of {', '.join(DASHBOARDS)}, not {name!r}")
-    response = http.get(f"{LINKS}/{DASHBOARDS[name]}", allow_redirects=False, timeout=TIMEOUT_SECONDS)
+    response = _send(http, "get", f"{LINKS}/{DASHBOARDS[name]}", allow_redirects=False)
     location = response.headers.get("Location", "")
     # The service appends an unknown path to the Status token, so a trailing path names no dashboard.
     match = TOKEN.search(location)
     if response.status_code not in (301, 302, 307, 308) or match is None or location[match.end() :].split("?")[0]:
         raise MonitoringError(f"{LINKS}/{DASHBOARDS[name]} redirects to {location!r} (HTTP {response.status_code})")
     return match.group(1)
+
+
+def _send(http: Any, method: str, url: str, **options: Any) -> Any:
+    """One request; a requests transport failure (DNS, connection, timeout) is an OSError and raises MonitoringError."""
+    try:
+        return getattr(http, method)(url, timeout=TIMEOUT_SECONDS, **options)
+    except OSError as error:
+        raise MonitoringError(f"{method.upper()} {url}: {type(error).__name__}: {error}") from error
 
 
 def _json(response: Any, what: str) -> Any:
@@ -103,7 +111,7 @@ def value_text(panel: dict[str, Any]) -> dict[str, str]:
 def definition_of(name: str, http: Any) -> tuple[str, dict[str, Any]]:
     """The dashboard's access token and its public definition response."""
     token = resolve(name, http)
-    response = http.get(f"{GRAFANA}/api/public/dashboards/{token}", timeout=TIMEOUT_SECONDS)
+    response = _send(http, "get", f"{GRAFANA}/api/public/dashboards/{token}")
     body = _json(response, f"dashboard {name}")
     if response.status_code != 200 or not isinstance(body, dict) or "dashboard" not in body:
         raise MonitoringError(f"dashboard {name}: HTTP {response.status_code}: {_message(body)}")
@@ -195,9 +203,7 @@ def query(name: str, panel_id: int, hours: float = 6.0, http: Any | None = None)
         "maxDataPoints": MAX_POINTS,
         "timeRange": {"from": f"now-{int(hours * 3600)}s", "to": "now", "timezone": "utc"},
     }
-    response = http.post(
-        f"{GRAFANA}/api/public/dashboards/{token}/panels/{panel_id}/query", json=request, timeout=TIMEOUT_SECONDS
-    )
+    response = _send(http, "post", f"{GRAFANA}/api/public/dashboards/{token}/panels/{panel_id}/query", json=request)
     body = _json(response, f"panel {panel_id} of {name}")
     if not isinstance(body, dict) or "results" not in body:
         raise MonitoringError(f"panel {panel_id} of {name}: HTTP {response.status_code}: {_message(body)}")

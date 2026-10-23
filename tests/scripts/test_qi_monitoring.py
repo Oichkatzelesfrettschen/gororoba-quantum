@@ -126,3 +126,22 @@ def test_dashboard_without_panels_reads_empty() -> None:
         {"panels": [{"id": 1, "panels": None}]}
     ) != [{"id": 1, "panels": None}]:
         raise AssertionError("a null panel list did not read as empty")
+
+
+class Unreachable:
+    def get(self, url: str, **_options: Any) -> Response:
+        raise ConnectionError(f"name resolution failed for {url}")
+
+    post = get
+
+
+def test_transport_failure_raises_monitoring_error_and_cli_exits_1(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    with pytest.raises(
+        monitoring.MonitoringError, match="GET https://dashboard.quantum-inspire.com/tuna-9: ConnectionError"
+    ):
+        monitoring.dashboard("tuna-9", Unreachable())
+    monkeypatch.setattr(monitoring, "session", Unreachable)
+    if monitoring.main(["status", "1"]) != 1 or "ConnectionError" not in capsys.readouterr().err:
+        raise AssertionError("the CLI did not report a transport failure as its one-line error")
