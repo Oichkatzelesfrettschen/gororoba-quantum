@@ -81,6 +81,18 @@ The bounded retry authorization replaces the execution hold for that attempt;
 it establishes neither instrument recovery nor authority to cancel the other
 workflow's acquisition.
 
+The user resumed submission after restoring shell network access. The
+[authorized order-pilot retry](../../results/quandela/runs/ascella-approved-order-pilot-retry/README.md)
+waited through an observed calibration status, then submitted the unchanged
+approved manifest at 06:56:37 UTC on 23 October 2026 after both live status
+records reported `available` and token occupancy was empty. Job
+`3f707140-4413-40ed-bc31-58e09238926f` returned the same input-port diagnostic
+after one execution second, with zero shots and zero samples. Token usage
+increased from 56 to 57 jobs and from five to six Ascella execution seconds;
+both credit counters stayed unchanged. The authorized retry is consumed,
+and its instrument error triggers the stopping rule. The public availability
+transition again supplies insufficient evidence of restored input control.
+
 A safe protobuf inspection of the published architecture finds empty logical
 `input_ports` and `output_ports` maps, alongside the six-source occupation,
 twelve detectors and optical circuit. Logical Perceval ports therefore supply

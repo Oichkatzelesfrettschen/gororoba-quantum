@@ -2,6 +2,13 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-approved-order-pilot-retry",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-approved-order-pilot-retry",
+      "family": "authorized photonic order instrument recovery retry",
+      "question": "Does the unchanged approved eight-setting order pilot execute after Ascella reports available and provide positive samples for device conformance analysis?"
+    },
+    {
       "id": "qd-ascella-native-input-map-recheck",
       "provider": "quandela",
       "run": "results/quandela/runs/ascella-native-input-map-recheck",
@@ -1669,6 +1676,32 @@
     }
   ],
   "claims": [
+    {
+      "id": "ascella-approved-order-retry-input-map-error",
+      "statement": "The explicitly authorized retry of the unchanged eight-setting Ascella order pilot returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero token-reported credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One explicitly reauthorized retry, submitted after both live platform status records reported available and token occupancy was empty. The manifest and resource caps match the approval. The error triggered the stopping rule. The acquisition supplies an instrument-readiness observation; operator probabilities, hardware loss and drift remain unmeasured. The private deployed input map and worker control flow remain unobserved.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/ascella-approved-order-pilot-retry/results.json",
+          "sha256": "de9fbceb6fd5b6bebccc9d623739c7e950eb23f3179d8e78c044ce3c5ffcbdc8"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+        "results/quandela/runs/ascella-approved-order-pilot-retry/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-approved-order-pilot-retry"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "belenos-operator-repeat-counts-and-compilation-boundary",
       "statement": "The approved five-job Belenos programme completed 120 settings with 983040 returned samples in 724 execution seconds, charged 5.081920 credits. The descriptive reported-single-photon readout excludes and retains 350 outcomes whose total reported occupation is zero or greater than one. The 120 matched-repeat pair comparisons have maximum conditional total variation 0.036181 and identical returned compiled-circuit bytes within every matched pair. Returned compiled intensity distributions differ from requested ideal distributions by at most 0.000210 total variation. The imaginary-superposition Fourier control on representative zero instead gives measured-versus-compiled total variation from 0.996336 to 0.997313 across its three repeats, while its measured-versus-preceding-compiled distance is 0.030785 to 0.034049.",
@@ -4650,12 +4683,65 @@
       "superseded_by": null
     },
     {
+      "id": "a5-nullity12-gap-extended-precision",
+      "statement": "At the three nonzd-axis witnesses {e_p, 0} of D_(5,12), 12 seeded near-rank-20 points found by alternating projection from starts at scales 0.03 and 0.003 and refined at 110 digits to sigma_21/sigma_1 < 1e-40 keep their float64 relative distance from the {a, 0} family cone (4.28e-4 to 2.47e-2) at three significant digits while lying 1.51e-3 to 2.68e-2 from the witness, and 64-perturbation float64 clouds at scale 1e-2 span 16 directions.",
+      "domain": "algebra",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Floating and extended-precision arithmetic at seed 20261023, 110 digits, float tolerance 1e-14, cloud scale 1e-2. A refined point has L_y within 1e-40 of a rank-20 matrix that need not be a left multiplication; the rank-20 cone meets span{L_e} far from transversally, so no error bound places an exact point of D_(5,12) near it, and the record establishes neither membership, nor that the family fails to exhaust D_(5,12), nor a local dimension. A 16-direction span bounds the local dimension from above only. An exact parameterized piece or local equations remain the admission route.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_nullity12_refinement/result.json",
+          "sha256": "7f3ef3ee4ffe1cfd11c3a31ea78357c4a16b60836553fc5c1efae74940ac55c1"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_nullity12_refinement/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
+      ],
+      "gates": {
+        "core-662": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a5-tangent-bound-not-linear",
+      "statement": "At all 29 witnesses of the A_5 rank-locus families, the tangent bound T(x) = {y : U^T L_y V = 0} is not inside the closed rank cone R_k = {y : rank L_y <= 32 - k} that contains the cone over D_(5,k): L_y has exact rational rank 32 at six seeded rational points of T(x), integer combinations of a rational basis, at every nullity-4, -8 and -12 witness and rank 20 at the three nullity-16 zero-divisor-axis witnesses, above the cone bound 32 - k.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact ranks over the rationals at the recorded points; one point of rank above 32 - k certifies that T(x) is not inside R_k, and the record carries every weight vector, so the certificate is independent of the generator that drew them. The result excludes only a piece whose cone is linear of the tangent-bound dimension: the zero-divisor-axis witnesses, whose local dimension equals the tangent bound on a curved cone, fail the test as well, so a curved piece stays possible.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_tangent_linearity/result.json",
+          "sha256": "89f64258076513861d7b0e1a5c55e531bd2d927c6c0dd95304eb50ff314a05cc"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_tangent_linearity/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
+      ],
+      "gates": {
+        "core-663": "replay",
+        "core-664": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-nonzero-divisor-two-dimension-gap",
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -7782,7 +7868,7 @@
     },
     {
       "id": "signed-overlap-kernel-independence",
-      "statement": "In the sedenions (cd_core) the signed dilation overlap <L_e2 u|(L_e1 + L_e10 + t L_e2) u>/(2 + |t|) equals t/(2 + |t|) for every real unit vector u, in the kernel of L(e1 + e10) or not: the certified kernel vector (e4 - e15)/sqrt2, the bright vector (e4 + e15)/sqrt2, e4 and a seeded random vector all read it, and on the kernel support {e4, e15} all 1000 seeded replacement sign tables leave it unchanged. The zero-divisor property is instead the eigenvalue -1 of K = L_e1^T L_e10 on u (K swaps e4 and e15, and its -1 eigenspace is four-dimensional): the cancellation observable cos^2(theta) <w|L_e1 u> + sin^2(theta) <w|L_e10 u> with w = L_e1 u reads cos(2 theta) for the kernel vector and 1 for the bright vector, and one flipped L_e10 sign at e4 or e15, or 755 of the 1000 sign tables, removes its zero at theta = pi/4.",
+      "statement": "In the sedenions (cd_core) the signed dilation overlap <L_e2 u|(L_e1 + L_e10 + t L_e2) u>/(2 + |t|) equals t/(2 + |t|) for every real unit vector u, in the kernel of L(e1 + e10) or not, because L_e2 is orthogonal and L_e2^T L_e1 and L_e2^T L_e10 are antisymmetric (exact integer identities); as checks, the certified kernel vector (e4 - e15)/sqrt2, the bright vector (e4 + e15)/sqrt2, e4 and a seeded random vector all read it, and on the kernel support {e4, e15} all 1000 seeded replacement sign tables leave it unchanged. The zero-divisor property is instead the eigenvalue -1 of K = L_e1^T L_e10 on u (K swaps e4 and e15, and its -1 eigenspace is four-dimensional): the cancellation observable cos^2(theta) <w|L_e1 u> + sin^2(theta) <w|L_e10 u> with w = L_e1 u reads cos(2 theta) for the kernel vector and 1 for the bright vector, and one flipped L_e10 sign at e4 or e15, or 755 of the 1000 sign tables, removes its zero at theta = pi/4.",
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",
@@ -7790,7 +7876,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
         }
       ],
       "documents": [
@@ -7819,7 +7905,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
         }
       ],
       "documents": [
@@ -7845,7 +7931,7 @@
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
-          "sha256": "91d9a3a1f6b421ba7212bcf76ac8e916fddc6fbc6eea1807f3cb1b201d36cc0d"
+          "sha256": "860c4c44c7bc3f36aabccef694c1c0cd2d99f8c1ed832f7f064255a84ab4cfce"
         }
       ],
       "documents": [

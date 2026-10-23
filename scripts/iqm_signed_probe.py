@@ -289,7 +289,14 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     arms: dict[float, list[int]] = {}
     runs = []
-    prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
+    # The prediction both runs carry must be the retained case's, which core-638 rebuilds from its
+    # calibration copy; cases.json predates a recorded prediction digest, so the case directory binds it.
+    case_name = json.loads((sorted(run_dirs)[0] / "cases.json").read_text(encoding="utf-8"))["case"]
+    retained = (ROOT / "results/iqm/cases" / case_name / "prediction.json").read_bytes()
+    for run_dir in run_dirs:
+        if (run_dir / "prediction.json").read_bytes() != retained:
+            raise ValueError(f"{run_dir}/prediction.json differs from results/iqm/cases/{case_name}/prediction.json")
+    prediction = json.loads(retained)
     # The preregistered analysis reads one Garnet run of each job of one case, compiled against the
     # calibration set the prediction was made from; mock outcomes never enter it.
     digests = {sha256((run_dir / "cases.json").read_bytes()) for run_dir in run_dirs}
@@ -339,7 +346,6 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
             }
         )
     z = {t: (1 - 2 * ones / n, 1 / math.sqrt(n), n) for t, (ones, n) in arms.items()}
-    prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
     parts = {}
     for size in sorted({abs(t) for t in z}):
         (plus, se_plus, n_plus), (minus, se_minus, n_minus) = z[size], z[-size]

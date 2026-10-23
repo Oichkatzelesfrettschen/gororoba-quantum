@@ -95,6 +95,21 @@ def sign_table_trial(table: tuple[np.ndarray, np.ndarray, np.ndarray]) -> tuple[
     return invariant, broken
 
 
+def matrix_identities() -> dict[str, bool]:
+    """The exact identities that make the signed overlap t/(2 + |t|) for every real unit vector u.
+
+    L_e2 is orthogonal, so <L_e2 u, L_e2 u> = 1; L_e2^T L_e1 and L_e2^T L_e10 are antisymmetric, so
+    <L_e2 u, L_e1 u> = <L_e2 u, L_e10 u> = 0 for every real u. The entries are signed permutation
+    matrices of integers, so the comparisons are exact.
+    """
+    l1, l10, l2 = left(1), left(10), left(2)
+    return {
+        "l_e2_orthogonal": bool(np.array_equal(l2.T @ l2, np.eye(DIM))),
+        "l_e2_t_l_e1_antisymmetric": bool(np.array_equal((l2.T @ l1).T, -(l2.T @ l1))),
+        "l_e2_t_l_e10_antisymmetric": bool(np.array_equal((l2.T @ l10).T, -(l2.T @ l10))),
+    }
+
+
 def kernel_independence() -> dict[str, Any]:
     rng = np.random.default_rng(20261023)
     l1, l10, l2 = left(1), left(10), left(2)
@@ -129,6 +144,7 @@ def kernel_independence() -> dict[str, Any]:
     symmetric = np.linalg.eigvalsh((k + k.T) / 2)
     phis = (-0.25, -0.05, 0.0, 0.05, 0.25)
     return {
+        "matrix_identities": matrix_identities(),
         "signed_overlap": signed,
         "random_sign_tables": len(tables),
         "signed_overlap_unchanged_by_sign_table": signed_invariant,
@@ -394,6 +410,12 @@ def audit() -> dict[str, Any]:
 
 def self_test() -> str:
     independence = kernel_independence()
+    if not all(independence["matrix_identities"].values()):
+        raise RuntimeError(f"an identity behind the universal overlap fails: {independence['matrix_identities']}")
+    # A symmetric part in L_e2^T L_e1 is what would make the overlap depend on u; the check must see it.
+    broken = left(1, np.where(np.arange(DIM) == 4, -1.0, 1.0))
+    if np.array_equal((left(2).T @ broken).T, -(left(2).T @ broken)):
+        raise RuntimeError("a flipped L_e1 sign left L_e2^T L_e1 antisymmetric")
     if any(abs(r["overlap"]["+0.05"] - 0.05 / 2.05) > 1e-9 for r in independence["signed_overlap"]):
         raise RuntimeError("the signed overlap departs from t/(2 + |t|) for some u")
     if independence["signed_overlap_unchanged_by_sign_table"] != independence["random_sign_tables"]:
