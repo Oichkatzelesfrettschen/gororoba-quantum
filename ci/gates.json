@@ -3023,6 +3023,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/cd_star_lattice.py --check docs/evidence/cd-star-lattice/census.json",
+   "name": "core-663",
+   "seconds": 18.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json",
    "name": "core-367",
    "seconds": 5.8,
