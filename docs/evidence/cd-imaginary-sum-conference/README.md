@@ -7,10 +7,12 @@ on the recursive pair tower over the integers. In the standard basis that map
 is the arc matrix W_n of the
 [star-lattice tower](../../notes/topics/cd-star-lattice-tower.md#the-boundary-as-a-paley-matrix),
 and the identities are W_n^T = -W_n and W_n^T W_n = (n - 1) I in every
-dimension. The remaining conference conditions, a zero diagonal and entries
-+-1 off it, follow from the basis products e_a e_b = +-e_(a XOR b), which the
-bridge below checks against cd_sign through n = 64; the Rocq theorem for them
-is the open step of the
+dimension. The zero diagonal follows from skewness in every dimension:
+`isum_skew` with x = y = e_a gives <e_a s, e_a> = -<e_a s, e_a>, so the a-th
+coordinate of e_a s is 0 (a direct consequence, not a separately compiled
+lemma). The entries +-1 off the diagonal follow from the basis products
+e_a e_b = +-e_(a XOR b), which the bridge below checks against cd_sign through
+n = 64; the Rocq theorem for them is the open step of the
 [basis-sign plan](../../state/plans/cd-tower-basis-sign-theorem.json).
 
 | Theorem | Statement, for every k |

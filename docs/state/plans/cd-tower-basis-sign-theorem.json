@@ -2,7 +2,7 @@
   "schema": "work-plan-v1",
   "id": "cd-tower-basis-sign-theorem",
   "kind": "investigation",
-  "summary": "Prove in Rocq that the recursive pair tower's basis products are e_a e_b = sigma_k(a, b) e_(a XOR b) for a transcription sigma_k of cd_core.cd_sign, and derive the zero diagonal and +-1 entries of W_n.",
+  "summary": "Prove in Rocq that the recursive pair tower's basis products are e_a e_b = sigma_k(a, b) e_(a XOR b) for a transcription sigma_k of cd_core.cd_sign, and derive the +-1 entries of W_n; the zero diagonal already follows from isum_skew.",
   "sources": [
     "proofs/CdImaginarySumConference.v",
     "docs/evidence/cd-imaginary-sum-conference/README.md",
@@ -27,7 +27,7 @@
     },
     {
       "id": "arc-matrix-entries",
-      "action": "Derive from the lemma that coord (mul (e a) s) (a XOR b) = sigma k a b for b != 0 and coord (mul (e a) s) a = 0, with s the tower's imaginary sum.",
+      "action": "Derive from the lemma that coord (mul (e a) s) (a XOR b) = sigma k a b for b != 0, with s the tower's imaginary sum, and state coord (mul (e a) s) a = 0 as a named corollary of isum_skew.",
       "acceptance": "The two entry theorems compile closed under the global context and, with isum_conference, state W_n as a skew conference matrix in the standard basis for every k.",
       "state": "todo",
       "depends_on": [
