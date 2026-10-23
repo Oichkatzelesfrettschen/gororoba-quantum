@@ -377,6 +377,70 @@ QC, shots, circuits, the expected billed seconds and credits, and the
 calibration set it was planned against. The MCP server submits nothing. A
 simulation of 14 qubits or fewer still runs on Kaggle or the build host.
 
+`scripts/iqm_jobs.py` is the submission path: `build` and `check` write and
+regenerate a case, `submit` posts one job of it to `/api/v1/jobs/{qc}/circuit`
+only for the approved cases.json digest, an online and healthy QC and the
+credit ceiling that cases.json records for that QC (`max_credits`, which the
+command line repeats), after an exclusive `submission-state.json`, and
+`collect` keeps the job record and the measurements and counts artifacts byte
+for byte under a lock on the run directory. `--dry` runs every refusal and
+sends nothing. One run directory is admitted per quantum computer, case, job
+and cases.json digest, so a rebuilt case takes its own mock run. The timing,
+reset-billing and signed-probe cases predate `max_credits`; their retained
+bytes stay as approved, so a charged resubmission of them refuses and a rerun
+goes through a new case. The first case is the
+[Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
+later cases from measured billing.
+
+## What the Garnet runs measured
+
+Facts a Garnet case design starts from, each with the record that carries it:
+
+- **Billing.** Garnet bills ceil(runtime) per job, not ceil(estimate); the
+  estimate is a fixed 1.60 s plus each shot's schedule and bounded runtime
+  within -0.63 s to +1.50 s on the retained jobs, so a ceiling adds 1.60 s to
+  a case's shot schedule ([timing pilot](../../design/iqm-garnet-timing-pilot.md)).
+  The job body carries no runtime or credit cap, which IQM does not offer, so
+  `max_credits` bounds the predicted bill; a runtime beyond the expected
+  schedule plus 1.60 s bills more, and a case sizes its shot schedule from an
+  upper per-shot time and the free mock twin's estimate.
+  Extra circuits cost no time beyond their shots, so replicas, randomized
+  compilations and readout calibrations belong in the same job.
+- **Reset.** One active-reset cycle shortens a shot from 316 us to 37.5 us
+  and leaves QB1 6.8 % excited against 0.65 % passive; all-zeros heralding
+  removes that excitation and returns only kept shots, 55.9 % on the
+  seven-qubit probe, with no top-up. A heralded job's runtime exceeded its
+  estimate by 0.63 s.
+- **Coherent error dominates first-order observables.** An observable read
+  near the equator of the measured qubit (an interference or Hadamard-test
+  readout) moves at first order with gate over-rotation, axis error,
+  residual Z after CZ and CZ conditional phase, which randomized
+  benchmarking sees at second order. The 199-CZ signed probe read even
+  offsets of -0.022 and -0.012 against +0.029 from the calibration-built
+  depolarizing and relaxation model; its readout alone predicts +0.031
+  (heralded QB7 errors 0.003 and 0.034), so the circuit moved the reading by
+  about -0.045. Through the calibration noise model the even part's
+  response to each stationary coherent error is 5 to 10 % of the noiseless
+  one (QB11 over-rotation -0.43 per unit against -8.0), so QB11 alone would
+  need a 10.5 % over-rotation, three times what its randomized-benchmarking
+  infidelity allows, and all 29 error terms aligned at that bound reach
+  only 0.032: the offset lies outside the stationary coherent model, and
+  leakage read as 1, crosstalk and readout under heralding are untested
+  ([coherent response](../../design/iqm-garnet-signed-kernel-probe.md#adversarial-audit)).
+  A prediction from `scripts/iqm_sim.py` therefore bounds incoherent loss
+  and readout only; a case that reads a first-order observable measures the
+  coherent errors of its own qubits in the same job (error-amplifying
+  repetitions) or randomizes them.
+- **Batch order.** A job's circuits run under one calibration, so the arms
+  of a +-parameter contrast interleave in the circuit list (+, -, -, +)
+  rather than block, keeping drift along the batch out of the odd part.
+- **Calibration lifetime.** Set `9069c4ef` served from the snapshot of
+  2026-10-22T20:48Z to at least 2026-10-23T00:50Z, so a case planned
+  against it and pinned with `calibration_set_id` pools with its jobs.
+- **Readout.** `measure_012` (three-state readout) is offered on QB1, QB3,
+  QB7, QB9 and QB14; the Qiskit Target omits it, so a leakage readout goes
+  through the circuit JSON directly.
+
 ## Gates and snapshot state
 
 CI never imports the stack: its gates read retained JSON with the standard

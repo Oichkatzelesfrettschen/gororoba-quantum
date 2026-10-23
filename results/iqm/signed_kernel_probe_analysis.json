@@ -1,0 +1,69 @@
+{
+ "credits_charged": 4.5,
+ "falsified": false,
+ "linear_visibility": {
+  "chi2": 0.08212033860639953,
+  "dof": 1,
+  "pooled": 0.2058288990727727,
+  "se": 0.05402402929257257
+ },
+ "parts": {
+  "0.05": {
+   "decision": "unresolved",
+   "even": -0.011836500882451917,
+   "kept_minus": 55655,
+   "kept_plus": 56065,
+   "law": 0.02439024390243903,
+   "odd": 0.005789947774452298,
+   "odd_over_law": 0.23738785875254415,
+   "odd_over_law_se": 0.1226651848922237,
+   "odd_over_se": 1.9352504866080649,
+   "predicted_odd": 0.018805,
+   "prediction_z": -4.3501922873739876,
+   "se": 0.002991833777859115,
+   "z_minus": -0.017626448656904214,
+   "z_plus": -0.006046553107999619
+  },
+  "0.25": {
+   "decision": "sign resolved",
+   "even": -0.022026038879971455,
+   "kept_minus": 11214,
+   "kept_plus": 11156,
+   "law": 0.1111111111111111,
+   "odd": 0.022026038879971455,
+   "odd_over_law": 0.1982343499197431,
+   "odd_over_law_se": 0.06017429033729432,
+   "odd_over_se": 3.2943363155357908,
+   "predicted_odd": 0.0295975,
+   "prediction_z": -1.1324296422657387,
+   "se": 0.0066860322596993685,
+   "z_minus": -0.04405207775994291,
+   "z_plus": 0.0
+  }
+ },
+ "runs": [
+  {
+   "billed_seconds": 2.0,
+   "calibration_set": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
+   "charge": 1.0,
+   "estimate_seconds": 2.45728,
+   "heralding_retention": 0.55925,
+   "job": "strong",
+   "qc": "garnet",
+   "run": "2026-10-23T003708Z-garnet-signed-kernel-probe-strong",
+   "runtime_seconds": 1.590327
+  },
+  {
+   "billed_seconds": 7.0,
+   "calibration_set": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
+   "charge": 3.5,
+   "estimate_seconds": 5.8864,
+   "heralding_retention": 0.5586,
+   "job": "weak",
+   "qc": "garnet",
+   "run": "2026-10-23T003738Z-garnet-signed-kernel-probe-weak",
+   "runtime_seconds": 6.520285
+  }
+ ],
+ "schema": "iqm-signed-probe-analysis-v1"
+}
