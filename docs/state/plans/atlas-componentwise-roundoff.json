@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "atlas-componentwise-roundoff",
+  "kind": "implementation",
+  "summary": "161: atlas_coherent_families: componentwise vs normwise least-squares roundoff in --check",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/5769a3a875f4cda1ca263cd119e7baf6766bb3887b8090d69ef2af6ec573defe.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-207.json"
+  ],
+  "state": "inbox",
+  "scope": "161: atlas_coherent_families: componentwise vs normwise least-squares roundoff in --check",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #207 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-207-integration",
+      "action": "Verify the recorded integration state of PR #207.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "3055c7c84a9938ab3cf8b86f7ed9cc492b917eb1310a653cfa90371cc14328f9",
+          "result": "PR #207 merged as 03f6e46e4e9a3eb5a609065e8ca3c2dab0693f88; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-207.json",
+              "sha256": "7d9e79ab459c0004c9a197e1d0ef8e34da0d3c2666c98f6b0daf632c4cd6606d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- Prediction, stated before measuring: every Fez and Kingston component has measured eps-perturbation drift at least 10x below its current per-value tolerance. The floor of 1.5e-6 dominates small components, and BLAS-level backward error is about eps. - Falsifier of the current rule: any component with drift above tolerance / 10. That selects path (b). - Falsifier of the probe: the CI OpenBLAS recompute moves a value by more than its measured drift times 10, which would mean BLAS differences are not eps-sized backward perturbations of the design. - Commands: - `\"$PYTHON\" scripts/atlas_coherent_families.py --self-test` (normal and -O) - `--check docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4` - core-334 cmp unchanged, since result.json bytes do not change.",
+      "state": "todo"
+    }
+  ]
+}

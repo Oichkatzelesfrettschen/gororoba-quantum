@@ -1,0 +1,11 @@
+{
+  "number": 217,
+  "title": "qi_readout_ringdown: null calibration of the scanned-T tail rule shows 13.82 is conservative",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T19:42:32Z",
+  "closed_at": "2026-10-17T19:42:32Z",
+  "merge_commit_sha": "4e2e7fb87f9230a3687f341dfa4fb638e379708a",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/217",
+  "merge_ancestor_of_canonical_head": true
+}

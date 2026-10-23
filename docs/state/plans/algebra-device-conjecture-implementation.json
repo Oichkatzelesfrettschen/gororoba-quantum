@@ -1,0 +1,66 @@
+{
+  "schema": "work-plan-v1",
+  "id": "algebra-device-conjecture-implementation",
+  "kind": "implementation",
+  "summary": "Implement the source-bound conjecture screen and offline instrument falsifiers.",
+  "sources": [
+    "docs/design/hypercomplex-operator-evidence.md",
+    "docs/evidence/algebra-device-conjectures/README.md"
+  ],
+  "state": "active",
+  "scope": "Source-bound proposal dispositions, exact finite falsifiers, logical circuit controls and focused offline validation. Hosted integration and provider acquisition have separate authorities.",
+  "owner": "algebra-device conjecture implementation",
+  "next_action": "Verify the reconciled tree and retain focused validation receipts.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The user requested implementation. Retained-data outcomes preserve their original evidence classes; provider acquisitions remain approval-gated."
+  },
+  "steps": [
+    {
+      "id": "bind-corpus",
+      "action": "Bind the proposal screen and acquisition census to retained source bytes.",
+      "acceptance": "All 22 proposals and the 259-acquisition frozen scope replay with explicit selected/excluded records.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "8b88315c1ecb9e8eb374760fab780ecae311d490034e648dbb037e85eaaa3c1b",
+          "result": "The source-bound replay and circuit gate passed before main reconciliation.",
+          "observed_at": "2026-10-23T20:12:13.767336+00:00",
+          "revision": "3314af235bfff2cfe577b5c3e7aef01f8de856dc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/algebra-device-conjectures/manifest.json",
+              "sha256": "23d4780dcb8fed40e6865a4ef6f15a71c0da84db3063a4c6e98523af458b7c5b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "implement-falsifiers",
+      "action": "Implement exact algebra/instrument controls and complete logical circuits.",
+      "acceptance": "Exact certificates and seventeen circuit cases have explicit observables, mutations and boundaries.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "8f4a834faafee4995f1373d76e397dc5da7e63db42a6b4fbe3dfacb4764c4fa8",
+          "result": "The source-bound replay and circuit gate passed before main reconciliation.",
+          "observed_at": "2026-10-23T20:12:13.767889+00:00",
+          "revision": "3314af235bfff2cfe577b5c3e7aef01f8de856dc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/algebra-device-conjectures/result.json",
+              "sha256": "cb5140698e1d85d252f997a1e2ff34610f28d46ce38741004c770aa3985d3535"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-reconciled-tree",
+      "action": "Verify focused synthesis, circuits, registry, planning and provenance after main reconciliation.",
+      "acceptance": "Focused gates pass and retained receipts identify their revision and input hashes.",
+      "state": "doing"
+    }
+  ]
+}

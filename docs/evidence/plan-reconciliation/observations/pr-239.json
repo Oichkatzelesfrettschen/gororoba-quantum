@@ -1,0 +1,11 @@
+{
+  "number": 239,
+  "title": "box_kite: Latin-square ladder series with readout context and 50 Hz lock-in",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T01:54:07Z",
+  "closed_at": "2026-10-18T01:54:07Z",
+  "merge_commit_sha": "5c285fcb41a113594e5c549905d12b3c7fd1b463",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/239",
+  "merge_ancestor_of_canonical_head": true
+}

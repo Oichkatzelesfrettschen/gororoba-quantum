@@ -1,0 +1,49 @@
+{
+  "schema": "work-plan-v1",
+  "id": "formal-evidence-dependencies",
+  "kind": "investigation",
+  "summary": "Formal evidence: algebra, measured counts, and prospective experiments",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/4eb2f2730c25578febc964de839ab4ac5982af6a35048b67a46f0924361023ce.txt",
+    "docs/notes/formal_evidence_dependencies.md"
+  ],
+  "state": "inbox",
+  "scope": "Formal evidence: algebra, measured counts, and prospective experiments",
+  "next_action": "Reconcile the existing fold-scalar obstruction receipt.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Each formal assertion needs its own kernel-checked source closure; restricted constructions remain distinct from global classification."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Reconcile the existing fold-scalar obstruction receipt.",
+      "acceptance": "Each formal assertion needs its own kernel-checked source closure; restricted constructions remain distinct from global classification.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Certify basis signs, scalar embedding and transported-product equivalence.",
+      "acceptance": "Each formal assertion needs its own kernel-checked source closure; restricted constructions remain distinct from global classification.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Formalize principal covers, Schur charts, metrics and overlap conditions.",
+      "acceptance": "Each formal assertion needs its own kernel-checked source closure; restricted constructions remain distinct from global classification.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-4",
+      "action": "Certify labeled-law and decoder implications.",
+      "acceptance": "Each formal assertion needs its own kernel-checked source closure; restricted constructions remain distinct from global classification.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-5",
+      "action": "Bound binomial tails and fixed-sample decision soundness.",
+      "acceptance": "Each formal assertion needs its own kernel-checked source closure; restricted constructions remain distinct from global classification.",
+      "state": "todo"
+    }
+  ]
+}

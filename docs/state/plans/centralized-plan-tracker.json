@@ -1,0 +1,78 @@
+{
+  "schema": "work-plan-v1",
+  "id": "centralized-plan-tracker",
+  "kind": "implementation",
+  "summary": "Implement the planning ledger, reconcile all discovered sources, and integrate the reviewed tracker.",
+  "sources": [
+    "docs/runbooks/plan-tracker.md",
+    "docs/evidence/plan-reconciliation/sources/d987c765de99311b68ad020732b703b8e67d302210915b25b32e1f2843879f67.txt"
+  ],
+  "state": "closed",
+  "scope": "Tracker commands, full cross-worktree reconciliation, validation and reviewed integration.",
+  "owner": "centralized-plan-tracker implementation",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The user approved full reconciliation across all registered worktrees and CLI plus JSON authoring."
+  },
+  "steps": [
+    {
+      "id": "validate-tracker-and-migration",
+      "action": "Run tracker regressions and verify the complete inventory mapping.",
+      "acceptance": "All tracker tests, source mappings, generated views and provenance checks pass.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Tracker regressions, style, types, generated views and both migration denominators pass.",
+          "observed_at": "2026-10-23T18:21:48.069613+00:00",
+          "revision": "56a96a355c6fcf49e834f35058e762ec64a18a2b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/tracker-validation.json",
+              "sha256": "9f6c64526046744c296997c52fd302d04d912701e20e8b1d03ff04a1311b20c7"
+            }
+          ],
+          "scope_sha256": "9dc4d3533c73bc5c90c1892c20387874f56192bfc926469319e8e1d7a7cc5e2d"
+        }
+      ]
+    },
+    {
+      "id": "review-and-integrate",
+      "action": "Complete repository gates, Codex reviews and merge.",
+      "acceptance": "The reviewed tracker is merged and canonical main contains it; the user waived further gates for this documentation session.",
+      "state": "done",
+      "depends_on": [
+        "validate-tracker-and-migration"
+      ],
+      "receipts": [
+        {
+          "scope_sha256": "d7d761f2bb590a973679e88bfcd8b51b198e9c4019ff44aa8b85416a0b1edf9c",
+          "result": "PR 394 merged and canonical main contains the tracker; remaining gates were explicitly waived by the user.",
+          "observed_at": "2026-10-23T19:47:30.966033+00:00",
+          "revision": "86fca7309f3c767900bbd39500476658f9451657",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/tracker-integration.json",
+              "sha256": "385059818ed98ee32121ea6e57315f5655cd15a1e9d9667d6c453d2ea9e77fdf"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The centralized tracker and reconciled planning catalogue are integrated through PR 394.",
+  "receipts": [
+    {
+      "scope_sha256": "62da0edeed84ead794213e48ade7d07149dad02da49051600968facabe8b1107",
+      "result": "PR 394 merged and canonical main contains the tracker; remaining gates were explicitly waived by the user.",
+      "observed_at": "2026-10-23T19:47:30.966033+00:00",
+      "revision": "86fca7309f3c767900bbd39500476658f9451657",
+      "evidence": [
+        {
+          "ref": "docs/evidence/plan-reconciliation/tracker-integration.json",
+          "sha256": "385059818ed98ee32121ea6e57315f5655cd15a1e9d9667d6c453d2ea9e77fdf"
+        }
+      ]
+    }
+  ]
+}

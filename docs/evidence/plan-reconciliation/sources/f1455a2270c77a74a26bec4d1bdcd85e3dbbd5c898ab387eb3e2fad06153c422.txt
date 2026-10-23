@@ -1,0 +1,77 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-069.md
+
+# #69: n21-orbit-rca preregisters between-arm contracts after barrier-equalized windows
+
+Owner session: ibmquantum-fe. Branch (planned): rca/n21-orbit-barrier-equalized-arms, built on the #71 branch.
+Scoping facts: docs/local/plans/scoping-n21-orbit-rca-fe.md.
+
+## Finding
+
+Observed:
+
+1. **The arms.** They come from gororoba_quantum/qpe_diagnostics.py:
+   - N21_ORBIT_VARIANTS = nominal, window_delay, extra_readout, window_echo (L180), and N21_ORBIT_BUILDABLE adds window_barrier (L184).
+   - n21_orbit_diagnostic is at L187-257, and diagnostic_experiments.n21_orbit_rca_group (L132-161) assembles the group.
+   - Only window_echo carries barriers (L230, L246), and window_barrier carries one at L234-237. nominal, window_delay and extra_readout have none before `circuit.measure(0, phase[0])` (L238).
+2. **The compiler moves work-only gates past the control's measurement**, because they commute with it. In run 2026-10-13T083417, window_roles gives the members different couplings:
+   - nominal_fb, window_delay_fb and extra_readout_fb: {136: {0: -1, 1: -1}}.
+   - Their no_feedback twins: {136: {0: 1, 1: 1}, 144: {1: 0}}, with an unresolved 136-144 joint probe.
+   - window_echo_fb: {136: -1, 144: +1}, and window_echo_no_fb: {136: +1, 144: -1}.
+
+   The issue's falsifier ("identical couplings for every member") is false today, as the issue predicts.
+3. **Between-arm comparisons are post-hoc mechanism fits** in scripts/n21_orbit_rca.py. No preregistered between-arm contract exists.
+4. **window_roles needs the hardware-returned metadata.compilation.scheduler_timing**, so the issue's falsifier proper needs a new hardware run. IBM time is reserved (dry runs only).
+
+## Reachability
+
+- The default n21-orbit-rca family that live_run.py plans (qpu_planning.py L223, L509-557) reaches the circuit change. Every future run of the family would carry the barrier.
+- The contract change reaches the documented analysis CLI.
+- Retained runs keep their archived isa.qpy and are unaffected.
+
+## Design
+
+1. **qpe_diagnostics.n21_orbit_diagnostic places a barrier over every qubit of the circuit** immediately before the control's first measurement, in every variant.
+   - window_echo's existing barriers stay.
+   - window_barrier becomes the nominal arm plus its work-bit delay, so the family keeps one control for the barrier itself: the pre-barrier nominal as `nominal_unbarriered`, built but excluded from the default group.
+   - The family's experiment digest changes, and qpu_planning records the new design.
+2. **Preregistered between-arm contracts in n21_orbit_rca.py**, stated before any new data:
+   - window_delay minus nominal phase slope per dt equals the fitted detuning, within its interval;
+   - extra_readout minus nominal contrast stays within the readout-induced dephasing bound;
+   - window_echo restores the nominal contrast within its interval.
+
+   Each is evaluated only when every member's window_roles couplings are identical; otherwise the contract reports `not_admissible` with the differing members.
+3. **Offline structural contract, gate core-446.** For every member of the default family, transpiled at optimization level 3 against the retained Heron r2 Targets (docs/evidence/heron_platform/targets.json, FakeFez where the snapshot lacks a field), no gate on a work qubit is ordered after the control's first measurement in the ISA's DAG. This is checkable without a schedule and runs normal and `-O`.
+4. **core-092 (qpe_diagnostics.py) is updated** for the barrier, and a `live_run.py --out ../results/live` dry run records the new family plan, since the planned circuits change.
+
+## Acceptance and falsifier
+
+- **Prediction:** core-446 passes for every member with the barrier, and fails on `nominal_unbarriered`. The dry run plans the family with an unchanged CZ count per member: a barrier adds no CZ, though routing may change depth.
+- **Falsifiers:**
+  - core-446 finds a work-qubit gate after the control's measurement in a barriered member, meaning the transpiler crosses the barrier;
+  - the dry run's routed CZ count rises by more than 5 percent against the retained plan, meaning the barrier costs fidelity the design must state.
+- **The issue's falsifier proper**, identical window_roles couplings on hardware, needs one approved IBM run of the barriered family. The plan writes that case, with seconds estimated from the dry run, and stops for the owner's approval. IBM time is reserved, so it is parked, not run.
+
+## Shared files and dependencies
+
+- gororoba_quantum/qpe_diagnostics.py, diagnostic_experiments.py, qpu_planning.py: other n21 work (ibmquantum-12's n21-usage-time and n21-gl52) touches qpu_planning.py and reconciles at merge.
+- scripts/n21_orbit_rca.py: after #72 and #71.
+- ci/gates.json (core-446) and core-092.
+- A live_run dry run under results/live/.
+- Hardware: one IBM run, parked pending the owner's approval and the QPU reservation.
+
+## Effort and agents
+
+- Medium, about 4 to 6 h without hardware.
+- One sonnet agent writes core-446; the circuit change, contracts and dry run stay in session.
+
+## Out of scope
+
+- Running the barriered family on IBM hardware: owner approval and the QPU reservation.
+- A barrier on Quantum Inspire Tuna-17: boxkite-quantum-main owns Tuna work, and Tuna has no binary-controlled gates (QI execution facts).
+
+## Outcome (2026-10-18)
+
+- Local work landed in PR #253 (merge 8c91060): every variant bracketed, nominal_unbarriered control, window_bracket_violations, core-446, scripts/n21_orbit_rca.py --between-arm contracts.
+- Dry run results/live/2026-10-18T062500.711287Z: ibm_fez, 8192 shots, 48 CZ, 20.0 s modeled, 30 s ceiling. WINDOW_BRACKET_CASE.md holds the case; the bracket costs 1 CZ per arm.
+- IBM run parked: QPU minutes reserved, case unapproved. The issue stays open for the hardware falsifier.

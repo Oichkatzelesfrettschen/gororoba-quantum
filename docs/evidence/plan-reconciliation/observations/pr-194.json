@@ -1,0 +1,11 @@
+{
+  "number": 194,
+  "title": "gl52_split_conjugators: per-round GL(5,2) encodings cut ten-round N=21 routed CZ 4.6%",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T12:32:52Z",
+  "closed_at": "2026-10-17T12:32:52Z",
+  "merge_commit_sha": "968817bcca95bbbfd82d8e33e00f48527b73cc7d",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/194",
+  "merge_ancestor_of_canonical_head": true
+}

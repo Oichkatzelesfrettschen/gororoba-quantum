@@ -1,0 +1,93 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-069-init-herald.md
+
+# Issue 69: in-run initialization herald, 50 us repetition delay
+
+Owner decision (2026-10-18): design A of
+docs/local/reports/n21-window-bracket-cross-session-optimizations.md -- a 50 us
+repetition delay with an in-run initialization herald, 27,648 shots per PUB.
+Nothing is submitted by this work. The deliverable is one code PR; the
+orchestrator then makes the fresh dry run and the case PR.
+
+Worktree: ~/worktrees/IBMQuantum/n21/orbit-rca-init-herald, branch
+n21/orbit-rca-init-herald, based on origin/main 605d413.
+
+## Herald
+
+- Opt-in: a herald flag on the n21-orbit-rca family that the policy records
+  (so the approved record binds it). Default off, so every retained
+  n21-orbit-rca record, core-446 (window bracket) and the planning contracts
+  replay unchanged.
+- Circuit (gororoba_quantum/qpe_diagnostics.py `n21_orbit_diagnostic`, built
+  through `diagnostic_experiments.n21_orbit_rca_group`): with the herald on,
+  the first instructions measure every qubit of the circuit (control and the
+  three work qubits) into a separate ClassicalRegister named `herald`, then a
+  barrier over all qubits, then the unchanged program. The `phase` register
+  and the labeled law over it are unchanged; the herald bits are ideally 0.
+  Check that ideal_compiled_probabilities / the labeled-law and exact-law
+  paths marginalize to the `phase` register (or otherwise keep the 4-entry
+  law), and that the planner's admission and the window_bracket contract
+  accept the heralded circuits.
+- `qpe_diagnostics.window_bracket_violations`: the window opens at the first
+  measurement whose clbit is in the `phase` register (not the herald), so a
+  heralded circuit reads the same violations as its unheralded twin.
+- `scripts/n21_orbit_rca.py window_roles`:
+  - writers: take measurements into the `phase` register only;
+  - opening: the control's first measure play after the herald (plays carry
+    no clbit; drop the herald prefix, every pulse up to and including the
+    herald measurements and their barrier, from the pulse list, and drop the
+    herald measure instructions from the instruction list, consistently, so
+    `positions` and the one-to-one sx/x/cz check are unchanged);
+  - a heralded member must yield exactly the couplings its unheralded twin
+    yields on the same schedule minus the prefix. Add a contract for that
+    (synthetic or retained-schedule based).
+- Analysis: the herald is an admission bound on the member-differential
+  initial excitation, never a post-selection. Herald P(1) per qubit equals
+  initial excitation plus readout p(1|0); the readout term is common to the
+  members (same qubits, same readout), so the identifiable quantity is the
+  spread across members of herald P(1) on each qubit. Preregister: the run is
+  herald-admissible when, on every placed qubit, the max minus min over the 8
+  members of herald P(1) is at most a bound B, tested at a stated alpha with
+  the 27,648-shot binomial resolution. Derive B from the contracts: the bound
+  is the excitation spread that moves the largest between-arm contract by at
+  most a stated small fraction (say one quarter) of its minimum detectable
+  deficit at 27,648 shots (about 0.018); write the derivation into the
+  analysis module docstring and the README/notes. Statistics, levels and
+  shot counts of the three between-arm contracts are otherwise unchanged.
+  `--between-arm` reports the herald verdict beside admissibility.
+- No new behavior for members without the herald.
+
+## Fold in PR #268's review threads
+
+1. P1, execution-time calibration: `retained_t2_us()` and `member_readouts()`
+   in scripts/n21_orbit_rca.py read plan-time `placed_qubit_calibration`
+   from record.json. Read the calibration in force at each PUB's execution
+   start, which `--collect` records in collect.json (properties at the PUB's
+   execution start), and fall back to plan time only for a record that holds
+   none, stating which was used in the report.
+2. P2, analyzer binding: do NOT add n21_orbit_rca.py to live_run's
+   EXPERIMENT_SOURCE_MANIFEST (that changes every family's experiment digest
+   and breaks other sessions' pending approvals). Instead `--between-arm`
+   prints and records the sha256 of scripts/n21_orbit_rca.py, and accepts an
+   `--expected-analyzer-sha256 HEX` that refuses a mismatch; the case will
+   name that digest.
+3. P2, uncommitted study: the orchestrator commits the runtime study and the
+   cross-session survey in the case PR; nothing to do here.
+
+## Gates
+
+Gate numbers available: core-445 and core-459. Use them for the herald
+contract(s) (circuit structure + window_roles/window_bracket equivalence +
+herald admission self-test). Add each to ci/gates.json and, for full tier,
+ci/full_gate_inputs.json. Existing gates core-446 and the n21_orbit_rca
+replays must stay green. Run ruff format, ruff check, mypy through
+ci/pinned_tool.py on touched files.
+
+## Rules
+
+- No IBM network calls, no --submit, no dry run (the orchestrator runs it).
+- ASCII, American English, `"$PYTHON"`, no chronology or PR numbers in
+  source comments. Comments describe the mechanism.
+- Commit on the branch with trailer `Assisted-by: Claude Code (claude-opus-5-5)`.
+  Do not push. Report into docs/local/reports/issue-069-init-herald-agent.md.
+- Never git stash, never rm -rf (trash-put), never pkill -f.

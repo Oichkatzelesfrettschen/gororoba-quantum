@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "backend-identity-records",
+  "kind": "implementation",
+  "summary": "PR #184: live_run: record backend_version and processor_type in every run record",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/a7efb29c832bdff75f4d30117a0dff6b9c40f8f203ba4150fc1c8ff8bb5d6163.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-184.json"
+  ],
+  "state": "inbox",
+  "scope": "PR #184: live_run: record backend_version and processor_type in every run record",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #184 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-184-integration",
+      "action": "Verify the recorded integration state of PR #184.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "4bc083c4c1d242f5e68e28862318d2a018e8f545e106f58870d11570a47006f2",
+          "result": "PR #184 merged as 6c4f98aee5a9629b730547ef565425e936fedbbd; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-184.json",
+              "sha256": "10494bcdff3086241208a08269a7d578bddffd62332b3f69f29c9c942a6a9d32"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- The four contracts the PR did not run, plus runtime_contracts and the kaggle_run shard self-test, pass locally (normal and -O where the gate runs both); the pr-tier CI replica on Kaggle CPU at session close. - A submit-free `live_run.py` dry run writes a `planned` record carrying both fields (AGENTS.md rule for live_run changes). - Falsifiers: a contract that cancels a job and finds its collect entry without identity; a contract that bumps backend_version between plan and submit and finds the planning version in the submitted record. - Codex round 2 (the last under the two-round cap for new PRs), then merge when every thread is resolved and CI is green.",
+      "state": "todo"
+    }
+  ]
+}

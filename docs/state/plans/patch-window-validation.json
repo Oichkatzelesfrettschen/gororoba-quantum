@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "patch-window-validation",
+  "kind": "investigation",
+  "summary": "Staged patch-window characterization and validation",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/95aaee993cb29932e70e272728c4dc19c31a34f7d916a2e7e6dd96aa4a43c4cf.txt",
+    "docs/notes/patch_window_staged_plan.md"
+  ],
+  "state": "inbox",
+  "scope": "Staged patch-window characterization and validation",
+  "next_action": "Select and freeze a justified intervention before drafting a validation case; retained characterization is a separate result.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Source variants compared; historical assertions retain their source boundary. Current obligation-level validation needs the linked evidence."
+  },
+  "steps": [
+    {
+      "id": "resolve-next-obligation",
+      "action": "Select and freeze a justified intervention before drafting a validation case; retained characterization is a separate result.",
+      "acceptance": "Retain the resulting evidence or explicit unresolved boundary in the cited workstream; scientific claims and execution approvals keep their existing authorities.",
+      "state": "todo"
+    }
+  ]
+}

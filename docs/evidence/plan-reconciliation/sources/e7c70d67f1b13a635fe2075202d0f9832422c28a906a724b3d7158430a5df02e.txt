@@ -1,0 +1,99 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-182.md
+
+# #182: qi_readout_ringdown: propagate readout-calibration uncertainty into phase and rate errors
+
+Owner session: boxkite-quantum-main. Branch (planned):
+qi/ringdown-calibration-uncertainty-sensitivity.
+
+## Finding
+
+Observed in `scripts/qi_readout_ringdown_cases.py` on main 66eacb6:
+
+- `phase()` (line 384) inverts each quadrature as
+  `2 (p - e01) / (1 - e01 - e10) - 1` and gives it the variance
+  `4 p (1 - p) / kept / scale^2`: binomial noise of the Ramsey counts only.
+  e01 and e10 enter as constants.
+- `analyze_target()` (line 481) takes one `assignment = (e01, e10)` per
+  target for every arm and delay, so all arms of a target share one
+  calibration draw; its error is common to the arms and partly cancels in
+  `delta = rate(arm) - rate(reference)`, but not in the absolute rates, in
+  A, or in the visibility test against MIN_VISIBILITY.
+- e01 and e10 come from the batch's readout-0/readout-1 circuits, whose
+  counts are binomial with their own kept-shot totals (tabulate, line 353).
+
+Inferred: the omitted term is largest where P(0|1) is large and the
+quadratures sit far from 1/2, which on series P is Q6 (P(1|1) 0.67, then
+0.86 after the 04:12Z recalibration). Unmeasured until step 2 runs.
+
+## Reachability
+
+Reached through the documented `--analyze` CLI on every retained ring-down
+run (gates core-386 series P, core-369 QX dry runs, and the series-Q replay
+gate TUNA-Q adds). The reported `delta_se_hz`, `rate_se_hz` and `A_se_hz`
+fields are what the claims cite, so the understatement is user-visible.
+
+## Design
+
+The preregistered estimator is fixed in each cases.json, so this adds a
+sensitivity analysis beside the verdict and changes no verdict:
+
+1. Analytic term: extend `phase()` with the partial derivatives of each
+   quadrature with respect to e01 and e10 and the binomial variances of
+   e01 and e10 from the readout counts; carry the shared calibration as a
+   covariance across the arms of one target (a common term), so delta,
+   rate, A and visibility errors include it. New function
+   `calibrated_errors(...)`; `analyze_target` stays as is for the
+   preregistered fields.
+2. Check by joint parametric bootstrap: resample the readout-0/readout-1
+   counts and every Ramsey count binomially, recompute e01, e10 and the
+   full analysis, B = 2000 replicates per run set. Draw every replicate's
+   counts first from one seeded `random.Random`, then map the analyses
+   through `parallel.ordered_map`, so pooled equals serial.
+3. Output: a separate record
+   `results/quantum_inspire/readout_ringdown_tuna_17_{P,Q}_calibration_sensitivity.json`
+   holding, per target, the preregistered SE, the analytic calibrated SE
+   and the bootstrap SE with its spread; `--sensitivity` mode writes it and
+   `--sensitivity --check` replays it byte for byte (stdlib only).
+4. Gates core-434 (`--sensitivity --check` on series P and Q) and core-435
+   (a self-test: a mutated readout count changes the record, a zeroed e10
+   variance reproduces the preregistered SE).
+5. Docs: one paragraph in docs/notes/quantum_inspire/experiments.md beside
+   the series-P/Q results; the claims gain the sensitivity record as
+   evidence, their verdict text is unchanged.
+
+## Acceptance and falsifier
+
+Prediction, fixed now: on series P Q6 the analytic calibrated delta SE
+exceeds the preregistered delta SE, and the bootstrap SE agrees with the
+analytic one within the bootstrap spread. Falsifiers: (a) on Q6 the
+bootstrap SE equals the preregistered SE within its spread -- then the
+calibration term is negligible, the record says so and the issue closes on
+that measurement; (b) the analytic and bootstrap SEs disagree beyond the
+spread -- the analytic propagation is wrong and does not ship.
+Commands: `"$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py
+--sensitivity --check ...` normal and -O, the existing core-386/core-369
+gates unchanged, ruff, mypy (core-039).
+
+## Shared files and dependencies
+
+- Waits for TUNA-Q (tuna-ringdown-series-q.md) to land: that branch edits
+  the same script's analysis path and adds the series-Q analysis this
+  record also covers.
+- Shares with #183: `scripts/qi_readout_ringdown_cases.py`. #182 lands
+  first; #183 builds on its per-arm error model.
+- docs/state/research_state.json (claim evidence): reconcile by `--write`.
+- ci/gates.json: core-434, core-435.
+- No hardware, no Kaggle (B = 2000 analyses of 17 targets is seconds to
+  minutes on the build host; if it measures over 2 min it moves to the
+  full tier).
+
+## Effort and agents
+
+Medium: one script, one record per series, two gates. One sonnet agent.
+
+## Out of scope
+
+Re-adjudicating the preregistered verdicts (the cases fix the estimator);
+a calibration model for drift between the readout circuits and the Ramsey
+circuits inside a batch (needs interleaved readout, a new case).

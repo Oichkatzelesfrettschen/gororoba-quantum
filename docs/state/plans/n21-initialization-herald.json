@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "n21-initialization-herald",
+  "kind": "implementation",
+  "summary": "Issue 69: in-run initialization herald, 50 us repetition delay",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/17795704893b9291222931824f7358da9be38e6a7bd2cd84b92bf2c19d312e3e.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-275.json"
+  ],
+  "state": "inbox",
+  "scope": "Issue 69: in-run initialization herald, 50 us repetition delay",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #275 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-275-integration",
+      "action": "Verify the recorded integration state of PR #275.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "d5f8866dad37fa3c08bbb9d55a1818f71d6db2909d1664a99113ba1ab9411fcf",
+          "result": "PR #275 merged as a283368b772e3e542effbed898646317b2ffa53d; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-275.json",
+              "sha256": "71e98569a0f7ca74e5e113be288f66a21ae5aab8c08f6af870838d4428a5801d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Compare the named implementation, retained analysis or acquisition, and follow-up boundaries with the captured source.",
+      "state": "todo"
+    }
+  ]
+}

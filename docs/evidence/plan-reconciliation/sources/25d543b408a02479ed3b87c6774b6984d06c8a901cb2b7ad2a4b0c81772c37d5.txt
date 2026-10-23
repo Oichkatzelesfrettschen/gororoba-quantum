@@ -1,0 +1,118 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/ci-ledger-review.md
+
+# CI read-set ledger review (aaaf5ce..b62dfdc)
+
+Answer to the primary question: yes, the ledger can SKIP a gate whose fresh
+result would differ. The key is content-addressed (every stored read set is
+re-hashed against the tree under test), so stale, reordered or racing ledger
+merges cannot cause a false pass; every false pass found comes from a read
+the read set misses. Four such escapes are concrete; two are reachable
+through files a pull request adds in normal work.
+
+Probe: `$HOME/.cache/gororoba-quantum/ci-py3147/bin/python -B probe.py` under
+the tracer, with GLIBC_TUNABLES set, in a scratch repo. Recorded: os.open,
+mmap's underlying open, np.fromfile, np.load, the main script, Path.iterdir
+and rglob (as `d`). Not recorded: os.stat, Path.exists, Path.is_dir, the
+symlink path (only its target), 300 of 1200 opens issued from four threads.
+
+## Blocker
+
+1. Shell globs in gate commands bypass the trace. ci/gate_ledger.py:45
+   SHELL_METACHARACTERS omits `*`, `?`, `[`, so core-537
+   (`qd_box_kite_analysis.py --check results/quandela/runs/*-qpu_belenos-belenos_mesh-*/`)
+   is classed traceable. The shell expands the glob; no Python process lists
+   results/quandela/runs. Scenario: a PR retains a new belenos_mesh run whose
+   analysis fails. The stored read set names only the old run files, the key
+   is unchanged, core-537 SKIPs on the PR and on the main push; only the
+   nightly audit sees it. Fix: treat `*?[~` and any `$` other than
+   `"$PYTHON"` as untraceable (or record the expanded argv's directories).
+
+2. Thread race drops reads. ci/read_trace/sitecustomize.py:69,194,212 --
+   `active` is one process-wide flag; while one thread is inside `handle`
+   (realpath releases the GIL), every audit event from another thread returns
+   unrecorded. Measured: 900 of 1200 threaded opens recorded. Reachable:
+   gororoba_quantum/qpu_planning.py:1239 maps work over a ThreadPoolExecutor.
+   A file read only from a worker thread can drop out of the read set, and a
+   later edit to it SKIPs. Fix: make the reentrancy guard thread-local
+   (`threading.local()` or a per-thread-id set) and emit under a lock.
+
+## Fix
+
+3. Existence probes are outside the read set (sitecustomize.py:25-27
+   documents it). os.stat / Path.exists / is_file / is_dir / getsize raise no
+   audit event. Scenario: `if path.exists(): verify(path)` with path absent
+   on main; a PR adds a corrupt file there; key unchanged, SKIP. The nightly
+   audit bounds the window to one day after merge, but the PR and main push
+   both pass. Fix: wrap os.stat, os.lstat (genericpath and pathlib resolve
+   them through the os module at call time; importlib binds posix directly,
+   so imports stay quiet) and record `s PATH` keyed by existence and
+   st_mode type.
+
+4. Symlinks are recorded by target only. sitecustomize.py:101 realpaths every
+   path, so `open('literature/X')` records `docs/X`. Retargeting a tracked
+   symlink (repo holds `literature` and two docs/pdf links) changes what the
+   gate reads while the recorded target is unchanged: SKIP. A link pointing
+   outside the root records nothing at all. Fix: record each symlink
+   component on the path (readlink value) as its own read, or refuse to
+   store a gate whose reads traverse a link.
+
+5. Audit "fails on mismatch" only through the gate's own failure.
+   run_gates.py execute(): in audit mode a matching gate that now fails is
+   labelled, which is correct; but the audit cannot detect a mismatch whose
+   fresh result still passes (e.g. a nondeterministic or environment-only
+   difference), and a gate that the ledger would skip and that fails nightly
+   is reported once, after merge. Acceptable by design; state it in AGENTS.md
+   as "the nightly run bounds a missed read to one day on main".
+
+## Note
+
+6. Identity omissions. host_identity.py:23-44 keys prefixes plus PATH, HOME,
+   TMPDIR. Unkeyed names gates read: KAGGLE_KERNEL_RUN_TYPE
+   (scripts/linear_conjugation_search.py:162), IQM_TOKENS_FILE,
+   OPENQUANTUM_SDK_KEY, ANU_QRNG_KEY_FILE, RUNNER_TEMP, LANG/LC_*/TZ. Constant
+   or unset on CI shards, so unreachable there; a local `--ledger` run on the
+   build host can reuse a pass across them. PYTHONHASHSEED, GLIBC_TUNABLES,
+   GOROROBA_* and QI_PYTHON are covered; REPLAY_PYTHON enters through the
+   `replay` interpreter identity.
+7. Wall clock. scripts/iqm_platform.py:604,746 compare against
+   datetime.now(); any gate checking an expiry or rolling window SKIPs past
+   the date it would start failing. Nightly catches it.
+8. Concurrent content memo. run_gates.py execute() calls `content.forget()`
+   once before runs; keys for passes are hashed after each gate ends from a
+   shared memo. If an untraceable gate rewrites a repo file mid-shard, a
+   traced gate that read the rewritten bytes can be keyed by the memoized
+   original bytes and later SKIP. Requires a regenerating gate that writes
+   different bytes; hash the read set from bytes captured by the tracer or
+   forget per gate.
+9. `os.open(..., dir_fd=)` and `open(fd)` resolve against cwd or are dropped
+   (sitecustomize.py:96-100); glob `include_hidden` is not in the audit
+   args, so Content.matches recomputes without hidden files
+   (gate_ledger.py:179). No gate uses either today.
+10. Directory listings drop `*.pyc` names (gate_ledger.py:52,168); a gate
+    importing a sourceless .pyc from a listed directory still records the
+    open, so this only hides a newly added sourceless .pyc.
+11. PR cache trust is sound: the ledger job runs only on
+    `refs/heads/main` non-PR events (ci.yml ledger job `if:`), PRs restore
+    main-scope caches read-only, and PR-scope pins-venv saves are invisible
+    to main. A PR could rewrite its own ci.yml anyway. Merge order across
+    concurrent main runs loses entries (most recent save wins) but never
+    yields a false skip, because keys re-hash.
+12. pins-venv key (ci.yml:63) covers requirements.txt,
+    ci/requirements-ci.txt, ci/install_pins.sh, ci/patches/** and literal
+    py3.14.7; the venv's pyvenv.cfg `home` points at the setup-python path, so
+    a toolcache path change restores a broken venv that fails loudly at the
+    first import rather than silently. The interpreter identity keys
+    distributions by name and version, so the sympy patch is covered only by
+    the venv cache key, not by the ledger key; a patch edit rebuilds the venv
+    but leaves every ledger key unchanged. Add ci/patches/** digests to
+    host_identity or to the gate key.
+13. Timings planner: ci/gate_timings.json lacks core-074, core-598,
+    core-599 (they fall back to manifest seconds) and holds 46 case-expanded
+    names; measured_seconds (run_gates.py) raises KeyError on an entry
+    without wall_seconds, which merge_gate_timings.py --check guards.
+    Skipped gates still count their measured cost in assign(), so shards
+    balance on run-everything cost, not on what actually runs. Scheduling
+    only.
+14. tool_identity keys git and others by mtime; runner image updates
+    invalidate the whole ledger weekly. Cost only.

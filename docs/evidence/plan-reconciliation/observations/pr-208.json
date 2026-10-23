@@ -1,0 +1,11 @@
+{
+  "number": 208,
+  "title": "n21_orbit_rca: bind raw PUBs to the submission manifest, seed the static refit from every basin",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T16:43:09Z",
+  "closed_at": "2026-10-17T16:43:09Z",
+  "merge_commit_sha": "ec403fc5b943bdf69439d88c0e96c445a28552d8",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/208",
+  "merge_ancestor_of_canonical_head": true
+}

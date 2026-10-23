@@ -1,0 +1,11 @@
+{
+  "number": 259,
+  "title": "kaggle: build qiskit-aer 0.17.2 for CUDA 13 and run it on the T4 GPU venv as an opt-in",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T10:55:08Z",
+  "closed_at": "2026-10-18T10:55:08Z",
+  "merge_commit_sha": "258c80082a748214082d238d023c585813d52bff",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/259",
+  "merge_ancestor_of_canonical_head": true
+}

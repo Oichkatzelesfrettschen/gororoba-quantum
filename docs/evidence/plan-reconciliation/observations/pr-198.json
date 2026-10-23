@@ -1,0 +1,11 @@
+{
+  "number": 198,
+  "title": "qi_readout_ringdown: Tuna-17 series Q analysis reads not detected; retain batches 05-08 and the 05:39Z recalibration",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T15:47:55Z",
+  "closed_at": "2026-10-17T15:47:55Z",
+  "merge_commit_sha": "cc0361a21bda5f519c58e6566d12f1f3feaf7e9c",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/198",
+  "merge_ancestor_of_canonical_head": true
+}
