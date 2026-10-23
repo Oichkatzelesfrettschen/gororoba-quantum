@@ -125,6 +125,14 @@ def test_global_phase_associator_and_code_error_set_have_distinct_controls() -> 
         raise AssertionError(facts["code"])
 
 
+def test_bell_selection_changes_conditional_kernel_rate_and_preserves_unconditional_rate() -> None:
+    facts = implementation().exact_families()["conditioning"]
+    if facts["remote_z_selector_success"] != ["0", "1"]:
+        raise AssertionError(facts)
+    if facts["remote_x_selector_success"] != ["1/2", "1/2"] or facts["remote_selector_unconditional"] != "1/2":
+        raise AssertionError(facts)
+
+
 def test_measurement_schedule_refuses_short_cycles_and_requires_explicit_units() -> None:
     module = implementation()
     if module.timing_admission(50, 1340, 4)["admitted"]:

@@ -8030,6 +8030,7 @@
         ]
       ],
       "failure": "3/8",
+      "remote_selector_unconditional": "1/2",
       "remote_unconditional": [
         [
           "1/2",
@@ -8039,6 +8040,14 @@
           "0",
           "1/2"
         ]
+      ],
+      "remote_x_selector_success": [
+        "1/2",
+        "1/2"
+      ],
+      "remote_z_selector_success": [
+        "0",
+        "1"
       ],
       "success": "5/8",
       "zero_success_conditional": null
@@ -8242,9 +8251,9 @@
       ]
     }
   },
-  "frozen_base": "222301737274e80a4c7a59a9d9a16f73e44937a8",
-  "manifest_sha256": "42d044a70eddac2f11aa9f7884a1f9d135138243e332c4c08d84183e7571ead9",
-  "producer_sha256": "9667a98c1c9fb9d3ca7b4be20f6c63babb4812c2602c33259fcf757478b08bcc",
+  "frozen_base": "e1d95d9d8af8d2715013758ff37cccc56a7066eb",
+  "manifest_sha256": "26283a2fdab74c9d9d0c54daad734c4ff613c505eb5c0da1c76e5437023aae55",
+  "producer_sha256": "7b80092372d236eb6b2d50560fb26202f8de87fa633aa4e08ad6556e76ac5221",
   "proposals": [
     {
       "boundary": "Equal depth alone leaves routing and readout confounded.",
@@ -8361,7 +8370,7 @@
       "status": "capability-gated"
     },
     {
-      "boundary": "The separate gX+i gamma Z model is a standard complex control.",
+      "boundary": "The separate gX+i gamma Z model is a standard complex control. The primary source 1812.05226v1 reports a prior single-spin PT experiment.",
       "claims": [
         "singular-sector-split"
       ],

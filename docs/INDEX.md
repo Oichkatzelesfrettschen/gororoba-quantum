@@ -388,6 +388,11 @@ versions of record of the hypercomplex-theory exchange and the two non-Abelian a
 The [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md) retains the arithmetic behind the
 algebra circuit design rules of docs/notes/algebra_circuit_rules.md.
 
+## Operational instrument source identities
+
+The [instrument source note](notes/papers/operational-instrument-sources.md) records primary arXiv identities,
+abstract reading scopes, the incorrect draft citation and the prior single-spin parity-time experiment.
+
 ## Hypercomplex operator audit sources
 
 - [1806.00612v1](notes/papers/1806.00612.md): $SU(3)_C\times SU(2)_L\times U(1)_Y\left( \times U(1)_X \right)$ as a symmetry of division algebraic ladder operators

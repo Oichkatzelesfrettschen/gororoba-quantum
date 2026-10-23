@@ -6758,12 +6758,13 @@
     "gororoba_quantum/designs.py",
     "gororoba_quantum/select_lcu.py",
     "requirements.txt",
-    "ci/requirements-ci.txt"
+    "ci/requirements-ci.txt",
+    "docs/notes/papers/operational-instrument-sources.md"
   ],
-  "base_commit": "222301737274e80a4c7a59a9d9a16f73e44937a8",
+  "base_commit": "e1d95d9d8af8d2715013758ff37cccc56a7066eb",
   "census": {
     "path": "docs/evidence/algebra-device-conjectures/census.json",
-    "sha256": "57a218c05b685b50f43d46a335b9089ced4b55a4d28ce13c797bfd414cb10c85"
+    "sha256": "24457fb1ff8338e74a38b7c3f1c75928c6fb547dd3b38c7d41287b3c24ed9f72"
   },
   "claims": [
     {
@@ -7478,7 +7479,7 @@
       "status": "capability-gated"
     },
     {
-      "boundary": "The separate gX+i gamma Z model is a standard complex control.",
+      "boundary": "The separate gX+i gamma Z model is a standard complex control. The primary source 1812.05226v1 reports a prior single-spin PT experiment.",
       "claims": [
         "singular-sector-split"
       ],
@@ -7594,7 +7595,7 @@
     },
     {
       "path": "docs/design/hypercomplex-operator-evidence.md",
-      "sha256": "ca7ae7db75543f6b858f427f154ab2851ff1324e6448eb10ae3c44ebfb81f314"
+      "sha256": "377508629fcd1d2bbbd3a842302240dd12549841a1e179171d5a4d6741570309"
     },
     {
       "path": "docs/design/iqm-garnet-kernel-cancellation-probe.md",
@@ -7651,6 +7652,10 @@
     {
       "path": "docs/notes/ibm_heron_platform.md",
       "sha256": "81cd71d7bbe72e56e8f9f6823f70dd99a153fe71481f1ce64cea073771d75f17"
+    },
+    {
+      "path": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "89021a9339257c5b248c4e1cf0da9a64be73581d171962d61ca0cca6f3aaca2b"
     },
     {
       "path": "docs/notes/quandela/README.md",

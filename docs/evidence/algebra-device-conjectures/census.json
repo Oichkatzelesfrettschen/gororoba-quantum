@@ -6737,7 +6737,7 @@
       }
     }
   ],
-  "base_commit": "222301737274e80a4c7a59a9d9a16f73e44937a8",
+  "base_commit": "e1d95d9d8af8d2715013758ff37cccc56a7066eb",
   "schema": "algebra-device-census-v1",
   "sources": [
     {
@@ -6750,7 +6750,7 @@
     },
     {
       "path": "docs/design/hypercomplex-operator-evidence.md",
-      "sha256": "ca7ae7db75543f6b858f427f154ab2851ff1324e6448eb10ae3c44ebfb81f314"
+      "sha256": "377508629fcd1d2bbbd3a842302240dd12549841a1e179171d5a4d6741570309"
     },
     {
       "path": "docs/design/iqm-garnet-kernel-cancellation-probe.md",
@@ -6807,6 +6807,10 @@
     {
       "path": "docs/notes/ibm_heron_platform.md",
       "sha256": "81cd71d7bbe72e56e8f9f6823f70dd99a153fe71481f1ce64cea073771d75f17"
+    },
+    {
+      "path": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "89021a9339257c5b248c4e1cf0da9a64be73581d171962d61ca0cca6f3aaca2b"
     },
     {
       "path": "docs/notes/quandela/README.md",

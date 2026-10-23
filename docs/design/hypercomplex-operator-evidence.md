@@ -124,8 +124,10 @@ The exact certificate covers the following bounded objects:
 - The X/Z controlled-order witness reads -1; its incoherent control reads 0. The octonion associator encoding
   at basis inputs 1, 2 and 4 reads -1, while the identity-input control reads +1. Matrix reparenthesization leaves
   the operator product unchanged. These statements describe different observables.
-- Bell-pair conditional Z or X ensembles both average to the remote density `I/2`. A global phase cancels in a
-  density matrix; a phase on one reference branch produces `cos(phi)` in the control X observable.
+- Bell-pair conditional Z or X ensembles both average to the remote density `I/2`. In the certified dark/bright
+  logical basis the selector effect is `diag(0,1)`: Z selection gives conditional success 0 or 1, while X selection
+  gives 1/2 in both arms. Summing the complete instrument leaves unconditional success 1/2 for either choice.
+  A global phase cancels in a density matrix; a phase on one reference branch produces `cos(phi)` in the control X observable.
 - `X+iZ` is a nonzero rank-one matrix with square zero and parity-time invariance under X and conjugation.
   It is an explicit standard-complex exceptional-point control, separate from normal real left multiplication.
 - Exact rotation/dephasing instruments preserve total probability. The certificate separates fixed per-step
@@ -137,11 +139,12 @@ The exact certificate covers the following bounded objects:
   claiming a sedenion code. The [star-lattice code](../notes/topics/cd-star-lattice-tower.md) is `[[9,1,3]]`:
   one logical qubit. An arbitrary coherent sixteen-label register needs four logical qubits.
 
-The exact models are local derivations, not claims of publication priority. Existing source identities and reading
-scopes remain in [the source index](../INDEX.md). A new Crossref metadata retrieval for non-Hermitian, Zeno, error-code
-and continuous-variable references returned HTTP 429 during implementation; those candidate citations supply no
-evidence to this bundle. Broader literature/novelty conclusions remain unadmitted. The finite equations above are
-checked independently and require no unsupported citation.
+The exact models are local derivations, not claims of publication priority. The
+[instrument source note](../notes/papers/operational-instrument-sources.md) verifies primary arXiv identities and
+abstracts for parity-time dynamics, measurement constraints, error correction, Gaussian information and anyons.
+The draft's arXiv 2203.01234 citation names a gravity paper, and the reported nitrogen-vacancy experiment contradicts
+the blanket claim that parity-time dynamics on quantum hardware are untested. Abstract verification establishes
+neither paper-body validation nor a replay of those experiments. The finite equations above are checked independently.
 
 ### Logical circuit bank
 
