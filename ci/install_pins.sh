@@ -23,6 +23,11 @@ fi
 # on mpmath 1.4.1; --no-deps reproduces that pair.
 "$PYTHON" -m pip install --no-deps mpmath==1.4.1
 # sympy 1.14.0 on PyPI still calls mpmath APIs that 1.4 deprecates or renames;
-# the distribution patch the evidence ran with replaces them.
+# the distribution patch the evidence ran with replaces them. pip keeps an
+# installed sympy==1.14.0 in place, so a rerun finds the patch applied and
+# leaves the files as they are.
 site=$("$PYTHON" -c 'import pathlib, sympy; print(pathlib.Path(sympy.__file__).parents[1])')
-patch -s -p1 -d "$site" < ci/patches/sympy-1.14.0-mpmath-1.4.patch
+sympy_patch=ci/patches/sympy-1.14.0-mpmath-1.4.patch
+if ! patch -R --dry-run -s -f -p1 -d "$site" < "$sympy_patch" >/dev/null; then
+    patch -s -f -p1 -d "$site" < "$sympy_patch"
+fi

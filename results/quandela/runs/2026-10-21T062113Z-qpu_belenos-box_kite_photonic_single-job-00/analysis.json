@@ -1,0 +1,48 @@
+{
+ "blocks": [
+  {
+   "a": null,
+   "a_wilson95": [
+    0.0,
+    1.0
+   ],
+   "config": "two_label-00",
+   "dark_corrected": null,
+   "in_block": null,
+   "in_block_wilson95": [
+    0.0,
+    1.0
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "one_click_outside_block": 0,
+   "one_click_outside_by_mode": {},
+   "other_multi_click": 0,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": null
+  }
+ ],
+ "cases_sha256": "01afbad52b3cd36124d05ae7fb42a72655dda520ff835a2afde259e89b8a8aff",
+ "compiled": {
+  "distinct": 0,
+  "iterations": [],
+  "job": null
+ },
+ "job_id": "90712931-1b5a-4c14-bdd0-95e01ac02292",
+ "logical_perf": null,
+ "noise": null,
+ "physical_perf": null,
+ "platform": "qpu:belenos",
+ "result_sha256": "ab576eb11f3c16889cdfff260dfe58a9b80438e62581777ba582ee3b7723262b",
+ "run": "2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00",
+ "samples": 0,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 0,
+ "status": "canceled"
+}

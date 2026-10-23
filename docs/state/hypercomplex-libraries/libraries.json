@@ -1836,11 +1836,13 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ]
@@ -2010,6 +2012,7 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/iqm_mcp_server.py",
+    "scripts/oq_mcp_server.py",
     "scripts/qd_mcp_server.py",
     "scripts/qi_mcp_server.py"
    ]
@@ -2261,9 +2264,13 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/provider_patch_packing.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/provider_patch_packing.py"
+   ]
   },
   {
    "distribution": "numba",
@@ -2423,8 +2430,12 @@
     "scripts/gl52_split_conjugators.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
+    "scripts/hypercomplex_photonic_cases.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/local_optical_operator_replay.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2439,6 +2450,9 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_analysis.py",
     "scripts/patch_window_analysis.py",
+    "scripts/photonic_compilation_audit.py",
+    "scripts/photonic_repeat_readout.py",
+    "scripts/photonic_repeat_readout_pooled.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
@@ -2579,8 +2593,12 @@
     "scripts/gl52_split_conjugators.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
+    "scripts/hypercomplex_photonic_cases.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/local_optical_operator_replay.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2593,7 +2611,12 @@
     "scripts/n21_qx_conformance.py",
     "scripts/n21_replica_covariance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/packed_pauli_analysis.py",
     "scripts/patch_window_analysis.py",
+    "scripts/photonic_compilation_audit.py",
+    "scripts/photonic_repeat_readout.py",
+    "scripts/photonic_repeat_readout_pooled.py",
+    "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
@@ -2859,6 +2882,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/oq_mcp_server.py",
     "scripts/oq_platform.py"
    ]
   },
@@ -2957,10 +2981,12 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_toolchain_check.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_toolchain_check.py"
    ]
   },
@@ -3343,6 +3369,7 @@
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py"
@@ -3352,6 +3379,7 @@
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py"
@@ -4315,6 +4343,7 @@
     "scripts/n21_orbit_rca.py",
     "scripts/n21_qx_conformance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/packed_pauli_probe.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
@@ -5317,6 +5346,8 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/box_kite_qx_sweep.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -5324,6 +5355,8 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/box_kite_qx_sweep.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -5651,6 +5684,7 @@
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
     "scripts/patch_window_analysis.py",
+    "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
@@ -6613,7 +6647,7 @@
   "scripts/kaggle_run.py": "04e69833aefcd34311c033747cf73e9bf207bf56684a877f16d0f966ae634114",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
-  "scripts/hypercomplex_libraries.py": "a674e6a43f0089f7560150a04e9f52afef986400045e52f034e923c81a5235fc",
+  "scripts/hypercomplex_libraries.py": "4e57cdd6be4967ebbbbfb5698e8a43174b29b3cc91572904f0c4207d622a1141",
   "docs/notes/quandela/python-stack.md": "2f4be7a75a82b1c94a11e6bd45b7ff9d415c10c9a02953a9768100c03fac856e",
   "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
@@ -6650,6 +6684,12 @@
    "json",
    "pathlib",
    "re",
+   "sys"
+  ],
+  "ci/gate_env.py": [
+   "__future__",
+   "os",
+   "run_gates",
    "sys"
   ],
   "ci/gate_inputs.py": [
@@ -6715,6 +6755,7 @@
    "collections",
    "json",
    "pathlib",
+   "re",
    "subprocess"
   ],
   "ci/premerge_gates.py": [
@@ -6723,6 +6764,7 @@
    "collections",
    "contextlib",
    "fcntl",
+   "functools",
    "hashlib",
    "host_identity",
    "json",
@@ -6742,6 +6784,17 @@
    "importlib",
    "os",
    "sys",
+   "typing"
+  ],
+  "ci/replay_check.py": [
+   "__future__",
+   "argparse",
+   "fnmatch",
+   "json",
+   "pathlib",
+   "subprocess",
+   "sys",
+   "tempfile",
    "typing"
   ],
   "ci/run_gates.py": [
@@ -6764,6 +6817,16 @@
    "tempfile",
    "time",
    "typing"
+  ],
+  "ci/runner_image_records.py": [
+   "__future__",
+   "hashlib",
+   "json",
+   "pathlib",
+   "run_gates",
+   "sys",
+   "typing",
+   "unittest"
   ],
   "ci/runner_specs.py": [
    "__future__",
@@ -9851,6 +9914,23 @@
    "sys",
    "typing"
   ],
+  "scripts/hypercomplex_photonic_cases.py": [
+   "__future__",
+   "argparse",
+   "bdsc_certificate",
+   "copy",
+   "hashlib",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_belenos_mesh",
+   "qd_platform",
+   "typing"
+  ],
   "scripts/ibm_runtime_options_inventory.py": [
    "__future__",
    "argparse",
@@ -10046,6 +10126,61 @@
    "sys",
    "typing"
   ],
+  "scripts/local_optical_operator_replay.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/local_photonic_compiler_crosscheck.py": [
+   "__future__",
+   "argparse",
+   "cqasm",
+   "hashlib",
+   "importlib",
+   "json",
+   "numpy",
+   "opensquirrel_fullprecision",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "platform",
+   "qd_platform",
+   "qi_stack",
+   "qi_toolchain_check",
+   "qxelarator",
+   "re",
+   "sys",
+   "time",
+   "typing",
+   "warnings"
+  ],
+  "scripts/local_simulation_replay.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "local_photonic_compiler_crosscheck",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "pins",
+   "qi_stack",
+   "qi_toolchain_check",
+   "qxelarator",
+   "subprocess",
+   "sys",
+   "typing"
+  ],
   "scripts/lsq_conditioning_study.py": [
    "__future__",
    "argparse",
@@ -10197,6 +10332,7 @@
    "copy",
    "datetime",
    "diagnostic_experiments",
+   "fractions",
    "functools",
    "hashlib",
    "heapq",
@@ -10370,6 +10506,13 @@
    "random",
    "sys"
   ],
+  "scripts/opensquirrel_fullprecision.py": [
+   "__future__",
+   "importlib",
+   "math",
+   "opensquirrel",
+   "typing"
+  ],
   "scripts/oq_mcp_server.py": [
    "__future__",
    "collections",
@@ -10436,6 +10579,64 @@
    "pathlib",
    "scipy",
    "sys",
+   "typing"
+  ],
+  "scripts/photonic_compilation_audit.py": [
+   "__future__",
+   "argparse",
+   "base64",
+   "bdsc_certificate",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "photonic_repeat_readout",
+   "qd_belenos_mesh",
+   "qd_platform",
+   "re",
+   "typing",
+   "zlib"
+  ],
+  "scripts/photonic_compilation_audit_pooled.py": [
+   "__future__",
+   "argparse",
+   "bdsc_certificate",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "photonic_compilation_audit",
+   "photonic_repeat_readout_pooled",
+   "qd_platform",
+   "typing"
+  ],
+  "scripts/photonic_repeat_readout.py": [
+   "__future__",
+   "argparse",
+   "bdsc_certificate",
+   "hashlib",
+   "itertools",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/photonic_repeat_readout_pooled.py": [
+   "__future__",
+   "argparse",
+   "bdsc_certificate",
+   "hashlib",
+   "itertools",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "photonic_repeat_readout",
+   "qd_platform",
    "typing"
   ],
   "scripts/provider_api_audit.py": [
@@ -10523,6 +10724,7 @@
    "__future__",
    "argparse",
    "copy",
+   "fnmatch",
    "fractions",
    "hashlib",
    "json",
@@ -10729,8 +10931,18 @@
    "functools",
    "mcp",
    "pathlib",
+   "qi_monitoring",
    "qi_platform",
    "qxelarator",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_monitoring.py": [
+   "__future__",
+   "datetime",
+   "importlib",
+   "json",
+   "re",
    "sys",
    "typing"
   ],
@@ -10972,6 +11184,17 @@
    "sys",
    "tempfile",
    "typing"
+  ],
+  "scripts/quandela_api_inventory.py": [
+   "__future__",
+   "argparse",
+   "capture_qd_docs",
+   "hashlib",
+   "json",
+   "pathlib",
+   "re",
+   "typing",
+   "urllib"
   ],
   "scripts/qx_local_series.py": [
    "__future__",
@@ -11533,7 +11756,9 @@
   "mpmath": [
    "mpmath"
   ],
-  "networkx": [],
+  "networkx": [
+   "networkx"
+  ],
   "numpy": [
    "numpy"
   ],
@@ -11617,9 +11842,7 @@
   ]
  },
  "import_mapping_origin": "normalized importlib.metadata.packages_distributions observation with ISOLATED_IMPORTS fallback; checks project fresh tracked AST through this retained map instead of reinterpreting another host",
- "unresolved_import_roots": [
-  "networkx"
- ],
+ "unresolved_import_roots": [],
  "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
  "coverage": "all requirements locks, top-level literal pins and referenced runtime pin files in scripts/kaggle_run.py (without executing dispatch), retained IQM distributions, maintained scientific roles and tracked runtime imports; every named package-table entry in the maintained ecosystem and algebra-candidate notes, plus retained provider PyPI records",
  "host_observation_policy": "host versions retained; historical import locations archived separately; current imported_by follows fresh AST"
