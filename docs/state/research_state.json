@@ -8260,7 +8260,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/kernel_cancellation_qx_analysis.json",
-          "sha256": "fbd138bcd6d17a0b1e15d925832be4d57e059dc8345cf1e8823b067c9511e2e4"
+          "sha256": "5beb0569f965f82884c2c0c02a2e736e8fabc2d9946fb78df2e935fe3e3206f8"
         }
       ],
       "documents": [
@@ -8285,7 +8285,7 @@
     },
     {
       "id": "qi-tuna17-kernel-cancellation",
-      "statement": "On Tuna-17 (region 4, 8, 11, 12, 14, 45 CZ, every rotation on the pi/36 grid, 32768 shots per arm over two batches), the kernel cancellation probe read kernel odd parts of -0.0222 +- 0.0039 at phi = pi/36 and -0.0547 +- 0.0039 at pi/12, but the bright vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3): the preregistered H2 is falsified, the probe carries a signed response that does not depend on the kernel, and the kernel-minus-bright difference at pi/36, -0.0054 +- 0.0055 (z -1.0), the analysis's H1 decision, leaves the zero-divisor sign unresolved on this device. The sine-law contrast read z 0.76; each contrast is corrected by its own batch pair's readout (q8 errors 0.029 to 0.031 and 0.020 to 0.024).",
+      "statement": "On Tuna-17 (region 4, 8, 11, 12, 14, 45 CZ, every rotation on the pi/36 grid, 32768 shots per arm over two batches), the kernel cancellation probe read kernel odd parts of -0.0222 +- 0.0039 at phi = pi/36 and -0.0547 +- 0.0039 at pi/12, but the bright vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3): the preregistered H2 is falsified, the probe carries a signed response that does not depend on the kernel, and the readout-corrected kernel-minus-bright difference at pi/36, -0.0056 +- 0.0058 (z -0.97), the analysis's H1 decision, leaves the zero-divisor sign unresolved on this device. The sine-law test is withheld, since its pi/12 contrast ran out of order; each contrast is corrected by its own batch pair's readout (q8 errors 0.029 to 0.031 and 0.020 to 0.024).",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
@@ -8293,7 +8293,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json",
-          "sha256": "5232907b4da6605cf01b19a1284fdec4df24f84a6a50bf00c10bfb0d2406a3c0"
+          "sha256": "531ddfa2b331c95ac895c1cbbce79db32f5d79f4c29844978236fcdedefccce5"
         }
       ],
       "documents": [

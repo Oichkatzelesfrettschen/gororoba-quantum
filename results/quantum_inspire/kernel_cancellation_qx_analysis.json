@@ -14,11 +14,13 @@
     4096
    ],
    "odd": 0.0,
+   "odd_corrected": 0.0,
    "readout": {
     "e01": 0.0,
     "e10": 0.0
    },
    "se": 0.000244140625,
+   "se_corrected": 0.000244140625,
    "z_minus": 1.0,
    "z_plus": 1.0
   },
@@ -34,11 +36,13 @@
     4096
    ],
    "odd": -0.494384765625,
+   "odd_corrected": -0.494384765625,
    "readout": {
     "e01": 0.0,
     "e10": 0.0
    },
    "se": 0.009602396995399758,
+   "se_corrected": 0.009602396995399758,
    "z_minus": 0.48388671875,
    "z_plus": -0.5048828125
   },
@@ -54,11 +58,13 @@
     4096
    ],
    "odd": -0.184814453125,
+   "odd_corrected": -0.184814453125,
    "readout": {
     "e01": 0.0,
     "e10": 0.0
    },
    "se": 0.010855541322262387,
+   "se_corrected": 0.010855541322262387,
    "z_minus": 0.19287109375,
    "z_plus": -0.1767578125
   }
@@ -66,7 +72,7 @@
  "falsified_hypotheses": [],
  "h1_zero_divisor_sign": {
   "matched pi/36": {
-   "decision": "resolved",
+   "decision": "withheld: protocol deviation",
    "kernel_minus_bright": -0.184814453125,
    "se": 0.010858286330914358
   },
@@ -79,6 +85,7 @@
  "h2_bright_z": 0.0,
  "h3_sine_law": {
   "contrast": 0.037767243132291295,
+  "decision": "withheld: protocol deviation",
   "law": 2.879385241571817,
   "se": 0.032698989635347765,
   "z": 1.1549972507855326

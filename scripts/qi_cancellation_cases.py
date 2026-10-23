@@ -332,6 +332,10 @@ def evaluate(
             "odd": (zp - zm) / 2,
             "se": math.hypot(sp, sm) / 2,
             "readout": {"e01": (1 - ro0[0]) / 2, "e10": (1 + ro1[0]) / 2},
+            # Readout scales an odd part by 1 - e01 - e10 and the batch pairs differ, so tests across
+            # contrasts read the corrected odd part.
+            "odd_corrected": (zp - zm) / 2 / (1 - (1 - ro0[0]) / 2 - (1 + ro1[0]) / 2),
+            "se_corrected": math.hypot(sp, sm) / 2 / (1 - (1 - ro0[0]) / 2 - (1 + ro1[0]) / 2),
             "executed_order": order,
             "balanced": order in (None, "+--+", "-++-"),
         }
@@ -342,34 +346,41 @@ def evaluate(
 
     k1, k3, b1 = contrasts["kernel pi/36"], contrasts["kernel pi/12"], contrasts["bright pi/36"]
     sine = math.sin(math.pi / 6) / math.sin(math.pi / 18)
-    h3_se = math.hypot(k3["se"], sine * k1["se"])
-    h3 = k3["odd"] - sine * k1["odd"]
-    matched = k1["odd"] - b1["odd"]
-    matched_se = math.hypot(k1["se"], b1["se"])
-    r1 = 1 - k1["readout"]["e01"] - k1["readout"]["e10"]
+    h3_se = math.hypot(k3["se_corrected"], sine * k1["se_corrected"])
+    h3 = k3["odd_corrected"] - sine * k1["odd_corrected"]
+    matched = k1["odd_corrected"] - b1["odd_corrected"]
+    matched_se = math.hypot(k1["se_corrected"], b1["se_corrected"])
+    # A test is decided only on contrasts whose executed order held the design (principle P10); one that
+    # reads an unbalanced contrast is withheld and enters no falsification.
+    h1_valid = k1["balanced"] and b1["balanced"]
+    h2_valid = b1["balanced"]
+    h3_valid = k1["balanced"] and k3["balanced"]
+    h1_decision = decide(matched, matched_se) if h1_valid else "withheld: protocol deviation"
     falsified = [
         name
         for name, hit in (
-            ("H1", decide(matched, matched_se) == "falsified"),
-            ("H2", abs(b1["odd"] / b1["se"]) >= Z_RESOLVE),
-            ("H3", abs(h3 / h3_se) >= Z_RESOLVE),
+            ("H1", h1_decision == "falsified"),
+            ("H2", h2_valid and abs(b1["odd"] / b1["se"]) >= Z_RESOLVE),
+            ("H3", h3_valid and abs(h3 / h3_se) >= Z_RESOLVE),
         )
         if hit
     ]
     return {
         "contrasts": contrasts,
         "h1_zero_divisor_sign": {
-            "matched pi/36": {
-                "kernel_minus_bright": matched,
-                "se": matched_se,
-                "decision": decide(matched, matched_se),
-            },
+            "matched pi/36": {"kernel_minus_bright": matched, "se": matched_se, "decision": h1_decision},
             "pi/12": "no matched bright control",
             "nominal_against_zero": {"pi/36": decide(k1["odd"], k1["se"]), "pi/12": decide(k3["odd"], k3["se"])},
         },
         "h2_bright_z": b1["odd"] / b1["se"],
-        "h3_sine_law": {"law": sine, "contrast": h3, "se": h3_se, "z": h3 / h3_se},
-        "visibility": k1["odd"] / (-math.sin(math.pi / 18) * r1),
+        "h3_sine_law": {
+            "law": sine,
+            "contrast": h3,
+            "se": h3_se,
+            "z": h3 / h3_se,
+            "decision": "decided" if h3_valid else "withheld: protocol deviation",
+        },
+        "visibility": k1["odd_corrected"] / -math.sin(math.pi / 18),
         "protocol_deviations": [label for label, c in contrasts.items() if not c["balanced"]],
         "falsified_hypotheses": falsified,
     }
@@ -482,8 +493,14 @@ def self_test() -> str:
     swapped[plus], swapped[minus] = stamps[minus], stamps[plus]
     if evaluate(device(0.3, False, 0.0), manifest, stamps)["protocol_deviations"]:
         raise RuntimeError("the listed order was flagged")
-    if "kernel pi/36" not in evaluate(device(0.3, False, 0.0), manifest, swapped)["protocol_deviations"]:
+    deviated = evaluate(device(0.3, True, 0.0), manifest, swapped)
+    if "kernel pi/36" not in deviated["protocol_deviations"]:
         raise RuntimeError("an executed +, -, +, - order was not flagged")
+    # A deviation withholds the tests that read the contrast: a reversed sign then falsifies nothing.
+    if deviated["falsified_hypotheses"] or not deviated["h1_zero_divisor_sign"]["matched pi/36"]["decision"].startswith(
+        "withheld"
+    ):
+        raise RuntimeError(f"a deviated contrast entered a decision: {deviated['falsified_hypotheses']}")
     return (
         f"qi cancellation: region {manifest['region']} seed {manifest['seed']} {manifest['cz']} CZ, control "
         f"q[{control}], {len(angles)} Rz on the pi/36 grid; an honest device resolves the matched H1, a reversed "

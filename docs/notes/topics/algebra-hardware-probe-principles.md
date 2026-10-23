@@ -168,9 +168,11 @@ the [IQM guide](../iqm/README.md#what-the-garnet-runs-measured) and the
 - **Outcome: H2 falsified; no kernel-specific sign on Tuna-17.** The bright
   vector, whose ideal odd part is zero, read -0.0167 +- 0.0039 (z -4.3).
   The kernel read -0.0222 +- 0.0039 at pi/36 and -0.0547 +- 0.0039 at pi/12,
-  so H1 resolved nominally, but the kernel-minus-bright difference at pi/36
-  is -0.0054 +- 0.0055 (z -1.0); if the artifact scales like sin(2 phi), the
-  pi/12 difference is -0.0066 +- 0.0119 (z -0.6).
+  so H1 resolved nominally, but the kernel-minus-bright difference at pi/36,
+  each contrast corrected for its own batch pair's readout, is
+  -0.0056 +- 0.0058 (z -0.97); if the artifact scales like sin(2 phi), the
+  pi/12 difference is about z -0.6. The sine-law test is withheld because
+  its pi/12 contrast ran out of order (below).
 - **The same test on Garnet.** Kernel minus bright at phi = 0.1 is
   -0.0538 +- 0.0124 (z -4.3), and at 0.3 under the same scaling
   -0.132 +- 0.026 (z -5.0): Garnet's zero-divisor sign survives the
