@@ -8,10 +8,12 @@
   "b0": 1.0,
   "k+0.1a": -0.19866933079506122,
   "k+0.1b": -0.19866933079506122,
-  "k+0.3": -0.5646424733950354,
+  "k+0.3a": -0.5646424733950354,
+  "k+0.3b": -0.5646424733950354,
   "k-0.1a": 0.19866933079506122,
   "k-0.1b": 0.19866933079506122,
-  "k-0.3": 0.5646424733950354,
+  "k-0.3a": 0.5646424733950354,
+  "k-0.3b": 0.5646424733950354,
   "k0a": -0.0,
   "k0b": -0.0
  },
@@ -35,12 +37,20 @@
      "sha256": "2420df8258d5a34bf6a9302a5b0b40dd7bb222ca778ae24d0f9cb61d71923fa4"
     },
     {
-     "file": "circuits/k+0.3.json",
-     "sha256": "9c55569a82436276f7af5a3a3a5e9dc77f6c23ff6adee729173700737f46073f"
+     "file": "circuits/k+0.3a.json",
+     "sha256": "427d2e9b06c1be445a0a228abd85ca9983967113ac50784dfe2ebf56ecd7b335"
     },
     {
-     "file": "circuits/k-0.3.json",
-     "sha256": "9822cc12078f7ce6df7b3df99448bfc8b5f6cf6917132886a09253eb8b160770"
+     "file": "circuits/k-0.3a.json",
+     "sha256": "f45528770f2e1b34963836b9c8ce1d3a89f656f259f1d403a28342b5d6035a75"
+    },
+    {
+     "file": "circuits/k-0.3b.json",
+     "sha256": "98dee3d02190397ece365e06635d83e091660a58374ec981f930e87672d4b9b6"
+    },
+    {
+     "file": "circuits/k+0.3b.json",
+     "sha256": "c63a86ea45c37cadab44568bcd56f77dab3d7b7983919343fa3484e43416aa68"
     },
     {
      "file": "circuits/k0a.json",
@@ -103,7 +113,7 @@
      "sha256": "9b520c3e71cddad42d66c448ee1ee3742452d9d725347c6d54261be4dbae47b5"
     }
    ],
-   "expected_seconds": 1.798,
+   "expected_seconds": 1.969,
    "job": "cancellation",
    "max_credits": {
     "garnet": 2.0,

@@ -78,6 +78,10 @@ PREDICTION_SEED = 20261023
 AMPLIFY_K = (0, 5, 10)
 STEP = 1e-4
 Z_RESOLVE = 3.0
+# H5 marks a train non-linear above the chi-square quantile whose upper tail equals the one-sided
+# Z_RESOLVE normal tail; with three train lengths the residual has two degrees of freedom, whose
+# survival function is exp(-x/2).
+H5_CHI2_CUTOFF = -2 * math.log(0.5 * math.erfc(Z_RESOLVE / math.sqrt(2)))
 SYNTHETIC_VISIBILITY = 0.6
 SYNTHETIC_READOUT = (0.01, 0.03)
 # (name, bright, phi) in list order: +, -, -, + for each contrast.
@@ -86,8 +90,10 @@ PROBE_ARMS = (
     ("k-0.1a", False, -0.1),
     ("k-0.1b", False, -0.1),
     ("k+0.1b", False, 0.1),
-    ("k+0.3", False, 0.3),
-    ("k-0.3", False, -0.3),
+    ("k+0.3a", False, 0.3),
+    ("k-0.3a", False, -0.3),
+    ("k-0.3b", False, -0.3),
+    ("k+0.3b", False, 0.3),
     ("k0a", False, 0.0),
     ("k0b", False, 0.0),
     ("b+0.1a", True, 0.1),
@@ -287,7 +293,7 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
     contrast: dict[str, dict[str, Any]] = {}
     for label, plus, minus in (
         ("kernel 0.1", ("k+0.1a", "k+0.1b"), ("k-0.1a", "k-0.1b")),
-        ("kernel 0.3", ("k+0.3",), ("k-0.3",)),
+        ("kernel 0.3", ("k+0.3a", "k+0.3b"), ("k-0.3a", "k-0.3b")),
         ("bright 0.1", ("b+0.1a", "b+0.1b"), ("b-0.1a", "b-0.1b")),
     ):
         (zp, sp, np_), (zm, sm, nm) = z_of(counts, *plus), z_of(counts, *minus)
@@ -300,14 +306,36 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
             "se": math.hypot(sp, sm) / 2,
         }
     k1, k3, b1 = contrast["kernel 0.1"], contrast["kernel 0.3"], contrast["bright 0.1"]
-    h1 = {phi: decide(c["odd"], c["se"]) for phi, c in (("0.1", k1), ("0.3", k3))}
-    h2 = abs(b1["odd"] / b1["se"]) >= Z_RESOLVE
-    ratio = k3["odd"] / k1["odd"]
-    ratio_se = abs(ratio) * math.hypot(k3["se"] / k3["odd"], k1["se"] / k1["odd"])
-    sine = math.sin(0.6) / math.sin(0.2)
+    model = prediction["z"]
+    model_offset = (model["ro0"] + model["ro1"]) / 2
+    model_scale = (model["ro0"] - model["ro1"]) / 2
+    # Each modeled <Z> is sampled at PREDICTION_SHOTS; a mean over four circuits carries this error.
+    model_se = 1 / math.sqrt(4 * PREDICTION_SHOTS)
     ro0, ro1 = z_of(counts, "ro0"), z_of(counts, "ro1")
     e01, e10 = (1 - ro0[0]) / 2, (1 + ro1[0]) / 2
     r = 1 - e01 - e10
+    offset_se = math.hypot(ro0[1], ro1[1]) / 2
+    h1 = {phi: decide(c["odd"], c["se"]) for phi, c in (("0.1", k1), ("0.3", k3))}
+    # Idle relaxation is not unital and gives the bright vector an odd part of its own; H2 tests the
+    # departure from the modeled one, rescaled from the modeled to the measured readout.
+    bright_model = (model["b+0.1a"] + model["b+0.1b"] - model["b-0.1a"] - model["b-0.1b"]) / 4
+    bright_expected = r * bright_model / model_scale
+    bright_se = math.hypot(b1["se"], r * model_se / model_scale)
+    h2 = {
+        "expected_odd": bright_expected,
+        "z": (b1["odd"] - bright_expected) / bright_se,
+        "falsified": abs(b1["odd"] - bright_expected) / bright_se >= Z_RESOLVE,
+    }
+    # H3 as a contrast, odd(0.3) - c odd(0.1) with c = sin(0.6)/sin(0.2), defined at every reading.
+    sine = math.sin(0.6) / math.sin(0.2)
+    h3_se = math.hypot(k3["se"], sine * k1["se"])
+    h3 = {
+        "law": sine,
+        "contrast": k3["odd"] - sine * k1["odd"],
+        "se": h3_se,
+        "z": (k3["odd"] - sine * k1["odd"]) / h3_se,
+        "falsified": abs(k3["odd"] - sine * k1["odd"]) / h3_se >= Z_RESOLVE,
+    }
     amplify: dict[str, Any] = {}
     for qubit in [*prediction["theta_qubits"], prediction["control"]]:
         xs = np.array([4 * k + 1 for k in AMPLIFY_K], dtype=float)
@@ -324,45 +352,59 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
             "eps_se": slope_se / (math.pi / 2),
             "chi2": residual,
             "dof": len(AMPLIFY_K) - 1,
-            # H5: a chi-square beyond the dof by Z_RESOLVE of its spread marks a nonlinear train.
-            "linear": residual <= (len(AMPLIFY_K) - 1) + Z_RESOLVE * math.sqrt(2 * (len(AMPLIFY_K) - 1)),
+            "linear": residual <= H5_CHI2_CUTOFF,
         }
     visibility = k1["odd"] / (-math.sin(0.2) * r)
+    visibility_se = k1["se"] / (math.sin(0.2) * r)
     h4: dict[str, Any] = {"evaluated": all(amplify[q]["linear"] for q in prediction["theta_qubits"])}
     if h4["evaluated"]:
         shift = sum(prediction["response"][q]["even"] * amplify[q]["eps"] for q in prediction["theta_qubits"])
         shift_se = math.sqrt(
             sum((prediction["response"][q]["even"] * amplify[q]["eps_se"]) ** 2 for q in prediction["theta_qubits"])
         )
-        # The model's incoherent even part (idle relaxation is not unital) net of its own readout.
-        z = prediction["z"]
-        model_offset = (z["ro0"] + z["ro1"]) / 2
-        model_scale = (z["ro0"] - z["ro1"]) / 2
-        model_even = (z["k+0.1a"] + z["k+0.1b"] + z["k-0.1a"] + z["k-0.1b"]) / 4
+        model_even = (model["k+0.1a"] + model["k+0.1b"] + model["k-0.1a"] + model["k-0.1b"]) / 4
         relaxation = (model_even - model_offset) / model_scale
         predicted = (e10 - e01) + r * relaxation + r * visibility * shift
-        se = math.hypot(k1["se"], r * visibility * shift_se)
+        se = math.sqrt(
+            k1["se"] ** 2
+            + offset_se**2
+            + (r * model_se / model_scale) ** 2
+            + (r * visibility * shift_se) ** 2
+            + (r * shift * visibility_se) ** 2
+        )
         h4.update(
             {
                 "predicted_even": predicted,
                 "relaxation_even": r * relaxation,
                 "coherent_even": r * visibility * shift,
                 "measured_even": k1["even"],
+                "se": se,
                 "z": (k1["even"] - predicted) / se,
                 "falsified": abs(k1["even"] - predicted) / se >= Z_RESOLVE,
             }
         )
+    falsified = [
+        name
+        for name, hit in (
+            ("H1", "falsified" in h1.values()),
+            ("H2", h2["falsified"]),
+            ("H3", h3["falsified"]),
+            ("H4", bool(h4.get("falsified"))),
+        )
+        if hit
+    ]
     return {
         "contrasts": contrast,
         "h1_zero_divisor_sign": h1,
-        "h2_bright_artifact": h2,
-        "h3_sine_ratio": {"measured": ratio, "se": ratio_se, "law": sine, "z": (ratio - sine) / ratio_se},
+        "h2_bright_control": h2,
+        "h3_sine_law": h3,
         "h4_coherent_even": h4,
         "h5_amplification": amplify,
         "readout": {"e01": e01, "e10": e10, "scale": r},
         "visibility": visibility,
+        "visibility_se": visibility_se,
         "crossing": z_of(counts, "k0a", "k0b")[:2],
-        "falsified": "falsified" in h1.values() or h2,
+        "falsified_hypotheses": falsified,
     }
 
 
@@ -371,6 +413,11 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     counts: dict[str, tuple[int, int]] = {}
     runs = []
+    if len({run_dir.resolve() for run_dir in run_dirs}) != len(run_dirs):
+        raise ValueError("a run directory is named twice; each acquisition counts once")
+    jobs = [json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job_id"] for run_dir in run_dirs]
+    if len(set(jobs)) != len(jobs):
+        raise ValueError("two run directories hold one job; each acquisition counts once")
     for run_dir in sorted(run_dirs):
         facts = iqm_jobs.run_facts(run_dir)
         submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
@@ -452,9 +499,9 @@ def self_test() -> str:
     )
     eps[prediction["control"]] = -0.003
     honest = evaluate(synthetic(files, eps, False, 1, relaxation), prediction)
-    if honest["h1_zero_divisor_sign"] != {"0.1": "resolved", "0.3": "resolved"} or honest["h2_bright_artifact"]:
+    if honest["h1_zero_divisor_sign"] != {"0.1": "resolved", "0.3": "resolved"} or honest["falsified_hypotheses"]:
         raise RuntimeError(
-            f"an honest device reads {honest['h1_zero_divisor_sign']}, bright {honest['h2_bright_artifact']}"
+            f"an honest device reads {honest['h1_zero_divisor_sign']}, falsifies {honest['falsified_hypotheses']}"
         )
     for q, e in eps.items():
         got = honest["h5_amplification"][q]
@@ -467,8 +514,16 @@ def self_test() -> str:
     for name in [n for n in shifted if n.startswith("k")]:
         ones, n = shifted[name]
         shifted[name] = (ones + int(0.025 * n), n)
-    if not evaluate(shifted, prediction)["h4_coherent_even"].get("falsified"):
+    verdict = evaluate(shifted, prediction)
+    if not verdict["h4_coherent_even"].get("falsified") or "H4" not in verdict["falsified_hypotheses"]:
         raise RuntimeError("an even shift outside the coherent model left H4 standing")
+    # A device with no signed response (every arm reads the same) leaves H1 unresolved and H3 defined.
+    flat = {name: (SHOTS // 2, SHOTS) if name[0] in "kb" else counts for name, counts in shifted.items()}
+    null = evaluate(flat, prediction)
+    if null["h1_zero_divisor_sign"] != {"0.1": "unresolved", "0.3": "unresolved"} or not math.isfinite(
+        null["h3_sine_law"]["z"]
+    ):
+        raise RuntimeError(f"a null device reads {null['h1_zero_divisor_sign']}, H3 {null['h3_sine_law']}")
     reversed_ = evaluate(synthetic(files, eps, True, 2, relaxation), prediction)
     if "falsified" not in reversed_["h1_zero_divisor_sign"].values():
         raise RuntimeError(f"a reversed sign reads {reversed_['h1_zero_divisor_sign']}")

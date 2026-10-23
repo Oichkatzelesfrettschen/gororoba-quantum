@@ -333,8 +333,8 @@ def write_atomic(path: Path, data: bytes) -> None:
 def refuse_earlier(runs: Path, suffix: str, job: str, qc: str) -> None:
     """One live run directory per quantum computer, case and job: an earlier one, even without
     submission.json, may stand for a job already on the server, which the job list settles before
-    anything is resent. A run whose collected results.json reports a failed or cancelled job charged
-    nothing and ran nothing, so it leaves the job free to resubmit."""
+    anything is resent. A run whose collected results.json reports a failed or cancelled job that
+    billed no seconds leaves the job free to resubmit."""
     earlier = [run for run in sorted(runs.glob(f"*{suffix}")) if not settled_unrun(run)]
     if earlier:
         raise PlatformError(f"{job} on {qc} already has {earlier[0].name}; collect it or settle it first")
@@ -344,7 +344,10 @@ def settled_unrun(run_dir: Path) -> bool:
     retained = run_dir / "results.json"
     if not retained.exists():
         return False
-    return bool(json.loads(retained.read_text(encoding="utf-8")).get("status") in ("failed", "cancelled"))
+    results = json.loads(retained.read_text(encoding="utf-8"))
+    billed = float((results.get("metrics") or {}).get("billed_seconds") or 0.0)
+    # IQM can bill a failed or cancelled job; one that billed seconds ran and stays the job's run.
+    return results.get("status") in ("failed", "cancelled") and billed == 0.0
 
 
 def post_job(
@@ -712,7 +715,8 @@ def self_test() -> str:
             return 200, {}, json.dumps([{"measurement_keys": ["m"], "counts": {"1": sent["shots"]}}]).encode()
         status = "failed" if sent["shots"] == 1000 and state.get("fail") else "completed"
         state["balance"] -= 1.0 if status == "completed" else 0.0
-        return 200, {}, json.dumps({"id": job_id, "status": status, "metrics": {"billed_seconds": 2.0}}).encode()
+        billed = 2.0 if status == "completed" else float(state.get("failed_billed", 0.0))
+        return 200, {}, json.dumps({"id": job_id, "status": status, "metrics": {"billed_seconds": billed}}).encode()
 
     def refused(call: Any, words: str) -> None:
         try:
@@ -852,6 +856,15 @@ def self_test() -> str:
         again = submit(case, "j1-1x1000-passive", "garnet", "approved", approved, 5, client, runs, "s3b")
         if collect(again, client, poll=0)["status"] != "completed":
             raise RuntimeError("the resubmission after a collected failure did not complete")
+        # A failure that billed seconds ran on the device, so its job stays taken.
+        state["fail"], state["failed_billed"] = True, 2.0
+        billed_failure = submit(case, "j1-1x1000-passive", "garnet:mock", "approved", approved, 5, client, runs, "s3c")
+        collect(billed_failure, client, poll=0)
+        state["fail"], state["failed_billed"] = False, 0.0
+        refused(
+            lambda: submit(case, "j1-1x1000-passive", "garnet:mock", "approved", approved, 5, client, runs, "s3d"),
+            "already has",
+        )
         shots_back["value"] = 3999
         short = submit(case, "j4-1x4000-active1", "garnet", "approved", approved, 5, client, runs, "s4")
         sent = jobs[json.loads((short / "submission.json").read_text())["job_id"]]
