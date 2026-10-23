@@ -1,0 +1,24 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB12"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "c"
+   },
+   "locus": [
+    "QB12"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "ro1"
+}

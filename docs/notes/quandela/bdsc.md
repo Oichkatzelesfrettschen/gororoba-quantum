@@ -299,7 +299,7 @@ Tr(G rho) / Tr(D rho) from `bdsc.acceptance` on every setting. A g2 of
 
 ```sh
 "$PYTHON" scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd     # core-606
-"$PYTHON" scripts/bdsc_certificate.py --self-test                    # core-607
+"$PYTHON" scripts/bdsc_certificate.py --self-test                    # core-self-test-09
 "$PYTHON" -B -W error -m pytest -q tests/gororoba_quantum/test_bdsc_principal_angles.py
 "$PYTHON" scripts/bdsc_packages.py --write docs/evidence/bdsc/packages/packages.json
 "$PYTHON" scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json   # core-608

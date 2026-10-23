@@ -496,6 +496,12 @@ first collection writes `raw/result.json` before it parses the answer or reads
 the job data and usage, so a later failure leaves the scientific bytes on
 disk and a rerun completes the record. A usage report that stays unreadable
 is recorded as `usage_absent`, and the charge falls back to the billing rule.
+A job canceled before its start time, with no shots in its status or its
+returned result, is charged 0 credits: every retained such job (the
+2026-10-21 queue test and the three canceled diagnostic block-1 submissions
+of 2026-10-22) left the usage total unchanged, while the billing rule would
+read the per-job price whenever another job shares its window. A canceled
+job whose result returned shots keeps the billing rule.
 
 `result_summary` keeps every entry of a partial iterated answer at its
 position: a counted iteration as a completed job would, an iteration answered
@@ -529,6 +535,65 @@ The scheduled end is not proof of a completed calibration or a healthy input
 configuration. Record actual readiness and an acquisition-time calibration
 identity. Preserve epoch 2 as a separate intervention/replication epoch; do
 not pool across calibration changes merely because both batches completed.
+
+## Crossed diagnostic result (2026-10-23)
+
+The four jobs of the approved crossed diagnostic completed: block 1 on
+2026-10-22 (c8d90a80, ef06045d) and block 2 on 2026-10-23 (a5a0d2cf, after
+the first submission waited 7.6 hours and ended canceled before its start,
+and 33499aec), 960000 samples each, 40000 per iteration with 39959 to 40000
+eligible one-click trials. Block 2 job 1 was collected at 08:13:05 UTC and
+job 2 submitted at 08:13:30 UTC; no receipt of the matched check from that
+interval is retained, and `--matched-check` reproduces the equality of block
+2 job 1's returned circuits with block 1 job 2's on the retained runs. The
+resubmission continued past a stop condition with no amendment retained
+before it ([protocol deviation](../../runbooks/bdsc-qualification-case.md#protocol-deviation-of-2026-10-23-block-2-job-1-was-resubmitted)),
+so the readout's rule is the preregistered one and its reading is
+descriptive. The readout
+([bdsc_diagnostic_readout.json](../../../results/quandela/bdsc_diagnostic_readout.json),
+claim `qd-belenos-bdsc-diagnostic-readout`, gate `core-647`) selects the
+**stationarity** branch. Its standard errors and p-values are reference
+values under independent Bernoulli trials: the provider contract leaves count
+provenance and uncorrected observations unresolved, so they are uncalibrated
+if the service reconstructs or correlates the returned counts.
+
+- **Branch reading.** Matched requests changed between the blocks beyond
+  their class means (heterogeneity 553 on 45 degrees of freedom, p 1e-88),
+  while all 48 matched pairs returned identical compiled circuits and no
+  instance leaked. The provider contract leaves returned-circuit semantics
+  unresolved, so identical returns show that the service reported one
+  nominal model; the change belongs to the device rather than the compiler
+  only if a returned circuit describes the configuration that ran. The
+  branch's disposition: address stationarity and provider calibration before
+  any fixed-effect confirmation.
+- **Support-conditioned rerun (no branch reads it).** On selected clicks over
+  on-support clicks the matched requests' changes are homogeneous about their
+  class means (45.8 on 45, p 0.44), so the instance-specific part of the
+  block change lives in the aggregate fraction of clicks outside each
+  setting's target support (129355 such clicks over the 96 iterations, 42068
+  of them in mode 5), not in one mode. A common on-support shift remains: the
+  superpositions moved by -0.0048 (z -7.7). The template test stays resolved.
+- **Calibration shift.** The g basis state moved by +0.0035 between blocks
+  (z 11.6); f moved by +0.0003 (z 2.3) and the superpositions by -0.0015
+  (z -2.5), both inconclusive.
+- **Seeds.** Seed dispersion of the superpositions is resolved and
+  state-specific in both readings (seed interaction 5542 on 36 raw, 4424 on
+  36 support-conditioned). Within a block and template the seed slots split
+  between the two jobs, so that statistic also carries a state-dependent
+  change between jobs; restricted to seed slots that share a job, the
+  interaction stays resolved (2406 on 24 raw, 1941 on 24 support-conditioned),
+  so the state-specific seed effect stands apart from job identity.
+- **Residuals.** All 32 sum-rule residuals lie beyond the 0.02 margin,
+  between -0.14 and -0.24.
+- **Position in the job.** The rank correlation of each superposition's
+  deviation from r-hat with its position in the job reads -0.13 to +0.36
+  (p >= 0.17): a position trend is unresolved, not excluded.
+
+The next amendment therefore starts from stationarity: a design whose
+contrasts compare matched requests within one acquisition window, measures
+the aggregate off-support fraction per iteration as a calibrated nuisance,
+and carries the common on-support shift of the superpositions as its own
+term, before any confirmation reads a fixed effect.
 
 ## Research grounding
 

@@ -200,6 +200,10 @@ def test_future_case_cannot_omit_power_or_stop_without_retry() -> None:
     with pytest.raises(ValueError, match="not qualified"):
         decisions.validate_decision(bad)
     bad = copy.deepcopy(case)
+    bad["alternatives"] = ["history", " history "]
+    with pytest.raises(ValueError, match="distinct named alternatives"):
+        decisions.validate_decision(bad)
+    bad = copy.deepcopy(case)
     bad["retry_authorized"] = True
     with pytest.raises(ValueError, match="automatic retry"):
         decisions.validate_decision(bad)

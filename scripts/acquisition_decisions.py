@@ -50,7 +50,9 @@ def validate_decision(case: dict[str, Any]) -> None:
         require(nonempty(case.get(field)), f"{field} unavailable")
     alternatives = case.get("alternatives")
     require(
-        isinstance(alternatives, list) and all(nonempty(v) for v in alternatives) and len(set(alternatives)) >= 2,
+        isinstance(alternatives, list)
+        and all(nonempty(v) for v in alternatives)
+        and len({v.strip() for v in alternatives}) >= 2,
         "At least two distinct named alternatives are required",
     )
     require(set(case.get("stopping_outcomes", {})) == set(OUTCOMES), "All five terminal decisions must be specified")

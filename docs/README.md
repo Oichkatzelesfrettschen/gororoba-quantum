@@ -20,7 +20,9 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
 | IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
+| Local simulator cross-check | full-output photonic probabilities and precision-preserving cQASM export | [simulation evidence](../results/local-simulation/README.md), [complete optical outputs](../results/local-simulation/optical-operator-replay.json) |
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
+| Python | interpreters, library roles, optimization ladder | [PYTHON.md](PYTHON.md) |
 | CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
 | State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
@@ -33,6 +35,12 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 [Tuna-17](notes/quantum_inspire/experiments.md). The
 [hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
+native execution limits, billing units and MCP observations. The
+[current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
+density interventions and a separately labeled trapped-ion qualification; every generated program remains
+unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
+tracks the audit and integration gates.
 The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
 the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
 
@@ -56,7 +64,7 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | Quantum Inspire run | [README](notes/quantum_inspire/README.md), [usage.md](notes/quantum_inspire/usage.md), [tuna-17-run-design.md](notes/quantum_inspire/tuna-17-run-design.md) |
 | Open Quantum run | [README](notes/open_quantum/README.md), `scripts/oq_platform.py` estimate |
 | Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) |
-| IQM run | [README](notes/iqm/README.md), [os-4.7-emerald.md](notes/iqm/os-4.7-emerald.md) |
+| IQM run | [README](notes/iqm/README.md), [os-4.7.md](notes/iqm/os-4.7.md) |
 | Simulation and Kaggle | [README](notes/kaggle/README.md), [substrates.md](notes/kaggle/substrates.md), [gpu-runbook.md](notes/kaggle/gpu-runbook.md) |
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
@@ -90,7 +98,10 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 |---|---|
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
+| [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
+| [cd-star-lattice-tower.md](notes/topics/cd-star-lattice-tower.md) | Tuna-17 as the Gaussian-integer star lattice; lifts to dimensions 3, 4, 8, 16 and the sedenion zero divisors |
+| [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
@@ -116,6 +127,9 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
+| [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
+| [design/iqm-garnet-signed-kernel-probe.md](design/iqm-garnet-signed-kernel-probe.md) | signed sedenion kernel probe on IQM Garnet: odd dilation overlap, heralded active reset, prediction |
+| [design/iqm-garnet-kernel-cancellation-probe.md](design/iqm-garnet-kernel-cancellation-probe.md) | kernel cancellation probe on IQM Garnet: zero-divisor sign at 37 CZ, bright control, over-rotation trains, H1-H5 |
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |

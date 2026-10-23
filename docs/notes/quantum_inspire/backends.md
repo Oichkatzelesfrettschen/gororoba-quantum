@@ -157,13 +157,24 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   (`scripts/qi_toolchain_check.py`,
   [original toolchain record](../../evidence/quantum_inspire/toolchain_check.json)).
   The [source-bound proposal toolchain record](../../evidence/quantum_inspire/toolchain-source-bound-proposals.json)
-  retains its bytes. The active
+  and the
   [rejected-request proposal toolchain successor](../../evidence/quantum_inspire/toolchain-rejected-request-proposals.json)
-  preserves all 2,779 predecessor compilation rows and adds 832 exact-payload
-  submission-source and compact-QX successor circuits, for 3,611 current cases. Gate `core-368` checks the complete current
-  case set against that successor and regenerates it under the pinned local QI
+  retain their bytes; the latter preserves all 2,779 rows before it and adds 832
+  exact-payload submission-source and compact-QX successor circuits. The
+  [complete retained-case successor](../../evidence/quantum_inspire/toolchain-complete-retained-cases.json)
+  preserves the 3,671 cases that included the original 60 BDSC Pauli circuits.
+  The active
+  [pause-ladder toolchain successor](../../evidence/quantum_inspire/toolchain-pause-ladder.json)
+  preserves unchanged-circuit compilation rows and includes 68 BDSC Pauli circuits (27 Tuna-17,
+  41 QX twin) and the 832 pause-ladder ZZ-map successor circuits, for 4,511 current
+  cases. Rebuilt paths receive rows bound to their new circuit bytes; the
+  historical records retain their original rows. Gate `core-368` checks the complete
+  current case set through `scripts/qi_toolchain_check.py` and regenerates
+  the successor under the pinned local QI
   interpreter. The original record keeps its bytes; compilation proves source
   and default-pass conformance, while provider scheduling remains separate.
+  The matched-proposal receipt binds the compiler dependency's exact bytes;
+  selecting the current receipt retains that bound compiler source.
 - **Compiler** (API): SWAP2CZDecomposer then CZDecomposer; the configuration
   lists no mapping and no routing pass, so a circuit keeps every two-qubit
   gate on a coupled pair itself.

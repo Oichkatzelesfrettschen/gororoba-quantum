@@ -197,9 +197,12 @@ What they establish:
 - [P] A tensor-product noise model carries 2n single-qubit rates; a
   continuous-time Markov (CTMP) model captures readout cross-talk, which the
   paper attributes in part to frequency multiplexing (Bravyi).
-- [P] The M3 method corrects in the subspace of observed bit strings, handles
-  correlated errors and returns error bounds, with calibration cost that grows
-  at most linearly for the single-qubit matrices (Nation).
+- [P] The M3 method corrects in the subspace of observed bit strings and
+  returns error bounds (Nation). Its calibration grows at most linearly in the
+  qubit count for the tensored single-qubit matrices; the reduced-subspace
+  solver can also take correlated assignment elements, but those need their own
+  correlated channel and calibration circuits, whose cost the tensored figure
+  does not cover.
 - [P] On a multiplexed device with Purcell filters, simultaneous and
   individual readout errors differ by under 1 percent for five qubits
   (Heinsoo).

@@ -26,7 +26,7 @@ PRODUCER_DIGEST = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 FIELDS = ("planned_observations", "submitted_shot_ceiling", "provider_reported_shots", "returned_samples")
 CLASSIFICATION = {
     "exact finite certificate": "exact finite result",
-    "mathematical claim": "externally/repository proved statement; proof origin retained",
+    "mathematical claim": "mathematical statement; status and proof origin retained",
     "machine-checked proof": "kernel-checked statement; receipt scope retained",
     "numerical or stochastic simulation": "simulation result",
     "circuit-conformance check": "ideal circuit-conformance result",

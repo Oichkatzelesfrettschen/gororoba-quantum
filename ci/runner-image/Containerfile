@@ -1,0 +1,16 @@
+# The userland of the ubuntu-26.04 GitHub runner: its glibc (libm), the
+# setup-python 3.14.7 build at the toolcache path its runpath names with the
+# shared libraries its extension modules link (the runner image ships them),
+# and patch for ci/install_pins.sh. ci/runner_image.sh builds it from the cache
+# directory that holds the Python tarball.
+FROM docker.io/library/ubuntu:26.04@sha256:42527649dbc4f9197a6073f426f488cbff0e9cc9f2afce32d91c383e4875634a
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates patch \
+        libffi8 libgdbm6t64 libgdbm-compat4t64 libreadline8t64 libsqlite3-0 \
+    && rm -rf /var/lib/apt/lists/*
+COPY python-3.14.7-linux-26.04-x64.tar.gz /tmp/python.tar.gz
+RUN mkdir -p /opt/hostedtoolcache/Python/3.14.7/x64 \
+    && tar xzf /tmp/python.tar.gz -C /opt/hostedtoolcache/Python/3.14.7/x64 \
+    && rm /tmp/python.tar.gz /opt/hostedtoolcache/Python/3.14.7/x64/setup.sh \
+    && ln -s python3.14 /opt/hostedtoolcache/Python/3.14.7/x64/bin/python
+ENV PATH=/opt/hostedtoolcache/Python/3.14.7/x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

@@ -694,6 +694,20 @@ def analyse(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
     common, common_df, interaction, interaction_df = seed_split(split_groups)
     tests["seed_common"] = {"statistic": common, "df": common_df}
     tests["seed_interaction"] = {"statistic": interaction, "df": interaction_df}
+    # Within a block and template the seed slots split between the two jobs, so seed_interaction also carries a
+    # state-dependent change between those jobs. Slots that share a job separate the seed effect from it; no branch
+    # reads these two tests.
+    job_of = {(i["block"], i["template"], i["slot"]): i["job"] for i in items}
+    within_groups = [
+        {(label, s): (p(b, t, s, label), se(b, t, s, label)) for label in SUPERPOSITIONS for s in slots}
+        for b in BLOCKS
+        for t in templates
+        for job in sorted({job_of[(b, t, s)] for s in range(SLOTS)})
+        if len(slots := [s for s in range(SLOTS) if job_of[(b, t, s)] == job]) > 1
+    ]
+    common_within, common_within_df, within, within_df = seed_split(within_groups)
+    tests["seed_common_within_job"] = {"statistic": common_within, "df": common_within_df}
+    tests["seed_interaction_within_job"] = {"statistic": within, "df": within_df}
     tests["template"] = {
         "statistic": sum((x["effect"] / x["se"]) ** 2 for x in template_effect),
         "df": len(template_effect),

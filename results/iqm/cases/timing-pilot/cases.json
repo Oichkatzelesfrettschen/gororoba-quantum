@@ -1,0 +1,152 @@
+{
+ "case": "timing-pilot",
+ "ideal": {
+  "circuit": "X on QB1, then measure",
+  "p1": 1.0
+ },
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/j1-1x1000-passive-00.json",
+     "sha256": "1874b1e3ba45ea01303c6a4241ea59cf0ca67c68d62502f1470b7d54288f08cc"
+    }
+   ],
+   "expected_seconds": 0.3,
+   "job": "j1-1x1000-passive",
+   "options": {
+    "active_reset_cycles": null,
+    "heralding_mode": "none"
+   },
+   "shots": 1000
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/j2-1x4000-passive-00.json",
+     "sha256": "ff62322f38409bf618c476963841231f98738ae4c27b3ad0a8469b89e4760643"
+    }
+   ],
+   "expected_seconds": 1.2,
+   "job": "j2-1x4000-passive",
+   "options": {
+    "active_reset_cycles": null,
+    "heralding_mode": "none"
+   },
+   "shots": 4000
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/j3-20x200-passive-00.json",
+     "sha256": "651a7f667efc96340e449b8aae484c17edc2955b05015dacf25bdd1e8ce52d2a"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-01.json",
+     "sha256": "aa512287572d5b5c63a823ad6ea63dd8d412cdaf22a748cd3a60c4f25abe2f79"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-02.json",
+     "sha256": "c82c260f6bcfb8f9605116ea66f0c4386403638a303525215d8a88de9328de94"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-03.json",
+     "sha256": "4ef2b4d06b20ad6fef6503cc29eea00344bd8e584edec790bd297b97e2ab70b5"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-04.json",
+     "sha256": "4605caf5c62f0ccf70af705e05beeaba7f3da237ee7e52abc616f6a421b126db"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-05.json",
+     "sha256": "ea9355ff73152f378f3b1d582ffd055d6170074282399c1495595da6bd825496"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-06.json",
+     "sha256": "8c5c65e0add6caa02994f92036412fccbb9ccb10fac3768a1223b8a1ab4c9d69"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-07.json",
+     "sha256": "edb0ff5bec286fcb0f81ec75e2170141bbdb2772d4975b4b4e4fd1acc84390a4"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-08.json",
+     "sha256": "09d5a9cbfb49da3cf06eac1de17dd8c4c671a47a11aa43e3a93b92c14f5a3ba5"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-09.json",
+     "sha256": "a264d30999fbb95361350413fdfa4629908a59322074ddf893b7df8af0eaa048"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-10.json",
+     "sha256": "3af9d2a1f3de02c92da77e90bd1d3c7a78fc739d893b5d9e53144de5c76ad181"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-11.json",
+     "sha256": "545f8a9090beb2913e0137b48b3d9935dadf127237c9ddfab99257a30b3c85e2"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-12.json",
+     "sha256": "3dede836c9b6fe25e034ddf355b527db2b8318749c7c76a7f2102d17f3e7ef73"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-13.json",
+     "sha256": "7aa101bc8d3f66109869f0af23d931171d288bc6b81c38dbd7c9b360dd183160"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-14.json",
+     "sha256": "8791fbfb57db24cd51f857727c7e260a87281995f7fe4c3edf91f2f506d8a454"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-15.json",
+     "sha256": "15d1a18e5ad5d7ff8b63f0b2e6c6d743e67a374020f4f798e1e1f9715a63b8a7"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-16.json",
+     "sha256": "4281869ec32136ab9b3fdfeb1f6641cce4bdbc4004a415245604dec83defe823"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-17.json",
+     "sha256": "c2d47ab9a9d31d24f6d3248928b7a8bb27e7216ffdbdc2e42dd05c65c680c65c"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-18.json",
+     "sha256": "74309114f1efd696e9ed414733badabcedb1c04995629816cbde3a2e911f3404"
+    },
+    {
+     "file": "circuits/j3-20x200-passive-19.json",
+     "sha256": "24ed75a3b10a18b56608c0da432c2b2de0def597d105c34a7bec551efadfa4c6"
+    }
+   ],
+   "expected_seconds": 1.2,
+   "job": "j3-20x200-passive",
+   "options": {
+    "active_reset_cycles": null,
+    "heralding_mode": "none"
+   },
+   "shots": 200
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/j4-1x4000-active1-00.json",
+     "sha256": "31b575fa1f72f7e7d8f4df774f6a54002f6cbbcb210fb43d9246b0c9fbb6a8c3"
+    }
+   ],
+   "expected_seconds": 1.2,
+   "job": "j4-1x4000-active1",
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 4000
+  }
+ ],
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "What does IQM bill per job, per shot, per circuit and with active reset on Garnet?",
+ "schema": "iqm-circuit-case-v1",
+ "shot_seconds_prior": 0.0003
+}

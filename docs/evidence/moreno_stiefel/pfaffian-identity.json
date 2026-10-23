@@ -1,0 +1,532 @@
+{
+ "identity_points": {
+  "A_5": 465
+ },
+ "primes": {
+  "2305843009213693693": {
+   "algebras": {
+    "A_5": {
+     "non_stiefel_controls": [
+      [
+       16,
+       32
+      ]
+     ],
+     "pfaffian_degree": 8,
+     "pure_coordinates": 15,
+     "schwartz_zippel_bound_per_point": "26/p",
+     "stiefel_points": [
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      }
+     ],
+     "stiefel_ranks": [
+      [
+       14,
+       28
+      ]
+     ]
+    },
+    "A_6": {
+     "pfaffian_degree": 16,
+     "pure_coordinates": 31,
+     "schwartz_zippel_bound_per_point": "50/p",
+     "stiefel_points": [
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      }
+     ],
+     "stiefel_ranks": [
+      [
+       32,
+       64
+      ]
+     ]
+    }
+   },
+   "sqrt_minus_one": 966685122347009555
+  },
+  "2305843009213693921": {
+   "algebras": {
+    "A_5": {
+     "non_stiefel_controls": [
+      [
+       16,
+       32
+      ]
+     ],
+     "pfaffian_degree": 8,
+     "pure_coordinates": 15,
+     "schwartz_zippel_bound_per_point": "26/p",
+     "stiefel_points": [
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      },
+      {
+       "rank_L": 28,
+       "rank_N": 14
+      }
+     ],
+     "stiefel_ranks": [
+      [
+       14,
+       28
+      ]
+     ]
+    },
+    "A_6": {
+     "pfaffian_degree": 16,
+     "pure_coordinates": 31,
+     "schwartz_zippel_bound_per_point": "50/p",
+     "stiefel_points": [
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      },
+      {
+       "rank_L": 64,
+       "rank_N": 32
+      }
+     ],
+     "stiefel_ranks": [
+      [
+       32,
+       64
+      ]
+     ]
+    }
+   },
+   "sqrt_minus_one": 583529827753931384
+  }
+ },
+ "question": "math/0512517, Section 5 (p. 26): is every Stiefel element of A_5 a zero divisor?",
+ "schema": "moreno-stiefel-pfaffian-identity-v1",
+ "seed": 20261022
+}

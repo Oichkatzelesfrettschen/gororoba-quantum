@@ -79951,24 +79951,6 @@
         "status": "superseded"
       },
       {
-        "count": 16,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "27e31f46554b99086cc8b0f235e7ce9d27967f0d",
-          "name": "photonic-conformance-current-head"
-        },
-        "status": "established"
-      },
-      {
-        "count": 4,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "27e31f46554b99086cc8b0f235e7ce9d27967f0d",
-          "name": "photonic-conformance-current-head"
-        },
-        "status": "open"
-      },
-      {
         "count": 7,
         "evidence_class": "ideal circuit-conformance result",
         "source": {
@@ -79985,6 +79967,24 @@
           "name": "photonic-conformance-current-head"
         },
         "status": "established"
+      },
+      {
+        "count": 16,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "27e31f46554b99086cc8b0f235e7ce9d27967f0d",
+          "name": "photonic-conformance-current-head"
+        },
+        "status": "established"
+      },
+      {
+        "count": 4,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "27e31f46554b99086cc8b0f235e7ce9d27967f0d",
+          "name": "photonic-conformance-current-head"
+        },
+        "status": "open"
       },
       {
         "count": 43,
@@ -80068,24 +80068,6 @@
         "status": "superseded"
       },
       {
-        "count": 16,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "2f9168052148f1dce851dabbffbe41bc277ba025",
-          "name": "tuna-pauli-current-head"
-        },
-        "status": "established"
-      },
-      {
-        "count": 4,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "2f9168052148f1dce851dabbffbe41bc277ba025",
-          "name": "tuna-pauli-current-head"
-        },
-        "status": "open"
-      },
-      {
         "count": 7,
         "evidence_class": "ideal circuit-conformance result",
         "source": {
@@ -80102,6 +80084,24 @@
           "name": "tuna-pauli-current-head"
         },
         "status": "established"
+      },
+      {
+        "count": 16,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "2f9168052148f1dce851dabbffbe41bc277ba025",
+          "name": "tuna-pauli-current-head"
+        },
+        "status": "established"
+      },
+      {
+        "count": 4,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "2f9168052148f1dce851dabbffbe41bc277ba025",
+          "name": "tuna-pauli-current-head"
+        },
+        "status": "open"
       },
       {
         "count": 44,
@@ -80302,24 +80302,6 @@
         "status": "superseded"
       },
       {
-        "count": 16,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "4e56b8097e8227c757cff80df30e6a7ccb285fb7",
-          "name": "main"
-        },
-        "status": "established"
-      },
-      {
-        "count": 4,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "4e56b8097e8227c757cff80df30e6a7ccb285fb7",
-          "name": "main"
-        },
-        "status": "open"
-      },
-      {
         "count": 7,
         "evidence_class": "ideal circuit-conformance result",
         "source": {
@@ -80336,6 +80318,24 @@
           "name": "main"
         },
         "status": "established"
+      },
+      {
+        "count": 16,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "4e56b8097e8227c757cff80df30e6a7ccb285fb7",
+          "name": "main"
+        },
+        "status": "established"
+      },
+      {
+        "count": 4,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "4e56b8097e8227c757cff80df30e6a7ccb285fb7",
+          "name": "main"
+        },
+        "status": "open"
       },
       {
         "count": 43,
@@ -80536,24 +80536,6 @@
         "status": "superseded"
       },
       {
-        "count": 16,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "bc797e7d562faf751e3eb1af0bb2f6d084ad4f86",
-          "name": "photonic-conformance"
-        },
-        "status": "established"
-      },
-      {
-        "count": 4,
-        "evidence_class": "externally/repository proved statement; proof origin retained",
-        "source": {
-          "commit": "bc797e7d562faf751e3eb1af0bb2f6d084ad4f86",
-          "name": "photonic-conformance"
-        },
-        "status": "open"
-      },
-      {
         "count": 7,
         "evidence_class": "ideal circuit-conformance result",
         "source": {
@@ -80570,6 +80552,24 @@
           "name": "photonic-conformance"
         },
         "status": "established"
+      },
+      {
+        "count": 16,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "bc797e7d562faf751e3eb1af0bb2f6d084ad4f86",
+          "name": "photonic-conformance"
+        },
+        "status": "established"
+      },
+      {
+        "count": 4,
+        "evidence_class": "mathematical statement; status and proof origin retained",
+        "source": {
+          "commit": "bc797e7d562faf751e3eb1af0bb2f6d084ad4f86",
+          "name": "photonic-conformance"
+        },
+        "status": "open"
       },
       {
         "count": 43,
@@ -96589,7 +96589,7 @@
       "name": "photonic-conformance-current-head"
     }
   ],
-  "producer_sha256": "27c77573c2033b879abae4bf5a77b62869f496d2d280b32aa643c385e1e25347",
+  "producer_sha256": "0f5e21ed51aa1a34b1b0aad3705290d855856c6d856ae400b8d6899526a60222",
   "reconciliation": {
     "acquisitions": [
       {

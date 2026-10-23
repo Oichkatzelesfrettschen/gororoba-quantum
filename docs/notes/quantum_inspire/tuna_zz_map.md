@@ -32,10 +32,17 @@ The retained deadline-recovery source-binding successor is
 [`zz-map-tuna17-deadline-recovery/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-deadline-recovery/plan.json).
 Its recorded bytes remain immutable.
 
-The active unsubmitted source-binding successor is
+The retained rejected-request source-binding successor is
 [`zz-map-tuna17-rejected-request-recovery/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery/plan.json).
-The successor binds collection deadlines and separate receipts for zero-dispatch
+It binds collection deadlines and separate receipts for zero-dispatch
 refusal and a received first-project HTTP 401 whose retry window expired.
+Its recorded bytes remain immutable.
+
+The active unsubmitted source-binding successor is
+[`zz-map-tuna17-pause-ladder/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-pause-ladder/plan.json).
+It binds the `scripts/qi_platform.py` that paces hardware batches on the
+30/60/90/120 s ladder ([usage.md](usage.md#pause-escalation)); the plan's pause
+figures take the 120 s ceiling, so they match the predecessor's.
 All 416 cQASM payloads and scientific settings match the retained proposals.
 Gate `core-594` replays the active successor. Each predecessor retains its bytes.
 
@@ -58,9 +65,10 @@ Q6 after a platform calibration: the corrected Ramsey visibility reaches
 concrete concern for this proposal, whose four joint calibration states
 already require at least two batches per matching.
 
-The current runner requires a 120 s account-wide pause after completed
-hardware jobs. This 139-batch case therefore entails at least
-`138 * 120 = 16,560 s`, or **4.6 hours of pauses alone**, before execution,
+The runner requires an account-wide pause after completed hardware jobs, a
+step of 30 to 120 s ([usage.md](usage.md#pause-escalation)). This 139-batch
+case therefore entails `138 * 30 = 4,140 s` (69 minutes) to
+`138 * 120 = 16,560 s` (**4.6 hours**) of pauses alone, before execution,
 collection, queue and calibration overhead. The existing map measured
 poor coherence on Q5/Q6/Q7 by 2 us, and no retained acquisition establishes
 that every edge can support the mandatory 20 and 40 us points here.
@@ -378,8 +386,9 @@ charge. They exclude any undocumented repetition, control, compilation,
 job, queue and calibration overhead. Batch regrouping changes
 those unpriced overheads while preserving the circuit-level primitive
 sums. Actual QPU seconds and any monetary charge remain unset in the
-machine-readable proposal. These primitive sums exclude the current
-policy's minimum 16,560 s of pauses between the 139 hardware batches;
+machine-readable proposal. These primitive sums exclude the 4,140 to
+16,560 s of pauses between the 139 hardware batches (the ladder's 30 s
+first step to its 120 s ceiling);
 elapsed acquisition time cannot be inferred from the primitive sums alone.
 
 ## Offline generation, review and future collection
@@ -388,7 +397,7 @@ From the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-rejected-request-recovery --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
+"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-pause-ladder --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 "$PYTHON" scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 ```
 

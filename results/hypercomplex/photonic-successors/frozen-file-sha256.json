@@ -1,0 +1,22 @@
+{
+ "ascella-capability-frontier/frontier.json": "896199ba18301f3694e3c3fcfee389af85ff0473b3fd007f52e53daaeb2236a6",
+ "ascella-full-source-readiness/cases.json": "c53e3e9c597874ef1d3ba6a893c0357880426e09156ffa66df616e0ac725512f",
+ "ascella-full-source-readiness/circuit.json": "610c0fcc4f257952976cf6cfb17deab660b4e3df3935704f6960a99d94f89275",
+ "ascella-native-readiness/cases.json": "c7251994e223a90bfb8ea0e859d0fa0487ba198afb1d695e23db2fb9e6159378",
+ "ascella-native-readiness/circuit.json": "4a302ece48233cb65dcba5ef97785b0410235ecc3e3c8b97d638b119fcd1dd86",
+ "ascella-readiness/cases.json": "71b3eb5fa2d9df0dd39d82cd1e07d19111cc682e9a43d4491dab8654af2fa17d",
+ "ascella-readiness/circuit.json": "1cf2b0da7c208bee7ba2f1b93fa0f69dae11d78effb62e0bfcb029722df28922",
+ "ascella/order-repeat-block-0/cases.json": "ec407cb3923aec3a4ee22c4394fdb7258e99cd018adf8a195394b1fe93cee7f1",
+ "ascella/order-repeat-block-0/circuit.json": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f",
+ "belenos/order-repeat-block-0/cases.json": "ef355c5ccdedc9150db1a7030f037dbf6bb122333147756eaf5fca3b6612e5e8",
+ "belenos/order-repeat-block-0/circuit.json": "90cab2c082b1a9fdf4e2ac1f7b54c3d2f6da8ac7cffdb80c318034f8088ca53d",
+ "belenos/transform-repeat-block-0/cases.json": "1b76c143cc328a5612aba81d728e5c0205ebf491c3befc791ffde57ca5c9327a",
+ "belenos/transform-repeat-block-0/circuit.json": "917dd7fe0d73292a5235e1338bfcb79bb13e6e769f932225b2e681f9a33ac51a",
+ "belenos/wave-repeat-block-0/cases.json": "03f2072ebe59bd4e1c8838132df7ca6d63aa8c680665836b5ef564deb2531bcf",
+ "belenos/wave-repeat-block-0/circuit.json": "917dd7fe0d73292a5235e1338bfcb79bb13e6e769f932225b2e681f9a33ac51a",
+ "belenos/wave-repeat-block-1/cases.json": "60c351c31ed0eb1818db9faad7160228d072255e939ce0906ea35fbca48ac913",
+ "belenos/wave-repeat-block-1/circuit.json": "917dd7fe0d73292a5235e1338bfcb79bb13e6e769f932225b2e681f9a33ac51a",
+ "belenos/wave-repeat-block-2/cases.json": "531329395737aef90909c65c43981edb357502b18d2a023293581a33bfaddd0d",
+ "belenos/wave-repeat-block-2/circuit.json": "917dd7fe0d73292a5235e1338bfcb79bb13e6e769f932225b2e681f9a33ac51a",
+ "native-target-catalogue.json": "7cdf0b57ec28b9ad7d17fe6cb480a204506ecbd04f17013cb9e496308ed29df5"
+}

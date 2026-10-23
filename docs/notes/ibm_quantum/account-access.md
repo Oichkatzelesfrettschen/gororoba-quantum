@@ -14,7 +14,7 @@ Python.
 `backup-ibm-quantum-platform`. `gororoba_quantum/ibm_account.py`
 (`open_service`) selects one through `GOROROBA_IBM_ACCOUNT`; unset or empty
 opens the default. Each account is a separate IBM Cloud instance with its own
-600 s rolling quota and its own inventory file (gate core-587).
+600 s rolling quota and its own inventory file (the `--self-test` of gate `core-self-test-05` (`tests/test_cli_self_tests.py`)).
 
 ## Read surfaces
 

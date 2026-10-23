@@ -1,0 +1,160 @@
+{
+ "schema": "qi-bdsc-pauli-gate-v1",
+ "series": "bdsc_pauli_qx",
+ "batch": "batch-13",
+ "cases_sha256": "6fb9e71f01f3512ea54e6c3f9bccfd0b183d0039b57426b18e8c42194219c63e",
+ "predecessors": [
+  {
+   "batch": "batch-00",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
+   "results_sha256": "02227ca8b08af7c7741e3616871331380270708c7802392c78a79e1ac428c360",
+   "raw_sha256": {
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715",
+    "twin-witness-01.cq": "ebbf3a2aa61561abdc75487c673b62934aa44cd3a2aa52c216c0652273c7d42d"
+   }
+  },
+  {
+   "batch": "batch-01",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-01",
+   "results_sha256": "47d118e7a8b6486d9fdac6d8f50d72045a2dd802fc438642b07419cfe7ae5f29",
+   "raw_sha256": {
+    "twin-witness-02.cq": "c5509c71cbf648128f4a8fd1516826e5cba816a7861fecf615e0b2ef34c1e401",
+    "twin-witness-03.cq": "9d33ebc0c25cd0d5801139c3c66aba296fc87428951ae68825412b6c6148cbf2",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  },
+  {
+   "batch": "batch-02",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-02",
+   "results_sha256": "d0559cf62cfa2cdbaa1be922f604dd01522cff2e4ff91fdf96967372792bdb82",
+   "raw_sha256": {
+    "twin-witness-04.cq": "d171ed356d7ce73d1653c41ab1cfce0ce071cbbb52148e725ef38d9b2d6eb498",
+    "twin-witness-05.cq": "78de1a2654d6bc3203e75e9228bdf900bf5a07f34e3aede8101c37efb7fb4210",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715"
+   }
+  },
+  {
+   "batch": "batch-03",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-03",
+   "results_sha256": "6cab5a6025c4bcaecb5e623614e98248ccc29ad796fd90d709215db608d029b7",
+   "raw_sha256": {
+    "twin-witness-06.cq": "12ee38382f0d5f7f011219d222a0c2422fab8e90c088fb888aeb01fd64d043d1",
+    "twin-witness-07.cq": "255cce8e361c4ede790e303653a6e8d2fcbcb260e549d85368460a09f49beccf",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  },
+  {
+   "batch": "batch-04",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-04",
+   "results_sha256": "c3b35f796a20839415adbf45d259892fc3d1e02be0883c2f5f58e4bfa7ebb224",
+   "raw_sha256": {
+    "twin-witness-08.cq": "b93b3cf988acb545a9422d78a172496e4cc7860a78a0220242d43a395bf034dc",
+    "twin-witness-09.cq": "960f30838c82cbd13a1ac2fceb8a6e2b624e771ee30d23858e58c4038717d7a1",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715"
+   }
+  },
+  {
+   "batch": "batch-05",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-05",
+   "results_sha256": "ee92dd97d244367447b2c0294255aa257c1dbfdd7a920642d1310e8d8c904203",
+   "raw_sha256": {
+    "twin-witness-10.cq": "9eecbd8d69c01f29fd58fa173fe483cd66906b674ffc9b42ca6332ac9817691e",
+    "twin-witness-11.cq": "1368a09e18932a498e899aeddbd57e29d1457331d50ed15256268d4e92abc564",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  },
+  {
+   "batch": "batch-06",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-06",
+   "results_sha256": "c3dd7e2d3841e87e6a1a49d2029a07eec309b043521f8ebaa31d48eca62590b2",
+   "raw_sha256": {
+    "twin-witness-12.cq": "a9027f01dc85e1134657aff90aa11f3efe83e319926d2d78900c64869999bd4b",
+    "twin-witness-13.cq": "b14e26e8f1dbc963f7b3e0307e876a66329026f059f45c618044496794c34d52",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715"
+   }
+  },
+  {
+   "batch": "batch-07",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-07",
+   "results_sha256": "9a8a891334c2ead48bf9acbc50c01cf4f9cd9595a2ef81169eca7991f68b56b7",
+   "raw_sha256": {
+    "twin-witness-14.cq": "0ac48d306deae0361caf3fffca3327b4087de2b721799aacd1743d4fc51d3048",
+    "twin-witness-15.cq": "aac56c0da3e0b5848ea34e32b2ead71caaa5be3ff79275c3b0bca4cbda92f459",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  },
+  {
+   "batch": "batch-08",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-08",
+   "results_sha256": "ea566faddb6aa1d036e843e5fb1632fbcf4ecb7cab3f6c578130351ca6d0a283",
+   "raw_sha256": {
+    "twin-witness-16.cq": "1aea07cde8d0325d1bb769a9703199de1dfa02b25b328cb118d1ea4d1b37cc8a",
+    "twin-witness-17.cq": "bfc0540bdf29714de3778674a1fc7bcf5310d4752a9a595e2256a3a466b5963b",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715"
+   }
+  },
+  {
+   "batch": "batch-09",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-09",
+   "results_sha256": "3196938fc30d53fe22cf47c295c75d155675164c8bfce61d5e99b550b6801a52",
+   "raw_sha256": {
+    "twin-witness-18.cq": "f50880805fb2b206148d2581433f34974f18e151951c3df6f53e32afae258025",
+    "twin-quadrature-01.cq": "164b4f2ab8ea942a70c388674607f248d7090df69fc9e2ee5f8b7c8af07c5ded",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  },
+  {
+   "batch": "batch-10",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-10",
+   "results_sha256": "d315e9aff87a6cae5d3a89153c051d60a4219d58fc63013879984551766602aa",
+   "raw_sha256": {
+    "twin-quadrature-02.cq": "41c98b2d437b484a989d9b4e22d2cedc862bcd898d2fce965838b0ce72e900f5",
+    "twin-quadrature-03.cq": "53b7180764806bb331276625db1984b670a5e32090e05fb9b383ff110b46bb93",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715"
+   }
+  },
+  {
+   "batch": "batch-11",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-11",
+   "results_sha256": "b0352d74c1d468086d8904b5b6600deab20ab0e491774a966b90a9b1621fbe43",
+   "raw_sha256": {
+    "twin-quadrature-04.cq": "a2e8fae6531963a1eaa3bf4bbaf051b977041460837d01a69010fc63602386e6",
+    "twin-quadrature-05.cq": "0866ec6ebdc381202b7823e657da0886f76cae199d175423979ad4d42e262f25",
+    "readout-0.cq": "b8e7ed5909f0a2ff5f4fe02af0256e1f65a9d2771536debdedfc197da600e9a1"
+   }
+  },
+  {
+   "batch": "batch-12",
+   "run_dir": "2026-10-22T103514Z-bdsc_pauli_qx-batch-12",
+   "results_sha256": "c5e5660e95bb3a4b8cb175c6465aa732423dfa5c44d1e26490cb06bd0fced43a",
+   "raw_sha256": {
+    "twin-cosine-01.cq": "0711e9cd3d1b32ae9579c03aa7088d017d67863575cda74b34dd5254022d6b13",
+    "twin-cosine-02.cq": "6f2ae68a9e7a507b32fbb3bac0608085831bde06597c243c34b181c976eb99f2",
+    "readout-1.cq": "d062954236dfa474dd58d1bd63d8fb87eb5d4f1bbf9d1069736601a8449b0715"
+   }
+  }
+ ],
+ "stops": {
+  "batches_checked": [
+   "batch-00",
+   "batch-01",
+   "batch-02",
+   "batch-03",
+   "batch-04",
+   "batch-05",
+   "batch-06",
+   "batch-07",
+   "batch-08",
+   "batch-09",
+   "batch-10",
+   "batch-11",
+   "batch-12"
+  ],
+  "stop_condition_batch_00": [],
+  "bracket_drift_flagged": [],
+  "max_drift": 0.0
+ },
+ "control": null,
+ "backend_contract": "live record matches"
+}

@@ -520,9 +520,9 @@ scipy 1.18.1 and qiskit 2.5.2.
 ## Gates
 
 - core-489: `--check`, pr tier.
-- core-492: `--self-test` in both modes, pr tier, 2.1 s.
-- core-493: `gororoba_quantum/wheel_algebra.py --self-test` in both modes,
-  pr tier, 3.9 s. Its axiom cases run in chunks through
+- `--self-test` in both modes, in gate `core-self-test-08` (`tests/test_cli_self_tests.py`).
+- `gororoba_quantum/wheel_algebra.py --self-test` in both modes, in gate
+  `core-self-test-08`. Its axiom cases run in chunks through
   `parallel.ordered_map`.
 - core-458: `scripts/axis_tilt_substrate_split.py --check` and
   `--self-test` on `substrate_split.json` in both modes, pr tier, 3.5 s.

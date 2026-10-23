@@ -1,0 +1,154 @@
+{
+ "case": "kernel-cancellation-probe",
+ "ideal": {
+  "b+0.1a": 1.0,
+  "b+0.1b": 1.0,
+  "b-0.1a": 1.0,
+  "b-0.1b": 1.0,
+  "b0": 1.0,
+  "k+0.1a": -0.19866933079506122,
+  "k+0.1b": -0.19866933079506122,
+  "k+0.3a": -0.5646424733950354,
+  "k+0.3b": -0.5646424733950354,
+  "k-0.1a": 0.19866933079506122,
+  "k-0.1b": 0.19866933079506122,
+  "k-0.3a": 0.5646424733950354,
+  "k-0.3b": 0.5646424733950354,
+  "k0a": -0.0,
+  "k0b": -0.0
+ },
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/k+0.1a.json",
+     "sha256": "125acd21695c324eac0d55a89a9f96e72c9eecade219c379464879bd9ea3e5ca"
+    },
+    {
+     "file": "circuits/k-0.1a.json",
+     "sha256": "e231a081bf63a24a7af345b863ba84f481a80f0e0adebdfdb5df23aa92ed1ea7"
+    },
+    {
+     "file": "circuits/k-0.1b.json",
+     "sha256": "60bc00317f5270e1e666e6f82f27f6d1eca7f01c2d321d54a14d6d4873b87991"
+    },
+    {
+     "file": "circuits/k+0.1b.json",
+     "sha256": "2420df8258d5a34bf6a9302a5b0b40dd7bb222ca778ae24d0f9cb61d71923fa4"
+    },
+    {
+     "file": "circuits/k+0.3a.json",
+     "sha256": "427d2e9b06c1be445a0a228abd85ca9983967113ac50784dfe2ebf56ecd7b335"
+    },
+    {
+     "file": "circuits/k-0.3a.json",
+     "sha256": "f45528770f2e1b34963836b9c8ce1d3a89f656f259f1d403a28342b5d6035a75"
+    },
+    {
+     "file": "circuits/k-0.3b.json",
+     "sha256": "98dee3d02190397ece365e06635d83e091660a58374ec981f930e87672d4b9b6"
+    },
+    {
+     "file": "circuits/k+0.3b.json",
+     "sha256": "c63a86ea45c37cadab44568bcd56f77dab3d7b7983919343fa3484e43416aa68"
+    },
+    {
+     "file": "circuits/k0a.json",
+     "sha256": "5a918a49097f7c858bbb12dc25d4e11d54940c039c0e5df39d6bc1c318fe3718"
+    },
+    {
+     "file": "circuits/k0b.json",
+     "sha256": "3154e4d267e9073b463bbe4109365883722d8a69eee1ceea79e86d20d2dc8dcb"
+    },
+    {
+     "file": "circuits/b+0.1a.json",
+     "sha256": "b5577169fe873aec29426564067f625fb65af03aaaf59883f25db1860e459f88"
+    },
+    {
+     "file": "circuits/b-0.1a.json",
+     "sha256": "3e48d40dbbf27907d14875e9c08dc11c19754a87685db99613ea382ee32fb740"
+    },
+    {
+     "file": "circuits/b-0.1b.json",
+     "sha256": "a5233b1d478a9fc097e068605f03973a501c2714d184597faf24ea5015818976"
+    },
+    {
+     "file": "circuits/b+0.1b.json",
+     "sha256": "535fdd0cd988445ddf18b3276edb62b0d151c239792f6c933907e9ac6d4abc2a"
+    },
+    {
+     "file": "circuits/b0.json",
+     "sha256": "9f8ed2ad83872585d9830f255f9223ace17aaf7976b0e41ab54d28d99be640a6"
+    },
+    {
+     "file": "circuits/ro0-QB12.json",
+     "sha256": "d81cdceb729dc5777e650f0ac422f9bd3415c0981c7e686dfb8a74cae3d6127b"
+    },
+    {
+     "file": "circuits/ro1-QB12.json",
+     "sha256": "25a47bb7321fc9f7312a6dc63e604532b191f85465cbfd1c05c18253dbfd93eb"
+    },
+    {
+     "file": "circuits/ro0-QB11.json",
+     "sha256": "a0968edd2294a24a7abdc1bc5ba2012d74dfbbd04f4231f7fde410005ff2c9ec"
+    },
+    {
+     "file": "circuits/ro1-QB11.json",
+     "sha256": "df53fb76e68b6d2a98e00c9b309b38c088b9daf3407f24bd535e7e756aa1aaec"
+    },
+    {
+     "file": "circuits/amp-QB11-0.json",
+     "sha256": "268366a4880e8cc138da6125440b17a7c92e5ff564346445bbcda09796fdde25"
+    },
+    {
+     "file": "circuits/amp-QB11-1.json",
+     "sha256": "a37cda727854bab51f321e906c9f0988c878bd87c53df6a6567e8d0a0d34e30f"
+    },
+    {
+     "file": "circuits/amp-QB11-2.json",
+     "sha256": "51994bc74a782b1956cf9034b86433e5bb6287bbb022862f5b500b53b73aa3d3"
+    },
+    {
+     "file": "circuits/amp-QB11-3.json",
+     "sha256": "bf096f166f05e96bea7f9d9ad5370a17e52ea4fe584f281f707ae1deca54a373"
+    },
+    {
+     "file": "circuits/amp-QB12-0.json",
+     "sha256": "973de182176f6bf6c9c3976da15e4db99dc8554981b4725fbc57e79f8d0b43bf"
+    },
+    {
+     "file": "circuits/amp-QB12-1.json",
+     "sha256": "117dd98e09b0cfebd605c7cd69202757270dc92a1c8be77c48e01b3202da1bc9"
+    },
+    {
+     "file": "circuits/amp-QB12-2.json",
+     "sha256": "8633e56dbc76f7b8b75a54eea7bfb7721d74f8b94611adf603a168928faaddac"
+    },
+    {
+     "file": "circuits/amp-QB12-3.json",
+     "sha256": "277a5fdb6fda70ca90c69c1a55311005bb17033ea69e020c832124600a75f6a1"
+    }
+   ],
+   "expected_seconds": 3.348,
+   "job": "cancellation",
+   "max_credits": {
+    "garnet": 2.5,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "68b0f1d0-b410-450f-aed7-b709f22412c1"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 4000
+  }
+ ],
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does Garnet read the zero-divisor sign of the certified sedenion kernel, cos(2 theta) changing sign at the balanced selector, while the bright vector reads flat, and does the selector qubit's measured over-rotation account for the kernel's even offset?",
+ "schema": "iqm-circuit-case-v1"
+}

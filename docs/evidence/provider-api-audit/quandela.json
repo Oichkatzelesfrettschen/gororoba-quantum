@@ -1,0 +1,600 @@
+{
+ "availability": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 1,
+  "num_running_qt_jobs": 0
+ },
+ "explorer": [
+  {
+   "bookable": true,
+   "description": "Belenos QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": {
+    "end_time": "2026-10-29T12:00:00Z",
+    "maintenance_title": "Weekly maintenance",
+    "start_time": "2026-10-29T08:30:00Z",
+    "time_zone": "Europe/Paris"
+   },
+   "max_duration": 300,
+   "name": "qpu:belenos",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 88.97
+    },
+    "2026-10-16": {
+     "availability": 72.11
+    },
+    "2026-10-17": {
+     "availability": 86.72999999999999
+    },
+    "2026-10-18": {
+     "availability": 89.42
+    },
+    "2026-10-19": {
+     "availability": 74.5
+    },
+    "2026-10-20": {
+     "availability": 81.96000000000001
+    },
+    "2026-10-21": {
+     "availability": 82.28
+    },
+    "2026-10-22": {
+     "availability": 79.03
+    }
+   },
+   "status": "running",
+   "type": "qpu"
+  },
+  {
+   "bookable": false,
+   "description": "Belenos simulator",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:belenos",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 99.9
+    },
+    "2026-10-16": {
+     "availability": 99.88000000000001
+    },
+    "2026-10-17": {
+     "availability": 99.89
+    },
+    "2026-10-18": {
+     "availability": 99.88
+    },
+    "2026-10-19": {
+     "availability": 99.86
+    },
+    "2026-10-20": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-21": {
+     "availability": 99.87
+    },
+    "2026-10-22": {
+     "availability": 99.92
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": true,
+   "description": "Ascella QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "qpu:ascella",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 89.82
+    },
+    "2026-10-16": {
+     "availability": 89.72
+    },
+    "2026-10-17": {
+     "availability": 89.79
+    },
+    "2026-10-18": {
+     "availability": 89.83
+    },
+    "2026-10-19": {
+     "availability": 89.93
+    },
+    "2026-10-20": {
+     "availability": 89.97
+    },
+    "2026-10-21": {
+     "availability": 89.4
+    },
+    "2026-10-22": {
+     "availability": 89.89
+    }
+   },
+   "status": "calibration",
+   "type": "qpu"
+  },
+  {
+   "bookable": false,
+   "description": "Arcturus simulator",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:ascella",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-16": {
+     "availability": 99.9
+    },
+    "2026-10-17": {
+     "availability": 99.89
+    },
+    "2026-10-18": {
+     "availability": 99.89
+    },
+    "2026-10-19": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-20": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-21": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-22": {
+     "availability": 100.05
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Simulator with SLOS backend",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:slos",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 99.88999999999999
+    },
+    "2026-10-16": {
+     "availability": 99.89
+    },
+    "2026-10-17": {
+     "availability": 99.9
+    },
+    "2026-10-18": {
+     "availability": 99.9
+    },
+    "2026-10-19": {
+     "availability": 99.91000000000001
+    },
+    "2026-10-20": {
+     "availability": 99.9
+    },
+    "2026-10-21": {
+     "availability": 99.9
+    },
+    "2026-10-22": {
+     "availability": 99.92
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": true,
+   "description": "Boson sampler simulator with Clifford&Clifford 2017 backend",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:sampling",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 99.9
+    },
+    "2026-10-16": {
+     "availability": 99.9
+    },
+    "2026-10-17": {
+     "availability": 99.91
+    },
+    "2026-10-18": {
+     "availability": 99.91
+    },
+    "2026-10-19": {
+     "availability": 99.92
+    },
+    "2026-10-20": {
+     "availability": 99.91
+    },
+    "2026-10-21": {
+     "availability": 99.9
+    },
+    "2026-10-22": {
+     "availability": 99.93
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Clifford on GPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:gpu:small",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 99.9
+    },
+    "2026-10-16": {
+     "availability": 99.9
+    },
+    "2026-10-17": {
+     "availability": 99.9
+    },
+    "2026-10-18": {
+     "availability": 99.9
+    },
+    "2026-10-19": {
+     "availability": 99.91
+    },
+    "2026-10-20": {
+     "availability": 99.9
+    },
+    "2026-10-21": {
+     "availability": 99.88
+    },
+    "2026-10-22": {
+     "availability": 99.93
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Clifford on GPU",
+   "is_locked": true,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:gpu:medium",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-15": {
+     "availability": 0.0
+    },
+    "2026-10-16": {
+     "availability": 0.0
+    },
+    "2026-10-17": {
+     "availability": 0.0
+    },
+    "2026-10-18": {
+     "availability": 0.0
+    },
+    "2026-10-19": {
+     "availability": 0.0
+    },
+    "2026-10-20": {
+     "availability": 0.0
+    },
+    "2026-10-21": {
+     "availability": 0.0
+    },
+    "2026-10-22": {
+     "availability": 0.0
+    }
+   },
+   "status": "decommissioned",
+   "type": "simulator"
+  }
+ ],
+ "processors": {
+  "qpu:ascella": {
+   "perfs": {
+    "Clock (MHz)": 13.33,
+    "Dark counts (detection/s)": [
+     277.0,
+     225.0,
+     191.0,
+     104.0,
+     99.0,
+     287.0,
+     169.0,
+     355.0,
+     1568.0,
+     1881.0,
+     2428.0,
+     406.0
+    ],
+    "HOM (%)": 87.12,
+    "Transmission per mode (%)": {
+     "t_in": [
+      37.9,
+      0.0,
+      25.36,
+      0.0,
+      26.91,
+      0.0,
+      27.77,
+      0.0,
+      26.12,
+      0.0,
+      27.51,
+      0.0
+     ],
+     "t_out": [
+      107.19,
+      106.2,
+      101.83,
+      108.86,
+      105.53,
+      100.09,
+      94.66,
+      99.91,
+      91.01,
+      91.83,
+      76.51,
+      88.23
+     ]
+    },
+    "Transmittance (%)": 5.16,
+    "g2 (%)": 2.0
+   },
+   "specs": {
+    "architecture": ":PCVL:zip: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",
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count",
+     "entropy",
+     "entropy_demo"
+    ],
+    "commands": "pcvlar:zip:eJydkEsKwjAURbdyl9CktZ+x4Aqcl2iDBvKjeQW7e19/WBUcOAmPm5OTmyCDQAZrEiHnUfJ6DM4p33GcwyunUSCZm1c09BoHqBjt2GpHKL9RcdixovwNy2wHS/EGJ+r5rtiHS9raVajR4BKCxRk0RKunyvwAASFfQf4ZFGswKXly6tEm5XgzgcY4IcbT4j3NULMw90BpOVTiGlw0VpEJvk1ad3NeYfNs/1dB1BDN3+3kamyvYeBOq1ZKSF6LP7RP2d6MsA==",
+    "connected_input_modes": [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10
+    ],
+    "constraints": {
+     "max_mode_count": 12,
+     "max_photon_count": 6,
+     "max_sample_count": null,
+     "min_mode_count": 1,
+     "min_photon_count": 1,
+     "support_multi_photon": false
+    },
+    "default_mitigations": "pcvlar:zip:eJxTMFAwVDBQyMksLlEwAAAS5AMe",
+    "description": "Ascella QPU",
+    "detector": "threshold",
+    "documentation": "<p><strong>qpu:ascella</strong></p>\n\n<p>QPU Ascella is one of our online quantum computers. It features 12 available modes and up to 6 photons. With Ascella, you can implement any unitary transform on 12 modes -- it is universal. A schematic of the chip is shown above.</p>\n\n<p>The detectors are not number-resolving (i.e. cannot differentiate between 1- and n-photon states).</p>\n\n<p>Depending on your algorithm, you may be interested in the n-photon coincidence rate. You can calculate it as Clock [MHz] x (Transmittance)^n.</p>\n\n<p>The QPU supports sampling commands: samples and sample_count.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">Documentation</a>. Information about using Perceval to interact with our cloud computers is available <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>. And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud page.</p>\n",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+     "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+    },
+    "pcvl_version": "1.3.0",
+    "pre_shots_compatibility": false,
+    "processor_name": "qpu:ascella",
+    "software_versions": {
+     "exqalibur": "1.4.1",
+     "hardware-core": "3.9.3",
+     "mosaiq-arcturus": "2.1.5.1.post2",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0",
+     "universalchipworker": "2.1.3"
+    },
+    "type": "qpu"
+   },
+   "status": "calibration",
+   "type": "qpu"
+  },
+  "qpu:belenos": {
+   "perfs": {
+    "Clock (MHz)": 4.94,
+    "Dark counts (detection/s)": [
+     19.9,
+     6.0,
+     0.0,
+     0.9,
+     0.2,
+     1567.1,
+     0.1,
+     0.1,
+     0.0,
+     3.9,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.1,
+     3.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "HOM (%)": 85.6,
+    "Transmission per mode (%)": {
+     "t_in": [
+      6.6,
+      0.0,
+      5.63,
+      0.0,
+      5.46,
+      0.0,
+      7.58,
+      0.0,
+      5.06,
+      6.42,
+      0.0,
+      0.0,
+      6.26,
+      5.08,
+      0.0,
+      0.0,
+      5.63,
+      0.0,
+      5.04,
+      0.0,
+      4.97,
+      0.0,
+      3.0,
+      0.0
+     ],
+     "t_out": [
+      107.3,
+      103.29,
+      81.35,
+      82.98,
+      109.2,
+      67.16,
+      93.44,
+      85.34,
+      101.93,
+      83.41,
+      117.92,
+      106.15,
+      75.96,
+      92.93,
+      74.52,
+      105.49,
+      89.05,
+      114.98,
+      115.96,
+      98.07,
+      60.98,
+      114.88,
+      113.99,
+      111.37
+     ]
+    },
+    "Transmittance (%)": 5.91,
+    "g2 (%)": 0.9
+   },
+   "specs": {
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count",
+     "entropy"
+    ],
+    "connected_input_modes": [
+     0,
+     2,
+     4,
+     6,
+     8,
+     9,
+     12,
+     13,
+     16,
+     18,
+     20,
+     22
+    ],
+    "constraints": {
+     "max_mode_count": 24,
+     "max_photon_count": 12,
+     "max_sample_count": null,
+     "min_mode_count": 1,
+     "min_photon_count": 1,
+     "support_multi_photon": false
+    },
+    "description": "Belenos QPU",
+    "detector": "threshold",
+    "documentation": "<p><strong>qpu:belenos</strong></p>\n\n<p>QPU Belenos is our online quantum computer. It features 24 available modes and up to 12 photons. Belenos chip architecture is universal, meaning any unitary transform can be implemented. A schematic of the chip is shown above.</p>\n\n<p>Some of the detectors are quasi number-resolving (i.e. they can differentiate between 1- and n-photon states).</p>\n\n<p>Depending on your algorithm, you may be interested in the n-photon coincidence rate. You can calculate it as Clock [MHz] x (Transmittance x Brightness)^n.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">Documentation</a>. Information about using Perceval to interact with our cloud computers is available <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>. And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud page.</p>\n",
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+     "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+    },
+    "pcvl_version": "1.3.0",
+    "pre_shots_compatibility": false,
+    "processor_name": "qpu:belenos",
+    "software_versions": {
+     "exqalibur": "1.4.2",
+     "hardware-core-quandela": "3.9.10",
+     "mosaiq-belenos": "2.9.5",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0",
+     "universalchipworker": "2.1.1"
+    }
+   },
+   "status": "running",
+   "type": "qpu"
+  }
+ },
+ "request_started_utc": "2026-10-22T20:54:20.753703+00:00",
+ "retrieved_utc": "2026-10-22T20:54:28.605989+00:00",
+ "token_usage": [
+  {
+   "total_jobs": 56,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 5,
+     "free_credits": 0.0,
+     "nb_jobs": 5,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 2921,
+     "free_credits": 32.46742,
+     "nb_jobs": 34,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ]
+}

@@ -57,10 +57,10 @@ are treated as its reported total. IBM requested PUB shots are not relabelled co
 | photonic-conformance-current-head | exact finite result | established | 16 |
 | photonic-conformance-current-head | exploratory analysis (not confirmation) | exploratory | 48 |
 | photonic-conformance-current-head | exploratory analysis (not confirmation) | superseded | 2 |
-| photonic-conformance-current-head | externally/repository proved statement; proof origin retained | established | 16 |
-| photonic-conformance-current-head | externally/repository proved statement; proof origin retained | open | 4 |
 | photonic-conformance-current-head | ideal circuit-conformance result | established | 7 |
 | photonic-conformance-current-head | kernel-checked statement; receipt scope retained | established | 4 |
+| photonic-conformance-current-head | mathematical statement; status and proof origin retained | established | 16 |
+| photonic-conformance-current-head | mathematical statement; status and proof origin retained | open | 4 |
 | photonic-conformance-current-head | named-acquisition hardware inference | established | 43 |
 | photonic-conformance-current-head | proposal (not a result) | proposed | 10 |
 | photonic-conformance-current-head | proposal (not a result) | superseded | 2 |
@@ -70,10 +70,10 @@ are treated as its reported total. IBM requested PUB shots are not relabelled co
 | tuna-pauli-current-head | exact finite result | established | 16 |
 | tuna-pauli-current-head | exploratory analysis (not confirmation) | exploratory | 45 |
 | tuna-pauli-current-head | exploratory analysis (not confirmation) | superseded | 2 |
-| tuna-pauli-current-head | externally/repository proved statement; proof origin retained | established | 16 |
-| tuna-pauli-current-head | externally/repository proved statement; proof origin retained | open | 4 |
 | tuna-pauli-current-head | ideal circuit-conformance result | established | 7 |
 | tuna-pauli-current-head | kernel-checked statement; receipt scope retained | established | 4 |
+| tuna-pauli-current-head | mathematical statement; status and proof origin retained | established | 16 |
+| tuna-pauli-current-head | mathematical statement; status and proof origin retained | open | 4 |
 | tuna-pauli-current-head | named-acquisition hardware inference | established | 44 |
 | tuna-pauli-current-head | proposal (not a result) | proposed | 10 |
 | tuna-pauli-current-head | proposal (not a result) | superseded | 2 |
@@ -96,10 +96,10 @@ are treated as its reported total. IBM requested PUB shots are not relabelled co
 | main | exact finite result | established | 16 |
 | main | exploratory analysis (not confirmation) | exploratory | 45 |
 | main | exploratory analysis (not confirmation) | superseded | 2 |
-| main | externally/repository proved statement; proof origin retained | established | 16 |
-| main | externally/repository proved statement; proof origin retained | open | 4 |
 | main | ideal circuit-conformance result | established | 7 |
 | main | kernel-checked statement; receipt scope retained | established | 4 |
+| main | mathematical statement; status and proof origin retained | established | 16 |
+| main | mathematical statement; status and proof origin retained | open | 4 |
 | main | named-acquisition hardware inference | established | 43 |
 | main | proposal (not a result) | proposed | 10 |
 | main | proposal (not a result) | superseded | 2 |
@@ -122,10 +122,10 @@ are treated as its reported total. IBM requested PUB shots are not relabelled co
 | photonic-conformance | exact finite result | established | 16 |
 | photonic-conformance | exploratory analysis (not confirmation) | exploratory | 48 |
 | photonic-conformance | exploratory analysis (not confirmation) | superseded | 2 |
-| photonic-conformance | externally/repository proved statement; proof origin retained | established | 16 |
-| photonic-conformance | externally/repository proved statement; proof origin retained | open | 4 |
 | photonic-conformance | ideal circuit-conformance result | established | 7 |
 | photonic-conformance | kernel-checked statement; receipt scope retained | established | 4 |
+| photonic-conformance | mathematical statement; status and proof origin retained | established | 16 |
+| photonic-conformance | mathematical statement; status and proof origin retained | open | 4 |
 | photonic-conformance | named-acquisition hardware inference | established | 43 |
 | photonic-conformance | proposal (not a result) | proposed | 9 |
 | photonic-conformance | proposal (not a result) | superseded | 2 |

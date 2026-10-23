@@ -12,7 +12,7 @@ services"). Dates in this note date the measurements they cite.
 The census settles the algebra. `scripts/box_kite_census.py` derives every
 box-kite fact and every ideal probability below from `cd_core.cd_sign`, and
 retains them in [census.json](../../evidence/box_kite_census/census.json)
-(gates core-372 and core-373). A field cited as `census:x.y` is a path into
+(gate core-372 and gate `core-self-test-05` (`tests/test_cli_self_tests.py`)). A field cited as `census:x.y` is a path into
 that record. A hardware run never adds algebraic evidence: the signs in every
 circuit are compiled from cd_core, so a run measures whether a stated
 implementation reproduces the census prediction.
@@ -744,14 +744,13 @@ Built:
   coherence setting's conditional data marginal and each padded replica's
   CZ count;
 - `series("a", "qx")` (the exhaustive family, in memory), `smoke_series()`,
-  `tuna_series()`, `--summary` and `self_test()`; gates core-420 (`--check`)
-  and core-421 (`--self-test`).
+  `tuna_series()`, `--summary` and `self_test()`; gate core-420 (`--check`)
+  and gate `core-self-test-07` (`tests/test_cli_self_tests.py`) for `--self-test`.
 
 `scripts/box_kite_qx_sweep.py` runs the exhaustive family on qxelarator
 (`--run`), replays a record from its counts and the census (`--replay`,
 `--bind`, `--require-pass`), runs retained case directories locally
-(`--emulate`), and self-tests on synthetic records of both families (gate
-core-422). A
+(`--emulate`), and self-tests on synthetic records of both families (gate `core-self-test-07` (`tests/test_cli_self_tests.py`)). A
 Kaggle CPU kernel installs qxelarator through the `qx-emulator` pin group of
 `scripts/kaggle_run.py`; qxelarator 0.10.0 ships cp313 wheels only, so the
 sweep runs on the image's Python and never under `--ci-env`, and the CI

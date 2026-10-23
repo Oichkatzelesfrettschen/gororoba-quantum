@@ -1,0 +1,118 @@
+{
+ "backend": "tuna_17",
+ "batches": 6,
+ "contrasts": {
+  "bright pi/36": {
+   "balanced": true,
+   "batches": [
+    "batch-04",
+    "batch-05"
+   ],
+   "executed_order": "+--+",
+   "kept": [
+    32768,
+    32768
+   ],
+   "odd": -0.0167236328125,
+   "odd_corrected": -0.01769225802285788,
+   "readout": {
+    "e01": 0.03057861328125,
+    "e10": 0.024169921875,
+    "factor": 0.94525146484375
+   },
+   "se": 0.003891288127159124,
+   "se_corrected": 0.004116919147679735,
+   "z_minus": 0.10174560546875,
+   "z_plus": 0.06829833984375
+  },
+  "kernel pi/12": {
+   "balanced": false,
+   "batches": [
+    "batch-02",
+    "batch-03"
+   ],
+   "executed_order": "+-+-",
+   "kept": [
+    32768,
+    32768
+   ],
+   "odd": -0.05474853515625,
+   "odd_corrected": -0.0578485747452599,
+   "readout": {
+    "e01": 0.03082275390625,
+    "e10": 0.02276611328125,
+    "factor": 0.9464111328125
+   },
+   "se": 0.00388202857767318,
+   "se_corrected": 0.00410451005718435,
+   "z_minus": 0.15142822265625,
+   "z_plus": 0.04193115234375
+  },
+  "kernel pi/36": {
+   "balanced": true,
+   "batches": [
+    "batch-00",
+    "batch-01"
+   ],
+   "executed_order": "+--+",
+   "kept": [
+    32768,
+    32768
+   ],
+   "odd": -0.02215576171875,
+   "odd_corrected": -0.02329760605866119,
+   "readout": {
+    "e01": 0.029296875,
+    "e10": 0.01971435546875,
+    "factor": 0.95098876953125
+   },
+   "se": 0.003883350647838136,
+   "se_corrected": 0.004083918083143473,
+   "z_minus": 0.12774658203125,
+   "z_plus": 0.08343505859375
+  }
+ },
+ "falsified_hypotheses": [
+  "H2"
+ ],
+ "h1_zero_divisor_sign": {
+  "pi/12": "no matched bright control",
+  "post_hoc_matched pi/36": {
+   "decision": "unresolved",
+   "kernel_minus_bright": -0.005605348035803308,
+   "se": 0.005798914568982569
+  },
+  "preregistered_against_zero": {
+   "pi/12": "withheld: protocol deviation",
+   "pi/36": "resolved"
+  }
+ },
+ "h2_bright_z": -4.297711263213311,
+ "h3_sine_law": {
+  "contrast": 0.009234208304003268,
+  "decision": "withheld: no bright control at pi/12; protocol deviation",
+  "law": 2.879385241571817,
+  "se": 0.012454925258187291,
+  "z": 0.7414101740942305
+ },
+ "position_assumption": "the two batches of a contrast carry the same within-batch position effect",
+ "protocol_deviations": [
+  "kernel pi/12"
+ ],
+ "readout_assumption": {
+  "e01_batches": [
+   0.029296875,
+   0.03082275390625,
+   0.03057861328125
+  ],
+  "e10_batches": [
+   0.01971435546875,
+   0.02276611328125,
+   0.024169921875
+  ],
+  "factor_spread": 0.0024209757129953643,
+  "statement": "a batch's assignment factor equals its pair's; the batch spread enters se_corrected"
+ },
+ "schema": "qi-kernel-cancellation-analysis-v2",
+ "visibility": 0.13416556609852634
+}
