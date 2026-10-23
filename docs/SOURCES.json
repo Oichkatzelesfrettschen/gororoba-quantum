@@ -1707,6 +1707,15 @@
       "retention": "external_reference; mutable response hash identifies inspected bytes"
     },
     {
+      "url": "https://users.cecs.anu.edu.au/~bdm/data/",
+      "note": "docs/notes/papers/mckay-hadamard-matrices.md",
+      "sha256": "ad346572677e19cb10ffc3e7f7f6cbfcdb6f70bef022175812df4afe7434f3b8",
+      "bytes": 3626,
+      "retrieved_at_utc": "2026-10-23T22:53:28+00:00",
+      "reading_scope": "License section: CC BY 4.0 for the collection's data files, except data compiled by others; HTML files excluded",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
       "url": "https://users.cecs.anu.edu.au/~bdm/data/hadamard/had16.txt",
       "note": "docs/notes/papers/mckay-hadamard-matrices.md",
       "sha256": "67fb6f1a36f6893fca541a85754329812b9b8b454b3438ec9b6fd00005c2f170",
