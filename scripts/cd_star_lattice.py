@@ -511,17 +511,23 @@ def doubling_blocks(n: int) -> tuple[Matrix, Matrix]:
     return big_right, big_left
 
 
+def _gram_row_holds(task: tuple[Matrix, int]) -> bool:
+    columns, a = task
+    n = len(columns)
+    return all(
+        sum(x * y for x, y in zip(columns[a], columns[b], strict=True)) == (n - 1 if a == b else 0) for b in range(a, n)
+    )
+
+
 def is_skew_conference(matrix: Matrix) -> bool:
-    """Zero diagonal, W^T = -W and W^T W = (n - 1) I, so I + W is a skew Hadamard matrix."""
+    """Zero diagonal, W^T = -W and W^T W = (n - 1) I, so I + W is a skew Hadamard matrix.
+
+    The Gram rows run through ordered_map, one task per column a against columns a..n-1.
+    """
     n = len(matrix)
     columns = [[matrix[row][column] for row in range(n)] for column in range(n)]
     skew = all(matrix[i][j] == -matrix[j][i] for i in range(n) for j in range(n))
-    gram = all(
-        sum(x * y for x, y in zip(columns[a], columns[b], strict=True)) == (n - 1 if a == b else 0)
-        for a in range(n)
-        for b in range(a, n)
-    )
-    return skew and gram
+    return skew and all(ordered_map(_gram_row_holds, [(columns, a) for a in range(n)], min_items=1))
 
 
 def paley_matrix(q: int) -> Matrix:
