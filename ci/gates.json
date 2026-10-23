@@ -3871,7 +3871,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stationarity.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stationarity.py",
    "name": "core-675",
-   "seconds": 10.0,
+   "seconds": 25.0,
    "tier": "pr"
   }
  ],

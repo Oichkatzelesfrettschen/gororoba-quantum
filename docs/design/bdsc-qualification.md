@@ -572,14 +572,17 @@ diagnostic.
     superpositions near 0.0035.
 
 **Sensitivity at 100000 samples.** The retained data fix what the primary
-test can see.
+test can see
+([retained replay](../../results/quandela/bdsc_stationarity_retained.json),
+rebuilt by `scripts/bdsc_stationarity.py --check`).
 
 - Under the primary veto the superposition class keeps tau = 0.0021
   (interval to 0.0042), while f and g read tau^2 consistent with zero. The
   veto removes 0.84 of the superpositions' raw tau^2 (lower bound 0.40) and
   all of g's (lower bound 0.98).
-- A seeded simulation at the retained reference errors scaled to 100000
-  samples gives the primary these readings:
+- A seeded projection (10000 replicates per scenario, seed 20261023) at
+  the retained reference errors scaled to 100000 samples gives the primary
+  these readings:
   - with no residual (tau^2 = 0), consistent with probability 0.95;
   - with the retained residual at its point estimate, resolved with
     probability 0.72 (0.19 at 40000 samples).

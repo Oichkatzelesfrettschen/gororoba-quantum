@@ -27,6 +27,10 @@ returned circuit equals its retained diagnostic counterpart.
 Usage:
   "$PYTHON" scripts/bdsc_stationarity.py --write
   "$PYTHON" scripts/bdsc_stationarity.py --check
+
+--write and --check also build RETAINED, the same analysis of the retained
+diagnostic runs (which chose the veto, so it tests nothing) with the primary's
+projected readings at 40000 and TRIALS samples.
   "$PYTHON" scripts/bdsc_stationarity.py --plan-check PLAN_JSON
   "$PYTHON" scripts/bdsc_stationarity.py --matched-check RUN_DIR
   "$PYTHON" scripts/bdsc_stationarity.py --readout RUN_DIR...
@@ -42,6 +46,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 from scipy.optimize import brentq
 from scipy.stats import chi2, norm
 
@@ -49,6 +54,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import bdsc_diagnostic as diag  # noqa: E402
 import bdsc_stray_mode_veto as veto  # noqa: E402
+
+import parallel  # noqa: E402
 
 CASE = ROOT / "docs/evidence/bdsc/stationarity/case.json"
 CASES_DIR = ROOT / "results/quandela/cases/bdsc_stationarity"
@@ -67,6 +74,11 @@ DARK_DIR = ROOT / "results/quandela/bdsc_stationarity_dark"
 DARK = veto.DARK
 STRAY = veto.STRAY
 PLATFORM = diag.bdsc_cases.QUALIFYING_PLATFORM
+# The stationarity analysis of the retained diagnostic runs that chose the veto, with the primary's projected
+# readings at the diagnostic's and this case's sample counts.
+RETAINED = ROOT / "results/quandela/bdsc_stationarity_retained.json"
+PROJECTION_SEED = 20261023
+PROJECTION_REPLICATES = 10000
 
 
 def require(condition: bool, message: str) -> None:
@@ -561,6 +573,89 @@ def readout(runs: list[Path], validate: bool = True) -> dict[str, Any]:
     }
 
 
+def _projected_q(item: tuple[list[float], list[int], list[float], np.ndarray]) -> list[float]:
+    """Heterogeneity Q of each replicate about its class means at fixed weights 1 / se^2 (scalar arithmetic).
+
+    item is (reference errors, class index per change, tau^2 per change, standard normal draws of shape
+    replicates x changes); replicate change i is draw_i * sqrt(se_i^2 + tau2_i).
+    """
+    se, classes, tau2, draws = item
+    spread = [math.sqrt(s * s + t) for s, t in zip(se, tau2, strict=True)]
+    weights = [1 / (s * s) for s in se]
+    members = [[i for i, c in enumerate(classes) if c == k] for k in sorted(set(classes))]
+    out = []
+    for row in draws.tolist():
+        values = [z * sd for z, sd in zip(row, spread, strict=True)]
+        total = 0.0
+        for group in members:
+            weight = sum(weights[i] for i in group)
+            mean = sum(weights[i] * values[i] for i in group) / weight
+            total += sum(weights[i] * (values[i] - mean) ** 2 for i in group)
+        out.append(total)
+    return out
+
+
+def projection(changes: list[dict[str, Any]], excess: dict[str, Any]) -> list[dict[str, Any]]:
+    """The primary's expected Q and reading probabilities at 40000 and TRIALS samples under three residuals.
+
+    The retained reference errors scale as sqrt(40000 / n), and the residual per class is none, the Paule-Mandel
+    estimate, or its Q-profile upper limit. Every scenario's normal draws come from one generator seeded with
+    PROJECTION_SEED, drawn in scenario order before the pool maps them.
+    """
+    kept = [c for c in changes if c["same_returned_circuit"]]
+    names = list(diag.CLASSES)
+    classes = [names.index(diag.class_of(c["label"])) for c in kept]
+    residuals = {
+        "none": [0.0] * len(names),
+        "point": [excess[name]["tau2"] for name in names],
+        "upper_95": [excess[name]["tau2_interval_95"][1] for name in names],
+    }
+    rng = np.random.default_rng(PROJECTION_SEED)
+    scenarios, items = [], []
+    for trials in (diag.TRIALS, TRIALS):
+        se = [c["se"] * math.sqrt(diag.TRIALS / trials) for c in kept]
+        for residual, per_class in residuals.items():
+            draws = rng.standard_normal((PROJECTION_REPLICATES, len(kept)))
+            scenarios.append({"trials": trials, "residual": residual, "tau2": dict(zip(names, per_class, strict=True))})
+            items.append((se, classes, [per_class[k] for k in classes], draws))
+    df = len(kept) - len({*classes})
+    out = []
+    for scenario, qs in zip(scenarios, parallel.ordered_map(_projected_q, items, min_items=1), strict=True):
+        p_values = [float(chi2.sf(q, df)) for q in qs]
+        out.append(
+            {
+                **scenario,
+                "replicates": PROJECTION_REPLICATES,
+                "expected_q": sum(qs) / len(qs),
+                "p_resolved": sum(p < diag.ALPHA for p in p_values) / len(qs),
+                "p_consistent": sum(p >= diag.CONSISTENT_P for p in p_values) / len(qs),
+            }
+        )
+    return out
+
+
+def retained() -> dict[str, Any]:
+    """The stationarity analysis of the retained diagnostic runs and the primary's projected readings."""
+    observed, vetoed, _, _ = veto.collect()
+    read = analysis(observed, vetoed["subtract"], vetoed["detector_absent"])
+    primary_changes = diag.analyse(vetoed["detector_absent"])["block_changes"]
+    return {
+        "schema": "bdsc-stationarity-retained-v1",
+        "status": "exploratory: these are the runs whose outcomes chose the veto, so nothing here tests it",
+        "runs": [
+            {"run": run, "results_sha256": sha256_bytes((ROOT / run / "results.json").read_bytes())}
+            for run in veto.RUNS
+        ],
+        "primary": read["primary"],
+        "dark_click_falsifier": read["dark_click_falsifier"],
+        "common_shift": read["common_shift"],
+        "share_of_excess_variance_removed": read["share_of_excess_variance_removed"],
+        "excess_variance": {name: read[name]["excess_variance"] for name in ("raw", "detector_absent", "subtract")},
+        "group_by_block": {name: read[name]["group_by_block"] for name in ("raw", "detector_absent", "subtract")},
+        "projection": projection(primary_changes, read["detector_absent"]["excess_variance"]),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     group = parser.add_mutually_exclusive_group(required=True)
@@ -572,8 +667,13 @@ def main() -> int:
     args = parser.parse_args()
     if args.write:
         write()
+        RETAINED.write_text(json.dumps(retained(), indent=1, sort_keys=True) + "\n")
+        print(f"bdsc stationarity: wrote {rel(RETAINED)}")
     elif args.check:
         check()
+        text = json.dumps(retained(), indent=1, sort_keys=True) + "\n"
+        require(RETAINED.is_file() and RETAINED.read_text() == text, f"{rel(RETAINED)} differs from a fresh build")
+        print(f"bdsc stationarity: {rel(RETAINED)} matches a fresh build")
     elif args.plan_check:
         return plan_check(args.plan_check)
     elif args.matched_check:
