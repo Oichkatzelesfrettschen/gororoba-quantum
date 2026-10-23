@@ -140,7 +140,10 @@ germ M that independent equations G cut out at a point x.
   valuation is m and the leading digit is that form at w modulo p (EXAMPLES 3). A unit Jacobian
   guarantees the lift, not this equality: `H|M = 7 u^5` at `u = 7` has order 5 and is zero
   modulo `7^6`. Without the unit hypothesis the valuation only bounds the order from above.
-- A zero to `O(p^N)` bounds that order from below and proves nothing beyond it.
+- A zero to `O(p^N)` shows only that the valuation is at least `N`. It bounds the order from
+  below only under the unit hypothesis, which seeded weights meet except with the Schwartz-Zippel
+  probability. A zero of the `F_p[[t]]` lift through `t^(N-1)` bounds the order after reduction
+  modulo p, the order of the first leading form that is nonzero modulo p.
 - The script reads every value as a digit string modulo `p^N`, never through `==` between
   values of different precision, and cross-checks the digits against the same lift over
   `F_p[[t]]` in python-flint.
