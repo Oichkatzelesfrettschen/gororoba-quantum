@@ -1,0 +1,2 @@
+# Preserve whitespace emitted by the independent Rocq kernel checker.
+kernel.txt -whitespace

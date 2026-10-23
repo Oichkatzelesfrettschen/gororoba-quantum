@@ -23,9 +23,10 @@ Tag convention: [S] marks a statement of the secondary page; [I] marks repositor
 
 - [I] Flexibility applied to the imaginary sum s gives L_s R_s = R_s L_s, the commutation the
   conference induction of the [star-lattice tower note](../topics/cd-star-lattice-tower.md)
-  needs. That induction proves the commutation for s from the doubling itself, so it does
-  not depend on this article; the article is cited as the general result the special case
-  agrees with.
+  needs. That induction proves the commutation for s from the doubling itself, and
+  [proofs/CdImaginarySumConference.v](../../../proofs/CdImaginarySumConference.v) checks it in
+  Rocq, so neither depends on this article; the article is cited as the general result the
+  special case agrees with.
 
 ## Relevance
 
