@@ -210,3 +210,85 @@ so equal operation contracts can accompany differing raw document digests.
 The [instrument-readiness design](../../../design/ascella-instrument-readiness-and-packed-tests.md)
 binds the API findings to the static and native-mesh hardware diagnostics,
 the client repairs and the remaining execution conditions.
+
+## Input-map and client-contract refresh
+
+The 23 October 2026 read-only refresh reproduced all four code-pinned source
+digests: the Cloud, Toolbox and Account schemas and the lexical
+portal route map match the retained capture above. The operation denominator
+remains 56 schema entries and 53 distinct origin/method/path combinations.
+The Account reference defect remains. The matching portal bundle contains
+zero occurrences of `hardware_config`, `hardware_info`, `circuit_input_ports`
+or `set_pic_input`. These bounded searches establish the published surface;
+they do not establish the absence of private operator interfaces.
+
+The live Ascella processor still advertised hardware-core 3.9.3,
+mosaiq-arcturus 2.1.5.1.post2, universalchipworker 2.1.3, pcvl-worker 2.1.1
+and Perceval 1.3.0. Its parameter descriptions still named only
+`final_mode_number` and `use_photon_recycling`. Headless Firefox reached the
+Cloud portal and rendered `Session Expired` and `GO TO LOGIN`; authenticated
+operator diagnostics remain unavailable in that browser session. The public
+processor documentation links the Cloud guide and Perceval documentation.
+
+Six retained Ascella failures cover template, static and calibrated-native
+circuits, and omitted-default and explicitly empty mitigation policies. The
+same Perceval 1.3.1/exqalibur 1.4.2 client and computation serialization
+produce successful Belenos acquisitions. These comparisons reject an
+iterator-only, mitigation-only or circuit-mesh-mismatch-only explanation.
+They leave Ascella's different deployed instrument stack and configuration
+unobserved. Legacy-format execution on the current Ascella deployment remains
+untested; changing serialization has no documented input-map repair semantics.
+
+The public [Quandela repositories](https://github.com/orgs/Quandela/repositories)
+and [Ascella application repository](https://github.com/Quandela/Ascella)
+expose application and client material, rather than the deployed instrument
+implementation. The PyPI JSON endpoints for `hardware-core`,
+`hardware-core-quandela`, `mosaiq-arcturus`, `universalchipworker` and
+`pcvl-worker` returned HTTP 404 during this refresh. The exact physical
+channel schema and `Instruments.set_pic_input()` implementation remain
+unavailable from those searched public distributions.
+
+### Corrected client guidance
+
+The retained vendor source stays unchanged. Three corrections apply when
+using its [compilation example](../../../notes/quandela/guide/user-guide/04-compilation.md):
+
+1. Modern Perceval 1.3.1 `RemoteComputer` inherits the writable `parameters`
+   property from `AComputer`. Use `computer.parameters = {"final_mode_number": 12}`.
+   The `PlatformSpecs.parameters` docstring names the nonexistent modern
+   `set_parameters()` method; `RemoteProcessor` is the legacy class carrying
+   that method. An offline stub communication layer verified that the property
+   reaches `prepare_payload()["parameters"]`. Serialization alone cannot
+   give undocumented parameter names server-side meaning.
+2. Keep the complete completed sampler result while extracting
+   `computed_circuit` and `computed_input`. Those fields are siblings of
+   `results`, rather than fields inside the counts object. The retained
+   [single-computation simulator answer](../../../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00/raw/result.json)
+   and legacy `RemoteJob._get_results()` establish that shape.
+3. Construct a new `Sampler` after constructing and configuring the target
+   QPU processor. Reassigning the processor variable leaves the existing
+   sampler bound to the simulator. `AAlgorithm.__init__` retains its processor,
+   and `Sampler` obtains the communication handler from that retained object.
+   An offline object-identity probe reproduced the binding without executing
+   either processor.
+
+For an already collected, decoded simulator result, the corrected extraction
+and legacy sampler binding are:
+
+```python
+compiled_circuit = completed_simulation_result["computed_circuit"]
+compiled_input = completed_simulation_result["computed_input"]
+target_processor.set_circuit(compiled_circuit)
+target_processor.with_input(compiled_input)
+target_processor.min_detected_photons_filter(min_detected_photons)
+target_sampler = pcvl.algorithm.Sampler(target_processor, max_shots_per_call=max_shots)
+```
+
+The target processor, filtering and resource limits belong to the approved
+case. The snippet constructs a sampler and submits nothing. The repository's
+`qd_platform.py` uses a fresh `RemoteComputer` and its own recorded job body,
+so these legacy example defects do not explain its retained hardware errors.
+Repairing the deployed input mapping still requires the instrument's actual
+configuration schema and physical channel identities. The available Cloud
+interfaces supply neither. Successful hardware sampling remains the recovery
+test; this audit made zero job submissions.

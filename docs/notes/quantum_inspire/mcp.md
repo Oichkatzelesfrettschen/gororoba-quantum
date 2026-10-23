@@ -75,7 +75,24 @@ with timestamped direct API reads; a historical tool response is an observation,
 QuTech publishes a Grafana public dashboard per backend and a Status
 dashboard at https://monitoring.qutech.support (Grafana 13.1.1 on
 2026-10-22). `scripts/qi_monitoring.py` reads them through Grafana's
-public-dashboard API, with no account, and both tools above wrap it:
+public-dashboard API, with no account, and both tools above wrap it.
+
+The public [Status dashboard](https://monitoring.qutech.support/public-dashboards/b9a0daeda64d4044b88f78b40ba5482a)
+is the destination verified on 23 October 2026 for the stable
+[Quantum Inspire dashboard link](https://dashboard.quantum-inspire.com/).
+Panel 1 supplies the latest backend-type statuses; panel 2 supplies their
+time series. The URL's public access token identifies a shareable dashboard,
+rather than an account credential. Prefer the stable link in automation so
+the provider can rotate that public token.
+
+At 08:10:02 UTC on 23 October 2026, panel 1 reported Tuna-17 Executing,
+Tuna-5 and Tuna-9 Offline, and QX and Ry emulators Idle. The separate Tuna-17
+dashboard still carried its 22 October PHP-security and temporary-offline
+notices; querying its Latest T1 panel (3) failed with a Prometheus connection
+timeout. A dated notice, current backend status and calibration-data access
+are separate evidence surfaces. The PHP notice describes unavailable
+performance data; the live status observation does not prove that issue fixed.
+The backend identities in these dashboards belong to Quantum Inspire.
 
 - `dashboard.quantum-inspire.com/NAME` redirects each name (`tuna-17`,
   `tuna-9`, `tuna-5`, `ry_emulator`; the root is Status) to its access token,
