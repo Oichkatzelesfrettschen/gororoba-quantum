@@ -9,6 +9,7 @@ while IFS= read -r path; do
   case "$path" in
   proofs/* | \
     docs/evidence/c881_exhaustive/* | \
+    docs/evidence/cd-imaginary-sum-conference/* | \
     docs/evidence/folding_proofs/* | \
     docs/evidence/formal_certificates/* | \
     docs/evidence/stiefel_witness/* | \

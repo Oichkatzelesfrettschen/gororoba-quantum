@@ -103,6 +103,7 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
 | [cd-star-lattice-tower.md](notes/topics/cd-star-lattice-tower.md) | Tuna-17 as the Gaussian-integer star lattice; lifts to dimensions 3, 4, 8, 16, the Paley identification of their symmetry groups and the sedenion zero divisors |
 | [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |
+| [evidence/cd-imaginary-sum-conference/README.md](evidence/cd-imaginary-sum-conference/README.md) | Rocq proof, for every Cayley-Dickson dimension, that right multiplication by the imaginary sum is a skew conference matrix, with its kernel receipts and the bridge to cd_sign |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
