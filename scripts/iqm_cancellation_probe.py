@@ -22,17 +22,18 @@ error. Heralding (all zeros) and one active-reset cycle follow docs/notes/iqm/RE
 Preregistered decisions (Z_RESOLVE standard errors):
 - H1 zero-divisor sign: at phi = 0.1 and 0.3 the kernel odd part resolves when odd/se <= -Z_RESOLVE and
   falsifies the cancellation law when odd/se >= +Z_RESOLVE.
-- H2 bright control: the bright odd part at phi = 0.1 falsifies the probe (a circuit artifact) when
-  |odd/se| >= Z_RESOLVE.
-- H3 sine law: odd(0.3)/odd(0.1) departs from sin(0.6)/sin(0.2) by Z_RESOLVE standard errors.
+- H2 bright control: the bright odd part at phi = 0.1 departs by Z_RESOLVE standard errors from the
+  prediction's own bright odd part (idle relaxation is not unital), rescaled to the measured readout.
+- H3 sine law: the contrast odd(0.3) - (sin(0.6)/sin(0.2)) odd(0.1) lies Z_RESOLVE standard errors
+  from zero.
 - H4 even-part decomposition: the kernel even part at phi = 0.1 departs from
-  (e10 - e01) + r R + r V dEven/deps eps by Z_RESOLVE standard errors: readout offset and scale
-  r = 1 - e01 - e10 from the readout calibration, R the prediction's incoherent even part net of its
-  modeled readout (idle relaxation, which is not unital), V the visibility from the phi = 0.1 odd
-  part, eps from the theta qubit's trains.
-- H5 amplification: the trains' <Z> follows -sin((4k + 1)(pi/2) eps) (the server plays each pulse); a
-  residual chi-square above the one-sided Z_RESOLVE tail of three degrees of freedom marks pulse merging
-  or a non-stationary error, and H4 is then not evaluated.
+  (e10 - e01) + r R + r G eps by Z_RESOLVE standard errors: readout offset and scale r = 1 - e01 - e10
+  from the control's readout calibration, R the prediction's incoherent even part net of its modeled
+  readout (idle relaxation, which is not unital), G the noise model's derivative of the even part in the
+  theta qubit's relative over-rotation (prediction.json response noisy_even), eps from its trains.
+- H5 amplification: each train qubit's <Z> follows -sin((4k + 1)(pi/2) eps) through its own readout
+  (the server plays each pulse); a profiled chi-square above the one-sided Z_RESOLVE tail of three
+  degrees of freedom marks pulse merging or a non-stationary error, and H4 is then not evaluated.
 
 Usage: "$PYTHON" scripts/iqm_cancellation_probe.py (build DIR [--live] | check DIR | analyze RUN_DIR...
        --out FILE [--replay] | --self-test)
@@ -425,22 +426,37 @@ def decide(value: float, se: float) -> str:
 
 
 def fit_train(
-    lengths: list[int], rows: list[tuple[float, float, int]], e01: float, e10: float
+    lengths: list[int],
+    rows: list[tuple[float, float, int]],
+    ro0: tuple[float, float, int],
+    ro1: tuple[float, float, int],
 ) -> tuple[float, float, float]:
-    """Weighted least squares of r(-sin(N pi/2 eps)) + (e10 - e01) on the trains' <Z>: (eps, se, chi2).
+    """Joint fit of a qubit's trains and its two readout-calibration circuits: (eps, se, chi2).
 
-    A grid over |eps| <= EPS_RANGE brackets the minimum, a golden-section search refines it, and the
-    standard error comes from the chi-square's second derivative, se = sqrt(2 / chi2''). A minimum on the
-    range's edge or a non-positive curvature means the trains lie outside the model; the fit then
-    returns an infinite chi-square, which H5 rejects.
+    A train of N pulses reads (1 - e01 - e10)(-sin(N pi/2 eps)) + (e10 - e01); the bare measure reads
+    1 - 2 e01 and the pi pulse -1 + 2 e10. For each eps the readout errors enter linearly, so a weighted
+    least squares profiles them out and the readout calibration's finite shots reach eps and chi2. Six
+    readings and three parameters leave three degrees of freedom. A grid over |eps| <= EPS_RANGE brackets
+    the minimum of the profiled chi-square, a golden-section search refines it, and se = sqrt(2 / chi2'').
+    A minimum on the range's edge or a non-positive curvature means the trains lie outside the model; the
+    fit then returns an infinite chi-square, which H5 rejects.
     """
-    r, offset = 1 - e01 - e10, e10 - e01
 
     def chi2(eps: float) -> float:
-        return sum(
-            ((z - (offset - r * math.sin(n * math.pi / 2 * eps))) / se) ** 2
-            for n, (z, se, _) in zip(lengths, rows, strict=True)
-        )
+        design, target, weight = [], [], []
+        for n, (z, se, _) in zip(lengths, rows, strict=True):
+            s = math.sin(n * math.pi / 2 * eps)
+            design.append((s - 1, s + 1))
+            target.append(z + s)
+            weight.append(1 / se**2)
+        design += [(-2.0, 0.0), (0.0, 2.0)]
+        target += [ro0[0] - 1, ro1[0] + 1]
+        weight += [1 / ro0[1] ** 2, 1 / ro1[1] ** 2]
+        a = np.array(design)
+        y = np.array(target)
+        w = np.array(weight)
+        errors = np.linalg.solve(a.T @ (w[:, None] * a), a.T @ (w * y))
+        return float(np.sum(w * (y - a @ errors) ** 2))
 
     grid = [EPS_RANGE * (i / 1500 - 1) for i in range(3001)]
     best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
@@ -449,8 +465,8 @@ def fit_train(
     low, high = grid[max(best - 1, 0)], grid[min(best + 1, len(grid) - 1)]
     ratio = (math.sqrt(5) - 1) / 2
     for _ in range(100):
-        a, b = high - ratio * (high - low), low + ratio * (high - low)
-        low, high = (low, b) if chi2(a) < chi2(b) else (a, high)
+        a_, b_ = high - ratio * (high - low), low + ratio * (high - low)
+        low, high = (low, b_) if chi2(a_) < chi2(b_) else (a_, high)
     eps = (low + high) / 2
     step = 1e-4
     curvature = (chi2(eps + step) - 2 * chi2(eps) + chi2(eps - step)) / step**2
@@ -512,8 +528,9 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
     amplify: dict[str, Any] = {}
     for qubit in [*prediction["theta_qubits"], control]:
         rows = [z_of(counts, f"amp-{qubit}-{k}") for k in AMPLIFY_K]
-        own = readout[qubit]
-        eps, eps_se, residual = fit_train([4 * k + 1 for k in AMPLIFY_K], rows, own["e01"], own["e10"])
+        eps, eps_se, residual = fit_train(
+            [4 * k + 1 for k in AMPLIFY_K], rows, z_of(counts, f"ro0-{qubit}"), z_of(counts, f"ro1-{qubit}")
+        )
         amplify[qubit] = {
             "z": [z for z, _, _ in rows],
             "eps": eps,
@@ -524,7 +541,8 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         }
     visibility = k1["odd"] / (-math.sin(0.2) * r)
     visibility_se = k1["se"] / (math.sin(0.2) * r)
-    h4: dict[str, Any] = {"evaluated": all(amplify[q]["linear"] for q in prediction["theta_qubits"])}
+    # A failed train, the control's included, marks a run whose pulse execution or stationarity H4 rests on.
+    h4: dict[str, Any] = {"evaluated": all(entry["linear"] for entry in amplify.values())}
     if h4["evaluated"]:
         # The noisy-model derivative of the read even part, rescaled from the modeled to the measured readout.
         response_even = {q: prediction["response"][q]["noisy_even"] for q in prediction["theta_qubits"]}
@@ -594,6 +612,8 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
         record = json.loads((run_dir / "raw/job.json").read_bytes())
         case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        if facts["statuses"] != {"completed": 1}:
+            raise ValueError(f"{run_dir}: the job is {sorted(facts['statuses'])}; the analysis reads completed jobs")
         # Mock outcomes never enter the analysis, and every run must compile against the predicted set.
         if submission["qc"] != QC:
             raise ValueError(f"{run_dir}: ran on {submission['qc']}; the analysis reads {QC} runs only")
@@ -716,6 +736,12 @@ def self_test() -> str:
     merged_verdict = evaluate(merged, prediction)
     if merged_verdict["h4_coherent_even"]["evaluated"] or "H5" not in merged_verdict["falsified_hypotheses"]:
         raise RuntimeError("trains that ignore their pulse count left H5 standing or H4 evaluated")
+    # A failed train on the control alone also suspends H4.
+    control_merged = dict(shifted)
+    for k in AMPLIFY_K:
+        control_merged[f"amp-{control}-{k}"] = shifted[f"amp-{control}-{AMPLIFY_K[-1]}"]
+    if evaluate(control_merged, prediction)["h4_coherent_even"]["evaluated"]:
+        raise RuntimeError("a failed control train left H4 evaluated")
     reversed_ = evaluate(sample(z, files, control, True, 2), prediction)
     if "falsified" not in reversed_["h1_zero_divisor_sign"].values():
         raise RuntimeError(f"a reversed sign reads {reversed_['h1_zero_divisor_sign']}")

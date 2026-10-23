@@ -3929,7 +3929,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/kernel_cancellation.py --check && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/kernel_cancellation.py --check && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py analyze results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation --out results/iqm/kernel_cancellation_probe_analysis.json --replay",
    "name": "core-641",
    "seconds": 30.0,
    "tier": "pr"
