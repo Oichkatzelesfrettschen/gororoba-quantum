@@ -460,6 +460,13 @@
       "results/quandela/cases/bdsc_qualification/**",
       "results/quandela/runs/*-qpu_belenos-bdsc_qualification-*/**",
       "results/quandela/runs/*-sim_belenos-bdsc_qualification-*/**"
+    ],
+    "core-638": [
+      "results/iqm/cases/signed-kernel-probe/**"
+    ],
+    "core-640": [
+      "results/iqm/cases/signed-kernel-probe/**",
+      "results/iqm/signed_kernel_probe_audit.json"
     ]
   }
 }
