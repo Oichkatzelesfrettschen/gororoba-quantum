@@ -3756,7 +3756,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check --out results/quandela/bdsc_stray_mode_veto-runner-image.json && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
    "name": "core-667",
    "seconds": 15.0,
    "tier": "pr"
@@ -3768,6 +3768,22 @@
    "name": "core-675",
    "seconds": 25.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures",
+   "name": "core-670",
+   "seconds": 12.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_conjecture_circuits.py && \"$PYTHON\" -B -m pytest -q tests/scripts/test_algebra_device_conjectures.py tests/scripts/test_algebra_conjecture_circuits.py",
+   "name": "core-671",
+   "seconds": 53.0,
+   "tier": "full"
   },
   {
    "suite": "core",

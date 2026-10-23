@@ -480,6 +480,16 @@
     "core-666": [
       "docs/evidence/evidence-closure/**"
     ],
+    "core-671": [
+      "docs/**",
+      "results/**",
+      "scripts/**",
+      "gororoba_quantum/**",
+      "ci/**",
+      "requirements.txt",
+      "tests/scripts/test_algebra_device_conjectures.py",
+      "tests/scripts/test_algebra_conjecture_circuits.py"
+    ],
     "core-behavior-03": [
       "pyproject.toml",
       "tests/conftest.py"

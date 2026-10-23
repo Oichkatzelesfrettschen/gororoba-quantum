@@ -30,8 +30,8 @@ acquisition of every provider:
 
 | Evidence class | Status | Claim records |
 | --- | --- | ---: |
-| circuit-conformance check | established | 7 |
-| exact finite certificate | established | 21 |
+| circuit-conformance check | established | 8 |
+| exact finite certificate | established | 22 |
 | exploratory reanalysis | exploratory | 61 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 4 |
@@ -41,7 +41,7 @@ acquisition of every provider:
 | preregistered emulator control | established | 10 |
 | preregistered hardware inference | established | 49 |
 | preregistered hardware inference | superseded | 1 |
-| proposed experiment | proposed | 10 |
+| proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
 | withdrawn claim | withdrawn | 11 |
 
