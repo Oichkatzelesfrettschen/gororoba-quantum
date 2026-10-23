@@ -62,6 +62,11 @@ class Calibration:
         architecture = json.loads((folder / "dynamic-quantum-architecture.json").read_text(encoding="utf-8"))
         self.qubits: list[str] = architecture["qubits"]
         self.set_id: str = architecture["calibration_set_id"]
+        # The metrics must describe the architecture's calibration set; a pair from two sets (an interrupted
+        # refresh) would predict from one set while the job pins the other.
+        described = metrics.get("describes_id")
+        if described is not None and described != self.set_id:
+            raise ValueError(f"{folder}: metrics describe set {described}, the architecture is set {self.set_id}")
         cz = architecture["gates"]["cz"]
         self.cz: dict[frozenset[str], float] = {}
         for implementation, spec in cz["implementations"].items():

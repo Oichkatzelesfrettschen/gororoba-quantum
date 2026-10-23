@@ -8148,7 +8148,7 @@
     },
     {
       "id": "proposed-signed-null-retest",
-      "statement": "On Garnet (calibration set 68b0f1d0, the retained 199-CZ compile) the null-controlled re-test reads D(0.25) = odd(0.25) - odd(0) over two +, -, -, + blocks at |t| = 0.25 and at t = 0: the retained +0.022 at |t| = 0.25 carries the sign of t only if D(0.25) lies three standard errors above zero. The calibration model (exact, herald-conditioned readout) predicts an odd part of +0.0136 at t = 0 and D(0.25) = +0.0095 (+0.0059 with a 2.7 % QB11 over-rotation), so a model-like device leaves D(0.25) unresolved at the planned standard error of 0.0047, while the retained visibility of 0.206 puts it near 4.8 standard errors. The |t| = 0.05 resolve needs 16 blocks (ceiling 43.5 credits).",
+      "statement": "On Garnet (calibration set 68b0f1d0, the retained 199-CZ compile) the null-controlled re-test reads D(0.25) = odd(0.25) - odd(0) over two +, -, -, + blocks at |t| = 0.25 and at t = 0: the retained +0.022 at |t| = 0.25 carries the sign of t only if D(0.25) lies three standard errors above zero. The calibration model (exact, herald-conditioned readout) predicts an odd part of +0.0136 at t = 0 and D(0.25) = +0.0095 (+0.0059 with a 2.7 % QB11 over-rotation), so a model-like device leaves D(0.25) unresolved at the planned standard error of 0.0047, while the retained visibility of 0.206 puts it near 4.8 standard errors. A |t| = 0.05 resolve sized at that visibility took 16 blocks (ceiling 43.5 credits); at the visibility the re-test then measured (0.058) it needs about 202 blocks and is not built.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "superseded",

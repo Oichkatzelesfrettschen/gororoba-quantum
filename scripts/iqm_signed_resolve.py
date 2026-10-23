@@ -18,8 +18,9 @@ Variants, by the case directory's name:
 - signed-kernel-null-retest: |t| = 0.25 and t = 0, two +, -, -, + blocks each, 20000 shots, plus a
   calibration job (QB7 readout, prx trains on QB6 and QB11, 4000 shots). It asks whether the sign
   Garnet carried at |t| = 0.25 survives the null subtraction and balanced order.
-- signed-kernel-weak-resolve: |t| = 0.05 and t = 0 with enough blocks to resolve D(0.05) at
-  Z_RESOLVE standard errors for the measured visibility, split into jobs of at most 100 circuits.
+A |t| = 0.05 resolve is not built: blocks_to_resolve sizes it from VISIBILITY, the original run's 0.206
+that sized the re-test, while the re-test measured 0.058 after the null subtraction, at which D(0.05)
+needs about 202 blocks (some 1600 circuits and 515 credits) for Z_RESOLVE standard errors.
 
 Preregistered decisions (Z_RESOLVE standard errors): at each nonzero |t|, D(t) resolves the sign when
 it lies Z_RESOLVE above zero and falsifies the signed law when it lies Z_RESOLVE below; within that,
@@ -77,7 +78,6 @@ TRAIN_QUBITS = ("QB6", "QB11")
 AMPLIFY_K = (0, 1, 2, 3)
 VARIANTS: dict[str, dict[str, Any]] = {
     "signed-kernel-null-retest": {"t": 0.25, "blocks": 2},
-    "signed-kernel-weak-resolve": {"t": 0.05, "blocks": None},
 }
 
 
@@ -387,8 +387,7 @@ def self_test() -> str:
     if reversed_["decision"] != "falsified":
         raise RuntimeError(f"a reversed sign reads {reversed_['decision']}")
     return (
-        f"signed resolve: both variants 199 CZ in +, -, -, + order; weak resolve needs "
-        f"{blocks_to_resolve(VARIANTS['signed-kernel-weak-resolve']['t'])} blocks; an honest device resolves, "
+        "signed resolve: the null re-test compiles to 199 CZ in +, -, -, + order; an honest device resolves, "
         "a null-only odd part does not, a reversed sign falsifies"
     )
 

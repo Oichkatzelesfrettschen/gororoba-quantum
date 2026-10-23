@@ -3938,7 +3938,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py check results/iqm/cases/signed-kernel-null-retest && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py check results/iqm/cases/signed-kernel-weak-resolve",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py check results/iqm/cases/signed-kernel-null-retest",
    "name": "core-644",
    "seconds": 60.0,
    "tier": "full"
