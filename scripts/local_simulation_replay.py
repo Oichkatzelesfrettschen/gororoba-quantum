@@ -25,6 +25,19 @@ QI_BUNDLES = (
     ("terminal-unitary-compiler-crosscheck", False, True),
     ("validated-terminal-unitary-compiler-crosscheck", False, True),
     ("fullprecision-compiler-crosscheck", True, True),
+    ("cqasm-fullprecision-compiler-crosscheck", True, True),
+    ("photonic-compiler-crosscheck-perceval-1-3-1", False, True),
+)
+FOLLOWON_RECORDS = (
+    ("cqasm-fullprecision-compiler-crosscheck/qi.json", "fullprecision-compiler-crosscheck/qi.json"),
+    (
+        "photonic-compiler-crosscheck-perceval-1-3-1/qi.json",
+        "validated-terminal-unitary-compiler-crosscheck/qi.json",
+    ),
+    (
+        "photonic-compiler-crosscheck-perceval-1-3-1/photonic.json",
+        "physical-photonic-compiler-crosscheck/photonic.json",
+    ),
 )
 
 
@@ -46,6 +59,19 @@ def inventory() -> dict[str, str]:
 
 def load(name: str) -> dict[str, Any]:
     return json.loads((BUNDLE / name).read_text())
+
+
+def scientific_payload(record: dict[str, Any]) -> dict[str, Any]:
+    """Separate reported interpreter, producer and timing metadata from compared scientific fields."""
+    payload = {key: value for key, value in record.items() if key not in {"python", "runner_sha256", "elapsed_seconds"}}
+    payload["rows"] = [{key: value for key, value in row.items() if key != "seconds"} for row in record["rows"]]
+    return payload
+
+
+def check_repeat_record(arguments: tuple[str, str]) -> None:
+    retained, admitted = arguments
+    if scientific_payload(load(retained)) != scientific_payload(load(admitted)):
+        raise ValueError(f"follow-on scientific payload differs from its admitted reference: {retained}")
 
 
 def check_probabilities(values: list[float]) -> None:
@@ -254,15 +280,19 @@ def check() -> None:
         ("physical-photonic-compiler-crosscheck", "photonic.json"),
         ("validated-terminal-unitary-compiler-crosscheck", "qi.json"),
         ("fullprecision-compiler-crosscheck", "qi.json"),
+        ("cqasm-fullprecision-compiler-crosscheck", "qi.json"),
+        ("photonic-compiler-crosscheck-perceval-1-3-1", "qi.json"),
+        ("photonic-compiler-crosscheck-perceval-1-3-1", "photonic.json"),
     ):
         record = load(directory + "/" + record_file)
         if sha(BUNDLE / directory / "producer.py") != record["runner_sha256"]:
             raise ValueError("retained producer identity differs")
         if (
-            directory.startswith("fullprecision")
+            directory in {"fullprecision-compiler-crosscheck", "cqasm-fullprecision-compiler-crosscheck"}
             and sha(BUNDLE / directory / "exporter.py") != record["exporter"]["sha256"]
         ):
             raise ValueError("retained full-precision exporter identity differs")
+    ordered_map(check_repeat_record, FOLLOWON_RECORDS, min_items=1)
 
 
 def qi_simulation(arguments: tuple[str, str | None]) -> dict[str, Any]:
