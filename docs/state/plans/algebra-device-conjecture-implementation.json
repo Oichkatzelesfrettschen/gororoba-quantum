@@ -64,13 +64,13 @@
       "receipts": [
         {
           "scope_sha256": "d712384cc0c45f263f37649a2d3b1d9f7bcf9c9856d531e7299d6b9f017a0d70",
-          "result": "The scoped obligation revalidated after split-gate reconciliation; all four focused gates passed.",
-          "observed_at": "2026-10-23T20:49:34.676726+00:00",
-          "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
+          "result": "Six focused gates passed after the p-adic main reconciliation.",
+          "observed_at": "2026-10-23T21:23:49.669976+00:00",
+          "revision": "ba8bcc7e3dd1b068298cb435d03e173c42147e66",
           "evidence": [
             {
-              "ref": "docs/evidence/algebra-device-conjectures/focused-validation-split-gates.json",
-              "sha256": "fd20caf9cc2824cc01809e835eb2ddba4242e14bfd8607f44de03924828f9b95"
+              "ref": "docs/evidence/algebra-device-conjectures/focused-validation-padic-reconciliation.json",
+              "sha256": "b7fcb216b085ef8f0305299269cbf918fdc357800cddc10e2f777dc3e9dfe238"
             }
           ]
         }
@@ -82,13 +82,13 @@
   "receipts": [
     {
       "scope_sha256": "a98da229385dfa7ca2169712767eea3ea385a2662d7b66b0d6aa945f0a731c69",
-      "result": "The bounded offline implementation revalidated after split-gate reconciliation; hosted integration remains separate.",
-      "observed_at": "2026-10-23T20:49:34.676726+00:00",
-      "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
+      "result": "The bounded offline implementation revalidated on the combined tree; hosted integration remains separate.",
+      "observed_at": "2026-10-23T21:23:49.669976+00:00",
+      "revision": "ba8bcc7e3dd1b068298cb435d03e173c42147e66",
       "evidence": [
         {
-          "ref": "docs/evidence/algebra-device-conjectures/focused-validation-split-gates.json",
-          "sha256": "fd20caf9cc2824cc01809e835eb2ddba4242e14bfd8607f44de03924828f9b95"
+          "ref": "docs/evidence/algebra-device-conjectures/focused-validation-padic-reconciliation.json",
+          "sha256": "b7fcb216b085ef8f0305299269cbf918fdc357800cddc10e2f777dc3e9dfe238"
         }
       ]
     }
