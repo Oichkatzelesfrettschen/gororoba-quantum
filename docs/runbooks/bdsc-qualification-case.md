@@ -261,10 +261,14 @@ middle-middle under both policies (`mm-def-e2`, `mm-none-e2`).
 - A confirmation is planned after the stationarity readout, as its own case,
   and it reuses none of them.
 
-**The case.** It resubmits the diagnostic's four frozen requests exactly, in
-two blocks of two jobs. The requests keep the compilation seeds, parameters,
-groups and drawn order of the committed manifests under
-`results/quandela/cases/bdsc_diagnostic/`, so no new QRNG read is made.
+**The case.** It repeats the diagnostic's four frozen requests in two
+blocks of two jobs. The requests keep the compilation seeds, parameters,
+groups, drawn order, circuit and empty mitigation list of the committed
+manifests under `results/quandela/cases/bdsc_diagnostic/`, so no new QRNG
+read is made. Each iteration takes 100000 samples instead of 40000, with
+max_shots 120000; the
+[design](../design/bdsc-qualification.md#stationarity-under-a-stray-detector-veto)
+states what that sample count lets the primary test resolve.
 
 | Block | Job 1 requests | Job 2 requests | Timing |
 |---|---|---|---|
@@ -288,18 +292,22 @@ the common-shift reading and the reported-only quantities are the design's.
 
 ### Order of the stationarity case
 
-1. **Build.** The case builder, `scripts/bdsc_stationarity.py`, follows this
-   amendment and builds the four run directories under
-   `results/quandela/cases/bdsc_stationarity/` from the diagnostic
-   manifests. Each binds its source manifest's sha256 and the diagnostic's
-   QRNG record. `--check` proves every request equals its source: seeds,
-   parameters, order and the empty mitigation list.
-2. **Plan.** `qd_platform.py plan` passes on each directory for qpu:belenos
-   with `--admit-status running`. The receipt's `perfs_at_plan` holds a
-   dark-count rate for each of the 24 modes, and mode 5 reads above every one
-   of the other 23.
-3. **Written case.** It restates the plan output: about 1.08 credits and
-   176 s per job, 4.32 credits and about 705 s in all. It also states the
+1. **Build.** `scripts/bdsc_stationarity.py --write` builds the four
+   request directories under `results/quandela/cases/bdsc_stationarity/`
+   and the case record
+   [case.json](../evidence/bdsc/stationarity/case.json) from the diagnostic
+   manifests. Each manifest binds its source manifest's sha256 and keeps
+   the diagnostic's QRNG binding. `--check` proves that every request
+   equals its source in every field except the family and the sample and
+   shot budgets.
+2. **Plan.** For each directory, `qd_platform.py plan DIR --platform
+   qpu:belenos --max-credits 1.12 --expected-seconds 213.6
+   --per-job-credits 1.0 --admit-status running > PLAN.json` passes, and
+   `scripts/bdsc_stationarity.py --plan-check PLAN.json` passes. That check
+   requires the receipt's `perfs_at_plan` to hold a dark-count rate for each
+   of the 24 modes, with mode 5 above every one of the other 23.
+3. **Written case.** It restates the plan output: 1.12 credits and about
+   214 s per job, 4.48 credits and about 854 s in all. It also states the
    stop conditions below and the reading of each outcome. Wait for
    approval. No QRNG read is part of it.
 4. **Submission and checks.** Submit and collect each job in the order of
@@ -307,11 +315,12 @@ the common-shift reading and the reported-only quantities are the design's.
    - confirm the diagnostic's integrity checks: the empty policy in the
      retained body, an integer BSCount, 40000 samples per iteration, a
      returned compiled circuit and a positive `physical_perf`;
-   - run the matched check against the retained diagnostic job of the same
-     requests, which requires every returned-circuit hash to equal its
-     counterpart's;
-   - record a fresh platform read of the dark-count rates beside the
-     collected run.
+   - run `scripts/bdsc_stationarity.py --matched-check RUN_DIR` against the
+     retained diagnostic job of the same requests, which requires every
+     returned-circuit hash to equal its counterpart's;
+   - record a fresh platform read of the dark-count rates with
+     `qd_platform.py snapshot --out results/quandela/bdsc_stationarity_dark/after-JOB`,
+     which the readout reads beside the plan-time rate.
 5. **Readout.** `scripts/bdsc_stationarity.py --readout RUN_DIR...` reads
    the four runs. The runs enter `docs/state/research_state.json` with their
    claim.
@@ -325,7 +334,7 @@ Execution stops, and the remaining jobs stay unsent, when any of these holds:
   plan-time dark-count rate at or above mode 5's;
 - a retained job body differs from the empty mitigation list, or a result
   is not an integer BSCount;
-- a job fails, an iteration returns fewer than 40000 samples, or the
+- a job fails, an iteration returns fewer than 100000 samples, or the
   one-click rule (before the veto) excludes more than 0.01 of an
   iteration's samples;
 - an iteration returns no compiled circuit or no positive `physical_perf`;

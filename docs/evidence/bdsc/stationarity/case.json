@@ -1,0 +1,135 @@
+{
+ "schema": "bdsc-stationarity-case-v1",
+ "record": "stationarity_case",
+ "question": "does removing output detector 5 from every pattern remove the instance-specific change of matched requests between two acquisition windows, and are mode-5 clicks independent of the prepared state",
+ "authorization": "none: the case waits for its written-case approval; it makes no QRNG read",
+ "source": {
+  "diagnostic_case_sha256": "9f5a2cea55c250e370388e91ca4ff4c32a280b3f4b44915eb8928ceb36be158c",
+  "draw": {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-22T110545Z.json",
+   "sha256": "125f7adf7ebc739e013c6c71c46d447790a3eb496d9a647084e6721fbceaeb2d"
+  },
+  "manifests": {
+   "b1-j1": {
+    "cases": "results/quandela/cases/bdsc_diagnostic/b1-j1/cases.json",
+    "cases_sha256": "88d98e30ace89f89a17ce24a5ff9328bffdde53a5b0baf7d7ce5c293f38a2d90",
+    "circuit_sha256": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "b1-j2": {
+    "cases": "results/quandela/cases/bdsc_diagnostic/b1-j2/cases.json",
+    "cases_sha256": "5bac22a0473ca0573a4a2aaee4bb507e7ea350d5bf9af916737a49fec580f6a7",
+    "circuit_sha256": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "b2-j1": {
+    "cases": "results/quandela/cases/bdsc_diagnostic/b2-j1/cases.json",
+    "cases_sha256": "0e6c69113d791804a45c95abe8d16491f78dfb0036dc3b78e0dce15d4fc2f293",
+    "circuit_sha256": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "b2-j2": {
+    "cases": "results/quandela/cases/bdsc_diagnostic/b2-j2/cases.json",
+    "cases_sha256": "3016ebbf84968a7f8af1fa98859d8d2dffa8e57b2a4b3bbbeda058f591d675f9",
+    "circuit_sha256": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   }
+  },
+  "retained_runs": {
+   "b1-j1": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1",
+   "b1-j2": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+   "b2-j1": "results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1",
+   "b2-j2": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2"
+  }
+ },
+ "design": {
+  "blocks": {
+   "S1": [
+    "b1-j1",
+    "b1-j2"
+   ],
+   "S2": [
+    "b2-j1",
+    "b2-j2"
+   ]
+  },
+  "block_gap_hours": 1,
+  "instances": 96,
+  "eligible_trials_per_instance": 100000,
+  "max_shots_per_iteration": 120000,
+  "changed_fields": [
+   "family",
+   "max_samples",
+   "max_shots"
+  ],
+  "unchanged": "settings (seeds, parameters, columns, groups, drawn order), circuit.json, the empty mitigation list, command, gate form, selected modes and eligibility of each source manifest",
+  "stray_mode": 5,
+  "veto": {
+   "primary": "detector_absent: detector 5 is removed from every pattern before the one-click rule",
+   "secondary": "subtract: mode-5 one-click samples leave the eligible count"
+  },
+  "slots": "each (template, seed) group runs in one job per block; the groups of S1's job 1 run as S2's job 2 at matched positions and the reverse"
+ },
+ "jobs": [
+  {
+   "job": "b1-j1",
+   "block": "S1",
+   "iterations": 24
+  },
+  {
+   "job": "b1-j2",
+   "block": "S1",
+   "iterations": 24
+  },
+  {
+   "job": "b2-j1",
+   "block": "S2",
+   "iterations": 24
+  },
+  {
+   "job": "b2-j2",
+   "block": "S2",
+   "iterations": 24
+  }
+ ],
+ "resources": {
+  "billing_rule": "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots",
+  "credits_per_job": 1.12,
+  "credits": 4.48,
+  "seconds_per_job_estimate": {
+   "b1-j1": 213.6,
+   "b1-j2": 213.6,
+   "b2-j1": 213.6,
+   "b2-j2": 213.6
+  },
+  "seconds_estimate": 854.4,
+  "timing_rule": "6.3 s plus 2.6e-05 s per sample for each iteration against the 300 s per-job limit; measured at up to 40000 samples per iteration, where the four diagnostic jobs ran 164 to 171 s against 176.16 s predicted; the written case restates the live qd_platform.py plan output"
+ },
+ "analysis": {
+  "observation": "one-click selected fraction under each eligible set; every standard error is a reference value under independent Bernoulli trials",
+  "primary": "heterogeneity of the S1-to-S2 matched changes about their class means under detector_absent (bdsc_diagnostic.analyse block_change); resolved at p < 0.01 falsifies the claim that mode 5 carried the instance-specific change",
+  "coincidence_test": "bdsc_stray_mode_veto.coincidence_test on all 96 instances, calibrated on its conditional hypergeometric null (100000 draws, seed 20261023); resolved at p < 0.01 rejects the dark-click reading",
+  "excess_variance": "reported, decides nothing: the variance tau^2 of the matched changes beyond their reference counting errors per class (superposition, f, g), by the Paule-Mandel estimate with its Q-profile 95 % interval, raw and under each veto, and the share 1 - tau^2(veto) / tau^2(raw) with its lower bound from the veto's upper limit; it reads the size of a residual change that the heterogeneity test at 100000 trials can resolve",
+  "common_shift": "the superposition class-mean change S1 to S2 with its z under detector_absent, read as a window effect under an additive, group-independent slot effect; its sign against the retained -0.0044 is reported and decides nothing",
+  "group_by_block": "the superposition mean change of the groups that moved from job 1 to job 2 minus that of the groups that moved from job 2 to job 1, with its z; a slot effect and a group-specific window change are confounded in it, so it decides nothing",
+  "reported": [
+   "the mode-5 share per job and block against the plan-time and post-collection dark-count rates",
+   "the mode-5 share against each job's recorded duration per sample",
+   "the position trend of the mode-5 share in each job",
+   "the seed-by-state interaction at fixed seeds under each eligible set",
+   "how many returned circuits equal their retained diagnostic counterparts",
+   "every analysis on the raw one-click fractions"
+  ],
+  "tests": "resolved at p < 0.01, consistent at p >= 0.05, inconclusive between",
+  "scope": "a consistent primary reading supports designing a veto-based confirmation and certifies nothing"
+ },
+ "stop_conditions": [
+  "scripts/qd_platform.py plan refuses the platform",
+  "--plan-check on the plan output finds a mode other than 5 at or above mode 5's dark-count rate",
+  "a retained job body differs from the empty mitigation list, or a result is not an integer BSCount",
+  "a job fails, an iteration returns fewer than 100000 samples, or the one-click rule (before the veto) excludes more than 0.01 of an iteration's samples",
+  "an iteration returns no compiled circuit or no positive result_fields.physical_perf",
+  "--matched-check finds a returned-circuit hash that differs from its retained diagnostic counterpart",
+  "a job is submitted before the previous job is collected and checked",
+  "S2 would start within one hour of S1's last execution end",
+  "a scheduled maintenance window overlaps the span from S1's first execution to S2's last",
+  "spent credits or seconds reach the approved ceiling"
+ ],
+ "resubmission": "a job that ends canceled before its start time with 0 samples is resubmitted once, unchanged, and its run directory records the canceled attempt; a second cancellation of the same job, a started job that failed or a cancellation the case did not order stops the case"
+}

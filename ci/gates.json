@@ -3865,6 +3865,14 @@
    "name": "core-667",
    "seconds": 15.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stationarity.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stationarity.py",
+   "name": "core-675",
+   "seconds": 10.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

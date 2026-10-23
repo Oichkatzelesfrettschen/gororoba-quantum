@@ -523,9 +523,13 @@ in one job slot per block, and the groups of block 1's job 1 run as block
   effect or a group-specific change between the windows. It is reported as
   that confounded contrast and decides nothing.
 
-The stationarity case resubmits the diagnostic's four frozen requests
-exactly, with the same seeds, parameters, groups and drawn order, so it
-needs no new QRNG read:
+The stationarity case repeats the diagnostic's four frozen requests with
+the same seeds, parameters, groups, drawn order, circuit and empty
+mitigation list, so it needs no new QRNG read. Only the sample budget
+changes, from 40000 to 100000 samples per iteration, with max_shots 120000.
+`scripts/bdsc_stationarity.py --check` proves that every other field equals
+its source manifest
+([case.json](../evidence/bdsc/stationarity/case.json)):
 
 | Block | Jobs | Timing |
 |---|---|---|
@@ -560,12 +564,42 @@ diagnostic.
   - Whether the seed-by-state interaction reproduces at fixed seeds.
   - Whether each returned circuit equals its retained diagnostic
     counterpart.
+  - The excess variance tau^2 of the matched changes per class
+    (superposition, f, g), raw and under each veto, by the Paule-Mandel
+    estimate with its Q-profile 95 % interval, and the share of the raw
+    tau^2 that the veto removes. A common tau^2 does not fit the classes:
+    the reference errors of f and g lie near 0.0005 and those of the
+    superpositions near 0.0035.
+
+**Sensitivity at 100000 samples.** The retained data fix what the primary
+test can see.
+
+- Under the primary veto the superposition class keeps tau = 0.0021
+  (interval to 0.0042), while f and g read tau^2 consistent with zero. The
+  veto removes 0.84 of the superpositions' raw tau^2 (lower bound 0.40) and
+  all of g's (lower bound 0.98).
+- A seeded simulation at the retained reference errors scaled to 100000
+  samples gives the primary these readings:
+  - with no residual (tau^2 = 0), consistent with probability 0.95;
+  - with the retained residual at its point estimate, resolved with
+    probability 0.72 (0.19 at 40000 samples).
+- A resolved primary therefore separates "mode 5 carried all of the
+  instance-specific change" from "a residual superposition change of about
+  0.002 remains". The per-class tau^2 states which of the two holds and how
+  much the veto removed. It is reported and decides nothing.
 
 **Cost and limits.**
 
-- *Cost.* Four jobs at the diagnostic's billing rule (1.08 credits and about
-  176 s each) total 4.32 credits and about 705 s. The written case restates
-  the live `qd_platform.py plan` figures.
+- *Cost.* Each job bills 1 + 1e-6 x 120000 = 1.12 credits, and the four
+  total 4.48 credits. Every retained diagnostic iteration used exactly as
+  many shots as samples, so the 1.2 shot margin stops on samples.
+- *Duration.* The timing rule (6.3 s plus 26 us per sample per iteration)
+  predicts 213.6 s per job, 0.71 of the 300 s limit, and 854.4 s in all.
+  The rule is measured only up to 40000 samples per iteration, where the
+  four diagnostic jobs ran 164 to 171 s against 176.16 s predicted. A job
+  that exceeds its duration fails the samples stop condition and costs that
+  job's credits. The written case restates the live `qd_platform.py plan`
+  figures.
 - *Error calibration.* Standard errors stay reference values under
   independent Bernoulli trials while the provider contract leaves count
   provenance unresolved.
