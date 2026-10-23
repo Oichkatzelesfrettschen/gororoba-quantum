@@ -483,8 +483,26 @@ def fit_train(
     def chi2(eps: float) -> float:
         return solve(eps)[0]
 
+    def grid_chi2(eps: Any) -> Any:
+        """The profiled chi-square at every grid point in one batched solve; solve() is its scalar form."""
+        s = np.sin(np.multiply.outer(eps, np.array(lengths) * math.pi / 2))
+        c = np.cos(math.pi * eps)[:, None]
+        a = np.stack(
+            (
+                np.concatenate((s - 1, np.full_like(c, -2.0), c - 1), axis=1),
+                np.concatenate((s + 1, np.zeros_like(c), c + 1), axis=1),
+            ),
+            axis=2,
+        )
+        y = np.concatenate((np.array([z for z, _, _ in rows]) + s, np.full_like(c, ro0[0] - 1), ro1[0] + c), axis=1)
+        w = np.array([1 / se**2 for _, se, _ in rows] + [1 / ro0[1] ** 2, 1 / ro1[1] ** 2])
+        normal = np.einsum("gri,r,grj->gij", a, w, a)
+        errors = np.linalg.solve(normal, np.einsum("gri,r,gr->gi", a, w, y)[..., None])[..., 0]
+        return np.sum(w * (y - np.einsum("gri,gi->gr", a, errors)) ** 2, axis=1)
+
     grid = [EPS_RANGE * (i / 1500 - 1) for i in range(3001)]
-    best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
+    # The grid only brackets the minimum; the golden-section search and the curvature use solve().
+    best = int(np.argmin(grid_chi2(np.array(grid))))
     if best in (0, len(grid) - 1):
         errors = solve(grid[best])[1]
         return grid[best], math.inf, math.inf, float(errors[0]), float(errors[1])
