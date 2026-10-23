@@ -3857,6 +3857,14 @@
    "name": "core-ascella-order-recovery-replay",
    "seconds": 2.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error results/local-simulation/ascella-serialized-order-replay/producer.py --check",
+   "name": "core-ascella-serialized-request-replay",
+   "seconds": 12.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

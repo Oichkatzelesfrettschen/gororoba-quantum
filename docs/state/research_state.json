@@ -1837,7 +1837,11 @@
         },
         {
           "path": "results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.json",
-          "sha256": "5c8fd30ff62d5bec17d1a35ca8d86ef49bd12c3941d27e566141e33a67fb9f28"
+          "sha256": "b387d8de38d34075c27375d085d2e2903da90fccd857b1701edd834fac19f73c"
+        },
+        {
+          "path": "results/quandela/runs/ascella-mosaiq-update-order-retry/platform-before-submission.json",
+          "sha256": "76f74ca6d815bea6451cba4e0b6ef4e7e7060a840a722eaf75fb3e53e67742d4"
         }
       ],
       "documents": [
@@ -1845,7 +1849,8 @@
         "docs/design/ascella-instrument-readiness-and-packed-tests.md"
       ],
       "gates": {
-        "core-ascella-order-recovery-replay": "replay"
+        "core-ascella-order-recovery-replay": "replay",
+        "core-ascella-serialized-request-replay": "replay"
       },
       "acquisitions": [
         "qd-ascella-mosaiq-update-order-retry"

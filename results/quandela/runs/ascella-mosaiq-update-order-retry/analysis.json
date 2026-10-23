@@ -1,6 +1,8 @@
 {
+  "advertised_mosaiq_arcturus": "2.1.5.2.post4",
   "boundary": "Compiled meshes and performance fields are provider metadata. Four-output counts cannot measure full-output leakage, absolute calibrated loss, drift, or physical phase reconstruction.",
   "conditioning": "Occupation sum one within the four returned modes of twelve-mode Ascella.",
+  "deployment_boundary": "Pre-submission provider advertisement; the snapshot does not establish the executing instrument version or the cause of recovery.",
   "job_id": "889c0b21-6b14-473c-a81b-5ae90e244ea9",
   "observations": [
     {
@@ -327,10 +329,11 @@
   "schema": "ascella-four-output-order-analysis-v1",
   "source_sha256": {
     "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
-    "results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py": "c82e50f42e11fb7cf7262b8ebc03d661e082e5ba5bb38ece1fe13263d7f3a478",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py": "5bb6057809b3eba46009cd900d9546c24d54e440e77d86eec55f15c8f4874466",
     "results/quandela/runs/ascella-mosaiq-update-order-retry/cases.json": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
     "results/quandela/runs/ascella-mosaiq-update-order-retry/circuit.json": "f2e7ea115d91f962cb045e824d8d3f5c3da432fe0b812e0e58dfc7b23f7ac550",
     "results/quandela/runs/ascella-mosaiq-update-order-retry/job-body.json": "64904ad6515baf5f929b0223ce2bc4934d19fdbb6a086d812c51c87ca42f9d7a",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/platform-before-submission.json": "76f74ca6d815bea6451cba4e0b6ef4e7e7060a840a722eaf75fb3e53e67742d4",
     "results/quandela/runs/ascella-mosaiq-update-order-retry/raw/result.json": "4530d655aec96fa886f6fad8b58705c98dd27d16e34f870e3ae29e6e6b96840d",
     "results/quandela/runs/ascella-mosaiq-update-order-retry/results.json": "4cddad72140339137740a4d7ff21b9e983d010a416cf3d1075416af410242b2f",
     "results/quandela/runs/ascella-mosaiq-update-order-retry/submission.json": "1340739279199891cbe8377a3a769ab6926ea46e81d3d55ba2e1193d6645cdf0",

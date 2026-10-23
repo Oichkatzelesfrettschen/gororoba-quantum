@@ -79,8 +79,17 @@ def observation(task: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def advertised_deployment(snapshot: dict[str, Any]) -> str:
+    specs = snapshot["processor"]["specs"]
+    version = specs["software_versions"]["mosaiq-arcturus"]
+    if specs["processor_name"] != "qpu:ascella" or version != "2.1.5.2.post4":
+        raise ValueError("The recovery acquisition requires the retained Ascella deployment advertisement")
+    return str(version)
+
+
 def analyze(directory: Path) -> dict[str, Any]:
     qd.run_facts(directory)
+    deployment = advertised_deployment(json.loads((directory / "platform-before-submission.json").read_text()))
     manifest = json.loads((directory / "cases.json").read_text())
     results = json.loads((directory / "results.json").read_text())
     submission = json.loads((directory / "submission.json").read_text())
@@ -101,6 +110,7 @@ def analyze(directory: Path) -> dict[str, Any]:
     paths = [
         directory / name
         for name in (
+            "platform-before-submission.json",
             "cases.json",
             "circuit.json",
             "job-body.json",
@@ -113,6 +123,9 @@ def analyze(directory: Path) -> dict[str, Any]:
     return {
         "schema": "ascella-four-output-order-analysis-v1",
         "job_id": results["job_id"],
+        "advertised_mosaiq_arcturus": deployment,
+        "deployment_boundary": "Pre-submission provider advertisement; the snapshot does not establish "
+        "the executing instrument version or the cause of recovery.",
         "conditioning": "Occupation sum one within the four returned modes of twelve-mode Ascella.",
         "boundary": "Compiled meshes and performance fields are provider metadata. Four-output counts cannot "
         "measure full-output leakage, absolute calibrated loss, drift, or physical phase reconstruction.",
