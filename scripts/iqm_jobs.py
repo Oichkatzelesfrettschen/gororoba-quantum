@@ -377,6 +377,15 @@ def collect(run_dir: Path, client: Client, poll: float = 5.0, timeout: float = 3
     return results
 
 
+def shots_ok(returned: list[int], row: dict[str, Any]) -> bool:
+    """Every circuit returned the case's shots, or at most that many under all-zeros heralding, which
+    discards each shot whose pre-circuit measurement is not all zeros."""
+    heralded = row["options"].get("heralding_mode") == "zeros"
+    if len(returned) != len(row["circuits"]):
+        return False
+    return all(0 < n <= row["shots"] if heralded else n == row["shots"] for n in returned)
+
+
 def run_facts(run_dir: Path) -> dict[str, Any]:
     """The registry facts of one retained run, after checking it against its own receipts.
 
@@ -402,7 +411,7 @@ def run_facts(run_dir: Path) -> dict[str, Any]:
     record = json.loads((run_dir / "raw/job.json").read_bytes())
     if record["id"] != submission["job_id"] or record["status"] != results["status"]:
         raise PlatformError(f"{run_dir}: raw/job.json disagrees with results.json")
-    if results["status"] == "completed" and results["shots_per_circuit"] != [row["shots"]] * len(row["circuits"]):
+    if results["status"] == "completed" and not shots_ok(results["shots_per_circuit"], row):
         raise PlatformError(f"{run_dir}: a circuit returned other than {row['shots']} shots")
     billed = float((record.get("metrics") or {}).get("billed_seconds") or 0.0)
     return {
@@ -668,6 +677,12 @@ def self_test() -> str:
         if collect(short, client, poll=0)["shots_per_circuit"] != [3999]:
             raise RuntimeError("collect does not report the shots the service returned")
         refused(lambda: run_facts(short), "returned other than")
+        plain = {"circuits": [{}, {}], "shots": 100, "options": {"heralding_mode": "none"}}
+        heralded = {**plain, "options": {"heralding_mode": "zeros"}}
+        if not shots_ok([100, 100], plain) or shots_ok([99, 100], plain) or shots_ok([100], plain):
+            raise RuntimeError("shots_ok misreads an unheralded job")
+        if not shots_ok([61, 100], heralded) or shots_ok([0, 100], heralded) or shots_ok([101, 100], heralded):
+            raise RuntimeError("shots_ok misreads a heralded job")
     return "iqm jobs: build, check, approval, digest, ceiling, health, checkpoint and collection refusals pass"
 
 

@@ -32,7 +32,7 @@ The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 41 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 8 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 10 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -252,6 +252,8 @@ circuit and charges the account ledger's change.
 | [2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1](../../results/iqm/runs/2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1) | IQM Resonance | IQM reset-billing pilot | garnet:mock | 1 | 2 | completed | 0.0 credits | iqm-garnet-reset-billing-pilot |
 | [2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive](../../results/iqm/runs/2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive) | IQM Resonance | IQM reset-billing pilot | garnet | 1 | 2 | completed | 1.0 credits | iqm-garnet-reset-billing-pilot |
 | [2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1](../../results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1) | IQM Resonance | IQM reset-billing pilot | garnet | 1 | 2 | completed | 0.5 credits | iqm-garnet-reset-billing-pilot |
+| [2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong](../../results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 2 | completed | 0.0 credits | iqm-garnet-mock-heralded-probe |
+| [2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak](../../results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 10 | completed | 0.0 credits | iqm-garnet-mock-heralded-probe |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -466,6 +468,8 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-mock-reset-billing-a-2x2000-active1** (2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1, 1 billed seconds): Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?
 - **iqm-garnet-reset-billing-p-2x2000-passive** (2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive, 2 billed seconds): Does p-2x2000-passive on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?
 - **iqm-garnet-reset-billing-a-2x2000-active1** (2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1, 1 billed seconds): Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?
+- **iqm-garnet-mock-signed-kernel-probe-strong** (2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong, 1 billed seconds): Does the garnet:mock pipeline accept the strong job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?
+- **iqm-garnet-mock-signed-kernel-probe-weak** (2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak, 2 billed seconds): Does the garnet:mock pipeline accept the weak job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?
 
 ## Established claims
 
@@ -1254,6 +1258,10 @@ circuit and charges the account ledger's change.
   Boundary: Mock estimates under the mock's own calibration; the hardware estimate, runtime and billing are the reset and billing pilot's.
   Evidence: [results.json](../../results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive/results.json), [results.json](../../results/iqm/runs/2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive/results.json), [results.json](../../results/iqm/runs/2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive/results.json), [results.json](../../results/iqm/runs/2026-10-22T211622Z-garnet_mock-timing-pilot-j4-1x4000-active1/results.json), [iqm-garnet-timing-pilot.md](../design/iqm-garnet-timing-pilot.md).
   Acquisitions: iqm-garnet-mock-timing-j1-1x1000-passive, iqm-garnet-mock-timing-j2-1x4000-passive, iqm-garnet-mock-timing-j3-20x200-passive, iqm-garnet-mock-timing-j4-1x4000-active1.
+- **iqm-garnet-mock-heralded-probe** (exploratory reanalysis, hardware). The garnet:mock pipeline accepted both jobs of the signed kernel probe case (cases.json dd9cdf84) with heralding_mode zeros and active_reset_cycles 1, estimated 3.05 s for 2 circuits x 20000 shots and 8.86 s for 10 circuits x 20000, charged 0.00 credits, and returned 4918 to 5068 shots per circuit: the server returns only the heralded shots and does not top up the request.
+  Boundary: The mock's bits are random, so its kept fraction says nothing about Garnet's heralding retention.
+  Evidence: [results.json](../../results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong/results.json), [results.json](../../results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak/results.json), [iqm-garnet-signed-kernel-probe.md](../design/iqm-garnet-signed-kernel-probe.md).
+  Acquisitions: iqm-garnet-mock-signed-kernel-probe-strong, iqm-garnet-mock-signed-kernel-probe-weak.
 
 ## Open claims
 

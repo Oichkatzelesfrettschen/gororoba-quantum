@@ -1,0 +1,286 @@
+"""IQM Garnet case of the signed sedenion kernel probe: odd dilation overlap against an even offset.
+
+gororoba_quantum/signed_kernel_probe.py certifies the kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) and
+the perturbation B(t) = (L_e1 + L_e10 + t L_e2)/(2 + |t|): the dilation overlap Re<v|B(t)|u> =
+t/(2 + |t|) is odd in t and first order, read as <Z> of control qubit 6 of matched_signed_probe(),
+one parametrized circuit for every t whose bound compiles differ only in rotation angles. The arms
++t and -t give the odd part (Z(t) - Z(-t))/2, which cancels every offset even in t such as readout
+asymmetry, and the even part (Z(t) + Z(-t))/2. The registered falsifier is an odd part of zero or of
+the wrong sign at either |t|. Amplitude damping is not unital, so under relaxation the odd part is
+not a fixed visibility times t/(2 + |t|); prediction.json records the modeled odd part per |t| as a
+prediction, not as a visibility law.
+
+The case compiles the matched probe once per transpiler seed onto Garnet's calibrated CZ couplers
+(basis r and cz), predicts each seed's odd part at t = 0.25 from the case's own copy of the
+calibration (scripts/iqm_sim.py noise plus idle T1 and T2 relaxation over the ALAP schedule) and
+keeps the seed with the largest predicted visibility. Its job holds arms t = +-0.25 and t = +-0.05,
+the +-0.05 arms replicated to reach their shots, under active reset with all-zeros heralding:
+docs/design/iqm-garnet-timing-pilot.md measured one active-reset cycle leaving QB1 6 % excited, and
+heralding discards every shot whose pre-circuit measurement is not all zeros.
+
+Usage: "$PYTHON" scripts/iqm_signed_probe.py (build DIR | check DIR | --self-test)
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import shutil
+import sys
+from pathlib import Path
+from typing import Any
+
+from qiskit import QuantumCircuit, transpile
+from qiskit.circuit import Delay, Measure, Parameter
+from qiskit.circuit.library import CZGate, RGate
+from qiskit.transpiler import CouplingMap, InstructionProperties, Target
+from qiskit_aer import AerSimulator
+from qiskit_aer.noise import RelaxationNoisePass
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
+import iqm_sim  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, dump  # noqa: E402
+from iqm_platform import sha256  # noqa: E402
+
+import signed_kernel_probe as skp  # noqa: E402
+
+CASE = "signed-kernel-probe"
+QC = "garnet"
+SEEDS = range(8)
+SELECT_T = 0.25
+STRONG_T = 0.25
+WEAK_T = 0.05
+STRONG_SHOTS = 20000
+WEAK_SHOTS = 20000
+WEAK_COPIES = 5
+PREDICTION_SHOTS = 400000
+SELECTION_SHOTS = 100000
+PREDICTION_SEED = 20261022
+# Measured on Garnet QB1 by the reset and billing pilot: 37.5 us of execution per active-reset shot.
+ACTIVE_SHOT_SECONDS = 0.0000375
+OPTIONS = {"heralding_mode": "zeros", "active_reset_cycles": 1}
+CALIBRATION_FILES = ("metrics.json", "dynamic-quantum-architecture.json")
+DURATIONS = {"r": 16e-9, "cz": 40e-9, "measure": 480e-9}
+
+
+def law(t: float) -> float:
+    return t / (2 + abs(t))
+
+
+def target_of(calibration: iqm_sim.Calibration) -> tuple[Target, CouplingMap]:
+    index = {q: n for n, q in enumerate(calibration.qubits)}
+    edges = [(index[a], index[b]) for pair in calibration.cz for a, b in [sorted(pair, key=calibration.qubits.index)]]
+    coupling = CouplingMap([e for a, b in edges for e in ((a, b), (b, a))])
+    target = Target(num_qubits=len(calibration.qubits), dt=1e-9)
+    n = len(calibration.qubits)
+    target.add_instruction(
+        RGate(Parameter("angle"), Parameter("phase")),
+        {(q,): InstructionProperties(duration=DURATIONS["r"]) for q in range(n)},
+    )
+    target.add_instruction(CZGate(), {e: InstructionProperties(duration=DURATIONS["cz"]) for e in coupling.get_edges()})
+    target.add_instruction(Measure(), {(q,): InstructionProperties(duration=DURATIONS["measure"]) for q in range(n)})
+    target.add_instruction(Delay(Parameter("t")), {(q,): None for q in range(n)})
+    return target, coupling
+
+
+def relaxation(calibration: iqm_sim.Calibration) -> RelaxationNoisePass:
+    t1 = [calibration.values.get(f"characterization.model.{q}.t1_time", 1.0) for q in calibration.qubits]
+    t2 = [
+        min(calibration.values.get(f"characterization.model.{q}.t2_time", 1.0), 2 * t1[n])
+        for n, q in enumerate(calibration.qubits)
+    ]
+    return RelaxationNoisePass(t1s=t1, t2s=t2, dt=1e-9, op_types=[Delay])
+
+
+def predict(
+    compiled: QuantumCircuit, t: float, calibration: iqm_sim.Calibration, target: Target, shots: int = PREDICTION_SHOTS
+) -> float:
+    """<Z> of the control under the calibration noise and idle relaxation, sampled at a fixed seed."""
+    bound = compiled.assign_parameters(skp.matched_values(t))
+    scheduled = transpile(bound, target=target, optimization_level=0, scheduling_method="alap")
+    noisy = relaxation(calibration)(scheduled)
+    simulator = AerSimulator(noise_model=calibration.noise_model(), seed_simulator=PREDICTION_SEED)
+    counts = simulator.run(noisy, shots=shots).result().get_counts()
+    return sum((1 if key[-1] == "0" else -1) * n for key, n in counts.items()) / shots
+
+
+def to_iqm(bound: QuantumCircuit, name: str, qubits: list[str]) -> dict[str, Any]:
+    instructions = []
+    for item in bound.data:
+        op, locus = item.operation, [qubits[bound.find_bit(q).index] for q in item.qubits]
+        if op.name == "r":
+            angle, phase = (float(p) for p in op.params)
+            instructions.append({"name": "prx", "locus": locus, "args": {"angle": angle, "phase": phase}})
+        elif op.name == "cz":
+            instructions.append({"name": "cz", "locus": locus, "args": {}})
+        elif op.name == "measure":
+            instructions.append({"name": "measure", "locus": locus, "args": {"key": "c"}})
+        elif op.name != "barrier":
+            raise ValueError(f"{name}: {op.name} is not a Garnet native operation")
+    return {"name": name, "instructions": instructions}
+
+
+def build_from(calibration_dir: Path) -> tuple[dict[str, str], dict[str, Any]]:
+    calibration = iqm_sim.Calibration.from_directory(calibration_dir)
+    target, coupling = target_of(calibration)
+    best: tuple[float, int, QuantumCircuit] | None = None
+    seeds = []
+    for seed in SEEDS:
+        compiled = transpile(
+            skp.matched_signed_probe(),
+            basis_gates=["r", "cz"],
+            coupling_map=coupling,
+            optimization_level=3,
+            seed_transpiler=seed,
+        )
+        plus = predict(compiled, SELECT_T, calibration, target, SELECTION_SHOTS)
+        odd = (plus - predict(compiled, -SELECT_T, calibration, target, SELECTION_SHOTS)) / 2
+        visibility = odd / law(SELECT_T)
+        seeds.append({"seed": seed, "cz": compiled.count_ops().get("cz", 0), "visibility": round(visibility, 4)})
+        if best is None or visibility > best[0]:
+            best = (visibility, seed, compiled)
+    if best is None:
+        raise ValueError("no transpiler seed compiled")
+    _, seed, compiled = best
+    arms = []
+    for t in (STRONG_T, -STRONG_T, WEAK_T, -WEAK_T):
+        z = predict(compiled, t, calibration, target)
+        arms.append({"t": t, "law": law(t), "predicted_z": z})
+    files: dict[str, str] = {}
+    names = []
+    for t, copies in ((STRONG_T, 1), (-STRONG_T, 1), (WEAK_T, WEAK_COPIES), (-WEAK_T, WEAK_COPIES)):
+        bound = compiled.assign_parameters(skp.matched_values(t))
+        for copy in range(copies):
+            name = f"t{t:+.2f}-{copy:02d}"
+            rel = f"circuits/{name}.json"
+            files[rel] = dump(to_iqm(bound, name, calibration.qubits))
+            names.append((rel, t))
+    weak = [rel for rel, t in names if abs(t) == WEAK_T]
+    strong = [rel for rel, t in names if abs(t) == STRONG_T]
+    jobs = []
+    for job, rels, shots in (("strong", strong, STRONG_SHOTS), ("weak", weak, WEAK_SHOTS)):
+        jobs.append(
+            {
+                "job": job,
+                "circuits": [{"file": rel, "sha256": sha256(files[rel].encode())} for rel in rels],
+                "shots": shots,
+                "options": OPTIONS,
+                "expected_seconds": round(len(rels) * shots * ACTIVE_SHOT_SECONDS, 3),
+            }
+        )
+    by_t = {arm["t"]: arm["predicted_z"] for arm in arms}
+    prediction = {
+        "calibration_set": calibration.set_id,
+        "transpiler_seeds": seeds,
+        "chosen_seed": seed,
+        "cz": compiled.count_ops().get("cz", 0),
+        "physical_qubits": sorted(
+            {q for rel, _ in names[:1] for op in json.loads(files[rel])["instructions"] for q in op["locus"]}
+        ),
+        "arms": arms,
+        "odd": {
+            f"{t}": {"predicted": (by_t[t] - by_t[-t]) / 2, "law": law(t), "even_offset": (by_t[t] + by_t[-t]) / 2}
+            for t in (STRONG_T, WEAK_T)
+        },
+        "model": (
+            "iqm_sim depolarizing PRX and CZ, readout errors, ALAP idle T1/T2; no coherent error, leakage or crosstalk"
+        ),
+    }
+    files["cases.json"] = dump(
+        {
+            "schema": CASE_SCHEMA,
+            "case": CASE,
+            "question": (
+                "Is the dilation overlap of the perturbed sedenion kernel odd in t on Garnet: does (Z(t) - Z(-t))/2 "
+                "carry the sign of t, as Re<v|B(t)|u> = t/(2 + |t|) requires?"
+            ),
+            "ideal": {f"{t:+.2f}": law(t) for t in (STRONG_T, -STRONG_T, WEAK_T, -WEAK_T)},
+            "jobs": jobs,
+        }
+    )
+    files["prediction.json"] = dump(prediction)
+    return files, prediction
+
+
+def write(directory: Path) -> None:
+    calibration_dir = directory / "calibration"
+    calibration_dir.mkdir(parents=True, exist_ok=True)
+    source = iqm_sim.EVIDENCE / QC / "calibration"
+    for name in CALIBRATION_FILES:
+        shutil.copyfile(source / name, calibration_dir / name)
+    files, prediction = build_from(calibration_dir)
+    for rel, text in files.items():
+        path = directory / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+    print(json.dumps({k: prediction[k] for k in ("chosen_seed", "cz", "odd")}, indent=1))
+
+
+def check(directory: Path) -> None:
+    files, _ = build_from(directory / "calibration")
+    present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
+    expected = set(files) | {f"calibration/{name}" for name in CALIBRATION_FILES}
+    if present != expected:
+        raise ValueError(f"{directory}: files differ from the build: {sorted(present ^ expected)}")
+    for rel, text in files.items():
+        if (directory / rel).read_text(encoding="utf-8") != text:
+            raise ValueError(f"{directory}/{rel} differs from the build")
+    print(f"{directory}: matches the build from its retained calibration")
+
+
+def self_test() -> str:
+    calibration = iqm_sim.Calibration(QC)
+    target, coupling = target_of(calibration)
+    compiled = transpile(
+        skp.matched_signed_probe(),
+        basis_gates=["r", "cz"],
+        coupling_map=coupling,
+        optimization_level=1,
+        seed_transpiler=0,
+    )
+    ideal = AerSimulator(seed_simulator=1)
+    for t in (0.25, -0.25):
+        bound = compiled.assign_parameters(skp.matched_values(t))
+        counts = ideal.run(bound, shots=200000).result().get_counts()
+        z = sum((1 if key[-1] == "0" else -1) * n for key, n in counts.items()) / 200000
+        if abs(z - law(t)) > 5 * math.sqrt(1 / 200000) * 2:
+            raise RuntimeError(f"the noiseless compile reads {z} at t = {t}, not {law(t)}")
+        circuit = to_iqm(bound, "probe", calibration.qubits)
+        for op in circuit["instructions"]:
+            if op["name"] == "cz" and frozenset(op["locus"]) not in calibration.cz:
+                raise RuntimeError(f"cz on {op['locus']} is off the coupler graph")
+    flipped = QuantumCircuit(1)
+    flipped.ry(0.3, 0)
+    try:
+        to_iqm(flipped, "bad", calibration.qubits)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("a non-native operation was translated")
+    return (
+        f"iqm signed probe: noiseless Garnet compile reads t/(2+|t|) at t = +-0.25; {compiled.count_ops().get('cz')} CZ"
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--self-test", action="store_true")
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("build").add_argument("directory", type=Path)
+    sub.add_parser("check").add_argument("directory", type=Path)
+    args = parser.parse_args()
+    if args.self_test:
+        print(self_test())
+    elif args.command == "build":
+        write(args.directory)
+    elif args.command == "check":
+        check(args.directory)
+    else:
+        parser.error("choose build, check or --self-test")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

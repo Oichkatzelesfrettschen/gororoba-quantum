@@ -449,6 +449,9 @@
       "results/quandela/cases/bdsc_qualification/**",
       "results/quandela/runs/*-qpu_belenos-bdsc_qualification-*/**",
       "results/quandela/runs/*-sim_belenos-bdsc_qualification-*/**"
+    ],
+    "core-638": [
+      "results/iqm/cases/signed-kernel-probe/**"
     ]
   }
 }

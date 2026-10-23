@@ -41,7 +41,16 @@ READOUT_FIELD = "metrics.ssro.measure.constant.{q}.{kind}"
 
 class Calibration:
     def __init__(self, qc: str, evidence: Path = EVIDENCE) -> None:
-        folder = evidence / qc.replace(":", "_") / "calibration"
+        self.load(evidence / qc.replace(":", "_") / "calibration")
+
+    @classmethod
+    def from_directory(cls, folder: Path) -> Calibration:
+        """A calibration read from a folder holding metrics.json and dynamic-quantum-architecture.json."""
+        calibration = cls.__new__(cls)
+        calibration.load(folder)
+        return calibration
+
+    def load(self, folder: Path) -> None:
         metrics = json.loads((folder / "metrics.json").read_text(encoding="utf-8"))
         self.values = {o["dut_field"]: o["value"] for o in metrics["observations"] if not o.get("invalid")}
         self.set_id = metrics.get("observation_set_id")

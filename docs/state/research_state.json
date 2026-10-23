@@ -1491,6 +1491,20 @@
       "run": "results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1",
       "family": "IQM reset-billing pilot",
       "question": "Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-kernel-probe-strong",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the strong job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-signed-kernel-probe-weak",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak",
+      "family": "IQM signed kernel probe",
+      "question": "Does the garnet:mock pipeline accept the weak job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?"
     }
   ],
   "claims": [
@@ -7374,6 +7388,36 @@
         "iqm-garnet-mock-timing-j2-1x4000-passive",
         "iqm-garnet-mock-timing-j3-20x200-passive",
         "iqm-garnet-mock-timing-j4-1x4000-active1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-heralded-probe",
+      "statement": "The garnet:mock pipeline accepted both jobs of the signed kernel probe case (cases.json dd9cdf84) with heralding_mode zeros and active_reset_cycles 1, estimated 3.05 s for 2 circuits x 20000 shots and 8.86 s for 10 circuits x 20000, charged 0.00 credits, and returned 4918 to 5068 shots per circuit: the server returns only the heralded shots and does not top up the request.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock's bits are random, so its kept fraction says nothing about Garnet's heralding retention.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong/results.json",
+          "sha256": "27f107a4a2f8e6247181d9a9ea438dc1b8d105c1cf9e21b16c38fe547a06c212"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak/results.json",
+          "sha256": "ed44ad34fcc551fbee75a96a5f16647606c0d731f3abab9d309766b4151bd35a"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-signed-kernel-probe-strong",
+        "iqm-garnet-mock-signed-kernel-probe-weak"
       ],
       "assumptions": [],
       "depends_on": [],

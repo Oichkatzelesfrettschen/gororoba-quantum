@@ -4176,6 +4176,7 @@
     "scripts/heron_target_snapshot.py",
     "scripts/hypercomplex_cases.py",
     "scripts/ibm_runtime_options_inventory.py",
+    "scripts/iqm_signed_probe.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
@@ -4555,6 +4556,7 @@
     "scripts/ghost_event_scale.py",
     "scripts/ghost_run.py",
     "scripts/gl52_split_conjugators.py",
+    "scripts/iqm_signed_probe.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/n21_conjugation_noise.py",
@@ -9934,6 +9936,22 @@
    "time",
    "typing",
    "urllib"
+  ],
+  "scripts/iqm_signed_probe.py": [
+   "__future__",
+   "argparse",
+   "iqm_jobs",
+   "iqm_platform",
+   "iqm_sim",
+   "json",
+   "math",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "shutil",
+   "signed_kernel_probe",
+   "sys",
+   "typing"
   ],
   "scripts/iqm_sim.py": [
    "__future__",
