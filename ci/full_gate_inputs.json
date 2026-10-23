@@ -452,6 +452,10 @@
     ],
     "core-638": [
       "results/iqm/cases/signed-kernel-probe/**"
+    ],
+    "core-640": [
+      "results/iqm/cases/signed-kernel-probe/**",
+      "results/iqm/signed_kernel_probe_audit.json"
     ]
   }
 }

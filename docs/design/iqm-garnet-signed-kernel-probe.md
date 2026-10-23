@@ -38,8 +38,10 @@ compiles the probe, keeps a copy of the calibration it was planned against
 Each arm reads <Z> of control qubit 6. The odd part (Z(t) - Z(-t))/2
 cancels every offset even in t, readout asymmetry included.
 
-**Falsifier.** An odd part of zero, or of the sign opposite to t, at either
-|t|, at three standard errors.
+**Falsifier.** An odd part of the sign opposite to t, three standard
+errors from zero, at either |t|. An odd part within three standard errors of
+zero leaves that arm unresolved; the decision carries no equivalence margin,
+so no sample size turns a null reading into a falsification.
 
 **Prediction** (`scripts/iqm_sim.py` noise from the calibration copy plus
 ALAP idle T1/T2 relaxation, 400000 sampled shots per arm):
@@ -83,8 +85,8 @@ the server confirms it compiled against, and charged 4.50 credits
 
 The signed law is not falsified, and the device carries the sign of t at
 |t| = 0.25. The odd parts fit one visibility, odd = V t/(2 + |t|) with
-V = 0.206 +- 0.054 (chi-square 0.08 on 1 degree of freedom), so the hardware
-follows the linear law the simulator departs from at small |t|: its
+V = 0.206 +- 0.054 (chi-square 0.08 on 1 degree of freedom): two points do
+not reject the linear law, and the simulator departs from it at small |t|: its
 non-unital relaxation term predicted +0.0188 at |t| = 0.05, 4.4 standard
 errors above the measurement. The even offsets (-0.022 and -0.012) have the
 opposite sign to the modeled +0.029. The weak job's runtime (6.52 s)
@@ -151,8 +153,12 @@ odd(0.05)/odd(0.25) = 0.26 +- 0.16 lies between the linear law's 0.22 and the
 pure a0 scaling's 0.47, so the pooled visibility V = 0.206 assumes the linear
 law rather than testing it.
 
-**Design defects for the next case.** The weak job lists its five +t
-circuits before its five -t circuits, so drift along the batch order enters
-the odd part; the -t copies read -0.012, -0.004, -0.015, -0.025 and -0.032 in
+**Design defects for the next case.** The strong job lists its +t circuit
+before its -t circuit and the weak job its five +t circuits before its five
+-t circuits, so any reading that depends on batch position enters the odd
+part: a device with no signed response and a -0.044 shift on the second
+circuit reproduces the strong arm's +0.022 exactly. The sign at |t| = 0.25 is
+therefore resolved only under the assumption that position does not move the
+reading; the -t copies read -0.012, -0.004, -0.015, -0.025 and -0.032 in
 list order. The prediction carried no coherent error, so the even offset and
 the small-|t| odd part were outside the model by construction.

@@ -19,9 +19,10 @@ qubit, and a conditional-phase error of every CZ on a coupler, by central differ
 compile restricted to its seven qubits. Every odd-part derivative vanishes at t = 0, where the signed
 amplitude sqrt(|t|/(2 + |t|)) is zero, and grows with that amplitude rather than with t.
 
-sign cocycle. e_p e_q = (-1)^f(p, q) e_(p xor q) in dimension 2^n; the algebraic normal form of f over
-the 2n index bits has degree max(2, n), and at a fixed left factor degree n - 1 in q: octonion left
-multiplication is a degree-2 phase (CZ and S), sedenion left multiplication needs degree 3.
+sign cocycle. e_p e_q = (-1)^f(p, q) e_(p xor q) in dimension 2^n, enumerated for n = 1 to 6; the
+algebraic normal form of f over the 2n index bits has degree max(2, n), and its degree in q, maximized
+over the left factor p, is max(1, n - 1): octonion left multiplication is at most a degree-2 phase (CZ
+and S), sedenion left multiplication reaches degree 3. The closed form beyond n = 6 is unproved.
 
 Usage: "$PYTHON" scripts/iqm_probe_audit.py (--out FILE | --check FILE | --self-test)
 """

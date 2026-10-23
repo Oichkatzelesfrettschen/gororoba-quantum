@@ -303,17 +303,26 @@ def submit(
     import fcntl
 
     runs.mkdir(parents=True, exist_ok=True)
-    # The lock spans the duplicate check, the copy and the POST, so two submissions of one case never both pass.
-    fd = os.open(case_dir, os.O_RDONLY)
+    # The lock on the runs directory spans the duplicate check, the copy and the POST: every submission
+    # names its run directory there, so two submissions of one job pass neither from one case directory
+    # nor from two copies of it.
+    fd = os.open(runs, os.O_RDONLY)
     try:
         try:
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
-            raise PlatformError(f"another submission holds {case_dir}") from None
+            raise PlatformError(f"another submission holds {runs}") from None
         refuse_earlier(runs, suffix, job, qc)
         return post_job(case_dir, run_dir, job, qc, approval, approved_sha256, max_credits, price, client)
     finally:
         os.close(fd)
+
+
+def write_atomic(path: Path, data: bytes) -> None:
+    """Replace path in one rename, so an interrupted write leaves the old file or none, never a part."""
+    temporary = path.with_name(f".{path.name}.part")
+    temporary.write_bytes(data)
+    os.replace(temporary, path)
 
 
 def refuse_earlier(runs: Path, suffix: str, job: str, qc: str) -> None:
@@ -427,7 +436,7 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float) -
         path = raw / name
         if path.exists() and path.read_bytes() != data:
             raise PlatformError(f"{path} is retained with other bytes")
-        path.write_bytes(data)
+        write_atomic(path, data)
         kept[name] = sha256(data)
 
     keep("job.json", body)
@@ -461,7 +470,7 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float) -
         ),
         "raw_sha256": kept,
     }
-    (run_dir / "results.json").write_text(dump(results))
+    write_atomic(run_dir / "results.json", dump(results).encode())
     return results
 
 
@@ -499,8 +508,21 @@ def run_facts(run_dir: Path) -> dict[str, Any]:
     record = json.loads((run_dir / "raw/job.json").read_bytes())
     if record["id"] != submission["job_id"] or record["status"] != results["status"]:
         raise PlatformError(f"{run_dir}: raw/job.json disagrees with results.json")
-    if results["status"] == "completed" and not shots_ok(results["shots_per_circuit"], row):
-        raise PlatformError(f"{run_dir}: a circuit returned other than {row['shots']} shots")
+    if results["status"] == "completed":
+        expected = {"job.json", *(f"{artifact}.json" for artifact in ARTIFACTS)}
+        if set(results["raw_sha256"]) != expected:
+            raise PlatformError(
+                f"{run_dir}: a completed run retains {sorted(results['raw_sha256'])}, not {sorted(expected)}"
+            )
+        # The shot counts come from the retained measurements, not from the summary that records them.
+        returned = [
+            len(next(iter(circuit.values())))
+            for circuit in json.loads((run_dir / "raw/measurements.json").read_bytes())
+        ]
+        if returned != results["shots_per_circuit"]:
+            raise PlatformError(f"{run_dir}: results.json records other shot counts than raw/measurements.json")
+        if not shots_ok(returned, row):
+            raise PlatformError(f"{run_dir}: a circuit returned other than {row['shots']} shots")
     billed = float((record.get("metrics") or {}).get("billed_seconds") or 0.0)
     return {
         "created_at": submission["submitted_at"],
@@ -712,10 +734,14 @@ def self_test() -> str:
         refused(lambda: submit(case, job, "emerald", "approved", approved, 5, client, runs, "s0"), "approved quantum")
         import fcntl
 
-        holder = os.open(case, os.O_RDONLY)
+        runs.mkdir()
+        holder = os.open(runs, os.O_RDONLY)
         fcntl.flock(holder, fcntl.LOCK_EX)
         try:
-            refused(lambda: submit(case, job, "garnet", "approved", approved, 5, client, runs, "s0"), "holds")
+            # A byte-identical copy of the case directory meets the same lock.
+            twin = root / "twin" / PILOT
+            shutil.copytree(case, twin)
+            refused(lambda: submit(twin, job, "garnet", "approved", approved, 5, client, runs, "s0"), "holds")
         finally:
             os.close(holder)
         copy = shutil.copytree
@@ -793,6 +819,12 @@ def self_test() -> str:
         kept = (run / "raw/measurements.json").read_bytes()
         (run / "raw/measurements.json").write_text("[]")
         refused(lambda: run_facts(run), "differs from its recorded sha256")
+        summary = (run / "results.json").read_bytes()
+        stripped = json.loads(summary)
+        del stripped["raw_sha256"]["measurements.json"]
+        (run / "results.json").write_text(dump(stripped))
+        refused(lambda: run_facts(run), "a completed run retains")
+        (run / "results.json").write_bytes(summary)
         (run / "raw/measurements.json").write_bytes(kept)
         (run / "raw/job.json").write_text("{}")
         refused(lambda: collect(run, client, poll=0), "differs from its recorded sha256")

@@ -7448,7 +7448,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2. The signed overlap equals t/(2 + |t|) for every unit vector u (signed-overlap-kernel-independence), so the run establishes that Garnet carries a relative pi phase on the signed branch through this compile, not a property of the sedenion kernel. Coherent gate errors add an odd term proportional to sqrt(|t|/(2 + |t|)) (iqm-garnet-signed-probe-coherent-response), so the single-visibility fit does not separate the linear law from that term: the measured ratio odd(0.05)/odd(0.25) = 0.26 +- 0.16 lies between the linear 0.22 and the amplitude scaling 0.47. The weak job lists its five +t circuits before its five -t circuits, so drift along the batch order enters the odd part.",
+      "boundary": "One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2. The signed overlap equals t/(2 + |t|) for every unit vector u (signed-overlap-kernel-independence), so the run establishes that Garnet carries a relative pi phase on the signed branch through this compile, not a property of the sedenion kernel. Coherent gate errors add an odd term proportional to sqrt(|t|/(2 + |t|)) (iqm-garnet-signed-probe-coherent-response), so the single-visibility fit does not separate the linear law from that term: the measured ratio odd(0.05)/odd(0.25) = 0.26 +- 0.16 lies between the linear 0.22 and the amplitude scaling 0.47. The strong job lists its +t circuit before its -t circuit and the weak job its five +t circuits before its five -t circuits, so a reading that depends on batch position enters the odd part: a device with no signed response and a -0.044 shift on the second circuit reproduces the strong arm's +0.022, and the sign at |t| = 0.25 is resolved only under the assumption that position does not move the reading.",
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_analysis.json",
@@ -7509,7 +7509,7 @@
     },
     {
       "id": "cd-sign-cocycle-degree",
-      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree n - 1 in q at a fixed left factor p. Octonion left multiplication is therefore a degree-2 phase, implementable with CZ and S gates, and sedenion left multiplication needs a degree-3 phase.",
+      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree max(1, n - 1) in q maximized over the left factor p. Octonion left multiplication is therefore at most a degree-2 phase, implementable with CZ and S gates, and sedenion left multiplication reaches a degree-3 phase.",
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",
@@ -7539,7 +7539,7 @@
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
-      "boundary": "First-order derivatives of the ideal compiled circuit; the device's coherent error magnitudes are unmeasured, so attributing the measured even offsets to QB11 over-rotation is a candidate mechanism, not a fit. Amplitude damping, leakage and readout lie outside the model.",
+      "boundary": "First-order derivatives of the ideal compiled circuit under a stationary error model (one relative over-rotation and one axis error per qubit, one residual Z per qubit after CZ, one conditional phase per coupler); angle-dependent or time-dependent coherent errors lie outside it. The device's coherent error magnitudes are unmeasured, so attributing the measured even offsets to QB11 over-rotation is a candidate mechanism, not a fit. Amplitude damping, leakage and readout lie outside the model.",
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_audit.json",
