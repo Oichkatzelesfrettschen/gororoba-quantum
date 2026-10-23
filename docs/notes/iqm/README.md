@@ -395,5 +395,5 @@ all-49.0.3 baseline is [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
 Gates core-588 (`capture_iqm_docs.py --check`) and core-590 (`iqm_platform.py check docs/evidence/iqm --agents
 docs/notes/iqm/README.md`, which also holds the MCP tool set) and the
-`--self-test` of both scripts in the behavioral suite (`tests/test_cli_self_tests.py`) (the two-phase
+`--self-test` of both scripts in gates `core-self-test-06` and `core-self-test-07` (`tests/test_cli_self_tests.py`) (the two-phase
 refresh on a stubbed transport included).

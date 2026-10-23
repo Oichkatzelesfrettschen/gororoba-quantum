@@ -564,4 +564,4 @@ seeded single job) and core-563 (its `--check-readout-series` of the
 payload-class series, job-14 and the extended job-16). The `--self-test` of
 `capture_qd_docs.py`, `qd_platform.py` (the runner's stubbed-service contract
 included), `qd_box_kite_cases.py`, `cd_two_blade_blocks.py`,
-`qd_box_kite_analysis.py` and `qd_belenos_mesh.py` runs in the behavioral suite (`tests/test_cli_self_tests.py`).
+`qd_box_kite_analysis.py` and `qd_belenos_mesh.py` runs in gates `core-self-test-02`, `core-self-test-07`, `core-self-test-08` and `core-self-test-09` (`tests/test_cli_self_tests.py`).

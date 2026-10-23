@@ -120,7 +120,7 @@ and the Kaggle noise-snapshot rule.
   reconcile_qpu_inventory.py assigns each raw archive to the instance its
   run record names and checks coverage, the usage-window sum and the reserve
   per instance, while the historical-job and campaign accounting bind the
-  default instance. The `ibm_account.py --self-test` in the behavioral suite (`tests/test_cli_self_tests.py`)
+  default instance. The `ibm_account.py --self-test` in gate `core-self-test-05` (`tests/test_cli_self_tests.py`)
   holds the account selection and the instance refusal.
 - Retaining a collected run. A run directory joins the tree with every
   register that enumerates retained jobs, in one change: the instance's job

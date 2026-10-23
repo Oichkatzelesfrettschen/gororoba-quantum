@@ -5,7 +5,7 @@
 `scripts/qi_walsh_exemplar_analysis.py` holds the preregistered analysis.
 Gates core-428 (case regeneration) and core-432 (qxelarator conformance,
 `requires: qi`) hold the cases; the generator and analysis self-tests run in
-the behavioral suite (`tests/test_cli_self_tests.py`).
+gate `core-self-test-03` (`tests/test_cli_self_tests.py`).
 
 ## What the circuits measure
 

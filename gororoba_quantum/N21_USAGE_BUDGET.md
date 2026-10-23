@@ -124,7 +124,7 @@ the `if_else` selecting branches by the recorded bit with noise on its body
 gates. With `--model-method exact` the planner passes `simulation_shots=None`
 and the allowance is zero. Evidence that the exact law is Aer's law:
 
-- the `dynamic_density.py --self-test` of the behavioral suite (`tests/test_cli_self_tests.py`): a three-qubit fixture with exaggerated errors matches
+- the `dynamic_density.py --self-test` of gate `core-self-test-02` (`tests/test_cli_self_tests.py`): a three-qubit fixture with exaggerated errors matches
   400,000 Aer density-matrix shots within 0.001 (radius 0.0047), and each
   alternative ordering (no body noise, reset error before the reset,
   condition on the true outcome) lies outside 3 radii;

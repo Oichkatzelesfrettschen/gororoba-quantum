@@ -158,5 +158,5 @@ Gate `core-walk-extract` runs `--check-extract`
 under the recorded Qiskit 2.5.2 producer. That check requires exact JSON and QPY
 bytes. Qiskit 2.6 emits QPY format 18 where the producer emitted format 17, so
 current-SDK circuit equivalence and producer byte identity have separate gates.
-The `--self-test`, run by the behavioral suite (`tests/test_cli_self_tests.py`), mutates circuit content and metadata to verify
+The `--self-test`, run by gate `core-self-test-08` (`tests/test_cli_self_tests.py`), mutates circuit content and metadata to verify
 that the semantic extraction check rejects scientific changes.
