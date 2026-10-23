@@ -724,18 +724,29 @@ def commutant_facts(n: int, group: list[SignedPermutation]) -> dict[str, Any]:
     return facts
 
 
-def table_automorphisms(n: int) -> set[SignedPermutation]:
-    """Unsigned XOR-linear index permutations that preserve cd_sign: the basis table's permutation automorphisms."""
+def _table_automorphism_branch(task: tuple[int, int]) -> list[SignedPermutation]:
+    n, first = task
     bits = n.bit_length() - 1
     sign = [[cd_sign(n, a, b) for b in range(n)] for a in range(n)]
-    found: set[SignedPermutation] = set()
-    for images in itertools.permutations(range(1, n), bits):
+    found = []
+    rest = [image for image in range(1, n) if image != first]
+    for tail in itertools.permutations(rest, bits - 1):
+        images = (first, *tail)
         f = [0] * n
         for x in range(1, n):
             f[x] = f[x & (x - 1)] ^ images[(x & -x).bit_length() - 1]
         if len(set(f)) == n and all(sign[f[a]][f[b]] == sign[a][b] for a in range(n) for b in range(n)):
-            found.add(tuple((image, 1) for image in f))
+            found.append(tuple((image, 1) for image in f))
     return found
+
+
+def table_automorphisms(n: int) -> set[SignedPermutation]:
+    """Unsigned XOR-linear index permutations that preserve cd_sign: the basis table's permutation automorphisms.
+
+    One branch per image of e_1 runs through ordered_map.
+    """
+    branches = ordered_map(_table_automorphism_branch, [(n, first) for first in range(1, n)], min_items=1)
+    return {g for branch in branches for g in branch}
 
 
 def is_xor_linear(g: SignedPermutation) -> bool:
