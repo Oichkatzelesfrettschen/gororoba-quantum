@@ -169,13 +169,14 @@ and is never evidence of the gap.
 4. **Extended-precision probe of the {a, 0} witnesses.** Nullity-12 points
    reached from seeded starts near each witness keep their distance from the
    family when refined at 110 digits to sigma_21/sigma_1 < 1e-40, and a
-   perturbation cloud at scale 1e-2 has rank 16
+   perturbation cloud at scale 1e-2 spans 16 directions
    ([evidence](../evidence/rank_locus_nullity12_refinement/README.md),
-   `scripts/rank_locus_nullity12_refinement.py`, gate core-662). An
-   obstruction that hid a family-only locus would need order 12 or more at
-   the closest point. The numerics favor local dimension 15 at the
-   nullity-12 witnesses, with the {a, 0} family inside a larger piece;
-   admission still needs an exact piece or local equations.
+   `scripts/rank_locus_nullity12_refinement.py`, gate core-662). The
+   numerics show that the {a, 0} family is not the whole of D_(5,12) near a
+   nullity-12 witness. They leave the local dimension undecided between the
+   family's and the tangent bound, since the excess points and the span are
+   equally consistent with one 15-dimensional piece and with several smaller
+   branches; admission still needs an exact piece or local equations.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`

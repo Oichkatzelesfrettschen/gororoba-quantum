@@ -11257,7 +11257,6 @@
    "cd_core",
    "fractions",
    "json",
-   "math",
    "mpmath",
    "numpy",
    "parallel",

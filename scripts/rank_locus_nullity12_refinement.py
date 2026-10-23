@@ -13,14 +13,14 @@ product with |L_(e_m)|^2 = 32), and refines the landing point at 110 decimal
 digits until sigma_21 / sigma_1 < 1e-40, using mpmath.eigsy on L^T L. It
 records the refined point's relative distance from the family cone
 {a, 0} = span{(a, -i_4 a)} (famdist) and from x0. A cloud test at scale 1e-2
-perturbs each witness, projects back in float64, and reads the rank of the
-displacements against the 16 of T(x0).
+perturbs each witness, projects back in float64, and reads the span of the
+displacements against the 16 of T(x0). The span bounds the local dimension of
+the cone at x0 from above only: several lower-dimensional branches through x0
+can together span 16 directions.
 
 Falsifier, stated before the run: if D_(5,12) near x0 were the family alone, a
 refined landing point would move to the family, so a refined famdist below half
-its float64 value at any point, or a cloud rank below 16, refutes the excess. A
-famdist that survives refinement unchanged at distance r from x0 leaves only an
-obstruction whose order k satisfies famdist^k < 1e-40.
+its float64 value at any point, or a cloud span below 16, refutes the excess.
 
 The record is numerical evidence and certifies nothing: famdist and ranks come
 from floating and extended-precision arithmetic, and a certificate of the local
@@ -36,7 +36,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -147,15 +146,23 @@ def refine(item: tuple[list[float], list[float]]) -> dict[str, Any]:
     }
 
 
-def cloud(item: tuple[list[float], int]) -> list[float]:
-    witness, seed = item
+def project_point(start: list[float]) -> list[float]:
+    return project(np.array(start))[0].tolist()
+
+
+def cloud_starts(witness: list[float], seed: int) -> list[list[float]]:
     y = np.array(witness)
     rng = np.random.default_rng(seed)
-    rows = []
+    starts = []
     for _ in range(CLOUD_SAMPLES):
         d = rng.normal(size=DIM)
-        z, _ = project(y + CLOUD_ETA * d / np.linalg.norm(d))
-        rows.append((z - y) / CLOUD_ETA)
+        starts.append((y + CLOUD_ETA * d / np.linalg.norm(d)).tolist())
+    return starts
+
+
+def cloud_spectrum(witness: list[float], landed: list[list[float]]) -> list[float]:
+    y = np.array(witness)
+    rows = [(np.array(z) - y) / CLOUD_ETA for z in landed]
     s = np.linalg.svd(np.array(rows), compute_uv=False)
     return [float(value) for value in s / s[0]]
 
@@ -167,7 +174,8 @@ def rounded(value: float) -> float:
 def measure() -> dict[str, Any]:
     rng = np.random.default_rng(SEED)
     rows = [row for row in witnesses() if row["family"] == "nonzd-axis"]
-    starts: list[tuple[list[float], list[float]]] = []
+    raw: list[list[float]] = []
+    anchors: list[list[float]] = []
     labels: list[dict[str, Any]] = []
     for row in rows:
         x0 = np.array([float(Fraction(value)) for value in row["x"]])
@@ -179,13 +187,20 @@ def measure() -> dict[str, Any]:
                     d = rng.normal() * np.eye(DIM)[I4] + rng.normal() * np.eye(DIM)[HALF + I4] + 0.3 * d
                 d -= x0 * (x0 @ d)
                 d /= np.linalg.norm(d)
-                y, _ = project(x0 + eps * d)
-                starts.append((y.tolist(), x0.tolist()))
-                labels.append({"witness": row["witness"], "epsilon": eps, "start": kind, "float64_famdist": famdist(y)})
-    refined = parallel.ordered_map(refine, starts, min_items=2)
-    clouds = parallel.ordered_map(
-        cloud, [(starts[4 * i][1], SEED + row["witness"]) for i, row in enumerate(rows)], min_items=2
-    )
+                raw.append((x0 + eps * d).tolist())
+                anchors.append(x0.tolist())
+                labels.append({"witness": row["witness"], "epsilon": eps, "start": kind})
+    landed = parallel.ordered_map(project_point, raw, min_items=2)
+    for label, y in zip(labels, landed, strict=True):
+        label["float64_famdist"] = famdist(np.array(y))
+    refined = parallel.ordered_map(refine, list(zip(landed, anchors, strict=True)), min_items=2)
+    centers = anchors[:: len(EPSILONS) * 2]
+    perturbed = [cloud_starts(center, SEED + row["witness"]) for center, row in zip(centers, rows, strict=True)]
+    cloud_landed = parallel.ordered_map(project_point, [z for group in perturbed for z in group], min_items=2)
+    clouds = [
+        cloud_spectrum(center, cloud_landed[i * CLOUD_SAMPLES : (i + 1) * CLOUD_SAMPLES])
+        for i, center in enumerate(centers)
+    ]
     points = []
     for label, result in zip(labels, refined, strict=True):
         points.append(
@@ -198,12 +213,12 @@ def measure() -> dict[str, Any]:
                 "distance_to_witness": rounded(result["distance_to_witness"]),
                 "refined_below_target": result["log10_ratio"] < TARGET_LOG10,
                 "famdist_kept": result["famdist"] >= 0.5 * label["float64_famdist"],
-                "obstruction_order_floor": math.ceil(TARGET_LOG10 / math.log10(result["famdist"])),
             }
         )
     cloud_rows = []
     for row, values in zip(rows, clouds, strict=True):
-        # Tangent directions keep singular values of order 1; a direction the projection corrects leaves O(eta).
+        # The count is the span of the displacements, an upper bound on the local dimension of the cone at x0:
+        # several lower-dimensional branches through x0 can together span more directions than any one of them.
         rank = int(sum(value > 10 * CLOUD_ETA for value in values))
         cloud_rows.append(
             {
@@ -242,9 +257,9 @@ def main() -> int:
     data = measure()
     if arguments.check is not None:
         retained = json.loads(arguments.check.read_text())
-        for key in ("points", "clouds"):
-            if retained[key] != data[key]:
-                raise SystemExit(f"rank_locus_nullity12_refinement: {key} differ from {arguments.check}")
+        differing = sorted(key for key in retained.keys() | data.keys() if retained.get(key) != data.get(key))
+        if differing:
+            raise SystemExit(f"rank_locus_nullity12_refinement: {differing} differ from {arguments.check}")
     else:
         arguments.out.parent.mkdir(parents=True, exist_ok=True)
         arguments.out.write_text(json.dumps(data, indent=1, sort_keys=True) + "\n")
