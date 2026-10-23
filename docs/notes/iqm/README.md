@@ -187,14 +187,15 @@ Medians of the default calibration sets read at the snapshot:
 
 | QC | T1 | T2 (Ramsey) | T2 echo | PRX RB fidelity | readout fidelity | CZ IRB fidelity | PRX | CZ | measure |
 |---|---|---|---|---|---|---|---|---|---|
-| Emerald | 49 us | 15 us | 38 us | 0.99968 | 0.98845 | 0.99728 | 24 ns | 40 ns | 360 ns |
-| Garnet | 42 us | 9 us | 22 us | 0.99934 | 0.97945 | 0.99425 | 16 ns | 40 ns | 480 ns |
-| Sirius | 26 us | 10 us | 24 us | 0.99902 | 0.98335 | 0.97400 | 40 ns | 104 ns | 400 ns |
+| Emerald | 49 us | 15 us | 39 us | 0.99967 | 0.9879 | 0.99722 | 24 ns | 40 ns | 360 ns |
+| Garnet | 39 us | 9 us | 22 us | 0.99930 | 0.9804 | 0.99407 | 16 ns | 40 ns | 480 ns |
+| Sirius | 28 us | 10 us | 23 us | 0.99880 | 0.9820 | 0.97090 | 40 ns | 104 ns | 400 ns |
 
 - **Emerald**: Crystal 54, chip M216 variant H03 (`M216_F0W102525_H03_F08`),
   station MX07_Aphrodite_CD3. 54 qubits on a square lattice, 90 tunable
   couplers, 8 probe lines, 214 launchers. Drive frequencies 3.802 to
-  4.207 GHz, readout 5.101 to 6.053 GHz; T1 8.6 to 82 us. CZ is calibrated
+  4.207 GHz, readout 5.101 to 6.053 GHz; per-qubit T1 fits span 2.9 us to
+  2.0 ms. CZ is calibrated
   on 85 of the 90 couplings: `slepian_crf` on 83 and `crf_acstarkcrf` on
   QB44-QB50 and QB50-QB51. The DQA override map also names QB49-QB50 and
   QB54-QB50, which no CZ implementation lists as a locus, so the transpiler
@@ -203,13 +204,14 @@ Medians of the default calibration sets read at the snapshot:
   shelves the excited state to level 2 first. Since station control 50.0.0
   it also offers `measure_012` (`constant`), a three-state readout, on QB43
   alone (all 54 qubits of emerald:mock). Weakest operational loci: CZ
-  QB43-QB35 0.950, QB44-QB50 0.966 and QB50-QB51 0.967; readout QB10 0.899
-  and QB6 0.921.
+  QB43-QB35 0.941, QB50-QB51 0.964 and QB16-QB8 0.976; readout QB6 0.925
+  and QB35 0.961.
 - **Garnet**: chip M194 variant P08 (`M194_F0W2114_P08_B15`), "Apollo
   station in XLD10.S1". 20 qubits, 30 couplers, 3 probe lines. Drive 4.488
-  to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 15 to 57 us. CZ
-  `slepian_crf` on all 30 pairs; QB10's four couplings are its weakest
-  (0.988 to 0.990). `measure` also offers `fast_constant`.
+  to 4.770 GHz, readout 5.062 to 6.098 GHz; T1 16 to 67 us. CZ
+  `slepian_crf` on all 30 pairs; QB15's couplings are its weakest, QB19-QB15
+  0.886 and QB14-QB15 0.942, and QB15 also reads out worst (0.893).
+  `measure` also offers `fast_constant`.
 - **Sirius**: star architecture, chip M186 variant ND1
   (`M186_F0W2259_ND1_O12`), station Charon. 16 operational qubits (the
   static architecture names 24, of which 16 carry PRX), all coupled to one
@@ -218,8 +220,8 @@ Medians of the default calibration sets read at the snapshot:
   QB10), and MOVE swaps a qubit's 0-1 occupation with the resonator's, so a
   two-qubit gate between qubits is MOVE, CZ, MOVE. Its quality metrics
   include `move_ncz_move` IRB, `xy_move_cz_move` Clifford RB and a
-  16-qubit GHZ population and coherence bound. CZ to COMPR1 median 0.974,
-  weakest QB11 0.923.
+  16-qubit GHZ population and coherence bound. CZ to COMPR1 median 0.971,
+  weakest QB11 0.943.
 - **AWG channels** that drive and flux the qubits sample at 2 GS/s with an
   8-sample (Emerald, Garnet) or 16-sample (Sirius) instruction granularity,
   so every pulse duration is a multiple of 4 ns or 8 ns; Sirius also lists a
@@ -256,6 +258,19 @@ Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
 2400.00 (Emerald), 1800.00 (Garnet) or 1080.00 (Sirius) credits. The 30.00
 credits of this account buy 40 s on Emerald, 60 s on Garnet or 100 s on
 Sirius, and expire 2026-11-01.
+
+The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
+on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
+sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
+Client-side transpilation does not establish zero server compilation. Circuit batching can amortize
+compilation and rounding, but reset/readout/repetition time, failure exposure and acquisition ordering
+also constrain a useful batch. Request rate-limit units are separate from compute credits.
+
+The live limits are 100 circuits/job, 20000 shots/circuit and 2000000 executions/job for these QPUs.
+Those are structural ceilings rather than an affordable acquisition. The
+[current-balance case](../../design/packed-pauli-response-current-balance.md) reserves six IQM credits
+and compares maximal connected-cell layouts without assuming independent replicas. Slot prices exceed
+the current balance; the token's `job_execution` scope also leaves booking unavailable.
 
 ## Installation
 
@@ -330,14 +345,23 @@ and Codex approves the read tools; `iqm_cancel_job` asks every time.
 `iqm_platform.py check` holds the tool set and annotations. The server
 submits nothing and books no timeslot.
 
+Dictionary GET responses retain `_observation` with the exact request path and subsecond UTC start/end
+times. The interval belongs to that GET, rather than the calibration's creation timestamp or an atomic
+multi-tool snapshot. `iqm_architecture(alias, calibration_set_id=None)` resolves the default identity before
+reading the architecture. Pass the returned `calibration_set_id` to `iqm_metrics` or back to architecture
+to keep related reads on one set; returned identity mismatches raise MCP errors. Default resolution can
+change between separate tool calls, so callers must pass the identity for a coherent comparison.
+The server rebuilds the SDK settings model after import to resolve its lifespan forward reference before
+settings sources inspect it; the strict warning-as-error import regression exercises that path.
+
 | tool | reads |
 |---|---|
 | `iqm_quantum_computers` | every QC: alias, status, health, queue, station control version |
 | `iqm_quantum_computer` | one QC: limits, pricing, description |
 | `iqm_queue_availability` | pay-as-you-go windows |
 | `iqm_timeslots` | timeslots |
-| `iqm_architecture` | dynamic quantum architecture of the default calibration set |
-| `iqm_metrics` | quality metrics, optionally one locus |
+| `iqm_architecture` | dynamic architecture of an explicit or resolved-default calibration identity |
+| `iqm_metrics` | metrics of an explicit or resolved-default identity, optionally one locus |
 | `iqm_artifact` | a configuration artifact |
 | `iqm_credit` | account type, balance, expiry |
 | `iqm_tokens` | token scopes and expiries |

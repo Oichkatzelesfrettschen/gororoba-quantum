@@ -1,7 +1,7 @@
 # What IQM OS 4.7 changed on Emerald, Garnet and Sirius
 
-Emerald's upgrade window closed 2026-10-19T15:00Z and Garnet's and Sirius's
-2026-10-21T16:00Z. The Emerald sections compare the snapshot of
+Emerald's upgrade window closed 2026-10-19T15:00Z, Garnet's 2026-10-21T15:00Z
+and Sirius's 2026-10-21T16:00Z. The Emerald sections compare the snapshot of
 2026-10-19T15:58Z (commit 5ec5e8c) with the pre-upgrade baseline of 06:08Z
 (commit 2009f0f, [hardware-pre-4.7.md](hardware-pre-4.7.md)); the Garnet and
 Sirius section compares the snapshot of 2026-10-22T20:48Z

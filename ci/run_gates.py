@@ -25,13 +25,19 @@ gate, which replays its retained record where the toolchain is absent.
 GOROROBA_QI_REQUIRED=1, so each must take its live path or fail; the
 qi-stack job of .github/workflows/ci.yml runs that selection.
 
-A gate's ``runtime`` names a historical producer environment; its command
-runs under that runtime's interpreter (pins.REPLAY_RUNTIMES). The
-interpreter comes from ``--replay-python PATH``, else REPLAY_PYTHON, and
-must hold every pin of ci/requirements-replay.txt. With neither, the running
-interpreter serves when it holds every pin, as the build host's does, unless
-GOROROBA_PINS_REQUIRED=1, which CI sets. One line before the first gate
-names the choice; an unresolved runtime's gates exit 127 with that reason.
+A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
+chooses: an explicit $PYTHON as named, else the running interpreter when it
+holds every pin of requirements.txt and ci/requirements-ci.txt, else the
+host environment ci/build_host_envs.sh builds. A gate's ``runtime`` names a
+historical producer environment; its command runs under that runtime's
+interpreter (pins.REPLAY_RUNTIMES). The interpreter comes from
+``--replay-python PATH``, else REPLAY_PYTHON, and must hold every pin of
+ci/requirements-replay.txt. With neither, the running interpreter serves
+when it holds every pin, then the runtime's host environment, unless
+GOROROBA_PINS_REQUIRED=1, which CI sets. One line per runtime before the
+first gate names the choice, and a selection with an unresolved runtime
+runs no gate and exits 2 with that reason, since its gates would fail on
+the interpreter rather than on the tree.
 """
 
 from __future__ import annotations
@@ -63,6 +69,11 @@ DEFAULT_SHARD_CPUS = 4
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED"}
+OPENBLAS_CORETYPE = "Haswell"
+# numpy's dispatched loops above x86-64-v3 (AVX-512 on the runners' Intel
+# CPUs) round differently from the AVX2 loops; every runner and build host
+# supports x86-64-v3, so capping dispatch there gives all of them one path.
+NUMPY_DISABLED_FEATURES = "X86_V4 AVX512_ICL AVX512_SPR"
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # Each collector owns exactly one shell tree, so parallel gates cannot mix
 # their RUSAGE_CHILDREN counters. POSIX Python supplies the platform binding.
@@ -248,6 +259,12 @@ def environment_for(device: str | None, requires: str | None = None) -> dict[str
         "QISKIT_NUM_PROCS",
     ):
         environment.setdefault(variable, "1")
+    # OpenBLAS and numpy select kernels by the running CPU, and kernels differ
+    # in rounding; one named x86-64 AVX2 kernel set for each gives every
+    # x86-64-v3 CPU one rounding path. libm and the Python build follow the
+    # host image, so records are written in the runner's (ci/runner_image.sh).
+    environment.setdefault("OPENBLAS_CORETYPE", OPENBLAS_CORETYPE)
+    environment.setdefault("NPY_DISABLE_CPU_FEATURES", NUMPY_DISABLED_FEATURES)
     return environment
 
 
@@ -449,15 +466,28 @@ def main(argv: list[str] | None = None) -> int:
         for gate in selected:
             print(f"{gate['name']}\t{gate['cwd']}\t{gate['cmd']}")
         return 0
+    # _run gives each historical gate its runtime's interpreter as $PYTHON, so the current runtime
+    # resolves only when a selected gate runs under it.
+    primary = sys.executable
+    if any(not gate.get("runtime") for gate in selected):
+        resolved, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
+        print(f"current runtime: {reason}", flush=True)
+        if resolved is None:
+            return 2
+        primary = resolved
     environment = environment_for(arguments.device, arguments.requires)
+    environment["PYTHON"] = primary
+    unresolved = []
     for runtime in sorted({gate["runtime"] for gate in selected if gate.get("runtime")}):
-        interpreter, reason = pins.resolve_replay(runtime, arguments.replay_python, environment, environment["PYTHON"])
+        interpreter, reason = pins.resolve_replay(runtime, arguments.replay_python, environment, primary)
         print(f"historical runtime {runtime}: {reason}", flush=True)
         variable = REPLAY_INTERPRETERS[runtime]
         if interpreter is None:
-            environment.pop(variable, None)
+            unresolved.append(runtime)
         else:
             environment[variable] = interpreter
+    if unresolved:
+        return 2
     failures = []
     skipped = []
     audit_misses = []
