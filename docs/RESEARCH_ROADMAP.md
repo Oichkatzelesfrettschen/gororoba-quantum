@@ -57,8 +57,28 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(115 established, 59 exploratory, 3 open, 10 proposed, 7 superseded, 11 withdrawn) and every executed acquisition. Open and
+by evidence class and every executed acquisition. Open and
 proposed work, in dependency order:
+
+| Evidence class | Status | Claim records |
+| --- | --- | ---: |
+| circuit-conformance check | established | 7 |
+| exact finite certificate | established | 20 |
+| exploratory reanalysis | exploratory | 59 |
+| exploratory reanalysis | superseded | 2 |
+| machine-checked proof | established | 4 |
+| mathematical claim | established | 18 |
+| mathematical claim | open | 3 |
+| numerical or stochastic simulation | established | 8 |
+| preregistered emulator control | established | 10 |
+| preregistered hardware inference | established | 48 |
+| preregistered hardware inference | superseded | 1 |
+| proposed experiment | proposed | 10 |
+| proposed experiment | superseded | 4 |
+| withdrawn claim | withdrawn | 11 |
+
+These metadata counts are not summed into a headline of established scientific results.
+Independent hardware replication requires an adjudicated replication design, not a job count.
 
 - **proposed-tuna17-zero-divisor-matched-response** (proposed, proposed experiment). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
 - **a5-stiefel-universal** (open, mathematical claim). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open. Depends on a5-stiefel-selected-nullity, a5-stiefel-pfaffian-reduction, a5-stiefel-pfaffian-identity-test.

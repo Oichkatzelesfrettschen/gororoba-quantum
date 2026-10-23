@@ -2110,7 +2110,9 @@
     "scripts/rank_locus_nullity12_refinement.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/rank_locus_nullity12_refinement.py"
+   ]
   },
   {
    "distribution": "mthree",
@@ -2601,6 +2603,7 @@
     "scripts/hypercomplex_photonic_cases.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_probe_audit.py",
+    "scripts/iqm_signed_resolve.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/local_optical_operator_replay.py",
@@ -2630,6 +2633,7 @@
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
@@ -2641,6 +2645,7 @@
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
+    "scripts/rank_locus_nullity12_refinement.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -3975,7 +3980,8 @@
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_rotation_composite.py",
-    "scripts/rank_locus_second_order.py"
+    "scripts/rank_locus_second_order.py",
+    "scripts/rank_locus_tangent_linearity.py"
    ]
   },
   {
@@ -4354,6 +4360,7 @@
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_probe_audit.py",
     "scripts/iqm_signed_probe.py",
+    "scripts/iqm_signed_resolve.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
@@ -4366,6 +4373,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_probe.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -8718,6 +8726,16 @@
    "time",
    "typing"
   ],
+  "scripts/acquisition_decisions.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "re",
+   "typing"
+  ],
   "scripts/aer_blocking_probe.py": [
    "__future__",
    "aer_gpu_probe",
@@ -9656,6 +9674,20 @@
    "json",
    "law_encoding",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/evidence_closure.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "re",
+   "subprocess",
    "sys",
    "typing"
   ],
@@ -11002,6 +11034,7 @@
    "pathlib",
    "qi_zero_divisor_cases",
    "qiskit",
+   "statistics",
    "sys",
    "typing"
   ],
