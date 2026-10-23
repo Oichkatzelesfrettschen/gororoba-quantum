@@ -8130,15 +8130,15 @@
     },
     {
       "id": "iqm-garnet-kernel-cancellation",
-      "statement": "On IQM Garnet (calibration set 68b0f1d0, 37 CZ on QB6, QB7, QB11, QB12 and QB17, one active-reset cycle with all-zeros heralding), the kernel cancellation probe read the control's odd part (Z(phi) - Z(-phi))/2 at -0.0695 +- 0.0087 for phi = 0.1 (z -8.0) and -0.178 +- 0.009 for phi = 0.3 (z -20.1), resolving the zero-divisor sign of the certified sedenion kernel (the eigenvalue -1 of L_e1^T L_e10) at both angles, while the bright vector's odd part read -0.016 +- 0.009, within one standard error of its modeled -0.008 (H2 z -0.93). The sine-law contrast odd(0.3) - 2.84 odd(0.1) read +0.020 +- 0.026 (H3 z 0.74), the kernel even part +0.050 against its decomposition +0.046 (H4 z 0.37), and QB11's and QB12's prx trains fit relative over-rotations of +0.15 +- 0.07 % and -0.20 +- 0.06 % (H5 chi-square 5.1 and 1.1). No preregistered hypothesis is falsified. The visibility read 0.36 +- 0.05 against the model's 0.48, and the job charged 1.50 credits.",
+      "statement": "On IQM Garnet (calibration set 68b0f1d0, 37 CZ on QB6, QB7, QB11, QB12 and QB17, one active-reset cycle with all-zeros heralding), the kernel cancellation probe read the control's odd part (Z(phi) - Z(-phi))/2 at -0.0699 +- 0.0087 for phi = 0.1 (z -8.0) and -0.178 +- 0.009 for phi = 0.3 (z -20.1), resolving the zero-divisor sign of the certified sedenion kernel (the eigenvalue -1 of L_e1^T L_e10) at both angles, while the bright vector's odd part read -0.016 +- 0.009, within one standard error of its modeled -0.008 (H2 z -0.92). The sine-law contrast odd(0.3) - 2.84 odd(0.1) read +0.021 +- 0.026 (H3 z 0.78), the kernel even part +0.049 against its decomposition +0.046 (H4 z 0.33), and QB11's and QB12's prx trains fit relative over-rotations of +0.15 +- 0.07 % and -0.20 +- 0.06 % (H5 chi-square 5.1 and 1.1). No preregistered hypothesis is falsified. The visibility read 0.36 +- 0.05 against the model's 0.48, and the job charged 1.50 credits.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One compile, one calibration set and two angles. cd_core already settles the zero-divisor property exactly, so the run demonstrates that Garnet realizes the compiled sign table at first order; the bright control and the sine law bound circuit artifacts, and the even part's agreement with readout plus relaxation leaves no room for the large coherent error the signed probe's offsets once suggested.",
+      "boundary": "One compile, one calibration set and two angles. The prediction schedules idle relaxation ALAP; scheduled ASAP, IQM's pulse-builder default, it would move H4 to about z -2.5 and H2 to z -0.3 with no decision changed (issue #386). cd_core already settles the zero-divisor property exactly, so the run demonstrates that Garnet realizes the compiled sign table at first order; the bright control and the sine law bound circuit artifacts, and the even part's agreement with readout plus relaxation leaves no room for the large coherent error the signed probe's offsets once suggested.",
       "evidence": [
         {
           "path": "results/iqm/kernel_cancellation_probe_analysis.json",
-          "sha256": "fe7f98359ce6972469502049ab8c236f8ed823905b2fc797bfc52bdec3212298"
+          "sha256": "945eda504ac3df592c37aeb8e5aa58da0f587efa511789de4a5f2f4c69527517"
         },
         {
           "path": "results/iqm/cases/kernel-cancellation-probe/prediction.json",

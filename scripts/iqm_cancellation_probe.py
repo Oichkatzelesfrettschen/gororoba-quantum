@@ -411,14 +411,29 @@ def tally(names: list[str], measured: list[dict[str, Any]]) -> dict[str, tuple[i
     return out
 
 
-def z_of(counts: dict[str, tuple[int, int]], *names: str) -> tuple[float, float, int]:
-    """<Z>, its standard error and the kept shots; circuits whose shots heralding removed carry no weight."""
-    ones = sum(counts[n][0] for n in names)
-    n = sum(counts[n][1] for n in names)
+def z_one(counts: dict[str, tuple[int, int]], name: str) -> tuple[float, float, int]:
+    """<Z> of one circuit, its standard error and its kept shots."""
+    ones, n = counts[name]
     if n == 0:
         return 0.0, math.inf, 0
     z = 1 - 2 * ones / n
     return z, math.sqrt(max(1 - z * z, 1.0 / n) / n), n
+
+
+def z_of(counts: dict[str, tuple[int, int]], *names: str) -> tuple[float, float, int]:
+    """Equal-weight mean <Z> of the named circuits, its standard error and their kept shots.
+
+    The copies of an arm sit at time-symmetric positions (+, -, -, +), and a linear drift cancels only if
+    each copy carries the same weight; heralding keeps different shot counts per circuit, so a pooled count
+    would weight them unequally. A circuit whose shots heralding removed contributes nothing.
+    """
+    rows = [z_one(counts, name) for name in names]
+    kept = [row for row in rows if row[2] > 0]
+    if not kept:
+        return 0.0, math.inf, 0
+    z = sum(row[0] for row in kept) / len(kept)
+    se = math.sqrt(sum(row[1] ** 2 for row in kept)) / len(kept)
+    return z, se, sum(row[2] for row in kept)
 
 
 def decide(value: float, se: float) -> str:
@@ -430,11 +445,12 @@ def fit_train(
     rows: list[tuple[float, float, int]],
     ro0: tuple[float, float, int],
     ro1: tuple[float, float, int],
-) -> tuple[float, float, float]:
-    """Joint fit of a qubit's trains and its two readout-calibration circuits: (eps, se, chi2).
+) -> tuple[float, float, float, float, float]:
+    """Joint fit of a qubit's trains and its two readout-calibration circuits: (eps, se, chi2, e01, e10).
 
     A train of N pulses reads (1 - e01 - e10)(-sin(N pi/2 eps)) + (e10 - e01); the bare measure reads
-    1 - 2 e01 and the pi pulse -1 + 2 e10. For each eps the readout errors enter linearly, so a weighted
+    1 - 2 e01, and the calibration pi pulse, which carries the same over-rotation, reads
+    (1 - e01 - e10)(-cos(pi eps)) + (e10 - e01). For each eps the readout errors enter linearly, so a weighted
     least squares profiles them out and the readout calibration's finite shots reach eps and chi2. Six
     readings and three parameters leave three degrees of freedom. A grid over |eps| <= EPS_RANGE brackets
     the minimum of the profiled chi-square, a golden-section search refines it, and se = sqrt(2 / chi2'').
@@ -442,26 +458,31 @@ def fit_train(
     fit then returns an infinite chi-square, which H5 rejects.
     """
 
-    def chi2(eps: float) -> float:
+    def solve(eps: float) -> tuple[float, Any]:
         design, target, weight = [], [], []
         for n, (z, se, _) in zip(lengths, rows, strict=True):
             s = math.sin(n * math.pi / 2 * eps)
             design.append((s - 1, s + 1))
             target.append(z + s)
             weight.append(1 / se**2)
-        design += [(-2.0, 0.0), (0.0, 2.0)]
-        target += [ro0[0] - 1, ro1[0] + 1]
+        c = math.cos(math.pi * eps)
+        design += [(-2.0, 0.0), (c - 1, c + 1)]
+        target += [ro0[0] - 1, ro1[0] + c]
         weight += [1 / ro0[1] ** 2, 1 / ro1[1] ** 2]
         a = np.array(design)
         y = np.array(target)
         w = np.array(weight)
         errors = np.linalg.solve(a.T @ (w[:, None] * a), a.T @ (w * y))
-        return float(np.sum(w * (y - a @ errors) ** 2))
+        return float(np.sum(w * (y - a @ errors) ** 2)), errors
+
+    def chi2(eps: float) -> float:
+        return solve(eps)[0]
 
     grid = [EPS_RANGE * (i / 1500 - 1) for i in range(3001)]
     best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
     if best in (0, len(grid) - 1):
-        return grid[best], math.inf, math.inf
+        errors = solve(grid[best])[1]
+        return grid[best], math.inf, math.inf, float(errors[0]), float(errors[1])
     low, high = grid[max(best - 1, 0)], grid[min(best + 1, len(grid) - 1)]
     ratio = (math.sqrt(5) - 1) / 2
     for _ in range(100):
@@ -470,9 +491,10 @@ def fit_train(
     eps = (low + high) / 2
     step = 1e-4
     curvature = (chi2(eps + step) - 2 * chi2(eps) + chi2(eps - step)) / step**2
+    errors = solve(eps)[1]
     if not curvature > 0:
-        return eps, math.inf, math.inf
-    return eps, math.sqrt(2 / curvature), chi2(eps)
+        return eps, math.inf, math.inf, float(errors[0]), float(errors[1])
+    return eps, math.sqrt(2 / curvature), chi2(eps), float(errors[0]), float(errors[1])
 
 
 def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> dict[str, Any]:
@@ -497,10 +519,32 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
     control = prediction["control"]
     model_offset = (model[f"ro0-{control}"] + model[f"ro1-{control}"]) / 2
     model_scale = (model[f"ro0-{control}"] - model[f"ro1-{control}"]) / 2
+    amplify: dict[str, Any] = {}
+    for qubit in [*prediction["theta_qubits"], control]:
+        rows = [z_of(counts, f"amp-{qubit}-{k}") for k in AMPLIFY_K]
+        eps, eps_se, residual, fit_e01, fit_e10 = fit_train(
+            [4 * k + 1 for k in AMPLIFY_K], rows, z_of(counts, f"ro0-{qubit}"), z_of(counts, f"ro1-{qubit}")
+        )
+        amplify[qubit] = {
+            "z": [z for z, _, _ in rows],
+            "eps": eps,
+            "eps_se": eps_se,
+            "chi2": residual,
+            "dof": len(AMPLIFY_K) - 1,
+            "linear": residual <= H5_CHI2_CUTOFF,
+            "e01": fit_e01,
+            "e10": fit_e10,
+        }
+    # Each qubit's readout errors come from its joint fit, which models the calibration pi pulse's own
+    # over-rotation; the offset error is that of the two calibration circuits.
     readout = {}
     for qubit in [control, *prediction["theta_qubits"]]:
         ro0, ro1 = z_of(counts, f"ro0-{qubit}"), z_of(counts, f"ro1-{qubit}")
-        readout[qubit] = {"e01": (1 - ro0[0]) / 2, "e10": (1 + ro1[0]) / 2, "offset_se": math.hypot(ro0[1], ro1[1]) / 2}
+        readout[qubit] = {
+            "e01": amplify[qubit]["e01"],
+            "e10": amplify[qubit]["e10"],
+            "offset_se": math.hypot(ro0[1], ro1[1]) / 2,
+        }
     e01, e10 = readout[control]["e01"], readout[control]["e10"]
     r = 1 - e01 - e10
     offset_se = readout[control]["offset_se"]
@@ -525,20 +569,6 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
         "z": (k3["odd"] - sine * k1["odd"]) / h3_se,
         "falsified": abs(k3["odd"] - sine * k1["odd"]) / h3_se >= Z_RESOLVE,
     }
-    amplify: dict[str, Any] = {}
-    for qubit in [*prediction["theta_qubits"], control]:
-        rows = [z_of(counts, f"amp-{qubit}-{k}") for k in AMPLIFY_K]
-        eps, eps_se, residual = fit_train(
-            [4 * k + 1 for k in AMPLIFY_K], rows, z_of(counts, f"ro0-{qubit}"), z_of(counts, f"ro1-{qubit}")
-        )
-        amplify[qubit] = {
-            "z": [z for z, _, _ in rows],
-            "eps": eps,
-            "eps_se": eps_se,
-            "chi2": residual,
-            "dof": len(AMPLIFY_K) - 1,
-            "linear": residual <= H5_CHI2_CUTOFF,
-        }
     visibility = k1["odd"] / (-math.sin(0.2) * r)
     visibility_se = k1["se"] / (math.sin(0.2) * r)
     # A failed train, the control's included, marks a run whose pulse execution or stationarity H4 rests on.
