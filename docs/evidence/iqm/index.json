@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-19T15:58:36Z",
+  "captured_at": "2026-10-22T20:48:34Z",
   "files": {
     "account/credit.json": {
       "bytes": 128,
@@ -26,7 +26,7 @@
       "bytes": 73123,
       "path": "api/v1/quantum-computers/emerald/artifacts/channel-properties",
       "required": true,
-      "sha256": "af98c011204c7c9f8ee56a889376a6f3c7eaa8bbce8efffe0362ab04a7b8b4c1",
+      "sha256": "bc697472c138e8a59267a31a34505e4ae1f8faebee639b6c67e9c143bfaee086",
       "status": 200
     },
     "qc/emerald/artifacts/chip-design-records.json": {
@@ -40,7 +40,7 @@
       "bytes": 38781,
       "path": "api/v1/quantum-computers/emerald/artifacts/configuration",
       "required": true,
-      "sha256": "c9d76a01b3bb73a3438edc6a9d955e71ca45609162ca43d374b69f15a17dc8cf",
+      "sha256": "f047021040e219010a2a5fde57d7c79838b53e80b953b59e389f130e0987b173",
       "status": 200
     },
     "qc/emerald/artifacts/duts.json": {
@@ -73,37 +73,37 @@
     },
     "qc/emerald/calibration/dynamic-quantum-architecture.json": {
       "bytes": 7631,
-      "path": "api/v1/calibration-sets/emerald/51194779-d109-4536-ba98-b9346dac2b35/dynamic-quantum-architecture",
+      "path": "api/v1/calibration-sets/emerald/3a1a9ad0-0c98-49db-8cf5-7623d13729f4/dynamic-quantum-architecture",
       "required": true,
-      "sha256": "caa75ceda0ff72959b56699242175a62cdbad7196ad832bb5c609cbf03482e4d",
+      "sha256": "75d238546e7b0bb031cdc91cd55ddade28587f019d8d06c08832d57e3d76ddc3",
       "status": 200
     },
     "qc/emerald/calibration/metrics.json": {
-      "bytes": 527923,
-      "path": "api/v1/calibration-sets/emerald/51194779-d109-4536-ba98-b9346dac2b35/metrics",
+      "bytes": 528540,
+      "path": "api/v1/calibration-sets/emerald/3a1a9ad0-0c98-49db-8cf5-7623d13729f4/metrics",
       "required": true,
-      "sha256": "b75df80b847406e29d2df1a4045aa71c3ab3a3794940812cb899209b746bfb93",
+      "sha256": "3853c6bdd060d5e3cdabc895244d17ff19d2a6f6009210a5875226411ac74c5d",
       "status": 200
     },
     "qc/emerald/calibration/set.json": {
-      "bytes": 4261358,
+      "bytes": 4261412,
       "path": "api/v1/calibration-sets/emerald/default",
       "required": true,
-      "sha256": "d3a866dd813c8d70756496835a3a31428a23f52a8e124ab72305f8d02384b992",
+      "sha256": "78f42aa39533335086e230a23a5cc532cece0241b09afadea29c454d54d19271",
       "status": 200
     },
     "qc/emerald/details.json": {
       "bytes": 1104,
       "path": "api/v1/quantum-computers/emerald",
       "required": true,
-      "sha256": "76c8a4ce97d42a972fe0f271048b1dff059f2922643b291e24907dea6452e42f",
+      "sha256": "ebb01f214b59ec784aa6a270a2f031c6d3f59c10c03917b6c75d55d609792679",
       "status": 200
     },
     "qc/emerald/health.json": {
       "bytes": 100,
       "path": "api/v1/quantum-computers/emerald/health",
       "required": true,
-      "sha256": "0f0cdbc8ea0b93cca9463f3c266620259ca5ab83f03298f16c3fdb1be77bf530",
+      "sha256": "ad448109d491471bdefd7e1474306c59a77fdaab6627be968acd2fa8e23d70b9",
       "status": 200
     },
     "qc/emerald/limits.json": {
@@ -117,21 +117,21 @@
       "bytes": 264875,
       "path": "api/v1/openapi.json?qc=emerald",
       "required": true,
-      "sha256": "86f8f05d3fcf18871773f71cf68354c09532cbe910f2e038b0751b7fee5e7fba",
+      "sha256": "b7d60669700db73c0a68f088fce39f384682295efb093c9a4d2b7434517e33fe",
       "status": 200
     },
     "qc/emerald/queue-availability.json": {
       "bytes": 2030,
       "path": "api/v1/quantum-computers/emerald/queue-availability",
       "required": true,
-      "sha256": "d8b246fa5bb1eef7d7c87cd947cd9639f04a6ab42b449b51ea46836ca1e2eabd",
+      "sha256": "f6d14dff1d70865909a2387c3d1f7fcec3425266d8de391f38619ddcbbb96833",
       "status": 200
     },
     "qc/emerald/timeslots.json": {
       "bytes": 55000,
       "path": "api/v1/quantum-computers/emerald/timeslots",
       "required": true,
-      "sha256": "3128dac40827f3bea7b0d2bcb14fa853e69dedbe51d889b2a5e09cc01ff0222e",
+      "sha256": "e2c55328dfac67182a5fd8b12578ed3f4eab4b8ef6a59ab09872ca86d565ff4f",
       "status": 200
     },
     "qc/emerald_mock/artifacts/about.json": {
@@ -215,14 +215,14 @@
       "bytes": 614,
       "path": "api/v1/quantum-computers/emerald:mock",
       "required": true,
-      "sha256": "f2d5c991ebd9fe539bc24a014f9eb107a9c8b51ec44a3f5231e95dbd755f49cc",
+      "sha256": "eb1c54bf90b28fdf7c9ad52707c86775583b162e286ba09030ce29e69ef657b3",
       "status": 200
     },
     "qc/emerald_mock/health.json": {
       "bytes": 100,
       "path": "api/v1/quantum-computers/emerald:mock/health",
       "required": true,
-      "sha256": "a41fb3c91e015daee8f14ba1a8b248bb6ea0bb1332a20efc4a551c110e298986",
+      "sha256": "1a4a3eccdab0217d960e6ce35724aaee1319f7380221292d48653a0de21e8f37",
       "status": 200
     },
     "qc/emerald_mock/limits.json": {
@@ -236,7 +236,7 @@
       "bytes": 264977,
       "path": "api/v1/openapi.json?qc=emerald%3Amock",
       "required": true,
-      "sha256": "1d7479e7ccf8ca12c0fde666d0427c3ba5f60da00969cce5f60b32f51468b678",
+      "sha256": "7186c1d2482703b2dc1aff513e39289c7404838de4767b7dfada424fee72f6c6",
       "status": 200
     },
     "qc/emerald_mock/queue-availability.json": {
@@ -257,14 +257,14 @@
       "bytes": 73,
       "path": "api/v1/quantum-computers/garnet/artifacts/about",
       "required": true,
-      "sha256": "b9d84c3c33f5298e96066e8b79ecd3a7c514e9ca611ff18eb83e90ca392da65d",
+      "sha256": "1ff99b50b5f4ed3fa20dfa9ca6d5ca2eb57a37956585c3f4140b3be18351ed0c",
       "status": 200
     },
     "qc/garnet/artifacts/channel-properties.json": {
       "bytes": 25931,
       "path": "api/v1/quantum-computers/garnet/artifacts/channel-properties",
       "required": true,
-      "sha256": "7527c503a3e14ebd85032feddb907414437952f2ab5af3709c82b216b89dce5f",
+      "sha256": "08126f216932be46b43b12c3d711e18319df22845419080d2d0cd75c8c72e553",
       "status": 200
     },
     "qc/garnet/artifacts/chip-design-records.json": {
@@ -275,10 +275,10 @@
       "status": 200
     },
     "qc/garnet/artifacts/configuration.json": {
-      "bytes": 14413,
+      "bytes": 14410,
       "path": "api/v1/quantum-computers/garnet/artifacts/configuration",
       "required": true,
-      "sha256": "899381a55d65c951fef2534edf50b747f1295b18a2b7f98e91cc6e95e0ef8402",
+      "sha256": "d5723ccf70a4e16321a08c5f512cbd06535908ded848eb805ef9c5bbe9eb4d98",
       "status": 200
     },
     "qc/garnet/artifacts/duts.json": {
@@ -289,10 +289,10 @@
       "status": 200
     },
     "qc/garnet/artifacts/settings.json": {
-      "bytes": 309903,
+      "bytes": 346355,
       "path": "api/v1/quantum-computers/garnet/artifacts/settings",
       "required": true,
-      "sha256": "487e77149d42625f72f07901ff1aec2023f36222b53faf75d830e7911a6851b5",
+      "sha256": "716798191e008b8bc7f07aea8183f0aa1b0d29618a2ac05eae5148d9fc893b3d",
       "status": 200
     },
     "qc/garnet/artifacts/static-architecture.json": {
@@ -310,38 +310,38 @@
       "status": 200
     },
     "qc/garnet/calibration/dynamic-quantum-architecture.json": {
-      "bytes": 3248,
-      "path": "api/v1/calibration-sets/garnet/04b7af66-cc83-4e7d-bfaa-28236f5ef1b4/dynamic-quantum-architecture",
+      "bytes": 3420,
+      "path": "api/v1/calibration-sets/garnet/9069c4ef-7ab6-4e50-be4f-c91d71c3a06d/dynamic-quantum-architecture",
       "required": true,
-      "sha256": "18de71f45e5055c6a1d6c2aca331156cf6e9dcd13c523bac3829f3855bc7193b",
+      "sha256": "2aa7a958bfb7aad196f4509d303f17ec0e94a347078c86d28c2c13fc2f942513",
       "status": 200
     },
     "qc/garnet/calibration/metrics.json": {
-      "bytes": 98410,
-      "path": "api/v1/calibration-sets/garnet/04b7af66-cc83-4e7d-bfaa-28236f5ef1b4/metrics",
+      "bytes": 194959,
+      "path": "api/v1/calibration-sets/garnet/9069c4ef-7ab6-4e50-be4f-c91d71c3a06d/metrics",
       "required": true,
-      "sha256": "65a44a93d540b05b36a62ce049781d23afa6bdb619a60569c17e63b5f4e94536",
+      "sha256": "8bbb0a5c5b1b143be6a500fe3b3755847129a323a390039fbe83828b92dee236",
       "status": 200
     },
     "qc/garnet/calibration/set.json": {
-      "bytes": 1284971,
+      "bytes": 1425261,
       "path": "api/v1/calibration-sets/garnet/default",
       "required": true,
-      "sha256": "80f0aeb54fd982392706741c162ae52be3d81cb8e54d7264f2d63a747bb26b45",
+      "sha256": "cd43d39bb09227fa0eee43824cccbce664c5305c3d8c50a1e729e2806574fa55",
       "status": 200
     },
     "qc/garnet/details.json": {
       "bytes": 1137,
       "path": "api/v1/quantum-computers/garnet",
       "required": true,
-      "sha256": "a031de99968e2954d1e3334b470557da838ecde3f0281b094b4cf31422e8c04f",
+      "sha256": "093196c27a30fc4f9178ca78da54e06cb8539b62f943c43fba21772df385309a",
       "status": 200
     },
     "qc/garnet/health.json": {
       "bytes": 100,
       "path": "api/v1/quantum-computers/garnet/health",
       "required": true,
-      "sha256": "94a4fd6e1483e1ca89bf9b20d3069e3096b2342aaa2a543d63fec7dde6f7108f",
+      "sha256": "9200bc320d9dd624966898ad16f3f755e807b4bb4d27b92f5bde035df48e6ec8",
       "status": 200
     },
     "qc/garnet/limits.json": {
@@ -352,38 +352,38 @@
       "status": 200
     },
     "qc/garnet/openapi.json": {
-      "bytes": 259476,
+      "bytes": 264855,
       "path": "api/v1/openapi.json?qc=garnet",
       "required": true,
-      "sha256": "0a8ee42965fad9e0d3fabb7dd0aab8e7c741dec9da6d589c91b91603f740101a",
+      "sha256": "6e49898e087e26d462b78575907ef3e6374c72e466f95a5d3511185fc93cf36b",
       "status": 200
     },
     "qc/garnet/queue-availability.json": {
-      "bytes": 3690,
+      "bytes": 3890,
       "path": "api/v1/quantum-computers/garnet/queue-availability",
       "required": true,
-      "sha256": "daee431e137227630545065f662f6b9247901a8ba8ff1bb00d431a66fa7f239a",
+      "sha256": "98b28094e827c74c1d7c1691febfc1b87d286444e473f9655750e101b49b74fe",
       "status": 200
     },
     "qc/garnet/timeslots.json": {
-      "bytes": 50758,
+      "bytes": 52374,
       "path": "api/v1/quantum-computers/garnet/timeslots",
       "required": true,
-      "sha256": "1dc68ba29ff73debe5b5c3b95023dd0149b10d5cfec150a6c46bdc5b4de7d74d",
+      "sha256": "a68dc8d08bb162ea7f0aae2a81410e23abe7b39c487896f514ac8394e6ac17ad",
       "status": 200
     },
     "qc/garnet_mock/artifacts/about.json": {
       "bytes": 73,
       "path": "api/v1/quantum-computers/garnet:mock/artifacts/about",
       "required": true,
-      "sha256": "b9d84c3c33f5298e96066e8b79ecd3a7c514e9ca611ff18eb83e90ca392da65d",
+      "sha256": "1ff99b50b5f4ed3fa20dfa9ca6d5ca2eb57a37956585c3f4140b3be18351ed0c",
       "status": 200
     },
     "qc/garnet_mock/artifacts/channel-properties.json": {
       "bytes": 25931,
       "path": "api/v1/quantum-computers/garnet:mock/artifacts/channel-properties",
       "required": true,
-      "sha256": "66de40bd5a754333c50d3dc1c1e263af1f1f4ab39dc5552dd9332fbf408713b8",
+      "sha256": "0f873f56ec77cf2888fde9ff0b11a33eaaf7874c74989383a41dc4bf5a969ace",
       "status": 200
     },
     "qc/garnet_mock/artifacts/chip-design-records.json": {
@@ -397,7 +397,7 @@
       "bytes": 11478,
       "path": "api/v1/quantum-computers/garnet:mock/artifacts/configuration",
       "required": true,
-      "sha256": "f5ab4ffee914496a9e5e51559627235a044bdddb1763b5a79a2650c91671f940",
+      "sha256": "8b037a36b888308f9d43ca36d553a656769998d6388436356cb573cd12682b38",
       "status": 200
     },
     "qc/garnet_mock/artifacts/duts.json": {
@@ -408,10 +408,10 @@
       "status": 200
     },
     "qc/garnet_mock/artifacts/settings.json": {
-      "bytes": 309385,
+      "bytes": 345814,
       "path": "api/v1/quantum-computers/garnet:mock/artifacts/settings",
       "required": true,
-      "sha256": "f504f6a81470c8ac8b2a2dd416d1191ee53083fe8454a088faf44d619bba9ef4",
+      "sha256": "feee82007b3665f8a009d0019cef689308fff194b355fa4e56204dd6be6f0a2e",
       "status": 200
     },
     "qc/garnet_mock/artifacts/static-architecture.json": {
@@ -429,38 +429,38 @@
       "status": 200
     },
     "qc/garnet_mock/calibration/dynamic-quantum-architecture.json": {
-      "bytes": 2775,
-      "path": "api/v1/calibration-sets/garnet:mock/59916545-8c4e-482b-8852-e67fbf917647/dynamic-quantum-architecture",
+      "bytes": 3077,
+      "path": "api/v1/calibration-sets/garnet:mock/f04fe114-002f-46bd-8fa4-2a577ff56501/dynamic-quantum-architecture",
       "required": true,
-      "sha256": "a9bfdb37f7241e1a36bc96452339ea2f28e32806679607cf1b718f1966bdec1e",
+      "sha256": "8114020f93035eb709c6870c341c1957b95aa6f8585cc13400a2d266466b7958",
       "status": 200
     },
     "qc/garnet_mock/calibration/metrics.json": {
       "bytes": 64292,
-      "path": "api/v1/calibration-sets/garnet:mock/59916545-8c4e-482b-8852-e67fbf917647/metrics",
+      "path": "api/v1/calibration-sets/garnet:mock/f04fe114-002f-46bd-8fa4-2a577ff56501/metrics",
       "required": true,
-      "sha256": "de2b4ecd6c36a5b08f5716a9d3de81aabb3f9414fd4f865c6bed6031b9be8691",
+      "sha256": "64a362fd3ec9cf74728c12962bce18a4a742c424d07ea0a188fd79a506b99735",
       "status": 200
     },
     "qc/garnet_mock/calibration/set.json": {
-      "bytes": 397245,
+      "bytes": 470977,
       "path": "api/v1/calibration-sets/garnet:mock/default",
       "required": true,
-      "sha256": "d90c7e05804ac34452819733690124aa6ef9ea0e8cceee7f1164f3d4f6cfbbf7",
+      "sha256": "7dc6a84dcb53a3c4022e93acd390034d115ac037bbb4b9cbef468cdc0fee9af0",
       "status": 200
     },
     "qc/garnet_mock/details.json": {
       "bytes": 708,
       "path": "api/v1/quantum-computers/garnet:mock",
       "required": true,
-      "sha256": "464cb147b30f3ef4a0b51a5ba47987f9173292ecffd4e7363a398a2b143dda4a",
+      "sha256": "36aad4e3d32e2f32ce9d92bf28f560357276b114fd507659240bcb04c1d8f2a1",
       "status": 200
     },
     "qc/garnet_mock/health.json": {
       "bytes": 100,
       "path": "api/v1/quantum-computers/garnet:mock/health",
       "required": true,
-      "sha256": "69124d7a641229e604e2dce6bd5d16e23f67fa6329ed4bea145026d08e8e7728",
+      "sha256": "143e927c74fcae9c72033ef16da91d81e2fd49ab7e2d658fdc868d8c809728da",
       "status": 200
     },
     "qc/garnet_mock/limits.json": {
@@ -471,10 +471,10 @@
       "status": 200
     },
     "qc/garnet_mock/openapi.json": {
-      "bytes": 259578,
+      "bytes": 264957,
       "path": "api/v1/openapi.json?qc=garnet%3Amock",
       "required": true,
-      "sha256": "459d172d4cc78062850e892846f35c49a89f5e89160fcc1b25d2d5144cf81050",
+      "sha256": "d63760c4a6cf80af22b26144163145ba214929a66708cfb599f3cb9b498b0b7f",
       "status": 200
     },
     "qc/garnet_mock/queue-availability.json": {
@@ -495,14 +495,14 @@
       "bytes": 73,
       "path": "api/v1/quantum-computers/sirius/artifacts/about",
       "required": true,
-      "sha256": "b9d84c3c33f5298e96066e8b79ecd3a7c514e9ca611ff18eb83e90ca392da65d",
+      "sha256": "1ff99b50b5f4ed3fa20dfa9ca6d5ca2eb57a37956585c3f4140b3be18351ed0c",
       "status": 200
     },
     "qc/sirius/artifacts/channel-properties.json": {
       "bytes": 24603,
       "path": "api/v1/quantum-computers/sirius/artifacts/channel-properties",
       "required": true,
-      "sha256": "d8d1102d42a4eaf39586f2a6e5f598511af932edbf04951b04e3fdba1ac92fc2",
+      "sha256": "473993d69afe62a484f7e9b835f48729dd19a77a2eecd8e3c2ef79af96bb4773",
       "status": 200
     },
     "qc/sirius/artifacts/chip-design-records.json": {
@@ -516,7 +516,7 @@
       "bytes": 18602,
       "path": "api/v1/quantum-computers/sirius/artifacts/configuration",
       "required": true,
-      "sha256": "399e2986d77e4b29bd6a99cac583956010239a64140323cd19f08b936805769e",
+      "sha256": "9825d9b77ddbaa73320774fb1604650c105d37e5ffcdc05d962dc2c558ca20e8",
       "status": 200
     },
     "qc/sirius/artifacts/duts.json": {
@@ -527,10 +527,10 @@
       "status": 200
     },
     "qc/sirius/artifacts/settings.json": {
-      "bytes": 296048,
+      "bytes": 334052,
       "path": "api/v1/quantum-computers/sirius/artifacts/settings",
       "required": true,
-      "sha256": "8edc394c50e14e170ebcd773b6174671a4e402d5bbc8a59cb57629e2eb3aa874",
+      "sha256": "15d8f4cf26615978a8c88e3113484ae326934d980b0b864d66d0ed64c6a85829",
       "status": 200
     },
     "qc/sirius/artifacts/static-architecture.json": {
@@ -548,38 +548,38 @@
       "status": 200
     },
     "qc/sirius/calibration/dynamic-quantum-architecture.json": {
-      "bytes": 3080,
-      "path": "api/v1/calibration-sets/sirius/53d7843b-5634-4091-b27c-09c2b3acf9e4/dynamic-quantum-architecture",
+      "bytes": 3271,
+      "path": "api/v1/calibration-sets/sirius/10fb5570-79c7-4eaa-b092-1ad089af0328/dynamic-quantum-architecture",
       "required": true,
-      "sha256": "177e4b86bdb12d49cb3333172106ec860a009fbeebe8205d2ef25ab1ec7006b0",
+      "sha256": "06b0ab77cf10141b1c1bf01b1d97c47c3d5267f145aeff4b44381d0e64613972",
       "status": 200
     },
     "qc/sirius/calibration/metrics.json": {
-      "bytes": 94094,
-      "path": "api/v1/calibration-sets/sirius/53d7843b-5634-4091-b27c-09c2b3acf9e4/metrics",
+      "bytes": 171326,
+      "path": "api/v1/calibration-sets/sirius/10fb5570-79c7-4eaa-b092-1ad089af0328/metrics",
       "required": true,
-      "sha256": "7be54d700ff11cf681a0e8bdac8efa23026fa82d4a29caf13e1b4e51bead9916",
+      "sha256": "285cf92fe7c85c20b3c9f14eff9565fae964f82a5be9c3ab6b7c0bb97636e5fb",
       "status": 200
     },
     "qc/sirius/calibration/set.json": {
-      "bytes": 1068272,
+      "bytes": 1101294,
       "path": "api/v1/calibration-sets/sirius/default",
       "required": true,
-      "sha256": "24ee594ca3597577e0245e4ddddc097cfbb7ccfbcd007bf71752571bad7fbcc2",
+      "sha256": "7e60df12a53bfec146853dad940a5a62ec6515aceb0cd80deef0bee97b0ab978",
       "status": 200
     },
     "qc/sirius/details.json": {
       "bytes": 1361,
       "path": "api/v1/quantum-computers/sirius",
       "required": true,
-      "sha256": "a502aa080f8c829558f04873aa91c4bd8f522b817b92ac2771301d1a95382623",
+      "sha256": "dcb2e13ade7a22d315e214ef26aa08358f26c3a7caec84c8ae8c58e2650fc6a7",
       "status": 200
     },
     "qc/sirius/health.json": {
       "bytes": 100,
       "path": "api/v1/quantum-computers/sirius/health",
       "required": true,
-      "sha256": "c7af4e7652e9209ee9bda45fde7b28d3c818633af5bd4cbace1451f37323c19b",
+      "sha256": "d80048cc31e41e63f8e12cd9b7e3db0e4e0751e2c2db3aa980210c382d9447ee",
       "status": 200
     },
     "qc/sirius/limits.json": {
@@ -590,38 +590,38 @@
       "status": 200
     },
     "qc/sirius/openapi.json": {
-      "bytes": 259476,
+      "bytes": 264855,
       "path": "api/v1/openapi.json?qc=sirius",
       "required": true,
-      "sha256": "f42c77aef9f41e4a6e15c194d6f672be88393bb8b0edfa3367c0d0e71d149c48",
+      "sha256": "0bdc71555cad8b01c8bd3d035e8cd52135b170c0a5f6d88b02b71b9bc766d585",
       "status": 200
     },
     "qc/sirius/queue-availability.json": {
       "bytes": 1968,
       "path": "api/v1/quantum-computers/sirius/queue-availability",
       "required": true,
-      "sha256": "f6c992d88c0c546bc4a30bb98101c34041be763e53d9a1be2bd1ff3144427b80",
+      "sha256": "7d259318be5b5c3636a44135e1357973709c3477578fd0b2adfd4f892f05bff6",
       "status": 200
     },
     "qc/sirius/timeslots.json": {
-      "bytes": 50556,
+      "bytes": 52374,
       "path": "api/v1/quantum-computers/sirius/timeslots",
       "required": true,
-      "sha256": "c251cccdac9627150a2136664b19789408b9b8ad9e2c157c82f83b89f7a19efb",
+      "sha256": "ad87519fb6f8a9e774fe6aead0bbd9b015df3adf22b70562a9452462483a9587",
       "status": 200
     },
     "qc/sirius_mock/artifacts/about.json": {
       "bytes": 73,
       "path": "api/v1/quantum-computers/sirius:mock/artifacts/about",
       "required": true,
-      "sha256": "b9d84c3c33f5298e96066e8b79ecd3a7c514e9ca611ff18eb83e90ca392da65d",
+      "sha256": "1ff99b50b5f4ed3fa20dfa9ca6d5ca2eb57a37956585c3f4140b3be18351ed0c",
       "status": 200
     },
     "qc/sirius_mock/artifacts/channel-properties.json": {
       "bytes": 22945,
       "path": "api/v1/quantum-computers/sirius:mock/artifacts/channel-properties",
       "required": true,
-      "sha256": "8797dd8d7d3c8ea599ce91ebf8befb540d51035616b0bd501ee0688592b070cd",
+      "sha256": "145dacf10fae0fd6c535e7db50a47ea881ae17684a9162bf0c0a16091a0a0c82",
       "status": 200
     },
     "qc/sirius_mock/artifacts/chip-design-records.json": {
@@ -635,7 +635,7 @@
       "bytes": 15574,
       "path": "api/v1/quantum-computers/sirius:mock/artifacts/configuration",
       "required": true,
-      "sha256": "52e61d7792ad593294cb01caa815180e8859024ce683e4e92e1449925cd5d7a5",
+      "sha256": "55e40e829d445dc766e570edc6b0ca70f7aef7147db202a157cc84896224a2cc",
       "status": 200
     },
     "qc/sirius_mock/artifacts/duts.json": {
@@ -646,10 +646,10 @@
       "status": 200
     },
     "qc/sirius_mock/artifacts/settings.json": {
-      "bytes": 294401,
+      "bytes": 332405,
       "path": "api/v1/quantum-computers/sirius:mock/artifacts/settings",
       "required": true,
-      "sha256": "d0103b92a290d882b76a798db89879ba53bd05af5c9fe32da863e1bfa9fcc2c4",
+      "sha256": "2cbc18bd5e5dbe1604d4ad3c9129bbecf41b009d40b776fa026ab815c0060089",
       "status": 200
     },
     "qc/sirius_mock/artifacts/static-architecture.json": {
@@ -667,38 +667,38 @@
       "status": 200
     },
     "qc/sirius_mock/calibration/dynamic-quantum-architecture.json": {
-      "bytes": 2960,
-      "path": "api/v1/calibration-sets/sirius:mock/bd66eda7-69c0-4559-bed2-012f6d4d6405/dynamic-quantum-architecture",
+      "bytes": 3298,
+      "path": "api/v1/calibration-sets/sirius:mock/eccb62ea-29f5-429a-b134-ee6c7f449176/dynamic-quantum-architecture",
       "required": true,
-      "sha256": "8cc73d2d9e7b8d092e2c470a4c45570a925ad5d536c11693f51c51f94e3f5fef",
+      "sha256": "3fe3581f4e261fb652ed5db397deb93092ae384b63d4ba660fedc97647fe1c85",
       "status": 200
     },
     "qc/sirius_mock/calibration/metrics.json": {
       "bytes": 70986,
-      "path": "api/v1/calibration-sets/sirius:mock/bd66eda7-69c0-4559-bed2-012f6d4d6405/metrics",
+      "path": "api/v1/calibration-sets/sirius:mock/eccb62ea-29f5-429a-b134-ee6c7f449176/metrics",
       "required": true,
-      "sha256": "449a597fbe1ca09ee8b83999e322a2930e7788922d93cb9f6358f262c0bf3298",
+      "sha256": "b848793f9fdd84bc2fe38cba962a2d1c3c1b2cdd0c21d567a5e14881c40bb129",
       "status": 200
     },
     "qc/sirius_mock/calibration/set.json": {
-      "bytes": 469797,
+      "bytes": 555582,
       "path": "api/v1/calibration-sets/sirius:mock/default",
       "required": true,
-      "sha256": "209d01348de25b67ad725a201ccedb019c62cb341c659310a18adf3026990753",
+      "sha256": "0ecc35f5fb92ddcb019e33c3a72f03d23c87cbb9602c26dd1a1ee23e7b54aae1",
       "status": 200
     },
     "qc/sirius_mock/details.json": {
       "bytes": 1089,
       "path": "api/v1/quantum-computers/sirius:mock",
       "required": true,
-      "sha256": "f22adee74834b686aa400e23e7c630029c2c3af7b7afca01856fd84768092179",
+      "sha256": "2befada8f4a8b71d10627815ca81e4a4ef9b31a45980edb3a7b3afc9eef2961b",
       "status": 200
     },
     "qc/sirius_mock/health.json": {
       "bytes": 100,
       "path": "api/v1/quantum-computers/sirius:mock/health",
       "required": true,
-      "sha256": "3120c086fb6d972204545e7dc6d8249dcc86da16b53effe40771ad1f0df1d0b0",
+      "sha256": "377aef4a061dcc5c47af89627b1eaf92a5786ff1e9a3b61f0dfe85d406624198",
       "status": 200
     },
     "qc/sirius_mock/limits.json": {
@@ -709,17 +709,17 @@
       "status": 200
     },
     "qc/sirius_mock/openapi.json": {
-      "bytes": 259578,
+      "bytes": 264957,
       "path": "api/v1/openapi.json?qc=sirius%3Amock",
       "required": true,
-      "sha256": "8dd92085a7287f4de1ff2212976f7977da1728850fceebceaff59ab6bde2ddee",
+      "sha256": "3b986ce6d555095a8c10822737e972c9cdc21ba526a0bd473ec0e4cc2848cb8c",
       "status": 200
     },
     "qc/sirius_mock/queue-availability.json": {
       "bytes": 108,
       "path": "api/v1/quantum-computers/sirius:mock/queue-availability",
       "required": true,
-      "sha256": "334e24961b126202a8507ce9ecd92ca95e089ce1c0645a62095cba638cb0189c",
+      "sha256": "c7e28468c5a6db962b2e5b3af67a0e107f687e924724d14dce98df504638c242",
       "status": 200
     },
     "qc/sirius_mock/timeslots.json": {
@@ -761,7 +761,7 @@
       "bytes": 1623,
       "path": "api/v1/quantum-computers",
       "required": true,
-      "sha256": "d74348aba05f7859cba7728bc346035fdf473886d6a262acbc9b54bf989caa65",
+      "sha256": "dbd4f1687d44921972e64af93fc301325aca5ae9bbf8ff50f0977c77b7c012d7",
       "status": 200
     },
     "server/versions.json": {
