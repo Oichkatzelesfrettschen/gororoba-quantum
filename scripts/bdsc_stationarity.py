@@ -759,9 +759,10 @@ def main() -> int:
     elif args.matched_check:
         return run_matched_check(args.matched_check)
     elif args.calibration_contrast:
-        print(json.dumps(calibration_contrast(*args.calibration_contrast), indent=1, sort_keys=True))
+        before, after = (run.resolve() for run in args.calibration_contrast)
+        print(json.dumps(calibration_contrast(before, after), indent=1, sort_keys=True))
     else:
-        print(json.dumps(readout(args.readout), indent=1, sort_keys=True))
+        print(json.dumps(readout([run.resolve() for run in args.readout]), indent=1, sort_keys=True))
     return 0
 
 
