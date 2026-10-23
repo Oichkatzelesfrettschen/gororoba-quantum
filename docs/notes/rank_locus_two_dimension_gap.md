@@ -178,7 +178,7 @@ and is never evidence of the gap.
    dimension stays undecided between the family's and the tangent bound,
    and admission still needs an exact piece or local equations.
 5. **Exact linearity test of the tangent bound.** At all 29 witnesses,
-   L_y has rank above 32 - k at seeded integer points y of T(x), computed
+   L_y has rank above 32 - k at seeded rational points y of T(x), computed
    over the rationals with FLINT
    ([evidence](../evidence/rank_locus_tangent_linearity/README.md),
    `scripts/rank_locus_tangent_linearity.py`, gate core-663): rank 32 at

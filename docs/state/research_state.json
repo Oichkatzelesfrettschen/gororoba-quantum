@@ -4593,7 +4593,7 @@
     },
     {
       "id": "a5-tangent-bound-not-linear",
-      "statement": "At all 29 witnesses of the A_5 rank-locus families, the tangent bound T(x) = {y : U^T L_y V = 0} is not inside the closed rank cone R_k = {y : rank L_y <= 32 - k} that contains the cone over D_(5,k): L_y has exact rational rank 32 at six seeded integer points of T(x) at every nullity-4, -8 and -12 witness and rank 20 at the three nullity-16 zero-divisor-axis witnesses, above the cone bound 32 - k.",
+      "statement": "At all 29 witnesses of the A_5 rank-locus families, the tangent bound T(x) = {y : U^T L_y V = 0} is not inside the closed rank cone R_k = {y : rank L_y <= 32 - k} that contains the cone over D_(5,k): L_y has exact rational rank 32 at six seeded rational points of T(x), integer combinations of a rational basis, at every nullity-4, -8 and -12 witness and rank 20 at the three nullity-16 zero-divisor-axis witnesses, above the cone bound 32 - k.",
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",
