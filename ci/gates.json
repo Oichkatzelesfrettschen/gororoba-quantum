@@ -3853,6 +3853,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
+   "name": "core-666",
+   "seconds": 90.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
    "name": "core-667",
    "seconds": 15.0,
