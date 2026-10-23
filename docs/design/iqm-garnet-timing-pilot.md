@@ -105,3 +105,22 @@ reset and one with active reset. It tests four claims:
 The garnet:mock run of both jobs estimated 3.227 s and 1.635 s, as the
 model predicts, at 0.00 credits. On Garnet the ceilings are 1.50 and 1.00
 credits.
+
+## Hardware results (2026-10-22)
+
+The two Garnet jobs ran under the user's approval on calibration set
+`9069c4ef` and charged 1.50 credits
+([analysis](../../results/iqm/reset_billing_pilot_analysis.json), claim
+`iqm-garnet-reset-billing-pilot`):
+
+| claim | prediction | measured | verdict |
+|---|---|---|---|
+| H1 | billed = ceil(estimate): 3 s and 2 s | 2 s and 1 s = ceil(runtime 1.306 s and 0.205 s) | falsified: IQM bills the runtime |
+| H2 | estimate within 0.05 s of the model | departures +0.004 s and -0.018 s | holds |
+| H3 | active reset keeps initialization | bare measure P(1) 0.0680 against 0.0065 passive, z 10.4 | falsified |
+| H4 | QB1 reads X 0.9817, bare 0.0046 | 0.9705 (z -2.96), 0.0065 (z +1.06) | holds |
+
+Execution took 316 us per shot under passive reset and 37.5 us under one
+active-reset cycle, 8.4 times less where the mock's estimate model gave 46.
+A case that uses active reset carries its initialization error, about 6 % on
+QB1 here, or removes it by heralding.

@@ -1435,6 +1435,62 @@
       "run": "results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08",
       "family": "BDSC four-qubit local Pauli readout on Tuna-17",
       "question": "Batch 08 of the preregistered Tuna-17 pilot of the BDSC target effect read in one local Pauli basis per patch on three disjoint four-qubit patches: what raw scores, pair residuals and branch phase does the device return, with the assignment references and drift stops clear?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j1-1x1000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j1-1x1000-passive under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j2-1x4000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j2-1x4000-passive under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j3-20x200-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j3-20x200-passive under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-j4-1x4000-active1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T211622Z-garnet_mock-timing-pilot-j4-1x4000-active1",
+      "family": "IQM timing pilot",
+      "question": "IQM's runtime estimate and billing for j4-1x4000-active1 under the garnet:mock pipeline: per-job, per-shot, per-circuit and active-reset cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-reset-billing-p-2x2000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive",
+      "family": "IQM reset-billing pilot",
+      "question": "Does p-2x2000-passive on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-mock-reset-billing-a-2x2000-active1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1",
+      "family": "IQM reset-billing pilot",
+      "question": "Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-reset-billing-p-2x2000-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive",
+      "family": "IQM reset-billing pilot",
+      "question": "Does p-2x2000-passive on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
+    },
+    {
+      "id": "iqm-garnet-reset-billing-a-2x2000-active1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1",
+      "family": "IQM reset-billing pilot",
+      "question": "Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?"
     }
   ],
   "claims": [
@@ -7249,6 +7305,78 @@
       "depends_on": [
         "qi-qx-bdsc-pauli-twin-control"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-reset-billing-pilot",
+      "statement": "On IQM Garnet (station control 50.0.0, calibration set 9069c4ef), two jobs of X and a bare measure on QB1 at 2000 shots each billed ceil(runtime), not ceil(the compiler's execution runtime estimate): 2 s for a 1.306 s runtime under passive reset and 1 s for 0.205 s under active_reset_cycles 1, against estimates of 2.804 s and 1.617 s, 1.50 credits in all. The estimates follow 1.60 s per job plus each shot's schedule within 0.02 s. Execution took 316 us per shot under passive reset and 37.5 us under active reset. Active reset left the bare measure at P(1) 0.0680 against 0.0065 under passive reset (difference 0.0615, z 10.4), so one active-reset cycle does not keep QB1's initialization. The passive job read X at 0.9705 and the bare measure at 0.0065, within three standard errors of the calibration-built predictions 0.9817 and 0.0046 (z -2.96 and +1.06).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One qubit (QB1), one calibration set and one active-reset setting (one cycle); billing is the service's rule on 2026-10-22. The excess bare-measure P(1) under active reset is not separated into residual excitation and reset-induced readout error. The H4 bare-measure prediction in the design document was the simulator's 2000-shot sample 0.003; the decision uses the exact unheralded P(1|0) 0.0046. The garnet:mock jobs fix the estimate model only; their measurement data are random bits.",
+      "evidence": [
+        {
+          "path": "results/iqm/reset_billing_pilot_analysis.json",
+          "sha256": "edf61eb24a4ec4086852f5287f9185381f55cda2bc87744aa52b3870d6321ee0"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-timing-pilot.md",
+        "docs/notes/iqm/README.md"
+      ],
+      "gates": {
+        "core-635": "replay",
+        "core-636": "regression"
+      },
+      "acquisitions": [
+        "iqm-garnet-mock-reset-billing-p-2x2000-passive",
+        "iqm-garnet-mock-reset-billing-a-2x2000-active1",
+        "iqm-garnet-reset-billing-p-2x2000-passive",
+        "iqm-garnet-reset-billing-a-2x2000-active1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-runtime-estimate",
+      "statement": "The garnet:mock pipeline estimated 2.007 s for one circuit of 1000 shots, 3.227 s for one circuit of 4000 shots and for twenty circuits of 200 shots, and 1.635 s for 4000 shots with active_reset_cycles 1: a fixed 1.60 s per job plus 0.407 ms per passive-reset shot (the mock calibration's 400 us reset_wait, 1.2 us readout and 5 us end delay), no cost per extra circuit, and about 9 us per active-reset shot. Each job charged 0.00 credits, and the mock returned random bits (P(1) 0.48 to 0.51 for an X).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Mock estimates under the mock's own calibration; the hardware estimate, runtime and billing are the reset and billing pilot's.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive/results.json",
+          "sha256": "79807f0fa9ddfcdfe2b6cb27dca40250206c83cfbe3e4fccc2c88f501d7095ec"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive/results.json",
+          "sha256": "a261c0326da0d5dd0fcbbdaaa868353558d778ab9122aab57b645ef5048aaaec"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive/results.json",
+          "sha256": "b70a497e645d3b6fc9a152955942f490eb249a6234581296da80d964f17e5467"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-22T211622Z-garnet_mock-timing-pilot-j4-1x4000-active1/results.json",
+          "sha256": "f3b38c995046b1c29b7d20124e6c9944b0d7b668064c5bbfb5097fc061356300"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-timing-pilot.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-timing-j1-1x1000-passive",
+        "iqm-garnet-mock-timing-j2-1x4000-passive",
+        "iqm-garnet-mock-timing-j3-20x200-passive",
+        "iqm-garnet-mock-timing-j4-1x4000-active1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }

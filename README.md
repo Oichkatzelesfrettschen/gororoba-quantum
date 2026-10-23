@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (102 established, 45 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (103 established, 46 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -235,12 +235,22 @@ acquisition of every provider:
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08](results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08) | Quantum Inspire | BDSC four-qubit local Pauli readout on Tuna-17 | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive](results/iqm/runs/2026-10-22T211605Z-garnet_mock-timing-pilot-j1-1x1000-passive) | IQM Resonance | IQM timing pilot | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive](results/iqm/runs/2026-10-22T211611Z-garnet_mock-timing-pilot-j2-1x4000-passive) | IQM Resonance | IQM timing pilot | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive](results/iqm/runs/2026-10-22T211619Z-garnet_mock-timing-pilot-j3-20x200-passive) | IQM Resonance | IQM timing pilot | garnet:mock | 1 | 20 | completed | 0.0 credits |
+| [2026-10-22T211622Z-garnet_mock-timing-pilot-j4-1x4000-active1](results/iqm/runs/2026-10-22T211622Z-garnet_mock-timing-pilot-j4-1x4000-active1) | IQM Resonance | IQM timing pilot | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive](results/iqm/runs/2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive) | IQM Resonance | IQM reset-billing pilot | garnet:mock | 1 | 2 | completed | 0.0 credits |
+| [2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1](results/iqm/runs/2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1) | IQM Resonance | IQM reset-billing pilot | garnet:mock | 1 | 2 | completed | 0.0 credits |
+| [2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive](results/iqm/runs/2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive) | IQM Resonance | IQM reset-billing pilot | garnet | 1 | 2 | completed | 1.0 credits |
+| [2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1](results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1) | IQM Resonance | IQM reset-billing pilot | garnet | 1 | 2 | completed | 0.5 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs with 7438336 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 41 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 8 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
 
 ## Contents

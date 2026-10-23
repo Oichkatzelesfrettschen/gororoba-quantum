@@ -3864,7 +3864,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/timing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/reset-billing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/timing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/reset-billing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py analyze results/iqm/runs/2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive results/iqm/runs/2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1 results/iqm/runs/2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1 --out results/iqm/reset_billing_pilot_analysis.json --replay && \"$PYTHON\" -B -W error scripts/iqm_jobs.py --self-test",
    "name": "core-635",
    "seconds": 0.5,
    "tier": "pr"

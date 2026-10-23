@@ -24,6 +24,8 @@ Subcommands:
   record and, for a completed job, the measurements and measurement_counts artifacts byte for byte
   under raw/, reads the credit again and writes results.json: status, metrics, credits charged and
   per-circuit shot counts.
+- analyze RUN_DIR... --out FILE [--replay] writes (or with --replay compares) the reset and billing
+  pilot's H1-H4 decisions from its retained runs.
 - --self-test runs build, check, submit and collect against a stubbed transport on a temporary
   copy: the digest, ceiling, health and duplicate-submission refusals, a completed and a failed job.
 
@@ -375,6 +377,165 @@ def collect(run_dir: Path, client: Client, poll: float = 5.0, timeout: float = 3
     return results
 
 
+def run_facts(run_dir: Path) -> dict[str, Any]:
+    """The registry facts of one retained run, after checking it against its own receipts.
+
+    The case files match cases.json, submission.json names the job, QC, approval and cases digest,
+    results.json names the same job with a terminal status, every raw file keeps the sha256
+    results.json records, and a completed job returns the case's shots for every circuit. The charge
+    is billed_seconds times the price per second the submission recorded.
+    """
+    submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+    if submission.get("schema") != SUBMISSION_SCHEMA or not submission.get("approval"):
+        raise PlatformError(f"{run_dir}: submission.json is not an approved {SUBMISSION_SCHEMA} receipt")
+    _, row, cases_sha256 = load_job(run_dir, submission["job"])
+    if cases_sha256 != submission["cases_sha256"]:
+        raise PlatformError(f"{run_dir}: cases.json differs from the submission receipt")
+    results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
+    if results.get("schema") != RESULTS_SCHEMA or results["job_id"] != submission["job_id"]:
+        raise PlatformError(f"{run_dir}: results.json names another job")
+    if results["status"] not in TERMINAL:
+        raise PlatformError(f"{run_dir}: job status {results['status']} is not terminal")
+    for name, digest in results["raw_sha256"].items():
+        if sha256((run_dir / "raw" / name).read_bytes()) != digest:
+            raise PlatformError(f"{run_dir}/raw/{name} differs from its recorded sha256")
+    record = json.loads((run_dir / "raw/job.json").read_bytes())
+    if record["id"] != submission["job_id"] or record["status"] != results["status"]:
+        raise PlatformError(f"{run_dir}: raw/job.json disagrees with results.json")
+    if results["status"] == "completed" and results["shots_per_circuit"] != [row["shots"]] * len(row["circuits"]):
+        raise PlatformError(f"{run_dir}: a circuit returned other than {row['shots']} shots")
+    billed = float((record.get("metrics") or {}).get("billed_seconds") or 0.0)
+    return {
+        "created_at": submission["submitted_at"],
+        "backends": [submission["qc"]],
+        "jobs": 1,
+        "circuits": len(row["circuits"]),
+        "statuses": {results["status"]: 1},
+        "charge": round(billed * float(submission["price_per_second"]), 6),
+        "detail": f"{billed:g} billed seconds",
+    }
+
+
+# Preregistered predictions of the reset and billing pilot (docs/design/iqm-garnet-timing-pilot.md),
+# computed by iqm_sim from Garnet calibration set 9069c4ef: X on QB1 reads (1 - p/2)(1 - e10) + (p/2) e01
+# and a bare measure reads e01, the unheralded P(1 | 0). Z_STOP is the three-standard-error decision rule.
+PREDICTED = {"x": 0.9817, "zero": 0.0046}
+PREDICTION_CALIBRATION = "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d"
+Z_STOP = 3.0
+ESTIMATE_TOLERANCE = 0.05
+
+
+def p1_of(run_dir: Path) -> dict[str, dict[str, float]]:
+    """P(1) and its binomial standard error per circuit kind of a completed run."""
+    measurements = json.loads((run_dir / "raw/measurements.json").read_bytes())
+    _, row, _ = load_job(run_dir, json.loads((run_dir / "submission.json").read_text())["job"])
+    out = {}
+    for entry, circuit in zip(row["circuits"], measurements, strict=True):
+        bits = [shot[0] for shot in circuit["m"]]
+        p = sum(bits) / len(bits)
+        out[entry["file"].rsplit("-", 1)[-1].removesuffix(".json")] = {
+            "p1": p,
+            "se": math.sqrt(max(p * (1 - p), 1 / len(bits)) / len(bits)),
+            "shots": len(bits),
+        }
+    return out
+
+
+def analyze(run_dirs: list[Path]) -> dict[str, Any]:
+    """H1-H4 of the reset and billing pilot from its retained runs (mock and hardware)."""
+    runs = []
+    for run_dir in sorted(run_dirs):
+        facts = run_facts(run_dir)
+        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+        record = json.loads((run_dir / "raw/job.json").read_bytes())
+        metrics = record["metrics"]
+        case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        row = [r for r in case["jobs"] if r["job"] == submission["job"]][0]
+        runs.append(
+            {
+                "run": run_dir.name,
+                "qc": submission["qc"],
+                "job": submission["job"],
+                "expected_seconds": row["expected_seconds"],
+                "estimate_seconds": record["compilation"]["execution_runtime_estimate_seconds"],
+                "execution_seconds": metrics["execution_seconds"],
+                "runtime_seconds": metrics["runtime_seconds"],
+                "billed_seconds": metrics["billed_seconds"],
+                "charge": facts["charge"],
+                "p1": p1_of(run_dir),
+            }
+        )
+    hardware = {r["job"]: r for r in runs if r["qc"] == "garnet"}
+    passive, active = hardware["p-2x2000-passive"], hardware["a-2x2000-active1"]
+    h1 = [
+        {
+            "job": r["job"],
+            "billed": r["billed_seconds"],
+            "ceil_estimate": math.ceil(r["estimate_seconds"]),
+            "ceil_runtime": math.ceil(r["runtime_seconds"]),
+        }
+        for r in hardware.values()
+    ]
+    # H2 concerns Garnet's estimate; the mock schedules its own 400 us reset, so its rows carry no decision.
+    h2 = [
+        {"job": r["job"], "departure": round(r["estimate_seconds"] - r["expected_seconds"], 6)}
+        for r in hardware.values()
+    ]
+    h2_mock = [
+        {"job": r["job"], "qc": r["qc"], "departure": round(r["estimate_seconds"] - r["expected_seconds"], 6)}
+        for r in runs
+        if r["qc"] != "garnet"
+    ]
+    zero_gap = active["p1"]["zero"]["p1"] - passive["p1"]["zero"]["p1"]
+    zero_se = math.hypot(active["p1"]["zero"]["se"], passive["p1"]["zero"]["se"])
+    h4 = [
+        {
+            "job": r["job"],
+            "kind": kind,
+            "predicted": PREDICTED[kind],
+            "measured": value["p1"],
+            "z": (value["p1"] - PREDICTED[kind]) / value["se"],
+        }
+        for r in hardware.values()
+        for kind, value in r["p1"].items()
+        if r is passive
+    ]
+    return {
+        "schema": "iqm-reset-billing-analysis-v1",
+        "runs": runs,
+        "per_shot_seconds": {
+            r["job"]: r["execution_seconds"] / sum(v["shots"] for v in r["p1"].values()) for r in hardware.values()
+        },
+        "h1_billed_is_ceil_estimate": {
+            "rows": h1,
+            "holds": all(row["billed"] == row["ceil_estimate"] for row in h1),
+            "billed_is_ceil_runtime": all(row["billed"] == row["ceil_runtime"] for row in h1),
+        },
+        "h2_estimate_model": {
+            "rows": h2,
+            "tolerance": ESTIMATE_TOLERANCE,
+            "holds": all(abs(row["departure"]) <= ESTIMATE_TOLERANCE for row in h2),
+            "mock_rows": h2_mock,
+        },
+        "h3_active_reset_keeps_initialization": {
+            "ran": active["billed_seconds"] > 0 and active["p1"]["zero"]["shots"] > 0,
+            "zero_p1_active_minus_passive": zero_gap,
+            "z": zero_gap / zero_se,
+            "holds": zero_gap / zero_se <= Z_STOP,
+        },
+        "h4_simulator_predicts_qb1": {
+            "calibration_set": PREDICTION_CALIBRATION,
+            "rows": h4,
+            "holds": all(abs(row["z"]) <= Z_STOP for row in h4),
+        },
+        "credits_charged": round(sum(r["charge"] for r in runs), 6),
+    }
+
+
+def run_directories(runs: Path = RUNS) -> list[Path]:
+    return sorted(path for path in runs.iterdir() if path.is_dir()) if runs.is_dir() else []
+
+
 def self_test() -> str:
     jobs: dict[str, dict[str, Any]] = {}
     state = {"balance": 30.0, "healthy": True, "posts": 0}
@@ -484,6 +645,13 @@ def self_test() -> str:
         ):
             raise RuntimeError(f"collect kept {results}")
         collect(run, client, poll=0)
+        facts = run_facts(run)
+        if facts["statuses"] != {"completed": 1} or facts["charge"] != 1.0 or facts["backends"] != ["garnet"]:
+            raise RuntimeError(f"run_facts read {facts}")
+        kept = (run / "raw/measurements.json").read_bytes()
+        (run / "raw/measurements.json").write_text("[]")
+        refused(lambda: run_facts(run), "differs from its recorded sha256")
+        (run / "raw/measurements.json").write_bytes(kept)
         (run / "raw/job.json").write_text("{}")
         refused(lambda: collect(run, client, poll=0), "retained with other bytes")
         state["fail"] = True
@@ -499,6 +667,7 @@ def self_test() -> str:
             raise RuntimeError("active_reset_cycles is not sent exactly where the case sets it")
         if collect(short, client, poll=0)["shots_per_circuit"] != [3999]:
             raise RuntimeError("collect does not report the shots the service returned")
+        refused(lambda: run_facts(short), "returned other than")
     return "iqm jobs: build, check, approval, digest, ceiling, health, checkpoint and collection refusals pass"
 
 
@@ -520,6 +689,10 @@ def main() -> int:
     co.add_argument("run_dir", type=Path)
     co.add_argument("--poll", type=float, default=5.0)
     co.add_argument("--timeout", type=float, default=3600.0)
+    an = sub.add_parser("analyze")
+    an.add_argument("run_dirs", type=Path, nargs="+")
+    an.add_argument("--out", type=Path, required=True)
+    an.add_argument("--replay", action="store_true", help="compare --out with the recomputation")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
@@ -529,6 +702,14 @@ def main() -> int:
     elif args.command == "check":
         check_case(args.directory)
         print(f"{args.directory}: matches the build")
+    elif args.command == "analyze":
+        text = dump(analyze(args.run_dirs))
+        if args.replay:
+            if args.out.read_text(encoding="utf-8") != text:
+                raise PlatformError(f"{args.out} differs from the recomputation")
+            print(f"{args.out}: replays byte for byte")
+        else:
+            args.out.write_text(text, encoding="utf-8")
     elif args.command in ("submit", "collect"):
         client = Client(read_tokens(tokens_path())["access_token"])
         if args.command == "submit":

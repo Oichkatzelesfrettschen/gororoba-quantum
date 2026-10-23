@@ -1,0 +1,172 @@
+{
+ "credits_charged": 1.5,
+ "h1_billed_is_ceil_estimate": {
+  "billed_is_ceil_runtime": true,
+  "holds": false,
+  "rows": [
+   {
+    "billed": 2.0,
+    "ceil_estimate": 3,
+    "ceil_runtime": 2,
+    "job": "p-2x2000-passive"
+   },
+   {
+    "billed": 1.0,
+    "ceil_estimate": 2,
+    "ceil_runtime": 1,
+    "job": "a-2x2000-active1"
+   }
+  ]
+ },
+ "h2_estimate_model": {
+  "holds": true,
+  "mock_rows": [
+   {
+    "departure": 0.427168,
+    "job": "p-2x2000-passive",
+    "qc": "garnet:mock"
+   },
+   {
+    "departure": -0.000184,
+    "job": "a-2x2000-active1",
+    "qc": "garnet:mock"
+   }
+  ],
+  "rows": [
+   {
+    "departure": 0.004208,
+    "job": "p-2x2000-passive"
+   },
+   {
+    "departure": -0.017624,
+    "job": "a-2x2000-active1"
+   }
+  ],
+  "tolerance": 0.05
+ },
+ "h3_active_reset_keeps_initialization": {
+  "holds": false,
+  "ran": true,
+  "z": 10.407763899805603,
+  "zero_p1_active_minus_passive": 0.061500000000000006
+ },
+ "h4_simulator_predicts_qb1": {
+  "calibration_set": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d",
+  "holds": true,
+  "rows": [
+   {
+    "job": "p-2x2000-passive",
+    "kind": "x",
+    "measured": 0.9705,
+    "predicted": 0.9817,
+    "z": -2.9602217323102753
+   },
+   {
+    "job": "p-2x2000-passive",
+    "kind": "zero",
+    "measured": 0.0065,
+    "predicted": 0.0046,
+    "z": 1.0573724357150585
+   }
+  ]
+ },
+ "per_shot_seconds": {
+  "a-2x2000-active1": 3.7491249999999994e-05,
+  "p-2x2000-passive": 0.000316158
+ },
+ "runs": [
+  {
+   "billed_seconds": 1.0,
+   "charge": 0.0,
+   "estimate_seconds": 3.227168,
+   "execution_seconds": 0.183071,
+   "expected_seconds": 2.8,
+   "job": "p-2x2000-passive",
+   "p1": {
+    "x": {
+     "p1": 0.513,
+     "se": 0.011176560293757645,
+     "shots": 2000
+    },
+    "zero": {
+     "p1": 0.506,
+     "se": 0.01117953487404552,
+     "shots": 2000
+    }
+   },
+   "qc": "garnet:mock",
+   "run": "2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive",
+   "runtime_seconds": 0.211607
+  },
+  {
+   "billed_seconds": 1.0,
+   "charge": 0.0,
+   "estimate_seconds": 1.634816,
+   "execution_seconds": 0.056628,
+   "expected_seconds": 1.635,
+   "job": "a-2x2000-active1",
+   "p1": {
+    "x": {
+     "p1": 0.499,
+     "se": 0.011180317526796813,
+     "shots": 2000
+    },
+    "zero": {
+     "p1": 0.5035,
+     "se": 0.011180065965816123,
+     "shots": 2000
+    }
+   },
+   "qc": "garnet:mock",
+   "run": "2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1",
+   "runtime_seconds": 0.086227
+  },
+  {
+   "billed_seconds": 2.0,
+   "charge": 1.0,
+   "estimate_seconds": 2.804208,
+   "execution_seconds": 1.264632,
+   "expected_seconds": 2.8,
+   "job": "p-2x2000-passive",
+   "p1": {
+    "x": {
+     "p1": 0.9705,
+     "se": 0.0037835003634200943,
+     "shots": 2000
+    },
+    "zero": {
+     "p1": 0.0065,
+     "se": 0.0017969070649312946,
+     "shots": 2000
+    }
+   },
+   "qc": "garnet",
+   "run": "2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive",
+   "runtime_seconds": 1.305679
+  },
+  {
+   "billed_seconds": 1.0,
+   "charge": 0.5,
+   "estimate_seconds": 1.617376,
+   "execution_seconds": 0.149965,
+   "expected_seconds": 1.635,
+   "job": "a-2x2000-active1",
+   "p1": {
+    "x": {
+     "p1": 0.969,
+     "se": 0.003875499967746099,
+     "shots": 2000
+    },
+    "zero": {
+     "p1": 0.068,
+     "se": 0.005629209535982827,
+     "shots": 2000
+    }
+   },
+   "qc": "garnet",
+   "run": "2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1",
+   "runtime_seconds": 0.205329
+  }
+ ],
+ "schema": "iqm-reset-billing-analysis-v1"
+}
