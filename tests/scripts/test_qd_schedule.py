@@ -93,6 +93,7 @@ class Provider:
     def __init__(self, monkeypatch: pytest.MonkeyPatch, body: dict[str, Any] = BODY) -> None:
         self.body = body
         self.plan_error: str | None = None
+        self.submit_body: dict[str, Any] | None = None
         self.submit_error: str | None = None
         self.submitted: list[Path] = []
         self.ready = True
@@ -118,6 +119,7 @@ class Provider:
     def submit(self, run: Path, platform: str, approval: str, *args: Any) -> dict[str, Any]:
         if self.submit_error:
             raise qs.qd.PlatformError(self.submit_error)
+        args[-1]({"case": run.name, "body": dict(self.submit_body or self.body), "body_sha256": "x"})
         self.submitted.append(run)
         qs.write(run / "job-body.json", self.body)
         qs.write(run / "submission-state.json", {"phase": "posted", "job_id": f"job-{len(self.submitted)}"})
@@ -371,3 +373,40 @@ def test_the_snapshot_summary_stays_out_of_the_step_output(tree: Path, monkeypat
     receipt = qs.read(tree / "results/quandela/schedules/demo/j1.receipt.json")
     if receipt["outcome"] != "passed" or receipt["snapshot"] != "results/quandela/demo_dark/after-j1":
         raise AssertionError(receipt)
+
+
+def test_a_submit_plan_that_differs_from_the_pin_holds_with_nothing_sent(tree: Path, monkeypatch) -> None:
+    path = schedule(tree)
+    provider = Provider(monkeypatch)
+    step(path, T0)
+    provider.submit_body = {**BODY, "payload": {"command": "recalibrated"}}
+    held = step(path, T0)
+    if held.get("stage") != "submit" or provider.submitted or any((tree / "results/quandela/runs").iterdir()):
+        raise AssertionError(held)
+
+
+def test_submit_runs_verify_on_the_posted_plan_before_any_checkpoint(tmp_path: Path, monkeypatch) -> None:
+    qd = qs.qd
+    case = tmp_path / "run"
+    case.mkdir()
+    for file in qs.INPUTS:
+        (case / file).write_bytes((ROOT / "results/quandela/cases/bdsc_stationarity/b1-j1" / file).read_bytes())
+    (tmp_path / "token").write_text("t\n")
+    monkeypatch.setenv(qd.TOKEN_ENV, str(tmp_path / "token"))
+    monkeypatch.setattr(qd, "plan", lambda *args: {"body": dict(BODY), "body_sha256": "x"})
+
+    def refuse(*args: Any, **kwargs: Any) -> Any:
+        raise AssertionError("submit reached the service after verify refused")
+
+    monkeypatch.setattr(qd, "request", refuse)
+    monkeypatch.setattr(qd, "get", refuse)
+    seen: list[dict[str, Any]] = []
+
+    def verify(checked: dict[str, Any]) -> None:
+        seen.append(checked)
+        raise qd.PlatformError("stop condition")
+
+    with pytest.raises(qd.PlatformError, match="stop condition"):
+        qd.submit(case, "qpu:belenos", "approved", 1.12, 200.0, 1.0, (), verify)
+    if seen != [{"body": BODY, "body_sha256": "x"}] or sorted(p.name for p in case.iterdir()) != sorted(qs.INPUTS):
+        raise AssertionError("verify did not see the posted plan, or submit wrote a checkpoint")

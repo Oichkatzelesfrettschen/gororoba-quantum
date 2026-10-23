@@ -405,11 +405,26 @@ def prepare(schedule: dict[str, Any], job: dict[str, Any], run_id: str, work: Pa
     return {"outcome": "prepared", "key": job["key"], "run": run.name}
 
 
-def send(schedule: dict[str, Any], job: dict[str, Any], run: Path, run_id: str, now: float) -> dict[str, Any]:
+def send(
+    schedule: dict[str, Any], job: dict[str, Any], run: Path, run_id: str, now: float, work: Path
+) -> dict[str, Any]:
     """Submit a run this workflow run prepared; a refusal before the checkpoint is a hold.
 
-    Planning and the intent's push take time, so latest_start is read again here.
+    Planning and the intent's push take time, so latest_start is read again
+    here, and submit's own plan, the one whose body is posted, must carry the
+    pinned body digest and pass the case's plan check inside the submit lock.
     """
+
+    def verify(checked: dict[str, Any]) -> None:
+        digest = body_digest(checked["body"])
+        if digest != job["body_sha256"]:
+            raise qd.PlatformError(f"submit plan body {digest} differs from the pinned {job['body_sha256']}")
+        plan_path = work / f"{job['key']}-submit-plan.json"
+        write(plan_path, plan_record(checked))
+        code, output = run_check(job["plan_check"], plan_path)
+        if code != 0:
+            raise qd.PlatformError(f"submit plan check exit {code}: {output}")
+
     latest = job.get("latest_start")
     if latest is not None and now > utc(latest):
         # The intent stays, so sync removes the pushed run directory from the results branch too.
@@ -424,6 +439,7 @@ def send(schedule: dict[str, Any], job: dict[str, Any], run: Path, run_id: str, 
             job["expected_seconds"],
             job["per_job_credits"],
             tuple(job["admit_statuses"]),
+            verify,
         )
     except qd.PlatformError as error:
         if any((run / name).exists() for name in ("job-body.json", "submission-state.json")):
@@ -502,7 +518,7 @@ def step(
         if run is not None and state == "collected":
             return post(schedule, job, run, run_id)
         if run is not None and state == "prepared":
-            return send(schedule, job, run, run_id, clock())
+            return send(schedule, job, run, run_id, clock(), work)
         start = due_time(schedule, job)
         latest = job.get("latest_start")
         if latest is not None and clock() > utc(latest):
