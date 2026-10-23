@@ -3797,7 +3797,8 @@
         "docs/notes/topics/coherent-error-families-report.md"
       ],
       "gates": {
-        "core-329": "replay"
+        "core-329": "replay",
+        "core-661": "replay"
       },
       "acquisitions": [
         "fez-ripple-atlas",

@@ -342,8 +342,8 @@ From a clean tree at the branch head:
 The claim `hw-atlas-coherent-families` in
 [research_state.json](../../state/research_state.json) carries the ZZ-frame
 comparison and the no-single-family result, bound to
-`docs/evidence/atlas_coherent_families/result.json` and replayed by gate
-core-329.
+`docs/evidence/atlas_coherent_families/result.json`. Gate core-329 replays
+lane 4 of both runs and full-tier gate core-661 replays all 14 lanes.
 
 ## Remaining
 

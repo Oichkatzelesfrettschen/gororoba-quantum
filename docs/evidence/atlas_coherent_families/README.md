@@ -6,7 +6,7 @@ byte from `results/kaggle/2026-10-16T222749Z-gororoba-atlas-coherent-families`
 (gate core-334 compares the two). It fits the frame-detuning, CZ-phase,
 static-ZZ (two frames), SX-amplitude and axis-tilt families to the fringe
 phase offsets of all 14 lanes; gate core-329 recomputes lane 4 of both runs
-on CPU. The lane-4 tables below describe the gated case. The data are the
+on CPU, and full-tier gate core-661 recomputes all 14 lanes. The lane-4 tables below describe the gated case. The data are the
 Fez run `results/live/2026-10-13T025444.603480Z` (12 edges, qubits 50, 51,
 52, 58, 71) and the Kingston run `results/live/2026-10-15T031229.371738Z`
 (10 edges, qubits 138, 150-153; 2 edges span a calibration identity change
