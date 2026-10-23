@@ -1,0 +1,19 @@
+{
+ "ascella_tariff_fields": [
+  {
+   "max_duration": 300,
+   "name": "qpu:ascella",
+   "price_per_shot": 1e-06,
+   "status": "available"
+  }
+ ],
+ "availability": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 1,
+  "num_running_qt_jobs": 0
+ },
+ "observed_utc": "2026-10-22T20:17:08+00:00"
+}

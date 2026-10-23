@@ -1,0 +1,309 @@
+{
+ "boundary": "literal call-site map; does not prove endpoint coverage, authentication scope or runtime reachability",
+ "hardware_terms": {
+  "circuit_input_ports": false,
+  "hardware_config": false,
+  "hardware_info": false
+ },
+ "routes": [
+  {
+   "literal": "/api/maintenance/status",
+   "method": "GET",
+   "offset": 421067
+  },
+  {
+   "literal": "/api/platform-permissions/${oe}/${ae}",
+   "method": "GET",
+   "offset": 438896
+  },
+  {
+   "literal": "/api/platform-permissions/${oe}/${ae}",
+   "method": "DELETE",
+   "offset": 439015
+  },
+  {
+   "literal": "/api/platform-permissions/${oe}/${ae}",
+   "method": "POST",
+   "offset": 439155
+  },
+  {
+   "literal": "/api/platform-permissions/${oe}/${ae}",
+   "method": "POST",
+   "offset": 439292
+  },
+  {
+   "literal": "/api/platforms",
+   "method": "GET",
+   "offset": 439389
+  },
+  {
+   "literal": "/api/platform-permissions/explorer-tokens",
+   "method": "GET",
+   "offset": 439460
+  },
+  {
+   "literal": "/api/platform-permissions/${oe}/${ae}",
+   "method": "PUT",
+   "offset": 439548
+  },
+  {
+   "literal": "/api/jobs/page",
+   "method": "GET",
+   "offset": 453512
+  },
+  {
+   "literal": "/api/jobs",
+   "method": "POST",
+   "offset": 453579
+  },
+  {
+   "literal": "/api/jobs/${oe.job_id}/rerun",
+   "method": "POST",
+   "offset": 453840
+  },
+  {
+   "literal": "/api/jobs/cancel",
+   "method": "POST",
+   "offset": 454121
+  },
+  {
+   "literal": "/api/jobs/${oe}",
+   "method": "GET",
+   "offset": 454184
+  },
+  {
+   "literal": "/api/jobs/${oe}/rerun-history",
+   "method": "GET",
+   "offset": 454247
+  },
+  {
+   "literal": "/api/jobs/${oe}/download-result",
+   "method": "GET",
+   "offset": 454320
+  },
+  {
+   "literal": "/api/jobs/${oe}/download-intermediate-result",
+   "method": "GET",
+   "offset": 454407
+  },
+  {
+   "literal": "/api/jobs/${oe}/sub-jobs",
+   "method": "GET",
+   "offset": 454491
+  },
+  {
+   "literal": "/api/jobs/${oe}",
+   "method": "PUT",
+   "offset": 454565
+  },
+  {
+   "literal": "/api/jobs/${oe}/job-intermediate-results/page",
+   "method": "GET",
+   "offset": 454717
+  },
+  {
+   "literal": "/api/jobs/groups",
+   "method": "GET",
+   "offset": 454908
+  },
+  {
+   "literal": "/api/jobs/groups/cancel",
+   "method": "POST",
+   "offset": 455009
+  },
+  {
+   "literal": "/api/jobs/${oe}/settings",
+   "method": "POST",
+   "offset": 455150
+  },
+  {
+   "literal": "/api/jobs/${oe}/settings",
+   "method": "GET",
+   "offset": 455228
+  },
+  {
+   "literal": "/api/config/job-stored",
+   "method": "GET",
+   "offset": 455311
+  },
+  {
+   "literal": "/api/system-notifications?active_only=${oe}&apply_for=${ae}",
+   "method": "GET",
+   "offset": 1745566
+  },
+  {
+   "literal": "/api/notebook",
+   "method": "GET",
+   "offset": 1763681
+  },
+  {
+   "literal": "/api/company_invitation/${oe}",
+   "method": "GET",
+   "offset": 1788040
+  },
+  {
+   "literal": "/api/company_invitation/accept/${oe}",
+   "method": "POST",
+   "offset": 1788115
+  },
+  {
+   "literal": "/api/company_invitation/deny/${oe}",
+   "method": "POST",
+   "offset": 1788196
+  },
+  {
+   "literal": "/api/files/${oe}",
+   "method": "GET",
+   "offset": 2257158
+  },
+  {
+   "literal": "/api/platforms/${oe}",
+   "method": "GET",
+   "offset": 2277308
+  },
+  {
+   "literal": "/api/platforms/statistics/user${ae}",
+   "method": "GET",
+   "offset": 2277581
+  },
+  {
+   "literal": "/api/platforms/statistics/company/${oe}${le}",
+   "method": "GET",
+   "offset": 2277971
+  },
+  {
+   "literal": "/api/platform-types",
+   "method": "GET",
+   "offset": 2278151
+  },
+  {
+   "literal": "/api/platforms/lock-commands",
+   "method": "GET",
+   "offset": 2278221
+  },
+  {
+   "literal": "/api/platforms/${oe}/bookings-maintenance",
+   "method": "GET",
+   "offset": 2278327
+  },
+  {
+   "literal": "/api/auth/tokens/page",
+   "method": "GET",
+   "offset": 2287383
+  },
+  {
+   "literal": "/api/auth/token/revoke",
+   "method": "POST",
+   "offset": 2287613
+  },
+  {
+   "literal": "/api/auth/tokens/reopen",
+   "method": "POST",
+   "offset": 2287719
+  },
+  {
+   "literal": "/api/auth/tokens/delete-by-ids",
+   "method": "POST",
+   "offset": 2287782
+  },
+  {
+   "literal": "/api/auth/token/generate",
+   "method": "POST",
+   "offset": 2287989
+  },
+  {
+   "literal": "/api/auth/tokens/${oe.id}",
+   "method": "PUT",
+   "offset": 2288100
+  },
+  {
+   "literal": "/api/auth/token/${oe}",
+   "method": "GET",
+   "offset": 2288161
+  },
+  {
+   "literal": "/api/command-permissions/${oe}/${ae}",
+   "method": "GET",
+   "offset": 2288293
+  },
+  {
+   "literal": "/api/command-permissions/${oe}/${ae}",
+   "method": "DELETE",
+   "offset": 2288395
+  },
+  {
+   "literal": "/api/command-permissions/${oe}/${ae}",
+   "method": "POST",
+   "offset": 2288539
+  },
+  {
+   "literal": "/api/commands",
+   "method": "GET",
+   "offset": 2288623
+  },
+  {
+   "literal": "/api/command-permissions/explorer-tokens",
+   "method": "GET",
+   "offset": 2288692
+  },
+  {
+   "literal": "/api/user/credit/${oe}",
+   "method": "GET",
+   "offset": 2414271
+  },
+  {
+   "literal": "/api/user/credit/${oe}",
+   "method": "POST",
+   "offset": 2414342
+  },
+  {
+   "literal": "/api/price_usage/${oe}/${ae}",
+   "method": "GET",
+   "offset": 2414473
+  },
+  {
+   "literal": "/api/jobs/statistics",
+   "method": "GET",
+   "offset": 2669439
+  },
+  {
+   "literal": "/api/platforms/bookable",
+   "method": "GET",
+   "offset": 4857000
+  },
+  {
+   "literal": "/api/platforms/bookings/histories/page",
+   "method": "GET",
+   "offset": 4857564
+  },
+  {
+   "literal": "/api/platforms/bookings/histories/mark-all-as-read",
+   "method": "POST",
+   "offset": 4857788
+  },
+  {
+   "literal": "/api/platforms/bookings/histories/${oe}/mark-as-read",
+   "method": "POST",
+   "offset": 4857910
+  },
+  {
+   "literal": "/api/platforms/bookings/histories/unread-count?platform_id=${oe}",
+   "method": "GET",
+   "offset": 4858023
+  },
+  {
+   "literal": "/api/user-settings",
+   "method": "POST",
+   "offset": 4901078
+  },
+  {
+   "literal": "/api/user-settings/current",
+   "method": "GET",
+   "offset": 4901152
+  }
+ ],
+ "schema": "quandela-portal-lexical-routes-v1",
+ "source_bytes": 5082414,
+ "source_sha256": "2f86182fa9ea5999d49645c2553e6b645e7d390249838c9261b2132f51051c7e",
+ "source_url": "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+}

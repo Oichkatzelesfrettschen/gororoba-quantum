@@ -1,0 +1,6 @@
+{
+ "body_sha256": "fe5db0561b22679d36d152d0ef24e124ca553a450bce563da391d2abc8ea8eec",
+ "job": "cancellation",
+ "qc": "garnet:mock",
+ "state": "posting"
+}

@@ -88,13 +88,41 @@ def target_of(calibration: iqm_sim.Calibration) -> tuple[Target, CouplingMap]:
     return target, coupling
 
 
-def relaxation(calibration: iqm_sim.Calibration) -> RelaxationNoisePass:
-    t1 = [calibration.values.get(f"characterization.model.{q}.t1_time", 1.0) for q in calibration.qubits]
+# A qubit no gate touches stays in |0>, which idle T1/T2 relaxation leaves unchanged, so its relaxation
+# times cannot reach the reading; one without a calibrated value takes this inert placeholder.
+UNTOUCHED_SECONDS = 1.0
+
+
+def relaxation(calibration: iqm_sim.Calibration, touched: set[str] | None = None) -> RelaxationNoisePass:
+    """Idle T1/T2 from the calibration, required for every touched qubit (all qubits when touched is
+    None); T2 is capped at 2 T1, the physical bound."""
+    required = set(calibration.qubits) if touched is None else touched
+    missing = [
+        f"characterization.model.{q}.{kind}"
+        for q in sorted(required, key=calibration.qubits.index)
+        for kind in ("t1_time", "t2_time")
+        if f"characterization.model.{q}.{kind}" not in calibration.values
+    ]
+    if missing:
+        raise ValueError(f"the calibration lacks valid relaxation times of touched qubits: {missing}")
+    t1 = [calibration.values.get(f"characterization.model.{q}.t1_time", UNTOUCHED_SECONDS) for q in calibration.qubits]
     t2 = [
-        min(calibration.values.get(f"characterization.model.{q}.t2_time", 1.0), 2 * t1[n])
+        min(calibration.values.get(f"characterization.model.{q}.t2_time", UNTOUCHED_SECONDS), 2 * t1[n])
         for n, q in enumerate(calibration.qubits)
     ]
     return RelaxationNoisePass(t1s=t1, t2s=t2, dt=1e-9, op_types=[Delay])
+
+
+def relaxed(calibration: iqm_sim.Calibration, scheduled: QuantumCircuit) -> QuantumCircuit:
+    """A scheduled circuit with idle relaxation on its delays, requiring calibrated times for the qubits
+    its gates touch."""
+    touched = {
+        calibration.qubits[scheduled.find_bit(q).index]
+        for instruction in scheduled.data
+        if instruction.operation.name != "delay"
+        for q in instruction.qubits
+    }
+    return relaxation(calibration, touched)(scheduled)
 
 
 def predict(
@@ -103,7 +131,7 @@ def predict(
     """<Z> of the control under the calibration noise and idle relaxation, sampled at a fixed seed."""
     bound = compiled.assign_parameters(skp.matched_values(t))
     scheduled = transpile(bound, target=target, optimization_level=0, scheduling_method="alap")
-    noisy = relaxation(calibration)(scheduled)
+    noisy = relaxed(calibration, scheduled)
     simulator = AerSimulator(noise_model=calibration.noise_model(), seed_simulator=PREDICTION_SEED)
     counts = simulator.run(noisy, shots=shots).result().get_counts()
     return sum((1 if key[-1] == "0" else -1) * n for key, n in counts.items()) / shots
@@ -261,6 +289,22 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     arms: dict[float, list[int]] = {}
     runs = []
+    prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
+    # The preregistered analysis reads one Garnet run of each job of one case, compiled against the
+    # calibration set the prediction was made from; mock outcomes never enter it.
+    digests = {sha256((run_dir / "cases.json").read_bytes()) for run_dir in run_dirs}
+    if len(digests) != 1:
+        raise ValueError(f"the runs copy {len(digests)} different cases.json; one analysis reads one case")
+    names = sorted(json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job"] for run_dir in run_dirs)
+    if names != ["strong", "weak"]:
+        raise ValueError(f"the analysis reads exactly one strong and one weak run, not {names}")
+    for run_dir in run_dirs:
+        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+        compiled = json.loads((run_dir / "raw/job.json").read_bytes())["compilation"]["calibration_set_id"]
+        if submission["qc"] != QC or compiled != prediction["calibration_set"]:
+            raise ValueError(
+                f"{run_dir}: ran on {submission['qc']} against {compiled}, not {QC} against the prediction's set"
+            )
     if len({run_dir.resolve() for run_dir in run_dirs}) != len(run_dirs):
         raise ValueError("a run directory is named twice; each acquisition counts once")
     jobs = [json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))["job_id"] for run_dir in run_dirs]

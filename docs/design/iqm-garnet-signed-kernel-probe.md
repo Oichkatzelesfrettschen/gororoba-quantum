@@ -144,13 +144,18 @@ measured <Z> with respect to each coherent error of the compile
 Readout alone predicts an even part of +0.031 (heralded QB7 errors 0.003 and
 0.034), so the measured -0.022 and -0.012 put the circuit's own shift at
 -0.055 +- 0.007 and -0.045 +- 0.003. The derivatives above belong to the
-noiseless circuit; the device damps a coherent shift by the visibility
-V = 0.21 as it damps the odd part, so QB11's over-rotation alone would have to
-be 3.7 +- 1.1 % (|t| = 0.25) or 2.7 +- 0.7 % (|t| = 0.05). A 2.7 % error on a
-pi/2 pulse costs about 3e-4 of infidelity, of the order of QB11's measured
-randomized-benchmarking infidelity of 5e-4: the depolarizing model predicted
-+0.029 because it keeps an error's infidelity and drops its first-order,
-signed effect on the reading. Every odd-part derivative vanishes at t = 0 and scales with
+noiseless circuit. Through the calibration noise model (the audit's
+`noisy_response`: exact density-matrix probabilities with each error inserted
+after scheduling) every stationary coherent error moves the even part by 5 to
+10 % of its noiseless derivative, the damping differing from error to error
+(QB11 over-rotation -0.43 against -8.02, QB12 over-rotation +0.002 against
++1.15), so no single visibility rescales them. QB11's over-rotation alone
+would have to be 10.5 %; a pure over-rotation of a pi/2 pulse costs about
+delta^2/6 of infidelity, so QB11's randomized-benchmarking infidelity of 5e-4
+bounds it at 3.5 %, and all 29 error terms aligned at that bound move the even
+part by at most 0.032. The circuit-level offset therefore lies outside the
+stationary coherent model under this noise model; leakage read as 1,
+crosstalk, time-dependent errors and readout under heralding are untested. Every odd-part derivative vanishes at t = 0 and scales with
 the signed amplitude a0 = sqrt(|t|/(2 + |t|)), not with t, so a coherent
 error never fakes a sign at t = 0 but adds a term proportional to a0 that
 carries the sign of t: odd(t) = sign(t) (V a0^2 + K a0). The measured ratio

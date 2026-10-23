@@ -90,9 +90,10 @@ measurement and the 2.7 % is a comparison, not a prediction the case tests.
   sin(0.6)/sin(0.2) = 2.84, three standard errors from zero.
 - H4 even-part decomposition: the kernel even part at phi = 0.1 against
   the measured readout offset, plus the model's idle-relaxation even part
-  rescaled by the measured readout scale, plus -1.54 V eps from QB11's
-  trains; its standard error carries the readout, visibility, train and
-  model-sampling errors.
+  rescaled by the measured readout scale, plus the noise model's derivative
+  of the even part in QB11's over-rotation (-0.75 per unit, against -1.54
+  noiseless) times the trains' eps, rescaled likewise; its standard error
+  carries the readout and train errors, the prediction being exact.
 - H5 amplification: the trains' <Z> follows -sin(N pi/2 eps) with the
   readout applied; a residual chi-square above 15.6, the
   three-degree-of-freedom quantile of the one-sided three-sigma tail, marks
@@ -103,31 +104,32 @@ standard errors of zero leaves H1 unresolved, never falsified. It reads
 Garnet runs of this case alone, one cases.json digest at a time, each
 compiled against the prediction's calibration set; mock runs never enter.
 
-**Prediction** (scripts/iqm_sim.py noise from set `68b0f1d0` with ALAP idle
-T1/T2 relaxation, 200000 shots per circuit): kernel odd part -0.094 at
-phi = 0.1 (visibility 0.47, against 0.21 measured on the 199-CZ signed
-probe) and -0.265 at 0.3, kernel even part +0.061 and crossing +0.062 from
-relaxation, bright odd part -0.008 and bright reading +0.487. The model
-carries no coherent error.
+**Prediction** (scripts/iqm_sim.py noise from set `68b0f1d0` with
+herald-conditioned readout and ALAP idle T1/T2 relaxation, exact
+density-matrix probabilities; cases.json binds prediction.json by digest):
+kernel odd part -0.0945 at phi = 0.1 (visibility 0.48, against 0.21 measured
+on the 199-CZ signed probe) and -0.269 at 0.3, kernel even part +0.052 from
+relaxation and readout, bright odd part -0.008. The model carries no coherent
+error.
 
-**Model device.** The self-test draws counts from the exact coherent model of
-each circuit at visibility 0.6 with QB11 over-rotated by 2.7 % and QB12 by
--0.3 %, the control reading with errors (0.01, 0.03) and QB11 with
-(0.05, 0.12): it resolves H1 at both angles, falsifies no hypothesis and recovers
+**Model device.** The self-test draws counts from the noise model itself with
+QB11 over-rotated by 2.7 % and QB12 by -0.3 % (exact density matrix), the
+control reading with errors (0.01, 0.03) and QB11 with (0.05, 0.12): it
+resolves H1 at both angles, falsifies no hypothesis and recovers
 both over-rotations from the trains; it falsifies H1 when the kernel's sign
 is reversed, falsifies H4 when the kernel arms carry an even shift of -0.05
 that over-rotation does not explain, leaves H1 unresolved with H3 defined
-for a device with no signed response, and suspends H4 when the trains ignore
-their pulse count.
+for a device with no signed response, and falsifies H5 and suspends H4 when
+the trains ignore their pulse count.
 
 **Mock runs.** garnet:mock refused the first submission ('Calibration set
 not found', 0 credits), since the case then pinned Garnet's set for every
 QC; the set is now pinned per QC. The second run accepted a 21-circuit
-build (estimate 2.80 s) and the third a 25-circuit build (3.01 s). The
-fourth ran the current 27-circuit bytes (cases.json sha256 `b3a9e166...`),
-compiled against the mock's own set, estimated 3.09 s and charged 0.00
-credits; mock bits are random. A dry submission to Garnet passed every
-refusal.
+build (estimate 2.80 s), the third a 25-circuit build (3.01 s) and the
+fourth the first 27-circuit build (3.09 s). The fifth ran the current bytes
+(cases.json sha256 `19407dd2...`), compiled against the mock's own set,
+estimated 3.09 s and charged 0.00 credits; mock bits are random. A dry
+submission to Garnet passed every refusal.
 
 **Cost.** Expected 3.35 s of shots at an upper 31 us per heralded shot (the
 slope of the two heralded Garnet jobs), ceiling ceil(1.60 + 3.35) x 0.50 =
