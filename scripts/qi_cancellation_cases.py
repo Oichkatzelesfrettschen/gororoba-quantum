@@ -368,9 +368,8 @@ def evaluate(
     nominal = {
         label: decide(c["odd"], c["se"]) if c["balanced"] else withheld for label, c in (("pi/36", k1), ("pi/12", k3))
     }
-    # The manifests preregister H1 as the kernel odd part against zero. The matched difference kernel minus
-    # bright was chosen after the bright control falsified H2, so it is a post hoc adjudication and enters
-    # no preregistered falsification.
+    # The manifests preregister H1 as the kernel odd part against zero and name no matched difference, so
+    # kernel minus bright is reported as a post hoc adjudication and enters no preregistered falsification.
     matched_decision = decide(matched, matched_se) if k1["balanced"] and b1["balanced"] else withheld
     falsified = [
         name
@@ -406,8 +405,8 @@ def evaluate(
             "contrast": h3,
             "se": h3_se,
             "z": h3 / h3_se,
-            # The series measures the bright control at pi/36 only, and Tuna-17 shows a kernel-independent signed
-            # response there, so an angle-dependent artifact at pi/12 can move the contrast: H3 is never decided.
+            # The series measures the bright control at pi/36 only, so a kernel-independent signed response that
+            # depends on phi would move the contrast unseen at pi/12: H3 is never decided.
             "decision": "withheld: no bright control at pi/12"
             + ("" if k1["balanced"] and k3["balanced"] else "; protocol deviation"),
         },

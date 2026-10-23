@@ -223,7 +223,7 @@ derives each one from the run that forced it.
 - Choose an observable whose odd part takes no additive first-order term
   from a coherent error of the compile; check it with the first-order
   response of every coherent error (`scripts/iqm_probe_audit.py`).
-- Decide a kernel property on the double difference kernel minus control,
+- Preregister the decision on the double difference kernel minus control,
   running the control (the bright vector) at every parameter value the
   kernel runs: on Tuna-17 the bright vector carried a signed response of
   -0.017 (z -4.3) and the kernel's difference from it was z -1.0, while
@@ -237,7 +237,9 @@ derives each one from the run that forced it.
   Clifford+T phases exact (`scripts/qi_cancellation_cases.py`).
 - List the arms of a +- contrast +, -, -, + within one calibration, and give
   it a null arm where the ideal odd part vanishes: decide on
-  odd(t) - odd(0). A blocked order and a missing null arm let a position
+  odd(t) - odd(0). Where a batch holds fewer circuits than the contrast
+  (Quantum Inspire's three), the balance spans batches and the case declares
+  the assumption that each batch carries the same position effect. A blocked order and a missing null arm let a position
   effect and an incoherent offset pass for a signed response.
 - Derive a coherent-error response through the device's noise model before
   scaling it to a measured offset; the noiseless derivative overstates it by
