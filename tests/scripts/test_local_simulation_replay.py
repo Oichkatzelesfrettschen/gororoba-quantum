@@ -28,7 +28,7 @@ def skip_unchanged_numerical_replays(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.mark.parametrize("record_name", FOLLOWON_RECORDS)
-@pytest.mark.parametrize("mutation", ["missing_row", "seeded_counts", "producer"])
+@pytest.mark.parametrize("mutation", ["missing_row", "seeded_counts", "producer", "count_type"])
 def test_followon_replay_rejects_changed_evidence(
     record_name: str, mutation: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -45,14 +45,21 @@ def test_followon_replay_rejects_changed_evidence(
             record["runner_sha256"] = "0" * 64
         elif name.endswith("photonic.json"):
             counts = record["rows"][0]["simulated_counts"]
-            counts[0] -= 1
-            counts[1] += 1
+            if mutation == "count_type":
+                index = next(index for index, count in enumerate(counts) if count == 0)
+                counts[index] = False
+            else:
+                counts[0] -= 1
+                counts[1] += 1
         else:
             row = next(row for row in record["rows"] if len(row["simulations"]["source"]["counts"]) > 1)
             counts = row["simulations"]["source"]["counts"]
             first, second = list(counts)[:2]
-            counts[first] -= 1
-            counts[second] += 1
+            if mutation == "count_type":
+                counts[first] = float(counts[first])
+            else:
+                counts[first] -= 1
+                counts[second] += 1
         return record
 
     monkeypatch.setattr(local_simulation_replay, "load", altered_load)

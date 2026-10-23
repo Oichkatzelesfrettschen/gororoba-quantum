@@ -117,7 +117,9 @@ authorship unverified.
 
 The offline replay admits these three records explicitly. It verifies their
 producer/exporter bindings and compares every scientific field with the
-corresponding admitted record, excluding only top-level `python`,
+corresponding admitted record using canonical JSON with scalar types preserved.
+Boolean or floating replacements for integer counts fail the comparison.
+The comparison excludes only top-level `python`,
 `runner_sha256` and `elapsed_seconds`, and each optical row's `seconds`.
 Timing and interpreter values remain reported metadata. The existing QI
 denominator, frozen-source and numerical checks also cover both follow-on

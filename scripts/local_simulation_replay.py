@@ -70,7 +70,9 @@ def scientific_payload(record: dict[str, Any]) -> dict[str, Any]:
 
 def check_repeat_record(arguments: tuple[str, str]) -> None:
     retained, admitted = arguments
-    if scientific_payload(load(retained)) != scientific_payload(load(admitted)):
+    recorded = json.dumps(scientific_payload(load(retained)), sort_keys=True, allow_nan=False)
+    reference = json.dumps(scientific_payload(load(admitted)), sort_keys=True, allow_nan=False)
+    if recorded != reference:
         raise ValueError(f"follow-on scientific payload differs from its admitted reference: {retained}")
 
 
