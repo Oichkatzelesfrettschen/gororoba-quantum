@@ -279,13 +279,14 @@ def main() -> int:
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--write", action="store_true")
     action.add_argument("--check", action="store_true")
+    parser.add_argument("--out", type=Path, default=OUT, help="report path; a successor preserves retained bytes")
     args = parser.parse_args()
     text = json.dumps(build(), indent=1, sort_keys=True) + "\n"
     if args.write:
-        OUT.write_text(text)
+        args.out.write_text(text)
     else:
-        require(OUT.is_file() and OUT.read_text() == text, f"{OUT.relative_to(ROOT)} differs; regenerate explicitly")
-    print(f"stray-mode veto: {OUT.relative_to(ROOT)}")
+        require(args.out.is_file() and args.out.read_text() == text, f"{args.out} differs; regenerate explicitly")
+    print(f"stray-mode veto: {args.out}")
     return 0
 
 

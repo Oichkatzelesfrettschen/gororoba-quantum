@@ -190,7 +190,7 @@ stack, as core-489 does for pyadic. Versions below are the build host's.
 | threadpoolctl | 3.6.0 | limit BLAS threads per process | host only |
 | python-flint | 0.9.0 (CI pin) | exact rank modulo p (`nmod_mat`), RREF null spaces (`fmpq_mat`), SymPy's ground types | Kaggle images take it through `--ci-env` or the `exact-arithmetic` group |
 | gmpy2 | 2.3.2 | fast big integers and rationals where `Fraction` dominates a profile | host only |
-| pyadic | 0.3.0 | `ModP`, `PAdic`, rational reconstruction | not in CI; Kaggle `exact-arithmetic` group; [note](../packages/manual/pyadic.md) |
+| pyadic | 0.3.0 | `ModP`, `PAdic`, rational reconstruction, Hensel lifts of smooth germs (`scripts/rank_locus_padic_lift.py`) | not in CI; Kaggle `exact-arithmetic` group; precision model and traps in the [manual page](../packages/manual/pyadic.md#precision-model) |
 | galois | 0.4.11 | finite-field numpy arrays and linear algebra | `quantum-tools` group |
 | mpmath | 1.4.1 | arbitrary-precision reals and complexes | CI pin through `ci/install_pins.sh` |
 | cython | 3.3.0 | compiled extensions | no compiled module in the tree |

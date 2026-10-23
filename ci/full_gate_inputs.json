@@ -5,6 +5,9 @@
     "core-662": [
       "docs/evidence/rank_locus_nullity12_refinement/**"
     ],
+    "core-668": [
+      "docs/evidence/rank_locus_padic_lift/**"
+    ],
     "core-069": [],
     "core-080": [],
     "core-089": [],
@@ -476,6 +479,16 @@
     ],
     "core-666": [
       "docs/evidence/evidence-closure/**"
+    ],
+    "core-671": [
+      "docs/**",
+      "results/**",
+      "scripts/**",
+      "gororoba_quantum/**",
+      "ci/**",
+      "requirements.txt",
+      "tests/scripts/test_algebra_device_conjectures.py",
+      "tests/scripts/test_algebra_conjecture_circuits.py"
     ],
     "core-behavior-03": [
       "pyproject.toml",
