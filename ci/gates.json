@@ -1768,6 +1768,14 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_identity.py --check docs/evidence/moreno_stiefel/pfaffian-identity.json",
+   "name": "core-660",
+   "seconds": 9.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qubit_baseline.py",
    "name": "core-268",
@@ -2843,6 +2851,15 @@
    "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4",
    "name": "core-329",
    "seconds": 53.2,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes all",
+   "name": "core-661",
+   "seconds": 833.7,
    "tier": "full",
    "workers": "all"
   },
@@ -4016,7 +4033,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --check --summary results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json --output docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.png && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-figure-replay.py && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
    "name": "core-630",
    "seconds": 13.0,
    "tier": "pr"
@@ -4027,6 +4044,22 @@
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-cd-core-exact-contracts.json",
    "name": "core-631",
    "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_photonic_cases.py --out results/hypercomplex/photonic-successors --native-catalogue results/hypercomplex/photonic-successors/native-target-catalogue.json --check && \"$PYTHON\" -B -W error scripts/quandela_api_inventory.py docs/evidence/quandela/input-port-api-audit",
+   "name": "core-650",
+   "seconds": 10.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/photonic_repeat_readout_pooled.py results/quandela/runs/belenos-order-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-0 results/quandela/runs/belenos-wave-repeat-block-1 results/quandela/runs/belenos-wave-repeat-block-2 results/quandela/runs/belenos-transform-repeat-block-0 --check results/hypercomplex/belenos-repeat-readout-pooled.json && \"$PYTHON\" -B -W error scripts/photonic_compilation_audit_pooled.py results/hypercomplex/belenos-repeat-readout-pooled.json --check results/hypercomplex/belenos-compilation-measurement-audit-pooled.json",
+   "name": "core-651",
+   "seconds": 15.0,
    "tier": "pr"
   },
   {
@@ -4044,6 +4077,23 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response",
    "name": "core-633",
    "seconds": 2.0,
+   "tier": "pr",
+   "requires": ["qi"]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_simulation_replay.py",
+   "name": "core-652",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_simulation_replay.py --live-qi && \"$PYTHON\" -m pytest -q tests/scripts/test_opensquirrel_fullprecision.py tests/scripts/test_local_photonic_compiler_crosscheck.py",
+   "name": "core-653",
+   "seconds": 14.0,
    "tier": "pr",
    "requires": ["qi"]
   }

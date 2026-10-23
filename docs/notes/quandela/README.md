@@ -186,12 +186,17 @@ Properties of the server that its code and gate hold:
 - Parameters carry schemas: a platform name matches `(qpu|sim):...`, a job
   id is hexadecimal with dashes, so a path such as `../../api/tokens` fails
   validation before any request.
+- The protocol validates JSON types and rejects undeclared arguments before
+  FastMCP compatibility conversion. Boolean photon counts and JSON-string
+  matrices therefore fail at the protocol boundary. The HTTP adapter bounds
+  responses to 64 MiB; an oversized or unusable JSON acknowledgment reports an
+  unknown outcome, which requires reconciliation before a mutation retry.
 
 | Tool | Parameters | Effect | Claude / Codex approval |
 |---|---|---|---|
 | `qd_platforms` | none | Explorer platforms with status, seconds per job, credits per shot, daily availability, next maintenance; the public list | allow / approve |
 | `qd_platform` | `name`, `include_bulk` | processor record with a `bulk_fields` map (`present`, `empty` or `absent` per serialized chip and HTML documentation, as the server sent them); a default read replaces a present bulk value with `{"stripped": true, "chars": N}` and `include_bulk` keeps the values | allow / approve |
-| `qd_availability` | none | the token's job limits and occupancy | allow / approve |
+| `qd_availability` | none | the token's job limits and occupancy; an explicitly unknown platform queue count and an offer to open the authenticated dashboard | allow / approve |
 | `qd_usage` | none | jobs and usage per token, token ids removed | allow / approve |
 | `qd_job_status` | `job_id` | one status read | allow / approve |
 | `qd_job_result` | `job_id`, `include_raw` | the result; string fields truncate at 8000 characters without `include_raw` | allow / approve |
@@ -205,6 +210,14 @@ of this table, every one read-only except `qd_cancel_job`; it also parses the
 server and fails when a tool other than `qd_cancel_job` names `request`, when
 any string names a `/qt/` route, or when the server imports a network module
 of its own.
+
+`qd_availability.platform_queue` separates the dashboard's pending-job count
+from token occupancy. Its `count` stays null and its `status` reads
+`requires-dashboard-session`; its action offers to open
+https://cloud.quandela.com/webide/ for sign-in and a platform-card read.
+The MCP server neither opens a browser automatically nor copies browser
+credentials. The [API audit](../../evidence/quandela/input-port-api-audit/README.md#dashboard-queue-and-accounting-boundaries)
+records the dashboard route, browser probe and limits of the available count.
 
 ## Explorer plan, credits and notebooks
 
@@ -516,8 +529,9 @@ transpiler model and the 84/84 mapping.
 
 ## Gates
 
-CI never imports Perceval: its gates read retained JSON and Markdown with the
-standard library. Every retained run enters docs/state/research_state.json
+The snapshot and retained-result validators read JSON and Markdown with the
+standard library. Circuit-conformance behavioral tests use the Perceval and
+exqalibur versions pinned in ci/requirements-ci.txt. Every retained run enters docs/state/research_state.json
 under the `quandela` provider in the change that retains it.
 
 Gates core-500 (`capture_qd_docs.py --check`), core-501 (its

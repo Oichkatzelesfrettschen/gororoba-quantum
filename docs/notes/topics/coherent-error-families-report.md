@@ -337,9 +337,16 @@ From a clean tree at the branch head:
   median 0.078, median absolute change 0.224 and 90th percentile 0.735.
 - Neither source carries a qubit frequency.
 
+## Registry
+
+The claim `hw-atlas-coherent-families` in
+[research_state.json](../../state/research_state.json) carries the ZZ-frame
+comparison and the no-single-family result, bound to
+`docs/evidence/atlas_coherent_families/result.json`. Gate core-329 replays
+lane 4 of both runs and full-tier gate core-661 replays all 14 lanes.
+
 ## Remaining
 
-- **research_state.json** claims: the replay gate core-329 now exists, so the ZZ-frame comparison and the no-single-family result can enter as claims bound to `docs/evidence/atlas_coherent_families/result.json`.
 - **The x-versus-sx relative axis phase is not modeled.** x is 33 of 1765
   single-qubit pulses in the sampled replicas, too few to identify it.
 - **Joint nonlinear fits are not attempted.** Examples are a quadratic

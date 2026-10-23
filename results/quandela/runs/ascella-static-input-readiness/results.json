@@ -1,0 +1,77 @@
+{
+ "collected_utc": "2026-10-22T11:25:22+00:00",
+ "counts": {},
+ "data": {
+  "command": "sample_count",
+  "created_date": "2026-10-22T11:23:57.096473+00:00",
+  "duration": 1,
+  "failure_code": "RUNTIME ERROR",
+  "job_id": "f758aa3b-85c6-4c31-8bc5-535c5b1ff05c",
+  "job_name": "ascella-readiness/static-coupler",
+  "payload": {
+   "command": "sample_count",
+   "computation": "pcvlar 0 1 0 Computation 0 5 command 1 experiment 2 parameters 3 job_name 4 job_group_name 5 Command 0 3 name 6 signature 7 apply_emt 8 Experiment 212 Cio6UENWTDpCYXNpY1N0YXRlOnwxLDAsMCwwLDAsMCwwLDAsMCwwLDAsMD4SCkV4cGVyaW1lbnQiETpQQ1ZMOlBvc3RTZWxlY3Q6QAxKTRAMUkkQDCJFEAJSQRACIj0QAmI5CAISCQkYLURU+yH5PxoJCQAAAAAAAAAAIgkJAAAAAAAAAAAqCQkAAAAAAAAAADIJCQAAAAAAAAAAUAE= dict 3 15 17 12 18 16 19 str 32 ascella-readiness/static-coupler None  str 12 sample_count list 3 9 10 11 bool T tuple 3 12 13 14 tuple 3 15 13 14 tuple 3 16 13 14 str 11 max_samples type 3 int bool F str 9 max_shots str 16 compilation_seed int 2048 int 1024 int 0",
+   "max_samples": 1024,
+   "max_shots": 2048,
+   "mitigations": "pcvlar 0 1 0 list 0",
+   "pcvl_version": "1.3.1"
+  },
+  "pcvl_version": "1.3.1",
+  "platform_id": "184c7620-e10d-4f79-af2c-83be2041122",
+  "platform_name": "qpu:ascella",
+  "process_id": "fd2ace0a-9c6e-416a-a961-1787a17226b6",
+  "rerun_from": null,
+  "shots": 0,
+  "start_time": "2026-10-22T11:24:06.347088+00:00",
+  "status": "error"
+ },
+ "error": "RuntimeError: hardware_info.circuit_input_ports must be defined in the hardware_configto use Instruments.set_pic_input().",
+ "job_id": "f758aa3b-85c6-4c31-8bc5-535c5b1ff05c",
+ "partial": true,
+ "result_fields": {},
+ "result_sha256": "469193ad57c36b09b22fa891c1ee42236883b1e2fe78bb1f38442a47ad2f26ac",
+ "samples": 0,
+ "schema": "qd-collection-v1",
+ "shots": 0,
+ "status": {
+  "creation_datetime": 1792668237.096473,
+  "duration": 1,
+  "failure_code": "RUNTIME ERROR",
+  "last_intermediate_results": null,
+  "msg": "ok",
+  "progress": 0.0,
+  "progress_message": null,
+  "shots": 0,
+  "start_time": 1792668246.347088,
+  "status": "error",
+  "status_message": "RuntimeError: hardware_info.circuit_input_ports must be defined in the hardware_configto use Instruments.set_pic_input()."
+ },
+ "usage_after": [
+  {
+   "total_jobs": 46,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 3,
+     "free_credits": 0.0,
+     "nb_jobs": 3,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1869,
+     "free_credits": 25.225500000000004,
+     "nb_jobs": 26,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ]
+}
