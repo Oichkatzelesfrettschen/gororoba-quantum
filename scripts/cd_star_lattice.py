@@ -511,17 +511,23 @@ def doubling_blocks(n: int) -> tuple[Matrix, Matrix]:
     return big_right, big_left
 
 
+def _gram_row_holds(task: tuple[Matrix, int]) -> bool:
+    columns, a = task
+    n = len(columns)
+    return all(
+        sum(x * y for x, y in zip(columns[a], columns[b], strict=True)) == (n - 1 if a == b else 0) for b in range(a, n)
+    )
+
+
 def is_skew_conference(matrix: Matrix) -> bool:
-    """Zero diagonal, W^T = -W and W^T W = (n - 1) I, so I + W is a skew Hadamard matrix."""
+    """Zero diagonal, W^T = -W and W^T W = (n - 1) I, so I + W is a skew Hadamard matrix.
+
+    The Gram rows run through ordered_map, one task per column a against columns a..n-1.
+    """
     n = len(matrix)
     columns = [[matrix[row][column] for row in range(n)] for column in range(n)]
     skew = all(matrix[i][j] == -matrix[j][i] for i in range(n) for j in range(n))
-    gram = all(
-        sum(x * y for x, y in zip(columns[a], columns[b], strict=True)) == (n - 1 if a == b else 0)
-        for a in range(n)
-        for b in range(a, n)
-    )
-    return skew and gram
+    return skew and all(ordered_map(_gram_row_holds, [(columns, a) for a in range(n)], min_items=1))
 
 
 def paley_matrix(q: int) -> Matrix:
@@ -540,8 +546,8 @@ def paley_matrix(q: int) -> Matrix:
     return matrix
 
 
-def signed_equivalences(source: Matrix, target: Matrix) -> list[SignedPermutation]:
-    """Signed permutations i -> (t_i, s_i) with target[t_i][t_j] s_i s_j = source[i][j]: P source P^T = target."""
+def _equivalence_branch(task: tuple[Matrix, Matrix, int, int]) -> list[SignedPermutation]:
+    source, target, root, root_sign = task
     n = len(source)
     found: list[SignedPermutation] = []
 
@@ -560,8 +566,18 @@ def signed_equivalences(source: Matrix, target: Matrix) -> list[SignedPermutatio
                     extend(partial)
                     partial.pop()
 
-    extend([])
+    if target[root][root] == source[0][0]:
+        extend([(root, root_sign)])
     return found
+
+
+def signed_equivalences(source: Matrix, target: Matrix) -> list[SignedPermutation]:
+    """Signed permutations i -> (t_i, s_i) with target[t_i][t_j] s_i s_j = source[i][j]: P source P^T = target.
+
+    One branch per image (t, s) of axis 0 runs through ordered_map, in the order t, then sign +1 before -1.
+    """
+    roots = [(source, target, t, s) for t in range(len(source)) for s in (1, -1)]
+    return [g for branch in ordered_map(_equivalence_branch, roots, min_items=1) for g in branch]
 
 
 def mobius_image(q: int, m: Mobius, p: int) -> int:
@@ -672,17 +688,31 @@ def is_isomorphic_to_sl2(
     return False
 
 
+def _orbit_sums_of_row(task: tuple[list[SignedPermutation], int]) -> list[dict[tuple[int, int], int]]:
+    group, i = task
+    n = len(group[0])
+    sums = []
+    for j in range(n):
+        total: Counter[tuple[int, int]] = Counter()
+        for g in group:
+            (gi, si), (gj, sj) = g[i], g[j]
+            total[(gi, gj)] += si * sj
+        sums.append(dict(total))
+    return sums
+
+
 def commutant_basis(n: int, group: list[SignedPermutation]) -> list[Matrix]:
-    """Integer basis of the matrices commuting with every group element: the nonzero orbit sums of the units E_ij."""
+    """Integer basis of the matrices commuting with every group element: the nonzero orbit sums of the units E_ij.
+
+    The orbit sums of each row i of units run through ordered_map; the deduplication walks them in (i, j) order.
+    """
+    rows = ordered_map(_orbit_sums_of_row, [(group, i) for i in range(n)], min_items=1)
     seen: set[tuple[int, int]] = set()
     basis: list[Matrix] = []
     for i, j in itertools.product(range(n), repeat=2):
         if (i, j) in seen:
             continue
-        total: Counter[tuple[int, int]] = Counter()
-        for g in group:
-            (gi, si), (gj, sj) = g[i], g[j]
-            total[(gi, gj)] += si * sj
+        total = rows[i][j]
         seen |= set(total)
         if any(total.values()):
             scale = max(abs(v) for v in total.values())
@@ -798,6 +828,12 @@ def doubling_pair_labels(
     raise CensusError(f"no labeling of the doubling pairs by the projective line over F_{q} makes the group Moebius")
 
 
+def _pair_orbits_from(task: tuple[list[SignedPermutation], int]) -> list[set[frozenset[int]]]:
+    group, a = task
+    n = len(group[0])
+    return [{frozenset((g[a][0], g[b][0])) for g in group} for b in range(a + 1, n)]
+
+
 def sedenion_identification(group: list[SignedPermutation]) -> dict[str, Any]:
     """G_16 on the eight doubling pairs {a, a + 8}: PGL(2, 7) image, kernel and derived subgroup SL(2, 7)."""
     n, q = 16, 7
@@ -818,13 +854,14 @@ def sedenion_identification(group: list[SignedPermutation]) -> dict[str, Any]:
     for a in range(n):
         if not any(a in orbit for orbit in derived_orbits):
             derived_orbits.append(sorted({g[a][0] for g in derived}))
+    orbit_rows = ordered_map(_pair_orbits_from, [(group, a) for a in range(n)], min_items=1)
     pair_orbits: list[int] = []
     covered: set[frozenset[int]] = set()
-    for pair in itertools.combinations(range(n), 2):
-        if frozenset(pair) not in covered:
-            orbit = {frozenset(g[a][0] for a in pair) for g in group}
-            covered |= orbit
-            pair_orbits.append(len(orbit))
+    for a, row in enumerate(orbit_rows):
+        for b, orbit in zip(range(a + 1, n), row, strict=True):
+            if frozenset((a, b)) not in covered:
+                covered |= orbit
+                pair_orbits.append(len(orbit))
     return {
         "doubling_pair_maps_in_pgl2_7": all(image in classes for image in line.values()),
         "doubling_pair_image_order": len(set(line.values())),
@@ -837,6 +874,14 @@ def sedenion_identification(group: list[SignedPermutation]) -> dict[str, Any]:
     }
 
 
+def _element_checks(task: tuple[Matrix, SignedPermutation]) -> tuple[bool, bool]:
+    """Whether one signed permutation commutes with W, and whether its index map is XOR-linear."""
+    w, g = task
+    n = len(g)
+    commutes = all(w[g[i][0]][g[j][0]] * g[i][1] * g[j][1] == w[i][j] for i in range(n) for j in range(n))
+    return commutes, is_xor_linear(g)
+
+
 def identification_facts(groups: dict[int, list[SignedPermutation]]) -> dict[str, Any]:
     """Arc-matrix, Paley, commutant and table-automorphism facts that identify the boundary groups."""
     facts: dict[str, Any] = {
@@ -845,10 +890,12 @@ def identification_facts(groups: dict[int, list[SignedPermutation]]) -> dict[str
             str(n): doubling_blocks(n // 2) == (arc_matrix(n), left_matrix(n)) for n in CONFERENCE_DIMENSIONS[1:]
         },
     }
+    element_checks: dict[int, list[tuple[bool, bool]]] = {}
     for n, group in groups.items():
         w = arc_matrix(n)
+        element_checks[n] = ordered_map(_element_checks, [(w, g) for g in group], min_items=1)
         require(
-            all(w[g[i][0]][g[j][0]] * g[i][1] * g[j][1] == w[i][j] for g in group for i in range(n) for j in range(n)),
+            all(commutes for commutes, _ in element_checks[n]),
             f"a dimension-{n} boundary symmetry fails to commute with the arc matrix",
         )
     for n in (4, 8, 16):
@@ -857,7 +904,7 @@ def identification_facts(groups: dict[int, list[SignedPermutation]]) -> dict[str
         entry: dict[str, Any] = {
             "commutant": commutant_facts(n, group),
             "stabilizer_of_e0_equals_table_automorphisms": stabilizer_of_e0 == table_automorphisms(n),
-            "xor_linear_elements": sum(1 for g in group if is_xor_linear(g)),
+            "xor_linear_elements": sum(1 for _, linear in element_checks[n] if linear),
         }
         if n in PALEY_PRIMES:
             entry["paley"] = paley_facts(n, PALEY_PRIMES[n], group)
