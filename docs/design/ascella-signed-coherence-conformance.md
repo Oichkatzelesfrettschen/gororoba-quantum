@@ -335,8 +335,11 @@ coefficient spectrum" always names those primary sequences.
 The 15 discrete coefficients, the mutation difference and the absolute
 mutation dark probability form 17 primary endpoints. Allocate family error
 0.01 equally: `alpha_j=0.01/17`. The mutation dark tolerance is 0.05, fixed
-before acquisition; the endpoint qualifies closure when its whole interval
-lies in `[0, 0.05]`. Adding the ten sign-even X/Y coefficients would give 27
+before acquisition. A probability lies in `[0, 1]`, so the endpoint's interval
+is intersected with `[0, 1]` before any decision; closure qualifies when the
+upper bound `min(1, D_mut + r)` is at most 0.05, and fails when the lower bound
+exceeds 0.05. A perfectly closed mutation, `D_mut=0` with radius 0.01575, gives
+the clipped interval `[0, 0.01575]` and qualifies. Adding the ten sign-even X/Y coefficients would give 27
 endpoints and widen every radius by a factor of 1.0319 at unchanged cost; that
 expansion is an open decision of the plan's owner.
 For any linear endpoint with raw-iteration weights `c_i` and event range
