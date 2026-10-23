@@ -65,6 +65,10 @@ def _provider_facts(name: str) -> tuple[str, Any]:
     return name, research_state.PROVIDERS[name]().runs()
 
 
+def _source_record(path: str) -> dict[str, str]:
+    return {"path": path, "sha256": digest(local_path(path))}
+
+
 def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, Any]:
     """Explicitly refresh the frozen inventory through the existing offline provider adapters."""
     import research_state
@@ -104,7 +108,7 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, An
         "claims": claims,
         "acquisitions": acquisitions,
         "acquisition_count": len(acquisitions),
-        "sources": [{"path": path, "sha256": digest(local_path(path))} for path in sorted(paths)],
+        "sources": ordered_map(_source_record, sorted(paths), min_items=1),
     }
     census_path = local_path(census_path.resolve().relative_to(ROOT.resolve()).as_posix())
     census_path.write_text(
@@ -374,8 +378,12 @@ def _code_control() -> dict[str, Any]:
     }
 
 
+def _string_row(row: list[Any]) -> list[str]:
+    return [str(simplify(value)) for value in row]
+
+
 def strings(matrix: Any) -> list[list[str]]:
-    return [[str(simplify(value)) for value in row] for row in matrix.tolist()]
+    return ordered_map(_string_row, matrix.tolist(), min_items=1)
 
 
 def _bell_basis(task: tuple[Any, str, tuple[Any, Any]]) -> tuple[str, list[str]]:
@@ -549,18 +557,20 @@ def _embedding(dimension: int) -> dict[str, Any]:
     }
 
 
+def _comparison(item: dict[str, Any]) -> dict[str, Any]:
+    record = json.loads(local_path(item["path"]).read_text())
+    selected = {}
+    for field in item["fields"]:
+        value = record
+        for key in field.split("::"):
+            value = value[key]
+        selected[field] = value
+    return {**item, "retained_values": selected}
+
+
 def synthesis(manifest: dict[str, Any]) -> dict[str, Any]:
     validate_manifest(manifest)
-    comparisons = []
-    for item in manifest["comparisons"]:
-        record = json.loads(local_path(item["path"]).read_text())
-        selected = {}
-        for field in item["fields"]:
-            value = record
-            for key in field.split("::"):
-                value = value[key]
-            selected[field] = value
-        comparisons.append({**item, "retained_values": selected})
+    comparisons = ordered_map(_comparison, manifest["comparisons"], min_items=1)
     target_path = "docs/evidence/heron_platform/targets.json"
     require(target_path in {source["path"] for source in manifest["sources"]}, "timing source is unbound")
     snapshot = json.loads(local_path(target_path).read_text())
@@ -594,6 +604,19 @@ def synthesis(manifest: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _comparison_markdown(comparison: dict[str, Any]) -> list[str]:
+    return [
+        f"### {comparison['claim']}",
+        "",
+        comparison["boundary"],
+        "",
+        "```json",
+        encode(comparison["retained_values"]).rstrip(),
+        "```",
+        "",
+    ]
+
+
 def render(result: dict[str, Any]) -> str:
     lines = [
         "# Algebra-to-device conjecture synthesis",
@@ -618,17 +641,8 @@ def render(result: dict[str, Any]) -> str:
     for row in result["proposals"]:
         lines.append(f"| {row['id']} | {row['status']} | {row['question']} | {row['falsifier']} |")
     lines += ["", "## Retained comparisons", ""]
-    for comparison in result["comparisons"]:
-        lines += [
-            f"### {comparison['claim']}",
-            "",
-            comparison["boundary"],
-            "",
-            "```json",
-            encode(comparison["retained_values"]).rstrip(),
-            "```",
-            "",
-        ]
+    for section in ordered_map(_comparison_markdown, result["comparisons"], min_items=1):
+        lines.extend(section)
     lines += [
         "## Exact finite controls",
         "",

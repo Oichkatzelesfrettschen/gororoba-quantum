@@ -8256,7 +8256,7 @@
   },
   "frozen_base": "691853bd8549ff2eea00f39a4a03f80493908c76",
   "manifest_sha256": "23d4780dcb8fed40e6865a4ef6f15a71c0da84db3063a4c6e98523af458b7c5b",
-  "producer_sha256": "c4fe192ae07272076152bd37d8e8a38b8627c6984451bee77fc1cc3423a6243b",
+  "producer_sha256": "9c5c74b6c748ceeed4d2fc258b1fe72418ce19d78348312a7fdb95a29b356d4a",
   "proposals": [
     {
       "boundary": "Equal depth alone leaves routing and readout confounded.",
