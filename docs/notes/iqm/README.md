@@ -450,7 +450,7 @@ Facts a Garnet case design starts from, each with the record that carries it:
 - **Null offset.** On the 199-CZ compile the calibration model gives the
   signed probe's odd part +0.0136 at t = 0, where the ideal is zero, because
   the +0 and -0 circuits differ in their rotation angles; Garnet read
-  +0.0024 +- 0.0031 there.
+  +0.0025 +- 0.0031 there.
 - **Readout.** `measure_012` (three-state readout) is offered on QB1, QB3,
   QB7, QB9 and QB14; the Qiskit Target omits it, so a leakage readout goes
   through the circuit JSON directly.
