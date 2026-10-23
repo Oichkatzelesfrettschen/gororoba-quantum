@@ -611,6 +611,40 @@ rebuilt by `scripts/bdsc_stationarity.py --check`).
   0.002 remains". The per-class tau^2 states which of the two holds and how
   much the veto removed. It is reported and decides nothing.
 
+**Readout of the stationarity case.** The four post-calibration runs (the
+repeat of b1-j1, b1-j2, b2-j1 and b2-j2, all 2400000 samples, every
+returned circuit equal to its retained counterpart) read as follows under
+the primary veto
+([readout](../../results/quandela/bdsc_stationarity_readout.json)):
+
+- **Primary.** The heterogeneity of the matched changes reads 66.1 on 45
+  degrees of freedom (p 0.022): inconclusive, between the resolved and
+  consistent thresholds. It neither falsifies nor supports the claim that
+  mode 5 carried all of the instance-specific drift. The secondary veto
+  (`subtract`) reads 65.0 (p 0.027).
+- **Dark-click falsifier.** Consistent (statistic 103.3, p 0.31).
+- **Common shift.** The superposition class-mean change reads +0.0003
+  (z 0.8), so the retained -0.0044 does not repeat in sign or size.
+- **Group-by-block contrast.** -0.0002 (z -0.2), confounded by design.
+- **Excess variance.** The superpositions keep tau = 0.0021 (Q-profile
+  interval from 0.0009 to 0.0035, Q 55.7 on 31, p 0.004), the size of the
+  retained residual the sensitivity projection assumed. f and g read tau^2
+  consistent with zero. The veto removes 0.999 of the superpositions' raw
+  tau^2 and all of g's.
+- **Mode-5 share.** Its block means read 0.249 and 0.057 while every plan
+  and post-collection reading held mode 5 at 48440.3 counts/s, so within one
+  calibration the share changed fourfold at a constant platform figure. The
+  plan-time dark-count rate does not track the acquired mode-5 clicks, and
+  the dark-click mechanism stays a candidate.
+
+The pre-calibration b1-j1 run enters only the calibration contrast against
+its repeat
+([contrast](../../results/quandela/bdsc_stationarity_calibration_contrast.json)):
+the same 24 requests, 0 returned circuits differing, read the superposition
+shift -0.0017 (z -2.8), g +0.0006 (z 3.0) and f -0.0001 (z -1.6), with the
+mean mode-5 share rising from 0.093 to 0.255 as the plan-time figure moved
+from 49520.9 to 48440.3 counts/s. It is reported and decides nothing.
+
 **Cost and limits.**
 
 - *Cost.* Each job bills 1 + 1e-6 x 120000 = 1.12 credits, and the four

@@ -32,14 +32,14 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 7 |
 | exact finite certificate | established | 20 |
-| exploratory reanalysis | exploratory | 60 |
+| exploratory reanalysis | exploratory | 61 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 4 |
 | mathematical claim | established | 18 |
 | mathematical claim | open | 3 |
 | numerical or stochastic simulation | established | 8 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 48 |
+| preregistered hardware inference | established | 49 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 10 |
 | proposed experiment | superseded | 4 |
@@ -313,12 +313,17 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04](results/quantum_inspire/runs/2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05](results/quantum_inspire/runs/2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05) | Quantum Inspire | sedenion kernel cancellation probe (pi/36 grid) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [ascella-mosaiq-update-order-retry](results/quandela/runs/ascella-mosaiq-update-order-retry) | Quandela Cloud | photonic order sampling recovery after advertised deployment update | qpu:ascella | 1 | 8 | completed | 1.016384 credits |
+| [2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1](results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
+| [2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat](results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
+| [2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2](results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
+| [2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1](results/quandela/runs/2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
+| [2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2](results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 60 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 65 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 24 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->

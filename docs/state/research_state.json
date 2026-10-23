@@ -1409,6 +1409,41 @@
       "question": "the second job of block 2 (`b2-j2`) of the approved four-job crossed diagnostic (24 iterations of 40000 samples): how do the support-conditioned BDSC settings respond under the matched seed and order of the 2026-10-22 ANU draw?"
     },
     {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1-precalibration",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the first job of block 1 (`b1-j1`), run before a Belenos calibration and read only as the calibration contrast against its repeat of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the approved repeat of block 1's first job (`b1-j1`) after the Belenos calibration, read as block 1's b1-j1 of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the second job of block 1 (`b1-j2`) of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b2-j1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the first job of block 2 (`b2-j1`), at least one hour after block 1's last execution end of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-stationarity-b2-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2",
+      "family": "BDSC stationarity case on qpu:belenos",
+      "question": "the second job of block 2 (`b2-j2`) of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?"
+    },
+    {
       "id": "qi-qx-bdsc-pauli-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00",
@@ -8634,6 +8669,45 @@
       "related_claims": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bdsc-stationarity-readout",
+      "statement": "The preregistered stationarity case on qpu:belenos, four post-calibration jobs repeating the crossed BDSC diagnostic's frozen requests at 100000 samples per iteration with every returned circuit equal to its retained counterpart, reads its primary inconclusive under the frozen mode-5 detector_absent veto: the heterogeneity of matched block changes about their class means is 66.1 on 45 degrees of freedom (p 0.022; the subtract veto reads 65.0, p 0.027). The dark-click coincidence falsifier reads consistent (p 0.31), the superposition common shift reads +0.0003 (z 0.8) rather than repeating the retained -0.0044, and the superpositions keep an excess spread tau 0.0021 (interval 0.0009 to 0.0035) while f and g read none; the veto removes 0.999 of the superpositions' raw tau^2. Reported only: the mode-5 share fell from a block mean of 0.249 to 0.057 at a constant plan-time dark-count figure of 48440.3 counts/s, and the pre-calibration run of the b1-j1 requests against its repeat reads a superposition shift of -0.0017 (z -2.8) across the calibration.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One device and one calibration, two blocks about an hour apart; the case separates neither slow drift from a step change nor drift within a window. Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance unresolved. The calibration hold and the post-calibration repeat of b1-j1 were amendments committed before the jobs they govern; the pre-calibration b1-j1 run enters no frozen test. The plan-time dark-count figure is a platform reading, not an acquisition-time measurement, so the mode-5 mechanism stays a candidate. An inconclusive primary decides neither branch; it makes no certification decision.",
+      "evidence": [
+        {
+          "path": "results/quandela/bdsc_stationarity_calibration_contrast.json",
+          "sha256": "8481d6563c530bc315c82bcd19c108eacedfc8acac0a943b395ff582b3d5433b"
+        },
+        {
+          "path": "results/quandela/bdsc_stationarity_readout.json",
+          "sha256": "48a477b28a1dd8ce10e8a119ed33741d85987aab764fc8f0202694a4888f5d1e"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-qualification.md",
+        "docs/runbooks/bdsc-qualification-case.md",
+        "scripts/bdsc_stationarity.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-stationarity-b1-j1-precalibration",
+        "qd-qpu-belenos-bdsc-stationarity-b1-j1",
+        "qd-qpu-belenos-bdsc-stationarity-b1-j2",
+        "qd-qpu-belenos-bdsc-stationarity-b2-j1",
+        "qd-qpu-belenos-bdsc-stationarity-b2-j2"
+      ],
+      "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qd-belenos-bdsc-stray-mode-veto",
+        "qd-belenos-bdsc-diagnostic-readout"
+      ],
+      "depends_on": []
     }
   ]
 }
