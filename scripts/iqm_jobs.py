@@ -15,12 +15,15 @@ Subcommands:
   file sets.
 - submit CASE_DIR JOB --qc QC --approval QUOTE --approved-cases-sha256 HEX --max-credits C
   (network) copies the case into results/iqm/runs/STAMP-QC-CASE-JOB/, refuses unless cases.json
-  carries the approved digest, the quantum computer is online and healthy, and the job's expected
-  seconds rounded up times the live price per second stay within C, and refuses a job that already
+  carries the approved digest, the quantum computer is online and healthy, C equals the job's
+  max_credits for that quantum computer in the approved cases.json (a charged job needs one), and the
+  job's expected seconds plus the fixed job cost, rounded up, times the live price per second stay
+  within C, and refuses a job that already
   has a run directory for that quantum computer; it then writes submission-state.json exclusively
   before the POST, reads the account credit, posts the job and writes submission.json with the job
   id and the quoted approval. --dry runs every refusal and prints the job without copying or sending.
-- collect RUN_DIR [--poll S] [--timeout S] (network) waits for a terminal status, keeps the job
+- collect RUN_DIR [--poll S] [--timeout S] (network) holds an exclusive lock on RUN_DIR, waits for a
+  terminal status, keeps the job
   record and, for a completed job, the measurements and measurement_counts artifacts byte for byte
   under raw/, reads the credit again and writes results.json: status, metrics, credits charged and
   per-circuit shot counts.
@@ -181,6 +184,8 @@ def build_reset() -> dict[str, str]:
 
 
 CASES = {PILOT: build_timing, RESET_PILOT: build_reset}
+# build_reset writes expected_seconds with JOB_SECONDS already in them; every other case writes the shots' schedule.
+FIXED_COST_IN_EXPECTED = frozenset({RESET_PILOT})
 
 
 def build(name: str = PILOT) -> dict[str, str]:
@@ -273,7 +278,16 @@ def submit(
     # IQM bills ceil(runtime) and offers no job-side cap. Its estimate, a fixed JOB_SECONDS plus each shot's
     # schedule, ran from 0.63 s below to 1.50 s above the runtime of the retained Garnet jobs
     # (results/iqm/*_analysis.json), so the ceiling adds JOB_SECONDS to the case's expected seconds.
-    ceiling = math.ceil(JOB_SECONDS + row["expected_seconds"]) * price
+    fixed = 0.0 if case["case"] in FIXED_COST_IN_EXPECTED else JOB_SECONDS
+    ceiling = math.ceil(fixed + row["expected_seconds"]) * price
+    # A charged job spends what the approved cases.json records for its quantum computer, so the digest
+    # covers the credit limit and the command line only repeats it.
+    approved = row.get("max_credits", {}).get(qc)
+    if ceiling > 0:
+        if approved is None:
+            raise PlatformError(f"{job} records no approved credit ceiling for {qc} in cases.json")
+        if max_credits != approved:
+            raise PlatformError(f"--max-credits {max_credits} is not the approved {approved} for {job} on {qc}")
     if ceiling > max_credits:
         raise PlatformError(f"{job} expects {ceiling:.2f} credits on {qc}, above the approved {max_credits}")
     suffix = f"-{qc.replace(':', '_')}-{case['case']}-{job}"
@@ -370,6 +384,21 @@ def post_job(
 def collect(run_dir: Path, client: Client, poll: float = 5.0, timeout: float = 3600.0) -> dict[str, Any]:
     """Collect a terminal job once; a run already collected keeps its first results.json, whose credit
     delta a later collection would mix with every job charged since."""
+    import fcntl
+
+    # The lock spans the existence check through the write, so one collection publishes results.json.
+    fd = os.open(run_dir, os.O_RDONLY)
+    try:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise PlatformError(f"another collection holds {run_dir}") from None
+        return collect_locked(run_dir, client, poll, timeout)
+    finally:
+        os.close(fd)
+
+
+def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float) -> dict[str, Any]:
     retained = run_dir / "results.json"
     if retained.exists():
         results: dict[str, Any] = json.loads(retained.read_text(encoding="utf-8"))
@@ -666,8 +695,17 @@ def self_test() -> str:
         (case / "circuits/j1-1x1000-passive-00.json").write_text("{}\n")
         refused(lambda: check_case(case), "differs from the build")
         write_case(case)
-        approved = sha256((case / "cases.json").read_bytes())
+        bare = sha256((case / "cases.json").read_bytes())
         client = Client("token", transport, "https://stub")
+        refused(
+            lambda: submit(case, "j2-1x4000-passive", "garnet", "approved", bare, 5, client, runs, "s0"), "records no"
+        )
+        manifest = json.loads((case / "cases.json").read_text(encoding="utf-8"))
+        for row in manifest["jobs"]:
+            ceiling = 0.5 if row["job"] == "j3-20x200-passive" else 5.0
+            row["max_credits"] = {"garnet": ceiling, "garnet:mock": ceiling}
+        (case / "cases.json").write_text(dump(manifest), encoding="utf-8")
+        approved = sha256((case / "cases.json").read_bytes())
         job = "j2-1x4000-passive"
         refused(lambda: submit(case, job, "garnet", "", approved, 5, client, runs, "s0"), "quoted approval")
         refused(lambda: submit(case, job, "garnet", "approved", "0" * 64, 5, client, runs, "s0"), "not the approved")
@@ -696,7 +734,11 @@ def self_test() -> str:
         if state["posts"] or any(runs.glob("s0-*")):
             raise RuntimeError("a tampered copy posted or kept its run directory")
         refused(
-            lambda: submit(case, job, "garnet", "approved", approved, 0.5, client, runs, "s0"), "above the approved"
+            lambda: submit(case, job, "garnet", "approved", approved, 20, client, runs, "s0"), "is not the approved"
+        )
+        refused(
+            lambda: submit(case, "j3-20x200-passive", "garnet", "approved", approved, 0.5, client, runs, "s0"),
+            "above the approved",
         )
         state["healthy"] = False
         refused(lambda: submit(case, job, "garnet", "approved", approved, 5, client, runs, "s0"), "healthy")
@@ -723,6 +765,14 @@ def self_test() -> str:
         mock = submit(case, job, "garnet:mock", "approved", approved, 5, client, runs, "s2")
         if not mock.name.endswith("-garnet_mock-timing-pilot-" + job):
             raise RuntimeError(f"the mock run is named {mock.name}")
+        holder = os.open(run, os.O_RDONLY)
+        fcntl.flock(holder, fcntl.LOCK_EX)
+        try:
+            refused(lambda: collect(run, client, poll=0), "another collection holds")
+        finally:
+            os.close(holder)
+        if (run / "results.json").exists():
+            raise RuntimeError("a refused collection wrote results.json")
         results = collect(run, client, poll=0)
         if results["status"] != "completed" or results["shots_per_circuit"] != [4000]:
             raise RuntimeError(f"collect read {results}")
@@ -760,6 +810,15 @@ def self_test() -> str:
         if collect(short, client, poll=0)["shots_per_circuit"] != [3999]:
             raise RuntimeError("collect does not report the shots the service returned")
         refused(lambda: run_facts(short), "returned other than")
+        # The reset case's expected seconds carry the fixed job cost once: ceil(2.8) x 0.50 = 1.50 credits.
+        reset = root / RESET_PILOT
+        write_case(reset)
+        manifest = json.loads((reset / "cases.json").read_text(encoding="utf-8"))
+        for row in manifest["jobs"]:
+            row["max_credits"] = {"garnet": 1.5}
+        (reset / "cases.json").write_text(dump(manifest), encoding="utf-8")
+        digest = sha256((reset / "cases.json").read_bytes())
+        submit(reset, "p-2x2000-passive", "garnet", "approved", digest, 1.5, client, runs, "s5", dry=True)
         plain = {"circuits": [{}, {}], "shots": 100, "options": {"heralding_mode": "none"}}
         heralded = {**plain, "options": {"heralding_mode": "zeros"}}
         if not shots_ok([100, 100], plain) or shots_ok([99, 100], plain) or shots_ok([100], plain):
