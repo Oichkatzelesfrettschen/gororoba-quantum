@@ -88,18 +88,41 @@ def target_of(calibration: iqm_sim.Calibration) -> tuple[Target, CouplingMap]:
     return target, coupling
 
 
-def relaxation(calibration: iqm_sim.Calibration) -> RelaxationNoisePass:
-    """Idle T1/T2 on every qubit from the calibration; T2 is capped at 2 T1, the physical bound."""
-    fields = [f"characterization.model.{q}.{kind}" for q in calibration.qubits for kind in ("t1_time", "t2_time")]
-    missing = [field for field in fields if field not in calibration.values]
+# A qubit no gate touches stays in |0>, which idle T1/T2 relaxation leaves unchanged, so its relaxation
+# times cannot reach the reading; one without a calibrated value takes this inert placeholder.
+UNTOUCHED_SECONDS = 1.0
+
+
+def relaxation(calibration: iqm_sim.Calibration, touched: set[str] | None = None) -> RelaxationNoisePass:
+    """Idle T1/T2 from the calibration, required for every touched qubit (all qubits when touched is
+    None); T2 is capped at 2 T1, the physical bound."""
+    required = set(calibration.qubits) if touched is None else touched
+    missing = [
+        f"characterization.model.{q}.{kind}"
+        for q in sorted(required, key=calibration.qubits.index)
+        for kind in ("t1_time", "t2_time")
+        if f"characterization.model.{q}.{kind}" not in calibration.values
+    ]
     if missing:
-        raise ValueError(f"the calibration lacks valid relaxation times: {missing}")
-    t1 = [calibration.values[f"characterization.model.{q}.t1_time"] for q in calibration.qubits]
+        raise ValueError(f"the calibration lacks valid relaxation times of touched qubits: {missing}")
+    t1 = [calibration.values.get(f"characterization.model.{q}.t1_time", UNTOUCHED_SECONDS) for q in calibration.qubits]
     t2 = [
-        min(calibration.values[f"characterization.model.{q}.t2_time"], 2 * t1[n])
+        min(calibration.values.get(f"characterization.model.{q}.t2_time", UNTOUCHED_SECONDS), 2 * t1[n])
         for n, q in enumerate(calibration.qubits)
     ]
     return RelaxationNoisePass(t1s=t1, t2s=t2, dt=1e-9, op_types=[Delay])
+
+
+def relaxed(calibration: iqm_sim.Calibration, scheduled: QuantumCircuit) -> QuantumCircuit:
+    """A scheduled circuit with idle relaxation on its delays, requiring calibrated times for the qubits
+    its gates touch."""
+    touched = {
+        calibration.qubits[scheduled.find_bit(q).index]
+        for instruction in scheduled.data
+        if instruction.operation.name != "delay"
+        for q in instruction.qubits
+    }
+    return relaxation(calibration, touched)(scheduled)
 
 
 def predict(
@@ -108,7 +131,7 @@ def predict(
     """<Z> of the control under the calibration noise and idle relaxation, sampled at a fixed seed."""
     bound = compiled.assign_parameters(skp.matched_values(t))
     scheduled = transpile(bound, target=target, optimization_level=0, scheduling_method="alap")
-    noisy = relaxation(calibration)(scheduled)
+    noisy = relaxed(calibration, scheduled)
     simulator = AerSimulator(noise_model=calibration.noise_model(), seed_simulator=PREDICTION_SEED)
     counts = simulator.run(noisy, shots=shots).result().get_counts()
     return sum((1 if key[-1] == "0" else -1) * n for key, n in counts.items()) / shots

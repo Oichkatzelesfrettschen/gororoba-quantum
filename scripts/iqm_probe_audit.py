@@ -320,8 +320,8 @@ def noisy_z(item: tuple[list[dict[str, Any]], tuple[str, Any], float]) -> float:
     calibration = iqm_sim.Calibration.from_directory(CASE / "calibration")
     target, _ = probe.target_of(calibration)
     circuit, _ = iqm_sim.to_qiskit({"name": "arm", "instructions": instructions}, calibration)
-    scheduled = probe.relaxation(calibration)(
-        transpile(circuit, target=target, optimization_level=0, scheduling_method="alap")
+    scheduled = probe.relaxed(
+        calibration, transpile(circuit, target=target, optimization_level=0, scheduling_method="alap")
     )
     index = {q: n for n, q in enumerate(calibration.qubits)}
     out = QuantumCircuit(*scheduled.qregs, *scheduled.cregs)
