@@ -463,7 +463,10 @@ def fit_train(
     fit then returns an infinite chi-square, which H5 rejects.
     """
 
-    def solve(eps: float) -> tuple[float, Any]:
+    def solve(eps: float) -> tuple[float, tuple[float, float]]:
+        # The 2 x 2 normal equations solve in closed form with sum() and math, whose IEEE arithmetic is
+        # exactly rounded; a BLAS matrix product or a LAPACK solve rounds by its build and CPU kernel, so
+        # the retained analysis would replay only under the library that wrote it.
         design, target, weight = [], [], []
         for n, (z, se, _) in zip(lengths, rows, strict=True):
             s = math.sin(n * math.pi / 2 * eps)
@@ -474,35 +477,23 @@ def fit_train(
         design += [(-2.0, 0.0), (c - 1, c + 1)]
         target += [ro0[0] - 1, ro1[0] + c]
         weight += [1 / ro0[1] ** 2, 1 / ro1[1] ** 2]
-        a = np.array(design)
-        y = np.array(target)
-        w = np.array(weight)
-        errors = np.linalg.solve(a.T @ (w[:, None] * a), a.T @ (w * y))
-        return float(np.sum(w * (y - a @ errors) ** 2)), errors
+        s00 = sum(w * a0 * a0 for w, (a0, _) in zip(weight, design, strict=True))
+        s01 = sum(w * a0 * a1 for w, (a0, a1) in zip(weight, design, strict=True))
+        s11 = sum(w * a1 * a1 for w, (_, a1) in zip(weight, design, strict=True))
+        t0 = sum(w * a0 * y for w, (a0, _), y in zip(weight, design, target, strict=True))
+        t1 = sum(w * a1 * y for w, (_, a1), y in zip(weight, design, target, strict=True))
+        det = s00 * s11 - s01 * s01
+        e01, e10 = (s11 * t0 - s01 * t1) / det, (s00 * t1 - s01 * t0) / det
+        residual = sum(
+            w * (y - a0 * e01 - a1 * e10) ** 2 for w, (a0, a1), y in zip(weight, design, target, strict=True)
+        )
+        return residual, (e01, e10)
 
     def chi2(eps: float) -> float:
         return solve(eps)[0]
 
-    def grid_chi2(eps: Any) -> Any:
-        """The profiled chi-square at every grid point in one batched solve; solve() is its scalar form."""
-        s = np.sin(np.multiply.outer(eps, np.array(lengths) * math.pi / 2))
-        c = np.cos(math.pi * eps)[:, None]
-        a = np.stack(
-            (
-                np.concatenate((s - 1, np.full_like(c, -2.0), c - 1), axis=1),
-                np.concatenate((s + 1, np.zeros_like(c), c + 1), axis=1),
-            ),
-            axis=2,
-        )
-        y = np.concatenate((np.array([z for z, _, _ in rows]) + s, np.full_like(c, ro0[0] - 1), ro1[0] + c), axis=1)
-        w = np.array([1 / se**2 for _, se, _ in rows] + [1 / ro0[1] ** 2, 1 / ro1[1] ** 2])
-        normal = np.einsum("gri,r,grj->gij", a, w, a)
-        errors = np.linalg.solve(normal, np.einsum("gri,r,gr->gi", a, w, y)[..., None])[..., 0]
-        return np.sum(w * (y - np.einsum("gri,gi->gr", a, errors)) ** 2, axis=1)
-
     grid = [EPS_RANGE * (i / 1500 - 1) for i in range(3001)]
-    # The grid only brackets the minimum; the golden-section search and the curvature use solve().
-    best = int(np.argmin(grid_chi2(np.array(grid))))
+    best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
     if best in (0, len(grid) - 1):
         errors = solve(grid[best])[1]
         return grid[best], math.inf, math.inf, float(errors[0]), float(errors[1])
