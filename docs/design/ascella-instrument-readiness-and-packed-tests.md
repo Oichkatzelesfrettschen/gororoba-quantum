@@ -68,9 +68,9 @@ investigate and debug supplies context, rather than an explicit supersession
 of the recorded stopping rule. Their errors remain descriptive diagnostic
 observations; they cannot qualify as adherence to that preregistered protocol
 or successful device conformance. The receipts, approval text, cases and raw
-results retain their original bytes. Further Ascella execution is paused and
-requires the user's heads-up plus an explicit replacement or override of the
-stopping rule, as well as the applicable case and resource approval.
+results retain their original bytes. The stop applies until the user's
+heads-up explicitly replaces or overrides it under the applicable case and
+resource approval. Subsequent authorizations and their outcomes follow.
 
 The user subsequently authorized Ascella again. The
 [authorized order-retry preflight](../evidence/quandela/ascella-order-pilot-retry-preflight/README.md)
@@ -92,6 +92,22 @@ increased from 56 to 57 jobs and from five to six Ascella execution seconds;
 both credit counters stayed unchanged. The authorized retry is consumed,
 and its instrument error triggers the stopping rule. The public availability
 transition again supplies insufficient evidence of restored input control.
+
+### Successful sampling after the advertised Mosaiq update
+
+A later processor read on 23 October advertised mosaiq-arcturus
+2.1.5.2.post4 instead of the earlier observed 2.1.5.1.post2. The user
+explicitly approved one updated-deployment retry of the unchanged manifest.
+The [completed acquisition](../../results/quandela/runs/ascella-mosaiq-update-order-retry/README.md)
+returned all eight settings and 65,536 detected samples in 25 execution
+seconds, with a token-reported debit of 1.016384 free credits. The exact
+serialized computation also completed locally on SLOS and Naive before
+submission. The completed sampling establishes recovery of this tested
+four-output path. The provider's configuration change and executing worker
+identity remain unobserved; the advertised version change does not identify
+the exact repair. Full-output leakage, absolute loss and isolated drift
+remain separate measurement questions. The acquisition note records the
+user's subsequent 1.1-credit ceiling for a larger prospective design.
 
 A safe protobuf inspection of the published architecture finds empty logical
 `input_ports` and `output_ports` maps, alongside the six-source occupation,
@@ -138,12 +154,14 @@ an undocumented `hardware_config` field into jobs.
 
 An instrument-level causal trace needs the retained job IDs, terminal
 timestamps, exact error, source occupations and minimal static circuit.
-Ascella reports hardware-core 3.9.3, mosaiq-arcturus 2.1.5.1.post2,
+The failing-job processor observations reported hardware-core 3.9.3,
+mosaiq-arcturus 2.1.5.1.post2,
 pcvl-worker 2.1.1 and universalchipworker 2.1.3. The local client versions
 are Perceval 1.3.1 and exqalibur 1.4.2. Unobserved causal inputs include the
 deployed configuration and worker revision that handled each job and the
-mapping the worker loaded. A successful sampling job must demonstrate recovery. The Cloud
-portal's public `available` flag remains weaker evidence than that acquisition.
+mapping the worker loaded. The completed order acquisition demonstrates
+sampling recovery; the Cloud portal's public `available` flag alone supplies
+weaker evidence.
 
 ## First-principles measurement model
 
@@ -211,11 +229,12 @@ the measured rule. Shared circuit structure, photon filter and processing
 policy define a packable job. Incompatible filters or policies require
 separate jobs. Every cap and price receives a fresh read-only check.
 
-Ascella's per-setting overhead remains unmeasured because the tested jobs
-failed before acquisition. Belenos timing cannot establish Ascella timing.
-A successful small acquisition must measure compilation/setup overhead and
-sampling rate before a 300-second pack is sized. Packing maximizes informative
-completed observations per credit subject to that measured envelope. A partial
+The completed eight-setting Ascella pilot used 25 execution seconds for
+65,536 detected samples. That aggregate timing does not separate setup,
+compilation and sampling costs or establish scaling with settings and shots.
+Belenos timing cannot establish Ascella timing. A larger 300-second pack must
+retain a bounded completion claim until Ascella timing separates those costs.
+Packing maximizes informative completed observations per credit subject to that measured envelope. A partial
 answer remains partial and cannot qualify a full finite frontier.
 
 The approved Belenos repeat programme has five jobs, each capped at 180
