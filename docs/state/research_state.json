@@ -8199,6 +8199,10 @@
       "boundary": "One device, two blocks a day apart, read descriptively: block 2 was resubmitted past a stop condition with no amendment retained before it (the runbook's protocol deviation of 2026-10-23). Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance and uncorrected observations unresolved. Identical returned circuits show one nominal model; attributing the change to the device rather than the compiler holds only if a returned circuit describes the configuration that ran, which the contract leaves unresolved. The branch names the next amendment, stationarity and provider calibration before any fixed-effect confirmation, which reruns under that amendment; it makes no certification decision, and physical_perf ratios stay an uninterpreted provider diagnostic.",
       "evidence": [
         {
+          "path": "results/quandela/bdsc_diagnostic_readout-runner-image.json",
+          "sha256": "b4f9881dbd24053938322dffb6db646ad57295846b27cf9b08ed5de19815f4dc"
+        },
+        {
           "path": "results/quandela/bdsc_diagnostic_readout.json",
           "sha256": "6e2f94f9b5918641553ce898679cdb0a85ca98ec00a69755c72c60232fb1b688"
         }
@@ -8440,6 +8444,10 @@
       "status": "established",
       "boundary": "One compile, one calibration set and two angles. The kernel-minus-bright double difference, the test the Tuna-17 run showed is needed, reads -0.0538 +- 0.0124 (z -4.3) at phi = 0.1, and -0.132 +- 0.026 (z -5.0) at 0.3 if the bright artifact scales like sin(2 phi), since the case ran the bright arm at phi = 0.1 only. The prediction schedules idle relaxation ALAP; scheduled ASAP, IQM's pulse-builder default, it would move H4 to about z -2.5 and H2 to z -0.3 with no decision changed (issue #386). cd_core already settles the zero-divisor property exactly, so the run demonstrates that Garnet realizes the compiled sign table at first order; the bright control and the sine law bound circuit artifacts, and the even part's agreement with readout plus relaxation leaves no room for the large coherent error the signed probe's offsets once suggested.",
       "evidence": [
+        {
+          "path": "results/iqm/kernel_cancellation_probe_analysis-runner-image.json",
+          "sha256": "7ba917bf5b1284d9a0137a585a7f670eab3356932ffdd8823fe411ac4413cd62"
+        },
         {
           "path": "results/iqm/kernel_cancellation_probe_analysis.json",
           "sha256": "945eda504ac3df592c37aeb8e5aa58da0f587efa511789de4a5f2f4c69527517"

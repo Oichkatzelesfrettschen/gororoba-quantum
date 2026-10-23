@@ -550,8 +550,10 @@ resubmission continued past a stop condition with no amendment retained
 before it ([protocol deviation](../../runbooks/bdsc-qualification-case.md#protocol-deviation-of-2026-10-23-block-2-job-1-was-resubmitted)),
 so the readout's rule is the preregistered one and its reading is
 descriptive. The readout
-([bdsc_diagnostic_readout.json](../../../results/quandela/bdsc_diagnostic_readout.json),
-claim `qd-belenos-bdsc-diagnostic-readout`, gate `core-647`) selects the
+([bdsc_diagnostic_readout-runner-image.json](../../../results/quandela/bdsc_diagnostic_readout-runner-image.json),
+claim `qd-belenos-bdsc-diagnostic-readout`, gate `core-647` in the runner image's userland;
+the [first readout](../../../results/quandela/bdsc_diagnostic_readout.json), written under
+the build host's system scipy, differs in the last digits of its statistics and p-values only) selects the
 **stationarity** branch. Its standard errors and p-values are reference
 values under independent Bernoulli trials: the provider contract leaves count
 provenance and uncorrected observations unresolved, so they are uncalibrated
