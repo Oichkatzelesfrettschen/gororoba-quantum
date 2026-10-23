@@ -19,6 +19,8 @@ extra directions leave H_5^perp through e_8 and e_24 and curve, since the
 straight lines drop to nullity 0), or a second-order obstruction kills both
 tangent directions and the local dimension equals the family dimension.
 The question is classical and exact; it needs no QPU and no Tuna run.
+Computation 7 settles the {a, 0} row: at its witnesses D_(5,12) has local
+dimension 15, the tangent bound, with e_8 and e_24 tangent.
 
 ## The lead from the nullity-twelve cone
 
@@ -244,24 +246,68 @@ and is never evidence of the gap.
      64 / (p - 1), about 3e-8, with weights drawn from F_p^*, unless its
      leading form vanished modulo both
      primes.
-   - Closing the gap exactly needs one of three things:
-     - an ideal-membership certificate h H = sum a_i G_i with h(x) nonzero;
-     - vanishing beyond the Bezout bound deg(closure of M) times deg H, on
-       the order of 10^7;
-     - an explicit parameterization of M.
+   - The exact routes differ in reach:
+     - An explicit identity h H = sum a_i G_i with h(x) nonzero is a finite
+       certificate. Bare membership adds nothing: M is smooth, so the local
+       ideal of G is prime, and H lies in it exactly when the conjecture
+       holds.
+     - The Bezout route works one curve at a time.
+       - A line in the free coordinates lifts to M intersected with a linear
+         space, a curve of degree at most d^c, where d = 33 - k is the degree
+         of the cleared Schur entries.
+       - So vanishing beyond d^(c+1) proves H zero on that curve only.
+       - That is 29^5, about 2.1e7, at nullity 4; 25^11, about 2.4e15, at
+         nullity 8; and 21^17, about 3.0e22, at nullity 12.
+       - Finitely many seeded curves never cover M, and a generic direction
+         brings back the Schwartz-Zippel bound.
+     - An explicit parameterization of M. Computation 7 supplies one at
+       nullity 12.
 
-     Along a line in the chart, every lifted dependent coordinate that
-     moves has Berlekamp-Massey length 32, the maximum for 63 series
-     terms, at every witness, the smooth controls included. So M is not
-     rational of degree below 32 in the chart coordinates.
+     Berlekamp-Massey length of the dependent coordinates. Along a line in
+     the chart, every lifted dependent coordinate that moves has
+     Berlekamp-Massey length 32 over its 63 series terms, at every witness,
+     the smooth controls included.
+     - 32 is ceil(63/2), the value a sequence with no short recurrence takes.
+       A prefix of N terms can reach length N.
+     - A rational function P/Q of t with Q(0) nonzero obeys a recurrence of
+       length max(deg P, deg Q) from t^1. So modulo p no such coordinate is
+       rational of degree below 32 along the line.
+     - That constrains the graph coordinates only. At nullity 12, solving
+       the quadrics of computation 7 for them takes a square root, and the
+       same germ has a rational parameterization in other coordinates.
+7. **Quadric germ at nullity 12.** At the three nonzd-axis witnesses and the
+   seven Proposition 8.2 points, the germ of R_12 is a quadric cone
+   ([evidence](../evidence/rank_locus_quadric_germ/README.md),
+   `scripts/rank_locus_quadric_germ.py`, gates core-677 and core-678).
+   - Set z = p + i q = (u, mu, v) for y = (p, q) with pure halves.
+   - The cone is V = {u ^ v = 0, u.u + mu^2 + v.v = 0} over C^7 + C + C^7.
+   - Why V lies in R_12:
+     - The sedenion cross-product matrix satisfies
+       C_z^2 - z z^T + Q I = sum M_ij (u_i v_j - u_j v_i), with 168
+       coefficients of plus or minus 2.
+     - rank_R L_y = 2 rank_C [[0, -t^T], [t, C_z]] with t = p - i q.
+     - On V, C_z^2 = z z^T, and Sylvester's inequality then gives
+       nullity >= 12.
+   - The chart v = lambda u has a nonzero differential of
+     F = mu^2 + (1 + lambda^2) w.w at all ten points. So V is a real
+     16-manifold there.
+   - The exact tangent bound is also 16. So the Schur germ M of
+     computation 6 equals V, D_(5,12) has local dimension 15, and H vanishes
+     on M at those points.
+   - The record also places the A15 family of x0 inside V, and joins x0 to
+     e1 + e25 by an exact path of constant nullity 12.
+   - V passes through none of the nullity-8 and nullity-4 witnesses, where
+     u ^ v is nonzero. Those families stay open.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
-regenerating its retained result; computations 1, 2, 3, 5 and 6 also run
+regenerating its retained result; computations 1, 2, 3, 5, 6 and 7 also run
 `--self-test`, which rejects a corrupted nullity, frame, coefficient or
 rank in normal and `-O` modes. The registry
 carries the question as the open claim `a5-nonzero-divisor-two-dimension-gap`
-and promotes it only through a retained certificate.
+and promotes it only through a retained certificate. Claim
+`a5-nullity12-quadric-germ` admits the {a, 0} row at its witnesses, and the
+nullity-8 and nullity-4 rows stay open.
 
 ## Route to the global classification (roadmap items 3-8)
 
@@ -273,7 +319,7 @@ admits on its own:
 
 | Item | First deliverable | Rests on | Admission |
 | --- | --- | --- | --- |
-| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the extended-precision probe (computation 4) decides nothing, computation 5 excludes a linear piece, and computation 6 finds the Schur-complement germ M unobstructed through order 63, so the deliverable is a certificate that the excess equations vanish on M through an {a, 0} witness | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
+| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the extended-precision probe (computation 4) decides nothing, computation 5 excludes a linear piece, and computation 6 finds the Schur-complement germ M unobstructed through order 63, and computation 7 identifies M at the nonzd-axis witnesses and the Proposition 8.2 points as the quadric cone V, which also carries the A15 family at x0, so the remaining deliverable is how V meets B17 and the other pieces | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
 | 4. Regularity and links | smoothness of each D_(5,12) piece from independent local equations; the normal link at x0, where A15 and B17 meet in dimension 13 | item 3 for D_(5,12) | rank loci and smooth strata kept distinct |
 | 5. Kernel bundles | transition data of ker L_x over each smooth piece of D_(5,12) | item 4 | invariants computed; a classification needs its own sufficiency argument |
 | 6. Attachments | how partner spheres specialize across every admitted closure incidence of D_(5,12) | items 3 and 5 | attaching maps, not a frontier matrix |

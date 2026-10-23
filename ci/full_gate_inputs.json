@@ -8,6 +8,9 @@
     "core-668": [
       "docs/evidence/rank_locus_padic_lift/**"
     ],
+    "core-677": [
+      "docs/evidence/rank_locus_quadric_germ/**"
+    ],
     "core-069": [],
     "core-080": [],
     "core-089": [],
