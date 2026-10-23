@@ -10879,6 +10879,43 @@
    "qd_platform",
    "typing"
   ],
+  "scripts/plan_inventory.py": [
+   "__future__",
+   "check_markdown_links",
+   "hashlib",
+   "pathlib",
+   "plan_records",
+   "re",
+   "subprocess",
+   "typing"
+  ],
+  "scripts/plan_records.py": [
+   "__future__",
+   "datetime",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "re",
+   "sys",
+   "typing",
+   "urllib"
+  ],
+  "scripts/plan_tracker.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "copy",
+   "fcntl",
+   "os",
+   "pathlib",
+   "plan_inventory",
+   "plan_records",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
   "scripts/provider_api_audit.py": [
    "__future__",
    "argparse",
