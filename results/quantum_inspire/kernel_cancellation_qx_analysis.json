@@ -17,7 +17,8 @@
    "odd_corrected": 0.0,
    "readout": {
     "e01": 0.0,
-    "e10": 0.0
+    "e10": 0.0,
+    "factor": 1.0
    },
    "se": 0.000244140625,
    "se_corrected": 0.000244140625,
@@ -39,7 +40,8 @@
    "odd_corrected": -0.494384765625,
    "readout": {
     "e01": 0.0,
-    "e10": 0.0
+    "e10": 0.0,
+    "factor": 1.0
    },
    "se": 0.009602396995399758,
    "se_corrected": 0.009602396995399758,
@@ -61,7 +63,8 @@
    "odd_corrected": -0.184814453125,
    "readout": {
     "e01": 0.0,
-    "e10": 0.0
+    "e10": 0.0,
+    "factor": 1.0
    },
    "se": 0.010855541322262387,
    "se_corrected": 0.010855541322262387,
@@ -94,6 +97,20 @@
   "bright pi/36",
   "kernel pi/36"
  ],
+ "readout_assumption": {
+  "e01_batches": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "e10_batches": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "factor_spread": 0.0,
+  "statement": "a batch's assignment factor equals its pair's; the batch spread enters se_corrected"
+ },
  "schema": "qi-kernel-cancellation-analysis-v2",
  "visibility": 1.0643040175145828
 }

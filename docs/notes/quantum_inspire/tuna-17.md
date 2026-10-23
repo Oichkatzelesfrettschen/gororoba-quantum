@@ -229,6 +229,10 @@ the kernel's -0.0222 at phi = pi/36, so a Tuna-17 contrast decides on its
 difference from a matched control
 ([principles](../topics/algebra-hardware-probe-principles.md)). The kernel's
 odd part implies a visibility of 0.134 through its batch pair's readout,
-against Garnet's 0.36 at 37 CZ. Each circuit of a batch runs as its own job
+against Garnet's 0.36 at 37 CZ. A three-circuit batch holds one readout
+reference, so a pair reads e01 in one batch and e10 in the other and neither
+batch's own assignment factor is identified; the spread of the three e01 and
+three e10 readings (factor spread 0.0024) enters every corrected error and
+moves no decision. Each circuit of a batch runs as its own job
 in an order the platform chooses: one listed +, -, -, + contrast ran +, -,
 +, -, so an analysis reads the executed order from the jobs' start times.

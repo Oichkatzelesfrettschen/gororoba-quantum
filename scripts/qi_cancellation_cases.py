@@ -49,6 +49,7 @@ import argparse
 import hashlib
 import json
 import math
+import statistics
 import sys
 from pathlib import Path
 from typing import Any
@@ -311,6 +312,15 @@ def evaluate(
             sum(r[2] for r in rows),
         )
 
+    # A batch holds three circuits, so a pair reads readout-0 in one batch and readout-1 in the other and
+    # neither batch's own assignment factor 1 - e01 - e10 is identified. The series measures each reference
+    # once per pair in separate batches, and the sample spread of e01 over the readout-0 batches and of e10
+    # over the readout-1 batches (shot noise included) bounds how far a batch's factor departs from the
+    # pair's; that spread enters se_corrected.
+    e01s = [(1 - z_of([key])[0]) / 2 for key in shots if key.endswith("readout-0.cq")]
+    e10s = [(1 + z_of([key])[0]) / 2 for key in shots if key.endswith("readout-1.cq")]
+    factor_spread = math.hypot(*(statistics.stdev(e) if len(e) > 1 else 0.0 for e in (e01s, e10s)))
+
     contrasts: dict[str, dict[str, Any]] = {}
     for label in sorted({contrast for _, contrast, *_ in BATCHES}):
         pair = [batch for batch, contrast, *_ in BATCHES if contrast == label]
@@ -320,6 +330,8 @@ def evaluate(
         (zp, sp, np_), (zm, sm, nm) = z_of(plus), z_of(minus)
         ro0 = z_of([key for key in shots if key.split("/")[0] in pair and key.endswith("readout-0.cq")])
         ro1 = z_of([key for key in shots if key.split("/")[0] in pair and key.endswith("readout-1.cq")])
+        odd, se = (zp - zm) / 2, math.hypot(sp, sm) / 2
+        factor = 1 - (1 - ro0[0]) / 2 - (1 + ro1[0]) / 2
         order = None
         if executed is not None:
             signs = [key.split("/")[1][1] for key in sorted(arms, key=lambda k: executed[k])]
@@ -329,13 +341,13 @@ def evaluate(
             "z_plus": zp,
             "z_minus": zm,
             "kept": [np_, nm],
-            "odd": (zp - zm) / 2,
-            "se": math.hypot(sp, sm) / 2,
-            "readout": {"e01": (1 - ro0[0]) / 2, "e10": (1 + ro1[0]) / 2},
+            "odd": odd,
+            "se": se,
+            "readout": {"e01": (1 - ro0[0]) / 2, "e10": (1 + ro1[0]) / 2, "factor": factor},
             # Readout scales an odd part by 1 - e01 - e10 and the batch pairs differ, so tests across
-            # contrasts read the corrected odd part.
-            "odd_corrected": (zp - zm) / 2 / (1 - (1 - ro0[0]) / 2 - (1 + ro1[0]) / 2),
-            "se_corrected": math.hypot(sp, sm) / 2 / (1 - (1 - ro0[0]) / 2 - (1 + ro1[0]) / 2),
+            # contrasts read the corrected odd part, whose error carries the factor's batch spread.
+            "odd_corrected": odd / factor,
+            "se_corrected": math.hypot(se / factor, odd * factor_spread / factor**2),
             "executed_order": order,
             "balanced": order in (None, "+--+", "-++-"),
         }
@@ -366,6 +378,12 @@ def evaluate(
         if hit
     ]
     return {
+        "readout_assumption": {
+            "statement": "a batch's assignment factor equals its pair's; the batch spread enters se_corrected",
+            "e01_batches": e01s,
+            "e10_batches": e10s,
+            "factor_spread": factor_spread,
+        },
         "contrasts": contrasts,
         "h1_zero_divisor_sign": {
             "matched pi/36": {"kernel_minus_bright": matched, "se": matched_se, "decision": h1_decision},
