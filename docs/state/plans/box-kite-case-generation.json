@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "box-kite-case-generation",
+  "kind": "implementation",
+  "summary": "boxkite-generator: box-kite case generator and program rewritten to the reduced remote budget",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/7c1dfe9689ede8ef3148f92d890bd5d82ccf858fdd4cace1092b7b7191c3a2c4.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-197.json"
+  ],
+  "state": "inbox",
+  "scope": "boxkite-generator: box-kite case generator and program rewritten to the reduced remote budget",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #197 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-197-integration",
+      "action": "Verify the recorded integration state of PR #197.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "f992f4742a21accfb1ed4da5806f31447b5c6d77a94350c3445dd1ba21362a28",
+          "result": "PR #197 merged as 06f865d80e22d7758fd78119072dfcfcedfb7387; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-197.json",
+              "sha256": "9ec31e89c4fb68216e982aaff329f01592d51a5333a49a9912b02c0822c02563"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Every generated batch passes check_qi_platform_retention.py; --check is byte-equal in normal, -O and GOROROBA_WORKERS=1; each smoke circuit reproduces its census row by state vector. Orchestrator review of the diff, then the QI/registry pr gates and ruff/mypy locally. Falsifier: a smoke circuit whose state-vector marginal differs from census P, or a Tuna circuit off the pi/36 grid or using an excluded qubit.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "number": 270,
+  "title": "qi: line-phase-bin re-reading of the Tuna-17 ladder with a max(A1, A2) line test",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T21:06:02Z",
+  "closed_at": "2026-10-18T21:06:02Z",
+  "merge_commit_sha": "5ea77f5b2b1468c87bd5509faa36d66e0f194c02",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/270",
+  "merge_ancestor_of_canonical_head": true
+}

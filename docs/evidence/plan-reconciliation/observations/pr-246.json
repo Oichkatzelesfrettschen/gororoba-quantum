@@ -1,0 +1,11 @@
+{
+  "number": 246,
+  "title": "branch_dm: exact branching ghost sweep with exact error superoperators, one pool map, and the T4 placement record",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T05:44:08Z",
+  "closed_at": "2026-10-18T05:44:08Z",
+  "merge_commit_sha": "e7f30b94c91de6c5a5ec118627862aa15f957594",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/246",
+  "merge_ancestor_of_canonical_head": true
+}

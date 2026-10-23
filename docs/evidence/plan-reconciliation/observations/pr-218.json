@@ -1,0 +1,11 @@
+{
+  "number": 218,
+  "title": "qi_readout_ringdown: batch the null-calibration fit with numpy, bit-identical to the scalar fit",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T19:50:10Z",
+  "closed_at": "2026-10-17T19:50:10Z",
+  "merge_commit_sha": "bbb55cbfc679cfa68ad0696fb41165d752bd6ca4",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/218",
+  "merge_ancestor_of_canonical_head": true
+}

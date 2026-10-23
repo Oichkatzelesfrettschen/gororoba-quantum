@@ -1,0 +1,11 @@
+{
+  "number": 279,
+  "title": "state_prep_excess: bound a plan at any other delay from controls at that delay",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T23:10:41Z",
+  "closed_at": "2026-10-18T23:10:41Z",
+  "merge_commit_sha": "cd2676ec7b4942d828a72ee6084c117c8665a358",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/279",
+  "merge_ancestor_of_canonical_head": true
+}

@@ -1,0 +1,136 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/design/packed-pauli-response-current-balance.md
+
+# Packed Pauli response under current provider balances
+
+This case asks whether increasing simultaneous state-preparation load changes the operational dark/bright
+contrast of a fixed four-qubit measurement. The question matters because a nominal increase in replica count
+can destroy the response or correlate its errors; more qubits alone establish neither more information nor
+safe packing. The case uses the [provider audit](../evidence/provider-api-audit/README.md) and the exact
+[Pauli-effect identity](../notes/topics/bdsc-pauli-readout.md). The user limits design to current independent
+balances: 30 IQM credits and 25 Open Quantum Spark credits. Every program is unsubmitted and native-unadmitted.
+
+## Claim, null and possible decisions
+
+The target is `E0 = I/2 - YIXY/4 + YZXY/4`. Its kernel, spectrum and basis convention already have exact
+certificates. Hardware tests the implemented preparation/measurement channel, rather than proving that identity.
+
+Four fixed sentinel cells prepare `(e7+e12)/sqrt(2)` and `(e7-e12)/sqrt(2)` in two fixed quadratures.
+Cells 0/1 read `X3 X1 Y0`; cells 2/3 read `Y3 X1 Y0`, with the sector bit q2 read in Z. Each cell carries
+algebra bit b on logical qubit b. The Y readout gives the bounded score `g` in `{0,1/2,1}` and the kernel event.
+The ideal effect means are 0 and 1. The X quadrature has ideal parity zero; it remains a phase-sensitive diagnostic.
+
+The sparse arm prepares the four sentinel cells; the dense arm also prepares the remaining load cells.
+Both arms measure the same complete register and apply the same basis rotations. Idle load cells therefore
+still experience readout-basis pulses. The intervention changes GHZ-type preparation load and measurement
+context, not drive activity alone. A global source barrier separates preparation and readout; only native
+compilation and served scheduling can establish its physical implementation.
+
+The primary response per acquisition is the joint-shot mean `B_Y-K_Y`, using the two sentinel cells' raw g
+scores. The paired difference is dense response minus sparse response. The sharp operational null says the
+density assignment changes none of those paired outcomes. A two-sided exact assignment p-value at most 0.05
+rejects that null under the assumptions below. The ideal null is zero; a common unchanged affine response
+also predicts zero. A rejection identifies a response to the compound density intervention, not a unique
+crosstalk, leakage, readout or coherent-error channel. A compatible test establishes neither equivalence nor
+permission to multiply cells into independent trials. Equivalence needs its own justified margin and design.
+
+Secondary, explicitly exploratory outputs are X/Y quadratures, kernel-event fractions, product-reference
+assignment errors, per-cell response and drift. A phase estimate is withheld when the quadrature amplitude
+is unresolved. Readout-inverted scores, if later added, are conditional sensitivity analyses, never primary data.
+
+## Candidate selection and independent budgets
+
+| Candidate | Cells / measured qubits | Science / reference circuits | Shots/circuit | Register shots | Planned charge / reserve | Role |
+|---|---:|---:|---:|---:|---|---|
+| Direct Emerald | 13 / 52 | 32 / 4 | 2000 | 72000 | at most 24 / 6 IQM credits, bound pending | Calibration-rich 16-pair candidate |
+| Direct Garnet | 5 / 20 | 32 / 4 | 2000 | 72000 | at most 24 / 6 IQM credits, bound pending | Lower-rate alternative to Emerald |
+| Rigetti through Open Quantum | 26 / 104 | 16 / 4 | 3215 | 64300 | 20 / 5 Spark, concrete quotes pending | Preferred priced confirmatory candidate |
+| Forte-1 through Open Quantum | 9 / 36 | 4 / 0 | 100 | 400 | 20 / 5 Spark, concrete quotes pending | Descriptive trapped-ion qualification alternative |
+
+Emerald and Garnet are alternatives against the same IQM balance. Rigetti and IonQ are alternatives against
+the same Spark balance: both broker cases cannot run for 40 credits against 25. The recommendation is the
+Rigetti randomized density test if native admission closes; choose the IQM candidate after measured/compiler
+timing selects its feasible shot budget. The ion case is retained because the physical implementation is
+untested, but platform novelty alone does not justify spending its credits.
+
+Eight randomized pairs have minimum possible two-sided assignment p-value `2/2^8 = 1/128`; sixteen have
+`1/32768`. Two ion pairs have minimum 1/2, so the ion case cannot confirm the primary density result at 5%,
+even with an extreme outcome. Its valid question is coarse raw implementation/packing qualification on that
+device and calibration. More simultaneous cells do not repair that temporal-replication denominator.
+
+## Randomization, covariance and uncertainty
+
+The generator freezes seed 20261022. Each IQM/Rigetti pair independently randomizes sparse/dense order;
+the four computational references are all-zero/all-one at both ends. The ion sequence counterbalances
+two pairs in opposite orders and remains descriptive. The native compilation must retain the same sentinel
+physical placement, state-preparation macro and measurement map in both arms. Missing or unverifiable maps
+stop admission; a software map is not evidence that the provider applied it.
+
+The primary test conditions on all completed, prespecified pairs and uses their integer joint-score
+numerator differences. `packed_pauli_analysis.paired_pvalue` enumerates every sign assignment in bounded
+integer batches, retains ties and returns an exact Fraction. The test requires actual randomized assignment,
+preserved acquisition ordering/identity, the sharp no-effect null and absence of carryover/interference
+between acquisitions. It does not require treating the simultaneous cells as independent. Those assumptions
+remain explicit admission obligations, not properties inferred from a job's circuit array.
+
+Ordered shots, when supplied, support block/lag diagnostics. Counts-only data leave serial dependence
+unresolved; any shot-IID interval is labeled conditional and secondary. Use joint per-shot sentinel scores
+and full shared-shot covariance. Prohibit optional stopping, dropping inconvenient pairs, or refitting a
+favorable placement after outcomes. A failed/short acquisition, calibration transition that invalidates
+the compiled case, changed layout, missing raw joint outcomes or violated credit ceiling stops the case;
+an interrupted case reports diagnostics, not the complete preregistered test.
+
+## Throughput and cost optimization
+
+The graph witnesses attain the connected-template width ceilings. They optimize count, not joint fidelity,
+usable independent information or pulse concurrency. Native layout qualification must compare valid
+measurement/calibration metrics and retain weak or missing metrics explicitly before selecting sentinel roles.
+
+IQM accepts 100 circuits/job, 20000 shots/circuit and 2000000 executions/job on these QPUs. The 36-circuit
+design fits one circuit batch, but separate circuits remain separate acquisitions only if the served ordering
+and identity support the randomization contract. At 20000 shots the same design reaches 720000 executions;
+that is a structural capacity, not an affordable timing prediction. Increase shots only after the compiled
+repetition/reset schedule and a defensible server-compilation bound fit the total ceiling with reserve.
+
+IQM charges `rate * ceil(compilation_seconds + execution_seconds)` per job. The 24-credit science ceiling
+permits 32 billed seconds on Emerald or 48 on Garnet, including compilation. Native transpilation on the
+client does not establish zero server compilation. A smaller circuit batch can reduce failure exposure but
+adds compilation and rounding overhead. No speculative timing estimate authorizes a submission.
+
+The live broker tariff gives Rigetti `ceil(0.18+3215*0.000255)=1` credit/program and IonQ
+`ceil(0.18+100*0.048)=5`. Each job contains one full packed QASM program. The API's advertised 1024 circuits
+is not used to assume free multi-circuit multiplexing. The Rigetti case fits the existing one-credit MCP cap;
+the ion case requires a separately approved five-credit cap change and remains blocked under the current cap.
+Keep Standard priority. Public upload is itself disclosure under the provider's terms and requires approval.
+
+Do not queue the whole experiment merely to increase activity. The execution plan must preserve pair identity
+and chronology, bound active jobs, retain actual start/finish/calibration records, and recheck account occupancy
+and remaining credits. API request-rate units and compute credits remain separate accounting surfaces.
+
+## Generated references and admission
+
+[Emerald](../../results/iqm/proposals/packed-pauli-response-emerald/proposal.json),
+[Garnet](../../results/iqm/proposals/packed-pauli-response-garnet/proposal.json),
+[Rigetti](../../results/open_quantum/proposals/packed-pauli-response-rigetti/proposal.json) and
+[IonQ](../../results/open_quantum/proposals/packed-pauli-response-ionq/proposal.json) retain logical programs,
+randomized schedules, intended physical maps, producer/analysis/audit digests and explicit false execution/
+native-admission flags. Wide registers are composed from checked four-qubit cells and are not simulated.
+
+```sh
+"$PYTHON" scripts/packed_pauli_probe.py docs/evidence/provider-api-audit iqm:emerald --check results/iqm/proposals/packed-pauli-response-emerald
+```
+
+The same command selects each other backend and proposal. Remaining gates are native ISA/map conformance;
+served ordering, timing and reset semantics; an enforceable total cost case or exact quotes; raw-result and
+measurement identity; statistical assumption review; current-head PR review/resolution; and approval of the
+exact case. Until those gates close, the case is a design rather than an executable hardware authorization.
+
+The separate [Garnet timing-pilot proposal](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/364)
+owns the circuit-job submission path and prospective billing measurements. Its proposed acquisition remains
+distinct from the packed-response experiment; a proposed timing result supplies neither a measured bound nor
+an allocation of credits. Recompute both designs against the actual remaining balance before admission.
+
+The [Tuna matched-response case](tuna17-zero-divisor-matched-response.md) stays merged and deferred during its
+reported improvement work. Its deeper circuit and unfinished covariance contract are not silently transplanted
+to another machine. The failed C5 null-argmin code and the exact Pauli identity need no additional hardware run
+to settle their already-proven mathematical statements.

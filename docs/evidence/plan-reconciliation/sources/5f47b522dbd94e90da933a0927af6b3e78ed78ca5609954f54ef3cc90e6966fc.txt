@@ -1,0 +1,117 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/ci-read-set-ledger-report.md
+
+# CI read-set ledger: implementation report
+
+Branch `ci/fast-parallel-gates`, commits caf82fc..b62dfdc on top of aaaf5ce (not pushed).
+Host: 12 CPUs, shared, load 0.2-4.6 during the runs. Interpreters: `$C/ci-py3147/bin/python`
+(3.14.7) as PYTHON, `$C/replay-py3147/bin/python` as REPLAY_PYTHON,
+`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, `C=$HOME/.cache/gororoba-quantum`.
+
+## Commits
+
+| commit | section | content |
+|---|---|---|
+| caf82fc | 1 | `ci/read_trace/sitecustomize.py` audit-hook tracer |
+| 17d8bd4 | 2 | `ci/gate_ledger.py`, `ci/host_identity.py` (factored from premerge `cache_key`), run_gates `--ledger/--ledger-out/--ledger-audit`, gate core-598 |
+| 60388f8 | 3 | `ci/merge_gate_timings.py`, `ci/gate_timings.json`, measured-cost `assign`, gate core-599 |
+| 20ef082 | 4 | ci.yml: 12 shards, cached pins/replay venvs, ledger restore/upload, main-only `ledger` merge job |
+| 1994805 | 5 | self-test: interpreter-distribution change reruns |
+| cf58416 | 6 | AGENTS.md Layout-and-gates and Gate-cost text |
+| b62dfdc | fix | directory/glob digests drop `__pycache__`, `.mypy_cache`, `.ruff_cache`, `.pytest_cache`, `*.pyc` |
+
+## Commands and results
+
+- Tracer probe: `GOROROBA_READ_TRACE=... PYTHONPATH=ci/read_trace $P -W error probe.py` under
+  ci 3.14.7, replay 3.14.7 and QI 3.13.15: records open, import (pyc mapped to source), listdir,
+  glob, spawn-pool child reads, `U program true` for subprocess. No warnings under `-W error`.
+  None of the three interpreters ships its own sitecustomize (checked); the tracer chain-loads one anyway.
+- `ruff format --target-version py313`, `ruff check ci`, `mypy` (via ci/pinned_tool.py, ruff 0.17.1 through uv)
+  on run_gates.py, gate_ledger.py, host_identity.py, premerge_gates.py, merge_gate_timings.py,
+  read_trace/sitecustomize.py: clean.
+- `$C/ci-py3147/bin/python ci/gate_ledger.py --self-test`: pass (1.4 s). Mutation check: disabling the
+  listdir record makes it fail with "an edit read by listdir reran []".
+- `run_gates.py --gates core-000,core-265,core-388,core-598,core-599`: 5 pass (core-265 check_run_gates +
+  check_gate_inputs, core-388 premerge self-test). core-403/404/454 (ci.yml and pin checks) pass;
+  `actionlint .github/workflows/ci.yml` clean. AGENTS gates core-250/253/347/382/502/590 pass.
+- `merge_gate_timings.py ci/gate_timings.json <six shard records of PR run 39297159948>`: 500 gates;
+  `--check`: pass. Source is a PR run, not a main run -- the only complete measurement on hand.
+
+## Two-pass demonstration (pr tier, 410 gates)
+
+| pass | command | result | wall |
+|---|---|---|---|
+| first try 1 | `--tier pr --ledger-out L1` | 410 pass, 248 stored, 162 untraceable | 4:42 |
+| first try 2 | `--ledger L1 --ledger-out L2` | 39 skipped | 4:33 |
+| after b62dfdc, 1 | `--tier pr --ledger-out M1` | 410 pass | 4:34 |
+| after b62dfdc, 2 | `--tier pr --ledger M1 --ledger-out M2` | **162 passed, 248 skipped** | 2:12 |
+| touch | append a comment to `gororoba_quantum/compile_evidence.py`, `--ledger M2` | 165 passed, 245 skipped; reran exactly core-072, core-336, core-490, the three gates M2 lists as reading it | 2:15 |
+
+The first try's 39-of-248 came from directory listings that gained `__pycache__`, `.mypy_cache` and
+`.ruff_cache` during pass 1; b62dfdc fixed it. The file was restored afterwards; `git status` clean.
+
+Untraceable reasons (162 gates): shell beyond `"$PYTHON" ... && ...` 39 (e.g. `$(for d in ...)`),
+sha256sum 31, leading `PYTHONDONTWRITEBYTECODE=1` 24 / `PYTHONOPTIMIZE=1` 12 / `PYTHONWARNINGS=error` 7
+(assignment prefixes), ruff binary or mypy cache writes 10, git children 8, shellcheck 5, cmp 3.
+Allowing `NAME=value` prefixes in `shell_untraceable` would admit about 40 more gates; not done.
+
+## Tracer overhead (CPU = user+sys from the resources record, 2 runs each)
+
+| gate | untraced CPU s | traced CPU s | overhead |
+|---|---|---|---|
+| core-445 (1 worker) | 39.9, 39.8 | 40.0, 42.5 | +0.3 % and +6.8 % (second run under load); wall 40.0 vs 40.1/42.7 |
+| core-597 (12 workers) | 724.9, 726.5 | 731.0, 729.1 | +0.6 % mean; wall 243.8/243.7 vs 245.6/244.1 |
+
+## Shard count (simulation over ci/gate_timings.json, 4 slots per shard)
+
+max shard wall: 6 -> 610 s, 8 -> 537, 10 -> 566, 12 -> 468, 14/16 -> 468 (core-597 floor). Chose 12.
+With ~40 s cached setup a full-selection shard is ~508 s, above the 8 min target; ledger skips reduce the
+selected set. 12 shards + changes, qi-stack, ubuntu-24, external-ground-truth, rocq = 17 of 20 free-plan
+concurrent jobs, so a second concurrent run queues. CI wall and setup times: not run (no push).
+
+## Floor
+
+- core-597 (468 s on 4 workers): `ghost_run.replay_all_pairs` already maps independent pairs through
+  `parallel.ordered_map`; an item-range argument (`--pairs i/N`) registered as case gates would split it
+  across shards without changing the replay.
+- core-513 (445 s, single thread): `static_self_test` draws all three truths from one generator first,
+  then runs three independent `static_cross_validation` fits plus the S3 record; those four items (and
+  the four folds inside each) can go through `parallel.ordered_map` or become case gates that redraw the
+  inputs and fit one truth. Not changed.
+
+## Limits
+
+- os.stat / exists / is_file, clock reads and C-extension file opens raise no audit event; only the
+  nightly `--ledger-audit` catches a gate that depends on them.
+- Content digests are memoized per runner invocation; an untraceable gate rewriting a repo file while a
+  traced gate runs can stale a digest.
+- qi-stack job does not use the ledger.
+- docs/local/ is git-ignored, so this report is not committed.
+
+## Review follow-up (b62dfdc..65c7814)
+
+| commit | item |
+|---|---|
+| 0b79292 | (1) `* ? [ ~ ( ) $` outside the literal `"$PYTHON"` make a gate untraceable (core-537 now is) |
+| 80f418a | (2) per-thread re-entry guard, seen set and writes under one lock; self-test reads 400 files from a ThreadPoolExecutor: old tracer recorded 87, new 400 |
+| e7ea042 | (3)+(4) os.stat/os.lstat wrapped (`s`/`l` records keyed absent/file/directory/link/other); every link on a lexical path recorded as `k` keyed by readlink text, out-of-root links included; ledger schema v2. Self-test: appearing file, in-repo retarget with identical bytes, out-of-root retarget each flip SKIP to RUN; disabling the stat wrapper or the link walk fails the self-test. One commit for both, since both edit relative() |
+| 1dc475e | (5)+notes: ci/patches sha256s, KAGGLE_KERNEL_RUN_TYPE/LANG/LC_ALL/TZ values, presence only of IQM_TOKENS_FILE/OPENQUANTUM_SDK_KEY/ANU_QRNG_KEY_FILE/QUANDELA_TOKEN_FILE; self-test covers patch edit and credential presence |
+| 1b92e81 | content memo cleared before every stored key |
+| a051180 | AGENTS.md: stat/link/thread coverage, nightly audit bounds a missed read to one day on main, wall-clock checks rely on it |
+| 8cdd499 | (a) leading `NAME=value` admitted (PYTHON, PYTHONPATH, PYTHONHOME, PYTHONSTARTUP, GOROROBA_READ_TRACE* escape). The cmd string, assignments included, is already in every key via MANIFEST_FIELDS. Shell classification: 358 of 457 manifest entries, up from 300 after (1) |
+| ca531c0, 65c7814 | (b) core-597 as PAIR_CASES slice0..3 (strided by pair_cost rank, workers 1); core-513 as STATIC_CASES (one per fit plus S3). ca531c0 also carries 513's case_registry, so core-513 is broken at that single commit |
+
+Union proofs (build host, 13 processes concurrent): `ghost_run.py --check ... --runs pairs-all` replayed 9 pairs
+bit for bit; the four `--case sliceK` runs replayed the same 9 (sorted pair lists identical, cmp), 3/2/2/2.
+Walls: uncased 311 s on 4 workers; slices 394, 323, 28, 184 s. core-513 uncased 210 s; cases 55, 90, 97, 32 s;
+each truth's by_tau equals the uncased run's.
+
+Floor: one ghost pair (results/live/2026-10-11T152922.787095Z, 393 s retained) is a single Aer replay and
+cannot split further. Re-simulated plan with case estimates (local walls x1.2 for 597, x2.1 for 513), 40 s
+setup: 12 shards max 505 s (10 and 14 shards: 472 s, the slice0 floor). Before: 468 s.
+
+Gates rerun: core-000/001/002/039, 265, 388, 287, 293, 510-515, 534-536, 538, 540, 542-544, 561, 598, 599:
+24 pass. ruff, format (py313), mypy clean on every touched file.
+
+Two-pass demo after the fixes: pass 1 410 pass, 4:36; pass 2 `--ledger N1`: 119 run, 291 skipped, 1:24.
+core-445 tracer overhead with the stat wrapper: CPU 40.2/39.6 plain vs 40.0/39.8 traced (no measurable cost).

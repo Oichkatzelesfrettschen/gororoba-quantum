@@ -1,0 +1,238 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-131.md
+
+# ISSUE-131: audit dynamic members' ideal measured law against the CZ they execute
+
+Owner session: ibmquantum-e5. Branch (planned): conformance/dynamic-member-branch-law-cz-audit.
+
+## Finding
+
+`scripts/local_member_cz_conformance.py` classifies a member through the
+unitary of its bound circuit. `unitary_part` (line 186) returns the reason
+string "mid-circuit measurement, reset or control flow" for any member with a
+`measure`, `reset` or block-carrying instruction after final measurements are
+stripped, `classify` (line 242) passes it through, and `census` (line 295-304)
+files the name under `unchecked`. No CZ count, no declaration check.
+
+Observed (record `docs/evidence/walk-control-scaffolding/local_member_conformance.json`,
+read with a JSON load): 1452 distinct members, 950 entangling, 438 checked
+rows, and one `unchecked` reason holding 64 names; no member is "wider than 10
+qubits". The issue's 62 is the count at filing; the record holds 64 (38 name
+families once digits collapse).
+
+Observed (`probe.py`, `probe2.py` in the session scratchpad, which import
+`local_member_cz_conformance` and `qpe_diagnostics.ideal_branch_probabilities`):
+
+| quantity | value |
+|---|---|
+| dynamic members, width <= 10 | 64 (widths 4: 10, 5: 23, 6: 27, 7: 4) |
+| measure + reset ops per member | 2: 4, 3: 41, 4: 14, 5: 5 members, so at most 2^5 = 32 branches |
+| control flow | 25 `if_else`, every condition a single `Clbit`; no switch, loop or register condition |
+| classical registers per member | 1 for all 64 |
+| ISA CZ at level 3, seed 11, no coupling map | 47 members execute CZ, 17 execute none |
+| CZ-bearing, ideal law a point mass | 19 |
+| CZ-bearing, law a product over classical bits | 24 (the 19 plus 5) |
+| CZ-bearing, law correlated across bits | 23 (all `n21_*`, `orbit_*`, `coherence_measure_reset_{xx,yy,zz}`) |
+| exact enumeration plus transpile of all 64 | 1.4 s serial |
+
+The point-mass test alone over-reaches: `folded_qpe_s0..s3` are point masses
+by design and execute 41 CZ because the controlled rotation transfers the
+eigenphase onto the control (`order_finding.folded_qpe`, `controlled_rotate`).
+The issue's rule "point mass or product" therefore declares them, and the
+declaration is the honest record: the one-hot law is the pass criterion and the
+CZ is the probe. The sharper statement is that the audit cannot prove a CZ
+unnecessary for a dynamic member; it proves the law has no cross-bit
+correlation, which is the condition under which the static rule's
+"product output" family already requires a declaration.
+
+Inferred, then confirmed by the probe: "product over registers" is vacuous.
+Every dynamic member has one classical register, so a register-factorization
+test passes 47 of 47 CZ-bearing members. The test must factor over classical
+bits (24 of 47); no member factors over bits and not over registers, so the
+bit test is strictly the register test refined.
+
+`folded_qpe_null` (`experiments._folded_qpe_mod15`, line 279): `folded_qpe(1,
+identity=True)` runs `eigenstate_prep` on work qubits 1-4, then H, measure,
+reset, H, conditional P(-pi/2), H, measure on the control with no controlled
+rotation. The control returns to |0> through H-H, so the law is one-hot at 0
+(`one_hot(0)`). Observed: ideal law point mass, ISA CZ 6 (all from the
+preparation; the measured control never interacts with the work register).
+Currently no rule sees it.
+
+## Reachability
+
+`"$PYTHON" -B -W error scripts/local_member_cz_conformance.py --check`, gate
+core-289 (full tier, 120 s), through the default flow: `planned_groups`
+enumerates every registered group and every family group rebuilt from retained
+`results/live/*/record.json`. The 47 CZ-bearing dynamic members reach
+`live_run.select` as planned experiments, so a dynamic control executing CZ its
+law does not need passes undeclared today. No malformed input is involved.
+
+## Design
+
+All changes sit in `scripts/local_member_cz_conformance.py`; its imports
+already add `gororoba_quantum/` to `sys.path`.
+
+1. Branch enumeration reuses `qpe_diagnostics.ideal_branch_probabilities`
+   (`_branch_instructions`, line 296): a statevector per branch, `measure` and
+   `reset` split by projection (`_project`, probability floor 1e-14), `reset`
+   applying X on outcome 1, `if_else` on a single `Clbit` selecting the block by
+   the stored bit, `barrier` and `delay` skipped, little-endian classical index.
+   It returns the 2^num_clbits joint law. It is the exact helper
+   `qpe_diagnostics._verify` already checks against the Fraction law
+   `n21_labeled_law` (feed-forward and no-feed-forward) and against padded
+   compiled circuits, so no second enumerator is written. It raises
+   `ValueError` for any control flow other than `if_else` or a non-`Clbit`
+   condition; the audit catches exactly that and lists the member as
+   unchecked with reason "unsupported control flow: <ValueError text>", so a
+   future switch member fails to classify visibly and never silently passes.
+2. Cost guard. A new constant `MAX_BRANCH_OPS = 12` bounds measure plus reset
+   operations (2^12 branches of at most 2^10 amplitudes is 64 MB of live
+   states); a member above it lists as unchecked "more than 12 mid-circuit
+   measurements or resets" beside the existing width reason. The current
+   maximum is 5.
+3. `classify_dynamic(member) -> tuple[str, str]` at module level (picklable for
+   `parallel.ordered_map`): binds the circuit as `unitary_part` does
+   (`assign_parameters(member.binding)`), enumerates the law, and returns
+   `law` in {`point_mass`, `bit_product`, `correlated`} with a ISA CZ count from
+   `transpile(member.circuit, basis_gates=BASIS, optimization_level=OPT_LEVEL,
+   seed_transpiler=SEED)` (total CZ; a dynamic circuit has no local-component
+   split, so the static product-output rule applies: any CZ counts). Tests:
+   point mass is `max(p) > 1 - TOLERANCE`; bit product compares each of the
+   2^n joint entries with the product of single-bit marginals at TOLERANCE
+   (1e-9), n <= 12 clbits here. Both are exact to float64 and independent of
+   BLAS reduction order at this tolerance; the record stores only the label,
+   the point-mass outcome as a bit string, and the CZ integer, never a float,
+   so `--check` equality is byte stable and holds in normal and `-O` runs
+   (core-289 runs both).
+4. `census()` runs the dynamic classification in one
+   `parallel.ordered_map(classify_dynamic, members, min_items=2)` over the
+   dynamic members only, after the existing unitary-part pass identifies them,
+   and keeps the serial order; the transpile moves into the worker so the 64
+   transpiles are parallel too. The existing loop over static members is
+   unchanged. `unchecked` shrinks to width, branch-budget and unsupported
+   control-flow reasons (all empty on the current tree).
+5. Record schema `local-member-cz-conformance-v3`: new row `kind:
+   "dynamic_law"` with `law`, `outcome` (point mass only, else null), `cz`,
+   `templated`, `declared`. `needs_declaration` returns `row["cz"] > 0` and
+   `law != "correlated"` for dynamic rows. `enforce` adds the dynamic
+   patterns to its "every declaration matches a CZ-executing member" loop, so a
+   stale pattern fails.
+6. New `DYNAMIC_LAW_PROBES: dict[str, str]`, each pattern with the measurement
+   that needs the CZ. Required patterns (24 members):
+   - `folded_qpe_s\d`, `qpe_archived_s\d`, `qpe_delay_s\d`,
+     `qpe_no_feed_forward_s[02]`, `correction_known_s[13]`,
+     `correction_measured_s[13]`: the one-hot eigenphase readout; the
+     controlled rotation (`order_finding.controlled_rotate`) kicks the
+     eigenphase onto the control, so the CZ is the measured phase transfer
+     (`qpe_no_feed_forward_s[13]` joins as a product with spread, the
+     feed-forward-off control of the same circuit).
+   - `folded_qpe_null`: identity-multiplier null; it keeps the eigenstate
+     preparation so every folded member carries the same preparation cost and
+     the contrast with `folded_qpe_s\d` isolates the controlled rotation
+     (`experiments._folded_qpe_mod15`). The declaration names that mechanism.
+   - `hybrid_shor_N15_a2`: bit-product law over the order-finding phase bits
+     with 35 CZ; the declaration names the modular-multiplier chain the bits
+     read. Written against `order_finding.py` after reading it.
+   - `coherence_measure_reset_x[y]|y[x]`: orthogonal-basis arms whose law is a
+     product while `_xx`, `_yy`, `_zz` correlate; the CZ is the shared Bell arm
+     (`diagnostic_controls`, conditional-Ramsey Bell arm).
+   Patterns are refined against the member list at implementation time; each
+   regex must match at least one CZ-executing member.
+7. Docs: one paragraph in the module docstring, one in
+   `docs/evidence/walk-control-scaffolding/README.md` (line 101 region)
+   replacing the sentence that dynamic members are unchecked, and the
+   `--write` regeneration of the record.
+8. Gates. core-289 keeps its command and its full tier. Added (names from the
+   session range):
+   - core-406: `scripts/local_member_cz_conformance.py --self-test`, synthetic
+     circuits: Bell pair measured together (correlated), two independent H
+     measurements (bit product), X-then-measure with a spectator CZ pair
+     (point mass), reset-after-measure, `if_else` feed-forward whose law is
+     point mass, and a `switch_case` circuit that must list as unsupported.
+   - core-407: falsifier gate, `--self-test-undeclared`: drops
+     `folded_qpe_null` from the dynamic declarations in memory and requires
+     `enforce` to fail naming it; also requires a stale pattern to fail.
+   - core-408: enumerator cross-check, `ideal_branch_probabilities` against
+     `qpe_diagnostics.n21_labeled_law` for the dynamic members the audit
+     classifies as `correlated` (n21 feedback and no-feedback), reusing
+     `qpe_diagnostics._verify`'s Fraction law so the audit's input is the
+     proven one. Fast (<2 s); pr tier.
+   - core-409: reserved, unused unless the review asks for a separate -O run.
+   The lint and type gates cover `scripts/` whole; no list edit.
+   Parallel rule: the one loop over independent items goes through
+   `parallel.ordered_map`; no serial loop over members remains in the dynamic
+   path.
+
+## Acceptance and falsifier
+
+Prediction, stated from reading `folded_qpe` before the probe and confirmed by
+it: `folded_qpe_null` classifies `point_mass` with outcome `00`, executes 6
+CZ, and appears in the record with a declaration; deleting its pattern makes
+`--check` fail with "members executing CZ their law does not need,
+undeclared: ['folded_qpe_null']". Predicted counts after the change: 64 dynamic
+rows, 17 with zero CZ (no declaration), 47 with CZ, 24 requiring a
+declaration, 23 correlated and exempt, `unchecked` empty.
+
+Commands (all from the repository root, `PYTHON=${PYTHON:-python3}`):
+
+```sh
+"$PYTHON" -B -W error scripts/local_member_cz_conformance.py --write
+"$PYTHON" -B -W error scripts/local_member_cz_conformance.py --check
+"$PYTHON" -B -O -W error scripts/local_member_cz_conformance.py --check
+"$PYTHON" -B -W error scripts/local_member_cz_conformance.py --self-test
+GOROROBA_WORKERS=1 "$PYTHON" -B scripts/local_member_cz_conformance.py --check
+ruff check scripts/ ; ruff format --check scripts/ ; mypy scripts/local_member_cz_conformance.py
+```
+
+The serial and pooled runs must produce the same bytes. CI is the merge
+authority for core-289 timing; replicate the shard on Kaggle CPU only at
+session close-out (memory: Kaggle shards once per session).
+
+Falsifiers: (a) `folded_qpe_null` classifies `correlated` or shows 0 CZ, which
+would put the premise (point mass plus preparation CZ) wrong; (b) the counts
+differ from the table above, which would mean the enumerator and the probe
+disagree and the cross-check core-408 localizes which; (c) pooled and serial
+records differ; (d) core-289 exceeds its measured seconds by more than the
+parallel dynamic pass (about 1.4 s serial) explains.
+
+Runtime: the dynamic pass adds about 1.4 s serial (64 members, 1.4 s measured
+for enumeration plus transpile), less when pooled; the census setup
+(`planned_groups`, 1452 members digested) dominates and is unchanged, 76 s
+wall in the probe on the build host. core-289 stays at 120 s and stays in the
+full tier (the pr tier admits gates under two minutes). core-406, 407 and 408
+are each a few seconds and join the pr tier after their `seconds` are measured.
+
+## Shared files and dependencies
+
+- `scripts/local_member_cz_conformance.py` (this item); the record
+  `docs/evidence/walk-control-scaffolding/local_member_conformance.json`
+  regenerates, so any other item that adds a member, changes a circuit or
+  edits a family configuration also rewrites it; whichever lands second
+  re-runs `--write` and takes the union per the merge-conflict rule
+  (reconcile, not overwrite).
+- `ci/gates.json` (three new entries, core-289 unchanged): shared with every
+  item adding gates; ranges core-406..409 are this session's.
+- `docs/evidence/walk-control-scaffolding/README.md`.
+- `gororoba_quantum/qpe_diagnostics.py` is imported, not edited; if the
+  helper needs `switch_case` support, that edit belongs to a separate item.
+- No hardware, Kaggle or IBM use; no approval needed. Blocks nothing; waits
+  for nothing.
+
+## Effort and agents
+
+One session day, one file of about 150 changed lines plus three gates and the
+regenerated record. No subagent required; if parallel review is wanted, a
+sonnet agent on core-406 synthetic cases only, under the orchestrator's review
+of the diff.
+
+## Out of scope
+
+- Proving a dynamic member's CZ unnecessary (a CZ-free circuit with the same
+  branch law). That needs a synthesis or light-cone argument per family; the
+  audit declares and names the measurement instead.
+- Noisy-law or hardware-law comparison: the audit reads the ideal law only.
+- Dynamic members wider than 10 qubits, `switch_case`, loops and register
+  conditions: listed as unchecked with a reason until a member uses them.
+- Correlated dynamic members (23): no declaration required; whether their
+  entanglement is needed is a design question for their own plans.

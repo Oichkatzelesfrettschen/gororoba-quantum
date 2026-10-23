@@ -2,6 +2,13 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-mosaiq-update-order-retry",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-mosaiq-update-order-retry",
+      "family": "photonic order sampling recovery after advertised deployment update",
+      "question": "Does the unchanged eight-setting order pilot return counts after the advertised Mosaiq deployment changes, and how do conditional output frequencies compare with requested and returned compiled laws?"
+    },
+    {
       "id": "qd-ascella-approved-order-pilot-retry",
       "provider": "quandela",
       "run": "results/quandela/runs/ascella-approved-order-pilot-retry",
@@ -1816,6 +1823,43 @@
     }
   ],
   "claims": [
+    {
+      "id": "ascella-order-sampling-recovery",
+      "statement": "The explicitly authorized unchanged Ascella order pilot completed eight settings and returned 65536 detected samples in 25 execution seconds, with a token-reported debit of 1.016384 free credits. Conditional analysis accepts 65523 occupation-sum-one observations and retains 13 multiple-occupation exclusions. Measured-versus-requested total variation spans 0.00048828125 to 0.02796092796; returned compiled-versus-requested total variation stays below 0.000298160.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One acquisition establishes recovery of the tested sampling path after an advertised deployment change. Executing worker identity and the exact provider repair remain unobserved. Four returned modes cannot establish twelve-mode leakage or absolute transmission. The single ordered block cannot isolate drift, and descriptive distances have neither preregistered acceptance thresholds nor calibrated uncertainty.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/ascella-mosaiq-update-order-retry/results.json",
+          "sha256": "4cddad72140339137740a4d7ff21b9e983d010a416cf3d1075416af410242b2f"
+        },
+        {
+          "path": "results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.json",
+          "sha256": "2e62dd6661f849f47443cb26b2cec599ab7a45699dfecdd1fef0801543757d62"
+        },
+        {
+          "path": "results/quandela/runs/ascella-mosaiq-update-order-retry/platform-before-submission.json",
+          "sha256": "76f74ca6d815bea6451cba4e0b6ef4e7e7060a840a722eaf75fb3e53e67742d4"
+        }
+      ],
+      "documents": [
+        "results/quandela/runs/ascella-mosaiq-update-order-retry/README.md",
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+      ],
+      "gates": {
+        "core-ascella-order-recovery-replay": "replay",
+        "core-ascella-serialized-request-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-mosaiq-update-order-retry"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "ascella-approved-order-retry-input-map-error",
       "statement": "The explicitly authorized retry of the unchanged eight-setting Ascella order pilot returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero token-reported credit debit.",

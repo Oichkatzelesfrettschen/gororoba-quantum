@@ -1,0 +1,56 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-154.md
+
+# #154: research_state: bind collected QI transaction rows to usage.json rows
+
+Owner session: boxkite-quantum-main. Branch (planned): none -- already fixed.
+
+## Finding
+
+Fixed on main by 1a11778 (2026-10-16, "research_state: compare ledger
+transaction rows with the run results"), which predates nothing in the issue
+but left the issue open. Observed on main 66eacb6:
+
+- `scripts/research_state.py:250` `_transaction_key` returns the ledger fields
+  of one transaction row (id, timestamp, domain, change, job,
+  backend_type_id), and line 355 counts each collected row under that key;
+  lines 457-463 compare the multiset of keys of the retained jobs' run rows
+  with the ledger rows of those jobs and fail with "transaction rows of the
+  retained jobs differ".
+- `_qi_row_mutations` (line 1172) carries the issue's falsifier exactly:
+  "run transaction id changed", "run transaction timestamp changed",
+  "run transaction domain changed", "zero-change row added to a run",
+  "zero-change row added to the ledger", "ledger transaction row dropped".
+- `python3 -B -W error scripts/research_state.py --self-test` on main:
+  `research state: 62 mutations rejected` (observed 2026-10-17).
+
+## Reachability
+
+The adapter runs in gates core-270/core-271 over every retained run; the
+mutations are the documented self-test interface.
+
+## Design
+
+No code change. Closed the issue with a "Fixed in 1a11778" comment naming
+the function, the mutations and the self-test result (done 2026-10-17).
+
+## Acceptance and falsifier
+
+Accepted: self-test passes on main and rejects each named mutation. The
+issue would reopen if a ledger snapshot with non-empty `transactions`
+(today 0 rows) passes a run whose row differs in any key field; the
+synthetic rows in `_qi_row_mutations` already exercise that path.
+
+## Shared files and dependencies
+
+None.
+
+## Effort and agents
+
+Done; no agent.
+
+## Out of scope
+
+Nothing.
+
+State: done (issue closed).

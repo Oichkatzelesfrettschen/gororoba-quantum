@@ -1,0 +1,67 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/design/provider-api-billing-research-plan.md
+
+# Provider API, billing and research-design implementation plan
+
+> Execute the approved audit in the current session with test-first changes and independent final review.
+
+**Goal:** Admit provider facts and repair API/MCP information loss before designing a discriminating hardware acquisition.
+
+**Architecture:** Keep IQM's existing client and source snapshots, resolve calibration identities before related reads,
+and expose observation provenance without rewriting pinned historical sources. Put Open Quantum adaptations in a
+repository-owned wrapper around the pinned vendor tools, rather than editing installed packages. Keep Quandela's
+concurrent MCP repair under its existing owner and link the audit's residuals to that work.
+
+**Tech stack:** Pinned repository Python/CI tools, the isolated Open Quantum stack, IQM REST v1/GraphQL,
+MCP stdio, exact algebra certificates and local circuit checks.
+
+**Specification:** The user's approved audit scope and the claim boundaries in
+[hypercomplex-operator-evidence.md](hypercomplex-operator-evidence.md),
+[matched-response case](tuna17-zero-divisor-matched-response.md), and
+[BDSC Pauli readout](../notes/topics/bdsc-pauli-readout.md).
+
+## Constraints and review focus
+
+- Provider job submission, circuit upload, slots, QRNG and notebooks remain separately approved operations.
+- A price estimate without circuit upload is a read-only diagnostic; preserve its exact scope.
+- Existing ledger-bound source bytes stay immutable; corrections use successor records.
+- Credits from different providers are independent budgets, rather than convertible currency units.
+- The user limits the pilot design to current balances: IQM 30 credits and Open Quantum 25 Spark credits.
+  A larger pilot must fit those balances; purchases, top-ups and a purchased-credit fallback stay excluded.
+- A local algebra theorem or simulator result supplies no device-noise evidence or fundamental scalar-field test.
+- Missing data, mixed calibration identities, stale prices, error-shaped successful MCP responses and filtered
+  pagination must each have a regression before a claimed repair.
+
+## Ordered tasks
+
+1. [x] Inspect canonical main, dirty acquisitions, active worktrees and provider/source ownership.
+2. [x] Read existing claims and identify already-settled mathematical questions and outstanding device questions.
+3. [x] Audit fresh IQM identities, general/per-QC schemas, calibrated architecture/metrics, limits and billing.
+4. [x] Test and repair IQM calibration-bound reads and observation provenance in `scripts/iqm_mcp_server.py`.
+5. [x] Audit Open Quantum complete constraints, quotes, pagination, error semantics and publication boundary.
+6. [x] Test and implement a repository-owned Open Quantum MCP adapter, preserving vendor spend checks and schemas.
+7. [x] Retain sanitized successor audit observations and update provider guides with exact source and time bounds.
+8. [x] Reconcile Quandela usage and unresolved offer terms with its separate MCP owner; avoid overlapping edits.
+9. [x] Compare candidate acquisitions by question discrimination, identifiability, power and independent budgets.
+   Enumerate larger current-balance pilots. Separate circuit batching
+   from simultaneous replica packing; retain shared-shot covariance and require a packed-versus-isolated
+   equivalence acquisition before multiplying a nominal replica count into an independent sample count.
+10. [x] Write the selected run's hypothesis, controls, measurements, uncertainty assumptions, stop rules,
+    expected billed units, privacy boundary and remaining admission gates; include a separately costed ion candidate.
+11. [ ] Run regressions, direct API/stdio comparisons, lint/types, links, full behavioral tests and premerge comparison.
+12. [ ] Request hosted review, resolve findings, review the whole diff, merge and synchronize canonical main.
+
+## Acceptance cases
+
+IQM tests must force a default-calibration transition between calls and establish that related reads use the
+resolved immutable identity. Observation intervals must retain fractional UTC seconds and errors must reach MCP
+as errors. Existing tool signatures and the single cancellation mutation retain their boundaries.
+
+Open Quantum tests must read `n_qubits` separately from `limits.max_qubits_per_job`, preserve unknown values,
+filter across multiple pages, reject upstream error payloads, and delegate spending without changing caps,
+approval requirements or publication semantics. Live checks use catalogue/constraint reads and circuit-free quotes.
+
+The run design must identify at least one outcome that changes a named open operational claim. It must explain
+why another backend is informative and why the result cannot settle a theorem, a fundamental hypercomplex scalar
+field, or a noise mechanism the interventions leave confounded. A reserve, actual quote and reviewed analysis
+remain admission requirements rather than assumed execution authority.

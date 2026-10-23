@@ -1,0 +1,31 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna17-zero-divisor-matched-response",
+  "kind": "experiment",
+  "summary": "Tuna-17 zero-divisor matched-response case",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/d804d61de41841adc234cce2f92adc6fae1a37ae9845437406588a8ae78b3165.txt",
+    "docs/design/tuna17-zero-divisor-matched-response.md"
+  ],
+  "state": "inbox",
+  "scope": "Tuna-17 zero-divisor matched-response case",
+  "next_action": "Freeze the complete six-by-six covariance and calibration uncertainty model.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The nine-job design remains unsubmitted; retain source, uncertainty, timing and separate approval identities."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Freeze the complete six-by-six covariance and calibration uncertainty model.",
+      "acceptance": "The nine-job design remains unsubmitted; retain source, uncertainty, timing and separate approval identities.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Inspect served scheduling before final admission.",
+      "acceptance": "The nine-job design remains unsubmitted; retain source, uncertainty, timing and separate approval identities.",
+      "state": "todo"
+    }
+  ]
+}

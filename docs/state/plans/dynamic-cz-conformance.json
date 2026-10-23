@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "dynamic-cz-conformance",
+  "kind": "implementation",
+  "summary": "ISSUE-131: audit dynamic members' ideal measured law against the CZ they execute",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/945d44c9516a3294cd5b8a988e7c3c47a1e0c9d879f3126b66e30086af2ea20d.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-202.json"
+  ],
+  "state": "inbox",
+  "scope": "ISSUE-131: audit dynamic members' ideal measured law against the CZ they execute",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #202 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-202-integration",
+      "action": "Verify the recorded integration state of PR #202.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "2c7566c363be66dc8ec5ae4ad7784516d3b7a987f3095b07359cc04f5c007260",
+          "result": "PR #202 merged as 35db7698f37cecbbc407c816bd94c955708f226b; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-202.json",
+              "sha256": "3757b805c0fd3602563709cb7153699961e99dac521f80545ebca1c08064dc28"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Prediction, stated from reading `folded_qpe` before the probe and confirmed by it: `folded_qpe_null` classifies `point_mass` with outcome `00`, executes 6 CZ, and appears in the record with a declaration; deleting its pattern makes `--check` fail with \"members executing CZ their law does not need, undeclared: ['folded_qpe_null']\". Predicted counts after the change: 64 dynamic rows, 17 with zero CZ (no declaration), 47 with CZ, 24 requiring a declaration, 23 correlated and exempt, `unchecked` empty. Commands (all from the repository root, `PYTHON=${PYTHON:-python3}`): ```sh \"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --write \"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --check \"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test GOROROBA_WORKERS=1 \"$PYTHON\" -B scripts/local_member_cz_conformance.py --check ruff check scripts/ ; ruff format --check scripts/ ; mypy scripts/local_member_cz_conformance.py ``` The serial and pooled runs must produce the same bytes. CI is the merge authority for core-289 timing; replicate the shard on Kaggle CPU only at session close-out (memory: Kaggle shards once per session). Falsifiers: (a) `folded_qpe_null` classifies `correlated` or shows 0 CZ, which would put the premise (point mass plus preparation CZ) wrong; (b) the counts differ from the table above, which would mean the enumerator and the probe disagree and the cross-check core-408 localizes which; (c) pooled and serial records differ; (d) core-289 exceeds its measured seconds by more than the parallel dynamic pass (about 1.4 s serial) explains. Runtime: the dynamic pass adds about 1.4 s serial (64 members, 1.4 s measured for enumeration plus transpile), less when pooled; the census setup (`planned_groups`, 1452 members digested) dominates and is unchanged, 76 s wall in the probe on the build host. core-289 stays at 120 s and stays in the full tier (the pr tier admits gates under two minutes). core-406, 407 and 408 are each a few seconds and join the pr tier after their `seconds` are measured.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-183.md
+
+# #183: qi_readout_ringdown: calibrate the scanned-T tail statistic under its null
+
+Owner session: boxkite-quantum-main. Branch (planned):
+qi/ringdown-tail-threshold-null-calibration.
+
+## Finding
+
+Observed in `scripts/qi_readout_ringdown_cases.py` on main 66eacb6:
+
+- `analyze_target()` (line 481) declares a tail when
+  `chi2_h1 - chi2_h2 >= DETECT_DELTA_CHI2` (13.82, line 178) and
+  `|A| >= DETECT_SIGMA * se(A)`.
+- `fit_h2()` (line 417) minimizes chi2 over T on `T_GRID` within
+  `T_BOUNDS = (5, 100)` cycles, then golden-section refines between the best
+  grid point's neighbors. Under H1, A = 0 and T is unidentified, so the
+  statistic is a supremum over T: Wilks' 2-degree-of-freedom reference does
+  not apply (Davies' problem), and 13.82 is not the p = 0.001 point.
+- The A-significance conjunct is a second filter whose joint null rate is
+  also uncalibrated.
+
+Inferred: the null 0.999 quantile of the delta-chi2 exceeds 13.82, so the
+false-positive rate at 13.82 exceeds 0.001. Unmeasured until step 2.
+
+## Reachability
+
+The preregistered decision rule of every Tuna-17 ring-down series, reached
+through `--analyze` (core-386, core-369, the series-Q gate). Only a
+"detected" verdict is affected; "not detected" stands, since an
+anti-conservative threshold only inflates detections.
+
+## Design
+
+1. `null_statistics(weights, taus, n, seed)`: under H1 draw arm rates
+   `c + N(0, se_arm)` with the target's own per-arm errors (and, after #182,
+   the calibration covariance), run the identical `fit_h2`, `h2_errors` and
+   both conjuncts, and return the delta-chi2 values and the joint
+   detection indicator. Every replicate's normal draws come first from one
+   seeded generator, then the fits map through `parallel.ordered_map`.
+2. Calibration record
+   `results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json`:
+   per series and target, N = 200000 replicates (about 200 exceedances at
+   0.999), the empirical 0.999 quantile with a binomial-order-statistic
+   interval, the null rate of the full rule at 13.82, the seed and the
+   sha256 of the full statistic list; the top 1 percent of statistics kept
+   sorted. If the build host measures above 2 min the run goes to a Kaggle
+   CPU kernel (scripts/kaggle_run.py push, CPU machine) and the record is
+   retained from it.
+3. Re-adjudication block: each retained series-P and series-Q target's
+   observed statistic against its calibrated quantile. A preregistered
+   "tail"/"offset" that falls below the calibrated threshold is reported
+   as not significant under the calibrated null; the preregistered verdict
+   field is unchanged.
+4. Future preregistration: a `calibrated_threshold(weights)` helper and a
+   note that new series cases carry the calibrated value; existing
+   cases.json are untouched.
+5. Gates core-436 (replay: recompute the first 5000 replicates from the
+   recorded seed and require identical values plus the record's quantile
+   reproduced from the kept tail and hash) and core-437 (self-test: a
+   mutated seed, a dropped tail value or a changed weight is rejected).
+
+## Acceptance and falsifier
+
+Prediction, fixed now: the empirical null 0.999 quantile is above 13.82 for
+every series-P target. Falsifier: a quantile at or below 13.82 within its
+interval on the series-P weight patterns -- then the threshold was already
+conservative and the record says so. Commands: core-436/437 normal and -O,
+core-386 unchanged, ruff, mypy.
+
+## Shared files and dependencies
+
+- Waits for #182 (same script; reuses its calibrated per-arm errors) and
+  for TUNA-Q (series-Q analysis record).
+- ci/gates.json core-436, core-437; experiments.md paragraph;
+  research_state claim evidence (reconcile by `--write`).
+- Kaggle CPU only if the build-host run exceeds 2 min.
+
+## Effort and agents
+
+Medium. One sonnet agent after #182 lands.
+
+## Out of scope
+
+An analytic Davies upper bound (optional cross-check, a later note); any
+change to cases already submitted.
