@@ -816,11 +816,6 @@
    "cpu_seconds": 15.75,
    "workers": 1
   },
-  "core-210": {
-   "wall_seconds": 0.23,
-   "cpu_seconds": 0.19,
-   "workers": 1
-  },
   "core-211": {
    "wall_seconds": 23.7,
    "cpu_seconds": 78.22,
@@ -986,29 +981,14 @@
    "cpu_seconds": 70.55,
    "workers": 1
   },
-  "core-279": {
-   "wall_seconds": 13.78,
-   "cpu_seconds": 13.71,
-   "workers": 1
-  },
   "core-280": {
    "wall_seconds": 37.51,
    "cpu_seconds": 37.19,
    "workers": 1
   },
-  "core-281": {
-   "wall_seconds": 2.75,
-   "cpu_seconds": 2.69,
-   "workers": 1
-  },
   "core-282": {
    "wall_seconds": 31.16,
    "cpu_seconds": 30.97,
-   "workers": 1
-  },
-  "core-283": {
-   "wall_seconds": 0.14,
-   "cpu_seconds": 0.1,
    "workers": 1
   },
   "core-284": {
@@ -1131,16 +1111,6 @@
    "cpu_seconds": 30.24,
    "workers": 1
   },
-  "core-326": {
-   "wall_seconds": 6.55,
-   "cpu_seconds": 6.48,
-   "workers": 1
-  },
-  "core-327": {
-   "wall_seconds": 0.31,
-   "cpu_seconds": 0.25,
-   "workers": 1
-  },
   "core-328": {
    "wall_seconds": 18.99,
    "cpu_seconds": 18.93,
@@ -1206,19 +1176,9 @@
    "cpu_seconds": 1.94,
    "workers": 1
   },
-  "core-343": {
-   "wall_seconds": 9.83,
-   "cpu_seconds": 9.73,
-   "workers": 1
-  },
   "core-344": {
    "wall_seconds": 14.27,
    "cpu_seconds": 14.16,
-   "workers": 1
-  },
-  "core-346": {
-   "wall_seconds": 0.33,
-   "cpu_seconds": 0.28,
    "workers": 1
   },
   "core-347": {
@@ -1276,16 +1236,6 @@
    "cpu_seconds": 6.01,
    "workers": 1
   },
-  "core-367": {
-   "wall_seconds": 5.89,
-   "cpu_seconds": 5.79,
-   "workers": 1
-  },
-  "core-368": {
-   "wall_seconds": 0.63,
-   "cpu_seconds": 0.58,
-   "workers": 1
-  },
   "core-369": {
    "wall_seconds": 1.03,
    "cpu_seconds": 0.96,
@@ -1294,11 +1244,6 @@
   "core-370": {
    "wall_seconds": 0.16,
    "cpu_seconds": 0.1,
-   "workers": 1
-  },
-  "core-372": {
-   "wall_seconds": 9.22,
-   "cpu_seconds": 9.11,
    "workers": 1
   },
   "core-374": {
@@ -1310,11 +1255,6 @@
    "wall_seconds": 46.67,
    "cpu_seconds": 105.14,
    "workers": 4
-  },
-  "core-380": {
-   "wall_seconds": 0.15,
-   "cpu_seconds": 0.12,
-   "workers": 1
   },
   "core-382": {
    "wall_seconds": 0.13,
@@ -1391,11 +1331,6 @@
    "cpu_seconds": 16.62,
    "workers": 1
   },
-  "core-428": {
-   "wall_seconds": 13.58,
-   "cpu_seconds": 13.46,
-   "workers": 1
-  },
   "core-430": {
    "wall_seconds": 1.88,
    "cpu_seconds": 1.82,
@@ -1405,11 +1340,6 @@
    "wall_seconds": 6.5,
    "cpu_seconds": 8.56,
    "workers": 4
-  },
-  "core-433": {
-   "wall_seconds": 7.75,
-   "cpu_seconds": 7.66,
-   "workers": 1
   },
   "core-434": {
    "wall_seconds": 144.04,
@@ -1436,21 +1366,6 @@
    "cpu_seconds": 234.93,
    "workers": 4
   },
-  "core-439": {
-   "wall_seconds": 2.53,
-   "cpu_seconds": 2.47,
-   "workers": 1
-  },
-  "core-441": {
-   "wall_seconds": 0.84,
-   "cpu_seconds": 0.79,
-   "workers": 1
-  },
-  "core-442": {
-   "wall_seconds": 5.28,
-   "cpu_seconds": 5.2,
-   "workers": 1
-  },
   "core-443": {
    "wall_seconds": 69.46,
    "cpu_seconds": 69.08,
@@ -1475,11 +1390,6 @@
    "wall_seconds": 215.52,
    "cpu_seconds": 823.51,
    "workers": 4
-  },
-  "core-450": {
-   "wall_seconds": 6.23,
-   "cpu_seconds": 6.15,
-   "workers": 1
   },
   "core-451": {
    "wall_seconds": 0.7,
@@ -1581,11 +1491,6 @@
    "cpu_seconds": 118.47,
    "workers": 4
   },
-  "core-500": {
-   "wall_seconds": 0.31,
-   "cpu_seconds": 0.25,
-   "workers": 1
-  },
   "core-502": {
    "wall_seconds": 0.26,
    "cpu_seconds": 0.22,
@@ -1594,11 +1499,6 @@
   "core-504": {
    "wall_seconds": 2.97,
    "cpu_seconds": 2.91,
-   "workers": 1
-  },
-  "core-506": {
-   "wall_seconds": 3.22,
-   "cpu_seconds": 3.17,
    "workers": 1
   },
   "core-508": {
@@ -1791,11 +1691,6 @@
    "cpu_seconds": 42.96,
    "workers": 1
   },
-  "core-551": {
-   "wall_seconds": 8.74,
-   "cpu_seconds": 8.63,
-   "workers": 1
-  },
   "core-553": {
    "wall_seconds": 73.9,
    "cpu_seconds": 207.52,
@@ -1864,11 +1759,6 @@
   "core-586": {
    "wall_seconds": 12.15,
    "cpu_seconds": 12.08,
-   "workers": 1
-  },
-  "core-588": {
-   "wall_seconds": 1.33,
-   "cpu_seconds": 1.27,
    "workers": 1
   },
   "core-590": {

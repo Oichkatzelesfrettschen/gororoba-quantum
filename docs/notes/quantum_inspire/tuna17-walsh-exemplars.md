@@ -3,7 +3,7 @@
 `scripts/qi_walsh_exemplar_cases.py` writes the series
 `results/quantum_inspire/cases/walsh_exemplar_tuna_17/` and its QX twins;
 `scripts/qi_walsh_exemplar_analysis.py` holds the preregistered analysis.
-Gates core-428 (case regeneration) and core-432 (qxelarator conformance,
+Gates `core-record-check-02` (`tests/test_cli_record_checks.py`) (case regeneration) and core-432 (qxelarator conformance,
 `requires: qi`) hold the cases; the generator and analysis self-tests run in
 gate `core-self-test-03` (`tests/test_cli_self_tests.py`).
 

@@ -12,7 +12,7 @@ broadcast stays ideal, while on hardware it relaxes. The retained
 qubit; charged at the snapshot's T1 and T2, it gives the idle error E_idle,
 and `c_idle = 1 + E_idle / E_cz` is the CZ factor a fit would need if idle
 relaxation were the only omission ([idle_budget.json](idle_budget.json),
-gate core-343; the script's docstring states the charge and why it is an
+gate `core-record-check-01` (`tests/test_cli_record_checks.py`); the script's docstring states the charge and why it is an
 upper estimate).
 
 ## Fitted factor against the idle budget

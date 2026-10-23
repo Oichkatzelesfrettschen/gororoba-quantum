@@ -534,9 +534,9 @@ standard library. Circuit-conformance behavioral tests use the Perceval and
 exqalibur versions pinned in ci/requirements-ci.txt. Every retained run enters docs/state/research_state.json
 under the `quandela` provider in the change that retains it.
 
-Gates core-500 (`capture_qd_docs.py --check`), core-502 (`qd_platform.py check docs/evidence/quandela
+Gates `core-record-check-05` (`tests/test_cli_record_checks.py`) (`capture_qd_docs.py --check`), core-502 (`qd_platform.py check docs/evidence/quandela
 --agents docs/notes/quandela/README.md`), core-504
-(`qd_box_kite_cases.py --check results/quandela/cases`), core-506 (`cd_two_blade_blocks.py --check
+(`qd_box_kite_cases.py --check results/quandela/cases`), `core-record-check-05` (`cd_two_blade_blocks.py --check
 docs/evidence/box_kite_census/two_blade_blocks.json`), core-508 (`qd_box_kite_analysis.py --check --runs-under
 results/quandela/runs` over every retained run whose case schema is a
 box-kite or Belenos mesh case, but the qpu:belenos mesh runs, which core-537
