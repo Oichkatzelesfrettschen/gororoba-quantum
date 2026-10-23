@@ -1,0 +1,42 @@
+{
+ "blocks": 16,
+ "calibration_set": "68b0f1d0-b410-450f-aed7-b709f22412c1",
+ "cz": 199,
+ "model": "iqm_sim depolarizing PRX and CZ, readout errors, ALAP idle T1/T2; coherent adds relative over-rotations",
+ "parts": {
+  "calibration": {
+   "d_t": 0.0018699999999999984,
+   "odd_0": 0.014077500000000001,
+   "odd_t": 0.0159475
+  },
+  "coherent": {
+   "d_t": 0.0008774999999999989,
+   "odd_0": 0.007755000000000001,
+   "odd_t": 0.0086325
+  }
+ },
+ "planning": {
+  "ceiling_credits_garnet": 43.5,
+  "expected_d_t": 0.00502439024390244,
+  "expected_z": 3.0052406496459416,
+  "retention": 0.559,
+  "se_d_t": 0.001671876175538349,
+  "visibility": 0.206
+ },
+ "seed": 2,
+ "t": 0.05,
+ "z": {
+  "calibration": {
+   "+0.00": 0.03935,
+   "+0.05": 0.040055,
+   "-0.00": 0.011195,
+   "-0.05": 0.00816
+  },
+  "coherent": {
+   "+0.00": 0.02569,
+   "+0.05": 0.02556,
+   "-0.00": 0.01018,
+   "-0.05": 0.008295
+  }
+ }
+}
