@@ -21,7 +21,7 @@ passive reset bounds a shot at about 0.3 ms and 3300 shots per billed second.
 ## Case
 
 `scripts/iqm_jobs.py build results/iqm/cases/timing-pilot` writes the case;
-gate `core-635` regenerates it byte for byte. Every circuit is `prx(angle=pi,
+gate `core-639` regenerates it byte for byte. Every circuit is `prx(angle=pi,
 phase=0)` on QB1 followed by `measure` with key `m`, ideal P(1) = 1, with
 `heralding_mode` `none`.
 

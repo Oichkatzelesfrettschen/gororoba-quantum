@@ -3114,7 +3114,7 @@
       "domain": "implementation",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "Priced against direct counting before any hardware case; no universal speedup follows.",
+      "boundary": "Priced against direct counting before any hardware case; no universal speedup follows. The signed overlap holds for every unit vector u (signed-overlap-kernel-independence); only the dark probability depends on u lying in the kernel.",
       "evidence": [],
       "documents": [],
       "gates": {},
@@ -7358,7 +7358,7 @@
         "docs/notes/iqm/README.md"
       ],
       "gates": {
-        "core-635": "replay",
+        "core-639": "replay",
         "core-636": "regression"
       },
       "acquisitions": [
@@ -7448,7 +7448,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2.",
+      "boundary": "One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2. The signed overlap equals t/(2 + |t|) for every unit vector u (signed-overlap-kernel-independence), so the run establishes that Garnet carries a relative pi phase on the signed branch through this compile, not a property of the sedenion kernel. Coherent gate errors add an odd term proportional to sqrt(|t|/(2 + |t|)) (iqm-garnet-signed-probe-coherent-response), so the single-visibility fit does not separate the linear law from that term: the measured ratio odd(0.05)/odd(0.25) = 0.26 +- 0.16 lies between the linear 0.22 and the amplitude scaling 0.47. The weak job lists its five +t circuits before its five -t circuits, so drift along the batch order enters the odd part.",
       "evidence": [
         {
           "path": "results/iqm/signed_kernel_probe_analysis.json",
@@ -7474,6 +7474,89 @@
       "assumptions": [],
       "depends_on": [
         "iqm-garnet-reset-billing-pilot"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "signed-overlap-kernel-independence",
+      "statement": "In the sedenions (cd_core) the signed dilation overlap <L_e2 u|(L_e1 + L_e10 + t L_e2) u>/(2 + |t|) equals t/(2 + |t|) for every real unit vector u, in the kernel of L(e1 + e10) or not: the certified kernel vector (e4 - e15)/sqrt2, the bright vector (e4 + e15)/sqrt2, e4 and a seeded random vector all read it, and on the kernel support {e4, e15} all 1000 seeded replacement sign tables leave it unchanged. The zero-divisor property is instead the eigenvalue -1 of K = L_e1^T L_e10 on u (K swaps e4 and e15, and its -1 eigenspace is four-dimensional): the cancellation observable cos^2(theta) <w|L_e1 u> + sin^2(theta) <w|L_e10 u> with w = L_e1 u reads cos(2 theta) for the kernel vector and 1 for the bright vector, and one flipped L_e10 sign at e4 or e15, or 755 of the 1000 sign tables, removes its zero at theta = pi/4.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact arithmetic over the listed vectors and the seeded sign tables; it says nothing about a device, and a hardware reading of the cancellation observable needs its own approved case.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_audit.json",
+          "sha256": "b6b6d2abdc744dbe969424ba196fa02dc87ded6fdacae98356a8eff35318d1bc"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_probe_audit.py"
+      ],
+      "gates": {
+        "core-640": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "related_claims": [
+        "proposed-signed-kernel-probe"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "cd-sign-cocycle-degree",
+      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree n - 1 in q at a fixed left factor p. Octonion left multiplication is therefore a degree-2 phase, implementable with CZ and S gates, and sedenion left multiplication needs a degree-3 phase.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Enumerated for n <= 6; the closed form beyond n = 6 is a conjecture this certificate does not prove. Degree bounds the order of the multi-controlled phases a sign diagonal needs, not the routed CZ count on a lattice.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_audit.json",
+          "sha256": "b6b6d2abdc744dbe969424ba196fa02dc87ded6fdacae98356a8eff35318d1bc"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_probe_audit.py"
+      ],
+      "gates": {
+        "core-640": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-signed-probe-coherent-response",
+      "statement": "On the retained Garnet compile of the signed kernel probe (transpiler seed 2, 199 CZ on seven qubits), the first-order response of the measured <Z> on QB7 to coherent gate errors (prx over-rotation and axis error per qubit, residual Z after each CZ per qubit, CZ conditional phase per coupler) vanishes in the odd part at t = 0 for every error and grows with the signed amplitude sqrt(|t|/(2 + |t|)), not with t: the QB6 over-rotation coefficient per unit amplitude is -7.1, -6.9 and -6.2 at |t| = 0.01, 0.05 and 0.25. The even part responds at first order, led by QB11 over-rotation (-8.0 per unit relative over-rotation at |t| = 0.05), residual Z on QB11 (-1.56) and QB12 over-rotation (+1.15), so a +0.6 % QB11 amplitude error, which randomized benchmarking sees only at about 1e-5 infidelity, moves the even part by -0.05.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "First-order derivatives of the ideal compiled circuit; the device's coherent error magnitudes are unmeasured, so attributing the measured even offsets to QB11 over-rotation is a candidate mechanism, not a fit. Amplitude damping, leakage and readout lie outside the model.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_audit.json",
+          "sha256": "b6b6d2abdc744dbe969424ba196fa02dc87ded6fdacae98356a8eff35318d1bc"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "scripts/iqm_probe_audit.py"
+      ],
+      "gates": {
+        "core-640": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "iqm-garnet-signed-kernel-probe"
       ],
       "supersedes": [],
       "superseded_by": null

@@ -90,3 +90,69 @@ errors above the measurement. The even offsets (-0.022 and -0.012) have the
 opposite sign to the modeled +0.029. The weak job's runtime (6.52 s)
 exceeded its estimate (5.89 s), so a heralded job is bounded by the added
 1.60 s rather than by the estimate alone.
+
+## Adversarial audit
+
+`scripts/iqm_probe_audit.py` re-derives four bounds on the reading above
+([audit](../../results/iqm/signed_kernel_probe_audit.json), gate `core-640`).
+
+**The circuits compute the law.** Every retained circuit, run noiselessly on
+its seven qubits, reads exactly t/(2 + |t|) on QB7; the +t and -t circuits
+share one gate sequence and differ only in prx angles, and the five weak
+copies are identical. The recompile of seed 2 reproduces the retained arms.
+
+**The signed overlap does not test the kernel.** L_e2^T L_e1 and
+L_e2^T L_e10 are antisymmetric, so <L_e2 u, L_e1 u> = <L_e2 u, L_e10 u> = 0
+for every real u and Re<v|B(t)|u> = t/(2 + |t|) holds for the bright vector
+(e4 + e15)/sqrt2, for e4 and for a random unit vector as for the kernel
+vector, and for every replacement sign table on {e4, e15}
+(`signed-overlap-kernel-independence`). The e1 and e10 paths drop out one by
+one through orthogonality, never through their cancellation. The run
+therefore establishes that Garnet carries a relative pi phase on the signed
+branch through a 199-CZ compile at visibility near 0.2; it does not establish
+a property of the sedenion zero divisor. The dark probability t^2/(2 + |t|)^2
+and the cancellation observable below depend on the kernel.
+
+**The kernel is the eigenvalue -1 of L_e1^T L_e10.** (L_e1 + L_e10) u = 0
+holds exactly when K = L_e1^T L_e10 maps u to -u. K swaps e4 and e15, so the
+kernel vector is its -1 eigenvector and the bright vector its +1
+eigenvector, and its -1 eigenspace is four-dimensional, the dimension of a
+sedenion zero divisor's annihilator. A Hadamard test whose reference branch
+applies L_e1 and whose selector holds cos(theta) on e1 and sin(theta) on
+e10 reads cos^2(theta) + sin^2(theta) <L_e1 u, L_e10 u>: cos(2 theta) for the
+kernel vector, 1 for the bright vector. One flipped L_e10 sign at e4 or e15,
+or 755 of 1000 random sign tables, removes the zero at theta = pi/4, so this
+observable carries the zero-divisor sign at first order.
+
+**Coherent error enters both parts at first order.** The derivative of the
+measured <Z> with respect to each coherent error of the compile
+(`iqm-garnet-signed-probe-coherent-response`):
+
+| error | even part per unit error, \|t\| = 0.05 | odd part per unit error, \|t\| = 0.05 |
+|---|---|---|
+| QB11 prx over-rotation | -8.02 | -0.59 |
+| QB11 residual Z after CZ | -1.56 | -0.05 |
+| QB12 prx over-rotation | +1.15 | -0.06 |
+| QB6 residual Z after CZ | +0.83 | +0.06 |
+| QB7 prx over-rotation | -0.77 | -0.04 |
+| CZ QB11-QB12 conditional phase | -0.63 | -0.01 |
+| QB6 prx over-rotation | +0.10 | -1.07 |
+| QB7 residual Z after CZ | 0.00 | -0.22 |
+
+Readout alone predicts an even part of +0.031 (heralded QB7 errors 0.003 and
+0.034), so the measured -0.022 and -0.012 put the circuit's own shift near
+-0.05, which a +0.6 % QB11 amplitude error produces; randomized benchmarking
+sees that error at about 1e-5 infidelity, which is why the depolarizing model
+predicted +0.029. Every odd-part derivative vanishes at t = 0 and scales with
+the signed amplitude a0 = sqrt(|t|/(2 + |t|)), not with t, so a coherent
+error never fakes a sign at t = 0 but adds a term proportional to a0 that
+carries the sign of t: odd(t) = sign(t) (V a0^2 + K a0). The measured ratio
+odd(0.05)/odd(0.25) = 0.26 +- 0.16 lies between the linear law's 0.22 and the
+pure a0 scaling's 0.47, so the pooled visibility V = 0.206 assumes the linear
+law rather than testing it.
+
+**Design defects for the next case.** The weak job lists its five +t
+circuits before its five -t circuits, so drift along the batch order enters
+the odd part; the -t copies read -0.012, -0.004, -0.015, -0.025 and -0.032 in
+list order. The prediction carried no coherent error, so the even offset and
+the small-|t| odd part were outside the model by construction.
