@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (112 established, 51 exploratory, 3 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (112 established, 52 exploratory, 3 open, 10 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -256,12 +256,13 @@ acquisition of every provider:
 | [2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak](results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 10 | completed | 0.0 credits |
 | [2026-10-23T003708Z-garnet-signed-kernel-probe-strong](results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 2 | completed | 1.0 credits |
 | [2026-10-23T003738Z-garnet-signed-kernel-probe-weak](results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 10 | completed | 3.5 credits |
+| [ascella-approved-order-pilot-retry](results/quandela/runs/ascella-approved-order-pilot-retry) | Quandela Cloud | authorized photonic order instrument recovery retry | qpu:ascella | 1 | 8 | error | 0.0 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs with 7438336 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 50 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 51 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 12 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
