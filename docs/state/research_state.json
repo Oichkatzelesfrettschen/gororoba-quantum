@@ -2,6 +2,13 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-approved-order-pilot-retry",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-approved-order-pilot-retry",
+      "family": "authorized photonic order instrument recovery retry",
+      "question": "Does the unchanged approved eight-setting order pilot execute after Ascella reports available and provide positive samples for device conformance analysis?"
+    },
+    {
       "id": "qd-ascella-native-input-map-recheck",
       "provider": "quandela",
       "run": "results/quandela/runs/ascella-native-input-map-recheck",
@@ -1585,6 +1592,32 @@
     }
   ],
   "claims": [
+    {
+      "id": "ascella-approved-order-retry-input-map-error",
+      "statement": "The explicitly authorized retry of the unchanged eight-setting Ascella order pilot returned the missing hardware_info.circuit_input_ports instrument error after one execution second, with zero shots, zero samples and zero token-reported credit debit.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One explicitly reauthorized retry, submitted after both live platform status records reported available and token occupancy was empty. The manifest and resource caps match the approval. The error triggered the stopping rule. The acquisition supplies an instrument-readiness observation; operator probabilities, hardware loss and drift remain unmeasured. The private deployed input map and worker control flow remain unobserved.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/ascella-approved-order-pilot-retry/results.json",
+          "sha256": "de9fbceb6fd5b6bebccc9d623739c7e950eb23f3179d8e78c044ce3c5ffcbdc8"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md",
+        "results/quandela/runs/ascella-approved-order-pilot-retry/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-approved-order-pilot-retry"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "belenos-operator-repeat-counts-and-compilation-boundary",
       "statement": "The approved five-job Belenos programme completed 120 settings with 983040 returned samples in 724 execution seconds, charged 5.081920 credits. The descriptive reported-single-photon readout excludes and retains 350 outcomes whose total reported occupation is zero or greater than one. The 120 matched-repeat pair comparisons have maximum conditional total variation 0.036181 and identical returned compiled-circuit bytes within every matched pair. Returned compiled intensity distributions differ from requested ideal distributions by at most 0.000210 total variation. The imaginary-superposition Fourier control on representative zero instead gives measured-versus-compiled total variation from 0.996336 to 0.997313 across its three repeats, while its measured-versus-preceding-compiled distance is 0.030785 to 0.034049.",
