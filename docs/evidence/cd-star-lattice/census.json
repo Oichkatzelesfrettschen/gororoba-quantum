@@ -349,6 +349,12 @@
       "points": 37
     },
     "octahedron_selections": {
+      "reflection_free_order_and_largest_element_order_counts": {
+        "1:1": 3264,
+        "2:2": 48,
+        "3:3": 48,
+        "4:4": 12
+      },
       "reflection_free_stabilizer_order_counts": {
         "1": 3264,
         "2": 48,

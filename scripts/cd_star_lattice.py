@@ -355,14 +355,15 @@ def tuna17_binding() -> dict[str, Any]:
     }
 
 
-def _selection_stabilizer(choice: tuple[int, ...]) -> tuple[int, bool]:
+def _selection_stabilizer(choice: tuple[int, ...]) -> tuple[int, bool, int]:
+    """Stabilizer order, reflection-free flag and largest element order of one one-per-edge boundary."""
     edges = _octahedron_edges()
     boundary = set()
     for (u, v), pick in zip(edges, choice, strict=True):
         tail, head = (u, v) if pick else (v, u)
         boundary.add(point(3, [(tail[1], tail[0]), (2 * head[1], head[0])]))
     group = stabilizer(3, boundary)
-    return len(group), all(determinant(g) == 1 for g in group)
+    return len(group), all(determinant(g) == 1 for g in group), max(element_order(g) for g in group)
 
 
 def _octahedron_edges() -> list[tuple[SignedUnit, SignedUnit]]:
@@ -374,12 +375,15 @@ def octahedron_selections() -> dict[str, Any]:
     """Every one-per-edge boundary of the octahedron with its signed-permutation stabilizer."""
     choices = list(itertools.product((0, 1), repeat=len(_octahedron_edges())))
     results = ordered_map(_selection_stabilizer, choices)
-    orders = Counter(order for order, _ in results)
-    reflection_free = Counter(order for order, free in results if free)
+    orders = Counter(order for order, _, _ in results)
+    reflection_free = Counter(order for order, free, _ in results if free)
+    # A reflection-free group of order 4 is cyclic exactly when it holds an element of order 4.
+    free_shapes = Counter(f"{order}:{largest}" for order, free, largest in results if free)
     return {
         "selections": len(choices),
         "stabilizer_order_counts": {str(k): orders[k] for k in sorted(orders)},
         "reflection_free_stabilizer_order_counts": {str(k): reflection_free[k] for k in sorted(reflection_free)},
+        "reflection_free_order_and_largest_element_order_counts": dict(sorted(free_shapes.items())),
     }
 
 

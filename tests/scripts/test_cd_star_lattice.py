@@ -35,10 +35,10 @@ def test_one_reoriented_cross_polytope_edge_destroys_the_symmetry() -> None:
     partner = lattice.point(4, [(head[1], head[0]), (2 * tail[1], tail[0])])
     mutant = (boundary - {original}) | {partner}
     if not lattice.one_per_edge(4, mutant):
-        raise AssertionError("the reoriented edge still carries one boundary point")
+        raise AssertionError("reorienting one edge broke the one-per-edge property")
     order = lattice.group_facts(4, lattice.stabilizer(4, mutant))["order"]
-    if order == 24:
-        raise AssertionError("a reoriented edge kept the order-24 symmetry")
+    if order != 1:
+        raise AssertionError(f"a reoriented edge left a symmetry group of order {order}")
 
 
 def test_missing_boundary_point_fails_one_per_edge() -> None:
@@ -50,5 +50,11 @@ def test_missing_boundary_point_fails_one_per_edge() -> None:
 def test_octahedron_admits_no_reflection_free_boundary_beyond_order_four() -> None:
     selections = lattice.octahedron_selections()
     free = {int(k) for k in selections["reflection_free_stabilizer_order_counts"]}
-    if selections["selections"] != 4096 or max(free) != 4 or selections["stabilizer_order_counts"].get("24") != 2:
+    cyclic = selections["reflection_free_order_and_largest_element_order_counts"].get("4:4")
+    if (
+        selections["selections"] != 4096
+        or max(free) != 4
+        or selections["stabilizer_order_counts"].get("24") != 2
+        or not cyclic
+    ):
         raise AssertionError(selections)

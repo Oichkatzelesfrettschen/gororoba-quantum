@@ -105,7 +105,7 @@ pseudo-icosahedron (the icosahedron (0, +-1, +-phi) with phi replaced by 2).
 | Statement | Status |
 |---|---|
 | No boundary of type (1, 2, 0) keeps the full rotation group O of the cube | [T] O acts freely on the 24 type-(1, 2, 0) points, so an O-invariant subset holds 0 or 24 of them, never the 12 a one-per-edge boundary needs |
-| Of the 4096 one-per-edge boundaries of the octahedron, 2 reach symmetry order 24 (the two tetrahedral orbits, both with reflections); the largest reflection-free symmetry has order 4, a C4 pinwheel about one axis, on 12 boundaries | [E] `octahedron_selections` |
+| Of the 4096 one-per-edge boundaries of the octahedron, 2 reach symmetry order 24 (the two tetrahedral orbits, both with reflections); the largest reflection-free symmetry has order 4 and is cyclic, a C4 pinwheel about one coordinate axis, on 12 boundaries | [E] `octahedron_selections`; [T] every order-4 rotation of the cube turns about a coordinate axis |
 | The ancillas split into 3 forced-type classes of 6, one per coordinate axis; each of the 6 two-type assignments commutes and encodes 1 logical qubit with least logical weight 1 | [E] `check_types`: a [[19, 1, 1]] code, which corrects nothing |
 
 ## The sedenions
