@@ -87,7 +87,7 @@ CALIBRATION_FILES = ("metrics.json", "dynamic-quantum-architecture.json")
 # Step of the noisy-model central difference in a relative over-rotation.
 NOISY_STEP = 0.01
 # Train lengths 4k + 1 = 1, 5, 9, 13 keep the accumulated rotation under 0.7 rad up to a 3 % over-rotation,
-# the size the signed probe's even offsets put on QB11.
+# near the 3.5 % that QB11's randomized-benchmarking infidelity bounds.
 AMPLIFY_K = (0, 1, 2, 3)
 # The fit searches |eps| <= EPS_RANGE, where the 13-pulse train turns through at most 13 (pi/2) 0.06 =
 # 1.23 rad < pi/2, so -sin(N pi/2 eps) is monotonic in eps for every train and no alias enters; a minimum
