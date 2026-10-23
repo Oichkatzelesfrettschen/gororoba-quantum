@@ -27,14 +27,15 @@ returned circuit equals its retained diagnostic counterpart.
 Usage:
   "$PYTHON" scripts/bdsc_stationarity.py --write
   "$PYTHON" scripts/bdsc_stationarity.py --check
-
---write and --check also build RETAINED, the same analysis of the retained
-diagnostic runs (which chose the veto, so it tests nothing) with the primary's
-projected readings at 40000 and TRIALS samples.
   "$PYTHON" scripts/bdsc_stationarity.py --plan-check PLAN_JSON
   "$PYTHON" scripts/bdsc_stationarity.py --matched-check RUN_DIR
   "$PYTHON" scripts/bdsc_stationarity.py --readout RUN_DIR...
   "$PYTHON" scripts/bdsc_stationarity.py --calibration-contrast BEFORE_RUN AFTER_RUN
+
+--write and --check also build RETAINED, the same analysis of the retained
+diagnostic runs (which chose the veto, so it tests nothing) with the primary's
+projected readings at 40000 and TRIALS samples. --check also replays READOUT
+and CONTRAST from their retained runs and requires each to equal its file.
 """
 
 from __future__ import annotations
@@ -55,6 +56,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import bdsc_diagnostic as diag  # noqa: E402
 import bdsc_stray_mode_veto as veto  # noqa: E402
+from qi_readout_ringdown_cases import fsum_rows, libm_map  # noqa: E402
 
 import parallel  # noqa: E402
 
@@ -80,6 +82,21 @@ PLATFORM = diag.bdsc_cases.QUALIFYING_PLATFORM
 RETAINED = ROOT / "results/quandela/bdsc_stationarity_retained.json"
 PROJECTION_SEED = 20261023
 PROJECTION_REPLICATES = 10000
+# The retained readout of the four post-calibration runs, in job order, and the calibration contrast of the b1-j1
+# requests read before and after the Belenos calibration (docs/runbooks/bdsc-qualification-case.md).
+RUNS_DIR = ROOT / "results/quandela/runs"
+READOUT = ROOT / "results/quandela/bdsc_stationarity_readout.json"
+READOUT_RUNS = (
+    "2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+    "2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
+    "2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1",
+    "2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2",
+)
+CONTRAST = ROOT / "results/quandela/bdsc_stationarity_calibration_contrast.json"
+CONTRAST_RUNS = (
+    "2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+    "2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+)
 
 
 def require(condition: bool, message: str) -> None:
@@ -674,6 +691,25 @@ def _projected_q(item: tuple[list[float], list[int], list[float], np.ndarray]) -
     return out
 
 
+def _projected_q_batch(item: tuple[list[float], list[int], list[float], np.ndarray]) -> list[float]:
+    """_projected_q(item) for every replicate at once, with the scalar path's bits.
+
+    The products keep the scalar association, fsum_rows repeats builtin sum()'s Neumaier update over each class in
+    index order, and every square goes through libm pow as Python's ** does (docs/runbooks/vectorized-fits.md).
+    """
+    se, classes, tau2, draws = item
+    spread = [math.sqrt(s * s + t) for s, t in zip(se, tau2, strict=True)]
+    weights = [1 / (s * s) for s in se]
+    members = [[i for i, c in enumerate(classes) if c == k] for k in sorted(set(classes))]
+    values = [draws[:, i] * spread[i] for i in range(len(se))]
+    total = np.zeros(draws.shape[0])
+    for group in members:
+        weight = sum(weights[i] for i in group)
+        mean = fsum_rows([weights[i] * values[i] for i in group]) / weight
+        total = total + fsum_rows([weights[i] * libm_map(math.pow, values[i] - mean, 2.0) for i in group])
+    return [float(q) for q in total.tolist()]
+
+
 def projection(changes: list[dict[str, Any]], excess: dict[str, Any]) -> list[dict[str, Any]]:
     """The primary's expected Q and reading probabilities at 40000 and TRIALS samples under three residuals.
 
@@ -699,7 +735,7 @@ def projection(changes: list[dict[str, Any]], excess: dict[str, Any]) -> list[di
             items.append((se, classes, [per_class[k] for k in classes], draws))
     df = len(kept) - len({*classes})
     out = []
-    for scenario, qs in zip(scenarios, parallel.ordered_map(_projected_q, items, min_items=1), strict=True):
+    for scenario, qs in zip(scenarios, parallel.ordered_map(_projected_q_batch, items, min_items=1), strict=True):
         p_values = [float(chi2.sf(q, df)) for q in qs]
         out.append(
             {
@@ -754,6 +790,14 @@ def main() -> int:
         text = json.dumps(retained(), indent=1, sort_keys=True) + "\n"
         require(RETAINED.is_file() and RETAINED.read_text() == text, f"{rel(RETAINED)} differs from a fresh build")
         print(f"bdsc stationarity: {rel(RETAINED)} matches a fresh build")
+        replays = (
+            (READOUT, lambda: readout([RUNS_DIR / run for run in READOUT_RUNS])),
+            (CONTRAST, lambda: calibration_contrast(RUNS_DIR / CONTRAST_RUNS[0], RUNS_DIR / CONTRAST_RUNS[1])),
+        )
+        for path, build in replays:
+            text = json.dumps(build(), indent=1, sort_keys=True) + "\n"
+            require(path.read_text() == text, f"{rel(path)} differs from a fresh analysis of its retained runs")
+            print(f"bdsc stationarity: {rel(path)} matches a fresh analysis of its retained runs")
     elif args.plan_check:
         return plan_check(args.plan_check)
     elif args.matched_check:

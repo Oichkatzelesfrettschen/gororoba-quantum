@@ -8720,7 +8720,9 @@
         "docs/runbooks/bdsc-qualification-case.md",
         "scripts/bdsc_stationarity.py"
       ],
-      "gates": {},
+      "gates": {
+        "core-675": "replay"
+      },
       "acquisitions": [
         "qd-qpu-belenos-bdsc-stationarity-b1-j1-precalibration",
         "qd-qpu-belenos-bdsc-stationarity-b1-j1",

@@ -60,6 +60,24 @@ def test_excess_variance_recovers_zero_and_an_injected_variance() -> None:
         raise AssertionError(read)
 
 
+def test_batched_projection_returns_the_scalar_bits() -> None:
+    rng = np.random.default_rng(11)
+    items = []
+    for n, k in ((48, 3), (7, 7), (12, 1)):
+        se = [float(v) for v in rng.uniform(1e-4, 5e-3, n)]
+        classes = [i % k for i in range(n)]
+        tau2 = [0.0 if c == 0 else float(rng.uniform(0.0, 1e-5)) for c in classes]
+        draws = rng.standard_normal((300, n))
+        draws[0] = 0.0
+        draws[1] = 37.5
+        items.append((se, classes, tau2, draws))
+    for item in items:
+        scalar, batched = st._projected_q(item), st._projected_q_batch(item)
+        if [q.hex() for q in scalar] != [q.hex() for q in batched]:
+            differing = sum(a != b for a, b in zip(scalar, batched, strict=True))
+            raise AssertionError(f"{differing} of {len(scalar)} replicates differ")
+
+
 def test_calibration_contrast_changes_read_a_common_shift_per_class() -> None:
     indices = [i["index"] for i in st.diag.instances() if i["job"] == "b1-j1"]
     before = {i: {"selected": 40000, "eligible": 100000, "circuit_sha256": "a"} for i in indices}
