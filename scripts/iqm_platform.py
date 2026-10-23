@@ -209,6 +209,19 @@ class Client:
         return data
 
 
+def default_calibration_path(qc: str) -> str:
+    return f"{API}/calibration-sets/{qc}/default"
+
+
+def calibration_paths(qc: str, identity: str) -> dict[str, str]:
+    """The architecture and metrics of calibration set identity, by the file name each is retained under."""
+    pinned = f"{API}/calibration-sets/{qc}/{identity}"
+    return {
+        "dynamic-quantum-architecture.json": f"{pinned}/dynamic-quantum-architecture",
+        "metrics.json": f"{pinned}/metrics",
+    }
+
+
 def snapshot(out: Path, client: Client) -> None:
     out.mkdir(parents=True, exist_ok=True)
     index: dict[str, Any] = {"schema": "iqm-snapshot-v1", "server": SERVER, "captured_at": now(), "files": {}}
@@ -268,10 +281,9 @@ def snapshot(out: Path, client: Client) -> None:
             fetch(f"{base}/artifacts/{kind}.json", f"{root}/artifacts/{kind}")
         # The default set moves with every calibration, so the architecture
         # and metrics are read by the id the default resolved to.
-        calibration_set = json.loads(fetch(f"{base}/calibration/set.json", f"{API}/calibration-sets/{qc}/default"))
-        pinned = f"{API}/calibration-sets/{qc}/{calibration_set['observation_set_id']}"
-        fetch(f"{base}/calibration/dynamic-quantum-architecture.json", f"{pinned}/dynamic-quantum-architecture")
-        fetch(f"{base}/calibration/metrics.json", f"{pinned}/metrics")
+        calibration_set = json.loads(fetch(f"{base}/calibration/set.json", default_calibration_path(qc)))
+        for name, path in calibration_paths(qc, calibration_set["observation_set_id"]).items():
+            fetch(f"{base}/calibration/{name}", path)
     carry_feed(out, index)
     prune(out, index)
     (out / "index.json").write_bytes(canonical(index))

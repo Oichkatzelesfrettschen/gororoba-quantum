@@ -212,6 +212,11 @@ def check_case(directory: Path) -> None:
             raise PlatformError(f"{directory}/{rel} differs from the build")
 
 
+def ceiling_credits(expected_seconds: float, price: float, fixed: float = JOB_SECONDS) -> float:
+    """The credits a job may bill: IQM bills ceil(runtime), bounded by the shot schedule plus the fixed cost."""
+    return math.ceil(fixed + expected_seconds) * price
+
+
 def load_job(case_dir: Path, job: str) -> tuple[dict[str, Any], dict[str, Any], str]:
     raw = (case_dir / "cases.json").read_bytes()
     case = json.loads(raw)
@@ -226,7 +231,7 @@ def load_job(case_dir: Path, job: str) -> tuple[dict[str, Any], dict[str, Any], 
     return case, rows[0], sha256(raw)
 
 
-def body_of(case_dir: Path, row: dict[str, Any]) -> dict[str, Any]:
+def body_of(case_dir: Path, row: dict[str, Any], qc: str) -> dict[str, Any]:
     body: dict[str, Any] = {
         "circuits": [json.loads((case_dir / c["file"]).read_text(encoding="utf-8")) for c in row["circuits"]],
         "shots": row["shots"],
@@ -234,8 +239,13 @@ def body_of(case_dir: Path, row: dict[str, Any]) -> dict[str, Any]:
     }
     if row["options"]["active_reset_cycles"] is not None:
         body["active_reset_cycles"] = row["options"]["active_reset_cycles"]
-    if row["options"].get("calibration_set_id"):
-        body["calibration_set_id"] = row["options"]["calibration_set_id"]
+    # A string pins every quantum computer of the case; a map pins each named one, so a mock twin, whose
+    # calibration sets differ from its QPU's, compiles against its own default.
+    pinned = row["options"].get("calibration_set_id")
+    if isinstance(pinned, dict):
+        pinned = pinned.get(qc)
+    if pinned:
+        body["calibration_set_id"] = pinned
     return body
 
 
@@ -279,7 +289,7 @@ def submit(
     # schedule, ran from 0.63 s below to 1.50 s above the runtime of the retained Garnet jobs
     # (results/iqm/*_analysis.json), so the ceiling adds JOB_SECONDS to the case's expected seconds.
     fixed = 0.0 if case["case"] in FIXED_COST_IN_EXPECTED else JOB_SECONDS
-    ceiling = math.ceil(fixed + row["expected_seconds"]) * price
+    ceiling = ceiling_credits(row["expected_seconds"], price, fixed)
     # A charged job spends what the approved cases.json records for its quantum computer, so the digest
     # covers the credit limit and the command line only repeats it.
     approved = row.get("max_credits", {}).get(qc)
@@ -294,7 +304,7 @@ def submit(
     run_dir = runs / f"{stamp or now_stamp()}{suffix}"
     if dry:
         refuse_earlier(runs, suffix, job, qc, cases_sha256)
-        body = body_of(case_dir, row)
+        body = body_of(case_dir, row, qc)
         print(
             f"{run_dir.name}: dry, {len(body['circuits'])} circuits x {body['shots']} shots, "
             f"ceiling {ceiling:.2f} credits at {price} per second; nothing sent"
@@ -326,13 +336,32 @@ def write_atomic(path: Path, data: bytes) -> None:
 
 
 def refuse_earlier(runs: Path, suffix: str, job: str, qc: str, cases_sha256: str) -> None:
-    """One run directory per quantum computer, case, job and cases.json digest: an earlier one, even
-    without submission.json, may stand for a job already on the server, which the job list settles before
-    anything is resent. A rebuilt case carries another digest, so it is another approved artifact and
-    takes its own run."""
-    earlier = [run for run in sorted(runs.glob(f"*{suffix}")) if run_digest(run) in (cases_sha256, None)]
+    """One live run directory per quantum computer, case, job and cases.json digest: an earlier one,
+    even without submission.json, may stand for a job already on the server, which the job list settles
+    before anything is resent. A rebuilt case carries another digest, so it is another approved artifact
+    and takes its own run; a run whose collected results.json reports a failed or cancelled job that
+    billed no seconds leaves the job free to resubmit."""
+    earlier = [
+        run
+        for run in sorted(runs.glob(f"*{suffix}"))
+        if run_digest(run) in (cases_sha256, None) and not settled_unrun(run)
+    ]
     if earlier:
         raise PlatformError(f"{job} on {qc} already has {earlier[0].name}; collect it or settle it first")
+
+
+def settled_unrun(run_dir: Path) -> bool:
+    retained = run_dir / "results.json"
+    if not retained.exists():
+        return False
+    try:
+        results = json.loads(retained.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise PlatformError(f"{retained} is not readable JSON: {error}") from None
+    # IQM can bill a failed or cancelled job, and a record without billed_seconds says nothing either way,
+    # so only an explicit zero frees the job.
+    metrics = results.get("metrics") or {}
+    return results.get("status") in ("failed", "cancelled") and metrics.get("billed_seconds") in (0, 0.0)
 
 
 def run_digest(run_dir: Path) -> str | None:
@@ -362,7 +391,7 @@ def post_job(
     except PlatformError:
         shutil.rmtree(run_dir)
         raise
-    body = body_of(run_dir, row)
+    body = body_of(run_dir, row, qc)
     encoded = json.dumps(body, sort_keys=True).encode()
     # The exclusive checkpoint precedes the POST: an existing one means the job may already be on the server.
     fd = os.open(run_dir / "submission-state.json", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
@@ -713,7 +742,8 @@ def self_test() -> str:
             return 200, {}, json.dumps([{"measurement_keys": ["m"], "counts": {"1": sent["shots"]}}]).encode()
         status = "failed" if sent["shots"] == 1000 and state.get("fail") else "completed"
         state["balance"] -= 1.0 if status == "completed" else 0.0
-        return 200, {}, json.dumps({"id": job_id, "status": status, "metrics": {"billed_seconds": 2.0}}).encode()
+        billed = 2.0 if status == "completed" else float(state.get("failed_billed", 0.0))
+        return 200, {}, json.dumps({"id": job_id, "status": status, "metrics": {"billed_seconds": billed}}).encode()
 
     def refused(call: Any, words: str) -> None:
         try:
@@ -866,6 +896,33 @@ def self_test() -> str:
         if results["status"] != "failed" or results["shots_per_circuit"] or set(results["raw_sha256"]) != {"job.json"}:
             raise RuntimeError(f"a failed job collected as {results}")
         state["fail"] = False
+        # A collected failure ran nothing, so the same job submits again under a new stamp.
+        again = submit(case, "j1-1x1000-passive", "garnet", "approved", approved, 5, client, runs, "s3b")
+        if collect(again, client, poll=0)["status"] != "completed":
+            raise RuntimeError("the resubmission after a collected failure did not complete")
+        # Only an explicit zero of billed seconds frees a failed job; an empty metrics record does not.
+        probe = root / "settled"
+        probe.mkdir()
+        for record, freed in (
+            ({"status": "failed", "metrics": {}}, False),
+            ({"status": "failed", "metrics": {"billed_seconds": 0.0}}, True),
+            ({"status": "cancelled", "metrics": {"billed_seconds": 1.0}}, False),
+            ({"status": "completed", "metrics": {"billed_seconds": 0.0}}, False),
+        ):
+            (probe / "results.json").write_text(dump(record))
+            if settled_unrun(probe) != freed:
+                raise RuntimeError(f"settled_unrun reads {record} as {not freed}")
+        (probe / "results.json").write_text("{")
+        refused(lambda: settled_unrun(probe), "not readable JSON")
+        # A failure that billed seconds ran on the device, so its job stays taken.
+        state["fail"], state["failed_billed"] = True, 2.0
+        billed_failure = submit(case, "j1-1x1000-passive", "garnet:mock", "approved", approved, 5, client, runs, "s3c")
+        collect(billed_failure, client, poll=0)
+        state["fail"], state["failed_billed"] = False, 0.0
+        refused(
+            lambda: submit(case, "j1-1x1000-passive", "garnet:mock", "approved", approved, 5, client, runs, "s3d"),
+            "already has",
+        )
         shots_back["value"] = 3999
         short = submit(case, "j4-1x4000-active1", "garnet", "approved", approved, 5, client, runs, "s4")
         sent = jobs[json.loads((short / "submission.json").read_text())["job_id"]]
@@ -883,6 +940,13 @@ def self_test() -> str:
         (reset / "cases.json").write_text(dump(manifest), encoding="utf-8")
         digest = sha256((reset / "cases.json").read_bytes())
         submit(reset, "p-2x2000-passive", "garnet", "approved", digest, 1.5, client, runs, "s5", dry=True)
+        options: dict[str, Any] = {"heralding_mode": "none", "active_reset_cycles": None}
+        options["calibration_set_id"] = {"garnet": "set-g"}
+        pinned = {"circuits": [], "shots": 1, "options": options}
+        if body_of(root, pinned, "garnet").get("calibration_set_id") != "set-g" or "calibration_set_id" in body_of(
+            root, pinned, "garnet:mock"
+        ):
+            raise RuntimeError("a per-QC calibration pin reaches the wrong quantum computer")
         plain = {"circuits": [{}, {}], "shots": 100, "options": {"heralding_mode": "none"}}
         heralded = {**plain, "options": {"heralding_mode": "zeros"}}
         if not shots_ok([100, 100], plain) or shots_ok([99, 100], plain) or shots_ok([100], plain):

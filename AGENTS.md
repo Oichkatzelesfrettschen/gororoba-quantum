@@ -152,6 +152,10 @@ Binding rules for circuit and hardware work, before the notes open:
   `gororoba_quantum/cd_core.py` is the specification, and a package result
   enters evidence only through a declared map onto it, checked on every basis
   pair.
+- A hardware probe of an algebraic property passes the mutation test (the
+  ideal observable changes when the property is removed), lists its +-
+  arms +, -, -, + and decides against a null arm
+  ([Hardware probes](docs/notes/algebra_circuit_rules.md#hardware-probes)).
 - The account reaches ibm_fez, ibm_kingston and ibm_marrakesh, all Heron r2:
   156 qubits, heavy-hex, basis cz, id, rz, sx, x and xslow. The live Target is
   the timing authority (dt 4 ns), and `service.backends()` precedes naming a

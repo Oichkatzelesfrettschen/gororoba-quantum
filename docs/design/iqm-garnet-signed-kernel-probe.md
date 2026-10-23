@@ -172,3 +172,66 @@ therefore resolved only under the assumption that position does not move the
 reading; the -t copies read -0.012, -0.004, -0.015, -0.025 and -0.032 in
 list order. The prediction carried no coherent error, so the even offset and
 the small-|t| odd part were outside the model by construction.
+
+## Null-controlled follow-up
+
+The calibration model gives the signed probe an odd part of +0.0136 at
+t = 0 (exact density matrix, herald-conditioned readout, set `68b0f1d0`),
+where the ideal is zero and every first-order coherent error leaves it zero:
+the +0 and -0 circuits differ in their rotation angles, so incoherent noise
+acts on them differently. Sampled runs split it by channel (gate
+depolarizing alone about +0.014, idle relaxation alone about +0.031). That
+null offset carries most of the modeled odd part at |t| = 0.05 (+0.0157), and
+subtracting it, D(t) = odd(t) - odd(0), leaves +0.0021 at |t| = 0.05 and
++0.0095 at |t| = 0.25, whose ratio 0.221 matches the linear law's 0.222: the
+simulator's apparent small-|t| departure was this additive offset. The
+retained Garnet run had no t = 0 arm, so its +0.022 at |t| = 0.25 may hold
+an offset of the same size.
+
+[iqm_signed_resolve.py](../../scripts/iqm_signed_resolve.py) builds two
+null-controlled cases on the retained 199-CZ compile, each listing +t, -t,
+-t, +t blocks at |t| and at t = 0 with QB7 readout calibration and prx
+trains on QB6 and QB11 in a second job:
+
+| case | blocks | circuits x shots | ceiling | modeled D(t): calibration / with QB11 +2.7 % | planned z at V = 0.206 |
+|---|---|---|---|---|---|
+| `signed-kernel-null-retest`, \|t\| = 0.25 | 2 | 16 x 20000 + 10 x 4000 | 7.50 credits | +0.0095 / +0.0059 | 4.8 |
+
+The decision at each nonzero |t| reads D(t): resolved three standard errors
+above zero, falsified three below, unresolved between. A |t| = 0.05
+resolve sized at V = 0.206 took 16 blocks (128 circuits, 43.50 credits); at
+the re-test's measured 0.058 it needs about 202 blocks, some 1600 circuits
+and 515 credits, against 0.85 standard errors at 16 blocks, so it is not
+built. The re-test decides whether Garnet's
+|t| = 0.25 sign survives the null subtraction: the model's visibility after
+it is 0.05 to 0.09, under which D(0.25) stays within two standard errors
+(0.0047), while the retained run's 0.206 puts it near 4.8. cases.json binds each case's
+exact prediction by digest, and garnet:mock ran both re-test jobs of the
+current bytes (cases.json `ece7a3f2...`; estimates 13.2 s and 2.04 s,
+0.00 credits); its chip
+model ran 1.5 times Garnet's estimate on the retained probe, whose measured
+24.6 us per heralded shot puts the probe job near 9.5 s against its 12 s
+ceiling.
+
+### Null re-test results (2026-10-23)
+
+Both jobs ran under the owner's approval on calibration set `68b0f1d0` and
+charged 5.50 credits ([analysis](../../results/iqm/signed_kernel_null_retest_analysis.json),
+claim `iqm-garnet-signed-null-retest`, replayed by gate `core-643`).
+
+| arm | odd part | even part | kept shots per sign |
+|---|---|---|---|
+| \|t\| = 0.25 | +0.0090 +- 0.0031 | -0.0195 | 50263 / 50591 |
+| t = 0 | +0.0025 +- 0.0031 | -0.0175 | 50404 / 50433 |
+
+D(0.25) = +0.0065 +- 0.0045 (z 1.46) leaves the sign of t unresolved, and
+the visibility after the null subtraction, 0.058, sits inside the
+calibration model's 0.05 to 0.09. The measured null offset (+0.0025) is
+smaller than the modeled +0.0136. The original run's +0.022 at |t| = 0.25
+lies 1.8 standard errors (their combined error) above this run's +0.0090 at
+the same |t|; that run
+listed +t before -t and had no t = 0 arm, so a batch-position effect, a null
+offset and a fluctuation are not separated in it, and its sign-resolved
+reading is superseded. The negative even offsets reproduce (-0.0195 and
+-0.0175 against -0.022 and -0.012), so they belong to the device under both
+calibration sets.
