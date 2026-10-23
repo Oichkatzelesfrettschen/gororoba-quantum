@@ -1,0 +1,41 @@
+{
+ "credits_charged": 5.5,
+ "d_t": 0.006495211898837172,
+ "decision": "unresolved",
+ "null_z": 0.7763584400709378,
+ "parts": {
+  "0.0": {
+   "even": -0.01748295873913175,
+   "kept": [
+    50404,
+    50433
+   ],
+   "odd": 0.0024444697303228624,
+   "se": 0.0031486354809249
+  },
+  "0.25": {
+   "even": -0.019504112721613787,
+   "kept": [
+    50263,
+    50591
+   ],
+   "odd": 0.008939681629160035,
+   "se": 0.003148154206604413
+  }
+ },
+ "runs": [
+  {
+   "charge": 5.0,
+   "job": "probe-0",
+   "run": "2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0"
+  },
+  {
+   "charge": 0.5,
+   "job": "calibrate",
+   "run": "2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate"
+  }
+ ],
+ "schema": "iqm-signed-resolve-analysis-v1",
+ "se": 0.004452502700762823,
+ "visibility": 0.05845690708953455
+}
