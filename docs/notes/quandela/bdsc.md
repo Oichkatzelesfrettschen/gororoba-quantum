@@ -22,7 +22,7 @@ For rank-four orthogonal projectors, the angle calculation uses
 `atan2(sigma_max((I - P2) U1), sigma_min(U2^dagger U1))`, where each `U` is an
 orthonormal basis of its projector's range. The residual singular value avoids
 the square-root amplification of near-zero squared-sine roundoff; `atan2`
-also avoids the loss of precision in `asin` near 90 degrees. Gate `core-606`
+also avoids the loss of precision in `asin` near 90 degrees. Gate `core-record-check-04` (`tests/test_cli_record_checks.py`)
 replays the successor with the unchanged `CHECK_TOLERANCE = 1e-9`.
 The successor changes 17 `controls.json` truth angles: aligned subspaces round to
 zero degrees and orthogonal subspaces to 90 degrees. Complete regeneration with
@@ -201,7 +201,7 @@ propagated to the operator norm by the Gershgorin row sum or the triangle
 inequality. The second is matrix Bernstein. The handoff's complement radii
 0.409805, 0.157552, 0.049664 and 0.015689 at 1500 to 10^6 trials are matrix
 Bernstein at alpha_B = 0.0125 = alpha_C / 2 with m = 12. `planning.json`
-reproduces them to six digits, and gate core-606 holds them.
+reproduces them to six digits, and gate `core-record-check-04` holds them.
 
 ## Synthetic controls
 
@@ -298,11 +298,11 @@ Tr(G rho) / Tr(D rho) from `bdsc.acceptance` on every setting. A g2 of
 ## Commands
 
 ```sh
-"$PYTHON" scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd     # core-606
+"$PYTHON" scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd     # core-record-check-04
 "$PYTHON" scripts/bdsc_certificate.py --self-test                    # core-self-test-09
 "$PYTHON" -B -W error -m pytest -q tests/gororoba_quantum/test_bdsc_principal_angles.py
 "$PYTHON" scripts/bdsc_packages.py --write docs/evidence/bdsc/packages/packages.json
-"$PYTHON" scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json   # core-608
+"$PYTHON" scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json   # core-record-check-05
 ```
 
 `bdsc_packages.py --check` replays the record with numpy alone where the

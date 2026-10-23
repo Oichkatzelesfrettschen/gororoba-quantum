@@ -59,7 +59,7 @@ Quantum Inspire "Execution facts": Tuna 20 ns single-qubit, 60 ns CZ, 800 ns mea
 
 ## 5. Gates
 
-core-001/002 (ruff), core-039 (mypy), core-228/229 (octonion_structure_checks), core-251/252 (algebra_circuit_fixtures), core-327 (crosstalk --check), core-330 (zero_divisor --replay, plus --replay-series on the branch), core-331 (crosstalk --replay, --self-test), core-332/333 (coupler ZZ map), core-348 (zero_divisor --check, --self-test).
+core-001/002 (ruff), core-039 (mypy), core-228/229 (octonion_structure_checks), core-251/252 (algebra_circuit_fixtures), `core-record-check-05` (`tests/test_cli_record_checks.py`) (crosstalk --check), core-330 (zero_divisor --replay, plus --replay-series on the branch), core-331 (crosstalk --replay, --self-test), core-332/333 (coupler ZZ map), core-348 (zero_divisor --check, --self-test).
 
 ## Reuse
 

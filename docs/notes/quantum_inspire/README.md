@@ -35,7 +35,7 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 
 `scripts/capture_qi_docs.py` keeps each source under a header naming its
 URL, retrieval time and digest, with `MANIFEST.json` in each directory;
-gate core-346 rechecks every byte offline.
+gate `core-record-check-05` (`tests/test_cli_record_checks.py`) rechecks every byte offline.
 
 | Directory | Source |
 |---|---|
@@ -207,9 +207,9 @@ resources) and qi_submit_case (executes through the retained-case runner).
 The legacy raw-string qi_submit refuses execution. Failures return isError with the
 service's message.
 
-**Gates.** core-346 (`capture_qi_docs.py --check`), core-347
+**Gates.** `core-record-check-05` (`capture_qi_docs.py --check`), core-347
 (`qi_platform.py check docs/evidence/quantum_inspire --agents docs/notes/quantum_inspire/README.md`),
-core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`),
+`core-record-check-05` (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`),
 core-331 (`--replay` of every retained analysis.json), core-348 and core-330
 (`qi_zero_divisor_cases.py --check` and `--replay`), core-332 and core-333
 (`qi_coupler_zz_map.py` case regeneration with conformance, and the replay of

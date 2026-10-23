@@ -5,6 +5,9 @@
     "core-662": [
       "docs/evidence/rank_locus_nullity12_refinement/**"
     ],
+    "core-668": [
+      "docs/evidence/rank_locus_padic_lift/**"
+    ],
     "core-069": [],
     "core-080": [],
     "core-089": [],
@@ -476,6 +479,10 @@
     ],
     "core-666": [
       "docs/evidence/evidence-closure/**"
+    ],
+    "core-behavior-03": [
+      "pyproject.toml",
+      "tests/conftest.py"
     ]
   }
 }

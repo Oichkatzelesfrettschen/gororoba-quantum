@@ -33,12 +33,12 @@ Commits, oldest first:
    registers the script in core-001, core-002 and core-039.
 3. `calibration: drift series from the record medians, one row per
    identity`. Adds `scripts/calibration_median_drift.py`,
-   `docs/evidence/calibration_median_drift/` and gate core-326.
+   `docs/evidence/calibration_median_drift/` and gate `core-record-check-04` (`tests/test_cli_record_checks.py`).
 4. `docs: audit the coherent-error, drift and Rocq replacements for the
    starter kernels`. Adds this note.
 5. `calibration: bind the drift result to the snapshots it read`. The
    result names its 17 snapshots with their sha256, so a later export
-   leaves core-326 green.
+   leaves `core-record-check-04` green.
 6. `atlas: lane-constant model variants and raw-verified Kingston
    marginals`. Adds `<family>_plus_mean` models, checks Kingston against
    the raw shots, and lists inert columns.
