@@ -1,0 +1,24 @@
+{
+ "billed_credits": 0.0,
+ "compilation": {},
+ "credit_after": {
+  "currentBalance": "24.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "credits_charged": 0.0,
+ "errors": [
+  {
+   "error_code": "unknown",
+   "message": "Calibration set not found",
+   "source": "iqm-station-control"
+  }
+ ],
+ "job_id": "01a16668-236b-719a-95f1-9e47dd8cf892",
+ "metrics": {},
+ "raw_sha256": {
+  "job.json": "723624f54cf81c116a777ec587233fdbf8dffa862774d9326aa55ef2493ac049"
+ },
+ "schema": "iqm-results-v1",
+ "shots_per_circuit": [],
+ "status": "failed"
+}

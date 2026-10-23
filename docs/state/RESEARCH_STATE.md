@@ -32,7 +32,7 @@ The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 51 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 12 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 18 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -265,7 +265,13 @@ circuit and charges the account ledger's change.
 | [2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak](../../results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 10 | completed | 0.0 credits | iqm-garnet-mock-heralded-probe |
 | [2026-10-23T003708Z-garnet-signed-kernel-probe-strong](../../results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 2 | completed | 1.0 credits | iqm-garnet-signed-kernel-probe |
 | [2026-10-23T003738Z-garnet-signed-kernel-probe-weak](../../results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 10 | completed | 3.5 credits | iqm-garnet-signed-kernel-probe |
+| [2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 21 | failed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
+| [2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 21 | completed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
+| [2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 25 | completed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
+| [2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 27 | completed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
+| [2026-10-23T063559Z-garnet_mock-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T063559Z-garnet_mock-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet:mock | 1 | 27 | completed | 0.0 credits | iqm-garnet-mock-kernel-cancellation |
 | [ascella-approved-order-pilot-retry](../../results/quandela/runs/ascella-approved-order-pilot-retry) | Quandela Cloud | authorized photonic order instrument recovery retry | qpu:ascella | 1 | 8 | error | 0.0 credits | ascella-approved-order-retry-input-map-error |
+| [2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation](../../results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation) | IQM Resonance | IQM kernel cancellation probe | garnet | 1 | 27 | completed | 1.5 credits | iqm-garnet-kernel-cancellation |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -493,7 +499,13 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-mock-signed-kernel-probe-weak** (2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak, 2 billed seconds): Does the garnet:mock pipeline accept the weak job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?
 - **iqm-garnet-signed-kernel-probe-strong** (2026-10-23T003708Z-garnet-signed-kernel-probe-strong, 2 billed seconds): Does the strong job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?
 - **iqm-garnet-signed-kernel-probe-weak** (2026-10-23T003738Z-garnet-signed-kernel-probe-weak, 7 billed seconds): Does the weak job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?
+- **iqm-garnet-mock-kernel-cancellation-pinned** (2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation, 0 billed seconds): Does the garnet:mock pipeline accept the kernel cancellation job with Garnet's calibration set pinned for every quantum computer?
+- **iqm-garnet-mock-kernel-cancellation** (2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation, 1 billed seconds): Does the garnet:mock pipeline accept the kernel cancellation job of 21 circuits with heralding, active reset and amplification trains, and what does it estimate?
+- **iqm-garnet-mock-kernel-cancellation-live** (2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation, 1 billed seconds): Does the garnet:mock pipeline accept the 25-circuit kernel cancellation job rebuilt on Garnet's live calibration, and what does it estimate?
+- **iqm-garnet-mock-kernel-cancellation-readout** (2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation, 1 billed seconds): Does the garnet:mock pipeline accept the 27-circuit kernel cancellation job with a readout calibration for every measured qubit, and what does it estimate?
+- **iqm-garnet-mock-kernel-cancellation-exact** (2026-10-23T063559Z-garnet_mock-kernel-cancellation-probe-cancellation, 1 billed seconds): Does the garnet:mock pipeline accept the kernel cancellation case rebuilt with exact predictions bound into cases.json, and what does it estimate?
 - **qd-ascella-approved-order-pilot-retry** (ascella-approved-order-pilot-retry, job 3f707140-4413-40ed-bc31-58e09238926f, 0 samples, 0 shots): Does the unchanged approved eight-setting order pilot execute after Ascella reports available and provide positive samples for device conformance analysis?
+- **iqm-garnet-kernel-cancellation** (2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation, 3 billed seconds): Does Garnet read the zero-divisor sign of the certified sedenion kernel, cos(2 theta) changing sign at the balanced selector, while the bright vector reads flat?
 
 ## Established claims
 
@@ -1085,6 +1097,13 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-637; source regenerated by core-638.
   Acquisitions: iqm-garnet-signed-kernel-probe-strong, iqm-garnet-signed-kernel-probe-weak.
   Depends on: iqm-garnet-reset-billing-pilot.
+- **iqm-garnet-kernel-cancellation** (preregistered hardware inference, hardware). On IQM Garnet (calibration set 68b0f1d0, 37 CZ on QB6, QB7, QB11, QB12 and QB17, one active-reset cycle with all-zeros heralding), the kernel cancellation probe read the control's odd part (Z(phi) - Z(-phi))/2 at -0.0699 +- 0.0087 for phi = 0.1 (z -8.0) and -0.178 +- 0.009 for phi = 0.3 (z -20.1), resolving the zero-divisor sign of the certified sedenion kernel (the eigenvalue -1 of L_e1^T L_e10) at both angles, while the bright vector's odd part read -0.016 +- 0.009, within one standard error of its modeled -0.008 (H2 z -0.92). The sine-law contrast odd(0.3) - 2.84 odd(0.1) read +0.021 +- 0.026 (H3 z 0.78), the kernel even part +0.049 against its decomposition +0.046 (H4 z 0.33), and QB11's and QB12's prx trains fit relative over-rotations of +0.15 +- 0.07 % and -0.20 +- 0.06 % (H5 chi-square 5.1 and 1.1). No preregistered hypothesis is falsified. The visibility read 0.36 +- 0.05 against the model's 0.48, and the job charged 1.50 credits.
+  Boundary: One compile, one calibration set and two angles. The prediction schedules idle relaxation ALAP; scheduled ASAP, IQM's pulse-builder default, it would move H4 to about z -2.5 and H2 to z -0.3 with no decision changed (issue #386). cd_core already settles the zero-divisor property exactly, so the run demonstrates that Garnet realizes the compiled sign table at first order; the bright control and the sine law bound circuit artifacts, and the even part's agreement with readout plus relaxation leaves no room for the large coherent error the signed probe's offsets once suggested.
+  Evidence: [kernel_cancellation_probe_analysis.json](../../results/iqm/kernel_cancellation_probe_analysis.json), [prediction.json](../../results/iqm/cases/kernel-cancellation-probe/prediction.json), [iqm-garnet-kernel-cancellation-probe.md](../design/iqm-garnet-kernel-cancellation-probe.md), [kernel_cancellation.py](../../gororoba_quantum/kernel_cancellation.py).
+  Gates: replayed by core-641; source regenerated by core-642.
+  Acquisitions: iqm-garnet-kernel-cancellation.
+  Related claims: signed-overlap-kernel-independence.
+  Supersedes: proposed-kernel-cancellation-probe.
 
 ## Exploratory claims
 
@@ -1355,6 +1374,10 @@ circuit and charges the account ledger's change.
   Boundary: The mock's bits are random, so its kept fraction says nothing about Garnet's heralding retention.
   Evidence: [results.json](../../results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong/results.json), [results.json](../../results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak/results.json), [iqm-garnet-signed-kernel-probe.md](../design/iqm-garnet-signed-kernel-probe.md).
   Acquisitions: iqm-garnet-mock-signed-kernel-probe-strong, iqm-garnet-mock-signed-kernel-probe-weak.
+- **iqm-garnet-mock-kernel-cancellation** (exploratory reanalysis, hardware). garnet:mock refused the kernel cancellation job while Garnet's calibration set 9069c4ef was pinned for every quantum computer ('Calibration set not found', 0.00 credits); with the set pinned for Garnet alone it accepted all 21 circuits (37-CZ probe arms, readout calibration and 1- to 41-pulse prx trains) under heralding_mode zeros and one active-reset cycle, compiled against its own set f04fe114, estimated 2.80 s for 21 circuits x 4000 shots and charged 0.00 credits. The case rebuilt on Garnet's live set 68b0f1d0 (25 circuits, cases.json f8c814d1) ran on garnet:mock with an estimate of 3.01 s and 0.00 credits, and its 27-circuit successors with a readout calibration for every measured qubit (cases.json b3a9e166, then 19407dd2 with exact predictions bound into cases.json) with 3.09 s and 0.00 credits each.
+  Boundary: The mock's bits are random, so the run tests acceptance, schema and the runtime estimate, not the probe's physics; it does not show whether the server plays consecutive prx pulses separately.
+  Evidence: [results.json](../../results/iqm/runs/2026-10-23T013741Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T014012Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T053013Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T054053Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [results.json](../../results/iqm/runs/2026-10-23T063559Z-garnet_mock-kernel-cancellation-probe-cancellation/results.json), [iqm-garnet-kernel-cancellation-probe.md](../design/iqm-garnet-kernel-cancellation-probe.md).
+  Acquisitions: iqm-garnet-mock-kernel-cancellation-pinned, iqm-garnet-mock-kernel-cancellation, iqm-garnet-mock-kernel-cancellation-live, iqm-garnet-mock-kernel-cancellation-readout, iqm-garnet-mock-kernel-cancellation-exact.
 
 ## Open claims
 
@@ -1440,6 +1463,12 @@ circuit and charges the account ledger's change.
   Evidence: [strategy.md](../notes/quandela/strategy.md).
   Depends on: qd-belenos-single-job-failure-is-a-transformation.
   Superseded by: qd-belenos-q1-failure-persists-until-mesh-load.
+- **proposed-kernel-cancellation-probe** (proposed experiment, hardware). On Garnet the kernel cancellation probe (37 CZ on QB6, QB7, QB11, QB12 and QB17, calibration set 68b0f1d0) reads the control's <Z> as -V sin(2 phi) for the certified sedenion kernel vector around the balanced selector theta = pi/4 + phi and as V for the bright vector (e4 + e15)/sqrt2, so the odd part at phi = 0.1 and 0.3 carries the zero-divisor sign (the eigenvalue -1 of L_e1^T L_e10) while the bright odd part stays zero. The calibration model (exact, herald-conditioned readout) predicts visibility 0.48, kernel odd parts -0.0945 and -0.269, and a kernel even part of +0.052 from idle relaxation and readout; QB11's over-rotation, measured by prx trains of 1 to 13 pulses in the same job and fitted as -sin(N pi/2 eps), adds the noise model's -0.75 eps to that even part. Falsifiers: a kernel odd part three standard errors above zero (H1), a bright odd part three from the modeled bright odd part of idle relaxation (H2), the contrast odd(0.3) - (sin(0.6)/sin(0.2)) odd(0.1) three from zero (H3), the kernel even part three from its decomposition (H4); both kernel contrasts list their arms +, -, -, +.
+  Boundary: cd_core settles the zero-divisor property exactly, so a resolved H1 demonstrates that the device realizes the compiled sign table at first order rather than discovering an algebraic fact; the open questions are device physics (QB11's coherent error, the even-part decomposition, the response shape). No approved hardware case; the prediction carries no coherent error, and H4 rests on the model's relaxation even part and on QB11's over-rotation being the only first-order term of this compile under the audit's stationary error model; an angle-dependent QB11 error rescales the odd part by twice what its trains predict and leaves its sign.
+  Evidence: [iqm-garnet-kernel-cancellation-probe.md](../design/iqm-garnet-kernel-cancellation-probe.md), [kernel_cancellation.py](../../gororoba_quantum/kernel_cancellation.py), [iqm_cancellation_probe.py](../../scripts/iqm_cancellation_probe.py).
+  Gates: source regenerated by core-642; active code regression checked by core-641.
+  Related claims: signed-overlap-kernel-independence, iqm-garnet-signed-probe-coherent-response.
+  Superseded by: iqm-garnet-kernel-cancellation.
 
 ## Withdrawn claims
 
