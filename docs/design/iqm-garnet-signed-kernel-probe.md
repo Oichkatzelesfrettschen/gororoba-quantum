@@ -57,8 +57,8 @@ weak arms +0.0188 at about 6.5.
 
 **Cost.** `submit` bounds each job by ceil(1.60 s + expected seconds) at the
 live price, since IQM bills ceil(runtime) with no job-side cap and its
-estimate (a fixed 1.60 s plus each shot's schedule) exceeded the runtime of
-every pilot job: 2.00 credits (strong, 1.5 s expected) and 5.00 credits
+estimate (a fixed 1.60 s plus each shot's schedule) bounded the runtime of
+both unheralded pilot jobs: 2.00 credits (strong, 1.5 s expected) and 5.00 credits
 (weak, 7.5 s expected) on Garnet. The job body pins calibration set
 `9069c4ef`, so the device compiles against the calibration the prediction
 used, or refuses the job once that set is retired. The case permits only
@@ -68,3 +68,25 @@ with heralding and active reset (estimates 3.05 s and 8.86 s, 0.00 credits)
 and returned about a quarter of the requested shots, since the mock's random
 bits pass the herald at random; the server does not top up rejected
 shots.
+
+## Hardware results (2026-10-23)
+
+Both jobs ran under the user's approval on calibration set `9069c4ef`, which
+the server confirms it compiled against, and charged 4.50 credits
+([analysis](../../results/iqm/signed_kernel_probe_analysis.json), claim
+`iqm-garnet-signed-kernel-probe`). Heralding kept 55.9 % of shots in both.
+
+| \|t\| | Z(+t) | Z(-t) | odd part | z | decision | predicted odd |
+|---|---|---|---|---|---|---|
+| 0.25 | +0.0000 | -0.0441 | +0.0220 +- 0.0067 | 3.29 | sign resolved | +0.0296 |
+| 0.05 | -0.0060 | -0.0176 | +0.0058 +- 0.0030 | 1.94 | unresolved | +0.0188 |
+
+The signed law is not falsified, and the device carries the sign of t at
+|t| = 0.25. The odd parts fit one visibility, odd = V t/(2 + |t|) with
+V = 0.206 +- 0.054 (chi-square 0.08 on 1 degree of freedom), so the hardware
+follows the linear law the simulator departs from at small |t|: its
+non-unital relaxation term predicted +0.0188 at |t| = 0.05, 4.4 standard
+errors above the measurement. The even offsets (-0.022 and -0.012) have the
+opposite sign to the modeled +0.029. The weak job's runtime (6.52 s)
+exceeded its estimate (5.89 s), so a heralded job is bounded by the added
+1.60 s rather than by the estimate alone.

@@ -1505,6 +1505,20 @@
       "run": "results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak",
       "family": "IQM signed kernel probe",
       "question": "Does the garnet:mock pipeline accept the weak job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?"
+    },
+    {
+      "id": "iqm-garnet-signed-kernel-probe-strong",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong",
+      "family": "IQM signed kernel probe",
+      "question": "Does the strong job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?"
+    },
+    {
+      "id": "iqm-garnet-signed-kernel-probe-weak",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak",
+      "family": "IQM signed kernel probe",
+      "question": "Does the weak job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?"
     }
   ],
   "claims": [
@@ -7421,6 +7435,42 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-signed-kernel-probe",
+      "statement": "On IQM Garnet (calibration set 9069c4ef, 199 CZ on QB6, QB7, QB10, QB11, QB12, QB16 and QB17, one active-reset cycle with all-zeros heralding keeping 55.9 % of shots), the structure-matched signed probe of the certified sedenion kernel u = (e4 - e15)/sqrt2 of L(e1+e10) read the odd part (Z(t) - Z(-t))/2 of its control at +0.0220 +- 0.0067 for |t| = 0.25 (z 3.29, the sign of t resolved) and +0.0058 +- 0.0030 for |t| = 0.05 (z 1.94, unresolved), so the dilation overlap Re<v|B(t)|u> = t/(2 + |t|) is not falsified and the device carries its sign at |t| = 0.25. Both odd parts fit one visibility, V = 0.206 +- 0.054 times t/(2 + |t|) (chi-square 0.08, 1 dof), and the even offsets read -0.022 and -0.012. The jobs charged 4.50 credits.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2.",
+      "evidence": [
+        {
+          "path": "results/iqm/signed_kernel_probe_analysis.json",
+          "sha256": "b86605792c697b62e46b42a7e79cf902862333c01061574708f7255aec109cc2"
+        },
+        {
+          "path": "results/iqm/cases/signed-kernel-probe/prediction.json",
+          "sha256": "77eb2246d7f9dd84a274a428ca096f4e0b4d03fdd76e84f1ef358c7a88f702e0"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-signed-kernel-probe.md",
+        "gororoba_quantum/signed_kernel_probe.py"
+      ],
+      "gates": {
+        "core-637": "replay",
+        "core-638": "freshness"
+      },
+      "acquisitions": [
+        "iqm-garnet-signed-kernel-probe-strong",
+        "iqm-garnet-signed-kernel-probe-weak"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "iqm-garnet-reset-billing-pilot"
+      ],
       "supersedes": [],
       "superseded_by": null
     }

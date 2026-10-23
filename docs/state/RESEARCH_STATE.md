@@ -32,7 +32,7 @@ The Quantum Inspire ledger retrieved at 2026-10-22T16:57:47+00:00 lists 384 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 41 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 10 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 12 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -254,6 +254,8 @@ circuit and charges the account ledger's change.
 | [2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1](../../results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1) | IQM Resonance | IQM reset-billing pilot | garnet | 1 | 2 | completed | 0.5 credits | iqm-garnet-reset-billing-pilot |
 | [2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong](../../results/iqm/runs/2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 2 | completed | 0.0 credits | iqm-garnet-mock-heralded-probe |
 | [2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak](../../results/iqm/runs/2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak) | IQM Resonance | IQM signed kernel probe | garnet:mock | 1 | 10 | completed | 0.0 credits | iqm-garnet-mock-heralded-probe |
+| [2026-10-23T003708Z-garnet-signed-kernel-probe-strong](../../results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 2 | completed | 1.0 credits | iqm-garnet-signed-kernel-probe |
+| [2026-10-23T003738Z-garnet-signed-kernel-probe-weak](../../results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak) | IQM Resonance | IQM signed kernel probe | garnet | 1 | 10 | completed | 3.5 credits | iqm-garnet-signed-kernel-probe |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -470,6 +472,8 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-reset-billing-a-2x2000-active1** (2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1, 1 billed seconds): Does a-2x2000-active1 on IQM Garnet bill ceil(runtime or estimate), follow the estimate model, keep initialization under its reset, and read QB1 as the calibration-built simulator predicts?
 - **iqm-garnet-mock-signed-kernel-probe-strong** (2026-10-23T001644Z-garnet_mock-signed-kernel-probe-strong, 1 billed seconds): Does the garnet:mock pipeline accept the strong job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?
 - **iqm-garnet-mock-signed-kernel-probe-weak** (2026-10-23T001655Z-garnet_mock-signed-kernel-probe-weak, 2 billed seconds): Does the garnet:mock pipeline accept the weak job of the signed kernel probe with all-zeros heralding and active reset, what does it estimate, and does it top up heralded shots?
+- **iqm-garnet-signed-kernel-probe-strong** (2026-10-23T003708Z-garnet-signed-kernel-probe-strong, 2 billed seconds): Does the strong job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?
+- **iqm-garnet-signed-kernel-probe-weak** (2026-10-23T003738Z-garnet-signed-kernel-probe-weak, 7 billed seconds): Does the weak job of the structure-matched signed sedenion kernel probe on Garnet carry the sign of t in the odd part (Z(t) - Z(-t))/2 of its control qubit, as Re<v|B(t)|u> = t/(2 + |t|) requires?
 
 ## Established claims
 
@@ -1015,6 +1019,12 @@ circuit and charges the account ledger's change.
   Evidence: [reset_billing_pilot_analysis.json](../../results/iqm/reset_billing_pilot_analysis.json), [iqm-garnet-timing-pilot.md](../design/iqm-garnet-timing-pilot.md), [README.md](../notes/iqm/README.md).
   Gates: replayed by core-635; active code regression checked by core-636.
   Acquisitions: iqm-garnet-mock-reset-billing-p-2x2000-passive, iqm-garnet-mock-reset-billing-a-2x2000-active1, iqm-garnet-reset-billing-p-2x2000-passive, iqm-garnet-reset-billing-a-2x2000-active1.
+- **iqm-garnet-signed-kernel-probe** (preregistered hardware inference, hardware). On IQM Garnet (calibration set 9069c4ef, 199 CZ on QB6, QB7, QB10, QB11, QB12, QB16 and QB17, one active-reset cycle with all-zeros heralding keeping 55.9 % of shots), the structure-matched signed probe of the certified sedenion kernel u = (e4 - e15)/sqrt2 of L(e1+e10) read the odd part (Z(t) - Z(-t))/2 of its control at +0.0220 +- 0.0067 for |t| = 0.25 (z 3.29, the sign of t resolved) and +0.0058 +- 0.0030 for |t| = 0.05 (z 1.94, unresolved), so the dilation overlap Re<v|B(t)|u> = t/(2 + |t|) is not falsified and the device carries its sign at |t| = 0.25. Both odd parts fit one visibility, V = 0.206 +- 0.054 times t/(2 + |t|) (chi-square 0.08, 1 dof), and the even offsets read -0.022 and -0.012. The jobs charged 4.50 credits.
+  Boundary: One compile, one calibration set and two values of |t|; the |t| = 0.05 arm is underpowered, not a confirmation. The calibration-built simulator (depolarizing gates, readout errors, ALAP idle T1/T2) predicted odd parts +0.0296 and +0.0188 and even offsets near +0.029: the small-|t| odd part and the sign of the offsets depart from it, so its non-unital relaxation term does not describe this device. Heralding removes the active-reset excitation measured by iqm-garnet-reset-billing-pilot; it does not test the dark-probe law t^2/(2 + |t|)^2.
+  Evidence: [signed_kernel_probe_analysis.json](../../results/iqm/signed_kernel_probe_analysis.json), [prediction.json](../../results/iqm/cases/signed-kernel-probe/prediction.json), [iqm-garnet-signed-kernel-probe.md](../design/iqm-garnet-signed-kernel-probe.md), [signed_kernel_probe.py](../../gororoba_quantum/signed_kernel_probe.py).
+  Gates: replayed by core-637; source regenerated by core-638.
+  Acquisitions: iqm-garnet-signed-kernel-probe-strong, iqm-garnet-signed-kernel-probe-weak.
+  Depends on: iqm-garnet-reset-billing-pilot.
 
 ## Exploratory claims
 

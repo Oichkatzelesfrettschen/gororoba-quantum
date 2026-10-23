@@ -270,9 +270,9 @@ def submit(
     if record.get("operational_status") != "online" or not record.get("health", {}).get("healthy"):
         raise PlatformError(f"{qc} is {record.get('operational_status')}, healthy {record.get('health')}")
     price = float(record["pricing"]["payg_price_per_second"])
-    # IQM bills ceil(runtime) and offers no job-side cap. The garnet:mock and Garnet estimates add a fixed
-    # JOB_SECONDS to each shot's schedule and exceeded the measured runtime of every pilot job, so the
-    # ceiling carries that fixed cost on top of the case's expected seconds.
+    # IQM bills ceil(runtime) and offers no job-side cap. Its estimate, a fixed JOB_SECONDS plus each shot's
+    # schedule, ran from 0.63 s below to 1.50 s above the runtime of the retained Garnet jobs
+    # (results/iqm/*_analysis.json), so the ceiling adds JOB_SECONDS to the case's expected seconds.
     ceiling = math.ceil(JOB_SECONDS + row["expected_seconds"]) * price
     if ceiling > max_credits:
         raise PlatformError(f"{job} expects {ceiling:.2f} credits on {qc}, above the approved {max_credits}")

@@ -18,7 +18,8 @@ the +-0.05 arms replicated to reach their shots, under active reset with all-zer
 docs/design/iqm-garnet-timing-pilot.md measured one active-reset cycle leaving QB1 6 % excited, and
 heralding discards every shot whose pre-circuit measurement is not all zeros.
 
-Usage: "$PYTHON" scripts/iqm_signed_probe.py (build DIR | check DIR | --self-test)
+Usage: "$PYTHON" scripts/iqm_signed_probe.py (build DIR | check DIR | analyze RUN_DIR... --out FILE [--replay]
+       | --self-test)
 """
 
 from __future__ import annotations
@@ -233,6 +234,84 @@ def check(directory: Path) -> None:
     print(f"{directory}: matches the build from its retained calibration")
 
 
+# Preregistered decision (docs/design/iqm-garnet-signed-kernel-probe.md): at each |t| the odd part
+# resolves the sign of t when it lies Z_RESOLVE standard errors from zero with the sign of t, and
+# falsifies the signed law when it lies Z_RESOLVE standard errors from zero with the opposite sign.
+Z_RESOLVE = 3.0
+
+
+def analyze(run_dirs: list[Path]) -> dict[str, Any]:
+    """Odd and even parts, decisions, predictions and billing of the retained Garnet probe runs."""
+    import iqm_jobs
+
+    arms: dict[float, list[int]] = {}
+    runs = []
+    for run_dir in sorted(run_dirs):
+        facts = iqm_jobs.run_facts(run_dir)
+        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+        record = json.loads((run_dir / "raw/job.json").read_bytes())
+        case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        row = [r for r in case["jobs"] if r["job"] == submission["job"]][0]
+        measured = json.loads((run_dir / "raw/measurements.json").read_bytes())
+        kept = 0
+        for entry, circuit in zip(row["circuits"], measured, strict=True):
+            t = float(entry["file"].split("/t")[1].rsplit("-", 1)[0])
+            bits = [shot[0] for shot in circuit["c"]]
+            tally = arms.setdefault(t, [0, 0])
+            tally[0] += sum(bits)
+            tally[1] += len(bits)
+            kept += len(bits)
+        runs.append(
+            {
+                "run": run_dir.name,
+                "job": submission["job"],
+                "qc": submission["qc"],
+                "calibration_set": record["compilation"]["calibration_set_id"],
+                "estimate_seconds": record["compilation"]["execution_runtime_estimate_seconds"],
+                "runtime_seconds": record["metrics"]["runtime_seconds"],
+                "billed_seconds": record["metrics"]["billed_seconds"],
+                "charge": facts["charge"],
+                "heralding_retention": kept / (row["shots"] * len(row["circuits"])),
+            }
+        )
+    z = {t: (1 - 2 * ones / n, 1 / math.sqrt(n), n) for t, (ones, n) in arms.items()}
+    prediction = json.loads((sorted(run_dirs)[0] / "prediction.json").read_text(encoding="utf-8"))
+    parts = {}
+    for size in sorted({abs(t) for t in z}):
+        (plus, se_plus, n_plus), (minus, se_minus, n_minus) = z[size], z[-size]
+        odd, even, se = (plus - minus) / 2, (plus + minus) / 2, math.hypot(se_plus, se_minus) / 2
+        decision = "sign resolved" if odd / se >= Z_RESOLVE else "falsified" if odd / se <= -Z_RESOLVE else "unresolved"
+        predicted = prediction["odd"][f"{size}"]["predicted"]
+        parts[f"{size}"] = {
+            "z_plus": plus,
+            "z_minus": minus,
+            "kept_plus": n_plus,
+            "kept_minus": n_minus,
+            "odd": odd,
+            "even": even,
+            "se": se,
+            "odd_over_se": odd / se,
+            "decision": decision,
+            "law": law(size),
+            "odd_over_law": odd / law(size),
+            "odd_over_law_se": se / law(size),
+            "predicted_odd": predicted,
+            "prediction_z": (odd - predicted) / se,
+        }
+    ratios = [(v["odd_over_law"], v["odd_over_law_se"]) for v in parts.values()]
+    weight = sum(1 / s**2 for _, s in ratios)
+    pooled = sum(r / s**2 for r, s in ratios) / weight
+    chi2 = sum(((r - pooled) / s) ** 2 for r, s in ratios)
+    return {
+        "schema": "iqm-signed-probe-analysis-v1",
+        "runs": runs,
+        "parts": parts,
+        "falsified": any(v["decision"] == "falsified" for v in parts.values()),
+        "linear_visibility": {"pooled": pooled, "se": 1 / math.sqrt(weight), "chi2": chi2, "dof": len(ratios) - 1},
+        "credits_charged": round(sum(r["charge"] for r in runs), 6),
+    }
+
+
 def self_test() -> str:
     calibration = iqm_sim.Calibration(QC)
     target, coupling = target_of(calibration)
@@ -273,6 +352,10 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("build").add_argument("directory", type=Path)
     sub.add_parser("check").add_argument("directory", type=Path)
+    an = sub.add_parser("analyze")
+    an.add_argument("run_dirs", type=Path, nargs="+")
+    an.add_argument("--out", type=Path, required=True)
+    an.add_argument("--replay", action="store_true", help="compare --out with the recomputation")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
@@ -280,6 +363,14 @@ def main() -> int:
         write(args.directory)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "analyze":
+        text = dump(analyze(args.run_dirs))
+        if args.replay:
+            if args.out.read_text(encoding="utf-8") != text:
+                raise ValueError(f"{args.out} differs from the recomputation")
+            print(f"{args.out}: replays byte for byte")
+        else:
+            args.out.write_text(text, encoding="utf-8")
     else:
         parser.error("choose build, check or --self-test")
     return 0

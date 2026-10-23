@@ -3880,7 +3880,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_probe.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_probe.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_probe.py analyze results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak --out results/iqm/signed_kernel_probe_analysis.json --replay",
    "name": "core-637",
    "seconds": 6.0,
    "tier": "pr"
