@@ -29,21 +29,23 @@ all arms share one compile.
 
 ## Case
 
-`scripts/iqm_cancellation_probe.py build results/iqm/cases/kernel-cancellation-probe`
-compiles the probe onto Garnet's calibrated couplers (transpiler seed 1 of
-24, the fewest CZ): 37 CZ on QB6, QB7, QB11, QB12 and QB17, control QB12,
-the selector angle on QB11. One job of 23 circuits x 4000 shots, active
-reset one cycle, all-zeros heralding, calibration set `9069c4ef` pinned for
-Garnet alone:
+`scripts/iqm_cancellation_probe.py build results/iqm/cases/kernel-cancellation-probe --live`
+reads Garnet's current default calibration set into the case's calibration
+copy (set `68b0f1d0`, read 2026-10-23 after `9069c4ef` retired) and compiles
+the probe onto Garnet's calibrated couplers (transpiler seed 1 of 24, the
+fewest CZ): 37 CZ on QB6, QB7, QB11, QB12 and QB17, control QB12, the
+selector angle on QB11. `check` rebuilds the case offline from that copy
+(gate `core-642`). One job of 25 circuits x 4000 shots, active reset one
+cycle, all-zeros heralding, the calibration set pinned for Garnet alone:
 
 | circuits | purpose |
 |---|---|
 | kernel phi = +0.1, -0.1, -0.1, +0.1 | zero-divisor sign, drift cancels in the odd part |
 | kernel phi = +0.3, -0.3, -0.3, +0.3 | sine law, drift cancels likewise |
 | kernel phi = 0, twice | crossing |
-| bright phi = +0.1, -0.1, -0.1, +0.1 and 0 | control: odd part zero at every visibility |
+| bright phi = +0.1, -0.1, -0.1, +0.1 and 0 | control |
 | QB12 bare measure, QB12 pi then measure | readout calibration of the control |
-| 4k + 1 prx(pi/2), k = 0, 5, 10, on QB11 and on QB12 | relative over-rotation eps |
+| 4k + 1 prx(pi/2), k = 0 to 3, on QB11 and on QB12 | relative over-rotation eps |
 
 **Coherent response.** On this compile the first-order response of the
 control's <Z> under the audit's stationary error model (one relative
@@ -51,14 +53,24 @@ over-rotation and one axis error per qubit, one residual Z per qubit after
 CZ, one conditional phase per coupler; scripts/iqm_probe_audit.py) is zero
 for every error except QB11's over-rotation, which scales the kernel odd
 part by 1 + O(eps) and shifts its even part by -1.54 eps at phi = 0.1. A
-coherent error therefore never fakes the zero-divisor sign here, unlike the
-signed probe, whose odd part took a first-order term from every qubit; and
-the even part becomes a meter of QB11's pulse amplitude, which the trains
-measure independently in the same job. An angle-dependent amplitude error
-lies outside that model: a rotation error eta theta|theta| on QB11 moves the
-odd part at phi = 0.1 by -0.616 eta, while the pi/2 trains read it as
-eps = 1.571 eta, through which the linear model predicts -0.308 eta, half the
-effect. It rescales the visibility and leaves the sign of the odd part.
+coherent error of that model therefore never fakes the zero-divisor sign
+here, unlike the signed probe, whose odd part took a first-order term from
+every qubit, and the even part becomes a meter of QB11's pulse amplitude,
+which the trains measure independently in the same job. An angle-dependent
+amplitude error lies outside the model: a rotation error eta theta|theta| on
+QB11 moves the odd part at phi = 0.1 by -0.616 eta, while the pi/2 trains
+read it as eps = 1.571 eta, through which the linear model predicts
+-0.308 eta, half the effect. It rescales the visibility and leaves the sign
+of the odd part.
+
+**Train length.** The signed probe's even offsets put QB11's over-rotation
+near 2.7 +- 0.7 % once the device's visibility damping is counted
+([audit](iqm-garnet-signed-kernel-probe.md#adversarial-audit)), under the
+retired set `9069c4ef`. A 41-pulse train would wrap that error past 1.7 rad,
+so the trains stop at 13 pulses (under 0.7 rad at 3 %) and the analysis fits
+-sin(N pi/2 eps) itself rather than its linearization. Garnet recalibrates
+its pulses with each set, so QB11's error under `68b0f1d0` is a fresh
+measurement and the 2.7 % is a comparison, not a prediction the case tests.
 
 **Decisions** (three standard errors):
 
@@ -75,34 +87,40 @@ effect. It rescales the visibility and leaves the sign of the odd part.
   rescaled by the measured readout scale, plus -1.54 V eps from QB11's
   trains; its standard error carries the readout, visibility, train and
   model-sampling errors.
-- H5 amplification: the trains' <Z> is linear in the pulse count; a
-  residual chi-square above 13.2, the two-degree-of-freedom quantile of the
-  one-sided three-sigma tail, marks a non-linear train (pulses merged or
-  saturated) and suspends H4.
+- H5 amplification: the trains' <Z> follows -sin(N pi/2 eps) with the
+  readout applied; a residual chi-square above 15.6, the
+  three-degree-of-freedom quantile of the one-sided three-sigma tail, marks
+  merged pulses or a non-stationary error and suspends H4.
 
 The analysis lists every falsified hypothesis; an odd part within three
 standard errors of zero leaves H1 unresolved, never falsified.
 
-**Prediction** (scripts/iqm_sim.py noise from the calibration copy with
-ALAP idle T1/T2 relaxation, 200000 shots per circuit): kernel odd part
--0.113 at phi = 0.1 (visibility 0.57, against 0.21 measured on the 199-CZ
-signed probe), -0.318 at 0.3, kernel even part +0.034 from relaxation, and
-bright odd part -0.007 from the same non-unital relaxation, under one
-standard error at these shots. The model carries no coherent error.
+**Prediction** (scripts/iqm_sim.py noise from set `68b0f1d0` with ALAP idle
+T1/T2 relaxation, 200000 shots per circuit): kernel odd part -0.094 at
+phi = 0.1 (visibility 0.47, against 0.21 measured on the 199-CZ signed
+probe) and -0.265 at 0.3, kernel even part +0.061 and crossing +0.062 from
+relaxation, bright odd part -0.008 and bright reading +0.487. The model
+carries no coherent error.
 
 **Model device.** The self-test draws counts from the exact coherent model of
-each circuit at visibility 0.6 with injected over-rotations: it resolves H1,
-leaves H2 and H4 standing, recovers QB11's +0.006 and QB12's -0.003 from the
-trains, falsifies H1 when the kernel's sign is reversed and falsifies H4
-when the kernel arms carry an even shift of -0.05 that over-rotation does not
-explain.
+each circuit at visibility 0.6 with QB11 over-rotated by 2.7 % and QB12 by
+-0.3 %: it resolves H1 at both angles, falsifies no hypothesis and recovers
+both over-rotations from the trains; it falsifies H1 when the kernel's sign
+is reversed, falsifies H4 when the kernel arms carry an even shift of -0.05
+that over-rotation does not explain, leaves H1 unresolved with H3 defined
+for a device with no signed response, and suspends H4 when the trains ignore
+their pulse count.
 
 **Mock runs.** garnet:mock refused the first submission ('Calibration set
 not found', 0 credits), since the case then pinned Garnet's set for every
-QC; the set is now pinned per QC. The second run accepted the 21-circuit
-build, compiled against the mock's own set, estimated 2.80 s and charged
-0.00 credits; its bits are random.
+QC; the set is now pinned per QC. The second run accepted a 21-circuit
+build (estimate 2.80 s). The third ran the current 25-circuit bytes
+(cases.json sha256 `f8c814d1...`), compiled against the mock's own set,
+estimated 3.01 s and charged 0.00 credits; mock bits are random. A dry
+submission to Garnet passed every refusal.
 
-**Cost.** Expected 1.97 s of shots at an upper 21.4 us per heralded shot,
-ceiling ceil(1.60 + 1.80) x 0.50 = 2.00 credits, recorded in cases.json as
-the approved ceiling for Garnet.
+**Cost.** Expected 3.10 s of shots at an upper 31 us per heralded shot (the
+slope of the two heralded Garnet jobs), ceiling ceil(1.60 + 3.10) x 0.50 =
+2.50 credits, recorded in cases.json as the approved ceiling for Garnet; the
+mock's estimate puts the likely bill at ceil(3.0) x 0.50 = 1.50 to 2.00
+credits.
