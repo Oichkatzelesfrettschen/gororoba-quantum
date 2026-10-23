@@ -8726,6 +8726,16 @@
    "time",
    "typing"
   ],
+  "scripts/acquisition_decisions.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "re",
+   "typing"
+  ],
   "scripts/aer_blocking_probe.py": [
    "__future__",
    "aer_gpu_probe",
@@ -9664,6 +9674,20 @@
    "json",
    "law_encoding",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/evidence_closure.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "re",
+   "subprocess",
    "sys",
    "typing"
   ],
