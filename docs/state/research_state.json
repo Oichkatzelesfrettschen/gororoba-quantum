@@ -4876,12 +4876,40 @@
       "superseded_by": null
     },
     {
+      "id": "a5-schur-germ-unobstructed",
+      "statement": "At the 12 non-zero-divisor gap witnesses of the A_5 rank-locus families, the 9 zero-divisor-family witnesses, the 7 Proposition 8.2 points and the Moreno point, the excess entries of the Schur complement of L_y vanish on the smooth germ of dimension dim T(x) cut out by its independent entries: to O(p^12) at a Hensel-lifted p-adic point (pyadic, p = 2147483647) and through t^63 along four seeded directions in F_p[[t]] (python-flint, p = 2147483647 and 2147483629). At x0 = e1 + e18, whose cone A15 union B17 lies below its tangent bound, they are nonzero at order 2 in both routes with equal leading digits, and at valuation 4 at scale p^2.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact residues modulo p^12 and modulo p at the recorded seeded directions, whose weight vectors the record carries. A zero residue bounds the order of the obstruction series along the drawn direction from below and admits no local dimension: the series could still be nonzero with order 64 or more, or with a leading form that vanishes modulo both primes or at the drawn weights, which a leading form nonzero modulo p does with probability at most 64/p per direction. A nonzero residue at a gap witness would have refuted a5-nonzero-divisor-two-dimension-gap exactly, and none occurred. The p-adic route is recomputed where pyadic imports, and CI holds its retained rows to the recomputed series route.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_padic_lift/result.json",
+          "sha256": "d5ce5964a5e01511a11a4c5ae426ea5541112dfe6801de3bdfce79e5d1d037fd"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_padic_lift/README.md",
+        "docs/notes/rank_locus_two_dimension_gap.md",
+        "docs/notes/packages/manual/pyadic.md"
+      ],
+      "gates": {
+        "core-666": "replay",
+        "core-667": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-nonzero-divisor-two-dimension-gap",
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved. Claim a5-schur-germ-unobstructed finds the excess Schur-complement equations vanishing through order 63 on the smooth germ of the tangent-bound dimension at all 12 witnesses, so the statement there is equivalent to their exact vanishing on that germ, which an ideal-membership certificate or an explicit parameterization of the germ would establish.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",

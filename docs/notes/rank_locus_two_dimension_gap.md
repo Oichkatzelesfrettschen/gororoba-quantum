@@ -189,10 +189,67 @@ and is never evidence of the gap.
    witnesses, whose local dimension equals the tangent bound on the curved
    zero-divisor cone, fail the test as well, so it excludes only a linear
    piece.
+6. **p-adic Hensel lift of the Schur-complement germ.** This computation
+   turns the question into one about a single power series.
+   - Near x, R_k is the zero set of the k x k Schur complement S(y) of a
+     pivot block of L_y.
+   - c = 32 - dim T(x) of its entries have independent differentials. They
+     cut out a smooth germ M of dimension dim T(x) that contains R_k.
+   - The gap conjecture at x is therefore equivalent to the following
+     statement:
+
+     **Smooth-germ conjecture.** The excess entries H vanish on M. In other
+     words, the power series P(u) = H(phi(u)) along M is zero, and the
+     cone over D_(5,k) near x is the smooth, curved germ M itself.
+
+     Computation 2 is the order-2 and order-3 part of P, and computation 5
+     is the statement that M is not linear.
+
+   The piece the item-3 row of the roadmap asks for is M, which is
+   computable. What needs certifying is only that H vanishes on it.
+
+   **Why p-adics help.** A p-adically small displacement is an exact
+   infinitesimal:
+   - Set the free coordinates to x_f + p w.
+   - Hensel's lemma then lifts the dependent ones to a true point of
+     M(Z_p), known to O(p^N) with no rounding.
+   - H there is exact to O(p^N). Its valuation is the order m of P along w,
+     and its leading digit is P_m(w) mod p.
+
+   The real refinement of computation 4 could not make that step, because
+   closeness to a rank-20 matrix places no locus point nearby.
+
+   **Outcome.** The lift finds no obstruction at all 12 witnesses
+   ([evidence](../evidence/rank_locus_padic_lift/README.md),
+   `scripts/rank_locus_padic_lift.py`, gates core-666 and core-667).
+   - H vanishes to O(p^12) at the pyadic lift. It also vanishes through
+     t^63 in an independent F_p[[t]] lift (FLINT `nmod_mat`) along four
+     seeded directions per witness over two 31-bit primes.
+   - The controls pin down the method:
+     - The zero-divisor families, whose local dimension equals the tangent
+       bound, read zero.
+     - x0 = e1 + e18 reads order 2 in both routes, with equal digits, and
+       valuation 4 at scale p^2. Its cone A15 union B17 has unit dimension
+       17 against the tangent bound 21.
+     - A toy germ reads order 5.
+   - The result points one way, but it admits nothing. A nonzero P of
+     order below 64 would escape a drawn direction with probability at most
+     64 / p, about 3e-8, unless its leading form vanished modulo both
+     primes.
+   - Closing the gap exactly needs one of three things:
+     - an ideal-membership certificate h H = sum a_i G_i with h(x) nonzero;
+     - vanishing beyond the Bezout bound deg(closure of M) times deg H, on
+       the order of 10^7;
+     - an explicit parameterization of M.
+
+     Along a line in the chart, every lifted dependent coordinate that
+     moves has Berlekamp-Massey length 32, the maximum for 63 series
+     terms, at every witness, the smooth controls included. So M is not
+     rational of degree below 32 in the chart coordinates.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
-regenerating its retained result; computations 1, 2, 3 and 5 also run
+regenerating its retained result; computations 1, 2, 3, 5 and 6 also run
 `--self-test`, which rejects a corrupted nullity, frame, coefficient or
 rank in normal and `-O` modes. The registry
 carries the question as the open claim `a5-nonzero-divisor-two-dimension-gap`
@@ -208,7 +265,7 @@ admits on its own:
 
 | Item | First deliverable | Rests on | Admission |
 | --- | --- | --- | --- |
-| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the extended-precision probe (computation 4) decides nothing and computation 5 excludes a linear piece, so a certified curved piece through an {a, 0} witness is the deliverable | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
+| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the extended-precision probe (computation 4) decides nothing, computation 5 excludes a linear piece, and computation 6 finds the Schur-complement germ M unobstructed through order 63, so the deliverable is a certificate that the excess equations vanish on M through an {a, 0} witness | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
 | 4. Regularity and links | smoothness of each D_(5,12) piece from independent local equations; the normal link at x0, where A15 and B17 meet in dimension 13 | item 3 for D_(5,12) | rank loci and smooth strata kept distinct |
 | 5. Kernel bundles | transition data of ker L_x over each smooth piece of D_(5,12) | item 4 | invariants computed; a classification needs its own sufficiency argument |
 | 6. Attachments | how partner spheres specialize across every admitted closure incidence of D_(5,12) | items 3 and 5 | attaching maps, not a frontier matrix |

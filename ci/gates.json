@@ -1824,6 +1824,22 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_padic_lift.py --check docs/evidence/rank_locus_padic_lift/result.json",
+   "name": "core-666",
+   "seconds": 59.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_padic_lift.py --self-test && \"$PYTHON\" -B -W error -O scripts/rank_locus_padic_lift.py --self-test",
+   "name": "core-667",
+   "seconds": 25.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qubit_baseline.py",
    "name": "core-268",
