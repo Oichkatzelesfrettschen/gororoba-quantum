@@ -384,7 +384,11 @@ credit ceiling that cases.json records for that QC (`max_credits`, which the
 command line repeats), after an exclusive `submission-state.json`, and
 `collect` keeps the job record and the measurements and counts artifacts byte
 for byte under a lock on the run directory. `--dry` runs every refusal and
-sends nothing. The first case is the
+sends nothing. One run directory is admitted per quantum computer, case, job
+and cases.json digest, so a rebuilt case takes its own mock run. The timing,
+reset-billing and signed-probe cases predate `max_credits`; their retained
+bytes stay as approved, so a charged resubmission of them refuses and a rerun
+goes through a new case. The first case is the
 [Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
 later cases from measured billing.
 
@@ -411,12 +415,16 @@ Facts a Garnet case design starts from, each with the record that carries it:
   near the equator of the measured qubit (an interference or Hadamard-test
   readout) moves at first order with gate over-rotation, axis error,
   residual Z after CZ and CZ conditional phase, which randomized
-  benchmarking sees only at second order. The 199-CZ signed probe read even
+  benchmarking sees at second order. The 199-CZ signed probe read even
   offsets of -0.022 and -0.012 against +0.029 from the calibration-built
   depolarizing and relaxation model; its readout alone predicts +0.031
   (heralded QB7 errors 0.003 and 0.034), so the circuit moved the reading by
-  about -0.05, which a +0.6 % QB11 amplitude error reproduces
-  ([coherent response](../../design/iqm-garnet-signed-kernel-probe.md#adversarial-audit)).
+  about -0.045. The device damps a coherent shift by the probe's visibility
+  (0.21) as it damps the signal, so QB11 alone would need a 2.7 +- 0.7 %
+  amplitude error, whose infidelity (about 3e-4) is of the order of QB11's
+  randomized-benchmarking infidelity (5e-4): the depolarizing model drops
+  the error's first-order effect on the reading, not an error too small to
+  see ([coherent response](../../design/iqm-garnet-signed-kernel-probe.md#adversarial-audit)).
   A prediction from `scripts/iqm_sim.py` therefore bounds incoherent loss
   and readout only; a case that reads a first-order observable measures the
   coherent errors of its own qubits in the same job (error-amplifying

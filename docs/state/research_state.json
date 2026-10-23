@@ -7509,7 +7509,7 @@
     },
     {
       "id": "cd-sign-cocycle-degree",
-      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree max(1, n - 1) in q maximized over the left factor p. Octonion left multiplication is therefore at most a degree-2 phase, implementable with CZ and S gates, and sedenion left multiplication reaches a degree-3 phase.",
+      "statement": "For Cayley-Dickson dimension 2^n, n = 1 to 6 (cd_core), the sign f(p, q) in e_p e_q = (-1)^f(p, q) e_(p xor q) has algebraic normal form degree max(2, n) over the 2n index bits, with C(n, 2) + n monomials of degree 2 and (2^(k - 1) - 1) C(n, k) of degree k >= 3, and degree max(1, n - 1) in q maximized over the left factor p. Octonion left multiplication is therefore at most a degree-2 phase, implementable with CZ and Z gates, and sedenion left multiplication reaches a degree-3 phase.",
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",
@@ -7535,7 +7535,7 @@
     },
     {
       "id": "iqm-garnet-signed-probe-coherent-response",
-      "statement": "On the retained Garnet compile of the signed kernel probe (transpiler seed 2, 199 CZ on seven qubits), the first-order response of the measured <Z> on QB7 to coherent gate errors (prx over-rotation and axis error per qubit, residual Z after each CZ per qubit, CZ conditional phase per coupler) vanishes in the odd part at t = 0 for every error and grows with the signed amplitude sqrt(|t|/(2 + |t|)), not with t: the QB6 over-rotation coefficient per unit amplitude is -7.1, -6.9 and -6.2 at |t| = 0.01, 0.05 and 0.25. The even part responds at first order, led by QB11 over-rotation (-8.0 per unit relative over-rotation at |t| = 0.05), residual Z on QB11 (-1.56) and QB12 over-rotation (+1.15), so a +0.6 % QB11 amplitude error, which randomized benchmarking sees only at about 1e-5 infidelity, moves the even part by -0.05.",
+      "statement": "On the retained Garnet compile of the signed kernel probe (transpiler seed 2, 199 CZ on seven qubits), the first-order response of the measured <Z> on QB7 to coherent gate errors (prx over-rotation and axis error per qubit, residual Z after each CZ per qubit, CZ conditional phase per coupler) vanishes in the odd part at t = 0 for every error and grows with the signed amplitude sqrt(|t|/(2 + |t|)), not with t: the QB6 over-rotation coefficient per unit amplitude is -7.1, -6.9 and -6.2 at |t| = 0.01, 0.05 and 0.25. The even part responds at first order, led by QB11 over-rotation (-8.0 per unit relative over-rotation at |t| = 0.05), residual Z on QB11 (-1.56) and QB12 over-rotation (+1.15), so, with the device damping a coherent shift by the probe's visibility of 0.21, QB11 alone would need a 2.7 +- 0.7 % amplitude error to move the even part by the measured -0.045, an error whose infidelity (about 3e-4) is of the order of QB11's randomized-benchmarking infidelity (5e-4).",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
