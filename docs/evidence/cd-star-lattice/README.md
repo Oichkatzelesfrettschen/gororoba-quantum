@@ -66,7 +66,8 @@ Hadamard matrices of order 16 in
 retained from https://users.cecs.anu.edu.au/~bdm/data/hadamard/had16.txt
 (sha256 `67fb6f1a36f6893fca541a85754329812b9b8b454b3438ec9b6fd00005c2f170`),
 and counts the Hadamard automorphism pairs of I + W_n for n = 4 to 64. Classes
-carry the file's line numbers; no source here maps them to Hall's or
+carry the file's line numbers; the [source note](../../notes/papers/mckay-hadamard-matrices.md)
+records the page's equivalence relation and that it maps no line to Hall's or
 Sloane's labels.
 
 `boundary_symmetry` describes the group of signed permutation matrices that
