@@ -1248,7 +1248,7 @@ circuit and charges the account ledger's change.
   Evidence: [cd_associator_defect_census.md](../notes/topics/cd_associator_defect_census.md).
   Depends on: cd-associator-census.
 - **a5-stiefel-universal** (mathematical claim, algebra). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.
-  Boundary: The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction a counterexample is a generic point where Pf(L_a + i R_b) is nonzero, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.
+  Boundary: The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.
   Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [math-0512517.md](../notes/math-0512517.md).

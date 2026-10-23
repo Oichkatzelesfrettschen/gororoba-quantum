@@ -16,8 +16,10 @@ irreducible and has smooth real points, so its real points are Zariski dense
 in it, and a polynomial vanishes on the real Stiefel set exactly when it
 vanishes on the complex variety the identity test samples. The set where
 rank L_(a,b) <= r is closed, so every Stiefel element of A_5 is a zero divisor
-exactly when Pf(N) vanishes on a dense subset of the Stiefel set: no special
-point can refute the question, only a generic one.
+exactly when Pf(N) vanishes on a dense subset of the Stiefel set. Any single
+point with Pf(N) != 0, special or not, refutes the question, and its
+nonvanishing locus is then open and dense in the irreducible Stiefel variety,
+so one counterexample entails generic ones and uniform sampling detects it.
 
 Certificates:
 
@@ -154,15 +156,22 @@ def identity_point(item: tuple[int, list[int]]) -> None:
         raise ValueError(f"A_{n + 1}: Theorem 2.3 fails at {point}")
 
 
+def right_block_point(item: tuple[int, list[int], list[int]]) -> None:
+    """R_x y equals L_y x at one integer pair."""
+    half, x, y = item
+    if not np.array_equal(np.array(right_block(half, x)) @ y, np.array(left_matrix(half, y)) @ x):
+        raise ValueError(f"dimension {half}: R_x y differs from L_y x")
+
+
 def check_identities(n: int) -> int:
     """Theorem 2.3 and skew-symmetry on every e_i and e_i + e_j of the pure (a, b) space, in exact integers."""
     half = 1 << n
     m = half - 1
     rng = random.Random(SEED)
-    for _ in range(8):
-        x, y = [rng.randint(-3, 3) for _ in range(half)], [rng.randint(-3, 3) for _ in range(half)]
-        if not np.array_equal(np.array(right_block(half, x)) @ y, np.array(left_matrix(half, y)) @ x):
-            raise ValueError(f"A_{n}: R_x y differs from L_y x")
+    pairs = [
+        (half, [rng.randint(-3, 3) for _ in range(half)], [rng.randint(-3, 3) for _ in range(half)]) for _ in range(8)
+    ]
+    parallel.ordered_map(right_block_point, pairs)
     points: list[tuple[int, list[int]]] = []
     for i in range(2 * m):
         points.append((n, [int(t == i) for t in range(2 * m)]))

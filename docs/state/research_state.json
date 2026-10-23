@@ -1727,7 +1727,7 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction a counterexample is a generic point where Pf(L_a + i R_b) is nonzero, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
+      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
       "evidence": [],
       "documents": [
         "docs/notes/math-0512517.md"
