@@ -1,0 +1,22 @@
+{
+  "schema": "local-simulation-artifacts-v1",
+  "sha256": {
+    "README.md": "6ab9cbf763fdb62038a4df924a60f3c1f0b322b3156c35f17b5e00711c2c0ae8",
+    "fullprecision-compiler-crosscheck/exporter.py": "bdc371873676013613d132f69ca41d1357bc1e917d6c2f362efbd0e87a27b6cf",
+    "fullprecision-compiler-crosscheck/producer.py": "98d385351e26fcf6a4335e3230cfc1a75eb3eedfabc1457df81a1a198d2ab83c",
+    "fullprecision-compiler-crosscheck/qi.json": "046a4858f9d64ef413ac87105977126f9fdbb1e91919c0e582cc9439d0fa2bd0",
+    "optical-operator-replay-producer.py": "1f62c8e24508bac400b2fac0cfffbf2bf0317b8b5d679a7fc37e10dc3e76dc71",
+    "optical-operator-replay.json": "d525817d05aeeb9e702f721003d2f6b7bed6027b3169186da3952a53e2cb6ae8",
+    "photonic-compiler-crosscheck/photonic.json": "f87f990cffe86cc7de4e331380b5a2219ab125461b4be18d9576719e39f1b980",
+    "photonic-compiler-crosscheck/progress.txt": "c5aad64215d13ed282922a8a038161c24a832dfeb4c82c1d74824baa32fd591f",
+    "photonic-compiler-crosscheck/qi.json": "f85abf188bc5ed7ad8c3ed72ab1d36365c77f848b4b8a14d08abef35b3ed17ba",
+    "physical-photonic-compiler-crosscheck/photonic.json": "de0d911b45528775201551793d53f991d9603a01282ac3d2c4c598656510441d",
+    "physical-photonic-compiler-crosscheck/producer.py": "72b357a9aac53fa515b668ec733f20b011cf78ff0f9a63e2e3429c0b6799d482",
+    "physical-photonic-compiler-crosscheck/progress.txt": "529cf9a4ef30d28020d4210c47559347699cfb050e386773e807b09e4be4eaeb",
+    "physical-photonic-compiler-crosscheck/qi.json": "352574fab795d0976ab286bb11a3453c9ea4998b49ae80c8b6462b92a4fcebc4",
+    "scratch-disposition.json": "f399fa70f56e7f933a2ba7caa8693a4002f1c43d2ffd6a8cf3f2c66927ca94fd",
+    "terminal-unitary-compiler-crosscheck/qi.json": "8671ac95e3a4a6e77e1c3d2b3726e55f985cf0039448aea5b2b1faf7c18951a3",
+    "validated-terminal-unitary-compiler-crosscheck/producer.py": "230c8fe9e8b15cd8cbd389f8e104baee2da04247431abdc7777e1fd35b5f22cd",
+    "validated-terminal-unitary-compiler-crosscheck/qi.json": "8751156f6fb81c0050c643ff8e1ee62bc6d5ffb850bfd2b9d138eed516a7ff6d"
+  }
+}

@@ -4022,6 +4022,23 @@
    "seconds": 2.0,
    "tier": "pr",
    "requires": ["qi"]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_simulation_replay.py",
+   "name": "core-652",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_simulation_replay.py --live-qi && \"$PYTHON\" -m pytest -q tests/scripts/test_opensquirrel_fullprecision.py tests/scripts/test_local_photonic_compiler_crosscheck.py",
+   "name": "core-653",
+   "seconds": 14.0,
+   "tier": "pr",
+   "requires": ["qi"]
   }
  ],
  "excluded": [
