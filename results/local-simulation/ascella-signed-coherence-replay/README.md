@@ -28,6 +28,7 @@ coefficients and named endpoints must equal
 | Complex conjugation | Y_odd sin(2 theta) falsified |
 | Exchanged X and Y readouts | the constant, cos(2 theta) and sin(2 theta) coefficients of X_odd and Y_odd falsified |
 | One iteration missing | no complete inference; no decisions issued |
+| One iteration without eligible events | no complete inference; no decisions issued |
 
 The dispositions come from expected counts and the declared Hoeffding radius;
 they are not measured rejection probabilities. Aliasing on the five-point grid

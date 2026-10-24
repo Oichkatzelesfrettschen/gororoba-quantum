@@ -8,8 +8,8 @@ The registered estimators of scripts/ascella_coherence_analysis.py then run on
 expected counts of the ideal response, on the sampled SLOS counts and on
 synthetic responses built from the request's own analyzers: the equal-contrast
 mutation counterexample, the sign-even counterexamples of twists 0.2 and 0.05,
-a diagonal bright/dark mixture, complex conjugation, exchanged X and Y readouts
-and a missing iteration. docs/evidence/ascella-order-coefficients/derivation.json
+a diagonal bright/dark mixture, complex conjugation, exchanged X and Y readouts,
+a missing iteration and an iteration without eligible events. docs/evidence/ascella-order-coefficients/derivation.json
 supplies the radii, coefficients and expected dispositions every case must
 reproduce.
 """
@@ -170,47 +170,71 @@ def expected_counts(probabilities: list[np.ndarray]) -> Rows:
     return rows
 
 
-def synthetic_cases(settings: list[dict[str, Any]], derivation: dict[str, Any]) -> dict[str, Rows]:
-    """Expected counts of every synthetic response, keyed by case name."""
-    states, analyzers = prepared_states(settings)
+SYNTHETIC_CASES = (
+    "ideal",
+    "equal contrast",
+    "sign-even 0.2",
+    "sign-even 0.05",
+    "conjugation",
+    "diagonal mixture",
+    "exchanged readouts",
+    "missing iteration",
+    "zero-eligible iteration",
+)
 
-    def coherent(vectors: list[np.ndarray]) -> list[np.ndarray]:
-        return [np.abs(h @ v) ** 2 for h, v in zip(analyzers, vectors, strict=True)]
 
-    target = derivation["mutation"]["equal_contrast_counterexample"]
+@cache
+def request_states() -> tuple[list[np.ndarray], list[np.ndarray]]:
+    """The prepared states and analyzers of the retained request, derived once per worker."""
+    return prepared_states(manifest()["settings"])
 
-    def amplitudes(setting: dict[str, Any], state: np.ndarray, case: str) -> np.ndarray:
-        if case.startswith("sign-even") and setting["block"] != "mutation":
-            return twisted(state, setting["phi_sign"], 0.2 if case == "sign-even 0.2" else 0.05)
-        if case == "conjugation":
-            return np.conj(state)
-        if case == "equal contrast" and setting["block"] == "mutation":
-            dark = target["target_dark"] if setting["generator"] == "j" else target["mutation_dark"]
-            return np.array([math.sqrt(1 - dark), 0, 0, math.sqrt(dark)], dtype=complex)
-        return state
 
-    cases: dict[str, Rows] = {}
-    for case in ("ideal", "equal contrast", "sign-even 0.2", "sign-even 0.05", "conjugation"):
-        cases[case] = expected_counts(coherent([amplitudes(s, v, case) for s, v in zip(settings, states, strict=True)]))
-    # A bright/dark-dephased state keeps every direct intensity and loses the (0, 3) coherence.
-    cases["diagonal mixture"] = expected_counts(
-        [np.abs(h) ** 2 @ (np.abs(v) ** 2) for h, v in zip(analyzers, states, strict=True)]
+def amplitudes(setting: dict[str, Any], state: np.ndarray, case: str, target: dict[str, float]) -> np.ndarray:
+    """The pre-analyzer state a synthetic response assigns to one entry."""
+    if case.startswith("sign-even") and setting["block"] != "mutation":
+        return twisted(state, setting["phi_sign"], 0.2 if case == "sign-even 0.2" else 0.05)
+    if case == "conjugation":
+        return np.conj(state)
+    if case == "equal contrast" and setting["block"] == "mutation":
+        dark = target["target_dark"] if setting["generator"] == "j" else target["mutation_dark"]
+        return np.array([math.sqrt(1 - dark), 0, 0, math.sqrt(dark)], dtype=complex)
+    return state
+
+
+def synthesize(case: str) -> tuple[str, Rows]:
+    """Expected counts of one synthetic response through the request's own analyzers."""
+    settings = manifest()["settings"]
+    states, analyzers = request_states()
+    target = json.loads(DERIVATION.read_text(encoding="utf-8"))["mutation"]["equal_contrast_counterexample"]
+    if case == "diagonal mixture":
+        # A bright/dark-dephased state keeps every direct intensity and loses the (0, 3) coherence.
+        return case, expected_counts(
+            [np.abs(h) ** 2 @ (np.abs(v) ** 2) for h, v in zip(analyzers, states, strict=True)]
+        )
+    modified = (
+        states
+        if case in SYNTHETIC_CASES[6:]
+        else [amplitudes(setting, state, case, target) for setting, state in zip(settings, states, strict=True)]
     )
-    ideal = expected_counts(coherent(states))
-    position = {(s["readout"], s["theta_index"], s["arm"], s["block"]): i for i, s in enumerate(settings)}
-    swapped: Rows = []
-    for setting, row in zip(settings, ideal, strict=True):
-        other = {"x": "y", "y": "x"}.get(setting["readout"])
-        if other is None:
-            swapped.append(row)
-            continue
-        key = (other, setting["theta_index"], setting["arm"], f"theta{setting['theta_index']}-{other}")
-        swapped.append(ideal[position[key]])
-    cases["exchanged readouts"] = swapped
-    missing: Rows = list(ideal)
-    missing[17] = None
-    cases["missing iteration"] = missing
-    return cases
+    rows = expected_counts([np.abs(h @ v) ** 2 for h, v in zip(analyzers, modified, strict=True)])
+    if case == "exchanged readouts":
+        position = {(s["readout"], s["theta_index"], s["arm"], s["block"]): i for i, s in enumerate(settings)}
+        swapped: Rows = []
+        for setting, row in zip(settings, rows, strict=True):
+            other = {"x": "y", "y": "x"}.get(setting["readout"])
+            key = (other, setting["theta_index"], setting["arm"], f"theta{setting['theta_index']}-{other}")
+            swapped.append(row if other is None else rows[position[key]])
+        return case, swapped
+    if case == "missing iteration":
+        rows[17] = None
+    if case == "zero-eligible iteration":
+        rows[17] = [0.0] * MODES
+    return case, rows
+
+
+def synthetic_cases() -> dict[str, Rows]:
+    """Expected counts of every synthetic response, keyed by case name in registered order."""
+    return dict(ordered_map(synthesize, list(SYNTHETIC_CASES), min_items=1))
 
 
 def analyze_case(item: tuple[str, Rows]) -> tuple[str, dict[str, Any]]:
@@ -284,7 +308,8 @@ def require_dispositions(results: dict[str, dict[str, Any]], derivation: dict[st
     exchanged = by_name(results["exchanged readouts"])
     for name in ("X_odd constant", "Y_odd sin(2 theta)"):
         require(exchanged[name]["verdict"] == "falsified", f"exchanged readouts: {name} is not falsified")
-    require(not results["missing iteration"]["complete"], "a missing iteration still yields a complete inference")
+    for name in ("missing iteration", "zero-eligible iteration"):
+        require(not results[name]["complete"], f"a {name} still yields a complete inference")
 
 
 def digest(path: Path) -> str:
@@ -301,7 +326,7 @@ def report() -> dict[str, Any]:
     agreement = float(np.max(np.abs(np.array(slos) - np.array(naive))))
     require(agreement <= TOLERANCE, f"SLOS and Naive probabilities differ by {agreement:.2e}")
     sampled = ordered_map(sample_iterator, ["SLOS", "Naive"], min_items=1)
-    cases = synthetic_cases(settings, derivation)
+    cases = synthetic_cases()
     replay_counts: Rows = [[value * SAMPLES for value in row] for row in slos]
     synthesized = float(np.max(np.abs(np.array(replay_counts) - np.array(cases["ideal"]))))
     require(synthesized <= TOLERANCE * SAMPLES, f"the synthesized ideal departs from SLOS by {synthesized:.2e} counts")

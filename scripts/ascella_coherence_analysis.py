@@ -116,6 +116,9 @@ def analyze(manifest: dict[str, Any], mode_counts: Sequence[Sequence[float] | No
     if mode_counts is None or len(mode_counts) != ENTRIES or any(row is None for row in mode_counts):
         present = 0 if mode_counts is None else sum(row is not None for row in mode_counts)
         return {"complete": False, "reason": f"{present} of {ENTRIES} iterations attributable", "endpoints": []}
+    empty = [index for index, row in enumerate(mode_counts) if row is not None and sum(row) <= 0]
+    if empty:
+        return {"complete": False, "reason": f"iterations {empty} have no eligible events", "endpoints": []}
     values, eligible = statistics(settings, mode_counts)
     ideals = registered_ideals(settings)
     ranges = np.array([2.0 if setting["readout"] != "direct" else 1.0 for setting in settings])

@@ -2192,6 +2192,10 @@
         "inconclusive": 0,
         "qualifies": 24
       }
+    },
+    "zero-eligible iteration": {
+      "complete": false,
+      "reason": "iterations [17] have no eligible events"
     }
   },
   "iterator_checks": [
@@ -2350,10 +2354,10 @@
   "source_sha256": {
     "docs/evidence/ascella-order-coefficients/derivation.json": "4aebeeae2a05969611e9de7e2bb904b55064ae82c3de78893426cd401bd196b0",
     "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
-    "results/local-simulation/ascella-signed-coherence-replay/producer.py": "3163d7e37ac0bb9c553f2c079a3778ca9a0ba3ea0f4764e731863701c7ce236b",
+    "results/local-simulation/ascella-signed-coherence-replay/producer.py": "84c42818d74191f8a5f1162600e2ace0b61bd828406f9a4a6a60ae0e530c3585",
     "results/quandela/cases/ascella_signed_coherence/job-00/cases.json": "3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520",
     "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8",
-    "scripts/ascella_coherence_analysis.py": "d3ea8599f7132dac12c1d2df9fce1af87c00d4a5c39647861457c4efb8e0df63",
+    "scripts/ascella_coherence_analysis.py": "4fc9ae4b3b4a46fa1646370f1b7f076a190c6552196107c82f9585c38e90a890",
     "scripts/bdsc_certificate.py": "5dbcd027eb24a303ba5757e00b0123e846bc3c86dab70a24dc1ae1f98b197753"
   },
   "versions": {
