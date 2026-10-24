@@ -1018,6 +1018,38 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-associator-anf/replay_rocq.sh",
+   "name": "sources-400",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "sha256sum -c docs/evidence/cd-associator-anf/source_hashes.sha256",
+   "name": "sources-401",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-associator-census/replay_rocq.sh",
+   "name": "sources-402",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "sha256sum -c docs/evidence/cd-associator-census/source_hashes.sha256",
+   "name": "sources-403",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/cd-imaginary-sum-conference/tower_bridge.py",
    "name": "sources-393",
    "seconds": 7.0,
@@ -3900,7 +3932,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-3",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-4",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"

@@ -43,9 +43,10 @@ either. The proofs below are this
 note's (new proof or formalization). They are written proofs;
 scripts/cd_phase_degree.py checks every identity they use, cell by cell
 against cd_sign, and both statements on every pair through n = 8 (gates
-listed under Replay). Rocq proves Theorem 1, Theorem 3 and Proposition 4
-below for every n ([sign-row ANF bundle](../evidence/cd-sign-row-anf/README.md));
-Theorem 2 has no machine-checked proof.
+listed under Replay). Rocq proves Theorems 1 to 3, Proposition 4 and
+the census below for every n ([sign-row ANF bundle](../evidence/cd-sign-row-anf/README.md),
+[associator-phase ANF bundle](../evidence/cd-associator-anf/README.md),
+[census bundle](../evidence/cd-associator-census/README.md)).
 
 Upper bound only, as a cross-check: g_ij = s_{i,j} + phi_n(i, j) with
 s_{i,j} the Schreier sign vector of
@@ -301,7 +302,18 @@ linear.
 statement in this repository's terms: `sign_row_degree_all` gives degree
 max(1, n - 1) for every n against the tower sign sigma, which the
 [tower basis-sign bundle](../evidence/cd-tower-basis-sign/README.md) ties to
-cd_sign. The associator statement has no Rocq proof.
+cd_sign. [CdAssociatorAnf.v](../../proofs/CdAssociatorAnf.v) proves the
+associator statement on the same terms: `assoc_degree_is` gives degree
+max(1, Nat.log2 (max p q) - 1) for every k >= 3 and distinct nonzero p, q,
+following Lemmas A to D and the induction above; `assoc_sigma` equates the
+phase with the four cd_sign factors of predict.associator_phase, and
+`assoc_basis` with e_p (e_q e_x) = (-1)^g(x) (e_p e_q) e_x.
+[CdAssociatorCensus.v](../../proofs/CdAssociatorCensus.v) proves the
+census: with `anf_degree` the largest weight carrying a nonzero ANF
+coefficient, `census_degree_one` and `census_degree` count 21 pairs of
+degree 1 and 3 2^d (2^(d+1) - 1) of degree d for 2 <= d <= k - 2,
+`census_degree_none` excludes every other degree, and `census_total` sums
+the counts to C(2^k - 1, 2).
 
 A Rocq statement for open_gororoba, against its `cd_sign_fuel` (the
 function the [Stiefel witness](../evidence/stiefel_witness/README.md) uses)
@@ -348,7 +360,8 @@ keeps its pure-Python degree checks at dims 8 to 128.
 `am_altercommutative`, Lemma A as `am_left_involution` and Lemma E as
 `sigma_right_involution`, in the paper's argument order, for every n, and
 [CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves Theorem 1, Theorem 3
-and Proposition 4.
+and Proposition 4, and [CdAssociatorCensus.v](../../proofs/CdAssociatorCensus.v)
+the table's last two columns for every n.
 
 | n | dim | sign-row degree | new unordered pairs | their degree |
 | --- | --- | --- | --- | --- |

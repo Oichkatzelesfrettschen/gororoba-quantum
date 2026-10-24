@@ -1,0 +1,60 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-census-and-sign-semantics-rocq",
+  "kind": "implementation",
+  "summary": "Prove the associator-phase census of cd_phase_degree.md in Rocq, and replace the finite bridge between the Rocq tower sign and cd_core.cd_sign with a proof over a deep embedding of the Python function's syntax tree.",
+  "sources": [
+    "docs/notes/cd_phase_degree.md",
+    "proofs/CdAssociatorCensus.v",
+    "gororoba_quantum/cd_core.py",
+    "docs/evidence/cd-tower-basis-sign/README.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "steps": [
+    {
+      "id": "associator-census-rocq",
+      "state": "done",
+      "action": "Prove the census of cd_phase_degree.md in CdAssociatorCensus.v for every k >= 3, counting pairs by the computed ANF degree of their associator phase.",
+      "acceptance": "census_degree_one, census_degree, census_degree_none and census_total compile closed under the global context in a hash-bound replay with -w @all that passes against its receipts.",
+      "receipts": [
+        {
+          "result": "census_degree_one, census_degree, census_degree_none, census_new_level, census_stable, census_total and census_dim256 compile under -w @all; all ten assumption queries of the cd-associator-census replay print Closed under the global context, rocq check passes with the shared kernel receipt, and replay_rocq.sh passes against its receipts.",
+          "observed_at": "2026-10-24T15:49:23Z",
+          "revision": "b54b808c4a3282addc64474b864877324ca72f53",
+          "evidence": [
+            {
+              "ref": "proofs/CdAssociatorCensus.v",
+              "sha256": "bbd2562527a32c820259181a336db5b89bea03a85ea81caacb79b0452392591b"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-census/assumptions.txt",
+              "sha256": "f990327820c7e0de2c2185fa0c21ec662d961c689506a2b21b1afe9a2f285d04"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-census/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            }
+          ],
+          "scope_sha256": "bc318f2e3aacec11c29522d313dc60cecfbbee6b5662d792df1d77c1d289cb29"
+        }
+      ]
+    },
+    {
+      "id": "cd-sign-python-semantics",
+      "state": "todo",
+      "action": "Extract cd_core.cd_sign's syntax tree into a Rocq term, give the Python subset it uses a Rocq semantics, and prove the run equals sigma for every k.",
+      "acceptance": "The extraction test passes in pytest, and the semantics theorem compiles closed under the global context in a hash-bound replay with -w @all that passes against its receipts."
+    }
+  ],
+  "related": [
+    "cd-associator-degree-rocq",
+    "cd-tower-basis-sign-theorem"
+  ],
+  "scope": "The census of pairs by degree is counted only by scripts/cd_phase_degree.py, and the agreement of sigma with cd_core.cd_sign rests on tower_bridge.py through n = 64. This implementation proves the census for every k in a hash-bound Rocq bundle, and proves for every k that a Rocq semantics of the Python subset cd_sign uses, run on the syntax tree extracted from cd_core.py, returns sigma.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "Extract cd_core.cd_sign's syntax tree and prove its Rocq semantics returns sigma."
+}
