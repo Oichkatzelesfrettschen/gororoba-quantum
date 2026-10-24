@@ -460,10 +460,12 @@ jobs:
       - name: Open, update or close the tracking issue
         run: |
           set -eu
-          number=$(gh api "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
-            --jq "[.[] | select(.pull_request == null and .title == \"$TITLE\")][0].number // empty")
-          jobs=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs?per_page=100" \
-            --jq '.jobs[] | select(.conclusion == "failure") | .name')
+          # Every page, since open pull requests share the issues listing.
+          gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+            --jq ".[] | select(.pull_request == null and .title == \"$TITLE\") | .number" > "$RUNNER_TEMP/issues.list"
+          number=$(sed -n 1p "$RUNNER_TEMP/issues.list")
+          jobs=$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs?per_page=100" \
+            --jq '.jobs[] | select(.conclusion == "failure" or .conclusion == "timed_out" or .conclusion == "cancelled") | .name')
           case " $FAILED " in
           *" failure "* | *" cancelled "*) ;;
           *)
