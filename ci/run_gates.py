@@ -26,7 +26,8 @@ GOROROBA_QI_REQUIRED=1, so each must take its live path or fail; the
 qi-stack job of .github/workflows/ci.yml runs that selection.
 
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
-chooses: an explicit $PYTHON as named, else the running interpreter when it
+chooses: an explicit $PYTHON as named (a ``--changed-files`` run, the merge
+verdict, refuses one that differs from the pins), else the running interpreter when it
 holds every pin of requirements.txt and ci/requirements-ci.txt, else the
 host environment ci/build_host_envs.sh builds. A gate's ``runtime`` names a
 historical producer environment; its command runs under that runtime's
@@ -470,7 +471,7 @@ def main(argv: list[str] | None = None) -> int:
     # resolves only when a selected gate runs under it.
     primary = sys.executable
     if any(not gate.get("runtime") for gate in selected):
-        resolved, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
+        resolved, reason = pins.resolve_current(os.environ, sys.executable, ROOT, admission=changed is not None)
         print(f"current runtime: {reason}", flush=True)
         if resolved is None:
             return 2

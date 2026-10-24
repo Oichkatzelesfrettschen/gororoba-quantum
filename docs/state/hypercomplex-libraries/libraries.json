@@ -8901,6 +8901,17 @@
    "typing",
    "urllib"
   ],
+  "scripts/ascella_order_retry_collector.py": [
+   "__future__",
+   "analysis",
+   "argparse",
+   "bdsc_certificate",
+   "copy",
+   "json",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/associator_cubic_normal_form.py": [
    "__future__",
    "argparse",

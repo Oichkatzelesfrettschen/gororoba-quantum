@@ -17,8 +17,9 @@ schedule and on manual dispatch only: every gate of both tiers on main with
 merge, never per commit or push: the pr tier and every full gate whose
 imports or declared inputs the branch changes,
 `git diff --no-renames --name-only -z origin/main HEAD > CHANGED` then
-`"$PYTHON" ci/run_gates.py --changed-files CHANGED`. The Codex review loop of
-[Reviews and merges](../AGENTS.md#reviews-and-merges) is the merge gate. A pr
+`"$PYTHON" ci/run_gates.py --changed-files CHANGED`. Admission takes those
+gates green under the pinned runtime and the Codex review loop, in the order
+of [Merging](../AGENTS.md#reviews-and-merges). A pr
 gate over 30 s of measured wall moves to the full tier with its non-imported
 inputs declared in ci/full_gate_inputs.json, so a merge runs it when its own
 inputs change and the nightly run covers the reads the tracer cannot see.
@@ -144,10 +145,15 @@ those pins in a `-I` subprocess. With neither, the running interpreter serves
 when it holds every pin, then the host environment below. Current-runtime
 gates take an explicit `$PYTHON` as named, else the running interpreter when
 it holds every pin of requirements.txt and ci/requirements-ci.txt, else the
-host environment. The runner prints each choice before the first gate, and a
-selection with an unresolved runtime runs no gate and exits 2 naming the
-differing versions; premerge refuses the same way, since such gates fail on
-both trees and read as shared failures that hide a gate the branch breaks.
+host environment. A run that decides admission (`--changed-files`, and every
+premerge run) refuses an explicit `$PYTHON` that differs from those pins,
+since a verdict under another runtime admits nothing. The runner prints each
+choice before the first gate, and a selection with an unresolved runtime runs
+no gate and exits 2 naming the differing versions; premerge refuses the same
+way with exit 2, since such gates fail on both trees and read as shared
+failures that hide a gate the branch breaks. Premerge otherwise exits 0 when
+every gate passes on the merge, 1 when the merge introduces a failure and 3
+when every failure also fails on the base, which still blocks admission.
 CI installs the replay environment only for shards whose plan requires it
 and passes it as `REPLAY_PYTHON`.
 

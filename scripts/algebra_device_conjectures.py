@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_multiply_exact, cd_sign, left_mult_matrix_exact  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
-DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures/manifest.json"
+DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-2/manifest.json"
 SCHEMA = "algebra-device-conjectures-v1"
 
 
@@ -69,9 +69,44 @@ def _source_record(path: str) -> dict[str, str]:
     return {"path": path, "sha256": digest(local_path(path))}
 
 
-def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, Any]:
-    """Explicitly refresh the frozen inventory through the existing offline provider adapters."""
+def _uncommitted() -> list[str]:
+    """Every tracked or untracked path whose checkout state differs from HEAD's, ignored files excepted."""
+    listed = subprocess.run(
+        ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"], cwd=ROOT, capture_output=True, check=True
+    ).stdout.decode()
+    entries = iter(listed.split("\0"))
+    paths = []
+    for entry in entries:
+        if not entry:
+            continue
+        paths.append(entry[3:])
+        # A rename or copy entry is followed by its source path.
+        if "R" in entry[:2] or "C" in entry[:2]:
+            next(entries, None)
+    return paths
+
+
+def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str, predecessor_path: str) -> dict[str, Any]:
+    """Explicitly refresh the frozen inventory through the existing offline provider adapters.
+
+    manifest is the predecessor's content, read from predecessor_path. The
+    successor names that path, its digest, its base commit and the reason
+    for the refresh, and the predecessor bundle keeps its path and bytes. A
+    freeze reads the registry, every retained run and this producer, so it
+    runs only on a checkout identical to HEAD and base_commit names every
+    byte it read.
+    """
     import research_state
+
+    require(bool(reason.strip()), "a refresh needs a reason")
+    uncommitted = _uncommitted()
+    require(not uncommitted, f"freeze needs a checkout identical to HEAD: {', '.join(uncommitted[:5])}")
+    predecessor = {
+        "path": predecessor_path,
+        "manifest_sha256": digest(local_path(predecessor_path)),
+        "base_commit": manifest["base_commit"],
+        "reason": reason.strip(),
+    }
 
     registry = json.loads((ROOT / "docs/state/research_state.json").read_text())
     selected = set(manifest["selected_claim_ids"])
@@ -103,6 +138,7 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, An
             )
     manifest = {
         **manifest,
+        "supersedes": predecessor,
         "base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "companion_pin": (ROOT / "ci/open_gororoba.pin").read_text().strip(),
         "claims": claims,
@@ -131,6 +167,10 @@ def _verify_source(source: dict[str, str]) -> None:
     require(digest(path) == source["sha256"], f"source digest differs: {source['path']}")
 
 
+def _hex(value: Any, length: int) -> bool:
+    return isinstance(value, str) and len(value) == length and all(char in "0123456789abcdef" for char in value)
+
+
 def validate_manifest(manifest: dict[str, Any]) -> None:
     require(manifest.get("schema") == SCHEMA, "manifest schema differs")
     for field, key in (("proposals", "id"), ("sources", "path"), ("claims", "id"), ("acquisitions", "id")):
@@ -141,6 +181,20 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
     require(
         set(manifest["selected_claim_ids"]) == {claim["id"] for claim in manifest["claims"]}, "claim selection differs"
     )
+    if "supersedes" in manifest:
+        predecessor = manifest["supersedes"]
+        require(
+            isinstance(predecessor, dict)
+            and set(predecessor) == {"path", "manifest_sha256", "base_commit", "reason"}
+            and isinstance(predecessor["path"], str)
+            and _hex(predecessor["manifest_sha256"], 64)
+            and _hex(predecessor["base_commit"], 40)
+            and isinstance(predecessor["reason"], str)
+            and bool(predecessor["reason"].strip()),
+            "predecessor record needs a path, a manifest digest, a base commit and a reason",
+        )
+        # The predecessor is retained evidence: its manifest keeps its path and bytes.
+        _verify_source({"path": predecessor["path"], "sha256": predecessor["manifest_sha256"]})
     ordered_map(_verify_source, manifest["sources"], min_items=1)
     _verify_source(manifest["census"])
     census = json.loads(local_path(manifest["census"]["path"]).read_text())
@@ -591,6 +645,7 @@ def synthesis(manifest: dict[str, Any]) -> dict[str, Any]:
         "producer_sha256": digest(Path(__file__)),
         "versions": {"python": platform.python_version(), "sympy": version("sympy")},
         "frozen_base": manifest["base_commit"],
+        "supersedes": manifest.get("supersedes"),
         "acquisitions": manifest["acquisitions"],
         "proposals": manifest["proposals"],
         "comparisons": comparisons,
@@ -627,6 +682,15 @@ def render(result: dict[str, Any]) -> str:
         "",
         f"Checkout HEAD at freeze: `{result['frozen_base']}`. Input bytes are bound individually by the manifest.",
         f"Manifest digest: `{result['manifest_sha256']}`.",
+        *(
+            [
+                f"Supersedes `{result['supersedes']['path']}` (manifest digest "
+                f"`{result['supersedes']['manifest_sha256']}`, frozen at `{result['supersedes']['base_commit']}`), "
+                f"which keeps its path and bytes: {result['supersedes']['reason']}"
+            ]
+            if result["supersedes"]
+            else []
+        ),
         "",
         f"Acquisitions accounted for: {len(result['acquisitions'])}; "
         f"selected: {sum(row['included'] for row in result['acquisitions'])}.",
@@ -666,12 +730,25 @@ def main() -> int:
     target.add_argument(
         "--freeze", action="store_true", help="explicitly refresh manifest from offline provider adapters"
     )
+    parser.add_argument("--reason", help="why --freeze refreshes the manifest, recorded beside its predecessor")
+    parser.add_argument(
+        "--predecessor", type=Path, help="the manifest --freeze supersedes; the successor goes to a new --manifest"
+    )
     args = parser.parse_args()
     if args.freeze:
-        args.manifest.write_text(
-            encode(freeze_manifest(load_manifest(args.manifest), args.manifest.with_name("census.json")))
+        if args.reason is None or args.predecessor is None:
+            parser.error("--freeze requires --reason and --predecessor")
+        census = args.manifest.with_name("census.json")
+        # Retained bundles keep their paths and bytes, so a refresh writes a new bundle.
+        if args.manifest.exists() or census.exists():
+            parser.error(f"--freeze writes a new bundle; {args.manifest.parent} already holds one")
+        predecessor = local_path(args.predecessor.resolve().relative_to(ROOT.resolve()).as_posix())
+        args.manifest.parent.mkdir(parents=True, exist_ok=True)
+        frozen = freeze_manifest(
+            load_manifest(predecessor), census, args.reason, predecessor.relative_to(ROOT).as_posix()
         )
-        print("frozen manifest refreshed; regenerate derived outputs explicitly")
+        args.manifest.write_text(encode(frozen))
+        print("successor manifest frozen; generate derived outputs explicitly")
         return 0
     result = synthesis(load_manifest(args.manifest))
     outputs = {"result.json": encode(result), "README.md": render(result)}
