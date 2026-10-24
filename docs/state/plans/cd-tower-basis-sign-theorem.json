@@ -2,21 +2,23 @@
   "schema": "work-plan-v1",
   "id": "cd-tower-basis-sign-theorem",
   "kind": "investigation",
-  "summary": "Prove in Rocq that the recursive pair tower's basis products are e_a e_b = sigma_k(a, b) e_(a XOR b) for a transcription sigma_k of cd_core.cd_sign, and derive the +-1 entries of W_n; the zero diagonal already follows from isum_skew.",
+  "summary": "Prove in Rocq that the recursive pair tower's basis products are e_a e_b = sigma_k(a, b) e_(a XOR b) for a transcription sigma_k of cd_core.cd_sign, derive the +-1 entries and zero diagonal of W_n, and prove the Albuquerque-Majid cochain recursion equals the transposed sign.",
   "sources": [
     "proofs/CdImaginarySumConference.v",
     "docs/evidence/cd-imaginary-sum-conference/README.md",
     "docs/evidence/cd-imaginary-sum-conference/tower_bridge.py",
     "gororoba_quantum/cd_core.py",
-    "docs/notes/topics/cd-star-lattice-tower.md"
+    "docs/notes/topics/cd-star-lattice-tower.md",
+    "docs/evidence/albuquerque-majid-convention/README.md",
+    "docs/notes/math-9802116.md"
   ],
-  "state": "planned",
-  "scope": "proofs/CdImaginarySumConference.v proves the skew and Gram identities of right multiplication by the imaginary sum on the integer pair tower for every k. The standard-basis entries of that map, and their agreement with cd_core.cd_sign, are an exact finite check through n = 64 in tower_bridge.py. The investigation states and proves the entry theorem for every k; the Python bridge stays as the implementation check.",
+  "state": "active",
+  "scope": "proofs/CdImaginarySumConference.v proves the skew and Gram identities of right multiplication by the imaginary sum on the integer pair tower for every k. The standard-basis entries of that map, and their agreement with cd_core.cd_sign, are an exact finite check through n = 64 in tower_bridge.py. The investigation states and proves the entry theorem for every k, and proves that the cochain recursion of Albuquerque and Majid, Corollary 4.3, gives the transposed sign at every k, which am_convention_replay.py checks only through n = 64; the Python bridges stay as the implementation checks.",
   "owner": "Repository Rocq maintainer",
-  "next_action": "Define the basis element e_a^(k) and a Fixpoint sigma k a b transcribing the four cases of cd_core.cd_sign, then attempt the basis-product lemma by induction on k.",
+  "next_action": "Attach receipts for the four steps at the commit that carries the proofs, then close the plan.",
   "reconciliation": {
     "status": "verified",
-    "note": "Scope read from proofs/CdImaginarySumConference.v and tower_bridge.py; no step has started."
+    "note": "Scope read from proofs/CdImaginarySumConference.v, tower_bridge.py and am_convention_replay.py."
   },
   "steps": [
     {
@@ -27,7 +29,7 @@
     },
     {
       "id": "arc-matrix-entries",
-      "action": "Derive from the lemma that coord (mul (e a) s) (a XOR b) = sigma k a b for b != 0, with s the tower's imaginary sum, and state coord (mul (e a) s) a = 0 as a named corollary of isum_skew.",
+      "action": "Derive from the basis products that coord (mul (e a) s) (a XOR b) = sigma k a b for b != 0, with s the tower's imaginary sum, and that coord (mul (e a) s) a = 0.",
       "acceptance": "The two entry theorems compile closed under the global context and, with isum_conference, state W_n as a skew conference matrix in the standard basis for every k.",
       "state": "todo",
       "depends_on": [
@@ -38,6 +40,15 @@
       "id": "sign-transcription-check",
       "action": "Extend tower_bridge.py to compare the Rocq sigma transcription, mirrored in Python, with cd_core.cd_sign on every pair through n = 64, keeping the existing tower comparison.",
       "acceptance": "tower_bridge.py exits 0 under its gate, and a flipped sign in the mirrored transcription makes it exit nonzero.",
+      "state": "todo",
+      "depends_on": [
+        "basis-product-lemma"
+      ]
+    },
+    {
+      "id": "am-recursion-sign",
+      "action": "Define the exponent f_k of the Albuquerque-Majid cochain (arXiv math/9802116v1, Corollary 4.3) as a Fixpoint on k from the trivial group, so level 1 is f(x, y) = xy, and prove (-1)^f_k(a, b) = sigma k b a for all a, b < 2^k.",
+      "acceptance": "am_sign and am_complex compile closed under the global context in the same replay, and am_convention_replay.py --check still passes.",
       "state": "todo",
       "depends_on": [
         "basis-product-lemma"

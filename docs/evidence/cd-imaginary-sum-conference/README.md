@@ -7,13 +7,13 @@ on the recursive pair tower over the integers. In the standard basis that map
 is the arc matrix W_n of the
 [star-lattice tower](../../notes/topics/cd-star-lattice-tower.md#the-boundary-as-a-paley-matrix),
 and the identities are W_n^T = -W_n and W_n^T W_n = (n - 1) I in every
-dimension. The zero diagonal follows from skewness in every dimension:
-`isum_skew` with x = y = e_a gives <e_a s, e_a> = -<e_a s, e_a>, so the a-th
-coordinate of e_a s is 0 (a direct consequence, not a separately compiled
-lemma). The entries +-1 off the diagonal follow from the basis products
-e_a e_b = +-e_(a XOR b), which the bridge below checks against cd_sign through
-n = 64; the Rocq theorem for them is the open step of the
-[basis-sign plan](../../state/plans/cd-tower-basis-sign-theorem.json).
+dimension. In the standard basis e_a, a < 2^k, the tower multiplies basis
+units as e_a e_b = sigma_k(a, b) e_(a XOR b), with sigma_k the loop of
+cd_core.cd_sign unrolled one doubling per level, so W_n carries sigma_k(a, b)
+at row a XOR b, column a for every b != 0 and 0 on its diagonal. The cochain
+recursion of Albuquerque and Majid, Corollary 4.3 (the
+[convention replay](../albuquerque-majid-convention/README.md)), gives
+(-1)^f(a, b) = sigma_k(b, a) in every dimension, the transposed convention.
 
 | Theorem | Statement, for every k |
 | --- | --- |
@@ -21,6 +21,13 @@ n = 64; the Rocq theorem for them is the open step of the
 | `isum_skew` | <s x, y> = -<x, s y> and <x s, y> = -<x, y s> |
 | `isum_conference` | <x s, y s> = (2^k - 1) <x, y> |
 | `isum_skew_hadamard` | <x + x s, y + y s> = 2^k <x, y> |
+| `cd_sign_loop_sigma` | the cd_sign loop with accumulated sign t returns t sigma_k(p, q) |
+| `basis_mul` | e_a e_b = sigma_k(a, b) e_(a XOR b) for a, b < 2^k |
+| `basis_mul_coord` | (e_a y)_c = sigma_k(a, a XOR c) y_(a XOR c) and (y e_b)_c = sigma_k(c XOR b, b) y_(c XOR b) |
+| `arc_entry` | (e_a s)_(a XOR b) = sigma_k(a, b) for b != 0 |
+| `arc_diagonal` | (e_a s)_a = 0 |
+| `am_complex` | the Corollary 4.3 exponent at k = 1 is f(x, y) = xy |
+| `am_sign` | (-1)^f_k(a, b) = sigma_k(b, a) for a, b < 2^k |
 
 The tower is the recursive pair construction over the integers with the
 doubling (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)), the inner product
@@ -28,7 +35,7 @@ the coordinate dot product. The induction runs on the block forms of left
 and right multiplication by s' = (s, 1 + s) that the tower note derives; the
 commutation law closes through conj x = 2 re(x) 1 - x and s s = -(n - 1) 1, so
 flexibility of the algebra is proved for s rather than assumed. Integer
-coefficients keep every theorem free of axioms: all four assumption queries
+coefficients keep every theorem free of axioms: all eleven assumption queries
 print `Closed under the global context`, and the kernel check lists no axioms,
 type-in-type, unsafe fixpoints or assumed positivity.
 
@@ -40,11 +47,16 @@ the proof stands alone on Stdlib's ZArith.
 
 ## Bridge to cd_sign
 
-The Rocq theorems hold for the tower. [tower_bridge.py](tower_bridge.py)
-transcribes the tower's multiplication onto coordinate lists and checks
-e_a e_b = cd_sign(n, a, b) e_(a XOR b) for every pair at n = 2 to 64, and that
-the tower's (s, 1 + s) recursion yields e_1 + ... + e_(n-1). That step is
-exact finite computation, not a Rocq theorem.
+`sigma` and `cd_sign_loop` are Rocq transcriptions of the Python loop, and
+`cd_sign_loop_sigma` proves them equal. [tower_bridge.py](tower_bridge.py)
+links the transcription to the Python source: it mirrors `sigma` branch for
+branch and requires sigma_k(a, b) = cd_sign(2^k, a, b) on all 5,460 pairs at
+n = 2 to 64, with a negative control that negates each of the four branches in
+turn and requires a disagreement at every n >= 4. It also transcribes the
+tower's multiplication onto coordinate lists and checks
+e_a e_b = cd_sign(n, a, b) e_(a XOR b) on the same pairs and that the tower's
+(s, 1 + s) recursion yields e_1 + ... + e_(n-1). The bridge is exact finite
+computation; the Rocq side holds for every k.
 
 ## Replay
 
@@ -64,4 +76,4 @@ and [kernel.txt](kernel.txt). The ci.yml job rocq-replay runs it on the
 nightly schedule and on manual dispatch, which always replay; a pull request's
 premerge replay runs by hand and is recorded against the reviewed PR head. `source_hashes.sha256` binds
 the source and receipts, so an edit to the proof without new receipts fails
-the hash gate. The compile takes about 3 s on the build host.
+the hash gate. The compile takes about 6 s on the build host.

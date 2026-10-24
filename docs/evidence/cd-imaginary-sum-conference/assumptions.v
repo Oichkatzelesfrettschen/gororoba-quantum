@@ -3,3 +3,10 @@ Print Assumptions CdImaginarySumConference.isum_laws.
 Print Assumptions CdImaginarySumConference.isum_skew.
 Print Assumptions CdImaginarySumConference.isum_conference.
 Print Assumptions CdImaginarySumConference.isum_skew_hadamard.
+Print Assumptions CdImaginarySumConference.cd_sign_loop_sigma.
+Print Assumptions CdImaginarySumConference.basis_mul.
+Print Assumptions CdImaginarySumConference.basis_mul_coord.
+Print Assumptions CdImaginarySumConference.arc_entry.
+Print Assumptions CdImaginarySumConference.arc_diagonal.
+Print Assumptions CdImaginarySumConference.am_complex.
+Print Assumptions CdImaginarySumConference.am_sign.
