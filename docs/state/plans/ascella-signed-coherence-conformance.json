@@ -8,20 +8,42 @@
     "docs/evidence/ascella-order-coefficients/README.md",
     "docs/state/plans/ascella-approved-order-retry.json"
   ],
-  "state": "planned",
+  "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Build the frozen 64-setting twelve-mode native request and replay it locally against the ideal case and both counterexamples.",
+  "next_action": "Replay the frozen request in results/quandela/cases/ascella_signed_coherence/job-00 through local SLOS and run the registered estimators on the ideal response and the registered counterexamples.",
   "reconciliation": {
     "status": "unresolved",
-    "note": "The derivation, endpoints and theory atlas are retained; the native request, its local replay, the written case and any submission remain prospective."
+    "note": "The derivation, endpoints, theory atlas and frozen native request are retained; its local replay, the written case and any submission remain prospective."
   },
   "steps": [
     {
       "id": "freeze-native-request",
       "action": "Generate the serialized 64-setting request: twelve-entry input, twelve-mode circuit, output width twelve, explicit empty mitigation, budgets and exact entry order.",
       "acceptance": "A builder writes the request with a digest, and a check rejects any setting whose full unitary, analyzer or output width differs from the design.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The builder writes the 64-iteration twelve-mode template request; gate core-680 validates the retained bytes against Perceval and the closed-form operators and refuses a perturbed unitary, exchanged X/Y analyzers and a four-mode input occupation.",
+          "observed_at": "2026-10-24T05:57:21+00:00",
+          "revision": "767415cb652f98a212234db8df75dc319c0412a6",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/cases.json",
+              "sha256": "3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            },
+            {
+              "ref": "scripts/ascella_coherence_request.py",
+              "sha256": "6c1c010acfcee9da709ee634af5dc7d9a5706e3aac30e6ee9e660cb7494a63be"
+            }
+          ],
+          "scope_sha256": "7fa0703e609b4031e512351e5115cb944570d6ae72acd09a8bfc492c3f485da7"
+        }
+      ]
     },
     {
       "id": "replay-request-locally",
