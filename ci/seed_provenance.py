@@ -14,15 +14,17 @@ and kaggle_kernel/ and collects every integer literal in a seed position:
 
 Each literal is keyed by (file, seed name, value). ci/reproduction_seeds.json
 lists the keys that reproduce retained records, approved plans and known
-meshes, with their counts; it only shrinks. docs/evidence/anu_qrng/allocations.json
+meshes, with their counts; --shrink refuses a row it adds or raises over the
+baseline origin/main holds. docs/evidence/anu_qrng/allocations.json
 lists each key a new seed took from a retained ANU draw, with the draw record
 and the value's index. The check requires, per key, the tree's count to equal
 the baseline count plus the allocation count; each allocation's record to pass
 anu_qrng.admit and hold the value at its index; each (record, index) to be
-allocated once; and no allocation to take a record that a case manifest under
+allocated once, under the canonical path docs/evidence/anu_qrng/draw-<UTC>.json; and no
+allocation to take a record that a case manifest under
 results/ names, by file name, since such a case owns its whole draw.
 
-Usage: "$PYTHON" ci/seed_provenance.py (--check | --self-test)
+Usage: "$PYTHON" ci/seed_provenance.py (--check | --shrink | --self-test)
 """
 
 from __future__ import annotations
@@ -31,6 +33,7 @@ import argparse
 import ast
 import json
 import re
+import subprocess
 import sys
 import zlib
 from collections import Counter
@@ -50,6 +53,9 @@ CODE_DIRS = ("ci", "tests", "gororoba_quantum", "scripts", "kaggle_kernel")
 BASELINE = ROOT / "ci" / "reproduction_seeds.json"
 ALLOCATIONS = ROOT / "docs" / "evidence" / "anu_qrng" / "allocations.json"
 MANIFEST_ROOT = ROOT / "results"
+DRAW_DIR = "docs/evidence/anu_qrng"
+# The shrink-only comparison reads the baseline main holds; pr.yml fetches this ref before the tests.
+BASE_REF = "origin/main"
 DRAW_NAME = re.compile(r"draw-\d{4}-\d{2}-\d{2}T\d{6}Z\.json")
 # A seed_ name with one of these suffixes counts or spaces seeds rather than seeding.
 NOT_SEED_SUFFIXES = ("count", "stride", "offset", "step")
@@ -200,7 +206,10 @@ def check(
     for row in allocations:
         key = (row["path"], row["name"], row["value"])
         record_path = row["record"]
-        if Path(record_path).name in claimed:
+        name = Path(record_path).name
+        if not DRAW_NAME.fullmatch(name) or record_path != f"{DRAW_DIR}/{name}":
+            raise SeedError(f"{key}: record {record_path!r} is not spelled {DRAW_DIR}/draw-<UTC>.json")
+        if name in claimed:
             raise SeedError(f"{key}: {record_path} belongs to a case manifest under results/")
         if record_path not in records:
             record = read_record(record_path)
@@ -233,12 +242,50 @@ def check(
         raise SeedError("\n".join(problems))
 
 
-def load(path: Path, field: str) -> list[dict[str, Any]]:
-    data = json.loads(path.read_text(encoding="utf-8"))
+def shrink_problems(base: list[dict[str, Any]], head: list[dict[str, Any]]) -> list[str]:
+    """Rows the head baseline adds or raises over the base baseline; an exemption only ever goes away."""
+    before = baseline_counts(base)
+    return [
+        f"ci/reproduction_seeds.json: {key} count {count} exceeds {before[key]} on {BASE_REF}; "
+        "a new seed takes an ANU QRNG value through docs/evidence/anu_qrng/allocations.json"
+        for key, count in sorted(baseline_counts(head).items())
+        if count > before[key]
+    ]
+
+
+def base_baseline() -> list[dict[str, Any]] | None:
+    """The baseline at BASE_REF, or None when BASE_REF predates the file."""
+    relative = BASELINE.relative_to(ROOT).as_posix()
+    resolved = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", f"{BASE_REF}^{{commit}}"], cwd=ROOT, capture_output=True, text=True
+    )
+    if resolved.returncode != 0:
+        raise SeedError(f"{BASE_REF} is absent; fetch it (git fetch origin main) for the shrink-only comparison")
+    shown = subprocess.run(["git", "show", f"{BASE_REF}:{relative}"], cwd=ROOT, capture_output=True, text=True)
+    if shown.returncode != 0:
+        return None
+    return parse_rows(shown.stdout, relative, "seeds")
+
+
+def check_shrink() -> int:
+    base = base_baseline()
+    problems = [] if base is None else shrink_problems(base, load(BASELINE, "seeds"))
+    if problems:
+        raise SeedError("\n".join(problems))
+    print(f"seed provenance: reproduction seeds only shrink against {BASE_REF}")
+    return 0
+
+
+def parse_rows(text: str, path: Path | str, field: str) -> list[dict[str, Any]]:
+    data = json.loads(text)
     rows = data[field]
     if not isinstance(rows, list):
         raise SeedError(f"{path}: {field} is not a list")
     return rows
+
+
+def load(path: Path, field: str) -> list[dict[str, Any]]:
+    return parse_rows(path.read_text(encoding="utf-8"), path, field)
 
 
 def read_tree_record(record_path: str) -> dict[str, Any]:
@@ -284,7 +331,7 @@ def self_test() -> int:
     if got != want:
         raise SystemExit(f"self-test: scan found {got}, expected {want}")
     record = json.loads(sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"))[-1].read_text(encoding="utf-8"))
-    record_path = "docs/evidence/anu_qrng/self-test.json"
+    record_path = f"{DRAW_DIR}/draw-2000-01-01T000000Z.json"
     value = record["values"][0]
     good = Counter({("a.py", "SEED", 5): 1, ("b.py", "seed", value): 1})
     baseline = [{"path": "a.py", "name": "SEED", "value": 5, "count": 1}]
@@ -306,6 +353,12 @@ def self_test() -> int:
             set(),
         ),
         "belongs to a case": (good, baseline, [allocation], {Path(record_path).name}),
+        "is not spelled": (
+            good + Counter({("d.py", "seed", value): 1}),
+            baseline,
+            [allocation, dict(allocation, path="d.py", record="./" + record_path)],
+            set(),
+        ),
     }
     for fragment, (found, base, allocs, claimed) in mutations.items():
         try:
@@ -315,7 +368,14 @@ def self_test() -> int:
                 continue
             raise SystemExit(f"self-test: the {fragment!r} mutation raised {error}") from None
         raise SystemExit(f"self-test: the {fragment!r} mutation was admitted")
-    print(f"seed_provenance self-test: scan matched, {len(mutations)} mutations rejected")
+    raised = dict(baseline[0], count=2)
+    added = {"path": "c.py", "name": "SEED", "value": 12345, "count": 1}
+    if shrink_problems(baseline, []) or shrink_problems(baseline, baseline):
+        raise SystemExit("self-test: a kept or removed reproduction seed was refused")
+    for name, head in (("a raised count", [raised]), ("an added row", [*baseline, added])):
+        if not shrink_problems(baseline, head):
+            raise SystemExit(f"self-test: {name} in ci/reproduction_seeds.json was admitted")
+    print(f"seed_provenance self-test: scan matched, {len(mutations) + 2} mutations rejected")
     return 0
 
 
@@ -323,9 +383,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--check", action="store_true")
+    group.add_argument("--shrink", action="store_true")
     group.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     try:
+        if args.shrink:
+            return check_shrink()
         return self_test() if args.self_test else check_tree()
     except SeedError as error:
         raise SystemExit(str(error)) from None

@@ -51,6 +51,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: ./.github/actions/pins-venv
+      # ci/seed_provenance.py compares the reproduction-seed baseline with main's.
+      - name: Fetch main
+        run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
       # Several times the measured hosted pytest time; the prune point of
       # ci/AGENTS.md (Behavioral suite) sits well inside it.
       - name: pytest

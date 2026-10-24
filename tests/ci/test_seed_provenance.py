@@ -14,3 +14,7 @@ def test_seed_provenance_self_test() -> None:
 @pytest.mark.parametrize("shard", range(seed_provenance.SHARDS))
 def test_tree_seeds_are_accounted(shard: int) -> None:
     seed_provenance.check_tree(shard)
+
+
+def test_reproduction_seeds_only_shrink() -> None:
+    seed_provenance.check_shrink()
