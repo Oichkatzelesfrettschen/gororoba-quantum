@@ -4102,7 +4102,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_drift_series.py --check && \"$PYTHON\" -B -W error scripts/bdsc_drift_series.py --check-diagnostic && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_drift_series.py",
    "name": "core-679",
-   "seconds": 40.0,
+   "seconds": 20.0,
    "tier": "pr",
    "replays": [
     "results/quandela/bdsc_drift_series_diagnostic_pinned.json",

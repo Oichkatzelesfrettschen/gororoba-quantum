@@ -350,6 +350,18 @@ def pair_excess(first: dict[str, Any], second: dict[str, Any]) -> float:
     return math.fsum(terms) / len(terms)
 
 
+def _load(item: tuple[Path, dict[str, Any], bool]) -> dict[str, Any]:
+    return load_run(*item)
+
+
+def load_runs(
+    anchors: list[Path], series: list[Path], frozen: dict[str, Any], validate: bool
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """load_run of the anchors and the series runs through one order-preserving pool."""
+    loaded = parallel.ordered_map(_load, [(run, frozen, validate) for run in [*anchors, *series]])
+    return loaded[: len(anchors)], loaded[len(anchors) :]
+
+
 def centered_counting_variances(first: dict[str, Any], second: dict[str, Any]) -> dict[int, float]:
     """Each superposition setting's counting variance of its class-centered change, for independent setting errors.
 
@@ -440,8 +452,7 @@ def diagnostic(series_dirs: list[Path], validate: bool = True) -> dict[str, Any]
     frozen = st.documents()
     for run in series_dirs:
         require_passed_receipt(run)
-    anchors = [load_run(st.RUNS_DIR / name, frozen, validate) for name in ANCHORS]
-    series = [load_run(run, frozen, validate) for run in series_dirs]
+    anchors, series = load_runs([st.RUNS_DIR / name for name in ANCHORS], series_dirs, frozen, validate)
     means = []
     for record in series:
         members = [v for v in record["values"].values() if diag.class_of(v["label"]) == "superposition"]
@@ -496,8 +507,7 @@ def readout(series_dirs: list[Path], validate: bool = True) -> dict[str, Any]:
     frozen = st.documents()
     for run in series_dirs:
         require_passed_receipt(run)
-    anchors = [load_run(st.RUNS_DIR / name, frozen, validate) for name in ANCHORS]
-    series = [load_run(run, frozen, validate) for run in series_dirs]
+    anchors, series = load_runs([st.RUNS_DIR / name for name in ANCHORS], series_dirs, frozen, validate)
     every = anchors + series
     starts = [run["start"] for run in every]
     require(starts == sorted(starts) and len(set(starts)) == len(starts), "the runs are not in start order")
