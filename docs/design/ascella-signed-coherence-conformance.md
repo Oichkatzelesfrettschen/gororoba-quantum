@@ -851,8 +851,9 @@ statistic differs between the jobs at 25.5 on 10 (p 0.0045, one of three
 readouts tested), carried by the dark constant moving from 0.2504 to 0.2547.
 
 **Held-out prediction.** Job-00's inverse-variance gain-and-offset fit
-predicts job-01's pooled configurations at chi-square 340 on 10 (X) and 91 on
-10 (Y), against 3.3 and 8.3 for job-00's own configuration values. A uniform
+predicts job-01's pooled configurations at chi-square 402 on 10 (X) and 106
+on 10 (Y), in the full residual covariance its two shared parameters give the
+predictions, against 3.3 and 8.3 for job-00's own configuration values. A uniform
 gain and offset fail on held-out data; a fixed per-configuration response
 predicts it within counting noise. These results support a reproducible
 configuration-dependent analyzer response over the two acquisitions; they
@@ -871,7 +872,7 @@ quartile split tracks the amplitude itself. The
 Poisson fit n_jm = a_j f_m + b_j d_m, with the catalogue profile d fixed and
 one profile f fitted, has a flat likelihood ridge; iterations whose
 catalogue-shaped amplitude fits to zero pin it, so the catalogue-shaped
-component carries 6,202 to 6,267 of 6,659 job-00 events and 12,287 of 13,268
+component carries 6,202 to 6,267 of 6,659 job-00 events and 12,289 of 13,268
 job-01 events at every admissible point. Its log amplitude alternates
 (lag-1 -0.65 to -0.71 in job-00, -0.71 in job-01), while the fitted
 component (weight on modes 4 to 9) alternates weakly (-0.10 and -0.26). Both

@@ -38,8 +38,9 @@ exploratory record over both runs, with analytic references only:
   configuration statistic tested between jobs, which is also the held-out
   prediction of job-01 from job-00's configuration values;
 - held-out prediction: job-01's pooled configuration statistics against the
-  ideal and against the job-00 gain-and-offset fit, whose parameter variance
-  enters each configuration's denominator.
+  ideal and against the job-00 gain-and-offset fit, as the quadratic form in
+  the full residual covariance: job-01's multinomial variances plus the
+  covariance the two shared fitted parameters give every prediction.
 
 Usage:
   "$PYTHON" scripts/ascella_response_geometry.py A B OUT [--check]
@@ -61,10 +62,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import ascella_coherence_analysis as analysis  # noqa: E402
 import ascella_coherence_repeat as repeat  # noqa: E402
+from bdsc_certificate import close  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
 
 LOGICAL = repeat.LOGICAL
+READOUTS = ("x", "y")
 IDEAL_SHORTFALL = {"X_odd constant": 0.5, "Y_odd sin(2 theta)": 0.5}
 GAIN_RELATIONS = (
     ("X0 + Xc2", ((1, "X_odd constant"), (1, "X_odd cos(2 theta)"))),
@@ -75,9 +78,10 @@ GAIN_RELATIONS = (
 )
 # The multinomial variance floor keeps a statistic at the edge of its range finite.
 VARIANCE_FLOOR = 1e-12
-# The two-component background fit stops when one EM step raises the Poisson log-likelihood by less than this.
+# The two-component background fit runs a fixed EM step count, so every userland performs the same arithmetic,
+# and its last step must raise the Poisson log-likelihood by less than the tolerance.
 EM_TOLERANCE = 1e-9
-EM_STEPS = 200000
+EM_STEPS = 20000
 
 
 def require(condition: bool, message: str) -> None:
@@ -233,20 +237,19 @@ def background_components(counts: np.ndarray, dark: np.ndarray) -> dict[str, Any
     profile = np.full(columns, 1 / columns)
     first = table.sum(axis=1) / 2
     second = first.copy()
-    previous = -math.inf
     positive = table > 0
-    step = 0
-    while True:
-        step += 1
-        require(step <= EM_STEPS, "the background fit did not converge")
+
+    def likelihood() -> float:
         mean = np.outer(first, profile) + np.outer(second, catalogue)
-        likelihood = float((table[positive] * np.log(mean[positive])).sum() - mean.sum())
-        if likelihood - previous < EM_TOLERANCE:
-            break
-        previous = likelihood
-        ratio = table / mean
+        return float((table[positive] * np.log(mean[positive])).sum() - mean.sum())
+
+    previous = -math.inf
+    for _ in range(EM_STEPS):
+        previous = likelihood()
+        ratio = table / (np.outer(first, profile) + np.outer(second, catalogue))
         first, second, profile = first * (ratio @ profile), second * (ratio @ catalogue), profile * (first @ ratio)
         profile = profile / profile.sum()
+    require(likelihood() - previous < EM_TOLERANCE, "the background fit did not converge")
     mean = np.outer(first, profile) + np.outer(second, catalogue)
     deviance = 2 * float((table[positive] * np.log(table[positive] / mean[positive])).sum() - (table - mean).sum())
     quartiles = np.array_split(np.argsort(table.sum(axis=1), kind="stable"), 4)
@@ -257,11 +260,12 @@ def background_components(counts: np.ndarray, dark: np.ndarray) -> dict[str, Any
         return float(repeat.autocorrelation(np.log(values + repeat.LOG_OFFSET), 1))
 
     # The likelihood is flat along f' = (f - t d)/(1 - t), a' = (1 - t) a, b' = b + t a while every term stays
-    # non-negative: t <= min_m f_m/d_m and t >= -min_j b_j/a_j, so only these end points are identified.
-    carried = first > 0
+    # non-negative: t <= min_m f_m/d_m and t >= -min_j b_j/a_j, so only these end points are identified. An
+    # amplitude a_j that EM drives toward zero bounds t by -b_j/a_j, far below the binding bound, so amplitudes
+    # under 1e-12 of the table's events carry no constraint.
+    carried = first > 1e-12 * table.sum()
     ends = (-float((second[carried] / first[carried]).min()), float((profile / catalogue).min()))
     return {
-        "em_steps": step,
         "admissible_dark_totals": [float((second + t * first).sum()) for t in ends],
         "admissible_dark_lag1": [lag_one(second + t * first) for t in ends],
         "fitted_profile": [float(value) for value in profile],
@@ -371,12 +375,13 @@ def between_jobs(a: dict[str, Any], b: dict[str, Any], readout: str) -> dict[str
         design = np.column_stack([ideal, np.ones_like(ideal)])
         normal = design.T @ (design * weight[:, None])
         coefficients = np.linalg.solve(normal, design.T @ (weight * za))
-        prediction = design @ coefficients
-        spread = np.einsum("ij,jk,ik->i", design, np.linalg.inv(normal), design)
+        residual = zb - design @ coefficients
+        # Every prediction shares the two fitted parameters, so the residuals carry their full covariance.
+        covariance = np.diag(vb) + design @ np.linalg.inv(normal) @ design.T
         out["held_out"]["job_00_gain_offset"] = {
             "visibility": float(coefficients[0]),
             "offset": float(coefficients[1]),
-            **chi_square(float(((zb - prediction) ** 2 / (vb + spread)).sum()), len(keys)),
+            **chi_square(float(residual @ np.linalg.solve(covariance, residual)), len(keys)),
         }
     return out
 
@@ -386,9 +391,10 @@ def job_record(item: tuple[Path, dict[str, Any]]) -> dict[str, Any]:
     manifest, counts = record["manifest"], record["counts"]
     registered = repeat.load(directory / "analysis.json")["analysis"]
     recomputed = analysis.analyze(manifest, counts.tolist())
-    require(
-        [row["value"] for row in recomputed["endpoints"]] == [row["value"] for row in registered["endpoints"]],
-        f"{directory}: the retained analysis does not reproduce from its counts",
+    close(
+        [row["value"] for row in recomputed["endpoints"]],
+        [row["value"] for row in registered["endpoints"]],
+        f"{directory.name}: endpoints recomputed from counts against analysis.json",
     )
     block = counts.copy()
     block[:, LOGICAL:] = 0
@@ -398,9 +404,6 @@ def job_record(item: tuple[Path, dict[str, Any]]) -> dict[str, Any]:
         "registered_ideal_excluded": registered["ideal_excluded"],
         "gain_relations": gain_relations(registered["endpoints"]),
         "gain_relations_block_conditioned": gain_relations(conditioned),
-        "weighted_contrast": {
-            readout: weighted_contrast((manifest["settings"], counts, readout)) for readout in ("x", "y")
-        },
         "dilution": dilution(registered["endpoints"], conditioned),
         "outside_profile": outside_profile(counts, record["dark"]),
         "background_components": background_components(counts, record["dark"]),
@@ -417,6 +420,15 @@ def build(a_dir: Path, b_dir: Path) -> dict[str, Any]:
     a, b = records
     require(a["manifest"]["job"] == "job-00" and b["manifest"]["job"] == "job-01", "reads job-00 then job-01")
     jobs = ordered_map(job_record, list(zip((a_dir, b_dir), records, strict=True)), min_items=1)
+    fits = ordered_map(
+        weighted_contrast,
+        [(record["manifest"]["settings"], record["counts"], readout) for record in records for readout in READOUTS],
+        min_items=1,
+    )
+    for index, job in enumerate(jobs):
+        job["weighted_contrast"] = dict(
+            zip(READOUTS, fits[index * len(READOUTS) : (index + 1) * len(READOUTS)], strict=True)
+        )
     readouts = ("x", "y", "direct")
     compared = ordered_map(between_item, [(a, b, readout) for readout in readouts], min_items=1)
     return {
