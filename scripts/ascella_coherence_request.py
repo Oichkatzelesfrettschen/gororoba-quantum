@@ -33,8 +33,22 @@ requires 64 entries carrying the manifest's circuit_params, 8,192 samples,
 empty mitigation list, and each entry's bound unitary equal to the design
 operator.
 
+--preflight RUN and --submit RUN APPROVAL execute the written case of the
+design document. RUN holds copies of the frozen cases.json and circuit.json
+(and a preflight.json once preflight ran). Both run qd_platform.plan with the
+case's credit ceiling, expected seconds and per-job price, validate the fresh
+body against the design and require its digest without process_id, the one
+field Perceval draws afresh per job, to equal the retained job-body.json's.
+--preflight writes RUN/preflight.json, the platform catalogue
+RUN/platform-before/catalogue.json and the raw answers of every readable
+route, RUN/platform-before/observation.json, and sends nothing; --submit passes the
+same binding to qd_platform.submit as its verify step, so a request that
+departs from the frozen body is refused before its checkpoint is written.
+
 Usage:
   "$PYTHON" scripts/ascella_coherence_request.py [--check | --body]
+  "$PYTHON" scripts/ascella_coherence_request.py --preflight RUN
+  "$PYTHON" scripts/ascella_coherence_request.py --submit RUN APPROVAL
 """
 
 from __future__ import annotations
@@ -61,10 +75,16 @@ from qd_platform import (  # noqa: E402
     body_mitigations,
     iteration_form,
     load_case,
+    observe,
     payload,
+    plan,
     sha256_bytes,
+    snapshot,
+    submit,
     template_experiment,
+    write_json,
 )
+from qd_schedule import body_digest  # noqa: E402
 
 from hypercomplex_operators import ComplexMatrix, order_interferometer, quaternion_matrix  # noqa: E402
 from parallel import ordered_map  # noqa: E402
@@ -87,6 +107,16 @@ BODY_TOLERANCE = 1e-9
 PLATFORM = "qpu:ascella"
 OUT = ROOT / "results/quandela/cases/ascella_signed_coherence/job-00"
 DESIGN = "docs/design/ascella-signed-coherence-conformance.md"
+# The written case's arguments to qd_platform.plan and submit: the per-job
+# price plus the 16,384-shot iteration cap at 1e-6 credits per shot, and the
+# upper bound on 64 iterations that scales the 25-second eight-iteration pilot.
+CREDIT_CEILING = 1.016384
+EXPECTED_SECONDS = 200.0
+PER_JOB_CREDITS = 1.0
+STAGED = ("cases.json", "circuit.json")
+# qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
+# taken at preflight; the design's procedure writes platform-after/ at collection.
+BEFORE = "platform-before"
 
 UNIT_I = quaternion_matrix([0, 1, 0, 0])
 UNIT_J = quaternion_matrix([0, 0, 1, 0])
@@ -470,12 +500,63 @@ def freeze_body() -> int:
     return 0
 
 
+def staged(run: Path) -> None:
+    """Require RUN to hold the frozen request bytes and nothing a submission writes."""
+    for name in STAGED:
+        require((run / name).read_bytes() == (OUT / name).read_bytes(), f"{run / name} is not the frozen {name}")
+    extra = sorted(path.name for path in run.iterdir() if path.name not in (*STAGED, "preflight.json", BEFORE))
+    require(not extra, f"{run} holds {extra}; a run directory starts from the frozen request alone")
+
+
+def bound(checked: dict[str, Any]) -> None:
+    """Require the planned body to be the retained frozen body in every field except process_id."""
+    manifest = json.loads((OUT / "cases.json").read_text(encoding="utf-8"))
+    validate_body(checked["body"], manifest)
+    retained = json.loads((OUT / "job-body.json").read_text(encoding="utf-8"))
+    fresh, frozen = body_digest(checked["body"]), body_digest(retained)
+    require(fresh == frozen, f"the planned body {fresh} differs from the retained body {frozen} beyond process_id")
+
+
+def preflight(run: Path) -> int:
+    """Plan the written case read-only against the live platform and retain the plan without its body."""
+    staged(run)
+    checked = plan(run, PLATFORM, CREDIT_CEILING, EXPECTED_SECONDS, PER_JOB_CREDITS)
+    bound(checked)
+    snapshot(run / BEFORE)
+    observe(run / BEFORE)
+    record = {key: value for key, value in checked.items() if key != "body"}
+    record["body_sha256_without_process_id"] = body_digest(checked["body"])
+    record["planned_utc"] = datetime.now(UTC).isoformat(timespec="seconds")
+    write_json(run / "preflight.json", record)
+    print(
+        f"{run.name}: {PLATFORM} {checked['platform_at_plan']['status']}, ceiling {checked['credit_ceiling']:g} "
+        f"credits, body {record['body_sha256_without_process_id']} equals the retained body"
+    )
+    return 0
+
+
+def send(run: Path, approval: str) -> int:
+    """Submit the approved case once, through qd_platform.submit with the frozen-body binding as its verify step."""
+    staged(run)
+    require((run / "preflight.json").is_file(), f"{run} has no preflight.json; run --preflight first")
+    record = submit(run, PLATFORM, approval, CREDIT_CEILING, EXPECTED_SECONDS, PER_JOB_CREDITS, verify=bound)
+    print(f"job {record['job_id']} on {record['platform']}")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if argv == ["--check"]:
         return check()
     if argv == ["--body"]:
         return freeze_body()
-    require(not argv, f"usage: ascella_coherence_request.py [--check | --body], not {argv}")
+    if len(argv) == 2 and argv[0] == "--preflight":
+        return preflight(Path(argv[1]))
+    if len(argv) == 3 and argv[0] == "--submit":
+        return send(Path(argv[1]), argv[2])
+    require(
+        not argv,
+        f"usage: ascella_coherence_request.py [--check | --body | --preflight RUN | --submit RUN APPROVAL], not {argv}",
+    )
     built = documents()
     validate(json.loads(built["cases.json"]), json.loads(built["circuit.json"]))
     OUT.mkdir(parents=True, exist_ok=True)
