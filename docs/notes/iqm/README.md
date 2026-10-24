@@ -72,7 +72,13 @@ in [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
 ## Account and credential
 
-The account is PERSONAL with 30.00 credits that expire 2026-11-01. API
+The account is PERSONAL with 30.00 credits that expire 2026-11-01. The
+Starter plan on https://www.iqm.tech/products/iqm-resonance (read
+2026-10-24) grants "Up to 30 credits per month, based on availability" and
+states no reset date; the account's expiry at 00:00 UTC on the first of the
+next month fits a calendar-month grant, so a fresh balance after
+2026-11-01 is expected but unconfirmed until `iqm_credit` reads it.
+Purchased pay-as-you-go credits "don't expire" (same page). API
 tokens are created on the profile page (https://resonance.iqm.tech/profile),
 are personal and scoped to one workspace, and carry scopes:
 `job_execution` (submit and manage own jobs, list timeslots; all of
