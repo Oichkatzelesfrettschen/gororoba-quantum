@@ -139,9 +139,12 @@ p-adic rows to it.
   - Every other coordinate reads 32 at every witness, the smooth controls
     included. 32 is ceil(63/2), the value a sequence with no short
     recurrence takes; a prefix of N terms can reach length N.
-  - A rational function P/Q of t with Q(0) nonzero obeys a recurrence of
-    length max(deg P, deg Q) from t^1. So modulo p no coordinate is rational
-    of degree below 32 along the line.
+  - Over F_p, a rational function P/Q of t with Q(0) nonzero obeys, from t^1
+    on, a recurrence of length max(deg P, deg Q). Length 32 therefore
+    excludes every such P/Q with max(deg P, deg Q) <= 31.
+  - In characteristic zero the exclusion covers the P/Q whose coefficients
+    are p-integral with Q(0) a p-adic unit, because those reduce modulo p
+    without raising either degree.
   - That constrains the graph coordinates only. At nullity 12 they solve
     quadrics, which takes a square root, and
     [rank_locus_quadric_germ](../rank_locus_quadric_germ/README.md) gives the

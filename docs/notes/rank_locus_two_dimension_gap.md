@@ -267,11 +267,15 @@ and is never evidence of the gap.
      the chart, every lifted dependent coordinate that moves has
      Berlekamp-Massey length 32 over its 63 series terms, at every witness,
      the smooth controls included.
-     - 32 is ceil(63/2), the value a sequence with no short recurrence takes.
-       A prefix of N terms can reach length N.
-     - A rational function P/Q of t with Q(0) nonzero obeys a recurrence of
-       length max(deg P, deg Q) from t^1. So modulo p no such coordinate is
-       rational of degree below 32 along the line.
+     - The lengths are computed over F_p from the coefficients of t^1 to
+       t^63. 32 is ceil(63/2), the value a sequence with no short recurrence
+       takes; a prefix of N terms can reach length N.
+     - Over F_p, a rational function P/Q of t with Q(0) nonzero obeys, from
+       t^1 on, a recurrence of length max(deg P, deg Q). Length 32 therefore
+       excludes every such P/Q with max(deg P, deg Q) <= 31.
+     - In characteristic zero the exclusion covers the P/Q whose
+       coefficients are p-integral with Q(0) a p-adic unit, because those
+       reduce modulo p without raising either degree.
      - That constrains the graph coordinates only. At nullity 12, solving
        the quadrics of computation 7 for them takes a square root, and the
        same germ has a rational parameterization in other coordinates.
@@ -281,6 +285,9 @@ and is never evidence of the gap.
    `scripts/rank_locus_quadric_germ.py`, gates core-677 and core-678).
    - Set z = p + i q = (u, mu, v) for y = (p, q) with pure halves.
    - The cone is V = {u ^ v = 0, u.u + mu^2 + v.v = 0} over C^7 + C + C^7.
+     It is reduced and irreducible of complex dimension 8 and degree 14,
+     with Hilbert series (1 + 7t + 6t^2)/(1 - t)^8. Its 44 real quadrics
+     cut V x V over C, of degree 196.
    - Why V lies in R_12:
      - The sedenion cross-product matrix satisfies
        C_z^2 - z z^T + Q I = sum M_ij (u_i v_j - u_j v_i), with 168

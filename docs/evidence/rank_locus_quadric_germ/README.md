@@ -7,10 +7,12 @@ local dimension 15 there, its tangent bound.
 
 `result.json` is written by `scripts/rank_locus_quadric_germ.py --out` and
 recomputed by `--check`, which compares the complete record. That replay is
-gate core-677 and takes about 15 seconds. `--self-test` is gate core-678; in
+gate core-677 and takes about 25 seconds. `--self-test` is gate core-678; in
 normal and `-O` modes it rejects:
 - a flipped sign of the sedenion table;
 - a transport map without the conjugation of s;
+- a minor combination in the place of Q, whose Hilbert value in degree 2 is
+  99;
 - three point controls (off V, singular on V, and x0);
 - six corrupted record fields.
 
@@ -27,6 +29,52 @@ V is cut out by
     u ^ v = 0,    Q(z) = u.u + mu^2 + v.v = 0,
 
 which is 21 complex minors and one complex quadric, or 44 real quadrics in y.
+
+## Degree of V
+
+Let R = C[z_1..z_15], let I be the ideal of the 21 minors and J = I + (Q).
+V is a reduced, irreducible cone of complex dimension 8 and degree 14, with
+Hilbert series
+
+    H_(R/J)(t) = (1 + 7t + 6t^2) / (1 - t)^8.
+
+1. I is the ideal of 2 x 2 minors of the 2 x 7 matrix with rows u and v.
+   C[u, v]/I is the coordinate ring of the cone over the Segre embedding of
+   P^1 x P^6, a Cohen-Macaulay domain of dimension 8 with series
+   (1 + 6t)/(1 - t)^8. Adjoining mu gives R/I, a Cohen-Macaulay domain of
+   dimension 9 with series (1 + 6t)/(1 - t)^9.
+2. I is generated in degree 2, so its degree-2 part is the 21-dimensional
+   span of the minors. The recorded value h(2) = 98 = 120 - 22 puts Q outside
+   that span, so Q is not in I.
+3. R/I is a domain, so Q is a nonzerodivisor on it. Multiplying by 1 - t^2
+   gives the series above, and its numerator at t = 1 gives degree 14.
+4. R/J is a hypersurface quotient of a Cohen-Macaulay ring. So it is
+   Cohen-Macaulay, and J has no embedded primes.
+5. V is irreducible. Every rank-one pair is (u, v) = (a w, b w), so V is the
+   image of {G = 0} under (a, b, w, mu) -> (a w, mu, b w), where
+   G = (a^2 + b^2) w.w + mu^2.
+   - mu^2 + g is reducible only when -g is a square.
+   - g = (a + i b)(a - i b) w.w has three distinct irreducible factors, each
+     to the first power, so it is not a square.
+   - So G is irreducible, and so is its image V.
+6. J is prime. At the ten scope points the real Jacobian of the 46 equations
+   has rank 16, so the complex Jacobian of the 22 generators of J has rank
+   7 = 15 - 8. R/J is regular there, hence reduced at the generic point of
+   V. With no embedded primes, J is prime.
+
+The record's `hilbert` field holds h(0..5) = 1, 15, 98, 420, 1386, 3822.
+Degree 2 is the step that item 2 uses; degrees 3 to 5 are consistency checks.
+
+The real presentation has a different degree.
+- Treat the coordinates y as complex variables and set
+  w_k = y_k - i y_(16+k) beside z_k = y_k + i y_(16+k), an invertible linear
+  change.
+- Each generator f has integer coefficients, so Re f = (f(z) + f(w))/2 and
+  Im f = (f(z) - f(w))/(2i).
+- The 44 real quadrics therefore generate J(z) + J(w), which cuts V x V.
+- Its coordinate ring is R/J tensored with itself, with series
+  (1 + 7t + 6t^2)^2 / (1 - t)^16, dimension 16 and degree 196.
+- The linear forms y_0 and y_16 change neither number.
 
 ## Why V lies in R_12
 
@@ -158,6 +206,6 @@ s = sin(alpha) and c = cos(alpha), 0 <= alpha <= pi/2:
 - The germ statements hold at the ten recorded points.
 - The record leaves the nullity-8 and nullity-4 families of
   `a5-nonzero-divisor-two-dimension-gap` open, decomposes no rank locus and
-  counts no components.
+  counts no components of R_12.
 - The identities are checked exactly in Python over Z[z, t]. They are not
   formalized in Rocq.

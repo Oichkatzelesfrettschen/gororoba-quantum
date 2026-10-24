@@ -9,6 +9,33 @@
   "slice_completes_a15": true,
   "slice_on_v": true
  },
+ "hilbert": {
+  "agrees": true,
+  "degree": 14,
+  "denominator_exponent": 8,
+  "numerator": [
+   1,
+   7,
+   6
+  ],
+  "predicted": [
+   1,
+   15,
+   98,
+   420,
+   1386,
+   3822
+  ],
+  "real_presentation_degree": 196,
+  "values": [
+   1,
+   15,
+   98,
+   420,
+   1386,
+   3822
+  ]
+ },
  "identity": {
   "cross_matrix_annihilates_z": true,
   "cross_matrix_skew": true,

@@ -30,6 +30,11 @@ D_(5,12) = R_12 on the unit sphere therefore has local dimension 15 at x, and th
 Schur-complement entries vanish on M there. The record holds this at the three nonzd-axis witnesses
 and the seven Proposition 8.2 points of rank_locus_local_dimension.
 
+Degree. The Hilbert function of C[z]/(u ^ v, Q) in degrees 0..5 is 1, 15, 98, 420, 1386, 3822, that of
+(1 + 7t + 6t^2)/(1 - t)^8. Degree 2 puts Q outside the span of the minors, hence outside their prime
+ideal, which gives that series exactly: V is a cone of dimension 8 and degree 14. The 44 real quadrics
+have integer coefficients, so over C they cut V x V in (z, w) with w_k = y_k - i y_(16+k), of degree 196.
+
 Controls. x0 = e1 + e18 is a smooth point of V where T(x0) has dimension 22, so R_12 is larger
 than V there; its cone is A15 union B17 (nullity_twelve_local_geometry.md). The four-parameter
 slice of nullity_twelve_curves lies in V identically, and the 14 octonion derivations act on u and v
@@ -43,7 +48,8 @@ singular points.
 
 Falsifier, stated before the run: an entry of E outside the span of the minors, a failed kernel or
 transport identity, a scope point off V, with dF = 0, with nullity other than 12, or with a tangent
-bound other than 16 refutes the argument at that point.
+bound other than 16 refutes the argument at that point; a Hilbert value off the series refutes the
+degree.
 
 Usage:
     "$PYTHON" scripts/rank_locus_quadric_germ.py --out docs/evidence/rank_locus_quadric_germ/result.json
@@ -56,6 +62,7 @@ from __future__ import annotations
 import argparse
 import copy
 import importlib.metadata
+import itertools
 import json
 import math
 import sys
@@ -99,6 +106,11 @@ POINTS: tuple[tuple[str, str, tuple[tuple[int, int], ...]], ...] = (
     ("x0", "e1+e18", ((1, 1), (18, 1))),
     ("singular", "e1-e10+e18+e25", ((1, 1), (10, -1), (18, 1), (25, 1))),
 )
+# C[z]/(u ^ v, Q) has Hilbert series (1 + 7t + 6t^2)/(1 - t)^8: the rank-one cone of the 2 x 7 matrix
+# [u; v] with mu adjoined has (1 + 6t)/(1 - t)^9, and Q, outside that prime ideal, multiplies by 1 - t^2.
+HILBERT_NUMERATOR = (1, 7, 6)
+HILBERT_DENOMINATOR = 8
+HILBERT_TOP = 5
 PATH_MINORS = {
     "0..19": "16*c**8*(1 + s**2*c**2)**2*(1 - s**2*c**2)**4",
     "0..17,24,25": "16*s**4*(1 + 2*c**2)**2*(1 + s**2*c**2)**2*(1 - s**2*c**2)**4",
@@ -179,6 +191,71 @@ def isotropy(z: Sequence[Any], zero: Any) -> Any:
     for value in z:
         total = total + value * value
     return total
+
+
+def _monomials(degree: int) -> list[tuple[int, ...]]:
+    out = []
+    for combination in itertools.combinations_with_replacement(range(HALF - 1), degree):
+        exponent = [0] * (HALF - 1)
+        for k in combination:
+            exponent[k] += 1
+        out.append(tuple(exponent))
+    return out
+
+
+def cone_generators(quadric: bool = True) -> list[dict[tuple[int, ...], int]]:
+    """The 21 minors and Q as exponent maps over z_1..z_15; quadric=False puts a sum of two minors in Q's place."""
+    ring = flint.fmpz_mpoly_ctx.get([f"z{k}" for k in range(1, HALF)], "lex")
+    z = list(ring.gens())
+    rank_one = minors(z)
+    last = isotropy(z, ring.from_dict({})) if quadric else rank_one[0] + rank_one[1]
+    return [
+        {tuple(int(e) for e in exponents): int(value) for exponents, value in generator.to_dict().items()}
+        for generator in [*rank_one, last]
+    ]
+
+
+def hilbert_value(item: tuple[list[dict[tuple[int, ...], int]], int]) -> int:
+    """dim_C of the degree-d part of C[z]/(generators), for quadratic generators, by an exact fmpz rank."""
+    generators, degree = item
+    _require(all(sum(exponents) == 2 for g in generators for exponents in g), "a generator is not quadratic")
+    basis = _monomials(degree)
+    if degree < 2:
+        return len(basis)
+    index = {monomial: k for k, monomial in enumerate(basis)}
+    shifts = _monomials(degree - 2)
+    matrix = flint.fmpz_mat(len(generators) * len(shifts), len(basis))
+    row = 0
+    for generator in generators:
+        for shift in shifts:
+            for exponents, value in generator.items():
+                column = index[tuple(a + b for a, b in zip(exponents, shift, strict=True))]
+                matrix[row, column] += value
+            row += 1
+    return len(basis) - matrix.rank()
+
+
+def hilbert(quadric: bool = True, top: int = HILBERT_TOP) -> dict[str, Any]:
+    """The Hilbert function of C[z]/(u ^ v, Q) in degrees 0..top against (1 + 7t + 6t^2)/(1 - t)^8."""
+    generators = cone_generators(quadric)
+    values = parallel.ordered_map(hilbert_value, [(generators, d) for d in range(top + 1)], min_items=2)
+    predicted = [
+        sum(
+            c * math.comb(d - s + HILBERT_DENOMINATOR - 1, HILBERT_DENOMINATOR - 1)
+            for s, c in enumerate(HILBERT_NUMERATOR)
+            if d >= s
+        )
+        for d in range(top + 1)
+    ]
+    return {
+        "values": values,
+        "predicted": predicted,
+        "agrees": values == predicted,
+        "numerator": list(HILBERT_NUMERATOR),
+        "denominator_exponent": HILBERT_DENOMINATOR,
+        "degree": sum(HILBERT_NUMERATOR),
+        "real_presentation_degree": sum(HILBERT_NUMERATOR) ** 2,
+    }
 
 
 def identity(signs: list[list[int]]) -> dict[str, Any]:
@@ -556,7 +633,7 @@ def a15_link() -> dict[str, Any]:
     }
 
 
-def measure(links: bool = True) -> dict[str, Any]:
+def measure(full: bool = True) -> dict[str, Any]:
     algebra = identity(SIGNS)
     _require(
         all(
@@ -595,7 +672,9 @@ def measure(links: bool = True) -> dict[str, Any]:
         "rational_chart": parameterization,
         "other_gap_witnesses": others,
     }
-    if links:
+    if full:
+        data["hilbert"] = hilbert()
+        _require(data["hilbert"]["agrees"], "the Hilbert function of C[z]/(u ^ v, Q) leaves (1 + 7t + 6t^2)/(1 - t)^8")
         data["path"] = path_link()
         data["a15"] = a15_link()
         _require(
@@ -648,7 +727,7 @@ def _assign(data: dict[str, Any], path: tuple[Any, ...], value: Any) -> None:
 
 
 def self_test() -> str:
-    data = measure(links=False)
+    data = measure(full=False)
     algebra = data["identity"]
     _require(len(algebra["remainder"]) == 168 and algebra["remainder_coefficients"] == [-2, 2], "remainder shape moved")
     flipped = copy.deepcopy(SIGNS)
@@ -659,6 +738,8 @@ def self_test() -> str:
         "a flipped sign in the sedenion table leaves every identity intact",
     )
     _require(transport(conjugate_s=False)["agreeing"] < DIM - 2, "transport without conj(s) still agrees")
+    _require(hilbert(top=3)["agrees"], "the Hilbert function of C[z]/(u ^ v, Q) moved")
+    _require(not hilbert(quadric=False, top=3)["agrees"], "a minor combination in Q's place keeps the Hilbert series")
     controls = (
         ("e1+e8+e25", ((1, 1), (8, 1), (25, 1))),
         ("e1-e10+e18+e25", ((1, 1), (10, -1), (18, 1), (25, 1))),
@@ -684,7 +765,7 @@ def self_test() -> str:
         if row_level:
             row = damaged["points"][path[1]]
             _require(_refused(row), f"a corrupted {label} is admitted")
-    return f"{len(corruptions)} record corruptions, 2 identity mutations and {len(controls)} point controls rejected"
+    return f"{len(corruptions)} record corruptions, 3 identity mutations and {len(controls)} point controls rejected"
 
 
 def main() -> int:
@@ -713,6 +794,11 @@ def main() -> int:
             f"dim T {row['tangent_bound_dimension']:2d} V rank {row['jacobian_rank']:2d} "
             f"dF(mu, lambda) {row['chart']['d_mu']} {row['chart']['d_lambda']} cubic frame {row['cubic_kernel_rank']}"
         )
+    cone = data["hilbert"]
+    print(
+        f"hilbert: {cone['values']} agrees {cone['agrees']} "
+        f"degree {cone['degree']} real presentation {cone['real_presentation_degree']}"
+    )
     print(f"path: {data['path']}")
     print(f"a15: {data['a15']}")
     return 0
