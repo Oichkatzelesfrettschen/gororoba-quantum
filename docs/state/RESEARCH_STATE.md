@@ -661,7 +661,7 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-320.
   Depends on: cd-sign-row-degree.
 - **cd-associator-phase-degree** (mathematical claim, algebra). For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).
-  Boundary: Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and no proof assistant has checked it. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.
+  Boundary: Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claim cd-associator-anf-rocq proves the statement in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.
   Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md.
   Evidence: [cd_phase_degree.md](../notes/cd_phase_degree.md), [left_mult_sign_rank.md](../notes/left_mult_sign_rank.md).
@@ -816,10 +816,16 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-275; bytes verified by sources-243, sources-245.
   Kernel receipt: [kernel.txt](../evidence/stiefel_witness/kernel.txt).
 - **cd-sign-row-anf-rocq** (machine-checked proof, formal). For every Cayley-Dickson level k, kernel-checked by Rocq 9.3.0 with ten closed assumption queries: the Moebius transform anf_coef is the algebraic normal form of a 2^k-entry truth table (inversion and uniqueness); the left sign row of e_m has no degree-k term for k >= 2, its monomial omitting x_i carries bit i of m for k >= 3, and it has degree max(1, k - 1) for m != 0; the right sign row of e_m has degree 1 when m is a power of two and max(1, bitlen(m) - 2) otherwise.
-  Boundary: The rows are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; the associator-phase degree has no Rocq proof.
+  Boundary: The rows are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; claim cd-associator-anf-rocq proves the associator-phase degree on the same tower.
   Evidence: [CdSignRowAnf.v](../../proofs/CdSignRowAnf.v), [assumptions.v](../evidence/cd-sign-row-anf/assumptions.v), [assumptions.txt](../evidence/cd-sign-row-anf/assumptions.txt), [kernel.txt](../evidence/cd-sign-row-anf/kernel.txt), [README.md](../evidence/cd-sign-row-anf/README.md), [cd_phase_degree.md](../notes/cd_phase_degree.md).
   Gates: bytes verified by sources-399.
   Kernel receipt: [kernel.txt](../evidence/cd-sign-row-anf/kernel.txt).
+- **cd-associator-anf-rocq** (machine-checked proof, formal). For every Cayley-Dickson level k, kernel-checked by Rocq 9.3.0 with six closed assumption queries: the associator phase g of W = L_(e_p e_q)^dagger L_(e_p) L_(e_q) equals the four tower-sign factors of predict.associator_phase and satisfies e_p (e_q e_x) = (-1)^g(x) (e_p e_q) e_x; g vanishes for p = 0, q = 0, p = q and on the quaternions; and for k >= 3 and distinct nonzero p, q < 2^k, g has ANF degree exactly max(1, bitlen(max(p, q)) - 2).
+  Boundary: The phases are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; the census of pairs by degree is counted by scripts/cd_phase_degree.py, not in Rocq.
+  Evidence: [CdAssociatorAnf.v](../../proofs/CdAssociatorAnf.v), [assumptions.v](../evidence/cd-associator-anf/assumptions.v), [assumptions.txt](../evidence/cd-associator-anf/assumptions.txt), [kernel.txt](../evidence/cd-associator-anf/kernel.txt), [README.md](../evidence/cd-associator-anf/README.md), [cd_phase_degree.md](../notes/cd_phase_degree.md).
+  Gates: bytes verified by sources-401.
+  Kernel receipt: [kernel.txt](../evidence/cd-associator-anf/kernel.txt).
+  Depends on: cd-sign-row-anf-rocq.
 - **designs-ideal-semantics** (circuit-conformance check, implementation). Designs A to D equal their ideal operators and statevectors over every instance, including both SELECT sign strategies.
   Boundary: Ideal semantics only.
   Evidence: [DESIGN_NOTES.md](../../gororoba_quantum/DESIGN_NOTES.md).

@@ -1091,6 +1091,37 @@
       },
       "redistribution": "explicit_license_verified",
       "path": "docs/pdf/2608.20259v1.pdf"
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/2103.12805v1",
+      "note": "docs/notes/papers/2103.12805.md",
+      "audited_at_utc": "2026-10-24T15:18:17+00:00",
+      "status": "retained",
+      "sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5",
+      "bytes": 832785,
+      "pages": 13,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5",
+        "verified_at_utc": "2026-10-24T15:18:17+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2103.12805v1",
+        "evidence_sha256": "8856fd002331e7753843f9fb5c1b4ec3230c7362458bdc9ce1bc5b9f7957c3cb",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2103.12805v1.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:13+00:00",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
+      },
+      "redistribution": "explicit_license_verified",
+      "path": "docs/pdf/2103.12805v1.pdf"
     }
   ],
   "aliases": [
@@ -1864,7 +1895,7 @@
     },
     {
       "url": "https://arxiv.org/pdf/1107.1375v1",
-      "note": "docs/notes/papers/2205.07986.md",
+      "note": "docs/notes/papers/1107.1375.md",
       "sha256": "4a1b8e4f1369d5bc0a7a0fc6672d585bbeffc426cc698099cce0f7045f9b1c2f",
       "bytes": 211088,
       "retrieved_at_utc": "2026-10-24T09:20:17+00:00",
@@ -1873,7 +1904,7 @@
     },
     {
       "url": "https://arxiv.org/pdf/2103.12805v1",
-      "note": "docs/notes/papers/2205.07986.md",
+      "note": "docs/notes/papers/2103.12805.md",
       "sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5",
       "bytes": 832785,
       "retrieved_at_utc": "2026-10-24T09:20:17+00:00",
@@ -6266,6 +6297,99 @@
       "local_cache_path": "docs/local_source_cache/1709.09246v3.pdf",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "ArXiv metadata supplies an arXiv distribution grant; publisher-license admission is a separate route."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/2205.07986v2",
+      "note": "docs/notes/papers/2205.07986.md",
+      "audited_at_utc": "2026-10-24T15:18:25+00:00",
+      "status": "external_only",
+      "sha256": "bbad08fca3cd21463ce4e5a62f2ddfe4876c06f1796cbecd02a92c5a7668860e",
+      "bytes": 171034,
+      "pages": 13,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "bbad08fca3cd21463ce4e5a62f2ddfe4876c06f1796cbecd02a92c5a7668860e",
+        "verified_at_utc": "2026-10-24T15:18:25+00:00",
+        "license_identifier": "CC-BY-NC-ND-4.0",
+        "license_url": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2205.07986v2",
+        "evidence_sha256": "f219e18d05044bb24baaf0cb6418ba772cce5e9e5e7e1b9ed62f9b7eb262b1f1",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "external_only",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2205.07986v2.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:21+00:00"
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/2205.07986v2.pdf",
+      "local_cache_path": "docs/local_source_cache/2205.07986v2.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The abstract page names CC BY-NC-ND 4.0; the NoDerivatives term excludes sharing adapted material and the NonCommercial term excludes repository rehosting of a retained copy."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1003.0429v3",
+      "note": "docs/notes/papers/1003.0429.md",
+      "audited_at_utc": "2026-10-24T15:18:33+00:00",
+      "status": "external_only",
+      "sha256": "97dfc7afbb33faa961c442a5c721db5f9dec5e3ed6f355297e5e7f2adbfc3ad1",
+      "bytes": 880640,
+      "pages": 36,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "97dfc7afbb33faa961c442a5c721db5f9dec5e3ed6f355297e5e7f2adbfc3ad1",
+        "verified_at_utc": "2026-10-24T15:18:33+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1003.0429v3",
+        "evidence_sha256": "6e36bf576c9e4fff83a4fe0b507b33b387372880a186334ac1e78e80fc06dbec",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "external_only",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1003.0429v3.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:29+00:00"
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/1003.0429v3.pdf",
+      "local_cache_path": "docs/local_source_cache/1003.0429v3.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1107.1375v1",
+      "note": "docs/notes/papers/1107.1375.md",
+      "audited_at_utc": "2026-10-24T15:18:41+00:00",
+      "status": "external_only",
+      "sha256": "4a1b8e4f1369d5bc0a7a0fc6672d585bbeffc426cc698099cce0f7045f9b1c2f",
+      "bytes": 211088,
+      "pages": 22,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "4a1b8e4f1369d5bc0a7a0fc6672d585bbeffc426cc698099cce0f7045f9b1c2f",
+        "verified_at_utc": "2026-10-24T15:18:41+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1107.1375v1",
+        "evidence_sha256": "53f1729dae1945523841efd69c119581a5bf5532c26f783f3ece9a71b43de7ad",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "external_only",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1107.1375v1.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:37+00:00"
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/1107.1375v1.pdf",
+      "local_cache_path": "docs/local_source_cache/1107.1375v1.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
@@ -6306,6 +6430,12 @@
       "sha256": "ca0597fd98c6fb2417993e867b5cbc91ebdc55e24839c38e4674e8c78d817f17",
       "reading_scope": "Operative permission, NonCommercial and ShareAlike conditions, recipient scope and attribution requirements.",
       "verified_at_utc": "2026-10-13T23:31:23.837125+00:00"
+    },
+    "CC-BY-NC-ND-4.0": {
+      "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+      "sha256": "0389dccad7bdfebd9b7294ccd1582d8197b450295ff5263bafa41763e5f40b27",
+      "reading_scope": "License deed: attribution, NonCommercial and NoDerivatives terms; the NoDerivatives term excludes sharing adapted material and the NonCommercial term excludes repository rehosting.",
+      "verified_at_utc": "2026-10-24T15:18:45+00:00"
     }
   },
   "source_archives": [

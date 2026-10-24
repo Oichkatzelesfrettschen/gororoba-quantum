@@ -588,6 +588,7 @@ class SourceRightsChecks(unittest.TestCase):
             ("redistribution", "excluded_without_permission", "published redistribution status"),
             ("decision", "external_only", "published rights decision"),
             ("license_identifier", "LicenseRef-arXiv-nonexclusive-distrib-1.0", "published license allowlist"),
+            ("license_identifier", "CC-BY-NC-ND-4.0", "published license allowlist"),
             ("license_url", LICENSE_URLS["CC0-1.0"], "published license URL"),
             ("copy_status", "modified", "published copy status"),
             ("conditions", "", "published license conditions"),
