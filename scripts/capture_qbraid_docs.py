@@ -17,7 +17,10 @@ Three sources, each retained with its identity:
   distribution file's name, upload time, size and sha256, as pypi/<name>.json.
 
 Each kind writes MANIFEST.json (path, source URL, sha256, and every page that
-answered with an error) and prunes files its new rows no longer name.
+answered with an error) and prunes files its new rows no longer name. A kind
+whose MANIFEST.json exists is retained evidence: the capture refuses it
+before any fetch, so a later acquisition lands as a separately named
+successor rather than over the bytes the guide cites.
 ``--check`` verifies, without network access, that each kind's file set equals
 its manifest rows, that the rows equal the fixed inventory, that each row
 names its pinned source, that every file matches its sha256 and that each
@@ -363,6 +366,16 @@ def prune_capture(kind: str, rows: list[dict[str, Any]], base: Path = BASE, root
             path.rmdir()
 
 
+def refuse_retained(kinds: list[str], base: Path = BASE) -> None:
+    """Refuse a capture over any kind that already holds a manifest-bound capture."""
+    retained = [kind for kind in kinds if manifest_path(kind, base).exists()]
+    if retained:
+        raise SystemExit(
+            f"retained capture present for {', '.join(retained)}: its bytes are manifest-bound and immutable; "
+            "retain a fresh acquisition as a separately named successor"
+        )
+
+
 def write_manifest(kind: str, rows: list[dict[str, Any]], extra: dict[str, Any]) -> None:
     prune_capture(kind, rows)
     doc: dict[str, Any] = {"schema": "qbraid-docs-capture-v1", "kind": kind, "retrieved_utc": now(), "files": rows}
@@ -516,6 +529,15 @@ def self_test() -> int:
             raise SystemExit("self-test prune: stray file survived")
         check_tree(root)
         cases += 1
+        for kind in KINDS:
+            try:
+                refuse_retained([kind], base)
+            except SystemExit as refusal:
+                if "retained capture present" not in str(refusal):
+                    raise SystemExit(f"self-test {kind} recapture: wrong refusal {refusal}") from refusal
+            else:
+                raise SystemExit(f"self-test {kind} recapture: a retained capture was not refused")
+            cases += 1
     print(f"capture_qbraid_docs self-test: {cases} mutations rejected")
     return 0
 
@@ -539,6 +561,7 @@ def main() -> int:
         "api": capture_api,
         "pypi": capture_pypi,
     }
+    refuse_retained(chosen)
     for kind in chosen:
         rows, extra = capture[kind]()
         write_manifest(kind, rows, extra)
