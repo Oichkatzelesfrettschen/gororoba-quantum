@@ -32,6 +32,7 @@ import ast
 import json
 import re
 import sys
+import zlib
 from collections import Counter
 from collections.abc import Callable, Iterator
 from pathlib import Path
@@ -39,8 +40,11 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(1, str(ROOT / "gororoba_quantum"))
 
 import anu_qrng  # noqa: E402
+
+import parallel  # noqa: E402
 
 CODE_DIRS = ("ci", "tests", "gororoba_quantum", "scripts", "kaggle_kernel")
 BASELINE = ROOT / "ci" / "reproduction_seeds.json"
@@ -52,6 +56,11 @@ NOT_SEED_SUFFIXES = ("count", "stride", "offset", "step")
 SEEDING_CALLS = frozenset(
     {"default_rng", "seed", "Random", "RandomState", "SeedSequence", "PCG64", "MT19937", "Philox", "SFC64"}
 )
+# Every seed position names one of these, so a file without any holds no seed literal and skips the parse.
+SEED_TOKEN = re.compile("seed|random|default_rng|PCG64|MT19937|Philox|SFC64", re.IGNORECASE)
+# The pull-request tests split the tree into this many shards by crc32 of each path, so a shard keeps
+# its files across additions and deletions and each test stays inside the per-test budget.
+SHARDS = 8
 
 Key = tuple[str, str, int]
 
@@ -136,15 +145,26 @@ def literals(tree: ast.AST) -> Iterator[tuple[str, int]]:
                             yield name, value
 
 
-def scan(root: Path = ROOT) -> Counter[Key]:
-    found: Counter[Key] = Counter()
-    for directory in CODE_DIRS:
-        for path in sorted((root / directory).rglob("*.py")):
-            relative = path.relative_to(root).as_posix()
-            tree = ast.parse(path.read_text(encoding="utf-8"), filename=relative)
-            for name, value in literals(tree):
-                found[(relative, name, value)] += 1
-    return found
+def shard_of(relative: str) -> int:
+    return zlib.crc32(relative.encode()) % SHARDS
+
+
+def file_literals(relative: str) -> list[Key]:
+    text = (ROOT / relative).read_text(encoding="utf-8")
+    if not SEED_TOKEN.search(text):
+        return []
+    return [(relative, name, value) for name, value in literals(ast.parse(text, filename=relative))]
+
+
+def scan(shard: int | None = None) -> Counter[Key]:
+    """Seed literal counts over the code directories, or over one shard of their files."""
+    paths = [
+        path.relative_to(ROOT).as_posix()
+        for directory in CODE_DIRS
+        for path in sorted((ROOT / directory).rglob("*.py"))
+    ]
+    selected = [path for path in paths if shard is None or shard_of(path) == shard]
+    return Counter(key for keys in parallel.ordered_map(file_literals, selected) for key in keys)
 
 
 def baseline_counts(rows: list[dict[str, Any]]) -> Counter[Key]:
@@ -171,7 +191,9 @@ def check(
     allocations: list[dict[str, Any]],
     claimed: set[str],
     read_record: Callable[[str], dict[str, Any]],
+    shard: int | None = None,
 ) -> None:
+    """Admit every allocation; compare counts for every key, or for the keys of one shard's files."""
     expected = baseline_counts(baseline)
     taken: set[tuple[str, int]] = set()
     records: dict[str, dict[str, Any]] = {}
@@ -194,6 +216,8 @@ def check(
         expected[key] += 1
     problems = []
     for key in sorted(set(found) | set(expected)):
+        if shard is not None and shard_of(key[0]) != shard:
+            continue
         if found[key] > expected[key]:
             problems.append(
                 f"{key[0]}: seed {key[1]}={key[2]} appears {found[key]} times, {expected[key]} accounted; "
@@ -222,10 +246,10 @@ def read_tree_record(record_path: str) -> dict[str, Any]:
     return record
 
 
-def check_tree() -> int:
-    found = scan()
+def check_tree(shard: int | None = None) -> int:
+    found = scan(shard)
     claimed = claimed_records(MANIFEST_ROOT)
-    check(found, load(BASELINE, "seeds"), load(ALLOCATIONS, "allocations"), claimed, read_tree_record)
+    check(found, load(BASELINE, "seeds"), load(ALLOCATIONS, "allocations"), claimed, read_tree_record, shard)
     print(f"seed provenance: {sum(found.values())} seed literals accounted")
     return 0
 
@@ -241,6 +265,9 @@ def self_test() -> int:
         "parser.add_argument('--seed', type=int, default=6)\n"
         "TRIAL_SEEDS = (10, 11)\n"
     )
+    missed = [name for name in SEEDING_CALLS if not SEED_TOKEN.search(name)]
+    if missed:
+        raise SystemExit(f"self-test: the file prefilter skips {missed}")
     got = sorted(literals(ast.parse(source)))
     want = sorted(
         [

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 import seed_provenance
 
 
@@ -10,5 +11,6 @@ def test_seed_provenance_self_test() -> None:
         raise AssertionError("seed_provenance self-test failed")
 
 
-def test_tree_seeds_are_accounted() -> None:
-    seed_provenance.check_tree()
+@pytest.mark.parametrize("shard", range(seed_provenance.SHARDS))
+def test_tree_seeds_are_accounted(shard: int) -> None:
+    seed_provenance.check_tree(shard)
