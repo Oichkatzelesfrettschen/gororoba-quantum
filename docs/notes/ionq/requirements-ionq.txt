@@ -1,0 +1,17 @@
+certifi==2026.10.23
+charset-normalizer==3.5.2
+decorator==5.3.1
+dill==0.4.1
+idna==3.20
+importlib-metadata==10.1.0
+numpy==2.5.4
+python-dotenv==1.2.4
+qiskit==2.6.1
+qiskit-ionq==1.1.1
+requests==2.34.2
+rustworkx==0.18.1
+scipy==1.18.1
+stevedore==5.9.1
+typing-extensions==4.16.0
+urllib3==2.8.0
+zipp==4.1.2
