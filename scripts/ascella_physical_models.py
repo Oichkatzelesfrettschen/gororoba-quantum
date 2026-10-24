@@ -23,8 +23,8 @@ decides nothing between them.
 
 Leave-one-configuration-out, fitted after the preregistered table and deciding nothing, refits each static
 family on job-00 without one configuration and scores that configuration's X and Y statistics against the
-prediction in their multinomial variances alone, for all 30 configurations; the nominal mesh gives the
-reference. A shared mesh error predicts a configuration it was not fitted on, and a per-configuration lookup
+prediction in their multinomial variances alone. Each of the 30 configurations is left out in turn; the 19 that
+serve the X or Y readout (one serves both) are scored, and the nominal mesh gives the reference. A shared mesh error predicts a configuration it was not fitted on, and a per-configuration lookup
 does not.
 
 The held-out statistic of each readout is r^T (diag(v) + J C J^T)^{-1} r over job-01's pooled configuration
@@ -66,7 +66,7 @@ READOUTS = ("x", "y", "direct")
 SCORED = ("x", "y")
 DECISION_P = 0.01
 RELATION = "X0 + Xc2"
-# Parameter order, bounds and finite-difference step of each low-dimensional family.
+# Parameter order and bounds of each low-dimensional family.
 FAMILIES: dict[str, tuple[tuple[str, float, float], ...]] = {
     "nominal": (),
     "dephasing": (("phase_variance", 0.0, 1.0),),
