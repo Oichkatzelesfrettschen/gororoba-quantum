@@ -427,3 +427,17 @@ calibration. This amendment was committed before that job was sent.
 - **A failed plan check stops the case.** After the calibration, mode 5 may
   no longer be the hottest mode. A failed `--plan-check` is a frozen stop,
   not a hold: the unsent run directory goes to the trash, and the case ends.
+
+## Amendment of 2026-10-24: a drift series of the b1-j1 request
+
+Seven spaced repeats of the frozen b1-j1 request test whether the
+superposition excess spread the stationarity readout retained accumulates
+with elapsed time. The written case, its stop conditions and its
+preregistered analysis are in
+[the design](../design/bdsc-qualification.md#drift-series-of-one-frozen-request).
+The jobs run unattended from
+[bdsc-drift-series.json](../../results/quandela/schedules/bdsc-drift-series.json)
+through [the scheduled workflow](quandela-scheduled-runs.md), and the
+readout is `scripts/bdsc_drift_series.py --readout SERIES_RUN_DIR...` over
+the completed series runs. The runs enter `docs/state/research_state.json`
+with their claim on the results branch's pull request, before it merges.

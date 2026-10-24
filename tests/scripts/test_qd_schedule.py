@@ -140,8 +140,39 @@ class Provider:
         print("8 Explorer platforms, 2 public platforms")
 
 
-def step(path: Path, now: float, run_id: str = "1.1", plan_only: bool = False) -> dict[str, Any]:
-    return qs.step(qs.load(path), run_id, now + 3600, qs.ROOT.parent / "work", plan_only, clock=lambda: now)
+class Clock:
+    """The step's clock, which a sleep advances instead of waiting."""
+
+    def __init__(self, now: float) -> None:
+        self.now = now
+        self.slept: list[float] = []
+
+    def __call__(self) -> float:
+        return self.now
+
+    def sleep(self, seconds: float) -> None:
+        self.slept.append(seconds)
+        self.now += seconds
+
+
+def step(
+    path: Path, now: float, run_id: str = "1.1", plan_only: bool = False, clock: Clock | None = None, span: float = 3600
+) -> dict[str, Any]:
+    clock = clock or Clock(now)
+    return qs.step(
+        qs.load(path), run_id, now + span, qs.ROOT.parent / "work", plan_only, clock=clock, sleep=clock.sleep
+    )
+
+
+def independent(root: Path, **changes: Any) -> Path:
+    """A skip schedule: j2 starts at its own not_before two hours after j1's."""
+    path = schedule(root, **changes)
+    record = qs.read(path)
+    record["on_stop"] = "skip"
+    record["jobs"][1]["after"] = None
+    record["jobs"][1]["not_before"] = "2026-11-01T14:00:00Z"
+    qs.write(path, record)
+    return path
 
 
 def test_load_refuses_each_unsafe_schedule(tree: Path) -> None:
@@ -166,7 +197,7 @@ def test_load_refuses_each_unsafe_schedule(tree: Path) -> None:
 def test_two_jobs_run_in_order_with_the_gap_after_the_provider_execution_end(tree: Path, monkeypatch) -> None:
     path = schedule(tree)
     provider = Provider(monkeypatch)
-    if step(path, T0 - 1)["outcome"] != "wait":
+    if step(path, T0 - qs.LEAD - 1)["outcome"] != "wait":
         raise AssertionError("a job started before not_before")
     prepared = step(path, T0)
     if prepared["outcome"] != "prepared" or provider.submitted:
@@ -180,7 +211,7 @@ def test_two_jobs_run_in_order_with_the_gap_after_the_provider_execution_end(tre
     ):
         raise AssertionError(receipt)
     end = T0 + 100 + 167
-    waiting = step(path, end + 3599)
+    waiting = step(path, end + 3600 - qs.LEAD - 1)
     if waiting != {"outcome": "wait", "key": "j2", "state": "pending", "not_before": "2026-11-01T13:04:27Z"}:
         raise AssertionError(waiting)
     if step(path, end + 3600)["outcome"] != "prepared":
@@ -410,3 +441,85 @@ def test_submit_runs_verify_on_the_posted_plan_before_any_checkpoint(tmp_path: P
         qd.submit(case, "qpu:belenos", "approved", 1.12, 200.0, 1.0, (), verify)
     if seen != [{"body": BODY, "body_sha256": "x"}] or sorted(p.name for p in case.iterdir()) != sorted(qs.INPUTS):
         raise AssertionError("verify did not see the posted plan, or submit wrote a checkpoint")
+
+
+def test_a_job_due_within_the_lead_starts_at_its_not_before(tree: Path, monkeypatch) -> None:
+    path = schedule(tree)
+    Provider(monkeypatch)
+    clock = Clock(T0 - 1800)
+    if step(path, T0 - 1800, clock=clock, span=7200)["outcome"] != "prepared" or clock.slept != [1800]:
+        raise AssertionError(clock.slept)
+    if qs.read(tree / "results/quandela/schedules/demo/j1.intent.json")["run"][:17] != "2026-11-01T120000":
+        raise AssertionError("the run directory does not carry the due time")
+
+
+def test_a_tick_without_room_for_the_job_waits_instead_of_sleeping(tree: Path, monkeypatch) -> None:
+    path = schedule(tree)
+    Provider(monkeypatch)
+    clock = Clock(T0 - 1800)
+    # Due in 1800 s, expected 200 s and the collection margin 600 s exceed a 2500 s deadline.
+    if step(path, T0 - 1800, clock=clock, span=2500)["outcome"] != "wait" or clock.slept:
+        raise AssertionError(clock.slept)
+
+
+def test_load_refuses_a_skip_schedule_that_chains_a_job_after_another(tree: Path) -> None:
+    qs.load(independent(tree))
+    with pytest.raises(qs.ScheduleError):
+        qs.load(schedule(tree, on_stop="skip"))
+    with pytest.raises(qs.ScheduleError):
+        qs.load(schedule(tree, on_stop="continue"))
+
+
+def finish(path: Path, now: float) -> list[dict[str, Any]]:
+    outcomes = [step(path, now)]
+    while outcomes[-1]["outcome"] in ("continue", "prepared"):
+        outcomes.append(step(path, now))
+    return outcomes
+
+
+def test_a_held_job_in_a_skip_schedule_lets_the_next_job_run(tree: Path, monkeypatch) -> None:
+    path = independent(tree, job0_plan_check=["scripts/check_no.py", "{plan}"])
+    provider = Provider(monkeypatch)
+    held = step(path, T0)
+    if held["outcome"] != "continue" or held["stage"] != "plan_check":
+        raise AssertionError(held)
+    if step(path, T0 + 1)["key"] != "j2" or provider.submitted:
+        raise AssertionError("the job after the held one did not wait for its own not_before")
+    if finish(path, T0 + 7200)[-1] != {"outcome": "done"} or len(provider.submitted) != 1:
+        raise AssertionError(provider.submitted)
+
+
+def test_a_failed_matched_check_in_a_skip_schedule_lets_the_next_job_run(tree: Path, monkeypatch) -> None:
+    path = independent(tree, job0_matched_check=["scripts/check_no.py", "{run}"])
+    provider = Provider(monkeypatch)
+    outcomes = finish(path, T0)
+    if outcomes[-2]["state"] != "failed" or outcomes[-1]["key"] != "j2":
+        raise AssertionError(outcomes)
+    if finish(path, T0 + 7200)[-1] != {"outcome": "done"} or len(provider.submitted) != 2:
+        raise AssertionError(provider.submitted)
+    if qs.read(tree / "results/quandela/schedules/demo/j1.receipt.json")["outcome"] != "failed":
+        raise AssertionError("the failed receipt was lost")
+
+
+def test_an_interrupted_job_stops_a_skip_schedule(tree: Path, monkeypatch) -> None:
+    path = independent(tree)
+    provider = Provider(monkeypatch)
+    step(path, T0, run_id="1.1")
+    stopped = step(path, T0 + 7200, run_id="2.1")
+    if stopped["outcome"] != "stop" or stopped["state"] != "interrupted" or provider.submitted:
+        raise AssertionError(stopped)
+
+
+def test_a_total_ceiling_equal_to_the_decimal_sum_of_the_job_ceilings_loads(tree: Path) -> None:
+    path = schedule(tree, max_total_credits=1.12 + 1.12)
+    record = qs.read(path)
+    for job in record["jobs"]:
+        job["max_credits"] = 1.12
+    record["jobs"].extend(dict(record["jobs"][1], key=f"j{k}", run_name=f"qpu_belenos-demo-j{k}") for k in range(3, 8))
+    record["max_total_credits"] = 7.84
+    qs.write(path, record)
+    qs.load(path)
+    record["max_total_credits"] = 7.83
+    qs.write(path, record)
+    with pytest.raises(qs.ScheduleError):
+        qs.load(path)

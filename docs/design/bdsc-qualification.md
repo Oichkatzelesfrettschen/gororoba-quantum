@@ -668,6 +668,110 @@ from 49520.9 to 48440.3 counts/s. It is reported and decides nothing.
 - *Scope.* A consistent primary reading supports designing a veto-based
   confirmation and certifies nothing.
 
+## Drift series of one frozen request
+
+The stationarity readout leaves a superposition excess spread of tau =
+0.0021 in the matched changes under the primary veto. One pair of windows
+cannot say whether that spread is white run-to-run jitter, which a longer
+acquisition averages away, or a drift that accumulates with elapsed time,
+which no single-window design can calibrate. The calibration contrast adds
+that a Belenos calibration moves the class means (superposition -0.0017,
+z -2.8). The drift series answers the first question and records the
+second. A noise simulation cannot: both questions concern how one
+processor's response moves over hours and across its own calibrations, and
+an emulator has neither elapsed time nor calibrations.
+
+**Requests.** Seven jobs, `t1` to `t7`, each submit the frozen
+`results/quandela/cases/bdsc_stationarity/b1-j1/` directory unchanged: 24
+settings (both templates, all six states, four seeds), 100000 samples and
+max_shots 120000 per iteration. The pinned request body's sha256 without
+`process_id`, `3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd`,
+equals that of both retained 100000-sample b1-j1 runs of 2026-10-23, which
+serve as anchors. No QRNG read is made.
+
+**Schedule.** [bdsc-drift-series.json](../../results/quandela/schedules/bdsc-drift-series.json)
+runs through the scheduled workflow
+([runbook](../runbooks/quandela-scheduled-runs.md)) with `on_stop` skip.
+Slot k starts at its own `not_before`, two hours after slot k-1's, and
+holds unsent after `latest_start`, 100 minutes later, so a late slot drops
+and the next still runs. The slots run from 2026-10-24T12:00Z (`t1`) to
+2026-10-25T00:00Z (`t7`). A platform status outside `available` and
+`running`, or a token busy with another job, waits inside the window.
+
+**Stop conditions, per job.** Each one holds or fails that job alone and
+leaves the next slot to run:
+
+- the plan refuses the platform, or any of the other 23 modes reads a
+  plan-time dark-count rate at or above mode 5's
+  (`bdsc_stationarity.py --plan-check`);
+- the planned body differs from the pinned digest;
+- the job fails or is canceled, or `bdsc_stationarity.py --matched-check`
+  finds a returned circuit that differs from its retained diagnostic
+  counterpart, or an integrity check of `admit()` fails.
+
+An interrupted job, whose request may or may not have been posted, stops
+the series for an operator. A held or failed job is never resubmitted
+within the series.
+
+**Preregistered analysis** (`scripts/bdsc_drift_series.py --readout`,
+under detector_absent). The readout takes every series run whose receipt
+reads passed and whose status is completed, in start order.
+
+- **Primary: instance-specific drift.** Each run's 16 superposition values
+  are centered on that run's inverse-variance class mean, which removes a
+  common class shift. Per setting, the von Neumann ratio eta = sum
+  (x[t+1] - x[t])^2 / sum (x[t] - mean)^2 runs over the n completed series
+  runs in start order, and the statistic is the mean of the 16 ratios; a
+  drift that persists between runs lowers it. The null is exact: the
+  statistic is recomputed for all n! orderings of the runs, each ordering
+  shared by every setting, and p is the share of orderings at or below the
+  observed value. Per-run centering commutes with reordering the runs, and
+  a shared ordering keeps whatever correlation the settings carry (the four
+  settings of one template and seed share a compilation), so the test is
+  exact for exchangeable runs whatever the jitter level. Resolved
+  (p < 0.01) reads instance-specific drift; consistent (p >= 0.05) reads
+  run-to-run jitter without memory. A series and its reverse read alike,
+  so the smallest attainable p is 2 / n!: 0.0004 at seven runs, 0.0028 at
+  six, and 0.017 at five, where no reading can resolve. Fewer than six
+  completed series runs therefore leave the primary not run. The
+  independent-setting normal reference (mean 2, variance
+  4 (n - 2) / ((n - 1)(n + 1)) / 16) is reported beside it.
+- **Sensitivity.** `scripts/bdsc_drift_series.py --sensitivity` (2000
+  seeded series per scenario, seed 20261024, reference error 0.0018 per
+  value, seven runs) reads resolved with probability 0.010 under no drift
+  and 0.008 under white jitter of 0.0015 per run shared within each group
+  of four settings. Under a random walk whose two-hour step SD is 0.0021,
+  the size of the retained tau, it reads resolved with probability 0.71;
+  at step SD 0.0015 the probability is 0.43, and at 0.0010 it is 0.18. The
+  duration limit, not credits, caps the sample budget: the timing rule
+  gives 213.6 s at 100000 samples per iteration and about 276 s at 200000,
+  against the 300 s maximum.
+- **Reported only, deciding nothing.**
+  - Each class's inverse-variance mean per run (superposition, f, g), and
+    the von Neumann ratio of the superposition class mean, read as a common
+    drift.
+  - For every pair of runs, anchors included, the class-centered mean
+    excess square change d^2 - se1^2 - se2^2 of the superposition settings
+    against the pair's lag. The anchor pair, 0.47 h apart across one
+    calibration, reads 7.7e-6 before centering.
+  - The calibration epoch of each run: a new epoch begins where the
+    plan-time dark-count vector changes, since the platform refreshes
+    those figures only at calibration. The mean excess of within-epoch
+    pairs against between-epoch pairs.
+  - The mode-5 share of each run against its plan-time and post-collection
+    dark-count rates
+    (`results/quandela/bdsc_drift_series_dark/after-tN`).
+
+**Cost and limits.** Each job bills 1 + 1e-6 x 120000 = 1.12 credits and
+runs about 214 s; the seven total 7.84 credits and about 25 minutes of
+execution. A held slot bills nothing. Under `on_stop` skip a failure that
+arises after a job is sent (a duration overrun, a provider recompilation)
+can repeat in every later slot and bill each one, so the ceiling of 7.84
+credits is also the cost of a series in which every job fails. Standard errors stay reference values
+under independent Bernoulli trials. The series reads one request set, so a
+drift it finds is a property of these 24 compilations on Belenos and
+certifies nothing about the other 72 settings of the case.
+
 ## Conjecture ledger
 
 Each conjecture names the observable that tests it and what a result can and
@@ -688,6 +792,7 @@ levels and never share one "verified" label.
 | A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
 | Per-compilation transfer response carries the superposition scatter | matched seeds across blocks and four seeds per state (diagnostic case) | a matched seed whose response shifts beyond counting puts the scatter in time, not compilation |
 | Dark clicks in output mode 5 carry the instance-specific block change | heterogeneity of S1-to-S2 matched changes with detector 5 removed (stationarity case) | a resolved reading rejects it; a resolved coincidence test rejects the dark-click reading |
+| The residual superposition spread is drift that accumulates with elapsed time | pooled von Neumann ratio of class-centered residuals over seven spaced repeats (drift series) | a consistent reading names white run-to-run jitter; fewer than five completed runs leave it untested |
 
 Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
 exploits target structure for efficiency once the trusted objects and the
