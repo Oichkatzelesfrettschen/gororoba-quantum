@@ -884,3 +884,123 @@ cells show structure the fit leaves; and the fitted profile f differs between
 the jobs on modes 10 and 11. The alternation sits in a catalogue-dark-shaped
 component; converting its amplitude into acquisition time needs a detector
 gating model the records lack.
+
+## Restricted physical models of the analyzer response
+
+The per-configuration response reproduces across the jobs while a uniform gain
+and offset fail, so the next question is whether one physical error of the chip,
+shared by every configuration, produces it. Each configuration's returned
+`computed_circuit` gives the provider's model of the 12-mode mesh: fixed
+characterized couplers (Rx angles near 1.45 rad, identical in every setting)
+and 126 heater phases that all change between settings. A shared error family
+perturbs that mesh identically in every setting, so one parameter set predicts
+all three readouts. The families follow the Belenos mesh models of
+[`qd_belenos_mesh.py`](../../scripts/qd_belenos_mesh.py) (`predict`,
+`static_cross_validation`):
+
+| Family | Parameters | Mechanism |
+|---|---|---|
+| nominal | none | the returned circuit as reported |
+| dephasing | sigma | independent Gaussian heater phase noise, exact density-matrix channel (`channel`) |
+| dephasing + heater gain | sigma, kappa | every returned phase in [0, 2 pi) scales to (1 + kappa) phi |
+| dephasing + thermal crosstalk | sigma, c | every phase gains c times the sum of its mesh neighbors' phases (`neighbours`) |
+| dephasing + coupler offset | sigma, delta | every coupler angle shifts by delta |
+| dephasing + coupler noise | sigma, sigma_theta | independent Gaussian coupler-angle noise, exact channel |
+| static heater offsets | 126 offsets, prior width tau 0.1 and 0.3 rad | fixed offset per heater, maximum a posteriori, pure-state propagation |
+
+**Fit.** Each family is fitted on job-00 alone by maximum likelihood of the
+block-conditioned four-mode multinomial (n0 to n3 of every setting, all
+readouts and the mutation block), from the zero-perturbation start, so the fit
+needs no seed. The static family keeps both prior widths and selects neither.
+
+**Score.** Each fitted family predicts job-01's pooled configuration
+statistics of the X and Y readouts (10 configurations each). The held-out
+statistic is the quadratic form of the residuals in job-01's multinomial
+variances plus J C J^T, with C the fitted parameters' covariance (inverse
+observed information, plus the prior precision for the static family) and J
+the prediction Jacobian. The direct readout's dark constant moved between the
+jobs (0.2504 to 0.2547), which no static model can follow, so its held-out
+statistic is reported and decides nothing.
+
+**Decision.** A family explains the analyzer response when both held-out X and
+Y statistics give p > 0.01 on 10 degrees of freedom and its predicted
+block-conditioned X0 + Xc2 for job-01 lies inside job-01's projected
+simultaneous interval of that relation. A mechanism is named only when a family
+passes and every family nested in it without the distinguishing term fails.
+When no family passes, the shared-error families tested here are rejected as
+the source of the configuration response, which then needs per-configuration
+calibration error outside this list.
+
+**Outcome.** [`ascella_physical_models.py`](../../scripts/ascella_physical_models.py)
+writes [`physical-models.json`](../evidence/ascella-order-coefficients/physical-models.json).
+Every setting's block-conditioned multinomial carries a fixed in-block
+background: the setting's outside-block count, shared over modes 0 to 3 by
+the catalogue dark rates (354, 392, 314 and 80 per second against 14,797 on
+modes 4 to 11). It accounts for the few counts in cells the mesh leaves dark.
+Job-01's background term uses job-01's own outside counts; that moves its
+predicted statistics by about 2e-4 against residuals of 0.02 to 0.06. The
+covariance C of the low-dimensional families is the inverse expected (Fisher)
+information, in place of the observed information the paragraph above names;
+the static families use the observed information, the exact Hessian of the
+posterior at its mode, which Newton steps from the L-BFGS endpoint reach.
+Each left-out fit starts from the full-data mode. That selects one basin of
+a posterior that can hold several. The start leans toward the left-out
+configuration, so it can only lower the left-out statistic. No preregistered
+family passes, so the record names no mechanism.
+
+| Family | Job-00 X / Y | Job-01 held-out X / Y | Left-out configuration X / Y | Predicted X0 + Xc2, job-01 |
+|---|---|---|---|---|
+| nominal | 343 / 75 | 663 / 238 | 343 / 75 | 0.000 |
+| dephasing (sigma 0.022 rad) | 320 / 73 | 618 / 236 | | 0.000 |
+| heater gain (kappa 0.0014) | 283 / 55 | 527 / 167 | | -0.005 |
+| thermal crosstalk | 319 / 78 | 616 / 241 | | -0.001 |
+| coupler offset | 326 / 93 | 628 / 241 | | 0.001 |
+| coupler noise | 320 / 73 | 617 / 235 | | 0.000 |
+| static heater offsets, tau 0.1 | 55 / 33 | 53 / 46 | 287 / 95 | -0.022 |
+| static heater offsets, tau 0.3 | 41 / 22 | 39 / 30 | 300 / 134 | -0.025 |
+| detector efficiency (supplementary) | 254 / 43 | 465 / 119 | | -0.002 |
+| static coupler offsets, tau 0.1 (supplementary) | 45 / 18 | 59 / 32 | 196 / 64 | -0.022 |
+| static heater 0.3 and coupler 0.1 offsets (supplementary) | 7 / 9 | 7 / 13 | 266 / 800 | -0.026 |
+
+Each entry sums ten configurations of one readout. The job-00 column is
+descriptive, because the fit used those counts. Job-01's block-conditioned
+X0 + Xc2 reads -0.0307 [-0.0483, -0.0131].
+- The one- and two-parameter families fail in and out of sample and leave
+  X0 + Xc2 at -0.005 or above. Heater phase noise, a uniform heater gain,
+  nearest-neighbor thermal crosstalk, a uniform coupler offset, coupler
+  noise and per-mode detection efficiency are each rejected as the source of
+  the analyzer response. Efficiency acts through cos^2 phi at theta = 0,
+  which is sign-even, and its mode-2 term runs to the -0.5 bound.
+- Shared static heater offsets (rms 0.060 and 0.137 rad) or coupler offsets
+  (rms 0.039 rad) reproduce X0 + Xc2 and correlate with job-01's
+  configuration residuals at 0.96 to 0.98 on X. Each kind alone fails
+  job-01, with the same misfit in and out of sample. Heater and coupler
+  offsets together (258 parameters) pass job-01: X 7.0 (p 0.72) and Y 12.6
+  (p 0.25) on 10, with X0 + Xc2 at -0.026.
+- That pass tests reproducibility, which job-00's raw configuration values
+  already give (3.3 and 8.3 on 10). Refitted without one configuration, the
+  static families transfer only part of the response. They lower the
+  left-out X statistic from the nominal mesh's 343 to between 196 (coupler
+  offsets) and 300, still 20 to 30 times the counting noise. Only coupler
+  offsets lower Y (64 against 75), and the combined family raises it to 800.
+  The offsets reproduce each configuration they were fitted on far better
+  than one they were not.
+- Each left-out fit starts from the full-data mode, which can only lower the
+  left-out statistic. The statistic ignores the fitted parameters'
+  covariance, which raises it. Neither changes a reading at these
+  magnitudes.
+
+The X0 + Xc2 departure and the X residual pattern are therefore
+per-configuration properties of the compiled circuits that reproduce across
+the jobs. No mesh error tested here, incoherent, uniform or static per
+element, predicts them from a configuration's phases within counting noise;
+static per-element offsets capture a part of the X response that transfers
+between configurations. The supplementary
+families and the leave-one-configuration-out test were added after the
+preregistered table and decide nothing. Confidence that no static error of
+the returned mesh model explains the response is medium. It would rise if a
+mesh model with a drive-dependent heater response also failed to predict
+left-out configurations. It would fall if any shared family predicted them
+within counting noise. The fitted families replay within 1e-3 relative plus
+1e-8 absolute across BLAS builds, the unfitted nominal family at the
+certificate tolerance.
