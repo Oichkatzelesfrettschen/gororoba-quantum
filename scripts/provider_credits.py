@@ -176,6 +176,7 @@ def real_specs() -> list[ReaderSpec]:
         ReaderSpec("qBraid", subprocess_reader("qbraid", here)),
         ReaderSpec("BlueQubit", subprocess_reader("bluequbit", here)),
         ReaderSpec("AWS Free plan", subprocess_reader("aws", here)),
+        ReaderSpec("Azure Quantum", subprocess_reader("azure", here)),
         ReaderSpec("ANU QRNG", subprocess_reader("anu", here)),
     ]
 

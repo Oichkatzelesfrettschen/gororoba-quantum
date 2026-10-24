@@ -329,6 +329,15 @@ m != 0 the sum is delta_m(z) + xi + 1 + const, and g(0) = 0 with
 delta_m(0) = 0 sets const = 1. For m = 0 it is delta_0(z) + const, and
 g(0) = 0 sets const = 1, leaving 1 + delta_0(z) = N(z).
 
+The displayed identity is formalized for every n >= 3 in
+[CdAssociatorPointIndicators.v](../../proofs/CdAssociatorPointIndicators.v)
+as `point_indicator_pairs`, with separate nonzero and zero specializations;
+`point_indicator_degree` proves degree exactly n - 2, including n = 3.
+The [point-indicator bundle](../evidence/cd-associator-point-indicators/README.md)
+retains four closed assumption queries and an independent kernel-check
+receipt. The monomial-count and circuit statements below remain written
+consequences, not separate theorems in this formalization.
+
 By Lemma B both phases have degree n - 2, as Theorem 2 requires for
 bitlen(j) = n. delta_m(z) carries the monomials z^S with supp m within S,
 so the positive-polarity ANF of g_ij has 1 + 2^(n-2-|m|) monomials for

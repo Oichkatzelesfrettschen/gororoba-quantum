@@ -43,6 +43,7 @@ def mutations() -> list[tuple[str, str, str]]:
         ],
         ".github/workflows/ci.yml": [
             ("command -v rg", "command -v grep"),
+            ("formal_certificates ", ""),
             (some_crate, "crates/elsewhere"),
             ("needs.changes.outputs.rocq == 'true'", "true"),
         ],
