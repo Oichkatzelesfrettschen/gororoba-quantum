@@ -110,7 +110,12 @@ def check(root: Path) -> list[str]:
         if needle not in workflow:
             errors.append(f"ci.yml lacks {needle!r}")
     fetched = set(re.findall(r"^\s+((?:proofs|crates)[^\s]*)$", workflow, re.MULTILINE))
+    workflow_replays = {
+        name for selection in re.findall(r'^\s+only="([^"]*)"', workflow, re.MULTILINE) for name in selection.split()
+    }
     for name in bundles(root):
+        if name not in workflow_replays:
+            errors.append(f"the ci.yml replay selection omits {name}")
         hashes = root / f"docs/evidence/{name}/source_hashes.sha256"
         script = (root / f"docs/evidence/{name}/replay_rocq.sh").read_text(encoding="utf-8")
         if not hashes.exists() or "GOROROBA_ROOT" not in script:

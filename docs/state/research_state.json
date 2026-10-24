@@ -4567,7 +4567,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "Three readings stay outside the proof, each with a failing check: the extractor's one-to-one node map, which tests/scripts/test_cd_sign_rocq_ast.py and gate sources-406 compare with the embedded term; the int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the same contract pins; and the evaluator's reading of the cited Python Language Reference sections. _dimension tests type(dim) is int before any operator runs, so bool and every int subclass, whose overridden operators need not compute as integers, are rejected, and _index reads each index through operator.index, which returns an exact int; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
+      "boundary": "Claim cd-sign-python-translation-rocq closes the former extractor node-map gap with a kernel-checked translation certificate and independent raw-AST execution. Parsing, generic serialization and source-byte/hash binding remain external checks. The int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the existing contract pins, and the evaluator's reading of the cited Python Language Reference sections remain outside the proof. _dimension tests type(dim) is int before any operator runs, so bool and every int subclass, whose overridden operators need not compute as integers, are rejected, and _index reads each index through operator.index, which returns an exact int; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
       "evidence": [
         {
           "path": "proofs/CdSignPythonSemantics.v",
@@ -4605,6 +4605,64 @@
       "kernel_receipt": "docs/evidence/cd-sign-python-semantics/kernel.txt"
     },
     {
+      "id": "cd-sign-python-translation-rocq",
+      "statement": "Kernel-checked by Rocq 9.3.0 with seven closed assumption queries: a sound translation-validation certificate connects a generic raw Python AST to the independently defined integer-subset target syntax, and accepted source and target functions have equal modeled execution outcomes for every integer argument list and evaluator fuel. For the retained cd_core.cd_sign source, every exact-integer triple satisfies the target specification with sufficient fuel: valid dimensions and indices return the tower sign, failed guards raise an abstract exception, and the high-low guard mutant differs on the retained e_1 e_0 witness.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by sources-411. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
+      "evidence": [
+        {
+          "path": "proofs/CdSignAstTranslation.v",
+          "sha256": "25f7fe47ba1b26dc4a349779000d5adc48ef798308ddead3ef1eb892ee5ed6f6"
+        },
+        {
+          "path": "proofs/CdSignSourceCertificate.v",
+          "sha256": "37f2109eacff0065a03ec01d80fb27e70c036cfafc3a46fae1cd5f49770d56ef"
+        },
+        {
+          "path": "gororoba_quantum/cd_core.py",
+          "sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+        },
+        {
+          "path": "scripts/cd_sign_source_ast.py",
+          "sha256": "3187bcf30f2ee7ea43fe55697d251c1338245da6d7161a65004e088d8dce0a58"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/assumptions.v",
+          "sha256": "9f31ad72afd3f7b177cb1617d28f51959d5c06d9e6c8e621c45a3f3b53f3c5b0"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/assumptions.txt",
+          "sha256": "68842fc80f589bb583cf4916a7401c359d1e235988e35f686ccf4605c8211ae0"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+          "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-sign-python-translation/README.md",
+        "docs/evidence/cd-sign-python-semantics/README.md"
+      ],
+      "gates": {
+        "sources-410": "bytes",
+        "sources-411": "freshness"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-sign-python-semantics-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-sign-python-translation/kernel.txt"
+    },
+    {
       "id": "cd-associator-phase-degree",
       "statement": "For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).",
       "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claims cd-associator-anf-rocq and cd-associator-census-rocq prove the statement and the census in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
@@ -4632,7 +4690,7 @@
     {
       "id": "cd-associator-point-indicator-pairs",
       "statement": "For n >= 3, 0 <= m < 2^(n-2), i = 2^(n-1) + m and j = i + 2^(n-2), the associator phase is g_ij(x) = x_(n-1) + delta_m(z) for m != 0 and N(z) for m = 0, with z the low n - 2 bits of x, so W_ij is one multi-controlled Z on the low n - 2 qubits conjugated by X on the zero bits of m, times at most one Z and a global sign, while its positive-polarity ANF has 1 + 2^(n-2-popcount(m)) or 2^(n-2) - 1 monomials.",
-      "boundary": "Written proof (Proposition 5 of docs/notes/cd_phase_degree.md) from Lemma D's upper-pair closed form at levels n and n - 1; scripts/cd_phase_degree.py checks the formula and the monomial counts on every such pair through n = 8. The --sparsity table (282 of the 24384 top-degree pairs at n = 8 need one fixed-polarity multi-controlled Z, the rest at least two, up to 28 in the best fixed polarity) is a finite measurement without a proof, and the gate counts hold for circuits of X-conjugated multi-controlled Z, Z and X gates without ancillas.",
+      "boundary": "Written proof (Proposition 5 of docs/notes/cd_phase_degree.md) from Lemma D's upper-pair closed form at levels n and n - 1; claim cd-associator-point-indicators-rocq machine-checks the displayed phase formula and exact degree for every n >= 3. The positive-polarity monomial counts and gate realization remain written consequences, and scripts/cd_phase_degree.py checks the formula and monomial counts on every such pair through n = 8. The --sparsity table (282 of the 24384 top-degree pairs at n = 8 need one fixed-polarity multi-controlled Z, the rest at least two, up to 28 in the best fixed polarity) is a finite measurement without a proof, and the gate counts hold for circuits of X-conjugated multi-controlled Z, Z and X gates without ancillas.",
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
       ],
@@ -4653,6 +4711,51 @@
       "supersedes": [],
       "superseded_by": null,
       "proof_origin": "repository-written"
+    },
+    {
+      "id": "cd-associator-point-indicators-rocq",
+      "statement": "For every Cayley-Dickson level n >= 3, 0 <= m < 2^(n-2) and x < 2^n, kernel-checked by Rocq 9.3.0 with four closed assumption queries: for i = 2^(n-1) + m and j = i + 2^(n-2), the associator phase is g_ij(x) = x_(n-1) XOR [x mod 2^(n-2) = m] when m != 0 and [x mod 2^(n-2) != 0] when m = 0; the middle bit x_(n-2) is absent, and the phase has ANF degree exactly n - 2.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "This proves Proposition 5's displayed point-indicator identity and exact degree for the existing tower associator, including m = 0 and n = 3. The positive-polarity ANF monomial counts, the gate realization and its resource counts remain written consequences in claim cd-associator-point-indicator-pairs; this bundle does not formalize a circuit language or an optimality theorem. The connection to the retained Python source uses claims cd-sign-python-semantics-rocq and cd-sign-python-translation-rocq with their stated trust boundaries.",
+      "evidence": [
+        {
+          "path": "proofs/CdAssociatorPointIndicators.v",
+          "sha256": "f8107462007e7f99203c6eb8eb6ce1938f807593a1bdb0afb8eb9374d736434f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/assumptions.v",
+          "sha256": "7b404b82de80fd0d4d8ab641910014b6436bbafed1ac041e291d30cebb787b4f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/assumptions.txt",
+          "sha256": "f0532d0e8a885018e887fe9f2fc1415078fabe8f12825919a931ee3c625a3996"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+          "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-associator-point-indicators/README.md",
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "sources-408": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-associator-anf-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-associator-point-indicators/kernel.txt"
     },
     {
       "evidence": [
