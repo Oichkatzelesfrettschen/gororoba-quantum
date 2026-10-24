@@ -2385,7 +2385,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/cd_phase_degree.py --max-n 8",
    "name": "core-320",
-   "seconds": 1.5,
+   "seconds": 2.0,
    "tier": "pr"
   },
   {

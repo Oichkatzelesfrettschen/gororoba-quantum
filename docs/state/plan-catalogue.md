@@ -209,7 +209,7 @@ Work completion describes the recorded obligation. Scientific claims and provide
   Resolution: Retained pilot completed 27 jobs; preregistered readout drift stop withholds endpoint inference.
 
 - **[cd-tower-basis-sign-theorem](plans/cd-tower-basis-sign-theorem.json)** (closed/completed; verified): Prove in Rocq that the recursive pair tower's basis products are e\_a e\_b = sigma\_k(a, b) e\_(a XOR b) for a transcription sigma\_k of cd\_core.cd\_sign, derive the +-1 entries and zero diagonal of W\_n, and prove the Albuquerque-Majid cochain recursion equals the transposed sign. [Context](../../proofs/CdImaginarySumConference.v).
-  Resolution: basis\_mul, arc\_entry, arc\_diagonal and am\_sign hold for every k on the integer pair tower in proofs/CdTowerBasisSign.v, closed under the global context; tower\_bridge.py ties the Rocq sigma to cd\_core.cd\_sign through n = 64.
+  Resolution: basis\_mul, arc\_entry, arc\_diagonal and am\_sign hold for every k on the integer pair tower in proofs/CdTowerBasisSign.v, closed under the global context; tower\_bridge.py ties the Rocq sigma to cd\_core.cd\_sign through n = 64. Historical receipt inputs changed; revalidation required.
 
 - **[centralized-plan-tracker](plans/centralized-plan-tracker.json)** (closed/completed; verified): Implement the planning ledger, reconcile all discovered sources, and integrate the reviewed tracker. [Context](../../docs/runbooks/plan-tracker.md).
   Resolution: The centralized tracker and reconciled planning catalogue are integrated through PR 394.
