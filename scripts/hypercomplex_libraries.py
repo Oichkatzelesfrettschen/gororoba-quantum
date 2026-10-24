@@ -249,7 +249,16 @@ def normalized(name: str) -> str:
 def _file_imports(task: tuple[str, str]) -> tuple[str, list[str]]:
     root, filename = task
     roots: set[str] = set()
-    for node in ast.walk(ast.parse((Path(root) / filename).read_text())):
+    # An import is a statement, so it occurs only in a statement list: a body, orelse or finalbody, an
+    # except handler or a match case. Descending through those lists alone skips every expression node.
+    pending: list[ast.AST] = list(ast.parse((Path(root) / filename).read_text()).body)
+    while pending:
+        node = pending.pop()
+        for _, value in ast.iter_fields(node):
+            if isinstance(value, list):
+                pending.extend(
+                    child for child in value if isinstance(child, ast.stmt | ast.excepthandler | ast.match_case)
+                )
         if isinstance(node, ast.Import):
             roots.update(alias.name.split(".")[0] for alias in node.names)
         elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
@@ -257,13 +266,19 @@ def _file_imports(task: tuple[str, str]) -> tuple[str, list[str]]:
     return filename, sorted(roots)
 
 
-def tracked_imports(root: Path) -> tuple[dict[str, list[str]], set[str]]:
-    """Parse the tracked runtime source set independently of installed distributions."""
+def tracked_sources(root: Path) -> tuple[list[str], set[str]]:
+    """The tracked runtime files the inventory scans and the stems of every tracked module."""
     tracked = subprocess.check_output(["git", "ls-files", "-z", "*.py"], cwd=root).decode().split("\0")
     local_modules = {Path(name).stem for name in tracked if name}
     runtime_files = sorted(
         name for name in tracked if name.startswith(("gororoba_quantum/", "scripts/", "ci/", "kaggle_kernel/"))
     )
+    return runtime_files, local_modules
+
+
+def tracked_imports(root: Path) -> tuple[dict[str, list[str]], set[str]]:
+    """Parse the tracked runtime source set independently of installed distributions."""
+    runtime_files, local_modules = tracked_sources(root)
     return dict(ordered_map(_file_imports, [(str(root), name) for name in runtime_files])), local_modules
 
 
@@ -290,6 +305,11 @@ def check_import_coverage(record: dict[str, Any], root: Path) -> None:
     roots, local_modules = tracked_imports(root)
     if record.get("tracked_import_roots") != roots:
         raise ValueError("inventory tracked import roots differ")
+    check_import_projection(record, roots, local_modules)
+
+
+def check_import_projection(record: dict[str, Any], roots: dict[str, list[str]], local_modules: set[str]) -> None:
+    """The retained mapping covers exactly the external roots and projects onto each library's importers."""
     external = {
         name
         for names in roots.values()
