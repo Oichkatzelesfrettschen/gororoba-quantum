@@ -1,36 +1,22 @@
 name: pr
 
-# Pull-request acceptance: Ruff over the code directories and the pytest
+# Pull-request acceptance through ci/pr_checks.sh: Ruff, mypy and the pytest
 # regression suite with the audit marker deselected (pyproject.toml). The
 # retained-evidence replays, gate scheduler and ledger run in ci.yml's nightly
-# and manual audit. A job that reaches its timeout fails.
+# and manual audit. A job or step that reaches its timeout fails.
+# workflow_dispatch serves a pull request that GITHUB_TOKEN opened, whose
+# pull_request event starts no workflow; check runs attach to the dispatched
+# commit, which is that pull request's head.
 on:
   pull_request:
+  workflow_dispatch:
 
 concurrency:
-  group: pr-${{ github.event.pull_request.number }}
+  group: pr-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
-
-env:
-  PYTHON: python3
-  # Qiskit 2.6 Rust TLS plus late-loaded Aer OpenMP need reserved loader capacity.
-  GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
-  OPENBLAS_NUM_THREADS: "1"
-  OPENBLAS_CORETYPE: Haswell
-  NPY_DISABLE_CPU_FEATURES: X86_V4 AVX512_ICL AVX512_SPR
-  OMP_NUM_THREADS: "1"
-  MKL_NUM_THREADS: "1"
-  BLIS_NUM_THREADS: "1"
-  VECLIB_MAXIMUM_THREADS: "1"
-  NUMEXPR_NUM_THREADS: "1"
-  RAYON_NUM_THREADS: "1"
-  QISKIT_NUM_PROCS: "1"
-  GOROROBA_PINS_REQUIRED: "1"
-  PYTHONHASHSEED: "0"
-  MPLBACKEND: Agg
 
 jobs:
   lint:
@@ -40,51 +26,33 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
-        id: python
         with:
           python-version: "3.14.7"
       - name: Install the pinned Ruff
-        run: |
-          set -eu
-          "${{ steps.python.outputs.python-path }}" -m pip install "$(grep '^ruff==' ci/requirements-ci.txt)"
-      - name: ruff check
-        run: ruff check ci tests gororoba_quantum scripts kaggle_kernel
-      - name: ruff format
-        run: ruff format --check --target-version py313 ci tests gororoba_quantum scripts kaggle_kernel
+        run: python3 -m pip install "$(grep '^ruff==' ci/requirements-ci.txt)"
+      - name: ruff
+        run: sh ci/pr_checks.sh lint
+
+  types:
+    name: types
+    runs-on: ubuntu-26.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: ./.github/actions/pins-venv
+      - name: mypy
+        timeout-minutes: 4
+        run: sh ci/pr_checks.sh types
 
   tests:
     name: tests
     runs-on: ubuntu-26.04
     timeout-minutes: 8
-    env:
-      PINS_VENV: /home/runner/.cache/gororoba-ci/pins-venv
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
-        id: python
-        with:
-          python-version: "3.14.7"
-      # ci.yml's key, so a pull request restores the venv main's nightly run saved.
-      - name: Restore the pinned environment
-        id: pins-cache
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
-        with:
-          path: ${{ env.PINS_VENV }}
-          key: pins-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('requirements.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
-      - name: Install pinned dependencies
-        if: steps.pins-cache.outputs.cache-hit != 'true'
-        env:
-          BASE_PYTHON: ${{ steps.python.outputs.python-path }}
-        run: |
-          set -eu
-          "$BASE_PYTHON" -m venv "$PINS_VENV"
-          PYTHON="$PINS_VENV/bin/python" sh ci/install_pins.sh
-      - name: Save the pinned environment
-        if: steps.pins-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
-        with:
-          path: ${{ env.PINS_VENV }}
-          key: ${{ steps.pins-cache.outputs.cache-primary-key }}
+      - uses: ./.github/actions/pins-venv
+      # Several times the measured hosted pytest time; the prune point of
+      # ci/AGENTS.md (Behavioral suite) sits well inside it.
       - name: pytest
-        run: >-
-          "$PINS_VENV/bin/python" -B -m pytest -n auto --dist loadgroup -m "not audit" --durations=25
+        timeout-minutes: 4
+        run: sh ci/pr_checks.sh tests
