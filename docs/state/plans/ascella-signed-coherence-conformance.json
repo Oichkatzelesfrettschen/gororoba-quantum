@@ -105,6 +105,30 @@
             }
           ],
           "scope_sha256": "406e8b2bedcc0dfeacb29a9053e9d683abc1a43e53c1c8db603bd65508113385"
+        },
+        {
+          "result": "SLOS and Naive replay the 64-entry body with twelve-mode single-photon outputs matching the manifest within 1e-12; the ideal and sampled responses qualify all 27 endpoints, the equal-contrast case fails mutation closure, the 0.2 sign-even twist keeps the 15 sign-odd and dark coefficients ideal and falsifies exactly the derivation's three sign-even coefficients, and the 0.05 twist excludes their ideal while every endpoint qualifies. Missing and zero-eligible iterations yield no decisions.",
+          "observed_at": "2026-10-24T06:35:48+00:00",
+          "revision": "4ebf1b807d58c9be6224bc0b369535e0a9f37915",
+          "evidence": [
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/replay.json",
+              "sha256": "e6d9e8ceba1d6f6feb17c076a1785ce0160848583fa4ee0cb1d59236ea6e6238"
+            },
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/producer.py",
+              "sha256": "84c42818d74191f8a5f1162600e2ace0b61bd828406f9a4a6a60ae0e530c3585"
+            },
+            {
+              "ref": "scripts/ascella_coherence_analysis.py",
+              "sha256": "4fc9ae4b3b4a46fa1646370f1b7f076a190c6552196107c82f9585c38e90a890"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json",
+              "sha256": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8"
+            }
+          ],
+          "scope_sha256": "406e8b2bedcc0dfeacb29a9053e9d683abc1a43e53c1c8db603bd65508113385"
         }
       ]
     },
