@@ -701,3 +701,97 @@ position, checks the echoed `circuit_params`, and writes `analysis.json`. The
 retained run then enters `docs/state/research_state.json`, the strategy run
 log and this plan's receipts in the change that retains it.
 
+
+## Open problems after job-00 and the permuted repeat
+
+Job `739a5271` (job-00) qualifies all 27 endpoints and leaves three device
+questions open. [`ascella_coherence_repeat.py --diagnose`](../../scripts/ascella_coherence_repeat.py)
+writes their exploratory reading,
+[`job-00-diagnostics.json`](../evidence/ascella-order-coefficients/job-00-diagnostics.json).
+
+**Analyzer contrast.**
+- The returned compiled circuits are exact: every compiled statistic lies
+  within 2.2e-4 of its registered ideal, and no compiled circuit puts more
+  than 6.3e-7 of the photon outside modes 0 to 3.
+- The block-conditioned X and Y statistics read z = V ideal + c with V 0.970
+  (standard error 0.009) on both readouts, while the direct readout reads
+  slope 1.004. The deficit sits in the interference contrast of the hardware
+  and not in compilation or intensities.
+- X residuals exceed multinomial noise, chi-square 230 on 18 degrees of
+  freedom, against 45 on 18 for Y; the matched quadrature ideal explains
+  little of it (coefficient -0.023, chi-square 210 on 17). The X readout carries setting-specific errors.
+- A 3 % contrast deficit is the calibrated-chip scale Maring et al. report for
+  Ascella, total variation (3.0 +- 1.3) % over random phase settings
+  ([literature, source 1](../notes/quandela/literature.md#1-maring-et-al-ascella-platform)).
+- The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta)
+  coefficient (0.4777) exclude 0.5 for this reason. Block-conditioned
+  counts move them only to 0.4751 and 0.4851, so outside-block dilution
+  accounts for about a fifth of the deficit, not the whole of it.
+
+**Outside-block clicks.**
+- 6,659 of 524,288 events land on modes 4 to 11, 4 to 586 per setting, with
+  1,424, 1,783 and 2,376 on modes 8, 9 and 10, the detectors with the largest
+  plan-time dark rates (3,275, 4,114 and 5,290 per second). The pooled
+  composition follows those rates except for an excess on modes 4 and 6
+  (chi-square 110 on 7 degrees of freedom), so the clicks are mostly dark
+  counts with a per-iteration exposure.
+- The exposure alternates in execution order: log outside-block counts have
+  lag-1 autocorrelation -0.66 and lag-2 +0.73 (permutation p below 1e-4),
+  with six phase slips over 64 iterations, while the size of the
+  compiled-phase change from the predecessor predicts nothing (Spearman 0.22,
+  p 0.09). Because job-00 runs the four arms of each block consecutively, the
+  alternation is confounded with arm parity.
+- `physical_perf` reads 0.0209 in every iteration
+  ([literature, source 31](../notes/quandela/literature.md#31-perceval-performance-fields)),
+  so the provider reports no per-iteration exposure. Ascella's settling time
+  is unpublished; other thermo-optic devices settle in microseconds
+  ([source 30](../notes/quandela/literature.md#30-thermo-optic-switching-times)),
+  a comparison that leaves the settling share of the 2.5 to 3 s each iteration
+  costs unresolved.
+
+## Permuted repeat (job-01)
+
+The owner approved job-01 on 2026-10-24: job-00's 64 circuits (same
+`circuit_params`, seed 0, empty mitigation list and twelve-entry input) in the
+order that values 0 to 63 of the retained ANU QRNG draw
+[`draw-2026-10-18T083846Z.json`](../evidence/anu_qrng/draw-2026-10-18T083846Z.json)
+fix, at 16,384 samples and 32,768 shots per iteration. The order puts 17 of
+job-00's 32 high-outside settings at even positions and 15 at odd, so setting
+identity and execution parity separate. Its ceiling is 1.032768 credits and
+its expected duration under 240 s: job-00 took 186 s, and if acquisition time
+scales with samples at the rate the outside-block dark clicks imply (about
+34 s of job-00's 186), doubling the samples adds about 34 s; the per-sample
+rate is an inference of medium confidence. The stopping rule of job-00
+applies.
+
+`--compare A B OUT` applies the preregistered comparison, each test at
+alpha 0.01 against 20,000 seeded permutations:
+
+| Question | Statistic | Reading |
+|---|---|---|
+| Fixed per-setting cause | Spearman of per-setting log(count + 1/2) outside-block counts, job-00 against job-01 | supported when positive at p < 0.01 |
+| Alternation in execution order | lag-1 autocorrelation of job-01's log counts | supported when negative at p < 0.01 |
+| Reconfiguration size | Spearman of job-01's log counts against compiled-phase change | supported when positive at p < 0.01 |
+| Sample-budget scaling | log2 of the median outside-block count ratio, job-01 over job-00 | acquisition-proportional at 0.5 or more, per-iteration below |
+| Static X and Y errors | Pearson of per-setting contrast residuals across the jobs, per readout | reproduces when positive at p < 0.01 |
+| Contrast stability | V(job-01) - V(job-00) per readout with its standard error | reported |
+
+`--self-test` builds synthetic job-01 runs from job-00's counts under a fixed
+per-setting cause, an alternation, a reconfiguration-size law, a
+per-iteration burst, static residuals and drifting residuals, and requires
+each reading to come out as generated. job-01's own 27 endpoints come from
+`ascella_coherence_repeat.py --analyze RUN` with job-00's estimators.
+
+**Outcome.** Job `6ef8e8db` ran on 2026-10-24 at 15:31 UTC
+([retained run](../../results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/README.md),
+[comparison](../evidence/ascella-order-coefficients/repeat-comparison.json)):
+1,048,576 samples in 186 s for 1.032768 credits, all 27 endpoints qualifying.
+The outside-block clicks follow the execution sequence (lag-1 -0.653, setting
+Spearman -0.075) and grow with the samples (log2 ratio 0.83); the analyzer
+residuals reproduce (X 0.974, Y 0.802) at a stable contrast of 0.97. Both jobs
+report 186 s in total. No retained record separates acquisition time from
+reconfiguration or other overhead, and the jobs ran six hours apart in
+different orders, so the equal totals assign no marginal time to the further
+524,288 samples; the case's per-sample estimate (about 34 s) is neither
+confirmed nor bounded. A timing budget for larger sample counts needs
+component timing or controlled repeats that vary only the budget.

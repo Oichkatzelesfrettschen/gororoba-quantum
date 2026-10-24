@@ -3900,6 +3900,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_repeat.py --analyze results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 --check",
+   "name": "core-ascella-signed-coherence-repeat-replay",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_repeat.py --compare results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/repeat-comparison.json --check",
+   "name": "core-ascella-signed-coherence-comparison-replay",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_repeat.py --diagnose results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/job-00-diagnostics.json --check && \"$PYTHON\" -B -W error scripts/ascella_coherence_repeat.py --diagnose results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/job-01-diagnostics.json --check",
+   "name": "core-ascella-signed-coherence-diagnostics-replay",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_repeat.py --self-test",
+   "name": "core-ascella-signed-coherence-comparison-self-test",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
