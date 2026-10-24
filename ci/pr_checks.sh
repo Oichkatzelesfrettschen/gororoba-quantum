@@ -4,10 +4,17 @@
 #   sh ci/pr_checks.sh types           mypy over the same directories
 #   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
 #                                      given paths; -m audit PATH selects the marked tests
-# PYTHON names an interpreter holding the pins (sh ci/build_host_envs.sh builds
-# one locally). The environment below is the one the hosted jobs run under.
+# PYTHON names an interpreter holding the pins; left unset, the host
+# environment sh ci/build_host_envs.sh builds serves. The environment below is
+# the one the hosted jobs run under.
 set -eu
-PYTHON=${PYTHON:-python3}
+[ $# -ge 1 ] || { echo "usage: sh ci/pr_checks.sh lint|types|tests [PATH...]" >&2; exit 2; }
+root=$(cd "$(dirname "$0")/.." && pwd)
+# ci/pins.py resolve_lane holds the lane to an interpreter carrying its pins:
+# an explicit PYTHON as named, else the host environment ci/build_host_envs.sh
+# builds, else python3. A drifted interpreter exits 2 naming the differing
+# pins, since a verdict under other packages says nothing about the pinned run.
+PYTHON=$("${PYTHON:-python3}" "$root/ci/pins.py" lane "$1") || exit 2
 # A relative interpreter path names a file from the caller's directory, and
 # the checks below change directory; dirname keeps a venv's symlinked python.
 case $PYTHON in
@@ -15,8 +22,8 @@ case $PYTHON in
 */*) PYTHON=$(cd "$(dirname "$PYTHON")" && pwd)/$(basename "$PYTHON") ;;
 esac
 export PYTHON
-# ci/pinned_tool.py takes ruff and mypy from PATH, so the interpreter's own
-# bin directory, a venv's, leads it.
+# The interpreter's own bin directory, a venv's, leads PATH for every tool a
+# check starts; ci/pinned_tool.py runs ruff and mypy as its modules.
 bin=$(dirname "$(command -v "$PYTHON")")
 PATH=$bin:$PATH
 export PATH
@@ -28,11 +35,9 @@ export OPENBLAS_CORETYPE=Haswell
 export NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"
 export GOROROBA_PINS_REQUIRED=1 PYTHONHASHSEED=0 MPLBACKEND=Agg
 
-root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$root"
 code_dirs="ci tests gororoba_quantum scripts kaggle_kernel"
 
-[ $# -ge 1 ] || { echo "usage: sh ci/pr_checks.sh lint|types|tests [PATH...]" >&2; exit 2; }
 check=$1
 shift
 case $check in

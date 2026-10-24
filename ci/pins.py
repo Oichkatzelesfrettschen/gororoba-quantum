@@ -28,8 +28,10 @@ differences rather than on the change under test.
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
+import sys
 from collections.abc import Mapping
 from pathlib import Path
 
@@ -228,3 +230,54 @@ def resolve_current(
     return None, (
         f"the running interpreter {current} differs from {files}: {', '.join(missing)}; {BUILD_COMMAND} builds {host}"
     )
+
+
+# The pins each ci/pr_checks.sh lane needs: lint runs only ruff, the others import the whole runtime.
+LANES = ("lint", "types", "tests")
+
+
+def resolve_lane(lane: str, environment: Mapping[str, str], current: str, root: Path = ROOT) -> tuple[str | None, str]:
+    """The interpreter a ci/pr_checks.sh lane runs under and a one-line account of the choice.
+
+    An explicit $PYTHON runs when it holds the lane's pins and is never replaced. Without one, the host
+    environment serves when it holds them, which no CI runner builds, then the running interpreter. None names
+    the differing pins and, when the host environment holds them, the command that runs the lane under it.
+    """
+    if lane not in LANES:
+        raise ValueError(f"lane {lane!r} is not one of {', '.join(LANES)}")
+    pins = current_pins(root)
+    if not pins:
+        bare = environment.get("PYTHON") or current
+        return bare, f"{bare}: the tree pins no current runtime"
+    wanted = {"ruff": pins["ruff"]} if lane == "lint" else pins
+
+    def differs(python: str) -> list[str]:
+        return mismatches(python, wanted) if lane == "lint" else environment_mismatches(python, wanted, root)
+
+    host = host_env("current", environment)
+    host_holds = host.is_file() and not differs(str(host))
+    named = environment.get("PYTHON")
+    if not named and host_holds:
+        return str(host), f"the host environment {host} holds the {lane} pins"
+    candidate = named or current
+    missing = differs(candidate)
+    if not missing:
+        return candidate, f"{candidate} holds the {lane} pins"
+    hint = f"; run PYTHON={host} sh ci/pr_checks.sh {lane}" if host_holds else f"; {BUILD_COMMAND} builds {host}"
+    return None, f"{candidate} differs from the {lane} pins: {', '.join(missing)}{hint}"
+
+
+def main(argv: list[str]) -> int:
+    """``pins.py lane LANE``: print the lane's interpreter, or its refusal on stderr with exit 2."""
+    if len(argv) != 2 or argv[0] != "lane":
+        raise SystemExit("usage: pins.py lane lint|types|tests")
+    chosen, reason = resolve_lane(argv[1], os.environ, sys.executable)
+    if chosen is None:
+        print(f"pr_checks: {reason}", file=sys.stderr)
+        return 2
+    print(chosen)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))
