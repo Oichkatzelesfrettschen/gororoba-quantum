@@ -79,5 +79,13 @@ holds the exploratory reading of both runs with analytic references: the
 gain relations projected onto the simultaneous intervals, inverse-variance
 contrast fits, dilution fractions, outside-block profile tests, the
 two-component background fit, the configuration grouping and the held-out
-prediction of job-01. The `core-ascella-signed-coherence-*` gates replay all
-four within the certificate tolerance.
+prediction of job-01.
+[`physical-models.json`](physical-models.json), from
+[`scripts/ascella_physical_models.py`](../../../scripts/ascella_physical_models.py),
+holds the preregistered physical-model test: shared error families of the
+returned 12-mode meshes fitted on job-00 and scored on job-01's pooled
+configurations
+([design](../../design/ascella-signed-coherence-conformance.md#restricted-physical-models-of-the-analyzer-response)).
+The `core-ascella-signed-coherence-*` gates replay the first four within the
+certificate tolerance and the fitted families of the fifth within a relative
+1e-2, because its optimizer endpoints follow the BLAS build.

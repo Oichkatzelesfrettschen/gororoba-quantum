@@ -1969,6 +1969,44 @@
       "superseded_by": null
     },
     {
+      "id": "ascella-signed-coherence-physical-models",
+      "statement": "Fitted on job-00 and scored on job-01's pooled configuration statistics, no shared error family of the returned 12-mode Ascella meshes passes the preregistered held-out test (X and Y p > 0.01 on 10 degrees of freedom with predicted X0 + Xc2 inside job-01's interval). Heater phase noise (sigma 0.022 rad), a uniform heater gain, nearest-neighbor thermal crosstalk, a uniform coupler offset and coupler noise leave held-out X 527 to 663 and Y 167 to 241 and predict X0 + Xc2 of -0.005 or above against job-01's -0.031 [-0.048, -0.013]. Shared static heater offsets under N(0, tau^2) priors of 0.1 and 0.3 rad predict X0 + Xc2 of -0.022 and -0.025 and configuration residuals correlating 0.97 and 0.98 on X, but leave held-out X 54 and 39 and Y 48 and 30, matching their in-sample misfit. The best-identified offsets, about 0.007 rad standard error, sit on mode-1 and mode-2 heaters at 0.03 to 0.08 rad.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Shared families of the provider's returned mesh model only; the returned couplers are taken as exact up to the fitted perturbation, the multinomial ignores drift within an iteration, and the in-block background uses plan-time catalogue dark rates. The static offsets come from pure-state propagation without dephasing, and their mode-4 values are not identified. The detector-efficiency family was added after the preregistered table and decides nothing. The fitted families replay within a relative 1e-2 across BLAS builds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/physical-models.json",
+          "sha256": "7df144228dd86ba696c0c6d0d9c5cd12131980d375f41563dae34e7625abf8a5"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-physical-models-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-device-diagnostics"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "ascella-signed-coherence-conformance",
       "statement": "The approved 64-setting signed-coherence request on qpu:ascella (job 739a5271) completed 524288 detected samples in 186 execution seconds for a token-reported debit of 1.016384 free credits, and all 27 preregistered endpoints qualify under the 0.05 coefficient tolerance: the 15 sign-odd and dark coefficients deviate from their ideals by at most 0.0303, the 10 sign-even coefficients stay within 0.0116 of zero, and the mutation difference reads 0.1646 against its ideal 0.1727. The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta) coefficient (0.4777) exclude their ideal 0.5 while conforming. 6659 of 524288 events (1.27 percent) fall outside the logical block, between 4 and 586 per setting.",
       "domain": "hardware",

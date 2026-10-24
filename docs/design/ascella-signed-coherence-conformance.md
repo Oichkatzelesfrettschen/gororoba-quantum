@@ -930,3 +930,58 @@ passes and every family nested in it without the distinguishing term fails.
 When no family passes, the shared-error families tested here are rejected as
 the source of the configuration response, which then needs per-configuration
 calibration error outside this list.
+
+**Outcome.** [`ascella_physical_models.py`](../../scripts/ascella_physical_models.py)
+writes [`physical-models.json`](../evidence/ascella-order-coefficients/physical-models.json).
+Every setting's block-conditioned multinomial carries a fixed in-block
+background: the setting's outside-block count, shared over modes 0 to 3 by
+the catalogue dark rates (354, 392, 314 and 80 per second against 14,797 on
+modes 4 to 11). It accounts for the few counts in cells the mesh leaves dark,
+which a pure mesh model would otherwise fit by distorting its parameters.
+No family passes the decision rule, so the record names no mechanism.
+
+| Family | Job-00 X / Y (10 configurations) | Job-01 held-out X / Y | Predicted X0 + Xc2, job-01 |
+|---|---|---|---|
+| nominal | 343 / 75 | 663 / 238 | 0.000 |
+| dephasing (sigma 0.022 rad) | 320 / 73 | 618 / 236 | 0.000 |
+| heater gain (kappa 0.0014) | 283 / 55 | 527 / 167 | -0.005 |
+| thermal crosstalk | 319 / 78 | 616 / 241 | -0.001 |
+| coupler offset | 326 / 93 | 628 / 241 | 0.001 |
+| coupler noise | 320 / 73 | 617 / 235 | 0.000 |
+| static heater offsets, tau 0.1 | 55 / 33 | 54 / 48 | -0.022 |
+| static heater offsets, tau 0.3 | 41 / 22 | 39 / 30 | -0.025 |
+| detector efficiency (supplementary) | 254 / 43 | 465 / 119 | -0.002 |
+
+Job-01's block-conditioned X0 + Xc2 reads -0.0307 [-0.0483, -0.0131].
+- The one- and two-parameter families fail in and out of sample and leave X0 +
+  Xc2 at -0.005 or above. Heater phase noise fits at sigma 0.022 rad, far
+  below what a 0.97 contrast needs, so dephasing, a uniform heater gain,
+  nearest-neighbor thermal crosstalk, a uniform coupler offset, coupler noise
+  and per-mode detection efficiency are each rejected as the source of the
+  analyzer response. Efficiency acts through cos^2 phi at theta = 0, which is
+  sign-even, and its mode-2 term runs to the -0.5 bound. It was added beside
+  the preregistered table and decides nothing.
+- Shared static heater offsets (rms 0.060 and 0.137 rad) reproduce the
+  departure: predicted X0 + Xc2 of -0.022 and -0.025 lies inside job-01's
+  interval, and the predicted configuration residuals correlate with job-01's
+  at 0.97 and 0.98 on X and 0.79 and 0.91 on Y. They still fail the held-out
+  test (X 54 and 39, Y 48 and 30 on 10; p at most 0.001). The in-sample misfit
+  is as large as the held-out one, so the offsets underfit rather than
+  overfit. A constant offset per heater captures most of the reproducible
+  configuration response, and the rest needs heater errors that change with
+  the setting.
+- The offsets the data identify best (standard error about 0.007 rad) agree
+  between the two prior widths: the mode-2 heater in mesh column 33 at -0.082
+  and -0.080 rad, the mode-2 heater in column 5 at +0.051 and +0.054, and
+  mode-1 heaters in columns 3 and 8 at -0.03 to -0.04 and +0.04 to +0.05.
+  Offsets on the mode-4 heaters change with the prior and are not identified.
+
+The X0 + Xc2 departure is therefore a coherent calibration error of the
+compiled heater phases; incoherent noise and uniform coupler, gain or detector
+errors do not produce it. Confidence is medium. It would rise if a family
+adding a setting-dependent heater term to the static offsets (a per-heater
+gain or a drive-dependent response) passed the held-out test. It would fall
+if a family without heater-phase errors passed. Pooled offsets, effective
+phases and the multinomial ignore drift within an iteration. The static fit
+replays within a relative 1e-2 across BLAS builds, because its L-BFGS endpoint
+follows the build.
