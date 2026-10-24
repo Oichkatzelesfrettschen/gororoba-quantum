@@ -13,6 +13,8 @@ from pathlib import Path
 
 import pytest
 
+pytestmark = pytest.mark.audit
+
 ROOT = Path(__file__).resolve().parents[2]
 # (module, its row table, the gate-name prefix of its groups).
 MODULES = (

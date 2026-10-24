@@ -16,6 +16,8 @@ from unittest.mock import patch
 import pytest
 import run_gates
 
+pytestmark = pytest.mark.audit
+
 ROOT = Path(__file__).resolve().parents[2]
 LISTED: list[dict[str, Any]] = [
     {"name": "fast", "cwd": ".", "cmd": "true", "seconds": 1.0},

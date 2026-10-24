@@ -13,6 +13,10 @@ import re
 import shlex
 from pathlib import Path
 
+import pytest
+
+pytestmark = pytest.mark.audit
+
 ROOT = Path(__file__).resolve().parents[2]
 PREFIX = '"$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 '
 GROUPED = ("tests/test_cli_self_tests.py", "tests/test_cli_record_checks.py")

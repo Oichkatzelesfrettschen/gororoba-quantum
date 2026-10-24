@@ -21,6 +21,7 @@ from hypercomplex_libraries import (
 )
 
 
+@pytest.mark.audit
 def test_inventory_covers_locks_and_independent_roles() -> None:
     records = {row["distribution"]: row for row in inventory()["libraries"]}
     for name in ("libqasm", "qxelarator", "hyprat", "octonion", "python-flint", "cryptography", "qutip"):
@@ -32,6 +33,7 @@ def test_inventory_covers_locks_and_independent_roles() -> None:
         raise RuntimeError("coefficient arithmetic does not submit quantum jobs")
 
 
+@pytest.mark.audit
 def test_documented_candidates_and_provider_adapters_have_roles() -> None:
     rows = {row["distribution"]: row for row in inventory()["libraries"]}
     for name in (
@@ -89,6 +91,7 @@ def test_runtime_manifest_and_dispatch_pin_discovery(tmp_path: Path) -> None:
         check_execution_coverage(record, tmp_path)
 
 
+@pytest.mark.audit
 def test_retained_execution_inventory_covers_authoritative_sources() -> None:
     record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
     check_execution_coverage(record, ROOT)
@@ -209,6 +212,7 @@ def import_snapshot(tmp_path: Path) -> tuple[Path, dict[str, Any]]:
     return tmp_path, record
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("change", ["add", "remove"])
 def test_current_import_scan_rejects_tracked_source_changes(
     import_snapshot: tuple[Path, dict[str, Any]], change: str
