@@ -885,7 +885,7 @@ equations used here. Five findings set the plan:
    one-photon route. Q1's loss of about half therefore points at the compile
    and calibration path, not at the glass.
 2. Calibration episodes move leakage by more than an order of magnitude: a
-   Belenos study (Tully et al., arXiv:2606.18408) saw HOM visibility fall from
+   Belenos study (Tully et al., [arXiv:2606.18408](../papers/2606.18408.md)) saw HOM visibility fall from
    90.7 % to 21.2 % and a dump-port leak rise 66-fold across one
    recalibration, then recover. qpu:belenos read HOM 92.6 % at Q1 and 57.8 %
    after the next calibration.
