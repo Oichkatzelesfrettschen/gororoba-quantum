@@ -38,13 +38,30 @@ def citing_claims(state: dict[str, Any], gates: list[str]) -> dict[str, list[str
     return cited
 
 
-def report(run_url: str, failed_jobs: list[str], records: list[dict[str, Any]], state: dict[str, Any]) -> str:
+def load(path: Path) -> dict[str, Any] | None:
+    """The JSON object at path, or None when it is absent or unreadable.
+
+    The issue reports an audit whose own gates may have broken the registry or
+    cut a shard record short, so an input that fails to load drops out of the
+    report instead of stopping it.
+    """
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    return document if isinstance(document, dict) else None
+
+
+def report(run_url: str, failed_jobs: list[str], records: list[dict[str, Any]], state: dict[str, Any] | None) -> str:
     gates = failing_gates(records)
     lines = [f"The scheduled audit run {run_url} failed.", ""]
     if gates:
         lines += ["| failing gate | claims citing it |", "| --- | --- |"]
-        for gate, claims in citing_claims(state, gates).items():
-            lines.append(f"| `{gate}` | {', '.join(f'`{claim}`' for claim in claims) or 'none'} |")
+        if state is None or not isinstance(state.get("claims"), list):
+            lines += [f"| `{gate}` | unavailable: {RESEARCH_STATE.relative_to(ROOT)} did not load |" for gate in gates]
+        else:
+            for gate, claims in citing_claims(state, gates).items():
+                lines.append(f"| `{gate}` | {', '.join(f'`{claim}`' for claim in claims) or 'none'} |")
         lines.append("")
     if failed_jobs:
         lines.append("Failing jobs: " + ", ".join(f"`{job}`" for job in sorted(failed_jobs)) + ".")
@@ -60,9 +77,13 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--research-state", type=Path, default=RESEARCH_STATE)
     parser.add_argument("timings", nargs="*", type=Path)
     arguments = parser.parse_args(argv)
-    records = [json.loads(path.read_text(encoding="utf-8")) for path in arguments.timings]
-    state = json.loads(arguments.research_state.read_text(encoding="utf-8"))
-    sys.stdout.write(report(arguments.run_url, arguments.failed_job, records, state))
+    loaded = {path: load(path) for path in arguments.timings}
+    records = [record for record in loaded.values() if record is not None]
+    unreadable = sorted(str(path) for path, record in loaded.items() if record is None)
+    body = report(arguments.run_url, arguments.failed_job, records, load(arguments.research_state))
+    if unreadable:
+        body += "\nUnreadable timing records: " + ", ".join(f"`{name}`" for name in unreadable) + ".\n"
+    sys.stdout.write(body)
     return 0
 
 
