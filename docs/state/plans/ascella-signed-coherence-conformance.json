@@ -42,6 +42,34 @@
             }
           ],
           "scope_sha256": "7fa0703e609b4031e512351e5115cb944570d6ae72acd09a8bfc492c3f485da7"
+        },
+        {
+          "result": "The builder writes the 64-iteration twelve-mode template request and, through qd_platform.payload without sending, its serialized job body (Perceval estimate 524,288 shots); gate core-680 validates the retained case and body against Perceval and the closed-form operators and refuses a perturbed unitary, exchanged X/Y analyzers and a four-mode input occupation.",
+          "observed_at": "2026-10-24T06:07:17+00:00",
+          "revision": "f74154f735d4ea572c8d93be8a0d387c8602768a",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/cases.json",
+              "sha256": "3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json",
+              "sha256": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/body-build.json",
+              "sha256": "b4a1ccfff4ac9e5aab9cf8fa827b79486a189e42bcda800316d219a75a43a28a"
+            },
+            {
+              "ref": "scripts/ascella_coherence_request.py",
+              "sha256": "1327a9a3b13b74b0cd883b91cd8db3fe6ca8b674f4ab2bd31942a0933cbcfaf2"
+            }
+          ],
+          "scope_sha256": "7fa0703e609b4031e512351e5115cb944570d6ae72acd09a8bfc492c3f485da7"
         }
       ]
     },
