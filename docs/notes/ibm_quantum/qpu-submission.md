@@ -7,6 +7,12 @@ submission binds to its approved dry-run record, how calibration identity and
 prediction reuse work, the qubit exclusion option, the per-instance inventories
 and the Kaggle noise-snapshot rule.
 
+- IBM's Open Plan also offers a one-time 180 minutes over 12 months, opt-in,
+  to an account that has used 20 minutes in any 12 months
+  ([IBM blog 2026-03-16](https://www.ibm.com/quantum/blog/open-plan-updates),
+  surveyed in [n21_feedforward_backends.md](../topics/n21_feedforward_backends.md));
+  each account counts its own usage, and at the 600 s window an account
+  reaches 1200 s across at least two 28-day windows.
 - The plan allows 600 s of quantum time on a rolling 28-day window: usage()
   reports a usage_period that ends at the moment of the call, so each second
   spent returns 28 days later and no reset date exists.
