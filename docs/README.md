@@ -112,6 +112,12 @@ differs from it only in the `cd_core.py` digest.
 | [1107.1375.md](notes/papers/1107.1375.md) | Bales 2003 twisted group algebras and the recursive Cayley-Dickson twist, with its index and product convention |
 | [2103.12805.md](notes/papers/2103.12805.md) | Flaut and Boboescu 2021 twist-tree recursion and the twisted-group-algebra theorem for the Cayley-Dickson process (hosted, CC BY 4.0) |
 | [1003.0429.md](notes/papers/1003.0429.md) | Morier-Genoud and Ovsienko 2011 cubic twisted group algebras; the octonion cochain and the Cayley-Dickson algebras outside the cubic class |
+| [2512.07210.md](notes/papers/2512.07210.md) | Wilmot 2026 sedenion automorphisms: the graded sedenion table and 35-term calibration (both agree with `cd_core`), and the Schafer and Brown discrepancy for `Aut(S)` |
+| [2609.10569.md](notes/papers/2609.10569.md) | Gresnigt 2026 review of the sedenion `S3` family symmetry: Table 5 (11 printed defects against `cd_core`) and the `S3` maps `epsilon` and `psi`, certified on basis pairs |
+| [1907.07024.md](notes/papers/1907.07024.md) | Heikoop et al. 2020 morphisms of skew Hadamard matrices: the field-isomorphism map from quaternary unit Hadamard matrices to real Hadamard matrices |
+| [ocathain-2012-nonaffine-hadamard.md](notes/papers/ocathain-2012-nonaffine-hadamard.md) | O Cathain 2012 doubly transitive automorphism groups of Hadamard matrices: Ito's classification, Paley matrices and `PSL_2(q)`, skew difference sets (deposited text) |
+| [kivunge-2013-sign-matrices-2n-ons.md](notes/papers/kivunge-2013-sign-matrices-2n-ons.md) | Kivunge 2013 conference slides on sign matrices of the `2^n`-ons: Hadamard and skew Hadamard claims, Smith-Conway sign matrices equal to the `cd_core` transpose |
+| [0709.1447.md](notes/papers/0709.1447.md) | Luhn, Nasri and Ramond 2007 `PSL_2(7)`: presentation, classes, character table, subgroups and the Klein quartic |
 | [pmc-4957665-nonlinearity-measures.md](notes/papers/pmc-4957665-nonlinearity-measures.md) | nonlinearity measures for Boolean functions |
 | [2306.00874.md](notes/papers/2306.00874.md) | Maring et al. 2024 Quandela Ascella platform: source, chip, phase-voltage model and gate benchmarks |
 | [2310.15349.md](notes/papers/2310.15349.md) | Fyrillas et al. 2024 clear-box machine-learning characterization of a 12-mode photonic chip: imperfection model and amplitude fidelities (hosted, CC BY 4.0) |

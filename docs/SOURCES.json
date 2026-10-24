@@ -1482,6 +1482,22 @@
       "doi": "10.1038/s41567-018-0156-2",
       "venue": "Nature Physics 14(8), 822-826 (2018)",
       "receipt_url": "https://api.crossref.org/works/10.1038/s41567-018-0156-2"
+    },
+    "docs/notes/papers/2512.07210.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/2609.10569.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/1907.07024.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/kivunge-2013-sign-matrices-2n-ons.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/ocathain-2012-nonaffine-hadamard.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1016/j.jcta.2012.02.011",
+      "venue": "Journal of Combinatorial Theory, Series A 119(6), 1235-1249 (2012)",
+      "receipt_url": "https://api.crossref.org/works/10.1016/j.jcta.2012.02.011"
+    },
+    "docs/notes/papers/0709.1447.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1063/1.2823978",
+      "venue": "Journal of Mathematical Physics 48(12), 123519 (2007)",
+      "receipt_url": "https://api.crossref.org/works/10.1063/1.2823978"
     }
   },
   "web_sources": [
@@ -2646,6 +2662,78 @@
       "bytes": 5262,
       "retrieved_at_utc": "2026-10-24T21:15:31+00:00",
       "reading_scope": "Author Correction to Veps\u00e4l\u00e4inen et al., Nature 586, E8 (2020): existence and title",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/pdf/2512.07210v3",
+      "note": "docs/notes/papers/2512.07210.md",
+      "sha256": "615403aa8071e1531c7f55855afe476ea7bf638e35f7c2fdf4ad372b141407d1",
+      "bytes": 463452,
+      "retrieved_at_utc": "2026-10-24T21:35:46+00:00",
+      "reading_scope": "Wilmot, arXiv 2512.07210v3, 30 pages: abstract, introduction, Sections 2 and 3 through Theorem 2, the statements of Theorems 3 to 7 and Section 5, the summary; Table 2 and Eq. 9 compared with cd_core; appendix tables unread beyond captions",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/2609.10569v1",
+      "note": "docs/notes/papers/2609.10569.md",
+      "sha256": "fddbf1db928615cd29ef0db5b9052cd599d7b6461034b0bf6264b0e7d150bb43",
+      "bytes": 647210,
+      "retrieved_at_utc": "2026-10-24T21:35:46+00:00",
+      "reading_scope": "Gresnigt, arXiv 2609.10569v1, 59 pages: abstract, introduction, Sections 3.1.1 to 3.2.1, 3.5 and 3.6, Appendix A and Table 5 (read as text and page image); Sections 2, 3.3, 3.4, 3.7 and 4 to 8 read as headings only",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/1907.07024v4",
+      "note": "docs/notes/papers/1907.07024.md",
+      "sha256": "9e5ecee48867b1d455244ccadc17879ce25082b4d07d7f61d48b8958a892353c",
+      "bytes": 161976,
+      "retrieved_at_utc": "2026-10-24T21:35:46+00:00",
+      "reading_scope": "Heikoop, Nunez Ponasso, O Cathain and Pugmire, arXiv 1907.07024v4, 8 pages: all pages; the number-theoretic proofs of Section 3 read for statements only",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://doras.dcu.ie/29113/1/NonaffineHadamard.pdf",
+      "note": "docs/notes/papers/ocathain-2012-nonaffine-hadamard.md",
+      "sha256": "9753fda50325ac57bdc98ab5bd18c669f7482771e93a2e8d7b8ae02934ab66db",
+      "bytes": 370029,
+      "retrieved_at_utc": "2026-10-24T21:35:48+00:00",
+      "reading_scope": "O Cathain, deposited text of 27 February 2012 (version of record: J. Combin. Theory Ser. A 119(6), 1235-1249), 20 pages: abstract, Sections 1 to 6 through Theorem 50; proofs of Lemmas 35 to 46 and Section 7 read as statements or headings only",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1016/j.jcta.2012.02.011",
+      "note": "docs/notes/papers/ocathain-2012-nonaffine-hadamard.md",
+      "sha256": "161004531beeb370d49427d1451345e174b2cab7e83d27e252e8b84d44344ac7",
+      "bytes": 8819,
+      "retrieved_at_utc": "2026-10-24T21:35:57+00:00",
+      "reading_scope": "O Cathain 2012, Journal of Combinatorial Theory, Series A 119(6), 1235-1249: bibliographic identity",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://cs.du.edu/~petr/milehigh/2013/Kivunge.pdf",
+      "note": "docs/notes/papers/kivunge-2013-sign-matrices-2n-ons.md",
+      "sha256": "859183fca2c0ef330c322af5b9f3e3807eb8e2ce29a38873d2a81c46b90a2e5d",
+      "bytes": 881039,
+      "retrieved_at_utc": "2026-10-24T21:35:49+00:00",
+      "reading_scope": "Kivunge, Third Mile High Conference on Nonassociative Mathematics slides, 13 August 2013, 91 PDF pages (44 distinct frames): every distinct frame; conjugation bars of pp. 7 and 9 read from page images; sign matrices of pp. 17-29 and 58 compared with cd_core",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/0709.1447v2",
+      "note": "docs/notes/papers/0709.1447.md",
+      "sha256": "b40bcb03d8bef50f1f83f41fa482ecea8831eafc14fccf55fbc4885c601b21e3",
+      "bytes": 345702,
+      "retrieved_at_utc": "2026-10-24T21:35:46+00:00",
+      "reading_scope": "Luhn, Nasri and Ramond, arXiv 0709.1447v2, 43 pages: abstract, Section 3 on PSL_2(7), the triplet generators of Section 4.1, the subgroup statements of Section 5 and the Klein quartic of Section 6; sextet, octet and septet representations and the model sections unread",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1063/1.2823978",
+      "note": "docs/notes/papers/0709.1447.md",
+      "sha256": "87f1e4e06aab48f097021f51acfcc7a04d96cdb34a1f5a2979f3f727324323d3",
+      "bytes": 14903,
+      "retrieved_at_utc": "2026-10-24T21:35:57+00:00",
+      "reading_scope": "Luhn, Nasri and Ramond 2007, Journal of Mathematical Physics 48(12), 123519: bibliographic identity",
       "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
@@ -7649,6 +7737,217 @@
         "evidence_locator": "PDF page 5, acknowledgments and reprints notice",
         "reading_scope": "Acknowledgments and reprints notice on PDF page 5.",
         "evidence_summary": "The work is stated as not subject to US copyright; the Springer Nature reprints-and-permissions notice appears on the same page; no worldwide redistribution grant is stated."
+      }
+    },
+    {
+      "title": "Automorphisms of Sedenions",
+      "authors": [
+        "Wilmot, G. P."
+      ],
+      "version": "v3, 2026-07-30",
+      "source_url": "https://arxiv.org/pdf/2512.07210v3",
+      "note": "docs/notes/papers/2512.07210.md",
+      "audited_at_utc": "2026-10-24T21:53:06+00:00",
+      "sha256": "615403aa8071e1531c7f55855afe476ea7bf638e35f7c2fdf4ad372b141407d1",
+      "bytes": 463452,
+      "pages": 30,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/2512.07210v3.pdf",
+      "local_cache_path": "docs/local_source_cache/2512.07210v3.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The abstract page names CC BY-NC-SA 4.0; the NonCommercial term excludes repository rehosting of a retained copy.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "615403aa8071e1531c7f55855afe476ea7bf638e35f7c2fdf4ad372b141407d1",
+        "verified_at_utc": "2026-10-24T21:53:06+00:00",
+        "license_identifier": "CC-BY-NC-SA-4.0",
+        "evidence_url": "https://arxiv.org/abs/2512.07210v3",
+        "evidence_sha256": "266da784e7179902c80d6d8b273619b927e36f8fce5f5848bb0ffd4c1c2375c5",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2512.07210v3.html",
+        "evidence_retrieved_at_utc": "2026-10-24T21:35:47+00:00",
+        "license_url": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+        "decision": "external_only",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Sedenions, Clifford Algebras, and Three Fermion Generations: A Focused Review",
+      "authors": [
+        "Gresnigt, Niels"
+      ],
+      "version": "v1, 2026-09-02",
+      "source_url": "https://arxiv.org/pdf/2609.10569v1",
+      "note": "docs/notes/papers/2609.10569.md",
+      "audited_at_utc": "2026-10-24T21:53:06+00:00",
+      "sha256": "fddbf1db928615cd29ef0db5b9052cd599d7b6461034b0bf6264b0e7d150bb43",
+      "bytes": 647210,
+      "pages": 59,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/2609.10569v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2609.10569v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "fddbf1db928615cd29ef0db5b9052cd599d7b6461034b0bf6264b0e7d150bb43",
+        "verified_at_utc": "2026-10-24T21:53:06+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_url": "https://arxiv.org/abs/2609.10569v1",
+        "evidence_sha256": "c40d4fa3e138473750c2347769d6ef9281faaffe4a1976d2048710f856f308ff",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2609.10569v1.html",
+        "evidence_retrieved_at_utc": "2026-10-24T21:35:47+00:00",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Morphisms of Skew Hadamard Matrices",
+      "authors": [
+        "Heikoop, Philip",
+        "Nunez Ponasso, Guillermo",
+        "O Cathain, Padraig",
+        "Pugmire, John"
+      ],
+      "version": "v4, 2020-04-17",
+      "source_url": "https://arxiv.org/pdf/1907.07024v4",
+      "note": "docs/notes/papers/1907.07024.md",
+      "audited_at_utc": "2026-10-24T21:53:06+00:00",
+      "sha256": "9e5ecee48867b1d455244ccadc17879ce25082b4d07d7f61d48b8958a892353c",
+      "bytes": 161976,
+      "pages": 8,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/1907.07024v4.pdf",
+      "local_cache_path": "docs/local_source_cache/1907.07024v4.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "9e5ecee48867b1d455244ccadc17879ce25082b4d07d7f61d48b8958a892353c",
+        "verified_at_utc": "2026-10-24T21:53:06+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_url": "https://arxiv.org/abs/1907.07024v4",
+        "evidence_sha256": "8b7f2e4b013372d698e57243cdc1d147ff4537af4cfdd79f9858fe842f73f1d9",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1907.07024v4.html",
+        "evidence_retrieved_at_utc": "2026-10-24T21:35:47+00:00",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Simple Finite Non-Abelian Flavor Groups",
+      "authors": [
+        "Luhn, Christoph",
+        "Nasri, Salah",
+        "Ramond, Pierre"
+      ],
+      "version": "v2, 2007-12-12",
+      "source_url": "https://arxiv.org/pdf/0709.1447v2",
+      "note": "docs/notes/papers/0709.1447.md",
+      "audited_at_utc": "2026-10-24T21:53:06+00:00",
+      "sha256": "b40bcb03d8bef50f1f83f41fa482ecea8831eafc14fccf55fbc4885c601b21e3",
+      "bytes": 345702,
+      "pages": 43,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/0709.1447v2.pdf",
+      "local_cache_path": "docs/local_source_cache/0709.1447v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "b40bcb03d8bef50f1f83f41fa482ecea8831eafc14fccf55fbc4885c601b21e3",
+        "verified_at_utc": "2026-10-24T21:53:06+00:00",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "evidence_url": "https://arxiv.org/abs/0709.1447v2",
+        "evidence_sha256": "bd6bbf19f5abd0c3f64f7f1d5b0a991dcbcd893fb4843f0c60b619f98054582c",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-0709.1447v2.html",
+        "evidence_retrieved_at_utc": "2026-10-24T21:35:47+00:00",
+        "license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "decision": "external_only",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Difference sets and doubly transitive actions on Hadamard matrices",
+      "authors": [
+        "O Cathain, Padraig"
+      ],
+      "version": "Deposited text dated 2012-02-27; version of record J. Combin. Theory Ser. A 119(6), 1235-1249 (2012), DOI 10.1016/j.jcta.2012.02.011",
+      "source_url": "https://doras.dcu.ie/29113/1/NonaffineHadamard.pdf",
+      "note": "docs/notes/papers/ocathain-2012-nonaffine-hadamard.md",
+      "audited_at_utc": "2026-10-24T21:53:06+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "9753fda50325ac57bdc98ab5bd18c669f7482771e93a2e8d7b8ae02934ab66db",
+      "bytes": 370029,
+      "pages": 20,
+      "excluded_published_path": "docs/pdf/ocathain-2012-nonaffine-hadamard.pdf",
+      "local_cache_path": "docs/local_source_cache/ocathain-2012-nonaffine-hadamard.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "DORAS record page, Copyright Information and Creative Commons lines",
+      "rights_reason": "The DORAS record lists 'Copyright Information: (c) 2012 Elsevier' and a Creative Commons Attribution-Noncommercial-Share Alike 4.0 license for the deposited PDF. The deposited text is dated before publication and the record does not say which text the license covers, and the NonCommercial term excludes repository rehosting, so the repository retains its citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "9753fda50325ac57bdc98ab5bd18c669f7482771e93a2e8d7b8ae02934ab66db",
+        "verified_at_utc": "2026-10-24T21:53:06+00:00",
+        "decision": "external_only",
+        "license_identifier": "CC-BY-NC-SA-4.0",
+        "license_url": null,
+        "evidence_url": "https://doras.dcu.ie/29113/",
+        "evidence_sha256": "3ae03e7710392cb1c81f0326bb936ee7b25b659c9a48f11d5adc67b9c8af4def",
+        "evidence_locator": "DORAS record page, Copyright Information and Creative Commons lines",
+        "reading_scope": "Record page metadata: title, journal reference, Elsevier copyright line, deposited-file license line.",
+        "evidence_summary": "The record page names the Elsevier 2012 copyright and a CC BY-NC-SA 4.0 license for the deposited file; the license does not establish a rehosting right for this repository."
+      }
+    },
+    {
+      "title": "Sign Matrices for Frames of 2^n-ons under Smith Conway and Cayley Dickson Multiplications",
+      "authors": [
+        "Kivunge, Benard"
+      ],
+      "version": "Third Mile High Conference on Nonassociative Mathematics, University of Denver, presentation slides of 2013-08-13 (Beamer, 91 PDF pages)",
+      "source_url": "https://cs.du.edu/~petr/milehigh/2013/Kivunge.pdf",
+      "note": "docs/notes/papers/kivunge-2013-sign-matrices-2n-ons.md",
+      "audited_at_utc": "2026-10-24T21:53:06+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "859183fca2c0ef330c322af5b9f3e3807eb8e2ce29a38873d2a81c46b90a2e5d",
+      "bytes": 881039,
+      "pages": 91,
+      "excluded_published_path": "docs/pdf/kivunge-2013-sign-matrices-2n-ons.pdf",
+      "local_cache_path": "docs/local_source_cache/kivunge-2013-sign-matrices.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Conference talks page and the PDF title frame",
+      "rights_reason": "The conference page lists the slides under Talks and states no license; the PDF carries no copyright or license notice. No redistribution grant is established, so the repository retains its citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "859183fca2c0ef330c322af5b9f3e3807eb8e2ce29a38873d2a81c46b90a2e5d",
+        "verified_at_utc": "2026-10-24T21:53:06+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://cs.du.edu/~petr/milehigh/2013/",
+        "evidence_sha256": "93e8a68d74df840326f3f49c17a3e3d5f7048d959e84efeef313734a081369f8",
+        "evidence_locator": "Conference talks page entry for Kivunge and the PDF title frame",
+        "reading_scope": "Talks list entry and the absence of any license or copyright statement on the page and in the PDF text layer.",
+        "evidence_summary": "The conference page lists the slides and states no license; the PDF carries no notice; no redistribution grant is stated."
       }
     }
   ],
