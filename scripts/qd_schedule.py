@@ -24,12 +24,20 @@ The scheduler's state lives beside the schedule in results/quandela/schedules/NA
   checkpoint); the prepared run directory is removed, since every directory
   under results/quandela/runs/ is one sent job to scripts/research_state.py.
 - KEY.receipt.json records the matched check and the after-job snapshot of a
-  collected run; outcome failed stops the schedule.
+  collected run; outcome failed stops an on_stop halt schedule.
 
-Jobs run strictly in order, one per step: a held, failed or interrupted job
-stops every later one. A due job waits, staging nothing, while the platform
-reads a status the job does not admit or the token has a running or queued
-job; a job past its optional latest_start holds.
+Jobs run strictly in order, one per step. Under on_stop halt (the default) a
+held, failed or interrupted job stops every later one. Under on_stop skip,
+for a series of independent jobs that each stand alone, a held or failed job
+keeps its record and the next job proceeds; an interrupted or foreign job
+still stops the schedule, since its request may be live on the provider. A
+skip schedule names no earlier job in after, because a held job has no
+execution end. A due job waits, staging nothing, while the platform reads a
+status the job does not admit or the token has a running or queued job; a
+job past its optional latest_start holds. A step that finds the next job due
+within LEAD seconds, with the job's expected seconds and the collection
+margin still inside the deadline, sleeps until it is due, so the start lands
+at not_before rather than at the next scheduled tick.
 
 Subcommands:
 
@@ -95,6 +103,10 @@ PLACEHOLDERS = ("{plan}", "{run}")
 # A tick ends its collection this many seconds before the job's deadline, so
 # the commit and push of a finished collection fit inside the hosted runner.
 COLLECT_MARGIN = 600.0
+# GitHub starts scheduled ticks up to an hour apart under load, so a tick sleeps on a job due within this many seconds.
+LEAD = 3600.0
+ON_STOP = ("halt", "skip")
+CREDIT_TOLERANCE = 1e-9
 TAIL = 2000
 
 
@@ -168,6 +180,7 @@ def load(path: Path) -> dict[str, Any]:
     require((ROOT / str(schedule.get("case", ""))).is_file(), f"{name}: case {schedule.get('case')!r} is not a file")
     require(isinstance(schedule.get("platform"), str) and schedule["platform"], f"{name}: platform is empty")
     finite(schedule.get("max_total_credits"), f"{name}: max_total_credits")
+    require(schedule.get("on_stop", "halt") in ON_STOP, f"{name}: on_stop must be one of {', '.join(ON_STOP)}")
     jobs = schedule.get("jobs")
     require(isinstance(jobs, list) and jobs, f"{name}: jobs must be a nonempty list")
     keys: list[str] = []
@@ -200,6 +213,7 @@ def load(path: Path) -> dict[str, Any]:
         after = job.get("after")
         if after is not None:
             require(isinstance(after, dict) and after.get("key") in keys, f"{where}: after must name an earlier job")
+            require(not skips(schedule), f"{where}: an on_stop skip schedule starts each job at its own not_before")
             finite(after.get("min_gap_seconds"), f"{where}: min_gap_seconds")
         for field in ("max_credits", "expected_seconds", "per_job_credits"):
             finite(job.get(field), f"{where}: {field}")
@@ -211,12 +225,17 @@ def load(path: Path) -> dict[str, Any]:
             inside(ROOT / "results/quandela", job["snapshot_out"], f"{where}: snapshot_out")
         keys.append(key)
         runs.add(run_name)
-    total = sum(job["max_credits"] for job in jobs)
+    total = math.fsum(job["max_credits"] for job in jobs)
+    # Decimal credit figures carry binary rounding: seven ceilings of 1.12 sum to 7.840000000000001.
     require(
-        total <= schedule["max_total_credits"],
+        total <= schedule["max_total_credits"] + CREDIT_TOLERANCE,
         f"{name}: job ceilings {total:g} exceed {schedule['max_total_credits']:g}",
     )
     return schedule
+
+
+def skips(schedule: dict[str, Any]) -> bool:
+    return schedule.get("on_stop", "halt") == "skip"
 
 
 def state_dir(schedule: dict[str, Any], root: Path | None = None) -> Path:
@@ -347,7 +366,8 @@ def hold(schedule: dict[str, Any], job: dict[str, Any], run_id: str, stage: str,
         "held_utc": qd.now(),
     }
     write(state_dir(schedule) / f"{job['key']}.hold.json", record)
-    return {"outcome": "stop", "key": job["key"], "state": "held", "stage": stage, "reason": reason[-TAIL:]}
+    outcome = "continue" if skips(schedule) else "stop"
+    return {"outcome": outcome, "key": job["key"], "state": "held", "stage": stage, "reason": reason[-TAIL:]}
 
 
 def not_ready(schedule: dict[str, Any], job: dict[str, Any]) -> str:
@@ -476,7 +496,8 @@ def post(schedule: dict[str, Any], job: dict[str, Any], run: Path, run_id: str) 
         "received_utc": qd.now(),
     }
     write(state_dir(schedule) / f"{job['key']}.receipt.json", receipt)
-    return {"outcome": "continue" if outcome == "passed" else "stop", "key": job["key"], "state": outcome}
+    proceed = outcome == "passed" or skips(schedule)
+    return {"outcome": "continue" if proceed else "stop", "key": job["key"], "state": outcome}
 
 
 def step(
@@ -486,13 +507,14 @@ def step(
     work: Path,
     plan_only: bool = False,
     clock: Callable[[], float] = time.time,
+    sleep: Callable[[float], None] = time.sleep,
 ) -> dict[str, Any]:
     """Perform the next action of the schedule's first unfinished job."""
     if not schedule["enabled"] and not plan_only:
         return {"outcome": "stop", "reason": f"{schedule['name']} is disabled"}
     for job in schedule["jobs"]:
         state, run = job_state(schedule, job, run_id)
-        if state == "passed":
+        if state == "passed" or (state in ("held", "failed") and skips(schedule)):
             continue
         if state in ("held", "failed", "interrupted", "foreign"):
             where = run.name if run is not None else None
@@ -520,6 +542,9 @@ def step(
         if run is not None and state == "prepared":
             return send(schedule, job, run, run_id, clock(), work)
         start = due_time(schedule, job)
+        lead = start - clock()
+        if 0 < lead <= LEAD and start + job["expected_seconds"] + COLLECT_MARGIN <= deadline:
+            sleep(lead)
         latest = job.get("latest_start")
         if latest is not None and clock() > utc(latest):
             return hold(schedule, job, run_id, "latest_start", f"no start before {latest}")

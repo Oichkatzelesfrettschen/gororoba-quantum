@@ -306,8 +306,9 @@ twirling and dynamical decoupling off.
 ## Reviews and merges
 
 Codex, the chatgpt-codex-connector app, supplies the default pull-request
-review. It reviews on open, and an issue comment `@codex review` requests a
-review of the current head.
+review. It reviews only on request: an issue comment `@codex review` asks for
+a review of the current head, so the operator posts one right after opening
+a PR and after every push that needs review.
 
 Codex is the only hosted reviewer. Copilot reviews are billed to the owner,
 so no pull request requests one; when the Codex app reports exhausted
