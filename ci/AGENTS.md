@@ -1,9 +1,9 @@
 # CI and gate guide
 
 This file applies to the pull-request workflow, the audit's gate machinery
-under ci/, and the replay and cost rules of the audit. The repository's root AGENTS.md carries
-the short form of the code-style commands and the merge flow; CLAUDE.md loads
-this file.
+under ci/, and the replay and cost rules of the audit. The repository's root
+AGENTS.md carries the short form of the code-style commands and the merge
+flow; CLAUDE.md loads this file.
 
 ## Layout and gates
 
@@ -52,8 +52,9 @@ acquisitions; their research-state role is regression rather than replay.
 - `mypy` (static type checking against the configuration in pyproject.toml):
   on the touched files, and over gororoba_quantum/, scripts/, ci/, tests/ and
   kaggle_kernel/ (from gororoba_quantum/: `mypy . ../scripts ../ci ../tests
-  ../kaggle_kernel`) when a change alters a function, class or type signature another module imports,
-  since a per-file run never reads the unchanged callers.
+  ../kaggle_kernel`) when a change alters a function, class or type
+  signature another module imports, since a per-file run never reads the
+  unchanged callers.
 Run them through `"$PYTHON" ci/pinned_tool.py TOOL ARGS`, which uses the
 versions ci/requirements-ci.txt pins. Formatting is only ruff format; mypy
 checks types and ruff check catches defects, and neither rewrites code.
@@ -313,8 +314,8 @@ its manifests; give an expensive test a small unmarked counterpart. A bug fix
 adds a focused unmarked regression test, and the `tests` job's measured
 runtime stays inside its timeout. The audit gates select by path and ignore
 the marker, so they still run every marked test. In the audit, gate core-615
-runs `pytest -n auto --dist loadgroup` over tests/ in one process pool, so each worker imports the repository modules
-once; issue #291 carries the migration plan and its falsifier, a planted
+runs `pytest -n auto --dist loadgroup` over tests/ in one process pool, so
+each worker imports the repository modules once; issue #291 carries the migration plan and its falsifier, a planted
 mutant per moved contract. core-615 ignores the paths its sibling gates
 `core-behavior-NN` run, each a list of test modules or directories sized
 under the 30 s pr budget, or a full gate for a test whose single node
