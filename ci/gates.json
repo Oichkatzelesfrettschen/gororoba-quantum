@@ -3788,7 +3788,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_order_retry_collector.py && \"$PYTHON\" -B -W error scripts/ascella_order_retry_collector.py --self-test",
    "name": "core-ascella-order-recovery-replay",
    "seconds": 2.0,
    "tier": "pr"
