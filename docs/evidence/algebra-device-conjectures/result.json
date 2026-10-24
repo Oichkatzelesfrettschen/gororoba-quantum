@@ -8410,8 +8410,8 @@
       ]
     }
   },
-  "frozen_base": "cc5e8e8b3240c17192ca833c63b17a9ad1a78218",
-  "manifest_sha256": "3468b44fe5da334774847670b378c994a1020d263c15b53e4a9e99a4aa4e22cb",
+  "frozen_base": "8cb45200339159479c35ad005cf029186c07fef8",
+  "manifest_sha256": "598e2c44603214aab6df73f238241d5e431775bc1d82f504a81d639dd12d6e78",
   "producer_sha256": "bc186c2a46e645fabf860b06f05c0712bbba7eed60956d55c1f9dbf1cea7a454",
   "proposals": [
     {
@@ -8653,9 +8653,9 @@
   "schema": "algebra-device-conjectures-v1",
   "statistical_policy": "Historical decisions retain their preregistered rules; new comparisons are descriptive. No new p-values are inferred from summary records.",
   "supersedes": {
-    "base_commit": "691853bd8549ff2eea00f39a4a03f80493908c76",
-    "manifest_sha256": "8892a94a820bb2a14a506154a4e5ac3588a7b05854496ea8e7183b0431a2672a",
-    "reason": "Refreshes the bindings of docs/notes/quandela/README.md (#403 adds a pointer to the scheduled-runs runbook) and docs/notes/topics/cd-star-lattice-tower.md (#396 and #401 extend the note), additional context sources that no comparison, proposal or acquisition reads. The census gains six Quandela acquisitions retained since the predecessor (the Ascella order retry and five BDSC stationarity jobs), all outside the selected claim families; the 63 selected acquisitions, the proposals and the comparisons are unchanged. The predecessor's base commit does not hold its bound bytes."
+    "base_commit": "cc5e8e8b3240c17192ca833c63b17a9ad1a78218",
+    "manifest_sha256": "3468b44fe5da334774847670b378c994a1020d263c15b53e4a9e99a4aa4e22cb",
+    "reason": "Re-freezes on a checkout identical to HEAD, so base_commit also holds the registry, the retained runs and the producer; the predecessor was frozen while its producer change was uncommitted. Sources, acquisitions, proposals and comparisons are unchanged from the predecessor, which refreshed docs/notes/quandela/README.md and docs/notes/topics/cd-star-lattice-tower.md and added six Quandela acquisitions outside the selected claim families."
   },
   "versions": {
     "python": "3.14.7",
