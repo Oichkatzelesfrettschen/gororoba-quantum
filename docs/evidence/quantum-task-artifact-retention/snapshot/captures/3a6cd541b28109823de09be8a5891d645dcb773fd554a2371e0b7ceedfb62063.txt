@@ -1,0 +1,11 @@
+{
+ "approval": "Approve corrected pilot after validation",
+ "approved_plan_sha256": "43e0b67a8aaaa1203eacd5f0be9e4c74ac5f4f55576dc16f96591245864dc8a2",
+ "condition": "review and validation admit execution",
+ "expected_credit_debit": 0,
+ "jobs": 24,
+ "minimum_interbatch_pause_seconds": 840,
+ "modeled_execution_seconds": 270.80448,
+ "recorded_at_utc": "2026-10-22T05:10:23.496869+00:00",
+ "shots_per_job": 16384
+}

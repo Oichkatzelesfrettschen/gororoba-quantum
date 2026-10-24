@@ -1,0 +1,33 @@
+1792702283810	geckodriver	INFO	Listening on 127.0.0.1:49679
+1792702283859	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/usr/bin/firefox" "--m ... ss" "--remote-debugging-port" "41753" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "${TEMP}/rust_mozprofileo8aPoQ"
+*** You are running in headless mode.
+1792702284809	Marionette	INFO	Marionette enabled
+1792702284865	Marionette	INFO	Listening on port 42555
+WebDriver BiDi listening on ws://127.0.0.1:41753
+Read port: 42555
+1792702285002	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+1792702288806	Marionette	INFO	Stopped listening on port 42555
+[ERROR wr_glyph_rasterizer::platform::unix::font] Unable to set glyph size and transform: 23
+1792702289264	webdriver::server	INFO	Shutting down
+1792702330101	geckodriver	INFO	Listening on 127.0.0.1:54651
+1792702330130	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/usr/bin/firefox" "--m ... ss" "--remote-debugging-port" "46583" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "${TEMP}/rust_mozprofileqD7GLy"
+*** You are running in headless mode.
+1792702330793	Marionette	INFO	Marionette enabled
+1792702330845	Marionette	INFO	Listening on port 36773
+WebDriver BiDi listening on ws://127.0.0.1:46583
+Read port: 36773
+1792702330971	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: "Experiment desktop-release-rollout-show-relay-to-all-browsers-next-sign-up-modal-cta has unknown featureId: email-autocomplete-relay"
+console.error: "Experiment visual-card-updates has unknown featureId: newtabRefinedCardsLayout"
+console.error: "Experiment enable-nimbus-unenrollment-synchronization has unknown featureId: nimbusStore"
+console.error: "Experiment private-window-visual-refresh-design-change-only has unknown featureId: feltPrivacy"
+[ERROR wr_glyph_rasterizer::platform::unix::font] Unable to set glyph size and transform: 23
+[ERROR wr_glyph_rasterizer::platform::unix::font] Unable to set glyph size and transform: 23
+1792702334725	Marionette	INFO	Stopped listening on port 36773
+1792702335081	webdriver::server	INFO	Shutting down

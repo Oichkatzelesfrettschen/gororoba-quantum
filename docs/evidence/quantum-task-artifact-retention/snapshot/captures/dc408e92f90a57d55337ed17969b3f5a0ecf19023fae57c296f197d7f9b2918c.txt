@@ -1,0 +1,7 @@
+FAIL core-605   301.6s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_beat_model.py results/live
+
+=== core-605 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_beat_model.py results/live/2026-10-20T031212.175942Z --check
+results/live/2026-10-20T031212.175942Z/beat-model.json differs from the report its archived raw files regenerate
+
+0 passed, 1 failed of 1 gates in shard 0/1 on CPU

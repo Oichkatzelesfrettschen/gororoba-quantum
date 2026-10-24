@@ -1,0 +1,33 @@
+{
+ "failed": 9,
+ "files": [
+  {
+   "bytes": 164887,
+   "file": "frozen-affected-gates.json",
+   "sha256": "644e4f09fcccc6fb400f4d519e24f65e6a51c1c52dd9fae7e6cb398d2ae858a4"
+  },
+  {
+   "bytes": 4341734,
+   "file": "frozen-qualified-gate-ledger.json",
+   "sha256": "5ea9bf368528c59af25cafd783e67f6fcded5a1011513ad042d2429005a4b153"
+  },
+  {
+   "bytes": 16,
+   "file": "frozen-affected-gates-exit.json",
+   "sha256": "1b2f5a083325c33035cb246dcb6ceb08b00a036dfd9bf30e39aa76843a88af4f"
+  },
+  {
+   "bytes": 136171,
+   "file": "frozen-affected-changed-files",
+   "sha256": "7cd161da052a899ea00296dd18dad5e02ca2c45ba189205768dc1e004714d031"
+  },
+  {
+   "bytes": 234634,
+   "file": "frozen-affected-gate-plan.json",
+   "sha256": "c1c02e0cf54c042a0ad2d1bab00b434cc35c8287e17d29ecfb8672e5f5cc4293"
+  }
+ ],
+ "passed": 516,
+ "revision": "6ca991a0e339cf3d8bed5dd3d45d7888272a8a82",
+ "total": 525
+}

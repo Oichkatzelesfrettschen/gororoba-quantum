@@ -1,0 +1,30 @@
+Waiting for exact PR352 head qualification
+Traceback (most recent call last):
+  File "${TEMP}/quantum-artifact-retention-qualification.py", line 24, in <module>
+    time.sleep(30)
+    ~~~~~~~~~~^^^^
+KeyboardInterrupt
+Waiting for exact PR352 head qualification
+Traceback (most recent call last):
+  File "${TEMP}/quantum-artifact-retention-qualification.py", line 24, in <module>
+    time.sleep(30)
+    ~~~~~~~~~~^^^^
+KeyboardInterrupt
+Waiting for exact PR352 head qualification
+Traceback (most recent call last):
+  File "${TEMP}/quantum-artifact-retention-qualification.py", line 24, in <module>
+    time.sleep(30)
+    ~~~~~~~~~~^^^^
+KeyboardInterrupt
+Waiting for exact PR352 head qualification
+Traceback (most recent call last):
+  File "${TEMP}/quantum-artifact-retention-qualification.py", line 24, in <module>
+    time.sleep(30)
+    ~~~~~~~~~~^^^^
+KeyboardInterrupt
+Waiting for exact PR352 head qualification
+Traceback (most recent call last):
+  File "${TEMP}/quantum-artifact-retention-qualification.py", line 24, in <module>
+    if base_ledger.is_file():
+    ^^^^^^^^^^
+KeyboardInterrupt

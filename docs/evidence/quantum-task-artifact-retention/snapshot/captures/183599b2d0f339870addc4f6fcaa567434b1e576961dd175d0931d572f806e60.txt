@@ -1,0 +1,128 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "kind": "readout-reference",
+   "prepared": 0,
+   "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout-reference",
+   "prepared": 1,
+   "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15"
+  },
+  {
+   "file": "order-i1-j1-representative0.cq",
+   "kind": "hypercomplex-operator",
+   "measurement_mapping": [
+    0,
+    1
+   ],
+   "native_operator": {
+    "imaginary": [
+     [
+      0.4991829412230383,
+      0.4991829412230385,
+      -0.0008170587769614592,
+      -0.00081705877696156
+     ],
+     [
+      -0.4991829412230385,
+      0.49918294122303847,
+      0.0008170587769613658,
+      -0.0008170587769614027
+     ],
+     [
+      -0.0008170587769613848,
+      -0.000817058776961449,
+      0.49918294122303847,
+      0.4991829412230385
+     ],
+     [
+      0.0008170587769615045,
+      -0.000817058776961382,
+      -0.4991829412230385,
+      0.4991829412230383
+     ]
+    ],
+    "real": [
+     [
+      -0.5016301250601811,
+      3.992493741972192e-06,
+      -0.0016301250601811227,
+      -0.49999600750625806
+     ],
+     [
+      3.992493741888925e-06,
+      0.501630125060181,
+      -0.49999600750625794,
+      0.0016301250601811006
+     ],
+     [
+      -0.0016301250601811971,
+      -0.49999600750625794,
+      -0.5016301250601809,
+      3.992493741972192e-06
+     ],
+     [
+      -0.499996007506258,
+      0.001630125060181043,
+      3.992493741972192e-06,
+      0.501630125060181
+     ]
+    ]
+   },
+   "native_probabilities": [
+    0.5008163911759762,
+    0.24918360882402352,
+    3.324892756840386e-06,
+    0.249996675107243
+   ],
+   "nqubits": 2,
+   "observable_partition": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ]
+   ],
+   "operator_error": 0.003996245108526829,
+   "requested_probabilities": [
+    0.4999999999999999,
+    0.2499999999999999,
+    1.5085506170550123e-34,
+    0.24999999999999983
+   ],
+   "setting": {
+    "name": "order-i1-j1-representative0",
+    "phi": 0.7853981633974483,
+    "representative": 0,
+    "theta": 0.7853981633974483
+   },
+   "sha256": "72612aa06e79bbe70dd89ce766bb340ea1b89db361622a86e3fb831fb3228d75"
+  }
+ ],
+ "compiler": {
+  "angle_step_radians": 0.08726646259971647,
+  "qiskit": "2.5.2",
+  "seed": 7
+ },
+ "evidence_kind": "complex encoding and device conformance",
+ "hardware_pause_seconds": 120,
+ "job_execution_time_limit": 300,
+ "nqubits": 2,
+ "preregistered": {
+  "minimum_output_readout_contrast": 0.2,
+  "mitigation": "sensitivity only",
+  "primary": "raw grouped probabilities",
+  "shot_order": "retain; test temporal dependence before IID intervals"
+ },
+ "schema": "qi-hypercomplex-cases-v1",
+ "shots": 16384
+}

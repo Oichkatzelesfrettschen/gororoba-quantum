@@ -1,0 +1,29 @@
+{
+ "backend_type_status": "executing",
+ "explicit_submit_not_before_utc": "2026-10-22T05:32:52.443652Z",
+ "global_queue": {
+  "avg_wait_time_in_queue_secs": 79.0,
+  "max_wait_time_in_queue_secs": 104.0,
+  "min_wait_time_in_queue_secs": 44.0,
+  "number_of_jobs_in_queue": 3
+ },
+ "latest_account_hardware_finished_at": "2026-10-18T17:31:15.031559Z",
+ "nonterminal_account_hardware_jobs": 0,
+ "observed_utc": "2026-10-22T05:33:19.539546+00:00",
+ "pause_seconds_remaining": 0,
+ "physical_instances": [
+  {
+   "last_heartbeat": "2026-10-22T05:33:13.109373Z",
+   "name": "Tuna-17",
+   "status": "executing"
+  }
+ ],
+ "policy_read_admits_hardware": true,
+ "started_utc": "2026-10-22T05:33:14.057646+00:00",
+ "user_queue": {
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "number_of_jobs_in_queue": 0
+ }
+}

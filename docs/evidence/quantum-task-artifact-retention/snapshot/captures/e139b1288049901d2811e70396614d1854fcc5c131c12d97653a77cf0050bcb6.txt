@@ -1,0 +1,52 @@
+historical runtime qiskit-2.5: --replay-python=${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence/replay-py3.14.7/bin/python holds every pin of requirements-replay.txt
+FAIL core-619  1660.6s  "$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --c
+
+=== core-619 exit 1 in .
+"$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --check --against results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1259, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1248, in main
+    raise RuntimeError(f"{args.against} differs from a fresh analysis outside the analyzer identity")
+RuntimeError: results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json differs from a fresh analysis outside the analyzer identity
+PASS core-534   369.3s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-efficiency
+FAIL core-620  2114.8s  "$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --c
+
+=== core-620 exit 1 in .
+"$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --check --against results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1259, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1248, in main
+    raise RuntimeError(f"{args.against} differs from a fresh analysis outside the analyzer identity")
+RuntimeError: results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json differs from a fresh analysis outside the analyzer identity
+PASS core-447   201.5s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --check results/li
+FAIL core-616  2267.0s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_segmented_sweep.py --desig
+
+=== core-616 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_segmented_sweep.py --design-check results/live/n21-q143-segmented-design.json
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1259, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1233, in main
+    raise RuntimeError(f"{args.design_check} differs from a fresh design table")
+RuntimeError: results/live/n21-q143-segmented-design.json differs from a fresh design table
+PASS core-434   138.5s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/rea
+PASS core-537   213.7s  "$PYTHON" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*-qpu_belenos-be
+  untraceable core-537: shell command beyond $PYTHON invocations joined by &&
+PASS core-329   155.9s  "$PYTHON" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_
+PASS core-535   481.8s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-efficiency results/quandela/sessions/2026-1
+PASS core-360    59.2s  "$PYTHON" -B -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_am
+PASS core-094   235.1s  "$PYTHON" -B -W error qpu_planning_contracts.py
+  untraceable core-094: program git
+PASS core-523   129.8s  "$PYTHON" -B -W error qpu_planning_contracts.py --rep-delay
+  untraceable core-523: program git
+PASS core-582   421.3s  "$PYTHON" check_et_runtime.py
+  untraceable core-582: program git
+PASS core-570   660.9s  "$PYTHON" -B -W error qpu_planning_contracts.py --submit-reuse-herald
+  untraceable core-570: program git
+PASS core-554   131.2s  "$PYTHON" -B -W error scripts/rank_locus_second_order.py --self-test
+PASS core-597--slice1   682.8s  "$PYTHON" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs

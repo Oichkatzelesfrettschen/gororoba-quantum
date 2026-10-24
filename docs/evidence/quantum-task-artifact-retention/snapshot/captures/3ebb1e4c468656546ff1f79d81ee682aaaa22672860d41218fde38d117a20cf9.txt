@@ -1,0 +1,12 @@
+Read-only review of proposed owner outputs, 2026-10-22.
+Owner HEAD: 9d4ef5b79c11f69007f9260922b2a9bfe38bce5f.
+The four reviewed successors are untracked and uncommitted. PR342 does not adopt them.
+
+Between-arm tie-ordered proposal: fourteen floating changes; phase branches exchange by approximately 2*pi; selected slope changes 1.24e-8 rad/us and statistic changes 4.4e-12. Existing scientific decisions remain equal.
+Beat-model profiled proposal: five hundred floating changes and three discrete prospective alias-design choices change. Fitted model comparison and likelihood ratios remain exactly equal. Prospective expected discrimination changes by up to 1131.87 nats. Worst coprime-swap alternative changes 5 to -2; dense worst pair changes (-1,-2) to (0,1).
+Segmented 2026-10-21T043156.858484Z proposal: winning alias -2 to 0; runner-up -1 to -3; selected df -0.735429 to -0.0129464 MHz. Single NLL121672 to109162; static NLL108921 to108589; alias gap16.0344 to317.007. Resolved/line_mixture labels remain equal, while frequency inference changes materially.
+Segmented 2026-10-21T064222.721454Z proposal: winner0 and runner-up-3 remain. Rejected-cell NLL improves by up to5806. Static decay137.606 to152.253us; TLS decay131.313 to76.7218us. Parameters change materially despite preserved final labels.
+
+Visible dirty source adds frequency/weight starting points, curvature preconditioning, repeated polishing and additional fitting basins. The finite comparisons support optimization changes; they establish neither global-optimum certification nor revised uncertainty validity. Preserve predecessor reports and require explicit scientific amendment, optimizer controls and downstream impact review before adoption. A relaxed replay tolerance alone cannot justify changed discrete alias inference.
+
+No expensive reruns, provider calls or edits to the owner checkout occurred during this review.

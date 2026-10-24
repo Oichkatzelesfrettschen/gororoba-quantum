@@ -1,0 +1,21 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+_________ test_capture_rejects_private_source_names_before_publication _________
+
+tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-301/test_capture_rejects_private_s0')
+
+    def test_capture_rejects_private_source_names_before_publication(tmp_path: Path) -> None:
+        source = tmp_path / "research"
+        source.mkdir()
+        (source / "[REDACTED-EMAIL]").write_text("bounded result")
+        output = tmp_path / "retained"
+>       with pytest.raises(ValueError, match="source identity contains a private identifier"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/scripts/test_quantum_artifact_retention.py:250: Failed
+----------------------------- Captured stdout call -----------------------------
+artifact retention: 1 source identities, 1 unique retained captures
+=========================== short test summary info ============================
+FAILED tests/scripts/test_quantum_artifact_retention.py::test_capture_rejects_private_source_names_before_publication
+1 failed, 1 passed, 53 deselected in 0.08s

@@ -1,0 +1,12 @@
+{
+ "account_queue": {
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "number_of_jobs_in_queue": 0
+ },
+ "enabled": true,
+ "observed_at": "2026-10-22T05:45:41.613837+00:00",
+ "pause_seconds_or_hold": 0,
+ "status": "executing"
+}

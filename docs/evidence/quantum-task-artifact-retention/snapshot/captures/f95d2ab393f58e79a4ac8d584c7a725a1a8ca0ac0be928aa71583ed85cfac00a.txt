@@ -1,0 +1,10 @@
+Merge made by the 'ort' strategy.
+ docs/INDEX.md                                      |  3 +
+ docs/README.md                                     |  2 +
+ docs/SOURCES.json                                  | 63 +++++++++++++++++
+ docs/design/hypercomplex-operator-evidence.md      |  2 +-
+ .../quaternionic-foundational-source-review.md     | 66 ++++++++++++++++++
+ .../papers/quaternionic-optical-bound-reading.md   | 80 ++++++++++++++++++++++
+ 6 files changed, 215 insertions(+), 1 deletion(-)
+ create mode 100644 docs/notes/papers/quaternionic-foundational-source-review.md
+ create mode 100644 docs/notes/papers/quaternionic-optical-bound-reading.md

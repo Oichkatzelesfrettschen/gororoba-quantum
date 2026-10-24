@@ -3922,6 +3922,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -B -W error scripts/quantum_artifact_retention.py docs/evidence/quantum-task-artifact-retention --check-tree && PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -B -m pytest -q tests/scripts/test_quantum_artifact_retention.py",
+   "name": "core-654",
+   "seconds": 60.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery",
    "name": "core-632",
    "seconds": 3.0,

@@ -1,0 +1,4 @@
+historical runtime qiskit-2.5: REPLAY_PYTHON=${USER_HOME}/.cache/gororoba-quantum/replay-py3.14.7/bin/python3 holds every pin of requirements-replay.txt
+PASS core-011     3.9s  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_
+
+1 passed, 0 failed of 1 gates in shard 0/1 on CPU

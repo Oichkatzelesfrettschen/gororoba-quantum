@@ -1,0 +1,1 @@
+planck-sdk @ git+https://github.com/HectorNaaa/Planck-QSaaS@d57e32e7fcfb2a7bab6f7f92533dabb4cafb7ce6#subdirectory=sdk/python

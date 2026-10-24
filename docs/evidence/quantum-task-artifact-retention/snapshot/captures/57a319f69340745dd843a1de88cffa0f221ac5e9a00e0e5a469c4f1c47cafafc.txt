@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -eu
+export PYTHON=${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence/ci-py3.14.7/bin/python
+export REPLAY_PYTHON=${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence/replay-py3.14.7/bin/python
+export QI_PYTHON=${USER_HOME}/.local/share/quantuminspire/venv/bin/python
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export GOROROBA_WORKERS=4
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 BLIS_NUM_THREADS=1
+export GOROROBA_AER_DEVICE=CPU
+operator_directory=${USER_HOME}/worktrees/IBMQuantum/hypercomplex-operator-evidence/docs/local/hypercomplex-operator-evidence
+trap 'exit_status=$?; printf "{\"exit_code\":%s}\n" "$exit_status" > "$operator_directory/frozen-affected-gates-exit.json"; trap - EXIT; exit "$exit_status"' EXIT
+git diff --no-renames --name-only -z origin/main HEAD > "$operator_directory/frozen-affected-changed-files"
+"$PYTHON" ci/run_gates.py --changed-files "$operator_directory/frozen-affected-changed-files" \
+    --replay-python "$REPLAY_PYTHON" \
+    --timings "$operator_directory/frozen-affected-gates.json" \
+    --ledger-out "$operator_directory/frozen-qualified-gate-ledger.json"

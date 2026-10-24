@@ -1,0 +1,28 @@
+{
+ "backend_enabled": true,
+ "backend_type_status": "offline",
+ "global_queue": {
+  "avg_wait_time_in_queue_secs": 1754.0,
+  "max_wait_time_in_queue_secs": 1800.0,
+  "min_wait_time_in_queue_secs": 1688.0,
+  "number_of_jobs_in_queue": 6
+ },
+ "latest_account_hardware_finished_at": "2026-10-18T17:31:15.031559Z",
+ "nonterminal_account_hardware_jobs": 0,
+ "observed_utc": "2026-10-22T05:24:54.900711+00:00",
+ "physical_instances": [
+  {
+   "last_heartbeat": "2026-10-22T05:22:02.601725Z",
+   "name": "Tuna-17",
+   "status": "offline"
+  }
+ ],
+ "policy": "read-only; account priority remains with concurrent user sessions",
+ "started_utc": "2026-10-22T05:24:51.945913+00:00",
+ "user_queue": {
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "number_of_jobs_in_queue": 0
+ }
+}

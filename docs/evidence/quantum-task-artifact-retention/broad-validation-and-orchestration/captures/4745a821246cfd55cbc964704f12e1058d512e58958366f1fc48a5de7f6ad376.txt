@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot"
+
+echo "start=$(date -Is)"
+echo "cwd=$(pwd)"
+echo "cmd=export\ PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\ REPLAY_PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/replay-py3.14.7/bin/python\ GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096\;\ \"\$PYTHON\"\ ci/run_gates.py\ --tier\ full\ --ledger\ ${TEMP}/gororoba-hypercomplex-9sn5hyoj/operator/gate-ledger-pinned.json\ --ledger-out\ ${TEMP}/photonic-integrated-validation-bc797e7-ledger.json\ --timings\ ${TEMP}/photonic-integrated-validation-bc797e7-timings.json"
+echo "log=${TEMP}/photonic-integrated-validation-bc797e7.log"
+
+(
+  bash -lc export\ PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\ REPLAY_PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/replay-py3.14.7/bin/python\ GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096\;\ \"\$PYTHON\"\ ci/run_gates.py\ --tier\ full\ --ledger\ ${TEMP}/gororoba-hypercomplex-9sn5hyoj/operator/gate-ledger-pinned.json\ --ledger-out\ ${TEMP}/photonic-integrated-validation-bc797e7-ledger.json\ --timings\ ${TEMP}/photonic-integrated-validation-bc797e7-timings.json
+  echo "exit=$?"
+) 2>&1 | tee -a "${TEMP}/photonic-integrated-validation-bc797e7.log"
+
+echo "done=$(date -Is)"

@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.7.0
+rootdir: ${USER_HOME}/worktrees/IBMQuantum/quandela-mcp-contract-repairs
+configfile: pyproject.toml
+created: 2/2 workers
+2 workers [383 items]
+
+........................................................................ [ 18%]
+........................................................................ [ 37%]
+........................................................................ [ 56%]
+........................................................................ [ 75%]
+........................................................................ [ 93%]
+.......................                                                  [100%]
+============================= slowest 15 durations =============================
+120.99s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.95]
+107.38s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.5]
+102.24s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.0]
+97.91s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.0]
+73.58s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.5]
+65.46s call     tests/ci/test_gate_inputs.py::SelectionTests::test_quandela_static_scopes_follow_named_fixtures
+53.42s call     tests/ci/test_gate_inputs.py::SelectionTests::test_expensive_archive_replays_have_input_scopes
+37.75s call     tests/ci/test_gate_inputs.py::SelectionTests::test_slow_pr_gates_select_on_their_own_inputs
+16.11s call     tests/scripts/test_hypercomplex_libraries.py::test_documented_candidates_and_provider_adapters_have_roles
+14.97s call     tests/scripts/test_hypercomplex_libraries.py::test_inventory_covers_locks_and_independent_roles
+13.39s call     tests/ci/test_gate_ledger.py::test_every_read_kind_reruns_exactly_its_gate
+12.54s call     tests/ci/test_premerge_gates.py::test_base_cache
+9.06s call     tests/gororoba_quantum/test_live_run_wide_records.py::test_comparison_accepts_the_plan_and_refuses_an_edit
+6.84s call     tests/ci/test_gate_inputs.py::SelectionTests::test_synthetic_units_refuse_archive_access
+6.38s call     tests/scripts/test_quandela_mcp_contract.py::test_stdio_enforces_advertised_schema_before_sdk_coercion
+======================= 383 passed in 419.71s (0:06:59) ========================
+exit=0

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -eu
+export PYTHON="${QI_PYTHON:-$HOME/.local/share/quantuminspire/venv/bin/python}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+acquisition_directory=results/quantum_inspire/runs/tuna17-quaternion-order-noise
+operator_directory=docs/local/hypercomplex-operator-evidence
+trap 'exit_status=$?; printf "{\"exit_code\":%s}\n" "$exit_status" > "$operator_directory/tuna-order-execution-exit.json"; trap - EXIT; exit "$exit_status"' EXIT
+if [ ! -e "$acquisition_directory" ]; then
+    cp -a results/hypercomplex/cases/quantum_inspire/order "$acquisition_directory"
+fi
+"$PYTHON" scripts/hypercomplex_campaign.py "$acquisition_directory" > "$operator_directory/acquisition-frozen-plan.json"
+"$PYTHON" - "$operator_directory/acquisition-frozen-plan.json" <<'PY'
+import json,sys
+record=json.load(open(sys.argv[1]))
+if record['plan_sha256'] != '43e0b67a8aaaa1203eacd5f0be9e4c74ac5f4f55576dc16f96591245864dc8a2':
+    raise SystemExit('acquisition plan differs from corrected approval')
+PY
+"$PYTHON" scripts/hypercomplex_campaign.py "$acquisition_directory" --execute \
+    --approval 'Approve corrected pilot after validation' \
+    --approved-plan-sha256 43e0b67a8aaaa1203eacd5f0be9e4c74ac5f4f55576dc16f96591245864dc8a2 \
+    --max-wait-seconds 7200

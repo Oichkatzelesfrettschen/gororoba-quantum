@@ -1,0 +1,3852 @@
+{
+ "coverage": "all requirements locks, retained IQM distributions, maintained scientific roles and tracked runtime imports",
+ "libraries": [
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.7.1"
+   },
+   "distribution": "aiohappyeyeballs",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.7.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Happy Eyeballs for asyncio"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "3.14.3"
+   },
+   "distribution": "aiohttp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.14.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Async http client/server framework (asyncio)"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.9.1"
+   },
+   "distribution": "aiohttp-retry",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Environment support dependency"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.4.0"
+   },
+   "distribution": "aiosignal",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.4.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: aiosignal: a list of registered asynchronous callbacks"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.0.0"
+   },
+   "distribution": "alabaster",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A light, configurable Sphinx theme"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.20.0"
+   },
+   "distribution": "alembic",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.20.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A database migration tool for SQLAlchemy."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.0.5"
+   },
+   "distribution": "annotated-doc",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.0.5",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Document parameters, class attributes, return types, and variables inline, with Annotated."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.8.0",
+    "docs/notes/open_quantum/requirements-oq.txt": "0.8.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.8.0"
+   },
+   "distribution": "annotated-types",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.8.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Reusable constraint types to use with typing.Annotated"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "antlr4-python3-runtime",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.13.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Parser runtime for OpenQASM import."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "4.15.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "4.15.1"
+   },
+   "distribution": "anyio",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/iqm_mcp_server.py",
+    "scripts/qd_mcp_server.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.15.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: High-level concurrency and networking framework on top of asyncio or Trio"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.0.10"
+   },
+   "distribution": "asteval",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.0.10",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Safe, minimalistic evaluator of python expression using ast module"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.0.2"
+   },
+   "distribution": "asttokens",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.0.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Annotate AST trees with source code positions"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "26.1.0",
+    "docs/notes/open_quantum/requirements-oq.txt": "26.1.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "26.1.0"
+   },
+   "distribution": "attrs",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "26.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Classes Without Boilerplate"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.11.0"
+   },
+   "distribution": "autoray",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.11.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Array dispatch for qualified tensor-network backends."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.18.0"
+   },
+   "distribution": "babel",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.18.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Internationalization utilities"
+  },
+  {
+   "declared_versions": {
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "1.6.0"
+   },
+   "distribution": "build",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.6.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A simple, correct Python build frontend"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "cayley-calculator",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/box_kite_packages.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "1.3.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Independent multiplication reference; qualify each special function before use."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "cayley-dickson",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/box_kite_packages.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "0.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Independent recursive doubling reference; local reading and checks under its license boundary."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2026.10.18",
+    "docs/notes/open_quantum/requirements-oq.txt": "2026.7.22",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2026.7.22"
+   },
+   "distribution": "certifi",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2026.10.18",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python package for providing Mozilla's CA Bundle."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.1.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.1.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.1.1"
+   },
+   "distribution": "cffi",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.1.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Foreign Function Interface for Python calling C code."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.5.2",
+    "docs/notes/open_quantum/requirements-oq.txt": "3.5.2",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "3.5.2"
+   },
+   "distribution": "charset-normalizer",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.5.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.7.0"
+   },
+   "distribution": "cirq-core",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IQM circuit interface in its isolated stack."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.11.1"
+   },
+   "distribution": "clarabel",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.11.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Runtime dependency"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "8.5.0",
+    "docs/notes/open_quantum/requirements-oq.txt": "8.5.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "8.5.0"
+   },
+   "distribution": "click",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "8.5.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Composable command line interface toolkit"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "clifford",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.5.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Associative Clifford envelopes and rotor/spinor controls, not octonion multiplication."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.1.2"
+   },
+   "distribution": "cloudpickle",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.1.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Pickler class to extend the standard pickle.Pickler functionality"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.4.6"
+   },
+   "distribution": "colorama",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.4.6",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Cross-platform colored terminal text."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "6.12.0"
+   },
+   "distribution": "colorlog",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "6.10.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Add colours to the output of Python's logging module."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.2.3"
+   },
+   "distribution": "comm",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.2.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.4.0"
+   },
+   "distribution": "contourpy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.4.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python library for calculating contours of 2D quadrilateral grids"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.8.2"
+   },
+   "distribution": "cotengra",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.8.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Contraction planning for tensor-network references."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "50.0.2",
+    "docs/notes/open_quantum/requirements-oq.txt": "50.0.2",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "50.0.2"
+   },
+   "distribution": "cryptography",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "50.0.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: cryptography is a package which provides cryptographic recipes and primitives to Python developers."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "cupy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "14.2.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Qualified CUDA array and contraction reference path."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.9.3"
+   },
+   "distribution": "cvxpy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.9.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A domain-specific language for modeling convex optimization problems in Python."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.12.1"
+   },
+   "distribution": "cycler",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.12.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Composable style cycles"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.3.0"
+   },
+   "distribution": "cython",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.3.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The Cython compiler for writing C extensions in the Python language."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.2.0"
+   },
+   "distribution": "cytoolz",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Cython implementation of Toolz: High performance functional utilities"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.8.22"
+   },
+   "distribution": "debugpy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: An implementation of the Debug Adapter Protocol for Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.4.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "0.4.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.4.1"
+   },
+   "distribution": "dill",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.4.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: serialize all of Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.12.22"
+   },
+   "distribution": "dimod",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A shared API for binary quadratic model samplers."
+  },
+  {
+   "declared_versions": {
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "1.9.0"
+   },
+   "distribution": "distro",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.9.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Distro - an OS platform information API"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.22.4"
+   },
+   "distribution": "docutils",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.23",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Docutils -- Python Documentation Utilities"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.2.9"
+   },
+   "distribution": "duet",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A simple future-based async library for python."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.3.0"
+   },
+   "distribution": "executing",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.2.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Get the currently executing AST node of a frame, and other information"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "exqalibur",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/qd_belenos_mesh.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.4.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Compiled photonic simulator and mesh backend; preserve binary distribution constraints."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.22.2"
+   },
+   "distribution": "fastjsonschema",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.21.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Fastest Python implementation of JSON schema"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.67.0"
+   },
+   "distribution": "fonttools",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.67.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Tools to manipulate font files"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.8.0"
+   },
+   "distribution": "frozenlist",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.8.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A list-like structure which implements collections.abc.MutableSequence"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "galgebra",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.6.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Symbolic geometric calculus in an associative Clifford algebra."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "galois",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.4.11",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Finite-field Fano incidence and binary algebra certificates."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.75.5"
+   },
+   "distribution": "googleapis-common-protos",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Common protobufs used in Google APIs"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.84.0"
+   },
+   "distribution": "grpcio",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.84.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: HTTP/2-based RPC framework"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "0.16.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.16.0"
+   },
+   "distribution": "h11",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.16.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.15.1"
+   },
+   "distribution": "highspy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.15.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A thin set of pybind11 wrappers to HiGHS"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "1.0.9"
+   },
+   "distribution": "httpcore",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.0.9",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A minimal low-level HTTP client."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.13.1"
+   },
+   "distribution": "httpcore2",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.13.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A minimal low-level HTTP client."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "0.28.1"
+   },
+   "distribution": "httpx",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.28.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The next generation HTTP client."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "0.4.3"
+   },
+   "distribution": "httpx-sse",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.4.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Consume Server-Sent Event (SSE) messages with HTTPX."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.13.1"
+   },
+   "distribution": "httpx2",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.13.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The next generation HTTP client."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "hypercomplex",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/bdsc_packages.py",
+    "scripts/box_kite_packages.py",
+    "scripts/echo_dilation_noise.py",
+    "scripts/rank_locus_rotation_composite.py",
+    "scripts/stiefel_witness_certificate.py",
+    "scripts/walk_scaffold_channels.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "0.3.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Independent recursive CD products; Fraction-based exact witnesses."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "hypercomplex-algebra",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/box_kite_census.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.2.0.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Expression and tensor notation; shares the hypercomplex-engine implementation."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "hypercomplex-engine",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/box_kite_packages.py",
+    "scripts/cd_two_blade_blocks.py",
+    "scripts/echo_dilation_noise.py",
+    "scripts/walk_scaffold_channels.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "0.5.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Fast basis signs and higher-dimensional finite checks."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "hyprat",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/bdsc_packages.py",
+    "scripts/box_kite_packages.py",
+    "scripts/rank_locus_rotation_composite.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "0.2.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Exact rational CD coefficients, generalized signs, annihilators and regular representations."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.28.0"
+   },
+   "distribution": "ibm-cloud-sdk-core",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.24.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Core library used by SDKs for IBM Cloud Services"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.77.1"
+   },
+   "distribution": "ibm-platform-services",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.77.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python client library for IBM Cloud Platform Services"
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-replay.txt": "0.12.20260921",
+    "requirements.txt": "0.13.20261016"
+   },
+   "distribution": "ibm-quantum-schemas",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.12.20260921",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Runtime task and option schema conformance."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.20",
+    "docs/notes/open_quantum/requirements-oq.txt": "3.20",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "3.20"
+   },
+   "distribution": "idna",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.20",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Internationalized Domain Names in Applications (IDNA)"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.0.1"
+   },
+   "distribution": "imagesize",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.0.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Get image size from headers (BMP/PNG/JPEG/JPEG2000/GIF/TIFF/SVG/Netpbm/WebP/AVIF/HEIC/HEIF)"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "9.0.1"
+   },
+   "distribution": "importlib-metadata",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "9.0.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Read metadata from Python packages"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.3.1"
+   },
+   "distribution": "iniconfig",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.3.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: brain-dead simple config-ini parsing"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "7.4.0"
+   },
+   "distribution": "ipykernel",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "7.4.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: IPython Kernel for Jupyter"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "9.17.1"
+   },
+   "distribution": "ipython",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "9.17.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: IPython: Productive Interactive Computing"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.1.1"
+   },
+   "distribution": "ipython-pygments-lexers",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.1.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Defines a variety of Pygments lexers for highlighting IPython code."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.0.0"
+   },
+   "distribution": "iqm-benchmarks",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IQM characterization experiments; device jobs require approval."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "36.0.0"
+   },
+   "distribution": "iqm-client",
+   "hardware_execution": true,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IQM circuit jobs, native integrations and calibration reads."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.1.0"
+   },
+   "distribution": "iqm-data-definitions",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Common repository for data definitions inside IQM"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.3.0"
+   },
+   "distribution": "iqm-error-reduction-tools",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IQM readout/twirling workflow with acquisition accounting."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "29.0.0"
+   },
+   "distribution": "iqm-exa-common",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Framework for control and measurement of superconducting qubits: common library"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "15.0.0"
+   },
+   "distribution": "iqm-pulla",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IQM circuit-to-pulse compiler, imported as iqm.cpc."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "15.0.0"
+   },
+   "distribution": "iqm-pulse",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IQM native gate timing and playlist construction."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.0.0"
+   },
+   "distribution": "iqm-qaoa",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Optional optimization examples; not evidence of advantage for the present PDE task."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.2.0"
+   },
+   "distribution": "iqm-qubit-selector",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Calibration-aware IQM layout selection."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "14.0.0"
+   },
+   "distribution": "iqm-station-control-client",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python client for communicating with Station Control Service"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.7.1"
+   },
+   "distribution": "jax",
+   "hardware_execution": false,
+   "imported_by": [
+    "gororoba_quantum/jax_bridge.py",
+    "kaggle_kernel/kernel_main.py",
+    "scripts/jax_bridge_sweep.py",
+    "scripts/tpu_probe.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.9.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Differentiable array candidate; record actual devices rather than assuming GPU/TPU access."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.7.1"
+   },
+   "distribution": "jaxlib",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.9.0.dev0+selfbuilt",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: XLA library for JAX"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.20.1"
+   },
+   "distribution": "jedi",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.20.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: An autocompletion tool for Python that can be used for text editors."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.1.6"
+   },
+   "distribution": "jinja2",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.1.6",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A very fast and expressive template engine."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.6.0"
+   },
+   "distribution": "joblib",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.6.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Lightweight pipelining with Python functions"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.26.0",
+    "docs/notes/open_quantum/requirements-oq.txt": "4.26.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "4.26.0"
+   },
+   "distribution": "jsonschema",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.26.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: An implementation of JSON Schema validation for Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2025.9.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "2025.9.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2025.9.1"
+   },
+   "distribution": "jsonschema-specifications",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2025.9.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The JSON Schema meta-schemas and vocabularies, exposed as a Registry"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.0.1"
+   },
+   "distribution": "jupyter-cache",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A defined interface for working with a cache of jupyter notebooks."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "8.10.0"
+   },
+   "distribution": "jupyter-client",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "8.10.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Jupyter protocol implementation and client libraries"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "5.9.1"
+   },
+   "distribution": "jupyter-core",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "5.9.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Jupyter core package. A base package on which Jupyter projects rely."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "kaggle",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/kaggle_run.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.2.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Access Kaggle resources anywhere"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "kagglesdk",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/kaggle_run.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.1.37",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Bindings to access kaggle's external-facing APIs"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "kingdon",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Generated symbolic or batched Clifford operators."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.5.1"
+   },
+   "distribution": "kiwisolver",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.5.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A fast implementation of the Cassowary constraint solver"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.2.1"
+   },
+   "distribution": "libqasm",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "cQASM parsing and validation before upload."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.46.0"
+   },
+   "distribution": "llvmlite",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.50.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: lightweight wrapper around Bearer [REDACTED] functionality"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.3.4"
+   },
+   "distribution": "lmfit",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.3.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Identifiable device/noise parameter fitting with retained residuals."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.4.3"
+   },
+   "distribution": "mako",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.4.3.dev0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A super-fast templating language that borrows the best ideas from the existing templating languages."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.2.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "4.2.0"
+   },
+   "distribution": "markdown-it-py",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.2.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python port of markdown-it. Markdown parsing, done right!"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.0.4"
+   },
+   "distribution": "markupsafe",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.0.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Safely add untrusted strings to HTML/XML markup."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "mathdunders",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.4.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Numeric-method plumbing; supplies no independent multiplication evidence."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.11.2",
+    "ci/requirements-ci.txt": "3.11.2"
+   },
+   "distribution": "matplotlib",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/render_folded_job_review.py",
+    "scripts/render_rank_sector_norms.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.11.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Measured plots and static exports with uncertainty and evidence labels."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.2.2"
+   },
+   "distribution": "matplotlib-inline",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.2.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Inline Matplotlib backend for Jupyter"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "1.30.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.0"
+   },
+   "distribution": "mcp",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/iqm_mcp_server.py",
+    "scripts/qd_mcp_server.py",
+    "scripts/qi_mcp_server.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.29.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Model Context Protocol SDK"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.0"
+   },
+   "distribution": "mcp-types",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Environment support dependency"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.6.1"
+   },
+   "distribution": "mdit-py-plugins",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.6.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Collection of plugins for markdown-it-py"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.1.2",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.1.2"
+   },
+   "distribution": "mdurl",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.1.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Markdown URL utilities"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.6.0"
+   },
+   "distribution": "ml-dtypes",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.6.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "11.2.1"
+   },
+   "distribution": "more-itertools",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "11.2.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: More routines for operating on iterables, beyond itertools"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.3.0"
+   },
+   "distribution": "mpmath",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.4.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python library for arbitrary-precision floating-point arithmetic"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.0.0"
+   },
+   "distribution": "mthree",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Readout sensitivity analysis with explicit calibration and factorization assumptions."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "6.9.1"
+   },
+   "distribution": "multidict",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "7.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: multidict implementation"
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-ci.txt": "2.4.0"
+   },
+   "distribution": "mypy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.4.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Pinned static type gate."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.4.0"
+   },
+   "distribution": "myst-nb",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A Jupyter Notebook Sphinx reader built on top of the MyST markdown parser."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "5.1.0"
+   },
+   "distribution": "myst-parser",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "5.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: An extended [CommonMark](https://spec.commonmark.org/) compliant parser,"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.11.0"
+   },
+   "distribution": "nbclient",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.11.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "5.11.1"
+   },
+   "distribution": "nbformat",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "5.11.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The Jupyter Notebook format"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.7.4"
+   },
+   "distribution": "nest-asyncio2",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Patch asyncio to allow nested event loops"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.7",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "3.7"
+   },
+   "distribution": "networkx",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.7",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Graph inspection and independent topology controls."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.63.1"
+   },
+   "distribution": "numba",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.68.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Compiled numeric kernels; compilation speed does not change the arithmetic contract."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.3.5",
+    "ci/requirements-replay.txt": "2.5.4",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.5.4",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.5.4",
+    "requirements.txt": "2.5.4"
+   },
+   "distribution": "numpy",
+   "hardware_execution": false,
+   "imported_by": [
+    "ci/runner_specs.py",
+    "gororoba_quantum/adjudicate.py",
+    "gororoba_quantum/aer_delay_sentinels.py",
+    "gororoba_quantum/affine_residual.py",
+    "gororoba_quantum/algebra_planning_contracts.py",
+    "gororoba_quantum/bdsc.py",
+    "gororoba_quantum/branch_dm.py",
+    "gororoba_quantum/check_et_campaign.py",
+    "gororoba_quantum/check_et_rows.py",
+    "gororoba_quantum/check_et_runtime.py",
+    "gororoba_quantum/claim_boundaries.py",
+    "gororoba_quantum/coherence_window.py",
+    "gororoba_quantum/conditional_ramsey.py",
+    "gororoba_quantum/correction_circuits.py",
+    "gororoba_quantum/correction_circuits_contracts.py",
+    "gororoba_quantum/correction_planning.py",
+    "gororoba_quantum/correction_planning_contracts.py",
+    "gororoba_quantum/correction_preparation.py",
+    "gororoba_quantum/correction_statistics.py",
+    "gororoba_quantum/correction_statistics_contracts.py",
+    "gororoba_quantum/crossed_tile_template.py",
+    "gororoba_quantum/designs.py",
+    "gororoba_quantum/diagnostic_controls.py",
+    "gororoba_quantum/diagnostic_experiments.py",
+    "gororoba_quantum/dynamic_density.py",
+    "gororoba_quantum/empirical_bernstein_contracts.py",
+    "gororoba_quantum/et_campaign.py",
+    "gororoba_quantum/et_planning.py",
+    "gororoba_quantum/et_rows.py",
+    "gororoba_quantum/et_statistics.py",
+    "gororoba_quantum/experiment_optimizer.py",
+    "gororoba_quantum/experiments.py",
+    "gororoba_quantum/factoring.py",
+    "gororoba_quantum/heron_multiprogramming.py",
+    "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/law_encoding.py",
+    "gororoba_quantum/linear_conjugation_challenger.py",
+    "gororoba_quantum/live_run.py",
+    "gororoba_quantum/local_compute.py",
+    "gororoba_quantum/maximal_contracts.py",
+    "gororoba_quantum/maximal_experiments.py",
+    "gororoba_quantum/modular_arithmetic.py",
+    "gororoba_quantum/n21_exact_planning.py",
+    "gororoba_quantum/native_preflight_contracts.py",
+    "gororoba_quantum/order_finding.py",
+    "gororoba_quantum/parameter_binding_contracts.py",
+    "gororoba_quantum/patch_characterization.py",
+    "gororoba_quantum/placement_feasibility.py",
+    "gororoba_quantum/predict.py",
+    "gororoba_quantum/pub_shot_allocation_contracts.py",
+    "gororoba_quantum/qpe_diagnostics.py",
+    "gororoba_quantum/qpu_planning.py",
+    "gororoba_quantum/qpu_planning_contracts.py",
+    "gororoba_quantum/qubit_baseline.py",
+    "gororoba_quantum/rank_sector_contracts.py",
+    "gororoba_quantum/rank_sector_experiments.py",
+    "gororoba_quantum/replica_covariance_contracts.py",
+    "gororoba_quantum/ripple_contracts.py",
+    "gororoba_quantum/ripple_dynamics.py",
+    "gororoba_quantum/ripple_experiments.py",
+    "gororoba_quantum/runtime_contracts.py",
+    "gororoba_quantum/sedenion_bundle.py",
+    "gororoba_quantum/signed_kernel_probe.py",
+    "gororoba_quantum/snapshot_laws.py",
+    "gororoba_quantum/star_ramsey.py",
+    "gororoba_quantum/variance.py",
+    "kaggle_kernel/gpu_env_report.py",
+    "scripts/aer_gpu_probe.py",
+    "scripts/algebra_circuit_fixtures.py",
+    "scripts/associator_cubic_normal_form.py",
+    "scripts/associator_walsh_classes.py",
+    "scripts/atlas_coherent_families.py",
+    "scripts/atlas_detuning_map.py",
+    "scripts/atlas_fringe_amplitudes.py",
+    "scripts/axis_tilt_substrate_split.py",
+    "scripts/bdsc_cases.py",
+    "scripts/bdsc_certificate.py",
+    "scripts/bdsc_packages.py",
+    "scripts/box_kite_analysis.py",
+    "scripts/box_kite_cases.py",
+    "scripts/box_kite_follow_design.py",
+    "scripts/calibration_median_drift.py",
+    "scripts/calibration_scoped_family_analysis.py",
+    "scripts/cd_associator_defect_census.py",
+    "scripts/cd_phase_degree.py",
+    "scripts/census_frequency_design.py",
+    "scripts/check_extract_measured_ripple.py",
+    "scripts/coherence_window_analysis.py",
+    "scripts/conditional_ramsey_power.py",
+    "scripts/design_c_cubic_noise.py",
+    "scripts/design_c_hardware_verdict.py",
+    "scripts/echo_dilation_noise.py",
+    "scripts/extract_measured_ripple.py",
+    "scripts/ghost_branching_benchmark.py",
+    "scripts/ghost_error_scale.py",
+    "scripts/ghost_error_scale_branching.py",
+    "scripts/ghost_event_scale.py",
+    "scripts/ghost_run.py",
+    "scripts/gl52_split_conjugators.py",
+    "scripts/jax_bridge_sweep.py",
+    "scripts/local_member_cz_conformance.py",
+    "scripts/lsq_conditioning_study.py",
+    "scripts/mod15_signed_multiplier_census.py",
+    "scripts/n21_exact_crosscheck.py",
+    "scripts/n21_exact_model_validation.py",
+    "scripts/n21_orbit_context_refit.py",
+    "scripts/n21_orbit_rca.py",
+    "scripts/n21_q143_beat_model.py",
+    "scripts/n21_q143_line_switching.py",
+    "scripts/n21_q143_segmented_sweep.py",
+    "scripts/n21_qx_conformance.py",
+    "scripts/n21_replica_covariance.py",
+    "scripts/n21_spectator_ramsey.py",
+    "scripts/patch_window_analysis.py",
+    "scripts/qd_belenos_cone.py",
+    "scripts/qd_belenos_mesh.py",
+    "scripts/qd_mcp_server.py",
+    "scripts/qd_platform.py",
+    "scripts/qet_two_qubit_reference.py",
+    "scripts/qi_coupler_zz_map.py",
+    "scripts/qi_ibm_noise_replay.py",
+    "scripts/qi_ladder_line_bins.py",
+    "scripts/qi_readout_ringdown_cases.py",
+    "scripts/qi_shot_record_line.py",
+    "scripts/qi_tuna17_device_context.py",
+    "scripts/qi_walsh_exemplar_analysis.py",
+    "scripts/qi_walsh_exemplar_cases.py",
+    "scripts/qi_zero_divisor_cases.py",
+    "scripts/qi_zz_map_analysis.py",
+    "scripts/render_rank_sector_norms.py",
+    "scripts/replay_et_pilot.py",
+    "scripts/review_wide_control_job.py",
+    "scripts/signed_kernel_noise.py",
+    "scripts/singular_sector_dynamics.py",
+    "scripts/state_prep_control_parameters.py",
+    "scripts/state_prep_excess.py",
+    "scripts/substrate_crossover.py",
+    "scripts/tpu_probe.py",
+    "scripts/walk_scaffold_channels.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.5.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Arrays, paired-channel probabilities and FFT reference arithmetic."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "numpy-quaternion",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "2024.0.13",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Vectorized quaternion fields and products."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "20260602.2.3"
+   },
+   "distribution": "numpy-typing-compat",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Static typing compatibility layer for older versions of NumPy"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "4.0.0"
+   },
+   "distribution": "oauthlib",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.3.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "octonion",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/box_kite_packages.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "0.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "PyTorch octonion/Fano batches after the certified signed relabeling."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "octonion-sedenion",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": true,
+   "observed_host_version": "1.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Independent product witness over numpy-quaternion; exclude documented mutating functions."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "openqasm3",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.0.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "OpenQASM syntax and AST support."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "0.2.0"
+   },
+   "distribution": "openquantum-mcp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Broker tool transport; tool auto-approval does not replace repository case approval."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "1.0.0"
+   },
+   "distribution": "openquantum-sdk",
+   "hardware_execution": true,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Read-only native credit quotes and approved brokered execution."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "1.0.0"
+   },
+   "distribution": "openquantum-sdk-qiskit",
+   "hardware_execution": true,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Qiskit adapter for brokered backends; Public upload is a disclosure."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.9.1"
+   },
+   "distribution": "opensquirrel",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Native decomposition and coupling checks; record scheduling limitations."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.45.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.45.1"
+   },
+   "distribution": "opentelemetry-api",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.45.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Python API"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.66b1"
+   },
+   "distribution": "opentelemetry-exporter-http-transport",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Exporters HTTP transport"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.45.1"
+   },
+   "distribution": "opentelemetry-exporter-otlp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Collector Exporters"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.66b1"
+   },
+   "distribution": "opentelemetry-exporter-otlp-common",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry OTLP HTTP export utilities"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.45.1"
+   },
+   "distribution": "opentelemetry-exporter-otlp-proto-common",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Protobuf encoding"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.45.1"
+   },
+   "distribution": "opentelemetry-exporter-otlp-proto-grpc",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Collector Protobuf over gRPC Exporter"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.45.1"
+   },
+   "distribution": "opentelemetry-exporter-otlp-proto-http",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Collector Protobuf over HTTP Exporter"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.45.1"
+   },
+   "distribution": "opentelemetry-proto",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Python Proto"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.45.1"
+   },
+   "distribution": "opentelemetry-sdk",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Python SDK"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.66b1"
+   },
+   "distribution": "opentelemetry-semantic-conventions",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OpenTelemetry Semantic Conventions"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.4.0"
+   },
+   "distribution": "opt-einsum",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.4.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Path optimization of einsum functions."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.9.0"
+   },
+   "distribution": "optuna",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "5.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A hyperparameter optimization framework"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.19.0"
+   },
+   "distribution": "optype",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Building Blocks for Precise & Flexible Type Hints"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.1.0"
+   },
+   "distribution": "ordered-set",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: An OrderedSet is a custom MutableSet that remembers its order, so that every"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.13.0"
+   },
+   "distribution": "orjson",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.13.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.1.3"
+   },
+   "distribution": "osqp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.1.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: OSQP: The Operator Splitting QP Solver"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "24.2",
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "26.3"
+   },
+   "distribution": "packaging",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "26.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Core utilities for Python packages"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.0.6"
+   },
+   "distribution": "pandas",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.3.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Tabular evidence joins and summaries."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.8.7"
+   },
+   "distribution": "parso",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.8.7",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A Python Parser"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "pennylane",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Documented alternative differentiable circuit stack; not required for current cases."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "pennylane-quantuminspire",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Documented optional provider adapter; preserve its separate compatibility caps."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "perceval-interop",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Documented converter candidate with Qiskit version constraints."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "perceval-quandela",
+   "hardware_execution": true,
+   "imported_by": [
+    "scripts/bdsc_cases.py",
+    "scripts/bdsc_packages.py",
+    "scripts/qd_belenos_mesh.py",
+    "scripts/qd_mcp_server.py",
+    "scripts/qd_platform.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.3.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Photonic meshes, local SLOS/Naive checks and approved Quandela execution."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.9.0"
+   },
+   "distribution": "pexpect",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.9.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Pexpect allows easy control of interactive console applications."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "13.0.0"
+   },
+   "distribution": "pillow",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "13.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python Imaging Library (fork)"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "25.3"
+   },
+   "distribution": "pip",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "26.2.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The PyPA recommended tool for installing Python packages."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.13.5"
+   },
+   "distribution": "platformdirs",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.13.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-browser.txt": "1.64.0"
+   },
+   "distribution": "playwright",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/validate_measured_explorer.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.64.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A high-level API to automate web browsers"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.7.0"
+   },
+   "distribution": "pluggy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.7.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: plugin and hook calling mechanisms for python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.11"
+   },
+   "distribution": "ply",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.11",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python Lex & Yacc"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.0.53"
+   },
+   "distribution": "prompt-toolkit",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.0.53",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Library for building powerful interactive command lines in Python"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.5.4"
+   },
+   "distribution": "propcache",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.5.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Accelerated property cache"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "7.36.2"
+   },
+   "distribution": "protobuf",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "7.36.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Runtime dependency"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "7.2.2"
+   },
+   "distribution": "psutil",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "7.2.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Cross-platform lib for process and system monitoring."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.7.0"
+   },
+   "distribution": "ptyprocess",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.7.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Run a subprocess in a pseudo terminal"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.2.4"
+   },
+   "distribution": "pure-eval",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.2.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Safely evaluate AST nodes without side effects"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "pyadic",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/lsq_conditioning_study.py",
+    "scripts/wheel_zero_divisors.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.3.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Finite-field and finite-precision p-adic coefficients; a separate arithmetic experiment."
+  },
+  {
+   "declared_versions": {
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "3.1.0"
+   },
+   "distribution": "pybind11",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Seamless operability between C++11 and Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.11",
+    "docs/notes/open_quantum/requirements-oq.txt": "3.11",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "3.11"
+   },
+   "distribution": "pycparser",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.11",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: C parser in Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "7.48.0"
+   },
+   "distribution": "pycurl",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "7.48.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: PycURL -- A Python Interface To The cURL library"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.12.5",
+    "ci/requirements-replay.txt": "2.13.5",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.14.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.13.4",
+    "requirements.txt": "2.14.1"
+   },
+   "distribution": "pydantic",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/iqm_mcp_server.py",
+    "scripts/qd_mcp_server.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.14.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Data validation using Python type hints"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.41.5",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.50.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.46.4"
+   },
+   "distribution": "pydantic-core",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.50.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Core functionality for Pydantic validation and serialization"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "2.16.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.16.0"
+   },
+   "distribution": "pydantic-settings",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.16.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Settings management using Pydantic"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.21.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.21.0"
+   },
+   "distribution": "pygments",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.21.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Pygments is a syntax highlighting package written in Python."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.15.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.15.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.15.1"
+   },
+   "distribution": "pyjwt",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.15.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: JSON Web Token implementation in Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.4.2"
+   },
+   "distribution": "pylatex",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A Python library for creating LaTeX files and snippets"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.11"
+   },
+   "distribution": "pylatexenc",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.11",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Simple LaTeX parser providing latex-to-unicode and unicode-to-latex conversion"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.4.0"
+   },
+   "distribution": "pymatching",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Error-model decoding when a detector-code experiment requires it."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "pyoctonion",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/box_kite_packages.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "3.12",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Small octonion cross-check; depends on pyquaternion."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.3.3"
+   },
+   "distribution": "pyparsing",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.3.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: pyparsing - Classes and methods to define and execute parsing grammars"
+  },
+  {
+   "declared_versions": {
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "1.3.3"
+   },
+   "distribution": "pyproject-hooks",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.3.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Wrappers to call pyproject.toml-based build backend hooks."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "pyquaternion",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "0.9.9",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Scalar quaternion and rotation bookkeeping."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.12.4"
+   },
+   "distribution": "pyspnego",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.12.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Windows Negotiate Authentication Client and Server"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "9.1.1",
+    "ci/requirements-ci.txt": "9.1.1"
+   },
+   "distribution": "pytest",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "9.1.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Behavioral regressions and mutation checks."
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-ci.txt": "3.8.0"
+   },
+   "distribution": "pytest-xdist",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.8.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "CPU-budgeted independent test execution."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.9.0.post0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.9.0.post0"
+   },
+   "distribution": "python-dateutil",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.9.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Extensions to the standard Python datetime module"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.2.4",
+    "docs/notes/open_quantum/requirements-oq.txt": "1.2.4",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.2.4"
+   },
+   "distribution": "python-dotenv",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.2.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Read key-value pairs from a .env file and set them as environment variables"
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-replay.txt": "0.9.0",
+    "requirements.txt": "0.9.0"
+   },
+   "distribution": "python-flint",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/bdsc_packages.py",
+    "scripts/exact_rank.py",
+    "scripts/rank_locus_gap_directions.py",
+    "scripts/rank_locus_rotation_composite.py",
+    "scripts/rank_locus_second_order.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.9.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Exact rational/modular matrix rank and kernel certificates; defines no CD table."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "0.0.32",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.0.32"
+   },
+   "distribution": "python-multipart",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.0.32",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A streaming multipart parser for Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.25"
+   },
+   "distribution": "python-rapidjson",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python wrapper around rapidjson"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "6.0.3"
+   },
+   "distribution": "pyyaml",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "6.0.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: YAML parser and emitter for Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "27.2.0"
+   },
+   "distribution": "pyzmq",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "27.2.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python bindings for 0MQ"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "pyzx",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.10.7",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "ZX circuit simplification followed by exact operator-equivalence checks."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.1.9.post1"
+   },
+   "distribution": "qdldl",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.1.9.post1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: QDLDL, a free LDL factorization routine."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.63.0"
+   },
+   "distribution": "qi-compute-api-client",
+   "hardware_execution": true,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Typed Quantum Inspire compute API transport beneath the guarded runner."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.1.2",
+    "ci/requirements-replay.txt": "2.5.2",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
+    "requirements.txt": "2.6.0"
+   },
+   "distribution": "qiskit",
+   "hardware_execution": false,
+   "imported_by": [
+    "gororoba_quantum/adjudicate.py",
+    "gororoba_quantum/aer_delay_sentinels.py",
+    "gororoba_quantum/aer_resources.py",
+    "gororoba_quantum/affine_residual.py",
+    "gororoba_quantum/affine_residual_challenger.py",
+    "gororoba_quantum/algebra_planning.py",
+    "gororoba_quantum/algebra_planning_contracts.py",
+    "gororoba_quantum/branch_dm.py",
+    "gororoba_quantum/calibration_snapshot.py",
+    "gororoba_quantum/check_et_rows.py",
+    "gororoba_quantum/check_et_runtime.py",
+    "gororoba_quantum/claim_boundaries.py",
+    "gororoba_quantum/coherence_window.py",
+    "gororoba_quantum/compile_evidence.py",
+    "gororoba_quantum/conditional_ramsey.py",
+    "gororoba_quantum/correction_case_contracts.py",
+    "gororoba_quantum/correction_circuits.py",
+    "gororoba_quantum/correction_circuits_contracts.py",
+    "gororoba_quantum/correction_collection.py",
+    "gororoba_quantum/correction_collection_contracts.py",
+    "gororoba_quantum/correction_planning.py",
+    "gororoba_quantum/correction_planning_contracts.py",
+    "gororoba_quantum/correction_preparation.py",
+    "gororoba_quantum/correction_preparation_contracts.py",
+    "gororoba_quantum/correction_reanalysis.py",
+    "gororoba_quantum/correction_schedule_contracts.py",
+    "gororoba_quantum/crossed_tile_template.py",
+    "gororoba_quantum/designs.py",
+    "gororoba_quantum/diagnostic_controls.py",
+    "gororoba_quantum/diagnostic_experiments.py",
+    "gororoba_quantum/dynamic_density.py",
+    "gororoba_quantum/et_campaign.py",
+    "gororoba_quantum/et_planning.py",
+    "gororoba_quantum/et_rows.py",
+    "gororoba_quantum/experiments.py",
+    "gororoba_quantum/heron_multiprogramming.py",
+    "gororoba_quantum/hybrid_shor.py",
+    "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/linear_conjugation_challenger.py",
+    "gororoba_quantum/live_run.py",
+    "gororoba_quantum/local_compute.py",
+    "gororoba_quantum/maximal_contracts.py",
+    "gororoba_quantum/maximal_experiments.py",
+    "gororoba_quantum/modular_arithmetic.py",
+    "gororoba_quantum/n21_exact_planning.py",
+    "gororoba_quantum/native_preflight.py",
+    "gororoba_quantum/native_preflight_contracts.py",
+    "gororoba_quantum/order_finding.py",
+    "gororoba_quantum/packing.py",
+    "gororoba_quantum/parameter_binding_contracts.py",
+    "gororoba_quantum/patch_characterization.py",
+    "gororoba_quantum/pub_shot_runtime_contracts.py",
+    "gororoba_quantum/qpe_diagnostics.py",
+    "gororoba_quantum/qpu_case_allocation_contracts.py",
+    "gororoba_quantum/qpu_cases.py",
+    "gororoba_quantum/qpu_planning.py",
+    "gororoba_quantum/qpu_planning_contracts.py",
+    "gororoba_quantum/qubit_baseline.py",
+    "gororoba_quantum/rank_sector_contracts.py",
+    "gororoba_quantum/rank_sector_experiments.py",
+    "gororoba_quantum/ripple_contracts.py",
+    "gororoba_quantum/ripple_dynamics.py",
+    "gororoba_quantum/ripple_experiments.py",
+    "gororoba_quantum/runtime_contracts.py",
+    "gororoba_quantum/select_lcu.py",
+    "gororoba_quantum/signed_kernel_probe.py",
+    "gororoba_quantum/snapshot_laws.py",
+    "gororoba_quantum/star_ramsey.py",
+    "gororoba_quantum/test_heron_multiprogramming.py",
+    "kaggle_kernel/gpu_env_report.py",
+    "kaggle_kernel/kernel_main.py",
+    "scripts/aer_blocking_probe.py",
+    "scripts/aer_gpu_probe.py",
+    "scripts/algebra_circuit_fixtures.py",
+    "scripts/associator_cubic_normal_form.py",
+    "scripts/atlas_coherent_families.py",
+    "scripts/atlas_detuning_map.py",
+    "scripts/atlas_fringe_amplitudes.py",
+    "scripts/axis_tilt_substrate_split.py",
+    "scripts/box_kite_cases.py",
+    "scripts/census_frequency_design.py",
+    "scripts/check_extract_measured_ripple.py",
+    "scripts/coherence_window_analysis.py",
+    "scripts/compare_submitted_circuits.py",
+    "scripts/conditional_ramsey_power.py",
+    "scripts/design_c_cubic_noise.py",
+    "scripts/echo_dilation_noise.py",
+    "scripts/extract_measured_ripple.py",
+    "scripts/ghost_error_scale.py",
+    "scripts/ghost_error_scale_branching.py",
+    "scripts/ghost_event_scale.py",
+    "scripts/ghost_idle_budget.py",
+    "scripts/ghost_run.py",
+    "scripts/gl52_split_conjugators.py",
+    "scripts/heron_spatial_multiprogramming.py",
+    "scripts/heron_target_snapshot.py",
+    "scripts/ibm_runtime_options_inventory.py",
+    "scripts/jax_bridge_sweep.py",
+    "scripts/local_member_cz_conformance.py",
+    "scripts/mod15_signed_multiplier_census.py",
+    "scripts/n21_conjugation_noise.py",
+    "scripts/n21_exact_crosscheck.py",
+    "scripts/n21_exact_model_validation.py",
+    "scripts/n21_orbit_rca.py",
+    "scripts/n21_qx_conformance.py",
+    "scripts/n21_spectator_ramsey.py",
+    "scripts/qi_ibm_noise_replay.py",
+    "scripts/qi_zero_divisor_cases.py",
+    "scripts/replay_et_pilot.py",
+    "scripts/review_folded_jobs.py",
+    "scripts/review_wide_control_job.py",
+    "scripts/scaffolding_exposure.py",
+    "scripts/signed_kernel_noise.py",
+    "scripts/singular_sector_dynamics.py",
+    "scripts/substrate_crossover.py",
+    "scripts/walk_scaffold_channels.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.5.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Circuits, native synthesis, topology placement and operator verification."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "qiskit-addon-utils",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.4.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Supported circuit interchange and utility operations."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.17.2",
+    "ci/requirements-replay.txt": "0.17.2",
+    "requirements.txt": "0.17.2"
+   },
+   "distribution": "qiskit-aer",
+   "hardware_execution": false,
+   "imported_by": [
+    "gororoba_quantum/aer_delay_sentinels.py",
+    "gororoba_quantum/aer_identity.py",
+    "gororoba_quantum/branch_dm.py",
+    "gororoba_quantum/calibration_snapshot.py",
+    "gororoba_quantum/diagnostic_experiments.py",
+    "gororoba_quantum/dynamic_density.py",
+    "gororoba_quantum/hybrid_shor.py",
+    "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/linear_conjugation_challenger.py",
+    "gororoba_quantum/live_run.py",
+    "gororoba_quantum/local_compute.py",
+    "gororoba_quantum/maximal_contracts.py",
+    "gororoba_quantum/n21_exact_planning.py",
+    "gororoba_quantum/order_finding.py",
+    "gororoba_quantum/qpe_diagnostics.py",
+    "gororoba_quantum/qpu_planning_contracts.py",
+    "gororoba_quantum/snapshot_laws.py",
+    "gororoba_quantum/test_heron_multiprogramming.py",
+    "kaggle_kernel/gpu_env_report.py",
+    "kaggle_kernel/kernel_main.py",
+    "scripts/aer_blocking_probe.py",
+    "scripts/aer_gpu_probe.py",
+    "scripts/atlas_fringe_amplitudes.py",
+    "scripts/census_frequency_design.py",
+    "scripts/conditional_ramsey_power.py",
+    "scripts/design_c_cubic_noise.py",
+    "scripts/echo_dilation_noise.py",
+    "scripts/ghost_error_scale.py",
+    "scripts/ghost_error_scale_branching.py",
+    "scripts/ghost_event_scale.py",
+    "scripts/ghost_run.py",
+    "scripts/gl52_split_conjugators.py",
+    "scripts/jax_bridge_sweep.py",
+    "scripts/n21_conjugation_noise.py",
+    "scripts/n21_exact_crosscheck.py",
+    "scripts/n21_exact_model_validation.py",
+    "scripts/n21_qx_conformance.py",
+    "scripts/qi_ibm_noise_replay.py",
+    "scripts/signed_kernel_noise.py",
+    "scripts/singular_sector_dynamics.py",
+    "scripts/substrate_crossover.py",
+    "scripts/walk_scaffold_channels.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.17.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Ideal/noise circuit simulation; provider/routing approval rules apply to submitted jobs."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "qiskit-experiments",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.14.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Device-characterization circuits and analyses; calibration jobs require approval."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.43.1",
+    "ci/requirements-replay.txt": "0.50.0",
+    "requirements.txt": "0.50.0"
+   },
+   "distribution": "qiskit-ibm-runtime",
+   "hardware_execution": true,
+   "imported_by": [
+    "gororoba_quantum/adjudicate.py",
+    "gororoba_quantum/affine_residual_challenger.py",
+    "gororoba_quantum/algebra_planning_contracts.py",
+    "gororoba_quantum/calibration_snapshot.py",
+    "gororoba_quantum/check_et_runtime.py",
+    "gororoba_quantum/compile_evidence.py",
+    "gororoba_quantum/correction_case_contracts.py",
+    "gororoba_quantum/correction_circuits_contracts.py",
+    "gororoba_quantum/correction_collection_contracts.py",
+    "gororoba_quantum/correction_planning_contracts.py",
+    "gororoba_quantum/correction_preparation.py",
+    "gororoba_quantum/correction_schedule_contracts.py",
+    "gororoba_quantum/heron_multiprogramming.py",
+    "gororoba_quantum/ibm_account.py",
+    "gororoba_quantum/linear_conjugation_challenger.py",
+    "gororoba_quantum/live_run.py",
+    "gororoba_quantum/maximal_contracts.py",
+    "gororoba_quantum/native_preflight_contracts.py",
+    "gororoba_quantum/parameter_binding_contracts.py",
+    "gororoba_quantum/pub_shot_runtime_contracts.py",
+    "gororoba_quantum/qpu_planning_contracts.py",
+    "gororoba_quantum/ripple_contracts.py",
+    "gororoba_quantum/runtime_contracts.py",
+    "gororoba_quantum/signed_kernel_probe.py",
+    "scripts/compare_submitted_circuits.py",
+    "scripts/diagnose_qiskit_mock.py",
+    "scripts/ghost_calibrations.py",
+    "scripts/gl52_split_conjugators.py",
+    "scripts/heron_backend_config_snapshot.py",
+    "scripts/heron_target_snapshot.py",
+    "scripts/ibm_runtime_options_inventory.py",
+    "scripts/mod15_signed_multiplier_census.py",
+    "scripts/n21_orbit_rca.py",
+    "scripts/observe_qpu_job_inventory.py",
+    "scripts/qpu_runtime_levers.py",
+    "scripts/singular_sector_dynamics.py",
+    "scripts/state_prep_control_parameters.py",
+    "scripts/state_prep_excess.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.50.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IBM execution and result collection through the approved-record runner."
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-replay.txt": "0.1.1",
+    "requirements.txt": "0.1.1"
+   },
+   "distribution": "qiskit-mitigation",
+   "hardware_execution": true,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.1.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Hardware mitigation tasks; invocation can submit and needs the written case."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "qiskit-qasm3-import",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.6.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Validated OpenQASM interchange between isolated SDK environments."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.18.5"
+   },
+   "distribution": "qiskit-quantuminspire",
+   "hardware_execution": true,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Circuit conversion in the isolated Quantum Inspire environment."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.9.10"
+   },
+   "distribution": "qrisp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "IQM high-level circuit/QEC interface in its isolated stack."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "4.1.0"
+   },
+   "distribution": "quantuminspire",
+   "hardware_execution": true,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Account and case lifecycle through the existing guarded Quantum Inspire runner."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "quaternionic",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "1.0.18",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Numba quaternion arrays and independent numerical comparisons."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.15.0"
+   },
+   "distribution": "quimb",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.15.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Tensor-network classical references and marginal/expectation calculations."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "qutip",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Reference-only Lindblad alternative; qualify a capability gap before adding it."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.0"
+   },
+   "distribution": "qxelarator",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Local QX execution; measurement-register semantics differ from Tuna classical bits."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.37.0",
+    "docs/notes/open_quantum/requirements-oq.txt": "0.37.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.37.0"
+   },
+   "distribution": "referencing",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.37.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: JSON Referencing + Python"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.34.2",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.34.2",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.34.2"
+   },
+   "distribution": "requests",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/diagnose_qiskit_mock.py",
+    "scripts/kaggle_run.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.34.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python HTTP for Humans."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.3.0"
+   },
+   "distribution": "requests-ntlm",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.3.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: This package allows for HTTP NTLM authentication using the requests library."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "15.0.0"
+   },
+   "distribution": "rich",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "15.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.1.0"
+   },
+   "distribution": "roman-numerals",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Manipulate well-formed Roman numerals"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2026.9.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "2026.9.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2026.9.1"
+   },
+   "distribution": "rpds-py",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2026.9.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python bindings to Rust's persistent data structures (rpds)"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.19.1"
+   },
+   "distribution": "ruamel-yaml",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.19.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-ci.txt": "0.17.1"
+   },
+   "distribution": "ruff",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.17.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Pinned lint and format gate."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.3.0"
+   },
+   "distribution": "runningman",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.3.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Execution support used by measurement mitigation; provider submission stays guarded."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.17.1",
+    "ci/requirements-replay.txt": "0.18.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "0.18.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.18.1",
+    "requirements.txt": "0.18.1"
+   },
+   "distribution": "rustworkx",
+   "hardware_execution": false,
+   "imported_by": [
+    "gororoba_quantum/heron_multiprogramming.py",
+    "gororoba_quantum/live_run.py",
+    "gororoba_quantum/packing.py",
+    "gororoba_quantum/qpu_planning.py",
+    "gororoba_quantum/runtime_contracts.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.18.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Coupling graphs, placement and disjoint-support candidates."
+  },
+  {
+   "declared_versions": {},
+   "distribution": "sagemath",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/box_kite_census.py",
+    "scripts/box_kite_packages.py",
+    "scripts/rank_locus_rotation_composite.py"
+   ],
+   "independent_algebra_witness": true,
+   "observed_host_version": "10.10",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Exact derivations, Clifford and Albert references through certified convention maps."
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-replay.txt": "0.21.0",
+    "requirements.txt": "0.21.0"
+   },
+   "distribution": "samplomatic",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.21.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Runtime circuit preparation; dynamic-circuit restrictions remain binding."
+  },
+  {
+   "declared_versions": {
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "0.19.1"
+   },
+   "distribution": "scikit-build",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.19.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Improved build system generator for Python C/C++/Fortran/Cython extensions"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.18.1",
+    "ci/requirements-replay.txt": "1.18.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "1.18.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.18.1",
+    "requirements.txt": "1.18.1"
+   },
+   "distribution": "scipy",
+   "hardware_execution": false,
+   "imported_by": [
+    "ci/runner_specs.py",
+    "gororoba_quantum/bdsc.py",
+    "gororoba_quantum/check_et_campaign.py",
+    "gororoba_quantum/correction_statistics.py",
+    "gororoba_quantum/correction_statistics_contracts.py",
+    "gororoba_quantum/crossed_tile_template.py",
+    "gororoba_quantum/empirical_bernstein_contracts.py",
+    "gororoba_quantum/et_statistics.py",
+    "gororoba_quantum/placement_feasibility.py",
+    "gororoba_quantum/variance.py",
+    "scripts/atlas_fringe_amplitudes.py",
+    "scripts/axis_tilt_substrate_split.py",
+    "scripts/ghost_error_scale_branching.py",
+    "scripts/lsq_conditioning_study.py",
+    "scripts/n21_orbit_context_refit.py",
+    "scripts/n21_orbit_rca.py",
+    "scripts/n21_q143_beat_model.py",
+    "scripts/n21_q143_segmented_sweep.py",
+    "scripts/n21_spectator_ramsey.py",
+    "scripts/patch_window_analysis.py",
+    "scripts/qd_belenos_mesh.py",
+    "scripts/qi_coupler_zz_map.py",
+    "scripts/qi_shot_record_line.py",
+    "scripts/qi_zz_map_analysis.py",
+    "scripts/rank_sector_endpoint_decomposition.py",
+    "scripts/state_prep_control_parameters.py",
+    "scripts/state_prep_excess.py",
+    "scripts/walk_scaffold_channels.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.18.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Matrix exponentiation, linear algebra, integration and uncertainty estimates."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.18.1.1"
+   },
+   "distribution": "scipy-stubs",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The official type stubs for SciPy"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.3.1"
+   },
+   "distribution": "scs",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.3.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Splitting conic solver"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.13.2"
+   },
+   "distribution": "seaborn",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.13.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Statistical data visualization"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "selenium",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/kaggle_sessions.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.44.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Official Python bindings for Selenium WebDriver."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "84.0.0",
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "84.0.0"
+   },
+   "distribution": "setuptools",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "84.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Most extensible Python build backend with support for C/C++ extension modules"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.5.4"
+   },
+   "distribution": "shellingham",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.5.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Tool to Detect Surrounding Shell"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.17.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.17.0"
+   },
+   "distribution": "six",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.17.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python 2 and 3 compatibility utilities"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.1.1"
+   },
+   "distribution": "snowballstemmer",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.1.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: This package provides 36 stemmers for 34 languages generated from Snowball algorithms."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.6.1"
+   },
+   "distribution": "sparsediffpy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.8.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python bindings for SparseDiffEngine algorithmic differentiation"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "9.1.0"
+   },
+   "distribution": "sphinx",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "9.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Python documentation generator"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.0.0"
+   },
+   "distribution": "sphinxcontrib-applehelp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.0.0"
+   },
+   "distribution": "sphinxcontrib-devhelp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: sphinxcontrib-devhelp is a sphinx extension which outputs Devhelp documents"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.1.0"
+   },
+   "distribution": "sphinxcontrib-htmlhelp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.0.1"
+   },
+   "distribution": "sphinxcontrib-jsmath",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.0.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: A sphinx extension which renders display math in HTML via JavaScript"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.0.0"
+   },
+   "distribution": "sphinxcontrib-qthelp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: sphinxcontrib-qthelp is a sphinx extension which outputs QtHelp documents"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.0.0"
+   },
+   "distribution": "sphinxcontrib-serializinghtml",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.0.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: sphinxcontrib-serializinghtml is a sphinx extension which outputs \"serialized\" HTML files (json and pickle)"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "splitoct",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/algebra_package_tables.py",
+    "scripts/box_kite_packages.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.16",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Split-signature negative control; associator agreement does not establish algebra identity."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.1.5"
+   },
+   "distribution": "sqlalchemy",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.0.54",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Database Abstraction Library"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "3.5.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "3.5.0"
+   },
+   "distribution": "sse-starlette",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.5.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: SSE plugin for Starlette"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.6.3"
+   },
+   "distribution": "stack-data",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.6.4.dev0+g53501eb8b.d20251216",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Extract data from python stack frames and tracebacks for informative displays"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "1.8.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.8.0"
+   },
+   "distribution": "starlette",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.9.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The little ASGI library that shines."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "5.9.1",
+    "docs/notes/open_quantum/requirements-oq.txt": "5.9.1",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "5.9.1"
+   },
+   "distribution": "stevedore",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "5.7.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Manage dynamic plugins for Python applications"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.16.0"
+   },
+   "distribution": "stim",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.16.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Stabilizer controls and Clifford subcircuits; not general quaternion wave evolution."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.13.0",
+    "ci/requirements-replay.txt": "1.14.0",
+    "requirements.txt": "1.14.0"
+   },
+   "distribution": "sympy",
+   "hardware_execution": false,
+   "imported_by": [
+    "gororoba_quantum/circle_kernel_attachments.py",
+    "gororoba_quantum/complex_skew.py",
+    "gororoba_quantum/complex_skew_contracts.py",
+    "gororoba_quantum/four_support_doubling.py",
+    "gororoba_quantum/four_support_geometry.py",
+    "gororoba_quantum/four_support_homology.py",
+    "gororoba_quantum/four_support_rank.py",
+    "gororoba_quantum/integral_homology.py",
+    "gororoba_quantum/kernel_determinant.py",
+    "gororoba_quantum/kernel_determinant_contracts.py",
+    "gororoba_quantum/kernel_limit_contracts.py",
+    "gororoba_quantum/kernel_limits.py",
+    "gororoba_quantum/nullity_twelve_curves.py",
+    "gororoba_quantum/nullity_twelve_locus.py",
+    "gororoba_quantum/principal_skew_atlas.py",
+    "gororoba_quantum/projective_kernel_contracts.py",
+    "gororoba_quantum/projective_kernel_limits.py",
+    "gororoba_quantum/rank_attachments.py",
+    "gororoba_quantum/rank_charts.py",
+    "gororoba_quantum/rank_path_topology.py",
+    "gororoba_quantum/rank_polynomials.py",
+    "gororoba_quantum/rank_sector_contracts.py",
+    "gororoba_quantum/real_frontier_contracts.py",
+    "gororoba_quantum/real_frontier_graphs.py",
+    "gororoba_quantum/schur_acceleration.py",
+    "gororoba_quantum/skew_schur_charts.py",
+    "scripts/algebra_package_tables.py",
+    "scripts/bdsc_packages.py",
+    "scripts/rank_locus_second_order.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.14.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Exact operator identities and symbolic certificates."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.10.0"
+   },
+   "distribution": "tabulate",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.10.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Pretty-print tabular data"
+  },
+  {
+   "declared_versions": {
+    "ci/requirements-ci.txt": "3.7.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "3.7.0"
+   },
+   "distribution": "threadpoolctl",
+   "hardware_execution": false,
+   "imported_by": [
+    "ci/runner_specs.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.7.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Inspect and bound native BLAS/OpenMP threads."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.2.0"
+   },
+   "distribution": "toolz",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.1.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: List processing tools and functional utilities"
+  },
+  {
+   "declared_versions": {},
+   "distribution": "torch",
+   "hardware_execution": false,
+   "imported_by": [
+    "scripts/box_kite_packages.py"
+   ],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.14.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Qualified GPU tensor arithmetic and the octonion package backend."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "6.5.10"
+   },
+   "distribution": "tornado",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "6.5.10",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.70.1"
+   },
+   "distribution": "tqdm",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.70.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Fast, Extensible Progress Meter"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "5.16.1"
+   },
+   "distribution": "traitlets",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "5.16.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Traitlets Python configuration system"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.5"
+   },
+   "distribution": "truststore",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.10.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Verify certificates using native system trust stores"
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.27.3"
+   },
+   "distribution": "typer",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.27.3",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Typer, build great CLIs. Easy to code. Based on Python type hints."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.6.1.20261018"
+   },
+   "distribution": "types-networkx",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Typing stubs for networkx"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "7.35.1.20260906"
+   },
+   "distribution": "types-protobuf",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Typing stubs for protobuf"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.33.0.20261006"
+   },
+   "distribution": "types-requests",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Typing stubs for requests"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "1.17.0.20261008"
+   },
+   "distribution": "types-six",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Typing stubs for six"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.70.0.20260906"
+   },
+   "distribution": "types-tqdm",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Typing stubs for tqdm"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.16.0",
+    "docs/notes/open_quantum/requirements-oq.txt": "4.16.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "4.16.0"
+   },
+   "distribution": "typing-extensions",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "4.16.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Backported and Experimental Type Hints for Python 3.9+"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.4.4",
+    "docs/notes/open_quantum/requirements-oq.txt": "0.4.4",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.4.4"
+   },
+   "distribution": "typing-inspection",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.4.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Runtime typing introspection tools"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "3.2.3"
+   },
+   "distribution": "uncertainties",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.2.4",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: calculations with values with uncertainties, error propagation"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2.8.0",
+    "docs/notes/open_quantum/requirements-oq.txt": "2.8.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "2.7.0"
+   },
+   "distribution": "urllib3",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "2.8.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: HTTP library with thread-safe connection pooling, file post, and more."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/open_quantum/requirements-oq.txt": "0.54.0",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "0.54.0"
+   },
+   "distribution": "uvicorn",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.54.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: The lightning-fast ASGI server."
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "0.9.2"
+   },
+   "distribution": "wcwidth",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.9.2",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Measures the displayed width of unicode strings in a terminal"
+  },
+  {
+   "declared_versions": {
+    "packaging/qiskit-aer-cuda/build-requirements.txt": "0.48.0"
+   },
+   "distribution": "wheel",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "0.48.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Command line tool for manipulating wheel files"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "2026.9.0"
+   },
+   "distribution": "xarray",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": null,
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "Labeled acquisition arrays and parameter axes."
+  },
+  {
+   "declared_versions": {
+    "docs/notes/quantum_inspire/requirements-qi.txt": "1.25.1"
+   },
+   "distribution": "yarl",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "1.25.1",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Yet another URL library"
+  },
+  {
+   "declared_versions": {
+    "IQM retained environment": "4.1.1"
+   },
+   "distribution": "zipp",
+   "hardware_execution": false,
+   "imported_by": [],
+   "independent_algebra_witness": false,
+   "observed_host_version": "3.21.0",
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "role": "SDK/environment infrastructure: Backport of pathlib-compatible object wrapper for zip files"
+  }
+ ],
+ "schema": "hypercomplex-library-inventory-v1",
+ "sources_sha256": {
+  "ci/requirements-browser.txt": "6f9875723235ece07415e7d19103f2ec61ec35e1392d23fbd1c1290e043eaeb8",
+  "ci/requirements-ci.txt": "40be3064cb8dda368642c18fac388471ac84ed8b5237bd4bc8c5e183ed69038f",
+  "ci/requirements-replay.txt": "e5e98e830c7d6f06cca129bc4a9cd4bda6cc44cde0fc0b0d8d427e0ab0801496",
+  "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062",
+  "docs/notes/open_quantum/requirements-oq.txt": "b3acd33c1610642fe5b5374f624f9879f2a1271847293e74c1df762df2dfa058",
+  "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
+  "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
+  "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816"
+ },
+ "unresolved_import_roots": [
+  "cqasm",
+  "openquantum_mcp",
+  "openquantum_sdk",
+  "opensquirrel",
+  "quantuminspire",
+  "qxelarator",
+  "sedenion"
+ ]
+}
