@@ -4072,7 +4072,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "pyqpanda3",
@@ -4351,7 +4352,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "qdldl",

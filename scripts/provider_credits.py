@@ -60,7 +60,10 @@ Reader = Callable[[], list[Row]]
 NOT_READABLE = (
     ("IonQ", "organization usage needs the full organization id and credit is admin-only (docs/notes/ionq)"),
     ("Quafu", "the token API exposes no quota; it sits behind the web session (docs/notes/quafu)"),
-    ("Origin Quantum", "pyqpanda3 has no balance call; free machine seconds show in the console (docs/notes/originquantum)"),
+    (
+        "Origin Quantum",
+        "pyqpanda3 has no balance call; free machine seconds show in the console (docs/notes/originquantum)",
+    ),
 )
 
 # Strings from error text pass through this filter before they reach a file: it drops identifiers
