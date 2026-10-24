@@ -398,19 +398,24 @@ def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
     for key in ("circuit_params", "column", "operator", "ideal"):
         x_setting[key], y_setting[key] = y_setting[key], x_setting[key]
     narrow = {**circuit, "input_state": circuit["input_state"][:LOGICAL]}
-    refused = []
-    for label, candidate, mesh in (
-        ("perturbed unitary", perturbed, circuit),
-        ("exchanged X and Y analyzers", exchanged, circuit),
-        ("four-mode output width", manifest, narrow),
-    ):
-        try:
-            validate(candidate, mesh)
-        except (ValueError, PlatformError):
-            refused.append(label)
-            continue
-        raise ValueError(f"validate accepts the {label}")
-    return refused
+    return ordered_map(
+        refusal,
+        [
+            ("perturbed unitary", perturbed, circuit),
+            ("exchanged X and Y analyzers", exchanged, circuit),
+            ("four-mode output width", manifest, narrow),
+        ],
+    )
+
+
+def refusal(item: tuple[str, dict[str, Any], dict[str, Any]]) -> str:
+    """The label of a mutated request that validate refuses; a mutation it accepts raises."""
+    label, candidate, mesh = item
+    try:
+        validate(candidate, mesh)
+    except (ValueError, PlatformError):
+        return label
+    raise ValueError(f"validate accepts the {label}")
 
 
 def check() -> int:
