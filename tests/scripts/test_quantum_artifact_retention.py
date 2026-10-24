@@ -289,3 +289,32 @@ def test_verifier_rejects_private_source_metadata_with_matching_inventory_hash(t
     (output / "inventory.sha256").write_text(digest(data))
     with pytest.raises(ValueError, match="source identity contains a private identifier"):
         check(output)
+
+
+def test_gate_ledger_is_summarized_without_its_bytes(tmp_path: Path) -> None:
+    ledger = {
+        "schema": "gororoba-gate-ledger-v2",
+        "gates": {"core-001": {"key": "a" * 64, "reads": {"files": ["results/x.json"]}}},
+        "selected": ["core-001", "core-002"],
+    }
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "gate-ledger.json").write_text(json.dumps(ledger))
+    (source / "notes.md").write_text("unique finding")
+    output = tmp_path / "retained"
+    capture({"research": source}, output)
+    check(output)
+    record = json.loads((output / "inventory.json").read_text())
+    row = next(row for row in record["artifacts"] if row["source"].endswith("gate-ledger.json"))
+    if row["classification"] != "gate-ledger-summary" or "retained" in row:
+        raise AssertionError(f"a gate ledger was retained as bytes: {row}")
+    if (row["gate_count"], row["selected_count"]) != (1, 2):
+        raise AssertionError(row)
+    if len(list((output / "captures").iterdir())) != 1:
+        raise AssertionError("the ledger left a capture file")
+    del row["gate_keys_sha256"]
+    data = json.dumps(record).encode()
+    (output / "inventory.json").write_bytes(data)
+    (output / "inventory.sha256").write_text(digest(data))
+    with pytest.raises(ValueError, match="gate-ledger summary"):
+        check(output)

@@ -1,12 +1,14 @@
 {
  "artifacts": [
   {
-   "classification": "retained-sanitized",
-   "content_changed": true,
+   "classification": "gate-ledger-summary",
+   "gate_count": 0,
+   "gate_keys_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
    "git_blob_oid": "8cf3ac100a3c93473b4f7fc6719f33747d12f139",
-   "retained": "captures/f7f20844d5f0a0ad10f3722e7c27acfcd9efdc64177837d346b7e8a27eb28ed7.txt",
-   "retained_bytes": 87,
-   "retained_sha256": "f7f20844d5f0a0ad10f3722e7c27acfcd9efdc64177837d346b7e8a27eb28ed7",
+   "ledger_schema": "gororoba-gate-ledger-v2",
+   "reason": "A run_gates ledger regenerates from a rerun; its counts and digests identify it.",
+   "selected_count": 1,
+   "selected_sha256": "55d92790b34a02697295e193801aee6120cba0a197fc02a365f5bd581139202d",
    "source": "hypercomplex-library-import-coverage/hypercomplex-library-import-review/gate-ledger.json",
    "source_bytes": 87,
    "source_sha256": "2934b161efa02cb86e4cdda49234330e841b4e187af95ad66af9c2bd02940c55"

@@ -21,12 +21,12 @@ The [historical worktree scratch inventory](historical-worktree-scratch/inventor
 covers ignored research in six task-owned, already-merged worktrees: library
 import coverage, numerical-model pytest regressions, campaign submission
 deadlines, rejected-request recovery, proposal source bindings, and quaternion
-dephasing. The inventory retains 25 source identities and 19 unique captures.
+dephasing. The inventory retains 25 source identities and 18 unique captures.
 Regenerable pytest fixture repositories receive a metadata disposition rather
 than publication of their generated Git objects and sockets.
 
 The [broad validation and orchestration inventory](broad-validation-and-orchestration/inventory.json)
-adds 32 source identities and 25 captures. The completed frozen-source run at
+adds 32 source identities and 23 captures. The completed frozen-source run at
 `46b50f4625641ca8dd9df0baf492e48ee7256508` records 535 passing gates and one
 failure across 536 gates in 7362.42 seconds. The failing lint/type gate
 `core-000` exposed an unused type-ignore suppression, repaired in `fd65f74`.
@@ -74,12 +74,19 @@ file counts, and sizes rather than installed binaries. Those digests describe
 inventory metadata, rather than content. Third-party reading copies and the
 downloaded dashboard vendor bundle retain hashes rather than republished bytes.
 Synchronization locks receive transient dispositions. Archive members are read
-without extraction and retain individual identities.
+without extraction and retain individual identities. A run_gates ledger
+(schema `gororoba-gate-ledger-*`, keys `gates`, `schema` and `selected`)
+receives a `gate-ledger-summary` row: its source digest, gate and selection
+counts, and digests of the gate-to-key map and the selection, rather than the
+per-gate read traces a gate rerun regenerates. The broad-validation
+line-ending probe read the snapshot inventory before those summaries replaced
+its ledger captures; its row keeps that input's digest and Git blob identity
+as `superseded-inventory-identity`.
 
 The original snapshot's tracked-byte deduplication overwrote some external-copy
 and lock classifications. The [disposition correction map](snapshot/disposition-corrections.json)
-supersedes exactly those classifications while preserving the checksum-bound
-original inventory bytes. The verifier derives the required correction domain
+supersedes exactly those classifications while preserving the original
+inventory rows. The verifier derives the required correction domain
 from every historical row and rejects missing, additional, or incorrect entries.
 New captures preserve non-content classifications before tracked deduplication.
 The plaintext sanitizer normalizes casing and separators for every declared
@@ -96,7 +103,7 @@ retains the failing directory/archive/metadata reproductions, the subsequent
 57-test passing result, and focused gate timing receipts. Every historical
 inventory source name passed the added privacy check without a byte change.
 
-PR #352 owns MCP/API repairs. PR #368 owns the approved Ascella plan and waiting
+PR #352 owns MCP/API repairs. PR #368 owns the Ascella retry admission wait
 evidence. PR #369 owns local simulator outputs and the full-precision cQASM
 exporter. Other agents' hardware jobs, credentials, unrelated ignored research,
 and shared test-fixture trees remain outside the capture boundary. The capture

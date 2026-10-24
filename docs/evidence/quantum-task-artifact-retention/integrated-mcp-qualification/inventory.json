@@ -12,12 +12,14 @@
    "source_sha256": "3dc537e1434d9840aa3bc20b3040b26aaa163948d62aaf905a618dbafb614191"
   },
   {
-   "classification": "retained-sanitized",
-   "content_changed": true,
+   "classification": "gate-ledger-summary",
+   "gate_count": 392,
+   "gate_keys_sha256": "8b8f5d5847bfd33e76b20f778bb7ed33a417781c9aa967615225a624f7f38266",
    "git_blob_oid": "58c877ea7013330a3da337593d52d72c73737ab0",
-   "retained": "captures/1fb54f2bb0ed4cda06e0de6b15ef4e4896f864737212a2b7d25bb5ec586eb6de.txt",
-   "retained_bytes": 5405220,
-   "retained_sha256": "1fb54f2bb0ed4cda06e0de6b15ef4e4896f864737212a2b7d25bb5ec586eb6de",
+   "ledger_schema": "gororoba-gate-ledger-v2",
+   "reason": "A run_gates ledger regenerates from a rerun; its counts and digests identify it.",
+   "selected_count": 536,
+   "selected_sha256": "0f4b4c11f39a85cfc331e5cdae521f130395ffefbd42af0743f771cd7212dd07",
    "source": "integrated-mcp-ledger",
    "source_bytes": 5405220,
    "source_sha256": "ea8e09f4e379d2195eee76a57968fb66254f8ea3d1235c417cdc9a9fcbdccd14"

@@ -123,6 +123,39 @@ def external_copy(name: str) -> bool:
     )
 
 
+def gate_ledger_summary(data: bytes) -> dict[str, Any] | None:
+    """Counts and digests of a run_gates ledger, or None for any other content.
+
+    A ledger maps each passing gate to its cache key and read trace; a rerun of
+    the gates regenerates it, so the summary binds its identity without its bytes.
+    """
+    try:
+        parsed = json.loads(data)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    if not (
+        isinstance(parsed, dict)
+        and set(parsed) == {"gates", "schema", "selected"}
+        and isinstance(parsed["schema"], str)
+        and parsed["schema"].startswith("gororoba-gate-ledger-")
+        and isinstance(parsed["gates"], dict)
+        and all(isinstance(entry, dict) for entry in parsed["gates"].values())
+        and isinstance(parsed["selected"], list)
+    ):
+        return None
+    keys = {name: entry.get("key") for name, entry in parsed["gates"].items()}
+    return {
+        "ledger_schema": parsed["schema"],
+        "gate_count": len(keys),
+        "gate_keys_sha256": digest(json.dumps(keys, sort_keys=True).encode()),
+        "selected_count": len(parsed["selected"]),
+        "selected_sha256": digest(json.dumps(parsed["selected"]).encode()),
+    }
+
+
+GATE_LEDGER_FIELDS = frozenset({"ledger_schema", "gate_count", "gate_keys_sha256", "selected_count", "selected_sha256"})
+
+
 def _validate_source_identity(name: str) -> None:
     if clean_text(name) != name:
         raise ValueError("source identity contains a private identifier; use a non-private logical source name")
@@ -145,6 +178,13 @@ def _payload(arguments: tuple[str, bytes]) -> tuple[dict[str, Any], bytes | None
             **row,
             "classification": "transient-noise",
             "reason": "Synchronization state is not a scientific observation.",
+        }, None
+    if (summary := gate_ledger_summary(data)) is not None:
+        return {
+            **row,
+            "classification": "gate-ledger-summary",
+            **summary,
+            "reason": "A run_gates ledger regenerates from a rerun; its counts and digests identify it.",
         }, None
     if data.startswith(b"\x89PNG\r\n\x1a\n"):
         content, extension = data, ".png"
@@ -307,6 +347,10 @@ def _verify_row(arguments: tuple[Path, dict[str, Any]]) -> str | None:
         blob = (ROOT / repository_path).read_bytes()
         if digest(blob) != row["source_sha256"] or len(blob) != row["source_bytes"]:
             raise ValueError("repository evidence digest differs")
+    if row["classification"] == "gate-ledger-summary":
+        if "retained" in row or not GATE_LEDGER_FIELDS <= set(row):
+            raise ValueError("gate-ledger summary fields differ")
+        return None
     if "retained" not in row:
         return None
     relative = PurePosixPath(row["retained"])

@@ -1,12 +1,14 @@
 {
  "artifacts": [
   {
-   "classification": "retained-sanitized",
-   "content_changed": true,
+   "classification": "gate-ledger-summary",
+   "gate_count": 392,
+   "gate_keys_sha256": "a78a873e762b91681f41352524fd8419f614a4acd117ebe56f2d8c0c452ef8fa",
    "git_blob_oid": "aa9e3969891f67f9d87a4d20eb12dc03bbd289ab",
-   "retained": "captures/260a7c7ec80445bed5a263ba8bae160b49dddf08271ec2dd0e2eda35cd6d97e6.txt",
-   "retained_bytes": 5392788,
-   "retained_sha256": "260a7c7ec80445bed5a263ba8bae160b49dddf08271ec2dd0e2eda35cd6d97e6",
+   "ledger_schema": "gororoba-gate-ledger-v2",
+   "reason": "A run_gates ledger regenerates from a rerun; its counts and digests identify it.",
+   "selected_count": 536,
+   "selected_sha256": "0f4b4c11f39a85cfc331e5cdae521f130395ffefbd42af0743f771cd7212dd07",
    "source": "broad-ledger.json",
    "source_bytes": 5392788,
    "source_sha256": "58895b0c0b126d4edb14403c1fdb7873744e6555ebf80f90f8502508e592ad39"
@@ -45,10 +47,9 @@
    "source_sha256": "1d7d0c88f5ff7cde2bff54b955d7ddda5a8335b34a4f288b4f6ec69483b83fbc"
   },
   {
-   "classification": "already-retained",
+   "classification": "superseded-inventory-identity",
    "git_blob_oid": "4850c0c0405dad29d97c64ee8c1a1b69d1bb3268",
-   "repository_commit": "4f44edcdb6bb5632f2e4a23fab6100106d158f4c",
-   "repository_path": "docs/evidence/quantum-task-artifact-retention/snapshot/inventory.json",
+   "reason": "The probe read the snapshot inventory before its gate ledgers became summaries; the digest and blob identity name those bytes.",
    "source": "line-ending-checkout-probe/docs/evidence/quantum-task-artifact-retention/snapshot/inventory.json",
    "source_bytes": 904197,
    "source_sha256": "56f80daf07c21e595dd086d6413057003fc23f22d341b189e9e89f034bf587b0"
@@ -87,12 +88,14 @@
    "source_sha256": "50e852ded67a8255b15deb9c468cadb9b3b6b1fb98d445b67ab643188a46cd53"
   },
   {
-   "classification": "retained-sanitized",
-   "content_changed": true,
+   "classification": "gate-ledger-summary",
+   "gate_count": 0,
+   "gate_keys_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
    "git_blob_oid": "2ee13480dc8a89d6093cedf8fa6378d14550e5c7",
-   "retained": "captures/c9aac3865888b72c64fa107442b7181545db4eaeb572a8c163bab8e1e0af8535.txt",
-   "retained_bytes": 87,
-   "retained_sha256": "c9aac3865888b72c64fa107442b7181545db4eaeb572a8c163bab8e1e0af8535",
+   "ledger_schema": "gororoba-gate-ledger-v2",
+   "reason": "A run_gates ledger regenerates from a rerun; its counts and digests identify it.",
+   "selected_count": 1,
+   "selected_sha256": "fcf377bd05ca034087a27d97ccf58ccffce50701233f20f79a94cd68a75de3eb",
    "source": "quantum-artifact-retention-focused-808bdfb-ledger.json",
    "source_bytes": 87,
    "source_sha256": "fbbec0c29c2843a50f41b8e24c91bb5735493840d953095a2a44e5bcca1a8051"
