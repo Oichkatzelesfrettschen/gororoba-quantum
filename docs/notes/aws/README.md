@@ -30,9 +30,15 @@ On the free plan AWS charges nothing: usage draws the credits, and the plan
 ends when they run out or at its expiration date. Charges begin only after
 an upgrade to the paid plan, so an upgrade is the owner's decision alone and
 never an agent's; a paid plan then takes a spend limit in AWS Settings, which
-pauses the project when exceeded. The provider credits monitor
-(`scripts/provider_credits.py`) reads the plan state, remaining credits and
-month-to-date cost.
+pauses the project when exceeded. Two read-only calls give the plan state,
+remaining credits and month-to-date cost:
+
+```sh
+aws freetier get-account-plan-state --profile gororoba --region us-east-1
+aws ce get-cost-and-usage --profile gororoba --region us-east-1 \
+    --time-period Start=$(date -u +%Y-%m-01),End=$(date -u -d tomorrow +%F) \
+    --granularity MONTHLY --metrics UnblendedCost
+```
 
 ## CLI and sign-in
 
