@@ -42,7 +42,12 @@ series separates them by the order of the residuals in time.
 Usage:
   "$PYTHON" scripts/bdsc_drift_series.py --readout SERIES_RUN_DIR...
   "$PYTHON" scripts/bdsc_drift_series.py --sensitivity
+  "$PYTHON" scripts/bdsc_drift_series.py --write
+  "$PYTHON" scripts/bdsc_drift_series.py --check
 
+--write writes the readout of the seven retained series runs (READOUT_RUNS)
+to READOUT, a runner-image record (ci/runner_image_records.json); --check
+proves READOUT equals a fresh readout of those runs byte for byte.
 --sensitivity prints the share of seeded synthetic series (SENSITIVITY_SEED,
 SENSITIVITY_REPLICATES per scenario) that the primary reads resolved, at the
 retained reference error, for white jitter shared within each group of four
@@ -93,6 +98,16 @@ GROUP = 4
 BLOCK = 25
 STATE_DIR = ROOT / "results/quandela/schedules/bdsc-drift-series"
 DARK_DIR = ROOT / "results/quandela/bdsc_drift_series_dark"
+READOUT = ROOT / "results/quandela/bdsc_drift_series_readout_pinned.json"
+READOUT_RUNS = (
+    "2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+    "2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+    "2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+    "2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+    "2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+    "2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
+    "2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
+)
 CLASSES = tuple(diag.CLASSES)
 
 
@@ -389,9 +404,23 @@ def main() -> int:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--readout", type=Path, nargs="+", metavar="SERIES_RUN_DIR")
     group.add_argument("--sensitivity", action="store_true")
+    group.add_argument("--write", action="store_true")
+    group.add_argument("--check", action="store_true")
     args = parser.parse_args()
     if args.sensitivity:
         print(json.dumps(sensitivity(), indent=1, sort_keys=True))
+    elif args.write or args.check:
+        text = json.dumps(readout([st.RUNS_DIR / run for run in READOUT_RUNS]), indent=1, sort_keys=True) + "\n"
+        name = READOUT.relative_to(ROOT).as_posix()
+        if args.write:
+            READOUT.write_text(text, encoding="utf-8")
+            print(f"bdsc drift series: wrote {name}")
+        else:
+            require(
+                READOUT.is_file() and READOUT.read_text(encoding="utf-8") == text,
+                f"{name} differs from a fresh readout",
+            )
+            print(f"bdsc drift series: {name} matches a fresh readout of its retained runs")
     else:
         print(json.dumps(readout([run.resolve() for run in args.readout]), indent=1, sort_keys=True))
     return 0
