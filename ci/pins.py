@@ -233,7 +233,7 @@ def resolve_current(
 
 
 # The pins each ci/pr_checks.sh lane needs: lint runs only ruff, the others import the whole runtime.
-LANES = ("lint", "types", "tests")
+LANES = ("lint", "types", "tests", "gates")
 
 
 def resolve_lane(lane: str, environment: Mapping[str, str], current: str, root: Path = ROOT) -> tuple[str | None, str]:
@@ -270,7 +270,7 @@ def resolve_lane(lane: str, environment: Mapping[str, str], current: str, root: 
 def main(argv: list[str]) -> int:
     """``pins.py lane LANE``: print the lane's interpreter, or its refusal on stderr with exit 2."""
     if len(argv) != 2 or argv[0] != "lane":
-        raise SystemExit("usage: pins.py lane lint|types|tests")
+        raise SystemExit("usage: pins.py lane lint|types|tests|gates")
     chosen, reason = resolve_lane(argv[1], os.environ, sys.executable)
     if chosen is None:
         print(f"pr_checks: {reason}", file=sys.stderr)

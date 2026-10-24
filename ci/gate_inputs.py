@@ -126,10 +126,10 @@ def dependencies(
     return found
 
 
-def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -> set[str]:
+def full_gate_scopes(root: Path, gates: list[dict[str, Any]]) -> dict[str, list[str]]:
+    """The reviewed input globs of every full-tier gate, from ci/full_gate_inputs.json."""
     manifest: dict[str, list[str]] = json.loads((root / "ci/full_gate_inputs.json").read_text())["gates"]
-    full = [gate for gate in gates if gate.get("tier", "pr") == "full"]
-    expected = {gate["name"] for gate in full}
+    expected = {gate["name"] for gate in gates if gate.get("tier", "pr") == "full"}
     if set(manifest) != expected:
         raise ValueError(f"full gate input coverage differs: {sorted(set(manifest) ^ expected)}")
     for name, patterns in manifest.items():
@@ -138,6 +138,13 @@ def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -
             for pattern in patterns
         ):
             raise ValueError(f"{name}: input scopes must be checkout-relative glob strings")
+    return manifest
+
+
+def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -> set[str]:
+    manifest = full_gate_scopes(root, gates)
+    full = [gate for gate in gates if gate.get("tier", "pr") == "full"]
+    expected = {gate["name"] for gate in full}
     if any(matches(path, pattern) for path in changed for pattern in GLOBAL_INPUTS):
         return expected
     modules = module_index(root)
@@ -151,6 +158,83 @@ def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -
         sources = dependencies(root, gate, modules, references)
         if any(path in sources or any(matches(path, pattern) for pattern in patterns) for path in changed):
             selected.add(gate["name"])
+    return selected
+
+
+def command_paths(root: Path, gate: dict[str, Any]) -> set[str]:
+    """The checkout paths a gate command names as operands, relative to the checkout root.
+
+    A gate checks the records and directories its command names, so a change at or under one of
+    them reaches the gate whether or not the gate's sources import anything changed.
+    """
+    try:
+        words = shlex.split(gate["cmd"])
+    except ValueError:
+        return set()
+    named = set()
+    for word in words:
+        if word.startswith("-") or "$" in word or "=" in word:
+            continue
+        candidate = (root / gate["cwd"] / word.split("::", 1)[0]).resolve()
+        if candidate != root.resolve() and candidate.is_relative_to(root.resolve()):
+            named.add(candidate.relative_to(root.resolve()).as_posix())
+    return named
+
+
+def ledger_reaches(reads: dict[str, list[Any]], changed: set[str], listed: set[str]) -> bool:
+    """Whether a traced read set (ci/gate_ledger.py) reads a changed path or lists an added or removed one.
+
+    An edited file reaches a gate that read it; an added or removed file also reaches a gate that
+    listed its directory, matched it with a glob or probed its existence. Python files are left to the
+    import closure, since every gate that imports a sibling lists the module directory.
+    """
+    probed = set(reads.get("files", [])) | set(reads.get("links", [])) | {path for _, path in reads.get("stats", [])}
+    if changed & probed:
+        return True
+    directories = set(reads.get("dirs", []))
+    patterns = [pattern for _, pattern in reads.get("globs", [])]
+    for path in listed:
+        if path.endswith(".py"):
+            continue
+        if (os.path.dirname(path) or ".") in directories or any(matches(path, pattern) for pattern in patterns):
+            return True
+    return False
+
+
+def affected(
+    root: Path,
+    gates: list[dict[str, Any]],
+    changed: list[str],
+    listed: list[str],
+    traced: dict[str, dict[str, Any]] | None = None,
+) -> set[str]:
+    """The gates a change reaches: through their import closure, the paths their commands name, the
+    reviewed scopes of full-tier gates, or the read sets a traced run recorded (``traced`` maps a gate or
+    case name to its ledger entry). ``changed`` holds every changed path and ``listed`` the added and
+    removed ones.
+    """
+    scopes = full_gate_scopes(root, gates)
+    modules = module_index(root)
+    for path in changed:
+        if path.endswith(".py"):
+            modules.setdefault(Path(path).stem, set()).add(root / path)
+    references: dict[Path, tuple[tuple[str, ...], tuple[str, ...]]] = {}
+    edited, created = set(changed), set(listed)
+    # Each changed path with every directory above it, so a command operand naming a directory matches.
+    ancestry = {ancestor for path in edited for ancestor in [path, *(p.as_posix() for p in Path(path).parents)]}
+    entries = traced or {}
+    selected = set()
+    for gate in gates:
+        name = gate["name"]
+        sources = dependencies(root, gate, modules, references) | command_paths(root, gate)
+        patterns = scopes.get(name, [])
+        reads = [entry["reads"] for key, entry in entries.items() if key == name or key.startswith(f"{name}--")]
+        if (
+            not ancestry.isdisjoint(sources)
+            or any(matches(path, pattern) for path in edited for pattern in patterns)
+            or any(ledger_reaches(read, edited, created) for read in reads)
+        ):
+            selected.add(name)
     return selected
 
 

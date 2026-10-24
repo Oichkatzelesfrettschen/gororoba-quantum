@@ -4,11 +4,15 @@
 #   sh ci/pr_checks.sh types           mypy over the same directories
 #   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
 #                                      given paths; -m audit PATH selects the marked tests
+#   sh ci/pr_checks.sh gates [ARG...]  the ci/gates.json gates the branch's diff from
+#                                      origin/main reaches, of at most GATES_MAX_SECONDS
+#                                      (default 15) measured seconds; GATES_LEDGER names an
+#                                      audit ledger whose read sets widen the selection
 # PYTHON names an interpreter holding the pins; left unset, the host
 # environment sh ci/build_host_envs.sh builds serves. The environment below is
 # the one the hosted jobs run under.
 set -eu
-[ $# -ge 1 ] || { echo "usage: sh ci/pr_checks.sh lint|types|tests [PATH...]" >&2; exit 2; }
+[ $# -ge 1 ] || { echo "usage: sh ci/pr_checks.sh lint|types|tests|gates [ARG...]" >&2; exit 2; }
 root=$(cd "$(dirname "$0")/.." && pwd)
 # ci/pins.py resolve_lane holds the lane to an interpreter carrying its pins:
 # an explicit PYTHON as named, else the host environment ci/build_host_envs.sh
@@ -73,6 +77,20 @@ tests)
 		} >>"$GITHUB_STEP_SUMMARY"
 	fi
 	exit "$status"
+	;;
+gates)
+	# A record that binds its producer's digest, or a check whose input a change edits, fails only in
+	# the gate that replays it; this lane runs those gates before the merge, and the nightly audit
+	# keeps every gate above the seconds bound.
+	base=$(git merge-base origin/main HEAD) || {
+		echo "pr_checks.sh gates: no merge base with origin/main; fetch main" >&2
+		exit 2
+	}
+	diff=$(mktemp)
+	trap 'rm -f "$diff"' EXIT
+	git diff --no-renames --name-status -z "$base" HEAD >"$diff"
+	"$PYTHON" ci/run_gates.py --affected-by "$diff" ${GATES_LEDGER:+--affected-ledger "$GATES_LEDGER"} \
+		--max-seconds "${GATES_MAX_SECONDS:-15}" "$@"
 	;;
 *)
 	echo "pr_checks.sh: unknown check $check" >&2

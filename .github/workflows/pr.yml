@@ -1,9 +1,10 @@
 name: pr
 
-# Pull-request acceptance through ci/pr_checks.sh: Ruff, mypy and the pytest
-# regression suite with the audit marker deselected (pyproject.toml). The
-# retained-evidence replays, gate scheduler and ledger run in ci.yml's nightly
-# and manual audit. A job or step that reaches its timeout fails.
+# Pull-request acceptance through ci/pr_checks.sh: Ruff, mypy, the pytest
+# regression suite with the audit marker deselected (pyproject.toml), and the
+# ci/gates.json gates the pull request's diff reaches within a per-gate seconds
+# bound. Every gate, the retained-evidence replays and the ledger run in
+# ci.yml's nightly and manual audit. A job or step that reaches its timeout fails.
 # workflow_dispatch serves a pull request that GITHUB_TOKEN opened, whose
 # pull_request event starts no workflow; check runs attach to the dispatched
 # commit, which is that pull request's head.
@@ -59,3 +60,52 @@ jobs:
       - name: pytest
         timeout-minutes: 4
         run: sh ci/pr_checks.sh tests
+
+  gates:
+    name: gates
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    env:
+      REPLAY_VENV: /home/runner/.cache/gororoba-ci/replay-venv
+      LEDGER: /home/runner/.cache/gororoba-ci/ledger/gate-ledger.json
+      # Gates that run pytest carry the audit's unbounded call time.
+      GOROROBA_TEST_CALL_SECONDS: "0"
+    steps:
+      # The whole history (about 18 MiB packed) gives the merge base with main.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          fetch-depth: 0
+      - name: Fetch main
+        run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+      - uses: ./.github/actions/pins-venv
+      - name: Plan the historical replay environment
+        id: plan
+        run: sh ci/pr_checks.sh gates --plan "$RUNNER_TEMP/gate-plan.json" --github-output "$GITHUB_OUTPUT"
+      # ci.yml's key, so a pull request restores the runtime main's audit saved.
+      - name: Restore the recorded compiler runtime
+        id: replay-cache
+        if: steps.plan.outputs.historical == 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.REPLAY_VENV }}
+          key: replay-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('ci/requirements-replay.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
+      - name: Install the recorded compiler runtime
+        if: steps.plan.outputs.historical == 'true' && steps.replay-cache.outputs.cache-hit != 'true'
+        run: |
+          set -eu
+          "$pythonLocation/bin/python3" -m venv "$REPLAY_VENV"
+          PYTHON="$REPLAY_VENV/bin/python" REQUIREMENTS_FILE=ci/requirements-replay.txt sh ci/install_pins.sh
+      - name: Use the recorded compiler runtime
+        if: steps.plan.outputs.historical == 'true'
+        run: echo "REPLAY_PYTHON=$REPLAY_VENV/bin/python" >> "$GITHUB_ENV"
+      # The audit's merged ledger from main; its read sets add the data files a
+      # gate opens without naming them. A miss leaves the static selection.
+      - name: Restore the gate ledger
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.LEDGER }}
+          key: gate-ledger-${{ github.sha }}
+          restore-keys: gate-ledger-
+      - name: Affected gates
+        timeout-minutes: 20
+        run: GATES_LEDGER="$LEDGER" sh ci/pr_checks.sh gates
