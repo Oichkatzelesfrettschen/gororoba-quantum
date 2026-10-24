@@ -20,6 +20,8 @@ stubs differ. One line on stderr names the substitution.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import re
 import shutil
@@ -51,6 +53,22 @@ def installed_version(tool: str, python: str) -> str | None:
         return None
     match = _VERSION.match(completed.stdout.strip())
     return match.group(1) if completed.returncode == 0 and match else None
+
+
+def cache_arguments(tool: str, arguments: Sequence[str], environment: Mapping[str, str], cwd: Path) -> list[str]:
+    """ARGUMENTS with a mypy cache directory of this invocation's own, unless the caller names one.
+
+    ci/run_gates.py runs gates concurrently, and mypy's incremental cache supports one writer: two
+    invocations with different search paths writing .mypy_cache at once leave entries that crash the
+    next reader with INTERNAL ERROR. A directory keyed by the working directory, MYPYPATH and the
+    arguments keeps each invocation's cache warm across runs and private to it.
+    """
+    if tool != "mypy" or "MYPY_CACHE_DIR" in environment:
+        return list(arguments)
+    if any(argument == "--cache-dir" or argument.startswith("--cache-dir=") for argument in arguments):
+        return list(arguments)
+    identity = json.dumps([str(cwd), environment.get("MYPYPATH", ""), list(arguments)])
+    return ["--cache-dir", f".mypy_cache/{hashlib.sha256(identity.encode()).hexdigest()[:16]}", *arguments]
 
 
 def command(
@@ -87,7 +105,7 @@ def main(argv: Sequence[str]) -> int:
         raise SystemExit(f"pinned_tool: {REQUIREMENTS.name} pins no {tool}")
     argv_out, notice = command(
         tool,
-        arguments,
+        cache_arguments(tool, arguments, os.environ, Path.cwd()),
         pinned[tool],
         installed_version(tool, sys.executable),
         os.environ,

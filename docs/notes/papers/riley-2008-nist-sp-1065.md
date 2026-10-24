@@ -57,6 +57,10 @@ Tag convention: [P] marks paper statements; [I] marks repository interpretation.
   log-log slope mu of the stability plot as W PM (2, -2), F PM (1, about -2), W FM (0, -1), F FM
   (-1, 0) and RW FM (-2, 1). "The log sigma versus log tau slopes are the same for the two PM noise
   types, but are different on a Mod sigma plot, which is often used to distinguish between them."
+- [I] The tabulated mu is the exponent of the Allan variance, sigma_y^2(tau) proportional to
+  tau^mu with mu = -alpha - 1 for -3 < alpha <= 1 and mu = -2 for W PM; the Allan deviation therefore
+  slopes at mu / 2 on a log sigma versus log tau plot: W PM -1, W FM -1/2, F FM 0, RW FM +1/2.
+  Every mu below is the variance exponent.
 - [P] Original Allan variance, Eq. 6 (Section 5.2.2, PDF p. 24): for M fractional-frequency values y_i
   averaged over interval tau, sigma_y^2(tau) = [1 / (2 (M - 1))] times the sum over i = 1 to M - 1 of
   (y_{i+1} - y_i)^2. The paper says the Allan variance "has the advantage, for more divergent noise

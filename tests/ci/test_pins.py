@@ -258,6 +258,25 @@ def test_pinned_tool() -> None:
         raise AssertionError(f"{pinned_tool.REQUIREMENTS.name} pins no {', '.join(missing)}")
 
 
+def test_each_mypy_invocation_writes_its_own_cache() -> None:
+    root = Path("/checkout")
+    first = pinned_tool.cache_arguments("mypy", ["a.py"], {"MYPYPATH": "gororoba_quantum"}, root)
+    again = pinned_tool.cache_arguments("mypy", ["a.py"], {"MYPYPATH": "gororoba_quantum"}, root)
+    other = pinned_tool.cache_arguments("mypy", ["a.py"], {"MYPYPATH": "docs"}, root)
+    if first[:1] != ["--cache-dir"] or not first[1].startswith(".mypy_cache/") or first[2:] != ["a.py"]:
+        raise AssertionError(f"mypy runs without a private cache: {first}")
+    if first != again or first[1] == other[1]:
+        raise AssertionError("the cache directory must follow the invocation and differ between search paths")
+    for arguments, environment, tool in (
+        (["--cache-dir", "x", "a.py"], {}, "mypy"),
+        (["--cache-dir=x", "a.py"], {}, "mypy"),
+        (["a.py"], {"MYPY_CACHE_DIR": "x"}, "mypy"),
+        (["check"], {}, "ruff"),
+    ):
+        if pinned_tool.cache_arguments(tool, arguments, environment, root) != arguments:
+            raise AssertionError(f"a named cache or another tool keeps its arguments: {tool} {arguments}")
+
+
 def test_gate_lint_tools_are_pinned() -> None:
     # A bare ruff or mypy resolves through PATH, where a host install of
     # another release reports its own defects as gate failures.
