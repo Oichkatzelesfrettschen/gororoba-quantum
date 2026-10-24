@@ -124,6 +124,29 @@ def test_a_traced_read_set_reaches_an_unnamed_input(tree: Path) -> None:
         raise AssertionError("a case entry's read set must reach its parent gate")
 
 
+def test_an_added_directory_changes_its_parent_listing(tree: Path) -> None:
+    reads = {"files": [], "dirs": ["docs/runs"], "globs": [], "stats": [], "links": []}
+    traced = {"other": {"key": "k", "reads": reads}}
+    gates = json.loads((tree / "ci/gates.json").read_text())["gates"]
+    (tree / "docs/runs/old").mkdir(parents=True)
+    (tree / "docs/runs/new").mkdir()
+    (tree / "docs/runs/new/cases.json").write_text("{}\n")
+    (tree / "docs/runs/old/extra.json").write_text("{}\n")
+    before = {"docs/runs/old/cases.json"}
+    # Git lists docs/runs/new/cases.json; the entry docs/runs gains is docs/runs/new.
+    added = ["docs/runs/new/cases.json"]
+    if "other" not in gate_inputs.affected(tree, gates, added, added, traced, None, before):
+        raise AssertionError("a new directory under a listed directory must reach the gate that listed it")
+    # A file added inside a directory that already existed changes only that directory's listing.
+    added = ["docs/runs/old/extra.json"]
+    if "other" in gate_inputs.affected(tree, gates, added, added, traced, None, before):
+        raise AssertionError("an addition below an existing entry leaves the listed directory unchanged")
+    # A removed directory leaves its parent's listing too.
+    removed = ["docs/runs/gone/cases.json"]
+    if "other" not in gate_inputs.affected(tree, gates, removed, removed, traced, None, before | set(removed)):
+        raise AssertionError("a removed directory under a listed directory must reach the gate that listed it")
+
+
 def test_name_status_separates_added_and_removed_paths() -> None:
     diff = b"M\0scripts/a.py\0A\0results/new.json\0D\0results/old.json\0"
     if run_gates.name_status(diff) != (

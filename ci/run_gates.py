@@ -470,13 +470,20 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.affected_by is not None:
         edited, listed = name_status(arguments.affected_by.read_bytes())
         traced = gate_ledger.load(arguments.affected_ledger) if arguments.affected_ledger is not None else None
-        base = None
+        base = base_paths = None
         if arguments.affected_base is not None:
             shown = subprocess.run(
                 ["git", "show", f"{arguments.affected_base}:ci/gates.json"], cwd=ROOT, capture_output=True, check=False
             )
             base = json.loads(shown.stdout)["gates"] if shown.returncode == 0 else []
-        reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base)
+            tree = subprocess.run(
+                ["git", "ls-tree", "-r", "-z", "--name-only", arguments.affected_base],
+                cwd=ROOT,
+                capture_output=True,
+                check=True,
+            )
+            base_paths = {path for path in tree.stdout.decode("utf-8").split("\0") if path}
+        reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base, base_paths)
         gates = [gate for gate in gates if gate["name"] in reached]
         print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
     candidates = gate_inputs.expand_cases(ROOT, gates)

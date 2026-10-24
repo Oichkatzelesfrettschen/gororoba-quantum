@@ -28,10 +28,12 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
   (`GATES_MAX_SECONDS`) the diff reaches: every gate when the diff changes a
   file the pinned or replay venv cache keys hash (`gate_inputs.RUNTIME_INPUTS`),
   else a gate whose ci/gates.json entry is new or changed, or a changed path in
-  its import closure, at or under a path its command names, in a full-tier gate's
+  its import closure, at or under a path its command names, listed in a
+  checksum manifest its `sha256sum -c` checks, in a full-tier gate's
   ci/full_gate_inputs.json scopes, or in the read set main's audit ledger
   traced for it, where an added or removed non-Python file also reaches a
-  listed directory, glob or existence probe (`gate_inputs.affected`). It
+  glob or existence probe over it and the directory entry it creates or
+  deletes reaches a listing of that entry's parent (`gate_inputs.affected`). It
   restores the replay runtime and the gate ledger from ci.yml's caches
   read-only and builds the runtime on a miss; slower gates stay with the
   audit. Concurrent gates run mypy, so `ci/pinned_tool.py` gives each mypy

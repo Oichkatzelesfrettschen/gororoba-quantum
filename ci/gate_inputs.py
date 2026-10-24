@@ -233,24 +233,44 @@ def checksum_paths(root: Path, gate: dict[str, Any]) -> set[str]:
     return bound
 
 
-def ledger_reaches(reads: dict[str, list[Any]], changed: set[str], listed: set[str]) -> bool:
+def listing_entries(root: Path, listed: set[str], before: set[str] | None) -> set[str]:
+    """The directory entries an addition or removal creates or deletes.
+
+    Git reports the files of an added or removed directory, never the directory, so the entry whose
+    existence changed is the topmost prefix of each path that existed in ``before`` (every file path of
+    the merge base) and is gone now, or the reverse; its parent's listing is the one that changed. With
+    no base, each path is its own entry.
+    """
+    if before is None:
+        return set(listed)
+    existed = before | {parent.as_posix() for path in before for parent in Path(path).parents}
+    entries = set()
+    for path in listed:
+        parts = path.split("/")
+        for depth in range(1, len(parts) + 1):
+            entry = "/".join(parts[:depth])
+            if (entry in existed) != (root / entry).exists():
+                entries.add(entry)
+                break
+    return entries
+
+
+def ledger_reaches(reads: dict[str, list[Any]], changed: set[str], listed: set[str], entries: set[str]) -> bool:
     """Whether a traced read set (ci/gate_ledger.py) reads a changed path or lists an added or removed one.
 
     An edited file reaches a gate that read it; an added or removed file also reaches a gate that
-    listed its directory, matched it with a glob or probed its existence. Python files are left to the
-    import closure, since every gate that imports a sibling lists the module directory.
+    probed its existence or matched it with a glob, and a created or deleted directory entry
+    (listing_entries) reaches a gate that listed its parent. Python files are left to the import
+    closure, since every gate that imports a sibling lists the module directory.
     """
     probed = set(reads.get("files", [])) | set(reads.get("links", [])) | {path for _, path in reads.get("stats", [])}
-    if changed & probed:
+    if changed & probed or entries & probed:
         return True
     directories = set(reads.get("dirs", []))
     patterns = [pattern for _, pattern in reads.get("globs", [])]
-    for path in listed:
-        if path.endswith(".py"):
-            continue
-        if (os.path.dirname(path) or ".") in directories or any(matches(path, pattern) for pattern in patterns):
-            return True
-    return False
+    if any(not entry.endswith(".py") and (os.path.dirname(entry) or ".") in directories for entry in entries):
+        return True
+    return any(not path.endswith(".py") and any(matches(path, pattern) for pattern in patterns) for path in listed)
 
 
 def affected(
@@ -260,12 +280,14 @@ def affected(
     listed: list[str],
     traced: dict[str, dict[str, Any]] | None = None,
     base: list[dict[str, Any]] | None = None,
+    base_paths: set[str] | None = None,
 ) -> set[str]:
     """The gates a change reaches: every gate when it changes the pinned runtime, else each gate whose
     manifest entry differs from ``base`` (the merge base's ci/gates.json gates), and each gate reached
     through its import closure, the paths its command names, the reviewed scopes of a full-tier gate, or
     the read set a traced run recorded (``traced`` maps a gate or case name to its ledger entry).
-    ``changed`` holds every changed path and ``listed`` the added and removed ones.
+    ``changed`` holds every changed path, ``listed`` the added and removed ones, and ``base_paths`` the
+    merge base's file paths that locate the directory entries those create or delete.
     """
     if any(matches(path, pattern) for path in changed for pattern in RUNTIME_INPUTS):
         return {gate["name"] for gate in gates}
@@ -279,6 +301,7 @@ def affected(
     edited, created = set(changed), set(listed)
     # Each changed path with every directory above it, so a command operand naming a directory matches.
     ancestry = {ancestor for path in edited for ancestor in [path, *(p.as_posix() for p in Path(path).parents)]}
+    created_entries = listing_entries(root, created, base_paths)
     entries = traced or {}
     selected = set()
     for gate in gates:
@@ -291,7 +314,7 @@ def affected(
             (base is not None and before.get(name) != {field: gate.get(field) for field in MANIFEST_FIELDS})
             or not ancestry.isdisjoint(sources)
             or any(matches(path, pattern) for path in edited for pattern in patterns)
-            or any(ledger_reaches(read, edited, created) for read in reads)
+            or any(ledger_reaches(read, edited, created, created_entries) for read in reads)
         ):
             selected.add(name)
     return selected
