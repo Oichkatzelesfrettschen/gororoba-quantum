@@ -65,11 +65,11 @@ import copy
 import json
 import math
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from functools import cache
 from pathlib import Path
-from collections.abc import Callable
 from typing import Any
 
 import numpy as np
@@ -285,7 +285,8 @@ def build_setting(item: tuple[int, dict[str, Any]]) -> tuple[dict[str, Any], dic
 def job_of(manifest: dict[str, Any]) -> Job:
     """The registered job a manifest names; an unregistered job raises."""
     name = manifest.get("job")
-    require(isinstance(name, str) and name in JOBS, f"{manifest.get('family')}: job {name!r} is not registered")
+    if not isinstance(name, str) or name not in JOBS:
+        raise ValueError(f"{manifest.get('family')}: job {name!r} is not registered")
     return JOBS[name]
 
 
@@ -566,7 +567,8 @@ def freeze_body(job: Job) -> int:
     (out / "job-body.json").write_bytes(body_bytes)
     (out / "body-build.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(
-        f"ascella signed coherence {job.name}: job-body.json {record['job_body_sha256']}, {built['estimated_shots']} shots"
+        f"ascella signed coherence {job.name}: job-body.json {record['job_body_sha256']}, "
+        f"{built['estimated_shots']} shots"
     )
     return 0
 

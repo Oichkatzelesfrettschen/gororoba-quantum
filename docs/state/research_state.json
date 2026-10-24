@@ -2,6 +2,13 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01",
+      "family": "photonic signed-coherence permuted repeat",
+      "question": "Do job-00's outside-block clicks and analyzer residuals follow the setting, the execution order or the sample budget when the same 64 circuits run in a QRNG-drawn order at twice the samples?"
+    },
+    {
       "id": "qd-ascella-signed-coherence",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
@@ -1865,6 +1872,97 @@
     }
   ],
   "claims": [
+    {
+      "id": "ascella-signed-coherence-permuted-repeat",
+      "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs six hours apart on one device; the alternation's physical mechanism (which acquisition stage alternates) and the configuration error behind the reproducing residuals stay unidentified. Permutation p-values assume exchangeable positions under the null; the budget reading compares medians of two jobs. Equal integer durations bound the per-sample time cost only by the one-second resolution.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/analysis.json",
+          "sha256": "a0548293da65ffdb603799be6ab71fb94d008bbbaee164e7dcfe6f1645478121"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/submission.json",
+          "sha256": "d97a53fec4d7ef036b75052ac83764c64c13798b6c8c62088fa38e88f566f17f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/raw/result.json",
+          "sha256": "d87a4e6318b94a3e19f79654f3393ade73483e7f9974c3ecc6cfb3f2ab53c0a8"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/repeat-comparison.json",
+          "sha256": "922c442a075680199c592a4f8c7132d266162aa893d417c57f9c1fb9e33162aa"
+        }
+      ],
+      "documents": [
+        "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/README.md",
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "scripts/ascella_coherence_repeat.py"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-repeat-replay": "replay",
+        "core-ascella-signed-coherence-comparison-replay": "replay",
+        "core-ascella-signed-coherence-comparison-self-test": "admission"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-conformance"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-device-diagnostics",
+      "statement": "In both Ascella signed-coherence runs the returned compiled circuits reproduce every registered statistic within 2.2e-4, while the block-conditioned X and Y statistics read 0.967 to 0.972 times their ideals and the direct readout 1.004 times; X residuals exceed binomial noise (chi-square 148 and 313 on 18 degrees of freedom) more than Y (30 and 75). Outside-block clicks concentrate on modes 8 to 10, the detectors with the largest plan-time dark rates, with an excess on modes 4 and 6 (composition chi-square 110 and 211 on 7 degrees of freedom), and physical_perf reads 0.0209 in every iteration of different outside-block counts.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive fits without preregistered thresholds; the binomial errors ignore drift within an iteration. The dark-rate expectation uses plan-time rates, not acquisition-time ones, and a coincidence-window or gating model of the clicks is not established.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/job-00-diagnostics.json",
+          "sha256": "cc7a2d23728e6487f50d33a698ed2b35dca2244d95ef5e7e9e9209c66dc523a4"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/job-01-diagnostics.json",
+          "sha256": "fda640b326dfba0c5bbc6d29d325aae28558a235395bf21c31ada9552ab6acc8"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "docs/notes/quandela/literature.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-diagnostics-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "ascella-signed-coherence-conformance",
       "statement": "The approved 64-setting signed-coherence request on qpu:ascella (job 739a5271) completed 524288 detected samples in 186 execution seconds for a token-reported debit of 1.016384 free credits, and all 27 preregistered endpoints qualify under the 0.05 coefficient tolerance: the 15 sign-odd and dark coefficients deviate from their ideals by at most 0.0303, the 10 sign-even coefficients stay within 0.0116 of zero, and the mutation difference reads 0.1646 against its ideal 0.1727. The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta) coefficient (0.4777) exclude their ideal 0.5 while conforming. 6659 of 524288 events (1.27 percent) fall outside the logical block, between 4 and 586 per setting.",

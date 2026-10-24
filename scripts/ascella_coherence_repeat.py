@@ -152,7 +152,8 @@ def compiled(entry: dict[str, Any]) -> tuple[list[float], list[float]]:
     """(twelve output probabilities, compiled phases) of one returned iteration's computed circuit and input."""
     fields = entry["result_fields"]
     match = re.fullmatch(r":PCVL:BasicState:\|([01](?:,[01])*)>", fields["computed_input"])
-    require(match is not None, "computed_input is not a basic state")
+    if match is None:
+        raise ValueError("computed_input is not a basic state")
     occupation = [int(value) for value in match[1].split(",")]
     require(len(occupation) == analysis.MODES and sum(occupation) == 1, "computed_input is not one photon on 12")
     elements = _elements(fields["computed_circuit"])
@@ -445,7 +446,7 @@ def synthetic_law(settings: list[dict[str, Any]], rng: np.random.Generator) -> n
 def self_test() -> int:
     """Synthetic job-01 runs under each hypothesis must be classified as the hypothesis that generated them."""
     a = run_record(JOB_00)
-    expectations = {
+    expectations: dict[tuple[str, str], dict[str, Any]] = {
         ("identity", "static"): {"identity": True, "sequence": False, "reading": "acquisition-proportional"},
         ("sequence", "drift"): {"identity": False, "sequence": True, "reading": "acquisition-proportional"},
         ("transition", "static"): {"identity": False, "transition": True},
