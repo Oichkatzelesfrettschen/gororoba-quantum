@@ -9,7 +9,7 @@
     "gororoba_quantum/cd_core.py",
     "docs/evidence/cd-tower-basis-sign/README.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
@@ -82,5 +82,28 @@
   ],
   "scope": "The census of pairs by degree is counted only by scripts/cd_phase_degree.py, and the agreement of sigma with cd_core.cd_sign rests on tower_bridge.py through n = 64. This implementation proves the census for every k in a hash-bound Rocq bundle, and proves for every k that a Rocq semantics of the Python subset cd_sign uses, run on the syntax tree extracted from cd_core.py, returns sigma.",
   "owner": "Repository Rocq maintainer",
-  "next_action": "Extract cd_core.cd_sign's syntax tree and prove its Rocq semantics returns sigma."
+  "disposition": "completed",
+  "resolution": "CdAssociatorCensus.v proves the associator-phase census for every k >= 3, and CdSignPythonSemantics.v proves for every k that the syntax tree of cd_core.cd_sign, run under a Rocq semantics of the Python int subset it uses, returns the tower sign sigma; tower_bridge.py stays as a finite cross-check.",
+  "receipts": [
+    {
+      "result": "Both steps are done with receipts; the degree note, the tower basis-sign README, the docs map and the research state record both proofs.",
+      "observed_at": "2026-10-24T16:17:42Z",
+      "revision": "870db05b47e91d37c41274baf01a03200b766081",
+      "evidence": [
+        {
+          "ref": "proofs/CdAssociatorCensus.v",
+          "sha256": "bbd2562527a32c820259181a336db5b89bea03a85ea81caacb79b0452392591b"
+        },
+        {
+          "ref": "proofs/CdSignPythonSemantics.v",
+          "sha256": "539460c7b13b62b96782f5a331d358936c290851a3395c2f9d57b4d1e2252637"
+        },
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "568a4e700b3e3bd77f0cb8637add901c3fbda7b081aff0db576f21320420b82b"
+        }
+      ],
+      "scope_sha256": "6b061a453cd5ae70f0e8c53fd84d43af74d6024e844c19fdacd503da49f5e06f"
+    }
+  ]
 }
