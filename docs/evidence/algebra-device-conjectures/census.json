@@ -6,32 +6,6 @@
         "backends": [
           "qpu:ascella"
         ],
-        "charge": 1.016384,
-        "circuits": 8,
-        "created_at": "2026-10-23T17:11:41+00:00",
-        "detail": "job 889c0b21-6b14-473c-a81b-5ae90e244ea9, 65536 samples, 65536 shots",
-        "jobs": 1,
-        "statuses": {
-          "completed": 1
-        }
-      },
-      "id": "qd-ascella-mosaiq-update-order-retry",
-      "included": false,
-      "reason": "outside selected claim families",
-      "record": {
-        "family": "photonic order sampling recovery after advertised deployment update",
-        "id": "qd-ascella-mosaiq-update-order-retry",
-        "provider": "quandela",
-        "question": "Does the unchanged eight-setting order pilot return counts after the advertised Mosaiq deployment changes, and how do conditional output frequencies compare with requested and returned compiled laws?",
-        "run": "results/quandela/runs/ascella-mosaiq-update-order-retry"
-      }
-    },
-    {
-      "charge_unit": "credits",
-      "facts": {
-        "backends": [
-          "qpu:ascella"
-        ],
         "charge": 0.0,
         "circuits": 8,
         "created_at": "2026-10-23T06:56:37+00:00",
@@ -5229,136 +5203,6 @@
       }
     },
     {
-      "charge_unit": "credits",
-      "facts": {
-        "backends": [
-          "qpu:belenos"
-        ],
-        "charge": 1.12,
-        "circuits": 24,
-        "created_at": "2026-10-23T19:50:24+00:00",
-        "detail": "job 29a3d112-39fd-4742-a25e-cdd98ad4ee9b, 2400000 samples, 2400000 shots",
-        "jobs": 1,
-        "statuses": {
-          "completed": 1
-        }
-      },
-      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1-precalibration",
-      "included": false,
-      "reason": "outside selected claim families",
-      "record": {
-        "family": "BDSC stationarity case on qpu:belenos",
-        "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1-precalibration",
-        "provider": "quandela",
-        "question": "the first job of block 1 (`b1-j1`), run before a Belenos calibration and read only as the calibration contrast against its repeat of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?",
-        "run": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1"
-      }
-    },
-    {
-      "charge_unit": "credits",
-      "facts": {
-        "backends": [
-          "qpu:belenos"
-        ],
-        "charge": 1.12,
-        "circuits": 24,
-        "created_at": "2026-10-23T20:18:36+00:00",
-        "detail": "job 74e51ce0-b1a6-48a2-8bfe-1e656db58d6f, 2400000 samples, 2400000 shots",
-        "jobs": 1,
-        "statuses": {
-          "completed": 1
-        }
-      },
-      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1",
-      "included": false,
-      "reason": "outside selected claim families",
-      "record": {
-        "family": "BDSC stationarity case on qpu:belenos",
-        "id": "qd-qpu-belenos-bdsc-stationarity-b1-j1",
-        "provider": "quandela",
-        "question": "the approved repeat of block 1's first job (`b1-j1`) after the Belenos calibration, read as block 1's b1-j1 of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?",
-        "run": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat"
-      }
-    },
-    {
-      "charge_unit": "credits",
-      "facts": {
-        "backends": [
-          "qpu:belenos"
-        ],
-        "charge": 1.12,
-        "circuits": 24,
-        "created_at": "2026-10-23T20:22:40+00:00",
-        "detail": "job f9b370b9-9b80-465f-a4ed-f4ce5933a52c, 2400000 samples, 2400000 shots",
-        "jobs": 1,
-        "statuses": {
-          "completed": 1
-        }
-      },
-      "id": "qd-qpu-belenos-bdsc-stationarity-b1-j2",
-      "included": false,
-      "reason": "outside selected claim families",
-      "record": {
-        "family": "BDSC stationarity case on qpu:belenos",
-        "id": "qd-qpu-belenos-bdsc-stationarity-b1-j2",
-        "provider": "quandela",
-        "question": "the second job of block 1 (`b1-j2`) of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?",
-        "run": "results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2"
-      }
-    },
-    {
-      "charge_unit": "credits",
-      "facts": {
-        "backends": [
-          "qpu:belenos"
-        ],
-        "charge": 1.12,
-        "circuits": 24,
-        "created_at": "2026-10-23T21:31:13+00:00",
-        "detail": "job 1b22cb58-8ca6-47e0-ac5b-e550f91963c3, 2400000 samples, 2400000 shots",
-        "jobs": 1,
-        "statuses": {
-          "completed": 1
-        }
-      },
-      "id": "qd-qpu-belenos-bdsc-stationarity-b2-j1",
-      "included": false,
-      "reason": "outside selected claim families",
-      "record": {
-        "family": "BDSC stationarity case on qpu:belenos",
-        "id": "qd-qpu-belenos-bdsc-stationarity-b2-j1",
-        "provider": "quandela",
-        "question": "the first job of block 2 (`b2-j1`), at least one hour after block 1's last execution end of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?",
-        "run": "results/quandela/runs/2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1"
-      }
-    },
-    {
-      "charge_unit": "credits",
-      "facts": {
-        "backends": [
-          "qpu:belenos"
-        ],
-        "charge": 1.12,
-        "circuits": 24,
-        "created_at": "2026-10-23T21:35:19+00:00",
-        "detail": "job 8045d583-746d-4897-8aa8-701325aea17d, 2400000 samples, 2400000 shots",
-        "jobs": 1,
-        "statuses": {
-          "completed": 1
-        }
-      },
-      "id": "qd-qpu-belenos-bdsc-stationarity-b2-j2",
-      "included": false,
-      "reason": "outside selected claim families",
-      "record": {
-        "family": "BDSC stationarity case on qpu:belenos",
-        "id": "qd-qpu-belenos-bdsc-stationarity-b2-j2",
-        "provider": "quandela",
-        "question": "the second job of block 2 (`b2-j2`) of the approved stationarity case (24 iterations of 100000 samples, the diagnostic's frozen requests): do the matched requests change between blocks beyond their class means once output mode 5 is vetoed?",
-        "run": "results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2"
-      }
-    },
-    {
       "charge_unit": "ledger change",
       "facts": {
         "backends": [
@@ -6893,7 +6737,7 @@
       }
     }
   ],
-  "base_commit": "8cb45200339159479c35ad005cf029186c07fef8",
+  "base_commit": "691853bd8549ff2eea00f39a4a03f80493908c76",
   "schema": "algebra-device-census-v1",
   "sources": [
     {
@@ -6970,7 +6814,7 @@
     },
     {
       "path": "docs/notes/quandela/README.md",
-      "sha256": "19c3b522c348467384c22760e8b65d4145145de715b3527614bb6b7565f3d091"
+      "sha256": "3e85ef0bd016168f1574c671deb1ad0bd3158ffc9d7af603896866397d029895"
     },
     {
       "path": "docs/notes/quantum_inspire/experiments.md",
@@ -6998,7 +6842,7 @@
     },
     {
       "path": "docs/notes/topics/cd-star-lattice-tower.md",
-      "sha256": "0beeb299135889e8a2a33287205ea4f9705cf2727ce1d49619249a0b63825238"
+      "sha256": "71725dc971a3ef0e1ef63233a86eeabe667399bd6be644b8b4ca37fdf3c4b72d"
     },
     {
       "path": "docs/notes/topics/coherent-error-families-report.md",

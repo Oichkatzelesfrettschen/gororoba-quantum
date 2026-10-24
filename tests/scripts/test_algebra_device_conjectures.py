@@ -202,7 +202,7 @@ def test_comparison_attribution_and_companion_pin_follow_their_bound_sources(mut
         module.validate_manifest(manifest)
 
 
-@pytest.mark.parametrize("mutation", ["reason", "base_commit", "digest", "extra"])
+@pytest.mark.parametrize("mutation", ["reason", "base_commit", "digest", "extra", "path", "bytes"])
 def test_predecessor_record_requires_digest_commit_and_reason(mutation: str) -> None:
     module = implementation()
     manifest = module.load_manifest(module.DEFAULT_MANIFEST)
@@ -215,9 +215,14 @@ def test_predecessor_record_requires_digest_commit_and_reason(mutation: str) -> 
         predecessor["base_commit"] = predecessor["base_commit"][:12]
     elif mutation == "digest":
         predecessor["manifest_sha256"] = predecessor["manifest_sha256"].upper()
-    else:
+    elif mutation == "extra":
         predecessor["note"] = "unbound"
-    with pytest.raises(ValueError, match="predecessor"):
+    elif mutation == "path":
+        predecessor["path"] = 7
+    else:
+        # A rewritten predecessor bundle no longer matches the digest its successor recorded.
+        predecessor["manifest_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="predecessor" if mutation != "bytes" else "source digest differs"):
         module.validate_manifest(manifest)
 
 
@@ -237,7 +242,7 @@ def test_freeze_runs_only_on_a_checkout_identical_to_head(tmp_path: Path, monkey
     if module._uncommitted():
         raise AssertionError("a clean checkout reported changes")
     with pytest.raises(ValueError, match="reason"):
-        module.freeze_manifest(manifest, tmp_path / "census.json", " ")
+        module.freeze_manifest(manifest, tmp_path / "census.json", " ", "kept")
     (tmp_path / "edited").write_text("changed\n")
     (tmp_path / "with space").write_text("changed\n")
     (tmp_path / "untracked").write_text("new\n")
@@ -246,13 +251,24 @@ def test_freeze_runs_only_on_a_checkout_identical_to_head(tmp_path: Path, monkey
     if found != ["edited", "renamed", "untracked", "with space"]:
         raise AssertionError(f"uncommitted state reported as {found}")
     with pytest.raises(ValueError, match="identical to HEAD"):
-        module.freeze_manifest(manifest, tmp_path / "census.json", "a reason")
+        module.freeze_manifest(manifest, tmp_path / "census.json", "a reason", "kept")
 
 
-def test_freeze_requires_a_reason(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+@pytest.mark.parametrize(
+    ("arguments", "message"),
+    [
+        (["--freeze", "--predecessor", "x.json"], "requires --reason and --predecessor"),
+        (["--freeze", "--reason", "r"], "requires --reason and --predecessor"),
+        (["--freeze", "--reason", "r", "--predecessor", "x.json"], "writes a new bundle"),
+    ],
+)
+def test_freeze_needs_a_reason_a_predecessor_and_a_new_bundle(
+    arguments: list[str], message: str, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # The default --manifest names the current bundle, which a freeze never overwrites.
     module = implementation()
-    monkeypatch.setattr(sys, "argv", ["algebra_device_conjectures.py", "--freeze"])
+    monkeypatch.setattr(sys, "argv", ["algebra_device_conjectures.py", *arguments])
     with pytest.raises(SystemExit) as stopped:
         module.main()
-    if stopped.value.code != 2 or "--freeze requires --reason" not in capsys.readouterr().err:
-        raise AssertionError("--freeze without --reason was accepted")
+    if stopped.value.code != 2 or message not in capsys.readouterr().err:
+        raise AssertionError(f"--freeze {arguments} was accepted")

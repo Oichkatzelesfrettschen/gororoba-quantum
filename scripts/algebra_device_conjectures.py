@@ -86,13 +86,15 @@ def _uncommitted() -> list[str]:
     return paths
 
 
-def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str) -> dict[str, Any]:
+def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str, predecessor_path: str) -> dict[str, Any]:
     """Explicitly refresh the frozen inventory through the existing offline provider adapters.
 
-    The successor names its predecessor's digest and base commit and the
-    reason for the refresh. A freeze reads the registry, every retained run
-    and this producer, so it runs only on a checkout identical to HEAD and
-    base_commit names every byte it read.
+    manifest is the predecessor's content, read from predecessor_path. The
+    successor names that path, its digest, its base commit and the reason
+    for the refresh, and the predecessor bundle keeps its path and bytes. A
+    freeze reads the registry, every retained run and this producer, so it
+    runs only on a checkout identical to HEAD and base_commit names every
+    byte it read.
     """
     import research_state
 
@@ -100,7 +102,8 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str) ->
     uncommitted = _uncommitted()
     require(not uncommitted, f"freeze needs a checkout identical to HEAD: {', '.join(uncommitted[:5])}")
     predecessor = {
-        "manifest_sha256": hashlib.sha256(encode(manifest).encode()).hexdigest(),
+        "path": predecessor_path,
+        "manifest_sha256": digest(local_path(predecessor_path)),
         "base_commit": manifest["base_commit"],
         "reason": reason.strip(),
     }
@@ -182,13 +185,16 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
         predecessor = manifest["supersedes"]
         require(
             isinstance(predecessor, dict)
-            and set(predecessor) == {"manifest_sha256", "base_commit", "reason"}
+            and set(predecessor) == {"path", "manifest_sha256", "base_commit", "reason"}
+            and isinstance(predecessor["path"], str)
             and _hex(predecessor["manifest_sha256"], 64)
             and _hex(predecessor["base_commit"], 40)
             and isinstance(predecessor["reason"], str)
             and bool(predecessor["reason"].strip()),
-            "predecessor record needs a manifest digest, a base commit and a reason",
+            "predecessor record needs a path, a manifest digest, a base commit and a reason",
         )
+        # The predecessor is retained evidence: its manifest keeps its path and bytes.
+        _verify_source({"path": predecessor["path"], "sha256": predecessor["manifest_sha256"]})
     ordered_map(_verify_source, manifest["sources"], min_items=1)
     _verify_source(manifest["census"])
     census = json.loads(local_path(manifest["census"]["path"]).read_text())
@@ -678,8 +684,9 @@ def render(result: dict[str, Any]) -> str:
         f"Manifest digest: `{result['manifest_sha256']}`.",
         *(
             [
-                f"Supersedes manifest `{result['supersedes']['manifest_sha256']}`, frozen at "
-                f"`{result['supersedes']['base_commit']}`: {result['supersedes']['reason']}"
+                f"Supersedes `{result['supersedes']['path']}` (manifest digest "
+                f"`{result['supersedes']['manifest_sha256']}`, frozen at `{result['supersedes']['base_commit']}`), "
+                f"which keeps its path and bytes: {result['supersedes']['reason']}"
             ]
             if result["supersedes"]
             else []
@@ -724,14 +731,24 @@ def main() -> int:
         "--freeze", action="store_true", help="explicitly refresh manifest from offline provider adapters"
     )
     parser.add_argument("--reason", help="why --freeze refreshes the manifest, recorded beside its predecessor")
+    parser.add_argument(
+        "--predecessor", type=Path, help="the manifest --freeze supersedes; the successor goes to a new --manifest"
+    )
     args = parser.parse_args()
     if args.freeze:
-        if args.reason is None:
-            parser.error("--freeze requires --reason")
-        args.manifest.write_text(
-            encode(freeze_manifest(load_manifest(args.manifest), args.manifest.with_name("census.json"), args.reason))
+        if args.reason is None or args.predecessor is None:
+            parser.error("--freeze requires --reason and --predecessor")
+        census = args.manifest.with_name("census.json")
+        # Retained bundles keep their paths and bytes, so a refresh writes a new bundle.
+        if args.manifest.exists() or census.exists():
+            parser.error(f"--freeze writes a new bundle; {args.manifest.parent} already holds one")
+        predecessor = local_path(args.predecessor.resolve().relative_to(ROOT.resolve()).as_posix())
+        args.manifest.parent.mkdir(parents=True, exist_ok=True)
+        frozen = freeze_manifest(
+            load_manifest(predecessor), census, args.reason, predecessor.relative_to(ROOT).as_posix()
         )
-        print("frozen manifest refreshed; regenerate derived outputs explicitly")
+        args.manifest.write_text(encode(frozen))
+        print("successor manifest frozen; generate derived outputs explicitly")
         return 0
     result = synthesis(load_manifest(args.manifest))
     outputs = {"result.json": encode(result), "README.md": render(result)}
