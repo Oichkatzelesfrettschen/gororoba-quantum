@@ -46,3 +46,11 @@ use a separate successor location for any later retained revision. Numerical
 residuals use an absolute 1e-12 bound. Exact identities must reduce to zero.
 The checks establish these finite formulas; they do not verify a future native
 payload, a physical analyzer or a continuous experimental response.
+
+[`case-preflight.json`](case-preflight.json) retains the read-only plan of the
+written acquisition case in
+[the design](../../design/ascella-signed-coherence-conformance.md#written-acquisition-case),
+as `scripts/ascella_coherence_request.py --preflight` wrote it. It holds the
+platform row and processor figures, token occupancy, the credit ceiling,
+Perceval's shot estimate and the planned body's digest without `process_id`.
+It grants no approval.

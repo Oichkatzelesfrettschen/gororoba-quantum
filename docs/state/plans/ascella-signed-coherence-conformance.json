@@ -11,10 +11,10 @@
   "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Write the acquisition case for results/quandela/cases/ascella_signed_coherence/job-00 with fresh availability, tariff and expected credits, and wait for the user's approval.",
+  "next_action": "Obtain the user's approval of the written acquisition case in docs/design/ascella-signed-coherence-conformance.md#written-acquisition-case; then preflight, submit, collect and analyze per its procedure.",
   "reconciliation": {
     "status": "unresolved",
-    "note": "The derivation, endpoints, theory atlas and frozen native request and its local replay are retained; the written case and any submission remain prospective."
+    "note": "The derivation, endpoints, theory atlas, frozen native request, its local replay and the written acquisition case with its preflight are retained; approval and any submission remain prospective."
   },
   "steps": [
     {
@@ -136,9 +136,18 @@
       "id": "written-case-and-approval",
       "action": "Write the acquisition case with fresh availability, tariff and expected credits, and wait for the user's approval.",
       "acceptance": "An approved case names the request digest, samples, cap and expected credits; without approval nothing is submitted.",
-      "state": "todo",
+      "state": "doing",
       "depends_on": [
         "replay-request-locally"
+      ]
+    },
+    {
+      "id": "acquire-and-analyze",
+      "action": "Under the approved case, preflight, submit the frozen body once, collect the raw result and run the registered analysis on the retained run.",
+      "acceptance": "A retained run directory under results/quandela/runs/ holds the receipt, raw result, results.json and analysis.json that ascella_coherence_analysis.py --run reproduces; the run enters research_state.json and the strategy run log.",
+      "state": "todo",
+      "depends_on": [
+        "written-case-and-approval"
       ]
     }
   ],

@@ -8933,6 +8933,17 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_schedule",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_coherence_run.py": [
+   "__future__",
+   "ascella_coherence_analysis",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
    "sys",
    "typing"
   ],

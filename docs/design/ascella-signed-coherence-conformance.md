@@ -11,7 +11,8 @@ and a 1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
 [frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json)
 , its serialized job body and their
 [local replay](../../results/local-simulation/ascella-signed-coherence-replay/README.md)
-exist; the written case and submission remain prospective. Wave evolution
+exist, and the [written acquisition case](#written-acquisition-case) awaits
+the user's approval; nothing has been submitted. Wave evolution
 and Fourier families retain separate cases. The science-led design replaces
 the fixed-angle reference-and-repeat design in this document's Git history;
 all settings now probe the order mathematics, its sign symmetry or its
@@ -516,3 +517,126 @@ then distinguish axes with the same norm. That richer scan becomes a separate
 case after the coefficient atlas establishes which measurement discrepancies
 require explanation. Wave evolution and Fourier mathematics remain separate
 scientific families rather than filler in this job.
+
+## Written acquisition case
+
+The case submits the frozen request once to qpu:ascella: one job of 64
+iterations, 8,192 samples and a 16,384-shot cap per iteration (aggregate caps
+524,288 and 1,048,576), seed 0, the explicit empty mitigation list, a
+twelve-entry input and twelve returned modes. It names `cases.json`
+`3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520`, the
+retained `job-body.json`
+`7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8`, and that
+body's digest without `process_id`,
+`e323b1c6fd98747215a7c7a4574ab10a08f5392c1fc0b5edfafafcde09905c07`.
+
+The job measures the 27 primary endpoints of the preceding sections on the
+physical instrument. Local SLOS and Naive already return the ideal response to
+1e-12, so simulation answers only what the request asks for; the question is
+what Ascella's mesh, phase settings and detectors return. No repository model
+covers that response, as the descriptive pilot distances of 0.0005 to 0.028
+total variation show.
+
+**Seconds.** Expected 200 seconds against the 300-second `max_duration`. The
+eight-iteration pilot `889c0b21` completed 65,536 samples in 25 provider
+seconds. If every second scaled with iterations or samples, 64 iterations at
+the same budget would take 200 seconds; any fixed setup lowers that. The
+service's behavior at `max_duration` is unobserved, and the mutation block runs
+last, so a truncated job loses the mutation closure and the analysis returns
+`complete: false`.
+
+**Credits.** Ceiling and expectation 1.016384 credits: the 1.0 per-job price
+plus 16,384 billed shots at 1e-6 credits
+([billing runbook](../runbooks/quandela-credit-optimization.md)), inside the
+user's 1.2-credit limit. Pilot `889c0b21` debited exactly 1.016384 free
+credits. Six errored qpu:ascella jobs debited nothing: the token's qpu:ascella
+total reads 1.016384 free credits over seven jobs. The token's totals before
+the case are 57.24 free credits over 65 jobs, with zero paid credits. The
+account-wide remaining balance is unobserved.
+
+**Why not more shots per job.** The per-job price dominates, and shots cost
+1e-6 credits each, so a job's statistical yield is limited by its 300 seconds
+rather than by credits. One timing point cannot separate per-iteration setup
+from per-sample time. If all 25 pilot seconds were per-sample time, 64
+iterations would fit in 300 seconds only up to 12,288 samples each, which
+leaves no margin. That gain would shrink the radii by a factor of only 0.82,
+and it would invalidate the frozen digests, the replay receipts and the
+registered radii. The job therefore runs as frozen. Its measured duration
+supplies the second timing point that sizes any larger or repeated job. A
+repeat of the identical body costs 1.016384 credits; a between-job comparison
+needs its own analysis registered before its data, so it is a separate case.
+
+**Fresh read.** [`case-preflight.json`](../evidence/ascella-order-coefficients/case-preflight.json),
+planned at 2026-10-24 06:49:40 UTC by
+`ascella_coherence_request.py --preflight`:
+- qpu:ascella was available on its Explorer row and processor record, with
+  93.31% availability for 2026-10-24 and a 300-second `max_duration`.
+- The price was 1e-6 credits per shot, and token occupancy was 0 running and
+  0 queued of 1 and 1.
+- HOM was 86.52%, g2 2.0% and the clock 13.33 MHz.
+- Perceval estimated 524,288 shots.
+- The planned body equaled the retained body in every field except
+  `process_id`.
+
+**Untested path.** No completed Ascella job has yet used a twelve-entry input,
+an explicit empty mitigation list or more than eight iterations. Pilot
+`889c0b21` sent four entries and no mitigation field. Every retained Ascella
+job that carried an explicit mitigation list ended in the
+`circuit_input_ports`/`set_pic_input` worker error, but all of those jobs
+predate the advertised mosaiq-arcturus 2.1.5.2.post4 update and the pilot's
+completion. An error is therefore a live outcome, and on the retained
+evidence it costs nothing.
+
+**Stopping rule.**
+- A terminal error with no counted iteration allows one resubmission of the
+  identical body under the same approval, from a fresh run directory, after
+  `--preflight` passes again.
+- A second such error stops the case and is reported.
+- A completed, partial or canceled job that returned counts is never
+  resubmitted under this approval. An incomplete analysis keeps its raw counts
+  as descriptive evidence.
+
+**Dark counts.**
+- The processor reports 15,986 dark detections per second summed over twelve
+  detectors: 13,353 on detectors 8 to 11 and 744 on detectors 1 to 3.
+- Pilot setting `order-i1-j0-representative0` has its ideal support on mode 0
+  and returned 4 of 8,192 events on modes 1 to 3.
+- Scaling those 4 events by the ratio 15,986/744 bounds the dark share of
+  twelve-mode eligible events at about 86/8,192, or 1.05%.
+- The bound assumes the stray events are dark counts in proportion to each
+  detector's reported rate. Crosstalk would make the bound conservative, and
+  a rate-independent mechanism would break it; the uncertainty is medium.
+- A share of that size scales every statistic by about 0.99. Coefficients then
+  move by at most about 0.005, inside the 0.05 coefficient tolerance, though
+  the shift can exclude an exact ideal.
+- `outside_logical_block` in the analysis record reports the measured share.
+
+**Procedure after approval.** These commands contain no job-specific
+placeholder:
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token"
+RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-qpu_ascella-ascella_signed_coherence-job-00
+mkdir -p "$RUN"
+cp results/quandela/cases/ascella_signed_coherence/job-00/cases.json \
+   results/quandela/cases/ascella_signed_coherence/job-00/circuit.json "$RUN"/
+"$PYTHON" scripts/ascella_coherence_request.py --preflight "$RUN"
+"$PYTHON" scripts/ascella_coherence_request.py --submit "$RUN" "APPROVAL TEXT"
+"$PYTHON" scripts/qd_platform.py collect "$RUN" --timeout 3600
+"$PYTHON" scripts/ascella_coherence_run.py --run "$RUN"
+```
+
+`--submit` holds the token's submit lock and repeats the plan. It refuses a
+body that departs from the retained one before writing its checkpoint, and it
+refuses a run directory that holds anything but the two copied request files
+and `preflight.json`. Every directory under `results/quandela/runs/` reads as a sent job to
+`scripts/research_state.py`, so a run directory whose preflight refuses
+leaves the tree through `trash-put` before anything is committed. `collect`
+retains the raw result and the partial result
+of an error. `--run` attributes each counted iteration only at its own
+position, checks the echoed `circuit_params`, and writes `analysis.json`. The
+retained run then enters `docs/state/research_state.json`, the strategy run
+log and this plan's receipts in the change that retains it.
+
