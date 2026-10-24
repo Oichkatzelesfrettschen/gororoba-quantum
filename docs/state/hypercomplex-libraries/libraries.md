@@ -1,6 +1,6 @@
 # Python libraries in the hypercomplex campaign
 
-The inventory explains 360 distributions over the declared source surfaces.
+The inventory explains 362 distributions over the declared source surfaces.
 
 Each row names a distribution, its scientific or operational role, and the observed host version. The JSON register retains environment pins and import locations separately. A missing host distribution may belong to an isolated provider environment. Current import locations and unresolved roots follow a fresh tracked-source AST scan through the retained normalized module mapping. Historical import locations remain separately recorded.
 
@@ -233,6 +233,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | pyoctonion | 3.12 | Small octonion cross-check; depends on pyquaternion. |
 | pyparsing | 3.3.3 | SDK/environment infrastructure: pyparsing - Classes and methods to define and execute parsing grammars |
 | pyproject-hooks | 1.3.3 | SDK/environment infrastructure: Wrappers to call pyproject.toml-based build backend hooks. |
+| pyqasm | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | pyqpanda3 | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | pyquafu | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | pyquaternion | 0.9.9 | Scalar quaternion and rotation bookkeeping. |
@@ -248,6 +249,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | pyzmq | 27.2.0 | SDK/environment infrastructure: Python bindings for 0MQ |
 | pyzx | 0.10.7 | ZX circuit simplification followed by exact operator-equivalence checks. |
 | qbraid | separate/unobserved | Documented multi-provider SDK alternative; current cases use the repository's guarded clients. |
+| qbraid-core | separate/unobserved | Python library with core abstractions for software development in the qBraid ecosystem. |
 | qdldl | 0.1.9.post1 | SDK/environment infrastructure: QDLDL, a free LDL factorization routine. |
 | qi-compute-api-client | separate/unobserved | Typed Quantum Inspire compute API transport beneath the guarded runner. |
 | qiskit | 2.5.2 | Circuits, native synthesis, topology placement and operator verification. |

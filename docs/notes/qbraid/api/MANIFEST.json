@@ -1,0 +1,13 @@
+{
+ "schema": "qbraid-docs-capture-v1",
+ "kind": "api",
+ "retrieved_utc": "2026-10-24T20:47Z",
+ "files": [
+  {
+   "path": "docs/notes/qbraid/api/openapi-v2.json",
+   "source": "https://docs.qbraid.com/openapi-v2.json",
+   "sha256": "20848d9261247a0065d51b6519361e99718c4d18bd0559b42fa94b814e9f46d2"
+  }
+ ],
+ "unreachable": []
+}
