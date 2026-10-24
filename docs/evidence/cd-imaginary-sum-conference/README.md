@@ -43,7 +43,7 @@ The definitions transcribe open_gororoba `proofs/theories/RecursiveCDTower.v`
 (the same doubling over the reals). That file is absent at the commit
 `ci/open_gororoba.pin` names, and moving the pin would change
 `BooleanCochainFiltration.v` under the hash-bound folding_proofs bundle, so
-the proof stands alone on Stdlib's ZArith.
+the proof stands alone on Stdlib's ZArith and Btauto.
 
 ## Bridge to cd_sign
 
