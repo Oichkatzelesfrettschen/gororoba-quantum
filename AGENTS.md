@@ -12,12 +12,17 @@ lint and type-check configuration only. [ci/AGENTS.md](ci/AGENTS.md) holds the
 gate machinery: runner and shards, the gate ledger and premerge cache, the
 Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 
-**CI runs nightly.** The GitHub Actions workflow `ci.yml` runs every gate on
-main each night and on manual dispatch. A pull request's gates (the pr tier
-and its affected full gates, [ci/AGENTS.md](ci/AGENTS.md)) run by hand on the PR
-head before merge, never per commit or push. Admission takes both the Codex
-review loop and those gates passing under the pinned runtime, in the order of
-[Merging](#reviews-and-merges).
+**Pull requests and the audit.** The workflow `pr.yml` runs on every pull
+request push: job `lint` (Ruff over ci/, tests/, gororoba_quantum/, scripts/
+and kaggle_kernel/) and job `tests` (pytest over tests/ with
+`-m "not audit"`), each with an 8-minute timeout. Those two jobs green on the
+reviewed head and the Codex review loop admit a merge
+([Merging](#reviews-and-merges)); no local gate run or premerge replay is
+required. `ci.yml` is the audit: every gate, the retained-evidence replays, the
+Rocq replays and the ledger, nightly on main and on manual dispatch
+([ci/AGENTS.md](ci/AGENTS.md)). An audit failure qualifies the claims its
+evidence carries and gets an issue; it blocks no unrelated pull request.
+Locally, run the tests a change touches; pushing needs no exhaustive run.
 
 **Code style.** Every Python file a change touches passes, before each push,
 through `"$PYTHON" ci/pinned_tool.py TOOL ARGS` (the versions of
@@ -25,8 +30,10 @@ ci/requirements-ci.txt):
 - `ruff format --target-version py313` (120-column lines from pyproject.toml;
   the Python 3.13 target is the Quantum Inspire interpreter's);
 - `ruff check` (pycodestyle, pyflakes, import order, bugbear, pyupgrade, S101);
-- `mypy` on the touched files, and over the whole scope of gate core-039 when
-  a change alters a signature another module imports.
+- `mypy` on the touched files, and over gororoba_quantum/, scripts/, ci/,
+  tests/ and kaggle_kernel/ (from gororoba_quantum/: `mypy . ../scripts ../ci
+  ../tests ../kaggle_kernel`) when a change alters a signature another module
+  imports.
 
 A gate command run outside ci/run_gates.py needs `PYTHON` exported
 (`export PYTHON="${PYTHON:-python3}"`); an unexported assignment expands empty
@@ -373,14 +380,8 @@ code-review quota, the owner decides how the PR proceeds.
    what that review finds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
-4. The pr tier and the affected full gates pass on the head under the pinned
-   runtime: `ci/run_gates.py --changed-files` with `PYTHON` naming the
-   `ci-py3.14.7` host environment of `sh ci/build_host_envs.sh` (or another
-   interpreter holding every pin; the run refuses one that differs). A gate
-   that also fails on main still blocks the merge: only an owner's exception
-   naming that gate and that PR, quoted in the PR body, admits it.
-   `ci/premerge_gates.py` separates introduced failures (exit 1) from shared
-   ones (exit 3). A fix commit for a failing gate returns the PR to step 1.
+4. The `pr.yml` jobs `lint` and `tests` pass on the head. A push that changes
+   the head reruns them; a red job gets its fix commit on the branch.
 5. GitHub reports mergeable_state clean.
 
 Then, bottom-up, for each PR:

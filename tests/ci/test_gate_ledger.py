@@ -16,6 +16,8 @@ import pytest
 import run_gates
 from gate_ledger import load, merge, shell_untraceable, write
 
+pytestmark = pytest.mark.audit
+
 THREADED_FILES = 400
 
 

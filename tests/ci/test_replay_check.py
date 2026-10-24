@@ -10,7 +10,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
+import pytest
 import replay_check
+
+pytestmark = pytest.mark.audit
 
 
 def expect(found: Any, wanted: Any) -> None:
