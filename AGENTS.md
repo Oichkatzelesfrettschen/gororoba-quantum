@@ -79,7 +79,12 @@ fresh layout or twirl, a new mesh) takes new values from a draw.
 literal in the code directories to be a row of ci/reproduction_seeds.json,
 which only shrinks against main, or an entry of
 docs/evidence/qrng_seeds/allocations.json naming a registered source's draw
-that no case manifest owns and the index holding that value.
+that no case manifest owns and the index holding that value. A seed a CLI takes
+at run time goes through `qrng_seeds.add_seed_argument`, which accepts
+`qrng:<draw>#<index>`, the flag's default or `repro:<integer>` and refuses any
+other integer; the run record's `seed_source` names the spelling, and the
+change that retains a qrng-seeded run adds its ledger row with
+`"$PYTHON" ci/seed_provenance.py --add-runtime`.
 
 ## Work planning
 

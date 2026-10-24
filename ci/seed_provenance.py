@@ -16,7 +16,7 @@ Each literal is keyed by (file, seed name, value). ci/reproduction_seeds.json
 lists the keys that reproduce retained records, approved plans and known
 meshes, with their counts; --shrink refuses a row it adds or raises over the
 baseline origin/main holds. docs/evidence/qrng_seeds/allocations.json
-lists each key a new seed took from a retained ANU draw, with the draw record
+lists each key a new seed took from a retained QRNG draw, with the draw record
 and the value's index. The check requires, per key, the tree's count to equal
 the baseline count plus the allocation count; each allocation's record to pass
 its source's admit function (SOURCES: the ANU, Outshift and Quandela adapters
@@ -25,7 +25,7 @@ allocated once, under the canonical path docs/evidence/<source>/draw-<UTC>.json;
 allocation to take a record that a case manifest under
 results/ names, by file name, since such a case owns its whole draw.
 
-Usage: "$PYTHON" ci/seed_provenance.py (--check | --shrink | --self-test)
+Usage: "$PYTHON" ci/seed_provenance.py (--check | --shrink | --runtime | --add-runtime | --self-test)
 """
 
 from __future__ import annotations
@@ -46,25 +46,28 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(1, str(ROOT / "gororoba_quantum"))
 
-import anu_qrng  # noqa: E402
-import outshift_qrng  # noqa: E402
-import quandela_qrng  # noqa: E402
-
 import parallel  # noqa: E402
+import qrng_seeds  # noqa: E402
 
 CODE_DIRS = ("ci", "tests", "gororoba_quantum", "scripts", "kaggle_kernel")
 BASELINE = ROOT / "ci" / "reproduction_seeds.json"
 ALLOCATIONS = ROOT / "docs" / "evidence" / "qrng_seeds" / "allocations.json"
 MANIFEST_ROOT = ROOT / "results"
-# Each QRNG source's retained draw directory and the function that admits one of its records.
-SOURCES: dict[str, Callable[[dict[str, Any]], None]] = {
-    "docs/evidence/anu_qrng": anu_qrng.admit,
-    "docs/evidence/outshift_qrng": outshift_qrng.admit,
-    "docs/evidence/quandela_qrng": quandela_qrng.admit,
-}
+SOURCES = qrng_seeds.SOURCES
+# Flags that carry "seed" yet set no seed value: counts of transpiler or QX seeds, a recompile switch and the
+# retained comparison whose job rows a rewrite reuses.
+PLAIN_SEED_FLAGS = frozenset(
+    {
+        ("gororoba_quantum/live_run.py", "--seeds"),
+        ("scripts/n21_qx_conformance.py", "--seeds"),
+        ("scripts/n21_conjugation_noise.py", "--all-seeds"),
+        ("scripts/compare_submitted_circuits.py", "--seed"),
+    }
+)
 # The shrink-only comparison reads the baseline main holds; pr.yml fetches this ref before the tests.
 BASE_REF = "origin/main"
-DRAW_NAME = re.compile(r"draw-\d{4}-\d{2}-\d{2}T\d{6}Z\.json")
+DRAW_NAME = qrng_seeds.DRAW_NAME
+ARGUMENT_CALLS = ("add_argument", "add_seed_argument")
 # A seed_ name with one of these suffixes counts or spaces seeds rather than seeding.
 NOT_SEED_SUFFIXES = ("count", "stride", "offset", "step")
 SEEDING_CALLS = frozenset(
@@ -126,7 +129,7 @@ def literals(tree: ast.AST) -> Iterator[tuple[str, int]]:
             for keyword in node.keywords:
                 if keyword.arg and seed_name(keyword.arg) and (value := integer(keyword.value)) is not None:
                     yield keyword.arg, value
-            if name == "add_argument":
+            if name in ARGUMENT_CALLS:
                 flags = [a.value for a in node.args if isinstance(a, ast.Constant) and isinstance(a.value, str)]
                 flag = next((f for f in flags if "seed" in f.lower()), None)
                 for keyword in node.keywords:
@@ -163,22 +166,34 @@ def shard_of(relative: str) -> int:
     return zlib.crc32(relative.encode()) % SHARDS
 
 
-def file_literals(relative: str) -> list[Key]:
+def plain_seed_flags(tree: ast.AST) -> Iterator[str]:
+    """Flags carrying "seed" that a bare add_argument declares instead of add_seed_argument."""
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and call_name(node) == "add_argument":
+            for argument in node.args:
+                if isinstance(argument, ast.Constant) and isinstance(argument.value, str) and "seed" in argument.value:
+                    yield argument.value
+
+
+def file_literals(relative: str) -> tuple[list[Key], list[tuple[str, str]]]:
     text = (ROOT / relative).read_text(encoding="utf-8")
     if not SEED_TOKEN.search(text):
-        return []
-    return [(relative, name, value) for name, value in literals(ast.parse(text, filename=relative))]
+        return [], []
+    tree = ast.parse(text, filename=relative)
+    keys = [(relative, name, value) for name, value in literals(tree)]
+    return keys, [(relative, flag) for flag in plain_seed_flags(tree)]
 
 
-def scan(shard: int | None = None) -> Counter[Key]:
-    """Seed literal counts over the code directories, or over one shard of their files."""
+def scan(shard: int | None = None) -> tuple[Counter[Key], list[tuple[str, str]]]:
+    """Seed literal counts and bare seed flags over the code directories, or over one shard of their files."""
     paths = [
         path.relative_to(ROOT).as_posix()
         for directory in CODE_DIRS
         for path in sorted((ROOT / directory).rglob("*.py"))
     ]
     selected = [path for path in paths if shard is None or shard_of(path) == shard]
-    return Counter(key for keys in parallel.ordered_map(file_literals, selected) for key in keys)
+    results = parallel.ordered_map(file_literals, selected)
+    return Counter(key for keys, _ in results for key in keys), [flag for _, flags in results for flag in flags]
 
 
 def baseline_counts(rows: list[dict[str, Any]]) -> Counter[Key]:
@@ -191,12 +206,113 @@ def baseline_counts(rows: list[dict[str, Any]]) -> Counter[Key]:
     return counts
 
 
+def file_claims(path: str) -> list[str]:
+    """Draw file names one retained file names without an index. A file that references a draw by index (a run
+    record, or a scripts/kaggle_run.py manifest whose bundle inventory also names the draw file) consumes indices,
+    not the whole draw."""
+    text = Path(path).read_text(encoding="utf-8")
+    indexed = {Path(match.group(1)).name for match in qrng_seeds.REF.finditer(text)}
+    return sorted(set(DRAW_NAME.findall(qrng_seeds.REF.sub("", text))) - indexed)
+
+
+def manifest_files(manifest_root: Path) -> list[str]:
+    return [str(path) for path in sorted(manifest_root.rglob("*.json"))] if manifest_root.is_dir() else []
+
+
 def claimed_records(manifest_root: Path) -> set[str]:
-    """File names of the draw records that retained case files name; such a case owns its whole draw."""
-    claimed: set[str] = set()
-    for path in sorted(manifest_root.rglob("*.json")) if manifest_root.is_dir() else []:
-        claimed.update(DRAW_NAME.findall(path.read_text(encoding="utf-8")))
-    return claimed
+    """File names of the draw records that retained case files name without an index; such a case owns its
+    whole draw, while a qrng:<draw>#<index> reference consumes that one index."""
+    return {name for names in parallel.ordered_map(file_claims, manifest_files(manifest_root)) for name in names}
+
+
+def seed_sources(node: Any) -> Iterator[dict[str, Any]]:
+    """Every seed_source entry (qrng_seeds.seed_record) inside a parsed record."""
+    if isinstance(node, dict):
+        if {"script", "flag", "experiment", "sources"} <= set(node) and isinstance(node["sources"], list):
+            yield node
+        for value in node.values():
+            yield from seed_sources(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from seed_sources(value)
+
+
+Consumer = tuple[str, str, str]
+
+
+def file_references(path: str) -> tuple[list[tuple[str, int]], list[tuple[str, int, Consumer]]]:
+    """One retained file's qrng references, and the (record, index, consumer) its seed_source entries declare."""
+    text = Path(path).read_text(encoding="utf-8")
+    found = sorted({(match.group(1), int(match.group(2))) for match in qrng_seeds.REF.finditer(text)})
+    if not found:
+        return [], []
+    declared = []
+    for entry in seed_sources(json.loads(text)):
+        for source in entry["sources"]:
+            if isinstance(source, str) and (match := qrng_seeds.REF.fullmatch(source)):
+                consumer = (entry["script"], entry["flag"], entry["experiment"])
+                declared.append((match.group(1), int(match.group(2)), consumer))
+    return found, declared
+
+
+def runtime_consumption(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str]]:
+    """(record, index) -> the (script, flag, experiment) keys of every retained qrng reference, and the
+    files that carry a qrng reference no seed_source entry under the root declares."""
+    paths = manifest_files(manifest_root)
+    consumed: dict[tuple[str, int], set[Consumer]] = {}
+    mentions: dict[str, set[tuple[str, int]]] = {}
+    for path, (found, declared) in zip(paths, parallel.ordered_map(file_references, paths), strict=True):
+        if found:
+            mentions[Path(path).relative_to(manifest_root.parent).as_posix()] = set(found)
+        for record_path, index, consumer in declared:
+            consumed.setdefault((record_path, index), set()).add(consumer)
+    # A replay command, a wrapper manifest (scripts/kaggle_run.py submission.json args) or a copy may repeat a
+    # reference; a reference that no seed_source under the root declares is stray.
+    stray = [path for path, found in mentions.items() if found - set(consumed)]
+    return consumed, stray
+
+
+def check_runtime(
+    consumed: dict[tuple[str, int], set[Consumer]],
+    stray: list[str],
+    runtime: list[dict[str, Any]],
+    allocations: list[dict[str, Any]],
+    claimed: set[str],
+    read_record: Callable[[str], dict[str, Any]],
+) -> None:
+    """Every retained qrng reference has one consumer and one ledger row, and every ledger row one reference."""
+    problems = [f"{path}: a qrng reference outside a seed_source entry" for path in stray]
+    code = {(row["record"], row["index"]) for row in allocations}
+    rows: dict[tuple[str, int], dict[str, Any]] = {}
+    for row in runtime:
+        slot = (row["record"], row["index"])
+        if slot in rows:
+            problems.append(f"runtime ledger: index {slot[1]} of {slot[0]} is listed twice")
+            continue
+        rows[slot] = row
+        if slot in code:
+            problems.append(f"runtime ledger: index {slot[1]} of {slot[0]} also seeds a code literal")
+        if Path(slot[0]).name in claimed:
+            problems.append(f"runtime ledger: {slot[0]} belongs to a case manifest under results/")
+        qrng_seeds.source_directory(slot[0])
+        values = read_record(slot[0])["values"]
+        if not 0 <= slot[1] < len(values) or values[slot[1]] != row["value"]:
+            problems.append(f"runtime ledger: value {row['value']} is not index {slot[1]} of {slot[0]}")
+    for slot, consumers in sorted(consumed.items()):
+        if len(consumers) > 1:
+            problems.append(f"index {slot[1]} of {slot[0]} seeds {len(consumers)} experiments: {sorted(consumers)}")
+        ledger_row = rows.get(slot)
+        if ledger_row is None:
+            problems.append(
+                f"index {slot[1]} of {slot[0]} has no runtime ledger row; run ci/seed_provenance.py --add-runtime"
+            )
+        elif {(ledger_row["script"], ledger_row["flag"], ledger_row["experiment"])} != consumers:
+            problems.append(f"runtime ledger: index {slot[1]} of {slot[0]} names another consumer than its records")
+    problems += [
+        f"runtime ledger: index {i} of {r} has no retained reference" for r, i in sorted(set(rows) - set(consumed))
+    ]
+    if problems:
+        raise SeedError("\n".join(problems))
 
 
 def check(
@@ -206,8 +322,9 @@ def check(
     claimed: set[str],
     read_record: Callable[[str], dict[str, Any]],
     shard: int | None = None,
+    plain_flags: list[tuple[str, str]] | None = None,
 ) -> None:
-    """Admit every allocation; compare counts for every key, or for the keys of one shard's files."""
+    """Admit every allocation; compare counts and bare seed flags for every file, or for one shard's files."""
     expected = baseline_counts(baseline)
     taken: set[tuple[str, int]] = set()
     records: dict[str, dict[str, Any]] = {}
@@ -233,6 +350,17 @@ def check(
         taken.add((record_path, index))
         expected[key] += 1
     problems = []
+    flags = set(plain_flags or [])
+    in_shard = {item for item in PLAIN_SEED_FLAGS if shard is None or shard_of(item[0]) == shard}
+    problems += [
+        f"{path}: {flag} is declared by add_argument; declare it with qrng_seeds.add_seed_argument"
+        for path, flag in sorted(flags - PLAIN_SEED_FLAGS)
+    ]
+    if plain_flags is not None:
+        problems += [
+            f"{path}: {flag} is listed in PLAIN_SEED_FLAGS and no longer exists"
+            for path, flag in sorted(in_shard - flags)
+        ]
     for key in sorted(set(found) | set(expected)):
         if shard is not None and shard_of(key[0]) != shard:
             continue
@@ -299,16 +427,53 @@ def load(path: Path, field: str) -> list[dict[str, Any]]:
 
 
 def read_tree_record(record_path: str) -> dict[str, Any]:
-    record: dict[str, Any] = json.loads((ROOT / record_path).read_text(encoding="utf-8"))
-    return record
+    return qrng_seeds.read_record(record_path, ROOT)
 
 
 def check_tree(shard: int | None = None) -> int:
-    found = scan(shard)
+    found, flags = scan(shard)
     claimed = claimed_records(MANIFEST_ROOT)
-    check(found, load(BASELINE, "seeds"), load(ALLOCATIONS, "allocations"), claimed, read_tree_record, shard)
+    allocations = load(ALLOCATIONS, "allocations")
+    check(found, load(BASELINE, "seeds"), allocations, claimed, read_tree_record, shard, flags)
     print(f"seed provenance: {sum(found.values())} seed literals accounted")
     return 0
+
+
+def check_runtime_tree() -> int:
+    consumed, stray = runtime_consumption(MANIFEST_ROOT)
+    allocations = load(ALLOCATIONS, "allocations")
+    runtime = load(ALLOCATIONS, "runtime")
+    check_runtime(consumed, stray, runtime, allocations, claimed_records(MANIFEST_ROOT), read_tree_record)
+    print(f"seed provenance: {len(consumed)} retained qrng references match the runtime ledger")
+    return 0
+
+
+def add_runtime() -> int:
+    """Append a ledger row for every retained qrng reference that lacks one; the check then runs as usual."""
+    consumed, _ = runtime_consumption(MANIFEST_ROOT)
+    ledger = json.loads(ALLOCATIONS.read_text(encoding="utf-8"))
+    present = {(row["record"], row["index"]) for row in ledger["runtime"]}
+    added = 0
+    for (record_path, index), consumers in sorted(consumed.items()):
+        if (record_path, index) in present or len(consumers) != 1:
+            continue
+        script, flag, experiment = next(iter(consumers))
+        value = read_tree_record(record_path)["values"][index]
+        ledger["runtime"].append(
+            {
+                "record": record_path,
+                "index": index,
+                "value": value,
+                "script": script,
+                "flag": flag,
+                "experiment": experiment,
+            }
+        )
+        added += 1
+    ledger["runtime"].sort(key=lambda row: (row["record"], row["index"]))
+    ALLOCATIONS.write_text(json.dumps(ledger, indent=1) + "\n", encoding="utf-8")
+    print(f"seed provenance: {added} runtime ledger rows added")
+    return check_runtime_tree()
 
 
 def self_test() -> int:
@@ -395,8 +560,83 @@ def self_test() -> int:
     for name, head in (("a raised count", [raised]), ("an added row", [*baseline, added])):
         if not shrink_problems(baseline, head):
             raise SystemExit(f"self-test: {name} in ci/reproduction_seeds.json was admitted")
-    print(f"seed_provenance self-test: scan matched, {len(mutations) + 2} mutations rejected")
+    runtime_refusals = runtime_self_test(record_path, record)
+    flag_tree = ast.parse(
+        "p.add_argument('--seed', type=int)\n"
+        "p.add_argument('--seeds', type=int)\n"
+        "add_seed_argument(p, '--x-seed', default=4)\n"
+    )
+    flags = [("x.py", flag) for flag in plain_seed_flags(flag_tree)]
+    if flags != [("x.py", "--seed"), ("x.py", "--seeds")]:
+        raise SystemExit(f"self-test: bare seed flags read as {flags}")
+    if ("--x-seed", 4) not in list(literals(flag_tree)):
+        raise SystemExit("self-test: an add_seed_argument default escaped the literal scan")
+    try:
+        check(Counter(), [], [], set(), lambda path: {}, None, flags)
+    except SeedError as error:
+        if "add_seed_argument" not in str(error):
+            raise SystemExit(f"self-test: a bare seed flag raised {error}") from None
+    else:
+        raise SystemExit("self-test: a bare seed flag was admitted")
+    total = len(mutations) + 2 + runtime_refusals + 1
+    print(f"seed_provenance self-test: scan matched, {total} mutations rejected")
     return 0
+
+
+def runtime_self_test(record_path: str, record: dict[str, Any]) -> int:
+    """The runtime ledger admits one consumer per index and refuses each defect; returns the refusal count."""
+    value = record["values"][1]
+    consumer = ("scripts/x.py", "--seed", "case-a")
+    consumed = {(record_path, 1): {consumer}}
+    row = {
+        "record": record_path,
+        "index": 1,
+        "value": value,
+        "script": "scripts/x.py",
+        "flag": "--seed",
+        "experiment": "case-a",
+    }
+
+    def run(
+        consumed: dict[tuple[str, int], set[Consumer]],
+        stray: list[str],
+        rows: list[dict[str, Any]],
+        code: list[dict[str, Any]],
+        claimed: set[str],
+    ) -> None:
+        check_runtime(consumed, stray, rows, code, claimed, lambda path: record)
+
+    run(consumed, [], [row], [], set())
+    refusals = {
+        "outside a seed_source": (consumed, ["results/x.json"], [row], [], set()),
+        "experiments": ({(record_path, 1): {consumer, ("scripts/x.py", "--seed", "case-b")}}, [], [row], [], set()),
+        "no runtime ledger row": (consumed, [], [], [], set()),
+        "is not index": (consumed, [], [dict(row, value=value + 1)], [], set()),
+        "also seeds a code literal": (consumed, [], [row], [{"record": record_path, "index": 1}], set()),
+        "belongs to a case": (consumed, [], [row], [], {Path(record_path).name}),
+        "no retained reference": ({}, [], [row], [], set()),
+        "another consumer": (consumed, [], [dict(row, experiment="case-b")], [], set()),
+    }
+    for fragment, arguments in refusals.items():
+        try:
+            run(*arguments)
+        except SeedError as error:
+            if fragment in str(error):
+                continue
+            raise SystemExit(f"self-test: the {fragment!r} runtime mutation raised {error}") from None
+        raise SystemExit(f"self-test: the {fragment!r} runtime mutation was admitted")
+    text = json.dumps(
+        {
+            "seed_source": qrng_seeds.seed_record(
+                "scripts/x.py", "--seed", "case-a", [f"qrng:{record_path}#1", "default"]
+            )
+        }
+    )
+    if [entry["experiment"] for entry in seed_sources(json.loads(text))] != ["case-a"]:
+        raise SystemExit("self-test: a seed_source entry was not found")
+    if Path(record_path).name in DRAW_NAME.findall(qrng_seeds.REF.sub("", text)):
+        raise SystemExit("self-test: an indexed reference claimed its whole draw")
+    return len(refusals) + 1
 
 
 def main() -> int:
@@ -404,11 +644,17 @@ def main() -> int:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--check", action="store_true")
     group.add_argument("--shrink", action="store_true")
+    group.add_argument("--runtime", action="store_true")
+    group.add_argument("--add-runtime", action="store_true")
     group.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     try:
         if args.shrink:
             return check_shrink()
+        if args.runtime:
+            return check_runtime_tree()
+        if args.add_runtime:
+            return add_runtime()
         return self_test() if args.self_test else check_tree()
     except SeedError as error:
         raise SystemExit(str(error)) from None
