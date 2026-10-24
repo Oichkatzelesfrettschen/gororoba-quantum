@@ -1208,6 +1208,33 @@
   },
   "web_sources": [
     {
+      "url": "https://arxiv.org/abs/2408.15139",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "ebf63c1a4a4bd3cf79c5dbd660c1cbae986fcd6c17c775a24e0734e9d6442ad3",
+      "bytes": 41524,
+      "retrieved_at_utc": "2026-10-24T15:34:08Z",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Pradip et al., fast thermo-optic switching on silicon nitride through parity-time symmetry breaking: 8.5 us rise for a pi shift",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/2405.11044",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "ed7475f961ad330c0fe68f56d2a940495de5f34d3b022bcb2919e2d79dc4b59d",
+      "bytes": 42400,
+      "retrieved_at_utc": "2026-10-24T15:34:08Z",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Chen et al., slow-light silicon thermal phase shifter: P_pi 3.63 mW, P_pi tau 5.1 mW us",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/2601.10289",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "e3cc679ecaae82a8a5a42b86915c5c3af27e164535867e99b1b02e5e31673a4f",
+      "bytes": 43137,
+      "retrieved_at_utc": "2026-10-24T15:34:08Z",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Sanz et al., QFT benchmark of genuine multiphoton indistinguishability on a Quandela processor",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
       "url": "https://arxiv.org/abs/2203.01234",
       "note": "docs/notes/papers/operational-instrument-sources.md",
       "sha256": "13f3c712785887756796f50fb8f6cd94e7b12f4e7048d91e6023554346993eb8",

@@ -59,8 +59,11 @@ normalization. Each of the six assumption queries in
 [assumptions.v](assumptions.v) prints `Closed under the global context`
 ([assumptions.txt](assumptions.txt)): the proof terms reach the kernel
 through those definitions alone, with every classical, extensionality and
-choice principle absent. The remaining trust is the transcription of the
-cd_sign loop and of Corollary 4.3 that the tower bundle names.
+choice principle absent. The tower sign sigma equals the return value of
+cd_core.cd_sign for every k by the
+[cd_sign Python-semantics bundle](../cd-sign-python-semantics/README.md); the remaining
+trust is the transcription of Corollary 4.3 that the tower bundle names and
+the trust points the Python-semantics bundle lists.
 
 ## Replay
 
