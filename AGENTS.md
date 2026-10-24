@@ -18,7 +18,7 @@ and mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/,
 pytest over tests/ with `-m "not audit"`, and the ci/gates.json gates of at
 most 15 measured seconds that the diff from main reaches (a record binding an
 edited producer's digest fails there). Branch protection on main requires
-the three checks `lint`, `types` and `tests` green on the head; with the Codex
+the four checks `lint`, `types`, `tests` and `gates` green on the head; with the Codex
 review loop they admit a merge ([Merging](#reviews-and-merges)), and no local
 gate run or premerge replay is required. Locally, `sh ci/pr_checks.sh tests
 PATH` runs the touched tests under the hosted environment; pushing needs no

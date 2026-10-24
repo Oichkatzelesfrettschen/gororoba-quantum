@@ -41,8 +41,8 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
 `lint`, `types` and `tests` time out at 8 minutes and `gates` at 30.
 `types`, `tests` and `gates` restore the pinned venv through
 .github/actions/pins-venv, under ci.yml's cache key, and build it with
-ci/install_pins.sh on a miss. Branch protection on main requires `lint`, `types` and `tests`
-green on the head, for administrators too, without requiring the branch to
+ci/install_pins.sh on a miss. Branch protection on main requires `lint`, `types`, `tests`
+and `gates` green on the head, for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch
 (scripts/qd_schedule_tick.sh does so when a schedule finishes); a branch whose
