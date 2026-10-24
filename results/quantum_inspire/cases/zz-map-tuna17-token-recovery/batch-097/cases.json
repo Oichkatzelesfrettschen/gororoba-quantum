@@ -1,0 +1,155 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "batch_index": 97,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 2000,
+   "delay_seconds": 4e-05,
+   "direction": "b_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-b_probe-n0-x-t2000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      3,
+      5
+     ],
+     "neighbor": 3,
+     "neighbor_state": 0,
+     "probe": 5
+    },
+    {
+     "edge": [
+      4,
+      7
+     ],
+     "neighbor": 4,
+     "neighbor_state": 0,
+     "probe": 7
+    },
+    {
+     "edge": [
+      12,
+      14
+     ],
+     "neighbor": 12,
+     "neighbor_state": 0,
+     "probe": 14
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "e4fcda69de5e3c4352420951622e52e07c7a14cf9aa19d0532f151f23244dfdd"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 2000,
+   "delay_seconds": 4e-05,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-a_probe-n1-y-t2000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.5,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 1,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      3,
+      5
+     ],
+     "neighbor": 5,
+     "neighbor_state": 1,
+     "probe": 3
+    },
+    {
+     "edge": [
+      4,
+      7
+     ],
+     "neighbor": 7,
+     "neighbor_state": 1,
+     "probe": 4
+    },
+    {
+     "edge": [
+      12,
+      14
+     ],
+     "neighbor": 14,
+     "neighbor_state": 1,
+     "probe": 12
+    }
+   ],
+   "quadrature": "y",
+   "sha256": "8017e46f433cc3173b47086130c0ef81ad8d951f2b57440a7e837428db0f9807"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 2000,
+   "delay_seconds": 4e-05,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-05-a_probe-n0-y-t2000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.5,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "packing_id": "pack-05",
+   "pairs": [
+    {
+     "edge": [
+      3,
+      5
+     ],
+     "neighbor": 5,
+     "neighbor_state": 0,
+     "probe": 3
+    },
+    {
+     "edge": [
+      4,
+      7
+     ],
+     "neighbor": 7,
+     "neighbor_state": 0,
+     "probe": 4
+    },
+    {
+     "edge": [
+      12,
+      14
+     ],
+     "neighbor": 14,
+     "neighbor_state": 0,
+     "probe": 12
+    }
+   ],
+   "quadrature": "y",
+   "sha256": "a36fe83412523248d520992a046e9595f2c82b56e1725f2c0bfc61f76c16bfb2"
+  }
+ ],
+ "nqubits": 17,
+ "plan_schema": "qi-zz-map-plan-v1",
+ "schema": "qi-zz-map-cases-v1",
+ "shots": 8192,
+ "source_digests": {
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "conditional_ramsey_note_sha256": "ddac02db9715550afcd22d19d312dc668d2558adb42ff7476c4c75b7940cb087",
+  "conditional_ramsey_source_sha256": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+  "proposal_builder_sha256": "b2cd54495e728b666f15444105367853229ad7cc603ee3503692f3ed8fdd84a7",
+  "qi_platform_source_sha256": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+  "tuna_operations_sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
+ },
+ "status": "proposed_not_submitted"
+}

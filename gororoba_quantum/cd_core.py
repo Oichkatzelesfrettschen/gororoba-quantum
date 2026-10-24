@@ -23,7 +23,9 @@ ExactMatrix = tuple[tuple[Fraction, ...], ...]
 
 
 def _dimension(dim: int) -> None:
-    if isinstance(dim, bool) or not isinstance(dim, int) or dim < 1 or dim & (dim - 1):
+    # An int subclass can override the <, & and >> that this guard and its callers apply to dim. The exact-type test
+    # runs first, so every operator applied to an accepted dim is int's own.
+    if type(dim) is not int or dim < 1 or dim & (dim - 1):
         raise ValueError(f"dimension must be a positive power of two, got {dim!r}")
 
 

@@ -1,12 +1,14 @@
 """Contracts for cd_sign_rocq_ast: the Rocq terms in proofs/CdSignPythonSemantics.v are the serialized syntax tree
 of cd_core.cd_sign and of its high-low-unconditional mutant, the mutation changes the term, a construct outside
 the Rocq syntax is rejected rather than dropped, and the guards _dimension and _index behave on ints as the Rocq
-builtin clauses state, reject bool and non-int dimensions, and pass an __index__ object on as a Python int.
+builtin clauses state, reject every dimension whose type is not exactly int (bool and int subclasses that
+override the guard's or the loop's operators included), and pass an __index__ object on as a Python int.
 """
 
 from __future__ import annotations
 
 import ast
+import enum
 import hashlib
 from collections.abc import Callable
 from typing import cast
@@ -66,7 +68,7 @@ def test_markers_must_be_unique() -> None:
 # change to either guard fails here until dimension_guard and index_guard in CdSignPythonSemantics.v are re-checked
 # against the new body.
 GUARD_DIGESTS = {
-    "_dimension": "d2dfba87109707dff7fbf25599a91405822c1f74e8854cc1dbf4c08cba493161",
+    "_dimension": "326c9107aaabb29533a0ad5f76e4204efeb33fe204682196bd1b0a63897ee5e4",
     "_index": "0cb3cf2d6723c907eb9fa0afc967055feb0dc77682bf404f2d8a0217e1ca32bf",
 }
 
@@ -109,3 +111,56 @@ def test_guards_reject_bool_and_convert_index_objects() -> None:
     value = cd_core._index(4, cast(int, np.int64(3)))
     if type(value) is not int or value != 3:
         raise AssertionError("_index did not return a Python int for an __index__ object")
+
+
+class _ShiftZero(int):
+    """Overrides the loop's half = dim >> 1, so an accepted ShiftZero(4) would skip the loop and return +1."""
+
+    def __rshift__(self, count: int) -> int:
+        return 0
+
+
+class _AndZero(int):
+    """Overrides the guard's dim & (dim - 1), so an accepted AndZero(6) would pass as a power of two."""
+
+    def __and__(self, other: int) -> int:
+        return 0
+
+
+class _LessFalse(int):
+    """Overrides the guard's dim < 1, so an accepted LessFalse(0) would pass as positive."""
+
+    def __lt__(self, other: object) -> bool:
+        return False
+
+
+class _Level(enum.IntEnum):
+    OCTONION = 8
+
+
+class _IndexLies(int):
+    """Overrides __index__ and >=; _index reads the int value through operator.index, which ignores both."""
+
+    def __index__(self) -> int:
+        return 0
+
+    def __ge__(self, other: object) -> bool:
+        return True
+
+
+@pytest.mark.parametrize(
+    "dim",
+    [_ShiftZero(4), _AndZero(6), _AndZero(12), _LessFalse(0), _Level.OCTONION],
+    ids=["shift-zero-4", "and-zero-6", "and-zero-12", "less-false-0", "int-enum-8"],
+)
+def test_int_subclass_dimensions_raise_before_the_loop(dim: int) -> None:
+    if not _raises(cd_core._dimension, dim) or not _raises(cd_core.cd_sign, dim, 1, 1):
+        raise AssertionError(f"an int subclass dimension {type(dim).__name__}({int(dim)}) passed _dimension")
+
+
+def test_index_subclass_reaches_the_loop_as_its_int_value() -> None:
+    value = cd_core._index(8, _IndexLies(3))
+    if type(value) is not int or value != 3:
+        raise AssertionError("_index did not return the exact int value of an int subclass")
+    if cd_core.cd_sign(8, _IndexLies(3), 5) != cd_core.cd_sign(8, 3, 5):
+        raise AssertionError("an int subclass index changed cd_sign")

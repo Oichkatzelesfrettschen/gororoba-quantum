@@ -1,0 +1,20 @@
+{
+ "schema": "outshift-qrng-draw-v1",
+ "source": "https://api.qrng.outshift.com/api/v1/random_numbers",
+ "request": {
+  "encoding": "raw",
+  "format": "all",
+  "bits_per_block": 16,
+  "number_of_blocks": 4
+ },
+ "retrieved_utc": "2026-10-24T165116Z",
+ "raw": "{\"encoding\":\"raw\",\"random_numbers\":[{\"binary\":\"1110010011001110\",\"octal\":\"162316\",\"decimal\":\"58574\",\"hexadecimal\":\"e4ce\"},{\"binary\":\"1010001000010110\",\"octal\":\"121026\",\"decimal\":\"41494\",\"hexadecimal\":\"a216\"},{\"binary\":\"1011001010010100\",\"octal\":\"131224\",\"decimal\":\"45716\",\"hexadecimal\":\"b294\"},{\"binary\":\"1100000001000110\",\"octal\":\"140106\",\"decimal\":\"49222\",\"hexadecimal\":\"c046\"}]}",
+ "raw_sha256": "fbc6296a027850d9954da9921d3152e97eb419eb339fcb03fd56e9abc22c0661",
+ "bits": 16,
+ "values": [
+  58574,
+  41494,
+  45716,
+  49222
+ ]
+}
