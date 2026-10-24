@@ -67,7 +67,7 @@ proposed work, in dependency order:
 | exploratory reanalysis | exploratory | 61 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 4 |
-| mathematical claim | established | 18 |
+| mathematical claim | established | 19 |
 | mathematical claim | open | 3 |
 | numerical or stochastic simulation | established | 8 |
 | preregistered emulator control | established | 10 |

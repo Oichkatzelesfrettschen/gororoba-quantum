@@ -3979,6 +3979,7 @@
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/rank_locus_second_order.py",
     "scripts/rank_locus_tangent_linearity.py"
@@ -3989,6 +3990,7 @@
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/rank_locus_second_order.py",
     "scripts/rank_locus_tangent_linearity.py"
@@ -6205,6 +6207,7 @@
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -6239,6 +6242,7 @@
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ]
   },
@@ -11619,6 +11623,27 @@
    "pyadic",
    "random",
    "rank_locus_local_dimension",
+   "sys",
+   "typing"
+  ],
+  "scripts/rank_locus_quadric_germ.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "copy",
+   "dataclasses",
+   "flint",
+   "fractions",
+   "importlib",
+   "itertools",
+   "json",
+   "math",
+   "nullity_twelve_curves",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sympy",
    "sys",
    "typing"
   ],

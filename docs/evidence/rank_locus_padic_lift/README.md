@@ -121,16 +121,31 @@ p-adic rows to it.
     the Schwartz-Zippel lemma over the weight set F_p^*, about 3e-8 per
     direction;
   - or P_m would have to vanish identically modulo p for both primes.
-- An exact proof would need one of the following, and neither is available:
-  - Vanishing beyond deg(M closure) times deg(H). By the Bezout bound that is
-    on the order of 29^4 x 29 at nullity 4.
-  - A certificate that H lies in the local ideal of the independent entries.
+- An exact proof needs an explicit identity placing H in the local ideal of
+  the independent entries, or an explicit parameterization of M.
+  - The Bezout route is weaker than either. A lifted line is a curve of
+    degree at most d^c with d = 33 - k.
+  - Vanishing beyond d^(c+1) clears that one curve only. That is about 2.1e7
+    at nullity 4, 2.4e15 at nullity 8 and 3.0e22 at nullity 12.
+  - At the nonzd-axis witnesses and the Proposition 8.2 points,
+    [rank_locus_quadric_germ](../rank_locus_quadric_germ/README.md) proves
+    that M is the quadric cone V and that H vanishes on it.
+  - The nullity-8 and nullity-4 witnesses keep only the bound of this record.
 - The Proposition 8.2 and Moreno points carry no family dimension, and their
   rows show the same vanishing.
 - `recurrence_lengths` records the Berlekamp-Massey length of each dependent
   coordinate's coefficients t^1 to t^63 along the line.
   - A constant coordinate reads 0, and a linear one reads 1.
-  - Every other coordinate reads 32, the maximum for 63 terms, at every
-    witness, the smooth controls included.
-  - So no coordinate is a rational function of t of degree below 32, and the
-    chart offers no low-degree rational parameterization of M.
+  - Every other coordinate reads 32 at every witness, the smooth controls
+    included. 32 is ceil(63/2), the value a sequence with no short
+    recurrence takes; a prefix of N terms can reach length N.
+  - Over F_p, a rational function P/Q of t with Q(0) nonzero obeys, from t^1
+    on, a recurrence of length max(deg P, deg Q). Length 32 therefore
+    excludes every such P/Q with max(deg P, deg Q) <= 31.
+  - In characteristic zero the exclusion covers the P/Q whose coefficients
+    are p-integral with Q(0) a p-adic unit, because those reduce modulo p
+    without raising either degree.
+  - That constrains the graph coordinates only. At nullity 12 they solve
+    quadrics, which takes a square root, and
+    [rank_locus_quadric_germ](../rank_locus_quadric_germ/README.md) gives the
+    same germ a rational parameterization in other coordinates.
