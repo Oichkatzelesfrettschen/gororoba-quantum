@@ -104,7 +104,7 @@ def anf_degrees(rows: Table) -> npt.NDArray[np.int64]:
         a = a.reshape(count, -1, 2, 1 << b)
         a[:, :, 1, :] ^= a[:, :, 0, :]
         a = a.reshape(count, size)
-    weight = np.array([m.bit_count() for m in range(size)], dtype=np.int64)
+    weight = np.bitwise_count(np.arange(size)).astype(np.int64)
     return np.where(a.any(axis=1), (a * weight).max(axis=1), 0)
 
 
@@ -131,9 +131,9 @@ def check_coefficients(n: int, phi: Table) -> None:
         for j in range(n):
             want = ((m >> j) & 1).astype(np.uint8)
             _require(bool((coeff[:, full ^ (1 << j)] == want).all()), f"leading: bit {j} at n = {n}")
-        weight = np.array([v.bit_count() for v in range(dim)])
+        weight = np.bitwise_count(np.arange(dim))
         top = coeff[:, weight == n - 1]
-        _require(int(top.sum()) == int(sum(v.bit_count() for v in m.tolist())), f"leading: extra terms at n = {n}")
+        _require(int(top.sum()) == int(np.bitwise_count(m).sum()), f"leading: extra terms at n = {n}")
     bitlen = np.floor(np.log2(m)).astype(np.int64) + 1
     power = (m & (m - 1)) == 0
     want_deg = np.where(power, 1, np.maximum(1, bitlen - 2))
@@ -144,13 +144,14 @@ def check_coefficients(n: int, phi: Table) -> None:
         bool((phi[a[:, None], m[None, :]] ^ phi[a[:, None] ^ m[None, :], m[None, :]]).all()), f"right inv: n = {n}"
     )
     signs = 1 - 2 * right.astype(np.int64)
-    hadamard = np.array([[(-1) ** (x & z).bit_count() for z in range(dim)] for x in range(dim)], dtype=np.int64)
+    overlap = np.bitwise_count(a[:, None] & a[None, :]) % 2
+    hadamard = (1 - 2 * overlap).astype(np.int64)
     walsh = signs @ hadamard
-    even = np.array([[(b & z).bit_count() % 2 == 0 for z in range(dim)] for b in m.tolist()])
+    even = overlap[1:] == 0
     _require(not walsh[even].any(), f"right inv: Walsh coefficient at an even z, n = {n}")
     joint = anf(phi.reshape(1, -1))[0]
     pairs = 1 << (2 * n)
-    weight2 = np.array([v.bit_count() for v in range(pairs)])
+    weight2 = np.bitwise_count(np.arange(pairs))
     quadratic = set(np.flatnonzero(joint & (weight2 == 2)).tolist())
     want_quad = {(1 << i) | (1 << (n + jj)) for i in range(n) for jj in range(n) if i <= jj}
     _require(quadratic == want_quad, f"bilinear: degree-2 layer at n = {n}")
