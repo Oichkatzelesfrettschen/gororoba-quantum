@@ -41,10 +41,16 @@ The project studies the Cayley-Dickson algebras (octonions, sedenions and the
 properties become observables: a zero-divisor pair `a b = 0` appears as a
 dark output branch of zero probability, its bright control as one of
 probability near one, and the non-associativity of the algebra as a phase in
-an associator circuit. Every hardware probe passes a mutation test (the ideal
-observable changes when the property is removed), runs its arms in a
-+, -, -, + order and decides against a preregistered null
+an associator circuit. The repository's rules require every new hardware
+probe to pass a mutation test (the ideal observable changes when the
+property is removed), to run its arms in a +, -, -, + order and to decide
+against a preregistered null
 ([algebra circuit rules](../notes/algebra_circuit_rules.md#hardware-probes)).
+Some earlier runs predate parts of that rule, and their registry entries
+record the gaps: the original IQM Garnet signed kernel probe ran its positive
+settings before its negative ones and lacked a `t = 0` arm, which its null
+re-test supplied, and the Tuna-17 kernel cancellation probe ran in
++, -, +, - order at its larger angle, so that endpoint is withheld.
 The exact algebra is specified in `gororoba_quantum/cd_core.py`; selected
 statements are kernel-checked in Rocq (`proofs/`).
 
@@ -55,8 +61,10 @@ Hardware results so far (claim ids in the registry):
   `ibm_kingston` with the same signs (`hw-kingston-rank-transfer`).
 - IBM `ibm_kingston`: the encoded N = 21 order-finding contrast with
   real-time feed-forward is consistent with zero at 100,000 shots per arm
-  (`hw-n21-feedback-null-kingston`), so routing depth, not shot count,
-  limits that circuit.
+  (`hw-n21-feedback-null-kingston`). The run isolates no suppressing
+  mechanism: mid-circuit measurement error, feed-forward latency,
+  conditional-branch dephasing and routing depth remain unseparated
+  candidates.
 - QuTech Tuna-17: the Design B zero-divisor witness of
   `(e1 + e10)(e4 - e15) = 0` contracts toward the incoherent floor
   (`qi-tuna17-zero-divisor-contraction`, `qi-tuna17-zero-divisor-visibility-floor`),
@@ -70,11 +78,12 @@ Hardware results so far (claim ids in the registry):
   (`qd-qpu-belenos-84-84-zero-divisor-program`) and a signed-coherence
   conformance run (`ascella-signed-coherence-conformance`).
 
-The common limit across these devices is two-qubit depth after routing on
-sparse connectivity: the zero-divisor witnesses and the feed-forward circuit
-lose contrast with every SWAP. Devices with all-to-all connectivity, native
-mid-circuit measurement with feed-forward, or a different noise mechanism
-answer questions the current devices cannot.
+A working hypothesis, not an established cause, links these results: on
+sparse connectivity the routed two-qubit depth of the zero-divisor witnesses
+and of the feed-forward circuit grows with every SWAP, and contrast falls
+with it. Devices with all-to-all connectivity, native mid-circuit
+measurement with feed-forward, or a different noise mechanism test that
+hypothesis against the alternatives the N = 21 null leaves open.
 
 ## Common template
 
