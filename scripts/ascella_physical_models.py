@@ -24,8 +24,8 @@ decides nothing between them.
 Leave-one-configuration-out, fitted after the preregistered table and deciding nothing, refits each static
 family on job-00 without one configuration and scores that configuration's X and Y statistics against the
 prediction in their multinomial variances alone. Each of the 30 configurations is left out in turn; the 19 that
-serve the X or Y readout (one serves both) are scored, and the nominal mesh gives the reference. A shared mesh error predicts a configuration it was not fitted on, and a per-configuration lookup
-does not.
+serve the X or Y readout (one serves both) are scored, and the nominal mesh gives the reference. A shared mesh
+error predicts a configuration it was not fitted on, and a per-configuration lookup does not.
 
 The held-out statistic of each readout is r^T (diag(v) + J C J^T)^{-1} r over job-01's pooled configuration
 statistics, with v job-01's multinomial variances, C the inverse Fisher information of the job-00 fit (plus the
