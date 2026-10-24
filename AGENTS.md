@@ -13,9 +13,11 @@ gate machinery: runner and shards, the gate ledger and premerge cache, the
 Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 
 **Pull requests and the audit.** The workflow `pr.yml` runs
-`sh ci/pr_checks.sh lint|types|tests` on every pull request push: Ruff and
-mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/, and
-pytest over tests/ with `-m "not audit"`. Branch protection on main requires
+`sh ci/pr_checks.sh lint|types|tests|gates` on every pull request push: Ruff
+and mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/,
+pytest over tests/ with `-m "not audit"`, and the ci/gates.json gates of at
+most 15 measured seconds that the diff from main reaches (a record binding an
+edited producer's digest fails there). Branch protection on main requires
 the three checks `lint`, `types` and `tests` green on the head; with the Codex
 review loop they admit a merge ([Merging](#reviews-and-merges)), and no local
 gate run or premerge replay is required. Locally, `sh ci/pr_checks.sh tests
@@ -408,7 +410,7 @@ code-review quota, the owner decides how the PR proceeds.
    what that review finds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
-4. The `pr.yml` jobs `lint`, `types` and `tests` pass on the head. A push
+4. The `pr.yml` jobs `lint`, `types`, `tests` and `gates` pass on the head. A push
    that changes the head reruns them; a red job gets its fix commit on the
    branch.
 5. GitHub reports mergeable_state clean.
