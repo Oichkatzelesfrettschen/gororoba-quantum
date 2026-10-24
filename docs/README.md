@@ -156,6 +156,7 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/cd-sign-python-semantics/README.md](evidence/cd-sign-python-semantics/README.md) | Rocq proof, for every Cayley-Dickson dimension, that the syntax tree of `cd_core.cd_sign`, run under a semantics of the Python int subset it uses, returns the tower sign sigma and raises on invalid int arguments, with the extractor contract and kernel receipts |
 | [evidence/cd-associator-census/README.md](evidence/cd-associator-census/README.md) | Rocq proof, for every Cayley-Dickson dimension, of the census of unordered basis pairs by associator-phase ANF degree (21, then 3 2^d (2^(d+1) - 1) at degree d), with its kernel receipts |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
+| [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
 | [koebisu_rank_stratum_research.md](notes/koebisu_rank_stratum_research.md) | dimension-32 rank question |

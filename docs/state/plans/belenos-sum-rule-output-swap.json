@@ -1,0 +1,18 @@
+{
+  "schema": "work-plan-v1",
+  "id": "belenos-sum-rule-output-swap",
+  "kind": "experiment",
+  "summary": "Belenos six-state sum-rule deficit (-0.199 over 56 contrasts): exchange the f and g roles across physical outputs and compilations to tell whether it follows the logical state, the output detector, the compiled configuration or the one-click conditioning.",
+  "sources": [
+    "docs/design/bdsc-qualification.md",
+    "docs/notes/quandela/bdsc-acceptance-diagnostics.md",
+    "results/quandela/bdsc_drift_series_diagnostic_pinned.json",
+    "https://arxiv.org/abs/2310.15349"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Design a submit-free dry run whose arms swap the f and g output modes under fixed compilations and fixed outputs under swapped compilations, with the terminal-imbalance prediction of each arm frozen before any case is written; a deficit that follows the detector supports terminal imbalance, one that follows the compilation supports implementation dependence."
+}
