@@ -1878,7 +1878,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "Two jobs six hours apart on one device; the alternation's physical mechanism (which acquisition stage alternates) and the configuration error behind the reproducing residuals stay unidentified. Permutation p-values assume exchangeable positions under the null; the budget reading compares medians of two jobs. Equal integer durations bound the per-sample time cost only by the one-second resolution.",
+      "boundary": "Two jobs six hours apart on one device; the alternation's physical mechanism (which acquisition stage alternates) and the configuration error behind the reproducing residuals stay unidentified. Permutation p-values assume exchangeable positions under the null; the budget reading compares medians of two jobs. Equal total durations of jobs six hours apart in different orders assign no marginal time to the further samples, because no record separates acquisition from overhead.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",

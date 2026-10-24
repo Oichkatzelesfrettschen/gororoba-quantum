@@ -50,10 +50,10 @@ The outside-block clicks therefore follow the execution sequence: a high and
 a low iteration alternate whatever setting runs, and the clicks grow with the
 samples an iteration takes (13,268 of 1,048,576 against 6,659 of 524,288).
 The analyzer residuals belong to the settings: the same configurations err
-the same way six hours and several hourly recalibrations apart, at a stable
-contrast of 0.97. The equal 186-second durations put the cost of 524,288
-further samples below the duration's one-second resolution, so iterations,
-not samples, set the job's time.
+the same way six hours apart, at a stable
+contrast of 0.97. Both jobs report 186 seconds in total. No retained
+record separates acquisition time from reconfiguration or other overhead, so
+the equal totals assign no marginal time to the further 524,288 samples.
 
 [`job-01-diagnostics.json`](../../../../docs/evidence/ascella-order-coefficients/job-01-diagnostics.json)
 holds the exploratory reading of this run alone.

@@ -323,23 +323,14 @@ def compare_records(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     sequence = autocorrelation_test(b_series, 1)
     transition = permutation_test(phase_change(b["phases"])[1:], b_series[1:], rank=True)
     budget = math.log2(float(np.median(list(outside_b.values()))) / float(np.median(list(outside_a.values()))))
-    residuals: dict[str, Any] = {}
-    contrast: dict[str, Any] = {}
-    for readout in ("x", "y"):
-        fit_a = contrast_fit(a["manifest"]["settings"], a["counts"], readout)
-        fit_b = contrast_fit(b["manifest"]["settings"], b["counts"], readout)
-        res_b = dict(zip(fit_b["settings"], fit_b["residuals"], strict=True))
-        matched = np.array([res_b[n] for n in fit_a["settings"]])
-        test = permutation_test(np.array(fit_a["residuals"]), matched, rank=False)
-        residuals[readout] = {**test, "reproduces": test["value"] > 0 and test["p"] < ALPHA}
-        difference = fit_b["visibility"] - fit_a["visibility"]
-        se = math.hypot(fit_a["visibility_se"], fit_b["visibility_se"])
-        contrast[readout] = {
-            "visibility_a": fit_a["visibility"],
-            "visibility_b": fit_b["visibility"],
-            "difference": difference,
-            "se": se,
-        }
+    readouts = ("x", "y")
+    compared = ordered_map(
+        readout_comparison,
+        [(a["manifest"]["settings"], a["counts"], b["manifest"]["settings"], b["counts"], r) for r in readouts],
+        min_items=1,
+    )
+    residuals = {readout: result["residuals"] for readout, result in zip(readouts, compared, strict=True)}
+    contrast = {readout: result["contrast"] for readout, result in zip(readouts, compared, strict=True)}
     return {
         "identity": {**identity, "supported": identity["value"] > 0 and identity["p"] < ALPHA},
         "sequence": {**sequence, "supported": sequence["value"] < 0 and sequence["p"] < ALPHA},
@@ -350,6 +341,27 @@ def compare_records(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
         },
         "residuals": residuals,
         "contrast": contrast,
+    }
+
+
+def readout_comparison(
+    item: tuple[list[dict[str, Any]], np.ndarray, list[dict[str, Any]], np.ndarray, str],
+) -> dict[str, Any]:
+    """One readout's residual reproduction test and contrast difference between runs a and b."""
+    settings_a, counts_a, settings_b, counts_b, readout = item
+    fit_a = contrast_fit(settings_a, counts_a, readout)
+    fit_b = contrast_fit(settings_b, counts_b, readout)
+    res_b = dict(zip(fit_b["settings"], fit_b["residuals"], strict=True))
+    matched = np.array([res_b[n] for n in fit_a["settings"]])
+    test = permutation_test(np.array(fit_a["residuals"]), matched, rank=False)
+    return {
+        "residuals": {**test, "reproduces": test["value"] > 0 and test["p"] < ALPHA},
+        "contrast": {
+            "visibility_a": fit_a["visibility"],
+            "visibility_b": fit_b["visibility"],
+            "difference": fit_b["visibility"] - fit_a["visibility"],
+            "se": math.hypot(fit_a["visibility_se"], fit_b["visibility_se"]),
+        },
     }
 
 

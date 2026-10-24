@@ -788,9 +788,10 @@ each reading to come out as generated. job-01's own 27 endpoints come from
 1,048,576 samples in 186 s for 1.032768 credits, all 27 endpoints qualifying.
 The outside-block clicks follow the execution sequence (lag-1 -0.653, setting
 Spearman -0.075) and grow with the samples (log2 ratio 0.83); the analyzer
-residuals reproduce (X 0.974, Y 0.802) at a stable contrast of 0.97. The
-duration equals job-00's, which refutes the case's per-sample timing
-inference: 524,288 further samples cost less than the duration's one-second
-resolution, so the iteration count, not the sample budget, sets an Ascella
-job's time, and a later case can raise samples per iteration at a cost of
-1e-6 credits per shot of its largest iteration.
+residuals reproduce (X 0.974, Y 0.802) at a stable contrast of 0.97. Both jobs
+report 186 s in total. No retained record separates acquisition time from
+reconfiguration or other overhead, and the jobs ran six hours apart in
+different orders, so the equal totals assign no marginal time to the further
+524,288 samples; the case's per-sample estimate (about 34 s) is neither
+confirmed nor bounded. A timing budget for larger sample counts needs
+component timing or controlled repeats that vary only the budget.
