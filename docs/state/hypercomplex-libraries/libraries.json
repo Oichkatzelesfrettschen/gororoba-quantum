@@ -4072,7 +4072,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "pyqpanda3",
@@ -4351,7 +4352,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "qdldl",
@@ -11500,6 +11502,38 @@
    "oq_platform",
    "pathlib",
    "qd_platform",
+   "typing"
+  ],
+  "scripts/provider_credit_readers.py": [
+   "__future__",
+   "calendar",
+   "collections",
+   "concurrent",
+   "datetime",
+   "importlib",
+   "json",
+   "os",
+   "pathlib",
+   "re",
+   "subprocess",
+   "sys",
+   "typing",
+   "urllib"
+  ],
+  "scripts/provider_credits.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "concurrent",
+   "dataclasses",
+   "datetime",
+   "json",
+   "os",
+   "pathlib",
+   "re",
+   "subprocess",
+   "sys",
+   "tempfile",
    "typing"
   ],
   "scripts/provider_job_budget.py": [
