@@ -1,0 +1,18 @@
+{
+  "schema": "work-plan-v1",
+  "id": "heron-correlated-error-burst-search",
+  "kind": "experiment",
+  "summary": "Search for spatially correlated error bursts on a Heron r2 processor, the one cosmic-origin hypothesis these devices can test: many neighboring qubits prepared in |1> and read every shot, burst size against the 26.2 ms label switching of the Ramsey arms.",
+  "sources": [
+    "docs/notes/topics/relativistic-metrology-scale.md",
+    "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json",
+    "https://arxiv.org/abs/2104.05219",
+    "https://arxiv.org/abs/2402.03208"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Estimate the expected burst rate per chip and the QPU seconds needed to see five bursts from the imported cosmic-ray papers, then decide whether the 600 s rolling quota admits it before any dry run."
+}

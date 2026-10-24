@@ -789,7 +789,7 @@ memory. The p sits 0.006 above the consistent boundary, and the sensitivity
 of 0.71 for a walk of step SD 0.0021 per two hours (0.43 at 0.0015) leaves
 a walk of the retained tau's size undecided rather than excluded. The
 independent-setting reference reads z -2.02 (p 0.022), and the superposition
-class mean reads no common drift (ratio 2.02). Reported only, deciding
+class mean shows no ordered common drift (ratio 2.02). Reported only, deciding
 nothing:
 
 - The class-centered excess square change of the superposition settings
@@ -803,6 +803,36 @@ nothing:
   epoch and the within-epoch contrast is undefined. The epoch rule's
   premise, that the platform refreshes those figures only at calibration,
   fails on this window: the epochs name figure refreshes, not calibrations.
+
+**Diagnostic.** [bdsc_drift_series_diagnostic_pinned.json](../../results/quandela/bdsc_drift_series_diagnostic_pinned.json)
+(`scripts/bdsc_drift_series.py --check-diagnostic`, gate core-679) holds
+readings chosen after the readout, which none of them revises.
+
+- The unweighted superposition class mean jumps between runs: 0.3928 to
+  0.4042, sample SD 0.0038, against a counting error near 0.0004 per run.
+  The readout's ratio 2.02 says the jumps carry no order; their size is ten
+  times counting, so an absolute superposition probability compared across
+  jobs carries about 0.004 of shared jump, and a qualification contrast
+  between jobs needs its reference inside each job.
+- The readout's excess subtracts each setting's uncentered counting variance
+  from a centered change, and centering leaves var_s (1 - 2/16) +
+  sum_j var_j / 256 of it, so the readout's excess reads low by mean var / 16.
+  With the centered variance the lag profile reads 7.45e-6 at 2 h and
+  2.27e-5 at 12 h.
+- The Spearman correlation of that excess with lag over the 21 series pairs
+  is 0.65, exact p 0.006 over all 5040 relabelings of the run times. The
+  test was chosen after the data and is one of several examined, so it names
+  memory as the lead for a preregistered successor and decides nothing.
+- All 56 sum-rule contrasts (four template-and-seed groups, Delta_R and
+  Delta_I, seven runs) are negative, -0.251 to -0.140 with mean -0.199. The
+  terminal-imbalance model of the
+  [acceptance diagnostics](../notes/quandela/bdsc-acceptance-diagnostics.md)
+  predicts -0.150 for this target-complement pair from the receipt's
+  detector weights, about three quarters of the mean deficit, and the
+  deficit holds in every run of the day.
+- The mean mode-5 share does not follow the plan-time mode-5 dark rate
+  (Spearman 0.15, two-sided p 0.71 over nine runs). The plan-time figure
+  therefore says nothing about the stray clicks of a given acquisition.
 
 ## Conjecture ledger
 

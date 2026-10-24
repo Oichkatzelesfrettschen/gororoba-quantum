@@ -11507,6 +11507,38 @@
    "qd_platform",
    "typing"
   ],
+  "scripts/provider_credit_readers.py": [
+   "__future__",
+   "calendar",
+   "collections",
+   "concurrent",
+   "datetime",
+   "importlib",
+   "json",
+   "os",
+   "pathlib",
+   "re",
+   "subprocess",
+   "sys",
+   "typing",
+   "urllib"
+  ],
+  "scripts/provider_credits.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "concurrent",
+   "dataclasses",
+   "datetime",
+   "json",
+   "os",
+   "pathlib",
+   "re",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
   "scripts/provider_job_budget.py": [
    "__future__",
    "decimal"
