@@ -53,9 +53,10 @@ and the bitwise operations the lower bundles use. Each of the ten
 assumption queries in [assumptions.v](assumptions.v) prints `Closed under
 the global context` ([assumptions.txt](assumptions.txt)): the proof terms
 reach the kernel through those definitions alone, with every classical,
-extensionality and choice principle absent. The remaining trust is the one
-the associator-phase ANF bundle names, the reading of the tower sign sigma
-as cd_core.cd_sign.
+extensionality and choice principle absent. The tower sign sigma equals
+the return value of cd_core.cd_sign for every k by the
+[cd_sign Python-semantics bundle](../cd-sign-python-semantics/README.md); the remaining
+trust is the one the associator-phase ANF bundle names.
 
 ## Replay
 
