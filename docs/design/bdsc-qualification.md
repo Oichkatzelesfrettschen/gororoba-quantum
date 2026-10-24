@@ -615,7 +615,7 @@ rebuilt by `scripts/bdsc_stationarity.py --check`).
 repeat of b1-j1, b1-j2, b2-j1 and b2-j2, all 2400000 samples, every
 returned circuit equal to its retained counterpart) read as follows under
 the primary veto
-([readout](../../results/quandela/bdsc_stationarity_readout_pinned.json), the pinned interpreter's
+([readout](../../results/quandela/bdsc_stationarity_readout_pinned.json), the runner image's
 replay of the [retained readout](../../results/quandela/bdsc_stationarity_readout.json), which differs in the last ulps):
 
 - **Primary.** The heterogeneity of the matched changes reads 66.1 on 45
@@ -640,7 +640,7 @@ replay of the [retained readout](../../results/quandela/bdsc_stationarity_readou
 
 The pre-calibration b1-j1 run enters only the calibration contrast against
 its repeat
-([contrast](../../results/quandela/bdsc_stationarity_calibration_contrast_pinned.json), the pinned interpreter's
+([contrast](../../results/quandela/bdsc_stationarity_calibration_contrast_pinned.json), the runner image's
 replay of the [retained contrast](../../results/quandela/bdsc_stationarity_calibration_contrast.json), which differs in the last ulps):
 the same 24 requests, 0 returned circuits differing, read the superposition
 shift -0.0017 (z -2.8), g +0.0006 (z 3.0) and f -0.0001 (z -1.6), with the

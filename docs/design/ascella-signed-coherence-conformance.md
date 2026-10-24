@@ -16,8 +16,8 @@ owner's approval of that case, job `739a5271` ran on 2026-10-24: all 27
 endpoints qualify, and 1.27 % of events fall outside the logical block, above
 the case's dark-count bound
 ([retained run](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md)).
-The registry cites the pinned interpreter's
-[analysis](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-pinned.json),
+The registry cites the runner image's
+[analysis](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json),
 which the replay gate reproduces; the run's
 [first analysis](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis.json)
 keeps its bytes from a system-numpy build that differs in the last ulps, with the same 27 verdicts.

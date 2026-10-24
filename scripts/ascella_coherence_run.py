@@ -7,9 +7,9 @@ circuit_params. Every returned state must span twelve modes; occupation-sum-one
 states are eligible and vacuum and multiple-occupation states are tallied as
 exclusions. ascella_coherence_analysis.analyze decides the 27 endpoints, and
 the record lands in DIR/analysis.json, or in the file --out names, which a
-rerun must reproduce byte for byte. The pinned interpreter of
-ci/requirements-ci.txt is the reproducing runtime: another numpy build can
-differ in the last ulp of a bound.
+rerun must reproduce byte for byte. A gate-replayed record is written through
+ci/runner_image.sh and bound in ci/runner_image_records.json, because another
+libm or numpy build can differ in the last ulp of a bound.
 
 Usage:
   "$PYTHON" scripts/ascella_coherence_run.py --run DIR [--out FILE]

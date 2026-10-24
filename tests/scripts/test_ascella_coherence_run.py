@@ -108,7 +108,7 @@ def test_run_directory_requires_the_frozen_request_and_reproduces(manifest: dict
             raise AssertionError("a rerun must reproduce analysis.json")
         if not json.loads((run / "analysis.json").read_text(encoding="utf-8"))["analysis"]["complete"]:
             raise AssertionError("the ideal run is incomplete")
-        successor = run / "analysis-pinned.json"
+        successor = run / "analysis-runner-image.json"
         if run_analysis.main(["--run", str(run), "--out", str(successor)]) != 0:
             raise AssertionError("--out writes the named analysis")
         if successor.read_bytes() != (run / "analysis.json").read_bytes():
