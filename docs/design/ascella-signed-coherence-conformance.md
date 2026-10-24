@@ -939,9 +939,14 @@ the catalogue dark rates (354, 392, 314 and 80 per second against 14,797 on
 modes 4 to 11). It accounts for the few counts in cells the mesh leaves dark.
 Job-01's background term uses job-01's own outside counts; that moves its
 predicted statistics by about 2e-4 against residuals of 0.02 to 0.06. The
-covariance C is the inverse expected (Fisher) information, in place of the
-observed information the paragraph above names. No preregistered family
-passes, so the record names no mechanism.
+covariance C of the low-dimensional families is the inverse expected (Fisher)
+information, in place of the observed information the paragraph above names;
+the static families use the observed information, the exact Hessian of the
+posterior at its mode, which Newton steps from the L-BFGS endpoint reach.
+Each left-out fit starts from the full-data mode. That selects one basin of
+a posterior that can hold several. The start leans toward the left-out
+configuration, so it can only lower the left-out statistic. No preregistered
+family passes, so the record names no mechanism.
 
 | Family | Job-00 X / Y | Job-01 held-out X / Y | Left-out configuration X / Y | Predicted X0 + Xc2, job-01 |
 |---|---|---|---|---|
@@ -951,11 +956,11 @@ passes, so the record names no mechanism.
 | thermal crosstalk | 319 / 78 | 616 / 241 | | -0.001 |
 | coupler offset | 326 / 93 | 628 / 241 | | 0.001 |
 | coupler noise | 320 / 73 | 617 / 235 | | 0.000 |
-| static heater offsets, tau 0.1 | 55 / 33 | 54 / 48 | 342 / 171 | -0.022 |
-| static heater offsets, tau 0.3 | 41 / 22 | 39 / 30 | 476 / 123 | -0.025 |
+| static heater offsets, tau 0.1 | 55 / 33 | 53 / 46 | 287 / 95 | -0.022 |
+| static heater offsets, tau 0.3 | 41 / 22 | 39 / 30 | 300 / 134 | -0.025 |
 | detector efficiency (supplementary) | 254 / 43 | 465 / 119 | | -0.002 |
-| static coupler offsets, tau 0.1 (supplementary) | 45 / 18 | 59 / 32 | 257 / 109 | -0.022 |
-| static heater 0.3 and coupler 0.1 offsets (supplementary) | 7 / 9 | 7 / 16 | 538 / 1116 | -0.026 |
+| static coupler offsets, tau 0.1 (supplementary) | 45 / 18 | 59 / 32 | 196 / 64 | -0.022 |
+| static heater 0.3 and coupler 0.1 offsets (supplementary) | 7 / 9 | 7 / 13 | 266 / 800 | -0.026 |
 
 Each entry sums ten configurations of one readout. The job-00 column is
 descriptive, because the fit used those counts. Job-01's block-conditioned
@@ -970,26 +975,32 @@ X0 + Xc2 reads -0.0307 [-0.0483, -0.0131].
   (rms 0.039 rad) reproduce X0 + Xc2 and correlate with job-01's
   configuration residuals at 0.96 to 0.98 on X. Each kind alone fails
   job-01, with the same misfit in and out of sample. Heater and coupler
-  offsets together (258 parameters) pass job-01: X 7.2 (p 0.71) and Y 15.9
-  (p 0.10) on 10, with X0 + Xc2 at -0.026.
+  offsets together (258 parameters) pass job-01: X 7.0 (p 0.72) and Y 12.6
+  (p 0.25) on 10, with X0 + Xc2 at -0.026.
 - That pass tests reproducibility, which job-00's raw configuration values
-  already give (3.3 and 8.3 on 10). Refitted without one configuration, no
-  static family predicts it better than the nominal mesh, and the combined
-  family predicts it worst (X 538, Y 1,116 against 343 and 75). The offsets
-  memorize each configuration's response; they do not transfer to a new
-  setting of the same heaters and couplers. Leave-one-configuration-out
-  ignores the fitted parameters' covariance, which raises its statistics.
-  The gap to the nominal mesh is large enough that the covariance changes
-  no reading.
+  already give (3.3 and 8.3 on 10). Refitted without one configuration, the
+  static families transfer only part of the response. They lower the
+  left-out X statistic from the nominal mesh's 343 to between 196 (coupler
+  offsets) and 300, still 20 to 30 times the counting noise. Only coupler
+  offsets lower Y (64 against 75), and the combined family raises it to 800.
+  The offsets reproduce each configuration they were fitted on far better
+  than one they were not.
+- Each left-out fit starts from the full-data mode, which can only lower the
+  left-out statistic. The statistic ignores the fitted parameters'
+  covariance, which raises it. Neither changes a reading at these
+  magnitudes.
 
 The X0 + Xc2 departure and the X residual pattern are therefore
 per-configuration properties of the compiled circuits that reproduce across
 the jobs. No mesh error tested here, incoherent, uniform or static per
-element, predicts them from the configuration's phases. The supplementary
+element, predicts them from a configuration's phases within counting noise;
+static per-element offsets capture a part of the X response that transfers
+between configurations. The supplementary
 families and the leave-one-configuration-out test were added after the
 preregistered table and decide nothing. Confidence that no static error of
 the returned mesh model explains the response is medium. It would rise if a
 mesh model with a drive-dependent heater response also failed to predict
 left-out configurations. It would fall if any shared family predicted them
-within counting noise. The fitted families replay within a relative 1e-2
-across BLAS builds, because L-BFGS endpoints follow the build.
+within counting noise. The fitted families replay within 1e-3 relative plus
+1e-8 absolute across BLAS builds, the unfitted nominal family at the
+certificate tolerance.

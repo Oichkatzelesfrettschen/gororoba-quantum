@@ -7,6 +7,7 @@ from typing import Any
 
 import ascella_physical_models as models
 import numpy as np
+import pytest
 import qd_belenos_mesh as mesh
 
 CONFIGURATIONS = 6
@@ -116,6 +117,34 @@ def test_static_gradient_matches_finite_differences() -> None:
             raise AssertionError((h, grad[h], numeric))
 
 
+def test_static_gradient_matches_finite_differences_where_cells_sit_on_the_floor(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    d = data({"family": "heater_gain", "values": [0.0, 0.03]})
+    widths = models.prior_widths(d, 0.3, None)
+    free = widths > 0
+    offsets = np.array([0.01 * math.cos(h) for h in range(int(free.sum()))])
+    raw = models.pure_jacobians(d["couplers"], d["arch"], d["phases"], d["sources"])[0][:, : models.LOGICAL]
+    # A floor between the smallest and largest block probabilities holds some cells and leaves the rest free.
+    floor = float(np.quantile(raw, 0.25))
+    monkeypatch.setattr(models, "PROBABILITY_FLOOR", floor)
+    if not (raw < floor).any() or (raw < floor).all():
+        raise AssertionError("the floor holds no cell or every cell")
+    _, grad = models.static_objective(d, widths[free], free, offsets)
+    step = 1e-7
+    for h in range(int(free.sum())):
+        up, down = offsets.copy(), offsets.copy()
+        up[h] += step
+        down[h] -= step
+        numeric = (
+            models.static_objective(d, widths[free], free, up)[0]
+            - models.static_objective(d, widths[free], free, down)[0]
+        ) / (2 * step)
+        # The difference straddles the floor's kink for a heater that moves a cell across it.
+        if abs(grad[h] - numeric) > 0.05 * max(1.0, abs(numeric)):
+            raise AssertionError((h, grad[h], numeric))
+
+
 def test_background_is_added_to_the_configuration_light() -> None:
     d = data()
     light = np.tile([0.5, 0.0, 0.0, 0.5], (CONFIGURATIONS, 1))
@@ -124,3 +153,18 @@ def test_background_is_added_to_the_configuration_light() -> None:
     expected = expected / TOTAL
     if not np.allclose(pi, expected) or not np.allclose(pi.sum(axis=1), 1):
         raise AssertionError(pi)
+
+
+def test_fit_replay_bound_is_relative_for_small_values() -> None:
+    variance = 4.92e-4
+    models.replay(variance, variance * (1 + 5e-4), "phase_variance")
+    with pytest.raises(ValueError, match="phase_variance"):
+        models.replay(variance, 0.009, "phase_variance")
+    models.replay(0.0, 5e-9, "offset")
+    with pytest.raises(ValueError, match="offset"):
+        models.replay(0.0, 5e-8, "offset")
+
+
+def test_nominal_family_is_unfitted() -> None:
+    if models.UNFITTED != ("nominal",) or models.FAMILIES["nominal"]:
+        raise AssertionError(models.UNFITTED)

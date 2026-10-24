@@ -88,5 +88,6 @@ configurations, with supplementary families and a leave-one-configuration-out
 refit of the static ones
 ([design](../../design/ascella-signed-coherence-conformance.md#restricted-physical-models-of-the-analyzer-response)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance and the fitted families of the fifth within a relative
-1e-2, because its optimizer endpoints follow the BLAS build.
+certificate tolerance, and the fifth replays its nominal family there and its
+fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
+optimizer endpoints under another BLAS build.

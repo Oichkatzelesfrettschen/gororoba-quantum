@@ -82,6 +82,8 @@ FAMILIES: dict[str, tuple[tuple[str, float, float], ...]] = {
     ),
 }
 # Families fitted beside the preregistered table; their verdicts are reported and decide nothing.
+# Families with no fitted parameter, whose numbers no optimizer touches.
+UNFITTED = ("nominal",)
 SUPPLEMENTARY = ("detector_efficiency", "static_coupler_offsets_tau_0.1", "static_heater_0.3_coupler_0.1_offsets")
 # Static families: (name, heater prior width, coupler prior width); a width of None leaves that kind at zero.
 STATIC_FAMILIES: tuple[tuple[str, float | None, float | None], ...] = (
@@ -91,14 +93,23 @@ STATIC_FAMILIES: tuple[tuple[str, float | None, float | None], ...] = (
     ("static_heater_0.3_coupler_0.1_offsets", 0.3, 0.1),
 )
 STEP = 1e-5
-# L-BFGS endpoints of fits the data identify weakly follow the BLAS build, so every fitted family's numbers replay
-# within this relative bound; the observed relation, keys, counts and verdicts replay exactly.
-FIT_REPLAY_TOLERANCE = 1e-2
+# Optimizer endpoints round differently under each BLAS build: a fitted family's float replays within the relative
+# bound plus the absolute one, which covers offsets near zero. A tail p-value moves by about its statistic's
+# change, so the relative bound sits above the statistics' own. The nominal family, the observed relation, keys,
+# counts and verdicts replay at the certificate tolerance.
+FIT_REPLAY_RELATIVE = 1e-3
+FIT_REPLAY_ABSOLUTE = 1e-8
 # A model probability never falls below this floor, so a count in a cell the mesh leaves dark stays finite.
 PROBABILITY_FLOOR = 1e-9
 FIT_TOLERANCE = 1e-12
 FIT_ITERATIONS = 20000
 STATIC_GRADIENT_TOLERANCE = 1e-8
+REFINE_STEPS = 50
+REFINE_TOLERANCE = 1e-8
+REFINE_DAMPING = 1e-6
+HESSIAN_STEP = 1e-6
+ROUNDING = 64 * float(np.finfo(float).eps)
+LINE_SEARCH_FLOOR = 1e-12
 
 
 def require(condition: bool, message: str) -> None:
@@ -408,7 +419,8 @@ def static_light(data: dict[str, Any], offsets: np.ndarray, free: np.ndarray) ->
     raw = np.clip(p[:, :LOGICAL], PROBABILITY_FLOOR, None)
     total = raw.sum(axis=1)
     light = raw / total[:, None]
-    block = dp[:, :LOGICAL, :][:, :, free]
+    # A cell held at the floor does not move with the offsets, so its derivative is zero.
+    block = dp[:, :LOGICAL, :][:, :, free] * (p[:, :LOGICAL] > PROBABILITY_FLOOR)[:, :, None]
     dlight = (block - light[:, :, None] * block.sum(axis=1)[:, None, :]) / total[:, None, None]
     return light, dlight
 
@@ -428,8 +440,8 @@ def static_objective(
     return value, grad
 
 
-def static_offsets(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> np.ndarray:
-    """Maximum a posteriori static offsets from zero."""
+def static_mode(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Maximum a posteriori static offsets from zero, and the posterior Hessian there."""
     result = minimize(
         lambda offsets: static_objective(data, tau, free, offsets),
         np.zeros(int(free.sum())),
@@ -438,7 +450,58 @@ def static_offsets(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> n
         options={"ftol": FIT_TOLERANCE, "gtol": STATIC_GRADIENT_TOLERANCE, "maxiter": FIT_ITERATIONS},
     )
     require(bool(result.success), f"static fit: the fit did not converge: {result.message}")
-    return np.asarray(result.x)
+    return refine(data, tau, free, np.asarray(result.x))
+
+
+def posterior_hessian(data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray) -> np.ndarray:
+    """Exact Hessian of the negative log posterior (observed information plus prior precision), by central
+    differences of the analytic gradient, symmetrized."""
+    columns = []
+    for index in range(len(offsets)):
+        up, down = offsets.copy(), offsets.copy()
+        up[index] += HESSIAN_STEP
+        down[index] -= HESSIAN_STEP
+        columns.append(
+            (static_objective(data, tau, free, up)[1] - static_objective(data, tau, free, down)[1]) / (2 * HESSIAN_STEP)
+        )
+    hessian = np.stack(columns, axis=1)
+    return (hessian + hessian.T) / 2
+
+
+def refine(
+    data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Newton steps from the L-BFGS endpoint to the posterior mode, and the Hessian there.
+
+    L-BFGS stops on its relative function tolerance with the gradient still large along directions the data
+    barely constrain, where only the prior curves the posterior, so its endpoint follows the BLAS build. Exact
+    Newton steps, damped to positive definiteness and halved until the posterior does not rise, converge
+    quadratically on the mode, and the mode's Hessian must be positive definite."""
+    value, grad = static_objective(data, tau, free, offsets)
+    for _ in range(REFINE_STEPS):
+        hessian = posterior_hessian(data, tau, free, offsets)
+        lowest = float(np.linalg.eigvalsh(hessian).min())
+        damping = 0.0 if lowest > 0 else REFINE_DAMPING - lowest
+        step = np.linalg.solve(hessian + damping * np.eye(len(offsets)), grad)
+        if float(np.abs(step).max()) < REFINE_TOLERANCE:
+            require(lowest > 0, "static fit: the converged point is not a posterior mode")
+            return offsets, hessian
+        scale = 1.0
+        while True:
+            trial = offsets - scale * step
+            trial_value, trial_grad = static_objective(data, tau, free, trial)
+            # Near the mode a Newton step changes the posterior by less than its rounding, so a step within
+            # that rounding of the current value is accepted.
+            if trial_value <= value + ROUNDING * abs(value):
+                break
+            scale /= 2
+            # A damped step on an indefinite Hessian can be far longer than the basin, so the search halves until
+            # the step itself, not its scale, falls below the line-search floor.
+            require(
+                scale * float(np.abs(step).max()) > LINE_SEARCH_FLOOR, "static fit: no Newton step lowers the posterior"
+            )
+        offsets, value, grad = trial, trial_value, trial_grad
+    raise ValueError(f"static fit: the Newton refinement did not converge in {REFINE_STEPS} steps")
 
 
 def fit_static(item: tuple[str, float | None, float | None, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
@@ -446,11 +509,12 @@ def fit_static(item: tuple[str, float | None, float | None, dict[str, Any], dict
     widths = prior_widths(a, heater_tau, coupler_tau)
     free = widths > 0
     tau = widths[free]
-    offsets = static_offsets(a, tau, free)
-    light_a, jacobian_a = static_light(a, offsets, free)
-    covariance = np.linalg.inv(fisher(a, jacobian_a, light_a) + np.diag(1 / (tau * tau)))
+    offsets, hessian = static_mode(a, tau, free)
+    light_a, _ = static_light(a, offsets, free)
+    covariance = np.linalg.inv(hessian)
     light_b, jacobian_b = static_light(b, offsets, free)
     out = summarize(family, a, b, covariance, light_a, light_b, jacobian_b)
+    out["mode"] = offsets
     # Element positions as (mode, mesh column) of the returned layout, heaters then couplers in layout order.
     column = mesh.column_index(a["arch"])
     heaters = [j for j, (kind, _, _) in enumerate(a["arch"]) if kind == "ps"]
@@ -505,12 +569,18 @@ def left_out_statistics(
     return out
 
 
-def configuration_fold(item: tuple[str, float | None, float | None, dict[str, Any], int]) -> list[Any]:
-    """Static offsets fitted on job-00 without one configuration, scored on that configuration."""
-    _, heater_tau, coupler_tau, data, left_out = item
+def configuration_fold(
+    item: tuple[str, float | None, float | None, dict[str, Any], int, np.ndarray],
+) -> list[Any]:
+    """Static offsets fitted on job-00 without one configuration, scored on that configuration.
+
+    A fold's posterior can hold more than one mode, and an L-BFGS path from zero reaches one that follows the
+    BLAS build. Newton steps from the full-data mode reach the fold mode in that basin on every build; the
+    start leans the fold toward the left-out configuration, so it can only lower the left-out statistic."""
+    _, heater_tau, coupler_tau, data, left_out, start = item
     widths = prior_widths(data, heater_tau, coupler_tau)
     free = widths > 0
-    offsets = static_offsets(without_configuration(data, left_out), widths[free], free)
+    offsets = refine(without_configuration(data, left_out), widths[free], free, start)[0]
     return left_out_statistics(data, static_light(data, offsets, free)[0], left_out)
 
 
@@ -564,8 +634,11 @@ def build(a_dir: Path, b_dir: Path) -> dict[str, Any]:
     require(bool(np.allclose(a["phases"], b["phases"][order], atol=0, rtol=0)), "the jobs compile other heater phases")
     low = ordered_map(fit_family, [(family, a, b) for family in FAMILIES], min_items=1)
     static = ordered_map(fit_static, [(*spec, a, b) for spec in STATIC_FAMILIES], min_items=1)
+    modes = [row.pop("mode") for row in static]
     folds = ordered_map(
-        configuration_fold, [(*spec, a, k) for spec in STATIC_FAMILIES for k in range(len(a["keys"]))], min_items=1
+        configuration_fold,
+        [(*spec, a, k, mode) for spec, mode in zip(STATIC_FAMILIES, modes, strict=True) for k in range(len(a["keys"]))],
+        min_items=1,
     )
     count = len(a["keys"])
     for index, row in enumerate(static):
@@ -597,10 +670,11 @@ def build(a_dir: Path, b_dir: Path) -> dict[str, Any]:
 
 
 def replay(a: Any, b: Any, path: str) -> None:
-    """Every fitted-family float within FIT_REPLAY_TOLERANCE of the retained value; every other field exact."""
+    """Every fitted-family float within the fit replay bounds of the retained value; every other field exact."""
     if isinstance(a, float) and not isinstance(b, bool):
         require(isinstance(b, int | float), f"{path}: {a!r} against {b!r}")
-        require(abs(a - b) <= FIT_REPLAY_TOLERANCE * max(1.0, abs(a), abs(b)), f"{path}: {a} against {b}")
+        bound = FIT_REPLAY_RELATIVE * max(abs(a), abs(b)) + FIT_REPLAY_ABSOLUTE
+        require(abs(a - b) <= bound, f"{path}: {a} against {b}")
     elif isinstance(a, dict):
         require(isinstance(b, dict) and sorted(a) == sorted(b), f"{path}: keys differ")
         for key in a:
@@ -628,7 +702,10 @@ def emit(record: dict[str, Any], out: Path, check: bool) -> None:
         {k: v for k, v in retained.items() if k != "families"},
         name,
     )
-    replay(fresh["families"], retained["families"], f"{name}.families")
+    require(len(fresh["families"]) == len(retained["families"]), f"{name}: the family lists differ")
+    for index, (row, kept) in enumerate(zip(fresh["families"], retained["families"], strict=True)):
+        where = f"{name}.families[{index}]"
+        (close if row["family"] in UNFITTED else replay)(row, kept, where)
 
 
 def main(argv: list[str]) -> int:
