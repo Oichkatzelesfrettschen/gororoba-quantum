@@ -453,17 +453,27 @@ def static_mode(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> tupl
     return refine(data, tau, free, np.asarray(result.x))
 
 
-def posterior_hessian(data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray) -> np.ndarray:
-    """Exact Hessian of the negative log posterior (observed information plus prior precision), by central
-    differences of the analytic gradient, symmetrized."""
-    columns = []
-    for index in range(len(offsets)):
-        up, down = offsets.copy(), offsets.copy()
+class HessianColumn:
+    """One column of the posterior Hessian: the central difference of the analytic gradient along one offset."""
+
+    def __init__(self, data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray) -> None:
+        self.data, self.tau, self.free, self.offsets = data, tau, free, offsets
+
+    def __call__(self, index: int) -> np.ndarray:
+        up, down = self.offsets.copy(), self.offsets.copy()
         up[index] += HESSIAN_STEP
         down[index] -= HESSIAN_STEP
-        columns.append(
-            (static_objective(data, tau, free, up)[1] - static_objective(data, tau, free, down)[1]) / (2 * HESSIAN_STEP)
-        )
+        gradient_up = static_objective(self.data, self.tau, self.free, up)[1]
+        gradient_down = static_objective(self.data, self.tau, self.free, down)[1]
+        column: np.ndarray = (gradient_up - gradient_down) / (2 * HESSIAN_STEP)
+        return column
+
+
+def posterior_hessian(data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray) -> np.ndarray:
+    """Exact Hessian of the negative log posterior (observed information plus prior precision), by central
+    differences of the analytic gradient, symmetrized. The columns are independent and go through the pool,
+    which runs them serially inside a worker that already holds one slot."""
+    columns = ordered_map(HessianColumn(data, tau, free, offsets), list(range(len(offsets))))
     hessian = np.stack(columns, axis=1)
     return (hessian + hessian.T) / 2
 

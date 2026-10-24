@@ -168,3 +168,15 @@ def test_fit_replay_bound_is_relative_for_small_values() -> None:
 def test_nominal_family_is_unfitted() -> None:
     if models.UNFITTED != ("nominal",) or models.FAMILIES["nominal"]:
         raise AssertionError(models.UNFITTED)
+
+
+def test_posterior_hessian_is_the_symmetrized_column_loop() -> None:
+    d = data({"family": "heater_gain", "values": [0.0, 0.03]})
+    widths = models.prior_widths(d, 0.3, 0.1)
+    free = widths > 0
+    offsets = np.array([0.01 * math.sin(h) for h in range(int(free.sum()))])
+    column = models.HessianColumn(d, widths[free], free, offsets)
+    loop = np.stack([column(index) for index in range(len(offsets))], axis=1)
+    hessian = models.posterior_hessian(d, widths[free], free, offsets)
+    if not np.array_equal(hessian, (loop + loop.T) / 2) or not np.array_equal(hessian, hessian.T):
+        raise AssertionError("the pooled Hessian differs from the column loop")
