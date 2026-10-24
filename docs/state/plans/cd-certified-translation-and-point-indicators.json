@@ -1,0 +1,41 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-certified-translation-and-point-indicators",
+  "kind": "implementation",
+  "summary": "Certify translation of the cd_sign Python AST into the Rocq evaluator and formalize Proposition 5’s all-dimension point-indicator formula.",
+  "sources": [
+    "docs/evidence/cd-sign-python-semantics/README.md",
+    "docs/notes/cd_phase_degree.md",
+    "proofs/CdSignPythonSemantics.v",
+    "proofs/CdAssociatorAnf.v"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The user requested both formalization gaps on 2026-10-24; the existing semantics theorem and written Proposition 5 identify the boundaries."
+  },
+  "scope": "Prove source-AST translation and execution preservation for the exact integer subset used by cd_sign, relative to explicitly defined source semantics, and prove the point-indicator formula for every n >= 3. Preserve the independent trust boundaries of CPython parsing, raw serialization, guards and implementation conformance unless a theorem actually closes them. No hardware execution.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "Retain and validate the completed proofs and their integration under the pinned runtimes.",
+  "steps": [
+    {
+      "id": "formal-proofs",
+      "state": "doing",
+      "action": "Add a certified Python-AST translation with semantic preservation and an all-dimension proof of Proposition 5 using the existing tower and associator lemmas.",
+      "acceptance": "The new theorem statements compile with no warnings or admitted obligations under Rocq 9.3.0, and every retained assumption query is closed under the global context."
+    },
+    {
+      "id": "integration",
+      "state": "todo",
+      "depends_on": [
+        "formal-proofs"
+      ],
+      "action": "Retain exact replay bundles, register the proven statements and residual trust, wire the nightly replay and source checks, and update the generated views.",
+      "acceptance": "Both replay scripts reproduce their kernel and assumption receipts; touched Python checks, source hashes, CI pin checks, registry checks and plan checks pass under their declared runtimes."
+    }
+  ],
+  "related": [
+    "cd-census-and-sign-semantics-rocq",
+    "cd-associator-degree-rocq"
+  ]
+}

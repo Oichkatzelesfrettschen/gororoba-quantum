@@ -9934,6 +9934,15 @@
    "pathlib",
    "sys"
   ],
+  "scripts/cd_sign_source_ast.py": [
+   "__future__",
+   "argparse",
+   "ast",
+   "cd_sign_rocq_ast",
+   "hashlib",
+   "pathlib",
+   "sys"
+  ],
   "scripts/cd_star_lattice.py": [
    "__future__",
    "argparse",

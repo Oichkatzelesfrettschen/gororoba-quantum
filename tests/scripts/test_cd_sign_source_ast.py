@@ -1,0 +1,69 @@
+"""Source identity and lossless serialization contracts for the Rocq translation validator."""
+
+from __future__ import annotations
+
+import ast
+import hashlib
+
+import cd_sign_source_ast as source_ast
+import pytest
+
+
+def test_complete_source_export_and_digest_match_the_certificate() -> None:
+    source = source_ast.SOURCE.read_bytes()
+    proof = source_ast.PROOF.read_text(encoding="utf-8")
+    start, stop = source_ast.span(proof)
+    term = source_ast.generated(source.decode("utf-8"))
+    if proof[start:stop] != term or hashlib.sha256(source).hexdigest() not in term:
+        raise AssertionError("the complete raw source AST or its exact source-byte digest differs")
+
+
+def test_semantic_mutations_change_raw_tree_without_target_translation() -> None:
+    source = source_ast.SOURCE.read_text(encoding="utf-8")
+    original = source_ast.raw_term(source_ast.function_node(source))
+    guard = source_ast.raw_term(source_ast.function_node(source.replace(source_ast.MUTANT_OLD, source_ast.MUTANT_NEW)))
+    shift = source_ast.raw_term(source_ast.function_node(source.replace("half >>= 1", "half >>= 2")))
+    if original == guard or original == shift or '"NotEq"' not in original or '"NotEq"' in guard:
+        raise AssertionError("a semantic mutation was lost by the raw serializer")
+
+
+def test_unknown_constructs_and_contexts_remain_data() -> None:
+    term = source_ast.raw_term(ast.parse("x = [item * 2 for item in values]").body[0])
+    for tag in ["ListComp", "comprehension", "Mult", "Load", "Store"]:
+        if f'"{tag}"' not in term:
+            raise AssertionError(f"the raw serializer dropped {tag}")
+
+
+def test_annotations_and_docstring_are_serialized() -> None:
+    term = source_ast.raw_term(source_ast.function_node('def cd_sign(x: int) -> int:\n    "doc"\n    return x\n'))
+    for item in ['"annotation"', '"returns"', '(PStr "doc")', '"type_comment"', '"type_params"']:
+        if item not in term:
+            raise AssertionError(f"the raw serializer dropped function metadata {item}")
+
+
+def test_boolean_integer_and_string_atoms_are_distinct() -> None:
+    if source_ast.raw_term(True) != "(PBool true)" or source_ast.raw_term(1) != "(PInt (1)%Z)":
+        raise AssertionError("boolean and integer leaves were conflated")
+    if source_ast.raw_term("1") != '(PStr "1")' or source_ast.raw_term(None) != "PNone":
+        raise AssertionError("string or None leaves changed their representation")
+
+
+def test_string_data_cannot_escape_a_rocq_literal() -> None:
+    if source_ast.string_term('a"b') != '"a""b"':
+        raise AssertionError("Rocq quotes were not doubled")
+    for value in ["line\nbreak", "λ", "\x00"]:
+        expected = "(utf8 (" + " :: ".join(f"{byte}%nat" for byte in value.encode("utf-8")) + " :: nil))"
+        if source_ast.string_term(value) != expected:
+            raise AssertionError("nonprintable or non-ASCII string data escaped its UTF-8 byte term")
+
+
+def test_selection_refuses_missing_or_duplicate_function() -> None:
+    for source in ["def other():\n    pass\n", "def cd_sign():\n    pass\ndef cd_sign():\n    pass\n"]:
+        with pytest.raises(source_ast.UnsupportedValue):
+            source_ast.function_node(source)
+
+
+def test_unrepresented_leaf_is_refused() -> None:
+    for value in [1.5, b"bytes", complex(1, 2), {"key": "value"}]:
+        with pytest.raises(source_ast.UnsupportedValue):
+            source_ast.raw_term(value)

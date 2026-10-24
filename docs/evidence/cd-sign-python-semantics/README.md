@@ -134,6 +134,18 @@ et al., "Python: The Full Monty", OOPSLA 2013
 this proof depends on neither. The evaluator here covers only the
 constructs cd_sign uses, and proves its result for every input.
 
+## Certified source-AST successor
+
+The [source-AST translation bundle](../cd-sign-python-translation/README.md)
+adds a generic serialization of the complete Python AST, an independently
+defined interpreter of that raw tree, and a Rocq proof that every accepted
+translation certificate preserves the target evaluator's modeled execution.
+It lifts the sign and guard theorems here to the retained raw source AST.
+The semantic node map is therefore covered by a proof between two explicit
+integer calculi. CPython parsing, generic serialization, the fixed helper
+contracts and their correspondence to Python execution retain the stated
+external trust. This earlier proof and extractor keep their original bytes.
+
 ## Replay
 
 ```sh

@@ -3470,6 +3470,46 @@
    "tier": "pr"
   },
   {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-associator-point-indicators/replay_rocq.sh",
+   "name": "sources-407",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "sha256sum -c docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+   "name": "sources-408",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-sign-python-translation/replay_rocq.sh",
+   "name": "sources-409",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+   "name": "sources-410",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/cd_sign_source_ast.py --check",
+   "name": "sources-411",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_options/inventory.json && \"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --self-test",

@@ -1,0 +1,5 @@
+Require CdAssociatorPointIndicators.
+Print Assumptions CdAssociatorPointIndicators.point_indicator_pairs.
+Print Assumptions CdAssociatorPointIndicators.point_indicator_nonzero.
+Print Assumptions CdAssociatorPointIndicators.point_indicator_zero.
+Print Assumptions CdAssociatorPointIndicators.point_indicator_degree.
