@@ -11,7 +11,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
 
+import pytest
 import runner_image_records as records
+
+pytestmark = pytest.mark.audit
 
 ROOT = Path(__file__).resolve().parents[2]
 

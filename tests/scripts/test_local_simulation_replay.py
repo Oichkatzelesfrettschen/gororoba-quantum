@@ -11,6 +11,8 @@ import local_simulation_replay
 import pytest
 from local_simulation_replay import check_photonic, check_probabilities, check_qi, load
 
+pytestmark = pytest.mark.audit
+
 FOLLOWON_RECORDS = (
     "cqasm-fullprecision-compiler-crosscheck/qi.json",
     "photonic-compiler-crosscheck-perceval-1-3-1/qi.json",

@@ -51,6 +51,9 @@ addopts = [
     "-ra",
 ]
 filterwarnings = ["error"]
+markers = [
+    "audit: replays retained evidence or checks the gate machinery; the scheduled audit runs it and pull requests deselect it",
+]
 
 [tool.mypy]
 python_version = "3.14"
