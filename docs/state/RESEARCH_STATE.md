@@ -666,6 +666,13 @@ circuit and charges the account ledger's change.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md.
   Evidence: [cd_phase_degree.md](../notes/cd_phase_degree.md), [left_mult_sign_rank.md](../notes/left_mult_sign_rank.md).
   Gates: replayed by core-320.
+- **cd-associator-point-indicator-pairs** (mathematical claim, algebra). For n >= 3, 0 <= m < 2^(n-2), i = 2^(n-1) + m and j = i + 2^(n-2), the associator phase is g_ij(x) = x_(n-1) + delta_m(z) for m != 0 and N(z) for m = 0, with z the low n - 2 bits of x, so W_ij is one multi-controlled Z on the low n - 2 qubits conjugated by X on the zero bits of m, times at most one Z and a global sign, while its positive-polarity ANF has 1 + 2^(n-2-popcount(m)) or 2^(n-2) - 1 monomials.
+  Boundary: Written proof (Proposition 5 of docs/notes/cd_phase_degree.md) from Lemma D's upper-pair closed form at levels n and n - 1; scripts/cd_phase_degree.py checks the formula and the monomial counts on every such pair through n = 8. The --sparsity table (282 of the 24384 top-degree pairs at n = 8 need one fixed-polarity multi-controlled Z, the rest at least two, up to 28 in the best fixed polarity) is a finite measurement without a proof, and the gate counts hold for circuits of X-conjugated multi-controlled Z, Z and X gates without ancillas.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [cd_phase_degree.md](../notes/cd_phase_degree.md).
+  Gates: replayed by core-320.
+  Depends on: cd-associator-phase-degree.
 - **associator-cubic-normal-form** (exact finite certificate, algebra). Each of the 360 degree-3 dim-32 associator phases is l1 l2 l3 + q with l1, l2, l3 linearly independent linear forms on F_2^5 and deg q <= 2, so W_ij = D_q U_A^dagger (CCZ x I) U_A; the cubic part takes 15 values, 24 pairs each.
   Boundary: Dimension 32 only; degree-4 and degree-5 phases at dims 64 and 128 are not examined.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).

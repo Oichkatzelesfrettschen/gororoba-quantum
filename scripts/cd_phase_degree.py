@@ -45,7 +45,11 @@ cell by cell against tables built from cd_sign, and the statements:
 Stdout is byte-deterministic; --timing adds per-level seconds on stderr.
 --sparsity also prints, for the pairs of degree n - 2 new at each level, the
 number of distinct ANF degree histograms and the least and largest monomial
-counts with the number of pairs at the largest.
+counts with the number of pairs at the largest; then, minimized over the
+2^n polarity vectors p of the fixed-polarity form ANF(g(x ^ p)), the least
+monomial count and the count of monomials of degree at least 2 (the
+multi-controlled Z gates of that form), with the pairs that need one such
+gate and the largest such count.
 --mutate replaces one branch of cd_sign by a wrong one and inverts the
 verdict: the run exits 0 only when a check catches the mutation.
 """
@@ -215,17 +219,41 @@ def check_point_family(n: int, phi: Table) -> None:
     _require(bool((counts == want_counts).all()), f"point pairs: n = {n} Reed-Muller monomial counts")
 
 
+def polarity_minima(task: tuple[Table, range]) -> tuple[npt.NDArray[np.int64], npt.NDArray[np.int64]]:
+    """Per row, the least monomial count and the least count of degree >= 2 monomials over the polarities."""
+    phases, polarities = task
+    x = np.arange(phases.shape[1])
+    nonlinear = (np.bitwise_count(x) >= 2).astype(np.int64)
+    total = np.full(phases.shape[0], phases.shape[1], dtype=np.int64)
+    cubes = total.copy()
+    for p in polarities:
+        coefficients = anf(phases[:, x ^ p]).astype(np.int64)
+        total = np.minimum(total, coefficients.sum(axis=1))
+        cubes = np.minimum(cubes, coefficients @ nonlinear)
+    return total, cubes
+
+
 def top_sparsity(n: int, phi: Table) -> str:
-    """Distinct ANF degree histograms and monomial-count range over the unordered pairs new at level n."""
-    half = 1 << (n - 1)
-    j, i = (a.ravel() for a in np.meshgrid(np.arange(half, 1 << n), np.arange(1, 1 << n), indexing="ij"))
+    """ANF and fixed-polarity monomial statistics over the unordered pairs new at level n."""
+    from parallel import ordered_map
+
+    dim, half = 1 << n, 1 << (n - 1)
+    j, i = (a.ravel() for a in np.meshgrid(np.arange(half, dim), np.arange(1, dim), indexing="ij"))
     keep = i < j
-    coefficients = anf(associator_phases(phi, i[keep], j[keep]))
-    weight = np.bitwise_count(np.arange(1 << n)).astype(np.int64)
+    phases = associator_phases(phi, i[keep], j[keep])
+    coefficients = anf(phases)
+    weight = np.bitwise_count(np.arange(dim)).astype(np.int64)
     histograms = np.stack([(coefficients * (weight == d)).sum(axis=1) for d in range(n + 1)], axis=1)
     counts = coefficients.sum(axis=1).astype(np.int64)
     distinct = np.unique(histograms, axis=0).shape[0]
-    return f"{n} {int(keep.sum())} {distinct} {counts.min()} {counts.max()} {int((counts == counts.max()).sum())}"
+    block = max(1, dim // 16)
+    minima = ordered_map(polarity_minima, [(phases, range(p, min(dim, p + block))) for p in range(0, dim, block)])
+    total = np.min([pair[0] for pair in minima], axis=0)
+    cubes = np.min([pair[1] for pair in minima], axis=0)
+    return (
+        f"{n} {int(keep.sum())} {distinct} {counts.min()} {counts.max()} {int((counts == counts.max()).sum())} "
+        f"{total.min()} {int((cubes == 1).sum())} {cubes.max()}"
+    )
 
 
 def check_level(n: int, phi: Table, low: Table) -> tuple[int, int]:
@@ -377,7 +405,10 @@ def main() -> int:
         print(f"mismatch: {exc}", file=sys.stderr)
         return 1
     if sparsity:
-        print("n new_pairs distinct_histograms least_monomials most_monomials pairs_at_most")
+        print(
+            "n new_pairs distinct_histograms least_monomials most_monomials pairs_at_most "
+            "least_fixed_polarity_monomials pairs_with_one_fixed_polarity_cube most_fixed_polarity_cubes"
+        )
         print("\n".join(sparsity))
     if args.mutate:
         print(f"mutation {args.mutate} survived every check through n={args.max_n}", file=sys.stderr)

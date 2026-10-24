@@ -298,13 +298,17 @@ linear.
 
 ## Point-indicator pairs and the cost of W
 
-Theorem 2 fixes the degree of g_ij but not its ANF beyond the top layer, and
-the census puts 3n/(4(n - 1)) of the unordered pairs of A_n (n = 2^k >= 16
-here) at the top degree k - 2, 64/85 of them at dim 256. A degree stratum
-is therefore far from uniform in the cost of W_ij. Positive-polarity
-Reed-Muller synthesis, `phase_oracle_from_truth_table` in designs.py, emits
-one multi-controlled Z per ANF monomial, and the monomial count of the
-pairs new at level n spans 2 to 2^(n-1) - 1 (`--sparsity` below).
+Theorem 2 fixes the degree of g_ij and leaves the rest of its ANF free. The
+census puts the fraction 3 2^n / (4 (2^n - 1)) of the unordered pairs of
+A_n at the top degree n - 2 for n >= 4, 64/85 of them at dim 256, so a
+degree stratum is most of the algebra. The cost of W_ij depends on how its
+phase is synthesized. `phase_oracle_from_truth_table` in select_lcu.py
+emits one multi-controlled Z per ANF monomial (positive-polarity
+Reed-Muller), and the fixed-polarity form ANF(g(x ^ p)) costs one
+multi-controlled Z per monomial of degree at least 2, conjugated by X on the
+bits of p. [associator_walsh_classes.py](../../scripts/associator_walsh_classes.py)
+shows that one degree holds several Walsh spectra, so the degree does not
+fix the output distribution either.
 
 **Proposition 5 (point-indicator pairs).** For n >= 3 and 0 <= m <
 2^(n-2), let i = 2^(n-1) + m, j = i + 2^(n-2), and z the low n - 2 bits of
@@ -327,39 +331,50 @@ g(0) = 0 sets const = 1, leaving 1 + delta_0(z) = N(z).
 
 By Lemma B both phases have degree n - 2, as Theorem 2 requires for
 bitlen(j) = n. delta_m(z) carries the monomials z^S with supp m within S,
-so the ANF of g_ij has 1 + 2^(n-2-|m|) monomials for m != 0 and 2^(n-2) - 1
-for m = 0. Its circuit does not depend on m:
+so the positive-polarity ANF of g_ij has 1 + 2^(n-2-|m|) monomials for
+m != 0 and 2^(n-2) - 1 for m = 0, while the circuit does not depend on m:
 (-1)^delta_m(z) is one multi-controlled Z on qubits 0 to n - 3, conjugated
-by X on each qubit whose bit of m is 0. The factor (-1)^x_(n-1) is a Z on
-qubit n - 1, and (-1)^N(z) = -(-1)^delta_0(z) is the same gate up to a
-global sign. Qubit n - 2 carries no gate. These 2^(n-2) pairs are the
-top-degree associators that one (n - 2)-qubit multi-controlled Z
-implements. Their Reed-Muller monomial count runs from 2 at m = 2^(n-2) - 1
-to 1 + 2^(n-3) at |m| = 1, so neither the degree nor the positive-polarity
-monomial count of g_ij measures the cost of W_ij. A degree-stratified
-experiment that compares implementation behavior also controls the
-synthesis cost of each pair.
+by X on each qubit whose bit of m is 0, (-1)^x_(n-1) is a Z on qubit
+n - 1, and (-1)^N(z) = -(-1)^delta_0(z) is the same gate up to a global
+sign. Qubit n - 2 carries no gate. The positive-polarity monomial count
+therefore misstates the cost of W_ij, by a factor up to 2^(n-2) - 1 within
+this family alone.
 
-`--sparsity` measures the unordered pairs new at each level:
+**One-gate pairs.** A phase that one X-conjugated multi-controlled Z
+implements up to Z gates and a global sign is a single cube plus an affine
+function, which is a fixed-polarity form with one monomial of degree at
+least 2. Minimizing over p therefore decides, pair by pair, whether one
+such gate suffices. `--sparsity` measures the unordered pairs new at each
+level:
 
-| n | new pairs | distinct ANF degree histograms | least monomials | most monomials | pairs at most |
-| --- | --- | --- | --- | --- | --- |
-| 3 | 18 | 3 | 1 | 3 | 3 |
-| 4 | 84 | 10 | 2 | 7 | 6 |
-| 5 | 360 | 44 | 2 | 15 | 2 |
-| 6 | 1488 | 169 | 2 | 31 | 2 |
-| 7 | 6048 | 659 | 2 | 63 | 2 |
-| 8 | 24384 | 2554 | 2 | 127 | 2 |
+| n | new pairs | distinct ANF degree histograms | least / most monomials | pairs at most | least fixed-polarity monomials | pairs with one fixed-polarity cube | most fixed-polarity cubes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 3 | 18 | 3 | 1 / 3 | 3 | 1 | 0 | 0 |
+| 4 | 84 | 10 | 2 / 7 | 6 | 2 | 36 | 3 |
+| 5 | 360 | 44 | 2 / 15 | 2 | 2 | 96 | 6 |
+| 6 | 1488 | 169 | 2 / 31 | 2 | 2 | 126 | 10 |
+| 7 | 6048 | 659 | 2 / 63 | 2 | 2 | 180 | 18 |
+| 8 | 24384 | 2554 | 2 / 127 | 2 | 2 | 282 | 28 |
+
+At n = 3 every new phase is affine. At n = 8, 282 of the 24384 top-degree
+pairs need one multi-controlled Z, Proposition 5's 64 among them, and the
+other 24102 need at least two in any circuit of X-conjugated
+multi-controlled Z, Z and X gates without ancillas, with the best fixed
+polarity using up to 28. In that gate model the degree does not determine
+the cost, and an experiment that stratifies pairs by degree to compare
+implementation behavior also records each pair's synthesis cost.
 
 A lower pair lifts to g' + xi (Lemma D), which adds the one monomial
 x_(n-1) to g', so each row's histograms reappear one level up with one more
-degree-1 monomial. From n = 4 on the least count is 2, and from n = 5 on
-the only pair attaining it is Proposition 5's m = 2^(n-2) - 1. The least
-count, the largest count 2^(n-1) - 1, the pairs attaining the largest (for
-5 <= n <= 9 exactly (2^(n-1) - 1, 2^(n-1) + 2^(n-2) - 1) and
-(2^(n-1) - 1, 2^(n-1) + 2^(n-2))) and the histogram counts are
-measurements without a proof. At n = 9 a separate computation finds 9851
-histograms and counts 2 to 255.
+degree-1 monomial. From n = 5 on, the only pair with two positive-polarity
+monomials is Proposition 5's m = 2^(n-2) - 1, and for 5 <= n <= 9 the
+largest count 2^(n-1) - 1 belongs exactly to (2^(n-1) - 1, 2^(n-1) +
+2^(n-2) - 1) and (2^(n-1) - 1, 2^(n-1) + 2^(n-2)). These, the one-cube
+counts and the histogram counts are measurements without a proof; at n = 9
+a separate computation finds 9851 histograms and counts 2 to 255. The gate
+counts above are fixed-polarity upper bounds, except the one-cube test; a
+circuit using CNOT-conjugated phase gadgets or ancillas follows another cost
+model.
 
 ## Formalization statement
 
@@ -422,7 +437,7 @@ to n = 8:
 - Ren and Zhao's Theorem 1 closed form against the table, and its transpose as the control.
 
 It runs in about 2 s; `--sparsity` adds the table of the point-indicator
-section. `--mutate high-low-unconditional` and `--mutate
+section in about 30 s. `--mutate high-low-unconditional` and `--mutate
 high-high-no-early-return` each replace one cd_sign branch, and the run
 exits 0 only when a check catches the change. gororoba_quantum/verify.py
 keeps its pure-Python degree checks at dims 8 to 128.
