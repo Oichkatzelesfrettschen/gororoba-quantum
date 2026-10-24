@@ -153,7 +153,7 @@ def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
         name: [sum(record["counts"][name][k] for record in ordered) for k in range(len(vector))]
         for name, vector in first["counts"].items()
     }
-    return dict(
+    merged = dict(
         first,
         seeds=sorted(seeds),
         shots=sum(record["shots"] for record in ordered),
@@ -162,6 +162,12 @@ def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
         shards=len(ordered),
         versions=[record["versions"] for record in ordered],
     )
+    # Every shard's seed_source survives the merge, so each consumed QRNG index stays on record.
+    sources = [record["seed_source"] for record in ordered if "seed_source" in record]
+    merged.pop("seed_source", None)
+    if sources:
+        merged["seed_sources"] = sources
+    return merged
 
 
 def endpoint(record_path: Path) -> tuple[dict[str, str], tuple[ObservableContract, ...]]:

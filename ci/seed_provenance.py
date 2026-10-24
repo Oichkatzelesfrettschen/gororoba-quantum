@@ -232,22 +232,23 @@ Consumer = tuple[str, str, str]
 
 def runtime_consumption(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str]]:
     """(record, index) -> the (script, flag, experiment) keys of every retained qrng reference, and the
-    files that carry a qrng reference outside a seed_source entry."""
+    files that carry a qrng reference no seed_source entry of the same file declares."""
     consumed: dict[tuple[str, int], set[Consumer]] = {}
     stray: list[str] = []
     for path in sorted(manifest_root.rglob("*.json")) if manifest_root.is_dir() else []:
         text = path.read_text(encoding="utf-8")
-        mentions = len(qrng_seeds.REF.findall(text))
+        mentions = {match.group(0) for match in qrng_seeds.REF.finditer(text)}
         if not mentions:
             continue
-        placed = 0
+        declared: set[str] = set()
         for entry in seed_sources(json.loads(text)):
             for source in entry["sources"]:
                 if isinstance(source, str) and (match := qrng_seeds.REF.fullmatch(source)):
                     consumer = (entry["script"], entry["flag"], entry["experiment"])
                     consumed.setdefault((match.group(1), int(match.group(2))), set()).add(consumer)
-                    placed += 1
-        if placed != mentions:
+                    declared.add(source)
+        # A replay command repeats the spelling its seed_source declares; any other reference is stray.
+        if mentions - declared:
             stray.append(path.relative_to(manifest_root.parent).as_posix())
     return consumed, stray
 
