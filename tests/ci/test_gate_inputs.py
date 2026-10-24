@@ -12,7 +12,10 @@ from typing import Any
 from unittest.mock import patch
 
 import gate_inputs
+import pytest
 import run_gates
+
+pytestmark = pytest.mark.audit
 
 SLOW_FULL_GATES = (
     "core-339",

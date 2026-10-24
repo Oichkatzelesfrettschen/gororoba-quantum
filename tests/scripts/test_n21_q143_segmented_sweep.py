@@ -12,6 +12,8 @@ import n21_q143_segmented_sweep as sweep
 import numpy as np
 import pytest
 
+pytestmark = pytest.mark.audit
+
 beat = sweep.beat
 TRUTH_STATIC = sweep.TRUTH_STATIC
 TEST_ALPHA = sweep.FAMILY_ALPHA / len(sweep.TESTS)
