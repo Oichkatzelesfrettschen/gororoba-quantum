@@ -22,9 +22,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import ascella_coherence_analysis as analysis
-
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import ascella_coherence_analysis as analysis  # noqa: E402
+
+from parallel import ordered_map  # noqa: E402
+
 FROZEN = ROOT / "results/quandela/cases/ascella_signed_coherence/job-00/cases.json"
 PARAMETER_TOLERANCE = 1e-12
 
@@ -46,32 +51,46 @@ def attributed(
         entries = []
     if not isinstance(entries, list) or len(entries) > analysis.ENTRIES:
         raise ValueError(f"results.json carries {type(entries).__name__} iterations, not up to {analysis.ENTRIES}")
+    items = [
+        (position, entry, setting)
+        for position, (entry, setting) in enumerate(zip(entries, manifest["settings"], strict=False))
+    ]
+    attributions = ordered_map(attribute, items)
     rows: list[list[int] | None] = [None] * analysis.ENTRIES
     exclusions = {"vacuum": [0] * analysis.ENTRIES, "multiple": [0] * analysis.ENTRIES}
-    for position, (entry, setting) in enumerate(zip(entries, manifest["settings"], strict=False)):
-        if "counts" not in entry:
-            continue
-        echoed = entry.get("iteration", {}).get("circuit_params")
-        expected = setting["circuit_params"]
-        if not isinstance(echoed, dict) or sorted(echoed) != sorted(expected):
-            raise ValueError(f"iteration {position}: circuit_params do not name {setting['name']}'s parameters")
-        for name, value in expected.items():
-            if not math.isclose(echoed[name], value, rel_tol=0.0, abs_tol=PARAMETER_TOLERANCE):
-                raise ValueError(f"iteration {position}: {name} is {echoed[name]}, not {setting['name']}'s {value}")
-        vector = [0] * analysis.MODES
-        for state, count in entry["counts"].items():
-            occupation = [int(n) for n in state.split(",")]
-            if len(occupation) != analysis.MODES:
-                raise ValueError(
-                    f"iteration {position}: state {state} spans {len(occupation)} modes, not {analysis.MODES}"
-                )
-            photons = sum(occupation)
-            if photons == 1:
-                vector[occupation.index(1)] += count
-            else:
-                exclusions["vacuum" if photons == 0 else "multiple"][position] += count
-        rows[position] = vector
+    for (position, _, _), (row, vacuum, multiple) in zip(items, attributions, strict=True):
+        rows[position] = row
+        exclusions["vacuum"][position] = vacuum
+        exclusions["multiple"][position] = multiple
     return rows, exclusions
+
+
+def attribute(item: tuple[int, dict[str, Any], dict[str, Any]]) -> tuple[list[int] | None, int, int]:
+    """One iteration's twelve-mode eligible counts and its vacuum and multiple-occupation exclusions."""
+    position, entry, setting = item
+    if "counts" not in entry:
+        return None, 0, 0
+    echoed = entry.get("iteration", {}).get("circuit_params")
+    expected = setting["circuit_params"]
+    if not isinstance(echoed, dict) or sorted(echoed) != sorted(expected):
+        raise ValueError(f"iteration {position}: circuit_params do not name {setting['name']}'s parameters")
+    for name, value in expected.items():
+        if not math.isclose(echoed[name], value, rel_tol=0.0, abs_tol=PARAMETER_TOLERANCE):
+            raise ValueError(f"iteration {position}: {name} is {echoed[name]}, not {setting['name']}'s {value}")
+    vector = [0] * analysis.MODES
+    vacuum = multiple = 0
+    for state, count in entry["counts"].items():
+        occupation = [int(n) for n in state.split(",")]
+        if len(occupation) != analysis.MODES:
+            raise ValueError(f"iteration {position}: state {state} spans {len(occupation)} modes, not {analysis.MODES}")
+        photons = sum(occupation)
+        if photons == 1:
+            vector[occupation.index(1)] += count
+        elif photons == 0:
+            vacuum += count
+        else:
+            multiple += count
+    return vector, vacuum, multiple
 
 
 def sha256_file(path: Path) -> str:
