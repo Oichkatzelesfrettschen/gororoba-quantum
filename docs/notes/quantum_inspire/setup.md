@@ -93,10 +93,11 @@ renews lazily: a request within `REFRESH_MARGIN` (120 s) of expiry calls
 within 5 s of expiry, so an idle process renews nothing. Every holder rereads
 the file under the lock first, so all processes on the host share one
 exchange per expiry, at most one an hour. Each exchange rotates the refresh
-token, so renewal is the only moment a login can be lost: a holder that
-presents the predecessor of the current refresh token spends a token the
-server has already retired. The failure therefore lives in the exchange
-paths that skip the lock below, never in the lazy renewal itself.
+token, and a holder that presents the predecessor of the current one
+presents a token the server has already retired. Through the lock one holder
+exchanges and every other adopts the result, so a loss by reuse needs one of
+the paths that skip the lock below; a short tenant lifetime would end the
+login whatever the renewal path, and the exchange log tells the two apart.
 
 **What spends a login.** The authorization server, auth.quantum-inspire.com
 (an Auth0 tenant by its OpenID configuration), rotates the refresh token at
