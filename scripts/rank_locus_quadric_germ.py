@@ -590,7 +590,7 @@ def path_link() -> dict[str, Any]:
     s, c, circle, y = _path()
     z = [y[k] + sp.I * y[HALF + k] for k in range(1, HALF)]
     on_v = all(sp.rem(sp.expand(value), circle, s) == 0 for value in [*minors(z), isotropy(z, sp.Integer(0))])
-    minors_ok = dict(zip(PATH_MINORS, parallel.ordered_map(path_minor, list(PATH_MINORS)), strict=True))
+    minors_ok = dict(zip(PATH_MINORS, parallel.ordered_map(path_minor, list(PATH_MINORS), min_items=2), strict=True))
     numerator, denominator = _base_numerator(sp.Integer(0), 2 * s * c / (1 + c), s)
     slice_point = _phase_vector(numerator / denominator, sp.Integer(0))
     rescaled = all(
@@ -779,7 +779,9 @@ def self_test() -> str:
         ("e1-e10+e18+e25", ((1, 1), (10, -1), (18, 1), (25, 1))),
         ("e1+e18", ((1, 1), (18, 1))),
     )
-    rows = parallel.ordered_map(certify_point, [("nonzd-axis", name, support) for name, support in controls])
+    rows = parallel.ordered_map(
+        certify_point, [("nonzd-axis", name, support) for name, support in controls], min_items=2
+    )
     for (name, _), row in zip(controls, rows, strict=True):
         _require(_refused(row), f"{name} is admitted as a nonzd-axis germ point")
     first = algebra["remainder"][0][4]
