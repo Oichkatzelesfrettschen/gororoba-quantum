@@ -105,7 +105,10 @@
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" docs/sources/open_gororoba/check_signed_kite_switching.py | cmp - docs/sources/open_gororoba/signed_kite_switching.json",
    "name": "core-012",
    "seconds": 0.2,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/sources/open_gororoba/signed_kite_switching.json"
+   ]
   },
   {
    "suite": "core",
@@ -137,7 +140,10 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error results/live/folded_raw_analysis.py results/live/2026-10-12T055624.091217Z | cmp - results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json",
    "name": "core-017",
    "seconds": 0.6,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json"
+   ]
   },
   {
    "suite": "core",
@@ -337,7 +343,10 @@
    "cmd": "\"$PYTHON\" ../scripts/render_ripple_visualization.py --evidence ../results/ripple/evidence.json --out ../results/ripple/cayley-dickson-ripples.html --check",
    "name": "core-051",
    "seconds": 0.1,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/ripple/cayley-dickson-ripples.html"
+   ]
   },
   {
    "suite": "core",
@@ -933,7 +942,10 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
    "name": "sources-129",
    "seconds": 0.7,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/folding_proofs/fold_projection_counterexamples.json"
+   ]
   },
   {
    "suite": "sources",
@@ -1470,7 +1482,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T025444.603480Z --out results/ripple/measured-ripple.json --check",
    "seconds": 9.5,
    "tier": "pr",
-   "name": "core-205"
+   "name": "core-205",
+   "replays": [
+    "results/ripple/measured-ripple.json"
+   ]
   },
   {
    "suite": "core",
@@ -1478,7 +1493,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T032011.664435Z --out results/ripple/measured-rank-sector.json --check",
    "seconds": 3.0,
    "tier": "pr",
-   "name": "core-206"
+   "name": "core-206",
+   "replays": [
+    "results/ripple/measured-rank-sector.json"
+   ]
   },
   {
    "suite": "core",
@@ -1486,7 +1504,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/render_measured_ripple.py --evidence results/ripple/measured-ripple.json --evidence results/ripple/measured-rank-sector.json --out results/ripple/measured-cayley-dickson-ripples.html --check",
    "seconds": 0.8,
    "tier": "pr",
-   "name": "core-207"
+   "name": "core-207",
+   "replays": [
+    "results/ripple/measured-cayley-dickson-ripples.html"
+   ]
   },
   {
    "suite": "core",
@@ -1559,7 +1580,10 @@
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" ci/replay_check.py results/live/2026-10-19T170620.832658Z/between-arm.json --skip .analyzer_sha256 -- \"$PYTHON\" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T170620.832658Z --out {out}",
    "name": "core-613",
    "seconds": 4.3,
-   "tier": "full"
+   "tier": "full",
+   "replays": [
+    "results/live/2026-10-19T170620.832658Z/between-arm.json"
+   ]
   },
   {
    "suite": "core",
@@ -1624,7 +1648,10 @@
    "name": "core-617",
    "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json -- \"$PYTHON\" scripts/n21_q143_line_switching.py results/live/2026-10-21T064222.721454Z results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json --out {out}",
    "seconds": 1.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json"
+   ]
   },
   {
    "suite": "core",
@@ -2087,7 +2114,10 @@
    "cmd": "\"$PYTHON\" -I -W error docs/evidence/reviewer_associator_audit/audit.py | cmp - docs/evidence/reviewer_associator_audit/audit_results.json",
    "name": "sources-240",
    "seconds": 1.1,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/reviewer_associator_audit/audit_results.json"
+   ]
   },
   {
    "suite": "core",
@@ -2351,7 +2381,10 @@
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
-   "runtime": "qiskit-2.5"
+   "runtime": "qiskit-2.5",
+   "replays": [
+    "docs/evidence/submitted_circuits/comparison-pooled-validation.json"
+   ]
   },
   {
    "suite": "core",
@@ -2359,7 +2392,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged,pairs && \"$PYTHON\" -B -W error scripts/ghost_run.py --report docs/evidence/ghost_runs/result.json | cmp - docs/evidence/ghost_runs/report.json",
    "name": "core-287",
    "seconds": 112.6,
-   "tier": "full"
+   "tier": "full",
+   "replays": [
+    "docs/evidence/ghost_runs/report.json"
+   ]
   },
   {
    "suite": "core",
@@ -2978,7 +3014,11 @@
    "cmd": "t=$(mktemp -d) && \"$PYTHON\" -B -W error scripts/linear_conjugation_search.py --merge results/kaggle/2026-10-16T215953Z-gororoba-linear-conjugation-shard-0/output/output/repo/results/kaggle_out/linear_conjugation_shard_0.json results/kaggle/2026-10-16T215956Z-gororoba-linear-conjugation-shard-1/output/output/repo/results/kaggle_out/linear_conjugation_shard_1.json results/kaggle/2026-10-16T215959Z-gororoba-linear-conjugation-shard-2/output/output/repo/results/kaggle_out/linear_conjugation_shard_2.json results/kaggle/2026-10-16T221042Z-gororoba-linear-conjugation-shard-3/output/output/repo/results/kaggle_out/linear_conjugation_shard_3.json results/kaggle/2026-10-16T221044Z-gororoba-linear-conjugation-shard-4/output/output/repo/results/kaggle_out/linear_conjugation_shard_4.json --out \"$t/search.json\" >/dev/null && cmp \"$t/search.json\" docs/evidence/linear_conjugation/search.json && \"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --merge results/kaggle/2026-10-16T223545Z-gororoba-n21-encoded-noise-kingston/output/output/repo/results/kaggle_out/n21_conjugation_noise_kingston.json results/kaggle/2026-10-16T223549Z-gororoba-n21-encoded-noise-fez/output/output/repo/results/kaggle_out/n21_conjugation_noise_fez.json results/kaggle/2026-10-16T223552Z-gororoba-n21-encoded-noise-marrakesh/output/output/repo/results/kaggle_out/n21_conjugation_noise_marrakesh.json --out \"$t/noise.json\" && cmp \"$t/noise.json\" docs/evidence/linear_conjugation/noise.json && cmp results/kaggle/2026-10-16T223041Z-gororoba-linear-conjugation-challenger/output/output/repo/results/kaggle_out/n21_linear_conjugation_challenger.json results/hw_estimate/n21_linear_conjugation_challenger.json && \"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --chain docs/evidence/linear_conjugation/search.json results/hw_estimate/n21_linear_conjugation_challenger.json",
    "name": "core-338",
    "seconds": 4.6,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/linear_conjugation/noise.json",
+    "docs/evidence/linear_conjugation/search.json"
+   ]
   },
   {
    "suite": "core",
@@ -3688,7 +3728,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/timing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py check results/iqm/cases/reset-billing-pilot && \"$PYTHON\" -B -W error scripts/iqm_jobs.py analyze results/iqm/runs/2026-10-22T212227Z-garnet_mock-reset-billing-pilot-p-2x2000-passive results/iqm/runs/2026-10-22T212237Z-garnet_mock-reset-billing-pilot-a-2x2000-active1 results/iqm/runs/2026-10-22T212723Z-garnet-reset-billing-pilot-p-2x2000-passive results/iqm/runs/2026-10-22T212742Z-garnet-reset-billing-pilot-a-2x2000-active1 --out results/iqm/reset_billing_pilot_analysis.json --replay && \"$PYTHON\" -B -W error scripts/iqm_jobs.py --self-test",
    "name": "core-639",
    "seconds": 0.5,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/iqm/reset_billing_pilot_analysis.json"
+   ]
   },
   {
    "suite": "core",
@@ -3704,7 +3747,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_probe.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_probe.py analyze results/iqm/runs/2026-10-23T003708Z-garnet-signed-kernel-probe-strong results/iqm/runs/2026-10-23T003738Z-garnet-signed-kernel-probe-weak --out results/iqm/signed_kernel_probe_analysis.json --replay",
    "name": "core-637",
    "seconds": 6.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/iqm/signed_kernel_probe_analysis.json"
+   ]
   },
   {
    "suite": "core",
@@ -3728,7 +3774,10 @@
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/kernel_cancellation.py --check && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_cancellation_probe.py analyze results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation --out results/iqm/kernel_cancellation_probe_analysis-runner-image.json --replay",
    "name": "core-641",
    "seconds": 30.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/iqm/kernel_cancellation_probe_analysis-runner-image.json"
+   ]
   },
   {
    "suite": "core",
@@ -3744,7 +3793,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/iqm/signed_kernel_null_retest_analysis.json"
+   ]
   },
   {
    "suite": "core",
@@ -3760,7 +3812,11 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_cancellation_cases.py --self-test && \"$PYTHON\" -B -W error scripts/qi_cancellation_cases.py --analyze results/quantum_inspire/runs/2026-10-23T075103Z-kernel_cancellation_qx-batch-00 results/quantum_inspire/runs/2026-10-23T075235Z-kernel_cancellation_qx-batch-01 results/quantum_inspire/runs/2026-10-23T075308Z-kernel_cancellation_qx-batch-02 results/quantum_inspire/runs/2026-10-23T075342Z-kernel_cancellation_qx-batch-03 results/quantum_inspire/runs/2026-10-23T075417Z-kernel_cancellation_qx-batch-04 results/quantum_inspire/runs/2026-10-23T075450Z-kernel_cancellation_qx-batch-05 --out results/quantum_inspire/kernel_cancellation_qx_analysis.json --replay && \"$PYTHON\" -B -W error scripts/qi_cancellation_cases.py --analyze results/quantum_inspire/runs/2026-10-23T075543Z-kernel_cancellation_tuna_17-batch-00 results/quantum_inspire/runs/2026-10-23T080006Z-kernel_cancellation_tuna_17-batch-01 results/quantum_inspire/runs/2026-10-23T080624Z-kernel_cancellation_tuna_17-batch-02 results/quantum_inspire/runs/2026-10-23T081101Z-kernel_cancellation_tuna_17-batch-03 results/quantum_inspire/runs/2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04 results/quantum_inspire/runs/2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05 --out results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json --replay",
    "name": "core-645",
    "seconds": 20.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/kernel_cancellation_qx_analysis.json",
+    "results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json"
+   ]
   },
   {
    "suite": "core",
@@ -3784,7 +3840,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_diagnostic.py --readout results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1 results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2 results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1 results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2 | cmp - results/quandela/bdsc_diagnostic_readout-runner-image.json",
    "name": "core-647",
    "seconds": 15.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/quandela/bdsc_diagnostic_readout-runner-image.json"
+   ]
   },
   {
    "suite": "core",
@@ -3808,7 +3867,11 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-04 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07 results/quantum_inspire/runs/2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08 --out results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json --replay && \"$PYTHON\" -B -W error scripts/qi_bdsc_pauli_cases.py --analyze results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-00 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-01 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-02 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-03 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-04 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-05 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-06 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-07 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-08 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-09 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-10 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-11 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-12 results/quantum_inspire/runs/2026-10-22T103514Z-bdsc_pauli_qx-batch-13 --out results/quantum_inspire/bdsc_pauli_qx_analysis.json --replay",
    "name": "core-634",
    "seconds": 4.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/bdsc_pauli_qx_analysis.json",
+    "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json"
+   ]
   },
   {
    "suite": "core",
@@ -3824,7 +3887,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-figure-replay.py && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
    "name": "core-630",
    "seconds": 13.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/state/hypercomplex-libraries"
+   ]
   },
   {
    "suite": "core",
@@ -3840,7 +3906,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_photonic_cases.py --out results/hypercomplex/photonic-successors --native-catalogue results/hypercomplex/photonic-successors/native-target-catalogue.json --check && \"$PYTHON\" -B -W error scripts/quandela_api_inventory.py docs/evidence/quandela/input-port-api-audit",
    "name": "core-650",
    "seconds": 10.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/hypercomplex/photonic-successors"
+   ]
   },
   {
    "suite": "core",
@@ -3919,7 +3988,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_run.py --run results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 --out results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json",
    "name": "core-ascella-signed-coherence-acquisition-replay",
    "seconds": 1.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json"
+   ]
   },
   {
    "suite": "core",
@@ -3967,7 +4039,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stray_mode_veto.py --check --out results/quandela/bdsc_stray_mode_veto-runner-image.json && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stray_mode_veto.py",
    "name": "core-667",
    "seconds": 15.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/quandela/bdsc_stray_mode_veto-runner-image.json"
+   ]
   },
   {
    "suite": "core",
@@ -3975,7 +4050,12 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_stationarity.py --check && \"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_stationarity.py",
    "name": "core-675",
    "seconds": 25.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json",
+    "results/quandela/bdsc_stationarity_readout_pinned.json",
+    "results/quandela/bdsc_stationarity_retained.json"
+   ]
   },
   {
    "suite": "core",

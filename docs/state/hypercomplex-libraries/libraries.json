@@ -6906,6 +6906,7 @@
    "os",
    "pathlib",
    "run_gates",
+   "shlex",
    "shutil",
    "subprocess",
    "sys",
@@ -6924,6 +6925,21 @@
    "scipy",
    "sys",
    "threadpoolctl"
+  ],
+  "ci/seed_provenance.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "ast",
+   "collections",
+   "json",
+   "parallel",
+   "pathlib",
+   "re",
+   "subprocess",
+   "sys",
+   "typing",
+   "zlib"
   ],
   "gororoba_quantum/adjudicate.py": [
    "__future__",
