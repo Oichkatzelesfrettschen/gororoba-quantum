@@ -60,25 +60,26 @@ experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 `proofs/`, a replay bundle or its receipts follows the Rocq replay of
 [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
 
-**Seeds.** Every new random seed, on any provider or simulator, comes from the
-ANU QRNG: a numpy or `random` generator seed, `seed_transpiler`,
-`seed_simulator`, a Perceval `compilation_seed`, a bootstrap or null-calibration
-seed. `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng` retains
-the response bytes and their sha256 (`--source legacy` is the keyless JSON API,
-one request per minute; the default `aqn` service is keyed, 100 requests a
-month), and the code or case cites the draw file and the index of every value
-it takes, in index order, each value used once. The draw needs no approval.
-A seed that reproduces a retained record, an approved plan or a known compiled
-mesh is an identifier and keeps its value, because the record's replay and the
-approved-record comparison depend on it. The seed follows the job's question,
-not the circuit: a job that reproduces an earlier result imports the earlier
-seed constant by name, and a new job on an earlier circuit that needs its own
-randomness (an independent replicate, a fresh layout or twirl, a new mesh)
-takes new values from a draw. `ci/seed_provenance.py --check`, run by the `tests`
-check, requires every integer seed literal in the code directories to be a row
-of ci/reproduction_seeds.json, which only shrinks, or an entry of
-docs/evidence/anu_qrng/allocations.json naming a draw no case manifest owns and
-the index holding that value.
+**Seeds.** Every new random seed, on any provider or simulator, comes from a
+quantum random number generator: a numpy or `random` generator seed,
+`seed_transpiler`, `seed_simulator`, a Perceval `compilation_seed`, a bootstrap
+or null-calibration seed. The ANU QRNG serves first (`"$PYTHON"
+scripts/anu_qrng.py draw --out docs/evidence/anu_qrng`, keyed then keyless, no
+approval needed); [docs/notes/qrng/README.md](docs/notes/qrng/README.md) holds
+the fallback order, quotas, key files and approval rule of every source. The
+code or case cites the draw file and the index of every value it takes, in
+index order, each value used once. A seed that reproduces a retained record,
+an approved plan or a known compiled mesh is an identifier and keeps its value,
+because the record's replay and the approved-record comparison depend on it.
+The seed follows the job's question, not the circuit: a job that reproduces an
+earlier result imports the earlier seed constant by name, and a new job on an
+earlier circuit that needs its own randomness (an independent replicate, a
+fresh layout or twirl, a new mesh) takes new values from a draw.
+`ci/seed_provenance.py`, run by the `tests` check, requires every integer seed
+literal in the code directories to be a row of ci/reproduction_seeds.json,
+which only shrinks against main, or an entry of
+docs/evidence/qrng_seeds/allocations.json naming a registered source's draw
+that no case manifest owns and the index holding that value.
 
 ## Work planning
 

@@ -19,6 +19,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Open Quantum | brokered IonQ, Rigetti, IQM and AQT backends | [open_quantum/README.md](notes/open_quantum/README.md) |
 | Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
 | IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
+| QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
 | Local simulator cross-check | full-output photonic probabilities and precision-preserving cQASM export | [simulation evidence](../results/local-simulation/README.md), [complete optical outputs](../results/local-simulation/optical-operator-replay.json), [serialized Ascella request](../results/local-simulation/ascella-serialized-order-replay/README.md), [compiler replay provenance](../results/local-simulation/compiler-replay-provenance.md) |
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
@@ -48,16 +49,19 @@ the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_re
 The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
 and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
 The checksum-bound historical README and replay keep their bytes. The active source ledgers
-for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts),
-[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-contracts) and
-[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-contracts) bind the validated
-`cd_core.py` source and preserve every other identity in their historical `SHA256SUMS` files.
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-int-dimension),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-int-dimension) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-int-dimension) bind the
+`cd_core.py` whose dimension guard admits only exact int, and preserve every other identity of
+their `SHA256SUMS-exact-contracts` predecessors and historical `SHA256SUMS` files.
 
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
 with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
 The [determinant-contract successor](../results/live/rank-sector-endpoint-decomposition-determinant-contracts.json)
-also binds the extended `rank_polynomials.py`; its scientific fields remain identical.
+also binds the extended `rank_polynomials.py`; its scientific fields remain identical. The
+[exact-int-dimension successor](../results/live/rank-sector-endpoint-decomposition-exact-int-dimension.json)
+differs from it only in the `cd_core.py` digest.
 
 | Task | Read in order |
 |---|---|

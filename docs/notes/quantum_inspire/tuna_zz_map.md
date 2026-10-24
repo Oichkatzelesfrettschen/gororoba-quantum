@@ -38,11 +38,20 @@ It binds collection deadlines and separate receipts for zero-dispatch
 refusal and a received first-project HTTP 401 whose retry window expired.
 Its recorded bytes remain immutable.
 
-The active unsubmitted source-binding successor is
+The retained pause-ladder source-binding successor is
 [`zz-map-tuna17-pause-ladder/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-pause-ladder/plan.json).
 It binds the `scripts/qi_platform.py` that paces hardware batches on the
 30/60/90/120 s ladder ([usage.md](usage.md#pause-escalation)); the plan's pause
 figures take the 120 s ceiling, so they match the predecessor's.
+The [QX preflight successor](tuna_zz_qx_preflight.md) still binds this plan.
+
+The active unsubmitted source-binding successor is
+[`zz-map-tuna17-token-recovery/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-token-recovery/plan.json).
+It binds the `scripts/qi_platform.py` whose client retries the API's
+expired-signature 403 once, names the forced login on invalid_grant and logs
+each token exchange ([setup.md](setup.md#login-failures)); only the platform
+source digest and the batch case hashes that bind it differ from the
+pause-ladder plan.
 All 416 cQASM payloads and scientific settings match the retained proposals.
 Gate `core-594` replays the active successor. Each predecessor retains its bytes.
 
@@ -397,7 +406,7 @@ From the repository root:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-pause-ladder --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
+"$PYTHON" scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-token-recovery --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 "$PYTHON" scripts/qi_zz_map.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json
 ```
 

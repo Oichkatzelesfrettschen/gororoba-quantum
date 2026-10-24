@@ -4,7 +4,9 @@
 over the compute job manager REST API, run by the Quantum Inspire
 interpreter so it reads the tokens `qi login` stored. It reuses
 `scripts/qi_platform.py`'s `Client`, which renews the access token before
-its 3600 s lifetime ends, so a long-lived server keeps working.
+its 3600 s lifetime ends, so a long-lived server keeps working. A tool that
+fails on authentication returns the `Client` error text, which
+[setup.md](setup.md#login-failures) maps to its recovery.
 
 ## Tools
 
