@@ -70,8 +70,11 @@ month), and the code or case cites the draw file and the index of every value
 it takes, in index order, each value used once. The draw needs no approval.
 A seed that reproduces a retained record, an approved plan or a known compiled
 mesh is an identifier and keeps its value, because the record's replay and the
-approved-record comparison depend on it; a rerun of an earlier circuit imports
-its seed constant by name. `ci/seed_provenance.py --check`, run by the `tests`
+approved-record comparison depend on it. The seed follows the job's question,
+not the circuit: a job that reproduces an earlier result imports the earlier
+seed constant by name, and a new job on an earlier circuit that needs its own
+randomness (an independent replicate, a fresh layout or twirl, a new mesh)
+takes new values from a draw. `ci/seed_provenance.py --check`, run by the `tests`
 check, requires every integer seed literal in the code directories to be a row
 of ci/reproduction_seeds.json, which only shrinks, or an entry of
 docs/evidence/anu_qrng/allocations.json naming a draw no case manifest owns and

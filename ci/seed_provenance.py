@@ -222,7 +222,7 @@ def check(
             problems.append(
                 f"{key[0]}: seed {key[1]}={key[2]} appears {found[key]} times, {expected[key]} accounted; "
                 "draw it with scripts/anu_qrng.py and add its index to docs/evidence/anu_qrng/allocations.json, "
-                "or import the existing seed constant"
+                "or import the existing seed constant when the job reproduces its result"
             )
         elif found[key] < expected[key]:
             problems.append(
