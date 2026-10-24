@@ -9,7 +9,7 @@
     "docs/notes/cd_phase_degree.md",
     "docs/SOURCES.json"
   ],
-  "state": "inbox",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
@@ -19,7 +19,6 @@
   "related": [
     "cd-phase-coefficient-structure"
   ],
-  "next_action": "Prove assoc_degree_is in CdAssociatorAnf.v and replay the bundle.",
   "steps": [
     {
       "id": "associator-degree-rocq",
@@ -80,6 +79,30 @@
           "scope_sha256": "017cce3eb7877c9b9e7ec2c1a06f6114d37c87ff010110f538b892ebf2b2dae7"
         }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "CdAssociatorAnf.v proves Theorem 2 of cd_phase_degree.md for every k, closed under the global context, with the phase tied to the cd_sign factors of predict.associator_phase and to the tower product; the four twist-function papers are admitted through the PDF routes their exact-version licenses allow.",
+  "receipts": [
+    {
+      "result": "Both steps are done with receipts; the degree note, ledger and research state record the proof.",
+      "observed_at": "2026-10-24T15:28:46Z",
+      "revision": "207d94ece5c9703690ca8eac2bdafdae792703ba",
+      "evidence": [
+        {
+          "ref": "proofs/CdAssociatorAnf.v",
+          "sha256": "5fbec4bf0a2160766ee7d7d74c5b5139d65b1c31ada7bbfe5e1dd65abc479d1b"
+        },
+        {
+          "ref": "docs/notes/cd_phase_degree.md",
+          "sha256": "4076ef1d3bf304c5191cdcb796bce2f40baa95db0f64e5e74192cf0bf71bd685"
+        },
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "f62b7b81aad463f2ee27500607ee0b935cf4b625e4a4b5b548be734ea947ad7a"
+        }
+      ],
+      "scope_sha256": "d8736fa33f2306e5677371d9e780ed3928ac9af3827b8a76c563098e848fa707"
     }
   ]
 }
