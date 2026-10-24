@@ -619,36 +619,48 @@ class RetentionChecks(unittest.TestCase):
                     platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=deadline)
 
     def test_unauthorized_project_expiry_retains_proven_rejection_and_attempt(self) -> None:
-        client = FakeClient(self.case_dir)
-        transport = platform.Client.__new__(platform.Client)
-        transport.expires = 10000
-        transport.session = Mock()
-        transport.session.request.return_value.status_code = 401
-        clock = [1.0]
-
-        def refresh() -> None:
-            clock[0] = 11.0
-
-        with (
-            patch.object(platform, "Client", return_value=client),
-            patch.object(platform.time, "time", return_value=100.0),
-            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
-            patch.object(transport, "refresh", side_effect=refresh),
-            patch.object(client, "post", side_effect=transport.post),
+        expired = {"detail": platform.EXPIRED_SIGNATURE}
+        for status, body, receipt in (
+            (401, {}, {"method": "POST", "path": "/projects", "status_code": 401}),
+            (403, expired, {"method": "POST", "path": "/projects", "status_code": 403, **expired}),
         ):
-            with self.assertRaisesRegex(TimeoutError, "deadline"):
-                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
-        self.assertEqual(transport.session.request.call_count, 1)
-        state = json.loads((self.case_dir / "submission-state.json").read_text())
-        self.assertEqual(state["phase"], "resource-request-rejected")
-        self.assertEqual(state["resource_requests_dispatched"], 1)
-        self.assertEqual(state["resource_requests_applied"], 0)
-        self.assertEqual(state["rejected_request"], {"method": "POST", "path": "/projects", "status_code": 401})
-        self.assertFalse(platform.pre_dispatch_refused(self.case_dir, state["cases_sha256"]))
-        self.assertTrue(platform.creation_refused(self.case_dir, state["cases_sha256"]))
-        self.assert_retry_blocked()
-        with self.assertRaisesRegex(platform.PlatformError, "401.*separately approved"):
-            self.reconcile(client)
+            with self.subTest(status=status):
+                client = FakeClient(self.case_dir)
+                transport = platform.Client.__new__(platform.Client)
+                transport.expires = 10000
+                transport.session = Mock()
+                transport.session.request.return_value.status_code = status
+                transport.session.request.return_value.json.return_value = body
+                clock = [1.0]
+
+                def refresh(clock: list[float] = clock) -> None:
+                    clock[0] = 11.0
+
+                with (
+                    patch.object(platform, "Client", return_value=client),
+                    patch.object(platform.time, "time", return_value=100.0),
+                    patch.object(platform.time, "monotonic", side_effect=lambda clock=clock: clock[0]),
+                    patch.object(transport, "refresh", side_effect=refresh),
+                    patch.object(client, "post", side_effect=transport.post),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, f"HTTP {status} rejected"):
+                        platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+                self.assertEqual(transport.session.request.call_count, 1)
+                state_path = self.case_dir / "submission-state.json"
+                state = json.loads(state_path.read_text())
+                self.assertEqual(state["phase"], "resource-request-rejected")
+                self.assertEqual(state["resource_requests_dispatched"], 1)
+                self.assertEqual(state["resource_requests_applied"], 0)
+                self.assertEqual(state["rejected_request"], receipt)
+                self.assertFalse(platform.pre_dispatch_refused(self.case_dir, state["cases_sha256"]))
+                self.assertTrue(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+                self.assert_retry_blocked()
+                with self.assertRaisesRegex(platform.PlatformError, f"HTTP {status} and was not.*separately approved"):
+                    self.reconcile(client)
+                for forged in ({**receipt, "status_code": 500}, {**receipt, "detail": "other"}):
+                    state_path.write_text(json.dumps({**state, "rejected_request": forged}))
+                    self.assertFalse(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+                state_path.unlink()
 
     def test_rejection_after_project_creation_keeps_partial_resource_boundary(self) -> None:
         for rejected_path in ("/batch_jobs", "/algorithms", "/jobs"):

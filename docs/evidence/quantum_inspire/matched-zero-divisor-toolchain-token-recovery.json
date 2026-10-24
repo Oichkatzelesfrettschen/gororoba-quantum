@@ -5,7 +5,7 @@
   "scripts/qi_matched_zero_divisor.py": "9b3ff02d76b00e266105d62a52b5922535445c3a264c315fe43d3c2caff1a87c",
   "scripts/qi_toolchain_check.py": "fa9d1ee6aa61b75906e2fe85adb39a5be46360ec8b3a947f5844f2c6c0c51d0c",
   "scripts/qi_zero_divisor_cases.py": "6c0a7c15e3f04ec0036ad42e8712629b7dd764ddbc51d4ba1ee2526156515174",
-  "scripts/qi_platform.py": "dd6030663cc1304a7a0ea17a0deed7ac2132ee8391fcb95b5245de87be5ea5b2",
+  "scripts/qi_platform.py": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
   "gororoba_quantum/qi_stack.py": "47c84368b91125942a04c8515edd7023e081ce19ad9d09e223060af5eb60e1df",
   "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92"
  },
