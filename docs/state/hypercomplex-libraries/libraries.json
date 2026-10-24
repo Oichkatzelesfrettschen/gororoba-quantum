@@ -6734,6 +6734,14 @@
    "statistics",
    "typing"
   ],
+  "ci/audit_report.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "ci/changed_paths.py": [
    "__future__",
    "os",

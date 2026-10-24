@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import os
 import sys
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -35,3 +36,30 @@ def pytest_configure(config: pytest.Config) -> None:
     # xdist resolves -n auto before configure, so the pool size reads the
     # caller's cap and the workers it spawns inherit the one-slot setting.
     os.environ["GOROROBA_WORKERS"] = "1"
+
+
+# The call phase of a test outside the audit marker fails past this many
+# seconds. The hosted pull-request runner measures about twice the build
+# host's time, and its slowest unmarked test took 4.97 s.
+# GOROROBA_TEST_CALL_SECONDS replaces the bound on a contended host; 0 lifts it.
+CALL_BUDGET_SECONDS = float(os.environ.get("GOROROBA_TEST_CALL_SECONDS", "10"))
+
+
+@pytest.hookimpl(wrapper=True)
+def pytest_runtest_makereport(
+    item: pytest.Item, call: pytest.CallInfo[None]
+) -> Generator[None, pytest.TestReport, pytest.TestReport]:
+    report = yield
+    if (
+        call.when == "call"
+        and report.passed
+        and CALL_BUDGET_SECONDS > 0
+        and call.duration > CALL_BUDGET_SECONDS
+        and item.get_closest_marker("audit") is None
+    ):
+        report.outcome = "failed"
+        report.longrepr = (
+            f"{item.nodeid} took {call.duration:.2f} s, over the {CALL_BUDGET_SECONDS:.0f} s pull-request budget:"
+            " shrink its input or mark it audit with a small unmarked counterpart"
+        )
+    return report
