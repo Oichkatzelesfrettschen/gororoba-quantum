@@ -3956,6 +3956,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_response_geometry.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/response-geometry.json --check",
+   "name": "core-ascella-signed-coherence-response-geometry-replay",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,

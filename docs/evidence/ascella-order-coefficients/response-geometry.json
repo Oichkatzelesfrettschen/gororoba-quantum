@@ -1,0 +1,1106 @@
+{
+ "between_jobs": {
+  "direct": {
+   "configurations": [
+    [
+     "theta0-direct-arm0",
+     "theta0-direct-arm3"
+    ],
+    [
+     "theta0-direct-arm1",
+     "theta0-direct-arm2"
+    ],
+    [
+     "theta1-direct-arm0",
+     "theta1-direct-arm3"
+    ],
+    [
+     "theta1-direct-arm1",
+     "theta1-direct-arm2"
+    ],
+    [
+     "theta2-direct-arm0",
+     "theta2-direct-arm3"
+    ],
+    [
+     "theta2-direct-arm1",
+     "theta2-direct-arm2"
+    ],
+    [
+     "theta3-direct-arm0",
+     "theta3-direct-arm3"
+    ],
+    [
+     "theta3-direct-arm1",
+     "theta3-direct-arm2"
+    ],
+    [
+     "theta4-direct-arm0",
+     "theta4-direct-arm3"
+    ],
+    [
+     "theta4-direct-arm1",
+     "theta4-direct-arm2"
+    ]
+   ],
+   "equality": {
+    "dof": 10,
+    "p": 0.004467916702912636,
+    "statistic": 25.503915645048814
+   },
+   "held_out": {
+    "ideal": {
+     "dof": 10,
+     "p": 1.3871303855955642e-55,
+     "statistic": 286.0338076064895
+    }
+   },
+   "pooled_residual_correlation": 0.8939825652121501
+  },
+  "x": {
+   "configurations": [
+    [
+     "theta0-x-arm0",
+     "theta0-x-arm3"
+    ],
+    [
+     "theta0-x-arm1",
+     "theta0-x-arm2"
+    ],
+    [
+     "theta1-x-arm0",
+     "theta1-x-arm3"
+    ],
+    [
+     "theta1-x-arm1",
+     "theta1-x-arm2"
+    ],
+    [
+     "theta2-x-arm0",
+     "theta2-x-arm3"
+    ],
+    [
+     "theta2-x-arm1",
+     "theta2-x-arm2"
+    ],
+    [
+     "theta3-x-arm0",
+     "theta3-x-arm3"
+    ],
+    [
+     "theta3-x-arm1",
+     "theta3-x-arm2"
+    ],
+    [
+     "theta4-x-arm0",
+     "theta4-x-arm3"
+    ],
+    [
+     "theta4-x-arm1",
+     "theta4-x-arm2"
+    ]
+   ],
+   "equality": {
+    "dof": 10,
+    "p": 0.9725867625475012,
+    "statistic": 3.329044585203605
+   },
+   "held_out": {
+    "ideal": {
+     "dof": 10,
+     "p": 7.918675167278837e-140,
+     "statistic": 680.8949244606354
+    },
+    "job_00_gain_offset": {
+     "dof": 10,
+     "offset": -0.00280442989487163,
+     "p": 5.5571527561733184e-67,
+     "statistic": 339.8913022705147,
+     "visibility": 0.9784446105654772
+    }
+   },
+   "pooled_residual_correlation": 0.996584893272358
+  },
+  "y": {
+   "configurations": [
+    [
+     "theta0-y-arm0",
+     "theta0-y-arm3"
+    ],
+    [
+     "theta0-y-arm1",
+     "theta0-y-arm2"
+    ],
+    [
+     "theta1-y-arm0",
+     "theta1-y-arm3"
+    ],
+    [
+     "theta1-y-arm1",
+     "theta1-y-arm2"
+    ],
+    [
+     "theta2-y-arm0",
+     "theta2-y-arm3"
+    ],
+    [
+     "theta2-y-arm1",
+     "theta2-y-arm2"
+    ],
+    [
+     "theta3-y-arm0",
+     "theta3-y-arm3"
+    ],
+    [
+     "theta3-y-arm1",
+     "theta3-y-arm2"
+    ],
+    [
+     "theta4-y-arm0",
+     "theta4-y-arm3"
+    ],
+    [
+     "theta4-y-arm1",
+     "theta4-y-arm2"
+    ]
+   ],
+   "equality": {
+    "dof": 10,
+    "p": 0.5947353848091534,
+    "statistic": 8.349537684335425
+   },
+   "held_out": {
+    "ideal": {
+     "dof": 10,
+     "p": 1.403969841953191e-45,
+     "statistic": 238.51589387932387
+    },
+    "job_00_gain_offset": {
+     "dof": 10,
+     "offset": -0.007396495303380453,
+     "p": 3.302960981363713e-15,
+     "statistic": 91.0581204036953,
+     "visibility": 0.9743719890750783
+    }
+   },
+   "pooled_residual_correlation": 0.964867537334581
+  }
+ },
+ "jobs": {
+  "job-00": {
+   "background_components": {
+    "admissible_dark_lag1": [
+     -0.6542272792535924,
+     -0.7114571747460792
+    ],
+    "admissible_dark_totals": [
+     6202.009233542145,
+     6267.0017630128
+    ],
+    "cells": 512,
+    "dark_component": {
+     "lag1_log_autocorrelation": -0.6542272792535924,
+     "median": 14.005074015695982,
+     "total": 6202.009233542145
+    },
+    "deviance": 577.5858006627951,
+    "em_steps": 1355,
+    "fitted_component": {
+     "lag1_log_autocorrelation": -0.10241707626762517,
+     "median": 6.664679737441864,
+     "total": 456.9907664578549
+    },
+    "fitted_profile": [
+     0.14691818782347416,
+     0.14297938808097477,
+     0.22505546474696603,
+     0.09192215211053567,
+     0.13720427494225884,
+     0.16412073339482255,
+     0.05084380130034383,
+     0.040955997600624156
+    ],
+    "parameters": 135,
+    "quartile_pearson": 58.18826540231343
+   },
+   "configurations": {
+    "arms_pair_as_0_3_or_1_2": true,
+    "distinct": 30,
+    "duplicates": {
+     "analyzer": {
+      "dof": 21,
+      "p": 0.34347625477841986,
+      "statistic": 23.009421959691174
+     },
+     "direct": {
+      "dof": 13,
+      "p": 0.21050768691491623,
+      "statistic": 16.76002881730832
+     }
+    },
+    "shared": [
+     [
+      "mutation-arm0",
+      "mutation-arm3",
+      "theta1-direct-arm0",
+      "theta1-direct-arm3"
+     ],
+     [
+      "mutation-arm1-ii",
+      "mutation-arm2-ii"
+     ],
+     [
+      "theta0-direct-arm0",
+      "theta0-direct-arm3"
+     ],
+     [
+      "theta0-direct-arm1",
+      "theta0-direct-arm2"
+     ],
+     [
+      "theta0-x-arm0",
+      "theta0-x-arm3",
+      "theta0-y-arm0",
+      "theta0-y-arm3"
+     ],
+     [
+      "theta0-x-arm1",
+      "theta0-x-arm2"
+     ],
+     [
+      "theta0-y-arm1",
+      "theta0-y-arm2"
+     ],
+     [
+      "theta1-direct-arm1",
+      "theta1-direct-arm2"
+     ],
+     [
+      "theta1-x-arm0",
+      "theta1-x-arm3"
+     ],
+     [
+      "theta1-x-arm1",
+      "theta1-x-arm2"
+     ],
+     [
+      "theta1-y-arm0",
+      "theta1-y-arm3"
+     ],
+     [
+      "theta1-y-arm1",
+      "theta1-y-arm2"
+     ],
+     [
+      "theta2-direct-arm0",
+      "theta2-direct-arm3"
+     ],
+     [
+      "theta2-direct-arm1",
+      "theta2-direct-arm2"
+     ],
+     [
+      "theta2-x-arm0",
+      "theta2-x-arm3"
+     ],
+     [
+      "theta2-x-arm1",
+      "theta2-x-arm2"
+     ],
+     [
+      "theta2-y-arm0",
+      "theta2-y-arm3"
+     ],
+     [
+      "theta2-y-arm1",
+      "theta2-y-arm2"
+     ],
+     [
+      "theta3-direct-arm0",
+      "theta3-direct-arm3"
+     ],
+     [
+      "theta3-direct-arm1",
+      "theta3-direct-arm2"
+     ],
+     [
+      "theta3-x-arm0",
+      "theta3-x-arm3"
+     ],
+     [
+      "theta3-x-arm1",
+      "theta3-x-arm2"
+     ],
+     [
+      "theta3-y-arm0",
+      "theta3-y-arm3"
+     ],
+     [
+      "theta3-y-arm1",
+      "theta3-y-arm2"
+     ],
+     [
+      "theta4-direct-arm0",
+      "theta4-direct-arm3"
+     ],
+     [
+      "theta4-direct-arm1",
+      "theta4-direct-arm2"
+     ],
+     [
+      "theta4-x-arm0",
+      "theta4-x-arm3"
+     ],
+     [
+      "theta4-x-arm1",
+      "theta4-x-arm2"
+     ],
+     [
+      "theta4-y-arm0",
+      "theta4-y-arm3"
+     ],
+     [
+      "theta4-y-arm1",
+      "theta4-y-arm2"
+     ]
+    ]
+   },
+   "dilution": {
+    "X_odd constant": {
+     "block_conditioned": 0.4750541097127599,
+     "ideal": 0.5,
+     "registered": 0.46965574845348756,
+     "removed_fraction": 0.17790391867130417
+    },
+    "Y_odd sin(2 theta)": {
+     "block_conditioned": 0.48508307277736684,
+     "ideal": 0.5,
+     "registered": 0.47772004383841343,
+     "removed_fraction": 0.33047771214416444
+    }
+   },
+   "gain_relations": [
+    {
+     "excludes_zero": true,
+     "interval": [
+      -0.052354450716739276,
+      -0.002894639675783628
+     ],
+     "relation": "X0 + Xc2",
+     "value": -0.027624545196261452
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.02760027346117231,
+      0.021860112817295232
+     ],
+     "relation": "Y0 + Yc2",
+     "value": -0.0028700803219385397
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.032794887859990074,
+      0.016666297090138338
+     ],
+     "relation": "X0 - Ys2",
+     "value": -0.008064295384925868
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.0366904286666098,
+      0.012770270291570279
+     ],
+     "relation": "Xs2 + Y0",
+     "value": -0.01196007918751976
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.04853371709458787,
+      0.009413217471916702
+     ],
+     "relation": "Xc2 + Ys2",
+     "value": -0.019560249811335584
+    }
+   ],
+   "gain_relations_block_conditioned": [
+    {
+     "excludes_zero": true,
+     "interval": [
+      -0.05467842128075934,
+      -0.004845726072760681
+     ],
+     "relation": "X0 + Xc2",
+     "value": -0.029762073676760037
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.028858240573827427,
+      0.021040475968634537
+     ],
+     "relation": "Y0 + Yc2",
+     "value": -0.003908882302596445
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.03493715665347552,
+      0.014879230524261655
+     ],
+     "relation": "X0 - Ys2",
+     "value": -0.010028963064606933
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.03899936040775237,
+      0.010750587462177202
+     ],
+     "relation": "Xs2 + Y0",
+     "value": -0.014124386472787586
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.04894307079813204,
+      0.009476849573825885
+     ],
+     "relation": "Xc2 + Ys2",
+     "value": -0.019733110612153104
+    }
+   ],
+   "job": "job-00",
+   "outside_profile": {
+    "catalogue_likelihood_ratio": {
+     "dof": 7,
+     "p": 9.831531061690748e-17,
+     "statistic": 90.48607659636377
+    },
+    "catalogue_pearson": {
+     "dof": 7,
+     "p": 7.478495336549499e-21,
+     "statistic": 110.42965974872816
+    },
+    "catalogue_profile": [
+     0.009191052240318983,
+     0.03230384537406231,
+     0.013245928228695006,
+     0.04088666621612489,
+     0.22132864769885788,
+     0.27802933026964927,
+     0.3575048996418193,
+     0.04750963033047239
+    ],
+    "catalogue_share_upper_bound": 0.900853549149089,
+    "modes": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "observed": [
+     104,
+     238,
+     167,
+     282,
+     1424,
+     1783,
+     2376,
+     285
+    ],
+    "observed_profile": [
+     0.015617960654752966,
+     0.03574110226760775,
+     0.025078840666766782,
+     0.04234870100615708,
+     0.2138459228112329,
+     0.26775792160985135,
+     0.3568103318816639,
+     0.04279921910196726
+    ],
+    "parity_profiles": {
+     "cells": 16,
+     "cells_below_five": 0,
+     "dof": 7,
+     "even_mean_per_iteration": 81.71875,
+     "even_total": 2615,
+     "min_expected": 40.84096711217901,
+     "odd_mean_per_iteration": 126.375,
+     "odd_total": 4044,
+     "p": 0.23090672840158014,
+     "statistic": 9.313769770707157
+    },
+    "quartile_profiles": {
+     "cells": 32,
+     "cells_below_five": 3,
+     "dof": 21,
+     "mean_per_iteration": [
+      10.875,
+      18.1875,
+      61.9375,
+      325.1875
+     ],
+     "min_expected": 2.717525153927016,
+     "p": 3.653127056553711e-73,
+     "statistic": 406.78792404687374
+    },
+    "total_variation": 0.023159112536083413
+   },
+   "registered_ideal_excluded": [
+    "X_odd constant",
+    "Y_odd sin(2 theta)"
+   ],
+   "weighted_contrast": {
+    "x": {
+     "gain_offset": {
+      "coefficients": [
+       0.978518447843943,
+       -0.0028035766481311676
+      ],
+      "dof": 18,
+      "p": 9.746805280177321e-32,
+      "se": [
+       0.0016668800686071774,
+       0.0012909677417398601
+      ],
+      "statistic": 195.0536286122181
+     },
+     "quadrature": {
+      "coefficients": [
+       0.978267826198939,
+       -0.01737563609732839,
+       -0.0029878282696049947
+      ],
+      "dof": 17,
+      "p": 1.6436152533092672e-28,
+      "se": [
+       0.0016678793989015207,
+       0.004002293373800893,
+       0.0012916651649097857
+      ],
+      "statistic": 176.2057018669848
+     },
+     "quadrature_terms": [
+      "visibility",
+      "quadrature",
+      "offset"
+     ],
+     "terms": [
+      "visibility",
+      "offset"
+     ]
+    },
+    "y": {
+     "gain_offset": {
+      "coefficients": [
+       0.9745440198047381,
+       -0.007438534202465379
+      ],
+      "dof": 18,
+      "p": 0.0006193836329971153,
+      "se": [
+       0.005065869382042119,
+       0.0018885562190150006
+      ],
+      "statistic": 43.7838035702102
+     },
+     "quadrature": {
+      "coefficients": [
+       0.9745717249639361,
+       -0.0024330717052171713,
+       -0.0074316989944637896
+      ],
+      "dof": 17,
+      "p": 0.00043071973287018124,
+      "se": [
+       0.005066033646927872,
+       0.0035827139808742936,
+       0.001888583038777872
+      ],
+      "statistic": 43.32260756217814
+     },
+     "quadrature_terms": [
+      "visibility",
+      "quadrature",
+      "offset"
+     ],
+     "terms": [
+      "visibility",
+      "offset"
+     ]
+    }
+   }
+  },
+  "job-01": {
+   "background_components": {
+    "admissible_dark_lag1": [
+     -0.7068854549669584,
+     -0.7068854640558508
+    ],
+    "admissible_dark_totals": [
+     12286.595784018193,
+     12286.595800485113
+    ],
+    "cells": 512,
+    "dark_component": {
+     "lag1_log_autocorrelation": -0.7068854549669584,
+     "median": 28.658174991472777,
+     "total": 12286.595784018193
+    },
+    "deviance": 643.2215265809353,
+    "em_steps": 2368,
+    "fitted_component": {
+     "lag1_log_autocorrelation": -0.2596819805873499,
+     "median": 16.070000296717915,
+     "total": 981.404215981808
+    },
+    "fitted_profile": [
+     0.13179555781987176,
+     0.14841175652472077,
+     0.19515720624548155,
+     0.0997253208224754,
+     0.16648336472189312,
+     0.15461278177269405,
+     6.025901756627784e-09,
+     0.10381400606696146
+    ],
+    "parameters": 135,
+    "quartile_pearson": 97.33200499090917
+   },
+   "configurations": {
+    "arms_pair_as_0_3_or_1_2": true,
+    "distinct": 30,
+    "duplicates": {
+     "analyzer": {
+      "dof": 21,
+      "p": 0.7820923995019294,
+      "statistic": 15.776171001937788
+     },
+     "direct": {
+      "dof": 13,
+      "p": 0.9262204405967854,
+      "statistic": 6.496144711615206
+     }
+    },
+    "shared": [
+     [
+      "mutation-arm0",
+      "mutation-arm3",
+      "theta1-direct-arm0",
+      "theta1-direct-arm3"
+     ],
+     [
+      "mutation-arm1-ii",
+      "mutation-arm2-ii"
+     ],
+     [
+      "theta0-direct-arm0",
+      "theta0-direct-arm3"
+     ],
+     [
+      "theta0-direct-arm1",
+      "theta0-direct-arm2"
+     ],
+     [
+      "theta0-x-arm0",
+      "theta0-x-arm3",
+      "theta0-y-arm0",
+      "theta0-y-arm3"
+     ],
+     [
+      "theta0-x-arm1",
+      "theta0-x-arm2"
+     ],
+     [
+      "theta0-y-arm1",
+      "theta0-y-arm2"
+     ],
+     [
+      "theta1-direct-arm1",
+      "theta1-direct-arm2"
+     ],
+     [
+      "theta1-x-arm0",
+      "theta1-x-arm3"
+     ],
+     [
+      "theta1-x-arm1",
+      "theta1-x-arm2"
+     ],
+     [
+      "theta1-y-arm0",
+      "theta1-y-arm3"
+     ],
+     [
+      "theta1-y-arm1",
+      "theta1-y-arm2"
+     ],
+     [
+      "theta2-direct-arm0",
+      "theta2-direct-arm3"
+     ],
+     [
+      "theta2-direct-arm1",
+      "theta2-direct-arm2"
+     ],
+     [
+      "theta2-x-arm0",
+      "theta2-x-arm3"
+     ],
+     [
+      "theta2-x-arm1",
+      "theta2-x-arm2"
+     ],
+     [
+      "theta2-y-arm0",
+      "theta2-y-arm3"
+     ],
+     [
+      "theta2-y-arm1",
+      "theta2-y-arm2"
+     ],
+     [
+      "theta3-direct-arm0",
+      "theta3-direct-arm3"
+     ],
+     [
+      "theta3-direct-arm1",
+      "theta3-direct-arm2"
+     ],
+     [
+      "theta3-x-arm0",
+      "theta3-x-arm3"
+     ],
+     [
+      "theta3-x-arm1",
+      "theta3-x-arm2"
+     ],
+     [
+      "theta3-y-arm0",
+      "theta3-y-arm3"
+     ],
+     [
+      "theta3-y-arm1",
+      "theta3-y-arm2"
+     ],
+     [
+      "theta4-direct-arm0",
+      "theta4-direct-arm3"
+     ],
+     [
+      "theta4-direct-arm1",
+      "theta4-direct-arm2"
+     ],
+     [
+      "theta4-x-arm0",
+      "theta4-x-arm3"
+     ],
+     [
+      "theta4-x-arm1",
+      "theta4-x-arm2"
+     ],
+     [
+      "theta4-y-arm0",
+      "theta4-y-arm3"
+     ],
+     [
+      "theta4-y-arm1",
+      "theta4-y-arm2"
+     ]
+    ]
+   },
+   "dilution": {
+    "X_odd constant": {
+     "block_conditioned": 0.47574465385793074,
+     "ideal": 0.5,
+     "registered": 0.4719026911128275,
+     "removed_fraction": 0.13673774810715905
+    },
+    "Y_odd sin(2 theta)": {
+     "block_conditioned": 0.48344635350432746,
+     "ideal": 0.5,
+     "registered": 0.4768331317160668,
+     "removed_fraction": 0.2854603266703558
+    }
+   },
+   "gain_relations": [
+    {
+     "excludes_zero": true,
+     "interval": [
+      -0.0477658439163704,
+      -0.012792703140317996
+     ],
+     "relation": "X0 + Xc2",
+     "value": -0.030279273528344197
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.02479996581532226,
+      0.010175910796919548
+     ],
+     "relation": "Y0 + Yc2",
+     "value": -0.007312027509201357
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.02241797805173773,
+      0.012557096845259186
+     ],
+     "relation": "X0 - Ys2",
+     "value": -0.004930440603239272
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.03488021783815075,
+      9.490331374827424e-05
+     ],
+     "relation": "Xs2 + Y0",
+     "value": -0.01739265726220124
+    },
+    {
+     "excludes_zero": true,
+     "interval": [
+      -0.04583637832056264,
+      -0.004861287529647207
+     ],
+     "relation": "Xc2 + Ys2",
+     "value": -0.025348832925104925
+    }
+   ],
+   "gain_relations_block_conditioned": [
+    {
+     "excludes_zero": true,
+     "interval": [
+      -0.048305526412480926,
+      -0.013052819121779413
+     ],
+     "relation": "X0 + Xc2",
+     "value": -0.03067917276713017
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.027592827123437098,
+      0.0077444147517738695
+     ],
+     "relation": "Y0 + Yc2",
+     "value": -0.009924206185831615
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.025313509087232566,
+      0.009910109794439126
+     ],
+     "relation": "X0 - Ys2",
+     "value": -0.00770169964639672
+    },
+    {
+     "excludes_zero": false,
+     "interval": [
+      -0.033578353328011776,
+      0.0016235185294635355
+     ],
+     "relation": "Xs2 + Y0",
+     "value": -0.01597741739927412
+    },
+    {
+     "excludes_zero": true,
+     "interval": [
+      -0.04363177595563883,
+      -0.002323170285828069
+     ],
+     "relation": "Xc2 + Ys2",
+     "value": -0.02297747312073345
+    }
+   ],
+   "job": "job-01",
+   "outside_profile": {
+    "catalogue_likelihood_ratio": {
+     "dof": 7,
+     "p": 7.090992081240447e-34,
+     "statistic": 172.60353600561916
+    },
+    "catalogue_pearson": {
+     "dof": 7,
+     "p": 6.872546424325975e-42,
+     "statistic": 210.48918397524722
+    },
+    "catalogue_profile": [
+     0.008221083918295074,
+     0.033137292101435525,
+     0.015050907481186366,
+     0.04508948333649529,
+     0.21311579080503384,
+     0.2771137671536078,
+     0.3591348890153671,
+     0.049136786188579015
+    ],
+    "catalogue_share_upper_bound": 0.9519288282552558,
+    "modes": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "observed": [
+     209,
+     483,
+     343,
+     594,
+     2731,
+     3500,
+     4758,
+     650
+    ],
+    "observed_profile": [
+     0.015752185709978897,
+     0.036403376545070844,
+     0.0258516731986735,
+     0.0447693699125716,
+     0.2058335845643654,
+     0.2637925836599337,
+     0.35860717515827556,
+     0.04899005125113054
+    ],
+    "parity_profiles": {
+     "cells": 16,
+     "cells_below_five": 0,
+     "dof": 7,
+     "even_mean_per_iteration": 223.375,
+     "even_total": 7148,
+     "min_expected": 96.40337654507084,
+     "odd_mean_per_iteration": 191.25,
+     "odd_total": 6120,
+     "p": 0.3204180475700115,
+     "statistic": 8.139917630223346
+    },
+    "quartile_profiles": {
+     "cells": 32,
+     "cells_below_five": 0,
+     "dof": 21,
+     "mean_per_iteration": [
+      24.5625,
+      37.875,
+      111.25,
+      655.5625
+     ],
+     "min_expected": 6.190608984021706,
+     "p": 2.2563108975890935e-181,
+     "statistic": 920.5738594664233
+    },
+    "total_variation": 0.021597951952806275
+   },
+   "registered_ideal_excluded": [
+    "X_odd constant",
+    "X_odd sin(2 theta)",
+    "X_odd cos(4 theta)",
+    "Y_odd sin(2 theta)",
+    "Y_odd sin(4 theta)",
+    "dark constant",
+    "X_even cos(2 theta)",
+    "Y_even constant"
+   ],
+   "weighted_contrast": {
+    "x": {
+     "gain_offset": {
+      "coefficients": [
+       0.9809183275655184,
+       -0.00232268394592373
+      ],
+      "dof": 18,
+      "p": 1.7295975630328115e-75,
+      "se": [
+       0.001158406581414736,
+       0.0009011138728326058
+      ],
+      "statistic": 408.26253950833734
+     },
+     "quadrature": {
+      "coefficients": [
+       0.9803852125580814,
+       -0.020216539696444977,
+       -0.00243796764518617
+      ],
+      "dof": 17,
+      "p": 2.623124375755989e-65,
+      "se": [
+       0.0011607571438581315,
+       0.0027998677343149155,
+       0.0009012553067078308
+      ],
+      "statistic": 356.1264307114656
+     },
+     "quadrature_terms": [
+      "visibility",
+      "quadrature",
+      "offset"
+     ],
+     "terms": [
+      "visibility",
+      "offset"
+     ]
+    },
+    "y": {
+     "gain_offset": {
+      "coefficients": [
+       0.9715512030802731,
+       -0.01137807992733276
+      ],
+      "dof": 18,
+      "p": 3.1172488737692923e-15,
+      "se": [
+       0.0035647772544161386,
+       0.0013319815541896708
+      ],
+      "statistic": 110.02244905820226
+     },
+     "quadrature": {
+      "coefficients": [
+       0.9715747553674551,
+       -0.0019466712696996702,
+       -0.011361268218533626
+      ],
+      "dof": 17,
+      "p": 1.541147275361611e-15,
+      "se": [
+       0.003564909733967453,
+       0.002540207460481288,
+       0.0013321621963834718
+      ],
+      "statistic": 109.43516682268036
+     },
+     "quadrature_terms": [
+      "visibility",
+      "quadrature",
+      "offset"
+     ],
+     "terms": [
+      "visibility",
+      "offset"
+     ]
+    }
+   }
+  }
+ },
+ "runs": [
+  "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+  "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01"
+ ],
+ "schema": "ascella-signed-coherence-response-geometry-v1"
+}

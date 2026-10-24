@@ -1924,11 +1924,11 @@
     },
     {
       "id": "ascella-signed-coherence-device-diagnostics",
-      "statement": "In both Ascella signed-coherence runs the returned compiled circuits reproduce every registered statistic within 2.2e-4, while the block-conditioned X and Y statistics read 0.967 to 0.972 times their ideals and the direct readout 1.004 times; X residuals exceed multinomial noise (chi-square 230 and 493 on 18 degrees of freedom) more than Y (45 and 114). Outside-block clicks concentrate on modes 8 to 10, the detectors with the largest plan-time dark rates, with an excess on modes 4 and 6 (composition chi-square 110 and 211 on 7 degrees of freedom), and physical_perf reads 0.0209 in every iteration of different outside-block counts.",
+      "statement": "In both Ascella signed-coherence runs the statistics computed from the returned compiled circuits lie within 2.2e-4 of every registered ideal, while the block-conditioned X and Y statistics read 0.97 to 0.98 times their ideals and the direct readout 1.004 times; inverse-variance weighted gain-and-offset fits leave X chi-square 195 and 408 on 18 degrees of freedom and Y 44 and 110. Of the five linear relations a setting-independent complex gain imposes on the sign-odd coefficients, X0 + Xc2 = 0 fails in both runs on the projected simultaneous intervals (-0.028 and -0.030) and the rest hold except Xc2 + Ys2 in job-01. Pooled per returned compiled configuration, job-00's X and Y values predict job-01's within counting noise (chi-square 3.3 and 8.3 on 10) where job-00's gain-and-offset fit does not (340 and 91). Outside-block counts follow the catalogue dark profile only at high amplitude: quartile-pooled profiles differ (likelihood ratio 407 and 921 on 21), and a two-component Poisson fit places the alternation (lag-1 -0.65 to -0.71) in a catalogue-shaped component holding most of them, beside a component on modes 4 to 9 that alternates weakly. physical_perf reads 0.0209 in every iteration of different outside-block counts.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Descriptive fits without preregistered thresholds; the binomial errors ignore drift within an iteration. The dark-rate expectation uses plan-time rates, not acquisition-time ones, and a coincidence-window or gating model of the clicks is not established.",
+      "boundary": "Exploratory fits without preregistered thresholds; the multinomial errors ignore drift within an iteration, and the configuration agreement sets no equivalence margin on drift. The dark profile uses plan-time catalogue rates, the two-component fit is descriptive (its deviance has no asymptotic reference, its fitted profile differs between the runs, and its job-00 catalogue share exceeds the bound the pooled composition sets), and no detector gating model converts a component's amplitude into acquisition time. The diagnostics records' residual_chi2 and block_less_dark_share verdicts carry no inferential reading; response-geometry.json holds the weighted fits.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
@@ -1945,6 +1945,10 @@
         {
           "path": "docs/evidence/ascella-order-coefficients/job-01-diagnostics.json",
           "sha256": "58a421f875883a897a28e02cde56e1cfac79deb1d1e586bb3fbbc87cccf2856b"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/response-geometry.json",
+          "sha256": "40f7bdf4a31666702bf15e13ed03781c6f4b5a2a41dbee077615382cf227660d"
         }
       ],
       "documents": [
@@ -1952,7 +1956,8 @@
         "docs/notes/quandela/literature.md"
       ],
       "gates": {
-        "core-ascella-signed-coherence-diagnostics-replay": "replay"
+        "core-ascella-signed-coherence-diagnostics-replay": "replay",
+        "core-ascella-signed-coherence-response-geometry-replay": "replay"
       },
       "acquisitions": [
         "qd-ascella-signed-coherence",

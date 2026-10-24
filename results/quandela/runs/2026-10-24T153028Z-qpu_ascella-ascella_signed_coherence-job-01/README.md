@@ -49,9 +49,10 @@ holds the comparison the design registers:
 The outside-block clicks therefore follow the execution sequence: a high and
 a low iteration alternate whatever setting runs, and the clicks grow with the
 samples an iteration takes (13,268 of 1,048,576 against 6,659 of 524,288).
-The analyzer residuals belong to the settings: the same configurations err
-the same way six hours apart, at a stable
-contrast of 0.97. Both jobs report 186 seconds in total. No retained
+The analyzer residuals belong to the configurations: pooled per returned
+configuration, the X and Y statistics agree with job-00's within counting
+noise six hours apart (chi-square 3.3 and 8.3 on 10), at a contrast near 0.97
+([response geometry](../../../../docs/design/ascella-signed-coherence-conformance.md#response-geometry-of-both-jobs)). Both jobs report 186 seconds in total. No retained
 record separates acquisition time from reconfiguration or other overhead, so
 the equal totals assign no marginal time to the further 524,288 samples.
 

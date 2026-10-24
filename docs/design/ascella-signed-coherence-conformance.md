@@ -710,32 +710,45 @@ writes their exploratory reading,
 [`job-00-diagnostics.json`](../evidence/ascella-order-coefficients/job-00-diagnostics.json).
 
 **Analyzer contrast.**
-- The returned compiled circuits are exact: every compiled statistic lies
-  within 2.2e-4 of its registered ideal, and no compiled circuit puts more
-  than 6.3e-7 of the photon outside modes 0 to 3.
+- The returned nominal compiled model matches the target: every statistic
+  computed from the returned `computed_circuit` and `computed_input` lies
+  within 2.2e-4 of its registered ideal, and none puts more than 6.2e-7 of the
+  photon outside modes 0 to 3. The check covers the circuit the provider
+  reports, not the applied voltages or the implemented unitary.
 - The block-conditioned X and Y statistics read z = V ideal + c with V 0.970
-  (standard error 0.009) on both readouts, while the direct readout reads
-  slope 1.004. The deficit sits in the interference contrast of the hardware
-  and not in compilation or intensities.
-- X residuals exceed multinomial noise, chi-square 230 on 18 degrees of
-  freedom, against 45 on 18 for Y; the matched quadrature ideal explains
-  little of it (coefficient -0.023, chi-square 210 on 17). The X readout carries setting-specific errors.
+  (standard error 0.009) on both readouts by ordinary least squares, 0.979 and
+  0.975 by inverse-variance weights, while the direct readout reads
+  slope 1.004. The deficit sits in the interference contrast of the hardware;
+  the reported compilation and the intensities lie close to ideal, and the
+  direct response carries small resolved departures of its own (job-01's dark
+  constant 0.2547, interval [0.2511, 0.2583]).
+- X residuals exceed multinomial noise: the inverse-variance weighted fit
+  leaves chi-square 195 on 18 degrees of freedom, against 44 on 18 for Y, and
+  the matched quadrature ideal explains little of it (coefficient -0.017,
+  chi-square 176 on 17) ([response geometry](#response-geometry-of-both-jobs)).
+  The X readout carries setting-specific errors. The diagnostics record's
+  `residual_chi2` standardizes ordinary-least-squares residuals by unequal
+  variances and has no chi-square reference.
 - A 3 % contrast deficit is the calibrated-chip scale Maring et al. report for
   Ascella, total variation (3.0 +- 1.3) % over random phase settings
   ([literature, source 1](../notes/quandela/literature.md#1-maring-et-al-ascella-platform)).
 - The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta)
   coefficient (0.4777) exclude 0.5 for this reason. Block-conditioned
   counts move them only to 0.4751 and 0.4851, so outside-block dilution
-  accounts for about a fifth of the deficit, not the whole of it.
+  removes 18 % of the X shortfall and 33 % of the Y shortfall (14 % and 29 %
+  in job-01). The fractions describe a change of denominator, not a
+  decomposition into physical causes.
 
 **Outside-block clicks.**
 - 6,659 of 524,288 events land on modes 4 to 11, 4 to 586 per setting, with
   1,424, 1,783 and 2,376 on modes 8, 9 and 10, the detectors with the largest
   plan-time dark rates (3,275, 4,114 and 5,290 per second). The pooled
   composition follows those rates except for an excess on modes 4 and 6
-  (chi-square 110 on 7 degrees of freedom), so the clicks are mostly dark
-  counts with a per-iteration exposure.
-- The exposure alternates in execution order: log outside-block counts have
+  (chi-square 110 on 7 degrees of freedom): a dark-rate-shaped background
+  with further structure. The composition alone bounds the catalogue share
+  above by 0.90 and admits no positive lower bound; the
+  [two-component fit](#response-geometry-of-both-jobs) separates the parts.
+- The outside-block count alternates in execution order: log counts have
   lag-1 autocorrelation -0.66 and lag-2 +0.73 (permutation p below 1e-4),
   with six phase slips over 64 iterations, while the size of the
   compiled-phase change from the predecessor predicts nothing (Spearman 0.22,
@@ -743,7 +756,7 @@ writes their exploratory reading,
   alternation is confounded with arm parity.
 - `physical_perf` reads 0.0209 in every iteration
   ([literature, source 31](../notes/quandela/literature.md#31-perceval-performance-fields)),
-  so the provider reports no per-iteration exposure. Ascella's settling time
+  so the provider reports no per-iteration acquisition time. Ascella's settling time
   is unpublished; other thermo-optic devices settle in microseconds
   ([source 30](../notes/quandela/literature.md#30-thermo-optic-switching-times)),
   a comparison that leaves the settling share of the 2.5 to 3 s each iteration
@@ -795,3 +808,78 @@ different orders, so the equal totals assign no marginal time to the further
 524,288 samples; the case's per-sample estimate (about 34 s) is neither
 confirmed nor bounded. A timing budget for larger sample counts needs
 component timing or controlled repeats that vary only the budget.
+
+## Response geometry of both jobs
+
+[`ascella_response_geometry.py`](../../scripts/ascella_response_geometry.py)
+writes one exploratory record over both runs,
+[`response-geometry.json`](../evidence/ascella-order-coefficients/response-geometry.json),
+with analytic references only. It settles which part of the analyzer deficit
+a uniform gain explains and how the outside-block background splits.
+
+**Gain relations.** A setting-independent complex gain g maps the ideal
+coherence C(theta) = (1 - exp(-2i theta))/2 to g C(theta), which fixes five
+linear relations among the sign-odd coefficients. Projecting each job's
+simultaneous registered intervals onto them keeps the family coverage:
+
+| Relation | job-00 | job-01 |
+|---|---|---|
+| X0 + Xc2 = 0 | -0.0276 [-0.0524, -0.0029] | -0.0303 [-0.0478, -0.0128] |
+| Y0 + Yc2 = 0 | -0.0029 [-0.0276, 0.0219] | -0.0073 [-0.0248, 0.0102] |
+| X0 - Ys2 = 0 | -0.0081 [-0.0328, 0.0167] | -0.0049 [-0.0224, 0.0126] |
+| Xs2 + Y0 = 0 | -0.0120 [-0.0367, 0.0128] | -0.0174 [-0.0349, 0.0001] |
+| Xc2 + Ys2 = 0 | -0.0196 [-0.0485, 0.0094] | -0.0254 [-0.0458, -0.0049] |
+
+X0 + Xc2 excludes zero in both jobs and keeps its value under the
+block-conditioned denominator (-0.0298, -0.0307), so dilution does not cause
+it; Xc2 + Ys2 excludes zero in job-01 alone. The Y relations and the X-to-Y
+relations hold. The X sign-odd response therefore departs from a scaled and
+rotated ideal circle along its constant-minus-cos(2 theta) direction, while
+the Y response and the X-Y phase relation stay within a common gain; job-01
+also resolves X cos(4 theta) at 0.0143 [0.0041, 0.0245].
+
+**Configuration response.** The 64 settings of each job compile to 30
+distinct returned configurations: each block's arms 0 and 3 share one, and
+arms 1 and 2 another. The theta-0 X and Y arms 0 and 3 compile to one
+configuration, and the mutation arms 0 and 3 compile to the theta-1 direct
+arms 0 and 3. The settings sharing a configuration agree within a job
+(analyzer chi-square 23.0 on 21 and 15.8 on 21; direct 16.8 on 13 and 6.5 on
+13). Pooled per configuration, the block-conditioned statistics agree between
+the jobs on X (3.3 on 10 degrees of freedom, p 0.97) and Y (8.3 on 10,
+p 0.59), with pooled residual correlations 0.997 and 0.965. The direct
+statistic differs between the jobs at 25.5 on 10 (p 0.0045, one of three
+readouts tested), carried by the dark constant moving from 0.2504 to 0.2547.
+
+**Held-out prediction.** Job-00's inverse-variance gain-and-offset fit
+predicts job-01's pooled configurations at chi-square 340 on 10 (X) and 91 on
+10 (Y), against 3.3 and 8.3 for job-00's own configuration values. A uniform
+gain and offset fail on held-out data; a fixed per-configuration response
+predicts it within counting noise. These results support a reproducible
+configuration-dependent analyzer response over the two acquisitions; they
+name no calibration mechanism and set no equivalence margin on drift.
+
+**Outside-block background.** One profile with a per-iteration amplitude,
+n_jm = e_j d_m, fails: the pooled profiles of the four quartiles of
+per-iteration outside total differ (likelihood ratio 407 on 21 degrees of
+freedom in job-00, 921 on 21 in job-01). The lowest quartile (11 and 25
+events per iteration) spreads over modes 4 to 11 with mode 10 at 0.16 and
+0.11, and the highest quartile (325 and 656) follows the catalogue dark
+profile with mode 10 at 0.38 and 0.39. The even- and odd-position pooled
+profiles agree (9.3 and 8.1 on 7, p 0.23 and 0.32), but the phase slips mix
+high and low iterations within each parity, so that split is weak; the
+quartile split tracks the amplitude itself. The
+Poisson fit n_jm = a_j f_m + b_j d_m, with the catalogue profile d fixed and
+one profile f fitted, has a flat likelihood ridge; iterations whose
+catalogue-shaped amplitude fits to zero pin it, so the catalogue-shaped
+component carries 6,202 to 6,267 of 6,659 job-00 events and 12,287 of 13,268
+job-01 events at every admissible point. Its log amplitude alternates
+(lag-1 -0.65 to -0.71 in job-00, -0.71 in job-01), while the fitted
+component (weight on modes 4 to 9) alternates weakly (-0.10 and -0.26). Both
+components roughly double with the samples. The fit is descriptive and its
+shares are model values: job-00's 0.93 exceeds the 0.90 the pooled
+composition allows any exact catalogue share, because the catalogue
+overpredicts mode 11; quartile-pooled Pearson residuals of 58 and 97 on 32
+cells show structure the fit leaves; and the fitted profile f differs between
+the jobs on modes 10 and 11. The alternation sits in a catalogue-dark-shaped
+component; converting its amplitude into acquisition time needs a detector
+gating model the records lack.
