@@ -34,3 +34,11 @@ original paths.
 The [instrument-readiness design](../../../design/ascella-instrument-readiness-and-packed-tests.md)
 records the prior configuration error and the boundaries of instrument
 recovery evidence. Platform availability alone cannot establish recovery.
+
+The [admission wait record](approval-wait.json) retains the read at 21:30:26
+UTC on 22 October 2026 that held the retry: the Belenos job still `waiting`
+with zero shots, one queued job on the token, and no collected Belenos
+result. It dispatched zero retry requests. The retry later ran once as job
+`3f707140-4413-40ed-bc31-58e09238926f` from the same manifest and circuit;
+its [acquisition record](../../../../results/quandela/runs/ascella-approved-order-pilot-retry/README.md)
+retains the repeated input-map error that ended the authorization.

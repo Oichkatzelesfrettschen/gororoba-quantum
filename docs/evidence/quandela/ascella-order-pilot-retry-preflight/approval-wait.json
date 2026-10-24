@@ -1,0 +1,23 @@
+{
+ "schema": "ascella-order-retry-wait-v1",
+ "retry_state": "planned-awaiting-independent-acquisition",
+ "retry_resource_requests_dispatched": 0,
+ "case_manifest_sha256": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
+ "circuit_sha256": "f2e7ea115d91f962cb045e824d8d3f5c3da432fe0b812e0e58dfc7b23f7ac550",
+ "observed_utc": "2026-10-22T21:30:26+00:00",
+ "independent_job_id": "4058ce4e-7892-4da4-9e86-7f78f5fa9777",
+ "independent_job_status": "waiting",
+ "independent_job_shots": 0,
+ "independent_collected_result_observed": false,
+ "availability": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 1,
+  "num_running_qt_jobs": 0
+ },
+ "ready_for_fresh_ascella_preflight": false,
+ "authenticated_current_per_job_offer_observed": false,
+ "remaining_account_balance_observed": false
+}
