@@ -1,0 +1,54 @@
+{
+ "schema": "qi-kernel-cancellation-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "k+pi_36-000.cq",
+    "k-pi_36-001.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "k-pi_36-010.cq",
+    "k+pi_36-011.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "k+pi_12-020.cq",
+    "k-pi_12-021.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "files": [
+    "k-pi_12-030.cq",
+    "k+pi_12-031.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "files": [
+    "b+pi_36-040.cq",
+    "b-pi_36-041.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "files": [
+    "b-pi_36-050.cq",
+    "b+pi_36-051.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}

@@ -186,12 +186,17 @@ Properties of the server that its code and gate hold:
 - Parameters carry schemas: a platform name matches `(qpu|sim):...`, a job
   id is hexadecimal with dashes, so a path such as `../../api/tokens` fails
   validation before any request.
+- The protocol validates JSON types and rejects undeclared arguments before
+  FastMCP compatibility conversion. Boolean photon counts and JSON-string
+  matrices therefore fail at the protocol boundary. The HTTP adapter bounds
+  responses to 64 MiB; an oversized or unusable JSON acknowledgment reports an
+  unknown outcome, which requires reconciliation before a mutation retry.
 
 | Tool | Parameters | Effect | Claude / Codex approval |
 |---|---|---|---|
 | `qd_platforms` | none | Explorer platforms with status, seconds per job, credits per shot, daily availability, next maintenance; the public list | allow / approve |
 | `qd_platform` | `name`, `include_bulk` | processor record with a `bulk_fields` map (`present`, `empty` or `absent` per serialized chip and HTML documentation, as the server sent them); a default read replaces a present bulk value with `{"stripped": true, "chars": N}` and `include_bulk` keeps the values | allow / approve |
-| `qd_availability` | none | the token's job limits and occupancy | allow / approve |
+| `qd_availability` | none | the token's job limits and occupancy; an explicitly unknown platform queue count and an offer to open the authenticated dashboard | allow / approve |
 | `qd_usage` | none | jobs and usage per token, token ids removed | allow / approve |
 | `qd_job_status` | `job_id` | one status read | allow / approve |
 | `qd_job_result` | `job_id`, `include_raw` | the result; string fields truncate at 8000 characters without `include_raw` | allow / approve |
@@ -206,7 +211,22 @@ server and fails when a tool other than `qd_cancel_job` names `request`, when
 any string names a `/qt/` route, or when the server imports a network module
 of its own.
 
+`qd_availability.platform_queue` separates the dashboard's pending-job count
+from token occupancy. Its `count` stays null and its `status` reads
+`requires-dashboard-session`; its action offers to open
+https://cloud.quandela.com/webide/ for sign-in and a platform-card read.
+The MCP server neither opens a browser automatically nor copies browser
+credentials. The [API audit](../../evidence/quandela/input-port-api-audit/README.md#dashboard-queue-and-accounting-boundaries)
+records the dashboard route, browser probe and limits of the available count.
+
 ## Explorer plan, credits and notebooks
+
+The [22 October token-usage and API audit](../../evidence/provider-api-audit/README.md) distinguishes
+free-credit consumption from purchased-credit consumption and from an unavailable remaining balance.
+Its Belenos simulator rows consume free credits despite the zero per-shot tariff. The report preserves
+the disagreement between public availability and the detailed Belenos calibration status, and leaves
+unreadable per-job/notebook offer fees unknown. Historical plan and catalogue observations below retain
+their own source dates; they are neither a live balance nor an execution authorization.
 
 The account holds the free Explorer offer. Its plan page reads: low job
 priority, one running job at a time, one waiting job at a time, at most
@@ -365,6 +385,10 @@ error or canceled job (or records its absence), requires the result's job id
 and shots to match the receipt and status, and parses the BSCount string itself: a result is service data,
 and `perceval.serialization.deserialize` evaluates parameter expressions.
 
+Spaced jobs of an approved case run unattended from a committed schedule
+through GitHub Actions, which calls the same plan, submit and collect
+([quandela-scheduled-runs.md](../../runbooks/quandela-scheduled-runs.md)).
+
 ## Strategy guide
 
 [strategy.md](strategy.md) is the living guide to cost, platform behavior,
@@ -509,23 +533,20 @@ transpiler model and the 84/84 mapping.
 
 ## Gates
 
-CI never imports Perceval: its gates read retained JSON and Markdown with the
-standard library. Every retained run enters docs/state/research_state.json
+The snapshot and retained-result validators read JSON and Markdown with the
+standard library. Circuit-conformance behavioral tests use the Perceval and
+exqalibur versions pinned in ci/requirements-ci.txt. Every retained run enters docs/state/research_state.json
 under the `quandela` provider in the change that retains it.
 
-Gates core-500 (`capture_qd_docs.py --check`), core-501 (its
-`--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
---agents docs/notes/quandela/README.md`), core-503 (its
-`--self-test`, the runner's stubbed-service contract included), core-504
-(`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
-`--self-test`), core-506 (`cd_two_blade_blocks.py --check
-docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
-`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
-retained run but the qpu:belenos mesh runs, which core-537 replays on the
-full tier), core-509 (its `--self-test`), core-510
+Gates `core-record-check-05` (`tests/test_cli_record_checks.py`) (`capture_qd_docs.py --check`), core-502 (`qd_platform.py check docs/evidence/quandela
+--agents docs/notes/quandela/README.md`), core-504
+(`qd_box_kite_cases.py --check results/quandela/cases`), `core-record-check-05` (`cd_two_blade_blocks.py --check
+docs/evidence/box_kite_census/two_blade_blocks.json`), core-508 (`qd_box_kite_analysis.py --check --runs-under
+results/quandela/runs` over every retained run whose case schema is a
+box-kite or Belenos mesh case, but the qpu:belenos mesh runs, which core-537
+replays on the full tier; the BDSC runs belong to the bdsc gates), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
-`--check-rca` replay of the leakage record), core-512 (its
-`--self-test`), core-515 (full tier, `--self-test-rule`: the decision
+`--check-rca` replay of the leakage record), core-515 (full tier, `--self-test-rule`: the decision
 rule on synthetic in-family and out-of-family truths), core-513 (full tier, `--self-test-static`: static offsets
 are declared on a static truth and on no dephasing, out-of-family or
 simulator data) and core-514 (full tier, `--check-static` of the retained
@@ -544,4 +565,7 @@ core-545 (`qd_belenos_cone.py --self-test`, the series readout rules
 included), core-546 (its `--check` of
 the light-cone reading), core-547 (its `--check-readout` of job-13, the
 seeded single job) and core-563 (its `--check-readout-series` of the
-payload-class series, job-14 and the extended job-16).
+payload-class series, job-14 and the extended job-16). The `--self-test` of
+`capture_qd_docs.py`, `qd_platform.py` (the runner's stubbed-service contract
+included), `qd_box_kite_cases.py`, `cd_two_blade_blocks.py`,
+`qd_box_kite_analysis.py` and `qd_belenos_mesh.py` runs in gates `core-self-test-02`, `core-self-test-07`, `core-self-test-08` and `core-self-test-09` (`tests/test_cli_self_tests.py`).

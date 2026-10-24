@@ -1,0 +1,12 @@
+{
+ "schema": "qi-bdsc-pauli-gate-v1",
+ "series": "bdsc_pauli_qx",
+ "batch": "batch-00",
+ "cases_sha256": "204ca2c2e6735ff717673bb3fe51e2411b236e867fa9aa23691db859c66b9395",
+ "predecessors": [],
+ "stops": {
+  "batches_checked": []
+ },
+ "control": null,
+ "backend_contract": "live record matches"
+}

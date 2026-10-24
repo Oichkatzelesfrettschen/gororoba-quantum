@@ -1,0 +1,249 @@
+{
+  "boundary": "Ideal local Perceval simulation of the retained sent computation; hardware instruments and their configuration are absent.",
+  "iterator_checks": [
+    {
+      "backend": "SLOS",
+      "samples_per_setting": [
+        8192,
+        8192,
+        8192,
+        8192,
+        8192,
+        8192,
+        8192,
+        8192
+      ],
+      "samples_total": 65536
+    },
+    {
+      "backend": "Naive",
+      "samples_per_setting": [
+        8192,
+        8192,
+        8192,
+        8192,
+        8192,
+        8192,
+        8192,
+        8192
+      ],
+      "samples_total": 65536
+    }
+  ],
+  "job_body_sha256": "3bc40b5d998c43097a68b25e251ce5451458968abc19f89ec6d56506e76d2011",
+  "manifest_sha256": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
+  "probability_checks": [
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 4.440892098500626e-16,
+      "name": "order-i0-j0-representative0",
+      "probabilities": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "setting": 0
+    },
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 4.440892098500626e-16,
+      "name": "order-i0-j0-representative1",
+      "probabilities": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "setting": 1
+    },
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i0-j1-representative0",
+      "probabilities": [
+        0.5000000000000002,
+        0.4999999999999999,
+        0.0,
+        0.0
+      ],
+      "setting": 2
+    },
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i0-j1-representative1",
+      "probabilities": [
+        0.4999999999999999,
+        0.5000000000000002,
+        0.0,
+        0.0
+      ],
+      "setting": 3
+    },
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i1-j0-representative0",
+      "probabilities": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "setting": 4
+    },
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i1-j0-representative1",
+      "probabilities": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "setting": 5
+    },
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i1-j1-representative0",
+      "probabilities": [
+        0.5000000000000002,
+        0.24999999999999994,
+        0.0,
+        0.24999999999999983
+      ],
+      "setting": 6
+    },
+    {
+      "backend": "SLOS",
+      "max_absolute_error": 2.7755575615628914e-16,
+      "name": "order-i1-j1-representative1",
+      "probabilities": [
+        0.25000000000000017,
+        0.49999999999999994,
+        0.24999999999999992,
+        0.0
+      ],
+      "setting": 7
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 4.440892098500626e-16,
+      "name": "order-i0-j0-representative0",
+      "probabilities": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "setting": 0
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 4.440892098500626e-16,
+      "name": "order-i0-j0-representative1",
+      "probabilities": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "setting": 1
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i0-j1-representative0",
+      "probabilities": [
+        0.5000000000000002,
+        0.4999999999999999,
+        0.0,
+        0.0
+      ],
+      "setting": 2
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i0-j1-representative1",
+      "probabilities": [
+        0.4999999999999999,
+        0.5000000000000002,
+        0.0,
+        0.0
+      ],
+      "setting": 3
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i1-j0-representative0",
+      "probabilities": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "setting": 4
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i1-j0-representative1",
+      "probabilities": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "setting": 5
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 3.3306690738754696e-16,
+      "name": "order-i1-j1-representative0",
+      "probabilities": [
+        0.5000000000000002,
+        0.24999999999999994,
+        0.0,
+        0.24999999999999983
+      ],
+      "setting": 6
+    },
+    {
+      "backend": "Naive",
+      "max_absolute_error": 2.7755575615628914e-16,
+      "name": "order-i1-j1-representative1",
+      "probabilities": [
+        0.25000000000000017,
+        0.49999999999999994,
+        0.24999999999999992,
+        0.0
+      ],
+      "setting": 7
+    }
+  ],
+  "request_comparison": {
+    "equal_except": [
+      "process_id"
+    ],
+    "matched": true
+  },
+  "schema": "ascella-local-serialized-replay-v1",
+  "seed": 20261023,
+  "source_sha256": {
+    "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
+    "results/local-simulation/ascella-serialized-order-replay/producer.py": "e3275f6b82169bf9b4969ee109b3356414336cac5c7a75bca62501c72a4af379",
+    "results/quandela/runs/ascella-approved-order-pilot-retry/cases.json": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
+    "results/quandela/runs/ascella-approved-order-pilot-retry/job-body.json": "3bc40b5d998c43097a68b25e251ce5451458968abc19f89ec6d56506e76d2011",
+    "results/quandela/runs/ascella-mosaiq-update-order-retry/job-body.json": "64904ad6515baf5f929b0223ce2bc4934d19fdbb6a086d812c51c87ca42f9d7a",
+    "scripts/bdsc_certificate.py": "5dbcd027eb24a303ba5757e00b0123e846bc3c86dab70a24dc1ae1f98b197753"
+  },
+  "versions": {
+    "exqalibur": "1.4.2",
+    "perceval-quandela": "1.3.1"
+  }
+}

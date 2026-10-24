@@ -1,0 +1,83 @@
+{
+ "case": "signed-kernel-probe",
+ "ideal": {
+  "+0.05": 0.02439024390243903,
+  "+0.25": 0.1111111111111111,
+  "-0.05": -0.02439024390243903,
+  "-0.25": -0.1111111111111111
+ },
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/t+0.25-00.json",
+     "sha256": "f75756cf948662d33e0a4c897873fc6c20babb53be6c5235b4c5d80f4f449306"
+    },
+    {
+     "file": "circuits/t-0.25-00.json",
+     "sha256": "df4701173f1862eb602529938a7ced9eaec46b9ca60d90bb9f718d7794c09646"
+    }
+   ],
+   "expected_seconds": 1.5,
+   "job": "strong",
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "zeros"
+   },
+   "shots": 20000
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/t+0.05-00.json",
+     "sha256": "f8c01c0df63e9e9dbbe7fb2eec9ed68fd01d4f254c679f145ac6a7ee699aac1a"
+    },
+    {
+     "file": "circuits/t+0.05-01.json",
+     "sha256": "bd82d00262ddfe22b464a64e7caea6448ee0c2a182582c7ce318681e66982e8b"
+    },
+    {
+     "file": "circuits/t+0.05-02.json",
+     "sha256": "fe3a7435c8262495e2015fb20881eff504f09aa02126c02b36c8c454a7c8b5d6"
+    },
+    {
+     "file": "circuits/t+0.05-03.json",
+     "sha256": "204e89ed1415a9c1684ffc10971bcbc69737850e415528a0ecdb01be4b4679f8"
+    },
+    {
+     "file": "circuits/t+0.05-04.json",
+     "sha256": "c24abed575182eddd738545887f06549d50c2d2616c76b85c30ccd0ee75a0145"
+    },
+    {
+     "file": "circuits/t-0.05-00.json",
+     "sha256": "871caa4c1d751e870a05576712dd5bbc4c16cfcbe926f0af6486cd47524d57e2"
+    },
+    {
+     "file": "circuits/t-0.05-01.json",
+     "sha256": "68d4a50e3cf0950cfe2f6ae7edcb286a15c4e1d367c683983d5f6dafdec91819"
+    },
+    {
+     "file": "circuits/t-0.05-02.json",
+     "sha256": "a1ced994f96b9ab780fa66d7f6b194642d56219316651e990fc90beabaf9137a"
+    },
+    {
+     "file": "circuits/t-0.05-03.json",
+     "sha256": "9e6a606480207bd501606923ba9c346530bc2d5aeff93497daa5cf118c1b7cb8"
+    },
+    {
+     "file": "circuits/t-0.05-04.json",
+     "sha256": "745f1d69731d3e0f710873eece5f848a7a4996b913187a59e8c8d0f2708c7ab3"
+    }
+   ],
+   "expected_seconds": 7.5,
+   "job": "weak",
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "zeros"
+   },
+   "shots": 20000
+  }
+ ],
+ "question": "Is the dilation overlap of the perturbed sedenion kernel odd in t on Garnet: does (Z(t) - Z(-t))/2 carry the sign of t, as Re<v|B(t)|u> = t/(2 + |t|) requires?",
+ "schema": "iqm-circuit-case-v1"
+}

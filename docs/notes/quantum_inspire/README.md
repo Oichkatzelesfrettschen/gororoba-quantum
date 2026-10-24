@@ -23,7 +23,7 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 | [platform-facts.md](platform-facts.md) | every fact the knowledge-base capture establishes, each with its source: per-backend constraints, retired backends, calibration, maintenance, account rules, tooling |
 | [tuna-17.md](tuna-17.md) | Tuna-17 result registers, the retained record of its readout drift, the readout ring-down verdicts and the runner and account rules the series established |
 | [experiments.md](experiments.md) | the Tuna-17 spectator-drive, teleportation and zero-divisor runs, their analyses and the Kingston-noise comparison |
-| [mcp.md](mcp.md) | the `quantum-inspire` MCP server: tools, permissions, registration |
+| [mcp.md](mcp.md) | the `quantum-inspire` MCP server: tools, permissions, registration and [public Grafana status and calibration dashboards](mcp.md#public-performance-dashboards) |
 | [cqasm.md](cqasm.md) | a working cQASM 3.0 reference with per-backend support |
 | [knowledge-base.md](knowledge-base.md) | a digest of every captured page, its link audit and the reconciled contradictions between pages, API and runs |
 | [citing.md](citing.md) | how to cite Quantum Inspire, its backends and tools, with BibTeX from registration records |
@@ -35,7 +35,7 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 
 `scripts/capture_qi_docs.py` keeps each source under a header naming its
 URL, retrieval time and digest, with `MANIFEST.json` in each directory;
-gate core-346 rechecks every byte offline.
+gate `core-record-check-05` (`tests/test_cli_record_checks.py`) rechecks every byte offline.
 
 | Directory | Source |
 |---|---|
@@ -114,7 +114,10 @@ exchanges only near expiry and writes the rotated tokens back atomically. A
 long-lived process (an MCP server) started before that rule restarts before
 QI work resumes.
 An agent that finds no login prompts the user to run `qi login` and approve
-the code; tokens never enter a commit, a log or memory.
+the code; tokens never enter a commit, a log or memory. An invalid_grant
+needs `qi login --force`, since plain `qi login` cannot recover it;
+[setup.md](setup.md#login-failures) holds the triage table by error text,
+the paths that spend a login and the exchange log that tells them apart.
 
 **Backends.** `scripts/qi_platform.py snapshot --out docs/evidence/quantum_inspire`
 reads the account's catalogue and ledger; gate core-347 renders this table
@@ -131,6 +134,9 @@ from the retained catalogue and fails when either changes alone:
 
 Backend instances: QX emulator (Cloud), Spin-2+ (TU Delft), Starmon-7 (TU Delft), Tuna-5 (TU Delft), Ry emulator (TU/eindhoven), Tuna-9 (TU Delft), Tuna-17 (TU Delft).
 <!-- quantum-inspire-facts:end -->
+
+The last two columns are the API's mechanical ceilings, not an allowance:
+on hardware the FAQ's 3 queued jobs governs ([usage.md](usage.md#queue-rules-the-faq-governs)).
 
 Status, queue length and heartbeat change between reads and live only in the
 snapshot. Spin-2+ and Starmon-7 appear as backend instances without a backend
@@ -162,9 +168,11 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 execution time fits 2.6 s per job plus
+the API's five batch jobs. No provider page sets an interval between
+submissions; [usage.md](usage.md#what-the-provider-requires) quotes every
+provider rule with its page and capture line. Tuna-17 execution time fits 2.6 s per job plus
 0.53 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
-and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
+and the account pause and the shared queue, not the shots, set a batch's cost; QX finished 2048
 shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
 between two reads minutes apart), delay queued jobs and charge the account
@@ -181,14 +189,17 @@ approval in submission.json and sends one batch; `collect CASE_DIR` writes
 the raw shots, job records and charged transactions. On hardware a batch
 holds at most three circuits and goes in only when none of the account's
 batches is queued, so at most three jobs are ever queued (the FAQ's limit
-under either reading of "job"); a series runs a QX dry run first, then
+under either reading of "job"; [usage.md](usage.md#queue-rules-the-faq-governs)
+holds the rule, and the FAQ governs over the API's 5 and 5); a series runs a QX dry run first, then
 submits each hardware batch only after the previous one is collected, passes
 its sanity checks and a pause. `submit` also refuses a hardware batch while
 any job of the account on a hardware backend type (`is_hardware`, whichever
 session submitted it) is unfinished or finished less than
-`HARDWARE_PAUSE_SECONDS` = 120 s ago, so sessions that share the account
-alternate with that pause and the platform can calibrate between batches;
-emulator batches skip the check. The case generators emit each experiment as
+`HARDWARE_PAUSE_SECONDS` ago, so sessions that share the account
+alternate. The pause is a repository rule: 30 s by default, raised to 60, 90
+and then 120 s after a platform failure ([usage.md](usage.md#pause-escalation));
+QX emulator batches skip the check, while the Ry emulator, which the API flags
+`is_hardware`, takes it. The case generators emit each experiment as
 a series of `batch-NN/` cases within that limit, and
 `scripts/check_qi_platform_retention.py` passes every generated batch through
 submit's checks up to the first request. Runs live under
@@ -204,9 +215,9 @@ resources) and qi_submit_case (executes through the retained-case runner).
 The legacy raw-string qi_submit refuses execution. Failures return isError with the
 service's message.
 
-**Gates.** core-346 (`capture_qi_docs.py --check`), core-347
+**Gates.** `core-record-check-05` (`capture_qi_docs.py --check`), core-347
 (`qi_platform.py check docs/evidence/quantum_inspire --agents docs/notes/quantum_inspire/README.md`),
-core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`),
+`core-record-check-05` (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`),
 core-331 (`--replay` of every retained analysis.json), core-348 and core-330
 (`qi_zero_divisor_cases.py --check` and `--replay`), core-332 and core-333
 (`qi_coupler_zz_map.py` case regeneration with conformance, and the replay of

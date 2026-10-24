@@ -1,0 +1,88 @@
+{
+ "schema": "qi-collection-v1",
+ "collected_utc": "2026-10-22T10:41:38+00:00",
+ "jobs": [
+  {
+   "file": "twin-cosine-03.cq",
+   "job": {
+    "id": 1567088,
+    "created_on": "2026-10-22T10:41:18.656615Z",
+    "file_id": 1577491,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 882197,
+    "queued_at": "2026-10-22T10:41:24.287006Z",
+    "finished_at": "2026-10-22T10:41:24.593522Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "7e1c9613-fa83-4f09-9408-5c76dce8beed",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1528516,
+     "created_on": "2026-10-22T10:41:24.500654Z",
+     "job_id": 1567088,
+     "execution_time_in_seconds": 0.078803,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0001010101": 117,
+      "0001010110": 135,
+      "0001011100": 138,
+      "0001011111": 106,
+      "0001100101": 137,
+      "0001100110": 140,
+      "0001101100": 128,
+      "0001101111": 120,
+      "0011000101": 124,
+      "0011000110": 118,
+      "0011001100": 147,
+      "0011001111": 112,
+      "0011110101": 138,
+      "0011110110": 121,
+      "0011111100": 134,
+      "0011111111": 133
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "readout-0.cq",
+   "job": {
+    "id": 1567089,
+    "created_on": "2026-10-22T10:41:19.435024Z",
+    "file_id": 1577492,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 882197,
+    "queued_at": "2026-10-22T10:41:24.639648Z",
+    "finished_at": "2026-10-22T10:41:25.122006Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "7e1c9613-fa83-4f09-9408-5c76dce8beed",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1528517,
+     "created_on": "2026-10-22T10:41:25.056363Z",
+     "job_id": 1567089,
+     "execution_time_in_seconds": 0.005708,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 2048
+     }
+    }
+   ],
+   "logs": null
+  }
+ ],
+ "transactions": []
+}

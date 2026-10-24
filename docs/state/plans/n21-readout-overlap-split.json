@@ -1,0 +1,24 @@
+{
+  "schema": "work-plan-v1",
+  "id": "n21-readout-overlap-split",
+  "kind": "implementation",
+  "summary": "n21-orbit-rca: readout-overlap split and spectator decomposition",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/2d475581f39af79a166695755fd2448ba0478fd6502ae22c221bd0e5450f348d.txt"
+  ],
+  "state": "inbox",
+  "scope": "n21-orbit-rca: readout-overlap split and spectator decomposition",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Source variants compared; historical assertions retain their source boundary. Current obligation-level validation needs the linked evidence."
+  },
+  "steps": [
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 GOROROBA_WORKERS=4` with `C=$HOME/.cache/gororoba-quantum` and `$C/ci-py3147/bin/python`: `ci/pinned_tool.py ruff check gororoba_quantum scripts ci`, `ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel` (NEVER run ruff format without --target-version py313; format only files you changed), `ci/pinned_tool.py mypy gororoba_quantum scripts ci`, `ci/run_gates.py --gates core-446,core-445,core-592,<new>,<n21_orbit_rca gates> --replay-python $C/replay-py3147/bin/python`. - core-408/409 (census) are known red pending another PR; leave the census alone.",
+      "state": "todo"
+    }
+  ]
+}

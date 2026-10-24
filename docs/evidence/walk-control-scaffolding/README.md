@@ -155,7 +155,7 @@ coherence after the orbit prefix's controlled swaps. A new member that
 executes CZ its law does not need fails the gate until it states why.
 `--check-dynamic` (gate core-409) rebuilds the planned groups and recomputes
 the dynamic rows against the record without the static classification.
-`--self-test` (gate core-406) classifies synthetic dynamic circuits of every
+`--self-test` (gate `core-self-test-08` (`tests/test_cli_self_tests.py`)) classifies synthetic dynamic circuits of every
 law and unchecked reason, a feed-forward copy beside a spectator CZ among
 them, `--self-test-undeclared` (core-407) requires the
 stored census to fail naming `folded_qpe_null` once its declaration is

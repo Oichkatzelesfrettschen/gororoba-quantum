@@ -32,6 +32,7 @@ from qiskit.transpiler.passes.synthesis import HLSConfig
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
+import qrng_seeds
 from order_finding import factor_order_finding, order_finding_plan
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -405,13 +406,17 @@ def _portable_output_path(output_path: Path | None) -> str | None:
 
 
 def _replay_command(
-    seeds: tuple[int, ...], candidates: tuple[Candidate, ...], output_path: Path | None, phase_bits: int = PHASE_BITS
+    seeds: tuple[int, ...],
+    candidates: tuple[Candidate, ...],
+    output_path: Path | None,
+    phase_bits: int = PHASE_BITS,
+    seed_spellings: list[str] | None = None,
 ) -> str:
     arguments = [
         '"$PYTHON"',
         "gororoba_quantum/compile_evidence.py",
         "--seeds",
-        *(str(seed) for seed in seeds),
+        *(seed_spellings if seed_spellings is not None else (str(seed) for seed in seeds)),
     ]
     if phase_bits != PHASE_BITS:
         arguments.extend(("--phase-bits", str(phase_bits)))
@@ -429,6 +434,7 @@ def capture(
     candidates: tuple[Candidate, ...],
     output_path: Path | None,
     phase_bits: int = PHASE_BITS,
+    seed_spellings: list[str] | None = None,
 ) -> dict[str, Any]:
     """Compile every requested candidate and return one self-describing record."""
     if not 1 <= phase_bits <= PHASE_BITS:
@@ -438,7 +444,7 @@ def capture(
         "schema_version": 3,
         "capture": "n21-heavy-hex-mcx-workspace",
         "qpu_executed": False,
-        "replay_command": _replay_command(seeds, candidates, output_path, phase_bits),
+        "replay_command": _replay_command(seeds, candidates, output_path, phase_bits, seed_spellings),
         "problem": {"modulus": MODULUS, "base": BASE, "phase_bits": phase_bits},
         "compiler": {
             "optimization_level": OPTIMIZATION_LEVEL,
@@ -473,7 +479,7 @@ def _write_atomic(output_path: Path, payload: str) -> None:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seeds", nargs="+", type=int, default=list(DEFAULT_SEEDS))
+    qrng_seeds.add_seed_argument(parser, "--seeds", nargs="+", default=list(DEFAULT_SEEDS))
     parser.add_argument(
         "--candidate",
         action="append",
@@ -492,7 +498,23 @@ def main() -> int:
         raise ValueError("transpiler seeds must form a nonempty set")
     requested_names = set(args.candidates) if args.candidates else {candidate.name for candidate in CANDIDATES}
     candidates = tuple(candidate for candidate in SELECTABLE_CANDIDATES if candidate.name in requested_names)
-    record = capture(seeds, candidates, args.out, args.phase_bits)
+    non_default = any(source != "default" for source in args.seeds_source)
+    record = capture(
+        seeds,
+        candidates,
+        args.out,
+        args.phase_bits,
+        qrng_seeds.spellings(seeds, args.seeds_source) if non_default else None,
+    )
+    if non_default:
+        experiment = (
+            qrng_seeds.repo_relative(args.out)
+            if args.out is not None
+            else f"candidates={','.join(candidate.name for candidate in candidates)} phase_bits={args.phase_bits}"
+        )
+        record["seed_source"] = qrng_seeds.seed_record(
+            "gororoba_quantum/compile_evidence.py", "--seeds", experiment, args.seeds_source
+        )
     payload = json.dumps(record, indent=2, sort_keys=True) + "\n"
     if args.out is None:
         sys.stdout.write(payload)

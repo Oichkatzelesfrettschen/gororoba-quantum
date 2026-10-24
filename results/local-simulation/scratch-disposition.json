@@ -1,0 +1,26 @@
+{
+  "schema": "local-simulation-scratch-disposition-v1",
+  "scope": "Artifacts created by the local photonic and compiler simulation task",
+  "files": [
+    {
+      "source_basename": "local-photonic-compiler-crosscheck.log",
+      "source_surface": "system temporary directory",
+      "type": "UTF-8 progress log",
+      "sha256": "c5aad64215d13ed282922a8a038161c24a832dfeb4c82c1d74824baa32fd591f",
+      "retained": "photonic-compiler-crosscheck/progress.txt",
+      "disposition": "Retain original bytes; lines identify initial harness failures and completion"
+    },
+    {
+      "source_basename": "physical-photonic-compiler-crosscheck.log",
+      "source_surface": "system temporary directory",
+      "type": "UTF-8 progress log",
+      "sha256": "529cf9a4ef30d28020d4210c47559347699cfb050e386773e807b09e4be4eaeb",
+      "retained": "physical-photonic-compiler-crosscheck/progress.txt",
+      "disposition": "Retain original bytes; lines identify each physical setting verdict"
+    }
+  ],
+  "launchers": "The task used direct tmux commands and the retained repository shell launcher; it created no temporary launcher file",
+  "environments": "The task used the pre-existing system and pinned Quantum Inspire interpreters; it created no virtual environment or package cache",
+  "generated_cache_policy": "Python bytecode caches are regenerable interpreter output, outside the retained scientific denominator; source and producer digests bind their reproducible inputs",
+  "shared_temporary_artifacts": "Other photonic-named gate ledgers, timings and launchers belong to the coordinating integration tasks and stay outside this task's ownership"
+}

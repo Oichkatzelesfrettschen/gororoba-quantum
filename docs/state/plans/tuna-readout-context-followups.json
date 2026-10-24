@@ -1,0 +1,43 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-readout-context-followups",
+  "kind": "experiment",
+  "summary": "Tuna-17 run design: platform configuration and the packed box-kite follow series",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/ae9ef495e877289317bad4eab1cf17cb1c9fd2c84a33823210fdd3bb88c00796.txt",
+    "docs/notes/quantum_inspire/tuna-17-run-design.md"
+  ],
+  "state": "inbox",
+  "scope": "Tuna-17 run design: platform configuration and the packed box-kite follow series",
+  "next_action": "Design a same-job phase-bin and depth reference.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The q13 context has retained resolution; new device questions require matched controls and their own written cases."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Design a same-job phase-bin and depth reference.",
+      "acceptance": "The q13 context has retained resolution; new device questions require matched controls and their own written cases.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Freeze a bias-aware line test.",
+      "acceptance": "The q13 context has retained resolution; new device questions require matched controls and their own written cases.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Separate remaining qubit readout contexts.",
+      "acceptance": "The q13 context has retained resolution; new device questions require matched controls and their own written cases.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-4",
+      "action": "Compare H versus Y90-X pricing, wait ladders and subset measurement.",
+      "acceptance": "The q13 context has retained resolution; new device questions require matched controls and their own written cases.",
+      "state": "todo"
+    }
+  ]
+}

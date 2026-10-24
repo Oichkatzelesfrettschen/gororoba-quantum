@@ -38,32 +38,40 @@
    "batch": "batch-04",
    "files": [
     "quadrature-k1.cq",
-    "quadrature-b1.cq",
+    "cosine-k1.cq",
     "quadrature-e7.cq"
    ]
   },
   {
    "batch": "batch-05",
    "files": [
-    "witness-07.cq",
-    "witness-08.cq",
+    "quadrature-b1.cq",
+    "cosine-b1.cq",
     "readout-0.cq"
    ]
   },
   {
    "batch": "batch-06",
    "files": [
-    "witness-09.cq",
-    "witness-10.cq",
+    "witness-07.cq",
+    "witness-08.cq",
     "readout-1.cq"
    ]
   },
   {
    "batch": "batch-07",
    "files": [
+    "witness-09.cq",
+    "witness-10.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-08",
+   "files": [
     "witness-11.cq",
     "witness-12.cq",
-    "readout-0.cq"
+    "readout-1.cq"
    ]
   }
  ]

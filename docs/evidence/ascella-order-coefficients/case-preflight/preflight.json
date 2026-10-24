@@ -1,0 +1,93 @@
+{
+ "admitted_statuses": [
+  "available"
+ ],
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "b4c98844ab2fa2d305fd53b544bee39b71308d77371a0f348a4fa416e22f5750",
+ "body_sha256_without_process_id": "e323b1c6fd98747215a7c7a4574ab10a08f5392c1fc0b5edfafafcde09905c07",
+ "case": "ascella-preflight4",
+ "cases_sha256": "3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520",
+ "credit_ceiling": 1.016384,
+ "estimated_credits": 1.016384,
+ "estimated_shots": 524288,
+ "expected_seconds": 200.0,
+ "max_credits": 1.016384,
+ "max_samples": 524288,
+ "max_shots": 1048576,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   338.0,
+   290.0,
+   270.0,
+   91.0,
+   113.0,
+   405.0,
+   227.0,
+   517.0,
+   2410.0,
+   3083.0,
+   3847.0,
+   568.0
+  ],
+  "HOM (%)": 87.28,
+  "g2 (%)": 1.9
+ },
+ "planned_utc": "2026-10-24T07:04:46+00:00",
+ "platform": "qpu:ascella",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Ascella QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "qpu:ascella",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-17": {
+    "availability": 89.79
+   },
+   "2026-10-18": {
+    "availability": 89.83
+   },
+   "2026-10-19": {
+    "availability": 89.93
+   },
+   "2026-10-20": {
+    "availability": 89.97
+   },
+   "2026-10-21": {
+    "availability": 89.4
+   },
+   "2026-10-22": {
+    "availability": 89.83
+   },
+   "2026-10-23": {
+    "availability": 90.81
+   },
+   "2026-10-24": {
+    "availability": 92.37
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

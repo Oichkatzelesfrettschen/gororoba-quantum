@@ -19,10 +19,15 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Open Quantum | brokered IonQ, Rigetti, IQM and AQT backends | [open_quantum/README.md](notes/open_quantum/README.md) |
 | Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
 | IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
+| QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
+| Local simulator cross-check | full-output photonic probabilities and precision-preserving cQASM export | [simulation evidence](../results/local-simulation/README.md), [complete optical outputs](../results/local-simulation/optical-operator-replay.json), [serialized Ascella request](../results/local-simulation/ascella-serialized-order-replay/README.md), [compiler replay provenance](../results/local-simulation/compiler-replay-provenance.md) |
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
+| Python | interpreters, library roles, optimization ladder | [PYTHON.md](PYTHON.md) |
 | CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
+| Planning | work records, next actions, blockers and completion receipts | [planning entrance](state/plans.md), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
+| Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
 
 ## Start here by task
@@ -32,22 +37,31 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 [Tuna-17](notes/quantum_inspire/experiments.md). The
 [hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
+native execution limits, billing units and MCP observations. The
+[current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
+density interventions and a separately labeled trapped-ion qualification; every generated program remains
+unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
+retains the historical checklist; the [planning catalogue](state/plan-catalogue.md) owns reconciled work status.
 The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
 the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
 
 The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
 and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
 The checksum-bound historical README and replay keep their bytes. The active source ledgers
-for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts),
-[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-contracts) and
-[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-contracts) bind the validated
-`cd_core.py` source and preserve every other identity in their historical `SHA256SUMS` files.
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-int-dimension),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-int-dimension) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-int-dimension) bind the
+`cd_core.py` whose dimension guard admits only exact int, and preserve every other identity of
+their `SHA256SUMS-exact-contracts` predecessors and historical `SHA256SUMS` files.
 
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
 with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
 The [determinant-contract successor](../results/live/rank-sector-endpoint-decomposition-determinant-contracts.json)
-also binds the extended `rank_polynomials.py`; its scientific fields remain identical.
+also binds the extended `rank_polynomials.py`; its scientific fields remain identical. The
+[exact-int-dimension successor](../results/live/rank-sector-endpoint-decomposition-exact-int-dimension.json)
+differs from it only in the `cd_core.py` digest.
 
 | Task | Read in order |
 |---|---|
@@ -55,7 +69,7 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | Quantum Inspire run | [README](notes/quantum_inspire/README.md), [usage.md](notes/quantum_inspire/usage.md), [tuna-17-run-design.md](notes/quantum_inspire/tuna-17-run-design.md) |
 | Open Quantum run | [README](notes/open_quantum/README.md), `scripts/oq_platform.py` estimate |
 | Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) |
-| IQM run | [README](notes/iqm/README.md), [os-4.7-emerald.md](notes/iqm/os-4.7-emerald.md) |
+| IQM run | [README](notes/iqm/README.md), [os-4.7.md](notes/iqm/os-4.7.md) |
 | Simulation and Kaggle | [README](notes/kaggle/README.md), [substrates.md](notes/kaggle/substrates.md), [gpu-runbook.md](notes/kaggle/gpu-runbook.md) |
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
@@ -81,6 +95,12 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | [quaternionic-optical-bound-reading.md](notes/papers/quaternionic-optical-bound-reading.md) | model-specific optical bound and Procopio/Adler exchange body-reading addendum |
 | [aflow-a_cf4-225-a.md](notes/papers/aflow-a_cf4-225-a.md) | AFLOW crystallographic prototype A_cF4_225_a |
 | [elkies-2013-m256.md](notes/papers/elkies-2013-m256.md) | Elkies 2013 course page on error-correcting codes |
+| [mckay-hadamard-matrices.md](notes/papers/mckay-hadamard-matrices.md) | McKay Hadamard equivalence-class data and the retained order-16 list |
+| [schafer-1954-cayley-dickson-flexible.md](notes/papers/schafer-1954-cayley-dickson-flexible.md) | Schafer 1954 flexibility of Cayley-Dickson algebras, metadata and secondary statement |
+| [2205.07986.md](notes/papers/2205.07986.md) | Ren and Zhao 2023 closed-form Cayley-Dickson twist function and its convention map |
+| [1107.1375.md](notes/papers/1107.1375.md) | Bales 2003 twisted group algebras and the recursive Cayley-Dickson twist, with its index and product convention |
+| [2103.12805.md](notes/papers/2103.12805.md) | Flaut and Boboescu 2021 twist-tree recursion and the twisted-group-algebra theorem for the Cayley-Dickson process (hosted, CC BY 4.0) |
+| [1003.0429.md](notes/papers/1003.0429.md) | Morier-Genoud and Ovsienko 2011 cubic twisted group algebras; the octonion cochain and the Cayley-Dickson algebras outside the cubic class |
 | [pmc-4957665-nonlinearity-measures.md](notes/papers/pmc-4957665-nonlinearity-measures.md) | nonlinearity measures for Boolean functions |
 
 ### Algebra and proofs
@@ -89,7 +109,17 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 |---|---|
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
+| [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
+| [cd-star-lattice-tower.md](notes/topics/cd-star-lattice-tower.md) | Tuna-17 as the Gaussian-integer star lattice; lifts to dimensions 3, 4, 8, 16, the Paley identification of their symmetry groups and the sedenion zero divisors |
+| [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |
+| [evidence/albuquerque-majid-convention/README.md](evidence/albuquerque-majid-convention/README.md) | replay of the Albuquerque-Majid cochain recursion against cd_sign: transposed map exact on 5,460 pairs, untransposed control fails, associators agree on 37,448 triples |
+| [evidence/cd-imaginary-sum-conference/README.md](evidence/cd-imaginary-sum-conference/README.md) | Rocq proof, for every Cayley-Dickson dimension, that right multiplication by the imaginary sum is a skew conference matrix, with its kernel receipts and the bridge to cd_sign |
+| [evidence/cd-tower-basis-sign/README.md](evidence/cd-tower-basis-sign/README.md) | Rocq proof, for every Cayley-Dickson dimension, that the tower's basis products are e_a e_b = sigma_k(a, b) e_(a XOR b) with sigma_k the cd_sign loop, the arc-matrix entries, and the Albuquerque-Majid Corollary 4.3 sign, with its kernel receipts |
+| [evidence/cd-sign-row-anf/README.md](evidence/cd-sign-row-anf/README.md) | Rocq proof, for every Cayley-Dickson dimension, of the ANF of the sign rows: Moebius inversion and uniqueness, the leading layer and exact degree of the left rows, and the exact degree of the right rows, with its kernel receipts |
+| [evidence/cd-associator-anf/README.md](evidence/cd-associator-anf/README.md) | Rocq proof, for every Cayley-Dickson dimension, of the exact ANF degree of the associator phases (Theorem 2 of the degree note), tied to the cd_sign factors of `predict.associator_phase` and to the tower product, with its kernel receipts |
+| [evidence/cd-sign-python-semantics/README.md](evidence/cd-sign-python-semantics/README.md) | Rocq proof, for every Cayley-Dickson dimension, that the syntax tree of `cd_core.cd_sign`, run under a semantics of the Python int subset it uses, returns the tower sign sigma and raises on invalid int arguments, with the extractor contract and kernel receipts |
+| [evidence/cd-associator-census/README.md](evidence/cd-associator-census/README.md) | Rocq proof, for every Cayley-Dickson dimension, of the census of unordered basis pairs by associator-phase ANF degree (21, then 3 2^d (2^(d+1) - 1) at degree d), with its kernel receipts |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
@@ -115,10 +145,14 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
+| [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
+| [design/iqm-garnet-signed-kernel-probe.md](design/iqm-garnet-signed-kernel-probe.md) | signed sedenion kernel probe on IQM Garnet: odd dilation overlap, heralded active reset, prediction |
+| [design/iqm-garnet-kernel-cancellation-probe.md](design/iqm-garnet-kernel-cancellation-probe.md) | kernel cancellation probe on IQM Garnet: zero-divisor sign at 37 CZ, bright control, over-rotation trains, H1-H5 |
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
+| [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
 | [coherence-case-submission-review.md](../plans/reviews/coherence-case-submission-review.md) | coherence-window case, submission-path review |

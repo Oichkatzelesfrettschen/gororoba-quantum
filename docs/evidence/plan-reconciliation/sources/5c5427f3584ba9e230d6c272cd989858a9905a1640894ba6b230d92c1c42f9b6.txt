@@ -1,0 +1,94 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/n21-rep-delay.md
+
+# n21-rep-delay: state-preparation control and a shorter repetition delay for the n21-feedback-encoded run
+
+Owner session: ibmquantum-12. Branch (planned): live-run/repetition-delay-state-prep-control. Gates: core-523 to core-526 (second range 520-539).
+
+## Finding
+
+The n21-feedback-encoded plan (PR #195, `N21_USAGE_BUDGET.md`) spends 78 percent
+of each shot pair on the backend's default 250 us `rep_delay`: 657.8 us per
+pair at 250 us, 357.8 at 100, 257.8 at 50. At 122,880 shots per PUB and R = 2
+the plan charges 83.1 s; the same plan at 100 us is about 45 s and at 50 us
+about 33 s (planner seconds scale with the per-pair column). IBM's
+repetition-rate guide (docs/notes/ibm_quantum/repetition-rate-execution.md)
+states that a lower `rep_delay` raises state-preparation error; no retained
+record measures by how much on Kingston, so the exact model, which starts
+every qubit in |0>, cannot size the run at a shorter delay.
+
+`live_run` always uses `qpu_planning.repetition_delay(backend)` (the default),
+in cost planning and in `sampler.options.execution.rep_delay` (live_run.py
+around 3917); no option or family sets or measures it.
+
+## Why IBM, and what the QI devices can and cannot do
+
+The question is a property of the Heron r2 device: how much residual
+excitation the n21 qubits on Kingston carry after `init_qubits` at a given
+`rep_delay`. AGENTS.md admits a device question on IBM.
+
+| Backend | Qubits / couplings | Shots per job (default / max) | Job limit | Batches | Relevant physics |
+|---|---|---|---|---|---|
+| QX emulator | 10, all-to-all (45) | 1024 / 2048 | 3600 s | 5 jobs per batch, 5 batches queued | noiseless statevector: no preparation error to measure |
+| Tuna-17 | 17, 24 couplings, bipartite | 8192 / 131072 | 300 s | repository: at most 3 circuits per batch, one queued batch, 120 s between batches | transmons; 0.60 to 0.94 ms per shot (the platform's 500 or 200 us initialization dominates), so 131072 shots take about 80 to 120 s and fit the 300 s limit; initialization time is set by the platform scheduler, not by the program |
+| Tuna-9, Tuna-5 | 9 / 12 couplings; 5 / 4 (star) | 8192 / 131072 | 300 s | as Tuna-17 | same initialization rule |
+| Ry emulator | 9, all-to-all (36) | 1024 / 1024 | 3600 s | 5 / 5 | no mid-circuit measurement; only an X-only program has run (box_kite_ry_ladder settles the gate set) |
+
+None of them can vary a repetition delay, and none measures Kingston, so the
+control runs on IBM. Tuna and QX stay the place for logic and toolchain
+questions (the n21 QX conformance check, core-499).
+
+## Design
+
+1. **`--rep-delay SECONDS`** in `live_run`: validated against
+   `backend.configuration().rep_delay_range` at planning and at each batch,
+   recorded in `policy` so the approval binds it, used by cost planning
+   (`qpu_planning` charge per pair) and set on the Sampler. Default unchanged.
+2. **Family `state-prep-control`** on a named layout (the n21 R = 2 placement
+   from the approved-record candidate): PUB A `init -> measure` on every
+   qubit (excited fraction = preparation plus readout error), PUB B
+   `init -> reset -> measure` (an active reset, which helps only where the
+   residual excitation exceeds the reset's readout misassignment), PUB C
+   `x -> measure` (the |1> column of the assignment matrix). Every qubit is
+   measured in each shot, so 14 qubits share the shots.
+3. **Exact model:** an initial per-qubit excitation epsilon as a channel
+   before the circuit in `dynamic_density` (bit-flip with probability
+   epsilon on |0>), so the n21 planner can size power with the measured
+   epsilon at the chosen delay; the n21 cross-check (core-487) extends to it.
+4. **Sizing:** 8192 shots per PUB resolves a per-qubit excess of 0.4
+   percentage points at 3 sigma (SE about 0.0011 at epsilon near 1
+   percent). Two jobs, `rep_delay` 50 us and 250 us (the baseline, which
+   also checks the calibration's `prob_meas1_prep0`): about 2 s overhead per
+   job plus 3 x 8192 shots x (rep_delay + about 10 us), about 3.5 s and
+   8.4 s, about 12 s in total. Preparation error falls monotonically with
+   delay (the guide's figure), so 50 us passing admits 100 us without a
+   third job.
+5. **Decision rule, stated before measuring:** choose the shortest delay
+   whose excess epsilon keeps the n21 plan's power at 0.8 within the 95 s
+   ceiling once the exact model carries it; add the initial reset only where
+   PUB B beats PUB A on that qubit. Expected saving on the n21 run: 83 s to
+   about 45 s at 100 us, for about 12 s of control.
+
+## Acceptance and falsifier
+
+- Contracts (qpu_planning_contracts): `--rep-delay` outside the range refuses;
+  the policy and approval comparison bind it; the charge model uses it.
+- `dynamic_density` with epsilon equals Aer with an initial `x` error of the
+  same probability (cross-check oracle).
+- Submit-free dry runs of `state-prep-control` and of n21 at 100 and 50 us
+  with an epsilon placeholder; the cases stay held for owner approval.
+- Falsifier: Kingston's excess epsilon at 50 us large enough that no delay
+  below 250 us keeps n21 within its ceiling, in which case the plan keeps
+  250 us and the control cost (about 12 s) is the price of knowing.
+
+## Shared files and dependencies
+
+gororoba_quantum/live_run.py, qpu_planning.py, dynamic_density.py,
+diagnostic_experiments.py, qpu_cases.py, ci/gates.json (core-523 to
+core-526), results/live/ dry-run records. Lands after PR #219 (parallel.py)
+only if it touches the same lines; independent otherwise.
+
+## Effort and agents
+
+One opus agent, about a day. No submission without the owner's approval of
+the written case; IBM time stays reserved until then.

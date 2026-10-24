@@ -1,0 +1,11 @@
+{
+  "number": 229,
+  "title": "live_run: bound repetition delay, state-prep control family and prep excitation in the exact model",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T22:02:29Z",
+  "closed_at": "2026-10-17T22:02:29Z",
+  "merge_commit_sha": "ff5c6fd1ab9719fd463a7fe575ee76366e7a93ca",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/229",
+  "merge_ancestor_of_canonical_head": true
+}

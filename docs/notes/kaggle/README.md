@@ -19,7 +19,7 @@ Kaggle kernels run every simulation of 14 qubits or fewer (root AGENTS.md,
 
 `scripts/capture_kaggle_docs.py` keeps Kaggle's own documentation here
 byte for byte, with `MANIFEST.json` in each directory naming every file's
-source URL and sha256 (gate core-283 rechecks the bytes):
+source URL and sha256 (gate `core-record-check-05` (`tests/test_cli_record_checks.py`) rechecks the bytes):
 
 | Directory | Source | Content |
 | --- | --- | --- |
@@ -107,7 +107,7 @@ retain its output under results/kaggle/. The kernel's own guide is
   set.
   `scripts/aer_gpu_probe.py --workloads n21 --configurations
   cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
-  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
+  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate `core-record-check-04`)
   cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
   the plain GPU executor at 7 and 10 qubits and statevector trajectories
   1.19 to 1.29 times slower, and Aer spread per-shot and batched runs over both
@@ -170,7 +170,7 @@ retain its output under results/kaggle/. The kernel's own guide is
     matches (`docs/notes/kaggle/custatevec.md`, "CUDA 13 build"). On the
     T4 x2 it ran every probe row with cuStateVec on; its GPU density-matrix
     rows draw the cu11 wheel's seeded counts, while seeded statevector
-    trajectories differ by build (gate core-442).
+    trajectories differ by build (gate `core-record-check-04`).
   - Only Python itself differs from CI's 3.14.7.
   - On a CPU machine the same push stops at the preflight, which proves the
     error path at no GPU cost.

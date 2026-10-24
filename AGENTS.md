@@ -12,11 +12,19 @@ lint and type-check configuration only. [ci/AGENTS.md](ci/AGENTS.md) holds the
 gate machinery: runner and shards, the gate ledger and premerge cache, the
 Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 
-**CI runs nightly.** The GitHub Actions workflow `ci.yml` runs every gate on
-main each night and on manual dispatch. A pull request's gates (the pr tier
-and its affected full gates, [ci/AGENTS.md](ci/AGENTS.md)) run by hand on the PR
-head before merge, never per commit or push, and the Codex review loop of
-[Reviews and merges](#reviews-and-merges) is the merge gate.
+**Pull requests and the audit.** The workflow `pr.yml` runs
+`sh ci/pr_checks.sh lint|types|tests` on every pull request push: Ruff and
+mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/, and
+pytest over tests/ with `-m "not audit"`. Branch protection on main requires
+the three checks `lint`, `types` and `tests` green on the head; with the Codex
+review loop they admit a merge ([Merging](#reviews-and-merges)), and no local
+gate run or premerge replay is required. Locally, `sh ci/pr_checks.sh tests
+PATH` runs the touched tests under the hosted environment; pushing needs no
+exhaustive run. `ci.yml` is the audit: every gate, the retained-evidence
+replays, the Rocq replays and the ledger, nightly on main and on manual
+dispatch ([ci/AGENTS.md](ci/AGENTS.md)). A failing scheduled run updates the
+issue "Nightly audit failing" with each failing gate and the claims citing it;
+it blocks no unrelated pull request.
 
 **Code style.** Every Python file a change touches passes, before each push,
 through `"$PYTHON" ci/pinned_tool.py TOOL ARGS` (the versions of
@@ -24,8 +32,10 @@ ci/requirements-ci.txt):
 - `ruff format --target-version py313` (120-column lines from pyproject.toml;
   the Python 3.13 target is the Quantum Inspire interpreter's);
 - `ruff check` (pycodestyle, pyflakes, import order, bugbear, pyupgrade, S101);
-- `mypy` on the touched files, and over the whole scope of gate core-039 when
-  a change alters a signature another module imports.
+- `mypy` on the touched files, and over gororoba_quantum/, scripts/, ci/,
+  tests/ and kaggle_kernel/ (from gororoba_quantum/: `mypy . ../scripts ../ci
+  ../tests ../kaggle_kernel`) when a change alters a signature another module
+  imports.
 
 A gate command run outside ci/run_gates.py needs `PYTHON` exported
 (`export PYTHON="${PYTHON:-python3}"`); an unexported assignment expands empty
@@ -49,6 +59,41 @@ experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 ../results/live`, whose audit record lands under results/live/. A change to
 `proofs/`, a replay bundle or its receipts follows the Rocq replay of
 [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
+
+**Seeds.** Every new random seed, on any provider or simulator, comes from a
+quantum random number generator: a numpy or `random` generator seed,
+`seed_transpiler`, `seed_simulator`, a Perceval `compilation_seed`, a bootstrap
+or null-calibration seed. The ANU QRNG serves first (`"$PYTHON"
+scripts/anu_qrng.py draw --out docs/evidence/anu_qrng`, keyed then keyless, no
+approval needed); [docs/notes/qrng/README.md](docs/notes/qrng/README.md) holds
+the fallback order, quotas, key files and approval rule of every source. The
+code or case cites the draw file and the index of every value it takes, in
+index order, each value used once. A seed that reproduces a retained record,
+an approved plan or a known compiled mesh is an identifier and keeps its value,
+because the record's replay and the approved-record comparison depend on it.
+The seed follows the job's question, not the circuit: a job that reproduces an
+earlier result imports the earlier seed constant by name, and a new job on an
+earlier circuit that needs its own randomness (an independent replicate, a
+fresh layout or twirl, a new mesh) takes new values from a draw.
+`ci/seed_provenance.py`, run by the `tests` check, requires every integer seed
+literal in the code directories to be a row of ci/reproduction_seeds.json,
+which only shrinks against main, or an entry of
+docs/evidence/qrng_seeds/allocations.json naming a registered source's draw
+that no case manifest owns and the index holding that value. A seed a CLI takes
+at run time goes through `qrng_seeds.add_seed_argument`, which accepts
+`qrng:<draw>#<index>`, the flag's default or `repro:<integer>` and refuses any
+other integer; the run record's `seed_source` names the spelling, and the
+change that retains a qrng-seeded run adds its ledger row with
+`"$PYTHON" ci/seed_provenance.py --add-runtime`.
+
+## Work planning
+
+[docs/state/plans.md](docs/state/plans.md) is the planning entry point. JSON records own work status;
+Markdown views are generated. Capture ideas cheaply, then record scope, owner, next action and checkable
+steps before committing work. Update records when scope changes, work pauses or an obligation closes.
+Completion requires scope-bound receipts; scientific claims and provider approvals keep their existing
+authorities. Reconcile JSON conflicts by hand, regenerate views and run `scripts/plan_tracker.py check`.
+The [operator procedure](docs/runbooks/plan-tracker.md) documents commands and shared-checkout locking.
 
 ## Source library and research replay
 
@@ -152,6 +197,10 @@ Binding rules for circuit and hardware work, before the notes open:
   `gororoba_quantum/cd_core.py` is the specification, and a package result
   enters evidence only through a declared map onto it, checked on every basis
   pair.
+- A hardware probe of an algebraic property passes the mutation test (the
+  ideal observable changes when the property is removed), lists its +-
+  arms +, -, -, + and decides against a null arm
+  ([Hardware probes](docs/notes/algebra_circuit_rules.md#hardware-probes)).
 - The account reaches ibm_fez, ibm_kingston and ibm_marrakesh, all Heron r2:
   156 qubits, heavy-hex, basis cz, id, rz, sx, x and xslow. The live Target is
   the timing authority (dt 4 ns), and `service.backends()` precedes naming a
@@ -206,6 +255,11 @@ build-host Python stack in
 
 ## Hardware services
 
+Future acquisition decision statements and job-specific cancellation authority
+follow [the evidence-closure procedure](docs/runbooks/evidence-closure.md).
+An account-wide queue grants no authority to cancel another worker's job.
+The derived closure snapshot is a view; it never replaces the research registry.
+
 Each provider guide holds the environment, credential handling, MCP
 registration, backend table, limits, gates and run procedure; the live provider
 pages stay the authority because they change. Tokens and keys live outside every
@@ -224,8 +278,8 @@ checkout and never enter a commit, log or memory.
   interpreter `iqm-python` of the iqm-resonance-stack package; MCP `iqm`; token
   pair file named by `IQM_TOKENS_FILE`.
 
-Every job (QPU, emulator, simulator or mock), upload, QRNG read, timeslot
-booking and notebook session on any provider waits for the user's approval of a
+Every job (QPU, emulator, simulator or mock), upload, provider QRNG read,
+timeslot booking and notebook session on any provider waits for the user's approval of a
 written case: what it measures, why a simulation cannot answer it, the backend,
 shots, expected seconds and expected credits. A Quantum Inspire hardware batch
 also keeps its pause and queue limits, and Open Quantum Public Compute makes
@@ -280,8 +334,9 @@ twirling and dynamical decoupling off.
 ## Reviews and merges
 
 Codex, the chatgpt-codex-connector app, supplies the default pull-request
-review. It reviews on open, and an issue comment `@codex review` requests a
-review of the current head.
+review. It reviews only on request: an issue comment `@codex review` asks for
+a review of the current head, so the operator posts one right after opening
+a PR and after every push that needs review.
 
 Codex is the only hosted reviewer. Copilot reviews are billed to the owner,
 so no pull request requests one; when the Codex app reports exhausted
@@ -353,7 +408,10 @@ code-review quota, the owner decides how the PR proceeds.
    what that review finds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
-4. GitHub reports mergeable_state clean.
+4. The `pr.yml` jobs `lint`, `types` and `tests` pass on the head. A push
+   that changes the head reruns them; a red job gets its fix commit on the
+   branch.
+5. GitHub reports mergeable_state clean.
 
 Then, bottom-up, for each PR:
 1. Merge it with a merge commit:

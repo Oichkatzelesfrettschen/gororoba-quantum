@@ -79,6 +79,9 @@ from qi_readout_ringdown_cases import arm_tau  # noqa: E402
 import parallel  # noqa: E402
 
 RUNS = ROOT / "results" / "quantum_inspire" / "runs"
+# The scan reads the runs stamped at or before this UTC stamp, the corpus tuna_17_shot_record_line.json holds;
+# a later run enters the scan only through a new stamp and a new record.
+CORPUS_THROUGH = "2026-10-18T165957Z"
 # backend_type_id of the backends whose strings put bit 0 rightmost.
 BACKENDS = {1: "QX", 7: "Tuna-17"}
 BAND = (0.019, 0.021)
@@ -223,7 +226,11 @@ def job_row(item: tuple[str, str, int]) -> dict[str, Any]:
 def inventory() -> list[tuple[str, str, int]]:
     """Every (run, circuit file, backend type) whose raw shots this scan reads, in path order."""
     items = []
-    for run in sorted(path for path in RUNS.iterdir() if (path / "results.json").exists()):
+    for run in sorted(
+        path
+        for path in RUNS.iterdir()
+        if (path / "results.json").exists() and path.name[: len(CORPUS_THROUGH)] <= CORPUS_THROUGH
+    ):
         backend = json.loads((run / "submission.json").read_text())["backend_type_id"]
         if backend not in BACKENDS:
             continue

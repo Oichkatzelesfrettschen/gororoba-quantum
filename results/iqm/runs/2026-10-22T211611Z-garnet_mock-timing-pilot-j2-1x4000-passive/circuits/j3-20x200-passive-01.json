@@ -1,0 +1,24 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m"
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "j3-20x200-passive-01"
+}

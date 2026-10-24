@@ -1,0 +1,5 @@
+Require CdImaginarySumConference.
+Print Assumptions CdImaginarySumConference.isum_laws.
+Print Assumptions CdImaginarySumConference.isum_skew.
+Print Assumptions CdImaginarySumConference.isum_conference.
+Print Assumptions CdImaginarySumConference.isum_skew_hadamard.

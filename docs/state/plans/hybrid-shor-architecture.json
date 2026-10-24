@@ -1,0 +1,49 @@
+{
+  "schema": "work-plan-v1",
+  "id": "hybrid-shor-architecture",
+  "kind": "investigation",
+  "summary": "Hybrid Shor architecture for IBM Heron r2",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/f29deebccca539e8e8b45b0c6d31d942b726c2e3d33e10df9a7a8d3d5dfe2d4e.txt",
+    "docs/design/hybrid-shor.md"
+  ],
+  "state": "inbox",
+  "scope": "Hybrid Shor architecture for IBM Heron r2",
+  "next_action": "Compare matched all-to-all compilation.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Retain exact or numerical scope per result; N35 follows a qualified N21 mechanism, and device execution needs a separate approved case."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Compare matched all-to-all compilation.",
+      "acceptance": "Retain exact or numerical scope per result; N35 follows a qualified N21 mechanism, and device execution needs a separate approved case.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Certify the three-clean M15 oracle and seed matrix.",
+      "acceptance": "Retain exact or numerical scope per result; N35 follows a qualified N21 mechanism, and device execution needs a separate approved case.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Optimize target-weighted Gray paths and per-multiplier synthesis.",
+      "acceptance": "Retain exact or numerical scope per result; N35 follows a qualified N21 mechanism, and device execution needs a separate approved case.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-4",
+      "action": "Qualify decoder margin before hardware admission.",
+      "acceptance": "Retain exact or numerical scope per result; N35 follows a qualified N21 mechanism, and device execution needs a separate approved case.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-5",
+      "action": "Certify signed-XOR primal and exact matching dual bounds.",
+      "acceptance": "Retain exact or numerical scope per result; N35 follows a qualified N21 mechanism, and device execution needs a separate approved case.",
+      "state": "todo"
+    }
+  ]
+}

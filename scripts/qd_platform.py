@@ -203,7 +203,7 @@ class RefusedError(PlatformError):
 
 
 class UnansweredError(PlatformError):
-    """The request reached no answer: the connection failed or timed out."""
+    """The request lacks a usable acknowledgment that establishes its outcome."""
 
 
 # Statuses a read may outlive: the service's own timeouts, throttling and gateway or upstream failures.
@@ -213,8 +213,8 @@ TRANSIENT_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
 def transient(error: PlatformError) -> bool:
     """A failed read worth repeating: a transient HTTP status, or no answer at all (network or timeout).
 
-    Any other failure (a missing token, an answer that is not JSON) recurs on
-    every attempt, so it raises at once.
+    A missing token and other local configuration failures raise at once.
+    A malformed or oversized response remains retryable for reads alone.
     """
     if isinstance(error, RefusedError):
         return error.code in TRANSIENT_STATUSES
@@ -264,11 +264,19 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
     call = urllib.request.Request(API + route, data=data, headers=headers, method=method)
     try:
         with OPENER.open(call, timeout=60) as response:
-            answer = response.read()
+            answer = response.read(RESULT_LIMIT + 1)
     except urllib.error.HTTPError as error:
-        detail = error.read()[:500].decode("utf-8", errors="replace")
-        error.close()
+        try:
+            detail = error.read(500).decode("utf-8", errors="replace")
+        except (OSError, http.client.HTTPException) as interrupted:
+            raise UnansweredError(
+                f"{method} {route}: HTTP {error.code} response interrupted: {interrupted!r}"
+            ) from None
+        finally:
+            error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
+        if method.upper() not in {"GET", "HEAD", "OPTIONS"} and (error.code == 408 or error.code >= 500):
+            raise UnansweredError(f"{method} {route}: HTTP {error.code}; remote mutation outcome is unknown") from None
         raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip(), error.code) from None
     # HTTPError subclasses URLError and is caught above. urlopen wraps only
     # connection setup in URLError; a connection dropped while the answer is
@@ -277,12 +285,14 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
     # is neither), and is unanswered as well.
     except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
         raise UnansweredError(f"{method} {route}: {error!r}") from None
+    if len(answer) > RESULT_LIMIT:
+        raise UnansweredError(f"{method} {route}: answer exceeds the {RESULT_LIMIT}-byte response limit")
     if raw:
         return answer
     try:
         return json.loads(answer) if answer else None
-    except json.JSONDecodeError:
-        raise PlatformError(f"{method} {route}: answer is not JSON: {answer[:200]!r}") from None
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        raise UnansweredError(f"{method} {route}: answer is not usable JSON") from None
 
 
 def get(route: str, auth: bool = True) -> Any:
@@ -417,6 +427,77 @@ def snapshot(out: Path) -> None:
     print(f"{len(explorer)} Explorer platforms, {len(public)} public platforms")
 
 
+OBSERVATION_SCHEMA = "qd-observation-v1"
+ACCOUNT_API = "https://api.account.quandela.com"
+# Every GET route of the retained cloud and account OpenAPI documents
+# (docs/notes/quandela/api/) plus the platform routes Perceval reads, except
+# routes that return token records (credentials), the QRNG routes (each read
+# is a billed provider request that needs an approved case) and the session
+# routes (logout, oauth). Job routes belong to collect.
+OBSERVED_ROUTES = (
+    ("cloud", "/", False),
+    ("cloud", "/health", False),
+    ("cloud", "/openapi.json", False),
+    ("cloud", "/qt-openapi.json", False),
+    ("cloud", "/api/platforms/public", False),
+    ("cloud", "/api/platforms/public/explorer", False),
+    ("cloud", "/api/jobs/availability", True),
+    ("cloud", "/api/tokens/usage/report", True),
+    ("account", "/", False),
+    ("account", "/health", False),
+    ("account", "/api/rss-feed", False),
+)
+
+
+def observed(host: str, route: str, auth: bool) -> dict[str, Any]:
+    """One route's answer, scrubbed of FORBIDDEN_KEYS when it is JSON, or the refusal that answered it."""
+    base = {"cloud": API, "account": ACCOUNT_API}[host]
+    headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
+    if auth:
+        headers["Authorization"] = f"Bearer {token()}"
+    entry: dict[str, Any] = {"host": base, "route": route, "auth": auth, "retrieved_utc": now()}
+    try:
+        with OPENER.open(urllib.request.Request(base + route, headers=headers), timeout=60) as response:
+            answer = response.read(RESULT_LIMIT + 1)
+            entry["http_status"] = response.status
+            entry["content_type"] = response.headers.get("Content-Type")
+    except urllib.error.HTTPError as error:
+        error.close()
+        return {**entry, "http_status": error.code, "refused": True}
+    except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
+        return {**entry, "unanswered": repr(error)}
+    if len(answer) > RESULT_LIMIT:
+        return {**entry, "unanswered": f"answer exceeds {RESULT_LIMIT} bytes"}
+    try:
+        value = json.loads(answer)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        # A non-JSON answer (the RSS feed, an HTML home page) is kept as text with its digest.
+        return {**entry, "sha256": sha256_bytes(answer), "text": answer.decode("utf-8", errors="replace")}
+    cleaned = scrub(value)
+    return {**entry, "sha256": sha256_bytes(json.dumps(cleaned, sort_keys=True).encode()), "json": cleaned}
+
+
+def observe(out: Path) -> None:
+    """Write out/observation.json: every observed route, then every platform's processor record, all raw."""
+    token()
+    routes = [observed(*route) for route in OBSERVED_ROUTES]
+    explorer = next(entry for entry in routes if entry["route"] == "/api/platforms/public/explorer")
+    names = sorted(row["name"] for row in explorer.get("json") or [] if isinstance(row, dict) and "name" in row)
+    for name in names:
+        routes.append(observed("cloud", platform_route(name), True))
+    record = {
+        "schema": OBSERVATION_SCHEMA,
+        "retrieved_utc": now(),
+        "versions": versions(),
+        "excluded": "token records, QRNG reads (billed), session routes; job routes are collect's",
+        "routes": routes,
+    }
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "observation.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    failed = [entry["route"] for entry in routes if "json" not in entry and "text" not in entry]
+    print(f"{len(routes)} routes observed; unanswered or refused: {failed or 'none'}")
+
+
 def span(low: int | None, high: int | None) -> str:
     if low is None and high is None:
         return "-"
@@ -479,6 +560,7 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
         "mcp.server",
         "mcp.server.fastmcp",
         "mcp.server.fastmcp.exceptions",
+        "mcp.server.fastmcp.server",
         "mcp.server.stdio",
         "mcp.types",
         "pydantic",
@@ -486,8 +568,10 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
     modules = {name: ModuleType(name) for name in names}
     modules["mcp.server.fastmcp"].FastMCP = ToolRecorder  # type: ignore[attr-defined]
     modules["mcp.server.fastmcp.exceptions"].ToolError = RuntimeError  # type: ignore[attr-defined]
+    modules["mcp.server.fastmcp.server"].Settings = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.server.stdio"].stdio_server = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.types"].ToolAnnotations = dict  # type: ignore[attr-defined]
+    modules["mcp.types"].Tool = MagicMock()  # type: ignore[attr-defined]
     modules["pydantic"].Field = MagicMock()  # type: ignore[attr-defined]
     spec = importlib.util.spec_from_file_location("qd_mcp_surface", server)
     if spec is None or spec.loader is None:
@@ -737,8 +821,9 @@ def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tu
             deviation = float(numpy.max(numpy.abs(actual - matrix)))
             if deviation > 1e-9:
                 raise PlatformError(f"{setting['name']}: the template misses its full operator by {deviation:.2e}")
-        for parameter in parameters.values():
-            parameter.reset()
+        if iteration_form(manifest) != "single":
+            for parameter in parameters.values():
+                parameter.reset()
     built = pcvl.Experiment(chip)
     built.with_input(pcvl.BasicState(circuit["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
@@ -932,10 +1017,16 @@ def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str)
 
     live = mesh.decode(architecture_blob(processor, platform))
     spec = circuit["architecture"]
-    if [p for k, _, p in live if k == "ps"] != spec["symbols"] or [[m, p[0]] for k, m, p in live if k == "bs"] != spec[
-        "couplers"
-    ]:
+    if (
+        any(p[1:] != (0.0, 0.0, 0.0, 0.0) for k, _, p in live if k == "bs")
+        or [p for k, _, p in live if k == "ps"] != spec["symbols"]
+        or [[m, p[0]] for k, m, p in live if k == "bs"] != spec["couplers"]
+    ):
         raise PlatformError("the live architecture differs from the case: regenerate the mesh case after recalibration")
+    if "ops" in circuit:
+        operations = [[kind.upper(), mode, index] for index, (kind, mode, _) in enumerate(live)]
+        if operations != circuit["ops"]:
+            raise PlatformError("the live architecture operation sequence differs from the case's native template")
 
 
 def live_architecture(processor: dict[str, Any], platform: str) -> None:
@@ -1023,7 +1114,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     computer.mitigations = None if policy is None else []
     form = iteration_form(manifest)
     mesh = manifest.get("gate_form") == "mesh"
-    template = form == "template"
+    template = manifest.get("gate_form") == "template"
     if mesh:
         built, settings = mesh_experiment(manifest, circuit)
     elif template:
@@ -1187,7 +1278,7 @@ def plan(
         message = hom_warning(platform, perfs, block_photons(circuit), case_dir.name)
         if message is not None:
             print(message, file=sys.stderr)
-    if manifest.get("gate_form") == "mesh":
+    if manifest.get("gate_form") == "mesh" or "architecture" in circuit:
         live_mesh(processor, circuit, platform)
     if "seeded_from" in manifest:
         live_architecture(processor, platform)
@@ -1246,8 +1337,14 @@ def submit(
     expected_seconds: float,
     per_job_credits: float,
     admit_statuses: tuple[str, ...] = (),
+    verify: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
-    """Send one approved case as one job while holding the token's submit lock beside the token file."""
+    """Send one approved case as one job while holding the token's submit lock beside the token file.
+
+    verify receives the plan whose body is posted, before the checkpoint is
+    written, so a caller's own stop conditions bind the request actually sent;
+    a PlatformError from it refuses the submission with nothing written.
+    """
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
     if load_case(case_dir)[0].get("draft"):
@@ -1259,6 +1356,8 @@ def submit(
         if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
         checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits, admit_statuses)
+        if verify is not None:
+            verify(checked)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
         receipt = {
             "schema": SUBMISSION_SCHEMA,
@@ -1556,6 +1655,15 @@ def result_summary(
             raise PlatformError("the result carries no serialized counts")
         return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
     else:
+        if not complete and not inner["results"].startswith(":PCVL:"):
+            return {
+                "shots": shots,
+                "partial": True,
+                "counts": {},
+                "samples": 0,
+                "error": inner["results"][:2000],
+                "result_fields": scalar_tree({key: value for key, value in inner.items() if key != "results"}),
+            }
         counts = parse_counts(inner["results"])
     # An iterated answer's top-level shots is one iteration's max_shots; each
     # entry reports the shots it used, and their sum is what the job consumed.
@@ -1632,6 +1740,22 @@ def run_facts(directory: Path) -> dict[str, Any]:
         raise PlatformError(f"{owner}: results.json names another job or schema")
     if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
         raise PlatformError(f"{owner}: results.json carries {carried}")
+    returned = collected.get("data", {}).get("payload")
+    if (
+        manifest.get("schema") == "qd-hypercomplex-cases-v1"
+        and "logical_modes" in manifest
+        and collected.get("status", {}).get("status") == "completed"
+        and not isinstance(returned, dict)
+    ):
+        raise PlatformError(f"{owner}: completed full-output acquisition lacks its returned payload")
+    if isinstance(returned, dict):
+        echoed = dict(returned)
+        # The worker adds its version to the payload; the sent fields retain
+        # their exact JSON structures, including compilation parameters.
+        if "pcvl_version" not in body["payload"]:
+            echoed.pop("pcvl_version", None)
+        if echoed != body["payload"]:
+            raise PlatformError(f"{owner}: returned payload differs from job-body.json")
     status = collected["status"]["status"]
     if status not in TERMINAL:
         raise PlatformError(f"{owner}: job status {status} is not terminal")
@@ -1751,6 +1875,20 @@ def charged(
     one_job = jobs_before is not None and jobs_after == jobs_before + 1
     if before is not None and after is not None and same_month and after >= before and one_job:
         return round(after - before, 6)
+    # A job canceled before its start time ran nothing and is charged nothing (bdsc-acceptance-diagnostics.md).
+    # Shots read from a returned result (shots), and a start time or duration in the job data, count as
+    # execution even when the status omits them.
+    status = collected.get("status") or {}
+    data = collected.get("data") or {}
+    if (
+        status.get("status") == "canceled"
+        and status.get("start_time") is None
+        and not status.get("shots")
+        and not shots
+        and data.get("start_time") is None
+        and data.get("duration") is None
+    ):
+        return 0.0
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
     if manifest is not None and iteration_form(manifest) != "single":
@@ -1796,6 +1934,25 @@ def charge_self_test() -> None:
     got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 3600000, iterated)
     if got != 1.6:
         raise SystemExit(f"self-test: charged() read {got} for an iterated job across a reset, not 1.6")
+    # A job canceled before it started costs nothing even when another job shares its usage window; one
+    # canceled after its start keeps the billing rule.
+    for start, want in ((None, 0.0), (1792667218.0, 1.01)):
+        status = {"status": "canceled", "start_time": start, "shots": 0}
+        collected = {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status}
+        got = charged(submission, collected, 0 if start is None else 10000)
+        if got != want:
+            raise SystemExit(f"self-test: charged() read {got} for a job canceled with start {start}, not {want}")
+    # A canceled job whose status omits start and shots but whose result returned shots keeps the billing rule.
+    status = {"status": "canceled", "start_time": None}
+    got = charged(submission, {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status}, 10000)
+    if got != 1.01:
+        raise SystemExit(f"self-test: charged() read {got} for a canceled job that returned 10000 shots, not 1.01")
+    # A canceled status without a start time keeps the billing rule when the job data records one.
+    started = {"start_time": "2026-10-22T17:10:00+00:00", "duration": 4.0}
+    collected = {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status, "data": started}
+    got = charged(submission, collected, 0)
+    if got != 1.0:
+        raise SystemExit(f"self-test: charged() read {got} for a canceled job whose data records a start, not 1.0")
 
 
 def seed_self_test() -> None:
@@ -2599,6 +2756,8 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command")
     p = sub.add_parser("snapshot")
     p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser("observe")
+    p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("check")
     p.add_argument("directory", type=Path)
     p.add_argument("--agents", type=Path, nargs="+", help="files carrying the quandela-facts section")
@@ -2633,6 +2792,11 @@ def main() -> int:
     elif args.command == "snapshot":
         try:
             snapshot(args.out)
+        except PlatformError as error:
+            raise SystemExit(str(error)) from None
+    elif args.command == "observe":
+        try:
+            observe(args.out)
         except PlatformError as error:
             raise SystemExit(str(error)) from None
     elif args.command == "check":

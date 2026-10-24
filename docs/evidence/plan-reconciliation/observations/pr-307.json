@@ -1,0 +1,11 @@
+{
+  "number": 307,
+  "title": "n21-orbit-rca: pin roles, split the readout overlap, retain two ibm_fez runs",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-19T18:28:57Z",
+  "closed_at": "2026-10-19T18:28:57Z",
+  "merge_commit_sha": "e9e4152079ab90d031fa6abf7f766c09f6a06215",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/307",
+  "merge_ancestor_of_canonical_head": true
+}

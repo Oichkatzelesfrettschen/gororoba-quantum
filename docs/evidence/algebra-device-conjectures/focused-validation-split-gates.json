@@ -1,0 +1,109 @@
+{
+  "boundary": "Focused offline gates after split-gate reconciliation; head-specific hosted validation remains pending.",
+  "checkout_head": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
+  "evidence_class": "implementation validation",
+  "gate_run": {
+    "cpu_capacity": 12,
+    "gates": [
+      {
+        "estimated_seconds": 13.0,
+        "name": "core-630",
+        "resources": {
+          "max_rss_kib": 107416,
+          "system_seconds": 0.543604,
+          "user_seconds": 9.730812,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 7.044051056000171,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 12.0,
+        "name": "core-670",
+        "resources": {
+          "max_rss_kib": 684412,
+          "system_seconds": 1.4155959999999999,
+          "user_seconds": 11.878222,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 11.375738359987736,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 53.0,
+        "name": "core-671",
+        "resources": {
+          "max_rss_kib": 1297560,
+          "system_seconds": 2.825483,
+          "user_seconds": 16.023789,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 21.125586910988204,
+        "status": 0
+      },
+      {
+        "estimated_seconds": 1.0,
+        "name": "core-plan-tracker",
+        "resources": {
+          "max_rss_kib": 26788,
+          "system_seconds": 0.070239,
+          "user_seconds": 0.525335,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 0.529350388009334,
+        "status": 0
+      }
+    ],
+    "ledger_audit_misses": [],
+    "schema": "gororoba-gate-timings-v1",
+    "shard": "0/1",
+    "shard_cpus": 4,
+    "skipped": [],
+    "wall_seconds": 21.134194810991175
+  },
+  "inputs": [
+    {
+      "path": "scripts/algebra_device_conjectures.py",
+      "sha256": "9c5c74b6c748ceeed4d2fc258b1fe72418ce19d78348312a7fdb95a29b356d4a"
+    },
+    {
+      "path": "scripts/algebra_conjecture_circuits.py",
+      "sha256": "ba8eedcd05d922f0bcc2a45a864fbba2b3a3f803fe78cc0c22acc90ea7311247"
+    },
+    {
+      "path": "docs/evidence/algebra-device-conjectures/manifest.json",
+      "sha256": "8892a94a820bb2a14a506154a4e5ac3588a7b05854496ea8e7183b0431a2672a"
+    },
+    {
+      "path": "docs/evidence/algebra-device-conjectures/result.json",
+      "sha256": "a7575c1822ec7b7ec8c60cf7c81c9e604a01ae7e1960baa066d5bae1cb1a1b0d"
+    },
+    {
+      "path": "docs/state/hypercomplex-libraries/libraries.json",
+      "sha256": "520149a4008fe8b6b81598dbcf4083771c4c54b16e86f567960ae4e864cf1116"
+    },
+    {
+      "path": "ci/gates.json",
+      "sha256": "c12f6cd9c25ee8795bd9eed77801047ce77a33e52e4804af6c7597ca9a00266b"
+    },
+    {
+      "path": "ci/full_gate_inputs.json",
+      "sha256": "8ba5db6c2fc30f146a49aaf3dd37f071ec10d45e19c0b00e7f965f00e9df8a54"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "14ee36b6f1f748191cd08f3f85ddb3b248aea27a696b97dae2b7951c60c491d7"
+    }
+  ],
+  "observed_at": "2026-10-23T20:49:34.676726+00:00",
+  "predecessor": {
+    "ref": "docs/evidence/algebra-device-conjectures/focused-validation.json",
+    "sha256": "aed12a5dc08a1a532eac8239e2e21689e3c2ca6ac837755c86edd04024eed1df"
+  },
+  "python": "3.14.7",
+  "schema": "algebra-device-focused-validation-v1"
+}

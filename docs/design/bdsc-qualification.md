@@ -416,6 +416,394 @@ access mode. A confirmation sample count is frozen only after that, and it
 is planned over the number of independent compilations as well as trials
 per compilation.
 
+The diagnostic selected the stationarity branch, and the
+[stationarity case](#stationarity-under-a-stray-detector-veto) below is the
+next acquisition.
+
+## Stationarity under a stray-detector veto
+
+The crossed diagnostic selected the stationarity branch on its raw one-click
+fractions. Its exploratory reanalysis, `scripts/bdsc_stray_mode_veto.py`
+([readout](../../results/quandela/bdsc_stray_mode_veto.json), claim
+`qd-belenos-bdsc-stray-mode-veto`), places that change in one detector.
+Output mode 5 lies outside every selection and every target support of the
+case. Its dark-count rate in each run's receipt (`perfs_at_plan`) is the
+largest of any mode: 3137.7 per second before block 1 and 1847.5 before
+block 2, while every other mode read at most 80.9.
+
+- **Matched block changes.** Across the 48 matched instances, the mode-5
+  share of one-click samples changed by -0.0069 with an SD of 0.0119. All
+  other off-support modes together changed by +0.0002 with an SD of 0.0026.
+- **Dark-rate tracking.** The block-mean mode-5 share fell from 0.0144 to
+  0.0075. The ratio, 0.52, sits near the dark-rate ratio of 0.59.
+- **Job-level spread.** The two block-1 jobs share one plan-time reading,
+  yet their mean shares differ (0.0123 and 0.0165). A plan-time figure does
+  not resolve job-level variation.
+- **Perf-exposure diagnostic (no reading).** If acquisition time scaled as
+  1 / physical_perf, a fixed dark rate D would make the share rise with
+  D / physical_perf. [strategy.md](../notes/quandela/strategy.md) records
+  that timing model as unconfirmed, and physical_perf moves with the sample
+  budget, so these ranks are reported and decide nothing:
+  - within block 1, 0.39 (p 0.006) on 1 / physical_perf;
+  - within block 2, -0.13 (p 0.37);
+  - pooled on D / physical_perf, 0.19 (p 0.06).
+- **Veto result.** With mode 5 vetoed, the heterogeneity of the matched
+  changes about their class means falls from 553 to 58.0 on 45 degrees of
+  freedom (p 0.09).
+  - The two definitions below agree: 57.98 for subtracting mode-5 one-click
+    samples and 58.04 for removing the detector from every pattern.
+  - The g basis state's block shift reads -0.0007 (z -3.6) instead of
+    +0.0035.
+  - A common superposition shift of -0.0044 (z -7.2) remains, together with
+    the state-by-seed interaction.
+
+Contract C's loss-only identity assumes negligible dark counts, and mode 5
+violates that assumption. The veto was chosen after these outcomes were
+seen, on runs read descriptively, so it names a hypothesis that the
+stationarity case tests on new data.
+
+**The veto definition is frozen on physical grounds before new data.** A
+dark click is independent of the prepared state.
+
+- *Alone*, a dark click adds a mode-5 one-click sample to the denominator.
+  This is the additive bias.
+- *Coincident with a genuine click in mode m*, it turns that sample into a
+  two-click pattern. Every mode is thinned by the same factor, so the
+  conditional fractions stay unbiased.
+
+The estimators follow from that:
+
+- *Primary (`detector_absent`).* Detector 5 is removed from every detection
+  pattern before the one-click rule. The eligible set then does not depend
+  on mode 5's rate, and it keeps the coincident trials.
+- *Secondary (`subtract`).* Mode-5 one-click samples leave the eligible
+  count. It is reported beside the primary.
+
+**The paired falsifier of the dark-click reading** is frozen as
+`coincidence_test`. The primary eligible set is the secondary set plus the
+coincident trials: patterns with one mode-5 click beside exactly one other
+click. The two sets of trials are disjoint within each iteration.
+
+- *Statistic.* For each instance, with c coincident trials, n secondary
+  trials and pooled fraction p,
+  z = (p_c - p_s) / sqrt(p (1 - p) (1 / c + 1 / n)), where p_c and p_s are
+  the selected fractions of the two sets.
+- *Pooling.* T is the sum of z^2 over every instance with c > 0 and
+  0 < p < 1. It is one statistic, so it needs no multiplicity correction.
+- *Calibration.* Coincident counts are as small as one, so a chi-square
+  tail does not calibrate T. Under a state-independent dark click, the
+  coincident trials are an exchangeable subset of the instance's trials.
+  Conditional on each instance's margins, the coincident selected count is
+  therefore hypergeometric. The p-value is (1 + #{T* >= T}) / (1 + R) over
+  R = 100000 seeded draws of that conditional null (seed 20261023). The
+  chi-square tail is reported beside it and decides nothing.
+- *Decision.* A resolved reading (p < 0.01) means mode-5 clicks correlate
+  with the prepared state and rejects the dark-click reading.
+- *Retained data.* T reads 47.7 over 66 instances: conditional p 0.40,
+  consistent (the chi-square reference reads 0.96).
+
+The veto names mode 5 by number. The case stops unless mode 5 reads a
+plan-time dark-count rate above every one of the other 23 modes, selected
+and on-support ones included: a hotter detector would stay inside both veto
+estimators.
+
+**A two-block repeat with crossed slots.** Each (template, seed) group runs
+in one job slot per block, and the groups of block 1's job 1 run as block
+2's job 2 at matched positions (and the reverse).
+
+- *Common shift.* Half the groups move from job 1 to job 2 and half the
+  other way. A job-slot effect that adds the same amount to every group
+  therefore cancels in the class-mean shift of the superpositions, and that
+  shift reads a change between the two acquisition windows. A slot effect
+  that differs between groups does not cancel, so this reading assumes an
+  additive, group-independent slot effect.
+- *Group-by-block contrast.* No group runs in both slots within a block, so
+  the class-mean change of the groups that moved from job 1 to job 2, minus
+  that of the groups that moved the other way, is confounded: either a slot
+  effect or a group-specific change between the windows. It is reported as
+  that confounded contrast and decides nothing.
+
+The stationarity case repeats the diagnostic's four frozen requests with
+the same seeds, parameters, groups, drawn order, circuit and empty
+mitigation list, so it needs no new QRNG read. Only the sample budget
+changes, from 40000 to 100000 samples per iteration, with max_shots 120000.
+`scripts/bdsc_stationarity.py --check` proves that every other field equals
+its source manifest
+([case.json](../evidence/bdsc/stationarity/case.json)):
+
+| Block | Jobs | Timing |
+|---|---|---|
+| S1 | `b1-j1`, then `b1-j2` | first |
+| S2 | `b2-j1`, then `b2-j2` | starts at least one hour after S1's last execution ends |
+
+The case does not separate a slow drift from a step change between the two
+windows, and it makes no claim of stationarity within one window.
+
+**Preregistered falsifiers and readings,** all under the primary veto.
+A test reads resolved at p < 0.01 and consistent at p >= 0.05, as in the
+diagnostic.
+
+- **Primary.** The heterogeneity of the S1-to-S2 matched changes about their
+  class means reads consistent. A resolved reading falsifies the claim that
+  mode 5 carried the instance-specific drift.
+- **Dark-click falsifier.** `coincidence_test` on all 96 instances, as
+  defined above.
+- **Common shift.** The superposition class-mean change S1 to S2, with its
+  z, read as a window effect. Whether it repeats the retained -0.0044 in
+  sign is reported and decides nothing.
+- **Group-by-block contrast.** Reported with its z as a slot or
+  group-specific window effect, confounded by design.
+- **Reported only.**
+  - The raw block change of the mode-5 share against the change of the
+    plan-time and post-collection dark-count rates.
+  - The mode-5 share against a prediction fixed before submission. The
+    plan of 2026-10-23 reads mode 5 at 49520.9 counts/s, against 3137.7 and
+    1847.5 before the diagnostic's blocks; every other mode reads at most
+    130.6. The share is d / (d + g) for a mode-5 click rate d beside the
+    genuine one-click rate g, so a rate-tracking source scales the odds
+    s / (1 - s) with the plan-time rate. The retained block-mean shares
+    (0.0144 at 3137.7, 0.0075 at 1847.5) then predict 0.17 to 0.19. A share
+    near the retained 0.007 to 0.016 means the plan-time figure does not
+    track the acquired dark clicks. Either outcome is reported and decides
+    nothing. Observed after the fact: b1-j1 read a mean mode-5 share of
+    0.093 across its 24 iterations, with a range of 0.019 to 0.276. The
+    mean lies between the two predictions, and the spread across settings
+    shows that a single job-level odds figure is the wrong form for the
+    prediction: the share depends on the setting's genuine one-click rate
+    g. About 0.91 of b1-j1's samples stayed eligible under the primary
+    veto, against the 0.81 the job-level prediction implied.
+  - At that share about 0.81 of each iteration's samples stay eligible
+    under the primary veto, so the primary's power against the retained
+    residual sits somewhat below the projection's 0.72, which assumed
+    every sample eligible.
+  - The perf-exposure diagnostic, and the mode-5 share against each job's
+    recorded duration per sample, an acquisition exposure that does not
+    rest on the unconfirmed physical_perf timing model.
+  - The position trend of the mode-5 share in each job. Two diagnostic jobs
+    read rank correlations of -0.49 and -0.47.
+  - Whether the seed-by-state interaction reproduces at fixed seeds.
+  - Whether each returned circuit equals its retained diagnostic
+    counterpart.
+  - The excess variance tau^2 of the matched changes per class
+    (superposition, f, g), raw and under each veto, by the Paule-Mandel
+    estimate with its Q-profile 95 % interval, and the share of the raw
+    tau^2 that the veto removes. A common tau^2 does not fit the classes:
+    the reference errors of f and g lie near 0.0005 and those of the
+    superpositions near 0.0035.
+
+**Sensitivity at 100000 samples.** The retained data fix what the primary
+test can see
+([retained replay](../../results/quandela/bdsc_stationarity_retained.json),
+rebuilt by `scripts/bdsc_stationarity.py --check`).
+
+- Under the primary veto the superposition class keeps tau = 0.0021
+  (interval to 0.0042), while f and g read tau^2 consistent with zero. The
+  veto removes 0.84 of the superpositions' raw tau^2 (lower bound 0.40) and
+  all of g's (lower bound 0.98).
+- A seeded projection (10000 replicates per scenario, seed 20261023) at
+  the retained reference errors scaled to 100000 samples gives the primary
+  these readings:
+  - with no residual (tau^2 = 0), consistent with probability 0.95;
+  - with the retained residual at its point estimate, resolved with
+    probability 0.72 (0.19 at 40000 samples).
+- A resolved primary therefore separates "mode 5 carried all of the
+  instance-specific change" from "a residual superposition change of about
+  0.002 remains". The per-class tau^2 states which of the two holds and how
+  much the veto removed. It is reported and decides nothing.
+
+**Readout of the stationarity case.** The four post-calibration runs (the
+repeat of b1-j1, b1-j2, b2-j1 and b2-j2, all 2400000 samples, every
+returned circuit equal to its retained counterpart) read as follows under
+the primary veto
+([readout](../../results/quandela/bdsc_stationarity_readout_pinned.json), the runner image's
+replay of the [retained readout](../../results/quandela/bdsc_stationarity_readout.json), which differs in the last ulps):
+
+- **Primary.** The heterogeneity of the matched changes reads 66.1 on 45
+  degrees of freedom (p 0.022): inconclusive, between the resolved and
+  consistent thresholds. It neither falsifies nor supports the claim that
+  mode 5 carried all of the instance-specific drift. The secondary veto
+  (`subtract`) reads 65.0 (p 0.027).
+- **Dark-click falsifier.** Consistent (statistic 103.3, p 0.31).
+- **Common shift.** The superposition class-mean change reads +0.0003
+  (z 0.8), so the retained -0.0044 does not repeat in sign or size.
+- **Group-by-block contrast.** -0.0002 (z -0.2), confounded by design.
+- **Excess variance.** The superpositions keep tau = 0.0021 (Q-profile
+  interval from 0.0009 to 0.0035, Q 55.7 on 31, p 0.004), the size of the
+  retained residual the sensitivity projection assumed. f and g read tau^2
+  consistent with zero. The veto removes 0.999 of the superpositions' raw
+  tau^2 and all of g's.
+- **Mode-5 share.** Its block means read 0.249 and 0.057 while every plan
+  and post-collection reading held mode 5 at 48440.3 counts/s, so within one
+  calibration the share changed fourfold at a constant platform figure. The
+  plan-time dark-count rate does not track the acquired mode-5 clicks, and
+  the dark-click mechanism stays a candidate.
+
+The pre-calibration b1-j1 run enters only the calibration contrast against
+its repeat
+([contrast](../../results/quandela/bdsc_stationarity_calibration_contrast_pinned.json), the runner image's
+replay of the [retained contrast](../../results/quandela/bdsc_stationarity_calibration_contrast.json), which differs in the last ulps):
+the same 24 requests, 0 returned circuits differing, read the superposition
+shift -0.0017 (z -2.8), g +0.0006 (z 3.0) and f -0.0001 (z -1.6), with the
+mean mode-5 share rising from 0.093 to 0.255 as the plan-time figure moved
+from 49520.9 to 48440.3 counts/s. It is reported and decides nothing.
+
+**Cost and limits.**
+
+- *Cost.* Each job bills 1 + 1e-6 x 120000 = 1.12 credits, and the four
+  total 4.48 credits. The post-calibration repeat of b1-j1 raises the case
+  to five jobs and 5.60 credits
+  ([calibration hold](../runbooks/bdsc-qualification-case.md#calibration-hold-of-the-stationarity-case)).
+  Every retained diagnostic iteration used exactly as
+  many shots as samples, so the 1.2 shot margin stops on samples.
+- *Duration.* The timing rule (6.3 s plus 26 us per sample per iteration)
+  predicts 213.6 s per job, 0.71 of the 300 s limit, and 854.4 s in all.
+  The rule is measured only up to 40000 samples per iteration, where the
+  four diagnostic jobs ran 164 to 171 s against 176.16 s predicted. A job
+  that exceeds its duration fails the samples stop condition and costs that
+  job's credits. The written case restates the live `qd_platform.py plan`
+  figures.
+- *Error calibration.* Standard errors stay reference values under
+  independent Bernoulli trials while the provider contract leaves count
+  provenance unresolved.
+- *Dark-rate timing.* The case records the platform's dark-count reading
+  after each collection as well as at plan time.
+- *Scope.* A consistent primary reading supports designing a veto-based
+  confirmation and certifies nothing.
+
+## Drift series of one frozen request
+
+The stationarity readout leaves a superposition excess spread of tau =
+0.0021 in the matched changes under the primary veto. One pair of windows
+cannot say whether that spread is white run-to-run jitter, which a longer
+acquisition averages away, or a drift that accumulates with elapsed time,
+which no single-window design can calibrate. The calibration contrast adds
+that a Belenos calibration moves the class means (superposition -0.0017,
+z -2.8). The drift series answers the first question and records the
+second. A noise simulation cannot: both questions concern how one
+processor's response moves over hours and across its own calibrations, and
+an emulator has neither elapsed time nor calibrations.
+
+**Requests.** Seven jobs, `t1` to `t7`, each submit the frozen
+`results/quandela/cases/bdsc_stationarity/b1-j1/` directory unchanged: 24
+settings (both templates, all six states, four seeds), 100000 samples and
+max_shots 120000 per iteration. The pinned request body's sha256 without
+`process_id`, `3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd`,
+equals that of both retained 100000-sample b1-j1 runs of 2026-10-23, which
+serve as anchors. No QRNG read is made.
+
+**Schedule.** [bdsc-drift-series.json](../../results/quandela/schedules/bdsc-drift-series.json)
+runs through the scheduled workflow
+([runbook](../runbooks/quandela-scheduled-runs.md)) with `on_stop` skip.
+Slot k starts at its own `not_before`, two hours after slot k-1's, and
+holds unsent after `latest_start`, 100 minutes later, so a late slot drops
+and the next still runs. The slots run from 2026-10-24T07:00Z (`t1`) to
+2026-10-24T19:00Z (`t7`). A platform status outside `available` and
+`running`, or a token busy with another job, waits inside the window.
+
+**Stop conditions, per job.** Each one holds or fails that job alone and
+leaves the next slot to run:
+
+- the plan refuses the platform, or any of the other 23 modes reads a
+  plan-time dark-count rate at or above mode 5's
+  (`bdsc_stationarity.py --plan-check`);
+- the planned body differs from the pinned digest;
+- the job fails or is canceled, or `bdsc_stationarity.py --matched-check`
+  finds a returned circuit that differs from its retained diagnostic
+  counterpart, or an integrity check of `admit()` fails.
+
+An interrupted job, whose request may or may not have been posted, stops
+the series for an operator. A held or failed job is never resubmitted
+within the series.
+
+**Preregistered analysis** (`scripts/bdsc_drift_series.py --readout`,
+under detector_absent). The readout admits a series run only when its
+slot's scheduler receipt reads passed and names the run, and the job ended
+completed; it reads them in start order. A run whose after-job snapshot
+failed therefore stays out even when its counts are intact.
+
+- **Primary: instance-specific drift.** Each run's 16 superposition values
+  are centered on that run's unweighted class mean, which removes a
+  common class shift exactly; inverse-variance weights would move with
+  the shifted fractions and leave part of it. Per setting, the von
+  Neumann ratio eta = sum (x[t+1] - x[t])^2 / sum (x[t] - mean)^2 runs
+  over the n completed series
+  runs in start order, and the statistic is the mean of the 16 ratios; a
+  drift that persists between runs lowers it. The null is exact: the
+  statistic is recomputed for all n! orderings of the runs, each ordering
+  shared by every setting, and p is the share of orderings at or below the
+  observed value. Per-run centering commutes with reordering the runs, and
+  a shared ordering keeps whatever correlation the settings carry (the four
+  settings of one template and seed share a compilation), so the test is
+  exact for exchangeable runs whatever the jitter level. Resolved
+  (p < 0.01) reads instance-specific drift; consistent (p >= 0.05) reads
+  run-to-run jitter without memory. A series and its reverse read alike,
+  so the smallest attainable p is 2 / n!: 0.0004 at seven runs, 0.0028 at
+  six, and 0.017 at five, where no reading can resolve. Fewer than six
+  completed series runs therefore leave the primary not run. The
+  independent-setting normal reference (mean 2, variance
+  4 (n - 2) / ((n - 1)(n + 1)) / 16) is reported beside it.
+- **Sensitivity.** `scripts/bdsc_drift_series.py --sensitivity` (2000
+  seeded series per scenario, seed 20261024, reference error 0.0018 per
+  value, seven runs) reads resolved with probability 0.010 under no drift
+  and 0.008 under white jitter of 0.0015 per run shared within each group
+  of four settings. Under a random walk whose two-hour step SD is 0.0021,
+  the size of the retained tau, it reads resolved with probability 0.71;
+  at step SD 0.0015 the probability is 0.43, and at 0.0010 it is 0.18. The
+  duration limit, not credits, caps the sample budget: the timing rule
+  gives 213.6 s at 100000 samples per iteration and about 276 s at 200000,
+  against the 300 s maximum.
+- **Reported only, deciding nothing.**
+  - Each class's inverse-variance mean per run (superposition, f, g), and
+    the von Neumann ratio of the superposition class mean, read as a common
+    drift.
+  - For every pair of runs, anchors included, the class-centered mean
+    excess square change d^2 - se1^2 - se2^2 of the superposition settings
+    against the pair's lag. The anchor pair, 0.47 h apart across one
+    calibration, reads 7.7e-6 before centering.
+  - The calibration epoch of each run: a new epoch begins where the
+    plan-time dark-count vector changes, since the platform refreshes
+    those figures only at calibration. The mean excess of within-epoch
+    pairs against between-epoch pairs.
+  - The mode-5 share of each run against its plan-time and post-collection
+    dark-count rates
+    (`results/quandela/bdsc_drift_series_dark/after-tN`).
+
+**Cost and limits.** Each job bills 1 + 1e-6 x 120000 = 1.12 credits and
+runs about 214 s; the seven total 7.84 credits and about 25 minutes of
+execution. A held slot bills nothing. Under `on_stop` skip a failure that
+arises after a job is sent (a duration overrun, a provider recompilation)
+can repeat in every later slot and bill each one, so the ceiling of 7.84
+credits is also the cost of a series in which every job fails. Standard errors stay reference values
+under independent Bernoulli trials. The series reads one request set, so a
+drift it finds is a property of these 24 compilations on Belenos and
+certifies nothing about the other 72 settings of the case.
+
+**Readout.** All seven slots ran on 2026-10-24 from 07:00Z to 19:00Z, two
+hours apart, each in 165 to 176 s with every returned circuit equal to its
+retained counterpart. [bdsc_drift_series_readout_pinned.json](../../results/quandela/bdsc_drift_series_readout_pinned.json)
+(`scripts/bdsc_drift_series.py --check`, gate core-679) holds the readout.
+The primary reads consistent: the mean von Neumann ratio of the 16
+class-centered superposition settings is 1.674, exact p 0.056 over all 5040
+orderings, so the preregistered rule names run-to-run jitter without
+memory. The p sits 0.006 above the consistent boundary, and the sensitivity
+of 0.71 for a walk of step SD 0.0021 per two hours (0.43 at 0.0015) leaves
+a walk of the retained tau's size undecided rather than excluded. The
+independent-setting reference reads z -2.02 (p 0.022), and the superposition
+class mean reads no common drift (ratio 2.02). Reported only, deciding
+nothing:
+
+- The class-centered excess square change of the superposition settings
+  rises with lag: 7.1e-6 at 2 h, 1.06e-5 at 4 h, 1.60e-5 at 6 h, 2.08e-5 at
+  8 h, 2.09e-5 at 10 h and 2.24e-5 at 12 h. White jitter of the retained
+  tau 0.0021 gives about 8.8e-6 at every lag. The lag points share runs and
+  carry no independent error, so the profile is a lead for a longer series,
+  not a test.
+- The plan-time dark-count vector changed between every pair of runs
+  (mode 5 from 7326.8 to 18616.3 counts/s), so each run sits in its own
+  epoch and the within-epoch contrast is undefined. The epoch rule's
+  premise, that the platform refreshes those figures only at calibration,
+  fails on this window: the epochs name figure refreshes, not calibrations.
+
 ## Conjecture ledger
 
 Each conjecture names the observable that tests it and what a result can and
@@ -435,6 +823,8 @@ levels and never share one "verified" label.
 | Complex controls are necessary for the error family | real bank against phase-sensitive controls | agreement on real inputs cannot exclude E_I |
 | A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
 | Per-compilation transfer response carries the superposition scatter | matched seeds across blocks and four seeds per state (diagnostic case) | a matched seed whose response shifts beyond counting puts the scatter in time, not compilation |
+| Dark clicks in output mode 5 carry the instance-specific block change | heterogeneity of S1-to-S2 matched changes with detector 5 removed (stationarity case) | a resolved reading rejects it; a resolved coincidence test rejects the dark-click reading |
+| The residual superposition spread is drift that accumulates with elapsed time | pooled von Neumann ratio of class-centered residuals over seven spaced repeats (drift series) | a consistent reading names white run-to-run jitter; fewer than six completed runs leave it untested. Read consistent (p 0.056, seven runs); the reported-only excess rises with lag, so a walk of step SD 0.0021 stays undecided |
 
 Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
 exploits target structure for efficiency once the trusted objects and the

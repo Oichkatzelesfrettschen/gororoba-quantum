@@ -18,6 +18,7 @@ from typing import Any
 from qiskit import transpile
 from qiskit_aer import AerSimulator
 
+import qrng_seeds
 from factoring import (
     PrecheckResult,
     classical_precheck,
@@ -122,6 +123,14 @@ def _simulate_payload(args: argparse.Namespace) -> dict[str, Any]:
             "decode": _decoded_payload(counts, phase_bits, args.modulus, normalized_base),
         }
     )
+    if args.seed_source != "default":
+        experiment = (
+            f"simulate modulus={args.modulus} base={args.base} phase_bits={args.phase_bits} "
+            f"multiplier_strategy={args.multiplier_strategy} evidence={args.evidence} shots={args.shots}"
+        )
+        payload["seed_source"] = qrng_seeds.seed_record(
+            "gororoba_quantum/hybrid_shor.py", "--seed", experiment, args.seed_source
+        )
     return payload
 
 
@@ -168,7 +177,7 @@ def _parser() -> argparse.ArgumentParser:
     simulate = subparsers.add_parser("simulate", help="run one local Aer order-finding experiment")
     add_problem_arguments(simulate)
     simulate.add_argument("--shots", type=int, default=256)
-    simulate.add_argument("--seed", type=int, default=7)
+    qrng_seeds.add_seed_argument(simulate, "--seed", default=7)
     decode = subparsers.add_parser("decode", help="recover orders and verified factors from JSON counts")
     decode.add_argument("modulus", type=int)
     decode.add_argument("counts", type=Path)

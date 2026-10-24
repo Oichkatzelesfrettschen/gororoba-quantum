@@ -29,7 +29,7 @@ Tuna-17 for the device answer, QX for the ideal reference.
 
 `scripts/qi_crosstalk_teleport_cases.py --write results/quantum_inspire/cases`
 generates every backend's cQASM 3.0 from the catalogue topology; gate
-core-327 regenerates them byte for byte. Each backend is a series of
+`core-record-check-05` (`tests/test_cli_record_checks.py`) regenerates them byte for byte. Each backend is a series of
 `batch-NN/` cases of at most three circuits, each submittable on its own:
 batch-00 holds none, A and B, and batch-01 holds none, AB and teleport, so
 every phase shift subtracts the undriven reference measured in its own batch
@@ -828,8 +828,8 @@ and results/quantum_inspire/box_kite_ry_analysis.json; claims
   the bipartite map above. It uses both directions, explicit |0>/|1>
   neighbors, eight induced matchings, X/Y readout, six delays including zero,
   and joint pair calibration with propagated covariance and fixed Holm
-  criteria. Its 416 circuits occupy 139 batches. The current 120 s hardware
-  pause imposes at least 4.6 hours between batches alone, while the retained
+  criteria. Its 416 circuits occupy 139 batches. The 120 s hardware pause
+  then in force imposed at least 4.6 hours between batches alone, while the retained
   runs show calibration changes within minutes. Mandatory 20 and 40 us
   points also lack demonstrated all-qubit viability. The case is therefore
   not recommended for acquisition unchanged: first fix a shorter pilot or

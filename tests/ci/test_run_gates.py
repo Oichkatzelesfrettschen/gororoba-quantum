@@ -16,6 +16,8 @@ from unittest.mock import patch
 import pytest
 import run_gates
 
+pytestmark = pytest.mark.audit
+
 ROOT = Path(__file__).resolve().parents[2]
 LISTED: list[dict[str, Any]] = [
     {"name": "fast", "cwd": ".", "cmd": "true", "seconds": 1.0},
@@ -155,3 +157,66 @@ def test_malformed_requires_is_refused(root: Path, malformed: Any) -> None:
 
 def test_repository_manifest_selects() -> None:
     run_gates.select(ROOT, "full")
+
+
+def test_historical_selection_needs_no_current_runtime(root: Path, tmp_path: Path) -> None:
+    # A selection of historical gates alone runs under the replay interpreter
+    # even where no interpreter holds the current runtime's pins.
+    marker = tmp_path / "ran"
+    manifest(root, [{"name": "historical", "cwd": ".", "cmd": f"touch {marker}", "runtime": "qiskit-2.5"}])
+
+    def unresolvable(*_arguments: Any) -> tuple[None, str]:
+        raise AssertionError("a historical-only selection resolved the current runtime")
+
+    with (
+        patch.object(run_gates.pins, "resolve_current", unresolvable),
+        patch.object(run_gates.pins, "mismatches", lambda _python, _pins, _patches=None: []),
+        runner(root, REPLAY_PYTHON=os.environ.get("PYTHON") or "python3", GOROROBA_PINS_REQUIRED=None) as output,
+    ):
+        status = run_gates.main([])
+    if status != 0 or not marker.exists():
+        raise AssertionError(f"a historical-only selection returned {status}:\n{output.getvalue()}")
+
+
+def test_unresolved_runtime_runs_no_gate(root: Path, tmp_path: Path) -> None:
+    # A selection whose historical runtime no interpreter holds exits 2
+    # before any gate runs, rather than failing each of its gates with 127.
+    marker = tmp_path / "ran"
+    manifest(
+        root,
+        [
+            {"name": "current", "cwd": ".", "cmd": f"touch {marker}"},
+            {"name": "historical", "cwd": ".", "cmd": "true", "runtime": "qiskit-2.5"},
+        ],
+    )
+    differing = ["qiskit 2.6.0 (pin 2.5.2)"]
+    with (
+        patch.object(run_gates.pins, "mismatches", lambda _python, _pins, _patches=None: list(differing)),
+        runner(root, REPLAY_PYTHON=None, XDG_CACHE_HOME=str(tmp_path / "cache"), GOROROBA_PINS_REQUIRED=None) as output,
+    ):
+        status = run_gates.main([])
+    text = output.getvalue()
+    if status != 2 or marker.exists() or "ci/build_host_envs.sh" not in text:
+        raise AssertionError(f"an unresolved runtime returned {status} or ran a gate:\n{text}")
+
+
+def test_only_a_changed_files_run_decides_admission(root: Path, tmp_path: Path) -> None:
+    # A --changed-files run is the merge verdict, so pins.resolve_current
+    # refuses a $PYTHON that differs from the pins there and only there.
+    manifest(root, [{"name": "fast", "cwd": ".", "cmd": "true", "seconds": 1.0}])
+    changed = tmp_path / "changed"
+    changed.write_bytes(b"")
+    seen: list[bool] = []
+
+    def record(_environment: Any, current: str, _root: Path, admission: bool = False) -> tuple[str, str]:
+        seen.append(admission)
+        return current, "recorded"
+
+    with (
+        patch.object(run_gates.pins, "resolve_current", record),
+        patch.object(run_gates.gate_inputs, "affected_full", lambda _root, _gates, _changed: set()),
+        runner(root) as output,
+    ):
+        statuses = [run_gates.main([]), run_gates.main(["--changed-files", str(changed)])]
+    if statuses != [0, 0] or seen != [False, True]:
+        raise AssertionError(f"admission passed as {seen} with statuses {statuses}:\n{output.getvalue()}")

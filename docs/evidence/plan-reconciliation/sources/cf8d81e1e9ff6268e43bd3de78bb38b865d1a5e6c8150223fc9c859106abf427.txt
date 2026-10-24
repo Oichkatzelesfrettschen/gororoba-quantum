@@ -1,0 +1,65 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/n21-prepush-review.md
+
+# n21/orbit-window-sweep pre-push review
+
+Scope: `git diff origin/main...HEAD` over live_run.py, qpu_planning.py,
+qpu_cases.py, diagnostic_experiments.py, scripts/n21_orbit_rca.py and
+scripts/local_member_cz_conformance.py. Read-only; no gate was run (not run:
+review scope only).
+
+## Blocker
+
+None found.
+
+## Fix
+
+1. Pre-sweep records lose their three original contracts.
+   scripts/n21_orbit_rca.py:2538 grows `CONTRACTS` from 3 to 5 for every
+   non-split record, and `admissibility` (default `ORBIT_VARIANTS`, which
+   now holds `window_delay_long`) lists the missing pair, so `--between-arm`
+   over a retained pre-sweep n21-orbit-rca record (results/live/2026-10-18T062500,
+   2026-10-18T163059, 2026-10-18T211254: family_configuration without
+   `window_sweep`) reports every contract not_admissible at alpha 0.01
+   instead of the three contracts at 0.05/3. `contract_names` should key on
+   the configuration (sweep / split / plain, e.g. read from members as
+   `overlap_split` does) and pass the matching variants to `admissibility`.
+   No retained between-arm.json covers those records, so no gate fails yet.
+2. `magnitude_mde` (n21_orbit_rca.py:3458) and `herald_bound` through it
+   use `CONTRACT_ALPHA` (0.01) for split records, whose contracts run at
+   `contract_alpha(True)` = 0.0125. The herald admission bound for a split
+   is therefore computed at a different alpha than its contracts; it errs
+   conservative, but the recorded MDE does not describe the split's test.
+
+## Note
+
+3. Approval binding holds: `qpu_planning.settings` (qpu_planning.py:277-287)
+   puts `overlap_split` and `pin_layout` in `policy.design`, so a submit
+   that drops or changes either re-plans to a differing design and refuses;
+   `pinned_orbit_layout` refuses another backend, an out-of-device or a
+   calibration-excluded pinned qubit; `pinned_roles_violations` refuses a
+   routed arm that leaves the pin. `overlap_arm` is a constant, so a legacy
+   ten-member record re-planned now yields twelve members and refuses by
+   digest. qpu_cases.py:321-334 reproduces `--overlap-split` and
+   `--pin-layout BACKEND:Q,...` from the design; argparse order is free.
+4. Legacy rebuild: diagnostic_experiments.py:687 defaults `window_sweep`
+   False and `overlap_arm` "nominal", so records without the new keys
+   rebuild their recorded groups.
+5. Statistics direction checked: `magnitude_decline` and
+   `spectator_decline` pass only when upper limit + margin < 0, test minus
+   reference, margin against the pass. `spectator_visibility` R = hypot is
+   Rician-biased upward, more for the lower-visibility arm, which biases the
+   decline contracts toward fail (conservative).
+6. local_member_cz_conformance.py:608 `next(...)` raises a bare
+   StopIteration when ci/requirements-replay.txt has no `qiskit==` line;
+   only a hand-edited pin file reaches it. The guard checks qiskit alone,
+   while other replay pins (numpy, rustworkx) also move compiled digests.
+   Line 589 counts heralded members by `num_clbits > 2`, a descriptive print.
+7. Source comments carry history: "rebuilds the earlier ten-member split"
+   (diagnostic_experiments.py docstring near 450 and the comment near the
+   N21_OVERLAP_ARM constant). AGENTS.md wants the artifact described:
+   e.g. "overlap_arm "nominal" pairs nominal with ... (the ten-member
+   configuration)". The case text naming the 2026-10-13T083417 run is
+   record-facing text, acceptable.
+8. No new `assert`, no broad `except`; added CPU loops are per-member
+   compiles inside the existing candidate loop (same pattern as main).

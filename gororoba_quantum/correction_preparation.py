@@ -27,6 +27,7 @@ import correction_statistics
 import ibm_account
 import live_run
 import local_compute
+import qrng_seeds
 from qpe_diagnostics import ideal_compiled_probabilities
 from qpu_planning import repetition_delay
 
@@ -325,7 +326,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--backend", required=True)
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--seed", type=int, default=20261010)
+    qrng_seeds.add_seed_argument(parser, "--seed", default=20261010)
     parser.add_argument("--shots", type=int, default=8192)
     parser.add_argument("--model-shots", type=int, default=32768)
     parser.add_argument("--native-dry-run", action="store_true")
@@ -340,6 +341,13 @@ def main() -> int:
     try:
         report, files = build(snapshot, seed=args.seed, shots=args.shots, model_shots=args.model_shots)
         report["instance_sha256_12"] = live_run._instance_hash(service)
+        if args.seed_source != "default":
+            report["seed_source"] = qrng_seeds.seed_record(
+                "gororoba_quantum/correction_preparation.py",
+                "--seed",
+                qrng_seeds.repo_relative(args.out),
+                args.seed_source,
+            )
         for name, data in files.items():
             (directory / name).write_bytes(data)
         _write(directory / "preparation.json", report)

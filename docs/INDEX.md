@@ -82,6 +82,7 @@ each source license in force.
 | [Google Quantum AI and Collaborators 2023 -- Non-Abelian braiding of graph vertices in a superconducting processor](notes/papers/2210.10255.md) | [2210.10255v2.pdf](pdf/2210.10255v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Matsumoto et al. 2026 -- Two-qubit logic and teleportation with mobile spin qubits in silicon (Nature 653, 391)](notes/papers/s41586-026-10423-9.md) | [s41586-026-10423-9.pdf](pdf/s41586-026-10423-9.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Wu et al. 2026 -- Simultaneous high-fidelity single-qubit gates in a spin qubit array (Nature Physics)](notes/papers/s41567-026-03466-2.md) | [s41567-026-03466-2.pdf](pdf/s41567-026-03466-2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Flaut and Boboescu 2021 -- A twisted group algebra structure for an algebra obtained by the Cayley-Dickson process (arXiv 2103.12805)](notes/papers/2103.12805.md) | [2103.12805v1.pdf](pdf/2103.12805v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 The two Nature aliases identify retained arXiv preprints, with their own
 licenses and versions. The aliases do not identify the publisher versions.
@@ -98,8 +99,10 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Roetteler 2008 -- Quantum algorithms for highly non-linear Boolean functions (arXiv 0811.3208)](notes/papers/0811.3208.md) | [PDF](https://arxiv.org/pdf/0811.3208v2) | `0811.3208v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0811.3208v2) |
 | [Biss, Christensen, Dugger, Isaksen 2009 -- Eigentheory of Cayley-Dickson algebras (arXiv 0905.2987)](notes/0905.2987.md) | [PDF](https://arxiv.org/pdf/0905.2987v1) | `0905.2987v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0905.2987v1) |
 | [Roetteler 2009 -- Hidden shift for quadratics and for functions of large Gowers norm (arXiv 0911.4724)](notes/papers/0911.4724.md) | [PDF](https://arxiv.org/pdf/0911.4724v1) | `0911.4724v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0911.4724v1) |
+| [Morier-Genoud and Ovsienko 2011 -- A series of algebras generalizing the octonions and Hurwitz-Radon identity (arXiv 1003.0429)](notes/papers/1003.0429.md) | [PDF](https://arxiv.org/pdf/1003.0429v3) | `1003.0429v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1003.0429v3) |
 | [Tropp 2012 -- User-friendly tail bounds for sums of random matrices (arXiv 1004.4389)](notes/papers/1004.4389.md) | [PDF](https://arxiv.org/pdf/1004.4389v7) | `1004.4389v7.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1004.4389v7) |
 | [Gavinsky, Roetteler, Roland 2011 -- Quantum algorithm for the Boolean hidden shift problem (arXiv 1103.3017)](notes/papers/1103.3017.md) | [PDF](https://arxiv.org/pdf/1103.3017v1) | `1103.3017v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1103.3017v1) |
+| [Bales 2003 -- Cayley-Dickson and Clifford algebras as twisted group algebras (arXiv 1107.1375)](notes/papers/1107.1375.md) | [PDF](https://arxiv.org/pdf/1107.1375v1) | `1107.1375v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1107.1375v1) |
 | [Decker, Ivanyos, Santha, Wocjan 2011 -- Hidden Symmetry Subgroup Problems (arXiv 1107.2189)](notes/papers/1107.2189.md) | [PDF](https://arxiv.org/pdf/1107.2189v2) | `1107.2189v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1107.2189v2) |
 | [Martin-Lopez et al. 2012 -- Experimental realization of Shor's quantum factoring algorithm using qubit recycling (arXiv 1111.4147)](notes/papers/1111.4147.md) | [PDF](https://arxiv.org/pdf/1111.4147v2) | `1111.4147v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1111.4147v2) |
 | [Gambetta et al. 2012 -- Characterization of addressability by simultaneous randomized benchmarking](notes/papers/1204.6308.md) | [PDF](https://arxiv.org/pdf/1204.6308v2) | `1204.6308v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1204.6308v2) |
@@ -118,6 +121,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Niu and Todri-Sanial 2021 -- How Parallel Circuit Execution Can Be Useful for NISQ Computing? (arXiv 2112.00387)](notes/papers/2112.00387.md) | [PDF](https://arxiv.org/pdf/2112.00387v1) | `2112.00387v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2112.00387v1) |
 | [Ohkura, Satoh and Van Meter 2021 -- Simultaneous execution of quantum circuits on current and near-future NISQ systems (arXiv 2112.07091)](notes/papers/2112.07091.md) | [PDF](https://arxiv.org/pdf/2112.07091v2) | `2112.07091v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2112.07091v2) |
 | [Kaufman and Minzer 2022 -- Improved Optimal Testing Results from Global Hypercontractivity (arXiv 2202.08688)](notes/papers/2202.08688.md) | [PDF](https://arxiv.org/pdf/2202.08688v1) | `2202.08688v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2202.08688v1) |
+| [Ren and Zhao 2023 -- The explicit twisted group algebra structure of the Cayley-Dickson algebra (arXiv 2205.07986)](notes/papers/2205.07986.md) | [PDF](https://arxiv.org/pdf/2205.07986v2) | `2205.07986v2.pdf` | [CC-BY-NC-ND-4.0](https://arxiv.org/abs/2205.07986v2) |
 | [Dynamic parameterized quantum circuits: expressive and barren-plateau free](notes/papers/2411.05760.md) | [PDF](https://arxiv.org/pdf/2411.05760v3) | `2411.05760.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2411.05760v3) |
 | [Reggiani 2024 -- The geometry of sedenion zero divisors (arXiv 2411.18881)](notes/papers/2411.18881.md) | [PDF](https://arxiv.org/pdf/2411.18881v1) | `2411.18881v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2411.18881v1) |
 | [Quantum-Centric Algorithm for Sample-Based Krylov Diagonalization](notes/papers/2501.09702.md) | [PDF](https://arxiv.org/pdf/2501.09702v3) | `2501.09702.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2501.09702v3) |
@@ -387,6 +391,11 @@ The [hypercomplex and anyon Crossref note](notes/papers/hypercomplex_quantum_cro
 versions of record of the hypercomplex-theory exchange and the two non-Abelian anyon experiments.
 The [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md) retains the arithmetic behind the
 algebra circuit design rules of docs/notes/algebra_circuit_rules.md.
+
+## Operational instrument source identities
+
+The [instrument source note](notes/papers/operational-instrument-sources.md) records primary arXiv identities,
+abstract reading scopes, the incorrect draft citation and the prior single-spin parity-time experiment.
 
 ## Hypercomplex operator audit sources
 

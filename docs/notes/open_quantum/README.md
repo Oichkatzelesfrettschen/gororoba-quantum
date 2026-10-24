@@ -60,7 +60,7 @@ available; the repository does not use it.
 |---|---|---|
 | Core SDK | `OpenQuantumClient`, `SchedulerClient.submit_job(JobSubmissionConfig, ...)` | every API: upload, prepare, quote, plan and priority choice, create, poll, download output and calibration, cancel |
 | SDK CLI | `"$OQ_PYTHON" -m openquantum_sdk --sdk-key KEY --input FILE.qasm --backend CODE --subcategory oth:oth --shots N` | one job: upload, quote, ask, submit, wait; prints counts |
-| MCP | `"$OQ_PYTHON" -I -m openquantum_mcp` | the 13 tools below |
+| MCP | `"$OQ_PYTHON" -I scripts/oq_mcp_server.py` | repository adapter over the pinned 13 vendor tools |
 | Qiskit | `openquantum_sdk_qiskit.OQBackend`, `OQSampler`, `OQEstimator` | transpile to the backend's Target, run as SamplerV2 or EstimatorV2 |
 | Portal | https://www.openquantum.com | job creation, monitoring, keys, credits, referral and claim pages |
 
@@ -79,6 +79,23 @@ with `OPENQUANTUM_SDK_KEY`, `OPENQUANTUM_MCP_MAX_CREDITS=1`,
 `~/.config/shell/codex-env.sh` loads it by default
 (`CLAUDE_MCP_SERVERS` defaults to `kaggle,quantum-inspire,openquantum`).
 `catalogue.json` retains every tool's description and input schema.
+
+The [API/billing audit](../../evidence/provider-api-audit/README.md) found information loss in the vendor
+server: missing physical/job-width counts, nested execution constraints omitted by the summary, filtering
+after a premature pagination cutoff, and JSON error strings returned as protocol success.
+`scripts/oq_mcp_server.py` provides the reviewed repository adapter without editing the installed package.
+To deploy the adapter, replace the launcher with `"$OQ_PYTHON" -I scripts/oq_mcp_server.py`, using the
+canonical script's absolute path in client registration, retain every existing credential/cap/timeout
+environment setting, and reconnect the owning session. The registration description above records the
+vendor launcher; a process already running that launcher retains vendor behavior until replaced.
+
+The adapter keeps all thirteen input schemas and delegates mutation/spend decisions to the original vendor
+tools. Catalogue responses distinguish `physical_qubits` from `max_qubits_per_job`, retain nested limits,
+native operations and features, and name omitted fields explicitly. `max_qubits` remains a best-effort
+physical-width filter; unknown values remain unknown. `limit_reached` means the requested result limit
+was reached, not proof that another backend exists. Dictionary responses add a subsecond `_observation`
+tool interval. Reads remain sequential, rather than an atomic account/backend snapshot. Vendor error
+payloads become MCP errors; read-only and mutating tools carry distinct annotations.
 
 | Tool | Parameters | Effect | Claude / Codex approval |
 |---|---|---|---|
@@ -195,6 +212,14 @@ Credits only.
 
 ## Backends, shots and price
 
+The [22 October source/quote refresh](../../evidence/provider-api-audit/README.md) retains fresh tariff
+rows and 39 circuit-free estimates. The sampled estimates match the model below and the static constraint
+documents match the earlier catalogue. The advertised 1024-circuit ceiling does not establish a supported
+multi-circuit upload representation or its charge multiplier: the inspected preparation interface accepts
+one input upload. The [current-balance case](../../design/packed-pauli-response-current-balance.md) therefore
+uses one packed QASM program per broker job, keeps a five-Spark reserve, and treats Rigetti and IonQ as
+alternatives against the same 25-credit balance.
+
 `docs/evidence/open_quantum/pricing.json` holds the pricing page's
 USD-equivalent rates: a task fee and a per-shot rate per backend and plan
 (the table shows the Public pair), Private exactly twice Public, which
@@ -272,7 +297,7 @@ completed job on a backend that tags one.
 
 ## Gates
 
-Gates core-380 (`capture_oq_docs.py --check`), core-381 (its `--self-test`),
-core-382 (`oq_platform.py check docs/evidence/open_quantum --agents
-docs/notes/open_quantum/README.md`) and core-383 (its `--self-test`) hold the
+Gates `core-record-check-05` (`tests/test_cli_record_checks.py`) (`capture_oq_docs.py --check`) and core-382 (`oq_platform.py
+check docs/evidence/open_quantum --agents docs/notes/open_quantum/README.md`),
+with the `--self-test` of both scripts in gates `core-self-test-04` and `core-self-test-09` (`tests/test_cli_self_tests.py`), hold the
 captures, the facts table and the credit rule.

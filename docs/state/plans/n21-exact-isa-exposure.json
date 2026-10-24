@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "n21-exact-isa-exposure",
+  "kind": "implementation",
+  "summary": "71: n21_orbit_rca models piecewise window exposure across intervening scheduled pulses",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/41486f73ea721eeb59220324c33ddff8ef55db98d29bcb2b648e378c522d8ee7.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-212.json"
+  ],
+  "state": "inbox",
+  "scope": "71: n21_orbit_rca models piecewise window exposure across intervening scheduled pulses",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #212 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-212-integration",
+      "action": "Verify the recorded integration state of PR #212.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "350daeffeb347ce486e75d0ef11ec09773031c40ffe3932b8bdce282f4db67dd",
+          "result": "PR #212 merged as 67a0dd8522f021108c0d46f72f96236693f541ba; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-212.json",
+              "sha256": "668b7c4768e246aa391e69ace4fac58181c9365a9da4c00a77aa7a2023d417e7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- **Prediction:** on 083417 the piecewise model resolves the no_feedback joint probe, which the single gap cannot. The piecewise deviance of the nominal family falls below the single-gap deviance by more than the model's added degrees of freedom (a likelihood-ratio test at p < 0.01). - **Falsifiers, as in the issue:** - piecewise and single-gap exposures give equal joint-fit deviances on a run whose window holds a work-only pulse; - the piecewise model also leaves the no_feedback probe unresolved. That would place the inconsistency outside window exposure, for example in readout or reset, and the finding would say so. - **Commands:** `--self-check`, core-444, core-445, core-192, core-443, and the lint gates.",
+      "state": "todo"
+    }
+  ]
+}

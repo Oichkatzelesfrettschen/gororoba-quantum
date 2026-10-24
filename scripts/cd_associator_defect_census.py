@@ -40,8 +40,10 @@ triple. The relation set is dimension independent, so the 16-class table is
 a finite certificate; the gate checks it exhaustively for d <= 32. With it,
 N(D), the per-pair law, the 168/72 subspace split with O(D) and
 Q(D) = (D - 2)(D - 4)(D - 8) / 192, and the (1, 6) parity law hold for every
-power-of-two D. The cross-scale Walsh law and the eight-point formula
-omega = -(-1)^(q.k + [k in E_D]) are checked from 16 to 4096 without a proof.
+power-of-two D. Theorem 5 of the same note derives the eight-point formula
+omega = -(-1)^(q.k + [k in E_D]) and the cross-scale Walsh law from two
+lifting steps, top level then level D/2, which the census checks with the
+formula itself from 16 to 4096.
 """
 
 from __future__ import annotations
@@ -335,6 +337,19 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
             [-(1 - 2 * ((bin((dim - 4) & int(x)).count("1") + (int(x) in exceptional)) & 1)) for x in k]
         )
         require(np.array_equal(cross, eight_point), f"{dim}: cross-scale eight-point formula")
+        half, quarter = dim // 2, dim // 4
+        lower = k % half
+        top_step = omega(half, np.full(dim, 1), np.full(dim, quarter + 3), lower) * (
+            1 - 2 * ((k // half + 1 + np.isin(lower, (0, quarter + 3))) & 1)
+        )
+        require(np.array_equal(cross, top_step), f"{dim}: Theorem 5 top-level lifting step")
+        low = lower % quarter
+        mask_parity = np.array([bin((quarter - 4) & int(x)).count("1") for x in low])
+        middle_step = 1 - 2 * ((mask_parity + lower // quarter + np.isin(low, (2, 3))) & 1)
+        require(
+            np.array_equal(omega(half, np.full(dim, 1), np.full(dim, quarter + 3), lower), middle_step),
+            f"{dim}: Theorem 5 level-D/2 lifting step",
+        )
         require(anf_degree(cross) == dim.bit_length() - 3, f"{dim}: cross-scale algebraic degree n - 2")
         if dim >= 32:
             require(support == 5 * dim // 16 and peak == dim - 16, f"{dim}: cross-scale Walsh law")

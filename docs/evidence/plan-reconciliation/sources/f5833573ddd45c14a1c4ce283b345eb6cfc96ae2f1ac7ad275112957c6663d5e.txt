@@ -1,0 +1,117 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-168.md
+
+# #168: Retained Kaggle records carry the kernel owner in their kernel slug
+
+Owner session: ibmquantum-fc. Branch (planned): kaggle/records-owner-boundary
+(path A) or kaggle/records-owner-hash (path B). Needs a user decision first.
+
+## Finding
+
+The Kaggle username is the `owner` in `owner/slug`. The following counts were
+observed with `git grep`, on main at 66eacb6.
+
+Program-written records (kaggle_run.py):
+- `build_kernel` (scripts/kaggle_run.py:386) writes `owner/slug` into
+  kernel/kernel-metadata.json `id` and into submission.json `kernel`.
+  `build_shard_kernel` (line 901) does the same.
+- `collect` (line 1100) writes it into collect.json `kernel`.
+- `dataset` (line 789) writes it into the record's `ref`, and each
+  submission.json `datasets` key carries it.
+- Occurrences in results/kaggle: 76 submission.json, 76 kernel-metadata.json
+  and 75 collect.json.
+
+Kernel-produced raw outputs, sha-ledgered in collect.json:
+- 18 output/output/datasets.json and about 15 logs.
+
+Other tracked files:
+- scripts/kaggle_sessions.py.
+- docs/evidence/ghost_runs/kaggle_datasets.json.
+- docs/evidence/ccz-reduction/independent_package/{RETENTION.md,retention.json}.
+- docs/evidence/simulation-notebook-audit/ (11 files, including retrieved
+  notebook sources).
+- docs/notes/kaggle/{interfaces,libraries,tpu-research}.md and a review note.
+- 284 tracked files in all.
+
+Exposure:
+- The repository is public (`gh api repos/... --jq .visibility`).
+- The name has been in public history since dc0766b.
+
+AGENTS.md:982 keeps "account identifiers" out of commits. The only identifier
+it defines a form for is the IBM Cloud CRN (a 12-hex sha256).
+
+Inferred: a HEAD-only redaction cannot remove the name from public history,
+because the harness denies force-push. The name also stays in raw kernel
+outputs, which the retention rule forbids rewriting ("Raw files are never
+rewritten").
+
+## Reachability
+
+Every `push`, `collect`, `dataset` and `shards` call writes the owner.
+Reachable through the default flow. Whether it is a defect depends on whether
+a Kaggle username is an "account identifier" under AGENTS.md. A GitHub owner
+name appears in every repository URL and is not treated as one.
+
+## Design
+
+Decision for the user. Recommended option first.
+
+**A. Boundary (recommended).** The Kaggle username is a public platform handle,
+like the GitHub owner. It identifies the published kernel and dataset, and
+public history already holds it.
+- AGENTS.md Records gains one sentence: account identifiers are credentials,
+  instance CRNs, account ids and emails; public platform handles (GitHub
+  owner, Kaggle username) are not.
+- Reply on #168 with that boundary, then close it. No record changes.
+
+**B. Hash going forward.**
+- New records store `kernel: "<slug>"` and `owner_sha256: sha256(owner)[:12]`,
+  the CRN rule's form.
+- `collect` and `status` resolve the owner from the local Kaggle config
+  (`username()`, line 243). They require `sha256(owner)[:12] ==
+  owner_sha256`, so a record collected under another account fails.
+- `kernel_ref`, `download_version`, `require_dataset_version` and the dataset
+  `ref` change to match, and verify (core-290) accepts both schemas.
+- Retained records stay as written: rewriting 227 program records changes
+  their bytes without removing the name from history or from the 33 raw
+  outputs.
+- scripts/kaggle_sessions.py drops its literal owner and reads `username()`.
+
+**C. Full HEAD redaction.** B plus rewriting every retained record and doc.
+Rejected in this plan: it breaks the raw-retention rule, churns 284 files,
+and leaves history unchanged.
+
+## Acceptance and falsifier
+
+- Path A: the AGENTS.md Records sentence lands through a PR, and the #168 reply
+  names the boundary. No gate depends on that section.
+- Path B:
+  - `kaggle_run.py self-test` builds a kernel whose submission.json and
+    collect.json carry no owner and whose `owner_sha256` matches.
+  - A real `push --smoke` then `collect` on Kaggle fetches the right version.
+    This is the issue's falsifier.
+  - verify passes on old and new records.
+  - Prediction: collect resolves the version through `username()` plus the
+    slug.
+  - Falsifier: collect under a different Kaggle account fetches a kernel or
+    fails silently instead of refusing on the hash.
+
+## Shared files and dependencies
+
+- scripts/kaggle_run.py, which PR #193 also changes (dataset `history`,
+  `require_dataset_version`). Path B lands after #193 and reconciles against
+  it.
+- ci/gates.json (core-280, core-290): no new gate name is needed. If one is,
+  it comes from core-461 onward.
+- Kaggle use for path B: one CPU smoke push. No quota concern.
+
+## Effort and agents
+
+Path A is small (30 min) with no agent. Path B is medium (3 h); one sonnet
+agent can draft the schema change, and I review it and run the Kaggle
+round-trip.
+
+## Out of scope
+
+Rewriting git history (force-push denied, public forks), and editing raw
+kernel outputs or retrieved third-party notebook sources.

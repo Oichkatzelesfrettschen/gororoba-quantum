@@ -1,0 +1,1 @@
+{"duration":1,"intermediate_results":[],"job_id":"763c39ea-5ebc-4c75-9d97-eea4d7a6edb9","results":"{\"results\": \"RuntimeError: hardware_info.circuit_input_ports must be defined in the hardware_configto use Instruments.set_pic_input().\"}","results_type":null,"shots":0}

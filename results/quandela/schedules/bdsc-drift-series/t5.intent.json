@@ -1,0 +1,8 @@
+{
+ "key": "t5",
+ "prepared_utc": "2026-10-24T15:00:20+00:00",
+ "run": "2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+ "run_id": "40102017275.1",
+ "schedule": "bdsc-drift-series",
+ "schema": "qd-schedule-intent-v1"
+}

@@ -1,0 +1,297 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/quandela-photonic-cases.md
+
+# Quandela photonic cases: zero-divisor dilation and associator-sign interferometer
+
+Owner: quandela-cloud session (branch quandela/perceval-cloud-catalogue, PR #216).
+State: designs verified in local Perceval SLOS simulation on 2026-10-17; no
+remote job sent. Every remote job (sim or QPU) needs a written case and the
+user's approval.
+
+## Prerequisite (not built)
+
+A case runner in scripts/qd_platform.py: `submit CASE_DIR --platform NAME
+--approval TEXT` (verify the case unitary digest, read qd availability, set
+max_shots_per_call from the case's credit ceiling, refuse when one job is
+running or queued), `collect CASE_DIR` (job status history, full result,
+processor record at submission, Perceval and exqalibur versions under
+results/quandela/runs/), a `quandela` adapter in scripts/research_state.py,
+and gates from core-504 on. Model it on qi_platform.py submit/collect.
+
+## Case A: sedenion zero-divisor dark/bright on 18 modes, 1 photon
+
+- Algebra: a = e1 + e10, corpus pair (e1 + e10)(e4 - e15) = 0 (cd_core), bright
+  control (e4 + e15).
+- Map: V = L_a restricted to columns {e4, e15}, singular values (2, 0),
+  scaled by 1/2; unitary dilation U = [[V, sqrt(I - V V^T)], [sqrt(I - V^T V), -V^T]],
+  18 x 18 (16 algebra modes + 2 dilation modes). A BS on inputs 0, 1 and a
+  pi phase on input 1 prepare (e4 - e15)/sqrt2; no phase gives (e4 + e15)/sqrt2.
+- Ideal: dark input exits the 2 dilation modes with P = 1; bright input stays
+  in the 16 algebra modes with P = 1 (SLOS, verified).
+- Platforms: 18 modes <= 24 on qpu:belenos and sim:belenos; 1 photon (Belenos
+  min_photon_count 1); sim:slos needs >= 2 photons, so not there.
+- Hardware question: the dark-floor and bright-ceiling contrast under the chip's
+  loss, dark counts and transpilation fidelity of an 18-mode unitary.
+
+## Case B: octonion associator-sign interferometer on 16 modes, 1 photon
+
+- Arms: A = L_{e_i} L_{e_j} on modes 0..7, B = L_{e_i e_j} on modes 8..15; split
+  and recombine each pair (k, 8 + k) with a 50:50 splitter: M = H (A + B) H.
+- Ideal for (i, j) = (1, 2): photon from input k exits the minus ports (8..15)
+  with P = 1 for k = 4..7, where the associator (e1, e2, e_k) is nonzero, and
+  P = 0 for k = 0..3, the quaternion subalgebra (SLOS, verified). cd_core
+  classifies octonion imaginary triples as 42 associating, 168 non-associating.
+- Name: associator-sign interference witness (AGENTS.md algebra rules). A single
+  photon through linear optics is classical-wave interference; the case claims
+  implementability and measured contrast, not nonclassicality.
+- Literature: compare docs/notes/1602.01624.md (single-photon test of
+  hypercomplex quantum theories) and its dispute (1604.04950, 1607.01648)
+  before any priority statement.
+
+## Case C: platform pipeline and HOM baseline
+
+- Two photons, BS, sample_count on sim:belenos (free per shot) and qpu:belenos,
+  against the processor record's HOM figure (94.2 % at the snapshot).
+- Purpose: exercises the runner end to end on the cheapest job; the QPU half is
+  a device question (indistinguishability and loss of the live chip).
+
+## Costs at the snapshot
+
+QPU 1e-06 credits per shot, simulators 0, 300 s per job, 1 running + 1 queued
+job, 200 credits per calendar month. qpu:belenos needs about 682042 shots for
+10000 two-photon coincidences (estimate_required_shots), 0.68 credits; a
+1-photon case needs no coincidence filter, so shots equal samples. The
+offer's per-job price is visible only in the logged-in portal; ask the user
+for it before the first case.
+
+## Box-kite photonic family (design facts, 2026-10-17, local only)
+
+- Rows come from docs/evidence/box_kite_census/census.json (package-witnessed),
+  with the case-digest schema of scripts/box_kite_cases.py and parallel.py for
+  every row loop.
+- Uniform dilation scale: V = (L_x restricted to span{e_L', e_U'}) / sqrt2 for
+  normalized x gives P(algebra modes) = ||x y||^2 / 2 = census p_selector_zero
+  on all 1176 rows (840 within-kite, 168 cross-kite, 168 non-kite), exact in
+  Fractions; every ||V||_op <= 1. Per-row max-singular-value scaling (the
+  first case A prototype) is wrong on strut rows.
+- Reduced encoding: each row is a 4-mode, 1-photon circuit (2 XOR labels + 2
+  dilation modes). CORRECTED (PR #226): within-kite rows use 12 sign blocks
+  M (24 (M, t) configurations), non-kite rows 4 more; the census reaches 14
+  of the 16 +-1 matrices (the two sets overlap), and two strut-type blocks
+  need cd_core witness pairs outside the Design B rows. The earlier "40 x 21
+  = 16 blocks" line merged sources and was wrong.
+- D = 32 and 64: 5040 and 52080 signed zero products, equal to the
+  annihilator nullity sums and to open_gororoba EXACT_ALTERNATOR_COUNTS; every
+  two-label product maps to one of the 32 (M, t) circuits
+  (docs/evidence/box_kite_census/two_blade_blocks.json).
+- Preregistered layers: census ideal, local NoiseModel from catalogue perfs,
+  sim:belenos, qpu:belenos. Contrast metric: the Tuna-17 endpoint contrast
+  (0.0415 +- 0.0032 vs ideal 1 for a = e1 + e10). Start one block per job;
+  packing adds inter-block crosstalk as a separate variable.
+
+## Written case S1: sim:belenos pipeline and compilation stage (awaiting approval)
+
+Branch quandela/box-kite-photonic-runner, PR #226 (merge first; cases are
+results/quandela/cases/ at the merged commit).
+
+- What it measures: the runner end to end (plan, submit, collect, research
+  state) on Quandela's own transpiler for the Belenos chip, and whether
+  sim:belenos models compilation or source imperfections: any algebra-mode
+  sample on a dark block, any dilation-mode sample on a bright block, or a
+  half block outside |z| < 4.5 is a finding about the simulator. Each result
+  also returns computed_circuit / computed_input, the pre-compilation the QPU
+  stage reuses (guide 04-compilation).
+- Why local Perceval cannot answer it: local SLOS has no Belenos transpiler,
+  no cloud result format and no runner path; locally the ideal is exact
+  (dark 0, bright 1, half 1/2, pair label fraction 0.4975 edge / 0.0008
+  strut at V = 1, 0.4696 / 0.0104 at V = 0.942).
+- Jobs (6, sequential, one at a time, each collected before the next):
+  1. single/job-04 bright, M = [[1,1],[-1,-1]], t = +1, p_algebra 1
+  2. single/job-05 dark, same M, t = -1 (dark/bright toggled by one input phase)
+  3. single/job-00 half (strut M = [[1,1],[1,-1]]), p_algebra 1/2
+  4. single/job-33 one-hot 16D dark (e1+e10)(e4-e15) on 18 modes
+  5. pairs/job-02 edge, perm M = -2 (label coincidence 1/4 ideal)
+  6. pairs/job-00 strut, perm M = 0 (label coincidence 0 ideal); fits V
+  (hom job dropped: under min_detected_photons 2 a two-mode hom job reads only
+  (0, 1) coincidences and carries no V; struts calibrate V through the exact
+  conditional f(V) preregistered in each pair block)
+- Samples: 10000 per one-photon job, 5000 two-click samples per pair job;
+  max_shots 20000 / 2000000; max_duration 300 s per job; expected seconds:
+  a few to tens per job (SLOS on <= 18 modes and 2 photons).
+- Credits: sim:belenos price_per_shot 0 -> 0 credits for shots;
+  --max-credits 0 enforces it. Per-job price: UNKNOWN (portal only). Total =
+  6 x per-job price. The first POST to /api/jobs with this body shape may be
+  refused; a refused run directory (checkpoint phase refused) goes to the trash,
+  never into a commit.
+- Runner arguments per job: --platform sim:belenos --expected-seconds 60
+  --per-job-credits P --max-credits P (P = the portal's per-job price; shots
+  cost 0, so the ceiling equals P). Each receipt keeps S, P, C, the processor
+  perfs and the approval text.
+- Stage S2 (separate approval): the rest of single (28) and pairs (14) on
+  sim:belenos, or go straight to the QPU case.
+
+## Written case Q1: qpu:belenos (drafted, after S1 results)
+
+- Same 6 jobs on qpu:belenos, reusing S1 computed_circuit once its parser
+  exists (otherwise freshly compiled, stated as a variable).
+- Shots (live plan estimates): 10000 per one-photon job (0.01 credits),
+  347113 per pair job (0.35 credits); ceilings 0.02 and 2.0.
+  Shots total ~ 4 x 0.01 + 2 x 0.35 = 0.74 credits; ceiling 4 x 0.02 + 2 x
+  2.0 = 4.08 credits; plus 6 x per-job price.
+- Hardware question: dark floor (chip unitary error, crosstalk, dark counts:
+  source noise predicts exactly 0), one-hot leakage into 14 unreachable
+  labels, and the edge two-click label fraction against f_edge(V) at the V the struts fit.
+
+## S1 and Q1 results (2026-10-17, PR #230)
+
+- Six sim:belenos jobs: every exact ideal (bright 1, dark 0, strut 0.506,
+  one-hot dark 0 on 16 labels, pair edge f 0.472, strut f 0.0134, V 0.918).
+- qpu:belenos single/job-04 bright (7419efb8): in_block 0.470, a 0.256; same
+  compiled circuit as sim (552 BS); leakage on modes 14-19.
+- Cost measured: 1 credit per job (free_credits) + 1e-06 per QPU shot. Used
+  7.01 of 200.
+
+## Written case S2 + Q2 (awaiting approval)
+
+S2, sim:belenos, 5 jobs, 5 credits, about 15 s each:
+1. belenos_fringe/job-00 (edge, 8 iterations phi = k pi/4): does the server run
+   iterations in one job, one compiled mesh? ideal (1 + cos phi)/2.
+2. belenos_fringe/job-01 (strut): flat 1/2.
+3. belenos_diagnostics/job-01 (bright, compact 4-mode, unitary form)
+4. belenos_diagnostics/job-02 (bright, compact, native gates)
+5. belenos_diagnostics/job-03 (bright, 24-mode, native gates)
+   3-5 compare computed_circuit: does width or gate form change the compiled mesh?
+
+Q2, qpu:belenos, 5 jobs, only if S2 shows iterations work:
+1. diagnostics/job-00 identity, photon at 20: routing baseline (1.01)
+2. diagnostics/job-01 compact bright: width hypothesis (1.01)
+3. diagnostics/job-04 compact dark native: dark floor (1.01)
+4. fringe/job-00 edge: visibility, phase offset (1.02)
+5. fringe/job-01 strut: flat control (1.02)
+Q2 estimate 5.07 credits, ceiling 5.14; S2 + Q2 about 10.07 credits; month total
+would be about 17.1 of 200.
+
+## S2 outcome and Q2 withdrawal (2026-10-17)
+
+S2 ran (5 sim jobs, 5.00 credits): iterations run in one job but compile per
+iteration; every form compiles to the full mesh. Q2 is withdrawn unsent (user
+2026-10-17: QPU runs approved only after the photonic leakage is resolved);
+its five run directories went to the trash. Usage 12.01 of 200.
+
+## Written case S3: belenos_mesh/job-00 on sim:belenos (sims approved)
+
+What it measures: one iterated job of the Belenos architecture circuit with
+16 phase settings (compiled-bright replay, hot and cold identity, hot and
+cold bright, compiled and cold dark, cold bright at mode 0, cold edge and
+strut fringes at phi = 0, pi/2, pi, 3 pi/2), 1500 samples each.
+Why a local simulation cannot answer it: the question is whether the service
+accepts an architecture-form circuit without re-transpiling (each
+iteration's computed_circuit must carry the sent phases to 1e-9) and whether
+its sim of those meshes matches the local mesh model's ideal per setting.
+Platform sim:belenos, 24000 samples, max_shots 48000, expected about 200 s
+(16 iterations at about 11 s if the server still compiles), 1 credit
+(per-job price; sim shots cost 0), ceiling 1.00. Plan 2026-10-17T232626Z
+passed every check including the live-architecture comparison.
+
+## Written case M1: belenos_mesh/job-00 on qpu:belenos (awaiting approval)
+
+Only after S3 shows zero re-transpiled iterations and per-setting agreement.
+Same 16 settings; it identifies the chip's error class by summed
+likelihood (phase noise, coupler noise, heater gain, crosstalk, ceiling,
+demultiplexer misroute) and tests device drift by replaying the Q1 mesh.
+Estimate 1.00 + 48000 x 1e-06 = 1.048 credits ceiling, about 1.03 expected.
+
+## S3 outcome (job 1d7160c1, 1.00 credit)
+
+Every one of the 16 settings reproduced its local mesh-model ideal on
+sim:belenos (TVD 0.0002 to 0.038 at 1500 samples), but the server
+re-transpiled every iteration: all 574 phases changed, only the occupied
+column survived, every returned mesh drives about 1800 rad of heater phase and
+spreads the photon over modes 16 to 23. The parameterized architecture form
+does not reach the chip. M1 as written is void.
+
+## Written case S4: belenos_mesh/job-01 on sim:belenos (sims approved)
+
+One setting (cold-bright-20) sent as the numeric architecture circuit, no
+parameters and no iterations: the cloud guide's pre-compilation form. It
+measures whether the server keeps numeric phases (computed_circuit equal to
+the sent phases to 1e-9). 1500 samples, about 15 s, 1 credit.
+
+## S4 outcome (job e5b74123, 1.00 credit)
+
+Numeric architecture circuit re-transpiled too (max phase change pi); 721/779
+on modes 20/21. The service re-transpiles every form; the transpiler is
+exqalibur CircuitOptimizer from random starts with photon-free inputs ignored
+(local replay matches the served meshes statistically). Usage 14.01 of 200.
+
+## Written case M1: belenos_mesh/job-00 on qpu:belenos (awaiting approval)
+
+Body byte-identical to S3 (circuit sha256 838e9c82...), so the QPU compiles
+the S3 meshes while the couplers are unchanged (plan 2026-10-18 passed the
+live-architecture check). 16 settings x 1500 samples; measures the chip's
+error class by summed likelihood on the returned meshes (expected margins
+>= 408 nats between classes), the demultiplexer-misroute conjecture through
+the identity settings, and the edge/strut fringe on hardware. One-photon
+only, so HOM 57.8 % does not enter. Estimate 1.024 credits, ceiling 1.048,
+expected about 60 to 120 s.
+
+## Written case M2: belenos_mesh/job-02 on qpu:belenos (after M1)
+
+The 84/84 box-kite program: 8 dark and 8 bright configurations covering all
+168 zero products and 168 controls of the 84 edges, one iteration each,
+1500 samples. Reads a (algebra share) per configuration and the bright-minus-
+dark contrast. Runs after M1 (and a seed screen if M1 names a class with a
+strong seed dependence). Estimate 1.024 credits, ceiling 1.048.
+
+## Written case S5: belenos_mesh/job-02 on sim:belenos (sims approved)
+
+The 84/84 program on the simulator before the QPU: 16 configurations x 1500
+samples, 1 credit. Checks the algebra share a per configuration (ideal 0 for
+the 8 dark, 1 for the 8 bright), the bright-minus-dark contrast fields, and
+records the 16 returned meshes the QPU will compile for the same body.
+
+## S5 outcome (job 32b28fe8, 1.00 credit)
+
+84/84 program on the simulator: 8 dark configurations a = 0 (0/1500 each), 8
+bright a = 1, verdict ideal. Usage 15.01 of 200.
+
+## Written case C1: belenos_mesh/job-03..06 on qpu:belenos (awaiting approval)
+
+Supersedes M1 as the first QPU step: one 16-setting job cannot identify
+static offsets (held-out TVD 3 to 12 floors), while 64 random-target settings
+can (0.1 rad recovered to correlation 0.89 locally). Four iterated jobs of 16
+seeded uniform-random meshes, inputs rotating over the 12 connected modes,
+1500 samples each, back to back in one calibration session (each plan checks
+the couplers). Analysis frozen at the pushed commit: class scans with the
+pooled-deviance and TVD-floor test per job, `--static` over the four runs
+(one fold per run), source models for the misroute.
+Gate: the plan's live-architecture check passes. The HOM >= 90 % gate is
+withdrawn: the approved replay R1 (job 7af74302, 2026-10-18T02:54Z) ran Q1's
+identical mesh 29dc6ef8 at HOM 57.6 % and read raw in-block 0.504 (Wilson
+0.494 to 0.514) against Q1's 0.470 (0.460 to 0.480) at HOM 92.6 %, the same
+leak onto modes 17 to 19 with small drift (mode 16 483 -> 261), so the HOM
+figure does not index this one-photon route's leakage. (The dark-corrected
+0.520 / 0.505 quoted in the submit approvals rest on the receipt dark model,
+which C1 job-03 refutes: modes 0 and 1 read zero clicks where it predicts
+about 150 and 40.) Approved by the user 2026-10-17: "C1 approved to run on the
+real quantum hardware finally as well as an exact resubmission of the first
+QPU job for before/after on that as well but C1 is primary!"
+Outcomes and what each triggers:
+- static declared: session-keyed offsets; compile candidate seeds on
+  sim:belenos, predict each under the offsets, run 84/84 with the best;
+- a class fits (dephasing, gain, crosstalk, misroute): seed ensembles per
+  configuration sized to the fitted magnitude; a misroute class reroutes
+  inputs;
+- ideal: Q1 was a calibration episode; run 84/84 (job-02) directly;
+- no class fits: report the residual; ensembles with split-half selection
+  (literature rule) for 84/84.
+Cost 4 x 1.024 = 4.10 credits, ceiling 4.19. Optional exact replay of
+single/job-04 (1.01) for an identical-mesh before/after test.
+
+## Next: form-vs-mesh bridge job F1 (designed 2026-10-18, not built)
+
+Design, preregistration draft, credit table, runner work and the written-case
+fields: `docs/local/HANDOFF-2026-10-18-quandela-form-mesh-bridge.md`. One
+iterated job of Q1's exact circuit over 24 compilation seeds (about 1.003
+credits) looks for a mesh served in both forms; more one-circuit seeds alone
+do not split form from mesh.

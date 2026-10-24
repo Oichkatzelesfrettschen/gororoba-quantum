@@ -1,0 +1,185 @@
+{
+  "schema": "work-plan-v1",
+  "id": "qrng-seed-sources-and-runtime-seeds",
+  "kind": "implementation",
+  "summary": "Draw every new seed from a registered QRNG source (ANU keyed and keyless, Outshift, Quandela) and enforce run-time seed flags through qrng references, the CLI default or repro:N, with a consumption ledger keyed by script, flag and experiment.",
+  "sources": [
+    "AGENTS.md",
+    "scripts/anu_qrng.py",
+    "ci/seed_provenance.py"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Merged in PRs #433, #435 and #436; every step's acceptance rerun on main."
+  },
+  "owner": "claude",
+  "scope": "QRNG draw adapters (ANU keyed and keyless, Outshift, Quandela /qt/qrng/ints), their source registry in ci/seed_provenance.py, the provider guide, and run-time seed flags with a consumption ledger across the CLIs that take a seed.",
+  "next_action": "None; a QCi uQRNG source opens its own record when the token arrives.",
+  "steps": [
+    {
+      "id": "outshift-adapter",
+      "action": "Write scripts/outshift_qrng.py: draw, check and self-test over retained raw responses under docs/evidence/outshift_qrng/, key in ~/.config/outshift-qrng/api-key.",
+      "acceptance": "The self-test rejects disagreeing representations, a wrong block width and an edited raw byte; check admits the retained probe draw.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "outshift_qrng.py --self-test rejects 5 mutations (disagreeing representations, block width, edited raw byte among them); check admits the retained 4-block probe draw. Merged in PR #435.",
+          "observed_at": "2026-10-24T19:57:36Z",
+          "revision": "b88e8acfb3618fc0260dd0bd300bf7276a36067c",
+          "evidence": [
+            {
+              "ref": "scripts/outshift_qrng.py",
+              "sha256": "5948f33187b91ee0b18b4492c55692994b83018b5154b53c5439c902b112dc62"
+            },
+            {
+              "ref": "docs/evidence/outshift_qrng/draw-2026-10-24T165116Z.json",
+              "sha256": "6f74ca3c98abc14f877380aa0f3b4dbf6b1365adc30e2b3f1b5852f96bcf5682"
+            }
+          ],
+          "scope_sha256": "37948de7d38cee26c8d0b7880cb88f389de2a73e0e2185cd28d76efe5197a883"
+        }
+      ]
+    },
+    {
+      "id": "quandela-adapter",
+      "action": "Write scripts/quandela_qrng.py over GET /qt/qrng/ints with draws gated on an approved written case.",
+      "acceptance": "The self-test admits a well-formed response and rejects edits; a draw without --approved-case refuses before any request.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "quandela_qrng.py --self-test rejects 6 mutations of a well-formed response; draw without --approved-case exits at argument parsing before any request. Merged in PR #435.",
+          "observed_at": "2026-10-24T19:57:36Z",
+          "revision": "b88e8acfb3618fc0260dd0bd300bf7276a36067c",
+          "evidence": [
+            {
+              "ref": "scripts/quandela_qrng.py",
+              "sha256": "ce4fa7008da3523fcf73eeaa23ff90a4710221dd1fbda55651361c887fd63149"
+            },
+            {
+              "ref": "tests/scripts/test_qrng_adapters.py",
+              "sha256": "6b4a6a327e003a6484f49fe414df650984a80ca3b5d41351f6716aa530930b45"
+            }
+          ],
+          "scope_sha256": "99634803be50bb0c1f4d864761d480bac8f338ee890a9f6e5d358da17dae51af"
+        }
+      ]
+    },
+    {
+      "id": "source-registry",
+      "action": "Register each source's evidence directory and admit function in SOURCES of gororoba_quantum/qrng_seeds.py, which ci/seed_provenance.py and the seed flags import, and accept allocations from any registered source.",
+      "acceptance": "The self-test admits an allocation from each registered source and refuses an unregistered directory.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "seed_provenance.py --self-test admits a retained draw from each SOURCES directory and refuses an allocation naming docs/evidence/unregistered/ (19 mutations rejected). Merged in PRs #435 and #436.",
+          "observed_at": "2026-10-24T19:57:36Z",
+          "revision": "b88e8acfb3618fc0260dd0bd300bf7276a36067c",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/qrng_seeds.py",
+              "sha256": "fe9be194f3cbef566df0cdc922aeb8d92d42405da8e32ab8ac9544aea86c84c2"
+            },
+            {
+              "ref": "ci/seed_provenance.py",
+              "sha256": "d52894b099339eaa0e449a4cdfc467781075aee7c2e25c46e9538fb78302c574"
+            }
+          ],
+          "scope_sha256": "8c7b16709ce8b64a94a9d6cc256828f43eabfe2d7aa96c3bc7ac2c2863fed451"
+        }
+      ]
+    },
+    {
+      "id": "provider-guide",
+      "action": "Write docs/notes/qrng/README.md: sources, fallback order, quotas, key files, approval rules, with a docs/README.md map row.",
+      "acceptance": "scripts/check_markdown_links.py passes and the AGENTS.md Seeds rule links the guide.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "check_markdown_links.py resolves every link in 511 Markdown files; AGENTS.md Seeds links docs/notes/qrng/README.md and docs/README.md carries its map row. Merged in PR #435.",
+          "observed_at": "2026-10-24T19:57:36Z",
+          "revision": "b88e8acfb3618fc0260dd0bd300bf7276a36067c",
+          "evidence": [
+            {
+              "ref": "docs/notes/qrng/README.md",
+              "sha256": "c2f6df03fa684c6624478856a200a7233d061cd899e728eb7d608a02b254738d"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "61b6cc5897054a5e0f45bab40d5f10cc2de244faebe1f72c725c5e644c2ad63c"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "75b1cbc725f28ce05ea52e8d5155f5d018ee5982a83aa8eb031bf9d10581e7bc"
+            }
+          ],
+          "scope_sha256": "7c656d08e879396dff13b836f476d1305727d5813709f362fb234ec344b6724f"
+        }
+      ]
+    },
+    {
+      "id": "runtime-seed-flags",
+      "action": "Give every CLI seed flag a type accepting qrng:<source>/<draw>#I, the CLI default or repro:N, and append consumption rows keyed by script, flag and experiment to the allocation ledger.",
+      "acceptance": "A bare non-default integer is refused at parse time on every seed flag; the ledger check refuses an index consumed under two experiment keys.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "qrng_seeds self-test refuses a bare non-default integer at parse time; seed_provenance refuses a seed flag declared through bare add_argument outside the four flags that set no seed value, and its runtime self-test refuses an index consumed by two experiments; --runtime matches 0 retained references against the ledger. Eleven CLIs migrated. Merged in PR #436.",
+          "observed_at": "2026-10-24T19:57:36Z",
+          "revision": "b88e8acfb3618fc0260dd0bd300bf7276a36067c",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/qrng_seeds.py",
+              "sha256": "fe9be194f3cbef566df0cdc922aeb8d92d42405da8e32ab8ac9544aea86c84c2"
+            },
+            {
+              "ref": "ci/seed_provenance.py",
+              "sha256": "d52894b099339eaa0e449a4cdfc467781075aee7c2e25c46e9538fb78302c574"
+            },
+            {
+              "ref": "tests/scripts/test_seed_sources_in_records.py",
+              "sha256": "66e8fd8f083c81200a0b4133d7df3df8cbfd840a670dd3f761523a8077b0fc61"
+            },
+            {
+              "ref": "docs/evidence/qrng_seeds/allocations.json",
+              "sha256": "df04a7404d8bd10c2019ba7afe69868b7a072a1b5b5549e2f41f8ba036e808ab"
+            }
+          ],
+          "scope_sha256": "aa8ba528067c91af6e77a1a168e499c0dc3597f10a3ce34634d12f874e99b72e"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Every new seed draws from a registered QRNG source (ANU keyed and keyless, Outshift, Quandela on an approved case); run-time seed flags take qrng:<draw>#I, the CLI default or repro:N, and ci/seed_provenance.py binds each retained qrng reference to one ledger row. A QCi uQRNG adapter waits on the provider token and belongs to a successor record.",
+  "receipts": [
+    {
+      "scope_sha256": "00aa19f64e7377c512759d31182cfb98f2aaf60c7f382c03ebc6e5b8d1442795",
+      "result": "All five steps done with receipts at this revision.",
+      "observed_at": "2026-10-24T19:57:49Z",
+      "revision": "b88e8acfb3618fc0260dd0bd300bf7276a36067c",
+      "evidence": [
+        {
+          "ref": "scripts/outshift_qrng.py",
+          "sha256": "5948f33187b91ee0b18b4492c55692994b83018b5154b53c5439c902b112dc62"
+        },
+        {
+          "ref": "scripts/quandela_qrng.py",
+          "sha256": "ce4fa7008da3523fcf73eeaa23ff90a4710221dd1fbda55651361c887fd63149"
+        },
+        {
+          "ref": "gororoba_quantum/qrng_seeds.py",
+          "sha256": "fe9be194f3cbef566df0cdc922aeb8d92d42405da8e32ab8ac9544aea86c84c2"
+        },
+        {
+          "ref": "ci/seed_provenance.py",
+          "sha256": "d52894b099339eaa0e449a4cdfc467781075aee7c2e25c46e9538fb78302c574"
+        },
+        {
+          "ref": "docs/notes/qrng/README.md",
+          "sha256": "c2f6df03fa684c6624478856a200a7233d061cd899e728eb7d608a02b254738d"
+        }
+      ]
+    }
+  ]
+}

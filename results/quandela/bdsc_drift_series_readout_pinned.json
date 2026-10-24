@@ -1,0 +1,541 @@
+{
+ "epoch_excess": {
+  "between": 1.7029615528969607e-05,
+  "within": null
+ },
+ "pairs": [
+  {
+   "excess_mean_square": 3.7540094244758308e-06,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 0.4695162300268809,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat"
+  },
+  {
+   "excess_mean_square": 3.3780937323093394e-05,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 11.171735727257198,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1"
+  },
+  {
+   "excess_mean_square": 6.2494503354486e-06,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 13.168887284994126,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2"
+  },
+  {
+   "excess_mean_square": 1.4242803991573987e-05,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 15.168208989699682,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3"
+  },
+  {
+   "excess_mean_square": 1.8807958664994923e-05,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 17.1689851864179,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4"
+  },
+  {
+   "excess_mean_square": 4.549835307112998e-05,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 19.17161689221859,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5"
+  },
+  {
+   "excess_mean_square": 5.0939564327126846e-05,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 21.169184698065123,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+  },
+  {
+   "excess_mean_square": 2.2043493740394014e-05,
+   "first": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "lag_hours": 23.16967122859425,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  },
+  {
+   "excess_mean_square": 1.820042096831117e-05,
+   "first": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "lag_hours": 10.702219497230319,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1"
+  },
+  {
+   "excess_mean_square": 2.289153289691466e-06,
+   "first": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "lag_hours": 12.699371054967244,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2"
+  },
+  {
+   "excess_mean_square": 3.935231846646484e-06,
+   "first": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "lag_hours": 14.6986927596728,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3"
+  },
+  {
+   "excess_mean_square": 1.024837013943975e-05,
+   "first": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "lag_hours": 16.699468956391016,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4"
+  },
+  {
+   "excess_mean_square": 3.3887688824662764e-05,
+   "first": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "lag_hours": 18.702100662191707,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5"
+  },
+  {
+   "excess_mean_square": 4.3940123855068965e-05,
+   "first": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "lag_hours": 20.69966846803824,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+  },
+  {
+   "excess_mean_square": 1.9012288637378034e-05,
+   "first": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "lag_hours": 22.70015499856737,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  },
+  {
+   "excess_mean_square": 8.838506330418349e-06,
+   "first": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "lag_hours": 1.9971515577369265,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2"
+  },
+  {
+   "excess_mean_square": 3.4653862228604543e-06,
+   "first": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "lag_hours": 3.996473262442483,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3"
+  },
+  {
+   "excess_mean_square": 4.6463812685965775e-06,
+   "first": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "lag_hours": 5.997249459160699,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4"
+  },
+  {
+   "excess_mean_square": 8.266870954597472e-06,
+   "first": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "lag_hours": 7.9998811649613915,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5"
+  },
+  {
+   "excess_mean_square": 2.1094629536358134e-05,
+   "first": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "lag_hours": 9.997448970807923,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+  },
+  {
+   "excess_mean_square": 2.235028572858463e-05,
+   "first": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "lag_hours": 11.997935501337052,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  },
+  {
+   "excess_mean_square": 2.3751235722893607e-06,
+   "first": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+   "lag_hours": 1.9993217047055563,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3"
+  },
+  {
+   "excess_mean_square": 5.6647196662885885e-06,
+   "first": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+   "lag_hours": 4.000097901423772,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4"
+  },
+  {
+   "excess_mean_square": 2.856105996904966e-05,
+   "first": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+   "lag_hours": 6.002729607224464,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5"
+  },
+  {
+   "excess_mean_square": 4.2091254670520255e-05,
+   "first": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+   "lag_hours": 8.000297413070996,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+  },
+  {
+   "excess_mean_square": 2.0744250728378858e-05,
+   "first": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+   "lag_hours": 10.000783943600124,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  },
+  {
+   "excess_mean_square": -2.3335152606372802e-07,
+   "first": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+   "lag_hours": 2.000776196718216,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4"
+  },
+  {
+   "excess_mean_square": 1.4929657644980056e-05,
+   "first": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+   "lag_hours": 4.003407902518908,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5"
+  },
+  {
+   "excess_mean_square": 2.1233182068234924e-05,
+   "first": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+   "lag_hours": 6.0009757083654405,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+  },
+  {
+   "excess_mean_square": 1.1940883031335008e-05,
+   "first": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+   "lag_hours": 8.001462238894568,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  },
+  {
+   "excess_mean_square": 1.0230934627719892e-05,
+   "first": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+   "lag_hours": 2.002631705800692,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5"
+  },
+  {
+   "excess_mean_square": 1.744506026369916e-05,
+   "first": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+   "lag_hours": 4.000199511647224,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+  },
+  {
+   "excess_mean_square": 9.717568096952676e-06,
+   "first": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+   "lag_hours": 6.000686042176353,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  },
+  {
+   "excess_mean_square": 7.078627988264712e-06,
+   "first": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+   "lag_hours": 1.9975678058465323,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+  },
+  {
+   "excess_mean_square": 1.137571134469046e-05,
+   "first": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+   "lag_hours": 3.9980543363756604,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  },
+  {
+   "excess_mean_square": 1.4419568415714103e-05,
+   "first": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
+   "lag_hours": 2.000486530529128,
+   "same_epoch": false,
+   "second": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+  }
+ ],
+ "primary": {
+  "independent_reference": {
+   "mean": 2.0,
+   "p_value": 0.02165317557438026,
+   "variance_of_mean": 0.026041666666666668,
+   "z": -2.020743240653359
+  },
+  "mean_ratio": 1.673903961749514,
+  "n_runs": 7,
+  "n_settings": 16,
+  "null": "exact, all 5040 orderings of the runs shared by every setting",
+  "p_value": 0.055952380952380955,
+  "ratios": {
+   "+#2": 2.265996910077061,
+   "+#38": 0.7289292223797972,
+   "+#44": 1.3718330384634492,
+   "+#8": 1.3010221448675707,
+   "+i#10": 0.9274563062008571,
+   "+i#4": 0.530409641780543,
+   "+i#40": 1.0743260529026046,
+   "+i#46": 1.8582003885973866,
+   "-#3": 1.676703789900859,
+   "-#39": 2.1193261665791434,
+   "-#45": 3.369771431154248,
+   "-#9": 1.6901738490574496,
+   "-i#11": 2.738404354336863,
+   "-i#41": 0.5572253153018847,
+   "-i#47": 2.776189625651385,
+   "-i#5": 1.7964951507411215
+  },
+  "reading": "consistent",
+  "smallest_attainable_p": 0.0003968253968253968,
+  "test": "pooled von Neumann ratio of class-centered superposition residuals under detector_absent"
+ },
+ "runs": [
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.001492914019100269,
+     "se": 6.344065216817664e-05
+    },
+    "g": {
+     "mean": 0.9942783547723419,
+     "se": 0.00012874076393762238
+    },
+    "superposition": {
+     "mean": 0.398310226871919,
+     "se": 0.0004040353958152316
+    }
+   },
+   "epoch": 0,
+   "role": "anchor",
+   "run": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "start_utc": 1792785030.542022,
+   "stray_rate_after": null,
+   "stray_rate_at_plan": 49520.9,
+   "stray_share": {
+    "max": 0.27564969205347756,
+    "mean": 0.09314364747102899,
+    "min": 0.01911898592338399
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.001381771957784604,
+     "se": 6.733037908002629e-05
+    },
+    "g": {
+     "mean": 0.9944812014535975,
+     "se": 0.00013921220470969453
+    },
+    "superposition": {
+     "mean": 0.39526518844364955,
+     "se": 0.00044545699458953177
+    }
+   },
+   "epoch": 1,
+   "role": "anchor",
+   "run": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "start_utc": 1792786720.80045,
+   "stray_rate_after": null,
+   "stray_rate_at_plan": 48440.3,
+   "stray_share": {
+    "max": 0.5053401125184271,
+    "mean": 0.25545826337556077,
+    "min": 0.03047883886327035
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.0014604593290668316,
+     "se": 6.250643666818277e-05
+    },
+    "g": {
+     "mean": 0.9953070335420039,
+     "se": 0.00011604732632723635
+    },
+    "superposition": {
+     "mean": 0.40445026150604746,
+     "se": 0.000407141167553245
+    }
+   },
+   "epoch": 2,
+   "role": "series",
+   "run": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "start_utc": 1792825248.79064,
+   "stray_rate_after": 13085.8,
+   "stray_rate_at_plan": 13085.8,
+   "stray_share": {
+    "max": 0.2505356320458141,
+    "mean": 0.09631434562116552,
+    "min": 0.012766638652099092
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.001383740250411221,
+     "se": 6.456414503394881e-05
+    },
+    "g": {
+     "mean": 0.9948637776208956,
+     "se": 0.0001174164749208255
+    },
+    "superposition": {
+     "mean": 0.39569862898187536,
+     "se": 0.00042029840239273143
+    }
+   },
+   "epoch": 3,
+   "role": "series",
+   "run": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+   "start_utc": 1792832438.536248,
+   "stray_rate_after": 7326.8,
+   "stray_rate_at_plan": 7326.8,
+   "stray_share": {
+    "max": 0.3212710947208081,
+    "mean": 0.145477315055398,
+    "min": 0.010303400122040273
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.0014989642490586836,
+     "se": 6.25366296213619e-05
+    },
+    "g": {
+     "mean": 0.9947162128581026,
+     "se": 0.00011688069927396162
+    },
+    "superposition": {
+     "mean": 0.3974420499443331,
+     "se": 0.0003947072929204701
+    }
+   },
+   "epoch": 4,
+   "role": "series",
+   "run": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+   "start_utc": 1792839636.094385,
+   "stray_rate_after": 11071.8,
+   "stray_rate_at_plan": 11071.8,
+   "stray_share": {
+    "max": 0.12021103002272478,
+    "mean": 0.04178891134001078,
+    "min": 0.007772953722414518
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.001550237706401145,
+     "se": 6.631568007699891e-05
+    },
+    "g": {
+     "mean": 0.9947304507796713,
+     "se": 0.00012038994724554256
+    },
+    "superposition": {
+     "mean": 0.3977985004083285,
+     "se": 0.00040124214994285116
+    }
+   },
+   "epoch": 5,
+   "role": "series",
+   "run": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+   "start_utc": 1792846838.888693,
+   "stray_rate_after": 12434.1,
+   "stray_rate_at_plan": 12434.1,
+   "stray_share": {
+    "max": 0.21511307777788902,
+    "mean": 0.084610395114198,
+    "min": 0.015866505267159537
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.001578340508515347,
+     "se": 6.332766121926607e-05
+    },
+    "g": {
+     "mean": 0.9946817002101804,
+     "se": 0.00011785345569610327
+    },
+    "superposition": {
+     "mean": 0.39870976699283694,
+     "se": 0.0003924804488013535
+    }
+   },
+   "epoch": 6,
+   "role": "series",
+   "run": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+   "start_utc": 1792854048.362834,
+   "stray_rate_after": 10365.3,
+   "stray_rate_at_plan": 10365.3,
+   "stray_share": {
+    "max": 0.0774132877137169,
+    "mean": 0.030938015342105964,
+    "min": 0.003531341909925772
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.0014055360368286603,
+     "se": 6.407336693022998e-05
+    },
+    "g": {
+     "mean": 0.9940998681999109,
+     "se": 0.00012746524723351665
+    },
+    "superposition": {
+     "mean": 0.40146747361214724,
+     "se": 0.000410745240747732
+    }
+   },
+   "epoch": 7,
+   "role": "series",
+   "run": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
+   "start_utc": 1792861239.606935,
+   "stray_rate_after": 18616.3,
+   "stray_rate_at_plan": 18616.3,
+   "stray_share": {
+    "max": 0.2319745133594478,
+    "mean": 0.11555395996018462,
+    "min": 0.017056481462955922
+   }
+  },
+  {
+   "class_means": {
+    "f": {
+     "mean": 0.0015646344573986258,
+     "se": 6.48724343117995e-05
+    },
+    "g": {
+     "mean": 0.99444191793047,
+     "se": 0.00012675861510746532
+    },
+    "superposition": {
+     "mean": 0.39203779570986724,
+     "se": 0.0004138420693355287
+    }
+   },
+   "epoch": 8,
+   "role": "series",
+   "run": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
+   "start_utc": 1792868441.358445,
+   "stray_rate_after": 10516.1,
+   "stray_rate_at_plan": 10516.1,
+   "stray_share": {
+    "max": 0.2941258979471201,
+    "mean": 0.12392294339286263,
+    "min": 0.027579928774358768
+   }
+  }
+ ],
+ "schema": "bdsc-drift-series-readout-v1",
+ "superposition_mean_ratio": 2.0216885288742223
+}

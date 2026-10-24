@@ -16,4 +16,5 @@ repository-relative; a branch name stands for its worktree.
 | [quantum-inspire-branch-pair-map.md](quantum-inspire-branch-pair-map.md) | the two Quantum Inspire branches and their merge order |
 | [open-gororoba-anf-degree-issue-draft.md](open-gororoba-anf-degree-issue-draft.md) | draft upstream issue for open_gororoba (ANF degree closed forms); not filed |
 | [docs-audit.md](docs-audit.md) | documentation inventory, bindings and restructure options |
+| [tuna17-bdsc-pauli-pilot-review.md](tuna17-bdsc-pauli-pilot-review.md) | adversarial, stability and literature review of the Tuna-17 BDSC Pauli pilot (PR #349) |
 | [docs-move-plan.json](docs-move-plan.json) | per-file move plan with bindings and reference-edit counts, companion of docs-audit.md |

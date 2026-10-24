@@ -1,0 +1,87 @@
+{
+ "associator": {
+  "16": {
+   "associator_support_disagreements": 0,
+   "triple_sign_disagreements": 0,
+   "triples": 4096
+  },
+  "2": {
+   "associator_support_disagreements": 0,
+   "triple_sign_disagreements": 0,
+   "triples": 8
+  },
+  "32": {
+   "associator_support_disagreements": 0,
+   "triple_sign_disagreements": 0,
+   "triples": 32768
+  },
+  "4": {
+   "associator_support_disagreements": 0,
+   "triple_sign_disagreements": 0,
+   "triples": 64
+  },
+  "8": {
+   "associator_support_disagreements": 0,
+   "triple_sign_disagreements": 0,
+   "triples": 512
+  }
+ },
+ "cochain": {
+  "16": {
+   "pairs": 256,
+   "transposed_disagreements": 0,
+   "untransposed_disagreements": 210
+  },
+  "2": {
+   "pairs": 4,
+   "transposed_disagreements": 0,
+   "untransposed_disagreements": 0
+  },
+  "32": {
+   "pairs": 1024,
+   "transposed_disagreements": 0,
+   "untransposed_disagreements": 930
+  },
+  "4": {
+   "pairs": 16,
+   "transposed_disagreements": 0,
+   "untransposed_disagreements": 6
+  },
+  "64": {
+   "pairs": 4096,
+   "transposed_disagreements": 0,
+   "untransposed_disagreements": 3906
+  },
+  "8": {
+   "pairs": 64,
+   "transposed_disagreements": 0,
+   "untransposed_disagreements": 42
+  }
+ },
+ "convention": {
+  "base": "G = Z_2, f(x, y) = xy",
+  "declared_map": "F_AM(a, b) = cd_sign(n, b, a)",
+  "new_generator": "highest index bit, cd_core's last doubling"
+ },
+ "schema": "albuquerque-majid-convention-v1",
+ "source": {
+  "bytes": 244217,
+  "sha256": "be7999751ffb6db38d57c4bafc589c9a8683a59a0554df9adb28cecb3f4370bf",
+  "statements": [
+   "Corollary 4.3 (cochain doubling)",
+   "Eq. (11) (coboundary associator)"
+  ],
+  "url": "https://arxiv.org/pdf/math/9802116v1"
+ },
+ "totals": {
+  "pairs": 5460,
+  "triples": 37448
+ },
+ "untransposed_witness": {
+  "F_AM": -1,
+  "a": 1,
+  "b": 2,
+  "cd_sign_a_b": 1,
+  "n": 4
+ }
+}
