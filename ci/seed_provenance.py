@@ -206,17 +206,23 @@ def baseline_counts(rows: list[dict[str, Any]]) -> Counter[Key]:
     return counts
 
 
+def file_claims(path: str) -> list[str]:
+    """Draw file names one retained file names without an index. A file that references a draw by index (a run
+    record, or a scripts/kaggle_run.py manifest whose bundle inventory also names the draw file) consumes indices,
+    not the whole draw."""
+    text = Path(path).read_text(encoding="utf-8")
+    indexed = {Path(match.group(1)).name for match in qrng_seeds.REF.finditer(text)}
+    return sorted(set(DRAW_NAME.findall(qrng_seeds.REF.sub("", text))) - indexed)
+
+
+def manifest_files(manifest_root: Path) -> list[str]:
+    return [str(path) for path in sorted(manifest_root.rglob("*.json"))] if manifest_root.is_dir() else []
+
+
 def claimed_records(manifest_root: Path) -> set[str]:
     """File names of the draw records that retained case files name without an index; such a case owns its
     whole draw, while a qrng:<draw>#<index> reference consumes that one index."""
-    claimed: set[str] = set()
-    for path in sorted(manifest_root.rglob("*.json")) if manifest_root.is_dir() else []:
-        text = path.read_text(encoding="utf-8")
-        # A file that references a draw by index (a run record, or a scripts/kaggle_run.py manifest whose bundle
-        # inventory also names the draw file) consumes indices, not the whole draw.
-        indexed = {Path(match.group(1)).name for match in qrng_seeds.REF.finditer(text)}
-        claimed.update(set(DRAW_NAME.findall(qrng_seeds.REF.sub("", text))) - indexed)
-    return claimed
+    return {name for names in parallel.ordered_map(file_claims, manifest_files(manifest_root)) for name in names}
 
 
 def seed_sources(node: Any) -> Iterator[dict[str, Any]]:
@@ -234,22 +240,32 @@ def seed_sources(node: Any) -> Iterator[dict[str, Any]]:
 Consumer = tuple[str, str, str]
 
 
+def file_references(path: str) -> tuple[list[tuple[str, int]], list[tuple[str, int, Consumer]]]:
+    """One retained file's qrng references, and the (record, index, consumer) its seed_source entries declare."""
+    text = Path(path).read_text(encoding="utf-8")
+    found = sorted({(match.group(1), int(match.group(2))) for match in qrng_seeds.REF.finditer(text)})
+    if not found:
+        return [], []
+    declared = []
+    for entry in seed_sources(json.loads(text)):
+        for source in entry["sources"]:
+            if isinstance(source, str) and (match := qrng_seeds.REF.fullmatch(source)):
+                consumer = (entry["script"], entry["flag"], entry["experiment"])
+                declared.append((match.group(1), int(match.group(2)), consumer))
+    return found, declared
+
+
 def runtime_consumption(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str]]:
     """(record, index) -> the (script, flag, experiment) keys of every retained qrng reference, and the
     files that carry a qrng reference no seed_source entry under the root declares."""
+    paths = manifest_files(manifest_root)
     consumed: dict[tuple[str, int], set[Consumer]] = {}
     mentions: dict[str, set[tuple[str, int]]] = {}
-    for path in sorted(manifest_root.rglob("*.json")) if manifest_root.is_dir() else []:
-        text = path.read_text(encoding="utf-8")
-        found = {(match.group(1), int(match.group(2))) for match in qrng_seeds.REF.finditer(text)}
-        if not found:
-            continue
-        mentions[path.relative_to(manifest_root.parent).as_posix()] = found
-        for entry in seed_sources(json.loads(text)):
-            for source in entry["sources"]:
-                if isinstance(source, str) and (match := qrng_seeds.REF.fullmatch(source)):
-                    consumer = (entry["script"], entry["flag"], entry["experiment"])
-                    consumed.setdefault((match.group(1), int(match.group(2))), set()).add(consumer)
+    for path, (found, declared) in zip(paths, parallel.ordered_map(file_references, paths), strict=True):
+        if found:
+            mentions[Path(path).relative_to(manifest_root.parent).as_posix()] = set(found)
+        for record_path, index, consumer in declared:
+            consumed.setdefault((record_path, index), set()).add(consumer)
     # A replay command, a wrapper manifest (scripts/kaggle_run.py submission.json args) or a copy may repeat a
     # reference; a reference that no seed_source under the root declares is stray.
     stray = [path for path, found in mentions.items() if found - set(consumed)]
