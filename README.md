@@ -39,7 +39,7 @@ acquisition of every provider:
 | mathematical claim | open | 3 |
 | numerical or stochastic simulation | established | 8 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 49 |
+| preregistered hardware inference | established | 50 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -318,12 +318,13 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2](results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
 | [2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1](results/quandela/runs/2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
 | [2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2](results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2) | Quandela Cloud | BDSC stationarity case on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
+| [2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00](results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00) | Quandela Cloud | photonic signed-coherence coefficient conformance | qpu:ascella | 1 | 64 | completed | 1.016384 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 65 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 66 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 24 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->

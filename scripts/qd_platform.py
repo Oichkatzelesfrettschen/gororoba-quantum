@@ -427,6 +427,77 @@ def snapshot(out: Path) -> None:
     print(f"{len(explorer)} Explorer platforms, {len(public)} public platforms")
 
 
+OBSERVATION_SCHEMA = "qd-observation-v1"
+ACCOUNT_API = "https://api.account.quandela.com"
+# Every GET route of the retained cloud and account OpenAPI documents
+# (docs/notes/quandela/api/) plus the platform routes Perceval reads, except
+# routes that return token records (credentials), the QRNG routes (each read
+# is a billed provider request that needs an approved case) and the session
+# routes (logout, oauth). Job routes belong to collect.
+OBSERVED_ROUTES = (
+    ("cloud", "/", False),
+    ("cloud", "/health", False),
+    ("cloud", "/openapi.json", False),
+    ("cloud", "/qt-openapi.json", False),
+    ("cloud", "/api/platforms/public", False),
+    ("cloud", "/api/platforms/public/explorer", False),
+    ("cloud", "/api/jobs/availability", True),
+    ("cloud", "/api/tokens/usage/report", True),
+    ("account", "/", False),
+    ("account", "/health", False),
+    ("account", "/api/rss-feed", False),
+)
+
+
+def observed(host: str, route: str, auth: bool) -> dict[str, Any]:
+    """One route's answer, scrubbed of FORBIDDEN_KEYS when it is JSON, or the refusal that answered it."""
+    base = {"cloud": API, "account": ACCOUNT_API}[host]
+    headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
+    if auth:
+        headers["Authorization"] = f"Bearer {token()}"
+    entry: dict[str, Any] = {"host": base, "route": route, "auth": auth, "retrieved_utc": now()}
+    try:
+        with OPENER.open(urllib.request.Request(base + route, headers=headers), timeout=60) as response:
+            answer = response.read(RESULT_LIMIT + 1)
+            entry["http_status"] = response.status
+            entry["content_type"] = response.headers.get("Content-Type")
+    except urllib.error.HTTPError as error:
+        error.close()
+        return {**entry, "http_status": error.code, "refused": True}
+    except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
+        return {**entry, "unanswered": repr(error)}
+    if len(answer) > RESULT_LIMIT:
+        return {**entry, "unanswered": f"answer exceeds {RESULT_LIMIT} bytes"}
+    try:
+        value = json.loads(answer)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        # A non-JSON answer (the RSS feed, an HTML home page) is kept as text with its digest.
+        return {**entry, "sha256": sha256_bytes(answer), "text": answer.decode("utf-8", errors="replace")}
+    cleaned = scrub(value)
+    return {**entry, "sha256": sha256_bytes(json.dumps(cleaned, sort_keys=True).encode()), "json": cleaned}
+
+
+def observe(out: Path) -> None:
+    """Write out/observation.json: every observed route, then every platform's processor record, all raw."""
+    token()
+    routes = [observed(*route) for route in OBSERVED_ROUTES]
+    explorer = next(entry for entry in routes if entry["route"] == "/api/platforms/public/explorer")
+    names = sorted(row["name"] for row in explorer.get("json") or [] if isinstance(row, dict) and "name" in row)
+    for name in names:
+        routes.append(observed("cloud", platform_route(name), True))
+    record = {
+        "schema": OBSERVATION_SCHEMA,
+        "retrieved_utc": now(),
+        "versions": versions(),
+        "excluded": "token records, QRNG reads (billed), session routes; job routes are collect's",
+        "routes": routes,
+    }
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "observation.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    failed = [entry["route"] for entry in routes if "json" not in entry and "text" not in entry]
+    print(f"{len(routes)} routes observed; unanswered or refused: {failed or 'none'}")
+
+
 def span(low: int | None, high: int | None) -> str:
     if low is None and high is None:
         return "-"
@@ -2685,6 +2756,8 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command")
     p = sub.add_parser("snapshot")
     p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser("observe")
+    p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("check")
     p.add_argument("directory", type=Path)
     p.add_argument("--agents", type=Path, nargs="+", help="files carrying the quandela-facts section")
@@ -2719,6 +2792,11 @@ def main() -> int:
     elif args.command == "snapshot":
         try:
             snapshot(args.out)
+        except PlatformError as error:
+            raise SystemExit(str(error)) from None
+    elif args.command == "observe":
+        try:
+            observe(args.out)
         except PlatformError as error:
             raise SystemExit(str(error)) from None
     elif args.command == "check":

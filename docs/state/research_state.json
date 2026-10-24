@@ -2,6 +2,13 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+      "family": "photonic signed-coherence coefficient conformance",
+      "question": "Do the sign-odd and sign-even X/Y and sign-averaged dark coefficients of the frozen 64-setting Ascella request, at five angles plus a commuting mutation, conform to their ideals within the preregistered 0.05 tolerance?"
+    },
+    {
       "id": "qd-ascella-mosaiq-update-order-retry",
       "provider": "quandela",
       "run": "results/quandela/runs/ascella-mosaiq-update-order-retry",
@@ -1858,6 +1865,48 @@
     }
   ],
   "claims": [
+    {
+      "id": "ascella-signed-coherence-conformance",
+      "statement": "The approved 64-setting signed-coherence request on qpu:ascella (job 739a5271) completed 524288 detected samples in 186 execution seconds for a token-reported debit of 1.016384 free credits, and all 27 preregistered endpoints qualify under the 0.05 coefficient tolerance: the 15 sign-odd and dark coefficients deviate from their ideals by at most 0.0303, the 10 sign-even coefficients stay within 0.0116 of zero, and the mutation difference reads 0.1646 against its ideal 0.1727. The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta) coefficient (0.4777) exclude their ideal 0.5 while conforming. 6659 of 524288 events (1.27 percent) fall outside the logical block, between 4 and 586 per setting.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one device and calibration; it decides the registered endpoints under their tolerance and certifies no exact ideal. The setting-dependent outside-block share exceeds the case's dark-count bound of about 0.91 percent, so the mechanism behind it, and whether it attenuates the two coefficients that exclude their ideal, is unidentified. Intervals assume independent sampling within each setting, and the job cannot separate drift within its 186 seconds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis.json",
+          "sha256": "1e36eff94b7939b4d87afb0cb9fcb22f1458f4e3d59377bf32ab212b7ac152da"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/submission.json",
+          "sha256": "9e1650b7f94f1099f81076d95541f0a2e37d34501ee0f10ffc5718364cce69d5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/raw/result.json",
+          "sha256": "b2bef57a8bbf721ddcf4ffcf21ef0195b28ff1c7d223f8c033da206578cad1c3"
+        }
+      ],
+      "documents": [
+        "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md",
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "scripts/ascella_coherence_run.py"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-acquisition-replay": "replay",
+        "core-ascella-signed-coherence-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "ascella-order-sampling-recovery",
       "statement": "The explicitly authorized unchanged Ascella order pilot completed eight settings and returned 65536 detected samples in 25 execution seconds, with a token-reported debit of 1.016384 free credits. Conditional analysis accepts 65523 occupation-sum-one observations and retains 13 multiple-occupation exclusions. Measured-versus-requested total variation spans 0.00048828125 to 0.02796092796; returned compiled-versus-requested total variation stays below 0.000298160.",
@@ -8811,12 +8860,12 @@
       "boundary": "One device and one calibration, two blocks about an hour apart; the case separates neither slow drift from a step change nor drift within a window. Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance unresolved. The calibration hold and the post-calibration repeat of b1-j1 were amendments committed before the jobs they govern; the pre-calibration b1-j1 run enters no frozen test. The plan-time dark-count figure is a platform reading, not an acquisition-time measurement, so the mode-5 mechanism stays a candidate. An inconclusive primary decides neither branch; it makes no certification decision.",
       "evidence": [
         {
-          "path": "results/quandela/bdsc_stationarity_calibration_contrast.json",
-          "sha256": "8481d6563c530bc315c82bcd19c108eacedfc8acac0a943b395ff582b3d5433b"
+          "path": "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json",
+          "sha256": "b72b8b154e5eb88f89d7174d2fa65678aa6a231a5fcee2d4767bd69ec7c05418"
         },
         {
-          "path": "results/quandela/bdsc_stationarity_readout.json",
-          "sha256": "48a477b28a1dd8ce10e8a119ed33741d85987aab764fc8f0202694a4888f5d1e"
+          "path": "results/quandela/bdsc_stationarity_readout_pinned.json",
+          "sha256": "fd95b1eb105d7818f2c2dc8561c55de0768668f2cd7a97ad30c8ecf5658d5ad1"
         }
       ],
       "documents": [
@@ -8860,8 +8909,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-2/result.json",
-          "sha256": "cc3b3c3bf970a66e64e6fc2042743b3802d3dddec6a974c3292569d1129d4996"
+          "path": "docs/evidence/algebra-device-conjectures-3/result.json",
+          "sha256": "5decce616f924df3bd885fe0db8e11d71b9834f62dbc02f8e0b882fc66c8770f"
         }
       ],
       "gates": {

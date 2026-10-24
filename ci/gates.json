@@ -3860,6 +3860,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_run.py --run results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+   "name": "core-ascella-signed-coherence-acquisition-replay",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
@@ -3892,7 +3900,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-2",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-3",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
