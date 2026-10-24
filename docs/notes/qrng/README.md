@@ -73,8 +73,11 @@ the change that retains the run: `"$PYTHON" ci/seed_provenance.py --add-runtime`
 appends a row to the `runtime` list of
 `docs/evidence/qrng_seeds/allocations.json` for every retained reference that
 lacks one, and `--runtime` (run by the `tests` check) requires every qrng
-reference under `results/` to sit in a `seed_source` entry, to have one
-experiment, and to match exactly one row. A reference with an index consumes
+reference under `results/` to be declared by some `seed_source` entry there
+(a replay command, a copy or a `scripts/kaggle_run.py` submission manifest may
+repeat it), to have one experiment, and to match exactly one row. A
+qrng-seeded Kaggle run therefore retains its collected output, which carries
+the `seed_source`, in the same change as its submission manifest. A reference with an index consumes
 that index only; a case manifest that names a draw without an index owns the
 whole draw.
 

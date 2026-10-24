@@ -30,6 +30,10 @@ def test_replay_command_repeats_a_declared_reference(tmp_path: Path) -> None:
     consumed, stray = seed_provenance.runtime_consumption(results)
     if stray or len(consumed) != 1:
         raise AssertionError(f"a declared replay reference read as stray: {stray}, {consumed}")
+    manifest = {"args": ["--seeds", ref]}
+    (results / "submission.json").write_text(json.dumps(manifest))
+    if seed_provenance.runtime_consumption(results)[1]:
+        raise AssertionError("a wrapper manifest repeating a declared reference read as stray")
     record["note"] = draw_ref(6)
     (results / "kept.json").write_text(json.dumps(record))
     if seed_provenance.runtime_consumption(results)[1] != ["results/kept.json"]:
