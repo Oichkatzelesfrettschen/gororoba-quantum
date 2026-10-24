@@ -6,13 +6,17 @@ finite angle family. The completed pilot observes intensities. The follow-up
 measures the coherence those intensities leave undetermined, extracts the
 predicted harmonic coefficients, and renders their measured geometry.
 
-The plan contains one proposed 64-setting order-family job, a 300-second cap
-and a 1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
-[frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json)
-, its serialized job body and their
+The plan contains one 64-setting order-family job, a 300-second cap and a
+1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
+[frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json),
+its serialized job body and their
 [local replay](../../results/local-simulation/ascella-signed-coherence-replay/README.md)
-exist, and the [written acquisition case](#written-acquisition-case) awaits
-the user's approval; nothing has been submitted. Wave evolution
+precede the [written acquisition case](#written-acquisition-case). Under the
+owner's approval of that case, job `739a5271` ran on 2026-10-24: all 27
+endpoints qualify, and 1.27 % of events fall outside the logical block, above
+the case's dark-count bound
+([retained run](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md)).
+Wave evolution
 and Fourier families retain separate cases. The science-led design replaces
 the fixed-angle reference-and-repeat design in this document's Git history;
 all settings now probe the order mathematics, its sign symmetry or its
